@@ -49,7 +49,7 @@ public class BannerPortlet extends ContentChannelPortlet {
 
     private static final Log log = LogFactory.getLog(BannerPortlet.class);
 
-    private static final String PARAM_CLICK_TAG = "clickTAG";
+    private static final String PARAM_REDIRECT = "redirect";
 
     @Override
     public void init(PortletConfig config) throws PortletException {
@@ -109,7 +109,7 @@ public class BannerPortlet extends ContentChannelPortlet {
     }
 
     @Override
-    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+    public void processView(ActionRequest request, ActionResponse response) {
         PortletPreferences preferences = request.getPreferences();
 
         String position = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
@@ -132,18 +132,30 @@ public class BannerPortlet extends ContentChannelPortlet {
                 counter.setIntValue("clicks", clicks);
                 counter.commit();
                 getLogger().debug("Clicks updated to: " + clicks + " for banner: " + bannerId);
+                
+                String redirectUrl = request.getParameter(PARAM_REDIRECT);
+                if (!StringUtils.isBlank(redirectUrl)) {
+                    getLogger().debug("Redirecting request for banner: " + bannerId + " to: " + redirectUrl);
+                    if (redirectUrl.indexOf("?") > -1) {
+                        redirectUrl += "&"; 
+                    }
+                    else {
+                        redirectUrl += "?";
+                    }
+                    
+                    redirectUrl += "elementId=" + bannerId + "&page=" + screenId + "&position=" + position;
+                    response.sendRedirect(redirectUrl);
+                }
+                else {
+                    Node url = SearchUtil.findRelatedNode(banner, "urls", "posrel");
+                    response.sendRedirect(url.getStringValue("url"));
+                }
             } catch (Exception ex) {
                 getLogger().error("Unable to update clicks on banner: " + bannerId, ex);
                 // continue with redirect in any case
             }
         } else {
             log.warn("No elementId found, check banners for page: " + page + " and position: " + position);
-        }
-
-        String clickTag = request.getParameter(PARAM_CLICK_TAG);
-        if (!StringUtils.isBlank(clickTag)) {
-            getLogger().debug("Redirecting request for banner: " + bannerId + " to: " + clickTag);
-            response.sendRedirect(clickTag);
         }
     }
 
