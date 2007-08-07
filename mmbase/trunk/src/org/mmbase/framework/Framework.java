@@ -17,12 +17,13 @@ import org.mmbase.util.functions.*;
 /**
  * A framework displays and processes components.
  *
- * The Framework as URLConverter must never return <code>null</code>, iow, it should
+ * The Framework as UrlConverter must never return <code>null</code>, iow, it should
  * <em>always</em> know how to do this.
+ *
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.35 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: Framework.java,v 1.36 2007-08-07 19:33:27 andre Exp $
  * @since MMBase-1.9
  */
 public interface Framework extends UrlConverter {

@@ -24,11 +24,12 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
- * Basic implementation of UrlConverter.
+ * Basic implementation of UrlConverter. Essential component, should typically be
+ * chained last in ChainedUrlConverter by the framework.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.16 2007-08-06 16:58:56 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.17 2007-08-07 19:33:27 andre Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
