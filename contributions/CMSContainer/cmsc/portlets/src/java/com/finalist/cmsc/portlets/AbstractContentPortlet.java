@@ -18,15 +18,8 @@ import javax.portlet.*;
 
 import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.commons.bridge.CloudUtil;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
-import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Relation;
-
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portalImpl.headerresource.MetaHeaderResource;
@@ -61,8 +54,6 @@ public abstract class AbstractContentPortlet extends CmscPortlet{
     /** name of the parameter that defines the mode the view is displayed in */
     protected static final String MODE = "mode";
     
-    private static final int MAX_BODY_LENGTH = 1024;
-
     private DateFormat metaDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     /**
