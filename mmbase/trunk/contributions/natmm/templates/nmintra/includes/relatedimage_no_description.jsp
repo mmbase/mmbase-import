@@ -28,7 +28,12 @@
           if((4<posrel_pos)&&(posrel_pos<7)) { imageTemplate = "+s(180)"; }
           if(6<posrel_pos) { imageTemplate = "+s(400)"; }
         %></mm:field>
-    </mm:first>    
-        <div <%@include file="../includes/imagesposition.jsp" %>><img src="<mm:node element="images"><mm:image template="<%= imageTemplate %>" /></mm:node
-                   >" alt="<mm:field name="images.title" />" border="0"></div>
+        <table border=0 cellpadding="0" cellspacing="0" style="width:80;margin-bottom:5px;" <%@include file="../includes/imagesposition.jsp" %>>
+    </mm:first><%
+
+     // ************** inner table with image **********************************************
+     // ** give table small width otherwise description can push the table to large width **
+     %><tr><td><div align="center"><img src="<mm:node element="images"><mm:image template="<%= imageTemplate %>" /></mm:node
+                   >" alt="<mm:field name="images.title" />" border="0"></div></td></tr>
+         <mm:last></table></mm:last>
 </mm:related>
