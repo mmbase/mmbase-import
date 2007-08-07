@@ -175,9 +175,12 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
            element.addOption(createOption("masspublish.png", labelMassPublish,
                getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
         }
-        String labelMassModify = JstlUtil.getMessage(request, "site.page.massmodify");
-        element.addOption(createOption("massmodify.png", labelMassModify,
-            getUrl("MassModify.do?number=" + parentNode.getNumber()), target));
+
+// Not yet ready for mainstream usage. Might become a handy tool for webmasters.
+        
+//        String labelMassModify = JstlUtil.getMessage(request, "site.page.massmodify");
+//        element.addOption(createOption("massmodify.png", labelMassModify,
+//            getUrl("MassModify.do?number=" + parentNode.getNumber()), target));
     }
 
     private String getUrl(String url) {

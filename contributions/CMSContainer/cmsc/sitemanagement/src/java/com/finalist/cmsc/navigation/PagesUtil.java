@@ -155,6 +155,19 @@ public class PagesUtil {
         RelationUtil.createRelation(page, layoutNode, LAYOUTREL);
     }
     
+    public static void replaceLayout(Node page, Node newLayout) {
+        if (newLayout == null) {
+            throw new IllegalArgumentException("Layout may not be null");
+        }
+        RelationList layoutrels = page.getRelations(LAYOUTREL);
+        for (Iterator<Relation> iterator = layoutrels.iterator(); iterator.hasNext();) {
+            Relation rel = iterator.next();
+            rel.delete(true);
+        }
+        addLayout(page, newLayout);
+    }
+
+    
     public static void addStylesheet(Node page, Node stylesheetNode) {
         if (stylesheetNode == null) {
             throw new IllegalArgumentException("Stylesheet may not be null");
@@ -234,7 +247,10 @@ public class PagesUtil {
        return SearchUtil.findRelatedOrderedNodeList(pageNode, STYLESHEET, STYLEREL, STYLEREL+"."+POS_FIELD);
     }
     
-
+    public static NodeList getLayouts(Cloud cloud) {
+        return SearchUtil.findOrderedNodeList(cloud, LAYOUT, TITLE_FIELD);
+    }
+    
     public static boolean isLayout(Node node) {
         return LAYOUT.equals(node.getNodeManager().getName());
     }
@@ -320,6 +336,23 @@ public class PagesUtil {
         }            
     }
 
+    public static void removePortlets(Node page, boolean singleOnly) {
+        RelationList portletrels = PortletUtil.getPortletRelations(page);
+        for (Iterator<Relation> iterator = portletrels.iterator(); iterator.hasNext();) {
+            Relation rel = iterator.next();
+            Node portlet = rel.getDestination();
+            if (PortletUtil.isSinglePortlet(portlet)) {
+                rel.delete(true);
+            }
+            else {
+                if (!singleOnly) {
+                    rel.delete(true);
+                    PortletUtil.deletePortlet(portlet);
+                }
+            }
+        }
+    }
+    
     public static Node getPage(Node portlet) {
         if (!PortletUtil.isSinglePortlet(portlet)) {
             NodeList pages = portlet.getRelatedNodes(PAGE, PortletUtil.PORTLETREL, SOURCE);;
@@ -428,4 +461,6 @@ public class PagesUtil {
             }
         }
     }
+
+
 }
