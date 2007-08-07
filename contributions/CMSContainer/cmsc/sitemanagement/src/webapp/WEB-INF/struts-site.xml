@@ -7,6 +7,7 @@
 	<!-- ========== Data Sources Definitions =================================== -->
 	<!-- ========== Form Bean Definitions =================================== -->
 	<form-beans>
+		<form-bean name="MassModifyForm" type="com.finalist.cmsc.navigation.forms.MassModifyForm" />
 		<form-bean name="QuickSearchForm" type="com.finalist.cmsc.struts.QuickSearchForm" />
 		<form-bean name="ReorderForm" type="com.finalist.cmsc.repository.forms.ReorderForm" />
 		<form-bean name="RolesForm" type="com.finalist.cmsc.security.forms.RolesForm" />
@@ -77,6 +78,12 @@
 		<action path="/editors/site/ReorderAction" type="com.finalist.cmsc.navigation.forms.ReorderAction"
 			name="ReorderForm" scope="request" unknown="false" validate="false">
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+		</action>
+
+		<action path="/editors/site/MassModify" type="com.finalist.cmsc.navigation.forms.MassModify"
+			name="MassModifyForm" scope="request" unknown="false" validate="false">
+			<forward name="massmodify" path="/editors/site/massmodify.jsp" redirect="false" />
+			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 
 		<!-- ==== Select page nodes ==== -->
