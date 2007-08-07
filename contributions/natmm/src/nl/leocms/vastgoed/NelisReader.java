@@ -107,7 +107,7 @@ public Set getEenheidListWithDepartments() {
  }
 
 
-private void readData() {
+public void readData() {
     //set time stamp 
     timeStamp = System.currentTimeMillis();
     log.debug("timestamp:" + timeStamp);
@@ -117,7 +117,7 @@ private void readData() {
     
     Cloud cloud = CloudFactory.getCloud();
     ApplicationHelper ap = new ApplicationHelper(cloud);
-    String temp = ap.getTempDir();
+    String temp = ap.getIncomingDir();
     
     String nelisPath= temp + NELIS_FILE;
     
