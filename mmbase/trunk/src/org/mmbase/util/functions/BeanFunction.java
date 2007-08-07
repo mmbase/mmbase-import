@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.22 2007-08-06 13:01:11 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.23 2007-08-07 15:40:45 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -117,7 +117,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     public static Object getInstance(final Class claz, Object constructorArgument) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         Class c = constructorArgument.getClass();
         while (c != null) {
-            try {            
+            try {
                 Constructor con = claz.getConstructor(new Class[] {c});
                 return con.newInstance(new Object[] {constructorArgument});
             } catch (NoSuchMethodException e) {
@@ -126,7 +126,7 @@ public class BeanFunction extends AbstractFunction<Object> {
         }
         Class[] interfaces = constructorArgument.getClass().getInterfaces();
         for (Class element : interfaces) {
-            try {            
+            try {
                 Constructor con = claz.getConstructor(new Class[] {element});
                 return con.newInstance(new Object[] {constructorArgument});
             } catch (NoSuchMethodException e) {
@@ -191,6 +191,7 @@ public class BeanFunction extends AbstractFunction<Object> {
         Object sampleInstance = producer.getInstance();
 
         List<Parameter> parameters = new ArrayList<Parameter>();
+        Method nodeParameter = null;
         for (Method m : claz.getMethods()) {
             String methodName = m.getName();
             Class[] parameterTypes = m.getParameterTypes();
@@ -218,7 +219,7 @@ public class BeanFunction extends AbstractFunction<Object> {
                     }
                 }
                 if (parameterName.equals("node") && org.mmbase.bridge.Node.class.isAssignableFrom(parameterTypes[0])) {
-                    parameters.add(Parameter.NODE);
+                    nodeParameter = method;
                 } else {
                     if(defaultValue != null) {
                         if (required) {
@@ -228,9 +229,14 @@ public class BeanFunction extends AbstractFunction<Object> {
                     } else {
                         parameters.add(new Parameter(parameterName, parameterTypes[0], required));
                     }
+                    setMethods.add(m);
                 }
-                setMethods.add(m);
+
             }
+        }
+        if (nodeParameter != null) {
+            parameters.add(Parameter.NODE);
+            setMethods.add(nodeParameter);
         }
         setParameterDefinition(parameters.toArray(Parameter.emptyArray()));
         ReturnType returnType = new ReturnType(method.getReturnType(), "");
