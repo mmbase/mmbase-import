@@ -218,13 +218,7 @@ public class WordHtmlCleaner {
 	      return text;
 	   }
 
-    private static String shrinkBR(String text) {
-        // remove all br's which are caused by more than one empty p
-          text = text.replaceAll("(<[bB][rR]\\s*/?>\\s*){4,}", "<br /><br />");
-        return text;
-    }
-
-   /**
+    /**
     * Fixes the anchors tags for Wordpad: <U><FONT color=#0000ff> ... </U></FONT>
     * 
     * @param xmlStr
