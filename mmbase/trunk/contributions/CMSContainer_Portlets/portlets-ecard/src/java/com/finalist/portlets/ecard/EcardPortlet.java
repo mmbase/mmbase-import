@@ -165,19 +165,25 @@ public class EcardPortlet extends ContentChannelPortlet {
        String senderName = preferences.getValue(SENDER_NAME, null);
        String subject = preferences.getValue(EMAIL_SUBJECT, null);
        String bodyBefore = preferences.getValue(EMAIL_BODY_BEFORE, null);
-       bodyBefore = bodyBefore.replace("#TO#", toName);
-       bodyBefore = bodyBefore.replace("#FROM#", fromName);
+       if (!StringUtil.isEmptyOrWhitespace(bodyBefore)) {
+           bodyBefore = bodyBefore.replace("#TO#", toName);
+           bodyBefore = bodyBefore.replace("#FROM#", fromName);
+       }
        String bodyAfter = preferences.getValue(EMAIL_BODY_AFTER, null);       
        
        if ( senderEmail != null && subject != null) {
           StringBuffer body = new StringBuffer();
-          body.append(bodyBefore);
-          body.append("\n");
+          if (!StringUtil.isEmptyOrWhitespace(bodyBefore)) {
+              body.append(bodyBefore);
+              body.append("\n");
+          }
           body.append("\n");
           body.append(url);
           body.append("\n");
           body.append("\n");
-          body.append(bodyAfter);
+          if (!StringUtil.isEmptyOrWhitespace(bodyAfter)) {
+              body.append(bodyAfter);
+          }
           EmailUtil.send(cloud, toName, toEmail, senderName, senderEmail, subject, body.toString());
        }
    }
