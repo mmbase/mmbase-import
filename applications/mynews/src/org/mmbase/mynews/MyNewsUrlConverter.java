@@ -15,11 +15,12 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
- * The URLConverter which deals with urls in /mmbase
+ * The UrlConverter that can filter and create urls for the MyNews example application. 
+ * Links start with '/magazine/'.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.3 2007-07-27 10:15:38 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.4 2007-08-07 19:05:00 andre Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
