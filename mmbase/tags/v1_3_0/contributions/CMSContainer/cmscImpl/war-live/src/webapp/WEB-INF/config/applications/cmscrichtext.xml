@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="cmscrichtext" maintainer="finalist.com" version="1" auto-deploy="true">
+   <neededbuilderlist>
+		<!--  inline links -->
+      <builder maintainer="finalist.com" version="1">inlinerel</builder>
+      <builder maintainer="finalist.com" version="1">imageinlinerel</builder>
+    </neededbuilderlist>
+
+    <neededreldeflist>
+		<!--  inline links -->
+   		<reldef source="inlinerel" target="inlinerel" direction="bidirectional" guisourcename="inlinerel(Parent)" guitargetname="inlinerel(Child)" builder="inlinerel" />
+   		<reldef source="imageinlinerel" target="imageinlinerel" direction="bidirectional" guisourcename="imageinlinerel(Parent)" guitargetname="imageinlinerel(Child)" builder="imageinlinerel" />
+   </neededreldeflist>
+
+   <allowedrelationlist>
+   </allowedrelationlist>
+
+   <datasourcelist>
+   </datasourcelist>
+
+   <relationsourcelist>
+   <!-- A testdata/backup skelet is generated for relation data. If the testdata is not available, it will still work. -->
+      <!--<relationsource builder="inlinerel" path="cmscrichtext/inlinerel.xml"/>-->
+      <!--<relationsource builder="imageinlinerel" path="cmscrichtext/imageinlinerel.xml"/>-->
+   </relationsourcelist>
+
+   <contextsourcelist>
+      <contextsource goal="backup" type="depth" path="cmscrichtext/backup.xml"/>
+   </contextsourcelist>
+
+   <description><![CDATA[Installs the cmscrichtext. Included are all the builders.]]></description>
+   <install-notice><![CDATA[You have installed the cmscrichtext.]]></install-notice>
+</application>
