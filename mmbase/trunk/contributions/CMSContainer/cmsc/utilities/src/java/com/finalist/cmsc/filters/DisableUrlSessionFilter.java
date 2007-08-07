@@ -10,9 +10,6 @@
 package com.finalist.cmsc.filters;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import javax.servlet.*;
 import javax.servlet.http.*;
 

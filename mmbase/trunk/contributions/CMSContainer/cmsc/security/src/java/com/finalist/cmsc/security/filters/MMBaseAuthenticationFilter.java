@@ -20,8 +20,6 @@ import java.security.Principal;
  */
 public class MMBaseAuthenticationFilter implements Filter {
 
-   private String domainName;
-
    public void init(FilterConfig filterConfig) throws ServletException {
    }
 
