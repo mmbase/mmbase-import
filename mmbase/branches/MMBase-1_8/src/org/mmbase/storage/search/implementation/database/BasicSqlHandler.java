@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.4 2007-08-08 09:34:12 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.5 2007-08-08 09:51:42 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -185,7 +185,7 @@ public class BasicSqlHandler implements SqlHandler {
                 }
             } else if (value instanceof Date) {
                 // mainly legacy (integers in db, datetime in build xmls)
-                value = new Integer((int) (((Date) value).getTime() / 1000));
+                sb.append(((Date) value).getTime() / 1000);
             } else {
                 // String value.
                 sb.append((String) value);
