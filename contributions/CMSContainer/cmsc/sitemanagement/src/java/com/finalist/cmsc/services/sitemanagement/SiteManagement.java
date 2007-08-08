@@ -146,4 +146,8 @@ public class SiteManagement {
     public static void resetSiteCache() {
        cService.resetSiteCache();
    }
+
+	public static RssFeed getRssFeedFromPath(String path) {
+		return cService.getRssFeedFromPath(path);
+	}
 }

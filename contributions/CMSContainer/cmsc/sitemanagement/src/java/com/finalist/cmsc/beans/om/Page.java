@@ -18,19 +18,10 @@ import net.sf.mmapps.commons.beans.NodeBean;
  * @author Wouter Heijke
  */
 @SuppressWarnings("serial")
-public class Page extends NodeBean implements Comparable<Page> {
+public class Page extends NavigationItem {
 	
-	private String title;
-    private String description;
-    private String urlfragment;
 	private boolean inmenu;
     private boolean secure;
-    private Date creationdate;
-    private Date lastmodifieddate;
-    private Date publishdate;
-    private Date expirydate;
-    private boolean use_expiry;
-    private String lastmodifier;
     private String externalurl;
 
     private Map<String,Integer> portlets = new HashMap<String,Integer>();
@@ -38,23 +29,7 @@ public class Page extends NodeBean implements Comparable<Page> {
     private List<Integer> stylesheet = new ArrayList<Integer>();
     private Map<String,String> pageImages = new HashMap<String,String>();
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public boolean isInmenu() {
+    public boolean isInmenu() {
 		return inmenu;
 	}
 
@@ -107,54 +82,6 @@ public class Page extends NodeBean implements Comparable<Page> {
         return portlets.values();
     }
     
-    public Date getCreationdate() {
-        return creationdate;
-    }
-
-    public void setCreationdate(Date creationdate) {
-        this.creationdate = creationdate;
-    }
-
-    public Date getLastmodifieddate() {
-        return lastmodifieddate;
-    }
-
-    public void setLastmodifieddate(Date lastmodifieddate) {
-        this.lastmodifieddate = lastmodifieddate;
-    }
-
-    public Date getPublishdate() {
-        return publishdate;
-    }
-
-    public void setPublishdate(Date publishdate) {
-        this.publishdate = publishdate;
-    }
-
-    public Date getExpirydate() {
-        return expirydate;
-    }
-
-    public void setExpirydate(Date expirydate) {
-        this.expirydate = expirydate;
-    }
-    
-    public boolean isUse_expiry() {
-        return use_expiry;
-    }
-    
-    public void setUse_expiry(boolean use_expiry) {
-        this.use_expiry = use_expiry;
-    }
-
-    public String getLastmodifier() {
-        return lastmodifier;
-    }
-
-    public void setLastmodifier(String lastmodifier) {
-        this.lastmodifier = lastmodifier;
-    }
-    
     public boolean isSecure() {
         return secure;
     }
@@ -165,15 +92,6 @@ public class Page extends NodeBean implements Comparable<Page> {
     }
 
     
-    public String getUrlfragment() {
-        return urlfragment;
-    }
-
-    
-    public void setUrlfragment(String urlfragment) {
-        this.urlfragment = urlfragment;
-    }
-    
     public String getExternalurl() {
 		return externalurl;
 	}
@@ -181,9 +99,6 @@ public class Page extends NodeBean implements Comparable<Page> {
 	public void setExternalurl(String externalurl) {
 		this.externalurl = externalurl;
 	}
-	
-    public int compareTo(Page o) {
-        return title.compareTo(o.title);
-    }
+
 
 }

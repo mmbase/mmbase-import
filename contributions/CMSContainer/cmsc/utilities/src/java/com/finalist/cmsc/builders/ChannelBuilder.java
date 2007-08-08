@@ -153,7 +153,7 @@ public Object getValue(MMObjectNode node, String field) {
          if (TreeUtil.PATH_FIELD.equals(field)) {
             String p = getPath(node);
             if (TreeUtil.getLevel(p) <= 1) {
-                if (!getTableName().equals(pathManagers[pathManagers.length - 1])) {
+                if (!getTableName().equals(pathManagers[1])) {
                     throw new IllegalArgumentException("Path is requested, but the " +
                             "node is not yet added to the tree.");
                 }
