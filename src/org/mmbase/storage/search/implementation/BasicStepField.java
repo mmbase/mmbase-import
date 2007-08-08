@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.23.2.1 2007-08-08 09:34:12 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.23.2.2 2007-08-08 09:51:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -56,11 +56,13 @@ public class BasicStepField implements StepField {
             break;
             // Numerical types.
         case Field.TYPE_INTEGER:
+        case Field.TYPE_LONG:
+            ok = value instanceof Number || value instanceof java.util.Date;
+            break;
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
-        case Field.TYPE_LONG:
         case Field.TYPE_NODE:
-            ok = value instanceof Number || value instanceof java.util.Date;
+            ok = value instanceof Number;
             break;
 
             // String types.
