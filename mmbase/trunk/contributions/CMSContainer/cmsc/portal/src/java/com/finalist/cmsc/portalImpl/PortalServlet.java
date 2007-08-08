@@ -176,10 +176,14 @@ public class PortalServlet extends HttpServlet {
     private boolean isActiuonUrl(PortletWindow actionWindow) {
         return actionWindow != null;
     }
-
+    
+    protected RssFeed getRssFeed(String path) {
+    	return SiteManagement.getRssFeedFromPath(path);
+    }
+    
     private void processRenderPhase(HttpServletRequest request, HttpServletResponse response,
             PortalRegistry registry, PortalURL currentURL) {
-        try {
+		try {
             String path = extractPath(request, currentURL);
             log.debug("===>getScreen:'" + path + "'");
             // NIJ-519: language can be defined per site, read by CmscPortlet
@@ -192,18 +196,26 @@ public class PortalServlet extends HttpServlet {
                     request.setAttribute("siteLocale", locale);
                 }
             }
-            ScreenFragment screen = getScreen(path);
-            if (screen != null) {
-                registry.setScreen(screen);
-                log.debug("===>SERVICE");
-                screen.service(request, response);
-                log.debug("===>SERVICE DONE");
-            } else {
-                log.error("Failed to find screen for: " + currentURL.getGlobalNavigationAsString());
-            }
-        } catch (Throwable t) {
-            log.fatal("Error processing", t);
-        }
+			ScreenFragment screen = getScreen(path);
+			if (screen != null) {
+				registry.setScreen(screen);
+				log.debug("===>SERVICE");
+				screen.service(request, response);
+				log.debug("===>SERVICE DONE");
+			} else {
+				RssFeed rssFeed = getRssFeed(path);
+				if(rssFeed != null) {
+					log.info("waiting implementation");
+//					rssFeed.service(request, response);
+				}
+				else {
+					log.error("Failed to find screen or RSS feed for: " + currentURL.getGlobalNavigationAsString());
+				}
+			}
+		} catch (Throwable t) {
+			log.fatal("Error processing", t);
+		}
+
     }
     
     protected ScreenFragment getScreen(String path) {

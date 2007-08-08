@@ -291,4 +291,9 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    public void resetSiteCache() {
       siteModelManager.resetSiteCache();
    }
+
+   @Override
+   public RssFeed getRssFeedFromPath(String path) {
+	   return siteModelManager.getRssFeed(path);
+   }
 }

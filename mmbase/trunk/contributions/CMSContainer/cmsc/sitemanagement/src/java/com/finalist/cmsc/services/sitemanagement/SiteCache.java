@@ -45,7 +45,6 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
     }
 
     public void doSetupCache() {
-        List<Node> unfinishedNodes = new ArrayList<Node>();
         
         Cloud cloud = getCloud();
 
@@ -59,8 +58,16 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
            createTree(siteId, sitefragment);
         }
         
+        loadNavigationItems(cloud, PagesUtil.PAGE);
+        loadNavigationItems(cloud, RssFeedUtil.RSSFEED);
+        
+    }
+
+	private void loadNavigationItems(Cloud cloud, String nodeType) {
+		List<Node> unfinishedNodes = new ArrayList<Node>();
+
         NodeManager navrel = cloud.getNodeManager(NavigationUtil.NAVREL);
-        NodeManager page = cloud.getNodeManager(PagesUtil.PAGE);
+        NodeManager page = cloud.getNodeManager(nodeType);
 
         Query q = cloud.createQuery();
         q.addStep(navrel);
@@ -70,8 +77,9 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         StepField sourceField = q.addField(NavigationUtil.NAVREL + ".snumber");
         StepField destField = q.addField(NavigationUtil.NAVREL + ".dnumber");
         StepField posField = q.addField(NavigationUtil.NAVREL + ".pos");
-        StepField pageNumberField = q.addField(PagesUtil.PAGE + ".number");
-        q.addField(PagesUtil.PAGE + "." + PagesUtil.FRAGMENT_FIELD);
+        StepField pageNumberField = q.addField(nodeType + ".number");
+        String fragmentField = NavigationUtil.getFragmentFieldname(nodeType);
+		q.addField(nodeType + "." + fragmentField);
         q.setConstraint(q.createConstraint(destField, FieldCompareConstraint.EQUAL, pageNumberField));
         q.addSortOrder(sourceField, SortOrder.ORDER_ASCENDING);
         q.addSortOrder(posField, SortOrder.ORDER_ASCENDING);
@@ -84,7 +92,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
             int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
             int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
             int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
-            String fragment = navrelNode.getStringValue(PagesUtil.PAGE + "." + PagesUtil.FRAGMENT_FIELD);
+            String fragment = navrelNode.getStringValue(nodeType + "." + fragmentField);
             
             boolean parentNotFound = true;
             for (PageTree tree : trees.values()) {
@@ -108,7 +116,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                 int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
                 int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
                 int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
-                String fragment = navrelNode.getStringValue(PagesUtil.PAGE + "." + PagesUtil.FRAGMENT_FIELD);
+                String fragment = navrelNode.getStringValue(nodeType + "." + fragmentField);
     
                 for (PageTree tree : trees.values()) {
                     PageTreeNode pageTreeNode = tree.insert(sourceNumber, destNumber, fragment, childIndex);
@@ -125,8 +133,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
             log.warn("Page treenode not found for navrel: " + navrelNode);
         }
         
-        MMBase.getMMBase().addNodeRelatedEventsListener(PagesUtil.PAGE, this);
-    }
+        MMBase.getMMBase().addNodeRelatedEventsListener(nodeType, this);
+	}
 
     private void createTree(int siteId, String sitefragment) {
         PageTree siteTree = new PageTree(siteId, sitefragment);

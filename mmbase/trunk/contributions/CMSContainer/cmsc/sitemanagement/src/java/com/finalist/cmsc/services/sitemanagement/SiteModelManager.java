@@ -28,6 +28,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
     private static final String STYLESHEET_CACHE = Stylesheet.class.getName();
     private static final String VIEW_CACHE = View.class.getName();
     private static final String PAGE_CACHE = Page.class.getName();
+    private static final String RSS_FEED_CACHE = RssFeed.class.getName();
     private static final String PORTLET_CACHE = Portlet.class.getName();
     
     private SiteCache siteCache;
@@ -72,6 +73,10 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         PageCacheEntryFactory pageFactory = new PageCacheEntryFactory();
         SelfPopulatingCache pages = createSelfPopulatingCache(PAGE_CACHE, pageFactory);
         pageFactory.cacheToRefresh(pages);
+        
+        RssFeedCacheEntryFactory rssFeedFactory = new RssFeedCacheEntryFactory();
+        SelfPopulatingCache rssFeeds = createSelfPopulatingCache(RSS_FEED_CACHE, rssFeedFactory);
+        rssFeedFactory.cacheToRefresh(rssFeeds);
         
         siteCache = new SiteCache();
     }
@@ -388,4 +393,27 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         return layout.getNames();
     }
 
+	public RssFeed getRssFeed(String path) {
+       if (path != null && path.length() > 0) {
+            Integer rssFeed = siteCache.getPage(path);
+            if (rssFeed != null) {
+                return getRssFeed(rssFeed);
+            }
+            else {
+                log.debug("Page not found for path " + path);
+            }
+        }
+        return null;
+	}
+
+    public RssFeed getRssFeed(int rssFeedId) {
+        try {
+            return (RssFeed) getCache(RSS_FEED_CACHE).get(rssFeedId);
+        }
+        catch (CacheException e) {
+            log.info("" + e.getMessage(), e);
+        }
+        return null;
+    }
+	
 }

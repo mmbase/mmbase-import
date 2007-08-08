@@ -28,8 +28,8 @@ public class NavigationUtil {
     public static final String NAVREL = "navrel";
     public static final String ALLOWREL = "allowrel";
 
-    public static String[] treeManagers = new String[] { PagesUtil.PAGE, SiteUtil.SITE };
-    public static String[] fragmentFieldnames = new String[] { PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD };
+    public static String[] treeManagers = new String[] { PagesUtil.PAGE, SiteUtil.SITE, RssFeedUtil.RSSFEED };
+    public static String[] fragmentFieldnames = new String[] { PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD, RssFeedUtil.FRAGMENT_FIELD};
 
     private NavigationUtil() {
         // utility
@@ -60,7 +60,11 @@ public class NavigationUtil {
     }
 
     public static String getFragmentFieldname(Node page) {
-        return TreeUtil.getFragmentFieldname(page.getNodeManager().getName(), treeManagers, fragmentFieldnames);
+        return getFragmentFieldname(page.getNodeManager().getName());
+    }
+
+    public static String getFragmentFieldname(String page) {
+        return TreeUtil.getFragmentFieldname(page, treeManagers, fragmentFieldnames);
     }
 
     /**

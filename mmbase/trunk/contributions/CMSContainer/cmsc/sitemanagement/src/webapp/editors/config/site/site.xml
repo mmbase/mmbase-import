@@ -9,8 +9,10 @@
    <action include="config/site/load_site.xml"/>
 
    <lists include="config/option_lists/all_optionlists.xml"/>
-
-   <steps>
+   <lists> 
+      <optionlist include="config/option_lists/languages.xml"/>
+   </lists>
+   <steps> 
       <step form-schema="edit_site"/>
       <step form-schema="edit_pagefields"/>
       <step form-schema="edit_pageadmin"/>
