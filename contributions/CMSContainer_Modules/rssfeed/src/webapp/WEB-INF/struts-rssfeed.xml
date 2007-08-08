@@ -19,7 +19,18 @@
 			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
 			<forward name="returnurl" path="/editors/rssfeed/RssFeedCreate.do" redirect="false" />
 			<forward name="cancel" path="/editors/empty.html" redirect="true" />
-			<forward name="success" path="/editors/rssfeed/show.jsp" redirect="false" />
+			<forward name="success" path="/editors/rssfeed/refreshandshow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/rssfeed/RssFeedEdit" type="com.finalist.cmsc.rssfeed.forms.RssFeedEdit" unknown="false"
+			validate="false">
+			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
+			<forward name="returnurl" path="/editors/rssfeed/RssFeedEdit.do" redirect="false" />
+			<forward name="success" path="/editors/rssfeed/refreshandshow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/rssfeed/RssFeedDelete" type="com.finalist.cmsc.rssfeed.forms.RssFeedDelete"
+			unknown="false" validate="false">
+			<forward name="delete" path="/editors/rssfeed/rssfeeddelete.jsp" redirect="false" />
+			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 
     </action-mappings>
