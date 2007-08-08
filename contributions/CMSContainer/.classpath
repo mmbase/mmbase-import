@@ -22,10 +22,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.6.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xmlParserAPIs-2.6.2.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xercesImpl-2.6.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.6.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-constructs-0.6.jar" sourcepath="C:/projects/MMBase/ehcache-constructs-0.6-src/src"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar"/>
@@ -35,22 +32,24 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/commons-mmbaselogging-1.3.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/lucenemodule-1.7.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-3.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/luceus/jars/luceus-core-0.2-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/luceus/jars/luceus-server-0.2-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/struts/jars/struts-1.2.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.4-20070102.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.4-20070102.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.4-20070102.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.4-20070102.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.4-20070102.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.4-20070102.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/mmcommons-1.3.6.1.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.10.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.1.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-rmmci-server-1.8.2-20061020.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.4-20070502.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.12.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
