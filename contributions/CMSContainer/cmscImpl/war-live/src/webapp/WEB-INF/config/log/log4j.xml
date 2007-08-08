@@ -78,6 +78,11 @@
     <appender-ref ref="logfile" />
   </logger>
 
+  <logger name="org.mmbase.module.tools.ApplicationInstaller" additivity="false">
+    <level class="&mmlevel;" value="warn" />
+    <appender-ref ref="logfile" />
+  </logger>
+
   <logger name="com.finalist" additivity="false">
     <level class="&mmlevel;" value="info" />
     <appender-ref ref="logfile" />
