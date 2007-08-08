@@ -19,9 +19,9 @@ import com.finalist.util.module.ModuleUtil;
  */
 public abstract class NavigationRenderer implements TreeCellRenderer {
 
-    private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
-    private static final String FEATURE_RSSFEED = "rssfeed";
-    private static final String FEATURE_WORKFLOW = "workflowitem";
+    protected static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+    protected static final String FEATURE_RSSFEED = "rssfeed";
+    protected static final String FEATURE_WORKFLOW = "workflowitem";
     
 	private String target = null;
     private HttpServletRequest request;
