@@ -1,3 +1,38 @@
+package com.finalist.cmsc.navigation;
+
+import javax.servlet.http.*;
+
+import net.sf.mmapps.commons.util.HttpUtil;
+
+import org.mmbase.bridge.Node;
+
+import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.util.bundles.JstlUtil;
+import com.finalist.tree.*;
+import com.finalist.util.module.ModuleUtil;
+
+/**
+ * Renderer of the Site management tree.
+ * 
+ * @author Nico Klasens (Finalist IT Group)
+ */
+public abstract class NavigationRenderer implements TreeCellRenderer {
+
+    private static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+    private static final String FEATURE_RSSFEED = "rssfeed";
+    private static final String FEATURE_WORKFLOW = "workflowitem";
+    
+	private String target = null;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+
+    public NavigationRenderer(HttpServletRequest request, HttpServletResponse response, String target) {
+        this.request = request;
+        this.response = response;
+        this.target = target;
+    }
+
     /**
      * Render een node van de tree.
      * 
@@ -163,3 +198,73 @@
 
         return element;
     }
+    
+    private void addGlobalOptions(Node parentNode, TreeElement element) {
+        String labelPageRights = JstlUtil.getMessage(request, "site.page.rights");
+        element.addOption(createOption("rights.png", labelPageRights,
+            getUrl("../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()), target));
+    }
+
+    private void addEditorOptions(Node parentNode, TreeElement element) {
+        String labelPageNew = JstlUtil.getMessage(request, "site.page.new");
+        element.addOption(createOption("new.png", labelPageNew,
+                getUrl("PageCreate.do?parentpage=" + parentNode.getNumber()), target));
+        
+        if(ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
+            String labelRssNew = JstlUtil.getMessage(request, "site.rss.new");
+            element.addOption(createOption("rss_new.png", labelRssNew,
+                  getUrl("../rssfeed/RssFeedCreate.do?parentpage=" + parentNode.getNumber()), target));
+        }
+        
+        if (NavigationUtil.getChildCount(parentNode) >= 2) {
+            String labelPageReorder = JstlUtil.getMessage(request, "site.page.reorder");
+            element.addOption(createOption("reorder.png", labelPageReorder, 
+                    getUrl("reorder.jsp?parent=" + parentNode.getNumber()), target));
+        }
+    }
+
+    private void addChiefEditorOptions(Node parentNode, boolean isPage, TreeElement element) {
+        if (isPage) {
+            String labelPageCut = JstlUtil.getMessage(request, "site.page.cut");
+            element.addOption(createOption("cut.png", labelPageCut, "javascript:cut('"
+                    + parentNode.getNumber() + "');", null));
+            String labelPageCopy = JstlUtil.getMessage(request, "site.page.copy");
+            element.addOption(createOption("copy.png", labelPageCopy, "javascript:copy('"
+                    + parentNode.getNumber() + "');", null));
+        }
+        String labelPagePaste = JstlUtil.getMessage(request, "site.page.paste");
+        element.addOption(createOption("paste.png", labelPagePaste, "javascript:paste('"
+                + parentNode.getNumber() + "');", null));
+    }
+
+    private void addWebmasterOptions(Node parentNode, TreeElement element) {
+        if(ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+           String labelPublish = JstlUtil.getMessage(request, "site.page.publish");
+           element.addOption(createOption("publish.png", labelPublish,
+               getUrl("../workflow/publish.jsp?number=" + parentNode.getNumber()), target));
+           String labelMassPublish = JstlUtil.getMessage(request, "site.page.masspublish");
+           element.addOption(createOption("masspublish.png", labelMassPublish,
+               getUrl("../workflow/masspublish.jsp?number=" + parentNode.getNumber()), target));
+        }
+
+// Not yet ready for mainstream usage. Might become a handy tool for webmasters.
+        
+//        String labelMassModify = JstlUtil.getMessage(request, "site.page.massmodify");
+//        element.addOption(createOption("massmodify.png", labelMassModify,
+//            getUrl("MassModify.do?number=" + parentNode.getNumber()), target));
+    }
+
+    private String getUrl(String url) {
+        return response.encodeURL(url);
+    }
+
+    public String getIcon(Object node, UserRole role) {
+        Node n = (Node) node;
+        return "type/" + n.getNodeManager().getName() + "_"+role.getRole().getName()+".png";
+    }
+
+    protected abstract TreeOption createOption(String icon, String label, String action, String target);
+
+    protected abstract TreeElement createElement(String icon, String id, String name, String fragment, String action, String target);
+    
+}
