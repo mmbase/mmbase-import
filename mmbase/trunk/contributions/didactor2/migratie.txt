@@ -6,15 +6,17 @@ Important issue for every update (leave this message on top):
 Or create a scorm dir in the ROOT of the webapp when you make a new install.
 
 2. If any component disappears or is not present on components page, you can delete the related
-application record from version control table in the mmeditors and restart Tomcat to reinstall 
+application record from version control table in the mmeditors and restart Tomcat to reinstall
 the application with component record.
-E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors 
+E.g.: if "versioning" is absent, delete "Versioning" node from version control table in mmeditors
 and restart Tomcat.
 
 
 ----
 
 2007
+  -   smptmodule.xml -> smtp.xml
+
   -   emailsenderdomain setting was removed from web.xml
       Is now a setting in sendmail-module (can be overridden in server.xml like so).
 
@@ -23,7 +25,7 @@ and restart Tomcat.
     webapp, namely the mmbase datadir).
     Map the fileservlet to the old setting for backwards compatibility.
     FileServlet _cannot_ execute JSPs.
-	
+
 
    To upgrade mmbob:
     alter table mmb_posters  modify password varchar(128);
@@ -32,7 +34,7 @@ and restart Tomcat.
     alter table mmb_posters add column registrationdate datetime;
 
     alter table mmb_postings add column c_body blob;
-    alter table mmb_postings change poster c_poster varchar(64);    
+    alter table mmb_postings change poster c_poster varchar(64);
 
     alter table mmb_postings add column posternumber integer;
     alter table mmb_postings add column editcount integer;
@@ -42,17 +44,17 @@ and restart Tomcat.
     alter table mmb_postings add column enable_smilies integer;
     alter table mmb_postings add column state integer;
 
-    
 
-    alter table mmb_postthreads change lastposttime c_lastposttime int(11);    
+
+    alter table mmb_postthreads change lastposttime c_lastposttime int(11);
     alter table mmb_postthreads change lastpostsubject c_lastpostsubject varchar(255);
     alter table mmb_postthreads change lastposter c_lastposter varchar(64);
     alter table mmb_postthreads add column postthreadcount integer;
-      
+
     alter table mmb_postthreads add lastposternumber int(11);
     alter table mmb_postthreads add lastpostnumber int(11);
 
-    alter table mmb_postareas change lastposttime c_lastposttime int(11);    
+    alter table mmb_postareas change lastposttime c_lastposttime int(11);
     alter table mmb_postareas change lastpostsubject c_lastpostsubject varchar(255);
     alter table mmb_postareas change lastposter c_lastposter varchar(64);
 
@@ -61,7 +63,7 @@ and restart Tomcat.
     alter table mmb_postareas add lastpostnumber int(11);
 
 
-    alter table mmb_forums change lastposttime c_lastposttime int(11);    
+    alter table mmb_forums change lastposttime c_lastposttime int(11);
     alter table mmb_forums change lastpostsubject c_lastpostsubject varchar(255);
     alter table mmb_forums change lastposter c_lastposter varchar(64);
 
@@ -82,20 +84,20 @@ and restart Tomcat.
 
    Important may be:
 
-    alter table mmb_images add width int(11);       
-    alter table mmb_images add height int(11);    
-    alter table mmb_images add filesize int(11);    
+    alter table mmb_images add width int(11);
+    alter table mmb_images add height int(11);
+    alter table mmb_images add filesize int(11);
     alter table mmb_images add filename varchar(255);
-    alter table mmb_icaches add width int(11);       
+    alter table mmb_icaches add width int(11);
     alter table mmb_icaches add height int(11)
     alter table mmb_icaches add itype varchar(32);
 
-    alter table mmb_attachments modify mimetype varchar(128);  
+    alter table mmb_attachments modify mimetype varchar(128);
 
     If you're planning to use the 'portal':
 
-     alter table mmb_news add date datetime;        
-     
+     alter table mmb_news add date datetime;
+
     To install poll:
 
      alter table mmb_versions drop index name;
@@ -108,15 +110,15 @@ and restart Tomcat.
      People has a new field:
        alter table mmb_people add gender int(11);
        alter table mmb_contacts add gender int(11);
-     
+
 
 2006-01-04
 
     To add mailbox "drafts" to people, please run /migrate/migrate-2006-01-04.jsp
 
-    
-2005-12-22   
- 
+
+2005-12-22
+
     ALTER TABLE `mmb_openquestions` ADD `type_of_score` INT NOT Null
 
 
