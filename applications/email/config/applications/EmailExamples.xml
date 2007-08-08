@@ -16,7 +16,7 @@
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="pools"    to="people"    type="related" />
+    <relation from="pools"    to="people"   type="related" />
     <relation from="pools"    to="email"    type="related" />
   </allowedrelationlist>
 
