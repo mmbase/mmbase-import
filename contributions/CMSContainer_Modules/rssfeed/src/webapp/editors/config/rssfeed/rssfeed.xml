@@ -8,6 +8,10 @@
    <action include="config/rssfeed/delete_rssfeed.xml"/>
    <action include="config/rssfeed/load_rssfeed.xml"/>
 
+   <lists> 
+      <optionlist include="config/option_lists/languages.xml"/>
+   </lists>
+   
    <steps>
       <step form-schema="edit_rssfeed"/>
    </steps>
