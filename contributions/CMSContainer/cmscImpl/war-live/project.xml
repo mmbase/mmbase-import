@@ -34,6 +34,16 @@
 		</dependency>
 		<dependency>
 			<groupId>finalist</groupId>
+			<artifactId>cmsc-edit-webapp</artifactId>
+			<version>${cmsc.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<mmbase.templates.bundle>false</mmbase.templates.bundle>
+				<mmbase.examples.bundle>false</mmbase.examples.bundle>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>finalist</groupId>
 			<artifactId>cmsc-maintenance</artifactId>
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
