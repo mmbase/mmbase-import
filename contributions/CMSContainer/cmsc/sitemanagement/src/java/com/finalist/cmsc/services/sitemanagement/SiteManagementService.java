@@ -85,4 +85,6 @@ public abstract class SiteManagementService extends Service {
    public abstract String getSite(Page page);
    
    public abstract void resetSiteCache();
+
+   public abstract RssFeed getRssFeedFromPath(String path);
 }

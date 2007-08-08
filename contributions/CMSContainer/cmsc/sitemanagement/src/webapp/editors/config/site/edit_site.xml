@@ -35,10 +35,10 @@
 		<optionlist select="boolean" />
 	</field>
 
-	<field name="language" dtmaxlength="2"
->
+	<field name="language" ftype="enum" dtrequired="true">
 		<prompt xml:lang="en">Language</prompt>
 		<prompt xml:lang="nl">Taal</prompt>
+		<optionlist select="languages"/>
 	</field>
 	<field name="creator" dtmaxlength="150">
 		<prompt xml:lang="en">Creator</prompt>

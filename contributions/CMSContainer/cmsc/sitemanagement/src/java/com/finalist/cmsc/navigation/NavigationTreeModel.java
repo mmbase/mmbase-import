@@ -3,6 +3,7 @@ package com.finalist.cmsc.navigation;
 import org.mmbase.bridge.*;
 
 import com.finalist.tree.TreeModel;
+import com.finalist.util.module.ModuleUtil;
 
 /**
  * Trivial implementation of a tree structure based on a cloud.
@@ -30,7 +31,11 @@ public class NavigationTreeModel implements TreeModel {
     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
     */
    public int getChildCount(Object parent) {
-      return NavigationUtil.getChildCount((Node) parent);
+	   int childCount = NavigationUtil.getChildCount((Node) parent);
+	   if(ModuleUtil.checkFeature(NavigationRenderer.FEATURE_RSSFEED)) {
+		   childCount += RssFeedUtil.getChildCount((Node) parent);
+	   }
+      return childCount;
    }
  
    /**
@@ -50,9 +55,15 @@ public class NavigationTreeModel implements TreeModel {
       if (pages.size() > index) {
          return pages.get(index);
       }
-      else {
-          throw new IndexOutOfBoundsException("Child " + index + " is not available. Node " + parentNode.getNumber() + " has " + pages.size() + " children.");
+      
+      if(ModuleUtil.checkFeature(NavigationRenderer.FEATURE_RSSFEED)) {
+    	  NodeList feeds = RssFeedUtil.getOrderedChildren(parentNode); 
+    	  if (index - pages.size() < feeds.size()) {
+    		  return feeds.get(index - pages.size());
+    	  }
       }
+      throw new IndexOutOfBoundsException("Child " + index + " is not available. Node " + parentNode.getNumber() + " has " + pages.size() + " children.");
+      
    }
 
     public Object getNode(String id) {
