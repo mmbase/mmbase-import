@@ -11,6 +11,8 @@ package org.mmbase.applications.email;
 
 import org.mmbase.module.*;
 import org.mmbase.util.*;
+import java.util.*;
+import javax.mail.internet.*;
 
 /**
  * This module provides mail functionality
@@ -18,7 +20,13 @@ import org.mmbase.util.*;
  * @application Mail
  * @author Michiel Meeuwissen
  */
-abstract public class AbstractSendMail extends WatchedReloadableModule implements SendMailInterface {
+abstract public class AbstractSendMail extends WatchedReloadableModule { //implements SendMailInterface {
+
+    /*
+    public AbstractSendMail(String name) { 
+        super(name);        
+    }
+    */
 
     /**
      * Send mail without extra headers
@@ -33,6 +41,18 @@ abstract public class AbstractSendMail extends WatchedReloadableModule implement
     public boolean sendMail(Mail mail) {
         return sendMail(mail.from, mail.to, mail.text, mail.headers);
     }
+
+    /**
+     * @javadoc
+     */
+    public abstract boolean sendMail(String from, String to, String data, Map<String, String> headers);
+
+
+    /**
+     * Sends a 'multipart' mail.
+     *
+     */
+    public abstract boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart);
 
 
 }
