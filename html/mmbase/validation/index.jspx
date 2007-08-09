@@ -4,7 +4,7 @@
     xml:lang="en"
     lang="en">
   <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.2 2006-07-11 12:21:53 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.3 2007-08-09 19:19:56 michiel Exp $ --&gt;</jsp:text>
   <mm:content type="text/html">
     <head>
       <title>MMBase DataType validation</title>
@@ -18,8 +18,8 @@
     </head>
 
     <body >
-      <mm:url id="ok" write="false" page="/mmbase/style/images/ok.gif" />
-      <mm:url id="next" write="false" page="/mmbase/style/images/next.gif" />
+      <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
+      <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
       <h1>MMBase DataType validation</h1>
       <p>
         This directory will contain the javascript and serverside components to enable client side
@@ -27,7 +27,7 @@
       </p>
       <table>
       <jsp:scriptlet>
-        
+
         Set list = new TreeSet(DataTypes.getSystemCollector().getDataTypes().keySet());
         Iterator i = list.iterator();
         while (i.hasNext()) {
@@ -36,11 +36,21 @@
       </jsp:scriptlet>
       <tr>
         <td>
+          <jsp:expression>key</jsp:expression>
+        </td>
+        <td>
           <mm:link page="datatype.jspx">
             <mm:param name="datatype"><jsp:expression>key</jsp:expression></mm:param>
             <a href="${_}" class="navigate">
-              <jsp:expression>key</jsp:expression>
-              <img src="${next}" alt="see" class="navigate" />              
+              <img src="${next}" alt="see" class="navigate" />
+            </a>
+          </mm:link>
+        </td>
+        <td>
+          <mm:link page="test.jspx">
+            <mm:param name="datatype"><jsp:expression>key</jsp:expression></mm:param>
+            <a href="${_}" class="navigate">
+              <img src="${next}" alt="test" class="navigate" />
             </a>
           </mm:link>
         </td>
