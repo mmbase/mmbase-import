@@ -6,7 +6,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.5 2007-08-09 19:41:47 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.6 2007-08-09 20:01:05 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -70,6 +70,18 @@ function setClassName(el, valid) {
  */
 function valid(el) {
     if (isRequired(el) && el.value == "") return false;
+
+    // @todo of course we can go a bit further here.
+
+    // min/max length: very simple
+    // minimum/maximum: very simple
+    // regexp patterns: if the regexp syntaxes of javascript and java are sufficiently similar),
+
+    // enumerations: but must of the time those would have given dropdowns and such, so it's hardly
+    // possible to entry wrongly.
+    //
+
+
     return true;
 }
 
