@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.48.2.2 2007-06-27 13:20:33 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.48.2.3 2007-08-09 13:45:09 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -159,6 +159,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected Object getFieldValue(Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+        if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
         return found;
     }
     protected boolean interpretEmptyAsNull(Field field) {
@@ -246,7 +247,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 Iterator i = col.iterator();
                 while (i.hasNext()) {
                     LocalizedString error = (LocalizedString) i.next();
-                    show.append("<span>");
+                    show.append("<span class='" + error.getKey() + "'>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
                 }

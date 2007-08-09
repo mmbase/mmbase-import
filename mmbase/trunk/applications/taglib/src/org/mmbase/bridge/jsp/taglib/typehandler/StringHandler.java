@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.63 2007-08-09 13:42:56 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.64 2007-08-09 13:44:22 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -154,6 +154,7 @@ public class StringHandler extends AbstractTypeHandler {
                 fieldValue = fieldValue.trim();
             }
         }
+        if (interpretEmptyAsNull(field) && "".equals(fieldValue)) fieldValue = null;
         if (log.isDebugEnabled()) {
             log.debug("Received '" + fieldValue + "' for " + field + " " + tag.getOptions());
         }
