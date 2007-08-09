@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.75 2007-08-03 14:49:19 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.76 2007-08-09 18:50:15 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -361,11 +361,13 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             el = parent.getOwnerDocument().createElementNS(XMLNS, name);
             DocumentReader.appendChild(parent, el, path);
         }
+        el.setPrefix("dt");
         return el;
     }
 
     protected Element addErrorDescription(Element el, Restriction r)  {
         r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
+        el.setPrefix("dt");
         return el;
     }
 
@@ -375,12 +377,16 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
-        description.toXml("description", XMLNS, parent, "description");
+
+        description.toXml("dt:description", XMLNS, parent, "description");
+
         getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
         getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
 
         addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
             setAttribute("value", "" + uniqueRestriction.isUnique());
+        addErrorDescription(getElement(parent, "required",   "description,class,property,default,unique,required"), requiredRestriction).
+            setAttribute("value", "" + requiredRestriction.isRequired());
 
         getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
@@ -582,6 +588,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS(XMLNS, "datatype");
             xml.getOwnerDocument().appendChild(xml);
         }
+        xml.setPrefix("dt");
         return xml;
     }
 
