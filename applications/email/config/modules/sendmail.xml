@@ -4,12 +4,12 @@
   <status>active</status>
   <class>org.mmbase.applications.email.SendMail</class>
   <properties>
-    <!-- 
-         some explanation about the encoding property would be welcome here 
+    <!--
+         some explanation about the encoding property would be welcome here
     -->
     <property name="encoding">ISO-8859-1</property>
 
-    <!-- 
+    <!--
          default, a named datasource can be used (which can be provided by your app-server):
     -->
     <property name="context">java:comp/env</property>
@@ -25,5 +25,22 @@
     <property name="user"></property>
     <property name="password"></property>
     -->
+
+
+    <property name="emailbuilder">email</property>
+    <property name="emailbuilder.bodyfield">body</property>
+
+    <!-- optional emailbuilder properties
+         if one of these is not set, the corresponding field is not
+         filled with contect by the module -->
+    <property name="emailbuilder.tofield">to</property>
+    <property name="emailbuilder.ccfield">cc</property>
+    <property name="emailbuilder.bccfield">bcc</property>
+    <property name="emailbuilder.fromfield">from</property>
+    <property name="emailbuilder.subjectfield">subject</property>
+    <property name="emailbuilder.headersfield">headers</property>
+    <property name="emailbuilder.datefield">date</property>
+    <property name="emailbuilder.typefield">type</property>
+
   </properties>
 </module>

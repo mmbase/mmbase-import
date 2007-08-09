@@ -10,7 +10,7 @@ import javax.mail.internet.*;
 
 /**
 
- * @version $Id: MailHandler.java,v 1.1 2007-08-06 12:04:50 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.2 2007-08-09 10:19:20 michiel Exp $
  */
 public abstract class MailHandler {
     private static final Logger log = Logging.getLoggerInstance(MailHandler.class);
@@ -19,7 +19,7 @@ public abstract class MailHandler {
     private class MailBox {
         public final Node box;  // mailbox object (mails are related to this node) Can be the user
                                 // node itself.
-        public final Node user; 
+        public final Node user;
         MailBox(Node b, Node u) {
             box = b; user = u;
         }
@@ -28,17 +28,16 @@ public abstract class MailHandler {
     protected Cloud getCloud() {
         return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
+
     protected Map<String, String> getProperties() {
-        return org.mmbase.module.core.MMBase.getMMBase().getModule("smtpmodule").getInitParameters();
+        return org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail").getInitParameters();
     }
 
 
-
-
-    /** 
-     * List containing Node objects for all mailboxes of the receipients 
+    /**
+     * List containing Node objects for all mailboxes of the receipients
      */
-    protected final List<MailBox> mailboxes = new ArrayList<MailBox>(); 
+    protected final List<MailBox> mailboxes = new ArrayList<MailBox>();
 
 
 
@@ -201,7 +200,7 @@ public abstract class MailHandler {
                         nodeSetHeader(email, properties.get("emailbuilder.bodyfield"), "" + message.getContent());
                     }
                     try {
-                        email.commit(); 
+                        email.commit();
                     } catch (Exception e) {
                         log.error(e);
                     }
