@@ -1,6 +1,6 @@
 // -*- mode: java; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><mm:content type="text/javascript" expires="600">
     <mm:cloud>
 
@@ -8,10 +8,10 @@ var ITEM_NONE   = '${mm:treefile("/gfx/icon_arrow_tab_none.gif", pageContext, in
 var ITEM_OPENED = '${mm:treefile("/gfx/icon_arrow_tab_open.gif", pageContext, includePath)}';
 var ITEM_CLOSED = '${mm:treefile("/gfx/icon_arrow_tab_closed.gif", pageContext, includePath)}';
 
-var may_open_future = 
-    <di:hasrole role="coach">true || //coach</di:hasrole> 
-    <di:hasrole role="teacher">true || // teacher</di:hasrole> 
-    <di:hasrole role="systemadministrator">true || //system administrator </di:hasrole> 
+var may_open_future =
+    <di:hasrole role="coach">true || //coach</di:hasrole>
+    <di:hasrole role="teacher">true || // teacher</di:hasrole>
+    <di:hasrole role="systemadministrator">true || //system administrator </di:hasrole>
     <di:getsetting component="core" setting="may_open_future" />; // may_open_future setting
 
 // IE does not even support indexOf, fixing that here..
@@ -36,7 +36,7 @@ var enabledPopups = false;
 function resize() {
     if(browserVersion()[0] == "IE") {
         var oBody = content.document.body;
-        var oFrame = document.all("content");        
+        var oFrame = document.all("content");
         oFrame.style.height = oBody.scrollHeight + 280;
     } else {
         var frameElem = document.getElementById("content");
@@ -112,7 +112,7 @@ function disablePopups() {
             popups[i].style.display = "none";
         }
     }
-    
+
 }
 
 function enablePopups() {
@@ -175,7 +175,7 @@ function requestContent(href) {
            contentEl.appendChild(content[i]);
        }
        document.href_frame = href;
-   }   
+   }
    scrollToTop();
 }
 
@@ -191,7 +191,7 @@ function postContent(href, form) {
                 Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, afterPost);
                 usedFrames[document.href_frame] = null;
                 document.href_frame = href;
-                usedFrames[href] = contentEl.childNodes;            
+                usedFrames[href] = contentEl.childNodes;
             } else {
                 alert(xmlhttp.status);
             }
@@ -216,7 +216,7 @@ function postContent(href, form) {
 }
 
 function openContent(type, number) {
-    
+
     if (document.getElementById('content-'+currentnumber)) {
         var el = document.getElementById('content-'+currentnumber);
         var classNames = el.className.split(" ");
@@ -231,7 +231,7 @@ function openContent(type, number) {
     if ( number > 0 ) {
         currentnumber = number;
     }
-    
+
     var href;
     switch ( type ) {
     case "educations":
@@ -263,13 +263,13 @@ function openContent(type, number) {
         }
         el.className = classNames.join(" ");
     }
-    
+
 }
 
 function openClose(div, img) {
     var realdiv = document.getElementById(div);
     var realimg = document.getElementById(img);
-    
+
     if (realdiv != null) {
         try {
             var o = openDivs[div];
@@ -318,7 +318,7 @@ function openOnly(div, img) {
             openDivs[div] = img;
             realdiv.style.display = "block";
             realimg.src = ITEM_OPENED;
-            
+
             var className = realdiv.className;
             if (className) {
                 // ignore "lbLevel" in classname to get the level depth
@@ -326,22 +326,22 @@ function openOnly(div, img) {
                 // alert("level = "+level);
                 var findparent = realdiv;
                 var findparentClass = className;
-                
-                
+
+
                 if (level > 1) {
                     // also open parents
                     do {
                         findparent = findparent.parentNode;
                         findparentClass = findparent.className || "";
                     } while (findparent && findparentClass.indexOf("lbLevel") != 0);
-                    
+
                     if (findparent) {
                         var divid = findparent.id;
                         var imgid = "img" + divid.substring(3,divid.length);
                         openOnly(divid, imgid);
                     }
                 }
-                
+
 
             }
         } catch (ex) {
@@ -362,7 +362,7 @@ function openOnly(div, img) {
         } catch (ex) {
             alert(ex);
         }
-    } 
+    }
 
     return true;
 }
@@ -421,7 +421,7 @@ function afterPost() {
     function reloadEducationTree() {
         usedFrames    = new Object();
         Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'), null, closeAppropriate);
-        
+
     }
 </mm:treefile>
 

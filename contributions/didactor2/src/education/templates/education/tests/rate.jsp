@@ -11,7 +11,7 @@
     <mm:import externid="command">next</mm:import>
 
     <jsp:directive.include file="/education/tests/definitions.jsp" />
-    
+
     <mm:node referid="learnobject" id="my_tests">
 
       <di:copybook>
@@ -21,12 +21,12 @@
             <mm:import id="testpath" vartype="list"><mm:field name="testpath" /></mm:import>
           </mm:nodefunction>
         </mm:node>
-      </di:copybook>       
+      </di:copybook>
 
       <mm:listnodes referid="my_questions">
         <mm:import id="question">shown<mm:field name="number"/></mm:import>
         <mm:import externid="$question" id="shownquestion" />
-          
+
         <mm:relatednodescontainer path="givenanswers,madetests" element="givenanswers">
           <mm:constraint field="madetests.number" referid="madetest"/>
           <mm:relatednodes>
@@ -42,17 +42,17 @@
         <div>
           <mm:field name="feedbackpage">
             <mm:compare value="0">
-              <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath" 
-                              referids="$referids,madetest,_node@tests" />          
-              <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath" 
+              <mm:treeinclude page="/education/tests/totalscore.jsp"  objectlist="$includePath"
                               referids="$referids,madetest,_node@tests" />
-              
+              <mm:treeinclude page="/education/tests/feedback.jsp" objectlist="$includePath"
+                              referids="$referids,madetest,_node@tests" />
             </mm:compare>
-      
+
             <mm:compare value="0" inverse="true">
-              <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids,tests@testNo,madetest@madetestNo,user@userNo" />
+              <mm:treeinclude page="/education/tests/viewanswersframe.jsp" objectlist="$includePath"
+                              referids="$referids,_node@testNo,madetest@madetestNo,user@userNo" />
             </mm:compare>
-            
+
           </mm:field>
         </div>
       </mm:compare>

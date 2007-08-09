@@ -1,52 +1,52 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><mm:content postprocessor="reducespace" expires="0">
   <mm:cloud rank="didactor user">
 
     <mm:import externid="tests" required="true"/>
     <mm:import externid="madetest" required="true"/>
-    <%@include file="/education/tests/definitions.jsp" %>  
+    <%@include file="/education/tests/definitions.jsp" %>
     <mm:node referid="madetest">
       <mm:field  id="madetestscore" name="score" write="false"/>
     </mm:node>
 
     <mm:node number="$tests">
       <mm:field id="requiredscore" name="requiredscore" write="false"/>
-      
+
       <mm:relatednodes type="questions" role="posrel" orderby="posrel.pos">
         <mm:import id="questionamount"><mm:size/></mm:import>
       </mm:relatednodes>
-      
+
       <mm:field id="test_name" name="name" write="false"/>
       <mm:field name="showtitle">
         <mm:compare value="1">
           <h1><mm:write referid="test_name"/></h1>
         </mm:compare>
       </mm:field>
-      
+
       <%-- Which type of feedback: standard page or feedback per question --%>
       <mm:import id="feedback"><mm:field name="feedbackpage"/></mm:import>
-      
+
       <%-- What is the score of the made test --%>
       <mm:relatednodescontainer type="madetests">
         <mm:constraint field="number" referid="madetest"/>
         <mm:relatednodes id="my_madetest"/>
       </mm:relatednodescontainer>
-      
-      
+
+
       <div class="feedback">
         <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
           <div class="teacherwillscore">
             <di:translate key="education.feedback_teacherwillscore" />
           </div>
         </mm:compare>
-        
+
         <mm:compare referid="madetestscore" referid2="TESTSCORE_INCOMPLETE">
           <div class="testincomplete">
             <di:translate key="education.feedback_testincomplete" />
           </div>
         </mm:compare>
-        
+
         <mm:isgreaterthan referid="madetestscore" value="-1">
           <div class="score">
             <di:translate key="education.feedback_testscore" arg0="${madetestscore}" />
@@ -57,12 +57,12 @@
                   <di:translate key="education.feedback_succeed" />
                 </div>
               </mm:islessthan>
-              
+
               <mm:islessthan referid="madetestscore" referid2="requiredscore" >
                 <div class="failed">
                   <di:translate key="education.feedback_failed" />
                 </div>
-              </mm:islessthan>                
+              </mm:islessthan>
             </mm:compare>
           </div>
         </div>
