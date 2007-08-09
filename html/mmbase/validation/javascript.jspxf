@@ -1,0 +1,23 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <mm:link page="/mmbase/validation/sarissa/sarissa.js">
+    <script src="${_}"><!-- Help IE --></script>
+  </mm:link>
+  <mm:link page="/mmbase/validation/sarissa/sarissa_dhtml.js">
+    <script src="${_}"><!-- Help IE --></script>
+  </mm:link>
+  <mm:link page="/mmbase/validation/sarissa/sarissa_ieemu_xpath.js">
+    <script src="${_}"><!-- Help IE --></script>
+  </mm:link>
+  <mm:link page="/mmbase/validation/sarissa/sarissa_ieemu_load.js">
+    <script src="${_}"><!-- Help IE --></script>
+  </mm:link>
+  <mm:link page="/mmbase/validation/utils.js">
+    <script src="${_}"><!-- Help IE --></script>
+  </mm:link>
+  <mm:link page="/mmbase/validation/validation.js.jsp">
+    <script src="${_}"><!-- Help IE --></script>
+  </mm:link>
+</jsp:root>
