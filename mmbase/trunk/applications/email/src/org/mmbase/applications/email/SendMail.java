@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.29 2007-08-06 12:31:58 michiel Exp $
+ * @version $Id: SendMail.java,v 1.30 2007-08-09 10:19:20 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -44,7 +44,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     public static long emailFailed = 0;
 
     /**
-    public SendMail(String name) { 
+    public SendMail(String name) {
         super(name);
     }
     */
@@ -74,7 +74,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     /**
      * @since MMBase-1.9
      */
-    protected void sendLocalMail(InternetAddress[] to, Node n) {
+    public void sendLocalMail(InternetAddress[] to, Node n) {
         if (log.isDebugEnabled()) {
             log.debug("sendLocalMail: Sending node {" + n + "} to addresses {" + Arrays.asList(to) + "}");
         }
@@ -83,10 +83,10 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         NodeManager emailManager = cloud.getNodeManager("emails");
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
         RelationManager relatedManager = cloud.getRelationManager("related");
-        Set failedUsers = new HashSet();
-        for (int i = 0; i < to.length; i++) {
-            log.debug("address " + to[i]);
-            String domain = to[i].getAddress();
+        Set<String> failedUsers = new HashSet<String>();
+        for (InternetAddress recipient : to) {
+            log.debug("address " + recipient);
+            String domain = recipient.getAddress();
             String username = domain.substring(0, domain.indexOf("@"));
             domain = domain.substring(domain.indexOf("@") + 1, domain.length());
 
@@ -151,25 +151,19 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                     if (log.isDebugEnabled()) {
                         log.debug("This user has email forwarding enabled. forwarding email to [" + mailadres + "]");
                     }
-                    try {
-                        /// should use Sender header here (in case of boucnes).
-                        // and perhaps als Resent-From header.
-                        Address localAddress = null;
-                        Set domains = getDomains();
-                        if (domains.size() > 0) {
-                            try {
-                                String local = person.getStringValue("username") + "@" + domains.iterator().next();
-                                localAddress = new InternetAddress(local);
-                                log.debug("Sender " + localAddress);
-                            } catch (Exception f) {
-                                log.error(f);
-                            }
+                    if (! "true".equals(getInitParameter("noforwarding"))) {
+                        try {
+                            /// should use Sender header here (in case of boucnes).
+                            // and perhaps als Resent-From header.
+                            Address localAddress = recipient;
+                            sendRemoteMail(InternetAddress.parse(mailadres), localAddress, n);
+                        } catch (Exception e) {
+                            // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
+                            // doubt it'll ever come here.
+                            log.warn("Exception when trying to forward email to [" + mailadres + "]: " + e.getMessage());
                         }
-                        sendRemoteMail(InternetAddress.parse(mailadres), localAddress, n);
-                    } catch (Exception e) {
-                        // MM: I think all exceptions are catched in sendRemoteMail itself already. So I
-                        // doubt it'll ever come here.
-                        log.warn("Exception when trying to forward email to [" + mailadres + "]: " + e.getMessage());
+                    } else {
+                        log.service("Forwarding disabled, not sending mail to " + mailadres);
                     }
                 } else {
                     log.debug("This user has email-forwaring enabled, but did not set an external email-adress");
@@ -201,6 +195,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         }
         log.debug("Finished processing local mails");
     }
+
 
     /**
      */
