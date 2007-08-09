@@ -4,7 +4,7 @@
 /*
 
 @author Michiel Meeuwissen
-@version $Id: validation.js.jsp,v 1.2 2007-08-09 18:56:34 michiel Exp $
+@version $Id: validation.js.jsp,v 1.3 2007-08-09 19:19:56 michiel Exp $
 */
 
 var dataTypeCache   = new Object();
@@ -34,8 +34,8 @@ function getDataTypeId(el) {
     var classNames = el.className.split(" ");
     for (i = 0; i < classNames.length; i++) {
         var className = classNames[i];
-        if (className.indexOf("mm_dt_") == 0) {
-            return className.substring(6);
+        if (className.indexOf("mm_f_") == 0) {
+            return className.substring(5);
         }
     }
     return "field";
@@ -67,7 +67,7 @@ function serverValidation(el) {
 
 function validResult(xml) {
     try {
-        return xml.selectSingleNode('/result/@valid').nodeValue;
+        return "true" == "" + xml.selectSingleNode('/result/@valid').nodeValue;
     } catch (ex) {
         //console.log(ex);
         throw ex;
@@ -91,9 +91,10 @@ function validatePage(el) {
         if (! valid(entry)) {
             v = false;
         }
-        if (! validResult(serverValidation(entry))) {
+        if (! validResult(serverValidation(entry)) ) {
             v = false;
         }
+        //console.log("hoi " + v);
         setClassName(entry, v);
 
     }
