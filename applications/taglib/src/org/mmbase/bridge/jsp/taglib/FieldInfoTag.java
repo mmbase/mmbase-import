@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.102 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.103 2007-08-09 13:48:56 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -194,9 +194,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
         if (handler == null) {
             log.warn("Could not find typehandler for type " + field.getDataType() + " of " + field.getNodeManager().getName() + "." + field.getName() + " using default for type.");
-            DataType dt = DataTypes.getDataType(Fields.getTypeDescription(field.getType()));
-            if (dt != null) {
-                handler = handlers.get(dt.getClass());
+            String t = Fields.getTypeDescription(field.getType());
+            if (t != null) {
+                DataType dt = DataTypes.getDataType(t);
+                if (dt != null) {
+                    handler = (Class) handlers.get(dt.getClass()); // getTypeAsClass?
+                }
             }
         }
         if (handler == null) {
