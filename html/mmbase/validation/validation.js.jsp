@@ -6,7 +6,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.4 2007-08-09 19:33:26 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.5 2007-08-09 19:41:47 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -16,7 +16,7 @@ var dataTypeCache   = new Object();
  * Whether the element is a 'required' form input
  */
 function isRequired(el) {
-    return getDataTypeXml(getDataTypeId(el)).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
+    return "true" == "" + getDataTypeXml(getDataTypeId(el)).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
 }
 
 
