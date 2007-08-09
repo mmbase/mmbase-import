@@ -8,7 +8,7 @@ import java.util.*;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.1 2007-08-06 12:04:50 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.2 2007-08-09 10:19:20 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);
@@ -16,15 +16,10 @@ public class SMTPModule extends org.mmbase.module.Module {
     Map<String, String> properties;
 
     private String[] mandatoryProperties = {"hostname", "port", "domains",
-            "emailbuilder", "emailbuilder.bodyfield",
-            "usersbuilder", "usersbuilder.accountfield"
+                                            "usersbuilder", "usersbuilder.accountfield"
     };
     private String[] optionalProperties = {
-            "mailboxbuilder", "mailboxbuilder.where", "mailboxbuilder.notfound",
-            "emailbuilder.tofield", "emailbuilder.fromfield", "emailbuilder.subjectfield",
-            "emailbuilder.headersfield", "emailbuilder.datefield", "emailbuilder.ccfield",
-            "emailbuilder.bccfield",
-            "emailbuilder.typefield"
+        "mailboxbuilder", "mailboxbuilder.where", "mailboxbuilder.notfound"
     };
 
     public void init() {
