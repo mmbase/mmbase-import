@@ -7,7 +7,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
 %><mm:content postprocessor="reducespace">
-<mm:cloud method="delegate">
+<mm:cloud rank="didactor user">
   <mm:import externid="mailbox">-1</mm:import>
   <mm:import externid="sf" />
   <mm:import externid="so" />

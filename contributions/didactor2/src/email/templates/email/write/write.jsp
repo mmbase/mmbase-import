@@ -1,11 +1,11 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%>
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><mm:content postprocessor="none" expires="0">
 <%-- no reducespace: it messes with the textarea --%>
-<mm:cloud method="delegate">
+<mm:cloud rank="didactor user">
   <jsp:directive.include file="/shared/setImports.jsp" />
-  
+
   <mm:content postprocessor="none" expires="0" language="${language}">
 
   <mm:import externid="so" />
@@ -25,23 +25,23 @@
   <mm:import id="subject" />
   <mm:import id="body" />
   <mm:import id="emailok">0</mm:import>
-  
+
   <!-- setup data according to some already existing mail -->
   <mm:import id="reply" externid="reply"/>
   <mm:present referid="reply">
     <mm:import id="loadOld"><mm:write referid="reply"/></mm:import>
   </mm:present>
-  
+
   <mm:import id="replyAll" externid="replyAll"/>
   <mm:present referid="replyAll">
     <mm:import id="loadOld"><mm:write referid="replyAll"/></mm:import>
   </mm:present>
-  
+
   <mm:import id="forward" externid="forward"/>
   <mm:present referid="forward">
     <mm:import id="loadOld"><mm:write referid="forward"/></mm:import>
   </mm:present>
-  
+
   <mm:present referid="loadOld">
     <mm:node referid="loadOld">
       <mm:present referid="reply">
@@ -62,7 +62,7 @@
       </mm:present>
 
       <mm:relatednodes type="attachments" id="oldAttachments" />
-      
+
       <mm:escaper id="plaintextquoter" type="regexps">
         <mm:param name="patterns">
           <mm:param name="^(.*)" value="> $$1" />
@@ -74,31 +74,31 @@
         <mm:field name="mimetype">
           <mm:compare value="text/plain">
             <mm:import id="body" reset="true">
-              <mm:present referid="wrote">            
+              <mm:present referid="wrote">
                 <p>
                   <mm:field name="date">
                     <mm:time format=":FULL.SHORT">
-                      <!-- see [DIDACTOR-42] -->
-                      <di:translate key="email.wroteon" 
+                      <%-- see [DIDACTOR-42] --%>
+                      <di:translate key="email.wroteon"
                                     arg0="${wrote}" arg1="${_}" />
                     </mm:time>
                   </mm:field>
                 </p>
               </mm:present>
               <mm:field name="body" escape="plaintextquoter,pp" />
-            </mm:import> 
-          </mm:compare>          
-          <!-- suppose text/html otherwise -->            
+            </mm:import>
+          </mm:compare>
+          <!-- suppose text/html otherwise -->
           <mm:compare value="text/plain" inverse="true">
             <mm:import id="body" reset="true">
-              <mm:present referid="wrote">            
+              <mm:present referid="wrote">
                 <p>
                   <mm:field name="date">
                     <mm:time format=":FULL.SHORT">
-                      <di:translate key="email.wroteon" 
+                      <di:translate key="email.wroteon"
                                     arg0="${wrote}" arg1="${_}" />
                     </mm:time>
-                  </mm:field> 
+                  </mm:field>
                 </p>
               </mm:present>
               <div class="quote">
@@ -107,12 +107,12 @@
                 </blockquote>
               </div>
             </mm:import>
-          </mm:compare>	  
+          </mm:compare>
         </mm:field>
       </mm:field>
     </mm:node>
   </mm:present><!-- loadOld -->
-  
+
   <mm:node number="$user">
     <mm:relatednodescontainer type="mailboxes">
       <mm:constraint field="type" value="1" />
@@ -120,19 +120,19 @@
         <mm:node  id="mailboxNode"/>
       </mm:relatednodes>
     </mm:relatednodescontainer>
-    
+
     <mm:relatednodescontainer type="mailboxes">
       <mm:constraint field="type" value="11" />
       <mm:relatednodes>
         <mm:node  id="draftMailboxNode"/>
       </mm:relatednodes>
-    </mm:relatednodescontainer>   
+    </mm:relatednodescontainer>
   </mm:node>
-  
+
   <mm:notpresent referid="draftMailboxNode">
     <mm:write id="draftMailboxNode" referid="mailboxNode"/>
   </mm:notpresent>
-  
+
   <%-- edit existing email (not yet sent) --%>
   <mm:import externid="id"/>
   <mm:isnotempty referid="id">
@@ -166,7 +166,7 @@
   <mm:present referid="inputbody">
     <mm:import id="body" reset="true"><mm:write referid="inputbody" escape="none"/></mm:import>
   </mm:present>
-  
+
   <!-- why excactly is this ncessary? -->
   <mm:escaper id="niceaddress" type="regexps">
     <mm:param name="patterns">
@@ -185,15 +185,14 @@
       </mm:listnodes>
     </mm:present>
   </mm:present>
-  
+
   <mm:notpresent referid="emailNode">
-    <mm:log>No email node yet, creating one</mm:log>
     <mm:createnode type="emails" id="emailNode" />
-    <mm:remove referid="id" />    
+    <mm:remove referid="id" />
     <mm:node id="id" referid="emailNode" />
     <mm:createrelation role="related" source="draftMailboxNode" destination="emailNode"/>
   </mm:notpresent>
-  
+
   <mm:node number="$user">
     <mm:import id="from">"<mm:field name="firstname"/> <mm:field name="lastname"/>" <<mm:field name="username"/><mm:write referid="emaildomain" />></mm:import>
   </mm:node>
@@ -208,7 +207,7 @@
       <% } %>
     </mm:isnotempty>
   </mm:isnotempty>
-  
+
   <mm:present referid="emailNode">
     <mm:node referid="emailNode">
       <mm:setfield name="from"><mm:write referid="from" escape="none"/></mm:setfield>
@@ -224,7 +223,7 @@
         <mm:createrelation source="emailNode" destination="oldAttachment" role="related" />
       </mm:listnodes>
     </mm:present>
-    
+
     <mm:import id="testattachment" externid="att_handle" />
     <mm:compare referid="testattachment" value="" inverse="true">
       <c:if test="${! empty testattachment.name}">
@@ -240,8 +239,8 @@
         <mm:createrelation role="related" source="emailNode" destination="newFile"/>
         <mm:remove referid="newFile"/>
       </c:if>
-    </mm:compare> 
-    
+    </mm:compare>
+
     <mm:import externid="delete_attachments" vartype="List"/>
     <mm:present referid="delete_attachments">
       <mm:node number="$emailNode">
@@ -250,7 +249,7 @@
         </mm:relatednodes>
       </mm:node>
     </mm:present>
-  
+
     <mm:import externid="send_action"/> <%-- send button pressed --%>
     <mm:present referid="send_action">
       <mm:compare referid="emailok" value="1">
@@ -266,9 +265,9 @@
           <mm:remove referid="mailbox"/>
           <mm:field id="mailbox" name="mailboxes.number" write="false"/>
         </mm:list>
-        
+
       <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
-      
+
       <mm:treefile jspvar="forward" write="false" page="/email/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?,class" escapeamps="no">
         <mm:param name="provider" value="$provider"/>
         <mm:param name="mailbox" value="$mailbox"/>
@@ -276,7 +275,7 @@
       <% response.sendRedirect(forward); %>
       </mm:compare>
     </mm:present>
-    
+
     <mm:import externid="lookup_to_action"/>
     <mm:present referid="lookup_to_action">
       <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=to</mm:import>
@@ -284,7 +283,7 @@
       <%    response.sendRedirect(redirect_url); %>
 
     </mm:present>
-    
+
     <mm:import externid="lookup_cc_action"/>
     <mm:present referid="lookup_cc_action">
       <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?,class" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=cc</mm:import>
@@ -295,37 +294,37 @@
       <mm:import id="redirect_url" jspvar="redirect_url"><mm:treefile  page="/address/index.jsp" objectlist="$includePath" referids="$referids,so?,sf?" escapeamps="no"/>&mailid=<mm:present referid="emailNode"><mm:write referid="emailNode"/></mm:present>&field=bcc</mm:import>
       <%    response.sendRedirect(redirect_url); %>
     </mm:present>
-    
+
   </mm:present>
-  
+
   <mm:import externid="nooutput"/>
   <mm:notpresent referid="nooutput">
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
         <title>Send mail</title>
-        <script type="text/javascript">
-          var editor = null;
-          function initEditor() {
-          var config = new HTMLArea.Config();
-          config.editorURL = "<mm:url page="/email/write/htmlarea/" />";
-          config.toolbar = [['forecolor', 'bold', 'italic', 'underline' ] ];
-          config.pageStyle= 'body { background-color: #fff; font-size: 12px; font-family: "Lucida Grande",Verdana,Arial,Helvetica,sans-serif; }  blockquote { border-left: solid 1px; margin-left: 2ex; padding-left: 1ex; background-color: #eee;}';
-          HTMLArea.replace('body', config);
-          //HTMLArea.replaceAll();
-          return false;
-          }
-        </script>
         <script type="text/javascript" src="<mm:treefile page="/email/write/htmlarea/htmlarea.js" objectlist="$includePath" referids="$referids" />"></script>
         <script type="text/javascript" src="<mm:treefile page="/email/write/htmlarea/lang/en.js" objectlist="$includePath" referids="$referids" />"></script>
         <script type="text/javascript" src="<mm:treefile page="/email/write/htmlarea/dialog.js" objectlist="$includePath" referids="$referids" />"></script>
         <style type="text/css">
           @import url(<mm:treefile page="/email/write/htmlarea/css/htmlarea.css" objectlist="$includePath" referids="$referids" />);
         </style>
+    <script type="text/javascript">
+      var editor = null;
+      function initEditor() {
+      var config = new HTMLArea.Config();
+      config.editorURL = "<mm:url page="/email/write/htmlarea/" />";
+      config.toolbar = [['forecolor', 'bold', 'italic', 'underline' ] ];
+      config.pageStyle= 'body { background-color: #fff; font-size: 12px; font-family: "Lucida Grande",Verdana,Arial,Helvetica,sans-serif; }  blockquote { border-left: solid 1px; margin-left: 2ex; padding-left: 1ex; background-color: #eee;}';
+      HTMLArea.replace('body', config);
+      //HTMLArea.replaceAll();
+      return false;
+      }
+      addEventHandler(window, "load", initEditor);
+    </script>
       </mm:param>
-      <!-- never heard about event-handlers? -->
-      <mm:param name="extrabody">onload="initEditor();"</mm:param>
     </mm:treeinclude>
-    
+
+
     <div class="rows">
       <div class="navigationbar">
         <div class="titlebar">
@@ -356,16 +355,16 @@
                 <mm:treeinclude page="/email/mailboxes.jsp" objectlist="$includePath" referids="$referids" />
               </div>
             </div>
-            
+
             <script>
               var email = new RegExp("\\b.+@.+\\b","i");
-              
+
               function checkFields(frm) {
               if(frm.elements['to'].value.length == 0) {
               alert('<di:translate key="email.toempty" />');
               return false;
               }
-              
+
               if(frm.elements['subject'].value.length == 0) {
               alert('<di:translate key="email.subjectempty" />');
               return false;
@@ -390,14 +389,14 @@
               <mm:param name="icon">write message</mm:param>
               <mm:param name="text"><di:translate key="email.writemessage" /></mm:param>
             </mm:treeinclude>
-            
+
             <div class="mainContent">
               <div class="contentHeader">
                 <mm:import externid="mailboxname" from="parameters"/><mm:write referid="mailboxname" />
               </div>
               <div class="contentBodywit">
                 <br/><br/><br/><%-- aarch --%>
-                <form action="${mm:treefile('/email/write/write.jsp', pageContext, includePath)}"  
+                <form action="${mm:treefile('/email/write/write.jsp', pageContext, includePath)}"
                       method="post" enctype="multipart/form-data" name="webmailForm">
                   <mm:notpresent referid="course">
                     <input type="hidden" name="provider" value="${provider}" />
@@ -517,13 +516,10 @@
               </div>
             </div>
           </div>
-          
+
           <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-          
+
         </mm:notpresent>
       </mm:content>
     </mm:cloud>
-    
-
-  
-
+  </mm:content>
