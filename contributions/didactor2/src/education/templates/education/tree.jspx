@@ -84,6 +84,10 @@
                 <mm:depth>
                   <![CDATA[<div id="div${previousnumber}" class="lbLevel${_}">]]>
                   <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
+                    <!--
+                         I think this gives clutter, not mentioning that it is silly to use a non-existing attribute
+                         I'd propose to set a class (so you an also use it for other styling puruposes) on the div itself.
+                    -->
                     <script type="text/javascript">
                       document.getElementById("img${previousnumber}").setAttribute("haschildren", 1);
                     </script>
