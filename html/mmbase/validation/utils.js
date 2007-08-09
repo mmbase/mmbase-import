@@ -1,3 +1,8 @@
+/**
+ * Some utils, stolen from all over the place.
+ *
+ * @todo needing some concept on how and where javascript libraries must be distributed.
+ */
 
 function getElementsByClass(node, searchClass, tag) {
     if (tag == null) tag ="*";
