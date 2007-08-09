@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.55 2007-08-03 18:25:43 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.56 2007-08-09 18:44:28 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -164,6 +164,11 @@
       <description xml:lang="en">
         Mainly supplied for backwards compatibility. A String without further restrications. Practicly this will result in textarea form entries.
       </description>
+      <pattern value="(?s)\A.*\z" />
+    </specialization>
+
+    <specialization id="requiredfield">
+      <required value="true" />
       <pattern value="(?s)\A.*\z" />
     </specialization>
 
@@ -386,7 +391,7 @@
       <pattern xml:lang="en-US" value="MMMM dd yyyy" />
       <pattern xml:lang="en"    value="dd MMMM yyyy" />
       <pattern xml:lang="fr" value="dd MMMM yyyy" />
-      
+
       <specialization id="20th-century">
         <description xml:lang="en">
           A specialization of 'date', so it ignores the time part. The only allowed values are dates which are in the 20th century.
