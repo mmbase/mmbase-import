@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.88.2.3 2007-04-26 19:36:32 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.4 2007-08-09 13:03:37 michiel Exp $
  */
 
 public class WriterHelper {
@@ -130,6 +130,13 @@ public class WriterHelper {
      * @since MMBase_1.8
      */
     private   Stack _Stack;
+    private class StackEntry {
+        public final Object value;
+        public final CharTransformer escaper;
+        StackEntry(Object v, CharTransformer e) {
+            value = v; escaper = e;
+        }
+    }
     // whether this tag pushed something on the stack already.
     private   boolean pushed = false;
 
@@ -432,10 +439,13 @@ public class WriterHelper {
             if (log.isDebugEnabled()) {
                 log.debug("Value was already pushed by this tag");
             }
-            _Stack.set(_Stack.size() - 1, value);
+            _Stack.set(_Stack.size() - 1, new StackEntry(value, getEscaper()));
         } else {
-            _Stack.push(value);
+            _Stack.push(new StackEntry(value, getEscaper()));
             pushed = true;
+        }
+        if (value != null) {
+            log.info("Setting _ " + value.getClass() + " " + getEscaper() + " " + Casting.wrap(value, getEscaper()));
         }
         pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
         if (log.isDebugEnabled()) {
@@ -540,14 +550,15 @@ public class WriterHelper {
      */
     private void pop_Stack() throws JspTagException {
         if (_Stack != null) {
-            Object pop = _Stack.pop();
+            StackEntry pop = (StackEntry) _Stack.pop();
             if (log.isDebugEnabled()) {
                 log.debug("Removed " + pop +  "( " + (pop == null ? "NULL" : pop.getClass().getName()) + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
             }
             if (_Stack.empty()) {
                 thisTag.getPageContext().removeAttribute("_");
             } else {
-                thisTag.getPageContext().setAttribute("_", Casting.wrap(_Stack.peek(), getEscaper()));
+                StackEntry peek = (StackEntry) _Stack.peek();
+                thisTag.getPageContext().setAttribute("_", Casting.wrap(peek.value, peek.escaper));
             }
             _Stack = null;
             pushed = false;
