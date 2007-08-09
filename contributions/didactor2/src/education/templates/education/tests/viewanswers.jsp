@@ -15,7 +15,6 @@
 
     <di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
       <mm:node referid="madetestNo">
-        <mm:field name="number" />
         <mm:relatednodes role="related" orderby="related.number" type="givenanswers" directions="up" id="answer">
           <p>
           <mm:relatednodes type="questions">
