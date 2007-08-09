@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.88.2.4 2007-08-09 13:03:37 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.5 2007-08-09 13:04:35 michiel Exp $
  */
 
 public class WriterHelper {
@@ -443,9 +443,6 @@ public class WriterHelper {
         } else {
             _Stack.push(new StackEntry(value, getEscaper()));
             pushed = true;
-        }
-        if (value != null) {
-            log.info("Setting _ " + value.getClass() + " " + getEscaper() + " " + Casting.wrap(value, getEscaper()));
         }
         pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
         if (log.isDebugEnabled()) {
