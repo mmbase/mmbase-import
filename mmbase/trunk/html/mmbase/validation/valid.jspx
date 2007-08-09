@@ -1,0 +1,36 @@
+<mm:content
+    expires="0"
+    type="application/xml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <!--
+      $Id: valid.jspx,v 1.1 2007-08-09 18:51:39 michiel Exp $
+      author: Michiel Meeuwissen
+  -->
+  <jsp:directive.page
+      import="org.mmbase.datatypes.*"
+      session="false" />
+  <jsp:directive.include file="get.datatype.jspxf" />
+  <mm:import externid="value" required="true" vartype="string" jspvar="value"/>
+  <jsp:scriptlet>
+    if (dataType.isRequired() &amp;&amp; "".equals(value)) {
+      value = null;
+    }
+    Collection errors = dataType.validate(value);
+    pageContext.setAttribute("errors", errors);
+  </jsp:scriptlet>
+  <result valid="${fn:length(errors) == 0}">
+    <jsp:scriptlet>
+      Iterator i = errors.iterator();
+      while (i.hasNext()) {
+        org.mmbase.util.LocalizedString s = (org.mmbase.util.LocalizedString) i.next();
+    </jsp:scriptlet>
+    <error><jsp:expression>s.get(null)</jsp:expression></error>
+    <jsp:scriptlet>
+      }
+    </jsp:scriptlet>
+  </result>
+
+</mm:content>

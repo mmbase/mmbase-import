@@ -1,0 +1,43 @@
+<mm:content
+    expires="0"
+    unacceptable="CRIPPLE"
+    type="application/xhtml+xml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <html  xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title>Test</title>
+      <mm:link page="/mmbase/validation/sarissa/sarissa.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <mm:link page="/mmbase/validation/sarissa/sarissa_dhtml.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <mm:link page="/mmbase/validation/sarissa/sarissa_ieemu_xpath.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <mm:link page="/mmbase/validation/sarissa/sarissa_ieemu_load.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <mm:link page="/mmbase/validation/utils.js">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <mm:link page="/mmbase/validation/validation.js.jsp">
+        <script src="${_}"><!-- Help IE --></script>
+      </mm:link>
+      <style>
+        .valid {
+          background-color: #f0fff0;
+        }
+        .invalid {
+          background-color: #fff0f0;
+        }
+      </style>
+    </head>
+    <body>
+      <form>
+        <textarea id="ta" class="mm_validate mm_dt_requiredfield"></textarea>
+      </form>
+    </body>
+  </html>
+</mm:content>
