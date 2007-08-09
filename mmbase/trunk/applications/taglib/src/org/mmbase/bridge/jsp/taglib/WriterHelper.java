@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.94 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: WriterHelper.java,v 1.95 2007-08-09 13:35:12 michiel Exp $
  */
 
 public class WriterHelper {
@@ -129,7 +129,14 @@ public class WriterHelper {
      * 'underscore' stack, containing the values for '_'.
      * @since MMBase_1.8
      */
-    private   Stack<Object> _Stack;
+    private   LinkedList<StackEntry> _Stack;
+    private class StackEntry {
+        public final Object value;
+        public final CharTransformer escaper;
+        StackEntry(Object v, CharTransformer e) {
+            value = v; escaper = e;
+        }
+    }
     // whether this tag pushed something on the stack already.
     private   boolean pushed = false;
 
@@ -420,9 +427,9 @@ public class WriterHelper {
 
         PageContext pageContext = thisTag.getPageContext();
 
-        _Stack = (Stack<Object>) pageContext.getAttribute(STACK_ATTRIBUTE);
+        _Stack = (LinkedList<StackEntry>) pageContext.getAttribute(STACK_ATTRIBUTE);
         if (_Stack == null) {
-            _Stack = new Stack<Object>();
+            _Stack = new LinkedList<StackEntry>();
             pushed = false;
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
@@ -432,9 +439,9 @@ public class WriterHelper {
             if (log.isDebugEnabled()) {
                 log.debug("Value was already pushed by this tag");
             }
-            _Stack.set(_Stack.size() - 1, value);
+            _Stack.set(0, new StackEntry(value, getEscaper()));
         } else {
-            _Stack.push(value);
+            _Stack.addFirst(new StackEntry(value, getEscaper()));
             pushed = true;
         }
         pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
@@ -540,14 +547,15 @@ public class WriterHelper {
      */
     private void pop_Stack() throws JspTagException {
         if (_Stack != null) {
-            Object pop = _Stack.pop();
+            StackEntry pop = _Stack.poll();
             if (log.isDebugEnabled()) {
                 log.debug("Removed " + pop +  "( " + (pop == null ? "NULL" : pop.getClass().getName()) + ")  from _stack for " + thisTag.getClass().getName() + " now: " + _Stack);
             }
-            if (_Stack.empty()) {
+            if (_Stack.size() == 0) {
                 thisTag.getPageContext().removeAttribute("_");
             } else {
-                thisTag.getPageContext().setAttribute("_", Casting.wrap(_Stack.peek(), getEscaper()));
+                StackEntry peek = _Stack.peek();
+                thisTag.getPageContext().setAttribute("_", Casting.wrap(peek.value, peek.escaper));
             }
             _Stack = null;
             pushed = false;
