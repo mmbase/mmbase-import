@@ -1,3 +1,7 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
   <jsp:directive.page
       import="org.mmbase.datatypes.*,java.util.*"
       session="false" />
@@ -11,9 +15,10 @@
     <mm:import externid="field"       required="true" />
     <mm:import externid="nodemanager" required="true" />
     <mm:cloud jspvar="cloud">
-      <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="field">
-        <!-- following code (generating XML) must be delegated to BasicDataType -->
-        <jsp:scriptlet>dataType = field.getDataType();</jsp:scriptlet>
-      </mm:fieldlist>
-    </mm:cloud>
+    <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="field">
+      <!-- following code (generating XML) must be delegated to BasicDataType -->
+      <jsp:scriptlet>dataType = field.getDataType();</jsp:scriptlet>
+    </mm:fieldlist>
+  </mm:cloud>
   </mm:notpresent>
+</jsp:root>
