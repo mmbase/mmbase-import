@@ -1,7 +1,8 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><mm:cloud method="delegate">
+%><mm:cloud rank="didactor user"
+>
   <jsp:directive.include file="/shared/setImports.jsp" />
 
   <mm:content postprocessor="reducespace" expires="0" language="$language">
@@ -9,17 +10,18 @@
     <mm:import externid="madetestNo" required="true"  />
     <mm:import externid="userNo"     required="true"  />
     <mm:import externid="feedback"   required="false" />
-        
+
     <jsp:directive.include file="/education/tests/definitions.jsp" />
 
     <di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
       <mm:node referid="madetestNo">
+        <mm:field name="number" />
         <mm:relatednodes role="related" orderby="related.number" type="givenanswers" directions="up" id="answer">
           <p>
           <mm:relatednodes type="questions">
             <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>
             <div class="view_answer">
-              <b><di:translate key="education.question" />:</b> 
+              <b><di:translate key="education.question" />:</b>
               <mm:field name="text" escape="none" />
               <br/>
               <mm:node id="question" />
@@ -58,7 +60,7 @@
               </c:otherwise>
             </c:choose>
           </mm:field>
-          
+
           <br/>
           <!-- Feedback (from the question) -->
           <mm:node referid="question">
@@ -67,14 +69,14 @@
               <mm:constraint field="minimalscore" value="${answer.score}" operator="<="/>
               <mm:relatednodes>
                 <b><di:translate key="education.feedback" />: <mm:field name="name"/></b><br/>
-                
+
                 <mm:relatednodes type="images">
                   <mm:image mode="img" template="s(150x150)"  />
                   <mm:last><br/></mm:last>
                 </mm:relatednodes>
-                
+
                 <mm:include page="/education/tests/view_feedback.jspx" />
-                
+
               </mm:relatednodes>
             </mm:relatednodescontainer>
           </p>

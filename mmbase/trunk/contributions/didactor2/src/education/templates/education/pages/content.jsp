@@ -1,14 +1,14 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><mm:content postprocessor="reducespace">
 <mm:cloud rank="didactor user" >
 
   <mm:import externid="learnobject" required="true"/>
-  
+
   <mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids,learnobject">
     <mm:param name="learnobjecttype">pages</mm:param>
   </mm:treeinclude>
-  
+
   <mm:import externid="fb_madetest"/>
   <mm:present referid="fb_madetest">
     <mm:node number="$fb_madetest" notfound="skip">
@@ -47,7 +47,7 @@
        </mm:field>
      </mm:notpresent>
 
-     
+
      <mm:import jspvar="text" reset="true"><mm:hasfield name="text"><mm:field name="text" escape="none"/></mm:hasfield> <mm:hasfield name="intro"><mm:field name="intro" escape="none"/></mm:hasfield></mm:import>
 
      <table width="100%" border="0" class="Font layout${layout}">
@@ -82,7 +82,7 @@
 
      </table>
 
- 
+
 
      <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
        <h3><mm:field name="title"/></h3>
@@ -122,7 +122,6 @@
      </div>
 
      <div class="urls">
-
        <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
          <mm:field name="showtitle">
            <mm:compare value="1">
