@@ -29,16 +29,18 @@
   <!-- TODO pre and postassessment are showed in the tree -->
 
   <div>
-    <!--
     <a href="javascript:reloadEducationTree()">Reload</a>
-    -->
     <mm:node number="$education" notfound="skip">
+
       <script type="text/javascript">addContent('<mm:nodeinfo type="type"/>','${_node}');</script>
+
       <img class="imgClosed" src="${gfx_item_closed}" id="img${_node}"
            onclick="openClose('div${_node}','img${_node}')" title="" alt="" />
+
       <mm:nodeinfo type="type">
         <a href="#_${_node}"
            onclick="if(openOnly('div${_node}','img${_node}')) { openContent( '${_}','${_node}' ); }"><mm:field name="name"/></a>
+
       </mm:nodeinfo>
 
       <mm:field id="previousnumber" name="number" write="false"/>
@@ -53,8 +55,24 @@
             <mm:depth id="currentdepth">
               <mm:compare value="2">
                 <mm:relatednodes id="tests" type="tests" role="posrel" searchdir="destination"/>
-                <mm:import id="previousmadetest">${empty madetest or madetest}</mm:import>
-                <mm:import id="madetest">${empty madetest or (madetest and ((empty tests) or mm:contains(madetests, tests)))}</mm:import>
+                <mm:import id="previousmadetest">${empty madetest ? 'true' : madetest}</mm:import>
+                <!--
+                <p>
+                  empty made test ${empty madetest}
+                </p>
+                <p>
+                  tests: ${tests}
+                </p>
+                <p>
+                  madetests: ${madetests}
+                </p>
+                -->
+                <mm:import id="madetest">${previousmadetest and ((empty tests) or mm:contains(madetests, tests))}</mm:import>
+                <!--
+                previousmadetest: ${previousmadetest}
+                tests: ${tests}
+                madetest: ${madetest}
+                -->
               </mm:compare>
             </mm:depth>
 
