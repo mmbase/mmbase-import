@@ -1,10 +1,10 @@
 // -*- mode: java; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content type="text/javascript" expires="600">
+%><mm:content type="text/javascript" expires="0">
 /*
 
 @author Michiel Meeuwissen
-@version $Id: validation.js.jsp,v 1.1 2007-08-09 18:51:39 michiel Exp $
+@version $Id: validation.js.jsp,v 1.2 2007-08-09 18:56:34 michiel Exp $
 */
 
 var dataTypeCache   = new Object();
@@ -87,7 +87,7 @@ function validatePage(el) {
     var els = getElementsByClass(el, "mm_validate");
     for (i=0; i < els.length; i++) {
         var entry = els[i];
-        console.log("validating " + entry);
+        //   console.log("validating " + entry);
         if (! valid(entry)) {
             v = false;
         }
@@ -121,30 +121,5 @@ addEventHandler(window, "load", function (event) {
     });
 
 
-function testXpath() {
-    try {
-      // create a DOM document
-      var xmlStr = "<?xml version='1.0' encoding='UTF-8'?>\n"+
-          "<stylesheet version='1.0' xmlns='http://www.w3.org/1999/XSL/Transform'>" +
-          "<output method='xml' version='1.0' encoding='UTF-8' indent='yes'/>"+
-          "<template match='*'></template><template match='@*'>"+
-          "</template></stylesheet>";
-      console.log("1");
-      var parser = new DOMParser();
-      console.log("1" + parser + " " + xmlStr);
-      var xmlDoc = parser.parseFromString(xmlStr, "text/xml");
-      console.log("2");
-      // the following two lines are needed for IE
-      xmlDoc.setProperty("SelectionNamespaces", "xmlns:xsd='http://www.w3.org/1999/XSL/Transform'");
-      xmlDoc.setProperty("SelectionLanguage", "XPath");
-      console.log("3");
-      // test XPath expressions on the document
-      console.log("hoi");
-      console.log(xmlDoc.selectNodes("//xsd:template"));
-    } catch (ex) {
-        console.log(ex);
-    }
-
-  }
 
 </mm:content>
