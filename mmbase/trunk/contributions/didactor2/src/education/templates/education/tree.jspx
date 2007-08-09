@@ -29,7 +29,9 @@
   <!-- TODO pre and postassessment are showed in the tree -->
 
   <div>
+    <!--
     <a href="javascript:reloadEducationTree()">Reload</a>
+    -->
     <mm:node number="$education" notfound="skip">
 
       <script type="text/javascript">addContent('<mm:nodeinfo type="type"/>','${_node}');</script>
