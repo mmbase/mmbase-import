@@ -1,4 +1,4 @@
-<mm:cloud method="asis"
+<mm:cloud rank="didactor user"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
@@ -8,6 +8,7 @@
   <mm:import externid="node_id" required="true"/>
   <mm:import externid="path_segment"/>
 
+  <mm:log>escape:" ${requestScope['org.mmbase.bridge.jsp.taglib.escaper']}</mm:log>
   <mm:node referid="node_id">
 
     <mm:nodeinfo type="type">
