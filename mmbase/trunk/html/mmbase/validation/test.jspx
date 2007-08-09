@@ -7,31 +7,9 @@
   <html  xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>Test</title>
-      <mm:link page="/mmbase/validation/sarissa/sarissa.js">
-        <script src="${_}"><!-- Help IE --></script>
-      </mm:link>
-      <mm:link page="/mmbase/validation/sarissa/sarissa_dhtml.js">
-        <script src="${_}"><!-- Help IE --></script>
-      </mm:link>
-      <mm:link page="/mmbase/validation/sarissa/sarissa_ieemu_xpath.js">
-        <script src="${_}"><!-- Help IE --></script>
-      </mm:link>
-      <mm:link page="/mmbase/validation/sarissa/sarissa_ieemu_load.js">
-        <script src="${_}"><!-- Help IE --></script>
-      </mm:link>
-      <mm:link page="/mmbase/validation/utils.js">
-        <script src="${_}"><!-- Help IE --></script>
-      </mm:link>
-      <mm:link page="/mmbase/validation/validation.js.jsp">
-        <script src="${_}"><!-- Help IE --></script>
-      </mm:link>
-      <mm:link page="/mmbase/style/css/mmbase.css">
-        <link rel="stylesheet"    href="${_}"     type="text/css" />
-      </mm:link>
-      <mm:link page="/mmbase/style/images/favicon.ico">
-        <link rel="icon"          href="${_}" type="image/x-icon" />
-        <link rel="shortcut icon" href="${_}" type="image/x-icon" />
-      </mm:link>
+      <jsp:directive.include file="javascript.jspxf" />
+      <jsp:directive.include file="mmbase.jspxf" />
+
       <style>
         .valid {
           background-color: #f0fff0;
