@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.54 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.55 2007-08-09 13:47:01 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -156,7 +156,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     }
     /**
      */
-    
+
     //public String htmlInputId(Node node, Field field) throws JspTagException {
     //return prefix(field.getName());
     //}
@@ -167,6 +167,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected Object getFieldValue(Node node, Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+        if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
         return found;
     }
 
@@ -253,7 +254,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
                 for (LocalizedString error : col) {
-                    show.append("<span>");
+                    show.append("<span class='" + error.getKey() + "'>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
                 }
