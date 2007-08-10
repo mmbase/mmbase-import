@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.64 2007-07-31 12:05:44 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.65 2007-08-10 10:05:36 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -495,9 +495,10 @@ public class ContentTag extends LocaleTag  {
         if (type.length() != 0) {
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            
+
             String a = unacceptable.getString(this);
             if (! "".equals(a)) {
+                addVary("Accept");
                 String acceptHeader = request.getHeader("Accept");
                 log.debug("a: " + acceptHeader);
                 boolean acceptable = acceptHeader.indexOf(type) != -1;
@@ -507,7 +508,7 @@ public class ContentTag extends LocaleTag  {
                         if (type.equals("text/html")) {
                             acceptable = true;
                         } else if (type.equals("application/xhtml+xml")) {
-                            type = "text/html";                            
+                            type = "text/html";
                             acceptable = true; //request.getHeader("Accept").indexOf(type) != -1;
                         }
                         if (a.length() > 7) {
@@ -593,6 +594,14 @@ public class ContentTag extends LocaleTag  {
                 // calc the string in GMT not localtime and add the offset
                 response.setDateHeader ("Expires", System.currentTimeMillis() + (expire * 1000));
                 response.setHeader("Cache-Control", "public");
+                if (varyHeaders != null) {
+                    StringBuilder buf = new StringBuilder();
+                    for (String h : varyHeaders) {
+                        if (buf.length() > 0) buf.append(',');
+                        buf.append(h);
+                    }
+                    response.setHeader("Vary", buf.toString());
+                }
             }
             addedCacheHeaders = true;
         } else {
