@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.10 2007-08-10 14:20:09 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11 2007-08-10 15:10:54 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -69,8 +69,10 @@ function isNumeric(el) {
  * Small utility to just get the dom attribute 'value', but also parse to float, if 'numeric' is true.
  */
 function getValueAttribute(numeric, el) {
+    if (el == null) return null;
     var value = el.getAttribute("value");
     if (numeric) {
+        if (value == "") return null;
         return parseFloat(value);
     } else {
         return value;
@@ -94,29 +96,39 @@ function minMaxValid(el) {
             value = parseFloat(value);
         }
 
-
-        var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
-        if (minInclusive != null && value <  getValueAttribute(numeric, minInclusive)) {
-            //console.log("" + value + " < " + getValueAttribute(numeric, minInclusive));
-            return false;
+        {
+            var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
+            var compare = getValueAttribute(numeric, minInclusive);
+            if (compare != null && value <  compare) {
+                console.log("" + value + " < " + compare);
+                return false;
+            }
         }
 
-        var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
-        if (minExclusive != null && value <=  getValueAttribute(numeric, minExclusive)) {
-            //console.log("" + value + " <= " + getValueAttribute(numeric, minExclusive));
-            return false;
+        {
+            var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
+            var compare = getValueAttribute(numeric, minExclusive);
+            if (compare != null && value <=  compare) {
+                console.log("" + value + " <= " + compare);
+                return false;
+            }
+        }
+        {
+            var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
+            var compare = getValueAttribute(numeric, maxInclusive);
+            if (compare != null && value >  compare) {
+                console.log("" + value + " > " + compare);
+                return false;
+            }
         }
 
-        var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
-        if (maxInclusive != null && value >  getValueAttribute(numeric, maxInclusive)) {
-            //console.log("" + value + " > " + getValueAttribute(numeric, maxInclusive));
-            return false;
-        }
-
-        var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
-        if (maxExclusive != null && value >=  getValueAttribute(numeric, maxExclusive)) {
-            //console.log("" + value + " >= " + getValueAttribute(numeric, maxExclusive));
-            return false;
+        {
+            var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
+            var compare = getValueAttribute(numeric, maxExclusive);
+            if (compare != null && value >=  value) {
+                console.log("" + value + " >= " + value);
+                return false;
+            }
         }
     } catch (ex) {
         //console.log(ex);
