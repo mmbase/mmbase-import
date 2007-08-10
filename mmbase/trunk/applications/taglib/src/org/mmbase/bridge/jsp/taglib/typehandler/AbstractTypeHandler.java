@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.55 2007-08-09 13:47:01 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.56 2007-08-10 13:14:12 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -131,7 +131,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @since MMBase-1.8
      */
     protected String getClasses(Field field) {
-        return "mm_validate mm_f_" + field.getName() + " mm_nm_" + field.getNodeManager().getName();
+        if (field instanceof org.mmbase.bridge.util.DataTypeField) {
+            return "mm_validate mm_dt_" + field.getName();
+        } else {
+            return "mm_validate mm_f_" + field.getName() + " mm_nm_" + field.getNodeManager().getName();
+        }
     }
 
     /**
