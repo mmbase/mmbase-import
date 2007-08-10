@@ -1,0 +1,55 @@
+<mm:content
+    expires="600"
+    language="client"
+    unacceptable="CRIPPLE"
+    type="application/xhtml+xml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
+  <html  xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title>Test</title>
+      <jsp:directive.include file="javascript.jspxf" />
+      <jsp:directive.include file="mmbase.jspxf" />
+
+      <style>
+        .valid {
+          background-color: #f0fff0;
+        }
+        .invalid {
+          background-color: #fff0f0;
+        }
+      </style>
+    </head>
+    <body>
+      <mm:import externid="field" />
+      <mm:notpresent referid="field">
+        <mm:import externid="datatype">requiredfield</mm:import>
+      </mm:notpresent>
+      <mm:present referid="field">
+        <mm:import externid="nodemanager" required="true" />
+      </mm:present>
+
+      <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
+      <h1>Testing for ${datatype} ${field}</h1>
+      <form>
+        <mm:cloud>
+          <mm:present referid="field">
+            <mm:fieldlist nodetype="${nodemanager}" fields="${field}">
+              <mm:fieldinfo  type="input" />
+            </mm:fieldlist>
+          </mm:present>
+          <mm:notpresent referid="field">
+            <mm:fieldinfo datatype="${datatype}" type="input" />
+          </mm:notpresent>
+        </mm:cloud>
+        <input type="button" onclick="validatePage()" value="server-side validation" />
+      </form>
+      <hr />
+      <mm:link page=".">
+        <a href="${_}" class="navigate">
+          <img src="${back}" alt="back" class="navigate" />
+        </a>
+      </mm:link>
+    </body>
+  </html>
+</mm:content>
