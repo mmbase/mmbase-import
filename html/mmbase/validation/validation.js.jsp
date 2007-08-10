@@ -7,11 +7,11 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.16 2007-08-10 17:16:33 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.17 2007-08-10 17:27:35 michiel Exp $
  */
 
 
-function MMBaseValidator(w) {
+function MMBaseValidator(w, root) {
    this.dataTypeCache   = new Object();
 
    /**
@@ -281,7 +281,7 @@ function MMBaseValidator(w) {
    /**
     * Validates al mm_validate form entries on the page
     */
-   this.validatePage = function(el) {
+   this.validatePage = function(el, server) {
        var v = true;
        if (el == null) {
            el = document.documentElement;
@@ -289,12 +289,16 @@ function MMBaseValidator(w) {
        var els = getElementsByClass(el, "mm_validate");
        for (var  i = 0; i < els.length; i++) {
            var entry = els[i];
-           if (! this.valid(entry)) {
-               v = false;
+           if (server) {
+               if (! this.serverValid(entry)) {
+                   v = false;
+               }
+           } else {
+               if (! this.valid(entry)) {
+                   v = false;
+               }
            }
-           //console.log("hoi " + v);
            this.setClassName(entry, v);
-
        }
        return v;
    }
@@ -320,8 +324,10 @@ function MMBaseValidator(w) {
        }
    }
    this.onLoad = function(event) {
-       var target = event.target || event.srcElement;
-       this.addJavascriptValidation(target);
+       if (this.root == null) {
+           this.root = event.target || event.srcElement;
+       }
+       this.addJavascriptValidation(this.root);
        //validatePage(target);
    }
 
@@ -331,8 +337,8 @@ function MMBaseValidator(w) {
            addEventHandler(w, "load", this.onLoad, this);
        }
    }
-
    this.setup(w);
+   this.root = root;
 
   }
 

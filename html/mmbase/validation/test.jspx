@@ -21,6 +21,7 @@
       </style>
     </head>
     <body>
+
       <script type="text/javascript">new MMBaseValidator(window);</script>
 
       <mm:import externid="field" />
@@ -33,7 +34,7 @@
 
       <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
       <h1>Testing for ${datatype} ${field}</h1>
-      <form>
+      <form id="myform">
         <mm:cloud>
           <mm:present referid="field">
             <mm:fieldlist nodetype="${nodemanager}" fields="${field}">
