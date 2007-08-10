@@ -29,6 +29,7 @@ import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTree;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTreeNode;
+import com.finalist.util.module.ModuleUtil;
 
 
 public class SiteCache implements RelationEventListener, NodeEventListener {
@@ -59,7 +60,9 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         }
         
         loadNavigationItems(cloud, PagesUtil.PAGE);
-        loadNavigationItems(cloud, RssFeedUtil.RSSFEED);
+        if(ModuleUtil.checkFeature(RssFeedUtil.RSSFEED)) {
+        	loadNavigationItems(cloud, RssFeedUtil.RSSFEED);
+    	}
         
     }
 
