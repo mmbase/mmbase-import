@@ -6,7 +6,11 @@
   <!--
       Returns XML describing a certain MMBase DataType.
       This can be used in (AJAX based) javascript validation of form entries.
-      $Id: datatype.jspx,v 1.7 2007-08-10 14:26:04 michiel Exp $
+
+      @todo: This JSP must accept a 'language' attribute, and all restriction error message must be included.
+             That way, also those can be used in javascript.
+
+      $Id: datatype.jspx,v 1.8 2007-08-10 14:28:13 michiel Exp $
       author: Michiel Meeuwissen
   -->
 
