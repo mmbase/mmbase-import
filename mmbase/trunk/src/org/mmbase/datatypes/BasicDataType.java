@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.77 2007-08-10 13:04:08 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.78 2007-08-10 13:28:26 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -360,6 +360,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         if (el == null) {
             el = parent.getOwnerDocument().createElementNS(XMLNS, name);
             DocumentReader.appendChild(parent, el, path);
+        } else if (! el.getLocalName().equals(name)) {
+            Element newChild = parent.getOwnerDocument().createElementNS(XMLNS, name);
+            parent.replaceChild(newChild, el);
+            el = newChild;
         }
         return el;
     }
