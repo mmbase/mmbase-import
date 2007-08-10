@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.12 2007-08-10 15:17:17 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.13 2007-08-10 15:21:56 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -25,6 +25,8 @@ function isRequired(el) {
  * Whether the value in the form element obeys the restrictions on length (minLength, maxLength, length)
  */
 function lengthValid(el) {
+
+    if (! isRequired(el) && value.length == 0) return true;
     var xml = getDataTypeXml(getDataTypeId(el));
 
     var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
