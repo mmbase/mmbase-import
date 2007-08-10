@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.8 2007-08-10 13:15:06 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.9 2007-08-10 14:03:21 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -22,8 +22,8 @@ function isRequired(el) {
 
 function lengthValid(el) {
     var xml = getDataTypeXml(getDataTypeId(el));
-    var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
 
+    var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
     if (minLength != null && el.value.length < minLength.getAttribute("value")) {
         return false;
     }
@@ -34,6 +34,76 @@ function lengthValid(el) {
     return true;
 }
 
+function isNumeric(el) {
+    var xml = getDataTypeXml(getDataTypeId(el));
+    var javaClass = xml.selectSingleNode('//dt:datatype/dt:class');
+    var name = javaClass.getAttribute("name");
+    if (name == "org.mmbase.datatypes.NumberDataType") {
+        return true;
+    }
+    var ex = javaClass.getAttribute("extends");
+    var javaClasses = ex.split(",");
+    for (i = 0; i < javaClasses.length; i++) {
+        if (javaClasses[i] == "org.mmbase.datatypes.NumberDataType") {
+            return true;
+        }
+    }
+    //console.log("" + el + " is not numeric");
+    return false;
+}
+
+function getValueAttribute(numeric, el) {
+    var value = el.getAttribute("value");
+    if (numeric) {
+        return parseFloat(value);
+    } else {
+        return value;
+    }
+}
+
+function minMaxValid(el) {
+    //console.log("validating : " + el);
+    try {
+        var xml = getDataTypeXml(getDataTypeId(el));
+
+        var value = el.value;
+        var numeric = isNumeric(el);
+        if (numeric) {
+            //console.log("numeric");
+            value = parseFloat(value);
+        }
+
+
+        var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
+        if (minInclusive != null && value <  getValueAttribute(numeric, minInclusive)) {
+            //console.log("" + value + " < " + getValueAttribute(numeric, minInclusive));
+            return false;
+        }
+
+        var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
+        if (minExclusive != null && value <=  getValueAttribute(numeric, minExclusive)) {
+            //console.log("" + value + " <= " + getValueAttribute(numeric, minExclusive));
+            return false;
+        }
+
+        var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
+        if (maxInclusive != null && value >  getValueAttribute(numeric, maxInclusive)) {
+            //console.log("" + value + " > " + getValueAttribute(numeric, maxInclusive));
+            return false;
+        }
+
+        var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
+        if (maxExclusive != null && value >=  getValueAttribute(numeric, maxExclusive)) {
+            //console.log("" + value + " >= " + getValueAttribute(numeric, maxExclusive));
+            return false;
+        }
+    } catch (ex) {
+        //console.log(ex);
+        throw ex;
+    }
+    return true;
+
+}
 
 
 /**
@@ -110,9 +180,9 @@ function setClassName(el, valid) {
 function valid(el) {
     if (isRequired(el) && el.value == "") return false;
     if (! lengthValid(el)) return false;
-    // @todo of course we can go a bit further here.
+    if (! minMaxValid(el)) return false;
 
-    // minimum/maximum: very simple
+    // @todo of course we can go a bit further here.
     // regexp patterns: if the regexp syntaxes of javascript and java are sufficiently similar),
 
     // enumerations: but must of the time those would have given dropdowns and such, so it's hardly
