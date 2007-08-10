@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.21 2006-07-18 12:58:40 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.21.2.1 2007-08-10 14:38:49 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -117,19 +117,18 @@ public abstract class ComparableDataType extends BasicDataType {
 
     public void toXml(Element parent) {
         super.toXml(parent);
-
         if (minRestriction.isInclusive()) {
-            getElement(parent, "minInclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive)")
+            getElement(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)")
                 .setAttribute("value", xmlValue(minRestriction.getValue()));
         } else {
-            getElement(parent, "minExclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive)")
+            getElement(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)")
                 .setAttribute("value", xmlValue(minRestriction.getValue()));
         }
         if (maxRestriction.isInclusive()) {
-            getElement(parent, "maxInclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
+            getElement(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
                 .setAttribute("value", xmlValue(maxRestriction.getValue()));
         } else {
-            getElement(parent, "maxExclusive",    "description,class,property,default,uniue,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
+            getElement(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
                 .setAttribute("value", xmlValue(maxRestriction.getValue()));
         }
 
