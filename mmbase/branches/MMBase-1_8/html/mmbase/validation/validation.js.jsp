@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.2 2007-08-10 15:22:10 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.3 2007-08-10 15:45:07 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -310,6 +310,9 @@ function addJavascriptValidation(el) {
     var els = getElementsByClass(el, "mm_validate");
     for (i=0; i < els.length; i++) {
         var entry = els[i];
+        if (entry.tagName.toUpperCase() == "TEXTAREA") {
+            entry.value = entry.value.replace(/^\s+|\s+$/g, "");
+        }
         addEventHandler(entry, "keyup", validate);
         //console.log("Will validate " + entry);
     }
