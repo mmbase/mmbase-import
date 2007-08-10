@@ -13,8 +13,6 @@ import java.util.*;
 
 import javax.servlet.ServletConfig;
 
-import net.sf.mmapps.commons.bridge.GenericNodeList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.*;
@@ -108,8 +106,21 @@ public class SearchServiceMMBaseImpl extends SearchService {
             Integer portletId = page.getPortlet(portletWindowName);
             Portlet portlet = SiteManagement.getPortlet(portletId);
             if (portlet != null) {
-                return evaluateArchive(portlet, content);
+                return evaluateContentTypes(portletId, content) && evaluateArchive(portlet, content);
             }
+        }
+        return true;
+    }
+
+    private boolean evaluateContentTypes(Integer portletId, Node content) {
+        List<String> nodeManagerNames = SiteManagement.getContentTypes(portletId.toString());
+        if (!nodeManagerNames.isEmpty()) {
+            for (String nmName : nodeManagerNames) {
+                if (content.getNodeManager().getName().equals(nmName)) {
+                    return true;
+                }
+            }
+            return false;
         }
         return true;
     }
@@ -219,6 +230,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
         return null;
     }
     
+    @Override
     public boolean hasContentPages(Node content) {
        NodeList pages = findPagesForContent(content, null); 
        return (pages != null && pages.size() > 0);
@@ -247,7 +259,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
             if (content != null) {
                 channels.remove(content);
             }
-            NodeList collectionchannels = new GenericNodeList();
+            NodeList collectionchannels = cloud.createNodeList();
             for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
                 Node contentchannel = iter.next();
                 NodeList cc = RepositoryUtil.getCollectionChannels(contentchannel);
@@ -364,6 +376,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
         return result;        
     }
     
+    @Override
     public Set<Node> findLinkedSecondaryContent(Node contentElement, String nodeManager, String relType, String direction) {
     	Set<Node> result = new HashSet<Node>();
     	
