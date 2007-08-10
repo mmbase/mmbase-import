@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11 2007-08-10 15:10:54 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.1 2007-08-10 15:12:41 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
