@@ -21,12 +21,26 @@
       </style>
     </head>
     <body>
-      <mm:import externid="datatype">requiredfield</mm:import>
+      <mm:import externid="field" />
+      <mm:notpresent referid="field">
+        <mm:import externid="datatype">requiredfield</mm:import>
+      </mm:notpresent>
+      <mm:present referid="field">
+        <mm:import externid="nodemanager" required="true" />
+      </mm:present>
+
       <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
-      <h1>Testing for ${datatype}</h1>
+      <h1>Testing for ${datatype} ${field}</h1>
       <form>
         <mm:cloud>
-          <mm:fieldinfo datatype="${datatype}" type="input" />
+          <mm:present referid="field">
+            <mm:fieldlist nodetype="${nodemanager}" fields="${field}">
+              <mm:fieldinfo  type="input" />
+            </mm:fieldlist>
+          </mm:present>
+          <mm:notpresent referid="field">
+            <mm:fieldinfo datatype="${datatype}" type="input" />
+          </mm:notpresent>
         </mm:cloud>
         <input type="button" onclick="validatePage()" value="server-side validation" />
       </form>
