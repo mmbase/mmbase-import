@@ -11,22 +11,26 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.19 2007-08-10 18:07:34 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.20 2007-08-10 21:35:16 michiel Exp $
  */
 
 
 function MMBaseValidator(w, root) {
-   this.dataTypeCache   = new Object();
 
    /**
     * Whether the element is a 'required' form input
     */
    this.isRequired = function(el) {
-       return "true" == "" + this.getDataTypeXml(this.getDataTypeId(el)).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
+       return "true" == "" + this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
    }
 
+   this.logEnabled = false;
+
    this.log = function (msg) {
-       console.log(msg);
+       if (this.logEnabled) {
+           // firebug console"
+           console.log(msg);
+       }
    }
 
    /**
@@ -34,7 +38,7 @@ function MMBaseValidator(w, root) {
     */
    this.lengthValid = function(el) {
        if (! this.isRequired(el) && el.value.length == 0) return true;
-       var xml = this.getDataTypeXml(this.getDataTypeId(el));
+       var xml = this.getDataTypeXml(el);
 
        var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
        if (minLength != null && el.value.length < minLength.getAttribute("value")) {
@@ -54,7 +58,7 @@ function MMBaseValidator(w, root) {
 
    this.hasJavaClass = function(el, javaClass) {
        var pattern = new RegExp(javaClass);
-       var xml = this.getDataTypeXml(this.getDataTypeId(el));
+       var xml = this.getDataTypeXml(el);
        var javaClassElement = xml.selectSingleNode('//dt:datatype/dt:class');
        var name = javaClassElement.getAttribute("name");
        if (pattern.test(name)) {
@@ -67,7 +71,7 @@ function MMBaseValidator(w, root) {
                return true;
            }
        }
-       //console.log("" + el + " is not numeric");
+       //this.log("" + el + " is not numeric");
        return false;
    }
 
@@ -92,7 +96,7 @@ function MMBaseValidator(w, root) {
            if (! /^[+-]?\d+$/.test(el.value)) return false;
        }
        if (this.isFloat(el)) {
-           if (! /^[+-]?\d+(\.\d+|)(e[+-]?\d+|)$/.test(el.value)) return false;
+           if (! /^[+-]?\d+(\.\d*|)(e[+-]?\d+|)$/.test(el.value)) return false;
        }
        return true;
 
@@ -118,14 +122,13 @@ function MMBaseValidator(w, root) {
     * for this.
     */
    this.minMaxValid  = function(el) {
-       //console.log("validating : " + el);
+       this.log("validating : " + el);
        try {
-           var xml = this.getDataTypeXml(this.getDataTypeId(el));
+           var xml = this.getDataTypeXml(el);
 
            var value = el.value;
            var numeric = this.isNumeric(el);
            if (numeric) {
-               //console.log("numeric");
                value = parseFloat(value);
            }
 
@@ -133,7 +136,7 @@ function MMBaseValidator(w, root) {
                var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
                var compare = this.getValueAttribute(numeric, minInclusive);
                if (compare != null && value <  compare) {
-                   //console.log("" + value + " < " + compare);
+                   this.log("" + value + " < " + compare);
                    return false;
                }
            }
@@ -142,7 +145,7 @@ function MMBaseValidator(w, root) {
                var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
                var compare = this.getValueAttribute(numeric, minExclusive);
                if (compare != null && value <=  compare) {
-                   //console.log("" + value + " <= " + compare);
+                   this.log("" + value + " <= " + compare);
                    return false;
                }
            }
@@ -150,7 +153,7 @@ function MMBaseValidator(w, root) {
                var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
                var compare = this.getValueAttribute(numeric, maxInclusive);
                if (compare != null && value >  compare) {
-                   //console.log("" + value + " > " + compare);
+                   this.log("" + value + " > " + compare);
                    return false;
                }
            }
@@ -159,12 +162,12 @@ function MMBaseValidator(w, root) {
                var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
                var compare = this.getValueAttribute(numeric, maxExclusive);
                if (compare != null && value >=  value) {
-                   //console.log("" + value + " >= " + compare);
+                   this.log("" + value + " >= " + compare);
                    return false;
                }
            }
        } catch (ex) {
-           //console.log(ex);
+           this.log(ex);
            throw ex;
        }
        return true;
@@ -173,13 +176,13 @@ function MMBaseValidator(w, root) {
 
 
    /**
-    * Given a certain datatype id object, this returns an XML representing it.
+    * Given a certain datatype element, this returns an XML representing its datatyp.
     * This will do a request to MMBase, unless this XML was cached already.
-    * The argument is a structure which is the result of {@link #getDataTypeId}.
     */
-   this.getDataTypeXml = function(id) {
-       var dataType = this.dataTypeCache[id];
+   this.getDataTypeXml = function(el) {
+       var dataType = el.dataType;
        if (dataType == null) {
+           var id = this.getDataTypeId(el);
            var xmlhttp = new XMLHttpRequest();
            xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(id), false);
            xmlhttp.send(null);
@@ -190,7 +193,7 @@ function MMBaseValidator(w, root) {
            } catch (ex) {
                // happens in safari
            }
-           this.dataTypeCache[id] = dataType;
+           el.dataType = dataType;
        }
        return dataType;
    }
@@ -217,25 +220,28 @@ function MMBaseValidator(w, root) {
     * MMBase DataType.
     */
    this.getDataTypeId = function(el) {
-       //console.log("getting datatype for " + el.className);
-       var classNames = el.className.split(" ");
-       var result = new Object();
-       for (i = 0; i < classNames.length; i++) {
-           var className = classNames[i];
-           if (className.indexOf("mm_dt_") == 0) {
-               result.dataType = className.substring(6);
-               return result;
-           } else if (className.indexOf("mm_f_") == 0) {
-               result.field = className.substring(5);
-           } else if (className.indexOf("mm_nm_") == 0) {
-               result.nodeManager = className.substring(6);
-           }
-           if (result.field != null && result.nodeManager != null) {
-               return result;
-           }
+       if (el.dataTypeStructure == null) {
+           this.log("getting datatype for " + el.className);
+           var classNames = el.className.split(" ");
+           var result = new Object();
+           for (i = 0; i < classNames.length; i++) {
+               var className = classNames[i];
+               if (className.indexOf("mm_dt_") == 0) {
+                   result.dataType = className.substring(6);
+                   break;
+               } else if (className.indexOf("mm_f_") == 0) {
+                   result.field = className.substring(5);
+               } else if (className.indexOf("mm_nm_") == 0) {
+                   result.nodeManager = className.substring(6);
+               }
+               if (result.field != null && result.nodeManager != null) {
+                   break;
+               }
 
+           }
+           el.dataTypeStructure = result;
        }
-       return "field";
+       return el.dataTypeStructure;
    }
 
    /**
@@ -244,7 +250,7 @@ function MMBaseValidator(w, root) {
     * user using CSS.
     */
    this.setClassName = function(el, valid) {
-       //console.log("Setting classname on " + el);
+       this.log("Setting classname on " + el);
        if (el.originalClass == null) el.originalClass = el.className;
        el.className = el.originalClass + (valid ? " valid" : " invalid");
    }
@@ -282,7 +288,7 @@ function MMBaseValidator(w, root) {
            xmlhttp.send(null);
            return xmlhttp.responseXML;
        } catch (ex) {
-           //console.log(ex);
+           this.log(ex);
            throw ex;
        }
        }
@@ -294,7 +300,7 @@ function MMBaseValidator(w, root) {
        try {
            return "true" == "" + xml.selectSingleNode('/result/@valid').nodeValue;
        } catch (ex) {
-           //console.log(ex);
+           this.log(ex);
            throw ex;
        }
    }
