@@ -1,5 +1,6 @@
 <mm:content
-    expires="0"
+    expires="600"
+    language="client"
     unacceptable="CRIPPLE"
     type="application/xhtml+xml"
     xmlns:jsp="http://java.sun.com/JSP/Page"

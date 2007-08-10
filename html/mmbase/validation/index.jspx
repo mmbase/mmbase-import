@@ -1,11 +1,15 @@
 <html
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
   <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.4 2007-08-09 19:48:28 michiel Exp $ --&gt;</jsp:text>
-  <mm:content type="text/html">
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.5 2007-08-10 10:12:30 michiel Exp $ --&gt;</jsp:text>
+  <mm:content
+      expires="600"
+      unacceptable="CRIPPLE"
+      type="application/xhtml+xml">
     <head>
       <title>MMBase DataType validation</title>
       <jsp:directive.include file="mmbase.jspxf" />

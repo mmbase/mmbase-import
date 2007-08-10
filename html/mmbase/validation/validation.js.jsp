@@ -1,12 +1,13 @@
 // -*- mode: java; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content type="text/javascript" expires="0">
+%><mm:content type="text/javascript"
+      expires="3600">
 
 /**
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.6 2007-08-09 20:01:05 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.7 2007-08-10 10:12:30 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -18,6 +19,12 @@ var dataTypeCache   = new Object();
 function isRequired(el) {
     return "true" == "" + getDataTypeXml(getDataTypeId(el)).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
 }
+
+function minLength(el) {
+
+}
+
+
 
 
 /**
@@ -31,8 +38,12 @@ function getDataTypeXml(id) {
       xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx?datatype=" />' + id, false);
       xmlhttp.send(null);
       dataType = xmlhttp.responseXML;
-      dataType.setProperty("SelectionNamespaces", "xmlns:dt='http://www.mmbase.org/xmlns/datatypes'");
-      dataType.setProperty("SelectionLanguage", "XPath");
+      try {
+          dataType.setProperty("SelectionNamespaces", "xmlns:dt='http://www.mmbase.org/xmlns/datatypes'");
+          dataType.setProperty("SelectionLanguage", "XPath");
+      } catch (ex) {
+          // happens in safari
+      }
       dataTypeCache[id] = dataType;
   }
   return dataType;
