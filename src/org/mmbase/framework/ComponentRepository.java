@@ -22,18 +22,18 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.24 2007-08-06 16:58:17 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.25 2007-08-10 14:00:06 andre Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
 
     public static final String XSD_COMPONENT = "component.xsd";
-    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/component";
+    public static final String NAMESPACE_COMPONENT = "http://www.mmbase.org/xmlns/component";
 
     public static final String XSD_FRAMEWORK = "framework.xsd";
     public static final String NAMESPACE_FRAMEWORK = "http://www.mmbase.org/xmlns/framework";
     static {
-        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD_COMPONENT, ComponentRepository.class);
+        XMLEntityResolver.registerSystemID(NAMESPACE_COMPONENT + ".xsd", XSD_COMPONENT, ComponentRepository.class);
         XMLEntityResolver.registerSystemID(NAMESPACE_FRAMEWORK + ".xsd", XSD_FRAMEWORK, ComponentRepository.class);
     }
 
