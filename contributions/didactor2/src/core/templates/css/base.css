@@ -132,9 +132,9 @@ table.font {
   border-bottom: #FFFFFF 1px solid
 }
 
-.applicationMenubar, 
-.providerMenubar, 
-.educationMenubar { 
+.applicationMenubar,
+.providerMenubar,
+.educationMenubar {
 
   white-space: nowrap;
 }
@@ -270,7 +270,7 @@ input.search {
   padding: 0.3em 1.5em 0.1em 0.5em
 }
 
-.menuSeperator:first-child { 
+.menuSeperator:first-child {
   background-image: none;
 }
 
@@ -422,7 +422,7 @@ a.users:hover {
   border-top: 6px solid #FF801A
 }
 
-.titlefield2 { 
+.titlefield2 {
   font-size: 1em;
   font-weight: bold;
   color: #000000;
@@ -465,7 +465,7 @@ a.users:hover {
   height: 1.4em;
   padding: 0px 0px 0px 0px;
 }
-.titlebar img { 
+.titlebar img {
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
   padding: 0em 0em 0em 0em;
@@ -569,7 +569,7 @@ a.path:hover {
 .folderCalendarBody p {
   margin-top: 0px;
 }
-.calDaySpacing { 
+.calDaySpacing {
   width: 1ex;
 }
 
@@ -964,42 +964,46 @@ blockquote {
   border-left: 1px;
 }
 
-img.pos2rel.image-inline { 
+img.pos2rel.image-inline {
   float: none !important;
 }
-img.pos2rel.image-left { 
-  float: left  !important; 
+img.pos2rel.image-left {
+  float: left  !important;
   clear: left;
 }
-img.pos2rel.image-right { 
+img.pos2rel.image-right {
   float: right !important;
   clear: right;
 }
-span.addressbook { 
+span.addressbook {
   display: block;
 }
 
 
 div.non_completed a,
-div.blocked a { 
+div.blocked a {
   color: #cccccc;
 }
 
 #contentFrame .prev_next {
   margin-top: 20px;
 }
-.prev_next a { 
+.prev_next a {
   text-decoration: none;
 }
-.prev_next a.popup { 
+.prev_next a.popup {
   font-weight: bold;
 }
 
-#ajax_loader { 
+#ajax_loader {
   position: absolute;
   background-color: #eee;
   z-index: 100;
   border: solid 3px #ddd;
   padding: 15px;
-  
+
+}
+
+textarea.invalid {
+  background-color: #ffdfdf;
 }
