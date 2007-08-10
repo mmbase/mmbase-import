@@ -7,7 +7,7 @@
   <articleinfo>
     <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.7 2007-08-04 10:08:22 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.8 2007-08-10 18:08:47 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -548,6 +548,44 @@ SATURDAY=saturday]]>
         TODO: mm:input, mm:form, mm:valid, mm:datatype
       </para>
     </section>
+  </section>
+  <section id="javascript">
+    <title>Datatypes and JavaScript</title>
+    <para>
+      Since MMBase 1.8.5, the meta information provided by MMBase Data Types can also be accessed
+      using JavaScript. For that you include the javascript file
+      /mmbase/validation/validation.js.jsp, plus some other utilities (see
+      /mmbase/valiation/test.jspx), and instatiate an "MMBaseValidator".
+          database is associated with a field).<programlisting id="mmbasevalidator"><![CDATA[
+<html  xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Test</title>
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+  </head>
+  <body>
+    <script type="text/javascript">new MMBaseValidator(window);</script>
+    ... the rest of your page..
+]]></programlisting>
+    </para>
+    <para>
+      This javascript library searches (on load) all form elements with the class
+      "mm_validate". 'onkeyup' events are added to all those elements.
+    </para>
+    <para>
+      The data type is determined by inspecting the css class names. If one  starts with "mm_dt_"
+      then the remaining is interpreted as the MMBase Data Type id. There can also be two class
+      names, one starting with mm_f_ and mm_nm_ which can together identify the datatype of a
+      certain field of a nodemanager.
+    </para>
+    <para>
+      The mm:fieldinfo tag of the MMBase Taglib will set up the correct CSS class for form elements
+      that it creates.
+    </para>
+    <para>
+      As soon a data type meta information is needed, then this is requested (using 'ajax') with a
+      call to /mmbase/validation/datatype.jspx.  The resulting XML's are cached in MMBaseValidator.
+    </para>
+
   </section>
 
   <section id="available" >
