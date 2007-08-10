@@ -24,6 +24,7 @@
 
       <script type="text/javascript">
         var validator = new MMBaseValidator(window);
+        //validator.logEnabled = true;
       </script>
 
       <mm:import externid="field" />
