@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.78 2007-08-10 13:28:26 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.79 2007-08-10 14:23:09 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -586,12 +586,34 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return Casting.toString(value);
     }
 
+
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
 
         description.toXml("description", XMLNS, parent, "description");
 
-        getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
+        {
+            Element classElement = getElement(parent, "class",    "description,class");
+            classElement.setAttribute("name", getClass().getName());
+
+            StringBuilder extend = new StringBuilder();
+            Class<?> sup = getClass().getSuperclass();
+            while(DataType.class.isAssignableFrom(sup)) {
+                if (extend.length() > 0) extend.append(',');
+                extend.append(sup.getName());
+                sup = sup.getSuperclass();
+            }
+            for (Class<?> c : getClass().getInterfaces()) {
+                if (DataType.class.isAssignableFrom(c)) {
+                    if (extend.length() > 0) extend.append(',');
+                    extend.append(c.getName());
+                }
+            }
+            classElement.setAttribute("extends", extend.toString());
+        }
+
+
+
         getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
 
         addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
