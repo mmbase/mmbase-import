@@ -1,12 +1,12 @@
 <mm:content
-    expires="0"
+    expires="3600"
     type="application/xml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
   <!--
       Returns XML describing a certain MMBase DataType.
       This can be used in (AJAX based) javascript validation of form entries.
-      $Id: datatype.jspx,v 1.5 2007-08-09 18:51:39 michiel Exp $
+      $Id: datatype.jspx,v 1.6 2007-08-10 10:12:30 michiel Exp $
       author: Michiel Meeuwissen
   -->
 
