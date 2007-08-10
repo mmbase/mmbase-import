@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.18 2007-08-10 18:03:18 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.19 2007-08-10 18:07:34 michiel Exp $
  */
 
 
@@ -276,9 +276,9 @@ function MMBaseValidator(w, root) {
     */
    this.serverValidation = function(el) {
        try {
-           var id = getDataTypeId(el);
+           var id = this.getDataTypeId(el);
            var xmlhttp = new XMLHttpRequest();
-           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + getDataTypeArguments(id) + "&value=" + el.value, false);
+           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(id) + "&value=" + el.value, false);
            xmlhttp.send(null);
            return xmlhttp.responseXML;
        } catch (ex) {
@@ -326,7 +326,7 @@ function MMBaseValidator(w, root) {
        for (var  i = 0; i < els.length; i++) {
            var entry = els[i];
            if (server) {
-               if (! this.serverValid(entry)) {
+               if (! this.validResult(this.serverValidation(entry))) {
                    v = false;
                }
            } else {
