@@ -11,20 +11,13 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.21 2007-08-10 22:06:37 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.22 2007-08-10 22:37:35 michiel Exp $
  */
 
 
 function MMBaseValidator(w, root) {
 
-   /**
-    * Whether the element is a 'required' form input
-    */
-   this.isRequired = function(el) {
-       return "true" == "" + this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
-   }
-
-   this.logEnabled = false;
+   this.logEnabled   = false;
    this.traceEnabled = false;
 
    this.log = function (msg) {
@@ -38,6 +31,13 @@ function MMBaseValidator(w, root) {
            // firebug console"
            console.log(msg);
        }
+   }
+
+   /**
+    * Whether the element is a 'required' form input
+    */
+   this.isRequired = function(el) {
+       return "true" == "" + this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
    }
 
    /**
@@ -65,22 +65,34 @@ function MMBaseValidator(w, root) {
 
    // much much, too simple
    this.javaScriptPattern = function(javaPattern) {
-       var flags = "";
-       if (javaPattern.indexOf("(?i)" == 0)) {
-           flags += "i";
-           javaPattern = javaPattern.substring(4);
-       }
-       javaPattern = javaPattern.replace(/\\A/g, "^");
-       javaPattern = javaPattern.replace(/\\z/g, "$");
+       try {
+           var flags = "";
+           if (javaPattern.indexOf("(?i)") == 0) {
+               flags += "i";
+               javaPattern = javaPattern.substring(4);
+           }
+           if (javaPattern.indexOf("(?s)") == 0) {
+               //this.log("dotall, not supported");
+               javaPattern = javaPattern.substring(4);
+               // I only hope this is always right....
+               javaPattern = javaPattern.replace(/\./g, "(.|\\n)");
+           }
+           javaPattern = javaPattern.replace(/\\A/g, "\^");
+           javaPattern = javaPattern.replace(/\\z/g, "\$");
 
-       var reg = new RegExp(javaPattern, flags);
-       return reg;
+           var reg = new RegExp(javaPattern, flags);
+           return reg;
+       } catch (ex) {
+           this.log(ex);
+           return null;
+       }
    }
    this.patternValid = function(el) {
        if (this.isString(el)) {
            var xml = this.getDataTypeXml(el);
            var javaPattern = xml.selectSingleNode('//dt:datatype/dt:pattern').getAttribute("value");
            var regex = this.javaScriptPattern(javaPattern);
+           if (regex == null) return true;
            this.log("pattern : " + regex + " " + el.value);
            return regex.test(el.value);
        } else {
@@ -211,7 +223,7 @@ function MMBaseValidator(w, root) {
 
 
    /**
-    * Given a certain datatype element, this returns an XML representing its datatyp.
+    * Given a certain form element, this returns an XML representing its mmbase Data Type.
     * This will do a request to MMBase, unless this XML was cached already.
     */
    this.getDataTypeXml = function(el) {
@@ -235,9 +247,9 @@ function MMBaseValidator(w, root) {
 
 
    /**
-    * All server side JSP's with which this javascript talks, can run in 2 modes. The either accept an
-    * one 'datatype' parameter, or a 'field' and a 'nodemanager' parameter.
-    * The result of {@link #getDataTypeId} servers as input, and returned is a query string which can
+    * All server side JSP's with which this javascript talks, can run in 2 modes. They either accept the
+    * one 'datatype' parameter, or a 'field' and a 'nodemanager' parameters.
+    * The result of {@link #getDataTypeId} serves as input, and returned is a query string which can
     * be appended to the servlet path.
     */
    this.getDataTypeArguments = function(id) {
