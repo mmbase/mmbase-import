@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.36 2007-08-02 10:04:13 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.37 2007-08-10 13:07:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -272,7 +272,7 @@ public class DocumentReader  {
      */
     public static String getNodeTextValue(Node n) {
         NodeList nl = n.getChildNodes();
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         for (int i = 0; i < nl.getLength(); i++) {
             Node textnode = nl.item(i);
             if (textnode.getNodeType() == Node.TEXT_NODE) {
@@ -288,12 +288,28 @@ public class DocumentReader  {
      * @since MMBase-1.8.1
      */
     public static void setNodeTextValue(Node n, String value) {
-        NodeList textNodes = n.getChildNodes();
-        for (int j = 0; j < textNodes.getLength(); j++) {
-            n.removeChild(textNodes.item(j));
+        Node child = n.getFirstChild();
+        while (child != null) {
+            Node next = child.getNextSibling();
+            n.removeChild(child);
+            child = next;
         }
         Text text = n.getOwnerDocument().createTextNode(value);
         n.appendChild(text);
+    }
+
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static void setPrefix(Document d, String ns, String prefix) {
+        NodeList nl = d.getElementsByTagName("*");
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node element = nl.item(i);
+            if (ns.equals(element.getNamespaceURI())) {
+                element.setPrefix(prefix);
+            }
+        }
     }
 
     /**
@@ -350,7 +366,9 @@ public class DocumentReader  {
      *
      * @param parent The parent element, to which a new child will be added
      * @param newChild this new child
-     * @param path The beforementioned comma separated list of regexps. See also {@link java.util.regex.Pattern};
+     * @param path The beforementioned comma separated list of regexps. See also {@link
+     * java.util.regex.Pattern};
+     * Namespace prefixes are ignored.
      * @since MMBase-1.8
      */
     static public void appendChild(Element parent, Element newChild, String path) {
@@ -365,7 +383,7 @@ public class DocumentReader  {
         while (j < childs.getLength() && i < p.length) {
             if (childs.item(j) instanceof Element) {
                 Element child = (Element) childs.item(j);
-                if (pattern.matcher(child.getTagName()).matches()) {
+                if (pattern.matcher(child.getLocalName()).matches()) {
                     j++;
                     refChild = childs.item(j);
                     matching = true;
