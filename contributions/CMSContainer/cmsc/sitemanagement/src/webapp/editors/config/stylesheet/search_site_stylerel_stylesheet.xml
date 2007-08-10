@@ -27,7 +27,7 @@
 
 	<action type="create">
 		<relation destinationtype="stylesheet" role="stylerel">
-			<field name="pos">{sum(//relation[@role='stylerel' and @destination='stylesheet' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='stylerel' and @lastitem='true']/object[@type='stylesheet']/../field[@name='pos'])+{$pos}}</field>
 		</relation>
 	</action>
 </list>
