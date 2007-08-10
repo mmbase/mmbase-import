@@ -22,7 +22,9 @@
     </head>
     <body>
 
-      <script type="text/javascript">new MMBaseValidator(window);</script>
+      <script type="text/javascript">
+        var validator = new MMBaseValidator(window);
+      </script>
 
       <mm:import externid="field" />
       <mm:notpresent referid="field">
@@ -45,7 +47,7 @@
             <mm:fieldinfo datatype="${datatype}" type="input" />
           </mm:notpresent>
         </mm:cloud>
-        <input type="button" onclick="validatePage()" value="server-side validation" />
+        <input type="button" onclick="validator.validatePage(true)" value="server-side validation" />
       </form>
       <hr />
       <mm:link page=".">
