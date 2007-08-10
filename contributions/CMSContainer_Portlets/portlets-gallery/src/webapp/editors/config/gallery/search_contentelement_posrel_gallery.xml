@@ -32,7 +32,7 @@
 
 	<action type="create">
 		<relation destinationtype="gallery" role="posrel">
-			<field name="pos">{sum(//relation[@role='posrel' and @destination='gallery' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='gallery']/../field[@name='pos'])+{$pos}}</field>
 		</relation>
 	</action>
 </list>
