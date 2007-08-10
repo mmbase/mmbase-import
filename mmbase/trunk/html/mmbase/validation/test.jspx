@@ -21,6 +21,8 @@
       </style>
     </head>
     <body>
+      <script type="text/javascript">new MMBaseValidator(window);</script>
+
       <mm:import externid="field" />
       <mm:notpresent referid="field">
         <mm:import externid="datatype">requiredfield</mm:import>
