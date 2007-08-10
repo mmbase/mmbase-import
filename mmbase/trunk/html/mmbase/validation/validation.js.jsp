@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.7 2007-08-10 10:12:30 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.8 2007-08-10 13:15:06 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -20,10 +20,19 @@ function isRequired(el) {
     return "true" == "" + getDataTypeXml(getDataTypeId(el)).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
 }
 
-function minLength(el) {
+function lengthValid(el) {
+    var xml = getDataTypeXml(getDataTypeId(el));
+    var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
 
+    if (minLength != null && el.value.length < minLength.getAttribute("value")) {
+        return false;
+    }
+    var maxLength = xml.selectSingleNode('//dt:datatype/dt:maxLength');
+    if (maxLength != null && el.value.length > maxLength.getAttribute("value")) {
+        return false;
+    }
+    return true;
 }
-
 
 
 
@@ -35,7 +44,7 @@ function getDataTypeXml(id) {
   var dataType = dataTypeCache[id];
   if (dataType == null) {
       var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx?datatype=" />' + id, false);
+      xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + getDataTypeArguments(id), false);
       xmlhttp.send(null);
       dataType = xmlhttp.responseXML;
       try {
@@ -49,17 +58,36 @@ function getDataTypeXml(id) {
   return dataType;
 }
 
+
+function getDataTypeArguments(id) {
+    if (id.dataType != null) {
+        return "?datatype=" + id.dataType;
+    } else {
+        return "?field=" + id.field + "&nodemanager=" + id.nodeManager;
+    }
+}
+
 /**
- * Given an element, returns the associated MMBase DataType (as an XML)
+ * Given an element, returns the associated MMBase DataType (as an Object)
  */
 function getDataTypeId(el) {
     //console.log("getting datatype for " + el.className);
     var classNames = el.className.split(" ");
+    var result = new Object();
     for (i = 0; i < classNames.length; i++) {
         var className = classNames[i];
-        if (className.indexOf("mm_f_") == 0) {
-            return className.substring(5);
+        if (className.indexOf("mm_dt_") == 0) {
+            result.dataType = className.substring(6);
+            return result;
+        } else if (className.indexOf("mm_f_") == 0) {
+            result.field = className.substring(5);
+        } else if (className.indexOf("mm_nm_") == 0) {
+            result.nodeManager = className.substring(6);
         }
+        if (result.field != null && result.nodeManager != null) {
+            return result;
+        }
+
     }
     return "field";
 }
@@ -81,10 +109,9 @@ function setClassName(el, valid) {
  */
 function valid(el) {
     if (isRequired(el) && el.value == "") return false;
-
+    if (! lengthValid(el)) return false;
     // @todo of course we can go a bit further here.
 
-    // min/max length: very simple
     // minimum/maximum: very simple
     // regexp patterns: if the regexp syntaxes of javascript and java are sufficiently similar),
 
@@ -104,7 +131,7 @@ function serverValidation(el) {
     try {
         var id = getDataTypeId(el);
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx?datatype=" />' + id + "&value=" + el.value, false);
+        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + getDataTypeArguments(id) + "&value=" + el.value, false);
         xmlhttp.send(null);
         return xmlhttp.responseXML;
     } catch (ex) {
