@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.29.2.1 2007-08-02 10:03:26 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.2 2007-08-10 14:38:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -297,6 +297,19 @@ public class DocumentReader  {
     }
 
     /**
+     * @since MMBase-1.8.5
+     */
+    public static void setPrefix(Document d, String ns, String prefix) {
+        NodeList nl = d.getElementsByTagName("*");
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node element = nl.item(i);
+            if (ns.equals(element.getNamespaceURI())) {
+                element.setPrefix(prefix);
+            }
+        }
+    }
+
+    /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
      * passed namespace
      */
@@ -365,7 +378,7 @@ public class DocumentReader  {
         while (j < childs.getLength() && i < p.length) {
             if (childs.item(j) instanceof Element) {
                 Element child = (Element) childs.item(j);
-                if (pattern.matcher(child.getTagName()).matches()) {
+                if (pattern.matcher(child.getLocalName()).matches()) {
                     j++;
                     refChild = childs.item(j);
                     matching = true;
