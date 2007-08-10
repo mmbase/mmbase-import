@@ -5,9 +5,13 @@
 
 /**
  * See test.jspx for example usage.
+
+ * new MMBaseValidator(window, root): attaches events to all elements in root when loading window.
+ * new MMBaseValidator(window): attaches events to all elements in window when loading window.
+ * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.17 2007-08-10 17:27:35 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.18 2007-08-10 18:03:18 michiel Exp $
  */
 
 
@@ -22,7 +26,7 @@ function MMBaseValidator(w, root) {
    }
 
    this.log = function (msg) {
-       //console.log(msg);
+       console.log(msg);
    }
 
    /**
@@ -48,26 +52,50 @@ function MMBaseValidator(w, root) {
        return true;
    }
 
-   /**
-    * Whether the form element represents a numeric value. There is made no difference between float,
-    * double, integer and long. This means that we don't care about loss of precision only.
-    */
-   this.isNumeric = function(el) {
+   this.hasJavaClass = function(el, javaClass) {
+       var pattern = new RegExp(javaClass);
        var xml = this.getDataTypeXml(this.getDataTypeId(el));
-       var javaClass = xml.selectSingleNode('//dt:datatype/dt:class');
-       var name = javaClass.getAttribute("name");
-       if (name == "org.mmbase.datatypes.NumberDataType") {
+       var javaClassElement = xml.selectSingleNode('//dt:datatype/dt:class');
+       var name = javaClassElement.getAttribute("name");
+       if (pattern.test(name)) {
            return true;
        }
-       var ex = javaClass.getAttribute("extends");
+       var ex = javaClassElement.getAttribute("extends");
        var javaClasses = ex.split(",");
        for (i = 0; i < javaClasses.length; i++) {
-           if (javaClasses[i] == "org.mmbase.datatypes.NumberDataType") {
+           if (pattern.test(javaClasses[i])) {
                return true;
            }
        }
        //console.log("" + el + " is not numeric");
        return false;
+   }
+
+   /**
+    * Whether the form element represents a numeric value. There is made no difference between float,
+    * double, integer and long. This means that we don't care about loss of precision only.
+    */
+   this.isNumeric = function(el) {
+       return this.hasJavaClass(el, "org\.mmbase\.datatypes\.NumberDataType");
+   }
+   this.isInteger = function(el) {
+       return this.hasJavaClass(el, "(org\.mmbase\.datatypes\.IntegerDataType|org\.mmbase\.datatypes\.LongDataType)");
+   }
+   this.isFloat = function(el) {
+       return this.hasJavaClass(el, "(org\.mmbase\.datatypes\.FloatDataType|org\.mmbase\.datatypes\.DoubleDataType)");
+   }
+
+   this.typeValid = function(el) {
+       if (el.value == "") return true;
+
+       if (this.isInteger(el)) {
+           if (! /^[+-]?\d+$/.test(el.value)) return false;
+       }
+       if (this.isFloat(el)) {
+           if (! /^[+-]?\d+(\.\d+|)(e[+-]?\d+|)$/.test(el.value)) return false;
+       }
+       return true;
+
    }
 
    /**
@@ -227,6 +255,7 @@ function MMBaseValidator(w, root) {
     */
    this.valid = function(el) {
        if (this.isRequired(el) && el.value == "") return false;
+       if (! this.typeValid(el)) return false;
        if (! this.lengthValid(el)) return false;
        if (! this.minMaxValid(el)) return false;
 
@@ -271,17 +300,24 @@ function MMBaseValidator(w, root) {
    }
 
    /**
+    * Cross browser hack.
+    */
+   this.target = function(event) {
+       return event.target || event.srcElement;
+   }
+   /**
     * The event handler which is linked to form elements
+    * You may want to override this function or {@link #setClassName}.
     */
    this.validate = function(event) {
-       var target = event.target || event.srcElement;
-       this.setClassName(target, this.valid(target));
+       var element = this.target(event);
+       this.setClassName(element, this.valid(element));
    }
 
    /**
     * Validates al mm_validate form entries on the page
     */
-   this.validatePage = function(el, server) {
+   this.validatePage = function(server, el) {
        var v = true;
        if (el == null) {
            el = document.documentElement;
@@ -310,6 +346,7 @@ function MMBaseValidator(w, root) {
        if (el == null) {
            el = document.documentElement;
        }
+       this.log("Will validate " + el);
 
        var els = getElementsByClass(el, "mm_validate");
        for (i=0; i < els.length; i++) {
@@ -317,22 +354,23 @@ function MMBaseValidator(w, root) {
            if (entry.tagName.toUpperCase() == "TEXTAREA") {
                entry.value = entry.value.replace(/^\s+|\s+$/g, "");
            }
-
            addEventHandler(entry, "keyup", this.validate, this);
            this.setClassName(entry, this.valid(entry));
-           this.log("Will validate " + entry);
+
        }
    }
    this.onLoad = function(event) {
        if (this.root == null) {
            this.root = event.target || event.srcElement;
        }
+
        this.addJavascriptValidation(this.root);
        //validatePage(target);
    }
 
 
    this.setup = function(w) {
+
        if (w != null) {
            addEventHandler(w, "load", this.onLoad, this);
        }
