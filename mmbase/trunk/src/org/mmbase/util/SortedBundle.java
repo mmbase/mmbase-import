@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.27 2007-05-23 13:21:18 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.28 2007-08-10 11:37:42 michiel Exp $
  */
 public class SortedBundle {
 
@@ -68,17 +68,22 @@ public class SortedBundle {
 
     public static class ValueWrapper implements Comparable<ValueWrapper> {
         private final Object key;
-        private final Comparable<Object> value;
+        private final Object value;
         private final Comparator<Object> com;
         public ValueWrapper(Object k, Comparable<Object> v) {
             key   = k;
             value = v;
             com   = null;
         }
+        public ValueWrapper(Object k, Object v, Comparator <Object> c) {
+            key   = k;
+            value = v;
+            com   = c;
+        }
         public  int compareTo(ValueWrapper other) {
             int result =
                 com != null ? com.compare(value, other.value) :
-                value.compareTo(other.value);
+                ((Comparable) value).compareTo(other.value);
             if (result != 0) return result;
             if (key instanceof Comparable) {
                 return ((Comparable<Object>) key).compareTo(other.key);
@@ -203,13 +208,13 @@ public class SortedBundle {
                 if (ValueWrapper.class.isAssignableFrom(wrapper)) {
                     log.debug("wrapper is a valueWrapper");
                     if (locale == null) {
-                        Constructor<?> c = wrapper.getConstructor(new Class[] { Object.class, Comparable.class });
-                        key = c.newInstance(new Object[] {  key, (Comparable<?>) value});
+                        Constructor<?> c = wrapper.getConstructor(Object.class, Comparable.class );
+                        key = c.newInstance(key, (Comparable<?>) value);
                     } else {
-                        Constructor<?> c = wrapper.getConstructor(new Class[] { Object.class, Object.class, Comparator.class });
+                        Constructor<?> c = wrapper.getConstructor(Object.class, Object.class, Comparator.class );
                         Collator comp = Collator.getInstance(locale);
                         comp.setStrength(Collator.PRIMARY);
-                        key = c.newInstance(new Object[] { key, value, comp});
+                        key = c.newInstance(key, value, comp);
                     }
                 } else if (Number.class.isAssignableFrom(wrapper)) {
                     if (key instanceof String) {
@@ -232,11 +237,11 @@ public class SortedBundle {
 
                 } else {
                     log.debug("wrapper is unrecognized, suppose constructor " + key.getClass());
-                    Constructor<?> c = wrapper.getConstructor(new Class[] {key.getClass()});
-                    key = c.newInstance(new Object[] { key });
+                    Constructor<?> c = wrapper.getConstructor(key.getClass());
+                    key = c.newInstance(key);
                 }
             } catch (NoSuchMethodException nsme) {
-                log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage() + " locale " + locale);
+                log.warn(nsme.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + nsme.getMessage() + " locale " + locale, nsme);
             } catch (SecurityException se) {
                 log.error(se.getClass().getName() + ". Could not convert " + key.getClass().getName() + " " + key + " to " + wrapper.getName() + " : " + se.getMessage());
              } catch (InstantiationException ie) {
