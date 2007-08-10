@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.1 2007-08-10 15:12:41 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.2 2007-08-10 15:22:10 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -25,6 +25,8 @@ function isRequired(el) {
  * Whether the value in the form element obeys the restrictions on length (minLength, maxLength, length)
  */
 function lengthValid(el) {
+    if (! isRequired(el) && el.value.length == 0) return true;
+
     var xml = getDataTypeXml(getDataTypeId(el));
 
     var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
@@ -100,7 +102,7 @@ function minMaxValid(el) {
             var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
             var compare = getValueAttribute(numeric, minInclusive);
             if (compare != null && value <  compare) {
-                console.log("" + value + " < " + compare);
+                //console.log("" + value + " < " + compare);
                 return false;
             }
         }
@@ -109,7 +111,7 @@ function minMaxValid(el) {
             var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
             var compare = getValueAttribute(numeric, minExclusive);
             if (compare != null && value <=  compare) {
-                console.log("" + value + " <= " + compare);
+                //console.log("" + value + " <= " + compare);
                 return false;
             }
         }
@@ -117,7 +119,7 @@ function minMaxValid(el) {
             var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
             var compare = getValueAttribute(numeric, maxInclusive);
             if (compare != null && value >  compare) {
-                console.log("" + value + " > " + compare);
+                //console.log("" + value + " > " + compare);
                 return false;
             }
         }
@@ -126,7 +128,7 @@ function minMaxValid(el) {
             var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
             var compare = getValueAttribute(numeric, maxExclusive);
             if (compare != null && value >=  value) {
-                console.log("" + value + " >= " + value);
+                //console.log("" + value + " >= " + compare);
                 return false;
             }
         }
