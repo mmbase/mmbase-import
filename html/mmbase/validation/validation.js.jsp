@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.9 2007-08-10 14:03:21 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.10 2007-08-10 14:20:09 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -20,6 +20,10 @@ function isRequired(el) {
     return "true" == "" + getDataTypeXml(getDataTypeId(el)).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
 }
 
+
+/**
+ * Whether the value in the form element obeys the restrictions on length (minLength, maxLength, length)
+ */
 function lengthValid(el) {
     var xml = getDataTypeXml(getDataTypeId(el));
 
@@ -31,9 +35,18 @@ function lengthValid(el) {
     if (maxLength != null && el.value.length > maxLength.getAttribute("value")) {
         return false;
     }
+
+    var length = xml.selectSingleNode('//dt:datatype/dt:length');
+    if (length != null && el.value.length != length.getAttribute("value")) {
+        return false;
+    }
     return true;
 }
 
+/**
+ * Whether the form element represents a numeric value. There is made no difference between float,
+ * double, integer and long. This means that we don't care about loss of precision only.
+ */
 function isNumeric(el) {
     var xml = getDataTypeXml(getDataTypeId(el));
     var javaClass = xml.selectSingleNode('//dt:datatype/dt:class');
@@ -52,6 +65,9 @@ function isNumeric(el) {
     return false;
 }
 
+/**
+ * Small utility to just get the dom attribute 'value', but also parse to float, if 'numeric' is true.
+ */
 function getValueAttribute(numeric, el) {
     var value = el.getAttribute("value");
     if (numeric) {
@@ -61,6 +77,11 @@ function getValueAttribute(numeric, el) {
     }
 }
 
+/**
+ * Whether the value of the given form element satisfies possible restrictions on minimal and
+ * maximal values. This takes into account whether it is a numeric value, which is quite important
+ * for this.
+ */
 function minMaxValid(el) {
     //console.log("validating : " + el);
     try {
@@ -107,8 +128,9 @@ function minMaxValid(el) {
 
 
 /**
- * Given a certain MMBase datatype id, this returns an XML representing it.
+ * Given a certain datatype id object, this returns an XML representing it.
  * This will do a request to MMBase, unless this XML was cached already.
+ * The argument is a structure which is the result of {@link #getDataTypeId}.
  */
 function getDataTypeXml(id) {
   var dataType = dataTypeCache[id];
@@ -129,6 +151,12 @@ function getDataTypeXml(id) {
 }
 
 
+/**
+ * All server side JSP's with which this javascript talks, can run in 2 modes. The either accept an
+ * one 'datatype' parameter, or a 'field' and a 'nodemanager' parameter.
+ * The result of {@link #getDataTypeId} servers as input, and returned is a query string which can
+ * be appended to the servlet path.
+ */
 function getDataTypeArguments(id) {
     if (id.dataType != null) {
         return "?datatype=" + id.dataType;
@@ -138,7 +166,10 @@ function getDataTypeArguments(id) {
 }
 
 /**
- * Given an element, returns the associated MMBase DataType (as an Object)
+ * Given an element, returns the associated MMBase DataType as a structutre. This structure has three fields:
+ * field, nodeManager and dataType. Either dataType is null or field and nodeManager are null. They
+ * are all null of the given element does not contain the necessary information to identify an
+ * MMBase DataType.
  */
 function getDataTypeId(el) {
     //console.log("getting datatype for " + el.className);
@@ -163,7 +194,7 @@ function getDataTypeId(el) {
 }
 
 /**
- * If it was determined that a certain fomr element was or was not valid, this function
+ * If it was determined that a certain form element was or was not valid, this function
  * can be used to set an appropriate css class, so that this status also can be indicated to the
  * user using CSS.
  */
@@ -174,7 +205,7 @@ function setClassName(el, valid) {
 }
 
 /**
- * Returns wether a form element contains a valid value. I.e. in a fast way, validation is done in
+ * Returns whether a form element contains a valid value. I.e. in a fast way, validation is done in
  * javascript, and therefore cannot be absolute.
  */
 function valid(el) {
@@ -195,7 +226,7 @@ function valid(el) {
 
 /**
  * Returns wether a form element contains a valid value. It is asked back to the server.
- * Returns an XML containing the reasons which it would not be valid.
+ * Returns an XML containing the reasons why it would not be valid.
  */
 function serverValidation(el) {
     try {
@@ -211,7 +242,7 @@ function serverValidation(el) {
 }
 
 /**
- * The result of {@link #serverValidation} is parsed, and converted in a simple boolean
+ * The result of {@link #serverValidation} is parsed, and converted to a simple boolean
  */
 function validResult(xml) {
     try {
