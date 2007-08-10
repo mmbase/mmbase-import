@@ -10,7 +10,7 @@
   <mm:relatednodescontainer type="feedback">
     <mm:relatednodes>
       <!-- Open Question Feedback (from teacher) -->
-      <b><di:translate key="education.feedback" />:</b> 
+      <b><di:translate key="education.feedback" />:</b>
       <jsp:text> </jsp:text>
       <mm:field name="text" escape="none"/>
       <br/>
@@ -18,4 +18,4 @@
 
     </mm:relatednodes>
   </mm:relatednodescontainer>
-</mm:node>    
+</mm:node>
