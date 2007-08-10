@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.20 2007-08-10 21:35:16 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.21 2007-08-10 22:06:37 michiel Exp $
  */
 
 
@@ -25,9 +25,16 @@ function MMBaseValidator(w, root) {
    }
 
    this.logEnabled = false;
+   this.traceEnabled = false;
 
    this.log = function (msg) {
        if (this.logEnabled) {
+           // firebug console"
+           console.log(msg);
+       }
+   }
+   this.trace = function (msg) {
+       if (this.traceEnabled) {
            // firebug console"
            console.log(msg);
        }
@@ -54,6 +61,31 @@ function MMBaseValidator(w, root) {
            return false;
        }
        return true;
+   }
+
+   // much much, too simple
+   this.javaScriptPattern = function(javaPattern) {
+       var flags = "";
+       if (javaPattern.indexOf("(?i)" == 0)) {
+           flags += "i";
+           javaPattern = javaPattern.substring(4);
+       }
+       javaPattern = javaPattern.replace(/\\A/g, "^");
+       javaPattern = javaPattern.replace(/\\z/g, "$");
+
+       var reg = new RegExp(javaPattern, flags);
+       return reg;
+   }
+   this.patternValid = function(el) {
+       if (this.isString(el)) {
+           var xml = this.getDataTypeXml(el);
+           var javaPattern = xml.selectSingleNode('//dt:datatype/dt:pattern').getAttribute("value");
+           var regex = this.javaScriptPattern(javaPattern);
+           this.log("pattern : " + regex + " " + el.value);
+           return regex.test(el.value);
+       } else {
+           return true;
+       }
    }
 
    this.hasJavaClass = function(el, javaClass) {
@@ -87,6 +119,9 @@ function MMBaseValidator(w, root) {
    }
    this.isFloat = function(el) {
        return this.hasJavaClass(el, "(org\.mmbase\.datatypes\.FloatDataType|org\.mmbase\.datatypes\.DoubleDataType)");
+   }
+   this.isString = function(el) {
+       return this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
    }
 
    this.typeValid = function(el) {
@@ -122,7 +157,7 @@ function MMBaseValidator(w, root) {
     * for this.
     */
    this.minMaxValid  = function(el) {
-       this.log("validating : " + el);
+       this.trace("validating : " + el);
        try {
            var xml = this.getDataTypeXml(el);
 
@@ -250,7 +285,7 @@ function MMBaseValidator(w, root) {
     * user using CSS.
     */
    this.setClassName = function(el, valid) {
-       this.log("Setting classname on " + el);
+       this.trace("Setting classname on " + el);
        if (el.originalClass == null) el.originalClass = el.className;
        el.className = el.originalClass + (valid ? " valid" : " invalid");
    }
@@ -264,9 +299,11 @@ function MMBaseValidator(w, root) {
        if (! this.typeValid(el)) return false;
        if (! this.lengthValid(el)) return false;
        if (! this.minMaxValid(el)) return false;
+       if (! this.patternValid(el)) return false; // not perfect yet
 
        // @todo of course we can go a bit further here.
-       // regexp patterns: if the regexp syntaxes of javascript and java are sufficiently similar),
+
+       // datetime validation is still broken. (those can have more fields and so on)
 
        // enumerations: but must of the time those would have given dropdowns and such, so it's hardly
        // possible to entry wrongly.
