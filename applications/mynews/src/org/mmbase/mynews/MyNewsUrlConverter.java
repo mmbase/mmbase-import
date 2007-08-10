@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.4 2007-08-07 19:05:00 andre Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.5 2007-08-10 08:03:24 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -32,6 +32,10 @@ public class MyNewsUrlConverter implements UrlConverter {
         framework = fw;
     }
 
+    public Parameter[] getParameterDefinition() {
+        return new Parameter[] {MMBaseUrlConverter.COMPONENT, MMBaseUrlConverter.BLOCK };
+    }
+
     public StringBuilder getUrl(String path,
                                 Collection<Map.Entry<String, Object>> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
@@ -41,7 +45,7 @@ public class MyNewsUrlConverter implements UrlConverter {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
         // BasicFramework always shows only one component
-        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(BasicFramework.COMPONENT));
+        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(MMBaseUrlConverter.COMPONENT));
         boolean explicitComponent = component != null;
         if (state != null && state.isRendering()) {
             component = state.getBlock().getComponent();
@@ -61,7 +65,7 @@ public class MyNewsUrlConverter implements UrlConverter {
             log.debug("Using " + component);
 
             Block block;
-            String blockParam = frameworkParameters.get(BasicFramework.BLOCK);
+            String blockParam = frameworkParameters.get(MMBaseUrlConverter.BLOCK);
             if (blockParam != null) {
                 if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
                 block = component.getBlock(blockParam);
