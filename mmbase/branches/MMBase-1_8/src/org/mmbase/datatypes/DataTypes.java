@@ -40,7 +40,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.21 2006-05-16 21:11:05 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.21.2.1 2007-08-10 14:40:49 michiel Exp $
  */
 
 public class DataTypes {
@@ -305,10 +305,12 @@ public class DataTypes {
         dataType = (DataType) i.next();
         Element e = (Element) doc.importNode(dataType.toXml(), true);
         doc.appendChild(e);
+        dataType.toXml(e);
         while (i.hasNext()) {
             dataType = (DataType) i.next();
             dataType.toXml(e);
         }
+        DocumentReader.setPrefix(doc, DataType.XMLNS, "dt");
         return doc;
     }
 
