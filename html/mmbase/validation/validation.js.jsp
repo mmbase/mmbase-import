@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.3 2007-08-10 15:45:07 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.4 2007-08-10 15:57:13 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -284,13 +284,10 @@ function validatePage(el) {
         el = document.documentElement;
     }
     var els = getElementsByClass(el, "mm_validate");
-    for (i=0; i < els.length; i++) {
+    for (var i = 0; i < els.length; i++) {
         var entry = els[i];
-        //   console.log("validating " + entry);
+        //        console.log("validating " + entry);
         if (! valid(entry)) {
-            v = false;
-        }
-        if (! validResult(serverValidation(entry)) ) {
             v = false;
         }
         //console.log("hoi " + v);
