@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.44 2007-08-03 14:49:19 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.45 2007-08-10 13:08:12 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType<String> implements LengthDataType<String> {
@@ -232,11 +232,11 @@ public class StringDataType extends ComparableDataType<String> implements Length
 
     public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
-        addErrorDescription(getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength"), minLengthRestriction)
+        addErrorDescription(getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength"), minLengthRestriction)
             .setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
-        addErrorDescription(getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength"), maxLengthRestriction)
+        addErrorDescription(getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength"), maxLengthRestriction)
             .setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
-        addErrorDescription(getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxIncluse|maxExclusive),minLength,maxLength,length,pattern"), patternRestriction)
+        addErrorDescription(getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern"), patternRestriction)
             .setAttribute("value", Casting.toString(patternRestriction.getPattern().pattern()));
     }
 
