@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.79 2007-08-10 14:23:09 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.80 2007-08-10 14:32:11 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -587,6 +587,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
 
+    /**
+     * @todo processors are not yet added
+     */
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
 
@@ -624,6 +627,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
 
+        /**
+           End up in the wrong place, and not needed for javascript, so commented out for the moment.
+
         if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
             org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
             Element element;
@@ -639,6 +645,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
             //element.setAttribute("value", Casting.toString(defaultValue));
         }
+        */
 
     }
 
