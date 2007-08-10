@@ -145,14 +145,16 @@ function requestContent(href) {
                try {
                     var contentEl = document.getElementById('contentFrame');
                     Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
+                    addJavascriptValidation(contentEl);
+                    validatePage(contentEl);
                     check(xmlhttp.responseXML.documentElement.getAttribute('class'));
                     document.href_frame = href;
                } catch (exception) {
                    // backwards compatibility
                    contentEl.innerHTML = "<iframe width='100%' height='100%' id='content' name='content' frameborder='0'  src='" + href + "' />";
                    resize();
-                   throw exception;
-                   //alert(exception);
+                   //throw exception;
+                   alert(exception);
                }
                var array = new Array();
                // in case it is more than one element (e.g. comments or so), store all childnodes.
