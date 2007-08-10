@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.76 2007-08-09 18:50:15 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.77 2007-08-10 13:04:08 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -351,7 +351,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         for (int i = 0; i < nl.getLength(); i++) {
             org.w3c.dom.Node child = nl.item(i);
             if (child instanceof Element) {
-                if (p.matcher(child.getNodeName()).matches()) {
+                if (p.matcher(child.getLocalName()).matches()) {
                     el = (Element) child;
                     break;
                 }
@@ -361,53 +361,15 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             el = parent.getOwnerDocument().createElementNS(XMLNS, name);
             DocumentReader.appendChild(parent, el, path);
         }
-        el.setPrefix("dt");
         return el;
     }
 
     protected Element addErrorDescription(Element el, Restriction r)  {
         r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
-        el.setPrefix("dt");
         return el;
     }
 
-    protected String xmlValue(Object value) {
-        return Casting.toString(value);
-    }
 
-    public void toXml(Element parent) {
-        parent.setAttribute("id", getName());
-
-        description.toXml("dt:description", XMLNS, parent, "description");
-
-        getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
-        getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
-
-        addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
-            setAttribute("value", "" + uniqueRestriction.isUnique());
-        addErrorDescription(getElement(parent, "required",   "description,class,property,default,unique,required"), requiredRestriction).
-            setAttribute("value", "" + requiredRestriction.isRequired());
-
-        getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
-        /// set this here...
-
-        if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
-            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
-            Element element;
-            if (nl.getLength() == 0) {
-                element = parent.getOwnerDocument().createElementNS(XMLNS, "commitprocessor");
-                Element clazz = parent.getOwnerDocument().createElementNS(XMLNS, "class");
-                clazz.setAttribute("name", getCommitProcessor().getClass().getName());
-                DocumentReader.appendChild(parent, element, "description,class,property");
-                element.appendChild(clazz);
-            } else {
-                element = (Element) nl.item(0);
-            }
-
-            //element.setAttribute("value", Casting.toString(defaultValue));
-        }
-
-    }
 
     public boolean isFinished() {
         return owner != null;
@@ -588,7 +550,6 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             xml = DocumentReader.getDocumentBuilder().newDocument().createElementNS(XMLNS, "datatype");
             xml.getOwnerDocument().appendChild(xml);
         }
-        xml.setPrefix("dt");
         return xml;
     }
 
@@ -598,17 +559,61 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
             xml.setAttribute("base", origin.getName());
         }
         // remove 'specialization' childs (they don't say anything about this datatype itself)
-        org.w3c.dom.NodeList childNodes = xml.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            if (childNodes.item(i) instanceof Element) {
-                Element childElement = (Element) childNodes.item(i);
-                if (childElement.getLocalName().equals("specialization")
-                    ||childElement.getLocalName().equals("datatype")
+        org.w3c.dom.Node child = xml.getFirstChild();
+        while(child != null) {
+            org.w3c.dom.Node next = child.getNextSibling();
+            switch(child.getNodeType()) {
+            case org.w3c.dom.Node.ELEMENT_NODE:
+                if (child.getLocalName().equals("specialization")
+                    ||child.getLocalName().equals("datatype")
                     ) {
-                    xml.removeChild(childElement);
+                    // fall through and remove
+                } else {
+                    break;
                 }
+            case org.w3c.dom.Node.TEXT_NODE:
+                xml.removeChild(child);
             }
+            child = next;
+
         }
+    }
+    protected String xmlValue(Object value) {
+        return Casting.toString(value);
+    }
+
+    public void toXml(Element parent) {
+        parent.setAttribute("id", getName());
+
+        description.toXml("description", XMLNS, parent, "description");
+
+        getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
+        getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
+
+        addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
+            setAttribute("value", "" + uniqueRestriction.isUnique());
+        addErrorDescription(getElement(parent, "required",   "description,class,property,default,unique,required"), requiredRestriction).
+            setAttribute("value", "" + requiredRestriction.isRequired());
+
+        getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
+        /// set this here...
+
+        if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
+            org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
+            Element element;
+            if (nl.getLength() == 0) {
+                element = parent.getOwnerDocument().createElementNS(XMLNS, "commitprocessor");
+                Element clazz = parent.getOwnerDocument().createElementNS(XMLNS, "class");
+                clazz.setAttribute("name", getCommitProcessor().getClass().getName());
+                DocumentReader.appendChild(parent, element, "description,class,property");
+                element.appendChild(clazz);
+            } else {
+                element = (Element) nl.item(0);
+            }
+
+            //element.setAttribute("value", Casting.toString(defaultValue));
+        }
+
     }
 
     public int compareTo(DataType<C> a) {
