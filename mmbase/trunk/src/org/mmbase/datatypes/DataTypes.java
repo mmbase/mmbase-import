@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.24 2007-04-16 08:37:18 nklasens Exp $
+ * @version $Id: DataTypes.java,v 1.25 2007-08-10 13:08:00 michiel Exp $
  */
 
 public class DataTypes {
@@ -289,11 +289,11 @@ public class DataTypes {
      */
     public static Document toXml(DataType<?> dataType) {
         // create an inheritance stack
-        List<DataType<?>> stack = new ArrayList<DataType<?>>();
-        stack.add(dataType);
+        LinkedList<DataType<?>> stack = new LinkedList<DataType<?>>();
+        stack.addFirst(dataType);
         while (dataType.getOrigin() != null) {
             dataType = dataType.getOrigin();
-            stack.add(0, dataType);
+            stack.addFirst(dataType);
         }
 
         // new XML
@@ -304,11 +304,22 @@ public class DataTypes {
         dataType = i.next();
         Element e = (Element) doc.importNode(dataType.toXml(), true);
         doc.appendChild(e);
+        dataType.toXml(e);
         while (i.hasNext()) {
             dataType = i.next();
             dataType.toXml(e);
         }
+        DocumentReader.setPrefix(doc, DataType.XMLNS, "dt");
         return doc;
+    }
+
+    public static void main(String arg[]) throws Exception {
+        DataTypes.initialize();
+        DataType dt = DataTypes.getDataType(arg[0]);
+        if (dt == null) {
+            throw new Exception("No such datatyep " + arg[0]);
+        }
+        System.out.println(org.mmbase.util.xml.XMLWriter.write(DataTypes.toXml(dt), true, true));
     }
 
 }
