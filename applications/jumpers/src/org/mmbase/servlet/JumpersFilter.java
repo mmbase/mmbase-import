@@ -13,7 +13,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.mmbase.module.builders.Jumpers;
+import org.mmbase.jumpers.Jumpers;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.1 2007-06-18 15:55:59 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.2 2007-08-10 14:41:14 andre Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);

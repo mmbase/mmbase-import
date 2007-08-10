@@ -20,7 +20,6 @@ import org.mmbase.util.logging.Logging;
 
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.builders.Jumpers;
 
 import org.mmbase.bridge.*;
 
@@ -41,7 +40,7 @@ import org.mmbase.bridge.*;
 * @see #calculate(MMObjectNode)
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: JumperStrategy.java,v 1.1 2007-07-24 12:53:18 michiel Exp $
+* @version $Id: JumperStrategy.java,v 1.2 2007-08-10 14:41:14 andre Exp $
 */
 public abstract class JumperStrategy { 
 
