@@ -7,7 +7,7 @@
  * See test.jspx for example usage.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11 2007-08-10 15:10:54 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.12 2007-08-10 15:17:17 michiel Exp $
  */
 
 var dataTypeCache   = new Object();
@@ -100,7 +100,7 @@ function minMaxValid(el) {
             var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
             var compare = getValueAttribute(numeric, minInclusive);
             if (compare != null && value <  compare) {
-                console.log("" + value + " < " + compare);
+                //console.log("" + value + " < " + compare);
                 return false;
             }
         }
@@ -109,7 +109,7 @@ function minMaxValid(el) {
             var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
             var compare = getValueAttribute(numeric, minExclusive);
             if (compare != null && value <=  compare) {
-                console.log("" + value + " <= " + compare);
+                //console.log("" + value + " <= " + compare);
                 return false;
             }
         }
@@ -117,7 +117,7 @@ function minMaxValid(el) {
             var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
             var compare = getValueAttribute(numeric, maxInclusive);
             if (compare != null && value >  compare) {
-                console.log("" + value + " > " + compare);
+                //console.log("" + value + " > " + compare);
                 return false;
             }
         }
@@ -126,7 +126,7 @@ function minMaxValid(el) {
             var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
             var compare = getValueAttribute(numeric, maxExclusive);
             if (compare != null && value >=  value) {
-                console.log("" + value + " >= " + value);
+                //console.log("" + value + " >= " + compare);
                 return false;
             }
         }
