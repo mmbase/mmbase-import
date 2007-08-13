@@ -8,4 +8,5 @@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><%@include file="page_base_functionality.jsp" 
 %><mm:import id="style">
     <link rel="StyleSheet" type="text/css" href="css/<mm:write referid="config.style_sheet" />"/>
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
 </mm:import>

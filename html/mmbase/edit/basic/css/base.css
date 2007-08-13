@@ -10,7 +10,9 @@ body.basic table, body.basic p {
   width: 100%;
 }
 
-
+.invalid {
+	background-color: #ffcfcf;
+}
 /* submit buttons */
 .buttons {
   text-align: right

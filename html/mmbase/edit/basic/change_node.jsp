@@ -6,6 +6,10 @@
 <title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
+  <script type="text/javascript">
+    var validator = new MMBaseValidator(window);
+  </script>
+
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
 <mm:import externid="node_number" required="true" from="parameters"/>
