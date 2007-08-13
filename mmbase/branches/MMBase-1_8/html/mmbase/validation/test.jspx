@@ -21,6 +21,16 @@
       </style>
     </head>
     <body>
+
+      <script type="text/javascript">
+        var validator = new MMBaseValidator();
+        validator.logEnabled = true;
+        validator.validateHook = function(valid) {
+           document.getElementById('submit').disabled = ! valid;
+        }
+        validator.setup(window);
+      </script>
+
       <mm:import externid="field" />
       <mm:notpresent referid="field">
         <mm:import externid="datatype">requiredfield</mm:import>
@@ -31,18 +41,32 @@
 
       <mm:url id="back" write="false" page="/mmbase/style/images/back.png" />
       <h1>Testing for ${datatype} ${field}</h1>
-      <form>
+      <form id="myform" method="get">
+        <mm:present referid="field">
+          <input type="hidden" name="field"       value="${field}" />
+          <input type="hidden" name="nodemanager" value="${nodemanager}" />
+        </mm:present>
+        <mm:notpresent referid="field">
+          <input type="hidden" name="datatype"    value="${datatype}" />
+        </mm:notpresent>
         <mm:cloud>
           <mm:present referid="field">
             <mm:fieldlist nodetype="${nodemanager}" fields="${field}">
               <mm:fieldinfo  type="input" />
+              <mm:fieldinfo  type="errors" />
             </mm:fieldlist>
           </mm:present>
           <mm:notpresent referid="field">
             <mm:fieldinfo datatype="${datatype}" type="input" />
+            <mm:fieldinfo datatype="${datatype}" type="errors" />
           </mm:notpresent>
         </mm:cloud>
-        <input type="button" onclick="validatePage()" value="server-side validation" />
+        <input type="button" onclick="validator.validatePage(true)" value="server-side validation" />
+        <!--
+        <input type="button" style="color: gray;" onclick="validator.logEnabled = ! validator.logEnabled;     this.style.color = validator.logEnabled ? 'black' : 'gray';" value="log" />
+        <input type="button" style="color: gray;" onclick="validator.traceEnabled = ! validator.traceEnabled; this.style.color = validator.traceEnabled &amp;amp;&amp;amp; validator.logEnabled ? 'black' : 'gray';" value="trace" />
+        -->
+        <input type="button" value="submit" id="submit" />
       </form>
       <hr />
       <mm:link page=".">
