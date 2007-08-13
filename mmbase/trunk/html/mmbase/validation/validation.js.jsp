@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.24 2007-08-13 08:32:32 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.25 2007-08-13 13:21:17 michiel Exp $
  */
 
 
@@ -21,8 +21,7 @@ function MMBaseValidator(w, root) {
    this.traceEnabled = false;
 
    this.dataTypeCache   = new Object();
-   this.elements        = new Object();
-   this.invalidElements = new Object();
+   this.invalidElements = 0;
    this.validateHook;
 
    this.log = function (msg) {
@@ -316,11 +315,20 @@ function MMBaseValidator(w, root) {
     * javascript, and therefore cannot be absolute.
     */
    this.valid = function(el) {
-       if (! el.value) return true; // not yet supported
-       if (this.isDateTime(el)) return true; // not  yet supported
+       if (typeof(el.value) == 'undefined') {
+           this.log("Unsupported element " + el);
+           return true; // not yet supported
+       }
+       if (this.isDateTime(el)) {
+           this.log("Datetimes not yet supported");
+           return true; // not  yet supported
+       }
 
-       if (! this.isRequired(el) && el.value == "") return true;
-
+       if (this.isRequired(el)) {
+           if (el.value == "") return false;
+       } else {
+           if (el.value == "") return true;
+       }
 
        if (! this.typeValid(el)) return false;
        if (! this.lengthValid(el)) return false;
@@ -381,6 +389,14 @@ function MMBaseValidator(w, root) {
    this.validate = function(event) {
        var element = this.target(event);
        var valid = this.valid(element);
+       if (valid != element.prevValid) {
+           if (valid) {
+               this.invalidElements--;
+           } else {
+               this.invalidElements++;
+           }
+       }
+       element.prevValid = valid;
        this.setClassName(valid, element);
        if (this.validateHook) {
            this.validateHook(valid, element);
@@ -428,7 +444,15 @@ function MMBaseValidator(w, root) {
                entry.value = entry.value.replace(/^\s+|\s+$/g, "");
            }
            addEventHandler(entry, "keyup", this.validate, this);
+           var valid = this.valid(entry);
+           entry.prevValid = valid;
            this.setClassName(this.valid(entry), entry);
+           if (!valid) {
+               this.invalidElements++;
+           }
+           if (this.validateHook) {
+               this.validateHook(valid, entry);
+           }
 
        }
    }
