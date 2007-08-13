@@ -32,7 +32,7 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-if(!Sarissa.IS_ENABLED_TRANSFORM_NODE && window.XSLTProcessor){
+if(!Sarissa.IS_ENABLED_TRANSFORM_NODE && window.XSLTProcessor && self.XMLElement){
     /** 
      * <p><b>Deprecated, will be removed in 0.9.6 (use XSLTProcessor instead): </b>Extends the Element class to emulate IE's transformNodeToObject (deprecated).
      * <b>Note </b>: The transformation result <i>must </i> be well formed,
