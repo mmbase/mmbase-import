@@ -109,7 +109,7 @@
             </form>
             <%-- /mm:timer--%>
     	    </td>
-    	    <td><%-- right collumn, present search result (if clicked on node manager)--%>  
+    	    <td><%-- right column, present search result (if clicked on node manager)--%>  
           <mm:present referid="node_type">		   
             <%-- following page needs the param 'to_page' --%>
             <mm:import id="to_page"><mm:url page="change_node.jsp"/></mm:import>			       
