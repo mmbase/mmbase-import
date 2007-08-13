@@ -1,5 +1,23 @@
 <%@page import="nl.leocms.authorization.*,org.mmbase.bridge.*,nl.leocms.util.*,nl.leocms.workflow.*,nl.leocms.content.*" %>
 <%@include file="/taglibs.jsp"  %>
+
+<%
+   Calendar cal = Calendar.getInstance();
+   int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+   
+   // show warning within office times
+   if (hourOfDay > 8 && hourOfDay < 17) {
+%>
+
+   <script language="JavaScript">
+   <!--
+   alert("Let op: i.v.m. de zware berekeningen die samenhangen met het opvragen van statistieken,\n"
+         + "is het niet gewenst om statistieken op te vragen binnen kantoortijden (van 09.00 tot 17.00).");
+   -->
+   </script>
+
+<% } %>
+
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <mm:locale language="nl">
 <%@ page import="java.util.*" %>
@@ -22,7 +40,6 @@
 int maxWidth = 300;
 int tableWidth = 500;
 
-Calendar cal = Calendar.getInstance();
 Date dd = new Date();
 
 cal.setTime(dd);
