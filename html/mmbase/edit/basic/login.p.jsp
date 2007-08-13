@@ -50,7 +50,7 @@
       <td><%=param.getLocalizedGUIName().get(locale)%> <mm:write value="<%=param.getLocalizedDescription().get(locale)%>"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
       </td>
       <td>
-	<input type="<%= ((StringDataType) param.getDataType()).isPassword() ? "password" : "text" %>" name="<%=param.getName()%>">
+        <input type="<%= ((StringDataType) param.getDataType()).isPassword() ? "password" : "text" %>" name="<%=param.getName()%>">
        </td>
      </tr>
      <%  }
