@@ -145,8 +145,18 @@ function requestContent(href) {
                try {
                     var contentEl = document.getElementById('contentFrame');
                     Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
-                    addJavascriptValidation(contentEl);
-                    validatePage(contentEl);
+                    contentEl.validator = new MMBaseValidator();
+                    contentEl.validator.validatePage(false, contentEl);
+                    contentEl.validator.validateHook = function(valid) {
+                        var buttons = getElementsByClass(contentEl, "formbutton", "input");
+                        for (i = 0; i < buttons.length; i++) {
+                            var disabled = (contentEl.validator.invalidElements > 0);
+                            buttons[i].disabled = disabled;
+                            // just because IE does not recognized input[disabled]
+                            buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
+                        }
+                    };
+                    contentEl.validator.addValidation(contentEl);
                     check(xmlhttp.responseXML.documentElement.getAttribute('class'));
                     document.href_frame = href;
                } catch (exception) {
