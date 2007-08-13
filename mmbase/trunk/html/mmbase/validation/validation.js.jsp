@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.23 2007-08-13 08:29:04 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.24 2007-08-13 08:32:32 michiel Exp $
  */
 
 
@@ -316,6 +316,7 @@ function MMBaseValidator(w, root) {
     * javascript, and therefore cannot be absolute.
     */
    this.valid = function(el) {
+       if (! el.value) return true; // not yet supported
        if (this.isDateTime(el)) return true; // not  yet supported
 
        if (! this.isRequired(el) && el.value == "") return true;
