@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.5 2007-08-13 13:20:17 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.6 2007-08-13 13:42:55 michiel Exp $
  */
 
 
@@ -440,10 +440,33 @@ function MMBaseValidator(w, root) {
        var els = getElementsByClass(el, "mm_validate");
        for (var i = 0; i < els.length; i++) {
            var entry = els[i];
-           if (entry.tagName.toUpperCase() == "TEXTAREA") {
+           if (entry.type == "textarea") {
                entry.value = entry.value.replace(/^\s+|\s+$/g, "");
            }
-           addEventHandler(entry, "keyup", this.validate, this);
+           // switch stolen from editwizards, not all cases are actually supported already here.
+           switch(entry.type) {
+           case "text":
+           case "textarea":
+               addEventHandler(entry, "keyup", this.validate, this);
+               addEventHandler(entry, "change", this.validate, this);
+               addEventHandler(entry, "blur", this.validate, this);
+               // IE calls this when the user does a right-click paste
+               addEventHandler(entry, "paste", this.validate, this);
+               // FireFox calls this when the user does a right-click paste
+               addEventHandler(entry, "input", this.validate, this);
+               break;
+           case "radio":
+           case "checkbox":
+               addEventHandler(entry, "click", this.validate, this);
+               addEventHandler(entry, "blur", this.validate, this);
+               break;
+           case "select-one":
+           case "select-multiple":
+           default:
+               addEventHandler(entry, "change", this.validate, this);
+               addEventHandler(entry, "blur", this.validate, this);
+           }
+
            var valid = this.valid(entry);
            entry.prevValid = valid;
            this.setClassName(this.valid(entry), entry);
@@ -455,6 +478,7 @@ function MMBaseValidator(w, root) {
            }
 
        }
+       el = null;
    }
    this.onLoad = function(event) {
        if (this.root == null) {
