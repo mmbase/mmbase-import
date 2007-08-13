@@ -14,12 +14,8 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
     <mm:param name="extraheader">
       <title><di:translate key="education.learnenvironmenttitle" /></title>
     </mm:param>
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
   </mm:include>
-
-  <mm:link page="/mmbase/validation/validation.js.jsp">
-    <script src="${_}" type="text/javascript">
-      </script>
-  </mm:link>
 
 
   <mm:hasnode number="component.drm">

@@ -106,6 +106,7 @@
           <c:choose>
             <c:when test="${fn:length(my_questions) + fn:length(givenanswers) ge fn:length(questions)}">
               <input type="button"
+                     disabled="disabled"
                      value="${di:translate(pageContext, 'education.buttontextdone')}" class="formbutton"
                      onClick="questionform.command.value='done'; postContent('${post}', questionform);"/>
             </c:when>
