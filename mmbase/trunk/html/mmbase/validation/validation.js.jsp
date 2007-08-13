@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.22 2007-08-10 22:37:35 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.23 2007-08-13 08:29:04 michiel Exp $
  */
 
 
@@ -20,6 +20,11 @@ function MMBaseValidator(w, root) {
    this.logEnabled   = false;
    this.traceEnabled = false;
 
+   this.dataTypeCache   = new Object();
+   this.elements        = new Object();
+   this.invalidElements = new Object();
+   this.validateHook;
+
    this.log = function (msg) {
        if (this.logEnabled) {
            // firebug console"
@@ -27,8 +32,7 @@ function MMBaseValidator(w, root) {
        }
    }
    this.trace = function (msg) {
-       if (this.traceEnabled) {
-           // firebug console"
+       if (this.traceEnabled && this.logEnabled) {
            console.log(msg);
        }
    }
@@ -136,6 +140,10 @@ function MMBaseValidator(w, root) {
        return this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
    }
 
+   this.isDateTime = function(el) {
+       return this.hasJavaClass(el, "org\.mmbase\.datatypes\.DateTimeDataType");
+   }
+
    this.typeValid = function(el) {
        if (el.value == "") return true;
 
@@ -143,7 +151,7 @@ function MMBaseValidator(w, root) {
            if (! /^[+-]?\d+$/.test(el.value)) return false;
        }
        if (this.isFloat(el)) {
-           if (! /^[+-]?\d+(\.\d*|)(e[+-]?\d+|)$/.test(el.value)) return false;
+           if (! /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/i.test(el.value)) return false;
        }
        return true;
 
@@ -208,7 +216,7 @@ function MMBaseValidator(w, root) {
            {
                var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
                var compare = this.getValueAttribute(numeric, maxExclusive);
-               if (compare != null && value >=  value) {
+               if (compare != null && value >=  compare) {
                    this.log("" + value + " >= " + compare);
                    return false;
                }
@@ -227,11 +235,12 @@ function MMBaseValidator(w, root) {
     * This will do a request to MMBase, unless this XML was cached already.
     */
    this.getDataTypeXml = function(el) {
-       var dataType = el.dataType;
+       var key = this.getDataTypeKey(el);
+       var dataType = this.dataTypeCache[key];
        if (dataType == null) {
-           var id = this.getDataTypeId(el);
+
            var xmlhttp = new XMLHttpRequest();
-           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(id), false);
+           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(key), false);
            xmlhttp.send(null);
            dataType = xmlhttp.responseXML;
            try {
@@ -240,7 +249,7 @@ function MMBaseValidator(w, root) {
            } catch (ex) {
                // happens in safari
            }
-           el.dataType = dataType;
+           this.dataTypeCache[key] = dataType;
        }
        return dataType;
    }
@@ -249,14 +258,14 @@ function MMBaseValidator(w, root) {
    /**
     * All server side JSP's with which this javascript talks, can run in 2 modes. They either accept the
     * one 'datatype' parameter, or a 'field' and a 'nodemanager' parameters.
-    * The result of {@link #getDataTypeId} serves as input, and returned is a query string which can
+    * The result of {@link #getDataTypeKey} serves as input, and returned is a query string which can
     * be appended to the servlet path.
     */
-   this.getDataTypeArguments = function(id) {
-       if (id.dataType != null) {
-           return "?datatype=" + id.dataType;
+   this.getDataTypeArguments = function(key) {
+       if (key.dataType != null) {
+           return "?datatype=" + key.dataType;
        } else {
-           return "?field=" + id.field + "&nodemanager=" + id.nodeManager;
+           return "?field=" + key.field + "&nodemanager=" + key.nodeManager;
        }
    }
 
@@ -266,7 +275,7 @@ function MMBaseValidator(w, root) {
     * are all null of the given element does not contain the necessary information to identify an
     * MMBase DataType.
     */
-   this.getDataTypeId = function(el) {
+   this.getDataTypeKey = function(el) {
        if (el.dataTypeStructure == null) {
            this.log("getting datatype for " + el.className);
            var classNames = el.className.split(" ");
@@ -296,7 +305,7 @@ function MMBaseValidator(w, root) {
     * can be used to set an appropriate css class, so that this status also can be indicated to the
     * user using CSS.
     */
-   this.setClassName = function(el, valid) {
+   this.setClassName = function(valid, el) {
        this.trace("Setting classname on " + el);
        if (el.originalClass == null) el.originalClass = el.className;
        el.className = el.originalClass + (valid ? " valid" : " invalid");
@@ -307,7 +316,11 @@ function MMBaseValidator(w, root) {
     * javascript, and therefore cannot be absolute.
     */
    this.valid = function(el) {
-       if (this.isRequired(el) && el.value == "") return false;
+       if (this.isDateTime(el)) return true; // not  yet supported
+
+       if (! this.isRequired(el) && el.value == "") return true;
+
+
        if (! this.typeValid(el)) return false;
        if (! this.lengthValid(el)) return false;
        if (! this.minMaxValid(el)) return false;
@@ -326,14 +339,14 @@ function MMBaseValidator(w, root) {
    }
 
    /**
-    * Returns wether a form element contains a valid value. It is asked back to the server.
+    * Determins whether a form element contains a valid value, according to the server.
     * Returns an XML containing the reasons why it would not be valid.
     */
    this.serverValidation = function(el) {
        try {
-           var id = this.getDataTypeId(el);
+           var key = this.getDataTypeKey(el);
            var xmlhttp = new XMLHttpRequest();
-           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(id) + "&value=" + el.value, false);
+           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(key) + "&value=" + el.value, false);
            xmlhttp.send(null);
            return xmlhttp.responseXML;
        } catch (ex) {
@@ -366,7 +379,11 @@ function MMBaseValidator(w, root) {
     */
    this.validate = function(event) {
        var element = this.target(event);
-       this.setClassName(element, this.valid(element));
+       var valid = this.valid(element);
+       this.setClassName(valid, element);
+       if (this.validateHook) {
+           this.validateHook(valid, element);
+       }
    }
 
    /**
@@ -389,7 +406,7 @@ function MMBaseValidator(w, root) {
                    v = false;
                }
            }
-           this.setClassName(entry, v);
+           this.setClassName(v, entry);
        }
        return v;
    }
@@ -397,20 +414,20 @@ function MMBaseValidator(w, root) {
    /**
     * Adds event handlers to all mm_validate form entries
     */
-   this.addJavascriptValidation = function(el) {
+   this.addValidation = function(el) {
        if (el == null) {
            el = document.documentElement;
        }
        this.log("Will validate " + el);
 
        var els = getElementsByClass(el, "mm_validate");
-       for (i=0; i < els.length; i++) {
+       for (var i = 0; i < els.length; i++) {
            var entry = els[i];
            if (entry.tagName.toUpperCase() == "TEXTAREA") {
                entry.value = entry.value.replace(/^\s+|\s+$/g, "");
            }
            addEventHandler(entry, "keyup", this.validate, this);
-           this.setClassName(entry, this.valid(entry));
+           this.setClassName(this.valid(entry), entry);
 
        }
    }
@@ -419,13 +436,12 @@ function MMBaseValidator(w, root) {
            this.root = event.target || event.srcElement;
        }
 
-       this.addJavascriptValidation(this.root);
+       this.addValidation(this.root);
        //validatePage(target);
    }
 
 
    this.setup = function(w) {
-
        if (w != null) {
            addEventHandler(w, "load", this.onLoad, this);
        }
