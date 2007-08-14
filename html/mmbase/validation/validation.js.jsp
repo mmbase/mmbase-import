@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.26 2007-08-14 11:53:07 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.27 2007-08-14 12:16:34 michiel Exp $
  */
 
 
@@ -395,7 +395,7 @@ function MMBaseValidator(w, root) {
    this.validateElement = function(element, server) {
        var valid;
        if (server) {
-           valid = this.validResult(this.serverValidation(entry));
+           valid = this.validResult(this.serverValidation(element));
        } else {
            valid = this.valid(element);
        }
@@ -420,7 +420,7 @@ function MMBaseValidator(w, root) {
        var els = this.elements;
        for (var  i = 0; i < els.length; i++) {
            var entry = els[i];
-           this.validateElement(entry);
+           this.validateElement(entry, server);
        }
        return this.invalidElements == 0;
    }
