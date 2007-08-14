@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.56 2007-08-09 18:44:28 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.57 2007-08-14 12:20:17 andre Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -202,7 +202,7 @@
 
     <specialization id="colors">
       <description xml:lang="en">
-        colors as can be used in css
+        Colors as can be used in css.
       </description>
       <default value="white" />
       <maxLength value="64" />
@@ -547,13 +547,19 @@
       <description xml:lang="en">
         Media types.
       </description>
+      <description xml:lang="nl">
+        Media typen cq. soorten media.
+      </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.media" />
       </enumeration>
     </specialization>
     <specialization id="ordinals">
       <description xml:lang="en">
-        'first', 'second' etc. Implemented by a drop-down, so don't expect 'twothousandeth' to work.
+        'First', 'second' etc. Implemented by a drop-down, so don't expect 'twothousandeth' to work.
+      </description>
+      <description xml:lang="nl">
+        'Eerste', 'tweede' etc. Geïmplementeerd in een drop-down, dus verwacht niet dat 'tweeduizendeerste' werkt.
       </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.ordinals" />
@@ -561,6 +567,12 @@
     </specialization>
 
     <specialization id="gender">
+      <description xml:lang="en">
+       A member of one or other sex, or rather being male or female.
+      </description>
+      <description xml:lang="nl">
+       Lid van een sekse, oftewel vrouw of man.
+      </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.genders" />
       </enumeration>
