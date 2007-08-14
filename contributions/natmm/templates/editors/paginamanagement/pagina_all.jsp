@@ -1,10 +1,10 @@
-<%@page import="com.finalist.tree.*,nl.leocms.pagina.*,nl.leocms.authorization.*,nl.leocms.util.PaginaHelper" %>
+<%@page import="com.finalist.tree.*,nl.leocms.pagina.*,nl.leocms.authorization.*,nl.leocms.util.*,java.util.*" %>
 <%@include file="/taglibs.jsp" %>
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
 <%
 String account = cloud.getUser().getIdentifier();
 %>
-<cache:cache groups="<%= account %>" key="<%= account + "_pagina_all" %>" time="<%= 3600*24*7 %>" scope="application">
+
 <!-- <%= new java.util.Date() %> -->
 <html>
 <head>
@@ -68,7 +68,7 @@ String account = cloud.getUser().getIdentifier();
    	<tr><td><img src='../img/refresh.gif' border='0' align='middle'/></td><td style="font-size:10px;">= bekijk deze pagina in de preview</td></tr>
 	   <tr><td><img src='../img/remove.gif' border='0' align='middle'/></td><td style="font-size:10px;">= verwijder deze pagina</td></tr>
 	</table>
-	</p>
+	</p><br>
 	<%
 	String contentModusNodeNumber = (String) session.getAttribute("contentmodus.contentnodenumber");
   if ((contentModusNodeNumber != null)  && (!contentModusNodeNumber.equals(""))) {
@@ -81,16 +81,54 @@ String account = cloud.getUser().getIdentifier();
     <%
   }
 	%>
+   
+   <p>
+      <form action="" method="POST">
+      <b>Kies subsite:</b> <select name="pSubSite" onChange="submit()" style="font-size: 12px;">
+      <%
+         // get subsiteid
+         String pSubSiteId = request.getParameter("pSubSite");
+ 
+         RubriekHelper h = new RubriekHelper(cloud);
+         TreeMap subSites = (TreeMap) h.getSubObjects(cloud.getNode("root").getStringValue("number"),true);
+         Iterator i = subSites.entrySet().iterator();
+         while (i.hasNext()) {
+            Map.Entry e = (Map.Entry)i.next();
+            
+            if (e != null) {
+               String key = ((Integer) e.getKey()).toString();
+                              
+               if (key != null && key.length() > 0) {
+
+                  // is subsite selected?
+                  String selectedSubSite = (pSubSiteId != null && pSubSiteId.equals(key)) ? " selected=\"selected\" " : " ";
+                  String value = (String)e.getValue();
+                  
+                  out.println("<option" + selectedSubSite + "value=\"" + key + 
+                        "\">" + cloud.getNode(value).getStringValue("naam") + "</option>");
+               }
+            }
+         }
+      %>
+      </select>
+      </form>
+   </p>
+   
 	<span style="width:600px">
 	<%
-  PaginaTreeModel model = new PaginaTreeModel(cloud);
-	HTMLTree t=new HTMLTree(model,"pagina");
-	AuthorizationHelper helper = new AuthorizationHelper(cloud);
-  java.util.Map roles=helper.getRolesForUser(helper.getUserNode(account));
-	t.setCellRenderer(new PaginaAllRenderer( model, roles, account, cloud, "workpane", request.getContextPath()) );
-  t.setExpandAll(false);
-	t.setImgBaseUrl("../img/");
-  t.render( out ); 
+      PaginaTreeModel model = new PaginaTreeModel(cloud);
+      HTMLTree t = new HTMLTree(model,"pagina");
+   
+      // set subsiteid
+      int subSiteId = (pSubSiteId != null) ? Integer.parseInt(pSubSiteId) : 0 ;
+      t.setSubSiteId(subSiteId);
+
+      AuthorizationHelper helper = new AuthorizationHelper(cloud);
+      java.util.Map roles = helper.getRolesForUser(helper.getUserNode(account));
+      t.setCellRenderer(new PaginaAllRenderer( model, roles, account, cloud, "workpane", request.getContextPath()) );
+      t.setExpandAll(false);
+      t.setImgBaseUrl("../img/");
+      t.render( out ); 
 	%>
 	</span>
 	<script language="Javascript1.2">restoreTree();</script>
@@ -112,5 +150,5 @@ String account = cloud.getUser().getIdentifier();
 </div>
 </body>
 </html>
-</cache:cache>
+
 </mm:cloud>
