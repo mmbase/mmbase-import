@@ -51,6 +51,8 @@ public class HTMLTree {
    public String treeId = "";
 
    public TreeModel model;
+   
+   public int subSiteId = 0;
 
    public HTMLTree() {
       model = null;
@@ -218,13 +220,24 @@ public class HTMLTree {
             preHtml += "<img src='" + buildImgUrl("vertline.gif") + "' align='center' valign='middle' border='0'/>";
          }
 
-         int count = model.getChildCount(node);
-         for (int i = 0; i < count; i++) {
-            Object child = model.getChild(node, i);
+         if (level == 0) {
+            // get subsite node
+            Object child = model.getChild(node, subSiteId);
             out.print(preHtml);
-            String img = getImage(model.isLeaf(child), (i == count - 1));
-            renderNode(child, level + 1, out, base + "_" + i, preHtml, img, (i == count - 1));
+            String img = getImage(model.isLeaf(child), true);
+            renderNode(child, level + 1, out, base + "_" + subSiteId, preHtml, img, true);            
+            
+         } else {
+            // get child nodes
+            int count = model.getChildCount(node);
+            for (int i = 0; i < count; i++) {
+               Object child = model.getChild(node, i);
+               out.print(preHtml);
+               String img = getImage(model.isLeaf(child), (i == count - 1));
+               renderNode(child, level + 1, out, base + "_" + i, preHtml, img, (i == count - 1));
+            }
          }
+         
          out.println("</div>\n");
       }
    }
@@ -257,5 +270,12 @@ public class HTMLTree {
       this.model = model;
    }
 
+   /**
+    * @param subSiteId
+    */
+   public void setSubSiteId(int subSiteId) {
+      this.subSiteId = subSiteId;
+   }   
+   
 }
 
