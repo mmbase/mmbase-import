@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.25 2007-08-13 13:21:17 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.26 2007-08-14 11:53:07 michiel Exp $
  */
 
 
@@ -22,6 +22,7 @@ function MMBaseValidator(w, root) {
 
    this.dataTypeCache   = new Object();
    this.invalidElements = 0;
+   this.elements        = new Array();
    this.validateHook;
 
    this.log = function (msg) {
@@ -384,11 +385,20 @@ function MMBaseValidator(w, root) {
    }
    /**
     * The event handler which is linked to form elements
-    * You may want to override this function or {@link #setClassName}.
+    * A 'validateHook' is called in this function, which you may want to set, in stead of
+    * overriding this function.
     */
    this.validate = function(event) {
-       var element = this.target(event);
-       var valid = this.valid(element);
+       this.validateElement(this.target(event));
+   }
+
+   this.validateElement = function(element, server) {
+       var valid;
+       if (server) {
+           valid = this.validResult(this.serverValidation(entry));
+       } else {
+           valid = this.valid(element);
+       }
        if (valid != element.prevValid) {
            if (valid) {
                this.invalidElements--;
@@ -404,28 +414,15 @@ function MMBaseValidator(w, root) {
    }
 
    /**
-    * Validates al mm_validate form entries on the page
+    * Validates al mm_validate form entries which were marked for validation with addValidation.
     */
-   this.validatePage = function(server, el) {
-       var v = true;
-       if (el == null) {
-           el = document.documentElement;
-       }
-       var els = getElementsByClass(el, "mm_validate");
+   this.validatePage = function(server) {
+       var els = this.elements;
        for (var  i = 0; i < els.length; i++) {
            var entry = els[i];
-           if (server) {
-               if (! this.validResult(this.serverValidation(entry))) {
-                   v = false;
-               }
-           } else {
-               if (! this.valid(entry)) {
-                   v = false;
-               }
-           }
-           this.setClassName(v, entry);
+           this.validateElement(entry);
        }
-       return v;
+       return this.invalidElements == 0;
    }
 
    /**
@@ -440,12 +437,36 @@ function MMBaseValidator(w, root) {
        var els = getElementsByClass(el, "mm_validate");
        for (var i = 0; i < els.length; i++) {
            var entry = els[i];
-           if (entry.tagName.toUpperCase() == "TEXTAREA") {
+           if (entry.type == "textarea") {
                entry.value = entry.value.replace(/^\s+|\s+$/g, "");
            }
-           addEventHandler(entry, "keyup", this.validate, this);
+           // switch stolen from editwizards, not all cases are actually supported already here.
+           switch(entry.type) {
+           case "text":
+           case "textarea":
+               addEventHandler(entry, "keyup", this.validate, this);
+               addEventHandler(entry, "change", this.validate, this);
+               addEventHandler(entry, "blur", this.validate, this);
+               // IE calls this when the user does a right-click paste
+               addEventHandler(entry, "paste", this.validate, this);
+               // FireFox calls this when the user does a right-click paste
+               addEventHandler(entry, "input", this.validate, this);
+               break;
+           case "radio":
+           case "checkbox":
+               addEventHandler(entry, "click", this.validate, this);
+               addEventHandler(entry, "blur", this.validate, this);
+               break;
+           case "select-one":
+           case "select-multiple":
+           default:
+               addEventHandler(entry, "change", this.validate, this);
+               addEventHandler(entry, "blur", this.validate, this);
+           }
+
            var valid = this.valid(entry);
            entry.prevValid = valid;
+           this.elements.push(entry);
            this.setClassName(this.valid(entry), entry);
            if (!valid) {
                this.invalidElements++;
@@ -455,6 +476,7 @@ function MMBaseValidator(w, root) {
            }
 
        }
+       el = null;
    }
    this.onLoad = function(event) {
        if (this.root == null) {
