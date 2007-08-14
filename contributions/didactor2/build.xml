@@ -47,7 +47,7 @@
   <target name="build" >
     <echo message="Building components: ${components}" />
     <delete file="${build.webapp.dir}/WEB-INF/web.xml" />
-  	
+
     <foreach list="${components}" target="build.component" inheritall="true" param="component" />
     <foreach list="${providers}" target="build.provider" inheritall="true" param="provider" />
 
@@ -56,7 +56,7 @@
        <available file="${build.webapp.dir}/WEB-INF/config/applications" type="dir" />
        <then>
          <copy todir="${build.webapp.dir}/WEB-INF/config/builders" flatten="yes">
-           <!-- 
+           <!--
                 flatten yes? having builders in a sensible sub-dir would make life a bit better
                 bearable ...
            -->
@@ -119,9 +119,9 @@
         <echo message="Copying templates from src/core/templates/${provider}" />
         <echo message="Warning: putting provider templates in /src/core/templates is deprecated,
                        consider using /providers/${provider}/templates instead ${defaultexclude} "/>
-        <copy todir="${build.webapp.dir}/${provider}" 
+        <copy todir="${build.webapp.dir}/${provider}"
               overwrite="true" preservelastmodified="true">
-          <fileset 
+          <fileset
               defaultexcludes="${defaultexcludes}"
               dir="src/core/templates/${provider}">
             <include name="**"/>
@@ -161,7 +161,7 @@
             <include name="**"/>
           </fileset>
         </copy>
-        <replace file="${build.webapp.dir}/WEB-INF/classes/oscache.properties" 
+        <replace file="${build.webapp.dir}/WEB-INF/classes/oscache.properties"
                  token="$${mmbaseroot.datadir}"
                  value="${mmbaseroot.datadir}"/>
       </then>
@@ -174,7 +174,7 @@
     <if>
       <available file="src/${component}/lib" type="dir" />
       <then>
-        <copy todir="${build.webapp.dir}/WEB-INF/lib"  
+        <copy todir="${build.webapp.dir}/WEB-INF/lib"
               preservelastmodified="true">
           <fileset
               defaultexcludes="${defaultexcludes}"
@@ -207,7 +207,7 @@
         <mkdir dir="${build.dir}/classes/${component}" />
 
         <copy todir="${build.dir}/classes/${component}">
-          <fileset 
+          <fileset
               defaultexcludes="${defaultexcludes}"
               dir="src/${component}/java">
             <include name="**/*.properties" />
@@ -221,9 +221,9 @@
           <available file="src/${component}/config" type="file"/>
           <then>
             <mkdir dir="${build.dir}/classes/${component}/org/mmbase/config" />
-            
+
             <copy todir="${build.dir}/classes/${component}/org/mmbase/config">
-              <fileset 
+              <fileset
                   defaultexcludes="${defaultexcludes}"
                   dir="src/${component}/config">
                 <include name="**"/>
@@ -239,7 +239,7 @@
                classpathref="classpath" />
 
         <if>
-          <!-- pretty ridiculous. See DIDACTOR-4 
+          <!-- pretty ridiculous. See DIDACTOR-4
           -->
           <available file="src/${component}/java/hibernate.cfg.xml" type="file"/>
           <then>
@@ -305,7 +305,7 @@
           <equals arg1="${component}" arg2="core"/>
           <then>
             <copy todir="${build.webapp.dir}" preservelastmodified="true">
-              <fileset 
+              <fileset
                   defaultexcludes="${defaultexcludes}"
                   dir="src/${component}/templates">
                 <include name="**"/>
@@ -333,7 +333,7 @@
           </then>
           <else>
             <copy todir="${build.webapp.dir}" overwrite="true" preservelastmodified="true">
-              <fileset 
+              <fileset
                   defaultexcludes="${defaultexcludes}"
                   dir="src/${component}/templates">
                 <include name="**"/>
@@ -358,25 +358,16 @@
             <include name="*.war" />
           </fileset>
         </unzip>
-
-
-       <foreach target="mergewizards" param="file">
-         <path>
-           <fileset dir="src/${component}/templates/editwizards/data/config/">
-             <include name="**/extra_*.xml" />
-           </fileset>
-         </path>
-       </foreach>
      </then>
     </if>
-    
+
 
     <!-- copy webinf -->
     <if>
       <available file="src/${component}/webinf" type="dir" />
       <then>
         <copy todir="${build.webapp.dir}/WEB-INF" preservelastmodified="true">
-          <fileset 
+          <fileset
               defaultexcludes="${defaultexcludes}"
               dir="src/${component}/webinf">
             <include name="**"/>
@@ -387,7 +378,7 @@
         <if>
           <available file="src/${component}/webinf/web-extra.xml" />
           <then>
-            <property name="mergeXmlFile"     
+            <property name="mergeXmlFile"
                       location="src/${component}/webinf/web-extra.xml" />
             <xslt style="merge-web.xml.xslt"
                   in="${build.webapp.dir}/WEB-INF/web.xml"
@@ -487,7 +478,7 @@
         <property name="war.name.postfix"         value="${DSTAMP}_${TSTAMP}" />
       </then>
       <else>
-        <!-- 
+        <!--
              WTF, I hate Ant
              2 external libraries and 8 lines to do something completely trivial:
         -->
@@ -495,7 +486,7 @@
           <length/>
         </stringutil>
         <math result="shorter" operand1="${tag.length}" operation="-" operand2="2" datatype="int"/>
-        <stringutil string="${tag}" property="tag.name">           
+        <stringutil string="${tag}" property="tag.name">
           <substring beginindex="7" endindex="${shorter}" />
         </stringutil>
         <property name="war.name.postfix" value=".${tag.name}" />
@@ -503,11 +494,11 @@
     </if>
     <tstamp />
     <property name="war.name.postfix"         value="${DSTAMP}_${TSTAMP}" />
-    
+
   </target>
 
   <target name="war" depends="webapp,war.name.postfix">
-    
+
     <jar destfile="${war.dir}/${war.name}${war.name.postfix}.war"
          basedir="${build.webapp.dir}"
          defaultexcludes="${defaultexcludes}"
@@ -533,14 +524,14 @@
         </fileset>
       </classpath>
     </taskdef>
-    
+
     <jasper2
         validateXml="false"
         addWebXmlMappings="true"
         uriroot="${build.webapp.dir}"
         webXmlFragment="${build.webapp.dir}/WEB-INF/jsp.xml"
         outputDir="${build.dir}/jspjava" />
-    
+
     <mkdir dir="${build.dir}/jspclasses" />
     <javac destdir="${build.dir}/jspclasses"
            optimize="off"
@@ -572,7 +563,7 @@
   <target name="srcdist">
     <mkdir dir="${build.dir}" />
     <delete file="${build.dir}/didactor-src.zip" quiet="true"/>
-    <zip 
+    <zip
         defaultexcludes="${defaultexcludes}"
         destfile="${build.dir}/didactor-src.zip"
         basedir=".">
