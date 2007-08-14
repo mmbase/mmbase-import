@@ -18,6 +18,7 @@ import javax.servlet.jsp.JspException;
 
 import java.util.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
 import org.mmbase.datatypes.*;
 import org.mmbase.util.Casting;
 
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.97.2.3 2007-08-09 13:47:48 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.97.2.4 2007-08-14 15:21:47 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -250,13 +251,25 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     }
 
 
+    private FieldProvider fieldProvider;
 
     public int doStartTag() throws JspTagException{
         findWriter(false); // just to call haveBody;
 
         Node          node = null;
-        FieldProvider fieldProvider = findFieldProvider();
-        Field         field = fieldProvider.getFieldVar();
+        final DataType dt = getDataType();
+        if (dt == null) {
+            fieldProvider = findFieldProvider();
+        } else {
+            fieldProvider = new FieldProvider() {
+                    private final Field f = new DataTypeField(getCloudVar(), dt);
+                    public Field getFieldVar() { return f; }
+                    public String getId() { return null; }
+                    public Node getNodeVar() { return null; }
+
+                };
+        }
+        Field field      = fieldProvider.getFieldVar();
         String fieldName = field.getName();
 
         {
@@ -481,6 +494,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * Write the value of the fieldinfo.
      */
     public int doEndTag() throws JspTagException {
+        fieldProvider = null;
         helper.doEndTag();
         return super.doEndTag();
     }
@@ -498,7 +512,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
         String id = (ft != null ? ft.getId() : null);
         if (id == null) {
-            id = findFieldProvider().getId();
+            id = fieldProvider.getId();
         }
         if (id == null) {
             id = "";
