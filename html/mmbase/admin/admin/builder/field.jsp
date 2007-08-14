@@ -99,7 +99,7 @@
 %>
 
   <tr>
-    <td>Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
+    <td>Field Name for ISO 639 <%=name.getStringValue("item1")%></td>
     <td><%=name.getStringValue("item2")%></td>
     <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guiname" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
@@ -121,7 +121,7 @@
         Node name=names.getNode(i);
 %>
   <tr>
-    <td>Description&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
+    <td>Description for ISO 639 <%=name.getStringValue("item1")%></td>
     <td><%=name.getStringValue("item2")%></td>
     <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_description" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
