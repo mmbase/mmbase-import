@@ -18,76 +18,76 @@
   </caption>
 
   <tr>
-	<th>Property</th>
-	<th>Value</th>
-	<th class="center">Explain</th>
+    <th>Property</th>
+    <th>Value</th>
+    <th class="center">Explain</th>
   </tr>
   <tr>
-	<td>Name</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbname",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_name" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Name</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbname",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_name" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   <tr>
-	<td>Type</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbmmbasetype",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_type" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Type</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbmmbasetype",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_type" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   <tr>
-	<td>Data Type</td>
-	<td><%=cloud.getNodeManager(builder).getField(field).getDataType().toXml()%></td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#data_type" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Data Type</td>
+    <td><%=cloud.getNodeManager(builder).getField(field).getDataType().toXml()%></td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#data_type" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   <tr>
-	<td>State</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbstate",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_state" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>State</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbstate",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_state" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   <tr>
-	<td>Required</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbnotnull",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_notnull" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Required</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbnotnull",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_notnull" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   <tr>
-	<td>Unique/Key</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbkey",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_key" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Unique/Key</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbkey",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_key" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   <tr>
-	<td>Size</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbsize",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_size" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
-  </tr>
-  
-  <tr><td colspan="3">&nbsp;</td></tr>
-  
-  <tr>
-	<th>Editor property</th>
-	<th>Value</th>
-	<th class="center">Explain</th>
-  </tr>
-  
-  <tr>
-	<td>Input</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorinput",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_input" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
-  </tr>
-  <tr>
-	<td>List</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorlist",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_list" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
-  </tr>
-  <tr>
-	<td>Search</td>
-	<td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorsearch",request,response)%>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_search" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Size</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbsize",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_size" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
   
   <tr><td colspan="3">&nbsp;</td></tr>
   
   <tr>
-	<th>GUI Property</th>
-	<th>Value</th>
-	<th class="center">Explain</th>
+    <th>Editor property</th>
+    <th>Value</th>
+    <th class="center">Explain</th>
+  </tr>
+  
+  <tr>
+    <td>Input</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorinput",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_input" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+  </tr>
+  <tr>
+    <td>List</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorlist",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_list" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+  </tr>
+  <tr>
+    <td>Search</td>
+    <td><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorsearch",request,response)%>&nbsp;</td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_search" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+  </tr>
+  
+  <tr><td colspan="3">&nbsp;</td></tr>
+  
+  <tr>
+    <th>GUI Property</th>
+    <th>Value</th>
+    <th class="center">Explain</th>
   </tr>
   
 <%
@@ -99,24 +99,18 @@
 %>
 
   <tr>
-	<td>Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
-	<td><%=name.getStringValue("item2")%></td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guiname" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
+    <td><%=name.getStringValue("item2")%></td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guiname" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
 <% } %>
-
-  <tr>
-	<td>New&nbsp;Field&nbsp;Name</td>
-	<td>&nbsp;</td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_guiname" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
-  </tr>
 
   <tr><td colspan="3">&nbsp;</td></tr>
   
   <tr>
-	<th>GUI Descriptions</th>
-	<th>Value</th>
-	<th class="center">Explain</th>
+    <th>GUI Descriptions</th>
+    <th>Value</th>
+    <th class="center">Explain</th>
   </tr>
 
 <%
@@ -127,9 +121,9 @@
         Node name=names.getNode(i);
 %>
   <tr>
-	<td>Description&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
-	<td><%=name.getStringValue("item2")%></td>
-	<td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_description" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
+    <td>Description&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
+    <td><%=name.getStringValue("item2")%></td>
+    <td class="center"><a href="http://www.mmbase.org/mmdocs18/informationanalysts/builders.html#field_description" target="_blank"><img src="<mm:url page="/mmbase/style/images/help.png" />" alt="explain" /></a></td>
   </tr>
 <% } %>
 
