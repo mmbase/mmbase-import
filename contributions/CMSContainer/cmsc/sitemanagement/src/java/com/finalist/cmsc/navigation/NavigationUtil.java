@@ -28,8 +28,8 @@ public class NavigationUtil {
     public static final String NAVREL = "navrel";
     public static final String ALLOWREL = "allowrel";
 
-    public static String[] treeManagers = new String[] { PagesUtil.PAGE, SiteUtil.SITE, RssFeedUtil.RSSFEED };
-    public static String[] fragmentFieldnames = new String[] { PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD, RssFeedUtil.FRAGMENT_FIELD};
+    public static String[] treeManagers = new String[] { RssFeedUtil.RSSFEED, PagesUtil.PAGE, SiteUtil.SITE };
+    public static String[] fragmentFieldnames = new String[] { RssFeedUtil.FRAGMENT_FIELD, PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD};
 
     private NavigationUtil() {
         // utility
@@ -288,7 +288,7 @@ public class NavigationUtil {
     }
 
     public static int getChildCount(Node parent) {
-        return TreeUtil.getChildCount(parent, treeManagers, NAVREL);
+        return TreeUtil.getChildCount(parent, PagesUtil.PAGE, NAVREL);
     }
 
     public static void movePage(Node sourcePage, Node destPage) {
