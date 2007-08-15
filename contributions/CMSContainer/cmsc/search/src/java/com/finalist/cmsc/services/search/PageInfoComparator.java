@@ -14,6 +14,8 @@ import java.util.Comparator;
 
 public class PageInfoComparator implements Comparator<PageInfo> {
 
+    private static final String CONTENTELEMENT = "contentelement";
+
     public int compare(PageInfo info1, PageInfo info2) {
         int priority = info1.getPriority() - info2.getPriority();
         if (priority != 0) {
@@ -21,13 +23,13 @@ public class PageInfoComparator implements Comparator<PageInfo> {
         }
         else {
             int parameter = 0;
-            if ("contenteleent".equals(info1.getParametername())) {
-                if (!"contenteleent".equals(info2.getParametername())) {
+            if (CONTENTELEMENT.equals(info1.getParametername())) {
+                if (!CONTENTELEMENT.equals(info2.getParametername())) {
                     parameter = -1;
                 }
             }
             else {
-                if ("contenteleent".equals(info2.getParametername())) {
+                if (CONTENTELEMENT.equals(info2.getParametername())) {
                     parameter = 1;
                 }
             }

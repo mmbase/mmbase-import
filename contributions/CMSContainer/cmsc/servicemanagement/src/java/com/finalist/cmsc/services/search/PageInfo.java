@@ -18,16 +18,18 @@ public class PageInfo {
 
     private int priority = -1;
     private String parametername;
+    private String parametervalue;
     private boolean isSite;
 
     public PageInfo(int pageNumber, String path, String windowName, String layout, 
-            int priority, String parametername, boolean isSite) {
+            int priority, String parametername, String parametervalue, boolean isSite) {
         this.pageNumber = pageNumber;
         this.path = path;
         this.windowName = windowName;
         this.layout = layout;
         this.priority = priority;
         this.parametername = parametername;
+        this.parametervalue = parametervalue;
         this.isSite = isSite;
     }
     
@@ -51,24 +53,16 @@ public class PageInfo {
         return priority;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     public String getParametername() {
         return parametername;
     }
-
-    public void setParametername(String parametername) {
-        this.parametername = parametername;
+    
+    public String getParametervalue() {
+        return parametervalue;
     }
     
     public boolean isSite() {
         return isSite;
-    }
-
-    public void setSite(boolean isSite) {
-        this.isSite = isSite;
     }
     
     @Override
