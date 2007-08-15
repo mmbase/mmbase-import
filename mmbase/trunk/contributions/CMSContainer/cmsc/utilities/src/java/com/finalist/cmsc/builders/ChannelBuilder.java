@@ -30,7 +30,7 @@ public abstract class ChannelBuilder extends MMObjectBuilder {
     private int relationNumber;
     
    @Override
-public boolean init() {
+   public boolean init() {
       log.debug("ChannelBuilder init");
       checkAddTmpField(TMP_OLDPATHNAME);
       checkAddTmpField(TreeUtil.OLDPATH_FIELD);
@@ -72,7 +72,7 @@ public boolean init() {
    
    
    @Override
-public int insert(String owner, MMObjectNode node) {
+   public int insert(String owner, MMObjectNode node) {
 //      don't use this method to add stuff to the channelCache in the ChannelUtil.
 //      The node is inserted before the relation to other nodes is made.
        
@@ -83,7 +83,7 @@ public int insert(String owner, MMObjectNode node) {
 
 
    @Override
-public boolean commit(MMObjectNode objectNode) {
+   public boolean commit(MMObjectNode objectNode) {
       log.debug(objectNode.getChanged());
       String fragmentFieldname = getFragmentFieldnameForBuilder();
       if (objectNode.getChanged().contains(fragmentFieldname)) {
@@ -125,7 +125,7 @@ public boolean commit(MMObjectNode objectNode) {
     *  in the commit() 
     */
    @Override
-public boolean setValue(MMObjectNode objectNode, String fieldName, Object originalValue) {
+   public boolean setValue(MMObjectNode objectNode, String fieldName, Object originalValue) {
       String fragmentFieldname = getFragmentFieldnameForBuilder();
       if (fragmentFieldname.equals(fieldName)) {
          log.debug("setValue() "+TMP_OLDPATHNAME+" to:"+originalValue);
@@ -136,7 +136,7 @@ public boolean setValue(MMObjectNode objectNode, String fieldName, Object origin
    
    
    @Override
-public void removeNode(MMObjectNode objectNode) {
+   public void removeNode(MMObjectNode objectNode) {
       TreePathCache.removeFromCache(getTableName(), objectNode.getNumber());
       super.removeNode(objectNode);
    }
@@ -148,12 +148,13 @@ public void removeNode(MMObjectNode objectNode) {
     * @return the result of the 'function', or null if no valid functions could be determined
     */
    @Override
-public Object getValue(MMObjectNode node, String field) {
+   public Object getValue(MMObjectNode node, String field) {
       if (!"number".endsWith(field) && node.getNumber() > 0) {
          if (TreeUtil.PATH_FIELD.equals(field)) {
             String p = getPath(node);
             if (TreeUtil.getLevel(p) <= 1) {
-                if (!getTableName().equals(pathManagers[1])) {
+                String managerOfRootNode = pathManagers[pathManagers.length - 1];
+                if (!getTableName().equals(managerOfRootNode)) {
                     throw new IllegalArgumentException("Path is requested, but the " +
                             "node is not yet added to the tree.");
                 }
