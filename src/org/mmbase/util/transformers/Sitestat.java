@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * 
  * @author Andre van Toly
  * @since MMBase-1.7
- * @version $Id: Sitestat.java,v 1.2 2005-06-29 12:34:08 andre Exp $
+ * @version $Id: Sitestat.java,v 1.3 2007-08-15 14:43:12 andre Exp $
  */
 
 public class Sitestat extends ReaderTransformer implements CharTransformer {
@@ -29,17 +29,20 @@ public class Sitestat extends ReaderTransformer implements CharTransformer {
 
     public Writer transform(Reader r, Writer w) {
         try {
-            log.debug("Starting transforming string for Sitestat");
+            if (log.isDebugEnabled()) log.debug("Starting transforming string for Sitestat");
+            int d = -1;
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
                 if (alowedChars.indexOf((char)c) > -1) {
                     w.write((char)c);
-                } else {
+                    d = c;
+                } else if (d != '_') {
                     w.write('_');
+                    d = '_';
                 }
             }            
-            log.debug("Finished transforming string for Sitestat");
+            if (log.isDebugEnabled()) log.debug("Finished transforming string for Sitestat");
         } catch (java.io.IOException e) {
             log.error(e.toString());
         }
