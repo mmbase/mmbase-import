@@ -38,30 +38,40 @@
 
 				
 				<mm:listnodes orderby="number">
-					<mm:field name="action" jspvar="action" write="false"/>
-					<mm:field name="timestamp" write="false"><mm:time jspvar="timestamp" write="false" format="dd/MM/yyyy hh:mm"/></mm:field>
-					<mm:field name="sourcenumber" jspvar="number" write="false"/>
+					<mm:field name="action" id="action" write="false"/>
+					<mm:field name="timestamp" write="false"><mm:time id="timestamp" write="false" format="dd/MM/yyyy hh:mm"/></mm:field>
+					<mm:field name="sourcenumber" id="number" write="false"/>
 					<c:set var="type" value=""/>
 					<c:set var="name" value=""/>
 					<c:set var="autor" value=""/>
 					<c:set var="publishdate" value=""/>
 					<mm:node number="${number}">
 						<mm:nodeinfo type="guitype" jspvar="nodetype" write="false" vartype="String"/>
-						<mm:field name="lastmodifier" jspvar="author" write="false"/>
+						<mm:hasfield name="lastmodifier">
+							<mm:field name="lastmodifier" id="author" write="false"/>
+						</mm:hasfield>
 
-						<mm:field name="name" jspvar="name" write="false"/>
+						<mm:hasfield name="name">
+							<mm:field name="name" id="name" write="false"/>
+						</mm:hasfield>
 						<c:if test="${empty name}">
-							<mm:field name="title" jspvar="name" write="false"/>
+							<mm:hasfield name="title">
+								<mm:field name="title" id="name" write="false"/>
+							</mm:hasfield>
 						</c:if>
 						<c:if test="${empty name}">
-							<mm:field name="key" jspvar="name" write="false"/>
+							<mm:hasfield name="key">
+								<mm:field name="key" id="name" write="false"/>
+							</mm:hasfield>
 						</c:if>
 
 						<mm:remove referid="publishdate"/>
-						<mm:field name="publishdate" id="publishdate" write="false"/>
-						<mm:isnotempty referid="publishdate">
-							<c:set var="publishdate"><mm:write referid="publishdate"><mm:time format="dd/MM/yyyy hh:mm"/></mm:write></c:set>
-						</mm:isnotempty>
+						<mm:hasfield name="publishdate">
+							<mm:field name="publishdate" id="publishdate" write="false"/>
+							<mm:isnotempty referid="publishdate">
+								<c:set var="publishdate"><mm:write referid="publishdate"><mm:time format="dd/MM/yyyy hh:mm"/></mm:write></c:set>
+							</mm:isnotempty>
+						</mm:hasfield>
 					</mm:node>
 					
 					
