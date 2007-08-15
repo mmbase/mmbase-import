@@ -81,7 +81,12 @@ public class RedirectServlet extends BridgeServlet {
             PageInfo pageInfo = Search.findDetailPageForContent(node);
             if (pageInfo != null) {
                 PortalURL u = new PortalURL(request, pageInfo.getPath());
-                u.setRenderParameter(pageInfo.getWindowName(), "elementId", new String[] { String.valueOf(node.getNumber()) } );
+                String elementId = String.valueOf(node.getNumber());
+                // When contentelement and the same number then it is a contentportlet
+                if (! ( "contentelement".equals(pageInfo.getParametername()) 
+                        && elementId.equals(pageInfo.getParametervalue()) ) ) {
+                    u.setRenderParameter(pageInfo.getWindowName(), "elementId", new String[] { elementId } );
+                }
                 redirect = u.toString();
             }
         }
