@@ -196,6 +196,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
         if (page != null) {
             String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
             String parameterName = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
+            String parameterValue = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.VALUE_FIELD);
 
             if (clicktopage) {
                 if ("contentchannel".equals(parameterName)) {
@@ -224,7 +225,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
             boolean isSite = (page instanceof Site);
             
             PageInfo pageInfo = new PageInfo(page.getId(), pagePath, portletWindowName,
-                    layout.getResource(), infoPrio, parameterName, isSite);
+                    layout.getResource(), infoPrio, parameterName, parameterValue, isSite);
             return pageInfo;
         }
         return null;
