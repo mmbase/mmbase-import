@@ -57,7 +57,7 @@
 
 	<action type="create">
 		<relation destinationtype="attachments" role="posrel">
-			<field name="pos">{sum(//relation[@role='posrel' and @destination='attachments' and @firstitem='true']/field[@name='pos'])-{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='attachments']/../field[@name='pos'])-{$pos}}</field>
 			<object type="attachments"></object>
 		</relation>
 	</action>
