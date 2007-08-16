@@ -1,8 +1,8 @@
-html, body { 
+html, body {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
-.article { 
+.article {
   /*
      IE6 Peek-a-boo bug:
      http://www.dracos.co.uk/code/ie6-css-bug/
@@ -16,7 +16,8 @@ div.column {
 }
 
 div.x1 {
-  float: left;
+  position: absolute;
+  left: 0px;
   width: 200px;
   margin-left:6px;
   /*
@@ -34,7 +35,7 @@ div.x2 {
 
 div.x3 {
   float: right;
-  width: 220px;    
+  width: 220px;
   margin-right: 6px;
   display: inline; /* double margin bug */
 }
@@ -60,22 +61,22 @@ div.column div {
   margin-left: 0ex;
 }
 
-div.column div h1 { 
+div.column div h1 {
   margin-top: 0px;
 }
 
-.article .intro { 
+.article .intro {
   display: block;
   padding: 0 0 0 0;
   margin: 0 0 0 0;
   width: 100%;
 }
-.article img { 
+.article img {
   float: right;
   padding: 0 0 0 0;
 }
 
-.article hr { 
+.article hr {
   padding: 0 0 0 0;
   margin: 0 0 0 0;
   margin-top: 1ex;
@@ -83,7 +84,7 @@ div.column div h1 {
   clear: both;
 }
 
-.portal p, .portal h2, .portal ul { 
+.portal p, .portal h2, .portal ul {
   margin-top: 0px;
   margin-bottom: 0px;
   padding-top: 3px;
@@ -91,22 +92,24 @@ div.column div h1 {
 
 }
 
-p.noaccount { 
+p.noaccount {
   margin-top: 0px;
   padding-top: 0px;
   padding-bottom: 0px;
 }
-.portal .login p { 
+.portal .login p {
   padding-bottom: 0px;
 }
 
-.portal .banner { 
+.portal .banner {
   background-color: transparent;
 }
-.portal .banner a, 
-.portal .banner img { 
+.portal .banner a,
+.portal .banner img {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
   border: none;
   background-color: transparent;
+  float: none;
+  display: inline;
 }
