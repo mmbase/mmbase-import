@@ -32,6 +32,33 @@ String account = cloud.getUser().getIdentifier();
       document.getElementById(hide1).style.display = 'none';
     }
    </script>
+   <script>
+      function setSubSite() {
+         var cookieSubsiteid = readCookie('selectedsubsite');
+         var subsiteid = 0;
+         
+         if (cookieSubsiteid) {
+            subsiteid = cookieSubsiteid;
+         }
+         
+         //alert("subsiteid: " + subsiteid);
+         for (i=0; i<document.getElementById('dropDownSubSite').length; i++) {
+           //alert("optionid: " + document.getElementById('dropDownSubSite').options[i].value);
+            
+            if (subsiteid == document.getElementById('dropDownSubSite').options[i].value) {
+               document.getElementById('dropDownSubSite').options[i].selected = true;
+               return;
+            }
+         }
+      }      
+      
+      function saveSubsiteCookie() {
+         var subsiteindex = document.getElementById('dropDownSubSite').selectedIndex;
+         saveCookie('selectedsubsite',subsiteindex,1);
+      }
+       
+   </script>
+
    <style>
       input {
    	    width:110px;
@@ -49,7 +76,7 @@ String account = cloud.getUser().getIdentifier();
       }
    </style>
 </head>
-<body style="padding-left:2px;" onLoad="javascript:showEditorsButton();">
+<body style="padding-left:2px;" onLoad="javascript:showEditorsButton();setSubSite();">
 <div id="paginas">
 	<table cellpadding="3" cellspacing="0" style="width:100%;">
       <tr>
@@ -84,11 +111,8 @@ String account = cloud.getUser().getIdentifier();
    
    <p>
       <form action="" method="POST">
-      <b>Kies subsite:</b> <select name="pSubSite" onChange="submit()" style="font-size: 12px;">
+      <b>Kies subsite:</b> <select id="dropDownSubSite" name="pSubSite" onChange="javascript:saveSubsiteCookie();submit();" style="font-size: 12px;">
       <%
-         // get subsiteid
-         String pSubSiteId = request.getParameter("pSubSite");
- 
          RubriekHelper h = new RubriekHelper(cloud);
          TreeMap subSites = (TreeMap) h.getSubObjects(cloud.getNode("root").getStringValue("number"),true);
          Iterator i = subSites.entrySet().iterator();
@@ -99,19 +123,15 @@ String account = cloud.getUser().getIdentifier();
                String key = ((Integer) e.getKey()).toString();
                               
                if (key != null && key.length() > 0) {
-
-                  // is subsite selected?
-                  String selectedSubSite = (pSubSiteId != null && pSubSiteId.equals(key)) ? " selected=\"selected\" " : " ";
                   String value = (String)e.getValue();
                   
-                  out.println("<option" + selectedSubSite + "value=\"" + key + 
-                        "\">" + cloud.getNode(value).getStringValue("naam") + "</option>");
+                  out.println("<option value=\"" + key + "\">" + cloud.getNode(value).getStringValue("naam") + "</option>");
                }
             }
          }
       %>
       </select>
-      </form>
+      </form>      
    </p>
    
 	<span style="width:600px">
@@ -120,6 +140,16 @@ String account = cloud.getUser().getIdentifier();
       HTMLTree t = new HTMLTree(model,"pagina");
    
       // set subsiteid
+      String pSubSiteId = null;
+      
+      Cookie[] cookies = request.getCookies();
+      for(int j=0; j<cookies.length; j++) {
+         Cookie thisCookie = cookies[j];
+         if (thisCookie.getName().equals("selectedsubsite")) {
+            pSubSiteId = thisCookie.getValue();
+         }
+      }
+      
       int subSiteId = (pSubSiteId != null) ? Integer.parseInt(pSubSiteId) : 0 ;
       t.setSubSiteId(subSiteId);
 
