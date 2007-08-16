@@ -10,7 +10,7 @@ import javax.mail.internet.*;
 
 /**
 
- * @version $Id: MailHandler.java,v 1.3 2007-08-16 11:40:41 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.4 2007-08-16 16:34:12 michiel Exp $
  */
 public abstract class MailHandler {
     private static final Logger log = Logging.getLoggerInstance(MailHandler.class);
@@ -228,7 +228,7 @@ public abstract class MailHandler {
                     log.error(ee);
                 }
             }
-            Relation rel = mailbox.box.createRelation(email, cloud.getRelationManager("related"));
+            Relation rel = cloud.getNode(mailbox.box.getNumber()).createRelation(email, cloud.getRelationManager("related"));
             rel.commit();
 
             //TODO: send to this user if he wants to
@@ -326,7 +326,7 @@ public abstract class MailHandler {
                         log.debug("Ignoring part with mimeType " + mimeType + " (not better than already stored part with mimeType " + mailMimeType);
                     } else {
                         log.debug("Found a non-text alternative inline part, cannot handle that, treat it as an ordinary attachment");
-                        Node tempAttachment = storeAttachment(p);
+                        Node tempAttachment = storeAttachment(p, mail.getCloud());
                         if (tempAttachment != null) {
                             attachments.add(tempAttachment);
                         }
@@ -348,7 +348,7 @@ public abstract class MailHandler {
             extractPart((Part) p.getContent(), attachments, mail);
         } else {
             log.debug("Found attachment with type: " + p.getContentType());
-            Node tempAttachment = storeAttachment(p);
+            Node tempAttachment = storeAttachment(p, mail.getCloud());
             if (tempAttachment != null) {
                 attachments.add(tempAttachment);
             }
@@ -361,50 +361,69 @@ public abstract class MailHandler {
      * @param p
      * @return Node in the MMBase object cloud
      */
-    private Node storeAttachment(Part p) throws MessagingException {
-        String fileName = p.getFileName();
-        NodeManager attachmentManager = getCloud().getNodeManager("attachments");
+    private Node storeAttachment(Part p, Cloud cloud) throws MessagingException {
+        NodeManager attachmentManager = cloud.getNodeManager("attachments");
+        try {
+            String fileName = p.getFileName();
 
-        if (attachmentManager == null) {
-            log.error("Attachments builder not activated");
-            return null;
-        }
+            if (attachmentManager == null) {
+                log.error("Attachments builder not activated");
+                return null;
+            }
 
-        Node attachmentNode = attachmentManager.createNode();
+            Node attachmentNode = attachmentManager.createNode();
 
 
-        if (p instanceof MimeBodyPart) {
-            MimeBodyPart mbp = (MimeBodyPart) p;
-            String contentId = mbp.getContentID();
-            if (contentId != null) {
-                // a bit of misuse, of course.
-                // targeting at working of multipart/related messages.
-                attachmentNode.setStringValue("description", contentId);
+            if (p instanceof MimeBodyPart) {
+                MimeBodyPart mbp = (MimeBodyPart) p;
+                String contentId = mbp.getContentID();
+                if (contentId != null) {
+                    // a bit of misuse, of course.
+                    // targeting at working of multipart/related messages.
+                    attachmentNode.setStringValue("description", contentId);
+                }
+            }
+            String mimeType = getMimeType(p.getContentType());
+
+            String title = fileName;
+
+            if (title == null || "".equals(title)) {
+                title = "attachment " + mimeType;
+            }
+            attachmentNode.setStringValue("title", title);
+
+            attachmentNode.setStringValue("mimetype", mimeType);
+            attachmentNode.setStringValue("filename", fileName);
+            attachmentNode.setIntValue("size", p.getSize());
+
+
+            try {
+                attachmentNode.setInputStreamValue("handle", p.getInputStream(), p.getSize());
+            } catch (Exception ex) {
+                log.error("Caught exception while trying to read attachment data: " + ex);
+            }
+
+            attachmentNode.commit();
+            log.debug("committed attachment to MMBase");
+
+            return attachmentNode;
+        } catch (Throwable e) {
+            log.service(e);
+            try {
+                Node attachmentNode = attachmentManager.createNode();
+                String fileName = p.getFileName();
+                attachmentNode.setStringValue("title", fileName + ": " + e.getMessage());
+
+                attachmentNode.setStringValue("mimetype", "text/plain");
+                attachmentNode.setStringValue("filename", "message.txt");
+                attachmentNode.setStringValue("handle", Logging.stackTrace(e));
+                attachmentNode.commit();
+                return attachmentNode;
+            } catch (Exception ew) {
+                log.error(ew.getMessage(), ew);
+                return null;
             }
         }
-        String mimeType = getMimeType(p.getContentType());
-
-        String title = fileName;
-
-        if (title == null || "".equals(title)) {
-            title = "attachment " + mimeType;
-        }
-        attachmentNode.setStringValue("title", title);
-
-        attachmentNode.setStringValue("mimetype", mimeType);
-        attachmentNode.setStringValue("filename", fileName);
-        attachmentNode.setIntValue("size", p.getSize());
-
-        try {
-            attachmentNode.setInputStreamValue("handle", p.getInputStream(), p.getSize());
-        } catch (Exception ex) {
-            log.error("Caught exception while trying to read attachment data: " + ex);
-        }
-
-        attachmentNode.commit();
-        log.debug("committed attachment to MMBase");
-
-        return attachmentNode;
     }
 
 
