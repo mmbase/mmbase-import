@@ -2,7 +2,7 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><%@ page import="java.text.*,java.util.*" contentType="application/xml;charset=UTF-8"
 %>
-<mm:content postprocessor="reducespace" type="application/xml">
+<mm:content postprocessor="reducespace" type="application/xml" expires="0">
   <mm:cloud rank="didactor user">
 
 
