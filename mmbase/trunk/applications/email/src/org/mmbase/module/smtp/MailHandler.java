@@ -10,7 +10,7 @@ import javax.mail.internet.*;
 
 /**
 
- * @version $Id: MailHandler.java,v 1.2 2007-08-09 10:19:20 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.3 2007-08-16 11:40:41 michiel Exp $
  */
 public abstract class MailHandler {
     private static final Logger log = Logging.getLoggerInstance(MailHandler.class);
@@ -36,6 +36,7 @@ public abstract class MailHandler {
 
     /**
      * List containing Node objects for all mailboxes of the receipients
+
      */
     protected final List<MailBox> mailboxes = new ArrayList<MailBox>();
 

@@ -4,23 +4,34 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.*;
 import java.util.*;
 import java.io.*;
+import org.mmbase.applications.crontab.*;
 import javax.mail.*;
 import javax.mail.search.*;
 import javax.mail.event.*;
 import javax.mail.internet.*;
 
 /**
- * A mailhandler that does not smpt-listen but periodically pops from a server.
- * 
- * @todo UNTESTED
+ * A mailhandler that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
  *
- * @version $Id: PopHandler.java,v 1.1 2007-08-06 12:04:50 michiel Exp $
+ *
+ * @version $Id: PopHandler.java,v 1.2 2007-08-16 11:40:41 michiel Exp $
  */
-public class PopHandler extends MailHandler  {
+public class PopHandler extends MailHandler implements CronJob {
     private static final Logger log = Logging.getLoggerInstance(PopHandler.class);
 
-    private static final String LASTRUN_ALIAS = PopHandler.class.getName() + ".lastrun"; 
+    private static final String LASTRUN_ALIAS = PopHandler.class.getName() + ".lastrun";
     // alias of mmevents node which remembers time of last run.
+
+    CronEntry entry;
+
+    public void init(CronEntry cronEntry) {
+        entry = cronEntry;
+        addMailbox("admin");
+    }
+
+    public void stop() {
+    }
+
 
     /**
      * Public constructor. Set all data that is needed for this thread to run.
@@ -75,8 +86,7 @@ public class PopHandler extends MailHandler  {
             // Get a Session object
             Session session = Session.getInstance(props, null);
 
-            String[] configuration = getProperties().get("pop").split(",");
-            //cronEntry.getConfiguration().split(",");
+            String[] configuration = entry.getConfiguration().split(",");
             String protocol = configuration[0];
             String host     = configuration[1];
             String userName = configuration[2];
