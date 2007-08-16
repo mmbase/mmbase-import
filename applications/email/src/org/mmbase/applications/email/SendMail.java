@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.30 2007-08-09 10:19:20 michiel Exp $
+ * @version $Id: SendMail.java,v 1.31 2007-08-16 11:40:00 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -86,9 +86,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         Set<String> failedUsers = new HashSet<String>();
         for (InternetAddress recipient : to) {
             log.debug("address " + recipient);
-            String domain = recipient.getAddress();
-            String username = domain.substring(0, domain.indexOf("@"));
-            domain = domain.substring(domain.indexOf("@") + 1, domain.length());
+            String address = recipient.getAddress();
+            int index = address.indexOf("@");
+            String username = index > 0 ? address.substring(0, index) : address;
 
             NodeQuery nq = peopleManager.createQuery();
             nq.setConstraint(nq.createConstraint(nq.createStepField("username"), username));
@@ -378,7 +378,8 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             log.debug("Sending node {" + n + "} to addresses {" + Arrays.asList(onlyto) + "}");
             log.trace("Because ", new Exception());
         }
-        StringBuffer errors = new StringBuffer();
+        StringBuilder errors = new StringBuilder();
+
         String from    = n.getStringValue("from");
         String to      = n.getStringValue("to");
         String cc      = n.getStringValue("cc");
@@ -573,6 +574,19 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         return sendMail(null, n);
     }
 
+    protected boolean isLocal(InternetAddress recipient) {
+        Set<String> domains = getDomains();
+        String address = recipient.getAddress();
+        int index = address.indexOf("@");
+        String domain = index > 0 ? address.substring(index + 1).toLowerCase() : null;
+        if (domain == null || domains.contains(domain)) {
+            log.debug("Known domain [" + domain + "], processing internally");
+            return true;
+        } else {
+            log.debug("Unknown domain [" + domain + "], processing externally");
+            return false;
+        }
+    }
 
     /**
      * Send mail with headers AND attachments to the emailaddresses
@@ -585,21 +599,16 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         if (log.isDebugEnabled()) {
             log.debug("Start sendmail: " + onlyto + ", " + n);
         }
-        Set domains = getDomains();
 
-        List remoteRecipients = new ArrayList();
-        List localRecipients = new ArrayList();
+        List<InternetAddress> remoteRecipients = new ArrayList<InternetAddress>();
+        List<InternetAddress>  localRecipients = new ArrayList<InternetAddress>();
         if (onlyto != null) {
             try {
                 InternetAddress[] recipients = InternetAddress.parse(onlyto);
                 for (int i = 0; i < recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
-                    domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.contains(domain.toLowerCase())) {
-                        log.debug("Known domain [" + domain + "], processing internally");
+                    if (isLocal(recipients[i])) {
                         localRecipients.add(recipients[i]);
                     } else {
-                        log.debug("Unknown domain [" + domain + "], processing externally");
                         remoteRecipients.add(recipients[i]);
                     }
                 }
@@ -611,13 +620,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             try {
                 InternetAddress[] recipients = InternetAddress.parse(to);
                 for (int i=0; i<recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
-                    domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.contains(domain.toLowerCase())) {
-                        log.debug("Known domain [" + domain + "], processing internally");
+                    if (isLocal(recipients[i])) {
                         localRecipients.add(recipients[i]);
                     } else {
-                        log.debug("Unknown domain [" + domain + "], processing externally");
                         remoteRecipients.add(recipients[i]);
                     }
                 }
@@ -630,13 +635,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
             try {
                 InternetAddress[] recipients = InternetAddress.parse(cc);
                 for (int i = 0; i < recipients.length; i++) {
-                    String domain = recipients[i].getAddress();
-                    domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                    if (domains.contains(domain.toLowerCase())) {
-                        log.debug("Known domain [" + domain + "], processing internally");
+                    if (isLocal(recipients[i])) {
                         localRecipients.add(recipients[i]);
                     } else {
-                        log.debug("Unknown domain [" + domain + "], processing externally");
                         remoteRecipients.add(recipients[i]);
                     }
                 }
@@ -648,13 +649,9 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 try {
                     InternetAddress[] recipients = InternetAddress.parse(bcc);
                     for (int i = 0; i < recipients.length; i++) {
-                        String domain = recipients[i].getAddress();
-                        domain = domain.substring(domain.indexOf("@") + 1, domain.length());
-                        if (domains.contains(domain.toLowerCase())) {
-                            log.debug("Known domain [" + domain + "], processing internally");
+                        if (isLocal(recipients[i])) {
                             localRecipients.add(recipients[i]);
                         } else {
-                            log.debug("Unknown domain [" + domain + "], processing externally");
                             remoteRecipients.add(recipients[i]);
                         }
                     }
