@@ -14,7 +14,7 @@ import javax.mail.internet.*;
  * it only implements commands listed in section 4.5.1 of RFC 2821.
  *</p>
  * <h1>How are multiparts dispatched to mmbase objects?</h2>
- * <p> 
+ * <p>
  * If the mimetype of the message itself is not multipart, then the message can simply be stored in
  * a object of the type 'emails'. The mime-type of the mail can be sotred in the mime-type field of
  * the message.
@@ -32,7 +32,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.1 2007-08-06 12:04:50 michiel Exp $
+ * @version $Id: SMTPHandler.java,v 1.2 2007-08-16 16:34:12 michiel Exp $
  */
 public class SMTPHandler extends MailHandler implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -192,7 +192,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
                 String recepient[] = parseAddress(address);
                 if (recepient.length != 2) {
                     log.service("Can't parse address " + address);
-                    writer.write("553 This user format is unknown here\r\n");// 
+                    writer.write("553 This user format is unknown here\r\n");//
                     writer.flush();
                     return;
                 }
@@ -212,7 +212,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
                         writer.write("250 Yeah, that user lives here. Bring on the data!\r\n");
                         writer.flush();
                         return;
-                    } 
+                    }
                 }
                 log.service("Mail for domain " + domain + " not accepted, not one of " + domains);
                 writer.write("553 We do not accept mail for domain '" + domain + "'\r\n");
@@ -222,6 +222,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
         }
 
         if (uLine.startsWith("DATA")) {
+            log.debug("data");
             if (state < STATE_RCPTTO) {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
@@ -233,6 +234,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
                 writer.flush();
             } else {
                 // start reading all the data, until the '.'
+                log.debug("354 Enter mail, end with CRLF.CRLF");
                 writer.write("354 Enter mail, end with CRLF.CRLF\r\n");
                 writer.flush();
                 char[] endchars = {'\r', '\n', '.', '\r', '\n'};
@@ -255,6 +257,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
                     }
                     last5chars[last5chars.length - 1] = (char)c;
 
+                    log.trace("" + last5chars);
                     isreading = false;
                     for (int i = 0; i < last5chars.length; i++) {
                         if (last5chars[i] != endchars[i]) {
@@ -266,12 +269,20 @@ public class SMTPHandler extends MailHandler implements Runnable {
 
                 // Copy everything but the '.\r\n' to the result
                 String result = data.substring(0, data.length() - 3);
-                if (handleData(result)) {
-                    writer.write("250 Rejoice! We will deliver this email to the user.\r\n");
-                    writer.flush();
-                    state = STATE_MAILFROM;
-                } else  {
-                    writer.write("550 Message not accepted.\r\n");
+                try {
+                    if (handleData(result)) {
+                        log.debug("250 Rejoice! We will deliver this email to the user.");
+                        writer.write("250 Rejoice! We will deliver this email to the user.\r\n");
+                        writer.flush();
+                        state = STATE_MAILFROM;
+                    } else  {
+                        log.debug("550 Message not accepted.");
+                        writer.write("550 Message not accepted.\r\n");
+                        writer.flush();
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    writer.write("550 Message error " + e.getMessage() + "\r\n");
                     writer.flush();
                 }
             }
