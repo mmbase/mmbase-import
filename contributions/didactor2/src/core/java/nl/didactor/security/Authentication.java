@@ -58,7 +58,7 @@ public class Authentication extends org.mmbase.security.Authentication {
     }
     static final UserContext ANONYMOUS;
     static {
-        ANONYMOUS  = new UserContext("anonymous", "anonymous", Rank.ANONYMOUS, "anonymous");        
+        ANONYMOUS  = new UserContext("anonymous", "anonymous", Rank.ANONYMOUS, "anonymous");
         Rank.createRank(50,  "didactor user"); // lower than 'basic' user, because normally didactor
                                                // users may not enter generic editors.
         Rank.createRank(200, "editor");
@@ -112,7 +112,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                         if (uc == null) {
                             log.warn("Logging out a user who is not logged in! This cannot be reported!");
                         } else {
-                            Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), 
+                            Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(),
                                                     null, null, null, "LOGOUT", null, "logout");
                             EventDispatcher.report(event, request, response);
                         }
@@ -222,7 +222,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                 request.getSession(true).setAttribute("didactor-logincomponent", ac.getName());
                 Integer usernumber = uc.getUserNumber();
                 Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), null, null, null,
-                                        "LOGIN", usernumber != null ? usernumber.toString() : null, 
+                                        "LOGIN", usernumber != null ? usernumber.toString() : null,
                                         "login");
                 EventDispatcher.report(event, request, response);
                 if (! uc.getAuthenticationType().equals(application)) {
@@ -269,7 +269,7 @@ public class Authentication extends org.mmbase.security.Authentication {
                     } else {
                         referUrl += "?";
                     }
-                    referUrl += "referrer=" + request.getRequestURI(); 
+                    referUrl += "referrer=" + request.getRequestURI();
                     if (referUrl.startsWith("/")) {
                         referUrl = request.getContextPath() + referUrl;
                     }
@@ -336,13 +336,13 @@ public class Authentication extends org.mmbase.security.Authentication {
 
     public String[] getTypes(int method) {
         switch(method) {
-        case METHOD_ASIS: 
+        case METHOD_ASIS:
             return new String[] {"anonymous", "login", "class"};
         case METHOD_HTTP:
             return new String[] {"name/password"};
         case METHOD_DELEGATE:
         case METHOD_SESSIONDELEGATE:
-            return new String[] {"login"}; // redirect page
+            return new String[] {"login", "name/password"}; // redirect page
         case METHOD_LOGINPAGE:
             return new String[] {"name/password", "login"};
         default:
