@@ -5,18 +5,22 @@
   <property name="project.name"   value="email" />
   <property name="project.package"   value="org/mmbase/applications/email" />
 
-  <property name="project.jars.dir"        location="build" />
-  <property name="project.jars.includes"   value="mail.jar" />
+  <property name="project.jars.includes"   value="email/build/mail.jar,crontab/build/mmbase-crontab.jar" />
 
   <import file="../buildbase-include.xml" />
 
   <property file="build.properties.default" />
 
-  
-  <target name="jar" description="Create mmbase-email.jar" depends="mail.jar,buildbase.jar" />
+  <target name="crontab">
+    <echo message="${applications.dir}/crontab" />
+    <ant dir="${applications.dir}/crontab" inheritAll="false" />
+  </target>
+
+
+  <target name="jar" description="Create mmbase-email.jar" depends="crontab,mail.jar,buildbase.jar" />
 
   <target name="mail.jar" description="Get Mail jar">
-    
+
     <echo message="mail" />
 
     <antcall target="downloadzip">
