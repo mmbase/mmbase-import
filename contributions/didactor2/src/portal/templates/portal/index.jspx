@@ -5,16 +5,16 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
-  <!-- 
+  <!--
        using doctype (strict mode) and returning text/xhml (in stead of application/xhtml+xml
        to please IE, which is a nasty, lousy browser
   -->
 
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/> 
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
-  <mm:content 
+  <mm:content
       type="application/xhtml+xml"
       unacceptable="CRIPPLE"
       postprocessor="none" expires="0">
@@ -30,8 +30,8 @@
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:treefile>
         <mm:treefile page="/portal/style/print.css"  objectlist="$includePath" write="false">
-          <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" /> 
-          <link href="${_}" rel="stylesheet" type="text/css"  media="print"/> 
+          <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
+          <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
         </mm:treefile>
         <mm:haspage page="/mmbase/style/css/mmxf.css">
           <mm:link page="/mmbase/style/css/mmxf.css">
@@ -41,7 +41,7 @@
       </head>
       <body class="portal">
         <mm:treeinclude debug="html" page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
-        
+
         <mm:treeinclude debug="html" page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids">
           <mm:param name="escapeamps">true</mm:param>
         </mm:treeinclude>
@@ -55,10 +55,10 @@
                 <c:when test="${c eq 'ignore'}">
                 </c:when>
                 <c:when test="${empty c}">
-                  <mm:treeinclude page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
+                  <mm:treeinclude debug="html" page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
                 </c:when>
                 <c:otherwise>
-                  <mm:treeinclude page="/portal/${c}.div.jspx"  objectlist="$includePath" referids="$referids,col,referids,includePath" />
+                  <mm:treeinclude debug="html" page="/portal/${c}.div.jspx"  objectlist="$includePath" referids="$referids,col,referids,includePath" />
                 </c:otherwise>
               </c:choose>
             </div>

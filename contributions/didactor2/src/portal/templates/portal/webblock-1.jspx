@@ -3,7 +3,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:di-portal="urn:jsptagdir:/WEB-INF/tags/di/portal"     
+    xmlns:di-portal="urn:jsptagdir:/WEB-INF/tags/di/portal"
     >
   <jsp:output omit-xml-declaration="yes" />
 
@@ -15,7 +15,6 @@
     -->
     <mm:field name="description"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
     <ul>
-      
       <mm:relatednodes type="object" role="posrel" orderby="posrel.pos">
         <mm:nodeinfo type="type">
           <c:choose>

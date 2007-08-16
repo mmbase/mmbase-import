@@ -43,7 +43,7 @@
           <a href="${_}" class="navigate">&amp;gt;&amp;gt;</a>
         </mm:link>
         <mm:relatednodes type="images" max="1">
-          <hr />                                  
+          <hr />
         </mm:relatednodes>
       </div>
     </mm:relatednodes>
