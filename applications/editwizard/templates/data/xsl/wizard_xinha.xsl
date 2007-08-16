@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard_xinha.xsl,v 1.2 2006-07-10 11:59:57 pierre Exp $
+    @version $Id: wizard_xinha.xsl,v 1.2.2.1 2007-08-16 10:44:45 andre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -124,7 +124,7 @@
       <xsl:comment>help IE</xsl:comment>
     </script>
 
-    <script type="text/javascript" src="{$htmlareadir}my-lang/{$language}.js">
+    <script type="text/javascript" src="{$htmlareadir}lang/{$language}.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
 
