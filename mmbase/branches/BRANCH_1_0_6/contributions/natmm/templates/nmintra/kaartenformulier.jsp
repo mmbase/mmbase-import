@@ -236,7 +236,7 @@ function small_window(NaamPagina) {
     wtop = 0;
   }
   
-var props = 'scrollBars=no,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width='+wwidth+',height='+wheight+',top='+wtop+',left='+wleft;
+var props = 'scrollBars=yes,resizable=no,toolbar=no,status=0,minimize=no,statusbar=0,menubar=no,directories=no,width='+wwidth+',height='+wheight+',top='+wtop+',left='+wleft;
 <%
    StringBuffer pageUrl = javax.servlet.http.HttpUtils.getRequestURL(request);
 %>
