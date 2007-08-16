@@ -10,14 +10,14 @@
     <mm:form name="edituser">
       <mm:import externid="change" />
 
-      <input type="hidden" name="processupload" value="true"/>       
+      <input type="hidden" name="processupload" value="true"/>
       <table class="Font">
         <tr>
           <td>
             <table class="Font">
               <mm:node number="$user" id="my_user">
-                <mm:fieldlist 
-                    fields="initials,firstname,lastname,email,address,zipcode,city,telephone,remarks,username,password,confirmpassword">
+                <mm:fieldlist
+                    fields="initials,firstname,lastname,email,address,zipcode,city,telephone,remarks,password,confirmpassword">
                   <tr>
                     <td style="vertical-align: top"><mm:fieldinfo type="guiname"/></td>
                     <td>
@@ -30,7 +30,7 @@
 
                   <mm:relatednodes type="images" max="1">
                     <mm:node id="image" />
-                    <td>                        
+                    <td>
                       <di:translate key="portfolio.newphoto" />
                     </td>
                     <td>
@@ -85,14 +85,14 @@
               </mm:node>
             </c:if>
           </mm:present>
-          <mm:commit />          
+          <mm:commit />
           <p>Saved.</p>
         </mm:valid>
         <mm:valid inverse="true">
           <p>Not saved because not valid.</p>
         </mm:valid>
       </mm:present>
-      
+
       <input class="formbutton" type="submit" name="change" value="${di:translate(pageContext, 'portfolio.save')}" />
     </mm:form>
   </mm:cloud>
