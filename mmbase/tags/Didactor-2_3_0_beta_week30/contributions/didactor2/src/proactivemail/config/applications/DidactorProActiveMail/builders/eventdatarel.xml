@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="eventdatarel" maintainer="didactor.nl" version="1" extends="insrel">
+  <status>active</status>
+
+  <classfile>org.mmbase.module.corebuilders.InsRel</classfile>
+  <searchage>1000</searchage>
+
+  <names>
+    <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Event Type Relation</singular>
+    <singular xml:lang="nl">Gebeurtenis Type Relatie</singular>
+  
+    <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="en">Event Type Relations</plural>
+    <plural xml:lang="nl">Gebeurtenis Type Relaties</plural>
+  </names>
+
+  <descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="en">Relation to events</description>
+    <description xml:lang="nl">Relatie aan gebeurtenis</description>
+  </descriptions>
+
+  <fieldlist>
+    
+    <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">EventType</description>
+        <description xml:lang="nl">GebeurtenisType</description>
+      </descriptions>
+      <!-- gui related -->
+      <gui>
+        <guiname xml:lang="en">EventID</guiname>
+        <guiname xml:lang="nl">GebeurtenisID</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <!-- editor related  -->
+      <editor>
+        <positions>
+          <!-- position in the input area of the editor -->
+          <input>3</input>
+          <!-- position in list area of the editor -->
+          <list>3</list>
+          <!-- position in search area of the editor -->
+          <search>3</search>
+        </positions>
+      </editor>
+      <!-- database related  -->
+      <db>
+        <!-- name of the field in the database -->
+        <name>eventid</name>
+        <!-- MMBase datatype and demands on it -->
+        <type state="persistent" notnull="true" key="false">INTEGER</type>
+      </db>
+    </field>
+ </fieldlist>
+</builder>

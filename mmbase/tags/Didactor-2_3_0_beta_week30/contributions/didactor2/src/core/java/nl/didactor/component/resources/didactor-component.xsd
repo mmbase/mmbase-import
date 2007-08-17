@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<xsd:schema
+    xmlns="http://www.mmbase.org/xmlns/didactor-component"
+    targetNamespace="http://www.mmbase.org/xmlns/didactor-component"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1.0"
+    >
+
+  <xsd:import
+      namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+      />
+
+  <xsd:element name="component">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="scope" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="setting" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:attribute name="name" type="xsd:string" />
+                  <xsd:attribute name="type">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="integer" />
+                        <xsd:enumeration value="boolean" />
+                        <xsd:enumeration value="domain" />
+                        <xsd:enumeration value="string" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:attribute>
+                  <xsd:attribute name="default" type="xsd:string" />
+                  <xsd:attribute name="prompt" type="xsd:string" />
+                  <xsd:attribute name="canbeempty" type="xsd:boolean" default="true" />
+                  <xsd:attribute name="ref" type="xsd:string" />
+                </xsd:complexType>
+                <!-- can't get it working if @name can be null if @ref is defined
+                <xsd:key name="setting">
+                  <xsd:selector xpath="."/>
+                  <xsd:field xpath="@name"/>
+                </xsd:key>
+                <xsd:keyref name="settingRef" refer="setting">
+                  <xsd:selector xpath="."/>
+                  <xsd:field xpath="@ref"/>
+                </xsd:keyref>
+                -->
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="name">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="component" />
+                  <xsd:enumeration value="providers" />
+                  <xsd:enumeration value="educations" />
+                  <xsd:enumeration value="classes" />
+                  <xsd:enumeration value="people" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="referid" type="xsd:string" />
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="templatepath" form="unqualified" type="xsd:string" />
+      <xsd:attribute name="templatebar" form="unqualified" type="xsd:string" />
+      <xsd:attribute name="barposition" form="unqualified" type="xsd:string" />
+    </xsd:complexType>
+    <xsd:unique name="scopes">
+      <xsd:selector xpath="./scope" />
+      <xsd:field xpath="@name"/>
+    </xsd:unique>
+  </xsd:element>
+</xsd:schema>

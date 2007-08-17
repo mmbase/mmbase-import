@@ -1,0 +1,16 @@
+<mm:node
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <jsp:output omit-xml-declaration="yes" />
+  <div class="banner">
+    <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
+      <a href="${_node.url}">
+	<mm:relatednodes type="images">
+	  <mm:image mode="img" template="s(200)" />
+	</mm:relatednodes>
+      </a>
+    </mm:relatednodes>
+  </div>
+</mm:node>

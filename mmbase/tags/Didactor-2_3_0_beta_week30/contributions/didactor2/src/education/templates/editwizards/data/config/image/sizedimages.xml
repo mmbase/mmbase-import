@@ -1,0 +1,61 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="sizerel" destination="images">
+  <title xml:lang="nl">Bijbehorende afbeeldingen</title>
+  <title xml:lang="en">Related images</title>
+
+  <item>
+    <field name="title" ftype="data">
+      <prompt xml:lang="nl">Titel</prompt>
+      <prompt xml:lang="en">Title</prompt>
+    </field>
+    <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+      <prompt xml:lang="nl">Positie</prompt>
+      <prompt xml:lang="en">Position</prompt>
+    </field>
+    <field ftype="data" name="description" rows="8">
+      <prompt xml:lang="nl">Omschrijving</prompt>
+      <prompt xml:lang="en">Description</prompt>
+    </field>
+    <field ftype="image" name="title">
+      <prompt xml:lang="nl">Afbeelding</prompt>
+      <prompt xml:lang="en">Image</prompt>
+    </field>
+    <field ftype="line" name="width" fdatapath="field[@name='width']">
+      <prompt xml:lang="nl">Breedte</prompt>
+      <prompt xml:lang="en">Width</prompt>
+    </field>
+    <field ftype="line" name="height" fdatapath="field[@name='height']">
+      <prompt xml:lang="nl">Hoogte</prompt>
+      <prompt xml:lang="en">Height</prompt>
+    </field>
+    <field wizardname="config/image/image" ftype="startwizard" />
+  </item>
+
+  <command name="startwizard" inline="true" wizardname="config/image/image" objectnumber="new" />
+
+  <command name="search" nodepath="images" fields="title,description,itype" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar afbeeldingen</prompt>
+    <prompt xml:lang="en">Search for images</prompt>
+    <search-filter>
+      <name xml:lang="nl">Titel bevat</name>
+      <name xml:lang="en">Title contains</name>
+      <search-fields>title</search-fields>
+    </search-filter>
+    <search-filter>
+      <name xml:lang="nl">Omschrijving bevat</name>
+      <name xml:lang="en">Title contains</name>
+      <search-fields>description</search-fields>
+    </search-filter>
+    <search-filter>
+      <name xml:lang="nl">Bestandsnaam bevat</name>
+      <name xml:lang="en">Description contains</name>
+      <search-fields>title</search-fields>
+    </search-filter>
+  </command>
+
+  <action type="create">
+    <relation role="sizerel" destinationtype="images">
+      <field name="pos">{sum(//relation[@role='sizerel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+    </relation>
+  </action>
+</list>
