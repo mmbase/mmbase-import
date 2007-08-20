@@ -38,6 +38,12 @@
     <div class="editor">
       <div class="body">
 
+<!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
+<c:set var="hasWorkflow" value="false"/>
+<mm:haspage page="/editors/workflow">
+	<c:set var="hasWorkflow" value="true"/>
+</mm:haspage>
+
 
 <mm:node number="$parentchannel" jspvar="parentchannelnode">
 <% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
@@ -201,21 +207,21 @@
 			   </c:otherwise>
 			</c:choose>
 		</td>
-<%-- 
-		<td width="10" onMouseDown="objClick(this);">
-			<c:set var="status" value="waiting"/>
-			<mm:relatednodes type="workflowitem">
-				<c:set var="status"><mm:field name="status"/></c:set>
-			</mm:relatednodes>
-			<c:if test="${status == 'waiting'}">
-				<mm:listnodes type="remotenodes" constraints="sourcenumber=${number}">
-					<c:set var="status" value="onlive"/>
-				</mm:listnodes>
-			</c:if>
-			<img src="../gfx/icons/status_${status}.png" alt="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" />
-		</td>
- --%>
-         </tr>
+        <c:if test="${hasWorkflow}">
+			<td width="10" onMouseDown="objClick(this);">
+				<c:set var="status" value="waiting"/>
+				<mm:relatednodes type="workflowitem">
+					<c:set var="status"><mm:field name="status"/></c:set>
+				</mm:relatednodes>
+				<c:if test="${status == 'waiting'}">
+					<mm:listnodes type="remotenodes" constraints="sourcenumber=${number}">
+						<c:set var="status" value="onlive"/>
+					</mm:listnodes>
+				</c:if>
+				<img src="../gfx/icons/status_${status}.png" alt="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" />
+			</td>
+		</c:if>
+      </tr>
    </mm:listnodes>
       </tbody>
    </table>
