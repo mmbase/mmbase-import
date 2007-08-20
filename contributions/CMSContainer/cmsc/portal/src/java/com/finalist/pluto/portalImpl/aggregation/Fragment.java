@@ -20,14 +20,11 @@
 package com.finalist.pluto.portalImpl.aggregation;
 
 import java.io.IOException;
-import java.util.Collection;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.finalist.cmsc.services.Parameters;
-import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public interface Fragment {
 
@@ -51,41 +48,11 @@ public interface Fragment {
 	public String getId();
 
 	/**
-	 * Returns the parent fragment. If this fragment is the root fragment the
-	 * return value is NULL
-	 * 
-	 * @return the parent fragment or NULL if this is the root fragment
-	 */
-	public Fragment getParent();
-
-	/**
 	 * Returns the initialization parameters of this fragment
 	 * 
 	 * @return the init parameters
 	 */
 	public Parameters getInitParameters();
-
-	/**
-	 * Returns a collection of all child fragments
-	 * 
-	 * @return a collection containing objects implementing the interface
-	 *         fragment
-	 */
-	public Collection<Fragment> getChildFragments();
-
-	/**
-	 * Adds an child to the fragment
-	 * 
-	 * @param child the child fragment
-	 */
-	public void addChild(Fragment child);
-
-	/**
-	 * Creates an URL pointing to this fragment
-	 * 
-	 * @param url the PortalURL object used
-	 */
-	public void createURL(PortalURL url);
 
 	public String getKey();
 }

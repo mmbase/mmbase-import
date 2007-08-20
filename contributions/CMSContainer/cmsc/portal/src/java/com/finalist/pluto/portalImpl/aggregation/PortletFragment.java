@@ -53,14 +53,13 @@ import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
  *
  * @author Wouter Heijke
  */
-public class PortletFragment extends AbstractFragmentSingle {
+public class PortletFragment extends AbstractFragment {
     
     private static Log log = LogFactory.getLog(PortletFragment.class);
 
     public static final String PORTLET_ERROR_MSG = "Error occurred in portlet!";
 
 	private com.finalist.cmsc.beans.om.Portlet portlet;
-    private String layoutId;
 	private PortletWindow portletWindow;
     private StringWriter storedWriter;
 
@@ -72,7 +71,6 @@ public class PortletFragment extends AbstractFragmentSingle {
             View view) throws Exception {
 		super(layoutId, config, parent);
 		this.portlet = portlet;
-        this.layoutId = layoutId;
 
         PortletEntityImpl portletEntity = new PortletEntityImpl();
         portletEntity.setId(getId());
@@ -84,7 +82,7 @@ public class PortletFragment extends AbstractFragmentSingle {
             log.debug("Create - portlet: " + portlet.getId());
             
 			PreferenceSetImpl ps = (PreferenceSetImpl) portletEntity.getPreferenceSet(); 
-            setDefaultPreferences(parent, portlet, ps);
+            setDefaultPreferences(ps);
             
             List<Object> p = portlet.getPortletparameters();
 			if (p.size() > 0) {
@@ -123,17 +121,31 @@ public class PortletFragment extends AbstractFragmentSingle {
 		((PortletWindowListCtrl) windowList).add(portletWindow);
 	}
 
-    protected void setDefaultPreferences(Fragment parent, com.finalist.cmsc.beans.om.Portlet portlet, PreferenceSetImpl ps) {
-        ScreenFragment screenFragment = (ScreenFragment)parent;
-        ps.add(PortalConstants.CMSC_OM_PAGE_ID, screenFragment.getPage().getId());
+    protected void setDefaultPreferences(PreferenceSetImpl ps) {
         ps.add(PortalConstants.CMSC_OM_PORTLET_ID, String.valueOf(portlet.getId()));
         ps.add(PortalConstants.CMSC_OM_PORTLET_DEFINITIONID, String.valueOf(portlet.getDefinition()));
-        ps.add(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, String.valueOf(layoutId));
     }
 
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    public void processAction(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        setupRequest(request);
+        
+        try {
+            PortletContainerFactory.getPortletContainer().processPortletAction(portletWindow,
+                    ServletObjectAccess.getServletRequest(request, portletWindow),
+                    ServletObjectAccess.getServletResponse(response));
+        } catch (PortletException e) {
+            log.fatal("process portlet raised an exception", e);
+        } catch (PortletContainerException e) {
+            log.fatal("portlet container raised an exception", e);
+        }
+    }
+
+    
+	public void service(HttpServletRequest request, HttpServletResponse response) {
 		log.debug("PortletFragment service enters");
         storedWriter = new StringWriter();
+        setupRequest(request);
         
 		HttpServletRequest wrappedRequest = ServletObjectAccess.getServletRequest(request, portletWindow);
 		// load the Portlet
@@ -216,6 +228,10 @@ public class PortletFragment extends AbstractFragmentSingle {
 		log.debug("PortletFragment service exits");
 	}
 
+    private void setupRequest(HttpServletRequest request) {
+        request.setAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, getKey());
+    }
+
     private ServletDefinition getServletDefinition() {
         ServletDefinition servletDefinition = null;
 		PortletEntity portletEntity = portletWindow.getPortletEntity();
@@ -238,7 +254,6 @@ public class PortletFragment extends AbstractFragmentSingle {
         PrintWriter responseWriter = response.getWriter();
         try {
             boolean unavailable = getServletDefinition().isUnavailable();
-            request.setAttribute("layoutId", layoutId);
             request.setAttribute(PortalConstants.FRAGMENT, this);
 
             
@@ -265,7 +280,6 @@ public class PortletFragment extends AbstractFragmentSingle {
     			rdFooter.include(request, response);
     			
                 request.removeAttribute(PortalConstants.FRAGMENT);
-    			request.removeAttribute("layoutId");
     		}
         } catch (ServletException e) {
             log.error("Error in portlet servlet");
@@ -279,11 +293,6 @@ public class PortletFragment extends AbstractFragmentSingle {
         }
     }
 
-	public void createURL(PortalURL url) {
-		getParent().createURL(url);
-		url.addLocalNavigation(getId());
-	}
-
 	public PortletWindow getPortletWindow() {
 		return portletWindow;
 	}
@@ -291,10 +300,6 @@ public class PortletFragment extends AbstractFragmentSingle {
 	public com.finalist.cmsc.beans.om.Portlet getPortlet() {
 		return portlet;
 	}
-
-    public String getLayoutId() {
-        return layoutId;
-    }
     
 	protected String getErrorMsg(Throwable t) {
         if (ServerUtil.isStaging()) {

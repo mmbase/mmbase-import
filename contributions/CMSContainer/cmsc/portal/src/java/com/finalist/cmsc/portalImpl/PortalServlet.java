@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Properties;
 
-import javax.portlet.PortletException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -25,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
-import org.apache.pluto.om.window.PortletWindow;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.ServerUtil;
@@ -41,7 +39,6 @@ import com.finalist.cmsc.services.ServiceManager;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 import com.finalist.pluto.portalImpl.services.log.CommonsLogging;
-import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
 
 /**
  * Portal controller servlet. Alle portal requests gaan door deze servlet.
@@ -147,34 +144,24 @@ public class PortalServlet extends HttpServlet {
         }
         
 		PortalControlParameter control = new PortalControlParameter(currentURL);
-		PortletWindow actionWindow = getPortletWindowOfAction(registry, control);
-		if (isActiuonUrl(actionWindow)) {
-			processActionPhase(request, response, control, actionWindow);
-			return; // we issued an redirect, so return directly
+		if (isActionUrl(control)){
+            String id = control.getPortletWindowOfAction();
+
+            log.debug("===>CONTROL='" + control.toString() + "'");
+            log.debug("===>WINDOW='" + id + "'");
+
+            ScreenFragment screen = registry.getScreen();
+            screen.processAction(request, response, id);
+            return; // we issued an redirect, so return directly
 		}
 
 		processRenderPhase(request, response, registry, currentURL);
 		log.debug("===>PortalServlet.doGet EXIT!");
 	}
 
-    private void processActionPhase(HttpServletRequest request, HttpServletResponse response,
-            PortalControlParameter control, PortletWindow actionWindow) throws IOException {
-        log.debug("===>CONTROL='" + control.toString() + "'");
-        log.debug("===>WINDOW='" + actionWindow.toString() + "'");
-
-        try {
-        	PortletContainerFactory.getPortletContainer().processPortletAction(actionWindow,
-        			ServletObjectAccess.getServletRequest(request, actionWindow),
-        			ServletObjectAccess.getServletResponse(response));
-        } catch (PortletException e) {
-        	log.fatal("process portlet raised an exception", e);
-        } catch (PortletContainerException e) {
-        	log.fatal("portlet container raised an exception", e);
-        }
-    }
-
-    private boolean isActiuonUrl(PortletWindow actionWindow) {
-        return actionWindow != null;
+    private boolean isActionUrl(PortalControlParameter control) {
+        String id = control.getPortletWindowOfAction();
+        return id != null;
     }
     
     protected RssFeed getRssFeed(String path) {
@@ -236,9 +223,14 @@ public class PortalServlet extends HttpServlet {
                         View view = SiteManagement.getView(portlet.getView());
 
                         PortletFragment pf = new PortletFragment(sc, sf, layoutId, portlet, definition, view);
-                        sf.addChild(pf);
+                        if (pf != null) {
+                            sf.addChild(pf);
+                        }
                     } else {
-                        createDefaultPortlet(sf, page, layoutId);
+                        PortletFragment pf = createDefaultPortlet(sf, page, layoutId);
+                        if (pf != null) {
+                            sf.addChild(pf);
+                        }
                     }
                 }
 
@@ -250,31 +242,20 @@ public class PortalServlet extends HttpServlet {
         return null;
     }
     
-    private void createDefaultPortlet(ScreenFragment sf, Page page, String layoutId) {
+    private PortletFragment createDefaultPortlet(ScreenFragment sf, Page page, String layoutId) {
         try {
             Portlet empty = SiteManagement.getPortlet(-1);
             PortletDefinition definition = SiteManagement.getPortletDefinition(empty.getDefinition());
             page.addPortlet(layoutId, -1);
             EmptyFragment ef = new EmptyFragment(sc, sf, layoutId, empty, definition);
-            sf.addChild(ef);
+            return ef;
         } catch (Exception e) {
             log.error("cannot create default portlet");
             if (log.isDebugEnabled()) {
                 log.debug(e);
             }
+            return null;
         }
-    }
-
-
-    public PortletWindow getPortletWindowOfAction(PortalRegistry registry, PortalControlParameter control) {
-        String id = control.getPortletWindowOfAction();
-        if (id != null) {
-            Fragment fragment = registry.getFragment(id);
-            if (fragment instanceof PortletFragment) {
-                return ((PortletFragment) fragment).getPortletWindow();
-            }
-        }
-        return null;
     }
 
     
