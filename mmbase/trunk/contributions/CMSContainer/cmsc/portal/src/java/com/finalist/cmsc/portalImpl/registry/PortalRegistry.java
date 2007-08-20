@@ -9,31 +9,22 @@
  */
 package com.finalist.cmsc.portalImpl.registry;
 
-import java.util.Iterator;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.finalist.pluto.portalImpl.aggregation.Fragment;
 import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 
 /**
  * Registry to keep track of things in the CMSC Portal
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PortalRegistry {
-	private static Log log = LogFactory.getLog(PortalRegistry.class);
 
 	private static final String PORTAL_REGISTRY = "com.finalist.pluto.portalImpl.core.PortalRegistry";
 
 	private ScreenFragment screen;
 
-	private static String contextPath;
-	
 	public static PortalRegistry getPortalRegistry(HttpServletRequest request) {
 		PortalRegistry reg = (PortalRegistry) request.getSession().getAttribute(PORTAL_REGISTRY);
 		if (reg == null) {
@@ -41,7 +32,6 @@ public class PortalRegistry {
 			request.getSession().setAttribute(PORTAL_REGISTRY, reg);
 		}
 		
-		contextPath = request.getContextPath();
 		return reg;
 	}
 	
@@ -52,27 +42,5 @@ public class PortalRegistry {
 	public ScreenFragment getScreen() {
 		return this.screen;
 	}
-	
-	public String getContextPath() {
-		return contextPath;
-	}
 
-	public Fragment getFragment(String id) {
-		Fragment fragment = null;
-		ScreenFragment s = getScreen();
-        if (s != null) {
-    		Iterator<Fragment> iterator = s.getChildFragments().iterator();
-    		while (iterator.hasNext()) {
-    			Fragment tmp = iterator.next();
-    			if (tmp != null) {
-    				if (tmp.getKey().equalsIgnoreCase(id)) {
-    					fragment = tmp;
-    					break;
-    				}
-    			}
-    		}
-    		log.debug("getFragment: '" + id + "':'" + fragment + "'");
-        }
-		return fragment;
-	}
 }

@@ -33,9 +33,9 @@ import org.apache.pluto.services.information.PortalContextProvider;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.portalImpl.PortalConstants;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
-import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.factory.FactoryAccess;
 
@@ -103,15 +103,25 @@ public class PortletTag extends SimpleTagSupport {
         Portlet portlet = portletFragment.getPortlet();
         portletInfo.setId(portlet.getId());
         
+        String responseContentType = response.getContentType();
+        int indexOf = responseContentType.indexOf(";");
+        if (indexOf > -1) {
+            responseContentType = responseContentType.substring(0, indexOf);
+        }
         ContentType supported = portletDefinition.getContentTypeSet().get(
-                response.getContentType());
+                responseContentType);
         PortalContextProvider portalContextProvider = FactoryAccess.getStaticProvider()
                 .getPortalContextProvider();
 
+        
         // get the list of modes this Portlet supports
         if (supported != null && portalContextProvider != null) {
-            Page page = ((ScreenFragment) portletFragment.getParent()).getPage();
-            boolean mayEditPage = SiteManagementAdmin.mayEdit(page);
+            boolean mayEditPage = true;
+            String pageId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
+            if (pageId != null) {
+                Page page = SiteManagement.getPage(Integer.valueOf(pageId));
+                mayEditPage = SiteManagementAdmin.mayEdit(page);
+            }
             boolean mayEditPortlet = SiteManagementAdmin.mayEdit(portlet);
             
             // if portlet supports portlet modes
