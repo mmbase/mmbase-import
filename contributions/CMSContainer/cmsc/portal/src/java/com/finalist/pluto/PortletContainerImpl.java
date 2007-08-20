@@ -106,18 +106,17 @@ public class PortletContainerImpl extends org.apache.pluto.PortletContainerImpl 
 				ObjectID id = portletWindow.getId();
 				PortalRegistry registry = PortalRegistry.getPortalRegistry(servletRequest);
 
-				Fragment fragment = registry.getFragment(id.toString());
+                ScreenFragment screenFragment = registry.getScreen();
+				Fragment fragment = screenFragment.getFragment(id.toString());
+
 				if (fragment instanceof EmptyFragment) {
 					log.debug("Can't delete empty portlets of this type.");
 				} else if (fragment instanceof PortletFragment) {
-                    ScreenFragment screenFragment = registry.getScreen();
                     PortletFragment portletFragment = (PortletFragment) fragment;
-                    if (screenFragment != null && portletFragment != null) {
-                        Page page = screenFragment.getPage();
-                        Portlet portlet = portletFragment.getPortlet();
-                        String layoutId = portletFragment.getLayoutId();
-                        SiteManagementAdmin.deleteScreenPortlet(page, portlet, layoutId);
-                    }
+                    Page page = screenFragment.getPage();
+                    Portlet portlet = portletFragment.getPortlet();
+                    String layoutId = portletFragment.getKey();
+                    SiteManagementAdmin.deleteScreenPortlet(page, portlet, layoutId);
 				} else {
 					log.debug("Can't delete portlets of this type " + fragment.getClass().getName());
 				}

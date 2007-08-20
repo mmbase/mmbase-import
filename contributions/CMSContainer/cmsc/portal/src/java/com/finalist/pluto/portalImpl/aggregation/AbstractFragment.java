@@ -19,23 +19,14 @@
 
 package com.finalist.pluto.portalImpl.aggregation;
 
-import java.io.IOException;
-import java.util.Collection;
-
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.finalist.cmsc.services.Parameters;
-import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public abstract class AbstractFragment implements Fragment {
 
 	private String id;
 
 	private ServletConfig config;
-
-	private Fragment parent;
 
 	private Parameters initParameters;
 
@@ -55,11 +46,6 @@ public abstract class AbstractFragment implements Fragment {
 		}
 
 		this.config = config;
-		this.parent = parent;
-	}
-
-	public Fragment getParent() {
-		return parent;
 	}
 
 	public String getId() {
@@ -69,12 +55,6 @@ public abstract class AbstractFragment implements Fragment {
 	public Parameters getInitParameters() {
 		return initParameters;
 	}
-
-	public abstract Collection<Fragment> getChildFragments();
-
-	public abstract void addChild(Fragment child);
-
-	public abstract void createURL(PortalURL url);
 
 	// additional methods.
 	public ServletConfig getServletConfig() {
@@ -102,10 +82,4 @@ public abstract class AbstractFragment implements Fragment {
 	public String getInitParameterValue(String name) {
 		return initParameters.getString(name);
 	}
-
-	public abstract void preService(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException;
-
-	public abstract void postService(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException;
 }

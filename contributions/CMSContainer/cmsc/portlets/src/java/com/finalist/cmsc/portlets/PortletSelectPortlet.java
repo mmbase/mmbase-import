@@ -36,9 +36,8 @@ public class PortletSelectPortlet extends CmscPortlet {
     @Override
     public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException {
         getLogger().debug("===>PortletSelectPortlet.EDIT mode");
-        PortletPreferences preferences = request.getPreferences();
-        String screenId = preferences.getValue(PortalConstants.CMSC_OM_PAGE_ID, null);
-        String layoutId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
+        String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
+        String layoutId = (String) request.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
 
         // get selected portlet if any..
         String action = request.getParameter("action");
@@ -73,9 +72,8 @@ public class PortletSelectPortlet extends CmscPortlet {
      */
     @Override
     protected void doEditDefaults(RenderRequest req, RenderResponse res) throws PortletException, IOException {
-        PortletPreferences preferences = req.getPreferences();
-        String pageId = preferences.getValue(PortalConstants.CMSC_OM_PAGE_ID, null);
-        String layoutId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
+        String pageId = (String) req.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
+        String layoutId = (String) req.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
         
         List<PortletDefinition> portlets = SiteManagement.getSingletonPortlets(pageId, layoutId);;
         List<PortletDefinition> portletdefinitions = SiteManagement.getPortletDefintions(pageId, layoutId);;
