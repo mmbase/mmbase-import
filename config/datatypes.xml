@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.57 2007-08-14 12:20:17 andre Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.58 2007-08-21 13:30:38 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -524,6 +524,7 @@
       <description xml:lang="en">
         Enumeration for the 'dir' field of certain MMBase system builders.
       </description>
+      <default value="2" />
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.dirs" />
       </enumeration>
