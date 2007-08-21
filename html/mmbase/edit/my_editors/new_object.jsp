@@ -96,10 +96,11 @@
           <div class="row">
             <label for="mm_<mm:fieldinfo type="name" />">
               <strong><mm:fieldinfo type="guiname" /></strong>
-              <a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a>
+			  <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+			  <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
             </label>
             <span class="content"><mm:fieldinfo type="guivalue" /></span>
-            <div class="description" style="display: none;" id="descr_<mm:fieldinfo type="name" />"><mm:fieldinfo type="description" /></div>
+            <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
           </div>
         </mm:fieldlist>
         <div class="lastrow">&nbsp;</div>
@@ -114,10 +115,11 @@
           <div class="row">
             <label for="mm_<mm:fieldinfo type="name" />">
               <strong><mm:fieldinfo type="guiname" /></strong>
-              <a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a>
+			  <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+			  <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
             </label>
             <span class="content"><mm:fieldinfo type="input" /></span>
-            <div class="description" style="display: none;" id="descr_<mm:fieldinfo type="name" />"><mm:fieldinfo type="description" /></div>
+            <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
           </div>
         </mm:fieldlist>
         <%@ include file="inc/aliases.jsp" %>
@@ -142,10 +144,11 @@
       <div class="row">
         <label for="mm_<mm:fieldinfo type="name" />">
           <strong><mm:fieldinfo type="guiname" /></strong>
-          <a onmouseover="showBox('descr_<mm:fieldinfo type="name" />', event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />', event);return false;"><mm:fieldinfo type="name" /></a>
+          <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+          <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
         </label>
         <span class="content"><mm:fieldinfo type="input" /></span>
-        <div class="description" style="display: none;" id="descr_<mm:fieldinfo type="name" />"><mm:fieldinfo type="description" /></div>
+        <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
       </div>
     </mm:fieldlist>
    
