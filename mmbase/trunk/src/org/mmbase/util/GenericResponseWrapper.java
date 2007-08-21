@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.19 2007-02-10 16:22:36 nklasens Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.20 2007-08-21 14:30:59 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -83,7 +83,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * @since MMBase-1.7.1
      */
     public HttpServletResponse getHttpServletResponse() {
-        //return (HttpServletResponse) getResponse(); // shoudl work, I think, but doesn't
+        //return (HttpServletResponse) getResponse(); // should work, I think, but doesn't
         HttpServletResponse response = wrappedResponse;
         while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
             response = ((GenericResponseWrapper) response).wrappedResponse;
@@ -117,7 +117,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             getHttpServletResponse().setHeader(header,value);
         }
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
@@ -135,7 +135,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             getHttpServletResponse().addHeader(arg0, arg1);
         }
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
      */
@@ -207,13 +207,17 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Return the OutputStream. This is a 'MyServletOutputStream'.
      */
     public ServletOutputStream getOutputStream() throws IOException {
+        if (outputStream != null) return outputStream;
+
         if (writer != null) {
-            throw new RuntimeException("Should use getOutputStream _or_ getWriter");
+            outputStream = new MyServletOutputStream(new WriterOutputStream(writer, characterEncoding));
+            return outputStream;
+            //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
-        if (outputStream == null) {
-            bytes        = new ByteArrayOutputStream();
-            outputStream = new MyServletOutputStream(bytes);
-        }
+
+        bytes        = new ByteArrayOutputStream();
+        outputStream = new MyServletOutputStream(bytes);
+
         return outputStream;
     }
 
@@ -221,13 +225,17 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Return the PrintWriter
      */
     public PrintWriter getWriter() throws IOException {
+        if (writer != null) return writer;
+
         if (outputStream != null) {
-            throw new RuntimeException("Should use getOutputStream _or_ getWriter");
+            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, characterEncoding)));
+            return writer;
+            //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
-        if (writer == null) {
-            string = new StringWriter();
-            writer  = new PrintWriter(string);
-        }
+
+        string = new StringWriter();
+        writer  = new PrintWriter(string);
+
         return writer;
     }
 
@@ -280,7 +288,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Return all data that has been written to the PrintWriter.
      */
     public String toString() {
-        if (writer != null) {
+        if (string != null) {
             return string.toString();
         } else if (outputStream != null) {
             try {
