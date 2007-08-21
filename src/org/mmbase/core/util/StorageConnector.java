@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.18 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: StorageConnector.java,v 1.19 2007-08-21 14:53:10 michiel Exp $
  */
 public class StorageConnector {
 
@@ -241,6 +241,7 @@ public class StorageConnector {
         }
     }
 
+    private final Set<Integer> warnedBuilders = new HashSet<Integer>();
     public MMObjectBuilder getBuilderForNode(final int number) {
         MMBase mmb = builder.getMMBase();
         MMObjectBuilder nodeBuilder = builder;
@@ -256,7 +257,7 @@ public class StorageConnector {
             }
             String builderName = mmb.getTypeDef().getValue(nodeType);
             if (builderName == null) {
-                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking '" + builder.getTableName() + "'");
+                log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking '" + builder.getTableName() + "' (more errors of this kind are logged on debug)");
                 builderName = builder.getTableName();
             }
             nodeBuilder = mmb.getBuilder(builderName);
@@ -266,7 +267,11 @@ public class StorageConnector {
                 } else {
                     nodeBuilder = mmb.getRootBuilder();
                 }
-                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded. Taking " + nodeBuilder.getTableName());
+                if (! warnedBuilders.contains(nodeType)) {
+                    log.warn("Builder " + builderName + "(" + nodeType + ") is not loaded, taking " + nodeBuilder.getTableName());
+                    warnedBuilders.add(nodeType);
+                }
+                log.debug("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded. Taking " + nodeBuilder.getTableName());
 
             }
         }
@@ -648,11 +653,9 @@ public class StorageConnector {
 
                 MMObjectBuilder conversionBuilder = builder.getMMBase().getBuilder(typedefNode.getStringValue("name"));
                 if(conversionBuilder == null) {
-                    // could not find the builder that was in typedef..
                     // maybe it is not active?
-                    // TODO: research: add incorrect node's to node cache?
-                    log.error("Could not find builder with name:" + typedefNode.getStringValue("name") + " refered by node #" + typedefNode.getNumber()+", is it active?");
-                    continue;
+                    log.error("Could not find builder with name:" + typedefNode.getStringValue("name") + " refered by node #" + typedefNode.getNumber()+", is it active? Taking object builder in stead.");
+                    conversionBuilder = MMBase.getMMBase().getBuilder("object");
                 }
                 try {
                     for (MMObjectNode current : conversionBuilder.getStorageConnector().getNodes(nodes)) {
@@ -671,17 +674,14 @@ public class StorageConnector {
             // insert all the corrected nodes that were found into the list..
             for(int i = 0; i < results.size(); i++) {
                 MMObjectNode current = results.get(i);
-                Integer number = Integer.valueOf(current.getNumber());
+                Integer number = current.getNumber();
                 if(convertedNodes.containsKey(number)) {
                     // converting the node...
                     results.set(i, convertedNodes.get(number));
                     convertedCount ++;
                 }
                 current = results.get(i);
-                if(current.getNumber() < 0) {
-                    // never happened to me, and never should!
-                    throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());
-                }
+                assert current.getNumber() >= 0;
             }
         } else if(convert.size() != 0) {
             log.warn("we still need to convert " + convertCount + " of the " + results.size() + " nodes"
