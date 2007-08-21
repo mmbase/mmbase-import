@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="gallery" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="basecontentelements" maintainer="finalist.com" version="1" type="application"/>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+     
+   </requirements>
+   <neededbuilderlist>      
+      <builder maintainer="finalist.com" version="1">gallery</builder>
+   </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+   
+   <allowedrelationlist>      
+   </allowedrelationlist>
+   
+   <datasourcelist>
+      <datasource builder="view" path="gallery/view.xml" />
+      <datasource builder="editwizards" path="gallery/editwizards.xml" />
+   </datasourcelist>
+   
+   <relationsourcelist>
+   </relationsourcelist>
+   
+   <contextsourcelist>
+   </contextsourcelist>
+</application>
