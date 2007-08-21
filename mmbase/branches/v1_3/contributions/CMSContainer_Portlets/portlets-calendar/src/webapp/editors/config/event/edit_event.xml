@@ -17,13 +17,13 @@
 		<prompt xml:lang="nl">Tekst</prompt>
 	</field>
 	<field name="starttime" ftype="datetime" dttype="datetime">
-		<prompt xml:lang="en">Starttime</prompt>
-		<prompt xml:lang="nl">Starttijd</prompt>
+		<prompt xml:lang="en">Start date</prompt>
+		<prompt xml:lang="nl">Start datum</prompt>
 	</field>
 	
 	<field name="endtime" ftype="datetime" dttype="datetime">
-		<prompt xml:lang="en">Endtime</prompt>
-		<prompt xml:lang="nl">Eindtijd</prompt>
+		<prompt xml:lang="en">End date</prompt>
+		<prompt xml:lang="nl">Eind datum</prompt>
 	</field>
 	
 	<field name="location" dtmaxlength="64000" ftype="line" dtrequired="false" rows="1">
