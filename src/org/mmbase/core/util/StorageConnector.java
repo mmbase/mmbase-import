@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: StorageConnector.java,v 1.11.2.1 2006-12-20 08:46:33 michiel Exp $
+ * @version $Id: StorageConnector.java,v 1.11.2.2 2007-08-21 14:52:32 michiel Exp $
  */
 public class StorageConnector {
 
@@ -235,6 +235,8 @@ public class StorageConnector {
         }
     }
 
+    private Set warnedBuilders = new HashSet();
+
     public MMObjectBuilder getBuilderForNode(final int number) {
         MMBase mmb = builder.getMMBase();
         MMObjectBuilder nodeBuilder = builder;
@@ -255,7 +257,11 @@ public class StorageConnector {
             }
             nodeBuilder = mmb.getBuilder(builderName);
             if (nodeBuilder == null) {
-                log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'.");
+                if (! warnedBuilders.contains(new Integer(nodeType))) {
+                    log.warn("Builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'. (more errors of this kind are logged on debug)");
+                    warnedBuilders.add(new Integer(nodeType));
+                }
+                log.debug("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'.");
                 nodeBuilder = mmb.getBuilder("object");
             }
         }
