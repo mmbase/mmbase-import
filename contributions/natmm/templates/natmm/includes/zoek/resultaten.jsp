@@ -6,6 +6,7 @@
       org.mmbase.bridge.NodeList,
       nl.leocms.evenementen.Evenement,
       nl.leocms.util.PaginaHelper,
+      nl.leocms.util.tools.SearchUtil,
 		net.sf.mmapps.modules.lucenesearch.LuceneModule,
       org.apache.lucene.index.IndexReader,
       org.apache.lucene.analysis.*,
@@ -13,232 +14,146 @@
 		net.sf.mmapps.modules.lucenesearch.util.*,
       org.apache.lucene.queryParser.QueryParser,
       org.apache.lucene.document.Document" %>
-<%
-String[] META_TAGS = {"dit", "is", "een", "test"};
-%>
+
+<mm:import jspvar="offsetID" externid="offset" id="offset">0</mm:import>
+
 <mm:cloud jspvar="cloud">
-   <mm:import jspvar="paginaID" externid="p">-1</mm:import>
-   <%
-   String subsiteID = request.getParameter("root");
-   String sQuery = request.getParameter("query");
-   String sMeta = request.getParameter("trefwoord");
-   String sCategory = request.getParameter("categorie");
-   if(sCategory==null) { sCategory = ""; }
-   boolean categorieExists = false;
-   %><mm:node number="<%=  sCategory %>" notfound="skipbody"
-      ><mm:nodeinfo type="type" write="false" jspvar="nType" vartype="String"><%
-         categorieExists = nType.equals("rubriek");
-      %></mm:nodeinfo
-   ></mm:node><%
-   if(!categorieExists) { sCategory = ""; }
+   <%   
+      boolean isIE = (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE")>-1);
+   
+      String subsiteID = request.getParameter("root");
+      String sQuery = request.getParameter("query");
 
-   HashSet hsetAllowedNodes = new HashSet();
-   HashSet hsetPagesNodes = new HashSet();
-   HashSet hsetCategories = new HashSet();
-
-   HashSet hsetArticlesNodes = new HashSet();
-   HashSet hsetItemsNodes = new HashSet();
-   HashSet hsetArtDossierNodes = new HashSet();
-   HashSet hsetNatuurgebiedenRouteNodes = new HashSet();
-	HashSet hsetNatuurgebiedenNatuurgebiedenNodes = new HashSet();
-   HashSet hsetFormulierNodes = new HashSet();
-   HashSet hsetEvenementNodes = new HashSet();
-
-   LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule"); 
-   if(mod!= null&&!sQuery.equals("")) {
-      %><%@include file="hashsets.jsp" %><%
-   }
+      String pContentType = request.getParameter("pcontentype"); 
+      if (pContentType == null) pContentType = "0";
+      int contentType = new Integer(pContentType).intValue();
+      
+      HashSet hsetPagesNodes = new HashSet();
+   
+      PaginaHelper ph = new PaginaHelper(cloud);
+      String templateUrl = "";
    %>
-   <a name="top" />
-   <form action="">
-      <input type="hidden" name="p" value="<%= paginaID %>">
-      <mm:list nodes="<%= paginaID %>" path="pagina,posrel,rubriek" fields="rubriek.number">
-         <input type="hidden" name="r" value="<mm:field name="rubriek.number" />">
-      </mm:list>
+   <form name="eventForm" action="">
+      <input type="hidden" name="offset" value="0"/>
+      
       <table width="100%" border="0" cellpadding="0" cellspacing="0">
-         <input type="hidden" name="p" value="<%= paginaID %>">
          <tr>
             <td class="maincolor" style="width:177px;padding:5px;line-height:0.85em;">&nbsp;ZOEKTERM&nbsp;</td>
-            <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;"><input name="query_frm" type="text" value="<%= ( sQuery == null ? "" : sQuery ) %>" style="width:100%;border:0"></td>
+            <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;">
+               <input name="query_frm" type="text" value="<%= ( sQuery == null ? "" : sQuery ) %>" style="width:100%;border:0">
+            </td>
          </tr>
          <tr>
             <td colspan="2" style="padding-left:80px;line-height:0.85em;height:7px;"></td>
          </tr>
          <tr>
-            <td class="maincolor" style="width:177px;padding:5px;line-height:0.85em;">&nbsp;RUBRIEKEN&nbsp;</td>
+            <td class="maincolor" style="width:177px;padding:5px;line-height:0.85em;">&nbsp;ZOEK NAAR&nbsp;</td>         
             <td class="maincolor" style="width:177px;padding:0px;vertical-align:top;">
-               <select name="categorie" style="width:100%;border:0;font-size:11px;" />
-                  <option value="">ALLE RUBRIEKEN</option>
-                  <mm:list nodes="<%= request.getParameter("root") %>" path="rubriek1,parent,rubriek2" orderby="parent.pos">
-                     <mm:field name="rubriek2.number" jspvar="sCategoryNumber" vartype="String">
-                     <mm:field name="rubriek2.naam" jspvar="sCategoryName" vartype="String">
-                        <option value="<%= sCategoryNumber %>" <%
-                           if((sCategory != null) && (sCategory.equals(sCategoryNumber))) { %> selected="selected" <% } 
-                           %>><%= sCategoryName.toUpperCase() %></option>
-                     </mm:field>
-                     </mm:field>
-                  </mm:list>
-               </select></td>
-         </tr>
-         <tr>
-            <td colspan="2" style="padding-left:80px;line-height:0.85em;height:7px;"></td>
-         </tr>
-         <%--
-         <tr>
-            <td style="padding-left:80px">&nbsp;</td>
-            <td class="leftnavrubriek" style="font-weight:bold;">&nbsp;TREFWOORD&nbsp;</td>
-            <td width="100%" class="leftnavrubriek" style="padding:1px">
-               <select name="trefwoord" style="width:100%; height:18px">
-                  <option></option><%
-                        for (int f = 0; f < META_TAGS.length; f++)
-                        {  %><option <% if((sMeta != null) && (sMeta.equals(META_TAGS[f]))) { %> selected="selected" <% } 
-                              %>><%=META_TAGS[f]%></option><%
-                        }
-                     %>
+               <select name="pcontentype" style="width:100%;border:0;font-size:12px;" />
+               <%
+                  Map contentTypes = new TreeMap();
+                  contentTypes.put("0","Artikelen");
+                  contentTypes.put("1","Producten uit de webwinkel");
+                  contentTypes.put("2","Activiteiten");
+                  contentTypes.put("3","Natuurgebieden");
+
+                  Iterator it1 = contentTypes.entrySet().iterator();              
+                  while(it1.hasNext()) {
+                     Map.Entry mapentry = (Map.Entry) it1.next();
+                     
+                     // see if the option is selected priviously
+                     String isSelected = (pContentType.equals(mapentry.getKey())) ? "selected " : "";
+                     out.println("<option " + isSelected + "value=\"" + mapentry.getKey() + "\">" + mapentry.getValue() + "</option>");
+                 }
+               %>              
                </select>
             </td>
+               
          </tr>
          <tr>
-            <td height="7" colspan="3"></td>
+            <td colspan="2" style="padding-left:80px;line-height:0.85em;height:7px;"></td>
          </tr>
-         --%>
          <tr>
-            <td>
-            </td>
-            <td>
-               <input type="submit" value="OPNIEUW ZOEKEN" class="submit_image" style="width:100%;"  />
-            </td>
+            <td></td>
+            <td><input type="submit" value="OPNIEUW ZOEKEN" class="submit_image" style="width:100%;"/></td>
          </tr>
      </table>
    </form>
    <br/>
+   
    <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <% if(hsetCategories.size()==0) {
-      %>Er zijn geen zoekresultaten gevonden, die voldoen aan uw zoekcriteria.<%
-   } else { 
-      %> De volgende zoekresultaten zijn gevonden in de categorieën<% 
-   }
-      boolean bFirst = true;
-      for (Iterator it = hsetCategories.iterator(); it.hasNext();)
-      {
-         String sRubriek = (String) it.next();
-         if(!bFirst) { %> | <% }
-         %><mm:node number="<%=sRubriek%>">
-            <a href="zoek.jsp?<%= request.getQueryString() %>#<mm:field name="number" />"><b><mm:field name="naam"/></b></a>
-         </mm:node><%
-         bFirst = false;
-      }
-   %>
-   <br/><br/>
-   <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table>
-   <%
-   // *** Show rubrieken
-   if (hsetCategories.size() > 0) { 
-    String sNatuurgebiedenRubriekNumber = "";
-    String sNatuurinRubriekNumber = "";
-    %>
-    <mm:node number="natuurgebieden_rubriek" notfound="skipbody">
-      <mm:field name="number" jspvar="dummy" vartype="String" write="false">
-        <% sNatuurgebiedenRubriekNumber = dummy; %>
-      </mm:field>	
-    </mm:node>
-    <mm:node number="natuurin_rubriek" notfound="skipbody">
-      <mm:field name="number" jspvar="dummy" vartype="String" write="false">
-        <% sNatuurinRubriekNumber = dummy; %>
-      </mm:field>
-    </mm:node>
-    <% 
-    PaginaHelper ph = new PaginaHelper(cloud);
-    for (Iterator it = hsetCategories.iterator(); it.hasNext(); ) {
-         String sRubriek = (String) it.next();
+   <%   
+   
+      LuceneModule mod = (LuceneModule) Module.getModule("lucenemodule"); 
+      if (mod != null && !sQuery.equals("")) {   
+         
+         %><%@include file="../../includes/time.jsp" %><%
+         %><!-- searching on <%= sQuery %> --><% 
 
-         HashSet hsetPagesForThisCategory = new HashSet(); %>
-         <mm:node number="<%=sRubriek%>">
-            <mm:relatednodes type="pagina">
-               <mm:field name="number" jspvar="sID" vartype="String" write="false"><%
-                     hsetPagesForThisCategory.add(sID);
-               %></mm:field>
-            </mm:relatednodes>
-            <a name="<mm:field name="number" />" />
-            <span class="colortitle"><mm:field name="naam"/></span>
-            <br/><%
+         net.sf.mmapps.modules.lucenesearch.LuceneManager lm  = mod.getLuceneManager();
+         net.sf.mmapps.modules.lucenesearch.SearchConfig cf = lm.getConfig();
+
+         SearchUtil su = new SearchUtil();
+         String qStr = su.queryString(sQuery);
+         
+         List searchResults = new ArrayList();
+                  
+         switch (contentType) {
+            case 0:
+               %><%@include file="results/articles_nodes.jsp" %><%
+               break;
+            case 1:
+               %><%@include file="results/items_nodes.jsp" %><%
+               break;
+            case 2:  
+               %><%@include file="results/evenement_nodes.jsp" %><%
+               break;
+            case 3:
+               %><%@include file="results/natuurgebieden_nodes.jsp" %><%
+               break;
+         }
+         
+         int listSize = searchResults.size();
+         int pageSize = 10;
+         int thisOffset = Integer.parseInt(offsetID);         
+
+         if(listSize > pageSize) {
+            int firstEvent = pageSize * thisOffset+1;
+            int lastEvent = pageSize * (thisOffset+1);
             
-            bFirst = true;
-            for (Iterator itp = hsetPagesNodes.iterator(); itp.hasNext(); ) {
-               String sPageID = (String) itp.next();
+            if (lastEvent > listSize) lastEvent = listSize;
+            %>
+               Gevonden <%= listSize %> resultaten; getoond <%= firstEvent %><% if(firstEvent != lastEvent) { %> - <%= lastEvent %><% } %><br/>
+               <%@include file="offsetlinks.jsp" %>
+               <table class="dotline"><tr><td height="3"></td></tr></table><br/>
+            <% 
+         } else if (listSize == 0) {
+            %>Er zijn geen resultaten gevonden, die voldoen aan uw zoekopdracht.<%
+         } else {
+            %>Gevonden <%= listSize %> resultaten
+            <table class="dotline"><tr><td height="3"></td></tr></table><%
+         } 
+    
+         for(int i = 0; i < (thisOffset * pageSize); i++) {
+            searchResults.remove(0);
+         }
+         
+         int iEventCtr = 0;
+         while(searchResults.size() > 0 && iEventCtr < pageSize) {
+            out.println(searchResults.get(0));
+            iEventCtr++;
+            searchResults.remove(0);
+         }         
 
-               if(!hsetPagesForThisCategory.contains(sPageID)) {
-                  continue;
-               }
-
-               String templateUrl = ph.createPaginaUrl(sPageID,request.getContextPath());
-               templateUrl = templateUrl + (templateUrl.indexOf("?") ==-1 ? "?" : "&");
-
-               %><mm:node number="<%=sPageID%>"><%
-                  if (!bFirst) { %><br/><% } %>
-                  <b><mm:field name="titel"/></b>
-                  <ul style="margin:0px;margin-left:16px;">
-                  <mm:related path="contentrel,artikel" fields="artikel.number">
-                     <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetArticlesNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-                  <mm:related path="posrel,items" fields="items.number">
-                     <mm:field name="items.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetItemsNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>u=<mm:field name="items.number"/>"><mm:field name="items.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-                  <mm:related path="posrel,dossier,posrel,artikel" fields="dossier.number,artikel.number">
-                     <mm:field name="artikel.number" jspvar="sID" vartype="String" write="false"><%
-                     if(hsetArtDossierNodes.contains(sID)){
-                        %><li><a href="<%= templateUrl %>d=<mm:field name="dossier.number"/>&id=<mm:field name="artikel.number"/>"><mm:field name="artikel.titel"/></a></li><%
-                     }
-                     %></mm:field>
-                  </mm:related>
-                  <% 
-                  if (sRubriek.equals(sNatuurinRubriekNumber)) {%>
-                    <mm:related path="contentrel,provincies,pos4rel,natuurgebieden">
-                        <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false">
-                          <mm:list nodes="<%= sID %>" path="natuurgebieden,rolerel,artikel" max="1">
-                          <% 
-                          if(hsetNatuurgebiedenRouteNodes.contains(sID)){
-                             %><li><a href="<%= templateUrl %>n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
-                           }
-                        %></mm:list>
-                      </mm:field>
-                    </mm:related>
-                    <% 
-                  } 
-                  if (sRubriek.equals(sNatuurgebiedenRubriekNumber)) {
-                    %>	
-	                  <mm:related path="contentrel,provincies,pos4rel,natuurgebieden,posrel,artikel" fields="natuurgebieden.number">
-  		                <mm:field name="natuurgebieden.number" jspvar="sID" vartype="String" write="false"><%
-     		               if(hsetNatuurgebiedenNatuurgebiedenNodes.contains(sID)){
-        		               %><li><a href="<%= templateUrl %>n=<mm:field name="natuurgebieden.number"/>"><mm:field name="natuurgebieden.naam"/></a></li><%
-           		         }
-              		     %></mm:field>
-                 		</mm:related><% 
-                  }	
-                  if(Evenement.isAgenda(cloud,sPageID)) {
-                     for(Iterator ite = hsetEvenementNodes.iterator(); ite.hasNext(); ) {
-                        String thisEvent = (String) ite.next();
-                        %><mm:node number="<%= thisEvent %>">
-                           <li><a href="<%= templateUrl %>e=<%= Evenement.getNextOccurence(thisEvent) %>"><mm:field name="titel" /></a>
-                         </mm:node><%
-                     }
-                  } %>
-                  </ul>
-               </mm:node><%
-               bFirst = false;
-            }
-         %></mm:node>
-         <div align="right"><a href="#top"><img src="media/arrowup_zoek.gif" border="0" /></a></div>
-         <table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
-      }
-   }
-%><br/>
+         %><table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
+         
+         if(listSize > pageSize) {
+            %><%@include file="offsetlinks.jsp" %><% 
+         }          
+      }  
+   %>  
 </mm:cloud>
+
+
+
+
