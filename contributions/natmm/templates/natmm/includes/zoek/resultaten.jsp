@@ -15,7 +15,7 @@
       org.apache.lucene.queryParser.QueryParser,
       org.apache.lucene.document.Document" %>
 
-<mm:import jspvar="offsetID" externid="offset" id="offset">0</mm:import>
+<mm:import jspvar="offsetID" externid="offset" id="offset">1</mm:import>
 
 <mm:cloud jspvar="cloud">
    <%   
@@ -96,8 +96,10 @@
          SearchUtil su = new SearchUtil();
          String qStr = su.queryString(sQuery);
          
+         int pageSize = 10;
+         int thisOffset = Integer.parseInt(offsetID);  
          List searchResults = new ArrayList();
-                  
+         
          switch (contentType) {
             case 0:
                %><%@include file="results/articles_nodes.jsp" %><%
@@ -113,9 +115,7 @@
                break;
          }
          
-         int listSize = searchResults.size();
-         int pageSize = 10;
-         int thisOffset = Integer.parseInt(offsetID);         
+         int listSize = searchResults.size();       
 
          if(listSize > pageSize) {
             int firstEvent = pageSize * thisOffset+1;
@@ -133,18 +133,12 @@
             %>Gevonden <%= listSize %> resultaten
             <table class="dotline"><tr><td height="3"></td></tr></table><%
          } 
-    
-         for(int i = 0; i < (thisOffset * pageSize); i++) {
-            searchResults.remove(0);
+         
+         for (int i = (thisOffset * pageSize); i < ((thisOffset+1) * pageSize); i++) {           
+            if (i == searchResults.size()) break;
+            out.println(searchResults.get(i));   
          }
          
-         int iEventCtr = 0;
-         while(searchResults.size() > 0 && iEventCtr < pageSize) {
-            out.println(searchResults.get(0));
-            iEventCtr++;
-            searchResults.remove(0);
-         }         
-
          %><table width="100%" background="media/dotline.gif"><tr><td height="3"></td></tr></table><%
          
          if(listSize > pageSize) {
