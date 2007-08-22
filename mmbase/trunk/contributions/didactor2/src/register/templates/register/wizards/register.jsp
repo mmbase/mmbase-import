@@ -1,17 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"
 %>
 <mm:content postprocessor="reducespace" expires="0">
-  <mm:cloud rank="editor">    
+  <mm:cloud rank="editor">
     <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
-    
+
     <mm:import externid="educationid" />
     <mm:import externid="person" />
     <mm:import externid="chosenclass" />
     <mm:import externid="chosenworkgroup" />
-    
+
     <html>
       <head>
         <title></title>
@@ -54,15 +54,15 @@
                 </mm:node>
                 <di:getsetting component="register" setting="send_email">
                   <mm:compare value="true">
-                    <mm:treeinclude page="/register/wizards/welcome.mail.jspx" 
+                    <mm:treeinclude page="/register/wizards/welcome.mail.jspx"
                                     referids="chosenclass,chosenworkgroup,person@chosenstudent,educationid@choseneducation"
-                                    objectlist="$includePath" 
+                                    objectlist="$includePath"
                                     />
                   </mm:compare>
                 </di:getsetting>
               </mm:compare>
             </mm:isnotempty>
-            
+
             <mm:isnotempty referid="person">
               <mm:import externid="delete" />
               <mm:isnotempty referid="delete">
@@ -110,7 +110,7 @@
                           </form>
                         </tr>
                       </mm:related>
-                    </table>                    
+                    </table>
                   </mm:node>
                 </mm:node>
               </mm:isnotempty>
@@ -138,7 +138,7 @@
                           <td>
                             <mm:link referid="url">
                               <mm:param name="delete">true</mm:param>
-                              <a href="${_}"><di:translate key="register.delete" /></a>
+                              <a href="${_}" onclick="return confirm('${di:translate(pageContext, 'register.delete_areyousure')}');"><di:translate key="register.delete" /></a>
                             </mm:link>
                           </td>
                         </tr>
@@ -147,7 +147,7 @@
                   </mm:relatednodes>
                 </table>
               </mm:node>
-            </mm:isempty>  
+            </mm:isempty>
           </mm:islessthan>
         </div>
       </body>
