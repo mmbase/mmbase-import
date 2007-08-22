@@ -107,6 +107,7 @@ p.noaccount {
 .portal .banner a,
 .portal .banner img {
   margin: 0 0 0 0;
+  margin-bottom: 15px;
   padding: 0 0 0 0;
   border: none;
   background-color: transparent;
