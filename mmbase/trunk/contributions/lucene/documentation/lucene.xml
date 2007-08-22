@@ -7,7 +7,7 @@
 
     <date>2005-12-24</date>
 
-    <edition>$Id: lucene.xml,v 1.9 2007-07-05 13:01:30 michiel Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.10 2007-08-22 11:43:56 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -167,9 +167,9 @@
     &lt;extractor class="org.mmbase.module.lucene.extraction.impl.POIExcelExtractor" /&gt;
     &lt;list type="news"&gt;
       &lt;mmsq:field name="date" alias="date" keyword="true" /&gt;
-      &lt;mmsq:field name="title" /&gt;   
+      &lt;mmsq:field name="title" /&gt;
       &lt;mmsq:field name="subtitle" /&gt;
-      &lt;mmsq:field name="intro" /&gt;   
+      &lt;mmsq:field name="intro" /&gt;
       &lt;mmsq:field name="body" /&gt;
       &lt;mmsq:relatednodes type="attachments" searchdirs="destination"&gt;
         &lt;mmsq:field name="title" /&gt;
@@ -193,13 +193,13 @@
     &lt;mmsq:field name="kindofdocument"  alias="kindofdocument" keyword="true" /&gt;
     &lt;mmsq:related path="items,meetings,kindofmeetings" element="kindofmeetings"&gt;
       &lt;mmsq:field name="meetings.date" alias="date" keyword="true" /&gt;
-      &lt;mmsq:field name="kindofmeetings.number" alias="kindofmeeting" 
+      &lt;mmsq:field name="kindofmeetings.number" alias="kindofmeeting"
                keyword="true" /&gt;
     &lt;/mmsq:related&gt;
   &lt;/list&gt;
 </programlisting>
 <para>
-  The 'boost' attribute will make indexing in given field 'heavier'. 
+  The 'boost' attribute will make indexing in given field 'heavier'.
 </para>
 <para>
   The 'optional' attribute contains a regular expression which is matched on the node-manager of the
@@ -272,6 +272,26 @@
         </programlisting>
           </example></para>
       </section>
+    </section>
+
+    <section>
+      <title>Search function</title>
+      <para>
+        <programlisting><![CDATA[
+        <mm:nodelistfunction module="lucene" name="search" referids="value,index,sortfields,offset,max,extraconstraints" id="searchresult"></mm:nodelistfunction>]]>
+        </programlisting>
+      </para>
+      <para>Returns the nodes found. The sortfields must be a keyword.</para>
+    </section>
+
+    <section>
+      <title>searchsize function</title>
+      <para>
+        <programlisting><![CDATA[
+        <mm:import id="size"><mm:function module="lucene" name="searchsize" referids="index,catText@value,extraconstraints"/></mm:import>]]>
+        </programlisting>
+      </para>
+      <para>Returns the number of items found.</para>
     </section>
 
     <section id="history">
