@@ -3,33 +3,23 @@
 <list role="assignedrel" destination="user" minoccurs="0" maxoccurs="1" >
    <title>Uitvoerende</title>
    <item>
-
-      <field ftype="data" name="username"
-      >
+      <field ftype="data" name="username">
          <prompt> username </prompt>
       </field>
-
-      <field ftype="data" name="surname"
-      >
+      <field ftype="data" name="surname">
          <prompt> Achternaam </prompt>
       </field>
-
-      <field ftype="data" name="firstname"
-      >
+      <field ftype="data" name="firstname">
          <prompt> Voornaam </prompt>
       </field>
-
-      <field ftype="data" name="prefix"
-      >
+      <field ftype="data" name="prefix">
          <prompt> tussenvoegsel </prompt>
       </field>
-
-      <field ftype="data" name="company"
-      >
+      <field ftype="data" name="company">
          <prompt> Bedrijf </prompt>
       </field>
-      <field ftype="startwizard" wizardname="config/user/user" inline="true"/>
    </item>
+   
    <command name="search" nodepath="user" age="-1" fields="username,surname,firstname,prefix,company">
       <prompt>Zoek user</prompt>
       <search-filter>
