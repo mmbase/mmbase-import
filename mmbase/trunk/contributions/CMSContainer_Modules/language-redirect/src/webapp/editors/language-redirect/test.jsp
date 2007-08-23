@@ -48,7 +48,7 @@
 	   		
 	   		<cmsc:list-pages var="topchannels" origin="${site}" mode="all"/>
    			<c:set var="swap" value="true"/>
-			   <c:forEach var="topchannel" items="${topchannels}" varStatus="topstatus" end="5">
+			   <c:forEach var="topchannel" items="${topchannels}" varStatus="topstatus" >
 		   		<tr <c:if test="${swap}">class="swap"</c:if>>
 		   			<c:set var="swap" value="${!swap}"/>
 			   		<td>* ${topchannel.title}</td>
@@ -64,7 +64,7 @@
 		   		</tr>
 					
 				   <cmsc:list-pages var="channels" origin="${topchannel}" mode="all"/>
-					<c:forEach var="channel" items="${channels}" varStatus="status" end="7">
+					<c:forEach var="channel" items="${channels}" varStatus="status" >
 			   		<tr <c:if test="${swap}">class="swap"</c:if>>
 			   			<c:set var="swap" value="${!swap}"/>
 			   			<td>&nbsp;&nbsp;- ${channel.title}</td>
@@ -80,7 +80,7 @@
 			   		</tr>
 						
 		   			<cmsc:list-pages var="subchannels" origin="${channel}" mode="all"/>
-						<c:forEach var="subchannel" items="${subchannels}" varStatus="substatus" end="7">
+						<c:forEach var="subchannel" items="${subchannels}" varStatus="substatus" >
 				   		<tr <c:if test="${swap}">class="swap"</c:if>>
 				   			<c:set var="swap" value="${!swap}"/>
 								<td>&nbsp;&nbsp;&nbsp;&nbsp;* ${subchannel.title}</td>
