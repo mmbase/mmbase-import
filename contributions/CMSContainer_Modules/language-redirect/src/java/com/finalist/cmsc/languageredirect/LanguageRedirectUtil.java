@@ -85,9 +85,13 @@ public class LanguageRedirectUtil {
                String[] treeManagers = new String[] { PagesUtil.PAGE, SiteUtil.SITE };       
                String[] fragmentFieldnames = new String[] { PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD };              
                String path = TreeUtil.getPathToRootStringWithoutCache(curPage, treeManagers, NavigationUtil.NAVREL, fragmentFieldnames);
-               Node currentSite = NavigationUtil.getSiteFromPath(cloud, path);
-               if (currentSite.getIntValue("number") == foreignSite.getIntValue("number") && PagesUtil.isPage(curPage)) {
-                  return path;
+               if (path != null) {
+                   Node currentSite = NavigationUtil.getSiteFromPath(cloud, path);
+                   if (currentSite != null 
+                           && currentSite.getIntValue("number") == foreignSite.getIntValue("number") 
+                           && PagesUtil.isPage(curPage)) {
+                      return path;
+                   }
                }
             }        
          }
