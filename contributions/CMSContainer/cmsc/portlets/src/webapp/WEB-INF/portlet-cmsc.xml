@@ -122,7 +122,35 @@
 			<keywords>Content</keywords>
 		</portlet-info>
 	</portlet>
-
+	<portlet>
+		<description>RelatedContentPortlet</description>
+		<portlet-name>relatedcontentportlet</portlet-name>
+		<display-name>RelatedContentPortlet</display-name>
+		<portlet-class>com.finalist.cmsc.portlets.RelatedContentPortlet</portlet-class>
+		<init-param>
+			<name>template.edit_defaults</name>
+			<value>RelatedContent.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.help</name>
+			<value>RelatedContent.jsp</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
+			<portlet-mode>DELETE</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<supported-locale>nl</supported-locale>
+		<resource-bundle>com.finalist.cmsc.portlets.RelatedContentPortlet</resource-bundle>
+		<portlet-info>
+			<title>RelatedContentPortlet</title>
+			<short-title>RelatedContentPortlet</short-title>
+			<keywords>RelatedContent</keywords>
+		</portlet-info>
+	</portlet>
 	<portlet>
 		<description>the IFRAME portlet</description>
 		<portlet-name>iframeportlet</portlet-name>
