@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.13.2.3 2007-07-27 13:59:35 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.13.2.4 2007-08-23 15:20:02 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -69,7 +69,9 @@ public class SetFunction extends AbstractFunction {
      */
     public Object getFunctionValue(Parameters parameters) {
         parameters.checkRequiredParameters();
-        log.info("Calling " + functionMethod + " with " + parameters);
+        if (log.isDebugEnabled()) {
+            log.debug("Calling " + functionMethod + " with " + parameters);
+        }
         try {
             if (defLength < parameters.size()) {
                 // when wrapping this fucntion, it can happen that the number of parameters increases.
@@ -89,10 +91,10 @@ public class SetFunction extends AbstractFunction {
                 throw new RuntimeException(te); // throw the actual exception that occurred
             }
         } catch (IllegalArgumentException iae) {
-            String mes = 
+            String mes =
                 "Function call failed (method not available) : " + name +", method: " + functionMethod +
                 ", instance: " + getInstance() +", parameters: " + parameters;
-            throw new RuntimeException(mes, iae); 
+            throw new RuntimeException(mes, iae);
 
         }
     }
