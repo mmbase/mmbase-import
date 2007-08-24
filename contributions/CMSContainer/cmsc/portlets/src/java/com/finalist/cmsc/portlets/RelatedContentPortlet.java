@@ -39,7 +39,7 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
 	private String getElementIdFromScreen(RenderRequest req, String window) {
 		HttpServletRequest servletRequest = getServletRequest(req);
 		PortalRegistry pr =PortalRegistry.getPortalRegistry(servletRequest);
-		Fragment fragment = pr.getFragment(window);
+		Fragment fragment = pr.getScreen().getFragment(window);
 		return ((PortletFragment)fragment).getPortlet().getParameterValue("contentelement");
 	}
 
