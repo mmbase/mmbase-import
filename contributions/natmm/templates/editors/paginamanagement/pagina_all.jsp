@@ -3,6 +3,11 @@
 <mm:cloud jspvar="cloud" rank="basic user" method='http'>
 <%
 String account = cloud.getUser().getIdentifier();
+
+/* in the style of the rest of this site, a nice # HACK */
+String cookieVarName = "selectedsubsite_internet";
+if ((request.getRequestURL()).indexOf("internet") < 0) cookieVarName = "selectedsubsite_intranet";
+
 %>
 
 <!-- <%= new java.util.Date() %> -->
@@ -34,7 +39,7 @@ String account = cloud.getUser().getIdentifier();
    </script>
    <script>
       function setSubSite() {
-         var cookieSubsiteid = readCookie('selectedsubsite');
+         var cookieSubsiteid = readCookie('<%=cookieVarName%>');
          var subsiteid = 0;
          
          if (cookieSubsiteid) {
@@ -54,7 +59,9 @@ String account = cloud.getUser().getIdentifier();
       
       function saveSubsiteCookie() {
          var subsiteindex = document.getElementById('dropDownSubSite').selectedIndex;
-         saveCookie('selectedsubsite',subsiteindex,1);
+         var indexvalue = document.getElementById('dropDownSubSite').options[subsiteindex].value;
+         //alert("subsiteid: " + subsiteindex + " + " + indexvalue);
+         saveCookie('<%=cookieVarName%>',indexvalue,1);
       }
        
    </script>
@@ -138,20 +145,22 @@ String account = cloud.getUser().getIdentifier();
 	<%
       PaginaTreeModel model = new PaginaTreeModel(cloud);
       HTMLTree t = new HTMLTree(model,"pagina");
-   
+
       // set subsiteid
       String pSubSiteId = null;
       
       Cookie[] cookies = request.getCookies();
       for(int j=0; j<cookies.length; j++) {
          Cookie thisCookie = cookies[j];
-         if (thisCookie.getName().equals("selectedsubsite")) {
+         if (thisCookie.getName().equals(cookieVarName)) {
             pSubSiteId = thisCookie.getValue();
          }
       }
-      
+
       int subSiteId = (pSubSiteId != null) ? Integer.parseInt(pSubSiteId) : 0 ;
       t.setSubSiteId(subSiteId);
+      
+      //System.out.println("subSiteId " + subSiteId);
 
       AuthorizationHelper helper = new AuthorizationHelper(cloud);
       java.util.Map roles = helper.getRolesForUser(helper.getUserNode(account));
