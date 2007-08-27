@@ -4,10 +4,11 @@
     <artifactId>cmsc-staging</artifactId>
     <name>Custom CMS Container staging web application</name>
     <shortDescription>CMS Container staging web application</shortDescription>
+	<currentVersion>${cmscimpl.version}</currentVersion>
 	<dependencies>
 		<dependency>
 			<groupId>finalist</groupId>
-			<artifactId>cmsc-webapp</artifactId>
+			<artifactId>cmscimpl-webapp</artifactId>
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
