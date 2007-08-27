@@ -19,6 +19,7 @@ import javax.servlet.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
+import org.mmbase.jumpers.Jumpers;
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.core.CoreField;
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.64 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: servdb.java,v 1.65 2007-08-27 14:12:10 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {

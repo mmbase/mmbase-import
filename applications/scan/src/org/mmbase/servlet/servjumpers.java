@@ -14,7 +14,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.mmbase.module.builders.Jumpers;
+import org.mmbase.jumpers.Jumpers;
 import org.mmbase.util.logging.*;
 
 /**
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN (depends from JamesServlet)
  * @deprecated use JumpersFilter
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.22 2004-10-01 08:41:49 pierre Exp $
+ * @version $Id: servjumpers.java,v 1.23 2007-08-27 14:12:10 michiel Exp $
  * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
