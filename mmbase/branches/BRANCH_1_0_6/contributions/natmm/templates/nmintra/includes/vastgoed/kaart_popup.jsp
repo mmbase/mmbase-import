@@ -21,11 +21,11 @@ String kartType = "";
 
 <br/><br/>
 	<mm:relatednodes type="images" max="1">
-		<img src="<mm:image template="s(920x)" />" border="0">
+		<img src="<mm:image template="s(920)" />" border="0">
 	</mm:relatednodes>
 
 <br/>
-<mm:field name="opmerking" escape="p" />
+<mm:field name="opmerking"/>
 
 </body>
 </html>
