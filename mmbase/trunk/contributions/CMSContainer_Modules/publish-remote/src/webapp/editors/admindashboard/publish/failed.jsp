@@ -12,7 +12,7 @@
 	
 		<h1><fmt:message key="admindashboard.publish.failed.header" /></h1>
 		
-		<b><fmt:message key="admindashboard.publish.failed.lastday" />:</b> 
+		<b><fmt:message key="admindashboard.publish.failed.lasthour" />:</b> 
  		<mm:listnodescontainer type="publishqueue">
  			<%
  			java.util.Calendar calendar = java.util.GregorianCalendar.getInstance();
