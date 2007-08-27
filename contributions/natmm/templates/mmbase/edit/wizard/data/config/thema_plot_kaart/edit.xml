@@ -7,7 +7,7 @@
       <optionlist select="typen_gebied"/>
    </field>
    <list include="config/images/zoek_thema_plot_kaart_related_images.xml" />
-   <field name="opmerking" ftype="text" rows="12"><prompt>Opmerking</prompt></field>
+   <field name="opmerking" ftype="html" rows="20"><prompt>Opmerking</prompt></field>
    <field name="hidden" ftype="enum">
       <prompt>ThemaPlotKaart verbergen?</prompt>
       <optionlist select="boolean_numerical"/>
