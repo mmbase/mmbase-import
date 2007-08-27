@@ -17,7 +17,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.DayMarkers;
-import org.mmbase.module.builders.Jumpers;
+import org.mmbase.jumpers.Jumpers;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.56 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: HtmlBase.java,v 1.57 2007-08-27 14:12:10 michiel Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
