@@ -4,6 +4,7 @@
     <artifactId>cmsc-live</artifactId>
     <name>Custom CMS Container live web application</name>
     <shortDescription>CMS Container live web application</shortDescription>
+	<currentVersion>${cmscimpl.version}</currentVersion>
 	<dependencies>
       <dependency>
          <groupId>finalist</groupId>
