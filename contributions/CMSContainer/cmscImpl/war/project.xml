@@ -4,6 +4,7 @@
     <artifactId>cmsc-webapp</artifactId>
     <name>Custom CMS Container web application</name>
     <shortDescription>CMS Container web application</shortDescription>
+	<currentVersion>${cmscimpl.version}</currentVersion>
 	<dependencies>
    		<dependency>
 			<groupId>finalist</groupId>
