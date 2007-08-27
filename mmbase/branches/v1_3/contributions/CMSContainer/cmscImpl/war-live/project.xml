@@ -9,7 +9,7 @@
       <dependency>
          <groupId>finalist</groupId>
          <artifactId>cmsc-webapp</artifactId>
-         <version>${cmsc.version}</version>
+         <version>${cmscimpl.version}</version>
          <type>mmbase-module</type>
       </dependency>
 	
