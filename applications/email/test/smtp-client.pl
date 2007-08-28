@@ -9,26 +9,26 @@
 
 # Added by Michiel
 # test smtp-server of didactor e.g. like this:
-# 
+#
 # ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=localhost --port=1025 --from=michiel@meeuw.org --to=ppuk@m.meeuw.org --data=simple.mail
 #
 # compare it do other implementations like this (please replace with your own gmail account and smtp server).
-# 
-# ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=smtp.omroep.nl --from=michiel@meeuw.org --to=mihxiil@gmail.com --data=multipart.mail 
+#
+# ~/mmbase/didactor/didactor2/src/email/test$ ./smtp-client.pl --host=smtp.omroep.nl --from=michiel@meeuw.org --to=mihxiil@gmail.com --data=multipart.mail
 
 
 
-# 
+#
 # Simple SMTP client with STARTTLS and AUTH support.
 # Michal Ludvig <michal@logix.cz>, 2003-2006
 # See http://www.logix.cz/michal/devel/smtp for details.
 # Thanks to all contributors for ideas and fixes!
-# 
+#
 
-# 
+#
 # This program can be freely distributed, used and modified
 # without any restrictions. It's a public domain.
-# 
+#
 
 use strict;
 use IO::Socket::INET;
@@ -40,9 +40,9 @@ use Getopt::Long;
 use Term::ReadKey;
 use Socket qw(:DEFAULT :crlf);
 
-my ($user, $pass, $host, $port, 
-    $use_login, $use_plain, $use_cram_md5, $use_digest_md5, 
-    $ehlo_ok, $auth_ok, $starttls_ok, $verbose, 
+my ($user, $pass, $host, $port,
+    $use_login, $use_plain, $use_cram_md5, $use_digest_md5,
+    $ehlo_ok, $auth_ok, $starttls_ok, $verbose,
     $hello_host, $from, @to, $datasrc);
 
 $host = 'localhost';
@@ -59,17 +59,17 @@ $ehlo_ok = 1;
 
 # Get command line options.
 GetOptions ('host=s' => \$host, 'server=s' => \$host,
-	'port=i' => \$port, 
+	'port=i' => \$port,
 	'user=s' => \$user, 'password=s' => \$pass,
-	'auth-login' => \$use_login, 
+	'auth-login' => \$use_login,
 	'auth-plain' => \$use_plain,
-	'auth-cram-md5' => \$use_cram_md5, 
+	'auth-cram-md5' => \$use_cram_md5,
 	'auth-digest-md5' => \$use_digest_md5,
 	'disable-ehlo' => sub { $ehlo_ok = 0; },
 	'force-ehlo' => sub { $ehlo_ok = 2; },
 	'hello-host|ehlo-host|helo-host=s' => \$hello_host,
 	'enable-auth' => \$auth_ok,
-	'disable-starttls|disable-tls|disable-ssl' => 
+	'disable-starttls|disable-tls|disable-ssl' =>
 		sub { $starttls_ok = 0; },
 	'from|mail-from=s' => \$from,
 	'to|rcpt-to=s' => \@to,
@@ -88,7 +88,7 @@ if ($use_login + $use_plain + $use_cram_md5 + $use_digest_md5 > 0)
 	{ $auth_ok = 1; }
 
 # If --enable-auth was given, enable all AUTH methods.
-elsif ($auth_ok && ($use_login + $use_plain + $use_cram_md5 
+elsif ($auth_ok && ($use_login + $use_plain + $use_cram_md5
                     + $use_digest_md5 == 0))
 {
 	$use_login = 1;
@@ -139,6 +139,7 @@ $ehlo_ok-- if ($text !~ /ESMTP/);
 &run_smtp ();
 
 # Good bye...
+print "Sending quit\n";
 &send_line ($sock, "QUIT\n");
 ($code, $text) = &get_line ($sock);
 die ("Unknown QUIT response '$code'.\n") if ($code != 221);
@@ -157,17 +158,17 @@ sub run_smtp
 		Net::SSLeay::load_error_strings();
 		Net::SSLeay::SSLeay_add_ssl_algorithms();
 		Net::SSLeay::randomize();
-	
+
 		&send_line ($sock, "STARTTLS\n");
 		($code, $text) = &get_line ($sock);
 		die ("Unknown STARTTLS response '$code'.\n") if ($code != 220);
-		
-		if (! IO::Socket::SSL::socket_to_SSL($sock, 
+
+		if (! IO::Socket::SSL::socket_to_SSL($sock,
 			SSL_version => 'SSLv3 TLSv1'))
 		{
-			die ("STARTTLS: ".IO::Socket::SSL::errstr()."\n"); 
+			die ("STARTTLS: ".IO::Socket::SSL::errstr()."\n");
 		}
-		
+
 		if ($verbose >= 1)
 		{
 			printf ("Using cipher: %s\n", $sock->get_cipher ());
@@ -177,7 +178,7 @@ sub run_smtp
 		# Send EHLO again (required by the SMTP standard).
 		&say_hello ($sock, $ehlo_ok, $hello_host, \%features) or return 0;
 	}
-	
+
 	# See if we should authenticate ourself
 	if (defined ($features{'AUTH'}) && $auth_ok)
 	{
@@ -197,7 +198,7 @@ sub run_smtp
 				warn ("AUTH failed '$code $text'.\n");
 				return 0;
 			}
-	
+
 			my $response = &encode_cram_md5 ($text, $user, $pass);
 			&send_line ($sock, "%s\n", $response);
 			($code, $text) = &get_line ($sock);
@@ -218,7 +219,7 @@ sub run_smtp
 				warn ("AUTH failed '$code $text'.\n");
 				return 0;
 			}
-			
+
 			&send_line ($sock, "%s\n", encode_base64 ($user, ""));
 
 			($code, $text) = &get_line ($sock);
@@ -227,7 +228,7 @@ sub run_smtp
 				warn ("AUTH failed '$code $text'.\n");
 				return 0;
 			}
-			
+
 			&send_line ($sock, "%s\n", encode_base64 ($pass, ""));
 
 			($code, $text) = &get_line ($sock);
@@ -241,7 +242,7 @@ sub run_smtp
 		elsif ($features{'AUTH'} =~ /PLAIN/i && $use_plain)
 		{
 			printf ("using PLAIN\n") if ($verbose >= 1);
-			&send_line ($sock, "AUTH PLAIN %s\n", 
+			&send_line ($sock, "AUTH PLAIN %s\n",
 				encode_base64 ("$user\0$user\0$pass", ""));
 			($code, $text) = &get_line ($sock);
 			if ($code != 235)
@@ -257,11 +258,11 @@ sub run_smtp
 			      "advertised by the server.\n");
 			return 0;
 		}
-		
+
 		if ($verbose >= 1)
 		{ printf ("Authentication of $user\@$host succeeded\n"); }
 	}
-	
+
 	# We can do a relay-test now if a recipient was set.
 	if ($#to >= 0)
 	{
@@ -292,6 +293,7 @@ sub run_smtp
 		}
 	}
 
+	print "Sending data\n";
 	# Wow, we should even send something!
 	if (defined ($datasrc))
 	{
@@ -328,7 +330,6 @@ sub run_smtp
 		close (MAIL);
 
 		$sock->printf ("$CRLF.$CRLF");
-
 		($code, $text) = &get_line ($sock);
 		if ($code != 250)
 		{
@@ -337,6 +338,7 @@ sub run_smtp
 		}
 	}
 
+	print "ready\n";
 	# Perfect. Everything succeeded!
 	return 1;
 }
@@ -385,7 +387,7 @@ sub encode_cram_md5 ($$$)
 	my ($ticket64, $username, $password) = @_;
 	my $ticket = decode_base64($ticket64) or
 		die ("Unable to decode Base64 encoded string '$ticket64'\n");
-	
+
 	my $password_md5 = hmac_md5_hex($ticket, $password);
 	return encode_base64 ("$username $password_md5", "");
 }
@@ -396,7 +398,7 @@ sub say_hello ($$$$)
 	my ($sock, $ehlo_ok, $hello_host, $featref) = @_;
 	my ($feat, $param);
 	my $hello_cmd = $ehlo_ok > 0 ? "EHLO" : "HELO";
-	
+
 	&send_line ($sock, "$hello_cmd $hello_host\n");
 	my ($code, $text, $more) = &get_one_line ($sock);
 
@@ -405,10 +407,10 @@ sub say_hello ($$$$)
 		warn ("$hello_cmd failed: '$code $text'\n");
 		return 0;
 	}
-	
+
 	# Empty the hash
 	%{$featref} = ();
-	
+
 	($feat, $param) = ($text =~ /^(\w+)[= ]*(.*)$/);
 	$featref->{$feat} = $param;
 
@@ -426,7 +428,7 @@ sub say_hello ($$$$)
 sub usage ()
 {
 	printf ("Simple SMTP client written in Perl that supports some
-advanced features like STARTTLS and AUTH. 
+advanced features like STARTTLS and AUTH.
 
 Author:	Michal Ludvig <michal\@logix.cz> (c) 2003-2006
 	http://www.logix.cz/michal/devel/smtp
@@ -437,14 +439,14 @@ Usage: smtp-client.pl [--options]
 				(default: localhost)
 	--port=<number>		Port where the SMTP server is listening.
 				(default: 25)
-	
+
 	--hello-host=<string>	String to use in the EHLO/HELO command.
 	--disable-ehlo		Don't use ESMTP EHLO command, only HELO.
 	--force-ehlo		Use EHLO even if server doesn't say ESMTP.
-	
-	--disable-starttls	Don't use encryption even if the remote 
+
+	--disable-starttls	Don't use encryption even if the remote
 				host offers it.
-	
+
 	--enable-auth		Enable all methods of SMTP authentication.
 	--auth-login		Enable only AUTH LOGIN method.
 	--auth-plain		Enable only AUTH PLAIN method.
@@ -456,7 +458,7 @@ Usage: smtp-client.pl [--options]
 	--to=<address>		Address to use in RCPT TO command.
 
 	--data=<filename>	Name of file to send after DATA command.
-	                        With \"--data=-\" the script will read 
+	                        With \"--data=-\" the script will read
 				standard input (useful e.g. for pipes).
 
 	--verbose[=<number>]	Be more verbose, print the SMTP session.
