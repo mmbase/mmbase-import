@@ -13,7 +13,7 @@ package org.mmbase.datatypes;
  * DataType associated with {@link java.lang.Float}, as NumberDataType, but provides getMin and getMax as float.
  *
  * @author Pierre van Rooden
- * @version $Id: FloatDataType.java,v 1.9 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: FloatDataType.java,v 1.10 2007-08-28 10:04:49 michiel Exp $
  * @since MMBase-1.8
  */
 public class FloatDataType extends NumberDataType<Float> {
@@ -24,8 +24,8 @@ public class FloatDataType extends NumberDataType<Float> {
      */
     public FloatDataType(String name, boolean primitive) {
         super(name, primitive ? Float.TYPE : Float.class);
-        setMin(Float.valueOf(Float.NEGATIVE_INFINITY), false);
-        setMax(Float.valueOf(Float.POSITIVE_INFINITY), false);
+        setMin(Float.valueOf(-1 * Float.MAX_VALUE), true);
+        setMax(Float.valueOf(Float.MAX_VALUE), true);
     }
 
 
