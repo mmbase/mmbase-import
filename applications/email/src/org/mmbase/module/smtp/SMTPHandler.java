@@ -32,7 +32,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.2 2007-08-16 16:34:12 michiel Exp $
+ * @version $Id: SMTPHandler.java,v 1.3 2007-08-28 11:07:11 michiel Exp $
  */
 public class SMTPHandler extends MailHandler implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -128,13 +128,14 @@ public class SMTPHandler extends MailHandler implements Runnable {
      * </ul>
      */
     private void parseLine(String line) throws IOException {
-        if (log.isDebugEnabled()) {
-            log.debug("SMTP INCOMING: " + line);
+        if (log.isTraceEnabled()) {
+            log.trace("SMTP INCOMING: " + line);
         }
 
         String uLine = line.toUpperCase();
 
         if (uLine.startsWith("QUIT")) {
+            log.debug("Sending 221 Goodbye");
             state = STATE_FINISHED;
             writer.write("221 Goodbye.\r\n");
             writer.flush();
@@ -241,8 +242,17 @@ public class SMTPHandler extends MailHandler implements Runnable {
                 char[] last5chars = new char[endchars.length];
                 int currentpos = 0;
                 int c;
+                // 76 length of a uu encoded line
+                int maxAttachmentSize = (5 * 1024 * 1024 / 76) * 76; // approx 5 Mb.
+                try {
+                    maxAttachmentSize = (Integer.parseInt(properties.get("max_attachment_size")) / 76) * 76;
+                } catch (Exception e) {
+                    log.error(e);
+                }
+
                 StringBuilder data = new StringBuilder();
                 boolean isreading = true;
+                boolean tooBig = false;
                 while (isreading) {
                     while ((c = reader.read()) == -1) {
                         try {
@@ -250,14 +260,20 @@ public class SMTPHandler extends MailHandler implements Runnable {
                             Thread.currentThread().sleep(50);
                         } catch (InterruptedException e) {}
                     }
-                    data.append((char)c);
+                    if (data.length() < maxAttachmentSize) {
+                        data.append((char)c);
+                    } else {
+                        tooBig = true;
+                    }
 
                     for (int i = 0; i < last5chars.length - 1; i++) {
                         last5chars[i] = last5chars[i + 1];
                     }
                     last5chars[last5chars.length - 1] = (char)c;
 
-                    log.trace("" + last5chars);
+                    if (log.isTraceEnabled()) {
+                        log.trace("" + last5chars);
+                    }
                     isreading = false;
                     for (int i = 0; i < last5chars.length; i++) {
                         if (last5chars[i] != endchars[i]) {
@@ -267,9 +283,13 @@ public class SMTPHandler extends MailHandler implements Runnable {
                     }
                 }
 
+                if (tooBig) {
+                    log.warn("Attachment was too big, truncated to " + maxAttachmentSize);
+                }
                 // Copy everything but the '.\r\n' to the result
-                String result = data.substring(0, data.length() - 3);
+                String result = data.substring(0, data.length() - (tooBig ? 0 : 3));
                 try {
+                    log.debug("Now handling data " + result.length());
                     if (handleData(result)) {
                         log.debug("250 Rejoice! We will deliver this email to the user.");
                         writer.write("250 Rejoice! We will deliver this email to the user.\r\n");
