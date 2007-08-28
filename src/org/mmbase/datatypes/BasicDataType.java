@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.80 2007-08-10 14:32:11 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.81 2007-08-28 10:04:20 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -252,8 +252,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      *
      * Tries to determin  cloud by node and field if possible and wraps {@link #preCast(Object, Cloud, Node, Field)}.
      */
-    //public final <D> DpreCast(D value, Node node, Field field) {
-    public final Object preCast(Object value, Node node, Field field) {
+    public final <D> D preCast(D value, Node node, Field field) {
+        //public final Object preCast(Object value, Node node, Field field) {
         return preCast(value, getCloud(node, field), node, field);
     }
 
@@ -270,9 +270,9 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
      * casting.  It should anticipate that every argument can be <code>null</code>. It should not
      * change the actual type of the value.
      */
-    protected Object preCast(Object value, Cloud cloud, Node node, Field field) {
+    protected <D> D preCast(D value, Cloud cloud, Node node, Field field) {
         if (value == null) return null;
-        Object preCast =  enumerationRestriction.preCast(value, cloud);
+        D preCast =  enumerationRestriction.preCast(value, cloud);
         return preCast;
     }
 
@@ -582,8 +582,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         }
     }
-    protected String xmlValue(Object value) {
-        return Casting.toString(value);
+    protected void xmlValue(Element el, Object value) {
+        el.setAttribute("value", Casting.toString(value));
     }
 
 
@@ -617,7 +617,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
 
 
-        getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
+        xmlValue(getElement(parent, "default",  "description,class,property,default"), defaultValue);
 
         addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
             setAttribute("value", "" + uniqueRestriction.isUnique());
@@ -1193,10 +1193,10 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         /**
          * @see BasicDataType#preCast
          */
-        protected Object preCast(Object v, Cloud cloud) {
+        protected <D> D preCast(D v, Cloud cloud) {
             if (getValue() == null) return v;
             try {
-                return value.castKey(v, cloud);
+                return (D) value.castKey(v, cloud);
                 //return v != null ? Casting.toType(v.getClass(), cloud, res) : res;
             } catch (NoClassDefFoundError ncdfe) {
                 log.error("Could not find class " + ncdfe.getMessage() + " while casting " + v.getClass() + " " + v, ncdfe);
