@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.63 2007-08-03 14:49:19 michiel Exp $
+ * @version $Id: DataType.java,v 1.64 2007-08-28 10:06:05 michiel Exp $
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
@@ -98,7 +98,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      */
     public int getBaseType();
 
-        /**
+    /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
@@ -134,8 +134,8 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.
      */
-    //    public <D> D preCast(D value, Node node, Field field);
-    public Object preCast(Object value, Node node, Field field);
+    public <D> D preCast(D value, Node node, Field field);
+    //public Object preCast(Object value, Node node, Field field);
 
     /**
      * Returns the default value of this data type.
@@ -188,7 +188,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     public Collection<LocalizedString> validate(C value, Node node, Field field);
 
     /**
-     * Returns whether this field is required (may not be <code>null</code>, or otherwise empty). 
+     * Returns whether this field is required (may not be <code>null</code>, or otherwise empty).
      *
      * @return  <code>true</code> if the field is required
      */
