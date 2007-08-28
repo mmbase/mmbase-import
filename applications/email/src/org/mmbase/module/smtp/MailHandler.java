@@ -6,11 +6,11 @@ import java.util.*;
 import java.io.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-//import nl.didactor.mail.*; // todo
+import org.mmbase.applications.email.SendMail;
 
 /**
 
- * @version $Id: MailHandler.java,v 1.4 2007-08-16 16:34:12 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.5 2007-08-28 11:06:34 michiel Exp $
  */
 public abstract class MailHandler {
     private static final Logger log = Logging.getLoggerInstance(MailHandler.class);
@@ -228,6 +228,7 @@ public abstract class MailHandler {
                     log.error(ee);
                 }
             }
+            log.debug("Creating relation with mailbox " + mailbox);
             Relation rel = cloud.getNode(mailbox.box.getNumber()).createRelation(email, cloud.getRelationManager("related"));
             rel.commit();
 
@@ -237,11 +238,9 @@ public abstract class MailHandler {
                 try {
                     String mailadres = user.getStringValue("email");
                     log.service("Forwarding " + email + " to " + mailadres);
-                    /*
-                    ExtendedJMSendMail sendmail = (ExtendedJMSendMail)org.mmbase.module.Module.getModule("sendmail");
+                    SendMail sendmail = (SendMail)org.mmbase.module.Module.getModule("sendmail");
                     sendmail.startModule();
                     sendmail.sendMail(mailadres, email);
-                    */
                 } catch (Throwable e) {
                     log.warn("Exception in forward " + e.getMessage(), e);
                     return false;
