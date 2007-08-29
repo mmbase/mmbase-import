@@ -50,24 +50,21 @@
       <li><a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${cat.name}</a>
 
       <mm:compare referid="category" value="${cat.name}">
-        
-        <c:forEach var="subcat" items="${cat.blocks}">
-          <mm:first><ul></mm:first>
-          <mm:link>
-            <mm:frameworkparam name="category">${category}</mm:frameworkparam>
-            <mm:frameworkparam name="component">${subcat.component.name}</mm:frameworkparam>
-            <mm:frameworkparam  name="block">${subcat.name}</mm:frameworkparam>
-            <li class="${subcat.name eq block and subcat.component.name eq component ? 'current' : ''}">
-              <a title="${subcat.description}" href="${_}">${subcat.name}            
-              <span class="component">(${subcat.component.name})</span>
-              </a>
-            </li>
-          </mm:link>
-          <mm:last></ul></mm:last>
-        </c:forEach>
-        
-      </mm:compare>    
-      
+        <ul>
+          <c:forEach var="subcat" items="${cat.blocks}">
+            <mm:link>
+              <mm:frameworkparam name="category">${category}</mm:frameworkparam>
+              <mm:frameworkparam name="component">${subcat.component.name}</mm:frameworkparam>
+              <mm:frameworkparam  name="block">${subcat.name}</mm:frameworkparam>
+              <li class="${subcat.name eq block and subcat.component.name eq component ? 'current' : ''}">
+                <a title="${subcat.description}" href="${_}">${subcat.name}            
+                <span class="component">(${subcat.component.name})</span>
+                </a>
+              </li>
+            </mm:link>
+          </c:forEach>
+        </ul>
+      </mm:compare>
       </li>
     </mm:stringlist>
   </mm:listfunction>
@@ -79,12 +76,11 @@
   <mm:present referid="component">
     <h2 class="top"><mm:write referid="block" /></h2>
     <c:catch var="exception">
-      <mm:component name="$component" block="$block">
+      <mm:component debug="xml" name="$component" block="$block">
         <mm:frameworkparam name="category">${category}</mm:frameworkparam>
       </mm:component>
     </c:catch>
     <c:if test="${! empty exception}">
-      
       <pre>
         ${exception}
       </pre>
