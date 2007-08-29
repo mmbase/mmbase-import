@@ -165,6 +165,20 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
                 image.setAttribute(RichText.HEIGHT_ATTR, String.valueOf(height));
              }
              
+             if (image.hasAttribute("align")) {
+                 String align = image.getAttribute("align");
+                 if (image.hasAttribute("class")) {
+                     String oldClass = image.getAttribute("class");
+                     String classStr = oldClass + " inline-" + align;
+                     image.removeAttribute("class");
+                     image.setAttribute("class", classStr);
+                 }
+                 else {
+                     String classStr = "inline-" + align;
+                     image.setAttribute("class", classStr);
+                 }
+             }
+             
              if (cloud.getUser().getRank() == Rank.ANONYMOUS) {
                  image.removeAttribute(RichText.RELATIONID_ATTR);
                  if (image.hasAttribute(RichText.DESTINATION_ATTR)) {
