@@ -8,18 +8,6 @@
     	This module offers the download to html function to users.
     </description>
     <dependencies>
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase</artifactId>
-			<version>${mmbase.version}</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-	   	<groupId>finalist</groupId>
-         <artifactId>cmsc-utilities</artifactId>
-         <version>${cmsc.version}</version>
-         <type>jar</type>
-    </dependency>   
-</dependencies>
+	</dependencies>
 </project>
 

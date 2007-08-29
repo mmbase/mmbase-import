@@ -5,31 +5,37 @@
     <name>Playlist portlet</name>
     <shortDescription>Enables browsing and searching in playlists</shortDescription>
 	<dependencies>
-		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-portal</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-portlets</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-utilities</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
 
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase</artifactId>
-			<version>${mmbase.version}</version>
-			<type>jar</type>
-		</dependency>
+<!-- JAXB -->
+        <dependency>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>20060426</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>20060426</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>jaxb</groupId>
+            <artifactId>jsr173_1.0_api</artifactId>
+            <version>20060426</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
 
 	</dependencies>
 </project>

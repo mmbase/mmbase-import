@@ -167,11 +167,11 @@
 			<version>${mmbase.version}</version>
 			<type>jar</type>
 			<properties>
-				<mmbase.config.bundle>false</mmbase.config.bundle>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
 		</dependency>
 
+<!-- MMApps.sourceforge.net -->
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>cloudprovider</artifactId>
@@ -200,6 +200,7 @@
 			</properties>
 		</dependency>
 
+<!-- Apache portals - pluto -->
 		<dependency>
 			<id>pluto</id>
 			<groupId>org.apache.pluto</groupId>
@@ -227,19 +228,17 @@
 			</properties>
 		</dependency>
 
+<!-- Struts.apache.org -->
 		<dependency>
-			<groupId>servletapi</groupId>
-			<artifactId>servletapi</artifactId>
-			<version>2.4-20040521</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>jspapi</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0-20040521</version>
-			<type>jar</type>
+			<groupId>struts</groupId>
+			<artifactId>struts</artifactId>
+			<version>1.2.9</version>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
 		</dependency>
 
+<!-- MMBase third-party dependencies -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -258,6 +257,7 @@
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
 		</dependency>
+		<!-- Uncomment when images use JAI instead of ImageMagick 
 		<dependency>
 			<groupId>jai</groupId>
 			<artifactId>jai_codec</artifactId>
@@ -276,6 +276,7 @@
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -293,12 +294,23 @@
 			</properties>
 		</dependency>
 
+<!-- Servlet/JSP -->
 		<dependency>
-			<groupId>struts</groupId>
-			<artifactId>struts</artifactId>
-			<version>1.2.9</version>
+			<groupId>servletapi</groupId>
+			<artifactId>servletapi</artifactId>
+			<version>2.4-20040521</version>
+			<type>jar</type>
 			<properties>
-				<war.bundle>${war.bundle}</war.bundle>
+				<war.bundle>false</war.bundle>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>jspapi</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0-20040521</version>
+			<type>jar</type>
+			<properties>
+				<war.bundle>false</war.bundle>
 			</properties>
 		</dependency>
 		
@@ -320,6 +332,7 @@
 			</properties>
 		</dependency>
 		
+<!-- Pager taglib -->
 		<dependency>
 			<groupId>jsptags.com</groupId>
 			<artifactId>pager-taglib</artifactId>
@@ -330,6 +343,7 @@
 			</properties>
 		</dependency>
 		
+<!-- Jakarta Commons -->		
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -420,6 +434,7 @@
 			</properties>
 		</dependency>
 
+<!-- Struts third-party dependencies -->
 		<dependency>
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
@@ -437,8 +452,7 @@
 			</properties>
 		</dependency>
 		
-		
-		
+<!-- EHcache used for cmsc sitemanagement -->		
    		<dependency>
 			<groupId>ehcache</groupId>
 			<artifactId>ehcache</artifactId>
@@ -458,6 +472,7 @@
 			</properties>
 		</dependency>
 
+<!-- Maven mmbase-modules plugin -->
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>maven-mmbase-module-plugin</artifactId>

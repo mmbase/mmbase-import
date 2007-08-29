@@ -12,12 +12,6 @@
     <name>Link Validator</name>
     <shortDescription>Checks if URL's are still valid</shortDescription>
     <dependencies>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.0</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 </project>
 
