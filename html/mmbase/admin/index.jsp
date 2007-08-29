@@ -1,6 +1,6 @@
-<%@ page  contentType="application/xhtml+xml; charset=UTF-8" 
-%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
+<%@ page  contentType="application/xhtml+xml; charset=UTF-8"
+%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <mm:content expires="0"
@@ -33,7 +33,7 @@
     <div id="head">
       <h1>MMBase</h1>
       <p>
-        You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) | 
+        You are logged in as: <mm:cloudinfo type="user" /> (rank: <mm:cloudinfo type="user" />) |
         <mm:link page="/mmbase/admin/logout.jsp"><a href="${_}">logout</a></mm:link>
       </p>
     </div>
@@ -57,7 +57,7 @@
               <mm:frameworkparam name="component">${subcat.component.name}</mm:frameworkparam>
               <mm:frameworkparam  name="block">${subcat.name}</mm:frameworkparam>
               <li class="${subcat.name eq block and subcat.component.name eq component ? 'current' : ''}">
-                <a title="${subcat.description}" href="${_}">${subcat.name}            
+                <a title="${subcat.description}" href="${_}">${subcat.name}
                 <span class="component">(${subcat.component.name})</span>
                 </a>
               </li>
@@ -82,7 +82,7 @@
     </c:catch>
     <c:if test="${! empty exception}">
       <pre>
-        ${exception}
+        ${mm:escape('text/xml', exception)}
       </pre>
     </c:if>
   </mm:present>
