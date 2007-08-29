@@ -6,37 +6,6 @@
     <shortDescription>Guestbook portlet</shortDescription>
 	<dependencies>
 		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-portal</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-portlets</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-utilities</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-contentrepository</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-sitemanagement</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-				
-		<dependency>
 			<groupId>jcaptcha</groupId>
 			<artifactId>jcaptcha-all</artifactId>			
 			<type>jar</type>
@@ -46,12 +15,6 @@
 			</properties>
 		</dependency>
 
-		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase</artifactId>
-			<version>${mmbase.version}</version>
-			<type>jar</type>
-		</dependency>
         <dependency>
             <groupId>mmapps</groupId>
             <artifactId>remotepublishing</artifactId>

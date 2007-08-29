@@ -13,19 +13,6 @@ See http://www.MMBase.org/license
     <shortDescription>Excel2Menu import</shortDescription>
     <dependencies>
 		<dependency>
-			<groupId>mmbase</groupId>
-			<artifactId>mmbase</artifactId>
-			<version>${mmbase.version}</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-sitemanagement</artifactId>
-			<version>${cmsc.version}</version>
-			<type>jar</type>
-		</dependency>
-
-		<dependency>
 			<groupId>poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>2.5.1</version>
@@ -41,6 +28,5 @@ See http://www.MMBase.org/license
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
 		</dependency>   
-
     </dependencies>    
 </project>
