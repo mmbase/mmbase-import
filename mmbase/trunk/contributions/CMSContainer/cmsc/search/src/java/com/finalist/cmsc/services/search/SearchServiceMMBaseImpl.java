@@ -32,7 +32,21 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
     private static Log log = LogFactory.getLog(SearchServiceMMBaseImpl.class);
 
+    protected static final String CONTENTCHANNEL = "contentchannel";
+    
+    protected static final String ARCHIVE = "archive";
+    
+    protected static final String USE_LIFECYCLE = "useLifecycle";
+    protected static final String DIRECTION = "direction";
+    protected static final String ORDERBY = "orderby";
+    protected static final String START_INDEX = "startindex";
+    protected static final String MAX_ELEMENTS = "maxElements";
+
+    protected static final String PAGE = "page";
+    protected static final String WINDOW = "window";
+    
     private Map<String,Integer> priorities = new HashMap<String, Integer>();
+    private boolean usePosition;
 
     @Override
     protected void init(ServletConfig aConfig, Properties aProperties) throws Exception {      
@@ -56,6 +70,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 priorities.put(low, 2);
             }
         }
+        
+        usePosition = aProperties.getBoolean("filter.usePosition", false);
     }
     
     private int getPriority(String name) {
@@ -101,12 +117,14 @@ public class SearchServiceMMBaseImpl extends SearchService {
     private boolean evaluatePageQueryNode(Node pageQueryNode, Node content) {
         Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
         String key = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
-        if ("contentchannel".equals(key)) {
+        if (CONTENTCHANNEL.equals(key)) {
             String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
             Integer portletId = page.getPortlet(portletWindowName);
             Portlet portlet = SiteManagement.getPortlet(portletId);
             if (portlet != null) {
-                return evaluateContentTypes(portletId, content) && evaluateArchive(portlet, content);
+                return evaluateContentTypes(portletId, content) 
+                    && evaluateArchive(portlet, content)
+                    && evalutateContentchannelPosition(portlet, content);
             }
         }
         return true;
@@ -126,10 +144,50 @@ public class SearchServiceMMBaseImpl extends SearchService {
     }
 
     private boolean  evaluateArchive(Portlet portlet, Node content) {
-        String archive = portlet.getParameterValue("archive");
+        String archive = portlet.getParameterValue(ARCHIVE);
         return ContentElementUtil.matchArchive(content, archive);
     }
 
+    private boolean evalutateContentchannelPosition(Portlet portlet, Node content) {
+        if (usePosition) {
+            String startIndex = portlet.getParameterValue(START_INDEX);
+            String maxElements = portlet.getParameterValue(MAX_ELEMENTS);
+            int start = startIndex == null || startIndex.length() == 0 ? 0 : Integer.valueOf(startIndex);
+            int end = maxElements == null || maxElements.length() == 0 ? -1 : Integer.valueOf(maxElements);
+            
+            if (start > 0 || end > 0) {
+                List<String> contenttypes = SiteManagement.getContentTypes(String.valueOf(portlet.getId()));
+
+                String contentchannel = portlet.getParameterValue(CONTENTCHANNEL);
+                String orderby = portlet.getParameterValue(ORDERBY);
+                String direction = portlet.getParameterValue(DIRECTION);
+                String archive = portlet.getParameterValue(ARCHIVE);
+                
+                String useLifecycle = portlet.getParameterValue(USE_LIFECYCLE);
+                boolean useLifecycleBool = Boolean.valueOf(useLifecycle).booleanValue();
+                if (useLifecycleBool && ServerUtil.isLive()) {
+                    // A live server will remove expired nodes.
+                    useLifecycleBool = false;
+    			}
+
+                Cloud cloud = content.getCloud();
+                Node channel = cloud.getNode(contentchannel);
+                
+                NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycleBool, archive, start, end, -1, -1, -1); 
+                for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+                    Node node = (Node) iterator.next();
+                    if(node.getNumber() == content.getNumber()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    
     @Override
     public List<PageInfo> findAllDetailPagesForContent(Node content) {
         List<PageInfo> result = new ArrayList<PageInfo>();
@@ -199,15 +257,15 @@ public class SearchServiceMMBaseImpl extends SearchService {
             String parameterValue = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.VALUE_FIELD);
 
             if (clicktopage) {
-                if ("contentchannel".equals(parameterName)) {
+                if (CONTENTCHANNEL.equals(parameterName)) {
                     Integer portletId = page.getPortlet(portletWindowName);
                     Portlet portlet = SiteManagement.getPortlet(portletId);
                     
                     if (portlet != null) {
-                        String pageNumber = portlet.getParameterValue("page");
+                        String pageNumber = portlet.getParameterValue(PAGE);
                         if (pageNumber != null) {
                             page = SiteManagement.getPage(Integer.valueOf(pageNumber));
-                            portletWindowName = portlet.getParameterValue("window");
+                            portletWindowName = portlet.getParameterValue(WINDOW);
                         }
                     }
                 }
@@ -358,9 +416,9 @@ public class SearchServiceMMBaseImpl extends SearchService {
     }
 
     private boolean isDetailPortlet(Portlet portlet) {
-        String contentchannel = portlet.getParameterValue("contentchannel");
+        String contentchannel = portlet.getParameterValue(CONTENTCHANNEL);
         if (contentchannel != null) {
-            String pageNumber = portlet.getParameterValue("page");
+            String pageNumber = portlet.getParameterValue(PAGE);
             if (pageNumber != null) {
                 return false;
             }
