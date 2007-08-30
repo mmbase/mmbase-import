@@ -5,7 +5,8 @@
 				 org.mmbase.storage.search.implementation.database.BasicSqlHandler,
 				 org.mmbase.storage.search.SearchQuery"
 				 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
+  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<mm:cloud rank="administrator"  jspvar="cloud">
 <div
   class="component ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
@@ -113,7 +114,7 @@
       QueryResultCache cache = (QueryResultCache) i.next();
 %>
    <mm:import id="cacheName" reset="true"><%=saveName(cache.getName())%></mm:import>
-   <tr><td colspan="6">  <a name="<mm:write referid="cacheName"/>"></td></tr>
+   <tr><td colspan="6">  <a name="<mm:write referid="cacheName"/>" /></td></tr>
    <%@include file="cache/cache_detail.jsp"%>
 
 
@@ -151,7 +152,7 @@
 
    <tr>
       <td  colspan="5" style="<mm:write referid="textStyle"/>">Events Analyzed : <%= cache.getReleaseStrategy().getTotalEvaluated()%>, Queries preserved : <%= cache.getReleaseStrategy().getTotalPreserved() %>, Queries flushed : <%= cache.getReleaseStrategy().getTotalEvaluated() - cache.getReleaseStrategy().getTotalPreserved()%></td>
-      <td  ><a href="<mm:write referid="url" escape="none"/>"/><b><%= cache.getReleaseStrategy().isEnabled() ? "disable" : "enable"%></b></a> </td>
+      <td  ><a href="<mm:write referid="url" escape="none"/>"><b><%= cache.getReleaseStrategy().isEnabled() ? "disable" : "enable"%></b></a> </td>
     </tr>
 
    <%-- create the toggle link for showing / hiding strategy details --%>
@@ -322,9 +323,9 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" align="left" /></a></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>
-
+</div>
 </mm:cloud>
