@@ -1,11 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <div
+    xmlns="http://www.w3.org/1999/xhtml" 
     class="mm_c mm_c_core mm_c_b_components ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
-    xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:jsp="http://java.sun.com/JSP/Page" 
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:content type="application/xml" expires="0" postprocessor="none">
@@ -15,11 +17,11 @@
         
       <mm:notpresent referid="component">
         <h1><fmt:message key="components.title" /></h1>
-        <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description, pageContext)}</p>
+        <p>${mm:string(requestScope["org.mmbase.framework.state"].block.description, pageContext)}</p>
         <mm:function set="utils" name="mmbase">
           <p>Framework: ${_.framework}</p>
         </mm:function>
-
+        <mm:function  set="components" name="failed" />
         <p><fmt:message key="components.available" /></p>
         <ul>
           <mm:listfunction id="comp" set="components" name="list" >
