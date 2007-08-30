@@ -84,6 +84,13 @@
       <pre>
         ${mm:escape('text/xml', exception)}
       </pre>
+      <pre>
+        ${mm:escape('text/xml', exception.cause.cause.cause)}
+
+
+        ${mm:escape('text/xml', exception.cause.cause)}
+        ${mm:escape('text/xml', exception.cause)}
+      </pre>
     </c:if>
   </mm:present>
   </div>
