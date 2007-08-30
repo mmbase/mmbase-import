@@ -1,8 +1,10 @@
 <div
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     class="component ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="administrator">
   <mm:import externid="cache"       from="request" id="name"  required="true" />
   <mm:import externid="deleteentry" from="request" vartype="integer">-1</mm:import>
@@ -30,7 +32,7 @@
         <th><input type="submit" value="search" /></th>
       </tr>
 
-      
+
       <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
         <c:if test="${deleteentry eq status.index}">
           <tr><td colspan="5">Deleting  <mm:function set="caches" name="remove" referids="cache.name@cache,entry.key@key" /></td></tr>
@@ -40,7 +42,7 @@
       <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
         <mm:context>
           <mm:voidfunction id="k"  set="utils" name="toString" referids="entry.key@object" />
-          
+
           <mm:write value="${k}">
             <mm:compare  regexp="${key}">
               <mm:write value="${entry.value}">
@@ -61,7 +63,7 @@
             </mm:compare>
           </mm:write>
         </mm:context>
-      </c:forEach>      
+      </c:forEach>
       <tr class="footer">
         <td class="navigate">
           <a href="${mm:url('cache', pageContext)}">
