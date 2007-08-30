@@ -11,9 +11,14 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.28 2007-08-28 10:03:22 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.29 2007-08-30 16:21:42 michiel Exp $
  */
+function Key() {
+      this.string = function() {
+          return this.dataType + "," + this.field + "," + this.nodeManager;
+      }
 
+}
 
 function MMBaseValidator(w, root) {
 
@@ -239,7 +244,7 @@ function MMBaseValidator(w, root) {
     */
    this.getDataTypeXml = function(el) {
        var key = this.getDataTypeKey(el);
-       var dataType = this.dataTypeCache[key];
+       var dataType = this.dataTypeCache[key.string()];
        if (dataType == null) {
 
            var xmlhttp = new XMLHttpRequest();
@@ -252,7 +257,7 @@ function MMBaseValidator(w, root) {
            } catch (ex) {
                // happens in safari
            }
-           this.dataTypeCache[key] = dataType;
+           this.dataTypeCache[key.string()] = dataType;
        }
        return dataType;
    }
@@ -282,7 +287,7 @@ function MMBaseValidator(w, root) {
        if (el.dataTypeStructure == null) {
            this.log("getting datatype for " + el.className);
            var classNames = el.className.split(" ");
-           var result = new Object();
+           var result = new Key();
            for (i = 0; i < classNames.length; i++) {
                var className = classNames[i];
                if (className.indexOf("mm_dt_") == 0) {
@@ -298,6 +303,7 @@ function MMBaseValidator(w, root) {
                }
 
            }
+           this.log("got " + result);
            el.dataTypeStructure = result;
        }
        return el.dataTypeStructure;
