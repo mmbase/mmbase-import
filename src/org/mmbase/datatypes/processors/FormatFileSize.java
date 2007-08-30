@@ -16,7 +16,7 @@ import java.text.*;
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.3 2007-08-30 22:06:36 michiel Exp $
+ * @version $Id: FormatFileSize.java,v 1.4 2007-08-30 22:25:36 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -34,14 +34,15 @@ public class FormatFileSize implements Processor {
     protected String[] prefixes = SI_BI;
     protected String unit = "B";
     protected String format = "{0,number,#} ";
-    protected int limitFactor = 9;
+    protected int limitFactor = 9 * k;
 
     /**
-     * If 'bi' set, will use binary SI prefixes. So, Ki, Mi, etc. which are multiples of
-     * 1024. Otherwise, use normal SI prefixes (k, M, G), which are multiples of 1000.
+     * If  set, will use binary prefixes as recommended by IEEE 1541 . So, Ki, Mi, etc. which
+     * are multiples of 1024. Otherwise normal SI prefixes are applied (k, M, G etc), which are multiples of
+     * 1000.
      * @since MMBase-1.9
      */
-    public void setBI(boolean bi) {
+    public void setBinaryPrefixes(boolean bi) {
         if (bi) {
             prefixes = SI_BI;
             k = KIBI;
@@ -51,7 +52,8 @@ public class FormatFileSize implements Processor {
         }
     }
     /**
-     * The unix which is prefixes by the prefixes. Defaults to 'B', the SI unit of a 'byte'.
+     * The unit symbol which is prefixed by the prefixes. Defaults to 'B', the IEEE 1541 recommended
+     * symbol for a 'byte'.
      * @since MMBase-1.9
      */
     public void setUnit(String u) {
@@ -60,8 +62,9 @@ public class FormatFileSize implements Processor {
 
     /**
      * It was commonplace to mix SI prefixes with 'binary' factors.
-     * If this is set to 'true', then SI prefixes are used 'byte' will be the unit, and 1024 the
-     * basic factor (which is basicly incorrect).
+     * If this is set to 'true', then SI prefixes are used 'byte' will be the unit symbol, and 1024 the
+     * basic factor (which basicly adhers to no recomendation or standard, but is widely used by
+     * e.g. hard disk manufacturers).
      * @since MMBase-1.9
      */
     public void setClassical(boolean c) {
@@ -76,7 +79,7 @@ public class FormatFileSize implements Processor {
         }
     }
     /**
-     * MessageFormat to format the number. Default to '{0,number,#} '.
+     * MessageFormat to format the number. Defaults to '{0,number,#} '.
      * @since MMBase-1.9
      */
     public void setFormat(String mf) {
@@ -98,13 +101,12 @@ public class FormatFileSize implements Processor {
 
     public final Object process(Node node, Field field, Object value) {
         int size = node.getIntValue(field.getName());
-        int factor = k;
+        int factor = 1;
         int power  = 0;
         while (size > factor * limitFactor) {
             factor *= k;
             power++;
         }
-        factor /= k;
 
         StringBuffer buf = new StringBuffer();
         MessageFormat mf = new MessageFormat(format,  node.getCloud().getLocale());
