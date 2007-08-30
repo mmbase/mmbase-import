@@ -15,8 +15,13 @@ import java.text.*;
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
+ * Actually, using setters like {@link #setUnit()}, this class can also be used to postfix all
+ * other kinds of units to integers.
+ *
+ * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
+ *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.4 2007-08-30 22:25:36 michiel Exp $
+ * @version $Id: FormatFileSize.java,v 1.5 2007-08-30 22:31:48 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -103,7 +108,7 @@ public class FormatFileSize implements Processor {
         int size = node.getIntValue(field.getName());
         int factor = 1;
         int power  = 0;
-        while (size > factor * limitFactor) {
+        while (size > factor * limitFactor && power < prefixes.length) {
             factor *= k;
             power++;
         }
