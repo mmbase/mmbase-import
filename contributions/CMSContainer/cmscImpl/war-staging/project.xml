@@ -8,8 +8,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>finalist</groupId>
-			<artifactId>cmscimpl-webapp</artifactId>
-			<version>${cmsc.version}</version>
+			<artifactId>cmsc-webapp</artifactId>
+			<version>${cmscimpl.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
 
@@ -130,6 +130,13 @@
 			<properties>
 				<mmbase.config.bundle>false</mmbase.config.bundle>
 			</properties>
+		</dependency>
+
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-rssfeed</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
 		</dependency>
 
 	</dependencies>

@@ -3,14 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"
-	extends="object" maintainer="finalist.com" name="rating" version="1">
+	extends="object" maintainer="finalist.com" name="rssfeed" version="1">
 	<!--
 		
 	-->
 	<status>active</status>
-	<!--
-		<class>Tasks.Task</class>
-	-->
+	<class>com.finalist.cmsc.navigation.NavigationBuilder</class>
 	<searchage>70</searchage>
 	<names>
 		<singular xml:lang="nl">RSS feed</singular>
@@ -148,7 +146,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype base="tekst" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="text" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>description</name>
 				<type key="false" notnull="true" size="2048" state="persistent">STRING</type>
@@ -170,7 +168,7 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype base="tekst" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<datatype base="text" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>copyright</name>
 				<type key="false" notnull="true" size="2048" state="persistent">STRING</type>
@@ -220,5 +218,47 @@
 				<type key="false" notnull="true" size="512" state="persistent">STRING</type>
 			</db>
 		</field>		
+		<field>
+			<descriptions>
+				<description xml:lang="en">The complete path for this page</description>
+				<description xml:lang="nl">Het path van dit page</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="en">Path</guiname>
+				<guiname xml:lang="nl">Path</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>-1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<db>
+				<name xml:lang="en">path</name>
+				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="en">The old path for this page</description>
+				<description xml:lang="nl">Het oude path van dit page</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="en">Old Path</guiname>
+				<guiname xml:lang="nl">Oud Path</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>-1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<db>
+				<name xml:lang="en">oldpath</name>
+				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
+			</db>
+		</field>
 	</fieldlist>
 </builder>
