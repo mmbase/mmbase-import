@@ -22,6 +22,7 @@ package com.finalist.tree;
 
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.NoSuchElementException;
 
 import javax.swing.tree.TreeModel;
 
@@ -222,7 +223,12 @@ public class HTMLTree {
 
          if (level == 0) {
             // get subsite node
-            Object child = model.getChild(node, subSiteId);
+            Object child = null;
+            try {
+               child = model.getChild(node, subSiteId);
+            } catch (NoSuchElementException ex) {
+               child = model.getChild(node, 0);   
+            }   
             out.print(preHtml);
             String img = getImage(model.isLeaf(child), true);
             renderNode(child, level + 1, out, base + "_" + subSiteId, preHtml, img, true);            
