@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.38 2007-06-28 08:23:25 michiel Exp $
+# $Id: build.properties.default,v 1.39 2007-08-31 06:09:24 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -55,7 +55,7 @@ jspapi.jar=${download.dir}/${jspapi.file}
 jspapi.loc=${mmaven.loc}/jspapi/jars/${jspapi.file}
 
 # ----- Hsqldb ----
-hsqldb.version=hsqldb_1_8_0_7
+hsqldb.version=hsqldb_1_8_0_8
 hsqldb.file=${hsqldb.version}.zip
 hsqldb.dest=${download.dir}/${hsqldb.file}
 hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
