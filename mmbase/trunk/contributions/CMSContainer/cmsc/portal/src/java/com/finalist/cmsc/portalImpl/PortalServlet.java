@@ -192,8 +192,7 @@ public class PortalServlet extends HttpServlet {
 			} else {
 				RssFeed rssFeed = getRssFeed(path);
 				if(rssFeed != null) {
-					log.info("waiting implementation");
-//					rssFeed.service(request, response);
+					rssFeed.service(request, response, getServletContext());
 				}
 				else {
 					log.error("Failed to find screen or RSS feed for: " + currentURL.getGlobalNavigationAsString());

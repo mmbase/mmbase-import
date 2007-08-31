@@ -79,5 +79,11 @@
 			<type>mmbase-module</type>
 		</dependency>
 
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-rssfeed</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
 	</dependencies>
 </project>
