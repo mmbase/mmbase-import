@@ -266,7 +266,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
 
     public void notify(RelationEvent event) {
         if (( PagesUtil.PAGE.equals(event.getRelationSourceType()) || SiteUtil.SITE.equals(event.getRelationSourceType()) ) 
-                && PagesUtil.PAGE.equals(event.getRelationDestinationType())) {
+                && (PagesUtil.PAGE.equals(event.getRelationDestinationType()) || RssFeedUtil.RSSFEED.equals(event.getRelationDestinationType()))) {
             switch (event.getType()) {
                 case Event.TYPE_CHANGE:
                 {
@@ -366,7 +366,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                             }
                         }
                     }
-                    if (PagesUtil.PAGE.equals(event.getBuilderName())) {
+                    if (PagesUtil.PAGE.equals(event.getBuilderName()) || RssFeedUtil.RSSFEED.equals(event.getBuilderName())) {
                         if(event.getChangedFields().contains(PagesUtil.FRAGMENT_FIELD)) {
                             for (PageTree tree : trees.values()) {
                                 if (tree.containsPageTreeNode(key)) {

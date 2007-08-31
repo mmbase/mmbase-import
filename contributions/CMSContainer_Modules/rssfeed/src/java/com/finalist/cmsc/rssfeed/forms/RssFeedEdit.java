@@ -39,7 +39,7 @@ public class RssFeedEdit extends MMBaseFormlessAction {
         }
         else {
             String ewnodelastedited = getParameter(request, "ewnodelastedited");
-            addToRequest(request, "showpage", ewnodelastedited);
+            addToRequest(request, "showfeed", ewnodelastedited);
             ActionForward ret = mapping.findForward(SUCCESS);
             return ret;
         }

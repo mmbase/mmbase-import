@@ -88,9 +88,11 @@ public class PublishTag extends NodeReferrerTag {
                }
             }
 
-            List<Node> nodeErrors = Workflow.isReadyToPublish(node, publishNumbers);
-            if(!nodeErrors.isEmpty()) {
-                errors.put(node, nodeErrors);
+            if(Workflow.isWorkflowElement(node)) {
+	            List<Node> nodeErrors = Workflow.isReadyToPublish(node, publishNumbers);
+	            if(!nodeErrors.isEmpty()) {
+	                errors.put(node, nodeErrors);
+	            }
             }
         }
         
