@@ -7,7 +7,6 @@ CONFIGURATION:
 
 TODO:
 * ??? merge into core ???
-* add images to the items in the feed
 * use the CMSC channel selector in stead of the edit wizard one
 * ??? email automatic ???
 
