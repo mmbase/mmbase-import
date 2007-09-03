@@ -13,6 +13,7 @@ import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.RssFeedUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
@@ -181,7 +182,7 @@ public class PublishTag extends NodeReferrerTag {
         private void publishNode(Node node,  List<Integer> publishNumbers) {
             try {
                 log.debug("Publising node using taglib: "+node.getNumber());
-                if(RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node)) {
+                if(RepositoryUtil.isContentChannel(node) || RepositoryUtil.isCollectionChannel(node) || RssFeedUtil.isRssFeedType(node)) {
                     Publish.publish(node);
                 }
                 else {
