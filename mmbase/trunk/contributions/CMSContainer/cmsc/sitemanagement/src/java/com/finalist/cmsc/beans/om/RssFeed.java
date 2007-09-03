@@ -82,6 +82,9 @@ public class RssFeed extends NavigationItem {
 
 		Date lastChange = null;
 		NodeList contentChannels = node.getRelatedNodes("contentchannel");
+		StringBuffer imageOutput = null;
+		boolean first = true;
+
 		if(contentChannels.size() > 0) {
 			Node contentChannel = contentChannels.getNode(0);
 			
@@ -98,13 +101,19 @@ public class RssFeed extends NavigationItem {
 	    		output.append("<link>");
 	    		output.append(uniqueUrl);
 	    		output.append("</link>");
-	    		String description = resultNode.getStringValue("intro");
-	    		if(description.length() == 0) {
+	    		String description = null;
+	    		if(resultNode.getNodeManager().hasField("intro")) {
+	    			description = resultNode.getStringValue("intro");
+	    		}
+	    		if((description == null || description.length() == 0) && resultNode.getNodeManager().hasField("body")) {
 	    			description = resultNode.getStringValue("body");
 	    			if(description.indexOf("<br/>") != -1) {
 	    				description = description.substring(0, description.indexOf("<br/>"));
 	    			}
 	    		} 
+	    		if(description != null) {    			
+	    			description = description.replaceAll("<.*?>", "");
+	    		}
 	    		output.append("<description>");    
 	    		output.append(description); 
 	    		output.append("</description>");
@@ -114,14 +123,41 @@ public class RssFeed extends NavigationItem {
 	    		output.append("<guid>");
 	    		output.append(uniqueUrl);
 	    		output.append("</guid>");
+	    		
+	    		NodeList images = resultNode.getRelatedNodes("images", "imagerel", null );
+	    		if(first && images.size() > 0) {
+	    			Node image = images.getNode(0);
+	    			List arguments = new ArrayList();
+	    			arguments.add("160x100");
+	    			int iCacheNodeNumber = image.getFunctionValue("cache", arguments).toInt();
+	    			String imageUrl = image.getFunctionValue("servletpath", null).toString() + iCacheNodeNumber;
+	    			
+	    			imageOutput = new StringBuffer();
+	    			imageOutput.append("<image>");
+	    			imageOutput.append("<url>");
+	    			imageOutput.append(imageUrl); 
+	    			imageOutput.append("</url>");
+	    			imageOutput.append("<title/>");
+	    			imageOutput.append("<link>");
+	    			imageOutput.append(uniqueUrl); 
+	    			imageOutput.append("</link>");
+	    			imageOutput.append("</image>");
+	    		}
+	    		
 	        	output.append("</item>");
 	        	
 	        	Date change = resultNode.getDateValue("lastmodifieddate");
 	        	if(lastChange == null || change.getTime() > lastChange.getTime()) {
 	        		lastChange = change;
 	        	}
+	        	
+	        	first = false;
 	        }
 	    }
+		
+		if(imageOutput != null) {
+			output.append(imageOutput);
+		}
 
 		if(lastChange != null) {
 			output.append("<lastBuildDate>");
