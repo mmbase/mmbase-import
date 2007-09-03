@@ -72,6 +72,10 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
         if (publisher.isPublishable(node)) {
             return publisher;
         }
+        publisher = getRssFeedPublisher(node.getCloud());
+        if (publisher.isPublishable(node)) {
+            return publisher;
+        }
         throw new IllegalArgumentException("Node was not publishable " + node);
     }
 
@@ -87,7 +91,11 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
         return new ChannelPublisher(cloud);
     }
 
-   public void published(Node publishedNode) {
+    private Publisher getRssFeedPublisher(Cloud cloud) {
+        return new RssFeedPublisher(cloud);
+    }
+
+    public void published(Node publishedNode) {
       if (Workflow.isWorkflowElement(publishedNode)) {
          Workflow.complete(publishedNode);
       }
