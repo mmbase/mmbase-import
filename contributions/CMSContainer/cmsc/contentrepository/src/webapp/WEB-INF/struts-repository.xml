@@ -85,7 +85,8 @@
 
 		<action path="/editors/repository/ReorderAction" type="com.finalist.cmsc.repository.forms.ReorderAction"
 			name="ReorderForm" scope="request" unknown="false" validate="false">
-			<forward name="reorder" path="/editors/repository/reordercontent.jsp" redirect="false" />
+         	<set-property property="cancellable" value="true"/>
+         	<forward name="reorder" path="/editors/repository/reordercontent.jsp" redirect="false" />
 			<forward name="success" path="/editors/repository/Content.do" redirect="false" />
 		</action>
 		<action path="/editors/repository/LinkToChannelAction"
@@ -192,7 +193,8 @@
 		<action path="/editors/usermanagement/ContentRolesAction"
 			type="com.finalist.cmsc.security.forms.ContentRolesAction" name="RolesForm" scope="session"
 			input="/editors/usermanagement/repository/roles.jsp" unknown="false" validate="false">
-			<forward name="success" path="/editors/usermanagement/repository/roles.jsp" redirect="false" />
+         	<set-property property="cancellable" value="true"/>
+         	<forward name="success" path="/editors/usermanagement/repository/roles.jsp" redirect="false" />
 			<forward name="savecancel" path="/editors/usermanagement/userlist.jsp" redirect="false" />
 		</action>
 
