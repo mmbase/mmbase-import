@@ -77,12 +77,14 @@
 
 		<action path="/editors/site/ReorderAction" type="com.finalist.cmsc.navigation.forms.ReorderAction"
 			name="ReorderForm" scope="request" unknown="false" validate="false">
-			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+         	<set-property property="cancellable" value="true"/>
+         	<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
 
 		<action path="/editors/site/MassModify" type="com.finalist.cmsc.navigation.forms.MassModify"
 			name="MassModifyForm" scope="request" unknown="false" validate="false">
-			<forward name="massmodify" path="/editors/site/massmodify.jsp" redirect="false" />
+         	<set-property property="cancellable" value="true"/>
+         	<forward name="massmodify" path="/editors/site/massmodify.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 
@@ -106,7 +108,8 @@
 		<action path="/editors/usermanagement/SiteRolesAction"
 			type="com.finalist.cmsc.security.forms.SiteRolesAction" name="RolesForm" scope="session"
 			input="/editors/usermanagement/site/roles.jsp" unknown="false" validate="false">
-			<forward name="success" path="/editors/usermanagement/site/roles.jsp" redirect="false" />
+         	<set-property property="cancellable" value="true"/>
+         	<forward name="success" path="/editors/usermanagement/site/roles.jsp" redirect="false" />
 			<forward name="savecancel" path="/editors/usermanagement/userlist.jsp" redirect="false" />
 		</action>
 	</action-mappings>
