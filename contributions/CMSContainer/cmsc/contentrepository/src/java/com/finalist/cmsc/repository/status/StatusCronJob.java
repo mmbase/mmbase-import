@@ -54,8 +54,10 @@ public class StatusCronJob implements CronJob {
 	private static final String OPERATOR_LESS_EQUAL = "<=";
 
 	private static final String OPERATOR_GREATER_EQUAL = ">=";
+	
+	private static final int MAX_QUERYSIZE = 1000;
 
-	private static final String PROPERTY_QUERYSIZE = "cronjob.status.querysize";
+//	private static final String PROPERTY_QUERYSIZE = "cronjob.status.querysize";
 
 	private long maximumEndDate;
 
@@ -75,16 +77,15 @@ public class StatusCronJob implements CronJob {
 
 		long startTime = System.currentTimeMillis();
         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-        String maxQuerySize = PropertiesUtil.getProperty(PROPERTY_QUERYSIZE, cloud);
         NodeManager nodeManager = cloud.getNodeManager(TYPE_CONTENTELEMENT);
         
-		int newlyExpired = updateNewlyExpired(nodeManager, maxQuerySize);
-		int newlyArchived = updateNewlyArchived(nodeManager, maxQuerySize);
-		int newlyPublished = updateNewlyPublished(nodeManager, maxQuerySize);
+		int newlyExpired = updateNewlyExpired(nodeManager, MAX_QUERYSIZE);
+		int newlyArchived = updateNewlyArchived(nodeManager, MAX_QUERYSIZE);
+		int newlyPublished = updateNewlyPublished(nodeManager, MAX_QUERYSIZE);
 
-		int degeneratedNew = updateDegeneratedNew(nodeManager, maxQuerySize);
-		int degeneratedPublished = updateDegeneratedPublished(nodeManager, maxQuerySize);
-		int degeneratedArchived = updateDegeneratedArchived(nodeManager, maxQuerySize);
+		int degeneratedNew = updateDegeneratedNew(nodeManager, MAX_QUERYSIZE);
+		int degeneratedPublished = updateDegeneratedPublished(nodeManager, MAX_QUERYSIZE);
+		int degeneratedArchived = updateDegeneratedArchived(nodeManager, MAX_QUERYSIZE);
 
 		if (newlyExpired > 0 || newlyArchived > 0 || newlyPublished > 0 || degeneratedNew > 0 || degeneratedPublished > 0
 				|| degeneratedArchived > 0) {
@@ -94,37 +95,37 @@ public class StatusCronJob implements CronJob {
 		}
 	}
 
-	private int updateDegeneratedNew(NodeManager nodeManager, String maxQuerySize) {
+	private int updateDegeneratedNew(NodeManager nodeManager, int maxQuerySize) {
 		NodeList archivedNodeList = getContentWithRestraints(FIELD_PUBLISHDATE, OPERATOR_LESS_EQUAL, new String[] {
 				STATUS_EMBARGOED, STATUS_ARCHIVED, STATUS_EXPIRED }, STATUS_NEW, nodeManager, maxQuerySize);
 		return updateListStatus(archivedNodeList, STATUS_NEW);
 	}
 
-	private int updateNewlyPublished(NodeManager nodeManager, String maxQuerySize) {
+	private int updateNewlyPublished(NodeManager nodeManager, int maxQuerySize) {
 		NodeList publishedNodeList = getContentWithRestraints(FIELD_PUBLISHDATE, OPERATOR_GREATER_EQUAL,
 				new String[] { STATUS_NEW }, STATUS_EMBARGOED, nodeManager, maxQuerySize);
 		return updateListStatus(publishedNodeList, STATUS_EMBARGOED);
 	}
 
-	private int updateDegeneratedPublished(NodeManager nodeManager, String maxQuerySize) {
+	private int updateDegeneratedPublished(NodeManager nodeManager, int maxQuerySize) {
 		NodeList publishedNodeList = getContentWithRestraints(FIELD_ARCHIVEDATE, OPERATOR_LESS_EQUAL, new String[] {
 				STATUS_ARCHIVED, STATUS_EXPIRED }, STATUS_EMBARGOED, nodeManager, maxQuerySize);
 		return updateListStatus(publishedNodeList, STATUS_EMBARGOED);
 	}
 
-	private int updateNewlyArchived(NodeManager nodeManager, String maxQuerySize) {
+	private int updateNewlyArchived(NodeManager nodeManager, int maxQuerySize) {
 		NodeList archivedNodeList = getContentWithRestraints(FIELD_ARCHIVEDATE, OPERATOR_GREATER_EQUAL, new String[] {
 				STATUS_NEW, STATUS_EMBARGOED }, STATUS_ARCHIVED, nodeManager, maxQuerySize);
 		return updateListStatus(archivedNodeList, STATUS_ARCHIVED);
 	}
 
-	private int updateDegeneratedArchived(NodeManager nodeManager, String maxQuerySize) {
+	private int updateDegeneratedArchived(NodeManager nodeManager, int maxQuerySize) {
 		NodeList archivedNodeList = getContentWithRestraints(FIELD_EXPIREDATE, OPERATOR_LESS_EQUAL,
 				new String[] { STATUS_EXPIRED }, STATUS_ARCHIVED, nodeManager, maxQuerySize);
 		return updateListStatus(archivedNodeList, STATUS_ARCHIVED);
 	}
 
-	private int updateNewlyExpired(NodeManager nodeManager, String maxQuerySize) {
+	private int updateNewlyExpired(NodeManager nodeManager, int maxQuerySize) {
 		NodeList expiredNodeList = getContentWithRestraints(FIELD_EXPIREDATE, OPERATOR_GREATER_EQUAL, new String[] { STATUS_NEW,
 				STATUS_EMBARGOED, STATUS_ARCHIVED }, STATUS_EXPIRED, nodeManager, maxQuerySize);
 		return updateListStatus(expiredNodeList, STATUS_EXPIRED);
@@ -174,13 +175,11 @@ public class StatusCronJob implements CronJob {
 		}
 	}
 
-	private NodeList getContentWithRestraints(String fieldName, String operator, String[] statusValues, String currentStatus, NodeManager nodeManager, String maxQuerySize) {
+	private NodeList getContentWithRestraints(String fieldName, String operator, String[] statusValues, String currentStatus, NodeManager nodeManager, int maxQuerySize) {
 		NodeQuery nodeQuery = nodeManager.createQuery();
 		nodeQuery.setCachePolicy(CachePolicy.NEVER);
 
-		if (!StringUtil.isEmpty(maxQuerySize)) {
-			nodeQuery.setMaxNumber(Integer.parseInt(maxQuerySize));
-		}
+		nodeQuery.setMaxNumber(maxQuerySize);
 
 		BasicCompositeConstraint constraint = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
 
