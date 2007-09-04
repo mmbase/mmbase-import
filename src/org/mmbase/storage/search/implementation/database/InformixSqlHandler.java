@@ -12,6 +12,7 @@ package org.mmbase.storage.search.implementation.database;
 import java.util.*;
 import java.sql.*;
 import java.lang.reflect.Method;
+import org.mmbase.module.core.MMBase;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
@@ -38,16 +39,16 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.25.2.1 2007-06-12 11:00:46 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.25.2.2 2007-09-04 14:26:12 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
+    public static final String  ADD_ORDERED = "informix-query-optimizer-ordered";
     /**
      * Logger instance.
      */
-    private static Logger log
-            = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
+    private static Logger log = Logging.getLoggerInstance(InformixSqlHandler.class.getName());
 
     /**
      * Constructor.
@@ -126,8 +127,11 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             /*
                Optimizer directive {+ORDERED} may not be used when using UNIONS
             */
-            if (query.getSteps().size() > 3) {
-                sbQuery.append("{+ORDERED} ");
+            if (MMBase.getMMBase().getStorageManagerFactory().hasOption(ADD_ORDERED)) {
+
+                if (query.getSteps().size() > 3) {
+                    sbQuery.append("{+ORDERED} ");
+                }
             }
 
             /*
@@ -194,7 +198,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         boolean appended = false;
         while (iFields.hasNext()) {
             StepField field = (StepField) iFields.next();
-            if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY) continue; 
+            if (field.getType() == org.mmbase.bridge.Field.TYPE_BINARY) continue;
             if (appended) {
                 sb.append(',');
             }
@@ -698,7 +702,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
 
                     // Loop through the fields until we find a match
-                    boolean found = false;                    
+                    boolean found = false;
                     for (int i = 0; i < query.getFields().size(); i++) {
                         StepField sf = (StepField) query.getFields().get(i);
                         String field = sf.getStep().getAlias() + "." + sf.getFieldName();
