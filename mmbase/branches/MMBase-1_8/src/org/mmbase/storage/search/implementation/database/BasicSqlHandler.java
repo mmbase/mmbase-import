@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.6 2007-09-04 14:45:20 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.7 2007-09-04 14:57:03 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -1072,8 +1072,7 @@ public class BasicSqlHandler implements SqlHandler {
      *        <code>false</code> otherwise.
      */
     // TODO RvM: add to interface, add javadoc
-    protected void appendField(StringBuffer sb, Step step,
-            String fieldName, boolean includeTablePrefix) {
+    protected void appendField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
 
         String tableAlias = step.getAlias();
         if (includeTablePrefix) {
@@ -1089,11 +1088,11 @@ public class BasicSqlHandler implements SqlHandler {
     /**
      * @since MMBase-1.8.5
      */
-    protected void appendLowerField(StringBuilder sb, Step step, String fieldName, boolean includeTablePrefix) {
+    protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
         // case insensitive
         sb.append("LOWER(");
         sb.append(')');
-        appendField(sb, step, fieldName, multipleSteps);
+        appendField(sb, step, fieldName, includeTablePrefix);
         sb.append(')');
     }
 
