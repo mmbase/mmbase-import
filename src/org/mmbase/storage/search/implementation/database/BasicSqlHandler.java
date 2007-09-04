@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.71 2007-08-08 09:51:51 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.72 2007-09-04 14:45:39 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -767,9 +767,7 @@ public class BasicSqlHandler implements SqlHandler {
                 FieldValueBetweenConstraint valueBetweenConstraint = (FieldValueBetweenConstraint) fieldConstraint;
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive
-                    sb.append("LOWER(");
-                    appendField(sb, step, fieldName, multipleSteps);
-                    sb.append(")");
+                    appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
@@ -803,9 +801,7 @@ public class BasicSqlHandler implements SqlHandler {
                     appendDateField(sb, step, fieldName, multipleSteps, part);
                 } else if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
-                    sb.append("LOWER(");
-                    appendField(sb, step, fieldName, multipleSteps);
-                    sb.append(")");
+                    appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
@@ -862,9 +858,7 @@ public class BasicSqlHandler implements SqlHandler {
                     Step step2 = field2.getStep();
                     if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                         // case insensitive
-                        sb.append("LOWER(");
-                        appendField(sb, step2, fieldName2, multipleSteps);
-                        sb.append(")");
+                        appendLowerField(sb, step2, fieldName2, multipleSteps);
                     } else {
                         // case sensitive or case irrelevant
                         appendField(sb, step2, fieldName2, multipleSteps);
@@ -1077,6 +1071,17 @@ public class BasicSqlHandler implements SqlHandler {
             sb.append(".");
         }
         sb.append(getAllowedValue(fieldName));
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected void appendLowerField(StringBuilder sb, Step step, String fieldName, boolean includeTablePrefix) {
+        // case insensitive
+        sb.append("LOWER(");
+        sb.append(')');
+        appendField(sb, step, fieldName, multipleSteps);
+        sb.append(')');
     }
 
 }
