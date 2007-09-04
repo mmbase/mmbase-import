@@ -12,6 +12,7 @@ package org.mmbase.storage.search.implementation.database;
 import java.util.*;
 import java.sql.*;
 import java.lang.reflect.Method;
+import org.mmbase.module.core.MMBase;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
@@ -38,11 +39,12 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.31 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.32 2007-09-04 14:26:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
 
+    public static final String  ADD_ORDERED = "informix-query-optimizer-ordered";
 
     private static final Logger log = Logging.getLoggerInstance(InformixSqlHandler.class);
 
@@ -124,11 +126,19 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         if (!isUnionQuery(query)) {
             /*
                Optimizer directive {+ORDERED} may not be used when using UNIONS
-            */
-            if (query.getSteps().size() > 3) {
-                sbQuery.append("{+ORDERED} ");
-            }
 
+               It is unclear why it is good to explicit add ORDERED tot the query.
+               I suspect it may not be definitely always good at all.
+               http://www.mmbase.org/jira/browse/MMB-1508
+               made it configurable for now
+
+            */
+            if (MMBase.getMMBase().getStorageManagerFactory().hasOption(ADD_ORDERED)) {
+
+                if (query.getSteps().size() > 3) {
+                    sbQuery.append("{+ORDERED} ");
+                }
+            }
             /*
                FIRST may not be used when using UNIONS
             */
