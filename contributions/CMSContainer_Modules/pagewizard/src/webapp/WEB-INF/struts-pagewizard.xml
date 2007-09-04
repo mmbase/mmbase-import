@@ -33,7 +33,8 @@
 		<action path="/editors/pagewizard/CompleteWizardAction" type="com.finalist.cmsc.pagewizard.forms.CompleteWizardAction" 
 				name="PageWizardForm" scope="request" input="/editors/pagewizard/pickcontent.jsp" 
 				unknown="false" validate="false">
-			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+         	<set-property property="cancellable" value="true"/>
+         	<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 		</action>
 
