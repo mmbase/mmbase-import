@@ -80,10 +80,10 @@
 				<li class="trashbin">
 					<a href="<mm:url page="../recyclebin/index.jsp"/>" target="content">
 						<fmt:message key="selector.recyclebin" />
+						<mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
+							(<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
+						</mm:node>
 					</a>
-					<mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-						(<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
-					</mm:node>
 				</li>
 				</mm:hasrank>
         			<li class="images"><a href="<mm:url page="../resources/ImageInitAction.do"/>" target="content"><fmt:message key="selector.images" /></a></li>
