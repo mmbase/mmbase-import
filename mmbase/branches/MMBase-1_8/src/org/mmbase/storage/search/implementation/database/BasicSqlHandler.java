@@ -23,7 +23,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.62.2.8 2007-09-05 08:06:26 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.62.2.9 2007-09-05 08:11:52 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -1091,7 +1091,6 @@ public class BasicSqlHandler implements SqlHandler {
     protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
         // case insensitive
         sb.append("LOWER(");
-        sb.append('(');
         appendField(sb, step, fieldName, includeTablePrefix);
         sb.append(')');
     }
