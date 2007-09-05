@@ -26,7 +26,7 @@ import javax.servlet.jsp.PageContext;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.6.2.2 2007-06-27 13:22:50 michiel Exp $
+ * @version $Id: FormTag.java,v 1.6.2.3 2007-09-05 12:22:06 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -46,7 +46,7 @@ public class FormTag extends TransactionTag implements Writer {
 
     private Attribute page = Attribute.NULL;
     private Attribute clazz = Attribute.NULL;
-    
+
     private Attribute referid = Attribute.NULL;
 
     private Object previous;
@@ -108,8 +108,8 @@ public class FormTag extends TransactionTag implements Writer {
             String c  = clazz.getString(this);
             try {
                 pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
-                                           "action=\"#" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
-                                           ("".equals(c) ? "" : " " + c) + 
+                                           "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
+                                           ("".equals(c) ? "" : " " + c) +
                                            "\" >");
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
