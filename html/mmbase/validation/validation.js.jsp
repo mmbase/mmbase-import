@@ -11,13 +11,18 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.8 2007-08-14 12:16:24 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.9 2007-09-05 08:26:34 michiel Exp $
  */
+function Key() {
+      this.string = function() {
+          return this.dataType + "," + this.field + "," + this.nodeManager;
+      }
 
+}
 
 function MMBaseValidator(w, root) {
 
-   this.logEnabled   = false;
+   this.logEnabled   = true;
    this.traceEnabled = false;
 
    this.dataTypeCache   = new Object();
@@ -163,6 +168,9 @@ function MMBaseValidator(w, root) {
    this.getValueAttribute = function(numeric, el) {
        if (el == null) return null;
        var value = el.getAttribute("value");
+       var eval = el.getAttribute("eval");
+       if (! eval == "") value = eval;
+
        if (numeric) {
            if (value == "") return null;
            return parseFloat(value);
@@ -236,7 +244,7 @@ function MMBaseValidator(w, root) {
     */
    this.getDataTypeXml = function(el) {
        var key = this.getDataTypeKey(el);
-       var dataType = this.dataTypeCache[key];
+       var dataType = this.dataTypeCache[key.string()];
        if (dataType == null) {
 
            var xmlhttp = new XMLHttpRequest();
@@ -249,7 +257,7 @@ function MMBaseValidator(w, root) {
            } catch (ex) {
                // happens in safari
            }
-           this.dataTypeCache[key] = dataType;
+           this.dataTypeCache[key.string()] = dataType;
        }
        return dataType;
    }
@@ -279,7 +287,7 @@ function MMBaseValidator(w, root) {
        if (el.dataTypeStructure == null) {
            this.log("getting datatype for " + el.className);
            var classNames = el.className.split(" ");
-           var result = new Object();
+           var result = new Key();
            for (i = 0; i < classNames.length; i++) {
                var className = classNames[i];
                if (className.indexOf("mm_dt_") == 0) {
@@ -295,6 +303,7 @@ function MMBaseValidator(w, root) {
                }
 
            }
+           this.log("got " + result);
            el.dataTypeStructure = result;
        }
        return el.dataTypeStructure;
@@ -311,18 +320,57 @@ function MMBaseValidator(w, root) {
        el.className = el.originalClass + (valid ? " valid" : " invalid");
    }
 
+   this.hasClass = function(el, searchClass) {
+       var pattern = new RegExp("(^|\\s)" + searchClass + "(\\s|$)");
+       return pattern.test(el.className);
+   }
+
+   this.getDateValue = function(el) {
+       if (this.hasClass(el, "mm_datetime")) {
+           var year = 0;
+           var month = 0;
+           var day = 0;
+           var hour = 0;
+           var minute = 0;
+           var second = 0;
+           var els = el.childNodes;
+           for (var  i = 0; i < els.length; i++) {
+               var entry = els[i];
+               if (this.hasClass(entry, "mm_datetime_year")) {
+                   year = entry.value;
+               } else if (this.hasClass(entry, "mm_datetime_month")) {
+                   month = entry.value;
+               } else if (this.hasClass(entry, "mm_datetime_day")) {
+                   day = entry.value;
+               } else if (this.hasClass(entry, "mm_datetime_hour")) {
+                   hour = entry.value;
+               } else if (this.hasClass(entry, "mm_datetime_minute")) {
+                   minute = entry.value;
+               } else if (this.hasClass(entry, "mm_datetime_second")) {
+                   second = entry.value;
+               }
+
+           }
+           var date = new Date(year, month - 1, day, hour , minute, second, 0);
+           this.log("date " + date);
+           return date.getTime() / 1000;
+       } else {
+           return e.value;
+       }
+
+   }
+
    /**
     * Returns whether a form element contains a valid value. I.e. in a fast way, validation is done in
     * javascript, and therefore cannot be absolute.
     */
    this.valid = function(el) {
+       if (this.isDateTime(el)) {
+           el.value = this.getDateValue(el);
+       }
        if (typeof(el.value) == 'undefined') {
            this.log("Unsupported element " + el);
            return true; // not yet supported
-       }
-       if (this.isDateTime(el)) {
-           this.log("Datetimes not yet supported");
-           return true; // not  yet supported
        }
 
        if (this.isRequired(el)) {
@@ -341,7 +389,7 @@ function MMBaseValidator(w, root) {
        // datetime validation is still broken. (those can have more fields and so on)
 
        // enumerations: but must of the time those would have given dropdowns and such, so it's hardly
-       // possible to entry wrongly.
+       // possible to enter wrongly.
        //
 
 
@@ -356,7 +404,8 @@ function MMBaseValidator(w, root) {
        try {
            var key = this.getDataTypeKey(el);
            var xmlhttp = new XMLHttpRequest();
-           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(key) + "&value=" + el.value, false);
+           var value = this.getDateValue(el);
+           xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(key) + "&value=" + value, false);
            xmlhttp.send(null);
            return xmlhttp.responseXML;
        } catch (ex) {
@@ -389,11 +438,18 @@ function MMBaseValidator(w, root) {
     * overriding this function.
     */
    this.validate = function(event) {
-       this.validateElement(this.target(event));
+       this.log("event" + event + " on " + this.target(event));
+       var target = this.target(event);
+       if (this.hasClass(target, "mm_validate")) {
+           this.validateElement(target);
+       } else if (this.hasClass(target.parentNode, "mm_validate")) {
+           this.validateElement(target.parentNode);
+       }
    }
 
    this.validateElement = function(element, server) {
        var valid;
+       this.log("Validating" + element);
        if (server) {
            valid = this.validResult(this.serverValidation(element));
        } else {
@@ -460,6 +516,7 @@ function MMBaseValidator(w, root) {
            case "select-one":
            case "select-multiple":
            default:
+               this.log("Adding eventhandler to " + entry);
                addEventHandler(entry, "change", this.validate, this);
                addEventHandler(entry, "blur", this.validate, this);
            }
