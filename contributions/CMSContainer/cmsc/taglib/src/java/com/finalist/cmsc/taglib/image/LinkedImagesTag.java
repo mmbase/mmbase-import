@@ -246,7 +246,7 @@ public class LinkedImagesTag  extends NodeReferrerTag {
         attributes.append((styleClass != Attribute.NULL) ? (" class=\"" + styleClass.getString(this) + "\"") : "");
         attributes.append((style != Attribute.NULL) ? (" style=\"" + style.getString(this) + "\"") : "");
         attributes.append((align != Attribute.NULL) ? (" align=\"" + align.getString(this) + "\"") : "");
-        attributes.append((border != Attribute.NULL) ? (" border=\"" + border.getString(this) + "\"") : " border=\"0\"");
+        attributes.append((border != Attribute.NULL) ? (" border=\"" + border.getString(this) + "\"") : "");
         attributes.append((hspace != Attribute.NULL) ? (" hspace=\"" + hspace.getString(this) + "\"") : "");
         attributes.append((vspace != Attribute.NULL) ? (" vspace=\"" + vspace.getString(this) + "\"") : "");
         return attributes.toString();
