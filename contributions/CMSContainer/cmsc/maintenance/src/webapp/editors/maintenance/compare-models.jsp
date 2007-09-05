@@ -5,8 +5,6 @@
 <%@page import="java.util.*" %>
 <html>
 <head>
-    <link href="../style.css" type="text/css" rel="stylesheet"/>
-    <script language="javascript" src="../script.js"></script>
     <title>Compare models</title>
 </head>
     <body>
