@@ -50,6 +50,7 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
                     
                     // unpublish and remove from workflow
                     Publish.remove(objectNode);
+                    Publish.unpublish(objectNode);
                     Workflow.remove(objectNode);
                 }
                 else {
@@ -66,6 +67,7 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
                             
                             // unpublish and remove from workflow
                             Publish.remove(objectNode);
+                            Publish.unpublish(objectNode);
                             Workflow.remove(objectNode);    
                         }
                         else {

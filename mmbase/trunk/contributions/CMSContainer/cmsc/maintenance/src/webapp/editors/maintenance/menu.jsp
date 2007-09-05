@@ -54,7 +54,10 @@
 	                  <c:url var="publishQueueUrl" value="/editors/maintenance/staging/remove-publishqueue.jsp"/>
 	                  <a href="${publishQueueUrl}" target="rightpane"><fmt:message key="maintenance.publish.remove-publishqueue" /></a>
 	               </li>
-
+	               <li class="advancedpublish">
+	                  <c:url var="unlinkUrl" value="/editors/maintenance/staging/unlink-remotenodes.jsp"/>
+	                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
+	               </li>
                <% } %>
 			<%--  </cmsc:hasfeature>  --%>
             </mm:haspage>

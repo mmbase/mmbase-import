@@ -20,6 +20,7 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
@@ -51,6 +52,10 @@ public class ChannelDelete extends MMBaseFormlessAction {
                     
                     RepositoryUtil.removeContentFromAllChannels(objectNode);
                     RepositoryUtil.addContentToChannel(objectNode, RepositoryUtil.getTrashNode(cloud));
+                    
+                    Publish.remove(objectNode);
+                    Publish.unpublish(objectNode);
+                    Workflow.remove(objectNode);
                 }
                 return mapping.findForward("channeldelete");
             }
@@ -58,6 +63,10 @@ public class ChannelDelete extends MMBaseFormlessAction {
                 if (Workflow.hasWorkflow(channelNode)) {
                     Workflow.remove(channelNode);
                 }
+                Publish.remove(channelNode);
+                Publish.unpublish(channelNode);
+                Workflow.remove(channelNode);
+                
                 channelNode.delete(true);
                 return mapping.findForward(SUCCESS);
             }

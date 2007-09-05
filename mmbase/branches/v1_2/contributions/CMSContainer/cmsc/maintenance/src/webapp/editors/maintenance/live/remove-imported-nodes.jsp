@@ -43,7 +43,7 @@
 	<mm:present referid="staging">
 		<mm:import externid="action" jspvar="action" />
 		<mm:present referid="action">
-			<%= new SqlExecutor().execute(new RemoveImportedNodes(staging, nodetype, action)) %>
+			<%= new SqlExecutor().execute(new RemoveImportedNodes(nodetype, action)) %>
 		</mm:present>
 	</mm:present>
 </mm:present>

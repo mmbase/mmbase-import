@@ -7,6 +7,7 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.*;
 import com.finalist.util.module.ModuleUtil;
@@ -58,7 +59,7 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
         if (role != null && SecurityUtil.isWriter(role)) {
             addWriterOptions(parentNode, element);
             if (SecurityUtil.isEditor(role)) {    
-                addEditorOptions(parentNode, element, model, level);
+                addEditorOptions(parentNode, element, model, level, role);
                 if (SecurityUtil.isChiefEditor(role)) {    
                     addChiefEditorOptions(parentNode, element, level);
                     if (SecurityUtil.isWebmaster(role)) {    
@@ -84,7 +85,7 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
 //                getUrl("Content.do?parentchannel=" + parentNode.getNumber()), target));
     }
 
-    private void addEditorOptions(Node parentNode, TreeElement element, TreeModel model, int level) {
+    private void addEditorOptions(Node parentNode, TreeElement element, TreeModel model, int level, UserRole role) {
         if (RepositoryUtil.isContentChannel(parentNode)) {
             String labelEdit = JstlUtil.getMessage(request, "repository.channel.edit");
             element.addOption(createOption("edit_defaults.png", labelEdit, 
@@ -97,7 +98,8 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
         }
    
         if (level > 1) {
-            if ((model.getChildCount(parentNode) == 0)) {
+            if (SecurityUtil.isWebmaster(role)
+                    || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
                 String label = JstlUtil.getMessage(request, "repository.channel.remove");
                 element.addOption(createOption("delete.png", label,
                         getUrl("ChannelDelete.do?number=" + parentNode.getNumber()), target));

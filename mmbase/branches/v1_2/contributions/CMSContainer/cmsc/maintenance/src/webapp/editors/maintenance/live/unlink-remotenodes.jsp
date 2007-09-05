@@ -3,8 +3,6 @@
 <%@page import="com.finalist.cmsc.maintenance.live.*"%>
 <html>
 <head>
-    <link href="../style.css" type="text/css" rel="stylesheet"/>
-    <script language="javascript" src="../script.js"></script>
     <title>Unlink Remotenodes</title>
 </head>
     <body>
@@ -28,7 +26,7 @@ if ("run".equals(command)) {
     }
 %>
 <% } else { %>
-    <p>Press 'unlink' to unlink missing nodes in staging.</p>
+    <p>Press 'unlink' to unlink missing nodes in live</p>
     <form action="" method="post">
         <input type="hidden" name="cmd" value="run"/>
         <input type="text" name="cloud1" value="staging.server"/>

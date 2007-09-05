@@ -47,7 +47,9 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
 
     @Override
     public void unpublish(Node node) {
-        getPublisher(node).unpublish(node);
+        if (isPublished(node)) {
+        	getPublisher(node).unpublish(node);
+        }
     }
     
     @Override
