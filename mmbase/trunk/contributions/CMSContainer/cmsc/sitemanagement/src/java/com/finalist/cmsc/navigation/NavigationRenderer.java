@@ -8,6 +8,7 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.*;
 import com.finalist.util.module.ModuleUtil;
@@ -101,7 +102,8 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
                     element.addOption(createOption("edit_defaults.png", labelPageEdit,
                         getUrl("PageEdit.do?number=" + parentNode.getNumber()), target));
                     
-                    if ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role)) {
+                    if (SecurityUtil.isWebmaster(role) ||
+                            (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
                         String labelPageRemove = JstlUtil.getMessage(request, "site.page.remove");
                         element.addOption(createOption("delete.png", labelPageRemove,
                                 getUrl("PageDelete.do?number=" + parentNode.getNumber()), target));

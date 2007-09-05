@@ -7,6 +7,7 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.*;
 import com.finalist.util.module.ModuleUtil;
@@ -62,7 +63,8 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
                     addChiefEditorOptions(parentNode, element, level);
                 }
                 if (level > 1) {
-                    if ((model.getChildCount(parentNode) == 0)) {
+                    if (SecurityUtil.isWebmaster(role)
+                            || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
                         String label = JstlUtil.getMessage(request, "repository.channel.remove");
                         element.addOption(createOption("delete.png", label,
                                 getUrl("ChannelDelete.do?number=" + parentNode.getNumber()), target));
