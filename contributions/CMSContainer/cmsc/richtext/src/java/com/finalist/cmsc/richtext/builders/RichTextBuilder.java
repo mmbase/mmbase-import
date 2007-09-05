@@ -36,16 +36,16 @@ public class RichTextBuilder extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(RichTextBuilder.class.getName());
 
     /** list of html text fields to clean */
-    private List<String> htmlFields = new ArrayList<String>();
+    protected List<String> htmlFields = new ArrayList<String>();
 
-    private MMObjectBuilder inlinerelBuilder = null;
-    private int inlinerelNumber = -1;
+    protected MMObjectBuilder inlinerelBuilder = null;
+    protected int inlinerelNumber = -1;
 
-    private MMObjectBuilder imagerelBuilder = null;
-    private int imagerelNumber = -1;
+    protected MMObjectBuilder imagerelBuilder = null;
+    protected int imagerelNumber = -1;
 
-    private boolean downloadImages = true;
-    private boolean resolveIds = true;
+    protected boolean downloadImages = true;
+    protected boolean resolveIds = true;
 
     /**
      * @see org.mmbase.module.core.MMObjectBuilder#init()
@@ -91,7 +91,7 @@ public class RichTextBuilder extends MMObjectBuilder {
       return RichText.RICHTEXT_TYPE.equals(name);
    }
 
-    private void initInlineBuilders() {
+    protected void initInlineBuilders() {
         if (inlinerelBuilder == null) {
             inlinerelBuilder = mmb.getMMObject(RichText.INLINEREL_NM);
             if (inlinerelBuilder == null) { throw new RuntimeException("Builder '"
@@ -188,7 +188,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         return committed;
     }
 
-    private void resolve(MMObjectNode node, List<String> idsList, List<CoreField> fields, boolean isSnsert) {
+    protected void resolve(MMObjectNode node, List<String> idsList, List<CoreField> fields, boolean isSnsert) {
         Iterator<CoreField> iFields = fields.iterator();
         while (iFields.hasNext()) {
             Field field = iFields.next();
@@ -239,15 +239,15 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
 
-    private void fillIdFromImages(Document doc, List<String> idsList) {
+    protected void fillIdFromImages(Document doc, List<String> idsList) {
         fillIds(doc, idsList, RichText.IMG_TAGNAME);
     }
 
-    private void fillIdFromLinks(Document doc, List<String> idsList) {
+    protected void fillIdFromLinks(Document doc, List<String> idsList) {
         fillIds(doc, idsList, RichText.LINK_TAGNAME);
     }
 
-    private void fillIds(Document doc, List<String> idsList, String tagname) {
+    protected void fillIds(Document doc, List<String> idsList, String tagname) {
         NodeList nl = doc.getElementsByTagName(tagname);
         for (int i = 0, len = nl.getLength(); i < len; i++) {
             Element link = (Element) nl.item(i);
@@ -262,7 +262,7 @@ public class RichTextBuilder extends MMObjectBuilder {
      * resolve links in the richtextfield en make inlinerel of it. Add the id to the anchortag so
      * that the link can be resolved in the frontend en point to the correct article.
      */
-    private void resolveLinks(Document doc, List<String> idsList, MMObjectNode mmObj) {
+    protected void resolveLinks(Document doc, List<String> idsList, MMObjectNode mmObj) {
         if (doc == null) {
             return;
         }
@@ -364,7 +364,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
 
-    private void resolveImages(Document doc, List<String> idsList, MMObjectNode mmObj) {
+    protected void resolveImages(Document doc, List<String> idsList, MMObjectNode mmObj) {
         if (doc == null) {
             return;
         }
@@ -504,7 +504,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
 
-    private void importImage(Element image, MMObjectNode mmObj, List<String> idsList) {
+    protected void importImage(Element image, MMObjectNode mmObj, List<String> idsList) {
         String src = image.getAttribute(RichText.SRC_ATTR);
         log.warn("Image found which is not linked " + src);
         String alt = image.getAttribute("alt");
@@ -540,25 +540,25 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
     
-    private boolean isNewInline(Element element) {
+    protected boolean isNewInline(Element element) {
         return element.hasAttribute(RichText.DESTINATION_ATTR)
                 && !element.hasAttribute(RichText.RELATIONID_ATTR);
     }
 
-    private boolean isInlineAttributesComplete(Element element) {
+    protected boolean isInlineAttributesComplete(Element element) {
         return element.hasAttribute(RichText.DESTINATION_ATTR)
                 && element.hasAttribute(RichText.RELATIONID_ATTR);
     }
 
-    private MMObjectNode getInlineRel(String id) {
+    protected MMObjectNode getInlineRel(String id) {
         return getRelation(id, inlinerelBuilder, RichText.REFERID_FIELD);
     }
     
-    private MMObjectNode getImageInlineRel(String id) {
+    protected MMObjectNode getImageInlineRel(String id) {
         return getRelation(id, imagerelBuilder, RichText.REFERID_FIELD);
     }
     
-    private MMObjectNode getRelation(String id, MMObjectBuilder builder, String idField) {
+    protected MMObjectNode getRelation(String id, MMObjectBuilder builder, String idField) {
         NodeSearchQuery query = getQuery(id, builder, idField);
         try {
             List<MMObjectNode> nodes = builder.getNodes(query);
@@ -572,7 +572,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         return null;
     }
     
-    private NodeSearchQuery getQuery(String id, MMObjectBuilder builder, String idField) {
+    protected NodeSearchQuery getQuery(String id, MMObjectBuilder builder, String idField) {
         // get all relations which are related to the node
         NodeSearchQuery query = new NodeSearchQuery(builder);
         StepField referidStepField = query.getField(builder.getField(idField));
@@ -585,7 +585,7 @@ public class RichTextBuilder extends MMObjectBuilder {
     /**
      * Creates a relation for an inline link
      */
-    private String createInlineRel(MMObjectNode mmObj, int objId) {
+    protected String createInlineRel(MMObjectNode mmObj, int objId) {
         String owner = mmObj.getStringValue("owner");
         MMObjectNode idrel = inlinerelBuilder.getNewNode(owner);
         idrel.setValue("snumber", mmObj.getNumber());
@@ -599,7 +599,7 @@ public class RichTextBuilder extends MMObjectBuilder {
     /**
      * Creates a relation for an inline image
      */
-    private String createImageIdRel(MMObjectNode mmObj, int dnumber, String height, String width, String legend) {
+    protected String createImageIdRel(MMObjectNode mmObj, int dnumber, String height, String width, String legend) {
         String owner = mmObj.getStringValue("owner");
         MMObjectNode imagerel = imagerelBuilder.getNewNode(owner);
         imagerel.setValue("snumber", mmObj.getNumber());
@@ -614,7 +614,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         return imagerel.getStringValue(RichText.REFERID_FIELD);
     }
 
-    private void setImageIdRelFields(MMObjectNode imagerel, String height, String width, String legend) {
+    protected void setImageIdRelFields(MMObjectNode imagerel, String height, String width, String legend) {
         if (!StringUtil.isEmpty(height)) {
             imagerel.setValue("height", height);
         }
@@ -626,7 +626,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         }
     }
 
-    private MMObjectNode createImage(String owner, String src, String alt) {
+    protected MMObjectNode createImage(String owner, String src, String alt) {
         try {
             URL imageUrl = new URL(src);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -660,7 +660,7 @@ public class RichTextBuilder extends MMObjectBuilder {
         return null;
     }
 
-    private MMObjectNode createUrl(String owner, String href, String name) {
+    protected MMObjectNode createUrl(String owner, String href, String name) {
         MMObjectNode urlNode = mmb.getMMObject("urls").getNewNode(owner);
         if (!StringUtil.isEmpty(name)) {
             urlNode.setValue("name", name);
