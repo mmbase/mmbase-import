@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.9 2007-09-05 08:26:34 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.10 2007-09-05 15:05:11 michiel Exp $
  */
 function Key() {
       this.string = function() {
@@ -22,7 +22,7 @@ function Key() {
 
 function MMBaseValidator(w, root) {
 
-   this.logEnabled   = true;
+    this.logEnabled   = false; //console;
    this.traceEnabled = false;
 
    this.dataTypeCache   = new Object();
@@ -531,7 +531,6 @@ function MMBaseValidator(w, root) {
            if (this.validateHook) {
                this.validateHook(valid, entry);
            }
-
        }
        el = null;
    }
