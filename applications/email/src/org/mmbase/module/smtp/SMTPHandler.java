@@ -32,7 +32,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.3 2007-08-28 11:07:11 michiel Exp $
+ * @version $Id: SMTPHandler.java,v 1.4 2007-09-06 16:37:00 michiel Exp $
  */
 public class SMTPHandler extends MailHandler implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
@@ -242,7 +242,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
                 char[] last5chars = new char[endchars.length];
                 int currentpos = 0;
                 int c;
-                // 76 length of a uu encoded line
+                // 76 length of a base 64 encoded line
                 int maxAttachmentSize = (5 * 1024 * 1024 / 76) * 76; // approx 5 Mb.
                 try {
                     maxAttachmentSize = (Integer.parseInt(properties.get("max_attachment_size")) / 76) * 76;
@@ -282,15 +282,19 @@ public class SMTPHandler extends MailHandler implements Runnable {
                         }
                     }
                 }
-
+                Map<String, String> headers = null;
                 if (tooBig) {
+                    // should be perhaps reject the entire message?
                     log.warn("Attachment was too big, truncated to " + maxAttachmentSize);
+                    headers = new HashMap<String, String>();
+                    headers.put("X-Attachment-Truncated", "Attachment was too big, truncated to " + maxAttachmentSize);
+
                 }
                 // Copy everything but the '.\r\n' to the result
                 String result = data.substring(0, data.length() - (tooBig ? 0 : 3));
                 try {
                     log.debug("Now handling data " + result.length());
-                    if (handleData(result)) {
+                    if (handleData(result, headers)) {
                         log.debug("250 Rejoice! We will deliver this email to the user.");
                         writer.write("250 Rejoice! We will deliver this email to the user.\r\n");
                         writer.flush();
@@ -370,7 +374,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
      * Handle the data from the DATA command. This method does all the work: it creates
      * objects in mailboxes.
      */
-    private boolean handleData(String data) {
+    private boolean handleData(String data, Map<String, String> headers) {
         if (log.isTraceEnabled()) {
             log.trace("Data: [" + data + "]");
         }
@@ -385,6 +389,15 @@ public class SMTPHandler extends MailHandler implements Runnable {
         } catch (MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
             return false;
+        }
+        try {
+            if (headers != null) {
+                for (Map.Entry<String, String> entry : headers.entrySet()) {
+                    message.setHeader(entry.getKey(), entry.getValue());
+                }
+            }
+        } catch (MessagingException e) {
+            log.error(e);
         }
         return handleMessage(message);
     }
