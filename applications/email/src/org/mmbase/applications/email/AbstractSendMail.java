@@ -23,8 +23,8 @@ import javax.mail.internet.*;
 abstract public class AbstractSendMail extends WatchedReloadableModule { //implements SendMailInterface {
 
     /*
-    public AbstractSendMail(String name) { 
-        super(name);        
+    public AbstractSendMail(String name) {
+        super(name);
     }
     */
 
