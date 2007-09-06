@@ -19,75 +19,75 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @javadoc
- * @author Daniel Ockeloen 
+ * @author Daniel Ockeloen
  */
 public class MimeBodyTagger {
 
-    static private final Logger log = Logging.getLoggerInstance(MimeBodyTagger.class); 
+    static private final Logger log = Logging.getLoggerInstance(MimeBodyTagger.class);
 
     /**
      * @javadoc
      */
-    public static Enumeration<MimeBodyTag> getMimeBodyParts(String body) {
+    public static List<MimeBodyTag> getMimeBodyParts(String body) {
 	String startkey="<multipart ";
 	String endkey="</multipart>";
 
-	Vector<MimeBodyTag> results=new Vector<MimeBodyTag>();
+	List<MimeBodyTag> results = new ArrayList<MimeBodyTag>();
 
-	int pos=body.indexOf(startkey);
-	while (pos!=-1) {
-            String part=body.substring(pos);
-            int endpos=part.indexOf(endkey);
-            part=part.substring(startkey.length(),endpos);
-            String atr=part.substring(0,part.indexOf(">"));
+	int pos = body.indexOf(startkey);
+	while (pos != -1) {
+            String part = body.substring(pos);
+            int endpos  = part.indexOf(endkey);
+            part        = part.substring(startkey.length(), endpos);
+            String atr  = part.substring(0, part.indexOf(">"));
             part=part.substring(part.indexOf(">")+1);
             StringTagger atrtagger=new StringTagger(atr);
 
-            MimeBodyTag tag=new MimeBodyTag();
+            MimeBodyTag tag = new MimeBodyTag();
 
             String type = atrtagger.Value("type");
-            if (type!=null) tag.setType(type);
+            if (type != null) tag.setType(type);
 
             String encoding = atrtagger.Value("encoding");
-            if (encoding!=null) tag.setEncoding(encoding);
+            if (encoding != null) tag.setEncoding(encoding);
 
             String number = atrtagger.Value("number");
-            if (number!=null) tag.setNumber(number);
+            if (number != null) tag.setNumber(number);
 
             String field = atrtagger.Value("field");
-            if (field!=null) tag.setNumber(field);
+            if (field != null) tag.setNumber(field);
 
             String formatter = atrtagger.Value("formatter");
-            if (formatter!=null) tag.setFormatter(formatter);
+            if (formatter != null) tag.setFormatter(formatter);
 
             String alt = atrtagger.Value("alt");
-            if (alt!=null) tag.setAlt(alt);
+            if (alt != null) tag.setAlt(alt);
 
             String id = atrtagger.Value("id");
-            if (id!=null) tag.setId(id);
+            if (id != null) tag.setId(id);
 
             String related = atrtagger.Value("related");
-            if (related!=null) tag.setRelated(related);
+            if (related != null) tag.setRelated(related);
 
             String file = atrtagger.Value("file");
-            if (file!=null) tag.setFile(file);
+            if (file != null) tag.setFile(file);
 
             String filename = atrtagger.Value("filename");
-            if (filename!=null) tag.setFileName(filename);
+            if (filename != null) tag.setFileName(filename);
 
             String attachment = atrtagger.Value("attachment");
-            if (attachment!=null) tag.setAttachment(attachment);
+            if (attachment != null) tag.setAttachment(attachment);
 
             tag.setText(part);
-		
-            results.addElement(tag);
+
+            results.add(tag);
 
             // set body ready for the new part
-            endpos=body.indexOf(endkey);
-            body=body.substring(endpos+endkey.length());
-            pos=body.indexOf(startkey);
-	}	
-	return results.elements();
+            endpos = body.indexOf(endkey);
+            body = body.substring(endpos+endkey.length());
+            pos = body.indexOf(startkey);
+	}
+	return results;
     }
 
 }
