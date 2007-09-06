@@ -14,7 +14,7 @@ import java.net.*;
 import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
-import org.mmbase.module.core.*;
+import org.mmbase.bridge.*;
 import org.mmbase.module.SendMailInterface;
 
 
@@ -23,13 +23,13 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * This is a helper class for EmailBuilder. It contains a lot of methods which deal with
- * MMObjectNodes of type 'email' (So actually one would expect those functions to be member of
+ * Node of type 'email' (So actually one would expect those functions to be member of
  * EmailBuilder itself).
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.23 2007-06-21 15:50:19 nklasens Exp $
+ * @version $Id: EmailHandler.java,v 1.24 2007-09-06 16:36:05 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -44,7 +44,7 @@ public class EmailHandler {
      * then parse the content for subject and body
      * lastly mail it using the sendmail module
      */
-    public static MMObjectNode sendMailNode(MMObjectNode node) {
+    public static Node sendMailNode(final Node node) {
         // get the sendmail module
         SendMailInterface sendmail = EmailBuilder.getSendMail();
         if (sendmail == null) {
@@ -99,10 +99,10 @@ public class EmailHandler {
      * Reads some fields from the given node and returns it as a Map with mail-headers.
      * The considered fields are replyto, cc, bcc and subject.
      */
-    private static Map<String, String> getHeaders(MMObjectNode node) {
+    private static Map<String, String> getHeaders(Node node) {
         Map<String, String> headers = new HashMap<String, String>();
 
-        MMObjectBuilder email = node.getBuilder();
+        NodeManager email = node.getNodeManager();
         // headers.put("From", node.getStringValue("from"));
         if (email.hasField("replyto")) {
             headers.put("Reply-To", unemptyString(node.getStringValue("replyto")));
@@ -114,7 +114,7 @@ public class EmailHandler {
             headers.put("BCC",      unemptyString(node.getStringValue("bcc")));
         }
         // subject field is obligotary
-        headers.put("Subject",  unemptyString(node.getStringValue("subject"))); 
+        headers.put("Subject",  unemptyString(node.getStringValue("subject")));
         return headers;
     }
 
@@ -132,7 +132,7 @@ public class EmailHandler {
      * get the To header if its not set directly
      * try to obtain it from related objects.
      */
-    private static Set<NodeRecipient> getTo(MMObjectNode node) {
+    private static Set<NodeRecipient> getTo(Node node) {
         Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
         String to = node.getStringValue("to");
         if (to != null && !to.equals("")) {
@@ -146,14 +146,13 @@ public class EmailHandler {
     /**
      * Get the email addresses of related users, which are related to related groups.
      */
-    private static Set<NodeRecipient> getAttachedGroups(MMObjectNode node) {
+    private static Set<NodeRecipient> getAttachedGroups(Node node) {
         Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
-        if (MMBase.getMMBase().getBuilder(EmailBuilder.groupsBuilder) != null) { // never mind if groups builders does not exist
-            List<MMObjectNode> rels = node.getRelatedNodes(EmailBuilder.groupsBuilder);
-            if (rels != null) {
-                for (MMObjectNode pnode: rels) {
-                    toUsers.addAll(getAttachedUsers(pnode));
-                }
+        if (node.getCloud().hasNodeManager(EmailBuilder.groupsBuilder)) { // never mind if groups builders does not exist
+            NodeIterator rels = node.getRelatedNodes(EmailBuilder.groupsBuilder).nodeIterator();
+            while(rels.hasNext()) {
+                Node pnode = rels.nextNode();
+                toUsers.addAll(getAttachedUsers(pnode));
             }
         }
 
@@ -164,15 +163,14 @@ public class EmailHandler {
     /**
      * Get the email addresses of related users;
      */
-    private static Set<NodeRecipient> getAttachedUsers(MMObjectNode node) {
+    private static Set<NodeRecipient> getAttachedUsers(Node node) {
         Set<NodeRecipient> toUsers = new LinkedHashSet<NodeRecipient>();
         // try and find related users
-        if (MMBase.getMMBase().getBuilder(EmailBuilder.usersBuilder) != null) { // never mind if users builders does not exist
-            List<MMObjectNode> rels = node.getRelatedNodes(EmailBuilder.usersBuilder);
-            if (rels != null) {
-                for (MMObjectNode pnode : rels) {
-                    toUsers.add(new NodeRecipient(pnode.getNumber(), pnode.getStringValue(EmailBuilder.usersEmailField)));
-                }
+        if (node.getCloud().hasNodeManager((EmailBuilder.usersBuilder))) { // never mind if users builders does not exist
+            NodeIterator rels = node.getRelatedNodes(EmailBuilder.usersBuilder).nodeIterator();
+            while (rels.hasNext()) {
+                Node pnode = rels.nextNode();
+                toUsers.add(new NodeRecipient(pnode.getNumber(), pnode.getStringValue(EmailBuilder.usersEmailField)));
             }
         }
         return toUsers;
@@ -216,7 +214,7 @@ public class EmailHandler {
             BufferedReader in = new BufferedReader(new InputStreamReader (connection.getInputStream(), encoding));
             int buffersize = 10240;
             char[] buffer = new char[buffersize];
-            StringBuffer string = new StringBuffer();
+            StringBuilder string = new StringBuilder();
             int len;
             while ((len = in.read(buffer, 0, buffersize)) != -1) {
                 string.append(buffer, 0, len);
@@ -232,7 +230,7 @@ public class EmailHandler {
     }
 
     private static String stripToOneLine(String input) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         StringTokenizer tok = new StringTokenizer(input,",\n\r");
         while (tok.hasMoreTokens()) {
             result.append(tok.nextToken());
@@ -251,7 +249,7 @@ public class EmailHandler {
      * @return whether successful
      */
 
-    private static boolean sendMail(MMObjectNode node, String from, NodeRecipient to,  String body, Map<String, String> headers) {
+    private static boolean sendMail(Node node, String from, NodeRecipient to,  String body, Map<String, String> headers) {
         String obody = body;
 
         // WTF!
@@ -259,8 +257,7 @@ public class EmailHandler {
         // if the body starts with a url call that url
         if (obody.indexOf("http://") == 0) {
             body = getUrlExtern(obody, "", "" + to.nodeNumber);
-
-                // convert html to plain text unless a the html tag is found
+            // convert html to plain text unless a the html tag is found
             if (body.indexOf("<html>") == -1 && body.indexOf("<HTML>") == -1) {
                 //body=html2plain(body);
             }
@@ -333,8 +330,8 @@ public class EmailHandler {
      */
 
     static class NodeRecipient {
-        int nodeNumber;
-        String email;
+        private final int nodeNumber;
+        private final String email;
         NodeRecipient(int i, String s) {
             nodeNumber = i;
             email = s;
