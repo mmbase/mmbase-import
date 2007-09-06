@@ -39,7 +39,7 @@ public class MimeBodyTag {
     private String formatter;
     private String filepath;
     private String filename;
-    private Vector<MimeBodyTag> altnodes; // synchronized?
+    private List<MimeBodyTag> altnodes;
     private MimeMultipart relatednodes;
     private String number;
     private String field;
@@ -57,13 +57,13 @@ public class MimeBodyTag {
      */
 
     public void addAlt(MimeBodyTag sub) {
-        if (altnodes==null) {
+        if (altnodes == null) {
             //altnodes=new MimeMultipart("alternative");
             //altnodes.addBodyPart(getMimeBodyPart());
-            altnodes = new Vector<MimeBodyTag>();
+            altnodes = new ArrayList<MimeBodyTag>();
         }
         //altnodes.addBodyPart(sub.getMimeBodyPart());
-        altnodes.addElement(sub);
+        altnodes.add(sub);
     }
 
 
@@ -74,38 +74,38 @@ public class MimeBodyTag {
 
     public void addRelated(MimeBodyTag sub) {
         try {
-            if (relatednodes==null) {
-                relatednodes=new MimeMultipart("related");
+            if (relatednodes == null) {
+                relatednodes = new MimeMultipart("related");
                 relatednodes.addBodyPart(getMimeBodyPart());
             }
             relatednodes.addBodyPart(sub.getMimeBodyPart());
         } catch(Exception e) {
-            log.error("Can't add related node");
+            log.error(e.getMessage());
         }
     }
 
     public void setAlt(String alt) {
-        this.alt=alt;
+        this.alt = alt;
     }
 
     public void setRelated(String related) {
-        this.related=related;
+        this.related = related;
     }
 
     public void setId(String id) {
-        this.id=id;
+        this.id = id;
     }
 
     public void setFile(String filepath) {
-        this.filepath=filepath;
+        this.filepath = filepath;
     }
 
     public void setFileName(String filename) {
-        this.filename=filename;
+        this.filename = filename;
     }
 
     public String getFileName() {
-        if (filename==null) {
+        if (filename == null) {
             // needs to be better, create a guessed name on getFile
             return "unknown";
         }
@@ -152,29 +152,30 @@ public class MimeBodyTag {
     }
 
     public void setType(String type) {
-        this.type=type;
+        this.type = type;
     }
 
     public void setEncoding(String encoding) {
-        this.encoding=encoding;
+        this.encoding = encoding;
     }
 
     public void setNumber(String number) {
-        this.number=number;
+        this.number = number;
     }
     public void setField(String field) {
-        this.field=field;
+        this.field = field;
     }
     public void setText(String text) {
-        this.text=text;
+        this.text = text;
     }
     public String getText() {
         // is there a formatter requested ??
-        if (formatter!=null) {
+        if (formatter != null) {
+            // wtf
             if (formatter.equals("html2plain")) {
                 return html2plain(text);
             }
-        } 
+        }
         return text;
     }
 
@@ -183,6 +184,8 @@ public class MimeBodyTag {
      * convert 'html' to 'plain' text
      * this removes the br and p tags and converts them
      * to returns and dubble returns for email use.
+
+     // WTF WTF WTF
      */
     private static String html2plain(String input) {
         // define the result string
@@ -193,22 +196,22 @@ public class MimeBodyTag {
         StringTokenizer tok = new StringTokenizer(input,"\n\r");
         while (tok.hasMoreTokens()) {
             // add the content part stripped of its return/linefeed
-            result+=tok.nextToken();
+            result += tok.nextToken();
         }
 
         // now use the html br and p tags to insert
-        // the wanted returns 
-        StringObject obj=new StringObject(result);
-        obj.replace("<br/>","\n");
-        obj.replace("<br />","\n");
-        obj.replace("<BR/>","\n");
-        obj.replace("<BR />","\n");
-        obj.replace("<br>","\n");
-        obj.replace("<BR>","\n");
-        obj.replace("<p>","\n\n");
-        obj.replace("<p/>","\n\n");
-        obj.replace("<p />","\n\n");
-        obj.replace("<P>","\n\n");
+        // the wanted returns
+        StringObject obj = new StringObject(result);
+        obj.replace("<br/>", "\n");
+        obj.replace("<br />", "\n");
+        obj.replace("<BR/>", "\n");
+        obj.replace("<BR />", "\n");
+        obj.replace("<br>", "\n");
+        obj.replace("<BR>", "\n");
+        obj.replace("<p>"," \n\n");
+        obj.replace("<p/>", "\n\n");
+        obj.replace("<p />", "\n\n");
+        obj.replace("<P>"," \n\n");
         result=obj.toString();
 
         // return the coverted body
@@ -221,36 +224,32 @@ public class MimeBodyTag {
     public MimeMultipart getMimeMultipart() {
         try {
             if (altnodes!=null) {
-                MimeMultipart result=new MimeMultipart("alternative");
+                MimeMultipart result = new MimeMultipart("alternative");
 
-                MimeMultipart r=getRelatedpart();
-                if (r==null) {
+                MimeMultipart r = getRelatedpart();
+                if (r == null) {
                     result.addBodyPart(getMimeBodyPart());
                 } else {
-                    MimeBodyPart wrapper=new MimeBodyPart();
+                    MimeBodyPart wrapper = new MimeBodyPart();
                     wrapper.setContent(r);
                     result.addBodyPart(wrapper);
                 }
 
-                Enumeration<MimeBodyTag> e=altnodes.elements();
-                while (e.hasMoreElements()) {
-                    MimeBodyTag t=e.nextElement();
-            
-                    r=t.getRelatedpart();
-                    if (r==null) {
+                for (MimeBodyTag t : altnodes) {
+                    r = t.getRelatedpart();
+                    if (r == null) {
                         result.addBodyPart(t.getMimeBodyPart());
                     } else {
-                        MimeBodyPart wrapper=new MimeBodyPart();
+                        MimeBodyPart wrapper = new MimeBodyPart();
                         wrapper.setContent(r);
                         result.addBodyPart(wrapper);
                     }
-            
+
                 }
                 return result;
             }
-            if (relatednodes!=null) return relatednodes;
-        }
-        catch (MessagingException e) {
+            if (relatednodes != null) return relatednodes;
+        } catch (MessagingException e) {
             log.debug("Failed to get Multipart" + e.getMessage());
         }
         return null;
@@ -262,43 +261,43 @@ public class MimeBodyTag {
     public MimeMultipart getRelatedpart() {
         return relatednodes;
     }
-	
+
     /**
      * @javadoc
      */
     public MimeBodyPart getMimeBodyPart() {
-        MimeBodyPart mmbp=new MimeBodyPart();
+        MimeBodyPart mmbp = new MimeBodyPart();
         try {
-            DataHandler d=null;
-            if (number!=null && !number.equals("")) {
+            DataHandler d = null;
+            if (number != null && !number.equals("")) {
                 if (field!=null) {
-                    d=getMMBaseObject(number,field);
+                    d = getMMBaseObject(number, field);
                 } else {
-                    d=getMMBaseObject(number);
+                    d = getMMBaseObject(number);
                 }
-            } else  if (type.equals("text/plain")) { 
-                d=new DataHandler(text,type+";charset=\""+encoding+"\"");
+            } else  if (type.equals("text/plain")) {
+                d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                 mmbp.setDataHandler(d);
-            } else if (type.equals("text/html")) { 
-                d=new DataHandler(text,type+";charset=\""+encoding+"\"");
+            } else if (type.equals("text/html")) {
+                d=new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                 mmbp.setDataHandler(d);
-            } else if (type.equals("application/octet-stream")) { 
-
-                String filepath=MMBaseContext.getHtmlRoot()+File.separator+getFile();
-                if (filepath.indexOf("..")==-1 && filepath.indexOf("WEB-INF")==-1) {
-                    FileDataSource fds=new FileDataSource(filepath);
-                    d=new DataHandler(fds);
+            } else if (type.equals("application/octet-stream")) {
+                // WTF WTF WTF
+                String filepath = MMBaseContext.getHtmlRoot() + File.separator+getFile();
+                if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF")==-1) {
+                    FileDataSource fds = new FileDataSource(filepath);
+                    d = new DataHandler(fds);
                     mmbp.setDataHandler(d);
                     mmbp.setFileName(getFileName());
                 } else {
                     log.error("file from there not allowed");
                 }
-            } else if (type.equals("image/gif") || type.equals("image/jpeg")) { 
-
-                String filepath=MMBaseContext.getHtmlRoot()+File.separator+getFile();
-                if (filepath.indexOf("..")==-1 && filepath.indexOf("WEB-INF")==-1) {
-                    FileDataSource fds=new FileDataSource(filepath);
-                    d=new DataHandler(fds);
+            } else if (type.equals("image/gif") || type.equals("image/jpeg")) {
+                // more WTF WTF
+                String filepath = MMBaseContext.getHtmlRoot() + File.separator + getFile();
+                if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF") == -1) {
+                    FileDataSource fds = new FileDataSource(filepath);
+                    d = new DataHandler(fds);
                     mmbp.setDataHandler(d);
                     mmbp.setHeader("Content-ID","<"+id+">");
                     mmbp.setHeader("Content-Disposition","inline");
@@ -308,9 +307,9 @@ public class MimeBodyTag {
             }
 
         } catch(Exception e){
-            log.error("Can't add DataHandler");
+            log.error(e.getMessage());
         }
-		
+
         return mmbp;
     }
 
