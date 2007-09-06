@@ -279,12 +279,12 @@ public class MimeBodyTag {
                 d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                 mmbp.setDataHandler(d);
             } else if (type.equals("text/html")) {
-                d=new DataHandler(text, type + ";charset=\"" + encoding + "\"");
+                d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                 mmbp.setDataHandler(d);
             } else if (type.equals("application/octet-stream")) {
                 // WTF WTF WTF
-                String filepath = MMBaseContext.getHtmlRoot() + File.separator+getFile();
-                if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF")==-1) {
+                String filepath = MMBaseContext.getHtmlRoot() + File.separator + getFile();
+                if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF") == -1) {
                     FileDataSource fds = new FileDataSource(filepath);
                     d = new DataHandler(fds);
                     mmbp.setDataHandler(d);
@@ -328,9 +328,9 @@ public class MimeBodyTag {
      */
 
     private DataHandler getMMBaseObject(String number,String field) {
-        Cloud cloud=LocalContext.getCloudContext().getCloud("mmbase");
-        Node node=cloud.getNode(number);
-        log.info("attached node="+node);
+        Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
+        Node node = cloud.getNode(number);
+        log.info("attached node=" + node);
         return null;
     }
 }

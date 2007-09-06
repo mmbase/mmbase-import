@@ -9,11 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
@@ -21,7 +18,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
-import org.mmbase.util.functions.Parameter;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -37,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.23 2007-08-06 15:36:48 michiel Exp $ 
+ * @version $Id: EmailBuilder.java,v 1.24 2007-09-06 16:36:05 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -156,72 +153,65 @@ public class EmailBuilder extends MMObjectBuilder {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Override the function call to receive the functions called from
-     * the outside world (mostly from the taglibs)
-     */
-    protected Object executeFunction(MMObjectNode node, String function, List args) {
-        if (log.isDebugEnabled()) {
-            log.debug("function: " + function);
-        }
-        if (function.equals("info")) {
-            List<?> empty = new ArrayList<Object>();
-            java.util.Map<String, String> info = (java.util.Map<String, String>) super.executeFunction(node, function, empty);
-            info.put("gui", "(mailtype or mailstatus) Gui representation of this object.");
-            if (args == null || args.size() == 0) {
-                return info;
-            } else {
-                return info.get(args.get(0));
-            }
-        } else if (function.equals("setType") || function.equals("settype") ) {
-            setType(node, args);
-            return null;
-        } else if (function.equals("mail")) {  // function mail(type) called
-            log.debug("We're in mail - args: " + args);
-            setType(node, args);
+    {
+        addFunction(new NodeFunction("mail", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Object getFunctionValue(Node node, Parameters parameters) {
+                    log.debug("We're in mail - args: " + parameters);
+                    setType(node, parameters);
 
-            // get the mailtype so we can call the correct handler/method
-            int mailType = node.getIntValue("mailtype");
-            switch(mailType) {
-            case TYPE_ONESHOT :
-                // deleting the node happens in EmailExpireHandler
-            case TYPE_ONESHOTKEEP :
-                EmailHandler.sendMailNode(node);
-                break;
-            // case TYPE_REPEATMAIL :
-            default:
-                log.warn("Trying to mail a node with unsupported type " + mailType);
-            }
+                    // get the mailtype so we can call the correct handler/method
+                    int mailType = node.getIntValue("mailtype");
+                    switch(mailType) {
+                    case TYPE_ONESHOT :
+                        // deleting the node happens in EmailExpireHandler
+                    case TYPE_ONESHOTKEEP :
+                        EmailHandler.sendMailNode(node);
+                        break;
+                        // case TYPE_REPEATMAIL :
+                    default:
+                        log.warn("Trying to mail a node with unsupported type " + mailType);
+                    }
 
-            return null;
-        } else if (function.equals("startmail")) {         // function startmail(type) called (starts a background thread)
-            if (log.isDebugEnabled()) {
-                log.debug("We are in startmail - args: " + args);
+                    return null;
+                }
             }
-            // check if we have arguments ifso call setType()
-            setType(node, args);
+            );
+        addFunction(new NodeFunction("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Object getFunctionValue(final Node node, Parameters parameters) {
+                    log.debug("We're in startmail - args: " + parameters);
+                    setType(node, parameters);
 
-            // get the mailtype so we can call the correct handler/method
-            int mailType = node.getIntValue("mailtype");
-            log.debug("mailtype: " + mailType);
-            switch(mailType) {
-            case TYPE_ONESHOT :
-                // deleting the node happens in EmailExpireHandler
-            case TYPE_ONESHOTKEEP :
-                new EmailBackgroundHandler(node);
-                break;
-            // case TYPE_REPEATMAIL :
-            default:
-                log.warn("Trying to start a mail of a node with unsupported type " + mailType);
+                    // get the mailtype so we can call the correct handler/method
+                    int mailType = node.getIntValue("mailtype");
+                    switch(mailType) {
+                    case TYPE_ONESHOT :
+                        // deleting the node happens in EmailExpireHandler
+                    case TYPE_ONESHOTKEEP :
+                        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                                public void run() {
+                                    EmailHandler.sendMailNode(node);
+                                }
+                            });
+                        break;
+                        // case TYPE_REPEATMAIL :
+                    default:
+                        log.warn("Trying to mail a node with unsupported type " + mailType);
+                    }
+
+                    return null;
+                }
             }
-            return null;
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Function '" + function + "' is not found in email app.");
-        }
-        return super.executeFunction(node, function, args);
+            );
+
+        addFunction(new NodeFunction("settype", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Object getFunctionValue(final Node node, Parameters parameters) {
+                    log.debug("We're in startmail - args: " + parameters);
+                    setType(node, parameters);
+                    return null;
+                }
+            }
+            );
+
     }
 
     /**
@@ -237,8 +227,8 @@ public class EmailBuilder extends MMObjectBuilder {
      * @param node	Email node on which to set the type
      * @param args	List with arguments
      */
-    private static void setType(MMObjectNode node, List<String> args) {
-        String type = args.get(0);
+    private static void setType(Node node, Parameters parameters) {
+        String type = (String) parameters.get("type");
         if ("oneshot".equals(type)) {
             node.setValue("mailtype", TYPE_ONESHOT);
             log.debug("Setting mailtype to: " + TYPE_ONESHOT);
