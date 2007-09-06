@@ -64,8 +64,8 @@ public class EmailExpireHandler implements Runnable {
                 try {
                     Thread.sleep(sleeptime * 1000);
                 } catch (InterruptedException f) {
-                    log.debug(Thread.currentThread().getName() +" was interrupted.");
-                    continue;
+                    log.service(Thread.currentThread().getName() +" was interrupted.");
+                    break;
                 }
                 if (MMBase.getMMBase().isShutdown()) {
                     log.service("MMBase has been shutdown, breaking out of email expire probe too");

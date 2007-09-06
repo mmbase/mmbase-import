@@ -29,14 +29,12 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.24 2007-09-06 16:36:05 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.25 2007-09-06 17:02:36 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
 
-
     private static final Logger log = Logging.getLoggerInstance(EmailHandler.class);
-
 
     /**
      * Send the email node.
@@ -49,13 +47,9 @@ public class EmailHandler {
         SendMailInterface sendmail = EmailBuilder.getSendMail();
         if (sendmail == null) {
             log.error("sendmail module not active, cannot send email");
-
             //node.commit(); // why is the node committed here?
-
             return node; // STATE_FAILED ?
         }
-
-
 
         String from = node.getStringValue("from");
         Set<NodeRecipient>   toGroup = getAttachedGroups(node);
@@ -302,7 +296,7 @@ public class EmailHandler {
                 if (body.indexOf("<multipart") == -1) {
                     mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
                 } else {
-                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body);
+                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body, node);
                     mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
                 }
 
