@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.409 2007-08-03 12:07:36 sdeboer Exp $
+version: $Id: mmbase-taglib.xml,v 1.410 2007-09-06 15:37:50 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1046,8 +1046,9 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The `functionset' from which the function must be taken. These are a kind of static functions (no
-        object is associated with them). These `sets' of functions are a bit like name-spaces.
+        The `functionset' from which the function must be taken. These are a kind of static
+        functions (no mmbase object is associated with them). These `sets' of functions are a bit
+        like name-spaces.
       </info>
     </attribute>
     <attribute>
@@ -1057,8 +1058,8 @@ a,b,c,d,e,c,d,e,f / c,d,e / a,b
       <info>
         <p>
           The java class name from which the function must be taken. The function will be
-          interpreted as a `bean' function, meaning that you can set parameters with `set' function,
-          and get function values with any function with no further arguments.
+          interpreted as a `bean' function, meaning that you can set parameters with `set' methods,
+          and get function values with any method with no  arguments.
         </p>
         <p>
           There are two exceptions to this:
@@ -3648,19 +3649,32 @@ transaction was commited, following should result anything:
       </info>
       <examplevalue>
         <value>datetime</value>
-        <info>If the value is a date-time, treat it as a date time combination</info>
+        <info>
+          If the value is a date-time, treat it as a date time combination.
+          This is deprecated. In 1.8 you can indicate this with the pattern setting on the datatype.
+        </info>
       </examplevalue>
       <examplevalue>
         <value>time</value>
-        <info>If the value is a date-time, treat it as time only </info>
+        <info>
+          If the value is a date-time, treat it as time only
+          This is deprecated. In 1.8 you can indicate this with the pattern setting on the datatype.
+        </info>
       </examplevalue>
       <examplevalue>
         <value>date</value>
-        <info>If the value is a date-time, treat it as date only</info>
+        <info>
+          If the value is a date-time, treat it as date only.
+          This is deprecated. In 1.8 you can indicate this with the pattern setting on the datatype.
+        </info>
       </examplevalue>
       <examplevalue>
         <value>extra:onchange='doStuff()'</value>
-        <info>if the type is `input' then you might want to add javascript on the onchange (or add other attributes, like `style' or so)</info>
+        <info>
+        if the type is `input' then you might want to add javascript on the onchange (or add other
+        attributes, like `style' or so) This is deprecated. In 1.8 the produces input entries have
+        very precise CSS classing, which can be used to implicitely attach events on load of the window.
+        </info>
         <since>MMBase-1.7</since>
       </examplevalue>
       <examplevalue>
@@ -4838,7 +4852,8 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        For 'external' includes you can indicate a 'timeout' in milliseconds.
+        For 'external' includes you can indicate a 'timeout' in milliseconds. A _responseCode
+        variable will be produced.
       </info>
       <since>MMBase-1.9</since>
     </attribute>
@@ -6663,10 +6678,10 @@ The 0 is just counter, which starts at 0 on every page.
         <info>Send a NOT_ACCEPTABLE with this message. If message = "_" it will be leaft empty.</info>
       </possiblevalue>
       <example><![CDATA[
-      <mm:content 
+      <mm:content
       type="application/xhtml+xml"
       unacceptable="Not Acceptable. You need to use a better browser (this one does not support xhtml). Try e.g. Firefox, Opera or Safari. _NOT_ MS Internet Explorer."
-      > ...      
+      > ...
       ]]>
       </example>
     </attribute>
@@ -6856,6 +6871,7 @@ The 0 is just counter, which starts at 0 on every page.
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
     <extends>contextreader</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <bodycontent>JSP</bodycontent>
