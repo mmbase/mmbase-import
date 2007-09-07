@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.23 2007-08-07 15:40:45 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.24 2007-09-07 15:53:09 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -266,6 +266,7 @@ public class BeanFunction extends AbstractFunction<Object> {
     public Object getFunctionValue(Parameters parameters) {
         try {
             Object b = getProducer().getInstance();
+            int count = 0;
             Iterator<?> i = parameters.iterator();
             Iterator<Method> j = setMethods.iterator();
             while(i.hasNext() && j.hasNext()) {
@@ -278,7 +279,13 @@ public class BeanFunction extends AbstractFunction<Object> {
                         continue;
                     }
                 }
-                setter.invoke(b, value);
+                Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
+                if ((defaultValue == null && value != null) ||
+                    (defaultValue != null && (! defaultValue.equals(value)))) {
+                    setter.invoke(b, value);
+                }
+                count++;
+
             }
             Object ret =  method.invoke(b);
             return ret;
