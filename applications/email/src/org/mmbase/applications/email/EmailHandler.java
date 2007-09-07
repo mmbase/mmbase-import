@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.25 2007-09-06 17:02:36 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.26 2007-09-07 11:18:19 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -109,6 +109,7 @@ public class EmailHandler {
         }
         // subject field is obligotary
         headers.put("Subject",  unemptyString(node.getStringValue("subject")));
+        headers.put("X-MMBase-Node",  "" + node.getNumber());
         return headers;
     }
 
@@ -268,6 +269,9 @@ public class EmailHandler {
 
 
         // little trick if it seems valid html page set
+
+        // Follow horrible hacks
+
         // the headers for html mail
         if (body.indexOf("<HTML>") != -1 && body.indexOf("</HTML>")!=-1) {
             headers.put("Mime-Version", "1.0");
