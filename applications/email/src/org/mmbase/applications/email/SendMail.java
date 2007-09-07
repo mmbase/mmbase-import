@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.31 2007-08-16 11:40:00 michiel Exp $
+ * @version $Id: SendMail.java,v 1.32 2007-09-07 10:58:14 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -242,24 +242,23 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      * {@inheritDoc}
      */
     public void init() {
-        try {
-            MMBase mmb = MMBase.getMMBase();
-            mailEncoding = mmb.getEncoding();
-            String encoding = getInitParameter("encoding");
-            if (encoding != null && !encoding.equals("")) {
-                mailEncoding = encoding;
-            }
+        MMBase mmb = MMBase.getMMBase();
+        mailEncoding = mmb.getEncoding();
+        String encoding = getInitParameter("encoding");
+        if (encoding != null && !encoding.equals("")) {
+            mailEncoding = encoding;
+        }
 
-            String smtpHost = getInitParameter("mailhost");
-            String smtpPort = getInitParameter("mailport");
 
-            String userName  = getInitParameter("user");
-            String password  = getInitParameter("password");
+        String context = getInitParameter("context");
+        if ("".equals(context)) context = null;
+        String dataSource = getInitParameter("datasource");
+        if ("".equals(dataSource)) dataSource = null;
 
-            String context = getInitParameter("context");
-            String dataSource = getInitParameter("datasource");
-            session = null;
-            if (dataSource != null) {
+        session = null;
+        if (dataSource != null) {
+            try {
+
                 if (context == null) {
                     context = "java:comp/env";
                     log.warn("The property 'context' is missing, taking default " + context);
@@ -271,17 +270,29 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 if (o instanceof Session) {
                     session = (javax.mail.Session) o;
                 } else {
-                    log.fatal("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
+                    log.error("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
                     return;
                 }
                 log.info("Module SendMail started (datasource = " + dataSource + " -> " + session.getProperties() + ")");
-            } else {
+            } catch (javax.naming.NamingException e) {
+                log.error("SendMail failure: " + e.getMessage());
+                log.debug(Logging.stackTrace(e));
+            }
+        }
+
+        if (session == null) {
+            String smtpHost = getInitParameter("mailhost");
+            if (smtpHost != null && ! "".equals(smtpHost)) {
                 if (context != null) {
                     log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
                 }
                 if (dataSource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
+                String smtpPort = getInitParameter("mailport");
+                String userName  = getInitParameter("user");
+                String password  = getInitParameter("password");
+
                 log.service("EMail module is configured using 'mailhost' property. Consider using J2EE compliant 'context' and 'datasource' properties.");
 
                 Properties prop = System.getProperties();
@@ -300,12 +311,12 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                 session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
 
                 log.info("Module SendMail started SMTP: " + buf);
+            } else {
+                log.fatal("Could not create Mail session");
             }
-
-        } catch (javax.naming.NamingException e) {
-            log.fatal("SendMail failure: " + e.getMessage());
-            log.debug(Logging.stackTrace(e));
         }
+
+
     }
 
     /**
@@ -345,7 +356,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
      */
     public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
         if (log.isServiceEnabled()) {
-            log.service("Sending mail to " + to + " Headers " + headers);
+            log.service("Sending mail to " + to + " Headers " + headers + " " + session);
         }
         try {
             MimeMessage msg = constructMessage(from, to, headers);
