@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="email"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <class name="org.mmbase.framework.BasicComponent">
+
+  </class>
+  <description xml:lang="nl">Email component</description>
+  <description xml:lang="en">Email component</description>
+
+  <block
+      classification="mmbase.examples"
+      name="emailexamples" mimetype="text/html">
+    <body jsp="index.jspx" />
+  </block>
+
+</component>
