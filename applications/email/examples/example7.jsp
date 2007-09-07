@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>E-mail attachments</title>
@@ -27,6 +25,9 @@ function toggle(targetId){
 // ]]>
 </script>
   </head>
+  <!--
+      TODO, This is no go, we cannot except letting this work via files.
+  -->
   <body>
     <h2>E-mail attachments</h2>
     <p>Please change the following settings in the file 'example7_process.jsp':</p>
@@ -41,15 +42,15 @@ function toggle(targetId){
     <p>Notes:</p>
     <ul>
       <li>Using Commons Fileupload has some weird quirks you need to remember
-        when using it for your own pages. I do not know if they are native to Commons 
-        Fileupload but just in case: your &lt;input type="file" /&gt; must start at 1 not 0. 
+        when using it for your own pages. I do not know if they are native to Commons
+        Fileupload but just in case: your &lt;input type="file" /&gt; must start at 1 not 0.
         So it needs to be &lt;input type="file" name="file1" /&gt;.</li>
-      <li>For some reason you can not submit to the same JSP, you must submit to 
+      <li>For some reason you can not submit to the same JSP, you must submit to
         a second page. That is why there is 'example7_process.jsp'.</li>
       <li>When you need to import variables in your page, f.e. with &lt;mm:import /&gt;,
         be sure to these after all the Commons Fileupload code.</li>
     </ul>
-    
+
     <form action="example7_process.jsp" method="post" enctype="multipart/form-data">
       <fieldset>
         <label for="name">Name</label><br />
@@ -62,7 +63,7 @@ function toggle(targetId){
         <textarea id="message" name="message" rows="5" cols="42" tabindex="4"
                   accesskey="4"></textarea>
         <br />
-        
+
         <label for="file1">File(s)</label><br />
         Click <img src="<mm:url page="/mmbase/edit/my_editors/img/mmbase-new.gif" />" alt="add" width="21" height="20" /> to add more files.
         <div id="f1">
@@ -86,6 +87,6 @@ function toggle(targetId){
         </div>
         <input name="action" id="action" type="submit" value="Send" tabindex="11" accesskey="7" />
       </fieldset>
-    </form>    
+    </form>
   </body>
 </html>

@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.7 2005-12-06 20:06:51 andre Exp $</edition>
+    <edition>$Id: email.xml,v 1.8 2007-09-07 11:00:54 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -32,13 +32,13 @@ practice this means email is and uses objects and relations just like
 all the other content stored in mmbase allow very for very powerful scripted email systems using all the already accepted tools to create their layout for most that means using the taglib system provided with mmbase.</para>
     </section>
 
- 
+
         <section><title>Sending our first email (oneshot)</title>
     <para>Sending one email from mmbase is as simple as creating a object !, This works because the email objects are "smart" objects that can react when you create/talk to them. Here is a a taglib example :</para>
 			<programlisting format="linespecific">
 			<![CDATA[
-  (from example1.jsp)			
-			
+  (from example1.jsp)
+
   <!--  create the email node -->
   <mm:createnode id="mail1" type="email">
          <mm:setfield name="from">Daniel <daniel@mmbase.org></mm:setfield>
@@ -58,7 +58,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
         function on it. The mail function has one parameter 'type', which defaults to 'oneshot' (so it is
         not supplied here). The oneshot type means the email will be deleted once its mailed, for reasons
         you will find out in following examples its not deleted right away but only after the email expire
-        time passed.               
+        time passed.
       </para>
 	</section>
   <section><title>Finding out what happened to the email</title>
@@ -69,7 +69,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 			<programlisting format="linespecific">
 			<![CDATA[
   (from example2.jsp)
-			
+
  <!--  create the email node -->
   <mm:createnode id="mail1" type="email">
          <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
@@ -85,7 +85,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
           <mm:function name="mail" />
         </mm:functioncontainer>
    </mm:node>
- 
+
  <!--check if mmbase could mail the message -->
   <mm:node referid="mail1">
          <mm:field name="mailstatus">
@@ -98,7 +98,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
           </mm:field>
    </mm:node>
 
-  
+
 
 			]]>
 			</programlisting>
@@ -117,7 +117,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 </para>
 			<programlisting format="linespecific">
 			<![CDATA[
-(from example3.jsp) 
+(from example3.jsp)
 
   <!--  create the email node -->
   <mm:createnode id="mail1" type="email">
@@ -158,7 +158,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 </mm:node>
 ]]>
 			</programlisting>
-<para>This will start the mailing process in the background and your page will return right away so users can not stop it. There can be several mail action going on at the same time without a problem. 
+<para>This will start the mailing process in the background and your page will return right away so users can not stop it. There can be several mail action going on at the same time without a problem.
 
 Now the oneshot will mail and tag itself to be deleted by mmbase, but in the above group example this might not be wanted. You might for example want to keep "prove" of when the email was send and if it worked ok for administration use. Or u want to reuse the email object (just update the content in the body for example) and email it again. For this the mailtype oneshotkeep was will not be deleted once it is mailed, cleanup or reuse will be upto you.
 </para>
@@ -211,7 +211,7 @@ example5_body.jsp?usernumer=343 for the body
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
 <mm:import externid="usernumber" />
-<mm:node number="$usernumber">update for 
+<mm:node number="$usernumber">update for
 <mm:field name="firstname" />
 <mm:field name="lastname" /> !
 </mm:node>

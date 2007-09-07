@@ -1,0 +1,46 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="mm_c mm_c_email mm_c_b_examples ${requestScope.componentClassName}"
+    id="${requestScope.componentId}">
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content language="en" postprocessor="none">
+    <mm:import id="examples" vartype="list">example1.jsp,example2.jsp,example3.jsp,example4.jsp,example5.jsp,example6.jsp,mmbase18.jspx</mm:import>
+    <mm:import externid="example">example1.jsp</mm:import>
+    <mm:import externid="email">mihxiltest@gmail.com</mm:import>
+    <mm:cloud>
+      <form method="get">
+        <select
+            onchange="this.form.submit()"
+            name="example">
+          <mm:stringlist referid="examples">
+            <mm:option value="${_}" compare="${example}">${_}</mm:option>
+          </mm:stringlist>
+        </select>
+        <input type="text" name="email" value="${email}" />
+        <input type="submit" />
+      </form>
+      <h1>${example}</h1>
+      <table>
+        <tr><th>Implementation</th><th>Result</th></tr>
+        <tr>
+          <td>
+            <pre>
+              <mm:include cite="true" page="${example}" escape="text/xml" />
+            </pre>
+          </td>
+          <td>
+            <mm:include page="${example}" />
+          </td>
+        </tr>
+      </table>
+    </mm:cloud>
+
+  </mm:content>
+</div>
+
+
+
+
