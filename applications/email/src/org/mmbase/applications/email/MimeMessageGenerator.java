@@ -43,7 +43,7 @@ public class MimeMessageGenerator {
         List<MimeBodyTag> rootnodes = new ArrayList<MimeBodyTag>();
 
 
-        for (MimeBodyTag tag : MimeBodyTagger.getMimeBodyParts(text, node)) {
+        for (MimeBodyTag tag : getMimeBodyParts(text, node)) {
             try {
 		// get all the needed fields
 		String type    = tag.getType();
@@ -107,74 +107,70 @@ public class MimeMessageGenerator {
         }
 	return null;
     }
-    private static class MimeBodyTagger {
 
+    /**
+     * @javadoc
+     */
+    static List<MimeBodyTag> getMimeBodyParts(String body, Node node) {
+        String startkey="<multipart ";
+        String endkey="</multipart>";
 
-        /**
-         * @javadoc
-         */
-        static List<MimeBodyTag> getMimeBodyParts(String body, Node node) {
-            String startkey="<multipart ";
-            String endkey="</multipart>";
+        List<MimeBodyTag> results = new ArrayList<MimeBodyTag>();
 
-            List<MimeBodyTag> results = new ArrayList<MimeBodyTag>();
+        int pos = body.indexOf(startkey);
+        while (pos != -1) {
+            String part = body.substring(pos);
+            int endpos  = part.indexOf(endkey);
+            part        = part.substring(startkey.length(), endpos);
+            String atr  = part.substring(0, part.indexOf(">"));
+            part = part.substring(part.indexOf(">")+1);
+            StringTagger atrtagger = new StringTagger(atr);
 
-            int pos = body.indexOf(startkey);
-            while (pos != -1) {
-                String part = body.substring(pos);
-                int endpos  = part.indexOf(endkey);
-                part        = part.substring(startkey.length(), endpos);
-                String atr  = part.substring(0, part.indexOf(">"));
-                part = part.substring(part.indexOf(">")+1);
-                StringTagger atrtagger = new StringTagger(atr);
+            MimeBodyTag tag = new MimeBodyTag();
 
-                MimeBodyTag tag = new MimeBodyTag();
+            String type = atrtagger.Value("type");
+            if (type != null) tag.setType(type);
 
-                String type = atrtagger.Value("type");
-                if (type != null) tag.setType(type);
+            String encoding = atrtagger.Value("encoding");
+            if (encoding != null) tag.setEncoding(encoding);
 
-                String encoding = atrtagger.Value("encoding");
-                if (encoding != null) tag.setEncoding(encoding);
+            String number = atrtagger.Value("number");
+            if (number != null) tag.setNumber(number);
 
-                String number = atrtagger.Value("number");
-                if (number != null) tag.setNumber(number);
+            String field = atrtagger.Value("field");
+            if (field != null) tag.setNumber(field);
 
-                String field = atrtagger.Value("field");
-                if (field != null) tag.setNumber(field);
+            String formatter = atrtagger.Value("formatter");
+            if (formatter != null) tag.setFormatter(formatter);
 
-                String formatter = atrtagger.Value("formatter");
-                if (formatter != null) tag.setFormatter(formatter);
+            String alt = atrtagger.Value("alt");
+            if (alt != null) tag.setAlt(alt);
 
-                String alt = atrtagger.Value("alt");
-                if (alt != null) tag.setAlt(alt);
+            String id = atrtagger.Value("id");
+            if (id != null) tag.setId(id);
 
-                String id = atrtagger.Value("id");
-                if (id != null) tag.setId(id);
+            String related = atrtagger.Value("related");
+            if (related != null) tag.setRelated(related);
 
-                String related = atrtagger.Value("related");
-                if (related != null) tag.setRelated(related);
+            String file = atrtagger.Value("file");
+            if (file != null) tag.setFile(file);
 
-                String file = atrtagger.Value("file");
-                if (file != null) tag.setFile(file);
+            String filename = atrtagger.Value("filename");
+            if (filename != null) tag.setFileName(filename);
 
-                String filename = atrtagger.Value("filename");
-                if (filename != null) tag.setFileName(filename);
+            String attachment = atrtagger.Value("attachment");
+            if (attachment != null) tag.setAttachment(attachment);
 
-                String attachment = atrtagger.Value("attachment");
-                if (attachment != null) tag.setAttachment(attachment);
+            tag.setText(part);
 
-                tag.setText(part);
+            results.add(tag);
 
-                results.add(tag);
-
-                // set body ready for the new part
-                endpos = body.indexOf(endkey);
-                body = body.substring(endpos+endkey.length());
-                pos = body.indexOf(startkey);
-            }
-            return results;
+            // set body ready for the new part
+            endpos = body.indexOf(endkey);
+            body = body.substring(endpos+endkey.length());
+            pos = body.indexOf(startkey);
         }
-
+        return results;
     }
 
 
@@ -199,6 +195,7 @@ public class MimeMessageGenerator {
         private MimeMultipart relatednodes;
         private String number;
         private String field;
+        private String attachmentId;
 
         private static final Logger log = Logging.getLoggerInstance(MimeBodyTag.class);
 
@@ -269,6 +266,10 @@ public class MimeMessageGenerator {
         }
 
         public void setAttachment(String attachmentid) {
+            this.attachmentId = attachmentid;
+        }
+        public String getAttachment() {
+            return attachmentId;
         }
 
         public String getFormatter() {
