@@ -28,6 +28,8 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @javadoc
+ * @javadoc
+ * @javadoc
  * @author Daniel Ockeloen
  *
  */
@@ -516,7 +518,11 @@ public class MimeMessageGenerator {
 
             log.service("attached node=" + node + " " + mimeType);
             byte[] b = node.getByteValue(field);
-            log.service(" -> " + b);
+            if (b == null || b.length == 0) {
+                log.warn("No binary data found for node " + node.getNumber() + "." + field);
+                b = ("No binary data found for node " + node.getNumber() + "." + field).getBytes();
+                mimeType = "text/plain";
+            }
             DataHandler d = new DataHandler(new ByteArrayDataSource(b, mimeType));
             mmbp.setDataHandler(d);
 
