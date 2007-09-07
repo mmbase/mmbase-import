@@ -113,6 +113,18 @@ public class MimeMessageGenerator {
      * @javadoc
      */
     static List<MimeBodyTag> getMimeBodyParts(String body, Node node) {
+        // MM.
+        // This is all quite horrible
+        // because an XML syntax is parsed here, in a very particular way.
+        // This leads to all kind of issues like e.g.
+        // http://www.mmbase.org/jira/browse/MMB-982
+        //
+        // This may be a bit hard to solve, because it is not garanteed that the body is actually
+        // XML. and it may lead to backwards incompatibility issues.
+        // So I'm not feeling like such a redo of this ***t right now.
+        // But I may feel so soon!
+
+
         String startkey="<multipart ";
         String endkey="</multipart>";
 
