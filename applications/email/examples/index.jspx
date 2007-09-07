@@ -7,7 +7,7 @@
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <mm:content language="en" postprocessor="none">
-    <mm:import id="examples" vartype="list">example1.jsp,example2.jsp,example3.jsp,example4.jsp,example5.jsp,example6.jsp,mmbase18.jspx</mm:import>
+    <mm:import id="examples" vartype="list">example1.jsp,mailstatus.jsp,group.jsp,background.jsp,example5.jsp,multipart.jsp,mmform.jspx</mm:import>
     <mm:import externid="example">example1.jsp</mm:import>
     <mm:import externid="email">mihxiltest@gmail.com</mm:import>
     <mm:cloud>
