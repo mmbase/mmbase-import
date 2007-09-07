@@ -11,6 +11,9 @@
     <mm:import externid="example">example1.jsp</mm:import>
     <mm:import externid="email">mihxiltest@gmail.com</mm:import>
     <mm:cloud>
+      <p>
+        Remarks: It seems that group-mailings are broken.
+      </p>
       <form method="get">
         <select
             onchange="this.form.submit()"
