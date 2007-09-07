@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.8.2.6 2007-08-07 15:38:56 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.8.2.7 2007-09-07 15:51:53 michiel Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -116,7 +116,7 @@ public class BeanFunction extends AbstractFunction {
     public static Object getInstance(final Class claz, Object constructorArgument) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         Class c = constructorArgument.getClass();
         while (c != null) {
-            try {            
+            try {
                 Constructor con = claz.getConstructor(new Class[] {c});
                 return con.newInstance(new Object[] {constructorArgument});
             } catch (NoSuchMethodException e) {
@@ -125,7 +125,7 @@ public class BeanFunction extends AbstractFunction {
         }
         Class[] interfaces = constructorArgument.getClass().getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
-            try {            
+            try {
                 Constructor con = claz.getConstructor(new Class[] {interfaces[i]});
                 return con.newInstance(new Object[] {constructorArgument});
             } catch (NoSuchMethodException e) {
@@ -155,7 +155,7 @@ public class BeanFunction extends AbstractFunction {
      * A list of all found setter methods. This list 1-1 corresponds with getParameterDefinition. Every Parameter belongs to a setter method.
      */
     private final List   setMethods = new ArrayList();
-    
+
 
     private final Producer producer;
 
@@ -259,6 +259,7 @@ public class BeanFunction extends AbstractFunction {
     public Object getFunctionValue(Parameters parameters) {
         try {
             Object bean = getProducer().getInstance();
+            int count = 0;
             Iterator i = parameters.iterator();
             Iterator j = setMethods.iterator();
             while(i.hasNext() && j.hasNext()) {
@@ -271,7 +272,12 @@ public class BeanFunction extends AbstractFunction {
                         continue;
                     }
                 }
-                method.invoke(bean, new Object[] {value});
+                Object defaultValue = parameters.getDefinition()[count].getDefaultValue();
+                if ((defaultValue == null && value != null) ||
+                    (defaultValue != null && (! defaultValue.equals(value)))) {
+                    method.invoke(bean, new Object[] {value});
+                }
+                count++;
             }
             Object ret =  method.invoke(bean, new Object[] {});
             return ret;
