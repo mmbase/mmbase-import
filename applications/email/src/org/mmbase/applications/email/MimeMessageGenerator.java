@@ -359,17 +359,18 @@ public class MimeMessageGenerator {
             // now use the html br and p tags to insert
             // the wanted returns
             StringObject obj = new StringObject(result);
+            // WTF
             obj.replace("<br/>", "\n");
             obj.replace("<br />", "\n");
             obj.replace("<BR/>", "\n");
             obj.replace("<BR />", "\n");
             obj.replace("<br>", "\n");
             obj.replace("<BR>", "\n");
-            obj.replace("<p>"," \n\n");
-            obj.replace("<p/>", "\n\n");
-            obj.replace("<p />", "\n\n");
-            obj.replace("<P>"," \n\n");
-            result=obj.toString();
+            obj.replace("<p>"," \n\n");   // WTF
+            obj.replace("<p/>", "\n\n");  // WTF
+            obj.replace("<p />", "\n\n"); // WTF
+            obj.replace("<P>"," \n\n");   // WTF
+            result = obj.toString();
 
             // return the coverted body
             return result;
