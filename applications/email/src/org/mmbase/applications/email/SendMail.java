@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.33 2007-09-07 11:18:19 michiel Exp $
+ * @version $Id: SendMail.java,v 1.34 2007-09-07 13:20:33 michiel Exp $
  */
 public class SendMail extends AbstractSendMail implements SendMailInterface {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -217,7 +217,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         } catch (javax.mail.MessagingException e) {
             emailFailed++;
             log.error("JMimeSendMail failure: " + e.getMessage());
-            log.debug(e);
+            log.debug(e.getMessage(), e);
         }
         return false;
     }

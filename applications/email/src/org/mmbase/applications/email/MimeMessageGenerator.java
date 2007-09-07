@@ -13,15 +13,16 @@ package org.mmbase.applications.email;
 import java.util.*;
 
 import java.io.*;
-import org.mmbase.module.core.*;
 import javax.mail.MessagingException;
+import javax.mail.util.ByteArrayDataSource;
 import javax.mail.internet.*;
 import javax.activation.*;
 
 
 import org.mmbase.bridge.*;
-
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.*;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -124,9 +125,12 @@ public class MimeMessageGenerator {
             part        = part.substring(startkey.length(), endpos);
             String atr  = part.substring(0, part.indexOf(">"));
             part = part.substring(part.indexOf(">")+1);
+
+
+            // StringTagger is deprecated.
             StringTagger atrtagger = new StringTagger(atr);
 
-            MimeBodyTag tag = new MimeBodyTag();
+            MimeBodyTag tag = new MimeBodyTag(node.getCloud());
 
             String type = atrtagger.Value("type");
             if (type != null) tag.setType(type);
@@ -140,8 +144,7 @@ public class MimeMessageGenerator {
             String field = atrtagger.Value("field");
             if (field != null) tag.setNumber(field);
 
-            String formatter = atrtagger.Value("formatter");
-            if (formatter != null) tag.setFormatter(formatter);
+            tag.setFormatter(atrtagger.Value("formatter"));
 
             String alt = atrtagger.Value("alt");
             if (alt != null) tag.setAlt(alt);
@@ -157,9 +160,6 @@ public class MimeMessageGenerator {
 
             String filename = atrtagger.Value("filename");
             if (filename != null) tag.setFileName(filename);
-
-            String attachment = atrtagger.Value("attachment");
-            if (attachment != null) tag.setAttachment(attachment);
 
             tag.setText(part);
 
@@ -195,11 +195,16 @@ public class MimeMessageGenerator {
         private MimeMultipart relatednodes;
         private String number;
         private String field;
-        private String attachmentId;
+        private final Cloud cloud;
 
-        private static final Logger log = Logging.getLoggerInstance(MimeBodyTag.class);
+        MimeBodyTag(Cloud c) {
+            cloud = c;
+        }
 
 
+        /**
+         * @deprecated
+         */
         public void setFormatter(String formatter) {
             this.formatter = formatter;
         }
@@ -265,13 +270,9 @@ public class MimeMessageGenerator {
             return filename;
         }
 
-        public void setAttachment(String attachmentid) {
-            this.attachmentId = attachmentid;
-        }
-        public String getAttachment() {
-            return attachmentId;
-        }
-
+        /**
+         * @deprecated
+         */
         public String getFormatter() {
             return formatter;
         }
@@ -328,6 +329,7 @@ public class MimeMessageGenerator {
         public String getText() {
             // is there a formatter requested ??
             if (formatter != null) {
+                // deprecated
                 // wtf
                 if (formatter.equals("html2plain")) {
                     return html2plain(text);
@@ -343,6 +345,7 @@ public class MimeMessageGenerator {
          * to returns and dubble returns for email use.
 
          // WTF WTF WTF
+         * @deprecated
          */
         private static String html2plain(String input) {
             // define the result string
@@ -381,7 +384,7 @@ public class MimeMessageGenerator {
          */
         public MimeMultipart getMimeMultipart() {
             try {
-                if (altnodes!=null) {
+                if (altnodes != null) {
                     MimeMultipart result = new MimeMultipart("alternative");
 
                     MimeMultipart r = getRelatedpart();
@@ -424,44 +427,39 @@ public class MimeMessageGenerator {
          * @javadoc
          */
         public MimeBodyPart getMimeBodyPart() {
+            log.info("Creating mimebody part for " + this);
             MimeBodyPart mmbp = new MimeBodyPart();
             try {
-                DataHandler d = null;
                 if (number != null && !number.equals("")) {
-                    if (field!=null) {
-                        d = getMMBaseObject(number, field);
-                    } else {
-                        d = getMMBaseObject(number);
-                    }
+                    log.service("attachment");
+                    addNode(mmbp, number, field);
                 } else  if (type.equals("text/plain")) {
-                    d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
+                    DataHandler d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                     mmbp.setDataHandler(d);
                 } else if (type.equals("text/html")) {
-                    d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
+                    DataHandler d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                     mmbp.setDataHandler(d);
-                } else if (type.equals("application/octet-stream")) {
-                    // WTF WTF WTF
-                    String filepath = MMBaseContext.getHtmlRoot() + File.separator + getFile();
+                } else if (type.startsWith("application/")) {
                     if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF") == -1) {
-                        FileDataSource fds = new FileDataSource(filepath);
-                        d = new DataHandler(fds);
+                        DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filepath), type);
+                        DataHandler d = new DataHandler(ds);
                         mmbp.setDataHandler(d);
                         mmbp.setFileName(getFileName());
                     } else {
                         log.error("file from there not allowed");
                     }
-                } else if (type.equals("image/gif") || type.equals("image/jpeg")) {
-                    // more WTF WTF
-                    String filepath = MMBaseContext.getHtmlRoot() + File.separator + getFile();
+                } else if (type.startsWith("image/")) {
                     if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF") == -1) {
-                        FileDataSource fds = new FileDataSource(filepath);
-                        d = new DataHandler(fds);
+                        DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filepath), type);
+                        DataHandler d = new DataHandler(ds);
                         mmbp.setDataHandler(d);
                         mmbp.setHeader("Content-ID","<"+id+">");
                         mmbp.setHeader("Content-Disposition","inline");
                     } else {
                         log.error("file from there not allowed");
                     }
+                } else {
+                    log.warn("don't know how to handle " + this);
                 }
 
             } catch(Exception e){
@@ -471,28 +469,45 @@ public class MimeMessageGenerator {
             return mmbp;
         }
 
-
-        /**
-         * @javadoc
-         */
-
-        private DataHandler getMMBaseObject(String number) {
-            return getMMBaseObject(number,"");
+        private CharTransformer getUnhtml() {
+            TagStripperFactory factory = new TagStripperFactory();
+            Parameters params = factory.createParameters();
+            params.set("tags", "NONE");
+            params.set("addbrs", false);
+            params.set("escapeamps", false);
+            CharTransformer transformer = factory.createTransformer(params);
+            return transformer;
         }
 
 
-
-        /**
-         * @javadoc
-         */
-
-        private DataHandler getMMBaseObject(String number,String field) {
-
-            // TODO should use user cloud, to avoid sending nodes which are unreadable.
-            Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase");
+        private void addNode(MimeBodyPart mmbp, String number, String field) throws MessagingException {
             Node node = cloud.getNode(number);
-            log.info("attached node=" + node);
-            return null;
+            if (field == null || "".equals(field)) field = "handle";
+            String mimeType;
+            try {
+                Function f = node.getFunction("mimetype");
+                Parameters params = f.createParameters();
+                params.setIfDefined("field", field);
+                mimeType = f.getFunctionValue(params).toString();
+                if (mimeType == null || mimeType.startsWith("Failed ")) {
+                    mimeType = "application/octet-stream";
+                }
+            } catch (NotFoundException nfe) {
+                mimeType = "appliction/octect-stream";
+            }
+            if (node.getNodeManager().hasField("filename")) {
+                mmbp.setFileName(node.getStringValue("filename"));
+            } else {
+                CharTransformer unhtml = getUnhtml();
+                mmbp.setFileName(unhtml.transform("" + node.getFunctionValue("gui", null)));
+            }
+
+            log.service("attached node=" + node + " " + mimeType);
+            byte[] b = node.getByteValue(field);
+            log.service(" -> " + b);
+            DataHandler d = new DataHandler(new ByteArrayDataSource(b, mimeType));
+            mmbp.setDataHandler(d);
+
         }
 
     }
