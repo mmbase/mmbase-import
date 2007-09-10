@@ -24,3 +24,8 @@ function openSite() {
 function openSiteWithPage(pagenumber) {
 	window.bottompane.location = siteUrl + '?page=' + pagenumber;
 }
+function initMenu() {
+	if (window.toppane && window.toppane.initMenu) {
+		window.toppane.initMenu();
+	}
+}
