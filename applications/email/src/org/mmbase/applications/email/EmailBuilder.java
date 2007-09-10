@@ -1,3 +1,4 @@
+
 /*
 
 This software is OSI Certified Open Source Software.
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.24 2007-09-06 16:36:05 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.25 2007-09-10 07:49:48 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -69,23 +70,17 @@ public class EmailBuilder extends MMObjectBuilder {
     static String usersEmailField;
     static String groupsBuilder;
 
-    // reference to the sendmail module
-    private static SendMailInterface sendmail;
-
     // reference to the expire handler
     private static EmailExpireHandler expirehandler;
 
     protected int expireTime = 60;
-    protected int sleepTime = 60*30;
+    protected int sleepTime = 60 * 30;
 
     /**
      * init
      */
     public boolean init() {
         super.init ();
-
-        // get the sendmail module
-        sendmail = (SendMailInterface) Module.getModule("sendmail");
 
         String property = getInitParameter("expireTime");
         if (property != null) {
@@ -203,6 +198,9 @@ public class EmailBuilder extends MMObjectBuilder {
             }
             );
 
+
+        // This is a silly function.
+        // We could override setStringValue on 'type' itself. Perhaps that even already works.
         addFunction(new NodeFunction("settype", MAIL_PARAMETERS, ReturnType.VOID) {
                 protected Object getFunctionValue(final Node node, Parameters parameters) {
                     log.debug("We're in startmail - args: " + parameters);
@@ -217,8 +215,8 @@ public class EmailBuilder extends MMObjectBuilder {
     /**
      * Return the sendmail module
      */
-    static SendMailInterface getSendMail() {
-        return sendmail;
+    static SendMail getSendMail() {
+        return (SendMail) Module.getModule("sendmail");
     }
 
     /**

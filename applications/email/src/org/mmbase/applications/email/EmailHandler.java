@@ -15,7 +15,6 @@ import java.util.*;
 import javax.mail.internet.MimeMultipart;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.SendMailInterface;
 
 
 import org.mmbase.util.logging.Logger;
@@ -29,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.26 2007-09-07 11:18:19 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.27 2007-09-10 07:49:48 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -44,7 +43,7 @@ public class EmailHandler {
      */
     public static Node sendMailNode(final Node node) {
         // get the sendmail module
-        SendMailInterface sendmail = EmailBuilder.getSendMail();
+        SendMail sendmail = EmailBuilder.getSendMail();
         if (sendmail == null) {
             log.error("sendmail module not active, cannot send email");
             //node.commit(); // why is the node committed here?
@@ -109,7 +108,8 @@ public class EmailHandler {
         }
         // subject field is obligotary
         headers.put("Subject",  unemptyString(node.getStringValue("subject")));
-        headers.put("X-MMBase-Node",  "" + node.getNumber());
+
+        headers.put("X-mmbase-node", node.getNodeManager().getName() + "/" + node.getNumber());
         return headers;
     }
 
@@ -173,7 +173,7 @@ public class EmailHandler {
 
 
 
-    private static String getUrlExtern(String absoluteUrl,String params,String usernumber) {
+    private static String getUrlExtern(String absoluteUrl, String params, String usernumber) {
         try {
             if (usernumber != null) {
                 params += "&usernumber=" + usernumber;
@@ -218,10 +218,10 @@ public class EmailHandler {
             return result;
 
         } catch(Exception e) {
-            // this is weird needs to be checked
-            //e.printStackTrace();
+            log.warn(e.getMessage());
+            return "";
         }
-        return "";
+
     }
 
     private static String stripToOneLine(String input) {

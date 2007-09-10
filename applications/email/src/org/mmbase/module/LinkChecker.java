@@ -13,20 +13,28 @@ import java.io.IOException;
 import java.net.*;
 import java.util.List;
 
+import org.mmbase.applications.email.SendMail;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * <p>
  * The linkChecker module detects broken urls in the urls builder and the jumpers builder.
  * If the linkchecker module is active it will at start up (5 minutes after the MMBase initialisation)
  * and start perfoming checks.
- * This wil only happend once every time time MMBase has been started.<br />
+ * </p>
+ * <p>
+ * So this wil only happen once every time time MMBase has been started. But since this class is a
+ * Runnable it can also be scheduled as a 'cronjob'.
+ * </p>
+ * <p>
  * For the LinckChecker to work the sendmail modules has to be configured and has to be active.
+ * </p>
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.6 2007-08-06 12:12:57 michiel Exp $
+ * @version $Id: LinkChecker.java,v 1.7 2007-09-10 07:49:48 michiel Exp $
  **/
 
 public class LinkChecker extends ProcessorModule implements Runnable {
@@ -37,10 +45,8 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     private static long WAIT_TIME = 0; // wait time between runs, default 0 (don't wait but terminate)
     private static long WAIT_TIME_BETWEEN_CHECKS = 5 * 1000; // wait time bewteen individual checks, default 5 seconds
 
-    private MMBase mmbase;
-
     /*
-    public LinkChecker(String name) { 
+    public LinkChecker(String name) {
         super(name);
     }
     */
@@ -72,7 +78,6 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             }
         }
 
-        mmbase = MMBase.getMMBase();
         log.info("Module LinkChecker started");
         MMBaseContext.startThread(this, "LinkChecker");
     }
@@ -82,6 +87,8 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     }
 
     public void run() {
+        MMBase mmbase = MMBase.getMMBase();
+
         long waitTime = INITIAL_WAIT_TIME;  // wait a certain time after startup (default 5 minutes)
         while (!mmbase.isShutdown()) {
             try {
@@ -91,12 +98,12 @@ public class LinkChecker extends ProcessorModule implements Runnable {
             }
             log.service("LinkChecker starting to check all Jumpers and Urls");
 
-            StringBuffer data = new StringBuffer();
+            StringBuilder data = new StringBuilder();
             checkUrls("urls", "url", data);
             checkUrls("jumpers", "url", data);
 
             try {
-                SendMailInterface sendmail = (SendMailInterface) getModule("sendmail");
+                SendMail sendmail = (SendMail) getModule("sendmail");
                 if (sendmail != null) {
                     // init variables for mail.
                     String from = getInitParameter("from");
@@ -132,10 +139,10 @@ public class LinkChecker extends ProcessorModule implements Runnable {
      * Checks if the urls in a specified builder exist.
      * @param builderName the builder to check
      * @param fieldName the fieldname of the url to check
-     * @param data the StringBuffer to append error information to
+     * @param data the StringBuilder to append error information to
      * @since MMBase-1.7
      */
-    protected void checkUrls(String builderName, String fieldName, StringBuffer data) {
+    protected void checkUrls(String builderName, String fieldName, StringBuilder data) {
         // Get all urls.
         MMObjectBuilder urls = mmbase.getBuilder(builderName);
         if (urls != null) {
@@ -168,7 +175,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
      * @return <code>false</code> if the url does not exist, <code>true</code> if the url exists
      */
     protected boolean checkUrl(String url) throws MalformedURLException, IOException {
-        if (url.indexOf("http") == 0 || url.indexOf("ftp") == 0) {
+        if (url.startsWith("http") || url.startsWith("ftp")) {
             URL urlToCheck = new URL(url);
             URLConnection uc = urlToCheck.openConnection();
             String header = uc.getHeaderField(0);
