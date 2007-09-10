@@ -41,14 +41,13 @@
     </th>
   </tr>
 
-  <form action="<mm:url page="profiles.jsp">
-                    <mm:param name="forumid" value="$forumid" />
-                                        <mm:param name="enableposterid" value="$enableposterid"/>
-                    <mm:param name="admincheck" value="true" />
-                </mm:url>" method="post">
+
   <tr>
     <td colspan="2" align="center">
-      <mm:write referid="mlg.Enable" /> <mm:write referid="mlg.member"/> : <mm:node number="$enableposterid"><mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)</mm:node>
+      <mm:write referid="mlg.Enable" /> <mm:write referid="mlg.member"/> :
+      <mm:nodefunction set="mmbob" name="getPosterInfo" referids="forumid,enableposterid@posterid">
+                <mm:field name="identifier" />
+            </mm:nodefunction>
     </td>
   </tr>
 
@@ -56,21 +55,32 @@
     <td colspan="2" align="center"><mm:write referid="mlg.Are_you_sure" />?</td>
   </tr>
 
-  <input type="hidden" name="admincheck" value="true">
-  <input type="hidden" name="action" value="enableposter">
 
 
   <tr>
-    <td align="center" ><input type="submit" value="<mm:write referid="mlg.Enable" />"> </td>
+    <td align="center" >
+        <mm:link page="${header.referer}">
+            <mm:param name="forumid" value="$forumid" />
+            <mm:param name="enableposterid" value="$enableposterid"/>
+            <mm:param name="admincheck" value="true" />
+            <form action="${_}" method="post">
+                <input type="hidden" name="action" value="enableposter">
+                <input type="hidden" name="admincheck" value="true">
+                <mm:write referid="mlg.Enable" >
+                    <input type="submit" value="${_}">
+                </mm:write>
+            </form>
+        </mm:link>
+    </td>
     <td align="center">
-      </form>
-      <form action="<mm:url page="index.jsp">
-    <mm:param name="forumid" value="$forumid" />
-    </mm:url>"
-    method="post">
-      <p />
-      <input type="submit" value="<mm:write referid="mlg.Cancel" />">
-      </form>
+        <mm:link page="${header.referer}">
+            <mm:param name="forumid" value="$forumid" />
+            <form action="${_}" method="post">
+                <mm:write referid="mlg.Cancel" >
+                    <input type="submit" value="${_}">
+                </mm:write>
+          </form>
+      </mm:link>
     </td>
   </tr>
 </table>
