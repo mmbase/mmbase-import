@@ -22,7 +22,9 @@
   <xsl:variable name="REASON-PUBLISH">Dit object staat klaar om gepubliceerd te worden. Zolang dit niet gebeurd is kan dit object niet bewerkt worden.</xsl:variable>
 <!--
   END
--->  
+-->
+   <xsl:include href="templatesi18n:xsl/prompts-workflow.xsl"/>
+
    <xsl:template name="formhiddenargs">
  		<input type="hidden" name="workflowcommand" value="" id="workflowcommand" />
 		<input type="hidden" name="workflowcomment" value="" id="workflowcomment" />
@@ -78,47 +80,9 @@
 		    </div>
 		  </div>
 		</xsl:if>
-
-
 	</xsl:if>
   </xsl:template>
 
-  <xsl:variable name="tooltip_finish">Voltooi het object en bied het ter goedkeuring aan</xsl:variable>
-  <xsl:variable name="tooltip_no_finish">
-  	De wijzigingen kunnen niet bewaard worden, omdat nog niet alle data correct is ingevuld.
-  </xsl:variable>
-
-  <xsl:variable name="tooltip_accept">Keur het object goed
-</xsl:variable>
-  <xsl:variable name="tooltip_no_accept">
-  	De wijzigingen kunnen niet goedgekeurd worden, omdat nog niet alle data correct is ingevuld.
-  </xsl:variable>
-
-  <xsl:variable name="tooltip_reject">Afwijzen.</xsl:variable>
-  <xsl:variable name="tooltip_no_reject">
-  	De wijzigingen kunnen niet afgewezen worden, omdat nog niet alle data correct is ingevuld.
-  </xsl:variable>
-
-  <xsl:variable name="tooltip_publish">Publiceer het object</xsl:variable>
-  <xsl:variable name="tooltip_no_publish">
-  	De wijzigingen kunnen niet gepubliceerd worden, omdat nog niet alle data correct is ingevuld.
-  </xsl:variable>
-
-  <xsl:template name="prompt_finish">
-    Voltooien
-  </xsl:template>
-
-  <xsl:template name="prompt_accept">
-    Goedkeuren
-  </xsl:template>
-
-  <xsl:template name="prompt_reject">
-    Afwijzen
-  </xsl:template>
-  
-  <xsl:template name="prompt_publish">
-    Publiceren
-  </xsl:template>
 
   <xsl:template name="finishbutton">
     <a href="javascript:doFinish();" id="bottombutton-finish" unselectable="on" titlesave="{$tooltip_finish}" titlenosave="{$tooltip_no_finish}">
