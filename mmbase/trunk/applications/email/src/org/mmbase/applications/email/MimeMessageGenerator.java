@@ -27,6 +27,8 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * @todo
+ * @todo
  * @javadoc
  * @javadoc
  * @javadoc
@@ -43,8 +45,7 @@ public class MimeMessageGenerator {
     public static MimeMultipart getMimeMultipart(String text, Node node) {
 
         Map<String, MimeBodyTag> nodes = new HashMap<String, MimeBodyTag>();
-        List<MimeBodyTag> rootnodes = new ArrayList<MimeBodyTag>();
-
+        List<MimeBodyTag> rootNodes = new ArrayList<MimeBodyTag>();
 
         for (MimeBodyTag tag : getMimeBodyParts(text, node)) {
             try {
@@ -55,11 +56,13 @@ public class MimeMessageGenerator {
 		String alt     = tag.getAlt();
 
 		// add it to the id cache
-		nodes.put(id, tag);
+                if (id != null) {
+                    nodes.put(id, tag);
+                }
 
 		// is it a root node ?
 		if (alt == null && related == null) {
-                    rootnodes.add(tag);
+                    rootNodes.add(tag);
 		} else if (alt != null) {
                     MimeBodyTag oldpart = nodes.get(alt);
                     if (oldpart != null) {
@@ -77,18 +80,18 @@ public class MimeMessageGenerator {
             }
 	}
 
-	if (rootnodes.size() == 1) {
-            MimeBodyTag t = rootnodes.get(0);
+	if (rootNodes.size() == 1) {
+            MimeBodyTag t = rootNodes.get(0);
             MimeMultipart mmp = t.getMimeMultipart();
             if (mmp != null) {
                 return mmp;
             }
 	} else {
-            if (rootnodes.size()>1) {
+            if (rootNodes.size()>1) {
                 try {
                     MimeMultipart root = new MimeMultipart();
                     root.setSubType("mixed");
-                    for (MimeBodyTag t : rootnodes) {
+                    for (MimeBodyTag t : rootNodes) {
                         MimeMultipart mmp = t.getMimeMultipart();
                         if (mmp != null) {
                             log.info("setting parent info : " + t.getId());
@@ -196,19 +199,21 @@ public class MimeMessageGenerator {
      */
     private static  class MimeBodyTag {
 
-        private String type="text/plain";
-        private String encoding="ISO-8859-1";
-        private String text="";
-        private String id="default";
+        private String type     = "text/plain";
+        private String encoding = "ISO-8859-1";
+        private String text     = "";
+        private String id       = "default";
+
         private String related;
         private String alt;
         private String formatter;
-        private String filepath;
-        private String filename;
-        private List<MimeBodyTag> altnodes;
-        private MimeMultipart relatednodes;
+        private String filePath;
+        private String fileName;
+        private List<MimeBodyTag> altNodes;
+        private MimeMultipart relatedNodes;
         private String number;
         private String field;
+
         private final Cloud cloud;
 
         MimeBodyTag(Cloud c) {
@@ -223,19 +228,18 @@ public class MimeMessageGenerator {
             this.formatter = formatter;
         }
 
-
         /**
          * @javadoc
          */
 
         public void addAlt(MimeBodyTag sub) {
-            if (altnodes == null) {
-                //altnodes=new MimeMultipart("alternative");
-                //altnodes.addBodyPart(getMimeBodyPart());
-                altnodes = new ArrayList<MimeBodyTag>();
+            if (altNodes == null) {
+                //altNodes=new MimeMultipart("alternative");
+                //altNodes.addBodyPart(getMimeBodyPart());
+                altNodes = new ArrayList<MimeBodyTag>();
             }
-            //altnodes.addBodyPart(sub.getMimeBodyPart());
-            altnodes.add(sub);
+            //altNodes.addBodyPart(sub.getMimeBodyPart());
+            altNodes.add(sub);
         }
 
 
@@ -246,11 +250,11 @@ public class MimeMessageGenerator {
 
         public void addRelated(MimeBodyTag sub) {
             try {
-                if (relatednodes == null) {
-                    relatednodes = new MimeMultipart("related");
-                    relatednodes.addBodyPart(getMimeBodyPart());
+                if (relatedNodes == null) {
+                    relatedNodes = new MimeMultipart("related");
+                    relatedNodes.addBodyPart(getMimeBodyPart());
                 }
-                relatednodes.addBodyPart(sub.getMimeBodyPart());
+                relatedNodes.addBodyPart(sub.getMimeBodyPart());
             } catch(Exception e) {
                 log.error(e.getMessage());
             }
@@ -268,20 +272,19 @@ public class MimeMessageGenerator {
             this.id = id;
         }
 
-        public void setFile(String filepath) {
-            this.filepath = filepath;
+        public void setFile(String filePath) {
+            this.filePath = filePath;
         }
 
-        public void setFileName(String filename) {
-            this.filename = filename;
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
         }
 
         public String getFileName() {
-            if (filename == null) {
-                // needs to be better, create a guessed name on getFile
-                return "unknown";
+            if (fileName == null) {
+                return ResourceLoader.getName(getFile());
             }
-            return filename;
+            return fileName;
         }
 
         /**
@@ -292,7 +295,7 @@ public class MimeMessageGenerator {
         }
 
         public String getFile() {
-            return filepath;
+            return filePath;
         }
 
         public String getType() {
@@ -398,7 +401,7 @@ public class MimeMessageGenerator {
          */
         public MimeMultipart getMimeMultipart() {
             try {
-                if (altnodes != null) {
+                if (altNodes != null) {
                     MimeMultipart result = new MimeMultipart("alternative");
 
                     MimeMultipart r = getRelatedpart();
@@ -410,7 +413,7 @@ public class MimeMessageGenerator {
                         result.addBodyPart(wrapper);
                     }
 
-                    for (MimeBodyTag t : altnodes) {
+                    for (MimeBodyTag t : altNodes) {
                         r = t.getRelatedpart();
                         if (r == null) {
                             result.addBodyPart(t.getMimeBodyPart());
@@ -423,7 +426,7 @@ public class MimeMessageGenerator {
                     }
                     return result;
                 }
-                if (relatednodes != null) return relatednodes;
+                if (relatedNodes != null) return relatedNodes;
             } catch (MessagingException e) {
                 log.debug("Failed to get Multipart" + e.getMessage());
             }
@@ -434,7 +437,7 @@ public class MimeMessageGenerator {
          * @javadoc
          */
         public MimeMultipart getRelatedpart() {
-            return relatednodes;
+            return relatedNodes;
         }
 
         /**
@@ -454,30 +457,30 @@ public class MimeMessageGenerator {
                     DataHandler d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                     mmbp.setDataHandler(d);
                 } else if (type.startsWith("application/")) {
-                    if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF") == -1) {
-                        DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filepath), type);
+                    if (filePath.indexOf("..") == -1 && filePath.indexOf("WEB-INF") == -1) {
+                        DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filePath), type);
                         DataHandler d = new DataHandler(ds);
                         mmbp.setDataHandler(d);
                         mmbp.setFileName(getFileName());
                     } else {
-                        log.error("file from there not allowed");
+                        log.error("file from '" + filePath + "' not allowed");
                     }
                 } else if (type.startsWith("image/")) {
-                    if (filepath.indexOf("..") == -1 && filepath.indexOf("WEB-INF") == -1) {
-                        DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filepath), type);
+                    if (filePath.indexOf("..") == -1 && filePath.indexOf("WEB-INF") == -1) {
+                        DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filePath), type);
                         DataHandler d = new DataHandler(ds);
                         mmbp.setDataHandler(d);
                         mmbp.setHeader("Content-ID","<"+id+">");
                         mmbp.setHeader("Content-Disposition","inline");
                     } else {
-                        log.error("file from there not allowed");
+                        log.error("file from '" + filePath + "' not allowed");
                     }
                 } else {
                     log.warn("don't know how to handle " + this);
                 }
 
             } catch(Exception e){
-                log.error(e.getMessage());
+                log.error(e.getMessage(), e);
             }
 
             return mmbp;
@@ -507,16 +510,19 @@ public class MimeMessageGenerator {
                     mimeType = "application/octet-stream";
                 }
             } catch (NotFoundException nfe) {
-                mimeType = "appliction/octect-stream";
+                mimeType = "appliction/octet-stream";
             }
-            if (node.getNodeManager().hasField("filename")) {
-                mmbp.setFileName(node.getStringValue("filename"));
+            if (node.getNodeManager().hasField("fileName")) {
+                mmbp.setFileName(node.getStringValue("fileName"));
             } else {
                 CharTransformer unhtml = getUnhtml();
                 mmbp.setFileName(unhtml.transform("" + node.getFunctionValue("gui", null)));
             }
 
-            log.service("attached node=" + node + " " + mimeType);
+            if (log.isDebugEnabled()) {
+                log.debug("attached node=" + node + " " + mimeType);
+            }
+
             byte[] b = node.getByteValue(field);
             if (b == null || b.length == 0) {
                 log.warn("No binary data found for node " + node.getNumber() + "." + field);

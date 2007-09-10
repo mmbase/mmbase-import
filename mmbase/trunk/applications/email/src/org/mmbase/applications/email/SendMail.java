@@ -19,7 +19,6 @@ import javax.activation.*;
 
 import org.mmbase.module.smtp.*;
 import org.mmbase.bridge.*;
-import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
@@ -31,9 +30,9 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.34 2007-09-07 13:20:33 michiel Exp $
+ * @version $Id: SendMail.java,v 1.35 2007-09-10 07:49:48 michiel Exp $
  */
-public class SendMail extends AbstractSendMail implements SendMailInterface {
+public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
 
     public static final String DEFAULT_MAIL_ENCODING = "ISO-8859-1";
@@ -72,6 +71,12 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     }
 
     /**
+     * Delivers the mail represented by an MMBase node 'locally'. I.e. no actual mail is sent
+     * (unless forwarded), but new objects and relations are created, to make this mail appear in
+     * the mailbox of the recipients (which are represented by other MMBase nodes).
+     * 
+     * The given 'body' of the node is _not_ parsed. MultiParts should be indicated by mmbase relations.
+     *
      * @since MMBase-1.9
      */
     public void sendLocalMail(InternetAddress[] to, Node n) {
@@ -80,6 +85,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
         }
         Cloud cloud = n.getCloud();
         NodeManager peopleManager = cloud.getNodeManager("people");
+        getInitParameter("emailbuilder");
         NodeManager emailManager = cloud.getNodeManager("emails");
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
         RelationManager relatedManager = cloud.getRelationManager("related");
@@ -102,7 +108,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
 
             Node person = people.getNode(0);
             NodeList mailboxes = person.getRelatedNodes("mailboxes");
-            for (int j=0; j < mailboxes.size(); j++) {
+            for (int j = 0; j < mailboxes.size(); j++) {
                 Node mailbox = mailboxes.getNode(j);
                 if (mailbox.getIntValue("type") == 0) {
                     log.debug("Found mailbox, adding mail now");
@@ -125,6 +131,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
                     mailbox.createRelation(emailNode, relatedManager).commit();
 
 
+                    // TODO attachments should not be copied! Or at least not always.
                     NodeList attachments = n.getRelatedNodes("attachments");
                     for (int k = 0; k < attachments.size(); k++) {
                         log.debug("Adding attachment(" + k + ")");
@@ -360,7 +367,7 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     }
 
     /**
-     * Send mail with headers
+     * Send mail with headers, withouth using any explicit nodes.
      */
     public boolean sendMail(String from, String to, String data, Map<String, String> headers) {
         if (log.isServiceEnabled()) {
@@ -388,6 +395,10 @@ public class SendMail extends AbstractSendMail implements SendMailInterface {
     }
 
     /**
+     * Sends an email which is represented by an MMBase node.
+     *
+     * The given 'body' of the node is _not_ parsed. MultiParts should be indicated by mmbase relations.
+     *
      * @param sender If this is a forward, then you'd want to set the sender to the local address
      * (see rfc 822 4.4.4)
      *  @since MMBase-1.9
