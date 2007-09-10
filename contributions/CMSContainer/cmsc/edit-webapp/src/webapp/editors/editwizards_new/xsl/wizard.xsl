@@ -626,6 +626,15 @@
                   </td>
              </xsl:for-each>
          </xsl:when>
+         <xsl:when test="command[@name=&apos;channelselector&apos;]">
+             <xsl:for-each select="command[@name=&apos;channelselector&apos;]">
+               <td class="listnew">
+                  <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/select/SelectorContentChannel.do', 'channelselector', 'width=350,height=500,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
+                     <xsl:call-template name="prompt_search"/>
+                  </a>
+                </td>
+             </xsl:for-each>
+         </xsl:when>
            <xsl:otherwise>
              <td class="listnew"></td>
            </xsl:otherwise>
