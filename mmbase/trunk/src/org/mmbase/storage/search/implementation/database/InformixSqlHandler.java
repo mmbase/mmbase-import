@@ -39,7 +39,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.32 2007-09-04 14:26:30 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.33 2007-09-11 10:24:40 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -287,27 +287,8 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         Iterator<Step> iSteps = query.getSteps().iterator();
         while (iSteps.hasNext()) {
             Step step = iSteps.next();
-            String tableName = step.getTableName();
-            String tableAlias = step.getAlias();
 
-            // Tablename, prefixed with basename and underscore
-            sb.append(org.mmbase.module.core.MMBase.getMMBase().getBaseName()).
-                    append("_").
-                    //Currently no replacement strategy is implemented for
-                    //invalid tablenames.
-                    //This would be useful, but requires modification to
-                    //the insert/update/delete code as well.
-                    //append(getAllowedValue(tableName));
-                    append(tableName);
-
-            // Table alias (tablename when table alias not set).
-            if (tableAlias != null) {
-                sb.append(" ").
-                        append(getAllowedValue(tableAlias));
-            } else {
-                sb.append(" ").
-                        append(getAllowedValue(tableName));
-            }
+            appendTableName(sb, step);
 
             if (iSteps.hasNext()) {
                 sb.append(",");
@@ -850,5 +831,15 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         } catch (Exception e) {
             log.error("Exception while calling releaseBlob(): " + e.getMessage());
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
+        // case insensitive
+        sb.append("lowercaseNotInvariant(");
+        appendField(sb, step, fieldName, includeTablePrefix);
+        sb.append(')');
     }
 }
