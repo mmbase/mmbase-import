@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.32.2.4 2004-09-07 12:58:47 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.32.2.5 2007-09-11 08:48:07 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -76,8 +76,8 @@ public class BasicSqlHandler implements SqlHandler {
      */
     private static boolean isRelevantCaseInsensitive(FieldConstraint constraint) {
         return !constraint.isCaseSensitive()
-        && (constraint.getField().getType() == FieldDefs.TYPE_STRING
-        || constraint.getField().getType() == FieldDefs.TYPE_XML);
+            && (constraint.getField().getType() == FieldDefs.TYPE_STRING
+                || constraint.getField().getType() == FieldDefs.TYPE_XML);
     }
 
     /**
@@ -574,8 +574,7 @@ public class BasicSqlHandler implements SqlHandler {
     // javadoc is inherited
     // XXX what exception to throw when an unsupported constraint is
     // encountered (currently throws UnsupportedOperationException)?
-    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
-    SearchQuery query, boolean inverse, boolean inComposite) {
+    public void appendConstraintToSql(StringBuffer sb, Constraint constraint, SearchQuery query, boolean inverse, boolean inComposite) {
 
         // Net effect of inverse setting with constraint inverse property.
         boolean overallInverse = inverse ^ constraint.isInverse();
@@ -603,10 +602,7 @@ public class BasicSqlHandler implements SqlHandler {
                     + "(at least 1 value is required).");
                 }
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
-                    // case insensitive
-                    sb.append("LOWER(");
-                    appendField(sb, step, fieldName, multipleSteps);
-                    sb.append(")");
+                    appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
@@ -637,10 +633,7 @@ public class BasicSqlHandler implements SqlHandler {
                 // Field value-between constraint
                 FieldValueBetweenConstraint valueBetweenConstraint = (FieldValueBetweenConstraint) fieldConstraint;
                 if (isRelevantCaseInsensitive(fieldConstraint)) {
-                    // case insensitive
-                    sb.append("LOWER(");
-                    appendField(sb, step, fieldName, multipleSteps);
-                    sb.append(")");
+                    appendLowerField(sb, step, fieldName, multipleSteps);
                 } else {
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
@@ -671,8 +664,7 @@ public class BasicSqlHandler implements SqlHandler {
 
                 if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
-                    sb.append("LOWER(");
-                    appendField(sb, step, fieldName, multipleSteps);
+                    appendLowerField(sb, step, fieldName, multipleSteps);
                     sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
@@ -732,9 +724,7 @@ public class BasicSqlHandler implements SqlHandler {
                     String tableAlias2 = field2.getStep().getAlias();
                     if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                         // case insensitive
-                        sb.append("LOWER(");
-                        appendField(sb, step2, fieldName2, multipleSteps);
-                        sb.append(")");
+                        appendLowerField(sb, step2, fieldName2, multipleSteps);
                     } else {
                         // case sensitive or case irrelevant
                         appendField(sb, step2, fieldName2, multipleSteps);
@@ -808,8 +798,7 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public int getSupportLevel(Constraint constraint, SearchQuery query)
-    throws SearchQueryException {
+    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException {
         return constraint.getBasicSupportLevel();
     }
 
@@ -930,8 +919,7 @@ public class BasicSqlHandler implements SqlHandler {
      *        <code>false</code> otherwise.
      */
     // TODO RvM: add to interface, add javadoc
-    protected void appendField(StringBuffer sb, Step step,
-            String fieldName, boolean includeTablePrefix) {
+    protected void appendField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
 
         String tableAlias = step.getAlias();
         if (includeTablePrefix) {
@@ -944,5 +932,18 @@ public class BasicSqlHandler implements SqlHandler {
         }
         sb.append(getAllowedValue(fieldName));
     }
+
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
+        // case insensitive
+        sb.append("LOWER(");
+        appendField(sb, step, fieldName, includeTablePrefix);
+        sb.append(')');
+    }
+
+
 
 }
