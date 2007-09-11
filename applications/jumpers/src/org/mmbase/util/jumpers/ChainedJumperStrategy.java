@@ -22,9 +22,9 @@ import org.mmbase.bridge.*;
 /**
 
 * @author Michiel Meeuwissen
-* @version $Id: ChainedJumperStrategy.java,v 1.2 2007-07-24 15:09:21 michiel Exp $
+* @version $Id: ChainedJumperStrategy.java,v 1.3 2007-09-11 17:13:13 michiel Exp $
 */
-public class ChainedJumperStrategy extends JumperStrategy { 
+public class ChainedJumperStrategy extends JumperStrategy {
 
     private static final Logger log = Logging.getLoggerInstance(ChainedJumperStrategy.class);
 
@@ -43,13 +43,14 @@ public class ChainedJumperStrategy extends JumperStrategy {
         }
         return false;
     }
+
     public String  calculate(MMObjectNode node) {
         for (JumperStrategy s : chain) {
-            String r = s.contains(node) ? s.calculate(node) : null;
+            String r = s.calculate(node);
             if (r != null) return r;
         }
         return null;
-        
+
     }
 
     public String toString() {
