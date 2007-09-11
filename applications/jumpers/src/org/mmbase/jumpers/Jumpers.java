@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.2 2007-08-21 15:49:24 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.3 2007-09-11 14:13:46 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -86,6 +86,13 @@ public class Jumpers extends MMObjectBuilder {
      */
     public boolean init() {
         super.init();
+
+        // make jumpers builder listen to all node events
+        // because of chaining it may want to invalidate jumpercaches.
+
+        MMBase.getMMBase().removeNodeRelatedEventsListener(getTableName(), this);
+        org.mmbase.core.event.EventManager.getInstance().addEventListener(this);
+
         // cache
         jumpercachebuilder = mmb.getMMObject("jumpercache");
         if(jumpercachebuilder == null) {
@@ -370,15 +377,19 @@ public class Jumpers extends MMObjectBuilder {
                     if (url == null) {
                         MMObjectNode node = getNode(ikey);
                         if (node != null) {
+                            log.debug("Found node " + ikey);
                             synchronized(this) {
                                 url = (String) jumpCache.get(key);
                                 if (url != null) {
+                                    log.debug("Applying " + strategy);
                                     url = strategy.calculate(node);
                                     if (url != null) {
                                         jumperDatabaseCache_put(key, url);
                                         jumpCache.put(key, url);
+                                        log.debug("Found " + url);
                                         return url;
                                     }
+                                    log.debug("Not found");
                                 }
                             }
                         }
@@ -510,33 +521,40 @@ public class Jumpers extends MMObjectBuilder {
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
     public void notify(NodeEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("Jumpers=" + event.getMachine() + " " + event.getBuilderName() + " no="
-                      + event.getNodeNumber()+ " " + NodeEvent.newTypeToOldType(event.getType()));
-        }
-        // delete
-        if(event.getType() == NodeEvent.TYPE_DELETE) {
-            if(log.isDebugEnabled()) {
-            	log.debug("delete detected: removing "+event.getBuilderName()+"("+event.getNodeNumber()+") from cache");
+        if(getTableName().equals(event.getBuilderName())){
+            if (log.isDebugEnabled()) {
+                log.debug("Jumpers=" + event.getMachine() + " " + event.getBuilderName() + " no="
+                          + event.getNodeNumber()+ " " + NodeEvent.newTypeToOldType(event.getType()));
             }
-            // remove cache
-            jumpCache.remove("" + event.getNodeNumber());
-            // locally changed: remove persistent cache
-            if(mmb.getMachineName().equals(event.getMachine()))
-                jumperDatabaseCache_remove("" + event.getNodeNumber());
-
-        // field change or relation change
-        } else if(	(event.getType() == NodeEvent.TYPE_CHANGE) ||
-        			(event.getType() == NodeEvent.TYPE_RELATION_CHANGE)) {
-            if(event.getBuilderName().equals("jumpers")) {
-                jumpCache.remove(getNode(event.getNodeNumber()).getStringValue("name"));
-            } else {
-                if(log.isDebugEnabled()) log.debug("change detected: removing "+event.getBuilderName()+"("+event.getNodeNumber()+") from cache");
+            // delete
+            if(event.getType() == NodeEvent.TYPE_DELETE) {
+                if(log.isDebugEnabled()) {
+                    log.debug("delete detected: removing "+event.getBuilderName()+"("+event.getNodeNumber()+") from cache");
+                }
                 // remove cache
                 jumpCache.remove("" + event.getNodeNumber());
                 // locally changed: remove persistent cache
                 if(mmb.getMachineName().equals(event.getMachine()))
                     jumperDatabaseCache_remove("" + event.getNodeNumber());
+
+                // field change or relation change
+            } else if(	(event.getType() == NodeEvent.TYPE_CHANGE) ||
+                        (event.getType() == NodeEvent.TYPE_RELATION_CHANGE)) {
+                if(event.getBuilderName().equals("jumpers")) {
+                    jumpCache.remove(getNode(event.getNodeNumber()).getStringValue("name"));
+                } else {
+                    if(log.isDebugEnabled()) log.debug("change detected: removing "+event.getBuilderName()+"("+event.getNodeNumber()+") from cache");
+                    // remove cache
+                    jumpCache.remove("" + event.getNodeNumber());
+                    // locally changed: remove persistent cache
+                    if(mmb.getMachineName().equals(event.getMachine()))
+                        jumperDatabaseCache_remove("" + event.getNodeNumber());
+                }
+            }
+        } else {
+            MMObjectNode node = getNode(event.getNodeNumber());
+            if (strategy.contains(node)) {
+                delJumpCache("" + event.getNodeNumber(), event.isLocal());
             }
         }
         super.notify(event);
