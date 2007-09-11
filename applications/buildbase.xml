@@ -32,7 +32,7 @@ Create a build.xml with a DOCTYPE like this:
 
 
   <property name="build.compiler" value="modern" />
-  <property name="build.documentation" value="false" />
+  <property name="build.documentation" value="true" />
   <property name="optimize"       value="on" />
   <property name="debug"          value="on" />
   <property name="deprecation"    value="on" />
@@ -406,7 +406,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
              windowtitle="${project.name} API"
              doctitle="${project.name}"
              maxmemory="100M"
-             source="1.4"
+             source="${java.source.version}"
              failonerror="false"
              bottom="${project.name} build ${version}">
       <classpath>
@@ -519,7 +519,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
       Well it is not very complicated, this download stuff,
       but should we reuse the code of the main build.xml rather then copying it?
   -->
-  
+
 
   <target name="downloadzip" unless="expanded" depends="download,testexpanded">
     <!-- Extract the package -->
