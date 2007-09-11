@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.4 2007-06-26 12:56:38 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.5 2007-09-11 09:22:00 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -73,7 +73,7 @@ public class DatabaseStorageManager implements StorageManager {
      * The cache that contains the last X types of all requested objects
      * @since 1.7
      */
-    private static Cache typeCache;
+    protected static Cache typeCache;
 
     static {
         typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
@@ -2747,12 +2747,13 @@ public class DatabaseStorageManager implements StorageManager {
      */
     public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException, SQLException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-            synchronized(factory) { // there is only on factory. This makes sure that there is only one conversion running
+            synchronized(factory) { // there is only on factory. This makes sure that there is only  one conversion running
                 int result = 0;
                 int fromDatabase = 0;
                 Iterator builders = factory.getMMBase().getBuilders().iterator();
                 while (builders.hasNext()) {
                     MMObjectBuilder builder = (MMObjectBuilder)builders.next();
+                    log.info("Converting " + builder.getTableName() + " to " + factory.getBinaryFileBasePath());
                     // remove clusternodes from the convert
                     if (!builder.getSingularName().equals("clusternodes")) {
                         Iterator fields = builder.getFields().iterator();
@@ -2833,7 +2834,7 @@ public class DatabaseStorageManager implements StorageManager {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    log.error("Exception while importing [" + builder + "]: " + e.getMessage());
+                                    log.error("Exception while importing [" + builder + "]: " + e.getMessage(), e);
                                 } finally {
                                     releaseActiveConnection();
                                 }
