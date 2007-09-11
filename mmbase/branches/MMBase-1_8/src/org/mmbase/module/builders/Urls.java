@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.25 2006-04-27 16:48:49 michiel Exp $
+ * @version $Id: Urls.java,v 1.25.2.1 2007-09-11 13:56:40 michiel Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Urls.class);
@@ -55,11 +55,16 @@ public class Urls extends MMObjectBuilder {
      */
     public void notify(NodeEvent event) {
          if(tableName.equals(event.getBuilderName())){
-             Jumpers jumpers = (Jumpers)mmb.getBuilder("jumpers");
-             if (jumpers == null) {
-                 log.debug("Urls builder - Could not get Jumper builder");
-             } else {
-                 jumpers.delJumpCache(""+event.getNodeNumber());
+             try {
+                 Jumpers jumpers = (Jumpers)mmb.getBuilder("jumpers");
+                 if (jumpers == null) {
+                     log.debug("Urls builder - Could not get Jumper builder");
+                 } else {
+                     jumpers.delJumpCache(""+event.getNodeNumber());
+                 }
+             } catch (ClassCastException cce) {
+                 log.debug("probably jumper is now org.mmbase.jumpers.Jumpers. Never mind. We'll make that listen to urls itself " + cce.getMessage());
+
              }
          }
         super.notify(event);
