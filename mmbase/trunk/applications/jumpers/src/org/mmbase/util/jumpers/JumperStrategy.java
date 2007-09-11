@@ -40,13 +40,12 @@ import org.mmbase.bridge.*;
 * @see #calculate(MMObjectNode)
 *
 * @author Marcel Maatkamp, VPRO Digitaal
-* @version $Id: JumperStrategy.java,v 1.2 2007-08-10 14:41:14 andre Exp $
+* @version $Id: JumperStrategy.java,v 1.3 2007-09-11 14:24:29 michiel Exp $
 */
-public abstract class JumperStrategy { 
+public abstract class JumperStrategy {
 
     private static final Logger log = Logging.getLoggerInstance(JumperStrategy.class);
 
-    protected Map<String, String> testset = new HashMap<String, String>();
 
     /**
     * signals whether this strategy can calculate an url for this node.
