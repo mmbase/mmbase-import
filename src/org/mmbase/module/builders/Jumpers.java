@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.24.2.5 2005-02-15 12:32:14 marcel Exp $
+ * @version $Id: Jumpers.java,v 1.24.2.6 2007-09-11 08:43:40 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -263,7 +263,7 @@ public class Jumpers extends MMObjectBuilder {
      * @param ctype the type of change
      */
     public boolean nodeChanged(String machine,String number,String builder,String ctype) {
-        log.debug("Jumpers="+machine+" " +builder+" no="+number+" "+ctype);
+        log.debug("Jumpers=" + machine+" " +builder+" no="+number+" "+ctype);
         jumpCache.clear();
         return true;
     }
