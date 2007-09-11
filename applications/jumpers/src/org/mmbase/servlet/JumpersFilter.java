@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Tools, Jumpers
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.2 2007-08-10 14:41:14 andre Exp $
+ * @version $Id: JumpersFilter.java,v 1.3 2007-09-11 12:39:04 michiel Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -38,7 +38,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * @deprecated will be dropped in future versions
      */
     public void setFilterConfig(FilterConfig fc) {
-        log.info("Setting filter-config");        
+        log.info("Setting filter-config");
         throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
@@ -48,7 +48,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
      * @deprecated will be dropped in future versions
      */
     public FilterConfig getFilterConfig() {
-        log.info("Getting filter-config");        
+        log.info("Getting filter-config");
         throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
@@ -78,7 +78,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
     }
 
     /**
-     * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the 
+     * Filters the request: tries to find a jumper and redirects to this url when found, otherwise the
      * request will be handled somewhere else in the filterchain.
      * @param servletRequest The ServletRequest.
      * @param servletResponse The ServletResponse.
@@ -92,7 +92,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         if (jumpers == null) {
             if (mmbase != null) {
                 jumpers = (Jumpers)mmbase.getBuilder("jumpers");
-            } 
+            }
             if (jumpers == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return; // nothing to be done
@@ -122,7 +122,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
             log.debug("key is: " + key);
             log.debug("uri is: " + reqURI);
         }
-        
+
         //ignore keys with extensions
         if (key.indexOf('.') == -1 ) {
             // because Tomcat version > 5.0.5 always adds a trailing slash if
@@ -170,7 +170,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
                 return;
             }
         }
-        
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
