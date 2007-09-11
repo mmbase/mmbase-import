@@ -16,30 +16,27 @@ import org.mmbase.module.core.MMObjectNode;
  * UrlStrategy.
  * This will return the url-field when the type of the object is 'urls'.
  *
- * @see org.mmbase.module.builders.Urls#getDefaultUrl(int) 
+ * @see org.mmbase.module.builders.Urls#getDefaultUrl(int)
  *
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: UrlStrategy.java,v 1.1 2007-07-24 12:53:18 michiel Exp $
+ * @version $Id: UrlStrategy.java,v 1.2 2007-09-11 12:38:05 michiel Exp $
  */
-public class UrlStrategy extends JumperStrategy { 
+public class UrlStrategy extends JumperStrategy {
 
-    /** 
-     * {@inheritDoc} 
+    /**
+     * {@inheritDoc}
      */
     public boolean contains(MMObjectNode node) {
         if(node == null) {
             throw new IllegalArgumentException("node is null!");
         }
-        if(node.getBuilder().getTableName().equals("urls"))
-            return true;
-        else
-            return false;
+        return node.getBuilder().getTableName().equals("urls");
     }
 
-    /** 
-     * {@inheritDoc} 
+    /**
+     * {@inheritDoc}
      */
-    public String calculate(MMObjectNode node) { 
+    public String calculate(MMObjectNode node) {
         if(node == null) {
             throw new IllegalArgumentException("node is null!");
         }
