@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.184 2007-06-26 12:57:22 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.185 2007-09-11 09:22:39 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -73,7 +73,7 @@ public class DatabaseStorageManager implements StorageManager {
      * The cache that contains the last X types of all requested objects
      * @since 1.7
      */
-    private static Cache<Integer, Integer> typeCache;
+    protected static Cache<Integer, Integer> typeCache;
 
     static {
         typeCache = new Cache(OBJ2TYPE_MAX_SIZE) {
@@ -547,8 +547,8 @@ public class DatabaseStorageManager implements StorageManager {
             Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
             String query = scheme.format(this, builder, field, builder.getField("number"), node);
             getActiveConnection();
-            
-            PreparedStatement s = null; 
+
+            PreparedStatement s = null;
             ResultSet result = null;
             try {
                 s = activeConnection.prepareStatement(query);
@@ -1927,7 +1927,7 @@ public class DatabaseStorageManager implements StorageManager {
                     query = query.replaceAll("\\(\\s*\\)", "");
                 }
                 long startTime = getLogStartTime();
-                PreparedStatement s = null; 
+                PreparedStatement s = null;
                 try {
                     s = activeConnection.prepareStatement(query);
                     s.executeUpdate();
@@ -1947,7 +1947,7 @@ public class DatabaseStorageManager implements StorageManager {
                 query = query.replaceAll("\\(\\s*\\)", "");
             }
 
-            PreparedStatement s = null; 
+            PreparedStatement s = null;
             long startTime = getLogStartTime();
             try {
                 s = activeConnection.prepareStatement(query);
@@ -1975,10 +1975,10 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     protected void addToTableNameCache(String name) {
-        tableNameCache.add(name.toUpperCase());        
+        tableNameCache.add(name.toUpperCase());
     }
 
-    
+
     /**
      * Creates a field type definition, of the format '[fieldtype] NULL' or
      * '[fieldtype] NOT NULL' (depending on whether the field is nullable).
@@ -2946,7 +2946,7 @@ public class DatabaseStorageManager implements StorageManager {
         public void truncate(long len) {
             throw new UnsupportedOperationException("");
         }
-        
+
         public void free() {
             bytes = null;
             if (inputStream != null) {
