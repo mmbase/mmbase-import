@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.32.2.5 2007-09-11 08:48:07 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.32.2.6 2007-09-11 13:47:00 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -665,7 +665,6 @@ public class BasicSqlHandler implements SqlHandler {
                 if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                     // case insensitive and database needs it
                     appendLowerField(sb, step, fieldName, multipleSteps);
-                    sb.append(")");
                 } else {
                     // case sensitive or case irrelevant
                     appendField(sb, step, fieldName, multipleSteps);
