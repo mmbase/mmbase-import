@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.4 2007-09-11 14:24:55 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.5 2007-09-11 17:13:37 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -76,7 +76,7 @@ public class Jumpers extends MMObjectBuilder {
     private MMObjectBuilder jumpercachebuilder = null;
 
     // jumper calculators
-    private ChainedJumperStrategy strategy = new ChainedJumperStrategy();
+    private final ChainedJumperStrategy strategy = new ChainedJumperStrategy();
 
     /**
      * Initializes the builder. Determines the jumper cache size, and
@@ -520,7 +520,7 @@ public class Jumpers extends MMObjectBuilder {
      *
      * @see org.mmbase.module.core.MMObjectBuilder#notify(org.mmbase.core.event.NodeEvent)
      */
-    public void notify(NodeEvent event) {
+    public void notify(final NodeEvent event) {
         if(getTableName().equals(event.getBuilderName())){
             if (log.isDebugEnabled()) {
                 log.debug("Jumpers=" + event.getMachine() + " " + event.getBuilderName() + " no="
@@ -552,9 +552,10 @@ public class Jumpers extends MMObjectBuilder {
                 }
             }
         } else {
-            MMObjectNode node = getNode(event.getNodeNumber());
+            MMObjectNode node = Jumpers.this.getNode(event.getNodeNumber());
             if (node != null && strategy.contains(node)) {
-                delJumpCache("" + event.getNodeNumber(), event.isLocal());
+                Jumpers.this.delJumpCache("" + event.getNodeNumber(), event.isLocal());
+
             }
         }
         super.notify(event);
