@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.8.2.9 2007-06-12 11:01:02 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.10 2007-09-11 08:48:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -60,6 +60,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         super(disallowedValues);
         mmbase = MMBase.getMMBase();
     }
+
 
     /**
      * Dertermine if the given query will turn out to be a UNION query
@@ -683,7 +684,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     }
 
                     // Loop through the fields until we find a match
-                    boolean found = false;                    
+                    boolean found = false;
                     for (int i = 0; i < query.getFields().size(); i++) {
                         StepField sf = (StepField) query.getFields().get(i);
                         String field = sf.getStep().getAlias() + "." + sf.getFieldName();
@@ -795,5 +796,15 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
             }
             log.debug("Completed generation of query:" + sb.toString());
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
+        // case insensitive
+        sb.append("lowercaseNotInvariant(");
+        appendField(sb, step, fieldName, includeTablePrefix);
+        sb.append(')');
     }
 }
