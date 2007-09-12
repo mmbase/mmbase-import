@@ -6,9 +6,6 @@
 <title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
-  <script type="text/javascript">
-    var validator = new MMBaseValidator(window);
-  </script>
 
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
@@ -18,6 +15,12 @@
 <mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
 
 <mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
+
+  <script type="text/javascript">
+    var validator = new MMBaseValidator();
+    validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
+    validator.setup(window);
+  </script>
 
 <% 
    if (urlStack.size() == 0) {
