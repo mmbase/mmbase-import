@@ -1,5 +1,5 @@
 <mm:content
-    expires="3600"
+    expires="300"
     type="application/xml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" >
@@ -10,10 +10,10 @@
       @todo: This JSP must accept a 'language' attribute, and all restriction error message must be included.
              That way, also those can be used in javascript.
 
-      $Id: datatype.jspx,v 1.8 2007-08-10 14:28:13 michiel Exp $
+      $Id: datatype.jspx,v 1.9 2007-09-12 23:19:59 michiel Exp $
       author: Michiel Meeuwissen
   -->
-
+  <jsp:output omit-xml-declaration="true" />
   <jsp:directive.include file="get.datatype.jspxf" />
 
   <jsp:scriptlet>
