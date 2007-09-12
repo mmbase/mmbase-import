@@ -25,7 +25,7 @@
 		<type>multiple</type>
 	</node>
 	<node number="575" owner="default">
-		<title>Zoekresulataten</title>
+		<title>Zoekresultaten</title>
 		<definition>searchportlet</definition>
 		<type>multiple</type>
 	</node>
