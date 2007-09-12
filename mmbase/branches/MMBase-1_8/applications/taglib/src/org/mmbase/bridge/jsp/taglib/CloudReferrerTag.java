@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.29.2.2 2007-07-16 10:52:41 michiel Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.29.2.3 2007-09-12 17:02:56 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -133,13 +133,17 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
-        CloudProvider prov = findCloudProvider(false);
-        if (prov != null) {
-            Cloud cloud = prov.getCloudVar();
-            if (cloud != null) {
-                p.setIfDefined(Parameter.CLOUD, cloud);
-                p.setIfDefined(Parameter.USER, cloud.getUser());
-            }
+        Cloud cloud = null;
+        CloudProvider provider = findCloudProvider(false);
+        if (provider != null) {
+            cloud = provider.getCloudVar();
+        }
+        if (cloud  == null) {
+            cloud = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        }
+        if (cloud != null) {
+            p.setIfDefined(Parameter.CLOUD, cloud);
+            p.setIfDefined(Parameter.USER, cloud.getUser());
         }
     }
 
