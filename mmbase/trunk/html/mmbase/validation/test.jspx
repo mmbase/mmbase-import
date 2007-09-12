@@ -1,3 +1,4 @@
+
 <mm:content
     expires="600"
     language="client"
@@ -12,21 +13,23 @@
       <jsp:directive.include file="mmbase.jspxf" />
 
       <style>
-        .valid {
+        .valid *, .valid {
           background-color: #f0fff0;
         }
-        .invalid {
+        .invalid *, .invalid  {
           background-color: #fff0f0;
         }
       </style>
     </head>
     <body>
-
       <script type="text/javascript">
-        var validator = new MMBaseValidator(window);
+        var validator = new MMBaseValidator();
+        validator.logEnabled = false;
         validator.validateHook = function(valid) {
            document.getElementById('submit').disabled = ! valid;
         }
+        validator.prefetchNodeManager("object");
+        validator.setup(window);
       </script>
 
       <mm:import externid="field" />
@@ -55,7 +58,7 @@
             </mm:fieldlist>
           </mm:present>
           <mm:notpresent referid="field">
-            <mm:fieldinfo datatype="${datatype}" type="input" />
+            <mm:fieldinfo datatype="${datatype}" type="input" options="free"/>
             <mm:fieldinfo datatype="${datatype}" type="errors" />
           </mm:notpresent>
         </mm:cloud>

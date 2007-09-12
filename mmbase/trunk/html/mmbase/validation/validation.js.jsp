@@ -11,17 +11,17 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.32 2007-09-12 22:10:20 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.33 2007-09-12 23:19:59 michiel Exp $
  */
 function Key() {
     this.string = function() {
         return this.dataType + "," + this.field + "," + this.nodeManager;
     }
-
 }
+
 function MMBaseValidator(w, root) {
 
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     this.traceEnabled = false;
 
     this.dataTypeCache   = new Object();
@@ -316,6 +316,31 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     return dataType;
 }
 
+MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatypes.jspx" />?nodemanager=' + nodemanager, false);
+    xmlhttp.send(null);
+    var dataTypes = xmlhttp.responseXML;
+
+    var fields = dataTypes.documentElement.childNodes;
+    for (var i = 0; i < fields.length; i++) {
+        var key = new Key();
+        key.nodeManager = nodemanager;
+        key.field = fields[i].getAttribute("name");
+        var xml = Sarissa.getDomDocument();
+
+        try {
+            xml.setProperty("SelectionNamespaces", "xmlns:dt='http://www.mmbase.org/xmlns/datatypes'");
+            xml.setProperty("SelectionLanguage", "XPath");
+        } catch (ex) {
+            // happens in safari
+        }
+        xml.appendChild(fields[i].firstChild.cloneNode(true));
+
+        this.dataTypeCache[key.string()] = xml;
+    }
+
+}
 
 
 /**
