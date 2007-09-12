@@ -4,14 +4,19 @@
   <mm:param name="org.mmbase.xml-mode" value="$config.xmlmode" />
 <mm:write referid="style" escape="none" />
 <title>Create a node</title>
-  <script type="text/javascript">
-    var validator = new MMBaseValidator(window);
-  </script>
 </head>
 <mm:context id="create_node">
 <mm:import externid="node_type" required="true" />
 
+
 <body class="basic" onLoad="document.create.elements[3].focus();">
+
+  <script type="text/javascript">
+    var validator = new MMBaseValidator();
+    validator.prefetchNodeManager('${node_type}');
+    validator.setup(window);
+  </script>
+
 
 <form name="create" enctype="multipart/form-data" method="post" action='<mm:url referids="node_type" page="commit_node.jsp" />'>
 <input type="hidden" name="new" value="new" />
