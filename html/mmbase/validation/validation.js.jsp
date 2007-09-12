@@ -11,11 +11,11 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.31 2007-09-12 07:41:23 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.32 2007-09-12 22:10:20 michiel Exp $
  */
 function Key() {
     this.string = function() {
-	return this.dataType + "," + this.field + "," + this.nodeManager;
+        return this.dataType + "," + this.field + "," + this.nodeManager;
     }
 
 }
@@ -36,14 +36,14 @@ function MMBaseValidator(w, root) {
 
 MMBaseValidator.prototype.log = function (msg) {
     if (this.logEnabled) {
-	// firebug console"
-	console.log(msg);
+        // firebug console"
+        console.log(msg);
     }
 }
 
 MMBaseValidator.prototype.trace = function (msg) {
     if (this.traceEnabled && this.logEnabled) {
-	console.log(msg);
+        console.log(msg);
     }
 }
 
@@ -63,17 +63,32 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     if (! this.isRequired(el) && el.value.length == 0) return true;
     var xml = this.getDataTypeXml(el);
 
-    var minLength = xml.selectSingleNode('//dt:datatype/dt:minLength');
-    if (minLength != null && el.value.length < minLength.getAttribute("value")) {
-        return false;
+    if (el.mm_minLength_set == null) {
+        var ml =  xml.selectSingleNode('//dt:datatype/dt:minLength');
+        if (ml != null) el.mm_minLength = ml.getAttribute("value");
+        el.mm_minLength_set = true;
     }
-    var maxLength = xml.selectSingleNode('//dt:datatype/dt:maxLength');
-    if (maxLength != null && el.value.length > maxLength.getAttribute("value")) {
+    if (el.mm_minLength != null && el.value.length < el.mm_minLength) {
         return false;
     }
 
-    var length = xml.selectSingleNode('//dt:datatype/dt:length');
-    if (length != null && el.value.length != length.getAttribute("value")) {
+    if (el.mm_maxLength_set == null) {
+        var ml =  xml.selectSingleNode('//dt:datatype/dt:maxLength');
+        if (ml != null) el.mm_maxLength = ml.getAttribute("value");
+        el.mm_maxLength_set = true;
+    }
+
+    if (el.mm_maxLength != null && el.value.length > el.mm_maxLength) {
+        return false;
+    }
+
+    if (el.mm_length_set == null) {
+        var l =  xml.selectSingleNode('//dt:datatype/dt:length');
+        if (l != null) el.mm_length = l.getAttribute("value");
+        el.mm_length_set = true;
+    }
+
+    if (el.mm_length != null && el.value.length != el.mm_length) {
         return false;
     }
     return true;
@@ -107,11 +122,13 @@ MMBaseValidator.prototype.javaScriptPattern = function(javaPattern) {
 MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
-        var javaPattern = xml.selectSingleNode('//dt:datatype/dt:pattern').getAttribute("value");
-        var regex = this.javaScriptPattern(javaPattern);
-        if (regex == null) return true;
-        this.log("pattern : " + regex + " " + el.value);
-        return regex.test(el.value);
+        if (el.mm_pattern == null) {
+            var javaPattern = xml.selectSingleNode('//dt:datatype/dt:pattern').getAttribute("value");
+            el.mm_pattern = this.javaScriptPattern(javaPattern);
+            if (el.mm_pattern == null) return true;
+            this.log("pattern : " + el.mm_pattern + " " + el.value);
+        }
+        return el.mm_pattern.test(el.value);
     } else {
         return true;
     }
@@ -157,7 +174,7 @@ MMBaseValidator.prototype.isFloat = function(el) {
 }
 MMBaseValidator.prototype.isString = function(el) {
     if (el.mm_isstring != null) return el.mm_isstring;
-    el.mm_issstring =  this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
+    el.mm_isstring =  this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
     return el.mm_isstring;
 }
 
@@ -218,36 +235,48 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
         }
 
         {
-            var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
-            var compare = this.getValueAttribute(numeric, minInclusive);
-            if (compare != null && value <  compare) {
-                this.log("" + value + " < " + compare);
+            if (el.mm_minInc_set == null) {
+                var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
+                el.mm_minInc = this.getValueAttribute(numeric, minInclusive);
+                el.mm_minInc_set = true;
+            }
+            if (el.mm_minInc != null && value <  el.mm_minInc) {
+                this.log("" + value + " < " + el.mm_minInc);
                 return false;
             }
         }
 
         {
-            var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
-            var compare = this.getValueAttribute(numeric, minExclusive);
-            if (compare != null && value <=  compare) {
-                this.log("" + value + " <= " + compare);
+            if (el.mm_minExcl_set == null) {
+                var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
+                el.mm_minExcl = this.getValueAttribute(numeric, minExclusive);
+                el.mm_minExcl_set = true;
+            }
+            if (el.mm_minExcl != null && value <=  el.mm_minExcl) {
+                this.log("" + value + " <= " + el.mm_minInc);
                 return false;
             }
         }
         {
-            var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
-            var compare = this.getValueAttribute(numeric, maxInclusive);
-            if (compare != null && value >  compare) {
-                this.log("" + value + " > " + compare);
+            if (el.mm_maxInc_set == null) {
+                var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
+                el.mm_maxInc = this.getValueAttribute(numeric, maxInclusive);
+                el.mm_maxInc_set = true;
+            }
+            if (el.mm_maxInc != null && value >  el.mm_maxInc) {
+                this.log("" + value + " > " + el.mm_maxInc);
                 return false;
             }
         }
 
         {
-            var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
-            var compare = this.getValueAttribute(numeric, maxExclusive);
-            if (compare != null && value >=  compare) {
-                this.log("" + value + " >= " + compare);
+            if (el.mm_maxExcl_set == null) {
+                var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
+                el.mm_maxExcl = this.getValueAttribute(numeric, maxExclusive);
+                el.mm_maxExcl_set = true;
+            }
+            if (el.mm_maxExcl != null && value >=  el.mm_maxExcl) {
+                this.log("" + value + " >= " + el.mm_maxExcl);
                 return false;
             }
         }
@@ -265,12 +294,15 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
  * This will do a request to MMBase, unless this XML was cached already.
  */
 MMBaseValidator.prototype.getDataTypeXml = function(el) {
-    var key = this.getDataTypeKey(el);
-    var dataType = this.dataTypeCache[key.string()];
+    if (el.mm_key == null) {
+        el.mm_key = this.getDataTypeKey(el);
+        el.mm_keys = el.mm_key.string();
+    }
+    var dataType = this.dataTypeCache[el.mm_keys];
     if (dataType == null) {
 
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(key), false);
+        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(el.mm_key), false);
         xmlhttp.send(null);
         dataType = xmlhttp.responseXML;
         try {
@@ -279,10 +311,11 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
         } catch (ex) {
             // happens in safari
         }
-        this.dataTypeCache[key.string()] = dataType;
+        this.dataTypeCache[el.mm_keys] = dataType;
     }
     return dataType;
 }
+
 
 
 /**
@@ -396,16 +429,16 @@ MMBaseValidator.prototype.valid = function(el) {
     }
 
     if (this.isRequired(el)) {
-        if (el.value == "") return false;
+	if (el.value == "") {
+            return false;
+	}
     } else {
         if (el.value == "") return true;
     }
-
     if (! this.typeValid(el)) return false;
     if (! this.lengthValid(el)) return false;
     if (! this.minMaxValid(el)) return false;
     if (! this.patternValid(el)) return false; // not perfect yet
-
     // @todo of course we can go a bit further here.
 
     // datetime validation is still broken. (those can have more fields and so on)
