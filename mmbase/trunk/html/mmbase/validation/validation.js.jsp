@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.30 2007-09-12 07:14:05 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.31 2007-09-12 07:41:23 michiel Exp $
  */
 function Key() {
     this.string = function() {
@@ -51,7 +51,9 @@ MMBaseValidator.prototype.trace = function (msg) {
  * Whether the element is a 'required' form input
  */
 MMBaseValidator.prototype.isRequired = function(el) {
-    return "true" == "" + this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
+    if (el.mm_isrequired != null) return el.mm_isrequired;
+    el.mm_isrequired = "true" == "" + this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
+    return el.mm_isrequired;
 }
 
 /**
@@ -139,30 +141,44 @@ MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
  * double, integer and long. This means that we don't care about loss of precision only.
  */
 MMBaseValidator.prototype.isNumeric = function(el) {
-    return this.hasJavaClass(el, "org\.mmbase\.datatypes\.NumberDataType");
+    if (el.mm_isnumeric != null) return el.mm_isnumeric;
+    el.mm_isnumeric = this.hasJavaClass(el, "org\.mmbase\.datatypes\.NumberDataType");
+    return el.isnumeric;
 }
 MMBaseValidator.prototype.isInteger = function(el) {
-    return this.hasJavaClass(el, "(org\.mmbase\.datatypes\.IntegerDataType|org\.mmbase\.datatypes\.LongDataType)");
+    if (el.mm_isinteger != null) return el.mm_isinteger;
+    el.mm_isinteger = this.hasJavaClass(el, "(org\.mmbase\.datatypes\.IntegerDataType|org\.mmbase\.datatypes\.LongDataType)");
+    return el.mm_isinteger;
 }
 MMBaseValidator.prototype.isFloat = function(el) {
-    return this.hasJavaClass(el, "(org\.mmbase\.datatypes\.FloatDataType|org\.mmbase\.datatypes\.DoubleDataType)");
+    if (el.mm_isfloat != null) return el.mm_isfloat;
+    el.mm_isfloat = this.hasJavaClass(el, "(org\.mmbase\.datatypes\.FloatDataType|org\.mmbase\.datatypes\.DoubleDataType)");
+    return el.mm_isfloat;
 }
 MMBaseValidator.prototype.isString = function(el) {
-    return this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
+    if (el.mm_isstring != null) return el.mm_isstring;
+    el.mm_issstring =  this.hasJavaClass(el, "org\.mmbase\.datatypes\.StringDataType");
+    return el.mm_isstring;
 }
 
 MMBaseValidator.prototype.isDateTime = function(el) {
-    return this.hasJavaClass(el, "org\.mmbase\.datatypes\.DateTimeDataType");
+    if (el.mm_isdatetime != null) return el.mm_isdatetime;
+    el.mm_isdatetime = this.hasJavaClass(el, "org\.mmbase\.datatypes\.DateTimeDataType");
+    return el.mm_isdatetime;
 }
+
+MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
+
+MMBaseValidator.prototype.FLOAT   = /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/i;
 
 MMBaseValidator.prototype.typeValid = function(el) {
     if (el.value == "") return true;
 
     if (this.isInteger(el)) {
-        if (! /^[+-]?\d+$/.test(el.value)) return false;
+        if (! this.INTEGER.test(el.value)) return false;
     }
     if (this.isFloat(el)) {
-        if (! /^[+-]?(\d+|\d+\.\d*|\d*\.\d+)(e[+-]?\d+|)$/i.test(el.value)) return false;
+        if (! this.FLOAT.test(el.value)) return false;
     }
     return true;
 
