@@ -1,23 +1,18 @@
 // -*- mode: javascript; -*-
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:content type="text/javascript"
-      expires="3600">
-
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
+<mm:content type="text/javascript" expires="3600">
 /**
  * See test.jspx for example usage.
 
  * new MMBaseValidator(window, root): attaches events to all elements in root when loading window.
  * new MMBaseValidator(window): attaches events to all elements in window when loading window.
- * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
+ * new MMBaseValidator():       attaches no events yet. You could replace some functions, add hooks, set settings first or so.
+ *                              then call validator.setup(window).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.34 2007-09-13 00:36:51 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.35 2007-09-13 06:57:33 michiel Exp $
  */
-function Key() {
-    this.string = function() {
-        return this.dataType + "," + this.field + "," + this.nodeManager;
-    }
-}
+
 
 function MMBaseValidator(w, root) {
 
@@ -31,8 +26,26 @@ function MMBaseValidator(w, root) {
 
     this.setup(w);
     this.root = root;
-
+    this.lang;
 }
+
+MMBaseValidator.prototype.setup = function(w) {
+    if (w != null) {
+        addEventHandler(w, "load", this.onLoad, this);
+    }
+}
+
+
+MMBaseValidator.prototype.onLoad = function(event) {
+    if (this.root == null) {
+        this.root = event.target || event.srcElement;
+    }
+    this.addValidation(this.root);
+    //validatePage(target);
+}
+
+
+
 
 MMBaseValidator.prototype.log = function (msg) {
     if (this.logEnabled) {
@@ -316,14 +329,56 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     return dataType;
 }
 
+
+function Key() {
+    this.node = null;
+    this.nodeManager = null;
+    this.field = null;
+    this.datatype = null;
+}
+Key.prototype.string = function() {
+    return this.dataType + "," + this.field + "," + this.nodeManager;
+}
+
 /**
- * Fetches all fields of a certain nodemanager at once (with one http request), and fills the fache
+ * Given an element, returns the associated MMBase DataType as a structutre. This structure has three fields:
+ * field, nodeManager and dataType. Either dataType is null or field and nodeManager are null. They
+ * are all null if the given element does not contain the necessary information to identify an
+ * MMBase DataType.
+ */
+MMBaseValidator.prototype.getDataTypeKey = function(el) {
+    if (el == null) console.log("Calling with null??");
+    if (el.mm_dataTypeStructure == null) {
+        var classNames = el.className.split(" ");
+        var result = new Key();
+        for (var i = 0; i < classNames.length; i++) {
+            var className = classNames[i];
+            if (className.indexOf("mm_dt_") == 0) {
+                result.dataType = className.substring(6);
+            } else if (className.indexOf("mm_f_") == 0) {
+                result.field = className.substring(5);
+            } else if (className.indexOf("mm_nm_") == 0) {
+                result.nodeManager = className.substring(6);
+            } else if (className.indexOf("mm_n_") == 0) {
+                result.node = className.substring(5);
+            }
+
+        }
+        this.log("got " + result);
+        el.mm_dataTypeStructure = result;
+    }
+    return el.mm_dataTypeStructure;
+}
+
+
+/**
+ * Fetches all fields of a certain nodemanager at once (with one http request), and fills the cache
  * of 'getDataTypeXml'. The intention is that you call this method if you're sure that all (or a lot
  * of) the fields of a certain nodemanager will be on the page.  Otherwise a new http request will
  * be done for every field.
  *
  */
-MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
+  MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatypes.jspx" />?nodemanager=' + nodemanager, false);
     xmlhttp.send(null);
@@ -364,37 +419,6 @@ MMBaseValidator.prototype.getDataTypeArguments = function(key) {
     }
 }
 
-/**
- * Given an element, returns the associated MMBase DataType as a structutre. This structure has three fields:
- * field, nodeManager and dataType. Either dataType is null or field and nodeManager are null. They
- * are all null if the given element does not contain the necessary information to identify an
- * MMBase DataType.
- */
-MMBaseValidator.prototype.getDataTypeKey = function(el) {
-    if (el.mm_dataTypeStructure == null) {
-        this.log("getting datatype for " + el.className);
-        var classNames = el.className.split(" ");
-        var result = new Key();
-        for (i = 0; i < classNames.length; i++) {
-            var className = classNames[i];
-            if (className.indexOf("mm_dt_") == 0) {
-                result.dataType = className.substring(6);
-                break;
-            } else if (className.indexOf("mm_f_") == 0) {
-                result.field = className.substring(5);
-            } else if (className.indexOf("mm_nm_") == 0) {
-                result.nodeManager = className.substring(6);
-            }
-            if (result.field != null && result.nodeManager != null) {
-                break;
-            }
-
-        }
-        this.log("got " + result);
-        el.mm_dataTypeStructure = result;
-    }
-    return el.mm_dataTypeStructure;
-}
 
 /**
  * If it was determined that a certain form element was or was not valid, this function
@@ -486,13 +510,14 @@ MMBaseValidator.prototype.valid = function(el) {
 /**
  * Determins whether a form element contains a valid value, according to the server.
  * Returns an XML containing the reasons why it would not be valid.
+ * @todo make asynchronous.
  */
 MMBaseValidator.prototype.serverValidation = function(el) {
     try {
         var key = this.getDataTypeKey(el);
         var xmlhttp = new XMLHttpRequest();
         var value = this.getDateValue(el);
-        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(key) + "&value=" + value, false);
+        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(key) + (this.lang != null ? "&lang=" + this.lang : "") + "&value=" + value + (key.node != null ? ("&node=" + key.node) : ""), false);
         xmlhttp.send(null);
         return xmlhttp.responseXML;
     } catch (ex) {
@@ -528,32 +553,34 @@ MMBaseValidator.prototype.validate = function(event, server) {
     this.log("event" + event + " on " + this.target(event));
     var target = this.target(event);
     if (this.hasClass(target, "mm_validate")) {
-	this.validateElement(target, server);
+        this.validateElement(target, server);
     } else if (this.hasClass(target.parentNode, "mm_validate")) {
-	this.validateElement(target.parentNodem, server);
+        this.validateElement(target.parentNode, server);
     }
 }
 
 MMBaseValidator.prototype.serverValidate = function(event) {
-    return this.validate(event, true);
+    this.validate(event, true);
 }
 
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
-    this.log("Validating" + element);
+    this.log("Validating " + element);
     if (server) {
         var serverXml = this.serverValidation(element);
         valid = this.validResult(serverXml);
         if (element.id) {
-            var errors = document.getElementById("mm_check_" + element.id.substring(3));
-            if (errors) {
-		Sarissa.clearChildNodes(errors);
-		for (var  i = 0; i < serverXml.documentElement.childNodes.length; i++) {
-		    var span = document.createElement("span");
-		    span.textContent = serverXml.childNodes[i].textContent;
-		    errors.appendChild(span);
-		}
+            var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
+            errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
+            if (errorDiv) {
+                Sarissa.clearChildNodes(errorDiv);
+                var errors = serverXml.documentElement.childNodes;
+                for (var  i = 0; i < errors.length; i++) {
+                    var span = document.createElement("span");
+                    span.textContent = errors[i].textContent;
+                    errorDiv.appendChild(span);
+                }
             }
         }
     } else {
@@ -639,22 +666,6 @@ MMBaseValidator.prototype.addValidation = function(el) {
     }
     el = null;
 }
-MMBaseValidator.prototype.onLoad = function(event) {
-    if (this.root == null) {
-        this.root = event.target || event.srcElement;
-    }
-
-    this.addValidation(this.root);
-    //validatePage(target);
-}
-
-
-MMBaseValidator.prototype.setup = function(w) {
-    if (w != null) {
-        addEventHandler(w, "load", this.onLoad, this);
-    }
-}
-
 
 
 </mm:content>
