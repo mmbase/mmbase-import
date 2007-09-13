@@ -41,6 +41,17 @@ input {
 .mm_check_error { 
   background-color: yellow;
 }
+.mm_check_error span {
+  display: none; /* show only first child */
+  border-left: solid #aaa 3px;
+  padding-left: 1ex;
+  margin-right: 1ex;
+}
+.mm_check_error span:first-child {
+  display: inline;
+  border-left: none;
+  padding-left: 0ex;
+}
 
 /* footers */
 

@@ -19,6 +19,11 @@
   <script type="text/javascript">
     var validator = new MMBaseValidator();
     validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
+    validator.validateHook = function(valid) {
+       document.getElementById('okbutton').disabled = ! valid;
+       document.getElementById('savebutton').disabled = ! valid;
+    }
+    validator.lang = '${config.lang}';
     validator.setup(window);
   </script>
 
@@ -88,8 +93,8 @@
 <tr>
 <td colspan="3" class="buttons">
 <p>
-<input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
-<input class="submit"   type ="submit" name="save" value="save" />
+<input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"  id="savebutton" type ="submit" name="save" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
