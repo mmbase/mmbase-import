@@ -11,7 +11,7 @@
  * new MMBaseValidator():       attaches no events yet. You could replace some function first or so.
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.33 2007-09-12 23:19:59 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.34 2007-09-13 00:36:51 michiel Exp $
  */
 function Key() {
     this.string = function() {
@@ -294,15 +294,15 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
  * This will do a request to MMBase, unless this XML was cached already.
  */
 MMBaseValidator.prototype.getDataTypeXml = function(el) {
+    var key = this.getDataTypeKey(el);
     if (el.mm_key == null) {
-        el.mm_key = this.getDataTypeKey(el);
-        el.mm_keys = el.mm_key.string();
+        el.mm_key = key.string();
     }
-    var dataType = this.dataTypeCache[el.mm_keys];
+    var dataType = this.dataTypeCache[el.mm_key];
     if (dataType == null) {
 
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(el.mm_key), false);
+        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(key), false);
         xmlhttp.send(null);
         dataType = xmlhttp.responseXML;
         try {
@@ -311,11 +311,18 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
         } catch (ex) {
             // happens in safari
         }
-        this.dataTypeCache[el.mm_keys] = dataType;
+        this.dataTypeCache[el.mm_key] = dataType;
     }
     return dataType;
 }
 
+/**
+ * Fetches all fields of a certain nodemanager at once (with one http request), and fills the fache
+ * of 'getDataTypeXml'. The intention is that you call this method if you're sure that all (or a lot
+ * of) the fields of a certain nodemanager will be on the page.  Otherwise a new http request will
+ * be done for every field.
+ *
+ */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatypes.jspx" />?nodemanager=' + nodemanager, false);
@@ -360,11 +367,11 @@ MMBaseValidator.prototype.getDataTypeArguments = function(key) {
 /**
  * Given an element, returns the associated MMBase DataType as a structutre. This structure has three fields:
  * field, nodeManager and dataType. Either dataType is null or field and nodeManager are null. They
- * are all null of the given element does not contain the necessary information to identify an
+ * are all null if the given element does not contain the necessary information to identify an
  * MMBase DataType.
  */
 MMBaseValidator.prototype.getDataTypeKey = function(el) {
-    if (el.dataTypeStructure == null) {
+    if (el.mm_dataTypeStructure == null) {
         this.log("getting datatype for " + el.className);
         var classNames = el.className.split(" ");
         var result = new Key();
@@ -384,9 +391,9 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
 
         }
         this.log("got " + result);
-        el.dataTypeStructure = result;
+        el.mm_dataTypeStructure = result;
     }
-    return el.dataTypeStructure;
+    return el.mm_dataTypeStructure;
 }
 
 /**
@@ -435,7 +442,7 @@ MMBaseValidator.prototype.getDateValue = function(el) {
         this.log("date " + date);
         return date.getTime() / 1000;
     } else {
-        return e.value;
+        return el.value;
     }
 
 }
@@ -454,9 +461,9 @@ MMBaseValidator.prototype.valid = function(el) {
     }
 
     if (this.isRequired(el)) {
-	if (el.value == "") {
+        if (el.value == "") {
             return false;
-	}
+        }
     } else {
         if (el.value == "") return true;
     }
@@ -517,21 +524,38 @@ MMBaseValidator.prototype.target = function(event) {
  * A 'validateHook' is called in this function, which you may want to set, in stead of
  * overriding this function.
  */
-MMBaseValidator.prototype.validate = function(event) {
+MMBaseValidator.prototype.validate = function(event, server) {
     this.log("event" + event + " on " + this.target(event));
     var target = this.target(event);
     if (this.hasClass(target, "mm_validate")) {
-        this.validateElement(target);
+	this.validateElement(target, server);
     } else if (this.hasClass(target.parentNode, "mm_validate")) {
-        this.validateElement(target.parentNode);
+	this.validateElement(target.parentNodem, server);
     }
 }
+
+MMBaseValidator.prototype.serverValidate = function(event) {
+    return this.validate(event, true);
+}
+
 
 MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
     this.log("Validating" + element);
     if (server) {
-        valid = this.validResult(this.serverValidation(element));
+        var serverXml = this.serverValidation(element);
+        valid = this.validResult(serverXml);
+        if (element.id) {
+            var errors = document.getElementById("mm_check_" + element.id.substring(3));
+            if (errors) {
+		Sarissa.clearChildNodes(errors);
+		for (var  i = 0; i < serverXml.documentElement.childNodes.length; i++) {
+		    var span = document.createElement("span");
+		    span.textContent = serverXml.childNodes[i].textContent;
+		    errors.appendChild(span);
+		}
+            }
+        }
     } else {
         valid = this.valid(element);
     }
@@ -582,7 +606,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "textarea":
             addEventHandler(entry, "keyup", this.validate, this);
             addEventHandler(entry, "change", this.validate, this);
-            addEventHandler(entry, "blur", this.validate, this);
+            addEventHandler(entry, "blur", this.serverValidate, this);
             // IE calls this when the user does a right-click paste
             addEventHandler(entry, "paste", this.validate, this);
             // FireFox calls this when the user does a right-click paste
@@ -591,14 +615,14 @@ MMBaseValidator.prototype.addValidation = function(el) {
         case "radio":
         case "checkbox":
             addEventHandler(entry, "click", this.validate, this);
-            addEventHandler(entry, "blur", this.validate, this);
+            addEventHandler(entry, "blur", this.serverValidate, this);
             break;
         case "select-one":
         case "select-multiple":
         default:
             this.log("Adding eventhandler to " + entry);
             addEventHandler(entry, "change", this.validate, this);
-            addEventHandler(entry, "blur", this.validate, this);
+            addEventHandler(entry, "blur", this.serverValidate, this);
         }
 
         var valid = this.valid(entry);
