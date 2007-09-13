@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.48 2007-07-07 13:32:06 michiel Exp $
+ * @version $Id: Utils.java,v 1.49 2007-09-13 12:45:12 nklasens Exp $
  */
 
 public class Utils {
@@ -313,9 +313,9 @@ public class Utils {
             if (xs.equals("")) {
                 XPath xp = xf.newXPath();
                 xs = xp.evaluate(xpath, node);
-            }
-            if (xs.equals("")) {
-                xs =  defaultvalue;
+                if (xs.equals("")) {
+                    xs =  defaultvalue;
+                }
             }
             return xs;
 
