@@ -66,6 +66,14 @@ See http://www.MMBase.org/license
                 </includes>
                 <filtering>false</filtering>
             </resource>
+      <resource>
+        <directory>${basedir}/META-INF</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
         </resources>
     </build>
 </project>
