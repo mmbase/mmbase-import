@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.pluto.core.impl.PortletRequestImpl;
 
+import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.aggregation.Fragment;
@@ -40,7 +41,17 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
 		HttpServletRequest servletRequest = getServletRequest(req);
 		PortalRegistry pr =PortalRegistry.getPortalRegistry(servletRequest);
 		Fragment fragment = pr.getScreen().getFragment(window);
-		return ((PortletFragment)fragment).getPortlet().getParameterValue("contentelement");
+		if(fragment == null) {
+			return null;
+		}
+		Portlet portlet = ((PortletFragment)fragment).getPortlet();
+		if(portlet == null) {
+			return null;
+		}
+		return portlet.getParameterValue("contentelement");
+		
+//		Fragment fragment = pr.getScreen().getFragment(window);
+//		return ((PortletFragment)fragment).getPortlet().getParameterValue("contentelement");
 	}
 
 	private HttpServletRequest getServletRequest(RenderRequest req) {
