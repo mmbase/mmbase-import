@@ -1,7 +1,6 @@
-
 <mm:content
     expires="600"
-    language="client"
+    language="${empty param.lang ? client : param.lang}"
     unacceptable="CRIPPLE"
     type="application/xhtml+xml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -28,7 +27,8 @@
         validator.validateHook = function(valid) {
            document.getElementById('submit').disabled = ! valid;
         }
-        validator.prefetchNodeManager("object");
+        validator.lang = '${param.lang}';
+        validator.prefetchNodeManager("object"); // not actually used on this page, just an example
         validator.setup(window);
       </script>
 
@@ -69,6 +69,19 @@
         -->
         <input type="submit" id="submit" />
       </form>
+      <hr />
+      <mm:import  id="langs" vartype="list">en,fr,nl</mm:import>
+      <mm:stringlist id="l" referid="langs">
+        <mm:link referids="datatype?,field?,nodemanager?,_@lang">
+          <a href="${_}">[${l}]</a>
+        </mm:link>
+        <mm:last inverse="true">, </mm:last>
+      </mm:stringlist>
+      <span style="margin-left: 5ex;">
+        <mm:link page="../edit/basic/">
+          <a href="${_}">Also basic editors use MMBaseValidator</a>
+        </mm:link>
+      </span>
       <hr />
       <mm:link page=".">
         <a href="${_}" class="navigate">
