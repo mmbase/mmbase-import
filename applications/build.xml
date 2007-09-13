@@ -33,7 +33,7 @@ Applications build file
 
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,richtext,oscache-cache" />
+  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,oscache-cache,largeobjects" />
 
   <target name="all"   depends="init,all18" />
 
@@ -192,6 +192,14 @@ Applications build file
      </ant>
   </target>
 
+  <target name="largeobjects" depends="mmbase">
+     <ant dir="largeobjects"  target="dependent.package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+	
   <target name="install">
     <ant dir="taglib"        target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -247,6 +255,10 @@ Applications build file
     <ant dir="richtext"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
+
+    <ant dir="largeobjects"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
   </target>
 
   <target name="clean">
@@ -267,7 +279,8 @@ Applications build file
      <ant dir="clustering"      target="clean" inheritAll="false" />
      <ant dir="richtext"      target="clean" inheritAll="false" />
      <ant dir="oscache-cache"      target="clean" inheritAll="false" />
-
+     <ant dir="largeobjects"      target="clean" inheritAll="false" />
+  	
      <delete dir="${applications.build.dir}" />
   </target>
 

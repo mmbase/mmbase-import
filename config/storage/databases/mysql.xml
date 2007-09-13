@@ -33,7 +33,26 @@
     <scheme name="create-index-scheme" >ALTER TABLE {1} ADD INDEX {3} ({2})</scheme>
     <scheme name="delete-index-scheme" >ALTER TABLE {1} DROP INDEX {2}</scheme>
 
+    <!--
+        MM: would it be a good idea to add this?
+
+    <scheme name="create-table-scheme">CREATE TABLE {1} ({2} {3} {5}) character set utf8</scheme>
+    <scheme name="create-object-table-scheme">CREATE TABLE {1} ({2} {3} {5}) character set utf8</scheme>
+    -->
   </attributes>
+
+  <!-- List of MMBase objects where the binary data should not be stored in the database but as a 
+  file. This option is only available if by default the database support BLOBs and the default
+  configuration stores binary data in the database. 
+  Of the objects listed here, the binary data is stored as file rather than as BLOB in the database.
+  The name used here is the name of the table in which the objects of this type are stored. For example
+  'images' or 'icaches'.
+  -->
+  <!--
+  <store-binary-as-file-objects>
+      <store-binary-as-file-object name="icaches" />
+  </store-binary-as-file-objects>
+  -->
 
   <!-- MySQL type mappings    -->
   <type-mappings>
