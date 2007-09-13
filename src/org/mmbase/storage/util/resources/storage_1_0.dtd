@@ -5,7 +5,7 @@
 <!--
         The main tag. You can specify a name and version for administration purposes.
 -->
-<!ELEMENT storage (storagemanagerfactory?,storagemanager?,searchqueryhandler*,attributes?,type-mappings?,disallowed-fields?)>
+<!ELEMENT storage (storagemanagerfactory?,storagemanager?,searchqueryhandler*,attributes?,store-binary-as-file-objects?,type-mappings?,disallowed-fields?)>
 <!ATTLIST storage name CDATA #IMPLIED>
 <!ATTLIST storage version CDATA #IMPLIED>
 
@@ -61,6 +61,17 @@
 <!ELEMENT scheme (#PCDATA)>
 <!ATTLIST scheme name CDATA #REQUIRED>
 
+<!--
+    Contains a list of objects of which binary data should not be stored in the database as BLOBs
+-->
+<!ELEMENT store-binary-as-file-objects (store-binary-as-file-object*)>
+
+<!-- 
+    Describe a object name of objects of which binary data should not be stored in the database. 
+    The element contains one attribute, namely the name of the object.
+-->
+<!ELEMENT store-binary-as-file-object EMPTY>
+<!ATTLIST store-binary-as-file-object name CDATA #REQUIRED>
 
 <!--
         Contains the type mappings for MMBase
