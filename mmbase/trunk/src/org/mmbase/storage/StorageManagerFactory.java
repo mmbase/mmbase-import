@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.30 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.31 2007-09-13 12:39:33 nklasens Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -59,6 +59,11 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      * The list with type mappings
      */
     protected List<TypeMapping> typeMappings;
+
+    /**
+     * The list with objects of which binary data should not be stored in database
+     */
+    protected List storeBinaryAsFileObjects;
 
     /**
      * The ChangeManager object, used to register/broadcast changes to a node or set of nodes.
@@ -154,6 +159,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         this.mmbase = mmbase;
         attributes    = Collections.synchronizedMap(new HashMap<String, Object>()); // ConcurrentHashMap not possible because null-values are put (TODO)
         typeMappings  = Collections.synchronizedList(new ArrayList<TypeMapping>()); // CopyOnWriteArrayList not possible because Collections.sort is done (TODO)
+        storeBinaryAsFileObjects = Collections.synchronizedList(new ArrayList()
         changeManager = new ChangeManager();
         try {
             log.debug("loading Storage Manager factory " + this.getClass().getName());
@@ -237,6 +243,8 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         // get attributes
         setAttributes(reader.getAttributes());
 
+        log.service("get objects with binary data that should not be stored in database");
+        storeBinaryAsFileObjects.addAll(reader.getStoreBinaryAsFileObjects());
 
         // get disallowed fields, and add these to the default list
         disallowedFields.putAll(reader.getDisallowedFields());
@@ -471,6 +479,14 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         return Collections.unmodifiableList(typeMappings);
     }
 
+    /**
+     * Returns a list of objects of which binary data should be stored in a file.
+     * @return the list of objects of which BLOB fields should not be stored in database. 
+     */
+    public List getStoreBinaryAsFileObjects() {
+    	return Collections.unmodifiableList(storeBinaryAsFileObjects);
+    }
+    
     /**
      * Returns a map of disallowed field names and their possible alternate values.
      * @return  A Map of disallowed field names
