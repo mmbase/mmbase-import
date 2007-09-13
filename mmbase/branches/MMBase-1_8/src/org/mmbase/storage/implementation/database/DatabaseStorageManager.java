@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.5 2007-09-11 09:22:00 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.6 2007-09-13 12:39:52 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -595,7 +595,7 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     public Blob getBlobValue(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
-        if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+        if (checkStoreFieldAsFile(node.getBuilder())) {
             return getBlobFromFile(node, field, mayShorten);
         } else {
             return getBlobFromDatabase(node, field, mayShorten);
@@ -730,6 +730,20 @@ public class DatabaseStorageManager implements StorageManager {
 
     }
 
+    /**
+     * Check if binary data of this field should be stored in the database.
+     * @param builder builder of this field
+     * @return true if binary field should be stored as file, otherwise false.
+     */
+    private boolean checkStoreFieldAsFile(MMObjectBuilder builder) {
+    	if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+    		return true;
+    	} else if (factory.getStoreBinaryAsFileObjects().contains(builder.getTableName())) {
+    		return true;
+    	}
+    	return false;
+    }
+    
     /**
      * Store a binary (blob) data file
      * @todo how to do this in a transaction???
@@ -885,7 +899,7 @@ public class DatabaseStorageManager implements StorageManager {
         for (Iterator f = createFields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             // skip bytevalues that are written to file
-            if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
+            if (checkStoreFieldAsFile(field.getParent()) && (field.getType() == Field.TYPE_BINARY)) {
                 storeBinaryAsFile(node, field);
                 // do not handle this field further
             } else {
@@ -1063,7 +1077,7 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException("trying to change the '" + field.getName() + "' field of " + node + ". Changed fields " + node.getChanged());
             }
             // skip bytevalues that are written to file
-            if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
+            if (checkStoreFieldAsFile(field.getParent()) && (field.getType() == Field.TYPE_BINARY)) {
                 storeBinaryAsFile(node, field);
             } else {
                 // handle this field - store it in fields
@@ -1514,7 +1528,7 @@ public class DatabaseStorageManager implements StorageManager {
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             CoreField field = (CoreField)f.next();
             if (field.inStorage()) {
-                if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
+                if (checkStoreFieldAsFile(builder) && (field.getType() == Field.TYPE_BINARY)) {
                     blobFileField.add(field);
                 }
             }
@@ -1573,7 +1587,7 @@ public class DatabaseStorageManager implements StorageManager {
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
                 if (field.inStorage()) {
-                    if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
+                    if (checkStoreFieldAsFile(builder) && (field.getType() == Field.TYPE_BINARY)) {
                         continue;
                     }
                     if (field.getType() == Field.TYPE_BINARY) {
@@ -1624,7 +1638,7 @@ public class DatabaseStorageManager implements StorageManager {
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 CoreField field = (CoreField)f.next();
                 if (field.inStorage()) {
-                    if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getType() == Field.TYPE_BINARY)) {
+                    if (checkStoreFieldAsFile(field.getParent()) && (field.getType() == Field.TYPE_BINARY)) {
                         continue;
                     }
                     // store the fieldname and the value parameter
@@ -1675,7 +1689,7 @@ public class DatabaseStorageManager implements StorageManager {
                     CoreField field = (CoreField)i.next();
                     if (field.inStorage()) {
                         Object value;
-                        if (field.getType() == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+                        if (field.getType() == Field.TYPE_BINARY && checkStoreFieldAsFile(builder)) {
                             value =  getBlobFromFile(node, field, true);
                             if (value == BLOB_SHORTED) value = MMObjectNode.VALUE_SHORTED;
                         } else if (field.getType() == Field.TYPE_BINARY) {
@@ -1816,7 +1830,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected boolean isPartOfBuilderDefinition(CoreField field) {
         // persistent field?
         // skip binary fields when values are written to file
-        boolean isPart = field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE));
+        boolean isPart = field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()));
         // also, if the database is OO, and the builder has a parent,
         // skip fields that are in the parent builder
         MMObjectBuilder parentBuilder = field.getParent().getParentBuilder();
@@ -2364,7 +2378,7 @@ public class DatabaseStorageManager implements StorageManager {
             List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
             for (Iterator i = builderFields.iterator(); i.hasNext();) {
                 CoreField field = (CoreField)i.next();
-                if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+                if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
                     field.rewrite();
                     pos++;
                     Object id = field.getStorageIdentifier();
@@ -2625,7 +2639,7 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException("Can not use data definiton statements (create new field) on row types.");
         }
         log.debug("Creating new field " + field);
-        if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+        if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
             Scheme scheme = factory.getScheme(Schemes.CREATE_FIELD, Schemes.CREATE_FIELD_DEFAULT);
             if (scheme == null) {
                 throw new StorageException("Storage layer does not support the dynamic creation of fields");
@@ -2671,7 +2685,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE) != null) {
             throw new StorageException("Can not use data definiton statements (change field) on row types.");
         }
-        if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+        if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
             Scheme scheme = factory.getScheme(Schemes.CHANGE_FIELD, Schemes.CHANGE_FIELD_DEFAULT);
             if (scheme == null) {
                 throw new StorageException("Storage layer does not support the dynamic changing of fields");
@@ -2717,7 +2731,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (factory.getScheme(Schemes.CREATE_OBJECT_ROW_TYPE) != null) {
             throw new StorageException("Can not use data definiton statements (delete field) on row types.");
         }
-        if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE))) {
+        if (field.inStorage() && (field.getType() != Field.TYPE_BINARY || !checkStoreFieldAsFile(field.getParent()))) {
             Scheme scheme = factory.getScheme(Schemes.DELETE_FIELD, Schemes.DELETE_FIELD_DEFAULT);
             if (scheme == null) {
                 throw new StorageException("Storage layer does not support the dynamic deleting of fields");
