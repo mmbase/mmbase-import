@@ -14,6 +14,10 @@
   <script type="text/javascript">
     var validator = new MMBaseValidator();
     validator.prefetchNodeManager('${node_type}');
+    validator.validateHook = function(valid) {
+       document.getElementById('okbutton').disabled = ! valid;
+    }
+    validator.lang = '${config.lang}';
     validator.setup(window);
   </script>
 
@@ -49,7 +53,7 @@
         </tr>
  <tr>
 <td colspan="2" class="buttons">
-<input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 </td>
 </tr>
