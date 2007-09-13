@@ -41,6 +41,19 @@
     -->
   </attributes>
 
+  <!-- List of MMBase objects where the binary data should not be stored in the database but as a 
+  file. This option is only available if by default the database support BLOBs and the default
+  configuration stores binary data in the database. 
+  Of the objects listed here, the binary data is stored as file rather than as BLOB in the database.
+  The name used here is the name of the table in which the objects of this type are stored. For example
+  'images' or 'icaches'.
+  -->
+  <!--
+  <store-binary-as-file-objects>
+      <store-binary-as-file-object name="icaches" />
+  </store-binary-as-file-objects>
+  -->
+
   <!-- MySQL type mappings    -->
   <type-mappings>
     <type-mapping name="DOUBLE" type="double" />
