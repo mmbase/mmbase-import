@@ -58,19 +58,19 @@
 .mm_c_x #searchresult tbody tr.selected.odd:hover {
   background-color: #e0f0e0;
 }
-#searchresult tbody tr.selected.even:hover {
+.mm_c_x #searchresult tbody tr.selected.even:hover {
   background-color: #d8e8d8;
 }
 
-#searchresult tbody tr.selected.odd.readonly:hover { 
+.mm_c_x #searchresult tbody tr.selected.odd.readonly:hover { 
   background-color: #f0e0e0;
 }
-#searchresult tbody tr.selected.even.readonly:hover { 
+.mm_c_x #searchresult tbody tr.selected.even.readonly:hover { 
   background-color: #e8d8d8;
 }
 
 
-#searchresult tfoot { 
+.mm_c_x #searchresult tfoot { 
   display: block;
   position: fixed;
   bottom: 0px;
@@ -81,14 +81,14 @@
   background-color: #ddd;
 }
 
-#searchresult { 
+.mm_c_x #searchresult { 
   margin-bottom: 50px;
 }
-.mm_check_error {
+.mm_c_x .mm_check_error {
   background-color: #f0e0e0;
 }
 
-input.small, input.big, textarea { 
+.mm_c_x input.small, .mm_c_x input.big, .mm_c_x textarea { 
   width: 100%;
 }
 .mm_c_x h1 {
@@ -103,63 +103,71 @@ input.small, input.big, textarea {
   padding: 0px 0px 0px 0px;  
   overflow: hidden;
 }
-h1 img { 
+.mm_c_x h1 img { 
   vertical-align: top;
 }
-h1 a { 
+.mm_c_x h1 a { 
 }
 
-h1.submitted { 
+.mm_c_x h1.submitted { 
   background-color: #f0e0e0;
 }
-h1.ok { 
+.mm_c_x h1.ok { 
   background-color: #e0f0e0;
 }
-h1.new { 
+.mm_c_x h1.new { 
   background-color: #f0f0e0;
 }
-h1.readonly {
+.mm_c_x h1.readonly {
   background-color: #f0a0a0;
 }
-td {
+.mm_c_x td {
   vertical-align: top;
 }
-span.currentpage { 
+.mm_c_x span.currentpage { 
   font: larger bold;
 }
 
-a span.navigate {
+.mm_c_x a span.navigate {
  display: none;
 }
 
-a.create::before {
+.mm_c_x a.create::before {
  content: url(${create});
 }
-a.back::before {
+.mm_c_x a.back::before {
  content: url(${back});
 }
-a.search::before{
+.mm_c_x a.search::before{
  content: url(${search});
 }
-a.ok::before{
+.mm_c_x a.ok::before{
  content: url(${ok});
 }
 
-.logininfo {  
+.mm_c_x .logininfo {  
 
   display: block;
   position: fixed;
   right: 0px;
   top: 0px;
 }
-a.logout::before {
+.mm_c_x a.logout::before {
   content: url(${logout});
 }
 
-h2 {
+.mm_c_x h2 {
   font-size: smaller;
   border-top: 1px solid;
   background-color: #ddd;
 }
+
+.mm_c_x .valid *, .mm_c_x .valid {
+    background-color: #f0fff0;
+}
+.mm_c_x .invalid *, .mm_c_x .invalid  {
+    background-color: #fff0f0;
+}
+
   </mm:content>
 </jsp:root>

@@ -35,6 +35,7 @@
     </mm:compare>
 
     <mm:import id="thispage"><mm:url page="."  /></mm:import>
+    page: ${thispage}
     <form id="form" action="${thispage}" method="post">
       <input type="hidden" name="pagesize" value="${pagesize}" />
       <h1>
@@ -68,8 +69,6 @@
         <mm:notpresent referid="only">
           <input title="descendants" name="only" type="checkbox"  onchange="this.form.submit()" />
         </mm:notpresent>
-
-        <jsp:directive.include file="logininfo.span.jspx" />
       </h1>
 
       <table class="search" summary="Search form">
@@ -214,7 +213,7 @@
       for (var i = 0; i &amp;lt; els.length; i++) {
       if ( pattern.test(els[i].className) ) {
       els[i].addEventListener("click", function() {
-      document.location.href = this.parentNode.cells[1].firstChild.href;
+         document.location = this.parentNode.cells[1].getElementsByTagName("a")[0].href;
       }, false);
       }
       if (pattern2.test(els[i].className)) {
