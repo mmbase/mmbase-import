@@ -10,13 +10,7 @@
     <mm:url write="false" id="ok"     page="/mmbase/style/images/ok.png" />
     <mm:url write="false" id="logout" page="/mmbase/style/images/reload.png" />
 
-@import url(<mm:url page="/mmbase/style/css/mmbase.css" />);
-body { 
-  margin: 0px 0px 0px 0px;
-  padding: 0px 0px 0px 0px;
-  margin-top: 40px;
-}
-table { 
+.mm_c_x .table { 
   margin-left: 0px;
   margin-right: 0px;
   padding-left: 1px;
@@ -25,43 +19,43 @@ table {
   
 }
 
-img { 
+.mm_c_x img { 
   border: none;
   margin: 0px 0px 0px 0px;
   padding: 0px 0px 0px 0px;
 }
 
-#searchresult tbody tr:hover { 
+.mm_c_x #searchresult tbody tr:hover { 
   cursor: pointer;
 }
-#searchresult tbody tr.odd:hover { 
+.mm_c_x #searchresult tbody tr.odd:hover { 
   background-color: #e0f0e0;
 }
-#searchresult tbody tr.even:hover { 
+.mm_c_x #searchresult tbody tr.even:hover { 
   background-color: #d8e8d8;
 }
-#searchresult tbody tr.odd.readonly:hover { 
+.mm_c_x #searchresult tbody tr.odd.readonly:hover { 
   background-color: #f0e0e0;
 }
-#searchresult tbody tr.even.readonly:hover { 
+.mm_c_x #searchresult tbody tr.even.readonly:hover { 
   background-color: #e8d8d8;
 }
 
-#searchresult.delete tbody tr.selected.odd {
- background-color: #ffffaa;
+.mm_c_x #searchresult.delete tbody tr.selected.odd {
+    background-color: #ffffaa;
 }
-#searchresult.delete tbody tr.selected.even {
+.mm_c_x #searchresult.delete tbody tr.selected.even {
  background-color: #ffff00;
 }
 
-#searchresult tbody tr.selected.odd {
+.mm_c_x #searchresult tbody tr.selected.odd {
   background-color: #f0f0e0;
 }
-#searchresult tbody tr.selected.even {
+.mm_c_x #searchresult tbody tr.selected.even {
   background-color: #e8e8d8;
 }
 
-#searchresult tbody tr.selected.odd:hover {
+.mm_c_x #searchresult tbody tr.selected.odd:hover {
   background-color: #e0f0e0;
 }
 #searchresult tbody tr.selected.even:hover {
@@ -97,13 +91,12 @@ img {
 input.small, input.big, textarea { 
   width: 100%;
 }
-h1 {
+.mm_c_x h1 {
   display: block;
   width: 100%;
   top: 0px;
   height: 39px;
   border-bottom: solid black 1px;
-  position: fixed;
   font-size: medium;
   background-color: #ddd;
   margin-top: 0px;
