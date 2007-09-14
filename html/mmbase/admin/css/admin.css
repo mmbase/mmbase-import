@@ -7,6 +7,10 @@ body {
   font-size: small;
   background: #fff;
   font-family: "Lucida Grande", Arial, sans-serif;
+  margin-left: auto;
+    margin-right: auto;
+  max-width: 1200px;
+
 }
 
 a:link { 
@@ -33,14 +37,11 @@ img {
   margin-right: 4px;
 }
 
-#outerheader {
-  background: #002828;
-  height: 56px;
-}
 
 #header {
-  max-width: 1200px;
-  margin: 0 auto 0 auto;
+  background: #002828;
+  height: 56px;
+  margin: 0;
 }
 
 #logo {
@@ -74,7 +75,6 @@ img {
 }
 
 #wrap {
-  max-width: 1200px;
   margin: 0 auto 0 auto;
 }
 
