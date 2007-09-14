@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.31.2.2 2007-05-31 11:57:38 michiel Exp $
+    @version $Id: prompts.xsl,v 1.31.2.3 2007-09-14 13:09:36 gerard Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -273,10 +273,10 @@
   <xsl:variable name="tooltip_sort_up">up</xsl:variable>
   <xsl:variable name="tooltip_sort_down">down</xsl:variable>
   <xsl:template name="prompt_sort_up">
-    <img src="{$mediadir}sortup.png" alt="{$tooltip_up}" height="15" width="15" />
+    <img src="{$mediadir}sortup.png" alt="{$tooltip_sort_up}" height="15" width="15" />
   </xsl:template>
   <xsl:template name="prompt_sort_down">
-    <img src="{$mediadir}sortdown.png" alt="{$tooltip_up}" height="15" width="15" />
+    <img src="{$mediadir}sortdown.png" alt="{$tooltip_sort_down}" height="15" width="15" />
   </xsl:template>
 
   <!-- searchlist prompts/tooltips -->
