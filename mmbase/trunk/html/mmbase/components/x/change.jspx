@@ -8,17 +8,13 @@
   <div
       class="mm_c mm_c_x mm_c_b_change ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
-    <script type="text/javascript">
-      new MMBaseValidator(window, "${requestScope.componentId}");
-
-    </script>
     <!--
          Offers a form for one existing MMBase node.
          Also handles the form.
 
          TODO: Some way to edit relations? NODE-field editor?
 
-$Id: change.jspx,v 1.2 2007-09-14 07:01:29 michiel Exp $
+$Id: change.jspx,v 1.3 2007-09-14 08:31:47 michiel Exp $
     -->
     <mm:import externid="ok" from="request">init</mm:import>
     <mm:import externid="submitted" from="request"><mm:write referid="ok" /></mm:import>
@@ -27,6 +23,12 @@ $Id: change.jspx,v 1.2 2007-09-14 07:01:29 michiel Exp $
       <mm:import externid="node" required="true" />
       <mm:form id="changeform" page="change" >
         <mm:node referid="node">
+          <script type="text/javascript">
+            var validator = new MMBaseValidator();
+            validator.prefetchNodeManager('<mm:nodeinfo type="nodemanager" />');
+            validator.setup(window, document.getElementById("${requestScope.componentId}"));
+          </script>
+          
           <mm:maywrite inverse="true"><mm:import id="readonly">readonly</mm:import></mm:maywrite>
           <h1 class="${submitted} ${readonly}">
             <mm:import externid="nodemanager"><mm:nodeinfo type="nodemanager" /></mm:import>
@@ -37,7 +39,6 @@ $Id: change.jspx,v 1.2 2007-09-14 07:01:29 michiel Exp $
             <a href="javascript:document.getElementById('changeform').submit();" class="ok"><span class="navigate">ok</span></a>
             <mm:nodeinfo type="gui" />
             <jsp:text> (<mm:nodeinfo type="guitype" />)</jsp:text>
-            <jsp:directive.include file="logininfo.span.jspx" />
           </h1>
 
 
