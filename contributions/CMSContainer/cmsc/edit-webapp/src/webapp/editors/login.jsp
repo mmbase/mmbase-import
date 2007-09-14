@@ -69,7 +69,7 @@ function setFocusOnFirstInput() {
             </mm:write>
          </table>
       </form>
-`	</cmscedit:sideblock>
+	</cmscedit:sideblock>
 </body>
 </html:html>
 </mm:content>
