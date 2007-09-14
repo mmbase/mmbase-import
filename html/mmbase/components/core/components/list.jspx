@@ -41,13 +41,15 @@
       <mm:present referid="component">
         <h1>'${component}'</h1>
         <mm:function set="components" name="get" referids="component@name" id="c">
-          <p>Version: ${c.version}</p>
-          <p>Defined in ${c.uri}</p>
-          <p>Translations: ${c.bundle}</p>
-          <p>Dependencies: ${c.dependencies}</p>
-          <c:if test="${! empty c.unsatisfiedDependencies}">
-            <p><strong style="color: red;"><em>Unsatisified</em> dependencies: ${c.unsatisfiedDependencies}</strong></p>
-          </c:if>
+          <table>
+            <tr><th>Version</th><td>${c.version}</td></tr>
+            <tr><th>Defined in</th><td>${c.uri}</td></tr>
+            <tr><th>Translations</th><td>${c.bundle}</td></tr>
+            <tr><th>Dependencies</th><td>${c.dependencies}</td></tr>
+            <c:if test="${! empty c.unsatisfiedDependencies}">
+              <tr><th><strong style="color: red;"><em>Unsatisified</em> dependencies</strong></th><td>${c.unsatisfiedDependencies}</td></tr>
+            </c:if>
+          </table>
           <h2>Settings for this component</h2>
           <ul>
             <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
