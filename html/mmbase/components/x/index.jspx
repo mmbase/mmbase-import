@@ -5,10 +5,11 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page buffer="200kb" />
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud method="asis">
   <div
-      class="mm_c mm_c_core mm_c_b_servers ${requestScope.componentClassName}"
+      class="mm_c mm_c_x mm_c_b_index ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <mm:import externid="nodemanager" from="request">object</mm:import>
     <mm:import externid="only" from="request" />
