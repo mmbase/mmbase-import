@@ -31,6 +31,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #002828;
 }
 
+
 img {
   border: 0;
   vertical-align: bottom;
@@ -79,13 +80,13 @@ img {
 }
 
 #content {
-  float: right;
   width: 80%;
-}
-
-.padder { 
-  padding: 0 1em 0 1em;
+  float: right;
  }
+#content div.mm_c {
+  padding-left: 1ex;
+  padding-right: 1ex;
+}
 
 #footer {
   clear: both;
@@ -191,10 +192,12 @@ html>body #navigation li a {
 
 /*********** content classes etc. ***********/
 h2.top {
+  padding-left: 1ex;
   font-size: 1.8em;
-  margin: 0.5em 0 0 0;
+  margin-top: 0px;
   text-transform: capitalize;
-  border-bottom: 1px solid #708A23;
+  background-color: #efefef;
+  border-bottom: 2px solid #708A23;
 }
 
 table {
