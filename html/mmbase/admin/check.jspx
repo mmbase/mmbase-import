@@ -5,6 +5,7 @@
       This simple JSP simply reports whether MMBase seems to be running correctly.
       @since MMBase-1.8.5
   -->
+  <mm:log jspvar="log">
   <mm:content expires="0" type="text/plain">
     <jsp:scriptlet>
       try {
@@ -19,8 +20,10 @@
     </mm:cloud>
     <jsp:scriptlet>
       } catch (Throwable t) {
+      log.warn(t.getMessage(), t);
       }
     </jsp:scriptlet>
     <mm:notpresent referid="ok">ERROR</mm:notpresent>
   </mm:content>
+  </mm:log>
 </jsp:root>
