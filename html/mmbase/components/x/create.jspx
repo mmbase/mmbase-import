@@ -9,12 +9,14 @@
       class="mm_c mm_c_core mm_c_b_servers ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <script type="text/javascript">
-      MMBaseValidator validator = new MMBaseValidator(window, '{requestScope.componentId}');
+      var validator = new MMBaseValidator();
+      validator.prefetchNodeManager('${requestScope.nodemanager}');
+      validator.setup(window, document.getElementById("${requestScope.componentId}"));
     </script>
     <!--
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.2 2007-09-14 07:01:29 michiel Exp $
+         $Id: create.jspx,v 1.3 2007-09-14 08:31:47 michiel Exp $
     -->
     <mm:import id="referids" from="request">nodemanager,only?</mm:import>
     <mm:cloud rank="basic user">
@@ -22,21 +24,20 @@
       <mm:import externid="submitted">new</mm:import>
 
       <h1 class="${submitted}">
-          <mm:link page="." referids="$referids">
-            <a href="${_}" class="back"><span class="navigate">back</span></a>
-          </mm:link>
-            <a href="javascript:document.getElementById('createform').submit();" class="ok"><span class="navigate">ok</span></a>
-          <jsp:text>New <mm:nodeinfo nodetype="$nodemanager" type="guitype" /></jsp:text>
-
-        </h1>
-        <mm:form id="createform">
-          <input type="hidden" name="nodemanager" value="${nodemanager}" />
-          <input type="hidden" name="submitted" value="submitted" />
-          <table summary="fields of new node of type ${nodemanager}">
-            <mm:fieldlist type="edit" nodetype="$nodemanager">
-              <mm:index id="index" write="false" />
-              <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
-                <td><mm:fieldinfo type="guiname" /></td>
+        <mm:link page="." referids="$referids">
+          <a href="${_}" class="back"><span class="navigate">back</span></a>
+        </mm:link>
+        <a href="javascript:document.getElementById('createform').submit();" class="ok"><span class="navigate">ok</span></a>
+        <jsp:text>New <mm:nodeinfo nodetype="$nodemanager" type="guitype" /></jsp:text>
+      </h1>
+      <mm:form id="createform">
+        <input type="hidden" name="nodemanager" value="${nodemanager}" />
+        <input type="hidden" name="submitted" value="submitted" />
+        <table summary="fields of new node of type ${nodemanager}">
+          <mm:fieldlist type="edit" nodetype="$nodemanager">
+            <mm:index id="index" write="false" />
+            <tr class="${index % 2 == 0 ? 'even' : 'odd'}">
+              <td><mm:fieldinfo type="guiname" /></td>
                 <td>
                   <mm:fieldinfo type="input" />
                   <mm:fieldinfo type="errors" />
