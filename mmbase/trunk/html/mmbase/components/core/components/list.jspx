@@ -17,12 +17,13 @@
         
       <mm:notpresent referid="component">
         <h1><fmt:message key="components.title" /></h1>
-        <p>${mm:string(requestScope["org.mmbase.framework.state"].block.description, pageContext)}</p>
-        <mm:function set="utils" name="mmbase">
-          <p>Framework: ${_.framework}</p>
-        </mm:function>
-        <mm:function  set="components" name="failed" />
-        <p><fmt:message key="components.available" /></p>
+        <table>
+          <mm:function set="utils" name="mmbase">
+            <tr><th>Framework</th><td>${_.framework}</td></tr>
+          </mm:function>
+          <tr><th>Failed components</th><td><mm:function  set="components" name="failed" /></td></tr>
+        </table>
+        <h2><fmt:message key="components.available" /></h2>
         <ul>
           <mm:listfunction id="comp" set="components" name="list" >
             <li>
@@ -54,11 +55,13 @@
           <ul>
             <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
               <li>
-                <em>${s.name} ${s.dataType}</em>
-                <p>${mm:string(s.description, pageContext)}</p>
-                <p>Current value: <strong><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getFramework().getSettingValue(s, null)</jsp:expression></strong></p>
+                <h3>${s.name}</h3>
+                <table>
+                  <tr><th>Data type</th><td>${s.dataType}</td></tr>
+                  <tr><th>Description</th><td>${mm:string(s.description, pageContext)}</td></tr>
+                  <tr><th>Current value</th><td><strong><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getFramework().getSettingValue(s, null)</jsp:expression></strong></td></tr>
+                </table>
               </li>
-              
               <!--
               <mm:fieldinfo type="input" datatype="s.dataType" />
               -->
@@ -68,10 +71,13 @@
           <ul>
             <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
               <li>
-                <p><em>${b.name}. </em> ${mm:string(b.description, pageContext)}</p>
-                <p>HEAD: <mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></p>
-                <p>BODY: <mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></p>
-                <p>Processor: <jsp:expression>b.getProcessor()</jsp:expression></p>
+                <h3>${b.name}</h3>
+                <table>
+                  <tr><th>Description</th><td>${mm:string(b.description, pageContext)}</td></tr>
+                  <tr><th>HEAD</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></td></tr>
+                  <tr><th>BODY</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></td></tr>
+                  <tr><th>Processor</th><td><jsp:expression>b.getProcessor()</jsp:expression></td></tr>
+                </table>
               </li>
             </mm:stringlist>
           </ul>
