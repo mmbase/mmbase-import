@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.36 2007-07-30 23:01:42 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.37 2007-09-14 06:54:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -172,24 +172,41 @@ public class BasicComponent implements Component {
         NodeList renderElements = block.getElementsByTagName(name);
         log.debug("Number of [" + name + "] elements: " + renderElements.getLength());
         if (renderElements.getLength() < 1) return null;
-        Element renderElement = (Element) renderElements.item(0);
-        String jsp = renderElement.getAttribute("jsp");
-        Renderer renderer;
-        if (!"".equals(jsp)) {
-            renderer = new JspRenderer(name.toUpperCase(), jsp, b);
-        } else {
-            try {
-                renderer = (Renderer) ComponentRepository.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                return null;
+        Renderer renderer = null;
+        for (int i = 0; i < renderElements.getLength(); i++) {
+            Element renderElement = (Element) renderElements.item(i);
+            String jsp = renderElement.getAttribute("jsp");
+        
+            Renderer subRenderer;
+            if (!"".equals(jsp)) {
+                subRenderer = new JspRenderer(name.toUpperCase(), jsp, b);
+            } else {
+                try {
+                    subRenderer = (Renderer) ComponentRepository.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    return null;
+                }
+            }
+            Parameter[] params = Parameter.readArrayFromXml(renderElement);
+            if (params.length > 0) { // a bit to simple, how can you explicitely make a renderer parameter-less now?
+                b.addParameters(params);
+            }
+            if (renderer == null) {
+                renderer = subRenderer;
+            } else {
+                if (renderer instanceof ChainedRenderer) {
+                    ((ChainedRenderer) renderer).add(subRenderer);
+                } else {
+                    ChainedRenderer chain = new ChainedRenderer(name.toUpperCase(), b);
+                    chain.add(renderer);
+                    chain.add(subRenderer);
+                    renderer = chain;
+                }
             }
         }
-        Parameter[] params = Parameter.readArrayFromXml(renderElement);
-        if (params.length > 0) { // a bit to simple, how can you explicitely make a renderer parameter-less now?
-            b.addParameters(params);
-        }
         return renderer;
+
     }
 
     private Processor getProcessor(String name, Element block, Block b) {
