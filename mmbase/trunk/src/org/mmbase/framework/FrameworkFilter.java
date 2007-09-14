@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.14 2007-08-07 19:33:27 andre Exp $
+ * @version $Id: FrameworkFilter.java,v 1.15 2007-09-14 06:50:37 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -181,6 +181,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
             State state = State.getState(request);
             if (forwardUrl != null && !forwardUrl.equals("")) {
+                res.setHeader("X-MMBase-forward", forwardUrl);
                 /*
                  * RequestDispatcher: If the path begins with a "/" it is interpreted
                  * as relative to the current context root.
