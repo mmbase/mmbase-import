@@ -11,12 +11,17 @@
     <script type="text/javascript">
       var validator = new MMBaseValidator();
       validator.prefetchNodeManager('${requestScope.nodemanager}');
+      validator.lang = "${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}";
+      validator.validateHook = function(valid) {
+        document.getElementById('okbutton').disabled = ! valid;
+      }
+
       validator.setup(window, document.getElementById("${requestScope.componentId}"));
     </script>
     <!--
          Offers a form for one new MMBase node.
          Also handles the form, and then redirects to change.jspx, because the node is existng then.
-         $Id: create.jspx,v 1.3 2007-09-14 08:31:47 michiel Exp $
+         $Id: create.jspx,v 1.4 2007-09-14 08:45:34 michiel Exp $
     -->
     <mm:import id="referids" from="request">nodemanager,only?</mm:import>
     <mm:cloud rank="basic user">
@@ -45,7 +50,7 @@
               </tr>
             </mm:fieldlist>
           </table>
-          <input type="submit" name="ok" value="create" />
+          <input type="submit" id="okbutton" name="ok" value="create" />
 
           <mm:compare referid="submitted" value="submitted">
             <!-- handle the form -->
