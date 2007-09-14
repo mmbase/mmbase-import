@@ -76,28 +76,26 @@
               </ul>
             </div>
             <div id="content">
-              <div class="padder">
-                <mm:present referid="component">
-                  <h2 class="top"><mm:write referid="block" /></h2>
-                  <c:catch var="exception">
-                    <mm:component debug="xml" name="$component" block="$block">
-                      <mm:frameworkparam name="category">${category}</mm:frameworkparam>
-                    </mm:component>
-                  </c:catch>
-                  <c:if test="${! empty exception}">
-                    <pre>
-                      ${mm:escape('text/xml', exception)}
-                    </pre>
-                    <pre>
-                      ${mm:escape('text/xml', exception.cause.cause.cause)}
-                      
-                      
-                      ${mm:escape('text/xml', exception.cause.cause)}
-                      ${mm:escape('text/xml', exception.cause)}
-                    </pre>
-                  </c:if>
-                </mm:present>
-              </div>
+              <mm:present referid="component">
+                <h2 class="top"><mm:write referid="block" /></h2>
+                <c:catch var="exception">
+                  <mm:component debug="xml" name="$component" block="$block">
+                    <mm:frameworkparam name="category">${category}</mm:frameworkparam>
+                  </mm:component>
+                </c:catch>
+                <c:if test="${! empty exception}">
+                  <pre>
+                    ${mm:escape('text/xml', exception)}
+                  </pre>
+                  <pre>
+                    ${mm:escape('text/xml', exception.cause.cause.cause)}
+                    
+                    
+                    ${mm:escape('text/xml', exception.cause.cause)}
+                    ${mm:escape('text/xml', exception.cause)}
+                  </pre>
+                </c:if>
+              </mm:present>
             </div>
             <div id="footer">
               <ul>
