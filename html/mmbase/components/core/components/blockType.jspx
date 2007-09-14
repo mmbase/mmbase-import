@@ -9,7 +9,7 @@
       <mm:write request="blockType" />
       <li>
         ${requestScope.blockType.name}        
-        <mm:include debug="html" page="blockType.jspx" />
+        <mm:include  page="blockType.jspx" />
       </li>
     </mm:stringlist>
   </ul>
