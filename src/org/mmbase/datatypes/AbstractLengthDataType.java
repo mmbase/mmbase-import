@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: AbstractLengthDataType.java,v 1.23 2007-08-10 13:03:10 michiel Exp $
+ * @version $Id: AbstractLengthDataType.java,v 1.24 2007-09-16 17:55:28 michiel Exp $
  * @since MMBase-1.8
  */
 abstract public class AbstractLengthDataType<E> extends BasicDataType<E> implements LengthDataType<E> {
@@ -130,8 +130,8 @@ abstract public class AbstractLengthDataType<E> extends BasicDataType<E> impleme
 
     public void toXml(Element parent) {
         super.toXml(parent);
-        getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength").setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
-        getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength").setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
+        addRestriction(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
+        addRestriction(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
 
     }
 

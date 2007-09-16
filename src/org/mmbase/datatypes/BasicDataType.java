@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.81 2007-08-28 10:04:20 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.82 2007-09-16 17:55:28 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -368,6 +368,28 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         return el;
     }
 
+    protected String getEnforceString(int enforce) {
+        switch(enforce) {
+        case DataType.ENFORCE_ABSOLUTE: return "absolute";
+        case DataType.ENFORCE_ALWAYS:   return "always";
+        case DataType.ENFORCE_ONCHANGE: return "onchange";
+        case DataType.ENFORCE_ONCREATE: return "oncreate";
+        case DataType.ENFORCE_NEVER:    return "never";
+        default:                        return "???";
+        }
+    }
+
+    protected  Element addRestriction(Element parent,  String name, String path, Restriction restriction) {
+        return addRestriction(parent, name, name, path, restriction);
+    }
+    protected  Element addRestriction(Element parent, String pattern, String name, String path, Restriction restriction) {
+        Element el = addErrorDescription(getElement(parent, pattern, name,   path), restriction);
+        xmlValue(el, restriction.getValue());
+        el.setAttribute("enforce", getEnforceString(restriction.getEnforceStrength()));
+        return el;
+    }
+
+
     protected Element addErrorDescription(Element el, Restriction r)  {
         r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
         return el;
@@ -588,7 +610,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
 
     /**
-     * @todo processors are not yet added
+
      */
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
@@ -619,11 +641,8 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
 
         xmlValue(getElement(parent, "default",  "description,class,property,default"), defaultValue);
 
-        addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
-            setAttribute("value", "" + uniqueRestriction.isUnique());
-        addErrorDescription(getElement(parent, "required",   "description,class,property,default,unique,required"), requiredRestriction).
-            setAttribute("value", "" + requiredRestriction.isRequired());
-
+        addRestriction(parent, "unique",   "description,class,property,default,unique", uniqueRestriction);
+        addRestriction(parent, "required",   "description,class,property,default,unique,required", requiredRestriction);
         getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
 
@@ -965,7 +984,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
         /**
          * Whether {@link #validate} must enforce this condition
          */
-        protected final boolean enforce(Node node, Field field) {
+        protected final boolean enforce(Object v, Node node, Field field) {
             switch(enforceStrength) {
             case DataType.ENFORCE_ABSOLUTE:
             case DataType.ENFORCE_ALWAYS:   return true;
@@ -987,7 +1006,7 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
                     return res;
                 }
             }
-            if ((! enforce(node, field)) ||  valid(v, node, field)) {
+            if ((! enforce(v, node, field)) ||  valid(v, node, field)) {
                 // no new error to add.
                 return errors;
             } else {
