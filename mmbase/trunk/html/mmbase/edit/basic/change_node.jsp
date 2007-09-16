@@ -18,16 +18,18 @@
 
   <script type="text/javascript">
     var validator = new MMBaseValidator();
+    validator.logEnabled = false;
+    validator.traceEnabled = false;
     validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
-    validator.validateHook = function(valid) {
-       document.getElementById('okbutton').disabled = ! valid;
-       document.getElementById('savebutton').disabled = ! valid;
+    validator.validateHook = function() {
+       document.getElementById('okbutton').disabled = this.invalidElements != 0;
+       document.getElementById('savebutton').disabled = this.invalidElements != 0;
     }
     validator.lang = '${config.lang}';
     validator.setup(window);
   </script>
 
-<% 
+<%
    if (urlStack.size() == 0) {
       push(urlStack, "home", "search_node.jsp?node_type=" + thisNode.getNodeManager().getName());
    }
@@ -112,8 +114,8 @@
  <mm:maywrite>
  <a  href="<mm:url referids="this_node@node_number"  page="edit_aliases.jsp" />">
        <span class="select"><!-- needed for IE --></span><span class="alt">[edit aliases]</span>
-</a>     
-   </mm:maywrite>    
+</a>
+   </mm:maywrite>
 </tr>
 </table>
 </form>
