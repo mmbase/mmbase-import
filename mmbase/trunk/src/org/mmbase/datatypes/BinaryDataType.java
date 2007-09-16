@@ -17,7 +17,7 @@ import org.apache.commons.fileupload.FileItem;
  * The datatype associated with byte arrays ('blobs').
  *
  * @author Pierre van Rooden
- * @version $Id: BinaryDataType.java,v 1.13 2007-05-08 15:23:37 michiel Exp $
+ * @version $Id: BinaryDataType.java,v 1.14 2007-09-16 17:55:28 michiel Exp $
  * @since MMBase-1.8
  */
 public class BinaryDataType extends AbstractLengthDataType<byte[]> {
@@ -48,7 +48,7 @@ public class BinaryDataType extends AbstractLengthDataType<byte[]> {
         if (value instanceof byte[]) {
             byte[] bytes = (byte[]) value;
             if (log.isDebugEnabled()) {
-                StringBuffer buf = new StringBuffer("[");
+                StringBuilder buf = new StringBuilder("[");
                 for (int i = 0 ; i < bytes.length; i++) {
                     buf.append((char) bytes[i]);
                     if (i + 1 < bytes.length) {
