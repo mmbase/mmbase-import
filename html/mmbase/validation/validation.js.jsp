@@ -10,9 +10,8 @@
  *                              then call validator.setup(window).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.35 2007-09-13 06:57:33 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.36 2007-09-16 17:58:36 michiel Exp $
  */
-
 
 function MMBaseValidator(w, root) {
 
@@ -46,7 +45,6 @@ MMBaseValidator.prototype.onLoad = function(event) {
 
 
 
-
 MMBaseValidator.prototype.log = function (msg) {
     if (this.logEnabled) {
         // firebug console"
@@ -61,11 +59,38 @@ MMBaseValidator.prototype.trace = function (msg) {
 }
 
 /**
+* Returns the mmbase node number associated with the given input element. Or null, if there is
+ * no such node, or the node is not yet created.
+*/
+MMBaseValidator.prototype.getNode = function(el) {
+    return this.getDataTypeKey(el).node;
+}
+
+/**
+ * Whether a restriction on a certain input element mus be enforced.
+ */
+MMBaseValidator.prototype.enforce = function(el, enf) {
+    this.log("ENformce " + enf);
+    if (enf == 'never') return false;
+    if (enf == 'always') return true;
+    if (enf == 'absolute') return true;
+    if (enf == 'oncreate') return  this.getNode(el) == null;
+    if (enf == 'onchange') return  this.getNode(el) == null || this.isChanged(el);
+}
+
+MMBaseValidator.prototype.isChanged = function(el) {
+    return this.getValue(el) != el.originalValue;
+}
+
+
+/**
  * Whether the element is a 'required' form input
  */
 MMBaseValidator.prototype.isRequired = function(el) {
     if (el.mm_isrequired != null) return el.mm_isrequired;
-    el.mm_isrequired = "true" == "" + this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required/@value').nodeValue;
+    var re = this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required');
+    el.mm_isrequired = "true" == "" + re.getAttribute("value");
+    el.mm_isrequired_enforce = re.getAttribute("enforce");
     return el.mm_isrequired;
 }
 
@@ -73,12 +98,15 @@ MMBaseValidator.prototype.isRequired = function(el) {
  * Whether the value in the form element obeys the restrictions on length (minLength, maxLength, length)
  */
 MMBaseValidator.prototype.lengthValid = function(el) {
-    if (! this.isRequired(el) && el.value.length == 0) return true;
+    if (! this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce) && this.getValue(el).length == 0) return true;
     var xml = this.getDataTypeXml(el);
 
     if (el.mm_minLength_set == null) {
         var ml =  xml.selectSingleNode('//dt:datatype/dt:minLength');
-        if (ml != null) el.mm_minLength = ml.getAttribute("value");
+        if (ml != null) {
+            el.mm_minLength = ml.getAttribute("value");
+            el.mm_minLength_enforce = ml.getAttribute("enforce");
+        }
         el.mm_minLength_set = true;
     }
     if (el.mm_minLength != null && el.value.length < el.mm_minLength) {
@@ -87,7 +115,10 @@ MMBaseValidator.prototype.lengthValid = function(el) {
 
     if (el.mm_maxLength_set == null) {
         var ml =  xml.selectSingleNode('//dt:datatype/dt:maxLength');
-        if (ml != null) el.mm_maxLength = ml.getAttribute("value");
+        if (ml != null) {
+            el.mm_maxLength = ml.getAttribute("value");
+            el.mm_maxLength_enforce = ml.getAttribute("enforce");
+        }
         el.mm_maxLength_set = true;
     }
 
@@ -97,7 +128,10 @@ MMBaseValidator.prototype.lengthValid = function(el) {
 
     if (el.mm_length_set == null) {
         var l =  xml.selectSingleNode('//dt:datatype/dt:length');
-        if (l != null) el.mm_length = l.getAttribute("value");
+        if (l != null) {
+            el.mm_length = l.getAttribute("value");
+            el.mm_length_enforce = l.getAttribute("enforce");
+        }
         el.mm_length_set = true;
     }
 
@@ -214,6 +248,8 @@ MMBaseValidator.prototype.typeValid = function(el) {
 
 }
 
+
+
 /**
  * Small utility to just get the dom attribute 'value', but also parse to float, if 'numeric' is true.
  */
@@ -239,22 +275,19 @@ MMBaseValidator.prototype.getValueAttribute = function(numeric, el) {
 MMBaseValidator.prototype.minMaxValid  = function(el) {
     this.trace("validating : " + el);
     try {
-        var xml = this.getDataTypeXml(el);
-
-        var value = el.value;
+        var xml   = this.getDataTypeXml(el);
+        var value = this.getValue(el);
         var numeric = this.isNumeric(el);
-        if (numeric) {
-            value = parseFloat(value);
-        }
-
         {
             if (el.mm_minInc_set == null) {
                 var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
                 el.mm_minInc = this.getValueAttribute(numeric, minInclusive);
+                el.mm_minInc_enforce = minInclusive != null ? minInclusive.getAttribute("enforce") : null;
                 el.mm_minInc_set = true;
             }
-            if (el.mm_minInc != null && value <  el.mm_minInc) {
-                this.log("" + value + " < " + el.mm_minInc);
+            this.log("" + value + " < " + el.mm_minInc  + " " + this.enforce(el, el.mm_minInc_enforce));
+            if (el.mm_minInc != null && this.enforce(el, el.mm_minInc_enforce) && value <  el.mm_minInc) {
+
                 return false;
             }
         }
@@ -263,9 +296,10 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
             if (el.mm_minExcl_set == null) {
                 var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
                 el.mm_minExcl = this.getValueAttribute(numeric, minExclusive);
+                el.mm_minExcl_enforce = minExclusive != null ? minExclusive.getAttribute("enforce") : null;
                 el.mm_minExcl_set = true;
             }
-            if (el.mm_minExcl != null && value <=  el.mm_minExcl) {
+            if (el.mm_minExcl != null && this.enforce(el, el.mm_minExcl_enforce) && value <=  el.mm_minExcl) {
                 this.log("" + value + " <= " + el.mm_minInc);
                 return false;
             }
@@ -274,9 +308,10 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
             if (el.mm_maxInc_set == null) {
                 var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
                 el.mm_maxInc = this.getValueAttribute(numeric, maxInclusive);
+                el.mm_maxInc_enforce = maxInclusive != null ? maxInclusive.getAttribute("enforce") : null;
                 el.mm_maxInc_set = true;
             }
-            if (el.mm_maxInc != null && value >  el.mm_maxInc) {
+            if (el.mm_maxInc != null && this.enforce(el, el.mm_maxInc_enforce) && value >  el.mm_maxInc) {
                 this.log("" + value + " > " + el.mm_maxInc);
                 return false;
             }
@@ -286,16 +321,17 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
             if (el.mm_maxExcl_set == null) {
                 var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
                 el.mm_maxExcl = this.getValueAttribute(numeric, maxExclusive);
+                el.mm_maxExcl_enforce = maxExclusive != null ? maxExclusive.getAttribute("enforce") : null;
                 el.mm_maxExcl_set = true;
             }
-            if (el.mm_maxExcl != null && value >=  el.mm_maxExcl) {
+            if (el.mm_maxExcl != null && this.enforce(el, el.mm_maxExcl_enforce) && value >=  el.mm_maxExcl) {
                 this.log("" + value + " >= " + el.mm_maxExcl);
                 return false;
             }
         }
     } catch (ex) {
         this.log(ex);
-        throw ex;
+        throw exsdf
     }
     return true;
 
@@ -378,7 +414,7 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  * be done for every field.
  *
  */
-  MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
+MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatypes.jspx" />?nodemanager=' + nodemanager, false);
     xmlhttp.send(null);
@@ -436,6 +472,19 @@ MMBaseValidator.prototype.hasClass = function(el, searchClass) {
     return pattern.test(el.className);
 }
 
+MMBaseValidator.prototype.getValue = function(el) {
+    if (this.isDateTime(el)) {
+        return  this.getDateValue(el);
+    } else {
+        var value = el.value;
+        if( this.isNumeric(el)) {
+            value = parseFloat(value);
+        }
+
+        return el.value;
+    }
+}
+
 MMBaseValidator.prototype.getDateValue = function(el) {
     if (this.hasClass(el, "mm_datetime")) {
         var year = 0;
@@ -476,20 +525,19 @@ MMBaseValidator.prototype.getDateValue = function(el) {
  * javascript, and therefore cannot be absolute.
  */
 MMBaseValidator.prototype.valid = function(el) {
-    if (this.isDateTime(el)) {
-        el.value = this.getDateValue(el);
-    }
-    if (typeof(el.value) == 'undefined') {
+    var value = this.getValue(el);
+
+    if (typeof(value) == 'undefined') {
         this.log("Unsupported element " + el);
         return true; // not yet supported
     }
 
-    if (this.isRequired(el)) {
-        if (el.value == "") {
+    if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
+        if (value == "") {
             return false;
         }
     } else {
-        if (el.value == "") return true;
+        if (value == "") return true;
     }
     if (! this.typeValid(el)) return false;
     if (! this.lengthValid(el)) return false;
@@ -517,7 +565,14 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var key = this.getDataTypeKey(el);
         var xmlhttp = new XMLHttpRequest();
         var value = this.getDateValue(el);
-        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/valid.jspx" />' + this.getDataTypeArguments(key) + (this.lang != null ? "&lang=" + this.lang : "") + "&value=" + value + (key.node != null ? ("&node=" + key.node) : ""), false);
+        xmlhttp.open("GET",
+                     '<mm:url page="/mmbase/validation/valid.jspx" />' +
+                     this.getDataTypeArguments(key) +
+                     (this.lang != null ? "&lang=" + this.lang : "") +
+                     "&value=" + value +
+                     (key.node != null ? ("&node=" + key.node) : "") +
+                     "&changed=" + this.isChanged(el),
+                     false);
         xmlhttp.send(null);
         return xmlhttp.responseXML;
     } catch (ex) {
@@ -652,6 +707,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
             addEventHandler(entry, "blur", this.serverValidate, this);
         }
 
+        entry.originalValue = this.getValue(entry);
         var valid = this.valid(entry);
         entry.prevValid = valid;
         this.elements.push(entry);
