@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.33 2007-08-28 10:06:05 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.34 2007-09-16 17:55:28 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
@@ -119,21 +119,17 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
 
         if (minRestriction.getValue() != null) {
             if (minRestriction.isInclusive()) {
-                Element el = getElement(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)");
-                xmlValue(el, minRestriction.getValue());
-                log.debug(el.getLocalName());
+                addRestriction(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+
             } else {
-                xmlValue(getElement(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)")
-                         , minRestriction.getValue());
+                addRestriction(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
             }
         }
         if (maxRestriction.getValue() != null) {
             if (maxRestriction.isInclusive()) {
-                xmlValue(getElement(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
-                         , maxRestriction.getValue());
+                addRestriction(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
             } else {
-                xmlValue(getElement(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
-                         , maxRestriction.getValue());
+                addRestriction(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
             }
         }
 
