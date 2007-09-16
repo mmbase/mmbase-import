@@ -15,7 +15,7 @@
     var validator = new MMBaseValidator();
     validator.prefetchNodeManager('${node_type}');
     validator.validateHook = function(valid) {
-       document.getElementById('okbutton').disabled = ! valid;
+       document.getElementById('okbutton').disabled = this.invalidElements != 0;
     }
     validator.lang = '${config.lang}';
     validator.setup(window);
