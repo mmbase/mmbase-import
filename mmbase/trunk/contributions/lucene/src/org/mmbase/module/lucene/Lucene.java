@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.90 2007-09-17 09:04:00 michiel Exp $
+ * @version $Id: Lucene.java,v 1.91 2007-09-17 09:18:16 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -354,7 +354,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 /*
                 List moreConstraints = (List) arguments.get(EXTRACONSTRAINTSLIST);
                 if (moreConstraints != null && moreConstraints.size() > 0) {
-                    StringBuffer ec = new StringBuffer(extraConstraints == null ? "" : extraConstraints + " ");
+                    StringBuilder ec = new StringBuilder(extraConstraints == null ? "" : extraConstraints + " ");
                     Iterator i = moreConstraints.iterator();
                     while (i.hasNext()) {
                         ec.append(i.next().toString());
