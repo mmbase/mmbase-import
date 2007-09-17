@@ -107,6 +107,7 @@
   <xsd:element name="extractor">
     <xsd:complexType>
       <xsd:attribute name="class" type="xsd:string" />
+      <xsd:attribute name="mimetype" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 
