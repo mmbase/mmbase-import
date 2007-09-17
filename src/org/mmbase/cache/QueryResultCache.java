@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.34.2.3 2007-08-07 11:53:58 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.34.2.4 2007-09-17 16:54:39 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -199,14 +199,20 @@ abstract public class QueryResultCache extends Cache implements NodeEventListene
         if (typeCounters.containsKey(roleName)) {
             return true;
         }
-        MMObjectBuilder srcbuilder = mmb.getMMObject(event.getRelationSourceType());
+        MMObjectBuilder srcbuilder = mmb.getBuilder(event.getRelationSourceType());
+        if (srcbuilder == null) {
+            return false;
+        }
         for (Iterator iter = srcbuilder.getAncestors().iterator(); iter.hasNext();) {
             MMObjectBuilder parent = (MMObjectBuilder) iter.next();
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
         }
-        MMObjectBuilder destbuilder = mmb.getMMObject(event.getRelationDestinationType());
+        MMObjectBuilder destbuilder = mmb.getBuilder(event.getRelationDestinationType());
+        if (destbuilder == null) {
+            return false;
+        }
         for (Iterator iter = destbuilder.getAncestors().iterator(); iter.hasNext();) {
             MMObjectBuilder parent = (MMObjectBuilder) iter.next();
             if (typeCounters.containsKey(parent.getTableName())) {
