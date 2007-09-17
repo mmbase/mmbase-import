@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.88 2007-08-06 09:14:31 michiel Exp $
+ * @version $Id: Lucene.java,v 1.89 2007-09-17 09:02:00 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -170,7 +170,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     //protected Function<Void> fullIndexFunction = new AbstractFunction<Void>("fullIndex", INDEX) {
     protected Function/*<Void>*/ fullIndexFunction = new AbstractFunction/*<Void>*/("fullIndex", new Parameter[] {INDEX}, ReturnType.VOID) {
-        public Void getFunctionValue(Parameters arguments) {
+        public Object getFunctionValue(Parameters arguments) {
             if (scheduler == null) throw new RuntimeException("Read only");
             String index = (String) arguments.get(INDEX);
             if (index == null || "".equals(index)) {
@@ -192,7 +192,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     //protected Function<Void> deleteIndexFunction = new AbstractFunction<Void>("deleteIndex", INDEX, IDENTIFIER, CLASS) {
     protected Function/*<Void>*/ deleteIndexFunction = new AbstractFunction/*<Void>*/("deleteIndex", new Parameter[] {INDEX, IDENTIFIER, CLASS}, ReturnType.VOID) {
-            public Void getFunctionValue(Parameters arguments) {
+            public Object getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 if(!readOnly){
                     String index      = (String) arguments.get(INDEX);
@@ -219,7 +219,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     //protected Function<Void> updateIndexFunction = new AbstractFunction<Void>("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
     protected Function updateIndexFunction = new AbstractFunction("updateIndex", new Parameter[] {new Parameter(IDENTIFIER, true),  CLASS}, ReturnType.VOID) {
-            public Void getFunctionValue(Parameters arguments) {
+            public Object getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 scheduler.updateIndex(arguments.getString(IDENTIFIER), (Class) arguments.get(CLASS));
                 return null;
@@ -235,7 +235,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     //protected Function<Integer> statusFunction = new AbstractFunction<Integer>("status") {
     protected Function/*<Integer>*/ statusFunction = new AbstractFunction/*<Integer>*/("status", Parameter.EMPTY, ReturnType.INTEGER) {
-        public Integer getFunctionValue(Parameters arguments) {
+        public Object getFunctionValue(Parameters arguments) {
             return scheduler == null ? Scheduler.READONLY : scheduler.getStatus();
         }
     };
@@ -844,7 +844,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     public Searcher getSearcher(String indexName) {
         if (indexName == null || indexName.equals("")) indexName = defaultIndex;
-        Searcher searcher = searcherMap.get(indexName);
+        Searcher searcher = indexName == null ? null : searcherMap.get(indexName);
         if (searcher == null) {
             throw new IllegalArgumentException("Index with name " +indexName + " does not exist. Existing are " + searcherMap.keySet());
         }
@@ -854,7 +854,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Received node event " + event);
+            log.debug("Received node event " + event +  Logging.stackTrace(6));
         }
         if (scheduler != null) {
             switch(event.getType()) {
@@ -1134,7 +1134,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         void fullIndex(final String index) {
             if (status != BUSY_FULL_INDEX || ! assignment.equals(ALL_FULL_INDEX)) {
                 if (! assigned(ALL_FULL_INDEX)) {
-                    // only schedule a full index if no complete full index ne is currently busy or scheduled already.
+                    // only schedule a full index if no complete full index is currently busy or scheduled already.
                     Assignment a = new Assignment() {
                             public void run() {
                                 status = BUSY_FULL_INDEX;
