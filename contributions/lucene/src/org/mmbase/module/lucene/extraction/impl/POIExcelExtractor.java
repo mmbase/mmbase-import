@@ -24,9 +24,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
  * Use POI to extract text from a MS Excel document
- * 
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class POIExcelExtractor implements Extractor {
     private static final Logger log = Logging.getLoggerInstance(POIExcelExtractor.class);
@@ -46,7 +46,7 @@ public class POIExcelExtractor implements Extractor {
         log.debug("extract stream");
         String result = null;
         try {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             HSSFWorkbook workbook = new HSSFWorkbook(input);
             int numSheets = workbook.getNumberOfSheets();
             for (int i = 0; i < numSheets; i++) {

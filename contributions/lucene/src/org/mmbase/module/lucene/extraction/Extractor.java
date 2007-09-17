@@ -17,33 +17,33 @@ import java.io.InputStream;
 
 /**
  * Content Extractor interface
- * 
+ *
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface Extractor {
-    
+
     /**
      * Mimetype this Extractor handles
-     * 
+     *
      * @param mimetype String representing the MIME Type
      */
     public void setMimeType(String mimetype);
-    
+
     /**
      * Mimetype this Extractor handles
-     * 
+     *
      * @return String representing the MIME Type
      */
     public String getMimeType();
-    
+
     /**
      * Extract text from a source
-     * 
+     *
      * @param source InputStream where the data comes from
      * @return String representing the extracted text
      * @throws Exception
      */
     public String extract(InputStream source) throws Exception;
-    
+
 }
