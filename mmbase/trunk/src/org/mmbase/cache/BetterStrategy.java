@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.28 2007-08-02 09:51:29 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.29 2007-09-17 08:57:55 michiel Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -34,7 +34,7 @@ public class BetterStrategy extends ReleaseStrategy {
     private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
     private static final Logger log = Logging.getLoggerInstance(BetterStrategy.class);
 
-    
+
     private static final Logger nodeEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".nodeevent");
     private static final Logger relationEventLog = Logging.getLoggerInstance(BetterStrategy.class.getName() + ".relationevent");
 
@@ -361,9 +361,7 @@ public class BetterStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
-        Iterator<Step> i = query.getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = i.next();
+        for (Step step : query.getSteps()) {
             String table = step.getTableName();
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
