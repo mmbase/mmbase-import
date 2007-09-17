@@ -32,7 +32,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Bunst Eunders
- * @version $Id: QueryResultCache.java,v 1.44 2007-08-07 11:56:29 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.45 2007-09-17 16:53:01 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -179,12 +179,18 @@ abstract public class QueryResultCache extends Cache<SearchQuery, List<MMObjectN
             return true;
         }
         MMObjectBuilder srcbuilder = mmb.getBuilder(event.getRelationSourceType());
+        if (srcbuilder == null) {
+          return false;
+        }
         for (MMObjectBuilder parent : srcbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
             }
         }
         MMObjectBuilder destbuilder = mmb.getBuilder(event.getRelationDestinationType());
+        if (destbuilder == null) {
+          return false;
+        }
         for (MMObjectBuilder parent : destbuilder.getAncestors()) {
             if (typeCounters.containsKey(parent.getTableName())) {
                 return true;
