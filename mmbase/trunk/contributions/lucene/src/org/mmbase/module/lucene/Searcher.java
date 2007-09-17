@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.35 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: Searcher.java,v 1.36 2007-09-17 08:19:49 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -289,7 +289,9 @@ public class Searcher implements NewSearcher.Listener {
             booleanQuery.add(extraQuery, BooleanClause.Occur.MUST);
             query = booleanQuery;
         }
-        return getSearcher().search(query, filter, sort);
+        IndexSearcher searcher = getSearcher();
+        if (searcher == null) throw new RuntimeException("No IndexSearcher found for " + this);
+        return searcher.search(query, filter, sort);
     }
 
 
@@ -376,6 +378,10 @@ public class Searcher implements NewSearcher.Listener {
      */
     public long getNumberOfProducedNodes() {
         return producedNodes;
+    }
+
+    public String toString() {
+        return "searcher[" + index.getName() + "]";
     }
 
 }
