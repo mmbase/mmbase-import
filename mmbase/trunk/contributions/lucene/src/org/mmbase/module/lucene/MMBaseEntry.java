@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.21 2007-07-23 17:35:53 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.22 2007-09-17 09:01:31 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -90,7 +90,7 @@ public class MMBaseEntry implements IndexEntry {
             //for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
             for (FieldIterator i = node.getNodeManager().getFields().fieldIterator(); i.hasNext();) {
                 org.mmbase.bridge.Field field = i.nextField();
-                if (field.getName().indexOf(".") >=0 ) continue;
+                if (field.getName().indexOf(".") >= 0 ) continue;
                 if (id.equals(field.getName())) continue; // was added already
                 Node subNode = node.getNodeValue(field.getName());
                 document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
@@ -117,19 +117,19 @@ public class MMBaseEntry implements IndexEntry {
             if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
                 String value = getFieldDataAsString(data, fieldName);
                 if (fieldDefinition.keyWord) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("add " + fieldName + " text, keyword" + value);
+                    if (log.isTraceEnabled()) {
+                        log.trace("add " + fieldName + " text, keyword" + value);
                     }
                     Indexer.addField(document, new Field(fieldName, value, Field.Store.YES, Field.Index.UN_TOKENIZED), fieldDefinition.multiple);
                 } else if (fieldDefinition.storeText) {
-                    if (log.isDebugEnabled()) {
+                    if (log.isTraceEnabled()) {
                         log.trace("add " + fieldName + " text, store");
                     }
                     Field field = new Field(fieldName, value, Field.Store.YES, Field.Index.TOKENIZED);
                     field.setBoost(fieldDefinition.boost);
                     Indexer.addField(document, field, fieldDefinition.multiple);
                 } else {
-                    if (log.isDebugEnabled()) {
+                    if (log.isTraceEnabled()) {
                         log.trace("add " + fieldName + " text, no store");
                     }
                     Field field = new Field(fieldName, value, Field.Store.NO, Field.Index.TOKENIZED);
@@ -139,7 +139,7 @@ public class MMBaseEntry implements IndexEntry {
             }
         }
         if (log.isDebugEnabled()) {
-            log.trace("Indexed " + data + " --> " + document);
+            log.debug("Indexed " + data + " --> " + document);
         }
     }
 
