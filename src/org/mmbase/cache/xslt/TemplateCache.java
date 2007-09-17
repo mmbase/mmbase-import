@@ -16,8 +16,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.ResourceWatcher;
 
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
+
 import javax.xml.transform.URIResolver;
 
 import org.mmbase.util.logging.Logger;
@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.15 2006-02-13 18:02:35 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.15.2.1 2007-09-17 11:38:10 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -92,45 +92,7 @@ public class TemplateCache extends Cache {
         super(size);
     }
 
-    /**
-     * Object to use as a key in the Caches.
-     * Contains the systemid of the XSLT object (if there is one)
-     * and the URIResolver.
-     */
-    private class Key {
-        private String  src;
-        private URIResolver uri;
-        Key(Source src, URIResolver uri) {
-            this.src = src.getSystemId();
-            this.uri = uri;
-        }
-        public boolean equals(Object o) {
-            if (o instanceof Key) {
-                Key k = (Key) o;
-                return  (src == null ? k.src == null : src.equals(k.src)) &&
-                        (uri == null ? k.uri == null : uri.equals(k.uri));
-            }
-            return false;
-        }
-        public int hashCode() {
-            return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
-        }
-        /**
-         * Returns File object or null
-         */
-        String getURL() {
-            if (src == null) return null;
-            try {
-                return src;
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        public String toString() {
-            return "" + src + "/" + uri;
-        }
 
-    }
 
     /**
      * Remove all entries associated wit a certain url (used by FileWatcher).
@@ -138,24 +100,31 @@ public class TemplateCache extends Cache {
      * @param  The file under concern
      * @return The number of cache entries removed
      */
-
     private int remove(String file) {
         int removed = 0;
-        Iterator i =  entrySet().iterator();
         if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + file);
-        while (i.hasNext()) {
-            Key mapKey = (Key) ((Map.Entry) i.next()).getKey();
-            if (mapKey.getURL().equals(file)) {
-                if(remove(mapKey) != null) {
-                    removed++;
-                } else {
-                    log.warn("Could not remove " + mapKey);
+        Set remove = new HashSet();
+        synchronized(this) {
+            Iterator i = entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Key mapKey = (Key) entry.getKey();
+                if (mapKey.getURL().equals(file)) {
+                    remove.add(mapKey);
                 }
+            }
+        }
+        Iterator i = remove.iterator();
+        while (i.hasNext()) {
+            Key mapKey = (Key) i.next();
+            if(remove(mapKey) != null) {
+                removed++;
+            } else {
+                log.warn("Could not remove " + mapKey);
             }
         }
         return removed;
     }
-
 
     public Templates getTemplates(Source src) {
         return getTemplates(src, null);
@@ -243,3 +212,44 @@ public class TemplateCache extends Cache {
     }
 
 }
+
+/**
+ * Object to use as a key in the Caches.
+ * Contains the systemid of the XSLT object (if there is one)
+ * and the URIResolver.
+ */
+class Key {
+    private String  src;
+    private URIResolver uri;
+    Key(Source src, URIResolver uri) {
+        this.src = src.getSystemId();
+        this.uri = uri;
+    }
+    public boolean equals(Object o) {
+        if (o instanceof Key) {
+            Key k = (Key) o;
+            return  (src == null ? k.src == null : src.equals(k.src)) &&
+                (uri == null ? k.uri == null : uri.equals(k.uri));
+        }
+        return false;
+    }
+    public int hashCode() {
+        return 32 * (src == null ? 0 : src.hashCode()) + (uri == null ? 0 : uri.hashCode());
+    }
+    /**
+     * Returns File object or null
+     */
+    String getURL() {
+        if (src == null) return null;
+        try {
+            return src;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    public String toString() {
+        return "" + src + "/" + uri;
+    }
+
+}
+
