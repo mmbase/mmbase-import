@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.23 2007-09-17 09:04:00 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.24 2007-09-17 09:18:16 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -321,14 +321,14 @@ public class MMBaseEntry implements IndexEntry {
      * @param data The map of fieldName/value mappings
      */
     void storeFieldTextData(Map<String, Object> data, String fieldName, String value) {
-        StringBuffer sb = null;
+        StringBuilder sb = null;
         try {
-            sb = (StringBuffer) data.get(fieldName);
+            sb = (StringBuilder) data.get(fieldName);
         } catch (ClassCastException cce) {
             log.warn("Tried to store data of '" + fieldName + "' as a standard index, but data was already stored as a special index");
         }
         if (sb == null) {
-            sb = new StringBuffer();
+            sb = new StringBuilder();
         } else {
             sb.append(" ");
         }

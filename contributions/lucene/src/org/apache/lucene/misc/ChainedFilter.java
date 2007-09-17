@@ -226,7 +226,7 @@ public class ChainedFilter extends Filter
 
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("ChainedFilter: [");
         for (int i = 0; i < chain.length; i++)
         {
