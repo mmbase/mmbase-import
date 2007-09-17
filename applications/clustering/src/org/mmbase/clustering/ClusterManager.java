@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.34 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: ClusterManager.java,v 1.35 2007-09-17 16:54:03 pierre Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -327,7 +327,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
             try {
                 EventManager.getInstance().propagateEvent(event);
             } catch (Throwable t) {
-                log.error("Exception during propegation of event: " + event + ": " + t.getMessage(), t);
+                log.error("Exception during propagation of event: " + event + ": " + t.getMessage(), t);
             }
         }
     }
