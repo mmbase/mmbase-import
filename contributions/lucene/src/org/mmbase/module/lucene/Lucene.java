@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.89 2007-09-17 09:02:00 michiel Exp $
+ * @version $Id: Lucene.java,v 1.90 2007-09-17 09:04:00 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -82,7 +82,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected final static Parameter/*<Class>*/ CLASS = new Parameter("class", Class.class, IndexDefinition.class);
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
- 
+
     protected final static Parameter/*<String>*/ SORTFIELDS = new Parameter("sortfields", String.class);
     protected final static Parameter/*<String>*/ FIELDS     = new Parameter("fields", String.class);
     protected final static Parameter/*<String>*/ ANALYZER   = new Parameter("analyzer", String.class);
@@ -262,7 +262,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(statusDescriptionFunction);
     }
-    
+
     //protected Function <Scheduler.Assignment> assignmentFunction = new AbstractFunction<Scheduler.Assignment/ ("assignment") {
     protected Function /*<Scheduler.Assignment>*/ assignmentFunction = new AbstractFunction /*<Scheduler.Assignment>*/ ("assignment", Parameter.EMPTY, ReturnType.UNKNOWN) {
         public Scheduler.Assignment getFunctionValue(Parameters arguments) {
@@ -366,11 +366,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 Cloud cloud         = (Cloud) arguments.get(Parameter.CLOUD);
                 cloud.setProperty(Cloud.PROP_XMLMODE, "flat"); //
                 try {
-                    return getSearcher(index).search(cloud, value, 
+                    return getSearcher(index).search(cloud, value,
                                                      Searcher.createFilter(filter),
-                                                     Searcher.getSort(sortFieldArray), 
+                                                     Searcher.getSort(sortFieldArray),
                                                      analyzer,
-                                                     Searcher.createQuery(extraConstraints), 
+                                                     Searcher.createQuery(extraConstraints),
                                                      fieldArray,
                                                      offset, max);
                 } catch (ParseException pe) {
@@ -469,7 +469,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         addFunction(lastFullIndexFunction);
 
         //addFunction(new AbstractFunction<Indexer>("default") {
-        addFunction(new AbstractFunction/*<Indexer>*/("default", Parameter.EMPTY, ReturnType.UNKNOWN){ 
+        addFunction(new AbstractFunction/*<Indexer>*/("default", Parameter.EMPTY, ReturnType.UNKNOWN){
                 public Indexer getFunctionValue(Parameters arguments) {
                     return indexerMap.get(defaultIndex);
                 }
@@ -549,9 +549,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     }
                     if (readOnlySetting != null) {
                         if (readOnlySetting.startsWith("host:")) {
-                            String host = readOnlySetting.substring(5); 
+                            String host = readOnlySetting.substring(5);
                             try {
-                                boolean write = 
+                                boolean write =
                                     java.net.InetAddress.getLocalHost().getHostName().equals(host) ||
                                     (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName()).equals(host);
                                 readOnly = ! write;
