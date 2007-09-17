@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.22 2007-09-17 09:01:31 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.23 2007-09-17 09:04:00 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -84,7 +84,7 @@ public class MMBaseEntry implements IndexEntry {
     protected void addStandardKeys(Document document) {
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
         String id = getIdentifier();
-        document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
+        document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED));
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
             //for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
@@ -157,7 +157,7 @@ public class MMBaseEntry implements IndexEntry {
         }
         return n;
     }
-    
+
     protected String getRealField(IndexFieldDefinition fd) {
         String fieldName = fd.fieldName;
         String realFieldName = fieldName;
@@ -222,82 +222,82 @@ public class MMBaseEntry implements IndexEntry {
                 }
                 String documentText = null;
                 switch (type) {
-                    case org.mmbase.bridge.Field.TYPE_DATETIME : {
-                        try {
-                            documentText = DATE_FORMAT.format(n.getDateValue(fieldName));
-                        } catch (Exception e) {
-                            // can't index dates prior to 1970, pretty dumb if you ask me
-                        }
-                        break;
+                case org.mmbase.bridge.Field.TYPE_DATETIME : {
+                    try {
+                        documentText = DATE_FORMAT.format(n.getDateValue(fieldName));
+                    } catch (Exception e) {
+                        // can't index dates prior to 1970, pretty dumb if you ask me
                     }
-                    case org.mmbase.bridge.Field.TYPE_BOOLEAN : {
-                        if (log.isDebugEnabled()) {
-                            log.trace("add " + alias + " keyword:" + n.getIntValue(fieldName));
-                        }
-                        documentText = "" + n.getIntValue(fieldName);
-                        break;
+                    break;
+                }
+                case org.mmbase.bridge.Field.TYPE_BOOLEAN : {
+                    if (log.isDebugEnabled()) {
+                        log.trace("add " + alias + " keyword:" + n.getIntValue(fieldName));
                     }
-                    case org.mmbase.bridge.Field.TYPE_NODE :
-                    case org.mmbase.bridge.Field.TYPE_INTEGER :
-                    case org.mmbase.bridge.Field.TYPE_LONG :
-                    case org.mmbase.bridge.Field.TYPE_DOUBLE :
-                    case org.mmbase.bridge.Field.TYPE_FLOAT : {
-                        documentText =  node.getStringValue(fieldName);
-                        break;
+                    documentText = "" + n.getIntValue(fieldName);
+                    break;
+                }
+                case org.mmbase.bridge.Field.TYPE_NODE :
+                case org.mmbase.bridge.Field.TYPE_INTEGER :
+                case org.mmbase.bridge.Field.TYPE_LONG :
+                case org.mmbase.bridge.Field.TYPE_DOUBLE :
+                case org.mmbase.bridge.Field.TYPE_FLOAT : {
+                    documentText =  node.getStringValue(fieldName);
+                    break;
+                }
+                case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
+                    log.debug("field type for " + fieldName + " was unknonw");
+                case org.mmbase.bridge.Field.TYPE_BINARY : {
+                    String mimeType = "unknown";
+                    try {
+                        mimeType = "" + getNode(fieldDefinition).getFunctionValue("mimetype", null);
+                    } catch (NotFoundException nfe) {
+                        log.warn("No mimetype-function found for node '" + n + "' with binary field '" + fieldName + "'");
+                        //
                     }
-                    case org.mmbase.bridge.Field.TYPE_UNKNOWN : // unknown field may be binary
-                        log.debug("field type for " + fieldName + " was unknonw");
-                    case org.mmbase.bridge.Field.TYPE_BINARY : {
-                        String mimeType = "unknown";                        
-                        try {
-                            mimeType = "" + getNode(fieldDefinition).getFunctionValue("mimetype", null);
-                        } catch (NotFoundException nfe) {
-                            log.warn("No mimetype-function found for node '" + n + "' with binary field '" + fieldName + "'");
-                            //
-                        }
-                        Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
-                        
-                        if (extractor != null) {
-                            InputStream input = n.getInputStreamValue(fieldName);
-                            
-                            if (log.isServiceEnabled()) {
-                                //byte[] help = n.getByteValue(fieldName);                            
-                                log.service("Analyzing document of " + getNode(fieldDefinition).getNumber() + " with " + extractor.getClass().getName().substring(extractor.getClass().getName().lastIndexOf(".") + 1) + " " + mimeType + ":" + n.getSize(fieldName) + " " + input.getClass());
-                                
-                            }
-                            
-                            try {
-                                documentText = extractor.extract(input);
-                            } catch (Exception e) {
-                                if (log.isDebugEnabled()) {
-                                    log.warn(e.getMessage(), e);
-                                } else {
-                                    log.warn(e.getClass() + ": " + e.getMessage());
-                                }
-                                extractor = ContentExtractor.getInstance().findExtractor("application/octet-stream");
-                                if (extractor != null) {
-                                    log.service("Retrying with " + extractor.getClass().getName().substring(extractor.getClass().getName().lastIndexOf(".") + 1));
-                                    try {
-                                        input = n.getInputStreamValue(fieldName);
-                                        documentText = extractor.extract(input);
-                                    } catch (Exception e2) {
-                                        log.error("Not successfull: " + e2.getMessage());
-                                    }
-                                }
+                    Extractor extractor = ContentExtractor.getInstance().findExtractor(mimeType);
 
+                    if (extractor != null) {
+                        InputStream input = n.getInputStreamValue(fieldName);
+
+                        if (log.isServiceEnabled()) {
+                            //byte[] help = n.getByteValue(fieldName);
+                            log.service("Analyzing document of " + getNode(fieldDefinition).getNumber() + " with " + extractor.getClass().getName().substring(extractor.getClass().getName().lastIndexOf(".") + 1) + " " + mimeType + ":" + n.getSize(fieldName) + " " + input.getClass());
+
+                        }
+
+                        try {
+                            documentText = extractor.extract(input);
+                        } catch (Exception e) {
+                            if (log.isDebugEnabled()) {
+                                log.warn(e.getMessage(), e);
+                            } else {
+                                log.warn(e.getClass() + ": " + e.getMessage());
                             }
-                        } else  {
-                            log.warn("Cannot read document: unknown mimetype '" + mimeType + "' of node " + n.getNumber() + ", trying stringvalue");
-                            documentText = n.getStringValue(fieldName);
+                            extractor = ContentExtractor.getInstance().findExtractor("application/octet-stream");
+                            if (extractor != null) {
+                                log.service("Retrying with " + extractor.getClass().getName().substring(extractor.getClass().getName().lastIndexOf(".") + 1));
+                                try {
+                                    input = n.getInputStreamValue(fieldName);
+                                    documentText = extractor.extract(input);
+                                } catch (Exception e2) {
+                                    log.error("Not successfull: " + e2.getMessage());
+                                }
+                            }
+
                         }
-                        break;
-                    }
-                    default: {
-                        if (log.isDebugEnabled()) {
-                            log.trace("index " + alias + " as text");
-                        }
+                    } else  {
+                        log.warn("Cannot read document: unknown mimetype '" + mimeType + "' of node " + n.getNumber() + ", trying stringvalue");
                         documentText = n.getStringValue(fieldName);
                     }
+                    break;
+                }
+                default: {
+                    if (log.isDebugEnabled()) {
+                        log.trace("index " + alias + " as text");
+                    }
+                    documentText = n.getStringValue(fieldName);
+                }
                 }
                 if (log.isTraceEnabled()) {
                     log.trace("Storing  " + documentText);
