@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.15 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.16 2007-09-17 08:52:54 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -62,9 +62,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
-        Iterator<Step> i = query.getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = i.next();
+        for (Step step : query.getSteps()) {
             String table = step.getTableName();
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
