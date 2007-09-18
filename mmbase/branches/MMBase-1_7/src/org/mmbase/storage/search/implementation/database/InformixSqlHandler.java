@@ -35,7 +35,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.8.2.10 2007-09-11 08:48:07 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.8.2.11 2007-09-18 13:22:50 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -798,13 +798,5 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
     }
 
-    /**
-     * @since MMBase-1.8.5
-     */
-    protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
-        // case insensitive
-        sb.append("lowercaseNotInvariant(");
-        appendField(sb, step, fieldName, includeTablePrefix);
-        sb.append(')');
-    }
+
 }
