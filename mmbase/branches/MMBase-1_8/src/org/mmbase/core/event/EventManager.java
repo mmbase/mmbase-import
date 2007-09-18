@@ -27,7 +27,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
  * manager is instantiated, event brokers are added for Event, NodeEvent and RelationEvent
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.12.2.2 2007-08-02 09:55:41 michiel Exp $
+ * @version $Id: EventManager.java,v 1.12.2.3 2007-09-18 12:03:09 michiel Exp $
  */
 public class EventManager {
 
@@ -133,7 +133,7 @@ public class EventManager {
     /**
      * @since MMBase-1.8.5
      */
-     
+
     public Collection getBrokers() {
         return Collections.unmodifiableSet(eventBrokers);
     }
@@ -211,17 +211,17 @@ public class EventManager {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
                     if (log.isTraceEnabled()) {
-                        log.trace("event: " + event + " has been accepted by broker " + broker);
+                        log.trace("event from '" + event.getMachine() + "': " + event + " has been accepted by broker " + broker);
                     } else {
-                        log.debug("event has been accepted by broker " + broker);
+                        log.debug("event from '" + event.getMachine() + "' has been accepted by broker " + broker);
                     }
                 }
             } else {
                 if (log.isDebugEnabled()) {
                     if (log.isTraceEnabled()) {
-                        log.trace("event: " + event + " has been rejected by broker " + broker);
+                        log.trace("event from '" + event.getMachine() + "': " + event + " has been rejected by broker " + broker);
                     } else {
-                        log.debug("event has been rejected by broker " + broker);
+                        log.debug("event from '" + event.getMachine() + "' has been rejected by broker " + broker);
                     }
                 }
             }
