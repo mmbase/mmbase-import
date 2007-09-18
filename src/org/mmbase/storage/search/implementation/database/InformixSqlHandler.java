@@ -39,7 +39,7 @@ import org.mmbase.module.database.MultiConnection;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.25.2.3 2007-09-11 10:14:30 michiel Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.25.2.4 2007-09-18 11:40:59 michiel Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -828,13 +828,4 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
     }
 
-    /**
-     * @since MMBase-1.8.5
-     */
-    protected void appendLowerField(StringBuffer sb, Step step, String fieldName, boolean includeTablePrefix) {
-        // case insensitive
-        sb.append("lowercaseNotInvariant(");
-        appendField(sb, step, fieldName, includeTablePrefix);
-        sb.append(')');
-    }
 }
