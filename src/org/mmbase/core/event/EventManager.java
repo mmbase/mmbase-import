@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: EventManager.java,v 1.24 2007-08-01 09:18:47 michiel Exp $
+ * @version $Id: EventManager.java,v 1.25 2007-09-18 12:04:05 michiel Exp $
  */
 public class EventManager {
 
@@ -130,7 +130,7 @@ public class EventManager {
     /**
      * @since MMBase-1.8.5
      */
-     
+
     public Collection<EventBroker> getBrokers() {
         return Collections.unmodifiableSet(eventBrokers);
     }
@@ -207,17 +207,17 @@ public class EventManager {
                 broker.notifyForEvent(event);
                 if (log.isDebugEnabled()) {
                     if (log.isTraceEnabled()) {
-                        log.trace("event: " + event + " has been accepted by broker " + broker);
+                        log.trace("event from '" + event.getMachine() + "': " + event + " has been accepted by broker " + broker);
                     } else {
-                        log.debug("event has been accepted by broker " + broker);
+                        log.debug("event from '" + event.getMachine() + "' has been accepted by broker " + broker);
                     }
                 }
             } else {
                 if (log.isDebugEnabled()) {
                     if (log.isTraceEnabled()) {
-                        log.trace("event: " + event + " has been rejected by broker " + broker);
+                        log.trace("event from '" + event.getMachine() + "': " + event + " has been rejected by broker " + broker);
                     } else {
-                        log.debug("event has been rejected by broker " + broker);
+                        log.debug("event from '" + event.getMachine() + "' has been rejected by broker " + broker);
                     }
                 }
             }
