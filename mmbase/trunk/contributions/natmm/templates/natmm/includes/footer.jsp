@@ -6,7 +6,7 @@
       constraints="<%= "rubriek2.number = '" + subsiteID + "'" %>" fields="pagina.number,rubriek1.number">
      <mm:import id="search_page" jspvar="search_page"><mm:field name="pagina.number" /></mm:import>
      <mm:import id="search_rubriek" jspvar="search_rubriek"><mm:field name="rubriek1.number" /></mm:import>
-     <form action="<%= ph.createPaginaUrl(search_page,request.getContextPath()) %>" style="margin:0px 0px 0px 0px">
+     <form name="eventForm" action="<%= ph.createPaginaUrl(search_page,request.getContextPath()) %>" style="margin:0px 0px 0px 0px">
    </mm:related>
 </mm:node>
 <%
@@ -25,13 +25,13 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT || iRubriekLayout==NatMMConfig.DEM
          </mm:node>
       </td>
       <mm:present referid="search_page">
-         <input type="hidden" name="p" value="<mm:write referid="search_page" />">
-         <input type="hidden" name="r" value="<mm:write referid="search_rubriek" />">
+         <input type="hidden" name="offset" value="0"/>
+         <input type="hidden" name="pcontentype" value="0"/>
          <td width="196">
             <table cellspacing="0" cellpadding="0">
                <tr>
                   <td class="footerzoektext"><input type="submit" value="ZOEKEN" style="height:16px;border:0;color:#FFFFFF;background-color:#1D1E94;text-align:left;padding-left:10px;font-weight:bold;font-size:0.9em;" /></td>
-                  <td class="footerzoekbox"><input type="text" name="query" style="width:100%;height:14px;font-size:12px;border:none;" value="<%= (request.getParameter("query")==null ? "" : request.getParameter("query")) %>"></td>
+                  <td class="footerzoekbox"><input type="text" name="query_frm" style="width:100%;height:14px;font-size:12px;border:none;" value="<%= (request.getParameter("query_frm")==null ? "" : request.getParameter("query_frm")) %>"></td>
                   <td class="footerzoekbox"><input type="image" src="media/submit_default.gif" alt="ZOEK" align="middle" border="0"></td>
                </tr>
             </table>
@@ -50,13 +50,13 @@ if(iRubriekLayout==NatMMConfig.DEFAULT_LAYOUT || iRubriekLayout==NatMMConfig.DEM
             <mm:node number="<%= subsiteID %>"><mm:field name="naam_de" /></mm:node>
          </td>
          <mm:present referid="search_page">
-            <input type="hidden" name="p" value="<mm:write referid="search_page" />">
-            <input type="hidden" name="r" value="<mm:write referid="search_rubriek" />">
+            <input type="hidden" name="offset" value="0"/>
+            <input type="hidden" name="pcontentype" value="0"/>
             <td width="196px">
                <table cellspacing="0" cellpadding="0">
                   <tr>
                      <td class="footerzoektext" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="submit" value="ZOEKEN" style="height:19px;border:0;color:#FFFFFF;background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;text-align:left;padding-left:10px;padding-top:1px;font-weight:bold;font-size:0.9em;" /></td>
-                     <td class="footerzoekbox" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="text" name="query" style="width:100%;height:17px;font-size:12px;border:none;" value="<%= (request.getParameter("query")==null ? "" : request.getParameter("query")) %>"></td>
+                     <td class="footerzoekbox" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="text" name="query_frm" style="width:100%;height:17px;font-size:12px;border:none;" value="<%= (request.getParameter("query_frm")==null ? "" : request.getParameter("query_frm")) %>"></td>
                      <td class="footerzoekbox" style="background-color:#<%= NatMMConfig.color1[iRubriekStyle] %>;"><input type="image" src="media/submit_<%= NatMMConfig.style1[iRubriekStyle] %>.gif" alt="ZOEK" align="middle" border="0"></td>
                   </tr>
                </table>
