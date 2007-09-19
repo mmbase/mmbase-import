@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.104 2007-06-19 21:04:50 michiel Exp $
+ * @version $Id: Casting.java,v 1.105 2007-09-19 15:05:18 michiel Exp $
  */
 
 import java.util.*;
@@ -36,6 +36,9 @@ import org.mmbase.util.xml.XMLWriter;
 import org.w3c.dom.*;
 
 public class Casting {
+
+    private static final Logger log = Logging.getLoggerInstance(Casting.class);
+
 
     /**
      * A Date formatter that creates a date based on a ISO 8601 date and a ISO 8601 time.
@@ -67,7 +70,11 @@ public class Casting {
         new ThreadLocal<DateFormat>() {
         protected synchronized DateFormat initialValue() {
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-                df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                try {
+                    df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                } catch (Throwable t) {
+                    log.warn(t.getMessage(), t);
+                }
                 return df;
             }
     };
@@ -86,9 +93,6 @@ public class Casting {
     };
 
 
-
-
-    private static final Logger log = Logging.getLoggerInstance(Casting.class);
 
     /**
      * Returns whether the passed object is of the given class.
@@ -286,7 +290,7 @@ public class Casting {
         return buffer;
     }
 
-    private static org.mmbase.storage.search.implementation.database.BasicSqlHandler sqlHandler = 
+    private static org.mmbase.storage.search.implementation.database.BasicSqlHandler sqlHandler =
         new org.mmbase.storage.search.implementation.database.BasicSqlHandler();
     /**
      * Convert an object to a string, using a Writer.
@@ -1010,11 +1014,11 @@ public class Casting {
         public Iterator iterator() { return list.iterator(); }
         public ListIterator listIterator() { return list.listIterator(); }
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             Iterator i = list.iterator();
             boolean hasNext = i.hasNext();
             while (hasNext) {
-                Casting.toStringBuffer(buf, i.next());
+                Casting.toStringBuilder(buf, i.next());
                 hasNext = i.hasNext();
                 if (hasNext) {
                     buf.append(',');
@@ -1038,11 +1042,11 @@ public class Casting {
         }
         public Node get(int index) { return (Node) Casting.wrap(super.get(index), escaper); }
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             Iterator<Node> i = iterator();
             boolean hasNext = i.hasNext();
             while (hasNext) {
-                Casting.toStringBuffer(buf, i.next());
+                Casting.toStringBuilder(buf, i.next());
                 hasNext = i.hasNext();
                 if (hasNext) {
                     buf.append(',');
