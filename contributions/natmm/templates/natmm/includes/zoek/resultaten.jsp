@@ -39,7 +39,7 @@
       <table width="100%" border="0" cellpadding="0" cellspacing="0">
          <tr>
             <td class="maincolor" style="width:177px;padding:5px;line-height:0.85em;">&nbsp;ZOEKTERM&nbsp;</td>
-            <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;">
+            <td class="maincolor" style="width:210px;padding:0px;padding-right:1px;vertical-align:top;">
                <input name="query_frm" type="text" value="<%= ( sQuery == null ? "" : sQuery ) %>" style="width:100%;border:0">
             </td>
          </tr>
@@ -48,7 +48,7 @@
          </tr>
          <tr>
             <td class="maincolor" style="width:177px;padding:5px;line-height:0.85em;">&nbsp;ZOEK NAAR&nbsp;</td>         
-            <td class="maincolor" style="width:177px;padding:0px;vertical-align:top;">
+            <td class="maincolor" style="width:210px;padding:0px;vertical-align:top;">
                <select name="pcontentype" style="width:100%;border:0;font-size:12px;" />
                <%
                   Map contentTypes = new TreeMap();
