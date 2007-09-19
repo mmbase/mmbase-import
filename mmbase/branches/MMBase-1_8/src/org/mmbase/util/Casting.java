@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.89 2006-07-26 09:08:01 michiel Exp $
+ * @version $Id: Casting.java,v 1.89.2.1 2007-09-19 13:29:11 michiel Exp $
  */
 
 import java.util.*;
@@ -37,6 +37,9 @@ import org.mmbase.util.xml.XMLWriter;
 import org.w3c.dom.*;
 
 public class Casting {
+
+    private static final Logger log = Logging.getLoggerInstance(Casting.class);
+
 
     /**
      * A Date formatter that creates a date based on a ISO 8601 date and a ISO 8601 time.
@@ -61,7 +64,11 @@ public class Casting {
      */
     public final static DateFormat ISO_8601_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
     static {
-        ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            ISO_8601_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+        } catch (Throwable t) {
+            log.warn(t.getMessage(), t);
+        }
     }
 
     public final static DateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -69,7 +76,6 @@ public class Casting {
 
 
 
-    private static final Logger log = Logging.getLoggerInstance(Casting.class);
 
     /**
      * Returns whether the passed object is of the given class.
@@ -189,7 +195,10 @@ public class Casting {
                     // just to avoid the error
                     return null;
                 }
-                log.error("Dont now how to convert to " + type);
+                log.error("Dont now how to convert '" + value.getClass() + " to " + type);
+                if (log.isDebugEnabled()) {
+                    log.debug("cause: ", new Exception());
+                }
                 // don't know
                 return value;
             }
@@ -416,7 +425,7 @@ public class Casting {
      * Transforms an object to a collection. If the object is a collection already, then nothing
      * happens. If it is a Map, then the 'entry set' is returned. A string is interpreted as a
      * comma-separated list of strings. Other objects are wrapped in an ArrayList with one element.
-     * 
+     *
      * @since MMBase-1.8
      */
     public static Collection toCollection(Object o) {
