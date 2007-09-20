@@ -18,5 +18,7 @@
 	    <xsl:when test="not($maxoccurs = '*')">Selecteer ten hoogste <xsl:value-of select="$maxoccurs"/> elementen</xsl:when>
     </xsl:choose>
   </xsl:template>
+  
+  <xsl:template name="prompt_new">nieuw</xsl:template>
 
 </xsl:stylesheet>
