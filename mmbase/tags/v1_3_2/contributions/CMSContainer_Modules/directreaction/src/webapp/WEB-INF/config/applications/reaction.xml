@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="reaction" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+   </requirements>
+   <neededbuilderlist>
+
+      <builder maintainer="finalist.com" version="1">reaction</builder>
+    </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+
+   <allowedrelationlist>
+        <relation from="contentelement" to="reaction" type="posrel" />
+   </allowedrelationlist>
+   
+   <datasourcelist>
+   </datasourcelist>
+   
+   <relationsourcelist>
+   </relationsourcelist>
+   
+   <contextsourcelist>
+   </contextsourcelist>
+</application>
