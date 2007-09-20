@@ -9,6 +9,7 @@
 
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/list.xsl"/>
+   <xsl:import href="templatesi18n:xsl/prompts-cmsc.xsl"/>
 
   <xsl:template name="colorstyle">
     <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/color/list.css" />
@@ -108,7 +109,4 @@
   <xsl:template name="prompt_delete">
   </xsl:template>
   
-  <xsl:template name="prompt_new">
-    nieuw
-  </xsl:template>
 </xsl:stylesheet>

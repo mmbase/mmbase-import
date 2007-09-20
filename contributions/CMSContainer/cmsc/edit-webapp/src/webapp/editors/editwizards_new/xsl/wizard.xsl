@@ -38,7 +38,7 @@
 
 <!-- CMSC-446: fix for date picker, so it won't always popup when pressing enter in an input -->
   <xsl:template name="date-picker">
-    <img class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , document.forms[0], 'internal_{@fieldname}',event);return false;"/>
+    <img class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onclick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , document.forms[0], 'internal_{@fieldname}',event);return false;"/>
   </xsl:template>
   
 
@@ -222,7 +222,9 @@
                   <xsl:apply-templates select="."/>
                 </div>
               </div>
+              <table style="width: 100%">
               <xsl:call-template name="listtable"/>
+              </table>
             </td>
           </tr>
         </xsl:when>
@@ -340,9 +342,7 @@
     What to do with 'lists'.
   -->
   <xsl:template name="colordiv">
-    <xsl:attribute name="class">
-      ruler<xsl:value-of select="position()"/>
-    </xsl:attribute>
+    <xsl:attribute name="class">ruler<xsl:value-of select="position()"/></xsl:attribute>
   </xsl:template>
   
   <xsl:template match="list">
@@ -441,7 +441,7 @@
               <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
             </td>
             <td>
-              <a href="#" title="{$tooltip_search}" onClick="doSearch(this,&apos;{../command[@name=&apos;add-item&apos;]/@cmd}&apos;,&apos;{$sessionkey}&apos;);" class="button">
+              <a href="#" title="{$tooltip_search}" onclick="doSearch(this,&apos;{../command[@name=&apos;add-item&apos;]/@cmd}&apos;,&apos;{$sessionkey}&apos;);" class="button">
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
@@ -491,8 +491,16 @@
       
     <xsl:for-each select="list">
       <tr class="listcanvas">
-        <td colspan="3">
-          <xsl:apply-templates select="." />
+        <td colspan="3" style="padding-left: 50px;">
+              <div>
+                <xsl:call-template name="colordiv"/>
+                <div>
+                  <xsl:apply-templates select="." />
+                </div>
+              </div>
+        <table width="100%">
+          <xsl:call-template name="listtable"/>
+          </table>
         </td>
       </tr>
     </xsl:for-each>
