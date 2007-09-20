@@ -52,6 +52,7 @@
 
 		<action path="/editors/usermanagement/DeleteUserAction" type="com.finalist.cmsc.security.forms.DeleteUserAction"
 			unknown="false" validate="false">
+			<forward name="changedLanguage" path="/editors/usermanagement/changelanguage.jsp" redirect="false" />
          	<forward name="success" path="/editors/usermanagement/userlist.jsp" redirect="false" />
 		</action>
 		<action path="/editors/usermanagement/UserAction" type="com.finalist.cmsc.security.forms.UserAction"

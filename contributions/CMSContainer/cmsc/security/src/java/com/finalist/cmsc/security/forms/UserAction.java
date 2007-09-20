@@ -43,7 +43,7 @@ public class UserAction extends MMBaseAction {
          
          String oldLanguage = userNode.getStringValue("language");
          String newLanguage = userForm.getLanguage();
-         changedOwnLanguage = changedOwnPassword(oldLanguage, newLanguage, cloud, userNode);
+         changedOwnLanguage = changedOwnLanguage(oldLanguage, newLanguage, cloud, userNode);
          userNode.setStringValue("language", newLanguage);
          
          
@@ -107,7 +107,7 @@ public class UserAction extends MMBaseAction {
        }
    }
 
-	private boolean changedOwnPassword(String oldLanguage, String newLanguage, Cloud cloud, Node userNode) {
+	private boolean changedOwnLanguage(String oldLanguage, String newLanguage, Cloud cloud, Node userNode) {
 		
 		if(cloud.getUser().getIdentifier().equals(userNode.getStringValue("username"))) {
 			if(oldLanguage == null) oldLanguage = "";
