@@ -6,7 +6,7 @@
       constraints="<%= "rubriek2.number = '" + subsiteID + "'" %>" fields="pagina.number,rubriek1.number">
      <mm:import id="search_page" jspvar="search_page"><mm:field name="pagina.number" /></mm:import>
      <mm:import id="search_rubriek" jspvar="search_rubriek"><mm:field name="rubriek1.number" /></mm:import>
-     <form name="eventForm" action="<%= ph.createPaginaUrl(search_page,request.getContextPath()) %>" style="margin:0px 0px 0px 0px">
+     <form action="<%= ph.createPaginaUrl(search_page,request.getContextPath()) %>" style="margin:0px 0px 0px 0px">
    </mm:related>
 </mm:node>
 <%
