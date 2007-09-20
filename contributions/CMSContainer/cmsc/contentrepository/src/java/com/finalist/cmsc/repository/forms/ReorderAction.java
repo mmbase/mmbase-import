@@ -39,17 +39,17 @@ public class ReorderAction extends MMBaseFormlessAction {
                 if (!isCancelled(request)) {
                     String ids = request.getParameter("ids");
                     ids = reverseIds(ids);
-                    RepositoryUtil.reorderContent(cloud, parent, ids);
-                    Node parentNode = cloud.getNode(parent);
-
-                    List<Node> nodes = new ArrayList<Node>();
-                    StringTokenizer tokenizer = new StringTokenizer(ids, ",");
-                    while (tokenizer.hasMoreTokens()) {
-                        String nodeId = tokenizer.nextToken();
-                        Node contentNode = cloud.getNode(nodeId);
-                        nodes.add(contentNode);
+                    List<Integer> changeNumbers = RepositoryUtil.reorderContent(cloud, parent, ids);
+                    if (!changeNumbers.isEmpty()) {
+                        Node parentNode = cloud.getNode(parent);
+                        List<Node> nodes = new ArrayList<Node>();
+                        for(int changeNodeNumber : changeNumbers) {
+                            Node contentNode = cloud.getNode(changeNodeNumber);
+                            nodes.add(contentNode);
+                        }
+                        
+                        Workflow.create(parentNode, "", nodes);
                     }
-                    Workflow.create(parentNode, "", nodes);
                 }
                 String returnurl = request.getParameter("returnurl");
                 if(returnurl != null) {
@@ -66,15 +66,18 @@ public class ReorderAction extends MMBaseFormlessAction {
                 if (!StringUtil.isEmptyOrWhitespace(direction) && direction.equalsIgnoreCase("down")) {
                    ids = reverseIds(ids).split(",");
                 }
-                RepositoryUtil.reorderContent(cloud, parent, ids, Integer.parseInt(offsetStr));
-                Node parentNode = cloud.getNode(parent);
-                
-                List<Node> nodes = new ArrayList<Node>();
-                for (String nodeId : ids) {
-                    Node contentNode = cloud.getNode(nodeId);
-                    nodes.add(contentNode);
+                List<Integer> changeNumbers = RepositoryUtil.reorderContent(cloud, parent, ids, Integer.parseInt(offsetStr));
+                if (!changeNumbers.isEmpty()) {
+
+                    Node parentNode = cloud.getNode(parent);
+                    
+                    List<Node> nodes = new ArrayList<Node>();
+                    for(int changeNodeNumber : changeNumbers) {
+                        Node contentNode = cloud.getNode(changeNodeNumber);
+                        nodes.add(contentNode);
+                    }
+                    Workflow.create(parentNode, "", nodes);
                 }
-                Workflow.create(parentNode, "", nodes);
                 return null;
             }
          }

@@ -324,26 +324,35 @@ public class RepositoryUtil {
      * @param cloud - MMbase cloud
      * @param parentNode - parent
      * @param children - new order 
+     * @return changed numbers
      */
-    public static void reorderContent(Cloud cloud, String parentNode, String children) {
+    public static List<Integer> reorderContent(Cloud cloud, String parentNode, String children) {
         Node parent = cloud.getNode(parentNode);
-        RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
+        return RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
     }
 
     /** Reorder content in channel
      * @param cloud - MMbase cloud
      * @param parentNode - parent
      * @param children - new order 
+     * @return changed numbers
      */
-    public static void reorderContent(Cloud cloud, String parentNode, String[] children) {
+    public static List<Integer> reorderContent(Cloud cloud, String parentNode, String[] children) {
         Node parent = cloud.getNode(parentNode);
-        RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
+        return RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT);
     }
 
 
-    public static void reorderContent(Cloud cloud, String parentNode, String[] children, int offset) {
+    /** Reorder content in channel
+     * @param cloud - MMbase cloud
+     * @param parentNode - parent
+     * @param children - new order
+     * @param offset - start reorder from this index
+     * @return changed numbers
+     */
+    public static List<Integer> reorderContent(Cloud cloud, String parentNode, String[] children, int offset) {
         Node parent = cloud.getNode(parentNode);
-        RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT, offset);
+        return RelationUtil.reorder(parent, children, CONTENTREL, CONTENTELEMENT, offset);
     }
 
 
