@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.13 2006-08-30 17:47:21 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.13.2.1 2007-09-20 13:23:06 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -64,6 +64,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     public LocalizedString getPattern() {
         return pattern;
     }
+
 
     private static final char DONTAPPEND = (char) -1;
     private static List parse(String p) {
@@ -226,7 +227,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             }
             return new Element("year",  Calendar.YEAR,  startYear, endYear) {
                 public int getNullValue() {
-                    return Integer.MAX_VALUE; 
+                    return Integer.MAX_VALUE;
                 }
             };
         }
@@ -364,7 +365,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         }
 
         /**
-         * Normally equivalent with <code>cal.getValue(getField())</code> 
+         * Normally equivalent with <code>cal.getValue(getField())</code>
          * @return The value for this element for a certain Calendar instance
          */
         public int getValue(Calendar cal) {

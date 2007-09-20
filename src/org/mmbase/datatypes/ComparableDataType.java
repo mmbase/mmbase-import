@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.21.2.1 2007-08-10 14:38:49 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.21.2.2 2007-09-20 13:23:06 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -117,22 +117,25 @@ public abstract class ComparableDataType extends BasicDataType {
 
     public void toXml(Element parent) {
         super.toXml(parent);
-        if (minRestriction.isInclusive()) {
-            getElement(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)")
-                .setAttribute("value", xmlValue(minRestriction.getValue()));
-        } else {
-            getElement(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)")
-                .setAttribute("value", xmlValue(minRestriction.getValue()));
+
+        if (minRestriction.getValue() != null) {
+            if (minRestriction.isInclusive()) {
+                addRestriction(parent, "(minInclusive|minExclusive)", "minInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+
+            } else {
+                addRestriction(parent, "(minExclusive|minInclusive)", "minExclusive",  "description,class,property,default,unique,required,(minInclusive|minExclusive)", minRestriction);
+            }
         }
-        if (maxRestriction.isInclusive()) {
-            getElement(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
-                .setAttribute("value", xmlValue(maxRestriction.getValue()));
-        } else {
-            getElement(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)")
-                .setAttribute("value", xmlValue(maxRestriction.getValue()));
+        if (maxRestriction.getValue() != null) {
+            if (maxRestriction.isInclusive()) {
+                addRestriction(parent, "(maxInclusive|maxExclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
+            } else {
+                addRestriction(parent, "(maxExclusive|maxInclusive)", "maxInclusive",   "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive)", maxRestriction);
+            }
         }
 
     }
+
 
     /**
      * Sets the minimum Date value for this data type.

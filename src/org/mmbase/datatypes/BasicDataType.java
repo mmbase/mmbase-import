@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.5 2007-08-03 14:46:51 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.6 2007-09-20 13:23:06 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -349,7 +349,7 @@ s     */
         for (int i = 0; i < nl.getLength(); i++) {
             org.w3c.dom.Node child = nl.item(i);
             if (child instanceof Element) {
-                if (p.matcher(child.getNodeName()).matches()) {
+                if (p.matcher(child.getLocalName()).matches()) {
                     el = (Element) child;
                     break;
                 }
@@ -358,30 +358,83 @@ s     */
         if (el == null) {
             el = parent.getOwnerDocument().createElementNS(XMLNS, name);
             DocumentReader.appendChild(parent, el, path);
-        }        
+        } else if (! el.getLocalName().equals(name)) {
+            Element newChild = parent.getOwnerDocument().createElementNS(XMLNS, name);
+            parent.replaceChild(newChild, el);
+            el = newChild;
+        }
         return el;
     }
+
+    protected String getEnforceString(int enforce) {
+        switch(enforce) {
+        case DataType.ENFORCE_ABSOLUTE: return "absolute";
+        case DataType.ENFORCE_ALWAYS:   return "always";
+        case DataType.ENFORCE_ONCHANGE: return "onchange";
+        case DataType.ENFORCE_ONCREATE: return "oncreate";
+        case DataType.ENFORCE_NEVER:    return "never";
+        default:                        return "???";
+        }
+    }
+
+    protected  Element addRestriction(Element parent,  String name, String path, Restriction restriction) {
+        return addRestriction(parent, name, name, path, restriction);
+    }
+    protected  Element addRestriction(Element parent, String pattern, String name, String path, Restriction restriction) {
+        Element el = addErrorDescription(getElement(parent, pattern, name,   path), restriction);
+        xmlValue(el, restriction.getValue());
+        el.setAttribute("enforce", getEnforceString(restriction.getEnforceStrength()));
+        return el;
+    }
+
 
     protected Element addErrorDescription(Element el, Restriction r)  {
         r.getErrorDescription().toXml("description", DataType.XMLNS, el, "");
         return el;
     }
 
-    protected String xmlValue(Object value) {
-        return Casting.toString(value);
+    protected void xmlValue(Element el, Object value) {
+        el.setAttribute("value", Casting.toString(value));
     }
 
     public void toXml(Element parent) {
         parent.setAttribute("id", getName());
+
         description.toXml("description", XMLNS, parent, "description");
-        getElement(parent, "class",    "description,class").setAttribute("name", getClass().getName());
-        getElement(parent, "default",  "description,class,property,default").setAttribute("value", xmlValue(defaultValue));
-        
-        addErrorDescription(getElement(parent, "unique",   "description,class,property,default,unique"), uniqueRestriction).
-            setAttribute("value", "" + uniqueRestriction.isUnique());
-        
+
+        {
+            Element classElement = getElement(parent, "class",    "description,class");
+            classElement.setAttribute("name", getClass().getName());
+
+            StringBuffer extend = new StringBuffer();
+            Class  sup = getClass().getSuperclass();
+            while(DataType.class.isAssignableFrom(sup)) {
+                if (extend.length() > 0) extend.append(',');
+                extend.append(sup.getName());
+                sup = sup.getSuperclass();
+            }
+            Class[] ifs = getClass().getInterfaces();
+            for (int i = 0 ; i < ifs.length; i++) {
+                Class c = ifs[i];
+                if (DataType.class.isAssignableFrom(c)) {
+                    if (extend.length() > 0) extend.append(',');
+                    extend.append(c.getName());
+                }
+            }
+            classElement.setAttribute("extends", extend.toString());
+        }
+
+
+
+        xmlValue(getElement(parent, "default",  "description,class,property,default"), defaultValue);
+
+        addRestriction(parent, "unique",   "description,class,property,default,unique", uniqueRestriction);
+        addRestriction(parent, "required",   "description,class,property,default,unique,required", requiredRestriction);
         getElement(parent, "enumeration", "description,class,property,default,unique,required,enumeration");
         /// set this here...
+
+        /**
+           End up in the wrong place, and not needed for javascript, so commented out for the moment.
 
         if (getCommitProcessor() != EmptyCommitProcessor.getInstance()) {
             org.w3c.dom.NodeList nl  = parent.getElementsByTagName("commitprocessor");
@@ -398,8 +451,10 @@ s     */
 
             //element.setAttribute("value", Casting.toString(defaultValue));
         }
+        */
 
     }
+
 
     public boolean isFinished() {
         return owner != null;
@@ -1054,7 +1109,7 @@ s     */
 
                 NodeManager nodeManager = field.getNodeManager();
                 Cloud cloud = nodeManager.getCloud();
-                
+
                 if (cloud.getUser().getRank().getInt() < Rank.ADMIN_INT) {
                     // This will test for uniqueness using bridge, so you'll miss objects you can't
                     // see (and database doesn't know that!)
