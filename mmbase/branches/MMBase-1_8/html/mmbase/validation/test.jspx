@@ -24,7 +24,7 @@
 
       <script type="text/javascript">
         var validator = new MMBaseValidator();
-        validator.logEnabled = true;
+        //validator.logEnabled = true;
         validator.validateHook = function(valid) {
            document.getElementById('submit').disabled = ! valid;
         }
