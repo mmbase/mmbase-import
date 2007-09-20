@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * use a localized String as customized in datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatDateTime.java,v 1.3 2005-12-10 14:33:36 michiel Exp $
+ * @version $Id: FormatDateTime.java,v 1.3.2.1 2007-09-20 13:23:06 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -31,7 +31,7 @@ public class FormatDateTime implements Processor {
     public Object process(Node node, Field field, Object value) {
         Locale locale = node.getCloud().getLocale();
         DataType dataType = field.getDataType();
-        Object date = node.getValue(field.getName());
+        Object date = value;
         if (dataType instanceof DateTimeDataType) {
             DateTimeDataType dateType = (DateTimeDataType) dataType;
             if (date == null) {

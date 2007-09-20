@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: StringDataType.java,v 1.35.2.3 2007-08-10 14:38:49 michiel Exp $
+ * @version $Id: StringDataType.java,v 1.35.2.4 2007-09-20 13:23:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class StringDataType extends ComparableDataType implements LengthDataType {
@@ -231,13 +231,11 @@ public class StringDataType extends ComparableDataType implements LengthDataType
 
     public void toXml(org.w3c.dom.Element parent) {
         super.toXml(parent);
-        addErrorDescription(getElement(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength"), minLengthRestriction)
-            .setAttribute("value", Casting.toString(minLengthRestriction.getValue()));
-        addErrorDescription(getElement(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength"), maxLengthRestriction)
-            .setAttribute("value", Casting.toString(maxLengthRestriction.getValue()));
-        addErrorDescription(getElement(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern"), patternRestriction)
-            .setAttribute("value", Casting.toString(patternRestriction.getPattern().pattern()));
+        addRestriction(parent, "minLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength", minLengthRestriction);
+        addRestriction(parent, "maxLength",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength", maxLengthRestriction);
+        addRestriction(parent, "pattern",  "description,class,property,default,unique,required,(minInclusive|minExclusive),(maxInclusive|maxExclusive),minLength,maxLength,length,pattern", patternRestriction);
     }
+
     protected Collection validateCastValueOrNull(Collection errors, Object castValue, Object value,  Node node, Field field) {
         errors = super.validateCastValueOrNull(errors, castValue, value,  node, field);
         errors = minLengthRestriction.validate(errors, castValue, node, field);

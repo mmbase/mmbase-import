@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.34 2006-07-18 12:58:40 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.34.2.1 2007-09-20 13:23:06 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -48,12 +48,12 @@ public class DateTimeDataType extends ComparableDataType {
         setMin(MIN_VALUE, true);
         setMax(MAX_VALUE, true);
     }
-
-    protected String xmlValue(Object value) {
+    protected void xmlValue(org.w3c.dom.Element el, Object value) {
         if (value instanceof DynamicDate) {
-            return ((DynamicDate) value).getFormat();
+            el.setAttribute("value", ((DynamicDate) value).getFormat());
+            el.setAttribute("eval",  Casting.toString(value));
         } else {
-            return super.xmlValue(value);
+            super.xmlValue(el, value);
         }
     }
 
