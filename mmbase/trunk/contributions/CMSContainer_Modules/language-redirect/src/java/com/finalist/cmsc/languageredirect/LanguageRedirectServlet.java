@@ -33,10 +33,12 @@ import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.FieldValueConstraint;
 
+import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.PagesUtil;
-import com.finalist.cmsc.navigation.SiteUtil;
+import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.services.search.Search;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.pluto.portalImpl.core.PortalURL;
 
 public class LanguageRedirectServlet extends BridgeServlet {
 	
@@ -78,11 +80,24 @@ public class LanguageRedirectServlet extends BridgeServlet {
     	}
       int id = Integer.parseInt(request.getParameter(PARAMETER_ID));
 
-      String result = LanguageRedirectUtil.translate(language, id);
-      if(result == null) {
-         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not translate, see log file");
+      String pagePath = LanguageRedirectUtil.translate(language, id);
+      if(pagePath == null) {
+         response.sendError(HttpServletResponse.SC_NOT_FOUND);
       }
-      response.sendRedirect(request.getContextPath() + "/" + result);
+      String redirect = getRedirectUrl(request, pagePath);
+      response.sendRedirect(redirect);
     }
+    
+    private String getRedirectUrl(HttpServletRequest request, String path) {
+        Page page = SiteManagement.getPageFromPath(path);
+        String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
+        
+        String host = null;
+        if(ServerUtil.useServerName()) {
+           host = SiteManagement.getSite(page);
+        }
+        PortalURL u = new PortalURL(host, request, link);
+        return u.toString();
+     }
 
 }
