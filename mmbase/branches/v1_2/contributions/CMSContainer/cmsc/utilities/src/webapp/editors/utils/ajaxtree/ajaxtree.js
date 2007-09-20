@@ -471,7 +471,8 @@ AjaxTreeAbstractNode.prototype.doExpand = function() {
 		if (!this.loading) {
 			this.loading = true;
 			// and create loading item if not
-			this._loadingItem = new AjaxTreeItem(ajaxTreeConfig.loadingText, null, null, ajaxTreeConfig.loadingIcon, null, null, 'true', 'true');
+			var loadingIcon = ajaxTreeConfig.loadingIcon();
+			this._loadingItem = new AjaxTreeItem(ajaxTreeConfig.loadingText, null, null, loadingIcon, null, null, 'true', 'true');
 			this.add(this._loadingItem);
 			this.openTreeItem();
 
