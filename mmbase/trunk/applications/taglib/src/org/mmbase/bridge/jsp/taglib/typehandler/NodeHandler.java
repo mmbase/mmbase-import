@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.38 2007-05-23 14:23:26 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.39 2007-09-21 12:53:43 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -89,7 +89,7 @@ public class NodeHandler extends AbstractTypeHandler {
            tag.getCloudVar().hasNodeManager(field.getGUIType())) {
             StringBuilder buffer = new StringBuilder();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select class=\"" + getClasses(field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
+            buffer.append("<select class=\"" + getClasses(node, field) + "\" name=\"").append( prefix(field.getName()) ).append("\" ");
             buffer.append("id=\"").append( prefixID(field.getName()) ).append("\" ");
             addExtraAttributes(buffer);
             buffer.append(">\n");
