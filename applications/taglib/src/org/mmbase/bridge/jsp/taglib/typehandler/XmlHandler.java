@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.19 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.20 2007-09-21 12:53:43 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -53,7 +53,7 @@ public class XmlHandler extends StringHandler {
             StringBuilder buffer = new StringBuilder();
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-            buffer.append("<textarea class=\"big " + getClasses(field) + "\"  rows=\"10\" cols=\"80\" ");
+            buffer.append("<textarea class=\"big " + getClasses(node, field) + "\"  rows=\"10\" cols=\"80\" ");
             buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
             buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
             addExtraAttributes(buffer);

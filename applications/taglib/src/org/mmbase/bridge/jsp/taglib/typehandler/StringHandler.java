@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.64 2007-08-09 13:44:22 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.65 2007-09-21 12:53:43 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -64,9 +64,9 @@ public class StringHandler extends AbstractTypeHandler {
                     if(field.getMaxLength() > 2048)  {
                         // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                         // wrap attribute removed, we want to produce valid XHTML, and who is still using netscape < 6?
-                        buffer.append("<textarea class=\"big " + getClasses(field) + "\" rows=\"10\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"big " + getClasses(node, field) + "\" rows=\"10\" cols=\"80\" ");
                     } else {
-                        buffer.append("<textarea class=\"small " + getClasses(field) + "\" rows=\"5\" cols=\"80\" ");
+                        buffer.append("<textarea class=\"small " + getClasses(node, field) + "\" rows=\"5\" cols=\"80\" ");
                     }
                     addExtraAttributes(buffer);
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -95,7 +95,7 @@ public class StringHandler extends AbstractTypeHandler {
                     }
                     buffer.append("</textarea>");
                 } else { // not 'field' perhaps it's 'string'.
-                    buffer.append("<input class=\"small " + getClasses(field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"80\" ");
+                    buffer.append("<input class=\"small " + getClasses(node, field) + "\" type=\"").append(dataType.isPassword() ? "password" : "text").append("\"  size=\"80\" ");
                     buffer.append("name=\"").append(prefix(field.getName())).append("\" ");
                     buffer.append("id=\"").append(prefixID(field.getName())).append("\" ");
                     String opt = tag.getOptions();
