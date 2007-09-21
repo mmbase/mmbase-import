@@ -15,7 +15,7 @@
   </names>
 
   <fieldlist>
-    <field>
+    <field name="name">
       <descriptions>
         <description xml:lang="en">A identifying name for this job</description>
         <description xml:lang="nl">Een naam voor deze cron-taak</description>
@@ -30,14 +30,12 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>name</name>
-        <type size="127" key="false" state="persistent" notnull="false">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="127" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="crontime">
       <descriptions>
         <description xml:lang="en">When the cronjob must be executed, using the 'crontab' syntax (see crontab(5))</description>
         <description xml:lang="nl">Op welke tijdstippen deze cron-taak moet worden uitgevoerd volgens de 'crontab' syntax (zie crontab(5))</description>
@@ -52,14 +50,12 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>crontime</name>
-        <type size="127" key="false" state="persistent" notnull="false">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="127" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="classfile">
       <descriptions>
         <description xml:lang="en">The name of the implementating class (implementation Runnable or CronJob)</description>
         <description xml:lang="nl">De naam van de class die deze taak implementeert (een implementatie van Runnable of CronJob)</description>
@@ -74,14 +70,12 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>classfile</name>
-        <type size="127" key="false" state="persistent" notnull="false">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="127" />
+      </datatype>
     </field>
 
-    <field>
+    <field name="config">
       <descriptions>
         <description xml:lang="en">A configuration string for the CronJob</description>
         <description xml:lang="nl">Een configuratie-string voor de CronJob class</description>
@@ -90,13 +84,12 @@
         <guiname xml:lang="nl">Configuratie</guiname>
         <guiname xml:lang="en">Configuration</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <name>config</name>
-        <type size="127" key="false" state="persistent" notnull="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="127" />
+      </datatype>
     </field>
-    <field>
+
+    <field name="type">
       <descriptions>
         <description xml:lang="en">cronjob type (1 = short, 2 = singleton jobs, 3 = multiple threads possible)</description>
         <description xml:lang="nl">het type job (1 = kort, 2 = enkelvoudig, 3 = meerdere gelijktijdige jobs mogelijk)</description>
@@ -105,15 +98,13 @@
         <guiname xml:lang="nl">Type jobs</guiname>
         <guiname xml:lang="en">Job type</guiname>
       </gui>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
-          <entry basename="org.mmbase.applications.crontab.builders.resources.jobtypes" />
+          <entry
+              javaconstants="org.mmbase.applications.crontab.CronEntry"
+              basename="org.mmbase.applications.crontab.builders.resources.jobtypes" />
         </enumeration>
       </datatype>
-      <db>
-        <name>type</name>
-        <type state="persistent" notnull="true" key="false">INTEGER</type>
-      </db>
     </field>
   </fieldlist>
 </builder>
