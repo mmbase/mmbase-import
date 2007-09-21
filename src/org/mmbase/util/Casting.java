@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.89.2.1 2007-09-19 13:29:11 michiel Exp $
+ * @version $Id: Casting.java,v 1.89.2.2 2007-09-21 12:53:06 michiel Exp $
  */
 
 import java.util.*;
@@ -421,27 +421,33 @@ public class Casting {
         }
     }
 
+
     /**
      * Transforms an object to a collection. If the object is a collection already, then nothing
      * happens. If it is a Map, then the 'entry set' is returned. A string is interpreted as a
      * comma-separated list of strings. Other objects are wrapped in an ArrayList with one element.
      *
-     * @since MMBase-1.8
+     * @since MMBase-1.8.5
      */
-    public static Collection toCollection(Object o) {
+    public static Collection toCollection(Object o, String delimiter) {
         if (o instanceof Collection) {
             return (Collection)o;
         } else if (o instanceof Map) {
             return ((Map)o).entrySet();
         } else if (o instanceof String) {
-            return StringSplitter.split((String)o);
+            if ("".equals(delimiter) || delimiter == null) delimiter = ",";
+            return StringSplitter.split((String)o, delimiter);
+        } else if (o instanceof Object[]) {
+            return Arrays.asList((Object[]) o);
         } else {
-            List l = new ArrayList();
-            if (o != null) {
-                l.add(o);
-            }
-            return l;
+            return Collections.singletonList(o);
         }
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    public static Collection toCollection(Object o) {
+        return toCollection(o, ",");
     }
 
     /**
