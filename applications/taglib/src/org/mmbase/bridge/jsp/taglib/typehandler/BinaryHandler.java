@@ -33,7 +33,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.12 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.13 2007-09-21 12:53:43 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
@@ -63,7 +63,7 @@ public class BinaryHandler extends AbstractTypeHandler {
             args.set(Parameter.LOCALE, tag.getLocale());
             show.append("" + gui.getFunctionValue(args));
         }
-        show.append("<input class=\"" + getClasses(field) + "\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
+        show.append("<input class=\"" + getClasses(node, field) + "\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
         addExtraAttributes(show);
         show.append("/>");
         return show.toString();

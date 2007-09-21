@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.56 2007-08-10 13:14:12 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.57 2007-09-21 12:53:43 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -130,11 +130,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @since MMBase-1.8
      */
-    protected String getClasses(Field field) {
+    protected String getClasses(Node node, Field field) {
         if (field instanceof org.mmbase.bridge.util.DataTypeField) {
-            return "mm_validate mm_dt_" + field.getName();
+            return "mm_validate mm_dt_" + field.getName() + (node != null ? " mm_n_" + node.getNumber() : "");
         } else {
-            return "mm_validate mm_f_" + field.getName() + " mm_nm_" + field.getNodeManager().getName();
+            return "mm_validate mm_f_" + field.getName() + " mm_nm_" + field.getNodeManager().getName() + (node != null ? " mm_n_" + node.getNumber() : "");
         }
     }
 
@@ -148,7 +148,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
-        StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small " + getClasses(field) + "\" size=\"80\" ");
+        StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small " + getClasses(node, field) + "\" size=\"80\" ");
         addExtraAttributes(show);
         Object value = getFieldValue(node, field, ! search);
         show.append("name=\"").append(prefix(field.getName())).append("\" ");
