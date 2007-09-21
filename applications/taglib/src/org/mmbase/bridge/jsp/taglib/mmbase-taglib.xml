@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.12 2007-09-06 15:37:14 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.13 2007-09-21 12:56:09 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2692,13 +2692,13 @@ access the value of title:
     <bodycontent>JSP</bodycontent>
     <info>
       <p>
-  Gets the function value for function `name'.  The function value is supposed to be
-  Collection, and this tags acts as a `listprovider' and `writer' tag, iterating over all
-  entries of the resulting collection.
+        Gets the function value for function `name'.  The function value is supposed to be
+        Collection, and this tags acts as a `listprovider' and `writer' tag, iterating over all
+        entries of the resulting collection.
       </p>
       <p>
-  For more information about how function tags work generally see the the `functiontag' entry
-  of this reference.
+        For more information about how function tags work generally see the the `functiontag' entry
+        of this reference.
       </p>
     </info>
     <since>MMBase-1.7</since>
@@ -2731,6 +2731,12 @@ access the value of title:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>How many items must be skipped before iterating</info>
+    </attribute>
+    <attribute>
+      <name>listdelimiter</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="import" attribute="listdelimiter" />
     </attribute>
   </tag>
 
