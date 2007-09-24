@@ -32,6 +32,14 @@ public class Search {
         return cService.findDetailPageForContent(node);
     }
 
+    public static PageInfo findDetailPageForContent(Node node, String serverName) {
+        if (cService == null) {
+            log.info("SearchService not started");
+            return null;
+        }
+        return cService.findDetailPageForContent(node, serverName);
+    }
+    
     public static List<PageInfo> findAllDetailPagesForContent(Node content) {
         if (cService == null) {
             log.info("SearchService not started");

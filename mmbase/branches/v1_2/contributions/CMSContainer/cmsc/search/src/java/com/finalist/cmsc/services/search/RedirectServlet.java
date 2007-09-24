@@ -71,16 +71,22 @@ public class RedirectServlet extends BridgeServlet {
         if (PagesUtil.isPageType(node)) {
             Page page = SiteManagement.getPage(node.getNumber());
             if (page != null) {
-                String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
-                redirect = request.getContextPath() + "/" + link;
+                redirect = getPortalUrl(request, page);
             }
             
         }
         
         if (ContentElementUtil.isContentElement(node)) {
-            PageInfo pageInfo = Search.findDetailPageForContent(node);
+            PageInfo pageInfo = null;
+            if (ServerUtil.useServerName()) {
+                pageInfo = Search.findDetailPageForContent(node, request.getServerName());
+            }
+            else {
+                pageInfo = Search.findDetailPageForContent(node);
+            }
+            
             if (pageInfo != null) {
-                PortalURL u = new PortalURL(request, pageInfo.getPath());
+                PortalURL u = new PortalURL(pageInfo.getHost(), request, pageInfo.getPath());
                 u.setRenderParameter(pageInfo.getWindowName(), "elementId", new String[] { String.valueOf(node.getNumber()) } );
                 redirect = u.toString();
             }
@@ -95,4 +101,14 @@ public class RedirectServlet extends BridgeServlet {
         }
     }
 
+    private String getPortalUrl(HttpServletRequest request, Page page) {
+        String host = null;
+        if(ServerUtil.useServerName()) {
+           host = SiteManagement.getSite(page);
+    	}
+
+        String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
+        PortalURL u = new PortalURL(host, request, link);
+        return u.toString();
+    }
 }

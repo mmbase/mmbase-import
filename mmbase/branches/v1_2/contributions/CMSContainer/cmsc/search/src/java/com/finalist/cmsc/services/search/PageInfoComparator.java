@@ -11,12 +11,30 @@ package com.finalist.cmsc.services.search;
 
 import java.util.Comparator;
 
+import org.apache.commons.lang.StringUtils;
 
 public class PageInfoComparator implements Comparator<PageInfo> {
 
     private static final String CONTENTELEMENT = "contentelement";
+    private String preferredSite;
+
+    public PageInfoComparator(String serverName) {
+        this.preferredSite = serverName;
+    }
 
     public int compare(PageInfo info1, PageInfo info2) {
+        if (!StringUtils.isBlank(preferredSite)) {
+            String host1 = info1.getHost();
+            String host2 = info2.getHost();
+            
+            if (preferredSite.equals(host1) && !preferredSite.equals(host2)) {
+                return -1;
+            }
+            if (preferredSite.equals(host2) && !preferredSite.equals(host1)) {
+                return 1;
+            }
+        }
+        
         int priority = info1.getPriority() - info2.getPriority();
         if (priority != 0) {
            return - priority;

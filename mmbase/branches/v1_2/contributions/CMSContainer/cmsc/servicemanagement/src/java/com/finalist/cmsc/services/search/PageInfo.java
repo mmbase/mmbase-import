@@ -12,6 +12,7 @@ package com.finalist.cmsc.services.search;
 public class PageInfo {
     
     private int pageNumber;
+    private String host;
     private String path;
     private String windowName;
     private String layout;
@@ -20,9 +21,10 @@ public class PageInfo {
     private String parametername;
     private boolean isSite;
 
-    public PageInfo(int pageNumber, String path, String windowName, String layout, 
+    public PageInfo(int pageNumber, String host, String path, String windowName, String layout, 
             int priority, String parametername, boolean isSite) {
         this.pageNumber = pageNumber;
+        this.host = host;
         this.path = path;
         this.windowName = windowName;
         this.layout = layout;
@@ -33,6 +35,10 @@ public class PageInfo {
     
     public int getPageNumber() {
         return pageNumber;
+    }
+    
+    public String getHost() {
+        return host;
     }
     
     public String getPath() {

@@ -84,6 +84,11 @@ public class SearchServiceMMBaseImpl extends SearchService {
     
     @Override
     public PageInfo findDetailPageForContent(Node content) {
+        return findDetailPageForContent(content, null);
+    }
+
+    @Override
+    public PageInfo findDetailPageForContent(Node content, String serverName) {
         List<Node> pages = findPagesForContent(content, null);
         if (!pages.isEmpty()) {
             filterPageQueryNodes(pages, content);
@@ -96,7 +101,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
                     }
                 }
                 if (!pageInfos.isEmpty()) {
-                    Collections.sort(pageInfos, new PageInfoComparator());
+                    Collections.sort(pageInfos, new PageInfoComparator(serverName));
                     return pageInfos.get(0);
                 }
             }
@@ -276,13 +281,18 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 return null;
             }
 
+            String host = null;
+            if(ServerUtil.useServerName()) {
+               host = SiteManagement.getSite(page);
+            }
+
             String pagePath = SiteManagement.getPath(page, !ServerUtil.useServerName());
             Layout layout = SiteManagement.getLayout(page.getLayout());
             String prioKey = layout.getResource() + "." + portletWindowName;
             int infoPrio = getPriority(prioKey);
             boolean isSite = (page instanceof Site);
             
-            PageInfo pageInfo = new PageInfo(page.getId(), pagePath, portletWindowName,
+            PageInfo pageInfo = new PageInfo(page.getId(), host, pagePath, portletWindowName,
                     layout.getResource(), infoPrio, parameterName, parameterValue, isSite);
             return pageInfo;
         }
