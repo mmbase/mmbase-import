@@ -28,7 +28,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.jsptags.navigation.pager.parser.*;
 
-public final class PagerTag extends TagSupport {
+public class PagerTag extends TagSupport {
 
    /*
     * The encoding of the parameters in the URL is set to ISO, because tomcat does not want to understand other 
@@ -79,7 +79,7 @@ public final class PagerTag extends TagSupport {
 	private int pageNumber = 0;
 	private Integer pageNumberInteger = null;
 
-	private String idOffsetParam = DEFAULT_ID+OFFSET_PARAM;
+	protected String idOffsetParam = DEFAULT_ID+OFFSET_PARAM;
 	private PagerTagExport pagerTagExport = null;
 	private Object oldPager = null;
 	private Object oldOffset = null;
@@ -95,11 +95,11 @@ public final class PagerTag extends TagSupport {
 		idOffsetParam = sid+OFFSET_PARAM;
 	}
 
-	public final void setUrl(String value) {
+	public void setUrl(String value) {
 		url = value;
 	}
 
-	public final String getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
@@ -197,7 +197,7 @@ public final class PagerTag extends TagSupport {
 
 
 
-	final void addParam(String name, String value) {
+	protected void addParam(String name, String value) {
       try {
          if (value != null) {
    			name = java.net.URLEncoder.encode(name, PARAMETER_ENCODING);
@@ -270,7 +270,7 @@ public final class PagerTag extends TagSupport {
 	}
 
 
-	final String getOffsetUrl(int pageOffset) {
+	protected String getOffsetUrl(int pageOffset) {
 		int uriLen = uri.length();
 		uri.append(params == 0 ? '?' : '&')
 		   .append(idOffsetParam).append('=').append(pageOffset);
