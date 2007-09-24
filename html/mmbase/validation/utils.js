@@ -4,6 +4,9 @@
  * @todo needing some concept on how and where javascript libraries must be distributed.
  */
 
+var b = new Array();
+b.push('hoi');
+
 function getElementsByClass(node, searchClass, tag) {
     if (tag == null) tag ="*";
     var classElements = new Array();
@@ -33,16 +36,16 @@ function addEventHandler(element, event, method, context) {
         } else if (element.attachEvent) {
             element.attachEvent("on" + event, wrappedmethod.execute);
         } else {
-            throw _("Unsupported browser!");
+            throw "Unsupported browser!";
         };
         return wrappedmethod.execute;
     } catch(e) {
-        alert(_('exception ${message} while registering an event handler ' +
+        alert('exception ${message} while registering an event handler ' +
                 'for element ${element}, event ${event}, method ${method}',
                 {'message': e.message, 'element': element,
-                    'event': event,
-                    'method': method}));
-    };
+                 'event': event,
+                 'method': method});
+};
 };
 
 /* ContextFixer, fixes a problem with the prototype based model
@@ -70,16 +73,16 @@ function ContextFixer(func, context) {
 
     this.execute = function() {
         /* execute the method */
-        var args = new Array();
+        var a = new Array();
         // the first arguments will be the extra ones of the class
         for (var i=0; i < self.args.length - 2; i++) {
-            args.push(self.args[i + 2]);
+            a.push(self.args[i + 2]);
         };
         // the last are the ones passed on to the execute method
         for (var i=0; i < arguments.length; i++) {
-            args.push(arguments[i]);
+            a.push(arguments[i]);
         };
-        return self.func.apply(self.context, args);
+        return self.func.apply(self.context, a);
     };
 
 };
