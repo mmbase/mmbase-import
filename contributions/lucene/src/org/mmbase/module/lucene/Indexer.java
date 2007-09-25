@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.40 2007-06-11 15:23:29 michiel Exp $
+ * @version $Id: Indexer.java,v 1.41 2007-09-25 14:42:21 michiel Exp $
  **/
 public class Indexer {
 
@@ -276,7 +276,10 @@ public class Indexer {
                     Term term = new Term("number", number);
                     TermDocs docs = reader.termDocs(term);
                     if (log.isDebugEnabled()) {
-                        log.debug(getName() + ": Will find " + reader.docFreq(term) + " for number=" + number);
+                        int num = reader.docFreq(term);
+                        if (num > 0) {
+                            log.debug(getName() + ": Will find " + num + " documents for number=" + number);
+                        }
                     }
                     while(docs.next()) {
                         int i = docs.doc();
@@ -299,14 +302,16 @@ public class Indexer {
                 } finally {
                     if (reader != null) try {reader.close(); } catch (IOException ioe) { log.error(ioe);}
                 }
-                log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
-                updated += update(indexDefinition, mains);
+                if (mains.size() > 0) {
+                    log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
+                    updated += update(indexDefinition, mains);
+                }
             }
         }
         if (updated > 0) {
-            log.service(getName() + ": Updated " + updated + " for '" + number + "'");
+            log.service(getName() + ": Updated " + updated + " documents for '" + number + "'");
         } else if (log.isDebugEnabled()) {
-            log.debug(getName() + ": Updated " + updated + " for '" + number + "'");
+            log.debug(getName() + ": Updated " + updated + " documents for '" + number + "'");
         }
         return updated;
     }
@@ -368,7 +373,7 @@ public class Indexer {
                     writer.addDocument(document);
                 }
                 document = new Document();
-                document.add(new Field("indexId", indexId,  Field.Store.YES, Field.Index.UN_TOKENIZED)); 
+                document.add(new Field("indexId", indexId,  Field.Store.YES, Field.Index.UN_TOKENIZED));
                 indexed++;
             }
             index(entry, document);
@@ -417,6 +422,6 @@ public class Indexer {
         return getName() + queries;
     }
 
-    
+
 
 }
