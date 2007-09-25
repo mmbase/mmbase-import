@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.88.2.5 2007-08-09 13:04:35 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.88.2.6 2007-09-25 14:15:02 michiel Exp $
  */
 
 public class WriterHelper {
@@ -316,7 +316,7 @@ public class WriterHelper {
                     if ("".equals(v)) {
                         v = new ArrayList();
                     } else {
-                        v = Casting.toList(v, listDelimiter.getString(thisTag));
+                        v = Casting.toList(v, getListdelimiter());
                     }
                 }
                 break;
@@ -490,6 +490,13 @@ public class WriterHelper {
      */
     final public void setListdelimiter(Attribute l) {
         listDelimiter = l;
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public String getListdelimiter() throws JspTagException {
+        return listDelimiter.getString(thisTag);
     }
 
     public int getVartype() {
