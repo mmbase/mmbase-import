@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.13 2007-09-21 12:56:09 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.14 2007-09-25 12:36:57 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6396,6 +6396,12 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <see tag="locale" attribute="timezone" />
       <since>MMBase-1.8.1</since>
+    </attribute>
+    <attribute>
+      <name>disposition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.5</since>
     </attribute>
     <attribute>
       <name>jspvar</name>
