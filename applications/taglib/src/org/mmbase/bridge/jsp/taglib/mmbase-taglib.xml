@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.410 2007-09-06 15:37:50 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.411 2007-09-25 12:39:51 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2731,13 +2731,13 @@ access the value of title:
     <bodycontent>JSP</bodycontent>
     <info>
       <p>
-  Gets the function value for function `name'.  The function value is supposed to be
-  Collection, and this tags acts as a `listprovider' and `writer' tag, iterating over all
-  entries of the resulting collection.
+        Gets the function value for function `name'.  The function value is supposed to be
+        Collection, and this tags acts as a `listprovider' and `writer' tag, iterating over all
+        entries of the resulting collection.
       </p>
       <p>
-  For more information about how function tags work generally see the the `functiontag' entry
-  of this reference.
+        For more information about how function tags work generally see the the `functiontag' entry
+        of this reference.
       </p>
     </info>
     <since>MMBase-1.7</since>
@@ -2770,6 +2770,12 @@ access the value of title:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>How many items must be skipped before iterating</info>
+    </attribute>
+    <attribute>
+      <name>listdelimiter</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="import" attribute="listdelimiter" />
     </attribute>
   </tag>
 
@@ -6614,6 +6620,22 @@ The 0 is just counter, which starts at 0 on every page.
           which is not public.
         </p>
       </info>
+    </attribute>
+    <attribute>
+      <name>disposition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.5</since>
+      <info>
+        Provides a proposal filename for the response. The content-disposition of the resonse will be set to 'attachment', and this filename.
+      </info>
+      <example><![CDATA[
+      <mm:content
+      type="text/csv"
+      disposition="export.csv"
+      > ...
+      ]]>
+      </example>
     </attribute>
     <attribute>
       <name>postprocessor</name>
