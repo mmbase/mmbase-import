@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.42 2007-09-25 16:53:09 michiel Exp $
+ * @version $Id: Indexer.java,v 1.43 2007-09-25 19:53:07 michiel Exp $
  **/
 public class Indexer {
 
@@ -123,7 +123,7 @@ public class Indexer {
                     if (d.isDirectory()) {
                         if (IndexReader.isLocked(this.path)) {
                             log.info("The directory " + this.path + " is locked! Trying to unlock.");
-                            Directory dir = FSDirectory.getDirectory(this.path, false);
+                            Directory dir = FSDirectory.getDirectory(this.path);
                             IndexReader.unlock(dir);
                             log.service("Unlocked lucene index directory " + dir);
                         }
@@ -305,6 +305,12 @@ public class Indexer {
                 if (mains.size() > 0) {
                     log.debug("Found lucene documents " + mains + " for node " + number + " which must be updated now");
                     updated += update(indexDefinition, mains);
+                } else {
+                    // perhaps the object changed such, that it now would be in the index.
+                    if (indexDefinition.inIndex(number)) {
+                        mains.add(number);
+                        updated += update(indexDefinition, mains);
+                    }
                 }
             }
         }
@@ -330,9 +336,11 @@ public class Indexer {
                 continue;
             }
             if (klass.isAssignableFrom(indexDefinition.getClass())) {
-                Set<String> mains = new HashSet<String>();
-                mains.add(number);
-                updated += update(indexDefinition, mains);
+                if (indexDefinition.inIndex(number)) {
+                    Set<String> mains = new HashSet<String>();
+                    mains.add(number);
+                    updated += update(indexDefinition, mains);
+                }
             }
         }
         if (updated > 0) {
