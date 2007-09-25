@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.65 2007-08-10 10:05:36 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.66 2007-09-25 12:39:51 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -281,6 +281,7 @@ public class ContentTag extends LocaleTag  {
     private Attribute postprocessor  = Attribute.NULL;
     private Attribute expires        = Attribute.NULL;
     private Attribute unacceptable   = Attribute.NULL;
+    private Attribute disposition    = Attribute.NULL;
 
 
     public void setType(String ct) throws JspTagException {
@@ -301,6 +302,12 @@ public class ContentTag extends LocaleTag  {
 
     public void setExpires(String e) throws JspTagException {
         expires = getAttribute(e);
+    }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public void setDisposition(String d) throws JspTagException {
+        disposition = getAttribute(d);
     }
 
 
@@ -546,6 +553,12 @@ public class ContentTag extends LocaleTag  {
                 // perhaps default cache behaviour should be no-cache if there is a session?
                 long exp = expires.getLong(this, DEFAULT_EXPIRE_TIME);
                 addNoCacheHeaders(request, response, exp);
+            }
+            if (disposition != Attribute.NULL) {
+                String dis = disposition.getString(this);
+                if (! dis.equals("")) {
+                    response.setHeader("Content-Disposition", "attachment; filename=\""  + dis + "\"");
+                }
             }
         }
         CharTransformer post = getPostProcessor();
