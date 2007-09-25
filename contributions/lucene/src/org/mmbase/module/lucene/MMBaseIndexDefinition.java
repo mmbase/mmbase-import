@@ -15,6 +15,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.cache.*;
+import org.mmbase.core.event.*;
 import org.mmbase.util.logging.*;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.analysis.Analyzer;
@@ -24,7 +26,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.17 2007-02-27 13:38:34 michiel Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.18 2007-09-25 16:53:09 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -52,6 +54,12 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     protected final List<String> identifierFields = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("number")));
 
     private final Map<String, Float> boosts = new HashMap<String, Float>();
+
+    private final ChainedReleaseStrategy releaseStrategy = new ChainedReleaseStrategy();
+    {
+        releaseStrategy.addReleaseStrategy(new BetterStrategy());
+        releaseStrategy.addReleaseStrategy(new ConstraintsMatchingStrategy());
+    }
 
 
     MMBaseIndexDefinition() {
@@ -92,6 +100,11 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
         return identifierFields;
     }
 
+    public boolean inIndex(String identifier) {
+        Cloud cloud = query.getCloud();
+        Node node = cloud.getNode(identifier);
+        return releaseStrategy.evaluate(NodeEventHelper.createNodeEventInstance(node, Event.TYPE_NEW, null), query, null).shouldRelease();
+    }
     /**
      * Converts an MMBase Node Iterator to an Iterator of IndexEntry-s.
      */
