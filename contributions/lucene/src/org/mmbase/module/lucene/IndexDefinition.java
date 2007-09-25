@@ -21,7 +21,7 @@ import org.apache.lucene.document.Document;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: IndexDefinition.java,v 1.16 2006-10-03 20:52:19 michiel Exp $
+ * @version $Id: IndexDefinition.java,v 1.17 2007-09-25 16:53:09 michiel Exp $
  **/
 interface IndexDefinition {
 
@@ -49,6 +49,11 @@ interface IndexDefinition {
      * quite straight-forward, but other indices may create virtual nodes here.
      */
     Node getNode(Cloud cloud, Document doc);
+
+    /**
+     * Whether the object with given key would be included in this index
+     */
+    boolean inIndex(String number);
 
     String getId();
     void setId(String i);

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.41 2007-09-25 14:42:21 michiel Exp $
+ * @version $Id: Indexer.java,v 1.42 2007-09-25 16:53:09 michiel Exp $
  **/
 public class Indexer {
 
@@ -312,6 +312,33 @@ public class Indexer {
             log.service(getName() + ": Updated " + updated + " documents for '" + number + "'");
         } else if (log.isDebugEnabled()) {
             log.debug(getName() + ": Updated " + updated + " documents for '" + number + "'");
+        }
+        return updated;
+    }
+
+    /**
+     * Update the index for the main element node with the given number.
+     * @param number the number of the node whose index to update
+     */
+    public int newIndex(final String number, final Class<? extends IndexDefinition> klass) {
+        int updated = 0;
+        assert klass != null;
+        // process all queries
+        for (IndexDefinition indexDefinition :  queries) {
+            if (indexDefinition == null) {
+                log.warn("Found empty index definition in " + this);
+                continue;
+            }
+            if (klass.isAssignableFrom(indexDefinition.getClass())) {
+                Set<String> mains = new HashSet<String>();
+                mains.add(number);
+                updated += update(indexDefinition, mains);
+            }
+        }
+        if (updated > 0) {
+            log.service(getName() + ": " + updated + " new documents for '" + number + "'");
+        } else if (log.isDebugEnabled()) {
+            log.debug(getName() + ": " + updated + " new documents for '" + number + "'");
         }
         return updated;
     }

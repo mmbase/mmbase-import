@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.17 2007-02-27 13:38:34 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.18 2007-09-25 16:53:09 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
@@ -67,11 +67,11 @@ public class JdbcIndexDefinition implements IndexDefinition {
 
     private String id;
 
-    JdbcIndexDefinition(DataSource ds, 
+    JdbcIndexDefinition(DataSource ds,
                         Element element,
                         Set allIndexedFields,
                         boolean storeText,
-                        boolean mergeText, 
+                        boolean mergeText,
                         Analyzer a,
                         boolean isSub) {
         this.dataSource = ds;
@@ -137,6 +137,13 @@ public class JdbcIndexDefinition implements IndexDefinition {
         String s = findSql.replaceAll("\\[IDENTIFIER\\]", identifier);
         s = s.replaceAll("\\[KEY\\]", identifier); // deprecated
         return s;
+    }
+
+    public boolean inIndex(String identifier) {
+        CloseableIterator<JdbcEntry> i = getSqlCursor(getFindSql(identifier));
+        boolean result = i.hasNext();
+        i.close();
+        return result;
     }
 
     protected String getSql(String identifier) {
@@ -296,7 +303,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
         if (id == null) {
             throw new IllegalArgumentException("No number found in " + doc);
         }
-        LazyMap m =  (LazyMap) nodeCache.get(id); // 
+        LazyMap m =  (LazyMap) nodeCache.get(id); //
         if (m == null) {
             Map<String, String> keys = new HashMap();
             for (String keyWord : keyWords) {
