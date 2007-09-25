@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.36 2007-09-17 08:19:49 michiel Exp $
+ * @version $Id: Searcher.java,v 1.37 2007-09-25 19:51:13 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -297,7 +297,7 @@ public class Searcher implements NewSearcher.Listener {
 
     static public Filter createFilter(String constraintsText) {
         if (constraintsText == null || "".equals(constraintsText)) return null;
-        return new QueryFilter(createQuery(constraintsText));
+        return new CachingWrapperFilter(new QueryWrapperFilter(createQuery(constraintsText)));
     }
     /**
      * Parses a constraint into a query.

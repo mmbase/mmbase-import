@@ -20,7 +20,7 @@ import java.io.StringWriter;
 import org.mmbase.module.lucene.extraction.Extractor;
 import org.mmbase.util.logging.*;
 
-import org.pdfbox.encryption.DocumentEncryption;
+import org.pdfbox.pdmodel.encryption.*;
 import org.pdfbox.exceptions.CryptographyException;
 import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
@@ -30,7 +30,7 @@ import org.pdfbox.util.PDFTextStripper;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PDFBoxExtractor implements Extractor {
 
@@ -60,10 +60,10 @@ public class PDFBoxExtractor implements Extractor {
             parser.parse();
             pdfDocument = parser.getPDDocument();
             if (pdfDocument.isEncrypted()) {
-                DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
-                // Just try using the default password and move
-                // on
-                decryptor.decryptDocument("");
+                StandardSecurityHandler decryptor = new StandardSecurityHandler();
+                StandardDecryptionMaterial dm = new StandardDecryptionMaterial("");
+                // TODO: password must be configurable
+                decryptor.decryptDocument(pdfDocument, dm);
             }
 
             StringWriter writer = new StringWriter();
@@ -135,9 +135,6 @@ public class PDFBoxExtractor implements Extractor {
             throw new Exception("PDFBoxExtractor, Error reading document: " + e.getMessage());
         } catch (CryptographyException e) {
             throw new Exception("PDFBoxExtractor, Error decrypting document: " + e.getMessage());
-        } catch (InvalidPasswordException e) {
-            // they didn't suppply a password and the default of "" was wrong.
-            throw new Exception("PDFBoxExtractor, The document is encrypted and will not be indexed: " + e.getMessage());
         } finally {
             // cleanup to return clean
             if (pdfDocument != null) {
