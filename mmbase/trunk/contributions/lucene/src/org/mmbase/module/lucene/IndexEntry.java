@@ -18,7 +18,7 @@ import org.apache.lucene.document.Document;
  * implementations of this interface define how index entries are added to a Lucene document.
  *
  * @author Michiel Meeuwissen.
- * @version $Id: IndexEntry.java,v 1.6 2006-09-13 09:51:14 michiel Exp $
+ * @version $Id: IndexEntry.java,v 1.7 2007-09-25 16:53:09 michiel Exp $
  **/
 public interface IndexEntry {
 
@@ -44,6 +44,8 @@ public interface IndexEntry {
      * Key to be used for 'sub-queries', this can be the same as {@link #getIdentifier}, but this is not necessary.
      */
     String getKey();
+
+
 
 
 }

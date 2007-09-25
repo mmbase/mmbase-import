@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.91 2007-09-17 09:18:16 michiel Exp $
+ * @version $Id: Lucene.java,v 1.92 2007-09-25 16:53:09 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -859,6 +859,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (scheduler != null) {
             switch(event.getType()) {
             case Event.TYPE_NEW:
+                scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                break;
             case Event.TYPE_CHANGE:
                 scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
                 break;
@@ -875,6 +877,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (scheduler != null) {
             switch(event.getType()) {
             case Event.TYPE_NEW:
+                //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                //scheduler.newIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                //break;
             case Event.TYPE_CHANGE:
             case Event.TYPE_DELETE:
                 scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
@@ -1029,6 +1034,29 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             return false;
         }
 
+
+        void newIndex(final String number, final Class klass) {
+            assert klass != null;
+            assign(new Assignment() {
+                    public void run() {
+                        log.service("New index for " + number);
+                        status = BUSY_INDEX;
+                        for (Indexer indexer : indexerMap.values()) {
+                            int updated = indexer.newIndex(number, klass);
+                            if (updated > 0) {
+                                log.service(indexer.getName() + ": " + updated + " new index entr" + (updated > 1 ? "ies" : "y"));
+                            }
+                        }
+                    }
+                    public String idString() {
+                        return klass.getName() + number;
+                    }
+                    public String toString() {
+                        return "NEW for " + number + " " + klass;
+                    }
+
+                });
+        }
 
         void updateIndex(final String number, final Class klass) {
             assert klass != null;
