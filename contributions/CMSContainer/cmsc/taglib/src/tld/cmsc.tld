@@ -1187,8 +1187,6 @@ The locale to be used.
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
-
-	
 	
 <!-- ################ -->
 <!-- Security Tags -->	
@@ -1218,13 +1216,38 @@ The var to write it to.
     </attribute>
   </tag>
 
+	<tag>
+		<description>Tag that checks if given password is oke.</description>
+		<name>validate-password</name>
+		<tag-class>com.finalist.cmsc.taglib.ValidatePasswordTag</tag-class>
+		<body-content>empty</body-content>	
+		<attribute>
+			<description>The password to be compared.</description>
+			<name>md5Password</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The password that the client typed in.</description>
+			<name>givenPassword</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The returned result of this tag.</description>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>	
+
 <!-- ################ -->
-<!-- Nedstat Tag -->	
+<!-- Statistics Tags -->	
 <!-- ################ -->
   <tag>
 		<description>Tag to parse netstat string.</description>
 		<name>nedstat</name>
-		<tag-class>com.finalist.cmsc.taglib.NedstatTag</tag-class>
+		<tag-class>com.finalist.cmsc.taglib.stats.NedstatTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>Labels such as 'category=sport'.</description>
@@ -1298,32 +1321,23 @@ The var to write it to.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>	
-	<tag>
-		<description>Tag that checks if given password is oke.</description>
-		<name>validate-password</name>
-		<tag-class>com.finalist.cmsc.taglib.ValidatePasswordTag</tag-class>
-		<body-content>empty</body-content>	
+	</tag>
+    <tag>
+		<description>Tag to generate google analytics .</description>
+		<name>google-analytics</name>
+		<tag-class>com.finalist.cmsc.taglib.stats.GoogleAnalyticsTag</tag-class>
+		<body-content>empty</body-content>
 		<attribute>
-			<description>The password to be compared.</description>
-			<name>md5Password</name>
-			<required>true</required>
+			<description>The google account name.</description>
+			<name>account</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<attribute>
-			<description>The password that the client typed in.</description>
-			<name>givenPassword</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<description>The returned result of this tag.</description>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>	
+	</tag>
 
+<!-- ################ -->
+<!-- Pager Tag -->	
+<!-- ################ -->
   <tag>
     <name>pager</name>
     <tag-class>com.finalist.cmsc.taglib.pager.PagerTag</tag-class>
