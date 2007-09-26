@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package com.finalist.cmsc.taglib;
+package com.finalist.cmsc.taglib.stats;
 
 import java.io.IOException;
 
@@ -77,8 +77,6 @@ public class NedstatTag extends CmscTag {
     private static final String TYPE_BOOKMARK = "bookmark";
     private static final String TYPE_CONTENT = "content";
     private static final String TYPE_BANNER = "banner"; // banner is a "custom" TYPE_CLICKOUT used in bannerRedirect.jsp
-
-    private static final String PRODUCTIONVARIABLE = "server/production";
     
     public void doTag() throws JspException, IOException {              
         /*
@@ -86,8 +84,7 @@ public class NedstatTag extends CmscTag {
          *  The production environment to be added in the context file is 
          *  'server/production' set to 'true' or 'false'.
          */                 
-        if (ServerUtil.isLive() && 
-                Boolean.valueOf(ServerUtil.getEnvironmentVariableValue(PRODUCTIONVARIABLE))) {          
+        if (ServerUtil.isLive() && ServerUtil.isProduction()) {          
             
             /* Validations */
             if (StringUtils.isEmpty(getCustomerName())) {
