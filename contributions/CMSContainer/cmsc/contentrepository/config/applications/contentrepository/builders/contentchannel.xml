@@ -12,9 +12,9 @@
    <class>com.finalist.cmsc.repository.ContentChannelBuilder</class>
    <searchage>70</searchage>
    <names>
-      <singular xml:lang="nl">contentchannel</singular>
+      <singular xml:lang="nl">Rubriek</singular>
       <singular xml:lang="en">contentchannel</singular>
-      <plural xml:lang="nl">contentchannel</plural>
+      <plural xml:lang="nl">Rubrieken</plural>
       <plural xml:lang="en">contentchannel</plural>
    </names>
    <descriptions>
