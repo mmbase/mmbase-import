@@ -23,6 +23,7 @@ public class ServerUtil {
 
    private static boolean live;
    private static boolean useServerName = false;
+   private static boolean production = false;
 
    private static boolean loaded;
 
@@ -36,6 +37,11 @@ public class ServerUtil {
       return !live;
    }
 
+   public static boolean isProduction() {
+       getSetting();
+       return production;
+    }
+   
    public static boolean useServerName() {
        getSetting();
        return useServerName;
@@ -53,6 +59,11 @@ public class ServerUtil {
             String useServerNameStr = (String) env.lookup("server/useServerName");
             if (useServerNameStr != null && useServerNameStr.length() > 0) {
                 useServerName = Boolean.valueOf(useServerNameStr);
+            }
+
+            String productionStr = (String) env.lookup("server/production");
+            if (productionStr != null && productionStr.length() > 0) {
+                production = Boolean.valueOf(productionStr);
             }
          }
          catch (NamingException ne) {
