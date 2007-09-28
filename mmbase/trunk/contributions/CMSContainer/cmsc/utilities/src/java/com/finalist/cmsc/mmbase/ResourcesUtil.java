@@ -88,14 +88,9 @@ public class ResourcesUtil {
         }
         String url = servletpath + id;
         if (!StringUtil.isEmpty(title)) {
-            try {
-                url += "/" + URLEncoder.encode(title, "utf-8");
-                // Apache webserver fails to pass the request to tomcat when / or \ is in the url (escaped or not)
-                url = url.replaceAll("%2F|%5C|%25", "");
-            }
-            catch (UnsupportedEncodingException e) {
-                // then don't add the title to be on the save side
-            }
+            url += "/" + TreeUtil.convertToFragment(title);
+            // Apache webserver fails to pass the request to tomcat when / or \ is in the url (escaped or not)
+            url = url.replaceAll("%2F|%5C|%25", "");
         }
         return url;
 
