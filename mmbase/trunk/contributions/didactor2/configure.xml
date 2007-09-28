@@ -38,7 +38,7 @@
   <property name="imageconvert.converterroot"         value="" />
   <property name="imageconvert.convertercommand"      value="convert" />
 
-  
+
   <property name="mmbase.logdir"  value="${catalina.base}/logs" />
   <property name="mmbase.logfile" value="didactor" />
   <property name="mmbaseroot.database" value="mysql" />
@@ -125,24 +125,24 @@
     <replace file="${build.config.dir}/modules/mmbaseroot.xml"
              token="$${mmbaseroot.language}"
              value="${mmbaseroot.language}"/>
-    <replace file="${build.config.dir}/applications/Resources/builders/images.xml"
+    <replace file="${build.config.dir}/builders/resources/images.xml"
              token="$${imageconvert.converterroot}"
              value="${imageconvert.converterroot}"/>
-    <replace file="${build.config.dir}/applications/Resources/builders/images.xml"
+    <replace file="${build.config.dir}/builders/resources/images.xml"
              token="$${imageconvert.convertercommand}"
              value="${imageconvert.convertercommand}"/>
 
-    <for list="${caches}" 
+    <for list="${caches}"
          param="param">
       <sequential>
-        <propertyregex 
+        <propertyregex
             override="yes"
             property="par.name"
             input="@{param}"
             regexp="(.*?)=(.*?)"
             select="\1"
             casesensitive="false" />
-        <propertyregex 
+        <propertyregex
             override="yes"
             global="true"
             property="par.value"
