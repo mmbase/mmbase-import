@@ -295,7 +295,8 @@
           <list>6</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <class name="nl.didactor.datatypes.UserName" />
         <unique value="true" />
         <required value="false" />
         <minLength value="5" />
