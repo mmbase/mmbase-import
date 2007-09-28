@@ -133,7 +133,7 @@
     <field name="feedbackpage">
       <descriptions>
         <description xml:lang="nl">De pagina die getoond moet worden
-          als een student klaar is met het maken van een toets. 
+          als een student klaar is met het maken van een toets.
           0 = default; een pagina die aangeeft of de student geslaagd/gezakt is
           1 = een pagina die alle antwoorden met feedback laat zien
               (deze is alleen relevant als de vlag 'mayview' op '1' staat)
@@ -166,7 +166,7 @@
         <description xml:lang="nl">
           Aantal vragen dat geselecteerd moet worden voor deze toets.
           0  = alle vragen laten zien in de volgorde die opgegeven is
-          1+ = willekeurig dit aantal vragen selecteren 
+          1+ = willekeurig dit aantal vragen selecteren
         </description>
         <description xml:lang="en">
           Number of questions that must be selected for this test.
@@ -192,12 +192,12 @@
          <guiname xml:lang="nl">Altijd online</guiname>
          <guiname xml:lang="en">Always online</guiname>
        </gui>
-       
+
        <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
          <default value="false" />
        </datatype>
     </field>
-   
+
     <field name="online_date">
       <descriptions>
         <description xml:lang="en">Online Date</description>
@@ -214,7 +214,7 @@
        </editor>
        <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    
+
     <field name="offline_date">
       <descriptions>
         <description xml:lang="en">Offline Date</description>
@@ -231,7 +231,7 @@
       </editor>
       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    
+
 
   </fieldlist>
 
@@ -243,6 +243,5 @@
       <class>nl.didactor.education.Functions</class>
     </function>
   </functionlist>
-
 
 </builder>
