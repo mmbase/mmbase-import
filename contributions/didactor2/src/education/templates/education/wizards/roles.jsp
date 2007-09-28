@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %>
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate">
@@ -11,7 +11,7 @@
   <mm:import id="wizardlang" reset="true">nl</mm:import>
 </mm:compare>
 
-<mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="wizardlang" /></mm:import>
+<mm:import id="wizardjsp"><mm:treefile write="true" page="/mmbase/edit/wizard/jsp/wizard.jsp" objectlist="$includePath" />?referrer=/education/wizards/ok.jsp&language=<mm:write referid="wizardlang" /></mm:import>
 <mm:import externid="command">-1</mm:import>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -20,7 +20,7 @@
       <title>Roles editen</title>
     </head>
     <style type="text/css">
-      table.tightborder { 
+      table.tightborder {
         border-color: #000000;
         border-style: solid;
         border-left-width: 1px;
@@ -28,7 +28,7 @@
         border-right-width: 0px;
         border-bottom-width: 0px;
       }
-      td.tightborder { 
+      td.tightborder {
         border-color: #000000;
         border-style: solid;
         border-left-width: 0px;
@@ -70,8 +70,8 @@
                   <td class="tightborder"><a href="<mm:treefile page="/education/wizards/roles_cmd.jsp" objectlist="$includePath" referids="$referids">
                     <mm:param name="command">deleterole</mm:param>
                     <mm:param name="rolenumber"><mm:field name="number"/></mm:param>
-                    </mm:treefile>" onClick="return doDelete('<di:translate key="education.areyousuredelrole" />');" 
-                    target="text"><img src="<mm:treefile page="/education/wizards/gfx/minus.gif" 
+                    </mm:treefile>" onClick="return doDelete('<di:translate key="education.areyousuredelrole" />');"
+                    target="text"><img src="<mm:treefile page="/education/wizards/gfx/minus.gif"
                     objectlist="$includePath" referids="$referids"/>" border="0"
                     title="<di:translate key="education.deletethisrole"/>" alt="<di:translate key="education.deletethisrole"/>" /></a></td>
                 </mm:listnodes>

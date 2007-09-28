@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><jsp:scriptlet>
   String imageName = "";
   String sAltText = "";
@@ -13,7 +13,7 @@
   <jsp:directive.include file="../roles_chk.jsp" />
 
   <mm:import externid="e">${education}</mm:import>
-  
+
   <mm:islessthan referid="rights" referid2="RIGHTS_RW">
     ${rights} &lt; ${RIGHTS_RW}
   </mm:islessthan>
@@ -81,8 +81,8 @@
                 </tr>
               </mm:listnodes>
             </table>
-         <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
+            <table border="0" cellpadding="0" cellspacing="0">
+              <tr>
                <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
                <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
 
@@ -100,7 +100,7 @@
                         title="${di:translate(pageContext, 'education.classes')}"
                         target="text">
                        <di:translate key="education.classes" />
-                     </a>                     
+                     </a>
                    </nobr>
                  </mm:link>
                </td>
@@ -135,6 +135,29 @@
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td><nobr>&nbsp;<a href='roles.jsp' title='<di:translate key="education.roles" />' target="text"><di:translate key="education.roles" /></a></nobr></td>
+            </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+               <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
+
+               <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
+               <td>
+                 <mm:link referid="listjsp">
+                   <mm:param name="wizard">config/disallowedusernames/disallowedusernames</mm:param>
+                   <mm:param name="nodepath">disallowedusernames</mm:param>
+                   <mm:param name="search">yes</mm:param>
+                   <mm:param name="orderby">number</mm:param>
+                   <mm:param name="directions">down</mm:param>
+                   <nobr>&nbsp;
+                   <a href="${_}${forbidtemplate}"
+                       target="text">
+                     <mm:nodeinfo nodetype="disallowedusernames" type="plural_guinodemanager" />
+                   </a>
+                   </nobr>
+                 </mm:link>
+               </td>
             </tr>
          </table>
          <mm:node number="component.report" notfound="skip">
@@ -179,7 +202,7 @@
                </table>
             <%-- </di:hasrole> --%>
          </mm:node>
-         
+
       </div>
    </mm:islessthan>
 </mm:cloud>
