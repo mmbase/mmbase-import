@@ -32,7 +32,7 @@ public class ClassRel extends DidactorRel {
     /**
      * Remove a node from the cloud.
      * Removing a 'classrel' means that the copybook that is related to this node
-     * has to be removed too. 
+     * has to be removed too.
      */
     public void removeNode(MMObjectNode node) {
         List copybooks = node.getRelatedNodes("copybooks");
