@@ -75,19 +75,19 @@ public class TranslateTag extends ContextReferrerTag implements Writer { //, Par
     private String translateDebug  = "";
 
 
-    protected CharSequence getTranslation() { 
+    protected CharSequence getTranslation() {
         return new CharSequence() {
                 protected String get() {
                     try {
                         TranslateTable.init();
-                        
-                        if (log.isDebugEnabled()) {                        
+
+                        if (log.isDebugEnabled()) {
                             log.debug("Getting translation table for locale '" + getLocale() + "'");
                         }
-                        
+
                         TranslateTable tt = new TranslateTable(getLocale());
                         String translation = "";
-                        
+
                         if (key != null) {
                             translation = tt.translate(key, sArg0, sArg1, sArg2, sArg3, sArg4);
                             if (log.isDebugEnabled()) {
@@ -96,13 +96,13 @@ public class TranslateTag extends ContextReferrerTag implements Writer { //, Par
                         } else {
                             return "";
                         }
-                        
+
                         if (translation == null || "".equals(translation)) {
                             if ("true".equals(translateDebug)) {
                                 translation = "???[" + key + "]???";
                             }
                         }
-                        
+
                         // Save some debugging information about the translation id's that are
                         // used on this page.
                         if ("true".equals(translateDebug)) {
@@ -115,7 +115,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer { //, Par
                                 pageContext.setAttribute("t_usedtrans", usedTranslations, PageContext.REQUEST_SCOPE);
                             }
                         }
-                        
+
                         return translation;
                     } catch (JspTagException jte ) {
                         log.warn(jte.getMessage(), jte);
@@ -131,7 +131,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer { //, Par
                 public CharSequence subSequence(int start, int end) {
                     return get().subSequence(start, end);
                 }
-                
+
                 public String toString() {
                     // this means that it is written to page by ${_} and that consequently there _must_ be a body.
                     // this is needed when body is not buffered.
@@ -148,7 +148,7 @@ public class TranslateTag extends ContextReferrerTag implements Writer { //, Par
 
     public int doStartTag() throws JspTagException {
         translateDebug  = "";
-        
+
         if (debug == null) {
             // if no debug is given in the tag, then we look it up in the page context
             translateDebug = (String)pageContext.getAttribute("t_debug");

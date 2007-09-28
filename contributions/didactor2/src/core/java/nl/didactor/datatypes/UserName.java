@@ -48,7 +48,7 @@ public class UserName extends StringDataType implements NodeEventListener {
 
     protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         if (! filled) fillSet();
-        log.info("Validating " + castValue);
+        log.debug("Validating " + castValue);
         errors = super.validateCastValue(errors, castValue, value,  node, field);
         if (errors == VALID) errors = new ArrayList();
         for (Pattern p : disallowed) {

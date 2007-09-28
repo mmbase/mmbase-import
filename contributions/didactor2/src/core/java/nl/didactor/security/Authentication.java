@@ -263,18 +263,18 @@ public class Authentication extends org.mmbase.security.Authentication {
             }
             if (loginPage != null) {
                 try {
-                    String referUrl = loginPage;
+                    StringBuilder referUrl = new StringBuilder(loginPage);
                     if (referUrl.indexOf("?") > -1) {
-                        referUrl += "&";
+                        referUrl.append('&');
                     } else {
-                        referUrl += "?";
+                        referUrl.append('?');
                     }
-                    referUrl += "referrer=" + request.getRequestURI();
-                    if (referUrl.startsWith("/")) {
-                        referUrl = request.getContextPath() + referUrl;
+                    referUrl.append("referrer=").append(request.getRequestURI());
+                    if (referUrl.toString().startsWith("/")) {
+                        referUrl.insert(0, request.getContextPath());
                     }
                     // how about the paramters already present. This seems to be too simple. Escaping?
-                    String redirect = response.encodeRedirectURL(referUrl);
+                    String redirect = response.encodeRedirectURL(referUrl.toString());
                     response.sendRedirect(redirect);
                 } catch (Exception e) {
                     throw new SecurityException("Can't redirect to login page(" + loginPage + ")", e);
