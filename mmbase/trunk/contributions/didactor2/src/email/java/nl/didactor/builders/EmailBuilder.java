@@ -6,24 +6,26 @@ import org.mmbase.module.*;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.*;
 import org.mmbase.util.functions.*;
-import nl.didactor.mail.ExtendedJMSendMail;
+import org.mmbase.applications.email.SendMail;
 import java.util.*;
 
 /**
  * This class handles objects of type 'emails'. When new emails are created,
  * it checks whether this email should be sent using the 'sendmail' module.
  *
+ * @todo MM: It is not entirely clear to me why Didactor needs its own email builder
+ *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
 public class EmailBuilder extends MMObjectBuilder {
-    private static final Logger log=Logging.getLoggerInstance(EmailBuilder.class);
-    private ExtendedJMSendMail sendmail;
+    private static final Logger log = Logging.getLoggerInstance(EmailBuilder.class);
+    private SendMail sendmail;
 
     /**
      * Initialize the builder
      */
     public boolean init() {
-        sendmail = (ExtendedJMSendMail)Module.getModule("sendmail");
+        sendmail = (SendMail)Module.getModule("sendmail");
         sendmail.startModule();
         return super.init();
     }
@@ -31,7 +33,7 @@ public class EmailBuilder extends MMObjectBuilder {
     /**
      * Test whether or not this email object should be sent using the
      * sendmail module. If so, make sure that the 'type' value is set
-     * back to '0'. 
+     * back to '0'.
      * This method will only email nodes that are already committed to
      * the database. Otherwise it's a pain to find out which objects
      * are related to it (attachments that need to be sent with it)
@@ -55,8 +57,8 @@ public class EmailBuilder extends MMObjectBuilder {
                 n = cloud.getNode(nodeNumber);
             } else {
                 // mapnodes do not have relations.
-                n = new org.mmbase.bridge.util.MapNode(node.getValues(), 
-                                                       cloud.getNodeManager(getTableName())); 
+                n = new org.mmbase.bridge.util.MapNode(node.getValues(),
+                                                       cloud.getNodeManager(getTableName()));
             }
 
             if (sendmail.sendMail(n)) {
@@ -139,11 +141,11 @@ public class EmailBuilder extends MMObjectBuilder {
                     return html(body);
                 }
             } else {
-                //if (mimeType.startsWith("text/html")) { 
+                //if (mimeType.startsWith("text/html")) {
                 return html(body);
             }
         } else if ("headers".equals(field)) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             String[] headers = node.getStringValue("headers").split("[\n\r]+");
             for (int i = 0 ; i < headers.length; i++) {
                 String header = headers[i];
