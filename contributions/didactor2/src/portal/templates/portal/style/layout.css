@@ -114,3 +114,7 @@ p.noaccount {
   float: none;
   display: inline;
 }
+.portal a.navigate {
+  margin-top: 1ex;
+  display: block;
+}
