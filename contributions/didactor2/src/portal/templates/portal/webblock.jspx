@@ -15,7 +15,7 @@
       </mm:composite>
     </mm:hasfield>
     <mm:relatednodes>
-      <div class="article">
+      <div class="article teaser">
         <h1><mm:field name="title" /></h1>
         <di:pos2relatedimage />
         <mm:relatednodes type="images" role="posrel" max="1" orderby="posrel.pos">
