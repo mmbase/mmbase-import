@@ -161,3 +161,7 @@ div.article.selection h3 {
 .portal .intro {
   font-weight: bold;
 }
+
+.portal .article.teaser .intro {
+  font-weight: normal;
+}
