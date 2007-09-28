@@ -181,7 +181,7 @@
         <guiname xml:lang="bg">Държава</guiname>
         <guiname xml:lang="eo">Lando</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" > 
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <maxLength value="255" />
       </datatype>
       <!-- todo 'countries' could be an enumeration -->
@@ -202,7 +202,7 @@
         <guiname xml:lang="hi">दुरभाष</guiname>
         <guiname xml:lang="eo">Telefonnumero</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="255" />
       </datatype>
     </field>
@@ -213,7 +213,7 @@
         <guiname xml:lang="nl">Mobiel</guiname>
         <guiname xml:lang="eo">Poŝtelefono</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" > 
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <maxLength value="255" />
       </datatype>
 
@@ -234,7 +234,17 @@
         <guiname xml:lang="hi">इ-मेल</guiname>
         <guiname xml:lang="eo">Retadreso</guiname>
       </gui>
-      <datatype base="emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+      <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="1024" />
+      </datatype>
+    </field>
+
+    <field name="verify_email">
+      <descriptions>
+        <description xml:lang="en">Person's (new) email address</description>
+        <description xml:lang="nl">Het nieuwe electronisch postadres van de persoon</description>
+      </descriptions>
+      <datatype base="verify_emailaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="1024" />
       </datatype>
     </field>
@@ -246,7 +256,7 @@
         <guiname xml:lang="nl">Website</guiname>
         <guiname xml:lang="eo">Retejo</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="255" />
       </datatype>
     </field>
@@ -285,7 +295,7 @@
           <list>6</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"> 
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <unique value="true" />
         <required value="false" />
         <minLength value="5" />
@@ -410,11 +420,13 @@
         <guiname xml:lang="en">Status</guiname>
         <guiname xml:lang="eo">Statuso</guiname>
       </gui>
+
       <datatype base="enableddisabled" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="true" />
         <required value="false" />
       </datatype>
     </field>
+
     <field name="islogged">
       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <default value="false" />
