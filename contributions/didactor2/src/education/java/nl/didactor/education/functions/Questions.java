@@ -9,17 +9,17 @@ import java.util.*;
 /**
  * Determines the questions for a certains test.
  * @author Michiel Meeuwissen
- * @version $Id: Questions.java,v 1.1 2007-07-26 14:41:58 michiel Exp $
+ * @version $Id: Questions.java,v 1.2 2007-09-28 15:59:03 michiel Exp $
  */
 public class Questions {
     protected final static Logger log = Logging.getLoggerInstance(Questions.class);
-    
+
     private Node node;
 
     public void setNode(Node n) {
         node = n;
     }
-   
+
     private int page = 0;
     /**
      * Which page of questions to return. On page -1 all questions are available.
@@ -39,7 +39,7 @@ public class Questions {
         seed = s;
     }
 
-    
+
     /**
      * Used on nodes of type 'tests'
      */
@@ -47,10 +47,10 @@ public class Questions {
         int questionAmount = node.getIntValue("questionamount");
         int questionsPerPage = node.getIntValue("questionsperpage");
         NodeManager questionsManager = node.getCloud().getNodeManager("questions");
-        NodeQuery query = Queries.createRelatedNodesQuery(node, questionsManager, "posrel", "destination");        
+        NodeQuery query = Queries.createRelatedNodesQuery(node, questionsManager, "posrel", "destination");
         if (questionAmount < 1) {
             Step posrel = (Step) query.getSteps().get(1);
-            Step questions = (Step) query.getSteps().get(2);         
+            Step questions = (Step) query.getSteps().get(2);
             query.addSortOrder(query.createStepField(posrel, "pos"), SortOrder.ORDER_ASCENDING, false);
             query.addSortOrder(query.createStepField(questions, "title"), SortOrder.ORDER_ASCENDING, false);
             NodeList result = questionsManager.getList(query);
@@ -69,7 +69,7 @@ public class Questions {
                     result.add(next);
                 }
             }
-            
+
             if (questionsPerPage < 1 || result.size() < questionsPerPage || page == -1) {
                 return result;
             } else {
