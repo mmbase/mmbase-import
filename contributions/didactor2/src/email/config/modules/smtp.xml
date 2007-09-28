@@ -9,10 +9,10 @@
     <property name="hostname">${smtpmodule.hostname}</property>
     <property name="port">${smtpmodule.port}</property>
     <property name="domains">${smtpmodule.relaydomains}</property>
- 
+
     <property name="emailbuilder">emails</property>
     <property name="emailbuilder.bodyfield">body</property>
-    
+
     <property name="usersbuilder">people</property>
     <property name="usersbuilder.accountfield">username</property>
 
