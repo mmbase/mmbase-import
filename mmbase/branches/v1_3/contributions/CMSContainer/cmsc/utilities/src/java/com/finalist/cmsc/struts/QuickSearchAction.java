@@ -39,7 +39,7 @@ public abstract class QuickSearchAction extends MMBaseAction {
                 // not an integer then it is a path
             }
 
-            if (intValue != null) {
+            if (intValue != null && isValidChannel(cloud, intValue)) {
                 channel = intValue.toString();
             }
             else {
@@ -64,4 +64,5 @@ public abstract class QuickSearchAction extends MMBaseAction {
 
     protected abstract Node getChannelFromPath(Cloud cloud, String quicksearch);
 
+    protected abstract boolean isValidChannel(Cloud cloud, int channelNumber);
 }

@@ -94,7 +94,7 @@
 		<cmscedit:sideblock title="selector.title" titleClass="side_block_gray" bodyClass="body_table"
 			titleStyle="width: 241px;">
 			<div class="search_form">
-				<c:if test="${not empty param.channel}">
+				<c:if test="${not empty param.channel && param.channel != 'notfound'}">
 	 				<mm:node number="${param.channel}">
 						<mm:field name="path" jspvar="channelPath" write="false" />
 					</mm:node>
