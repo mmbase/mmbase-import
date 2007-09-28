@@ -40,6 +40,7 @@
         </mm:haspage>
       </head>
       <body class="portal">
+
         <mm:treeinclude debug="html" page="/cockpit/applicationbar.jsp" objectlist="$includePath" referids="$referids"/>
 
         <mm:treeinclude debug="html" page="/cockpit/providerbar.jsp" objectlist="$includePath" referids="$referids">

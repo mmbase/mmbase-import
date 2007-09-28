@@ -24,7 +24,7 @@
           </div>
         </mm:isnotempty>
       </mm:field>
-      <di:pos2relatedimage />      
+      <di:pos2relatedimage />
       <mm:field name="body" escape="pl,links" />
       <mm:relatednodes type="images" role="posrel" offset="1" orderby="posrel.pos">
         <mm:image mode="img" template="s(100)" />
@@ -32,9 +32,9 @@
 
       <mm:relatednodes type="paragraphs" role="posrel">
         <mm:field name="showtitle">
-          <mm:compare value="false" inverse="0">
+          <mm:compare value="0" inverse="true">
             <mm:field name="title">
-              <mm:isnotempty><h2><mm:write />/></h2></mm:isnotempty>
+              <mm:isnotempty><h2><mm:write /></h2></mm:isnotempty>
             </mm:field>
           </mm:compare>
         </mm:field>
