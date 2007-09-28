@@ -130,29 +130,27 @@ This JSP actually remains one entire WTF
                     break;
                  }
 
-              %>
+                 %>
 
-              <mm:context>
-                <mm:node id="test" number="<%= testNum %>">
-                  <mm:field name="name" jspvar="name" vartype="String">
-                    <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
-                    <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<%= name %>")+rotate(90)</mm:import>
-                  </mm:field>
-                  <mm:node number="progresstextbackground">
-                    <th style="border-color:#000000; border-left:0px">
-                      <mm:image
-                          alt="${test.name}"
-                          template="$template" mode="img" />
-                    </th>
-                  </mm:node>
-                </mm:node>
-              </mm:context>
+                 <mm:context>
+                   <mm:node id="test" number="<%= testNum %>">
+                     <mm:field name="name" jspvar="name" vartype="String">
+                       <% name  = name.replaceAll("\\s+","_").replaceAll("\"","''"); %>
+                       <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<%= name %>")+rotate(90)</mm:import>
+                     </mm:field>
+                     <mm:node number="progresstextbackground">
+                       <th style="border-color:#000000; border-left:0px">
+                         <mm:image
+                             alt="${test.name}"
+                             template="$template" mode="img" />
+                       </th>
+                     </mm:node>
+                   </mm:node>
+                 </mm:context>
 
-              <% } %>
-
+              <%}%>
 
               <%-- If the man is connected directly to education this man is a mega techer for this education --%>
-
               <mm:isempty referid="class">
                 <mm:node referid="education">
                   <tr>
@@ -206,7 +204,7 @@ This JSP actually remains one entire WTF
               <%--
               If the user has role 'teacher' he may see all students in the current class.
               --%>
-              <di:hasrole role="teacher">
+              <di:hasrole role="teacher,systemadministrator">
                 <mm:isnotempty referid="class">
                   <mm:node referid="class">
                     <mm:timer name="teacher_people">
@@ -254,21 +252,17 @@ This JSP actually remains one entire WTF
           </table>
 
           <% if (showNextLink) { %>
-          <span style="float: right">
-            <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt + 15 %></mm:param></mm:treefile>">
-              <di:translate key="progress.next15" />
+            <span style="float: right">
+              <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt + 15 %></mm:param></mm:treefile>">
+                <di:translate key="progress.next15" />
+              </a>
+            </span>
+          <% }
+          if (showPrevLink) { %>
+            <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt - 15 %></mm:param></mm:treefile>">
+              <di:translate key="progress.previous15" /><%-- previous15?? wtf --%>
             </a>
-          </span>
-          <%
-          }
-          if (showPrevLink) {
-          %>
-          <a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids"><mm:param name="startAt"><%= startAt - 15 %></mm:param></mm:treefile>">
-            <di:translate key="progress.previous15" /><%-- previous15?? wtf --%>
-          </a>
-          <%
-          }
-          %>
+          <% } %>
         </mm:node>
       </div> <!-- class="contentBodywit" -->
     </div><!-- class="mainContent" -->
