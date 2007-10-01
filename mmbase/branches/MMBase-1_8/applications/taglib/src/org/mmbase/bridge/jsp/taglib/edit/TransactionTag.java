@@ -18,6 +18,7 @@ import org.mmbase.bridge.Transaction;
 
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.CloudProvider;
+import org.mmbase.bridge.jsp.taglib.CloudTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.23.2.2 2007-09-21 12:55:03 michiel Exp $
+ * @version $Id: TransactionTag.java,v 1.23.2.3 2007-10-01 15:22:20 michiel Exp $
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -38,6 +39,9 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     protected Attribute commit = Attribute.NULL;
     protected Attribute name   = Attribute.NULL;
     protected String jspvar = null;
+
+    protected Object prevCloud;
+
 
     public void setCommitonclose(String c) throws JspTagException {
         commit = getAttribute(c);
@@ -98,11 +102,17 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
                 throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
             }
             transaction = super.getCloudVar().getTransaction(n);
-            if (getId() != null && ! foundThis) { // put it in context
+                     if (getId() != null && ! foundThis) { // put it in context
                 log.debug("putting transaction in context");
                 getContextProvider().getContextContainer().register(getId(), transaction);
             }
         }
+        prevCloud = pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        if (prevCloud != null) {
+            log.debug("Found previous cloud " + prevCloud);
+        }
+        pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
+
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, transaction);
         }
@@ -121,6 +131,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             }
         }
         transaction = null;
+        pageContext.setAttribute(CloudTag.KEY, prevCloud, CloudTag.SCOPE);
         return super.doEndTag();
     }
     public int doAfterBody() throws JspTagException {
