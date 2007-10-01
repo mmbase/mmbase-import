@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.64.2.4 2007-07-23 08:51:46 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.64.2.5 2007-10-01 07:50:42 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -173,7 +173,11 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
                 String elString = element.getString(this);
                 if (! "".equals(elString)) {
-                    node = node.getNodeValue(elString);
+                    try {
+                        node = node.getNodeValue(elString);
+                    } catch (org.mmbase.bridge.NotFoundException nfe) {
+                        node = null;
+                    }
                     if (node == null) {
                         switch(Notfound.get(notfound, this)) {
                         case Notfound.MESSAGE:
