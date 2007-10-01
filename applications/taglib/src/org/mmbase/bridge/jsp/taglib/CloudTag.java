@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.154 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.155 2007-10-01 15:26:09 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -202,7 +202,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     protected String getAuthenticate() throws JspTagException {
         String a = authenticate.getString(this);
         if (a.length() == 0) {
-            return cloudContext.getAuthentication().getTypes(getMethod())[0];
+            return cloudContext.getAuthentication().getTypes(getMethodOrDefault())[0];
         }
         return a;
     }
@@ -283,7 +283,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
      * @return false on failure
      */
     private boolean setRealm(String r) throws JspTagException {
-        log.debug("setting realm in cookie"); 
+        log.debug("setting realm in cookie");
         Cookie c = searchCookie();
         if (c == null) {
             c = new Cookie(REALM + getSessionName(), r);
@@ -1338,6 +1338,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
 
     public int doEndTag() throws JspTagException {
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
+        prevCloud = null;
         return super.doEndTag();
     }
 
@@ -1351,6 +1352,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         session = null;
         request = null;
         response = null;
+        prevCloud = null;
     }
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
