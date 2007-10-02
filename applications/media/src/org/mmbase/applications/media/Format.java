@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.19.2.1 2007-10-02 13:32:57 michiel Exp $
+ * @version $Id: Format.java,v 1.19.2.2 2007-10-02 13:36:04 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -137,7 +137,7 @@ public final class Format {   // final class!!
     public static final Format M4V = new Format(61, "m4v");
 
     public static final Format GGP = new Format(70, "3gpp");
-    public static final Format FLASH = new Format(80, "swf");
+    public static final Format FLASH = new Format(80, "flv");
 
     public int toInt()    { return number; }
     public String toString() { return id;     }
