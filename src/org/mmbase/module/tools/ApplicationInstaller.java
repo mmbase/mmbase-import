@@ -28,23 +28,23 @@ import org.xml.sax.InputSource;
 
 
 /**
- * Application installations functionalite of MMAdmin.
+ * Application installations functionality of MMAdmin.
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.14 2007-10-02 12:15:14 michiel Exp $
  */
-public class ApplicationInstaller {
+class ApplicationInstaller {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationInstaller.class);
 
-    /**
-     * reference to MMBase
-     */
-    private MMBase mmb = null;
 
-    public ApplicationInstaller(MMBase mmb) {
+    private final MMBase mmb;
+    private final MMAdmin admin;
+
+    public ApplicationInstaller(MMBase mmb, MMAdmin admin) {
         this.mmb = mmb;
+        this.admin = admin;
     }
 
     public void installApplications() throws SearchQueryException {
@@ -73,16 +73,24 @@ public class ApplicationInstaller {
             String requiredMaintainer, ApplicationResult result, Set<String> installationSet,
             boolean autoDeploy) throws SearchQueryException {
 
+
         if (installationSet.contains(applicationName)) {
             return result.error("Circular reference to application with name " + applicationName);
         }
 
         ApplicationReader reader = getApplicationReader(applicationName);
-        Versions ver = (Versions)mmb.getMMObject("versions");
+        Versions ver = (Versions)mmb.getBuilder("versions");
         if (reader != null) {
             // test autodeploy
-            if (autoDeploy && !reader.hasAutoDeploy()) {
-                return true;
+            if (autoDeploy) {
+                if (!reader.hasAutoDeploy()) {
+                    return true;
+                } else {
+                    if (admin.getIgnoredAutodeployApplications().contains(applicationName)) {
+                        log.info("Ignoring auto-deploy '" + applicationName + "' because specified as ignore-auto-deploy parameter of mmadmin");
+                        return true;
+                    }
+                }
             }
             String name = reader.getName();
             String maintainer = reader.getMaintainer();
@@ -190,7 +198,7 @@ public class ApplicationInstaller {
      * @since MMBase-1.7
      */
     protected boolean installDataSources(List<Map<String,String>> dataSources, String appName, ApplicationResult result) {
-        MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
+        MMObjectBuilder syncbul = mmb.getBuilder("syncnodes");
 
         List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
         if (syncbul != null) {
@@ -419,7 +427,7 @@ public class ApplicationInstaller {
      * @javadoc
      */
     boolean installRelationSources(List<Map<String,String>> ds, String appname, ApplicationResult result) {
-        MMObjectBuilder syncbul = mmb.getMMObject("syncnodes");
+        MMObjectBuilder syncbul = mmb.getBuilder("syncnodes");
         InsRel insRel = mmb.getInsRel();
         if (syncbul != null) {
             List<MMObjectNode> nodeFieldNodes = new ArrayList<MMObjectNode>(); // a temporary list with all nodes that have NODE fields, which should be synced, later.
@@ -685,7 +693,7 @@ public class ApplicationInstaller {
     private boolean installBuilders(List<Map<String,String>> neededbuilders, String applicationRoot, ApplicationResult result) {
         for (Map<String, String> builderdata : neededbuilders) {
             String name = builderdata.get("name");
-            MMObjectBuilder bul = mmb.getMMObject(name);
+            MMObjectBuilder bul = mmb.getBuilder(name);
             // if builder not loaded
             if (bul == null) {
                 // if 'inactive' in the config/builder path, fail

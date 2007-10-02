@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.157 2007-08-06 16:54:15 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.158 2007-10-02 12:15:14 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -121,7 +121,7 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new ProcessFunction("BUILDERSAVE", new Parameter[] {PARAM_BUILDER, PARAM_PATH, PARAM_PAGEINFO, new Parameter("RESULT", String.class, "")}));
     }
 
-    public MMAdmin(String name) { 
+    public MMAdmin(String name) {
         super(name);
     }
 
@@ -297,7 +297,7 @@ public class MMAdmin extends ProcessorModule {
                     log.warn("Found empty app-name in " + cmds + " (used key " + cmdline + ")");
                 }
                 try {
-                    if (new ApplicationInstaller(mmb).installApplication(appname, -1, null, result, new HashSet<String>(), false)) {
+                    if (new ApplicationInstaller(mmb, this).installApplication(appname, -1, null, result, new HashSet<String>(), false)) {
                         lastmsg = result.getMessage();
                     } else {
                         lastmsg = "Problem installing application : " + appname + ", cause: " + result.getMessage();
@@ -393,6 +393,13 @@ public class MMAdmin extends ProcessorModule {
             String escaped = encoder.encode(s);
             return escaped.replaceAll("\n", "<br />");
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected Collection<String> getIgnoredAutodeployApplications() {
+        return Casting.toCollection(getInitParameter("ignored-auto-deploy"));
     }
 
     /**
@@ -636,7 +643,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Versions builder not installed, Can't auto deploy apps");
             return;
         }
-        ApplicationInstaller installer = new ApplicationInstaller(mmb);
+        ApplicationInstaller installer = new ApplicationInstaller(mmb, this);
 
         installer.installApplications();
         state = true;
