@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application Admin, Application
  * @author Daniel Ockeloen
- * @version $Id: MMAdminProbe.java,v 1.10 2005-10-23 18:00:50 nklasens Exp $
+ * @version $Id: MMAdminProbe.java,v 1.11 2007-10-02 12:15:14 michiel Exp $
  */
 public class MMAdminProbe implements Runnable {
 
@@ -86,7 +86,7 @@ public class MMAdminProbe implements Runnable {
             parent.probeCall();
         } catch(Exception e) {
             log.error(e.getMessage());
-            log.error(Logging.stackTrace(e));
+            log.debug("stacktrace: ", e);
         }
     }
 }
