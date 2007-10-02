@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * be online/offline.
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.13 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: MediaProviders.java,v 1.13.2.1 2007-10-02 09:44:35 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
@@ -76,5 +76,9 @@ public class MediaProviders extends MMObjectBuilder {
             }
         }
         return super.executeFunction(node, function, args);
+    }
+
+    protected String getNodeGUIIndicator(MMObjectNode node, org.mmbase.util.functions.Parameters params) {
+        return node.getStringValue("name") + " " + node.getStringValue("protocol") + "://" + node.getStringValue("host") + node.getStringValue("rootpath");
     }
 }
