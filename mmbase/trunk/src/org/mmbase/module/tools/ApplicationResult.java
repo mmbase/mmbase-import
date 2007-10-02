@@ -16,17 +16,17 @@ import org.mmbase.util.logging.Logging;
 /**
  * Contains the status after installing an MMBase 'application'. I.e. whether is was successful, and
  * a newline separated message String containing the reason(s).
- * @version $Id: ApplicationResult.java,v 1.3 2007-06-13 11:25:53 nklasens Exp $
+ * @version $Id: ApplicationResult.java,v 1.4 2007-10-02 12:15:14 michiel Exp $
  */
-public class ApplicationResult {
+class ApplicationResult {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationResult.class);
 
-    protected final StringBuffer resultMessage;
+    protected final StringBuilder resultMessage;
     protected boolean success;
 
     public ApplicationResult() {
-        resultMessage = new StringBuffer();
+        resultMessage = new StringBuilder();
         success = true;
     }
 

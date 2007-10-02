@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application Admin, Application
  * @author Daniel Ockeloen
- * @version $Id: MMAdminProbe.java,v 1.10 2005-10-23 18:00:50 nklasens Exp $
+ * @version $Id: MMAdminProbe.java,v 1.10.2.1 2007-10-02 12:15:34 michiel Exp $
  */
 public class MMAdminProbe implements Runnable {
 
@@ -74,6 +74,11 @@ public class MMAdminProbe implements Runnable {
         } else {
             log.error("MMAdminProbe thread was already running");
         }
+    }
+
+    public void stop() {
+        kicker.interrupt();
+        kicker = null;
     }
 
 

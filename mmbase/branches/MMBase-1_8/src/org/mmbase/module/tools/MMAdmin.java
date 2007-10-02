@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.144.2.1 2006-12-05 21:05:28 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.144.2.2 2007-10-02 12:15:34 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -119,6 +119,7 @@ public class MMAdmin extends ProcessorModule {
     }
 
 
+    private MMAdminProbe probe;
     /**
      * @javadoc
      */
@@ -131,7 +132,11 @@ public class MMAdmin extends ProcessorModule {
         mmb = (MMBase)getModule("MMBASEROOT");
 
 
-        new MMAdminProbe(this, mmb);
+        probe = new MMAdminProbe(this, mmb);
+    }
+    protected void shutdown() {
+        probe.stop();
+
     }
 
     /**
@@ -291,7 +296,7 @@ public class MMAdmin extends ProcessorModule {
                     log.warn("Found empty app-name in " + cmds + " (used key " + cmdline + ")");
                 }
                 try {
-                    if (new ApplicationInstaller(mmb).installApplication(appname, -1, null, result, new HashSet(), false)) {
+                    if (new ApplicationInstaller(mmb, this).installApplication(appname, -1, null, result, new HashSet(), false)) {
                         lastmsg = result.getMessage();
                     } else {
                         lastmsg = "Problem installing application : " + appname + ", cause: " + result.getMessage();
@@ -386,6 +391,13 @@ public class MMAdmin extends ProcessorModule {
             String escaped = encoder.encode(s);
             return escaped.replaceAll("\n", "<br />");
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected Collection getIgnoredAutodeployApplications() {
+        return Casting.toCollection(getInitParameter("ignored-auto-deploy"));
     }
 
     /**
@@ -629,7 +641,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("Versions builder not installed, Can't auto deploy apps");
             return;
         }
-        ApplicationInstaller installer = new ApplicationInstaller(mmb);
+        ApplicationInstaller installer = new ApplicationInstaller(mmb, this);
 
         installer.installApplications();
         state = true;
@@ -1065,7 +1077,7 @@ public class MMAdmin extends ProcessorModule {
 	CloudModel cloudmodel = ModelsManager.getModel("default");
 	if (cloudmodel != null) {
             CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-            if (cloudmodelbuilder != null) cloudmodelbuilder.setGuiName(fieldname,country,value); 
+            if (cloudmodelbuilder != null) cloudmodelbuilder.setGuiName(fieldname,country,value);
 	}
     }
 
@@ -1215,7 +1227,7 @@ public class MMAdmin extends ProcessorModule {
 	                CloudModel cloudmodel = ModelsManager.getModel("default");
 	                if (cloudmodel != null) {
                            CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBSize(fieldname,value); 
+                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBSize(fieldname,value);
 	                }
                     } catch (StorageException se) {
                         def.setMaxLength(oldSize);
@@ -1304,7 +1316,7 @@ public class MMAdmin extends ProcessorModule {
 	                CloudModel cloudmodel = ModelsManager.getModel("default");
 	                if (cloudmodel != null) {
                            CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBState(fieldname,value); 
+                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBState(fieldname,value);
 	                }
             }
         }
@@ -1335,7 +1347,7 @@ public class MMAdmin extends ProcessorModule {
 	    CloudModel cloudmodel = ModelsManager.getModel("default");
 	    if (cloudmodel != null) {
                 CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBKey(fieldname,value); 
+                if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBKey(fieldname,value);
 	    }
             def.finish();
         }
@@ -1369,7 +1381,7 @@ public class MMAdmin extends ProcessorModule {
 	            CloudModel cloudmodel = ModelsManager.getModel("default");
 	            if (cloudmodel != null) {
                         CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                        if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBNotNull(fieldname,value); 
+                        if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBNotNull(fieldname,value);
 	            }
                     // need to be rerouted syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
@@ -1450,7 +1462,7 @@ public class MMAdmin extends ProcessorModule {
                 log.debug("Calling cloud module builder");
 		CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
 		if (cloudmodelbuilder != null) {
-                    cloudmodelbuilder.addField(pos,fieldName, (String)vars.get("mmbasetype"), (String)vars.get("guitype"), (String)vars.get("dbstate"), (String)vars.get("dbnotnull"), (String)vars.get("dbkey"), (String)vars.get("dbsize")); 
+                    cloudmodelbuilder.addField(pos,fieldName, (String)vars.get("mmbasetype"), (String)vars.get("guitype"), (String)vars.get("dbstate"), (String)vars.get("dbnotnull"), (String)vars.get("dbkey"), (String)vars.get("dbsize"));
                 }
 	    } else {
                 log.warn("No cloud model 'default' found");
@@ -1475,7 +1487,7 @@ public class MMAdmin extends ProcessorModule {
 
         MMObjectBuilder bul = getMMObject(builder);
         if (bul != null && value != null && value.equals("Yes")) {
-	    
+
             CoreField def = bul.getField(fieldname);
             // make change in storage
             mmb.getStorageManager().delete(def);
@@ -1485,7 +1497,7 @@ public class MMAdmin extends ProcessorModule {
            CloudModel cloudmodel = ModelsManager.getModel("default");
            if (cloudmodel != null) {
                 CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                if (cloudmodelbuilder != null) cloudmodelbuilder.removeField(fieldname); 
+                if (cloudmodelbuilder != null) cloudmodelbuilder.removeField(fieldname);
             }
             def.finish();
         }
