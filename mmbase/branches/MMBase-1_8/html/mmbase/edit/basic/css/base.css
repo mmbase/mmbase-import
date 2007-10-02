@@ -5,7 +5,7 @@
 
 
 
-body.basic table, body.basic p { 
+body.basic table, body.basic p {
   margin-left: 0%;
   width: 100%;
 }
@@ -36,7 +36,7 @@ textarea.big {
 input {
 }
 
-.mm_check_error { 
+.mm_check_error {
   background-color: yellow;
 }
 
@@ -52,3 +52,8 @@ p.foot2 {
   float: right;
 }
 
+.nmname {
+  display: block;
+  font-size: smaller;
+  font-style: italic;
+}
