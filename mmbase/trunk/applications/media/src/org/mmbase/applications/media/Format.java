@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.21 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: Format.java,v 1.22 2007-10-02 13:33:15 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -137,6 +137,8 @@ public final class Format {   // final class!!
 
     public static final Format GGP = new Format(70, "3gpp");
 
+    public static final Format FLASH = new Format(80, "swf");
+
     public int toInt()    { return number; }
     public String toString() { return id;     }
     public static Format get(int i) {
@@ -151,7 +153,7 @@ public final class Format {   // final class!!
      * don't know if this is nice
      */
     public static List<Format> getMediaFormats() {
-        return Arrays.asList(new Format[] {MP3, RA, RA,WAV, PCM, MP2, RM, VOB, AVI, MPEG, MP4, MPG, ASF, MOV, WMA, OGG, OGM, RAM, WMP, QT, ASX, WAX, WMV, WVX, WM, WMZ, WMD, MID, PODCAST, VODCAST, M4A, M4V, GGP});
+        return Arrays.asList(new Format[] {MP3, RA, RA,WAV, PCM, MP2, RM, VOB, AVI, MPEG, MP4, MPG, ASF, MOV, WMA, OGG, OGM, RAM, WMP, QT, ASX, WAX, WMV, WVX, WM, WMZ, WMD, MID, PODCAST, VODCAST, M4A, M4V, GGP, FLASH});
     }
     public static Format get(String id) {
         id = id.toLowerCase();

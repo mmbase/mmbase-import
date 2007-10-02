@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.44.2.1 2007-07-10 11:21:56 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.44.2.2 2007-10-02 13:32:57 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -55,7 +55,11 @@ public class MediaFragments extends MMObjectBuilder {
     public static final String FUNCTION_DURATION    = "duration";
 
     // parameter definitions (making use of reflection utitility for functions)
-    public final static Parameter[] URLS_PARAMETERS          = { new Parameter("format",  List.class), new Parameter("bitrate", String.class), Parameter.REQUEST };
+    public final static Parameter[] URLS_PARAMETERS          = {
+        new Parameter("format",  List.class),
+        new Parameter("bitrate", String.class),
+        Parameter.REQUEST 
+    };
     public final static Parameter[] FILTEREDURLS_PARAMETERS  = URLS_PARAMETERS;
     public final static Parameter[] URL_PARAMETERS           = URLS_PARAMETERS;
     public final static Parameter[] NUDEURL_PARAMETERS       = URLS_PARAMETERS;
@@ -445,7 +449,7 @@ public class MediaFragments extends MMObjectBuilder {
     public String replace(PageInfo sp,StringTokenizer command) {
         if (command.hasMoreTokens()) {
             String token=command.nextToken();
-            
+
             log.debug("scan - "+token);
             if (token.equals("GETURL")) {
                 Integer number=null, userSpeed=null, userChannels=null;

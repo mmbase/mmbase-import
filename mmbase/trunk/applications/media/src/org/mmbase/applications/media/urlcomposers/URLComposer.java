@@ -36,6 +36,8 @@ public class URLComposer  {
     protected MMObjectNode  source;
     protected MMObjectNode  provider;
     protected Map<String, Object>           info;
+
+    protected int preference = 0;
     
     public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
         if(cacheExpireObjects!=null) {
@@ -152,4 +154,5 @@ public class URLComposer  {
         result = HashCodeUtil.hashCode(result, info == null ? 0 : info.hashCode());
         return result;
     }
+
 }
