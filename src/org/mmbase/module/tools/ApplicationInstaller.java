@@ -31,19 +31,19 @@ import org.xml.sax.InputSource;
  *
  * @author Nico Klasens
  * @since MMBase-1.8
- * @version $Id: ApplicationInstaller.java,v 1.8.2.2 2007-02-03 12:59:17 nklasens Exp $
+ * @version $Id: ApplicationInstaller.java,v 1.8.2.3 2007-10-02 12:15:34 michiel Exp $
  */
 public class ApplicationInstaller {
 
     private static final Logger log = Logging.getLoggerInstance(ApplicationInstaller.class);
 
-    /**
-     * reference to MMBase
-     */
-    private MMBase mmb = null;
 
-    public ApplicationInstaller(MMBase mmb) {
+    private final MMBase mmb;
+    private final MMAdmin admin;
+
+    public ApplicationInstaller(MMBase mmb, MMAdmin admin) {
         this.mmb = mmb;
+        this.admin = admin;
     }
 
     public void installApplications() throws SearchQueryException {
@@ -82,9 +82,18 @@ public class ApplicationInstaller {
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (reader != null) {
             // test autodeploy
-            if (autoDeploy && !reader.hasAutoDeploy()) {
-                return true;
+            // test autodeploy
+            if (autoDeploy) {
+                if (!reader.hasAutoDeploy()) {
+                    return true;
+                } else {
+                    if (admin.getIgnoredAutodeployApplications().contains(applicationName)) {
+                        log.info("Ignoring auto-deploy '" + applicationName + "' because specified as ignore-auto-deploy parameter of mmadmin");
+                        return true;
+                    }
+                }
             }
+
             String name = reader.getName();
             String maintainer = reader.getMaintainer();
             if (requiredMaintainer != null && !maintainer.equals(requiredMaintainer)) {
@@ -226,7 +235,7 @@ public class ApplicationInstaller {
             try {
                 MMObjectNode newNode = (MMObjectNode)n.next();
                 nodeReader.loadBinairyFields(newNode);
-                
+
                 int exportnumber = newNode.getIntValue("number");
                 if (existsSyncnode(syncbul, exportsource, exportnumber)) {
                     // XXX To do : we may want to load the node and check/change the fields
