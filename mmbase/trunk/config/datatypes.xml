@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.58 2007-08-21 13:30:38 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.59 2007-10-03 16:16:26 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -512,6 +512,13 @@
         <entry basename="org.mmbase.datatypes.resources.boolean.enableddisabled" />
       </enumeration>
     </specialization>
+    <specialization id="check">
+      <description xml:lang="en">
+        Boolean with no explicit enumeration. Will result in checkboxes.
+      </description>
+      <enumeration>
+      </enumeration>
+    </specialization>
   </datatype>
 
   <datatype id="integer">
@@ -581,10 +588,21 @@
 
     <specialization id="filesize">
       <description xml:lang="en">
-        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'kb' etc.
+        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'KiB' etc.
       </description>
       <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatFileSize" />
+        <class name="org.mmbase.datatypes.processors.FormatFileSize"/>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="filesize_deprecated">
+      <description xml:lang="en">
+        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'kbyte' etc.
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatFileSize">
+          <param name="classical">true</param>
+        </class>
       </getprocessor>
     </specialization>
 
@@ -640,6 +658,79 @@
       Double precision floating point numbers.
     </description>
     <class name="org.mmbase.datatypes.DoubleDataType" />
+
+    <specialization id="phys_distance">
+      <description xml:lang="en">
+        Some distance, in the SI unit meters. Always positive.
+      </description>
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">m</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="phys_temperature">
+      <description xml:lang="en">
+        A physical temparature.
+      </description>
+      <default value="273.15" />
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">K</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="phys_angle">
+      <description xml:lang="en">
+        An angle in radials (1 radian = 180 / π  degrees).
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">rad</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+    <specialization id="phys_mass">
+      <description xml:lang="en">
+        An physical mass.
+      </description>
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">g</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+
+    <specialization id="phys_duration">
+      <description xml:lang="en">
+        An physical duration, in seconds.
+      </description>
+      <minInclusive value="0" />
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">s</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
+
+    <specialization id="phys_energy">
+      <description xml:lang="en">
+      </description>
+      <getprocessor type="string">
+        <class name="org.mmbase.datatypes.processors.FormatQuantity">
+          <param name="unit">J</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
   </datatype>
 
   <datatype id="binary">
