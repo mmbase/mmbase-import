@@ -167,15 +167,16 @@ public class RegexpReplacer extends ChunkedTransformer {
     protected boolean replace(String string, Writer w, Status status) throws IOException {
         Iterator<Entry<Pattern,String>> i  = getPatterns().iterator();
 
-        boolean result = false;
+        boolean r = false;
         while (i.hasNext()) {
             Entry<Pattern,String> entry = i.next();
             Pattern p = entry.getKey();
             if (replaceFirstAll && status.used.contains(p)) continue;
             Matcher m = p.matcher(string);
             String replacement = entry.getValue();
-            result = m.find();
+            boolean result = m.find();
             if (result) {
+                r = true;
                 StringBuffer sb = new StringBuffer();
                 do {
                     status.replaced++;
@@ -191,7 +192,7 @@ public class RegexpReplacer extends ChunkedTransformer {
         }
 
         w.write(string);
-        return result;
+        return r;
 
     }
     protected final String base() {
