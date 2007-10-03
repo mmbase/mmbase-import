@@ -7,11 +7,25 @@
  * new MMBaseValidator(window, root): attaches events to all elements in root when loading window.
  * new MMBaseValidator(window): attaches events to all elements in window when loading window.
  * new MMBaseValidator():       attaches no events yet. You could replace some functions, add hooks, set settings first or so.
- *                              then call validator.setup(window).
+ *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.36 2007-09-16 17:58:36 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.37 2007-10-03 16:29:09 michiel Exp $
  */
+var validators = new Array();
+
+function watcher() {
+    for (var i = 0; i < validators.length; i++) {
+        if (validators[i].activeElement != null) {
+            if (! validators[i].activeElement.serverValidated) {
+                validators[i].serverValidation(validators[i].activeElement);
+            }
+        }
+    }
+    setTimeout("watcher()", 4000);
+
+}
+setTimeout("watcher()", 4000);
 
 function MMBaseValidator(w, root) {
 
@@ -26,6 +40,8 @@ function MMBaseValidator(w, root) {
     this.setup(w);
     this.root = root;
     this.lang;
+    this.id = validators.push(this);
+    this.activeElement = null;
 }
 
 MMBaseValidator.prototype.setup = function(w) {
@@ -383,7 +399,7 @@ Key.prototype.string = function() {
  * MMBase DataType.
  */
 MMBaseValidator.prototype.getDataTypeKey = function(el) {
-    if (el == null) console.log("Calling with null??");
+    if (el == null) return;
     if (el.mm_dataTypeStructure == null) {
         var classNames = el.className.split(" ");
         var result = new Key();
@@ -561,6 +577,7 @@ MMBaseValidator.prototype.valid = function(el) {
  * @todo make asynchronous.
  */
 MMBaseValidator.prototype.serverValidation = function(el) {
+    if (el == null) return;
     try {
         var key = this.getDataTypeKey(el);
         var xmlhttp = new XMLHttpRequest();
@@ -574,6 +591,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
                      "&changed=" + this.isChanged(el),
                      false);
         xmlhttp.send(null);
+        el.serverValidated = true;
         return xmlhttp.responseXML;
     } catch (ex) {
         this.log(ex);
@@ -622,6 +640,7 @@ MMBaseValidator.prototype.serverValidate = function(event) {
 MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
     this.log("Validating " + element);
+    this.activeElement = element;
     if (server) {
         var serverXml = this.serverValidation(element);
         valid = this.validResult(serverXml);
@@ -639,6 +658,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
             }
         }
     } else {
+        element.serverValidated = false;
         valid = this.valid(element);
     }
     if (valid != element.prevValid) {
