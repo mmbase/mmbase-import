@@ -10,22 +10,28 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.38 2007-10-03 16:31:49 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.39 2007-10-03 16:40:16 michiel Exp $
  */
 var validators = new Array();
 
+
 function watcher() {
     for (var i = 0; i < validators.length; i++) {
-        if (validators[i].activeElement != null) {
-            if (! validators[i].activeElement.serverValidated) {
-                validators[i].validateElement(validators[i].activeElement, true);
+	var validator = validators[i];
+	var el = validator.activeElement;
+	var now = new Date().getTime();
+        if (el != null) {
+            if (! el.serverValidated) {
+		if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
+                    validators[i].validateElement(validators[i].activeElement, true);
+		}
             }
         }
     }
-    setTimeout("watcher()", 4000);
+    setTimeout("watcher()", 150);
 
 }
-setTimeout("watcher()", 4000);
+setTimeout("watcher()", 500);
 
 function MMBaseValidator(w, root) {
 
@@ -42,6 +48,7 @@ function MMBaseValidator(w, root) {
     this.lang;
     this.id = validators.push(this);
     this.activeElement = null;
+    this.checkAfter    = 600;
 }
 
 MMBaseValidator.prototype.setup = function(w) {
@@ -659,6 +666,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         }
     } else {
         element.serverValidated = false;
+	element.lastChange = new Date();
         valid = this.valid(element);
     }
     if (valid != element.prevValid) {
