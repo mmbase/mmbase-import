@@ -172,21 +172,23 @@ public class RegexpReplacer extends ChunkedTransformer {
             Pattern p = entry.getKey();
             if (replaceFirstAll && status.used.contains(p)) continue;
             Matcher m = p.matcher(string);
-            if (m.matches()) {
-                String result = entry.getValue();
-                for (int j = m.groupCount(); j >= 0; j--) {
-                    if (replaceFirst) {
-                        result = result.replaceFirst("\\$" + j, m.group(j));
-                    } else {
-                        result = result.replaceAll("\\$" + j, m.group(j));
-                    }
+            String replacement = entry.getValue();
+            boolean result = m.find();
+            if (result) {
+                StringBuffer sb = new StringBuffer();
+                do {
                     status.replaced++;
-                }
+                    m.appendReplacement(sb, replacement);
+                    if (replaceFirst) break;
+                    result = m.find();
+                } while (result);
+                m.appendTail(sb);
                 if (replaceFirstAll) status.used.add(p);
-                w.write(result);
-                return true;
+                string = sb.toString();
             }
+
         }
+
         w.write(string);
         return false;
 
