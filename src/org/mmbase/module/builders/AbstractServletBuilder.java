@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.51 2007-07-13 13:48:14 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.52 2007-10-03 15:15:11 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -310,7 +310,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return getSGUIIndicator(node, new Parameters(GUI_PARAMETERS).set("field", field));
     }
 
-    protected static final Pattern legalizeFileName = Pattern.compile("[%\\/\\:\\;\\\\ ]+");
+    protected static final Pattern legalizeFileName = Pattern.compile("[%\\/\\:\\;\\\\ \\?]+");
 
 
     /**
@@ -349,6 +349,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
     /**
+     * Adds a filename to the path to a servlet, unless this does not make sense (not filename can
+     * be determined) or it was explicitely set not to, using the servlet context init parameter
+     * 'mmbase.servlet.&lt;association&gt;addfilename.
      * @since MMBase-1.8
      */
     protected boolean addFileName(MMObjectNode node, String servlet) {
