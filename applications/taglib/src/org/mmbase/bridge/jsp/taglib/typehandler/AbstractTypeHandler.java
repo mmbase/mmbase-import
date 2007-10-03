@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.57 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.58 2007-10-03 16:14:12 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -242,17 +242,17 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     }
                 }
             }
-            if (errors) {
+            if (errors && ! field.isReadOnly()) {
                 return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
             } else {
                 return "";
             }
         } else {
             FormTag form = tag.getFormTag(false, null);
-            if (form != null) {
+            if (form != null &&  ! field.isReadOnly()) {
                 form.setValid(false);
             }
-            if (errors) {
+            if (errors && ! field.isReadOnly()) {
                 StringBuilder show = new StringBuilder("<div id=\"");
                 show.append(prefixError(field.getName()));
                 show.append("\" class=\"mm_check_error\">");
