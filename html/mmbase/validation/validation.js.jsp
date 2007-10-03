@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.37 2007-10-03 16:29:09 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.38 2007-10-03 16:31:49 michiel Exp $
  */
 var validators = new Array();
 
@@ -18,7 +18,7 @@ function watcher() {
     for (var i = 0; i < validators.length; i++) {
         if (validators[i].activeElement != null) {
             if (! validators[i].activeElement.serverValidated) {
-                validators[i].serverValidation(validators[i].activeElement);
+                validators[i].validateElement(validators[i].activeElement, true);
             }
         }
     }
