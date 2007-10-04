@@ -11,27 +11,20 @@
     <mm:node number="$mag">
       <h1><mm:field  name="title" /></h1>
       <mm:field  name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
-      <div class="intro">
-        <mm:field  escape="p" name="intro"/>
-      </div>
-      <mm:field  escape="p" name="body"/>
-      <table>
-        <tr><th>title</th><th class="navigate" /></tr>
-        <mm:relatednodes  role="posrel" type="news" orderby="posrel.pos" max="10">
-          <tr>
-            <td><mm:field name="title" /></td>
-            <td  class="navigate link">
-              <mm:link page="article" referids="_node@n">
-                <a href="${_}">
-                  <mm:link page="/mmbase/style/images/next.png">
-                    <img src="${_}" alt="link" />
-                  </mm:link>
-                </a>
-              </mm:link>
-            </td>
-          </tr> 
-        </mm:relatednodes>
-      </table>
+      <p class="intro">
+        <mm:field  escape="p" name="intro" />
+      </p>
+      <mm:field  escape="p" name="body" />
+      <h2>News articles</h2>
+      <ul>
+      <mm:relatednodes role="posrel" type="news" orderby="posrel.pos" max="10">
+        <li>
+          <mm:link page="article" referids="_node@n">
+            <a href="${_}"><mm:field name="title" /></a>
+          </mm:link>
+        </li>
+      </mm:relatednodes>
+      </ul>
     </mm:node>
   </mm:cloud>
 </div>

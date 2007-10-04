@@ -2,8 +2,8 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <div
-  class="component mm_c_core mm_c_b_databases-connections ${requestScope.className}"
-  id="${requestScope.componentId}">
+	class="mm_c mm_c_core mm_c_b_connections ${requestScope.componentClassName}"
+	id="${requestScope.componentId}">
 
 <h3>Database connections overview</h3>
 
@@ -27,14 +27,12 @@
       <td><mm:field name="item4" /></td>
     </tr>
   </mm:nodelistfunction>
-  <tr>
-    <td>
-      <mm:link page="databases">
-        <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
-      </mm:link>
-    </td>
-    <td colspan="4">Return to Database Overview</td>
-  </tr>
   </table>
+  <p>
+    <mm:link page="databases">
+      <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+      <a href="${_}">Return to Database Overview</a>
+    </mm:link>
+  </p>
 </div>
 </mm:cloud>

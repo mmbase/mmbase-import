@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <div
-  class="component ${requestScope.className}"
+  class="mm_c mm_c_core mm_c_b_applications ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 <mm:import externid="application" />
 <mm:import externid="cmd" jspvar="cmd" />
@@ -58,8 +58,8 @@
   <p>
 	<mm:link page="applications">
 	  <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+	  <a href="${_}">Return to Applications Administration</a>
 	</mm:link>
-	Return to Applications Administration
   </p>
 </div>
 </mm:cloud>
