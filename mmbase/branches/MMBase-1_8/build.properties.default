@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.26.2.3 2007-08-06 12:13:42 michiel Exp $
+# $Id: build.properties.default,v 1.26.2.4 2007-10-04 13:50:36 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -146,7 +146,7 @@ taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/stan
 backport-util-concurrent.version=backport-util-concurrent-2.1
 backport-util-concurrent.file=${backport-util-concurrent.version}.tar.gz
 backport-util-concurrent.dest=${download.dir}/${backport-util-concurrent.file}
-backport-util-concurrent.loc=http://dcl.mathcs.emory.edu/util/backport-util-concurrent/dist/backport-util-concurrent-2.1/${backport-util-concurrent.file}
+backport-util-concurrent.loc=http://www.mmbase.org/download/${backport-util-concurrent.file}
 backport-util-concurrent.jar=${expand.dir}/${backport-util-concurrent.version}/backport-util-concurrent.jar
 
 
@@ -160,7 +160,7 @@ backport-util-concurrent.jar=${expand.dir}/${backport-util-concurrent.version}/b
 
 
 
-# ----- javacc ---- 
+# ----- javacc ----
 #https://javacc.dev.java.net/files/documents/17/13959/javacc-4.0beta1.tar.gz
 javacc.version=4.0beta1
 javacc.file=javacc-${javacc.version}.tar.gz
