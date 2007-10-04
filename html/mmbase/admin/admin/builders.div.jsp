@@ -1,8 +1,8 @@
 <%@ page import="org.mmbase.module.core.MMBase" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
-<div
-  class="component ${requestScope.componentClassName}"
+<div 
+  class="mm_c mm_c_core mm_c_b_builders ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
   
   <h3>Builder Overview <mm:cloudinfo type="rank" /></h3>

@@ -1,0 +1,5 @@
+/* 
+  css to test urls in component xml 
+  just creates a red border around tables
+*/
+table { border: 2px solid #c00; }
