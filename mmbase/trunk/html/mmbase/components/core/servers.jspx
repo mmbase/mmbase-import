@@ -86,8 +86,8 @@
       <p>
         <mm:link page="servers">
           <a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}"  alt="back" /></a>
+          <a href="${_}">Return to Servers Overview</a>
         </mm:link>
-        Return to Servers Overview
       </p>
     </mm:present>
     

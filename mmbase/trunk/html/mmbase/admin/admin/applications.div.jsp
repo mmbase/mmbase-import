@@ -3,8 +3,9 @@
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <mm:import externid="application" />
 <mm:import externid="app" />
+
 <div
-  class="component ${requestScope.componentClassName}"
+  class="mm_c mm_c_core mm_c_b_applications ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 <mm:notpresent referid="application">
   <h3>Administrate Applications</h3>
@@ -104,8 +105,8 @@
   <p>
     <mm:link page="applications">
       <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+      <a href="${_}">Return to Applications Overview</a>
     </mm:link>
-    Return to Applications Overview
   </p>
 </mm:present>
 

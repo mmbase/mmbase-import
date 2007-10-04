@@ -8,7 +8,7 @@
 <mm:import externid="cmd"      jspvar="cmd" />
 <mm:import externid="action" />
 <div
-  class="component ${requestScope.className}"
+  class="mm_c mm_c_core mm_c_b_modules ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
 
 <%
@@ -152,8 +152,8 @@ Module mmAdmin=ContextProvider.getDefaultCloudContext().getModule("mmadmin");
 <p>
   <mm:link page="modules">
     <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+    <a href="${_}">Return to Module Overview</a>
   </mm:link>
-  Return to Module Overview
 </p>
 
 </div>

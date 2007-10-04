@@ -7,20 +7,22 @@
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud>
+    <mm:import externid="mag">default.mags</mm:import>
     <mm:import externid="n" required="true" />
     <mm:node number="$n">      
-      <h1><mm:field  name="title"/></h1>
+      <h1><mm:field name="title"/></h1>
       <mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
       <div class="intro">
         <mm:field  name="intro" escape="p,links" />
       </div>
       <mm:field  escape="p,links" name="body"/>
       <mm:relatednodes type="images" role="posrel"  orderby="posrel.pos" max="3">
-        <mm:first><h2>Related images</h2></mm:first>
+        <mm:first><h2>Images</h2></mm:first>
         <mm:image template="s(200)" mode="img" />
       </mm:relatednodes>
 
       <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos" max="3">
+        <mm:first><h2>Links</h2></mm:first>
         <a href="${_node.url}"><mm:field name="description"/></a><br />
       </mm:relatednodes>
 
@@ -28,19 +30,18 @@
         <mm:first><h2>Authors</h2></mm:first>
         <em><mm:field name="firstname" /> <mm:field name="lastname" /></em><br />
       </mm:relatednodes>
-      <hr />
-      <div class="link">
-        <mm:relatednodes role="posrel" type="mags">
-          <mm:link page="magazine" referids="_node@mag">
-            <a href="${_}">
-              <mm:link page="/mmbase/style/images/back.gif">
-                <img src="${_}" alt="back" />
-              </mm:link>
-            </a>
-          </mm:link>
-          <br />
-        </mm:relatednodes>
-      </div>
+    </mm:node>
+    <mm:node number="$mag">
+    <h2>News articles</h2>
+    <ul>
+    <mm:relatednodes role="posrel" type="news" orderby="posrel.pos" max="10">
+      <li>
+        <mm:link page="article" referids="_node@n">
+          <a href="${_}"><mm:field name="title" /></a>
+        </mm:link>
+      </li>
+    </mm:relatednodes>
+    </ul>
     </mm:node>
   </mm:cloud>
 </div>

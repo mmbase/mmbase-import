@@ -2,8 +2,8 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
 <div
-  class="component ${requestScope.className}"
-  id="${requestScope.componentId}">
+	class="mm_c mm_c_core ${requestScope.componentClassName}"
+	id="${requestScope.componentId}">
   <mm:import externid="builder" jspvar="builder" />
   <mm:import externid="path" jspvar="path" />
   <mm:import externid="cmd" jspvar="cmd" />
@@ -34,7 +34,7 @@
         Not Available
       </td>
     </tr>
-    <tr><td colspan="5">&nbsp;</td></tr>
+    <tr><td colspan="5"> </td></tr>
     <tr>
       <th>Field</th>
       <th>Name</th>
@@ -85,8 +85,8 @@
   <p>
     <mm:link page="builders">
       <a href="${_}"><img src="<mm:url page="/mmbase/style/images/back.png" />" alt="back" /></a>
+      <a href="${_}">Return to Builder Overview</a>
     </mm:link>
-    Return to Builder Overview
   </p>
   
 </div>
