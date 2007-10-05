@@ -30,7 +30,7 @@ import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 import com.finalist.pluto.portalImpl.core.*;
 
 @SuppressWarnings("unused")
-public abstract class CmscPortlet extends GenericPortlet {
+public class CmscPortlet extends GenericPortlet {
 	
     private Log log;
     
