@@ -173,18 +173,6 @@
          <version>${cmsc.version}</version>
          <type>mmbase-module</type>
       </dependency>
-      <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-modules-publish-remote</artifactId>
-         <version>${cmscmodules.version}</version>
-         <type>mmbase-module</type>
-      </dependency>
-      <dependency>
-         <groupId>mmapps</groupId>
-         <artifactId>remotepublishing</artifactId>
-         <version>1.0.12</version>
-         <type>mmbase-module</type>
-      </dependency>
 
 <!-- MMBase -->	
 		<dependency>
