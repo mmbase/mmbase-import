@@ -17,7 +17,7 @@ import java.io.*;
 
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.module.SendMailInterface;
+import org.mmbase.applications.email.SendMail;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
@@ -468,7 +468,7 @@ public class Poster {
      * Save the poster, and add the node to the syncQueue
      */
     public void savePoster() {
-        Node node = ForumManager.getCloud().getNode(id);	
+        Node node = ForumManager.getCloud().getNode(id);
         node.setValue("firstname", firstname);
         node.setValue("lastname", lastname);
         node.setValue("email", email);
@@ -520,7 +520,7 @@ public class Poster {
      * (types: postareas, postthreads, forums, postings) are checked and all
      * references to this poster are removed.
      *
-     * TODO MM: 
+     * TODO MM:
      *      In didactor it was the case the poster object were reused between fora.
      *      This seems not a very odd decision.
      *      But don't delete a forum now.
@@ -537,14 +537,14 @@ public class Poster {
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"), "lastposternumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"), "lastposternumber");
         removeForeignKeys(ForumManager.getCloud().getNodeManager("postings"), "posternumber");
-        
+
         //make sure this node is not in a forum syncer
         ForumManager.nodeDeleted(node);
         node.delete(true);
         parent.childRemoved(this);
         return true;
     }
-    
+
 
     private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
         //check if nodenumber is somewhere referenced as a foreignkey
@@ -558,7 +558,7 @@ public class Poster {
             tempNode.setNodeValue(fieldname, null);
             log.debug("cloud id: "+ForumManager.getCloud().hashCode());
             log.debug("just set the value of field "+fieldname+" to null. it reads: "+tempNode.getStringValue(fieldname));
-            
+
 //          make shure this node is not in a forum syncer
             ForumManager.nodeDeleted(node);
             tempNode.commit();
@@ -866,7 +866,7 @@ public class Poster {
     public void checkRemoteHost(String host) {
 	if (!lasthost.equals(host)) {
 		if (remotehosts==null) readRemoteHosts();
-		RemoteHost rm=getRemoteHost(host);		
+		RemoteHost rm=getRemoteHost(host);
 		if (rm!=null) {
 			RemoteHost rml = getLastRemoteHost();
 			if (rm!=rml) {
@@ -911,7 +911,7 @@ public class Poster {
     public void readRemoteHosts() {
 	remotehosts = new ArrayList();
 	Node node = getNode();
-        NodeIterator i = node.getRelatedNodes("remotehosts").nodeIterator();	
+        NodeIterator i = node.getRelatedNodes("remotehosts").nodeIterator();
         while (i.hasNext()) {
               Node rnode=i.nextNode();
 	      RemoteHost rm = new RemoteHost(this,rnode.getStringValue("host"),rnode.getIntValue("lastupdatetime"),rnode.getIntValue("updatecount"));
@@ -919,7 +919,7 @@ public class Poster {
 	      remotehosts.add(rm);
 	}
     }
-   
+
 
     public void sendEmailOnChange(PostThread t) {
 	String line="";
@@ -930,7 +930,7 @@ public class Poster {
 
     public void sendUpdateMail() {
 	if (!mailbody.equals("")) {
-        SendMailInterface sendmail = (SendMailInterface) MMBase.getMMBase().getModule("sendmail");
+        SendMail sendmail = (SendMail) MMBase.getMMBase().getModule("sendmail");
         if (sendmail != null && !getEmail().equals("")) {
 		String from = parent.getFromEmailAddress();
 		String to = getEmail();
