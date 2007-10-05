@@ -12,7 +12,6 @@
       <builder maintainer="finalist.com" version="1">faqcategory</builder>
       <builder maintainer="finalist.com" version="1">faqitem</builder>
       <builder maintainer="finalist.com" version="1">link</builder>
-      <builder maintainer="finalist.com" version="1">mailform</builder>
     </neededbuilderlist>
     <neededreldeflist>
    </neededreldeflist>
@@ -31,7 +30,6 @@
       <datasource builder="faqcategory" path="basecontentelements/faqcategory.xml" />
       <datasource builder="faqitem" path="basecontentelements/faqitem.xml" />
       <datasource builder="link" path="basecontentelements/link.xml" />
-      <datasource builder="mailform" path="basecontentelements/mailform.xml" />
       <datasource builder="images" path="basecontentelements/images.xml"/>
       <datasource builder="attachments" path="basecontentelements/attachments.xml"/>
       <datasource builder="urls" path="basecontentelements/urls.xml"/>
