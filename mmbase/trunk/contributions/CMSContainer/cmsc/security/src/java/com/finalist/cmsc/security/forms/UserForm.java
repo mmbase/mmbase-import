@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserForm extends MMBaseForm {
 
    private String username;
-   private String password;
+   private String password1;
    private String password2;
    private String rank;
 
@@ -60,28 +60,28 @@ public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
                errors.add("username", new ActionMessage("error.username.alreadyexists"));
             }
          }
-         if (getPassword() == null || getPassword().length() < 5 || getPassword().length() > 15) {
+         if (getPassword1() == null || getPassword1().length() < 5 || getPassword1().length() > 15) {
             errors.add("password", new ActionMessage("error.password.invalid"));
          }
          if (getPassword2() == null || getPassword2().length() < 5 || getPassword2().length() > 15) {
             errors.add("password2", new ActionMessage("error.password.invalid"));
          }
          if (errors.size() <= 0) {
-            if (!getPassword().equals(getPassword2())) {
+            if (!getPassword1().equals(getPassword2())) {
                errors.add("password", new ActionMessage("error.password.nomatch"));
             }
          }
       }
       else {
-         if (getPassword() != null && getPassword().length() > 0) {
-            if (getPassword() == null || getPassword().length() < 5 || getPassword().length() > 15) {
+         if (getPassword1() != null && getPassword1().length() > 0) {
+            if (getPassword1() == null || getPassword1().length() < 5 || getPassword1().length() > 15) {
                errors.add("password", new ActionMessage("error.password.invalid"));
             }
             if (getPassword2() == null || getPassword2().length() < 5 || getPassword2().length() > 15) {
                errors.add("password2", new ActionMessage("error.password.invalid"));
             }
             if (errors.size() <= 0) {
-               if (!getPassword().equals(getPassword2())) {
+               if (!getPassword1().equals(getPassword2())) {
                   errors.add("password", new ActionMessage("error.password.nomatch"));
                }
             }
@@ -103,12 +103,12 @@ public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
       this.username = username;
    }
 
-   public String getPassword() {
-      return password;
+   public String getPassword1() {
+      return password1;
    }
 
-   public void setPassword(String password) {
-      this.password = password;
+   public void setPassword1(String password) {
+      this.password1 = password;
    }
 
    public String getDepartment() {
