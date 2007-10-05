@@ -44,6 +44,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
     protected static final String PAGE = "page";
     protected static final String WINDOW = "window";
+
+    private static final int ANY_PAGE = -1;
     
     private Map<String,Integer> priorities = new HashMap<String, Integer>();
     private boolean usePosition;
@@ -215,10 +217,16 @@ public class SearchServiceMMBaseImpl extends SearchService {
         
         
         return result;
+
     }
 
+
     private List<PageInfo> findAllDetailPages(Node content) {
-        NodeList pages = findPagesForContent(content, null);
+        return findAllDetailPages(content, ANY_PAGE);
+    }
+
+    private List<PageInfo> findAllDetailPages(Node content, int pageId) {
+        NodeList pages = findPagesForContent(content, null, pageId);
         
         List<PageInfo> infos = new ArrayList<PageInfo>();
         for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
@@ -306,6 +314,10 @@ public class SearchServiceMMBaseImpl extends SearchService {
     }
     
     private NodeList findPagesForContent(Node content, Node channel) {
+        return findPagesForContent(content, channel, ANY_PAGE);
+    }
+    
+    private NodeList findPagesForContent(Node content, Node channel, int pageid) {
         NodeList channels;
         Cloud cloud = content.getCloud();
         
@@ -321,7 +333,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
             channels.add(content);
         }
         
-        Query query = createPagesForContentQuery(cloud, channels);
+        Query query = createPagesForContentQuery(cloud, channels, pageid);
         
         NodeList pages = cloud.getList(query);
         if (pages.isEmpty()) {
@@ -337,7 +349,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
                 }
             }
             if (!collectionchannels.isEmpty()) {
-                Query collectionquery = createPagesForContentQuery(cloud, collectionchannels);
+                Query collectionquery = createPagesForContentQuery(cloud, collectionchannels, pageid);
                 pages = cloud.getList(collectionquery);
             }
         }
@@ -348,7 +360,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
         return pages;
     }
 
-    private Query createPagesForContentQuery(Cloud cloud, NodeList channels) {
+    private Query createPagesForContentQuery(Cloud cloud, NodeList channels, int pageid) {
         NodeManager parameterManager = cloud.getNodeManager(PortletUtil.NODEPARAMETER);
         NodeManager portletManager = cloud.getNodeManager(PortletUtil.PORTLET);
         NodeManager pageManager = cloud.getNodeManager(PagesUtil.PAGE);
@@ -365,6 +377,10 @@ public class SearchServiceMMBaseImpl extends SearchService {
         query.addField(pageStep, pageManager.getField("number"));
         
         SearchUtil.addNodesConstraints(query, parameterManager.getField(PortletUtil.VALUE_FIELD), channels);
+        
+        if (pageid != ANY_PAGE) {
+            SearchUtil.addEqualConstraint(query, pageManager.getField("number"), pageid);
+        }
         return query;
     }
     
@@ -461,9 +477,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
     @Override
     public String getPortletWindow(int pageId, String elementNumber) {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
-        Node node = cloud.getNode(elementNumber);
-        if (ContentElementUtil.isContentElement(node)) {
-            List<PageInfo> infos = findAllDetailPages(node);
+        Node content = cloud.getNode(elementNumber);
+        if (ContentElementUtil.isContentElement(content)) {
+            List<PageInfo> infos = findAllDetailPages(content, pageId);
+            if (infos.isEmpty()) {
+                infos = findAllDetailPages(content, ANY_PAGE);    
+            }
             
             if (!infos.isEmpty()) {
                 for (PageInfo pageInfo : infos) {
