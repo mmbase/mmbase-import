@@ -61,8 +61,8 @@
 			<tr>
 				<td class="fieldname"><fmt:message key="user.password" /></td>
 				<td>
-					<html:password property="password" size='15' maxlength='15' />
-					<span class="notvalid"><html:errors bundle="SECURITY" property="password" /></span>
+					<html:password property="password1" size='15' maxlength='15' />
+					<span class="notvalid"><html:errors bundle="SECURITY" property="password1" /></span>
 				</td>
 			</tr>
 			<tr>
