@@ -98,7 +98,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
 
-  <property name="project.name" value="a-mmbase-project" />
+  <property name="project.name" value="${ant.project.name}" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="project.target.templates.dir" value="${project.name}" />
   <property name="project.target.examples.dir" value="${project.name}" />
@@ -157,6 +157,8 @@ Create a build.xml with a DOCTYPE like this:
         <equals arg1="${documentation.available}" arg2="true" />
       </and>
     </condition>
+
+    <echo message="${build.documentation} ${documentation.available} ${do.documentation} ${do.generate.documentation}" />
 
     <condition property="do.javadoc">
       <and>
@@ -323,7 +325,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <available file="${project.external.lib.dir}" property="external.libs.exist"/>
 
   </target>
-  
+
   <target name="explicit.dependency.dir" depends="test.explicit.dependency.dir" if="external.libs.exist">
     <echo message="Using ${project.external.lib.dir} and ${project.jars.dir}" />
 
@@ -477,10 +479,10 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.templates" depends="init" if="templates.available">
-    <copy 
+    <copy
         todir="${templates.dir}/${project.target.templates.dir}" preservelastmodified="true">
-      <fileset 
-          defaultexcludes="${default.excludes}"        
+      <fileset
+          defaultexcludes="${default.excludes}"
           dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
       </fileset>
@@ -488,10 +490,10 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.examples" depends="init" if="examples.available">
-    <copy 
+    <copy
         todir="${examples.dir}/${project.target.examples.dir}" preservelastmodified="true">
-      <fileset 
-          defaultexcludes="${default.excludes}"        
+      <fileset
+          defaultexcludes="${default.excludes}"
           dir="${project.examples.dir}">
       </fileset>
     </copy>
@@ -500,7 +502,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="install.config" depends="init" if="config.available">
-    <copy 
+    <copy
         todir="${mmbase.config}" preservelastmodified="true">
       <fileset
           defaultexcludes="${default.excludes}"
