@@ -12,8 +12,9 @@
 
     <field name="type">
       <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="1024" />
         <enumeration>
-          <entry value="org.mmbase.notification.EmailNotification" xml:lang="nl" display="email" />
+          <entry value="org.mmbase.notifications.EmailNotification" xml:lang="nl" display="email" />
         </enumeration>
       </datatype>
     </field>

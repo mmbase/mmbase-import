@@ -29,11 +29,13 @@
       <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes" />
      </field>
 
+    <field name="lastcheck">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="today" />
+      </datatype>
+     </field>
+
+
   </fieldlist>
-  <functionlist>
-    <function key="date">
-      <class>org.mmbase.notifications.NotificationDate</class>
-    </function>
-  </functionlist>
 
 </builder>
