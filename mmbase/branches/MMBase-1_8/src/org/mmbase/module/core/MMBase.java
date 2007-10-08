@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.7 2007-08-02 09:55:41 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.8 2007-10-08 16:10:24 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -84,7 +84,6 @@ public class MMBase extends ProcessorModule {
      */
     private static final int STATE_UP = 2;
 
-    // logging
     private static final Logger log = Logging.getLoggerInstance(MMBase.class);
 
 
@@ -99,10 +98,6 @@ public class MMBase extends ProcessorModule {
      */
     public static final int startTime = (int) (System.currentTimeMillis() / 1000);
 
-    /**
-     * The (base)path to the builder configuration files
-     */
-    private static ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
 
     /**
      * Base name for the storage  to be accessed using this instance of MMBase.
@@ -354,7 +349,7 @@ public class MMBase extends ProcessorModule {
 
         log.debug("Loading builders:");
 
-    cloudModel = ModelsManager.addModel("default","default.xml");
+        cloudModel = ModelsManager.addModel("default","default.xml");
 
         loadBuilders();
 
@@ -433,7 +428,7 @@ public class MMBase extends ProcessorModule {
         oAlias = null;
         insRel = null;
         typeRel = null;
-        if (mmobjs != null) mmobjs.clear(); 
+        if (mmobjs != null) mmobjs.clear();
         mmobjs = null;
         cloudModel = null;
         storageManagerFactory = null;
@@ -907,7 +902,7 @@ public class MMBase extends ProcessorModule {
 
         Set builders = getBuilderLoader().getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
 
-        log.info("Loading builders: " + builders);
+        log.info("Loading builders from " + getBuilderLoader() + " " + builders);
         Iterator i = builders.iterator();
         while (i.hasNext()) {
             if (Thread.currentThread().isInterrupted()) {
@@ -1024,7 +1019,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public ResourceLoader getBuilderLoader() {
-        return MMBase.builderLoader;
+        return ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
     }
 
     /**
