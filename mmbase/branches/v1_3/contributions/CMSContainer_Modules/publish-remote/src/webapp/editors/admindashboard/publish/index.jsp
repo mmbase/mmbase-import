@@ -1,4 +1,4 @@
-<fmt:setBundle basename="cmsc-publish-remote" scope="request" />
+<%@include file="../../publish-remote/globals.jsp"%>
 
 <div class="editor">
      <div class="ruler_green"><div><fmt:message key="admindashboard.publish.header" /></div></div>
