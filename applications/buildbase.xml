@@ -95,7 +95,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
   <property name="concurrent.jar"   value="${build.dir}/lib/backport-util-concurrent.jar"/>
 
-  <property name="project.name" value="a-mmbase-project" />
+  <property name="project.name" value="${ant.project.name}" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="project.target.templates.dir" value="${project.name}" />
   <property name="project.target.examples.dir" value="${project.name}" />
