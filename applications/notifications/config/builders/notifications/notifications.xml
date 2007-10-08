@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="notifications" maintainer="mmbase.org" version="1" extends="insrel">
+
+  <searchage>31</searchage>
+
+  <fieldlist>
+
+    <field name="type">
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="org.mmbase.notification.EmailNotification" xml:lang="nl" display="email" />
+        </enumeration>
+      </datatype>
+    </field>
+
+  </fieldlist>
+
+</builder>
