@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.Hashtable;
+import org.mmbase.util.functions.*;
 import org.mmbase.util.xml.ModuleReader;
 import org.mmbase.util.logging.*;
 
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.9.2.1 2007-06-22 14:58:17 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.9.2.2 2007-10-08 14:14:37 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -70,6 +71,15 @@ public abstract class ReloadableModule extends Module {
      */
 
     public abstract void reload();
+
+    {
+        addFunction(new AbstractFunction("reload", Parameter.EMPTY, ReturnType.VOID) {
+                public Object getFunctionValue(Parameters arguments) {
+                    ReloadableModule.this.reload();
+                    return null;
+                }
+            });
+    }
 
 
 }
