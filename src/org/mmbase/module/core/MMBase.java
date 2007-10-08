@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.229 2007-08-01 09:18:47 michiel Exp $
+ * @version $Id: MMBase.java,v 1.230 2007-10-08 16:11:20 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -97,11 +97,6 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.7
      */
     public static final int startTime = (int) (System.currentTimeMillis() / 1000);
-
-    /**
-     * The (base)path to the builder configuration files
-     */
-    private static ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
 
     /**
      * Base name for the storage  to be accessed using this instance of MMBase.
@@ -255,11 +250,11 @@ public class MMBase extends ProcessorModule {
             if (p.getProperty("cache.path") == null) {
                 p.setProperty("cache.path", getInitParameter("datadir") + java.io.File.separator + "oscache");
             }
-            
+
             Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
             java.lang.reflect.Method m = osCache.getMethod("getInstance", javax.servlet.ServletContext.class, Properties.class);
             m.invoke(null, MMBaseContext.getServletContext(), p);
-            log.service("Using " + p + " for oscache");                
+            log.service("Using " + p + " for oscache");
         } catch (Throwable e) {
             log.service(e.getMessage());
         }
@@ -945,10 +940,11 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
+     * The (base)path to the builder configuration files
      * @since MMBase-1.8
      */
     public ResourceLoader getBuilderLoader() {
-        return MMBase.builderLoader;
+        return ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");
     }
 
     /**
