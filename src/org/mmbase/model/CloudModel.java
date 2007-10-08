@@ -15,6 +15,9 @@ import org.mmbase.util.logging.*;
 import java.util.*;
 import java.io.*;
 
+/**
+ * @javadoc
+ */
 public class CloudModel {
 
     private static Logger log = Logging.getLoggerInstance(CloudModel.class);
