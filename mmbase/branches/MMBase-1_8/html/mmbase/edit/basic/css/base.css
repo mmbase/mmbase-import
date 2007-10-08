@@ -36,8 +36,24 @@ textarea.big {
 input {
 }
 
+.mm_validate.invalid {
+  background-color: #ffcfcf;
+}
+
 .mm_check_error {
   background-color: yellow;
+}
+
+.mm_check_error span {
+  display: inline;
+  border-left: none;
+  padding-left: 0ex;
+}
+.mm_check_error span:not(:first-child) {
+  display: none; /* show only first child */
+  border-left: solid #aaa 3px;
+  padding-left: 1ex;
+  margin-right: 1ex;
 }
 
 /* footers */

@@ -15,7 +15,21 @@
 
 <mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode" commitonclose="false">
 
-<% 
+  <script type="text/javascript">
+    var validator = new MMBaseValidator();
+    validator.logEnabled = false;
+    validator.traceEnabled = false;
+    validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
+    validator.validateHook = function() {
+       document.getElementById('okbutton').disabled = this.invalidElements != 0;
+       document.getElementById('savebutton').disabled = this.invalidElements != 0;
+    }
+    validator.lang = '${config.lang}';
+    validator.setup(window);
+  </script>
+
+
+<%
    if (urlStack.size() == 0) {
       push(urlStack, "home", "search_node.jsp?node_type=" + thisNode.getNodeManager().getName());
    }
@@ -81,8 +95,8 @@
 <tr>
 <td colspan="3" class="buttons">
 <p>
-<input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
-<input class="submit"   type ="submit" name="save" value="save" />
+<input class="submit"   type ="submit" name="ok" id="okbutton" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="save" id="savebutton" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->
@@ -100,8 +114,8 @@
  <mm:maywrite>
  <a  href="<mm:url referids="this_node@node_number"  page="edit_aliases.jsp" />">
        <span class="select"><!-- needed for IE --></span><span class="alt">[edit aliases]</span>
-</a>     
-   </mm:maywrite>    
+</a>
+   </mm:maywrite>
 </tr>
 </table>
 </form>
