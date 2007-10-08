@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.56 2007-07-26 21:28:42 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.57 2007-10-08 14:27:37 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -60,7 +60,7 @@ public class BasicCloudContext implements CloudContext {
      */
     protected boolean check() {
         if(mmb == null) {
-            synchronized(this) {
+            synchronized(org.mmbase.module.core.MMBase.class) { // this is the object which MMBase.getMMBase is synchronizing too
                 // obtained lock
                 if (mmb == null) { // if run in the mean time by other thread, then skip
                     Iterator<org.mmbase.module.Module> i = org.mmbase.module.Module.getModules();
