@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application auto-deploy="true" version="1" name="Notifications" maintainer="mmbase.org">
+
+  <neededbuilderlist>
+    <builder version="1" maintainer="mmbase.org">notifyables</builder>
+    <builder version="1" maintainer="mmbase.org">notifications</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="notify" target="notify" direction="bidirectional" guisourcename="Notify" guitargetname="Notify" builder="notifications" />
+  </neededreldeflist>
+
+  <allowedrelationlist />
+
+  <datasourcelist />
+  <relationsourcelist/>
+  <contextsourcelist />
+  <install-notice>installed</install-notice>
+</application>
