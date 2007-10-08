@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.20 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: AbstractNode.java,v 1.21 2007-10-08 14:13:02 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -465,14 +465,14 @@ public abstract class AbstractNode implements Node {
             Field field = fi.nextField();
             // don't validate read-only (cannot be changed) or virtual fields (are not stored).
             // Specifically, the 'number' field must not be validated, because for new nodes it does not yet
-            // point to an existing node... 
+            // point to an existing node...
 	    // TODO: the number field should not be a NODE field
 	    // TODO: possibly virtual fields DO need validation? How about temporary fields?
             if (! field.isReadOnly() && !field.isVirtual()) {
 		// Only change a field if the enforcestrength of the restrictions is
 		// applicable to the change.
                 int enforceStrength = field.getDataType().getEnforceStrength();
-                if ((enforceStrength > DataType.ENFORCE_ONCHANGE) || 
+                if ((enforceStrength > DataType.ENFORCE_ONCHANGE) ||
 		    (isChanged(field.getName()) && (enforceStrength >= DataType.ENFORCE_ONCREATE)) ||
 	            (isNew() && (enforceStrength >= DataType.ENFORCE_NEVER))) {
                     Object value = getValueWithoutProcess(field.getName());
@@ -721,18 +721,19 @@ public abstract class AbstractNode implements Node {
         return createFunctionValue(function.getFunctionValue(params));
     }
 
-    protected Function getNodeFunction(String functionName) {
+    protected Function<?> getNodeFunction(String functionName) {
         return null;
     }
 
-    public final Function getFunction(String functionName) {
-        Function function = getNodeFunction(functionName);
+    public final Function<?> getFunction(String functionName) {
+        Function<?> function = getNodeFunction(functionName);
         if (function == null) {
             throw new NotFoundException("Function with name " + functionName + " does not exist on node " + getNumber() + " of type " + getNodeManager().getName() + "(known are " + getFunctions() + ")");
         }
         return new WrappedFunction(function) {
                 @Override
                 public final Object getFunctionValue(Parameters params) {
+                    if (params == null) params = createParameters();
                     params.setIfDefined(Parameter.NODE, AbstractNode.this);
                     params.setIfDefined(Parameter.CLOUD, AbstractNode.this.getCloud());
                     return AbstractNode.this.createFunctionValue(super.getFunctionValue(params)).get();
