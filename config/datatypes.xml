@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.59 2007-10-03 16:16:26 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.60 2007-10-08 08:30:21 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -317,6 +317,16 @@
       </enumeration>
     </specialization>
 
+    <specialization id="sgender">
+      <description xml:lang="en">
+        Gender stored in a string 'M' or 'F'.
+      </description>
+      <maxLength value="12" />
+      <enumeration>
+        <entry
+            basename="org.mmbase.datatypes.resources.genders" />
+      </enumeration>
+    </specialization>
 
 
   </datatype>
@@ -582,7 +592,9 @@
        Lid van een sekse, oftewel vrouw of man.
       </description>
       <enumeration>
-        <entry basename="org.mmbase.datatypes.resources.genders" />
+        <entry
+            javaconstants="org.mmbase.datatypes.resources.Gender"
+            basename="org.mmbase.datatypes.resources.genders" />
       </enumeration>
     </specialization>
 
