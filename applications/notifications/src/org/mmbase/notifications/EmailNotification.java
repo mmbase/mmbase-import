@@ -8,20 +8,31 @@ See http://www.MMBase.org/license
 sQuery
 */
 package org.mmbase.notifications;
+import org.mmbase.bridge.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A notification implementation which sends using mmbase-email.jar
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmailNotification.java,v 1.1 2007-10-08 10:00:54 michiel Exp $
+ * @version $Id: EmailNotification.java,v 1.2 2007-10-08 16:55:17 michiel Exp $
  **/
 public  class EmailNotification extends Notification {
 
-    public EmailNotification(String emailAddress) {
-    }
+    private static final Logger log = Logging.getLoggerInstance(EmailNotification.class);
 
-    public void send(String message) {
-        //"emails";
+    public void send(Node recipient, Node notifyable) {
+        String address = recipient.getFunctionValue("email", null).toString();
+        log.service("Sending notification email to " + address);
+        NodeManager emails = recipient.getCloud().getNodeManager("email");
+        Node email = emails.createNode();
+        email.setStringValue("to", address);
+        email.setStringValue("subject", notifyable.getStringValue("title"));
+        email.setStringValue("body", notifyable.getStringValue("message"));
+        email.commit();
+        email.getFunctionValue("startmail", null);
+
     }
 
 

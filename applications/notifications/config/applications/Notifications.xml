@@ -9,6 +9,7 @@
 
   <neededreldeflist>
     <reldef source="notify" target="notify" direction="bidirectional" guisourcename="Notify" guitargetname="Notify" builder="notifications" />
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
   </neededreldeflist>
 
   <allowedrelationlist />

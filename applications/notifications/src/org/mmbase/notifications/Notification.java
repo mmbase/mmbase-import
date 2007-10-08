@@ -9,13 +9,14 @@ sQuery
 */
 package org.mmbase.notifications;
 
+import org.mmbase.bridge.*;
 /**
  * @author Michiel Meeuwissen
- * @version $Id: Notification.java,v 1.1 2007-10-08 10:00:54 michiel Exp $
+ * @version $Id: Notification.java,v 1.2 2007-10-08 16:55:17 michiel Exp $
  **/
 public abstract class Notification {
 
-    public abstract void send(String message);
+    public abstract void send(Node recipient, Node notifyable);
 
 
 }
