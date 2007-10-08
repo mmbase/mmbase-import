@@ -174,6 +174,7 @@ TableOperations.prototype.dialogTableProperties = function() {
 
 		// dialog contents
 		dialog.content.style.width = "400px";
+		dialog.content.style.height = "310px";
 		dialog.content.innerHTML = " \
 <div class='title'\
  style='background: url(" + dialog.baseURL + dialog.editor.imgURL("table-prop.gif", "TableOperations") + ") #fff 98% 50% no-repeat'>" + HTMLArea._lc("Table Properties", "TableOperations") + "\
@@ -317,7 +318,8 @@ TableOperations.prototype.dialogRowCellProperties = function(cell) {
 		}
 
 		// dialog contents
-		dialog.content.style.width = "400px";
+		dialog.content.style.width = "420px";
+		dialog.content.style.height = "125px";
 		dialog.content.innerHTML = " \
 <div class='title'\
  style='background: url(" + dialog.baseURL + dialog.editor.imgURL(cell ? "cell-prop.gif" : "row-prop.gif", "TableOperations") + ") #fff 98% 50% no-repeat'>" + HTMLArea._lc(cell ? "Cell Properties" : "Row Properties", "TableOperations") + "</div> \
