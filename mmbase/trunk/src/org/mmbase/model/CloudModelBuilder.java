@@ -20,6 +20,9 @@ import org.xml.sax.InputSource;
 
 import java.io.*;
 
+/**
+ * @javadoc
+ */
 public class CloudModelBuilder {
 
     private static Logger log = Logging.getLoggerInstance(CloudModelBuilder.class);

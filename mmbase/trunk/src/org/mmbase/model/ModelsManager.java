@@ -13,6 +13,9 @@ package org.mmbase.model;
 import org.mmbase.util.*;
 import java.util.*;
 
+/**
+ * @javadoc
+ */
 public class ModelsManager {
 
     private static Map<String,CloudModel> models =  new HashMap<String,CloudModel>();
@@ -36,7 +39,7 @@ public class ModelsManager {
 	cm.setPath(path);
 	models.put(modelname,cm);
 	return cm;
-    } 
+    }
 
     public static CloudModel  getModel(String name) {
 	return models.get(name);
