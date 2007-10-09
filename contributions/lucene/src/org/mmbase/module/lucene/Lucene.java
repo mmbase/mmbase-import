@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.94 2007-10-09 09:47:12 michiel Exp $
+ * @version $Id: Lucene.java,v 1.95 2007-10-09 16:08:06 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -437,6 +437,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             public String getFunctionValue(Parameters arguments) {
                 if (scheduler != null) {
                     if (scheduler.getStatus() > Scheduler.IDLE) {
+                        log.info("Sending interrupt to " + scheduler);
                         scheduler.interrupt();
                         return "Interrupted";
                     } else {
@@ -499,12 +500,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 return configReadTime;
             }
             });
-        addFunction(new AbstractFunction("reload",Parameter.EMPTY, ReturnType.UNKNOWN) {
-            public Void getFunctionValue(Parameters arguments) {
-                Lucene.this.reload();
-                return null;
-            }
-            });
+
     }
 
     private ContentExtractor factory;
