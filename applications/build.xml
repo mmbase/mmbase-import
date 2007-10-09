@@ -177,7 +177,7 @@ Applications build file
   </target>
 
   <target name="richtext" depends="mmbase">
-     <ant dir="richtext"  target="dependent.package" inheritAll="false">
+     <ant dir="richtext"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -185,7 +185,7 @@ Applications build file
   </target>
 
   <target name="oscache-cache" depends="mmbase">
-     <ant dir="oscache-cache"  target="dependent.package" inheritAll="false">
+     <ant dir="oscache-cache"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -199,9 +199,9 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-	
+
   <target name="install">
-    <ant dir="taglib"        target="dependent.install" inheritAll="false">
+    <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="editwizard"    target="dependent.install" inheritAll="false">
@@ -213,7 +213,7 @@ Applications build file
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="oscache-cache"      target="dependent.install" inheritAll="false">
+    <ant dir="oscache-cache"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
@@ -249,7 +249,7 @@ Applications build file
     <ant dir="xmlimporter"    target="dependent.install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="clustering"      target="dependent.install" inheritAll="false">
+    <ant dir="clustering"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="richtext"      target="install" inheritAll="false">
@@ -280,7 +280,7 @@ Applications build file
      <ant dir="richtext"      target="clean" inheritAll="false" />
      <ant dir="oscache-cache"      target="clean" inheritAll="false" />
      <ant dir="largeobjects"      target="clean" inheritAll="false" />
-  	
+
      <delete dir="${applications.build.dir}" />
   </target>
 
