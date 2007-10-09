@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.25 2007-10-09 07:19:50 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.26 2007-10-09 10:26:28 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -82,11 +82,13 @@ public class MMBaseEntry implements IndexEntry {
     }
 
     protected void addStandardKeys(Document document) {
+        log.debug("Adding standard keys");
         // always add the 'element' number first, because that ensures that document.get("number") returns 'the' node
         String id = getIdentifier();
         document.add(new Field("number",   id,  Field.Store.YES, Field.Index.UN_TOKENIZED));
         if (multiLevel) {
             document.add(new Field("builder", elementManager.getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            log.debug("added builder as " + elementManager.getName());
             //for (org.mmbase.bridge.Field field : node.getNodeManager().getFields()) {
             for (FieldIterator i = node.getNodeManager().getFields().fieldIterator(); i.hasNext();) {
                 org.mmbase.bridge.Field field = i.nextField();
@@ -98,6 +100,7 @@ public class MMBaseEntry implements IndexEntry {
             }
         } else {
             document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+            log.debug("added builder as " + node.getNodeManager().getName());
             document.add(new Field("owner",  node.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
         }
 
@@ -140,7 +143,9 @@ public class MMBaseEntry implements IndexEntry {
         }
         if (log.isDebugEnabled()) {
             if (log.isTraceEnabled()) {
-                log.trace(("Indexed " + data + " --> " + document).substring(0, 500));
+                String t = "Indexed " + data + " --> " + document;
+                if (t.length() > 500) t = t.substring(0, 500) + "...";
+                log.trace("Indexed " + data + " --> " + t);
             } else {
                 log.debug("Indexed " + data);
             }
