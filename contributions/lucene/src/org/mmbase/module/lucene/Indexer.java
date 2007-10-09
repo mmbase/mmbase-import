@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.43 2007-09-25 19:53:07 michiel Exp $
+ * @version $Id: Indexer.java,v 1.44 2007-10-09 09:47:37 michiel Exp $
  **/
 public class Indexer {
 
@@ -82,9 +82,6 @@ public class Indexer {
     // Collection with queries to run
     private final List<IndexDefinition> queries;
 
-    private Date lastFullIndex = new Date(0);
-
-
 
 
     // of course life would be easier if we could used BoundedFifoBuffer of jakarta or so, but
@@ -106,6 +103,7 @@ public class Indexer {
         }
         errors[errorBufferCursor] = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()) + " : " + string;
     }
+
 
     /**
      * Instantiates an Indexer for a specified collection of queries and options.
@@ -177,7 +175,32 @@ public class Indexer {
         return null;
     }
 
+    protected Properties loadLastFullIndexTimes() {
+        Properties lastIndexed = new Properties();
+        try {
+            lastIndexed.load(new FileInputStream(path + java.io.File.separator + "lastIndexed.properties"));
+        } catch (IOException ioe) {
+            log.warn(ioe);
+        }
+        return lastIndexed;
+    }
+    protected void storeLastFullIndexTimes(Properties lastIndexed) {
+        try {
+            lastIndexed.store(new FileOutputStream(path + java.io.File.separator + "lastIndexed.properties"), "Saved by lucene module on " + new Date());
+        } catch (IOException ioe) {
+            log.warn(ioe);
+        }
+    }
+
     public Date getLastFullIndex() {
+        Properties lastIndexes = loadLastFullIndexTimes();
+        return new Date(Long.parseLong(lastIndexes.getProperty(index, "0")));
+    }
+    protected Date setLastFullIndex() {
+        Properties lastIndexes = loadLastFullIndexTimes();
+        Date lastFullIndex = new Date();
+        lastIndexes.setProperty(index, "" + lastFullIndex.getTime());
+        storeLastFullIndexTimes(lastIndexes);
         return lastFullIndex;
     }
 
@@ -357,7 +380,6 @@ public class Indexer {
      */
     public void fullIndex() {
         log.service("Doing full index for " + toString());
-        lastFullIndex = new Date(0);
         IndexWriter writer = null;
         try {
             writer = new IndexWriter(path, analyzer, true);
@@ -375,7 +397,8 @@ public class Indexer {
                 }
             }
             writer.optimize();
-            lastFullIndex = new Date();
+            Date lastFullIndex = setLastFullIndex();
+
             log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index: " + writer.docCount());
         } catch (Exception e) {
                 addError(e.getMessage());
