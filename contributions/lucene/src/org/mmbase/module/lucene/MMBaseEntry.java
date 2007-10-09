@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.26 2007-10-09 10:26:28 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.27 2007-10-09 16:09:02 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -277,11 +277,11 @@ public class MMBaseEntry implements IndexEntry {
 
                         try {
                             documentText = extractor.extract(input);
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             if (log.isDebugEnabled()) {
-                                log.warn(e.getMessage(), e);
+                                log.warn(e.getMessage() + " for node " + n, e);
                             } else {
-                                log.warn(e.getClass() + ": " + e.getMessage());
+                                log.warn(e.getClass() + ": " + e.getMessage() + " for node " + n);
                             }
                             extractor = ContentExtractor.getInstance().findExtractor("application/octet-stream");
                             if (extractor != null) {
