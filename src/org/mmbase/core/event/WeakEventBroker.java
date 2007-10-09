@@ -7,7 +7,8 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
+//import java.util.concurrent.CopyOnWriteArraySet;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 import java.lang.ref.SoftReference;
 
 import org.mmbase.util.HashCodeUtil;
