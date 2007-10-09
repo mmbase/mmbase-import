@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.95 2007-10-09 16:08:06 michiel Exp $
+ * @version $Id: Lucene.java,v 1.96 2007-10-09 16:26:40 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -690,7 +690,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 for (Iterator i = queryDefinition.query.getSteps().iterator(); i.hasNext();) {
                     Step step = (Step) i.next();
                     MMObjectBuilder builder = mmbase.getBuilder(step.getTableName());
-                    log.service("Observing for builder " + builder.getTableName() + " for index " + queryElement.getAttribute("name"));
+                    log.debug("Observing for builder " + builder.getTableName() + " for  '" + queryDefinition + "'");
                     builder.addEventListener(this);
                 }
             }
