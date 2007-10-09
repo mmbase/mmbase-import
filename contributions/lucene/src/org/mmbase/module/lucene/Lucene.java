@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.93 2007-09-25 19:53:07 michiel Exp $
+ * @version $Id: Lucene.java,v 1.94 2007-10-09 09:47:12 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -644,6 +644,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         return cloud;
     }
 
+
     public void shutdown() {
         if (scheduler != null) {
             log.service("Stopping Lucene Scheduler");
@@ -663,7 +664,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         init();
     }
 
-    public String getModuleInfo() {
+    public String getDescription() {
         return "This module performs lucene searches and maintains indices";
     }
 
