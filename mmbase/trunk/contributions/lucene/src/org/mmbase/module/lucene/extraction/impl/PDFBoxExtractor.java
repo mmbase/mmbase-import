@@ -30,7 +30,7 @@ import org.pdfbox.util.PDFTextStripper;
 
 /**
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PDFBoxExtractor implements Extractor {
 
@@ -132,9 +132,9 @@ public class PDFBoxExtractor implements Extractor {
                 }
             }
         } catch (IOException e) {
-            throw new Exception("PDFBoxExtractor, Error reading document: " + e.getMessage());
+            throw new Exception("PDFBoxExtractor, Error reading document: " + e.getMessage(), e);
         } catch (CryptographyException e) {
-            throw new Exception("PDFBoxExtractor, Error decrypting document: " + e.getMessage());
+            throw new Exception("PDFBoxExtractor, Error decrypting document: " + e.getMessage(), e);
         } finally {
             // cleanup to return clean
             if (pdfDocument != null) {
