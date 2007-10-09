@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.24 2007-09-17 09:18:16 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.25 2007-10-09 07:19:50 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -139,7 +139,11 @@ public class MMBaseEntry implements IndexEntry {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Indexed " + data + " --> " + document);
+            if (log.isTraceEnabled()) {
+                log.trace(("Indexed " + data + " --> " + document).substring(0, 500));
+            } else {
+                log.debug("Indexed " + data);
+            }
         }
     }
 
