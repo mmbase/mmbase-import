@@ -25,6 +25,8 @@ import org.mmbase.util.CloseableIterator;
 import org.mmbase.util.LocalizedString;
 
 import org.mmbase.util.logging.*;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 /**
  * An indexer object represents one Index in the MMBase lucene module. It contains the functionality
@@ -32,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.44 2007-10-09 09:47:37 michiel Exp $
+ * @version $Id: Indexer.java,v 1.45 2007-10-09 16:07:42 michiel Exp $
  **/
 public class Indexer {
 
@@ -74,6 +76,7 @@ public class Indexer {
     private final Cloud cloud;
     private final Analyzer analyzer;
 
+    private final String lucenePath;
     private final String path;
     // Name of the index
     private final String index;
@@ -113,6 +116,7 @@ public class Indexer {
      */
     Indexer(String path, String index, List<IndexDefinition> queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
         this.index = index;
+        this.lucenePath = path;
         this.path =  path + java.io.File.separator + index;
         if (! readOnly) {
             try {
@@ -178,7 +182,7 @@ public class Indexer {
     protected Properties loadLastFullIndexTimes() {
         Properties lastIndexed = new Properties();
         try {
-            lastIndexed.load(new FileInputStream(path + java.io.File.separator + "lastIndexed.properties"));
+            lastIndexed.load(new FileInputStream(lucenePath + java.io.File.separator + "lastIndexed.properties"));
         } catch (IOException ioe) {
             log.warn(ioe);
         }
@@ -186,7 +190,7 @@ public class Indexer {
     }
     protected void storeLastFullIndexTimes(Properties lastIndexed) {
         try {
-            lastIndexed.store(new FileOutputStream(path + java.io.File.separator + "lastIndexed.properties"), "Saved by lucene module on " + new Date());
+            lastIndexed.store(new FileOutputStream(lucenePath + java.io.File.separator + "lastIndexed.properties"), "Saved by " + getClass());
         } catch (IOException ioe) {
             log.warn(ioe);
         }
@@ -194,12 +198,19 @@ public class Indexer {
 
     public Date getLastFullIndex() {
         Properties lastIndexes = loadLastFullIndexTimes();
-        return new Date(Long.parseLong(lastIndexes.getProperty(index, "0")));
+        try {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            return format.parse(lastIndexes.getProperty(index, "1970-01-01 00:00:00"));
+        } catch (java.text.ParseException pe) {
+            log.warn(pe);
+            return new Date(0);
+        }
     }
     protected Date setLastFullIndex() {
         Properties lastIndexes = loadLastFullIndexTimes();
         Date lastFullIndex = new Date();
-        lastIndexes.setProperty(index, "" + lastFullIndex.getTime());
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        lastIndexes.setProperty(index, format.format(lastFullIndex.getTime()));
         storeLastFullIndexTimes(lastIndexes);
         return lastFullIndex;
     }
@@ -398,7 +409,6 @@ public class Indexer {
             }
             writer.optimize();
             Date lastFullIndex = setLastFullIndex();
-
             log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index: " + writer.docCount());
         } catch (Exception e) {
                 addError(e.getMessage());
