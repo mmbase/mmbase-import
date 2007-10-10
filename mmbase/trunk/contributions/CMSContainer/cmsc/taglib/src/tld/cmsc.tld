@@ -7,7 +7,7 @@
 	<display-name>CMS Container tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc</short-name>
-	<uri>http://finalist.com/csmc</uri>
+	<uri>http://finalist.com/cmsc</uri>
 	<tag>
 		<description>Container for a Screen(Fragment) and it's Layout template</description>
 		<name>screen</name>

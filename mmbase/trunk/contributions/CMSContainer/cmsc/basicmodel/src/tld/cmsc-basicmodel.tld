@@ -7,7 +7,7 @@
 	<display-name>CMS Container basic model tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-basicmodel</short-name>
-	<uri>http://finalist.com/csmc-basicmodel</uri>
+	<uri>http://finalist.com/cmsc-basicmodel</uri>
 	<tag>
 		<name>image</name>
 		<tag-class>com.finalist.cmsc.taglib.image.ImageTag</tag-class>
