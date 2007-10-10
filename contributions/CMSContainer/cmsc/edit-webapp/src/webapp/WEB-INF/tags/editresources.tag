@@ -1,4 +1,4 @@
-<%@taglib uri="http://finalist.com/csmc" prefix="cmsc"%>
+<%@taglib uri="http://finalist.com/cmsc" prefix="cmsc"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <cmsc:protected>
 <c:set var="clientLocale" value="${pageContext.request.locale}" />

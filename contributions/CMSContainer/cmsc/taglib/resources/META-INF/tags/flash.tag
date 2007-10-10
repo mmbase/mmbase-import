@@ -18,7 +18,7 @@
 <%@ attribute name="swliveconnect" required="false" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@taglib uri="http://finalist.com/csmc" prefix="cmsc" %>
+%><%@taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <c:if test="${empty majorversion}"><c:set var="majorversion">6</c:set></c:if>
 <c:if test="${empty build}"><c:set var="build">40</c:set></c:if>
 <c:if test="${empty wmode}"><c:set var="wmode">transparent</c:set></c:if>
