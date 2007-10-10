@@ -7,7 +7,7 @@
 	<display-name>CMS Container favorites tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-favorites</short-name>
-	<uri>http://finalist.com/csmc-favorites</uri>
+	<uri>http://finalist.com/cmsc-favorites</uri>
 	<tag>
 		<description>Get the favorites for an user</description>
 		<name>get</name>

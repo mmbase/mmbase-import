@@ -7,7 +7,7 @@
 	<display-name>CMS Container known visitor tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-knownvisitor</short-name>
-	<uri>http://finalist.com/csmc-knownvisitor</uri>
+	<uri>http://finalist.com/cmsc-knownvisitor</uri>
 	<tag>
 		<description>Get the user</description>
 		<name>getVisitor</name>

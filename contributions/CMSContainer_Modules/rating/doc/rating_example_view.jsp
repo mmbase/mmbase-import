@@ -1,5 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-<%@taglib uri="http://finalist.com/csmc-rating" prefix="cmsc-rating" %>
+<%@taglib uri="http://finalist.com/cmsc-rating" prefix="cmsc-rating" %>
 
 
 
