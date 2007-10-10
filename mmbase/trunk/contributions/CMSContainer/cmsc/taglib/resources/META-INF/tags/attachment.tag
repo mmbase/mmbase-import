@@ -2,7 +2,7 @@
 %><%@ attribute name="mode"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@taglib uri="http://finalist.com/csmc" prefix="cmsc" %>
+%><%@taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <c:choose>
 	<c:when test="${icon eq 'large'}"><c:set var="icondir">/gfx/mimetypes32/</c:set></c:when>
 	<c:otherwise><c:set var="icondir">/gfx/mimetypes/</c:set></c:otherwise>
