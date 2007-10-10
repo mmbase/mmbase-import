@@ -52,12 +52,12 @@
 
 		<action path="/editors/usermanagement/DeleteUserAction" type="com.finalist.cmsc.security.forms.DeleteUserAction"
 			unknown="false" validate="false">
-			<forward name="changedLanguage" path="/editors/usermanagement/changelanguage.jsp" redirect="false" />
          	<forward name="success" path="/editors/usermanagement/userlist.jsp" redirect="false" />
 		</action>
 		<action path="/editors/usermanagement/UserAction" type="com.finalist.cmsc.security.forms.UserAction"
 			name="UserForm" scope="session" input="/editors/usermanagement/user.jsp" unknown="false" validate="true">
          	<set-property property="cancellable" value="true"/>
+			<forward name="changedLanguage" path="/editors/usermanagement/changelanguage.jsp" redirect="false" />
 			<forward name="success" path="/editors/usermanagement/userlist.jsp" redirect="false" />
 		</action>
 		<action path="/editors/usermanagement/UserInitAction" type="com.finalist.cmsc.security.forms.UserInitAction"
