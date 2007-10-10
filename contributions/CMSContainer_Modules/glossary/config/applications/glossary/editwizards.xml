@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/APPLICATION" timestamp="20040225000000">
+	<node number="" owner="admin">
+		<name>Glossary</name>
+		<description>Glossary</description>
+		<wizard>config/glossary/glossary</wizard>
+		<nodepath>glossary</nodepath>
+		<fields>term</fields>
+	</node>
+</editwizards>
