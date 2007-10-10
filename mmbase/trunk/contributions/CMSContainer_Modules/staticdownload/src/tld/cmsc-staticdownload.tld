@@ -7,7 +7,7 @@
 	<display-name>CMS Static download tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-staticdownload</short-name>
-	<uri>http://finalist.com/csmc-staticdownload</uri>
+	<uri>http://finalist.com/cmsc-staticdownload</uri>
 	<tag>
 		<description>Start a new download</description>
 		<name>start</name>

@@ -7,7 +7,7 @@
 	<display-name>CMS Container glossary tag</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-glossary</short-name>
-	<uri>http://finalist.com/csmc-glossary</uri>
+	<uri>http://finalist.com/cmsc-glossary</uri>
 
 
 	<tag>
