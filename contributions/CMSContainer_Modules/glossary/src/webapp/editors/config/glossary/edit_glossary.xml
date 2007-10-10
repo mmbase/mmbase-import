@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_glossary">
+	<title>Glossary</title>
+
+	<field name="term" dtmaxlength="1024" ftype="line" dtrequired="true">
+		<prompt xml:lang="en">Term</prompt>
+		<prompt xml:lang="nl">Term</prompt>
+	</field>
+    <field name="definition" dtmaxlength="64000" ftype="text" rows="5" dtrequired="true">
+		<prompt xml:lang="en">Definition</prompt>
+		<prompt xml:lang="nl">Definition</prompt>
+	</field>
+     <field name="editor_note" dtmaxlength="64000" ftype="text" rows="5">
+		<prompt xml:lang="en">Editornote</prompt>
+		<prompt xml:lang="nl">Editornote</prompt>
+	</field>
+</form-schema>
