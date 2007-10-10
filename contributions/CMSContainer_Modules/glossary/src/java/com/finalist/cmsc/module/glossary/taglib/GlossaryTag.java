@@ -7,39 +7,34 @@ package com.finalist.cmsc.module.glossary.taglib;
 
 import com.finalist.cmsc.module.glossary.Glossary;
 import com.finalist.cmsc.module.glossary.GlossaryFactory;
-import java.io.IOException;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class GlossaryTag extends BodyTagSupport
-{
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+import java.io.IOException;
 
-    public GlossaryTag()
-    {
-        log = LogFactory.getLog(com/finalist/cmsc/module/glossary/Glossary);
+public class GlossaryTag extends BodyTagSupport {
+    private Log log;
+
+    public GlossaryTag() {
+        log = LogFactory.getLog(com.finalist.cmsc.module.glossary.taglib.GlossaryTag.class);
     }
 
     public int doAfterBody()
-        throws JspException
-    {
+            throws JspException {
         BodyContent bc = getBodyContent();
         String content = bc.getString();
         Glossary glossary = GlossaryFactory.getGlossary();
-        try
-        {
+        try {
             bc.clear();
             getPreviousOut().write(glossary.mark(content));
         }
-        catch(IOException e)
-        {
+        catch (IOException e) {
             log.error("IO Exception when transfer glossary ", e);
         }
-        return 0;
+        return SKIP_BODY;
     }
 
-    private Log log;
 }
