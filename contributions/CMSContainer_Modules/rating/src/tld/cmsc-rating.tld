@@ -7,7 +7,7 @@
 	<display-name>CMS Container rating tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-rating</short-name>
-	<uri>http://finalist.com/csmc-rating</uri>
+	<uri>http://finalist.com/cmsc-rating</uri>
 	<tag>
 		<description>Get the rating information of an element</description>
 		<name>get</name>

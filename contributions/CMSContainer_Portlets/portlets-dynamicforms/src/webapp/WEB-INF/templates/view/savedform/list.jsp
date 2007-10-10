@@ -5,7 +5,7 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://finalist.com/csmc" prefix="cmsc" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <fmt:setBundle basename="savedformmodule" scope="request" />
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <%--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">--%>

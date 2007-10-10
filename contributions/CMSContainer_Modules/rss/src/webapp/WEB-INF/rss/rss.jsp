@@ -5,7 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://finalist.com/csmc" prefix="cmsc" %>
+<%@taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <mm:content type="text/xml" encoding="UTF-8">
 <mm:import externid="results" jspvar="nodeList" vartype="List" />
 <mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
