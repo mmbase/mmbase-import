@@ -47,8 +47,8 @@ public class UserAction extends MMBaseAction {
          userNode.setStringValue("language", newLanguage);
          
          
-         if (!StringUtil.isEmpty(userForm.getPassword())) {
-            userNode.setStringValue("password", userForm.getPassword());
+         if (!StringUtil.isEmpty(userForm.getPassword1())) {
+            userNode.setStringValue("password", userForm.getPassword1());
 //          TODO: what should we do with an admin password change?
 //            if ("admin".equals(userNode.getStringValue("account"))) {
 //               UsersUtil.updateAdminPassword(userForm.getPassword());
