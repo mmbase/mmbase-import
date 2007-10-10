@@ -49,7 +49,6 @@ public class Glossary {
     public static synchronized Glossary instance() {
         if (null == glossary) {
             Glossary glossary = new Glossary();
-            glossary = glossary;
         }
         return glossary;
     }
