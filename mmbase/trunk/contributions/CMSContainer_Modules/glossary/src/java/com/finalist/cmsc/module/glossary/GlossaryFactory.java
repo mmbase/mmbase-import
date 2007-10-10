@@ -5,10 +5,13 @@
 
 package com.finalist.cmsc.module.glossary;
 
-import java.util.Iterator;
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+
+import java.util.Iterator;
 
 // Referenced classes of package com.finalist.cmsc.module.glossary:
 //            Glossary
@@ -24,12 +27,17 @@ public class GlossaryFactory
     {
         Glossary glossary = Glossary.instance();
         Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+
         NodeManager manager = cloud.getNodeManager("glossary");
         NodeList list = manager.createQuery().getList();
-        Node node;
-        for(Iterator nodeListIterator = list.iterator(); nodeListIterator.hasNext(); Glossary.instance().addTerm(node.getStringValue("term"), node.getStringValue("definition")))
-            node = (Node)nodeListIterator.next();
 
+        Iterator<Node> nodeListIterator = list.iterator();
+
+        while (nodeListIterator.hasNext()) {
+            Node node = nodeListIterator.next();
+            Glossary.instance().addTerm(node.getStringValue("term"), node.getStringValue("definition"));
+        }
+      
         return glossary;
     }
 }
