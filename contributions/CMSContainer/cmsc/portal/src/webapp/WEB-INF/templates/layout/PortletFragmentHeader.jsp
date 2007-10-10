@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib uri="http://finalist.com/csmc" prefix="cmsc" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 <cmsc:protected>
 	<fmt:setBundle basename="cmsc-portal" scope="request" />
 
