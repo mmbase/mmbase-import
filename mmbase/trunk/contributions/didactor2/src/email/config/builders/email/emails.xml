@@ -157,7 +157,7 @@
         <maxLength value="65535" />
       </datatype>
     </field>
-    
+
     <field name="mimetype">
       <descriptions>
         <description xml:lang="nl">Mimetype van het body-veld</description>
