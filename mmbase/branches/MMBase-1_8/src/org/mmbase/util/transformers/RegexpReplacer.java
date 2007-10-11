@@ -166,28 +166,31 @@ public class RegexpReplacer extends ChunkedTransformer {
     protected boolean replace(String string, Writer w, Status status) throws IOException {
         Iterator i  = getPatterns().iterator();
 
+        boolean r = false;
         while (i.hasNext()) {
             Entry entry = (Entry) i.next();
             Pattern p = (Pattern) entry.getKey();
             if (replaceFirstAll && status.used.contains(p)) continue;
             Matcher m = p.matcher(string);
-            if (m.matches()) {
-                String result = (String) entry.getValue();
-                for (int j = m.groupCount(); j >= 0; j--) {
-                    if (replaceFirst) {
-                        result = result.replaceFirst("\\$" + j, m.group(j));
-                    } else {
-                        result = result.replaceAll("\\$" + j, m.group(j));
-                    }
+            String replacement = (String) entry.getValue();
+            boolean result = m.find();
+            if (result) {
+                r = true;
+                StringBuffer sb = new StringBuffer();
+                do {
                     status.replaced++;
-                }
+                    m.appendReplacement(sb, replacement);
+                    if (replaceFirst) break;
+                    result = m.find();
+                } while (result);
+                m.appendTail(sb);
                 if (replaceFirstAll) status.used.add(p);
-                w.write(result);
-                return true;
+                string = sb.toString();
             }
+
         }
         w.write(string);
-        return false;
+        return r;
 
     }
     protected final String base() {
