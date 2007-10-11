@@ -32,9 +32,9 @@
               <mm:fieldlist nodetype="people" type="all">
                 <mm:fieldinfo type="value" /><jsp:text>,</jsp:text>
               </mm:fieldlist>
-            </mm:compare>
-            <jsp:text>
+              <jsp:text>
 </jsp:text>
+            </mm:compare>
           </mm:countrelations>
         </mm:relatednodes>
       </mm:node>
