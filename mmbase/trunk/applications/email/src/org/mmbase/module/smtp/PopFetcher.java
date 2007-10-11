@@ -1,3 +1,14 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+
+
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -11,15 +22,15 @@ import javax.mail.event.*;
 import javax.mail.internet.*;
 
 /**
- * A mailhandler that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
+ * A mail fetcher that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
  *
  *
- * @version $Id: PopHandler.java,v 1.2 2007-08-16 11:40:41 michiel Exp $
+ * @version $Id: PopFetcher.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
  */
-public class PopHandler extends MailHandler implements CronJob {
-    private static final Logger log = Logging.getLoggerInstance(PopHandler.class);
+public class PopFetcher extends MailFetcher implements CronJob {
+    private static final Logger log = Logging.getLoggerInstance(PopFetcher.class);
 
-    private static final String LASTRUN_ALIAS = PopHandler.class.getName() + ".lastrun";
+    private static final String LASTRUN_ALIAS = PopFetcher.class.getName() + ".lastrun";
     // alias of mmevents node which remembers time of last run.
 
     CronEntry entry;
@@ -36,8 +47,8 @@ public class PopHandler extends MailHandler implements CronJob {
     /**
      * Public constructor. Set all data that is needed for this thread to run.
      */
-    public PopHandler() {
-        super();
+    public PopFetcher(MailHandler mh) {
+        super(mh);
     }
 
     /**
@@ -46,7 +57,7 @@ public class PopHandler extends MailHandler implements CronJob {
      */
     public  void run() {
         try {
-            Cloud cloud = getCloud();
+            Cloud cloud = CloudMailHandler.getCloud();
             Node lastRun = null;
             try {
                 lastRun = cloud.getNode(LASTRUN_ALIAS);

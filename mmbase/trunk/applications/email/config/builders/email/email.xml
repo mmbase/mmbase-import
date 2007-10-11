@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="email" maintainer="mmbase.org" version="0" extends="object">
-  <!-- @version $Id: email.xml,v 1.12 2007-04-12 16:29:11 michiel Exp $ -->
+  <!-- @version $Id: email.xml,v 1.13 2007-10-11 17:47:50 michiel Exp $ -->
 
   <class>org.mmbase.applications.email.EmailBuilder</class>
   <searchage>14</searchage>
@@ -97,8 +97,8 @@
       </editor>
       <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <property name="local" value="false" />
-        <required value="true" />        
-        
+        <required value="true" />
+
       </datatype>
       <db>
         <type state="persistent" size="255" notnull="false" key="false">STRING</type>
@@ -276,8 +276,7 @@
         <guiname xml:lang="nl">Laatst Verstuurd</guiname>
         <guiname xml:lang="eo">Lasta sendo</guiname>
       </gui>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
-      </datatype>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
   </fieldlist>
 </builder>

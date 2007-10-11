@@ -1,3 +1,12 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -8,7 +17,7 @@ import java.util.*;
  * needed for a compliant SMTP server are implemented,
  * but no more than these.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPModule.java,v 1.2 2007-08-09 10:19:20 michiel Exp $
+ * @version $Id: SMTPModule.java,v 1.3 2007-10-11 17:47:50 michiel Exp $
  */
 public class SMTPModule extends org.mmbase.module.Module {
     private static final Logger log = Logging.getLoggerInstance(SMTPModule.class);

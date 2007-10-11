@@ -1,3 +1,13 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -7,10 +17,10 @@ import java.net.*;
 import java.util.concurrent.*;
 
 /**
- * Listener thread, that accepts connection on port 25 (default) and 
+ * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.2 2007-08-06 12:21:35 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.3 2007-10-11 17:47:50 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -19,7 +29,7 @@ public class SMTPListener extends Thread {
     private static final ThreadFactory factory = new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(), 
+                Thread t = new Thread(org.mmbase.module.core.MMBaseContext.getThreadGroup(),
                                       r, "SMTPLISTENER-" + (number++)) {
                         /**
                          * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
@@ -59,10 +69,10 @@ public class SMTPListener extends Thread {
 
             String portnr = properties.get("port");
             port = Integer.parseInt(portnr);
-            
+
             host = properties.get("hostname");
             if (host == null) host = "localhost";
-            
+
             try {
                 ssocket = new ServerSocket();
                 SocketAddress address = new InetSocketAddress(host, port);
@@ -96,7 +106,7 @@ public class SMTPListener extends Thread {
                 if (log.isDebugEnabled()) {
                     log.debug("Accepted connection: " + socket);
                 }
-                final SMTPHandler handler = new SMTPHandler(socket, properties);
+                final SMTPFetcher handler = new SMTPFetcher(MailHandlerFactory.getInstance(), socket, properties);
                 socketThreads.execute(handler);
             } catch (Exception e) {
                 if (ssocket != null && ! ssocket.isClosed()) {
