@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.35 2007-09-10 07:49:48 michiel Exp $
+ * @version $Id: SendMail.java,v 1.36 2007-10-11 08:57:39 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -262,6 +262,8 @@ public class SendMail extends AbstractSendMail {
         String dataSource = getInitParameter("datasource");
         if ("".equals(dataSource)) dataSource = null;
 
+        //java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+
         session = null;
         if (dataSource != null) {
             try {
@@ -303,6 +305,9 @@ public class SendMail extends AbstractSendMail {
                 log.service("EMail module is configured using 'mailhost' property. Consider using J2EE compliant 'context' and 'datasource' properties.");
 
                 Properties prop = System.getProperties();
+                prop.put("mail.transport.protocol", "smtp");
+                prop.put("mail.smtp.starttls.enable","true");
+
                 StringBuilder buf = new StringBuilder(smtpHost);
                 prop.put("mail.smtp.host", smtpHost);
 
@@ -313,11 +318,13 @@ public class SendMail extends AbstractSendMail {
                 // When username and password are specified, turn on smtp authentication.
                 boolean smtpAuth = userName != null && userName.trim().length() != 0 && password != null;
                 prop.setProperty("mail.smtp.auth", Boolean.toString(smtpAuth));
-                if (smtpAuth) buf.insert(0, userName + "@");
+                if (smtpAuth) {
+                    buf.insert(0, userName + "@");
+                }
 
                 session = Session.getInstance(prop, new SimpleAuthenticator(userName, password));
 
-                log.info("Module SendMail started SMTP: " + buf);
+                log.info("Module SendMail started SMTP: " + buf + "(" + prop + ")");
             } else {
                 log.fatal("Could not create Mail session");
             }
