@@ -22,7 +22,7 @@ import javax.mail.*;
  * if so, handles it. Otherwise ignores the message.
  * This Handler can be put in front of the {@link ChainedMailedHandler}.
  *
- * @version $Id: VerifyEmailMailHandler.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: VerifyEmailMailHandler.java,v 1.2 2007-10-11 17:56:46 michiel Exp $
  */
 public class VerifyEmailMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(VerifyEmailMailHandler.class);
@@ -32,10 +32,10 @@ public class VerifyEmailMailHandler implements MailHandler {
         log.info("Verifying " + message);
         try {
             Module emailModule = ContextProvider.getDefaultCloudContext().getModule("sendmail");
+            String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
             String subject = message.getSubject();
-            MessageFormat subjectField  = new MessageFormat(subject);
-            ParsePosition ps = new ParsePosition(0);
-            Object[] objs = subjectField.parse(subject, ps);
+            Object[] objs = new MessageFormat("{1}" + subjectField).parse(subject, new ParsePosition(0));
+            if (objs == null) objs = new MessageFormat(subjectField).parse(subject, new ParsePosition(0));
             if (objs != null) {
                 String key = (String) objs[0];
                 Cloud cloud = CloudMailHandler.getCloud();
@@ -61,15 +61,15 @@ public class VerifyEmailMailHandler implements MailHandler {
 
     public static void main(String[] argv) {
         String subject = "Test {0}";
-        String test    = "Tost @&#*(ARJK";
-        ParsePosition ps = new ParsePosition(0);
-        MessageFormat subjectField  = new MessageFormat(subject);
-        Object[] objs = subjectField.parse(test, ps);
-        if (objs != null) {
-            String key = (String) objs[0];
-            System.out.println(key);
-        } else {
-            System.out.println("no match");
+        for (String test : new String[] {"Re: Test @&#*(ARJK", "Test @&#*(ARJK", "  asdfjklajsdf ", "Antwoord op : Test aaaaa"}) {
+            Object[] objs = new MessageFormat("{1}" + subject).parse(test, new ParsePosition(0));
+            if (objs == null) objs = new MessageFormat(subject).parse(test, new ParsePosition(0));
+            if (objs != null) {
+                String key = (String) objs[0];
+                System.out.println(key);
+            } else {
+                System.out.println("no match  for " + test);
+            }
         }
     }
 
