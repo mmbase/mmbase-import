@@ -1,3 +1,13 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -32,10 +42,10 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPHandler.java,v 1.4 2007-09-06 16:37:00 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
  */
-public class SMTPHandler extends MailHandler implements Runnable {
-    private static final Logger log = Logging.getLoggerInstance(SMTPHandler.class);
+public class SMTPFetcher extends MailFetcher implements Runnable {
+    private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
 
     private boolean running = true;
     private final java.net.Socket socket;
@@ -64,8 +74,8 @@ public class SMTPHandler extends MailHandler implements Runnable {
     /**
      * Public constructor. Set all data that is needed for this thread to run.
      */
-    public SMTPHandler(java.net.Socket socket, Map<String, String> properties) {
-        super();
+    public SMTPFetcher(MailHandler mh, java.net.Socket socket, Map<String, String> properties) {
+        super(mh);
         this.socket = socket;
         this.properties = properties;
     }
@@ -144,7 +154,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
 
         if (uLine.startsWith("RSET")) {
             state = STATE_MAILFROM;
-            mailboxes.clear();
+            clearMailboxes();
             writer.write("250 Spontanious amnesia has struck me, I forgot everything!\r\n");
             writer.flush();
             return;
@@ -230,7 +240,7 @@ public class SMTPHandler extends MailHandler implements Runnable {
             } else if (state != STATE_RCPTTO) {
                 writer.write("503 Command not possible at this state\r\n");
                 writer.flush();
-            } else if (mailboxes.size() == 0) {
+            } else if (size() == 0) {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
             } else {
