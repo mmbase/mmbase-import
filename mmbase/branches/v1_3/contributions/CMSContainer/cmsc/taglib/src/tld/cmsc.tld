@@ -190,7 +190,19 @@
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
-	</tag>
+        <attribute>
+			<description>The method of inherit images from parent page</description>
+			<name>inherit</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+			<description>If get a image from all images of a page randomly</description>
+			<name>random</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
 	<tag>
 		<description>Generates urls for static content (No sessionid).</description>
 		<name>staticurl</name>
