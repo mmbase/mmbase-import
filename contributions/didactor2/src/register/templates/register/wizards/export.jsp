@@ -30,7 +30,10 @@
           <mm:countrelations type="roles">
             <mm:compare value="0">
               <mm:fieldlist nodetype="people" type="all">
-                <mm:fieldinfo type="value" /><jsp:text>,</jsp:text>
+                <jsp:text>"</jsp:text><mm:fieldinfo type="value" /><jsp:text>"</jsp:text>
+                <mm:last inverse="true">
+                  <jsp:text>,</jsp:text>
+                </mm:last>
               </mm:fieldlist>
               <jsp:text>
 </jsp:text>
