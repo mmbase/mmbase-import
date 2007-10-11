@@ -14,10 +14,10 @@ package org.mmbase.applications.email;
  * At the moment just a container for some constants. This may change
  */
 public abstract class MailBox {
-    public final int INBOX      = 0;
-    public final int SENT       = 1;
-    public final int DRAFTS     = 11;
-    public final int TRASH      = 2;
-    public final int PERSONAL   = 3;
+    public static final int INBOX      = 0;
+    public static final int SENT       = 1;
+    public static final int DRAFTS     = 11;
+    public static final int TRASH      = 2;
+    public static final int PERSONAL   = 3;
 }
 
