@@ -26,6 +26,9 @@
       </head>
       <body>
         <div class="content">
+          <p>
+            <a href="export.jsp">Export</a>
+          </p>
           <mm:import id="editcontextname" reset="true">opleidingen</mm:import><!-- TODO, this is dutch -->
           <jsp:directive.include file="/education/wizards/roles_chk.jsp" /> <!-- TODO, this is silly -->
           <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
