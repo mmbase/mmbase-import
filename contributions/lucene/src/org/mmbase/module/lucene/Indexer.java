@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.45 2007-10-09 16:07:42 michiel Exp $
+ * @version $Id: Indexer.java,v 1.46 2007-10-11 06:34:20 michiel Exp $
  **/
 public class Indexer {
 
@@ -72,8 +72,6 @@ public class Indexer {
         }
     }
 
-    // reference to the cloud
-    private final Cloud cloud;
     private final Analyzer analyzer;
 
     private final String lucenePath;
@@ -112,9 +110,8 @@ public class Indexer {
      * Instantiates an Indexer for a specified collection of queries and options.
      * @param index Name of the index
      * @param queries a collection of IndexDefinition objects that select the nodes to index, and contain options on the fields to index.
-     * @param cloud The Cloud to use for querying
      */
-    Indexer(String path, String index, List<IndexDefinition> queries, Cloud cloud, Analyzer analyzer, boolean readOnly) {
+    Indexer(String path, String index, List<IndexDefinition> queries, Analyzer analyzer, boolean readOnly) {
         this.index = index;
         this.lucenePath = path;
         this.path =  path + java.io.File.separator + index;
@@ -145,7 +142,6 @@ public class Indexer {
             }
         }
         this.queries = queries;
-        this.cloud = cloud;
         if (analyzer == null) {
             this.analyzer = new StandardAnalyzer();
         } else {
