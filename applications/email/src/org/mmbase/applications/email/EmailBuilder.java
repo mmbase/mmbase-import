@@ -1,4 +1,3 @@
-
 /*
 
 This software is OSI Certified Open Source Software.
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.25 2007-09-10 07:49:48 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.26 2007-10-11 17:47:50 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 

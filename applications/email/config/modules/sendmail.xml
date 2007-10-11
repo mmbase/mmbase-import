@@ -32,7 +32,7 @@
 
     <!-- optional emailbuilder properties
          if one of these is not set, the corresponding field is not
-         filled with contect by the module -->
+         filled with content by the module -->
     <property name="emailbuilder.tofield">to</property>
     <property name="emailbuilder.ccfield">cc</property>
     <property name="emailbuilder.bccfield">bcc</property>
@@ -41,6 +41,8 @@
     <property name="emailbuilder.headersfield">headers</property>
     <property name="emailbuilder.datefield">date</property>
     <property name="emailbuilder.typefield">type</property>
+
+    <property name="verify_email.password">secret</property>
 
   </properties>
 </module>
