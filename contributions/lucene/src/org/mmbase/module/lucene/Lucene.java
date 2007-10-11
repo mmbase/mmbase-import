@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.96 2007-10-09 16:26:40 michiel Exp $
+ * @version $Id: Lucene.java,v 1.97 2007-10-11 06:34:20 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -819,7 +819,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                 }
                             }
                         }
-                        Indexer indexer = new Indexer(indexPath, indexName, queries, getCloud(), analyzer, readOnly);
+                        Indexer indexer = new Indexer(indexPath, indexName, queries, analyzer, readOnly);
                         for (String s : configErrors) {
                             indexer.addError(url.toString() + ": " + s);
                         }
