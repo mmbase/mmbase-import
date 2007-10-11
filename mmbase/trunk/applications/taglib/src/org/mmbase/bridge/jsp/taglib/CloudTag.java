@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.155 2007-10-01 15:26:09 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.156 2007-10-11 08:36:36 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -1337,6 +1337,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
     }
 
     public int doEndTag() throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("Resetting cloud to " + prevCloud);
+        }
         pageContext.setAttribute(KEY, prevCloud, SCOPE);
         prevCloud = null;
         return super.doEndTag();
@@ -1352,7 +1355,6 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         session = null;
         request = null;
         response = null;
-        prevCloud = null;
     }
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
