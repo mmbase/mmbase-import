@@ -19,11 +19,11 @@ import net.sf.mmapps.commons.beans.NodeBean;
  */
 @SuppressWarnings("serial")
 public class Page extends NodeBean implements Comparable<Page> {
-	
-	private String title;
+
+    private String title;
     private String description;
     private String urlfragment;
-	private boolean inmenu;
+    private boolean inmenu;
     private boolean secure;
     private Date creationdate;
     private Date lastmodifieddate;
@@ -32,11 +32,12 @@ public class Page extends NodeBean implements Comparable<Page> {
     private boolean use_expiry;
     private String lastmodifier;
     private String externalurl;
+    private List<String> images = new ArrayList<String>();
 
-    private Map<String,Integer> portlets = new HashMap<String,Integer>();
+    private Map<String, Integer> portlets = new HashMap<String, Integer>();
     private int layout;
     private List<Integer> stylesheet = new ArrayList<Integer>();
-    private Map<String,String> pageImages = new HashMap<String,String>();
+    private Map<String, String> pageImages = new HashMap<String, String>();
 
     public String getTitle() {
         return title;
@@ -46,25 +47,25 @@ public class Page extends NodeBean implements Comparable<Page> {
         this.title = title;
     }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public boolean isInmenu() {
-		return inmenu;
-	}
+    public boolean isInmenu() {
+        return inmenu;
+    }
 
-	public boolean getInmenu() {
-		return inmenu;
-	}
+    public boolean getInmenu() {
+        return inmenu;
+    }
 
-	public void setInmenu(boolean inmenu) {
-		this.inmenu = inmenu;
-	}
+    public void setInmenu(boolean inmenu) {
+        this.inmenu = inmenu;
+    }
 
     public int getLayout() {
         return layout;
@@ -73,23 +74,24 @@ public class Page extends NodeBean implements Comparable<Page> {
     public void setLayout(int layout) {
         this.layout = layout;
     }
-    
+
     public List<Integer> getStylesheet() {
         return stylesheet;
     }
-   
+
     public void addStylesheet(int stylesheet) {
         this.stylesheet.add(new Integer(stylesheet));
     }
-    
+
     public String getPageImage(String name) {
-    	return pageImages.get(name);
+        return pageImages.get(name);
     }
-    
+
     public void addPageImage(String name, String image) {
-    	pageImages.put(name, image);
+        pageImages.put(name, image);
+        images.add(image);
     }
-    
+
     public void addPortlet(String layoutId, Integer p) {
         if (p != null) {
             portlets.put(layoutId, p);
@@ -102,11 +104,11 @@ public class Page extends NodeBean implements Comparable<Page> {
         }
         return -1;
     }
-    
+
     public Collection<Integer> getPortlets() {
         return portlets.values();
     }
-    
+
     public Date getCreationdate() {
         return creationdate;
     }
@@ -138,11 +140,11 @@ public class Page extends NodeBean implements Comparable<Page> {
     public void setExpirydate(Date expirydate) {
         this.expirydate = expirydate;
     }
-    
+
     public boolean isUse_expiry() {
         return use_expiry;
     }
-    
+
     public void setUse_expiry(boolean use_expiry) {
         this.use_expiry = use_expiry;
     }
@@ -154,36 +156,43 @@ public class Page extends NodeBean implements Comparable<Page> {
     public void setLastmodifier(String lastmodifier) {
         this.lastmodifier = lastmodifier;
     }
-    
+
     public boolean isSecure() {
         return secure;
     }
 
-    
+
     public void setSecure(boolean secure) {
         this.secure = secure;
     }
 
-    
+
     public String getUrlfragment() {
         return urlfragment;
     }
 
-    
+
     public void setUrlfragment(String urlfragment) {
         this.urlfragment = urlfragment;
     }
-    
-    public String getExternalurl() {
-		return externalurl;
-	}
 
-	public void setExternalurl(String externalurl) {
-		this.externalurl = externalurl;
-	}
-	
+    public String getExternalurl() {
+        return externalurl;
+    }
+
+    public void setExternalurl(String externalurl) {
+        this.externalurl = externalurl;
+    }
+
     public int compareTo(Page o) {
         return title.compareTo(o.title);
     }
 
+    public Set getPageImages() {
+        return pageImages.entrySet();
+    }
+
+    public List<String> getImages(){
+        return this.images;
+    }
 }

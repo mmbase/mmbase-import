@@ -75,11 +75,11 @@ public class InsertPageImageTag extends CmscTag {
         boolean override = StringUtils.equals(this.inherit, "override");
 
 
-        List<String> images = getCurrentPageImages(getPath());
+        List<String> images = getCurrentPageImages();
 
 
         if ((override && images.size() < 1) || directly) {  //inherit from parent.
-            images.addAll(getImagiesOfParent(getPath()));
+            images.addAll(getImagiesOfParent());
         }
 
 
@@ -93,23 +93,23 @@ public class InsertPageImageTag extends CmscTag {
         return null;
     }
 
-    private List<String> getImagiesOfParent(String path) {
+    private List<String> getImagiesOfParent() {
         List<Page> pages = SiteManagement.getListFromPath(getPath());
 
-        if (pages.size() < 2) {
+        if (pages.size() > 2) {
 
             for (int i = pages.size() - 2; i > 0; i--) {
                 if (pages.get(i).getPageImages().size() > 0)
-                    return pages.get(i).getPageImages(); //once find image from a closer parent,stop inherint.
+                    return pages.get(i).getImages(); //once find image from a closer parent,stop inherint.
             }
 
         }
         return new ArrayList<String>();
     }
 
-    private List<String> getCurrentPageImages(String path) {
+    private List<String> getCurrentPageImages() {
         List<Page> pages = SiteManagement.getListFromPath(getPath());
-        return (pages.get(pages.size() - 1)).getPageImages();
+        return (pages.get(pages.size() - 1)).getImages();
     }
 
     private int random(int length) {

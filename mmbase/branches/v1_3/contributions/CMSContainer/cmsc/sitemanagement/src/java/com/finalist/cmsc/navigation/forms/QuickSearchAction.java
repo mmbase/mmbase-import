@@ -24,7 +24,6 @@ public class QuickSearchAction
         return NavigationUtil.getPageFromPath(cloud, quicksearch);
     }
 
-	@Override
 	protected boolean isValidChannel(Cloud cloud, int channelNumber) {
 		try {
 			Node node = cloud.getNode(channelNumber);
