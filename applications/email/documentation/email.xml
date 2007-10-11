@@ -4,12 +4,16 @@
 <article class="specification">
   <articleinfo>
     <title>Email application</title>
-    <date>2003-07-02</date>
-    <edition>$Id: email.xml,v 1.8 2007-09-07 11:00:54 michiel Exp $</edition>
+    <date>2007-10-10</date>
+    <edition>$Id: email.xml,v 1.9 2007-10-11 20:59:47 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
         <surname>Ockeloen</surname>
+      </author>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
       </author>
     </authorgroup>
     <legalnotice>
@@ -21,19 +25,30 @@
   </articleinfo>
   <section>
     <title>Introduction</title>
-    <para>As many other cms systems, mmbase allows you to "publish" to email, but unlike other systems it provides a interactive email system that allows you to create/send/use email in a flexible way. Within modern websites you have several kinds of email needs ranging from sending a new user a email with his account and password information to full dynamic update mails to a group of users who share a common interest. This manual will give you the basic building blocks and examples to allow you to build and change your mmbase application to your email needs. Its based on the new email appication  as found in 1.7.x and up but also works on older release (see installing for 1.6.x).</para>
+    <para>
+      As many other cms systems, mmbase allows you to "publish" to email, but unlike other
+      systems it provides a interactive email system that allows you to create/send/use email in a
+      flexible way. Within modern websites you have several kinds of email needs ranging from sending
+      a new user a email with his account and password information to full dynamic update mails to a
+      group of users who share a common interest. This manual will give you the basic building blocks
+      and examples to allow you to build and change your mmbase application to your email needs. Its
+      based on the new email appication as found in 1.7.x and up but also works on older release (see
+      installing for 1.6.x).
+    </para>
   </section>
   <section>
     <title>Basic Concepts</title>
-<para>Email within mmbase is not created as a separate extension but
-gains its power by using several of the core mmbase concepts :
-objects/relations and separation between content and layout. In
-practice this means email is and uses objects and relations just like
-all the other content stored in mmbase allow very for very powerful scripted email systems using all the already accepted tools to create their layout for most that means using the taglib system provided with mmbase.</para>
-    </section>
+    <para>
+      Email within mmbase is not created as a separate extension but gains its power by using several of
+      the core mmbase concepts : objects/relations and separation between content and layout. In practice
+      this means email is and uses objects and relations just like all the other content stored in mmbase
+      allow very for very powerful scripted email systems using all the already accepted tools to create
+    their layout for most that means using the taglib system provided with mmbase.</para>
+  </section>
 
 
-        <section><title>Sending our first email (oneshot)</title>
+  <section>
+    <title>Sending our first email (oneshot)</title>
     <para>Sending one email from mmbase is as simple as creating a object !, This works because the email objects are "smart" objects that can react when you create/talk to them. Here is a a taglib example :</para>
 			<programlisting format="linespecific">
 			<![CDATA[
@@ -61,7 +76,8 @@ all the other content stored in mmbase allow very for very powerful scripted ema
         time passed.
       </para>
 	</section>
-  <section><title>Finding out what happened to the email</title>
+  <section>
+    <title>Finding out what happened to the email</title>
     <para>
       The node is only tagged to be deleted if you use oneshot, you can still visit it in one of the
       editors or ask it questions like the example below that shows if the mail worked and at what time.
@@ -97,10 +113,7 @@ all the other content stored in mmbase allow very for very powerful scripted ema
                     </mm:compare>
           </mm:field>
    </mm:node>
-
-
-
-			]]>
+      ]]>
 			</programlisting>
       <para>
         Here you see 2 parts in the first we create the node and it is given an
@@ -110,14 +123,23 @@ all the other content stored in mmbase allow very for very powerful scripted ema
         information about it.
       </para>
     </section>
-    <section><title>Sending mail to users and groups</title>
-    <para>
-      The above examples are clear but not  very dynamic, it just mails one person that we know the email address of usefull for sending account messages or greetingcards but within a modern website you also want to mail groups of users like in a mailing list or all the people that are part of a community topic. The mmbase email object will automaticly check any related users or groups of users and allow you to mail them just as easy as mailing just one of them. The following example mails a whole group with users, so in mmbase terms its users->groups->email. Once we give the mail command it will find check if there are related groups and if these groups have related users. If so it creates a list of all the found users and mails them.
-      The application sends the mail to a specific address, so it is needed you provide the 'to' field like info@mmbase.org in this example.
-</para>
-			<programlisting format="linespecific">
+    <section>
+      <title>Sending mail to users and groups</title>
+      <para>
+        The above examples are clear but not very dynamic, it just mails one person that we know the
+        email address of usefull for sending account messages or greetingcards but within a modern
+        website you also want to mail groups of users like in a mailing list or all the people that
+        are part of a community topic. The mmbase email object will automaticly check any related
+        users or groups of users and allow you to mail them just as easy as mailing just one of
+        them. The following example mails a whole group with users, so in mmbase terms its
+        users->groups->email. Once we give the mail command it will find check if there are related
+        groups and if these groups have related users. If so it creates a list of all the found
+        users and mails them.  The application sends the mail to a specific address, so it is needed
+        you provide the 'to' field like info@mmbase.org in this example.
+      </para>
+      <programlisting format="linespecific">
 			<![CDATA[
-(from example3.jsp)
+
 
   <!--  create the email node -->
   <mm:createnode id="mail1" type="email">
@@ -141,14 +163,32 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 
 			]]>
 			</programlisting>
-			<para>If you are new to mmbase this seems a lot of lines but if you are already a user of the mmbase taglibs you will notice that the code is just based taglibs and if you are working with groups in your application you probably already have created it and you can add some lines. The example first creates a email object then gets the group that is defined by the mmbase alias "groups.testgroep" then a relation is created between the email object and the group. Lastly the mail(oneshot) command is given again. Since mmbase can't find a "to" field it will try to find if any users or groups with users are related to this email node and mails all the users it finds. The above example only finds a attached group with users but attached users work in the same way.
-
-</para>
-	</section>
-		       <section><title>OneShotKeep and startmail</title>
-    <para>In the above examples we controlled the email process by using &lt;mm:function name="mail" /&gt;, the mail command tells mmbase to mail and wait until its done. This works fine for 1 of 2 mails and should be used in these cases (the good thing is that you can check what happened in the rest of the page as in example2.jsp) but this becomes a problem if you are mailing a larg(er) group mailing that can take several seconds to even minutes depending on the speed of your mailhost. Since such a page would most likely be called from a browser it means that the user gets a "getting page" for several seconds/minutes and will probably hit stop at one point leaving the email in an unsure state. To solve this you can also start mailing in the background, the command will return right away and you can use the method shown in example2 to check if its done.
-</para>
-<programlisting format="linespecific">
+      <para>
+        If you are new to mmbase this seems a lot of lines but if you are already a user of the mmbase
+        taglibs you will notice that the code is just based taglibs and if you are working with groups in
+        your application you probably already have created it and you can add some lines. The example first
+        creates a email object then gets the group that is defined by the mmbase alias "groups.testgroep"
+        then a relation is created between the email object and the group. Lastly the mail(oneshot) command
+        is given again. Since mmbase can't find a "to" field it will try to find if any users or groups with
+        users are related to this email node and mails all the users it finds. The above example only finds
+        a attached group with users but attached users work in the same way.
+      </para>
+    </section>
+    <section>
+      <title>OneShotKeep and startmail</title>
+      <para>
+        In the above examples we controlled the email process by using &lt;mm:function
+        name="mail" /&gt;, the mail command tells mmbase to mail and wait until its done. This works
+        fine for 1 of 2 mails and should be used in these cases (the good thing is that you can check
+        what happened in the rest of the page as in example2.jsp) but this becomes a problem if you
+        are mailing a larg(er) group mailing that can take several seconds to even minutes depending
+        on the speed of your mailhost. Since such a page would most likely be called from a browser it
+        means that the user gets a "getting page" for several seconds/minutes and will probably hit
+        stop at one point leaving the email in an unsure state. To solve this you can also start
+        mailing in the background, the command will return right away and you can use the method shown
+        in example2 to check if its done.
+      </para>
+      <programlisting format="linespecific">
 <![CDATA[
 <mm:node referid="mail1">
   <mm:functioncontainer>
@@ -158,11 +198,13 @@ all the other content stored in mmbase allow very for very powerful scripted ema
 </mm:node>
 ]]>
 			</programlisting>
-<para>This will start the mailing process in the background and your page will return right away so users can not stop it. There can be several mail action going on at the same time without a problem.
-
-Now the oneshot will mail and tag itself to be deleted by mmbase, but in the above group example this might not be wanted. You might for example want to keep "prove" of when the email was send and if it worked ok for administration use. Or u want to reuse the email object (just update the content in the body for example) and email it again. For this the mailtype oneshotkeep was will not be deleted once it is mailed, cleanup or reuse will be upto you.
-</para>
-<programlisting format="linespecific">
+      <para>
+        This will start the mailing process in the background and your page will return right away so users can not stop it. There can be several mail action going on at the same time without a problem.
+      </para>
+      <para>
+        Now the oneshot will mail and tag itself to be deleted by mmbase, but in the above group example this might not be wanted. You might for example want to keep "prove" of when the email was send and if it worked ok for administration use. Or u want to reuse the email object (just update the content in the body for example) and email it again. For this the mailtype oneshotkeep was will not be deleted once it is mailed, cleanup or reuse will be upto you.
+      </para>
+      <programlisting format="linespecific">
 <![CDATA[
 <mm:node referid="mail1">
   <mm:functioncontainer>
@@ -173,12 +215,22 @@ Now the oneshot will mail and tag itself to be deleted by mmbase, but in the abo
 ]]>
 </programlisting>
 
-</section>
-<section><title>Emailing dynamic content</title>
-<para>Mailing from inside a cms only makes sense if you can either work dynamically with the list of people you mail (see above) or that you can use content from within the cms. MMBase can do both and makes it very easy to allow very complex and powerful personalized email to users and groups of users. There are 2 ways to generate dynamic content and depend on if each person getting a copy of the email needs is different or they all get the same copy of the email. If everybody gets the same copy just add taglibs inside the above examples while building the email object. If every user needs a different mail then you can enter urls instead of the subject and body. MMBase will automatically see the url and call that on each user it will mail. It will also add a parameter to the url with the usernumber so you can create email based on it.</para>
-<programlisting format="linespecific">
-<![CDATA[(from example5.jsp)
-
+    </section>
+    <section>
+      <title>Emailing dynamic content</title>
+      <para>
+        Mailing from inside a cms only makes sense if you can either work dynamically with the list of
+        people you mail (see above) or that you can use content from within the cms. MMBase can do both and
+        makes it very easy to allow very complex and powerful personalized email to users and groups of
+        users. There are 2 ways to generate dynamic content and depend on if each person getting a copy of
+        the email needs is different or they all get the same copy of the email. If everybody gets the same
+        copy just add taglibs inside the above examples while building the email object. If every user needs
+        a different mail then you can enter urls instead of the subject and body. MMBase will automatically
+        see the url and call that on each user it will mail. It will also add a parameter to the url with
+      the usernumber so you can create email based on it.</para>
+      <programlisting format="linespecific">
+        <![CDATA[(from example5.jsp)
+                 
  <!--  create the email node -->
  <mm:createnode id="mail1" type="email">
    <mm:setfield name="from">daniel@submarine.nl</mm:setfield>
@@ -187,9 +239,11 @@ Now the oneshot will mail and tag itself to be deleted by mmbase, but in the abo
 </mm:createnode>
 ]]>
 			</programlisting>
-<para>When the mail(..) or startmail(..) is called it will include the content found on the urls defined in subject and body. Also the email code will add a url param to the url. It will do this for each user it will mail. So say we have 2 users :</para>
-<programlisting format="linespecific">
-<![CDATA[
+      <para>
+      When the mail(..) or startmail(..) is called it will include the content found on the urls
+      defined in subject and body. Also the email code will add a url param to the url. It will do
+      this for each user it will mail. So say we have 2 users :</para>
+      <programlisting format="linespecific"><![CDATA[
 Daniel Ockeloen with user number : 320
 Piet Hein with user number : 343
 
@@ -204,9 +258,8 @@ and for Piet Hein
 example5_subject.jsp?usernumber=343 for the subject
 example5_body.jsp?usernumer=343 for the body
 ]]>
-</programlisting>
-<programlisting format="linespecific">
-<![CDATA[The example5_subject.jsp :
+      </programlisting>
+      <programlisting format="linespecific"><![CDATA[The example5_subject.jsp :
 
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
@@ -218,10 +271,11 @@ example5_body.jsp?usernumer=343 for the body
 </mm:cloud>
 
 ]]>
-</programlisting>
-
-<para>As you can see there is nothing special in this page, it imports the usernumber param, opens the node and creates a subject line using the first and last name of the user. What is special is that MMBase will automatically remove all returns from the subject line since returns are not allowed in subject lines.</para>
-<programlisting format="linespecific">
+      </programlisting>
+      
+      <para>
+      As you can see there is nothing special in this page, it imports the usernumber param, opens the node and creates a subject line using the first and last name of the user. What is special is that MMBase will automatically remove all returns from the subject line since returns are not allowed in subject lines.</para>
+      <programlisting format="linespecific">
 <![CDATA[The example5_body.jsp
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud>
@@ -243,10 +297,15 @@ MMBase Email Team.
 </mm:cloud>
 
 ]]>
-</programlisting>
-<para>Same thing as with the subject a normal taglib page the body page is allowed to do any of the normal things to create the page you want. In this case ive assumed we want to mail people their account info. Now to allow for better control/layout of the email you can use the html &gt;br /> and &gt;p> tabs. If they are used in a body url we will convert them before emailing to single and dubble returns.
-</para>
-<![CDATA[Todo : Tell about multipart mail (example6.jsp),  mailing attachments (example7.jsp)
+      </programlisting>
+      <para>
+        Same thing as with the subject a normal taglib page the body page is allowed to do any of
+        the normal things to create the page you want. In this case ive assumed we want to mail
+        people their account info. Now to allow for better control/layout of the email you can use
+        the html &gt;br /> and &gt;p> tabs. If they are used in a body url we will convert them
+        before emailing to single and dubble returns.
+      </para>
+      <![CDATA[Todo : Tell about multipart mail (example6.jsp),  mailing attachments (example7.jsp)
 
 <mm:setfield name="body">
   <multipart id="plaintext" type="text/plain" encoding="UTF-8">
@@ -257,7 +316,53 @@ MMBase Email Team.
   </multipart>
 </mm:setfield>
 ]]>
-
-	</section>
-	</article>
+      
+    </section>
+    <section id="receiving">
+      <title>Receiving email</title>
+      <para>
+        The MMBase email application also contains functionality to <emphasis>receive</emphasis>
+        email. Two implementation are provided: it can act as a stand alone SMTP server, or it can
+        actively pop from a pop- or imap-server.
+      </para>
+      <section id="smtp">
+        <title>Acting as an SMTP-server</title>
+        <para>
+          To configure smtp, you must activate and configure the 'smtp' module. This means placing
+          a file 'smtp.xml' in the conf/modules/smtp.xml. Several properties can be configured, like
+          e.g. the port number (e.g. 25), and for which domains it should accept the mail. Find the
+          example smtp.xml, which also contains further clarifications.
+        </para>
+      </section>
+      <section id="smtp">
+        <title>Acting as an POP-client</title>
+        <para>
+          Mail can also be fetched by acting as a pop client. For this the mmbase crontab component
+          must be active, and you configure org.mmbase.module.smtp.PopFetcher as a cronjob. An
+          example conf/util/cronjobs.xml is shipped.
+        </para>
+      </section>
+      <section id="mailhandler">
+        <title>Dealing with received mail</title>
+        <para>
+          Mail which was received by one of the methods mentioned before, is then processed by
+          <emphasis>MailHandler</emphasis>s. The mail handlers are configured in a file
+          conf/util/mailhandlers.xml.
+        </para>
+        <para>
+          The implementation org.mmbase.module.smtp.CloudMailHandler will convert the received
+          emails into MMBase objects. This gives the possiblity to have a webmail. TODO: implement a
+          simple webmail (the one in didactor is too complex and messy).
+        </para>
+        <para>
+          Another provided mail-handler is org.mmbase.module.smtp.VerifyEmailMailHandler. This one
+          work in conjuction with the 'verify_email' data type which is provided by the email
+          component too. A builder which has next to some 'email' field also a 'verify_email' field,
+          will automaticly send emails containing the request to 'validate' the address. The
+          recipient can reply to such an email. 
+        </para>
+        
+      </section>
+    </section>
+</article>
 
