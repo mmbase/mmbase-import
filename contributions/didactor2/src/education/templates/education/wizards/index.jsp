@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><mm:content postprocessor="reducespace" expires="0">
 <mm:cloud rank="editor">
@@ -41,9 +41,9 @@
   <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
    <tr class="navigationbar">
       <td colspan="2" class="titlebar">
-        <img src="${mm:treefile('/gfx/icon_agenda.gif', pageContext, includePath)}" 
-             title="${di:translate(pageContext, 'education.editwizards')}" alt="${di:translate(pageContext, 'education.editwizards')}" />
-        <span class="menu_font">Editwizards:</span> 
+        <img src="${mm:treefile('/gfx/icon_agenda.gif', pageContext, includePath)}"
+             title="${di:translate('education.editwizards')}" alt="${di:translate('education.editwizards')}" />
+        <span class="menu_font">Editwizards:</span>
         <mm:treeinclude page="/education/wizards/tree_top_menu.jsp" objectlist="$includePath" />
       </td>
    </tr>

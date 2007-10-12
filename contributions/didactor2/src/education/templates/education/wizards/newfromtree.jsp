@@ -20,10 +20,10 @@ if(depth!=1){
         <mm:compare referid="the_last_parent" value="true">
           <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
         </mm:compare>
-        
-        
+
+
         <%@include file="tree_shift_child.jsp" %>
-        
+
         <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="learnblocks" type="guitype"/></mm:import>
         <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
         <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
@@ -31,8 +31,8 @@ if(depth!=1){
           <mm:link referid="wizardjsp" referids="_node@origin">
             <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
             <mm:param name="objectnumber">new</mm:param>
-            <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>             
-            <a href="${_}" title="${di:translate(pageContext, 'education.new')}  ${dummyname} ${di:translate(pageContext, 'education.aanmaken')}" 
+            <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
+            <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
                target="text">
               <di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" />
             </a>
@@ -49,20 +49,20 @@ if(depth!=1){
         <mm:compare referid="the_last_parent" value="true">
           <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
         </mm:compare>
-        
-        
+
+
         <%@include file="tree_shift_child.jsp" %>
-        
+
         <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="pages" type="guitype"/></mm:import>
         <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
-        <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>        
+        <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
         <td><nobr>
           <mm:link referid="wizardjsp" referids="_node@origin">
             <mm:param name="wizard">config/pages/pages-origin</mm:param>
-            <mm:param name="objectnumber">new</mm:param>           
+            <mm:param name="objectnumber">new</mm:param>
             <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
             <a href="${_}"
-               title="${di:translate(pageContext, 'education.new')} ${dummyname} ${di:translate(pageContext, 'education.aanmaken')}"
+               title="${di:translate('education.new')} ${dummyname} ${di:translate('education.aanmaken')}"
                target="text"><di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" />
             </a>
           </mm:link>
@@ -86,13 +86,13 @@ if(depth!=1){
             <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="tests" type="guitype"/></mm:import>
             <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-            <td><nobr> 
+            <td><nobr>
               <mm:link referid="wizardjsp" referids="_node@origin">
                 <mm:param name="wizard">config/tests/tests-origin</mm:param>
-                <mm:param name="objectnumber">new</mm:param>           
+                <mm:param name="objectnumber">new</mm:param>
                 <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
-                <a href="${_}" 
-                   title="${di:translate(pageContext, 'education.new')} ${dummyname}"
+                <a href="${_}"
+                   title="${di:translate('education.new')} ${dummyname}"
                    target="text"><di:translate key="education.new" /> ${dummyname}</a>
               </mm:link>
             </nobr></td>
@@ -107,20 +107,20 @@ if(depth!=1){
         <mm:compare referid="the_last_parent" value="true">
           <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
         </mm:compare>
-        
-        
+
+
         <%@include file="tree_shift_child.jsp" %>
-        
+
         <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="flashpages" type="guitype"/></mm:import>
         <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
         <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
         <td><nobr>
           <mm:link referid="wizardjsp" referids="_node@origin">
             <mm:param name="wizard">config/flashpages/flashpages-origin</mm:param>
-            <mm:param name="objectnumber">new</mm:param>           
+            <mm:param name="objectnumber">new</mm:param>
             <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
             <a href="${_}"
-               title="${di:translate(pageContext, 'education.new')} {dummyname}" 
+               title="${di:translate('education.new')} {dummyname}"
                target="text"><di:translate key="education.new" /> ${dummyname}</a>
           </mm:link>
         </nobr></td>
@@ -135,10 +135,10 @@ if(depth!=1){
         <mm:compare referid="the_last_parent" value="true">
           <td><img src="gfx/tree_spacer.gif" width="48px" height="16px" border="0" align="center" valign="middle"/></td>
         </mm:compare>
-        
-        
+
+
         <%@include file="tree_shift_child.jsp" %>
-        
+
         <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="htmlpages" type="guitype"/></mm:import>
         <mm:compare referid="the_last_element" value="true" inverse="true">
           <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
@@ -150,15 +150,15 @@ if(depth!=1){
         <td><nobr>
           <mm:link referid="wizardjsp" referids="_node@origin">
             <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
-            <mm:param name="objectnumber">new</mm:param>           
+            <mm:param name="objectnumber">new</mm:param>
             <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
-            <a href="${_}"                   
-               title="${di:translate(pageContext, 'education.new')} ${dummyname}"
+            <a href="${_}"
+               title="${di:translate('education.new')} ${dummyname}"
                target="text"><di:translate key="education.new" /> ${dummyname}</a>
           </mm:link>
         </nobr></td>
       </tr>
     </table>
   </mm:compare>
-  
+
 </mm:nodeinfo>

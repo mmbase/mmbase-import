@@ -1,7 +1,7 @@
 <%@page contentType="application/xml;charset=UTF-8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
-%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"
 %><jsp:directive.page import="java.util.*,nl.didactor.component.education.utils.*" />
 <div class="educations">
 <jsp:scriptlet>
@@ -14,7 +14,7 @@
   <jsp:directive.include file="../mode.include.jsp" />
   <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
    <!--
-       Educations come from here 
+       Educations come from here
    -->
    <mm:import id="editcontextname" reset="true">opleidingen</mm:import>
    <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
@@ -53,11 +53,11 @@
             <mm:isgreaterthan referid="number_of_educations" value="0">
               <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="middle"/></td>
             </mm:isgreaterthan>
-            
+
             <mm:islessthan    referid="number_of_educations" value="1">
               <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
             </mm:islessthan>
-            
+
             <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
             <mm:link referid="wizardjsp" referids="user@origin">
               <mm:param name="wizard">config/education/educations-origin</mm:param>
@@ -66,16 +66,16 @@
               <td>
                 <nobr>
                   <a href="${_}"
-                     title="${di:translate(pageContext, 'education.createneweducationdescription')}" 
+                     title="${di:translate('education.createneweducationdescription')}"
                      target="text"><di:translate key="education.createneweducation" /></a>
               </nobr></td>
             </mm:link>
           </tr>
         </table>
-        
+
         <mm:import id="educationId" externid="e">${education}</mm:import>
-        
-        
+
+
         <mm:isgreaterthan referid="number_of_educations" value="0">
           <%// -------------------------------------------- The Education starts from here -------------------------------------------- %>
           <mm:node number="${educationId}">
@@ -160,12 +160,12 @@
                         <mm:param name="objectnumber">new</mm:param>
                         <mm:param name="newpos">${maxpos + 1}</mm:param>
                         <td>
-                          <nobr> 
-                            <a href="${_}" title="${di:translate(pageContext, 'education.createnewlearnblockdescription')}" target="text">
+                          <nobr>
+                            <a href="${_}" title="${di:translate('education.createnewlearnblockdescription')}" target="text">
                             <di:translate key="education.createnewlearnblock" /></a>
                           </nobr>
                         </td>
-                      </mm:link>                      
+                      </mm:link>
                     </tr>
                   </table>
 
@@ -175,7 +175,7 @@
                      int iLearnblockCounter = 0;
                   %>
 
-                  <mm:relatednodes role="posrel" orderby="posrel.pos" 
+                  <mm:relatednodes role="posrel" orderby="posrel.pos"
                                    directions="up"
                                    searchdir="destination" type="learnobjects">
 
@@ -191,7 +191,7 @@
                               </mm:islessthan>
                             </mm:countrelations>
                           </mm:isgreaterthan>
-                          
+
                           <mm:field name="requiredscore" id="requiredscore">
                             <mm:countrelations type="questions">
                               <mm:islessthan value="$requiredscore">
@@ -206,7 +206,7 @@
                           </mm:field>
                         </mm:field>
                       </mm:compare>
-                      
+
                       <table border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -237,7 +237,7 @@
                         </tr>
                       </table>
                     </mm:nodeinfo>
-                    
+
                     <div id="node_0_0_<%= iLearnblockCounter %>" style="display:none">
                     <mm:treeinclude write="true" page="/education/wizards/learnobject.jsp" objectlist="$includePath" referids="wizardjsp">
                       <mm:param name="startnode"><mm:field name="number" /></mm:param>

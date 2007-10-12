@@ -3,12 +3,12 @@
   are related to those classes that we are in.
 -->
 <mm:content postprocessor="reducespace" expires="0"
-            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
-            xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+            xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+            xmlns:di="http://www.didactor.nl/ditaglib_1.0"
             xmlns:jsp="http://java.sun.com/JSP/Page"
             >
   <mm:cloud rank="didactor user">
-    
+
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
         <title><di:translate key="address.addressbook" /></title>
@@ -17,15 +17,15 @@
 
     <mm:import externid="field"/><!-- submit selected email addresses to mail/write.jsp -->
     <mm:import externid="mailid"/>
-    
-    <mm:import externid="addtoworkgroup"/>  
-    
+
+    <mm:import externid="addtoworkgroup"/>
+
     <div class="rows">
       <div class="navigationbar">
         <div class="titlebar">
-          <img src="${mm:treefile('/gfx/icon_addressbook.gif', pageContext, includePath)}" width="25" height="13" border="0" 
-               title="${di:translate(pageContext, 'address.addressbook')}" 
-               alt="${di:translate(pageContext, 'address.addressbook')}"  />
+          <img src="${mm:treefile('/gfx/icon_addressbook.gif', pageContext, includePath)}" width="25" height="13" border="0"
+               title="${di:translate('address.addressbook')}"
+               alt="${di:translate('address.addressbook')}"  />
           <di:translate key="address.addressbook" />
         </div>
       </div>
@@ -33,26 +33,26 @@
         <div class="folders">
           <div class="folderHeader">&amp;nbsp;</div>
           <div class="folderBody">
-            
-            
+
+
             <!-- will collect the users which must be shown -->
             <mm:import id="peopleSet" jspvar="peopleSet" vartype="Set"/>
-            <mm:write request="peopleSet" referid="peopleSet" />             
-            <mm:import externid="addr_class"/>            
-            
+            <mm:write request="peopleSet" referid="peopleSet" />
+            <mm:import externid="addr_class"/>
+
 
             <mm:treefile id="indexlink" page="/address/index.jsp"      objectlist="$includePath" referids="$referids,addtoworkgroup?,field?,mailid?" write="false" />
 
-            <mm:treeinclude page="/address/personal.addressbook.jspx"  objectlist="$includePath" referids="indexlink@link" />     
+            <mm:treeinclude page="/address/personal.addressbook.jspx"  objectlist="$includePath" referids="indexlink@link" />
             <mm:treeinclude page="/address/class.addressbook.jspx"     objectlist="$includePath" referids="indexlink@link" />
-            <mm:treeinclude page="/address/workgroup.addressbook.jspx" objectlist="$includePath" referids="indexlink@link" />            
+            <mm:treeinclude page="/address/workgroup.addressbook.jspx" objectlist="$includePath" referids="indexlink@link" />
             <mm:treeinclude page="/address/search.form.jspx"           objectlist="$includePath" referids="field?,mailid?,addr_class?" />
 
             <!-- Use complete provider  -->
             <mm:node referid="provider">
               <mm:treeinclude page="/address/related.addresses.jsp" objectlist="$includePath" />
             </mm:node>
-            
+
             <mm:node referid="education">
               <mm:relatednodescontainer path="related,people,roles"  searchdirs="source,destination">
                 <mm:relatednodes>
@@ -68,20 +68,20 @@
             <mm:import id="emaildomain" escape="trimmer"><mm:treeinclude write="true" page="/email/init/emaildomain.jsp" objectlist="$includePath"/></mm:import>
 
             <mm:import externid="addr_search" jspvar="addr_search" vartype="String"/>
-            
+
             <mm:present referid="addr_search">
               <mm:import id="list_class">1</mm:import>
               <mm:import id="list_book">1</mm:import>
             </mm:present>
-            
+
             <mm:present referid="addr_class">
               <mm:import id="list_class" reset="true">1</mm:import>
             </mm:present>
-            
+
             <mm:notpresent referid="addr_class">
               <mm:import id="list_book" reset="true">1</mm:import>
             </mm:notpresent>
-            
+
             <!-- Get all people of related classes except yourself -->
             <mm:present referid="list_class">
               <mm:relatednodescontainer path="classes">
@@ -90,7 +90,7 @@
                 </mm:present>
                 <mm:relatednodes>
                   <mm:relatednodescontainer path="people">
-                    <mm:constraint field="number" value="$user" inverse="true"/>              
+                    <mm:constraint field="number" value="$user" inverse="true"/>
                     <mm:relatednodes>
                       <mm:field name="number" vartype="integer" jspvar="number" write="false">
                         <jsp:scriptlet>peopleSet.add(number);</jsp:scriptlet>
@@ -100,7 +100,7 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:present>
-            
+
             <!-- Get all people of workgroups except yourself -->
             <mm:present referid="list_class">
               <mm:relatednodescontainer path="workgroups">
@@ -119,7 +119,7 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:present>
-            
+
             <!-- Get all contacts -->
             <mm:present referid="list_book">
               <mm:relatednodes type="addressbooks">
@@ -133,7 +133,7 @@
                 </mm:relatednodescontainer>
               </mm:relatednodes>
             </mm:present>
-          
+
             <mm:present referid="list_book">
               <mm:import id="checkboxes" reset="true">1</mm:import>
             </mm:present>
@@ -145,30 +145,30 @@
             </mm:present>
           </div>
         </div>
-      
+
         <div class="mainContent">
           <div class="contentHeader">
             &amp;nbsp;
           </div>
-          
+
           <mm:treefile page="${empty field ? (empty addtoworkgroup ? '/address/deletecontacts.jsp' : '/projectgroup/index.jsp') : '/email/write/write.jsp'}" objectlist="$includePath" referids="$referids">
             <form action="${_}" method="POST">
               <mm:notpresent referid="field">
                 <mm:notpresent referid="addtoworkgroup">
                   <input type="hidden" name="callerpage" value="/address/index.jsp?sf=lastname,firstname&amp;so=up,up" />
-                  <input type="hidden" name="addressbook" value="${addressbook}" /> 
+                  <input type="hidden" name="addressbook" value="${addressbook}" />
                 </mm:notpresent>
               </mm:notpresent>
-              
+
               <mm:present referid="field"><!-- refer to email/write.jsp -->
                 <input type="hidden" name="id" value="${mailid}" />
                 <input type="hidden" name="field" value="${field}" />
               </mm:present>
-              
+
               <mm:present referid="addtoworkgroup">
                 <input type="hidden" name="addcontact" value="1" />
               </mm:present>
-              
+
               <!-- Buttons on top of the right part of the screen -->
               <div class="contentSubHeader">
                 <mm:notpresent referid="field">
@@ -177,19 +177,19 @@
                       <mm:treefile page="/address/addcontact.jsp" objectlist="$includePath" referids="$referids,addressbook" write="false">
                         <mm:param name="callerpage">/address/index.jsp?sf=lastname,firstname&amp;so=up,up</mm:param>
                         <a href="${_}">
-                          <img src="${mm:treefile('/gfx/icon_addcontact.gif', pageContext, includePath)}" width="50" height="28" border="0" 
-                               title="${di:translate(pageContext, 'address.addcontact')}" 
-                               alt="${di:translate(pageContext, 'address.addcontact')}" />
+                          <img src="${mm:treefile('/gfx/icon_addcontact.gif', pageContext, includePath)}" width="50" height="28" border="0"
+                               title="${di:translate('address.addcontact')}"
+                               alt="${di:translate('address.addcontact')}" />
                         </a>
                       </mm:treefile>
-                      <input type="image" name="action_delete" value="delete" src="${mm:treefile('gfx/icon_deletecontact.gif', pageContext, includePath)}" 
-                             width="50" height="28" border="0" title="${di:translate(pageContext, 'address.deletecontact')}"  
-                             alt="${di:translate(pageContext, 'address.deletecontact')}" />
+                      <input type="image" name="action_delete" value="delete" src="${mm:treefile('gfx/icon_deletecontact.gif', pageContext, includePath)}"
+                             width="50" height="28" border="0" title="${di:translate('address.deletecontact')}"
+                             alt="${di:translate('address.deletecontact')}" />
                     </mm:isgreaterthan>
                   </mm:present>
                 </mm:notpresent>
               </div>
-              
+
               <!-- if 'students see their coach' and you're a student, add the coach -->
               <di:getsetting component="address" setting="students_see_coach">
                 <mm:compare value="true">
@@ -206,13 +206,13 @@
                   </di:hasrole>
                 </mm:compare>
               </di:getsetting>
-              
-              
+
+
               <div class="contentBody">
-                
+
                 <mm:listnodescontainer type="people">
                   <mm:constraint field="number" referid="peopleSet" operator="IN"/>
-                  
+
                   <mm:present referid="addr_search">
                     <mm:composite operator="OR">
                       <mm:import id="list" listdelimiter="\\s" externid="add_search" from="this" vartype="list" />
@@ -224,7 +224,7 @@
                       </mm:stringlist>
                     </mm:composite>
                   </mm:present>
-                  
+
                   <di:table maxitems="10">
                     <di:row>
                       <mm:present referid="checkboxes">
@@ -233,7 +233,7 @@
                         </di:headercell>
                       </mm:present>
                       <di:headercell><di:translate key="address.type" /></di:headercell>
-                      
+
                       <di:getsetting component="core" setting="personfields" vartype="string">
                         <mm:fieldlist nodetype="people" fields="${_},email" id="_field">
                           <di:headercell sortfield="${_field.name}"><mm:fieldinfo type="guiname" /></di:headercell>
@@ -241,7 +241,7 @@
                       </di:getsetting>
                     </di:row>
                     <mm:listnodes id="mycontacts">
-                      <mm:treefile id="link" write="false" 
+                      <mm:treefile id="link" write="false"
                                    page="/address/updatecontact.jspx" objectlist="$includePath" referids="$referids,_node@contact,addressbook">
                         <mm:param name="callerpage">/address/index.jsp?sf=lastname,firstname&amp;so=up,up</mm:param>
                       </mm:treefile>
@@ -253,82 +253,82 @@
                             <input type="checkbox" name="ids" value="${_node}" />
                           </di:cell>
                         </mm:present>
-                        
+
                         <di:cell>
                           <mm:remove referid="contactno"/>
                           <mm:import id="contactno"><mm:field name="number"/></mm:import>
-                          
+
                           <mm:compare referid="nodetype" value="contacts">
                             <img src="${mm:treefile('/address/gfx/contact.gif', pageContext, includePath)}"
-                                 title="${di:translate(pageContext,'address.contact')}"  
-                                 alt="${di:translate(pageContext,'address.contact')}"  />
+                                 title="${di:translate('address.contact')}"
+                                 alt="${di:translate('address.contact')}"  />
                           </mm:compare>
-                          
+
                           <mm:node number="$contactno">
                             <mm:remove referid="isonline"/>
                             <mm:field name="isonline" id="isonline" write="false"/>
                             <di:hasrole referid="contactno" role="contenteditor">
                               <mm:compare referid="isonline" value="false">
-                                <img src="${mm:treefile('/address/gfx/editor_offline.gif', pageContext, includePath)}" 
-                                     title="${di:translate(pageContext, 'core.editoroffline')}" 
-                                     alt="${di:translate(pageContext, 'core.editoroffline')}"  />
+                                <img src="${mm:treefile('/address/gfx/editor_offline.gif', pageContext, includePath)}"
+                                     title="${di:translate('core.editoroffline')}"
+                                     alt="${di:translate('core.editoroffline')}"  />
                               </mm:compare>
                               <mm:compare referid="isonline" value="true">
                                 <img src="${mm:treefile('/address/gfx/editor_online.gif', pageContext, includePath)}"
-                                     title="${di:translate(pageContext, 'core.editoronline')}" 
-                                     alt="${di:translate(pageContext, 'core.editoronline')}"  />
+                                     title="${di:translate('core.editoronline')}"
+                                     alt="${di:translate('core.editoronline')}"  />
                               </mm:compare>
                             </di:hasrole>
-                            
+
                             <di:hasrole referid="contactno" role="courseeditor">
                               <mm:compare referid="isonline" value="false">
-                                <img src="${mm:treefile('/address/gfx/editor_offline.gif', pageContext, includePath)}" 
-                                     title="${di:translate(pageContext, 'core.editoroffline')}" 
-                                     alt="${di:translate(pageContext, 'core.editoroffline')}" />
+                                <img src="${mm:treefile('/address/gfx/editor_offline.gif', pageContext, includePath)}"
+                                     title="${di:translate('core.editoroffline')}"
+                                     alt="${di:translate('core.editoroffline')}" />
                               </mm:compare>
                               <mm:compare referid="isonline" value="true">
-                              <img src="${mm:treefile('/address/gfx/editor_online.gif', pageContext, incluePath)}" 
-                                   title="${di:translate(pageContext, 'core.editoronline')}" 
-                                   alt="${di:translate(pageContext, 'core.editoronline')}" />
+                              <img src="${mm:treefile('/address/gfx/editor_online.gif', pageContext, incluePath)}"
+                                   title="${di:translate('core.editoronline')}"
+                                   alt="${di:translate('core.editoronline')}" />
                               </mm:compare>
                             </di:hasrole>
-                            
+
                             <di:hasrole referid="contactno" role="administrator">
                               <mm:compare referid="isonline" value="false">
-                                <img src="${mm:treefile('/address/gfx/administrators_offline.gif', pageContext, includePath)}" 
-                                     title="${di:translate(pageContext, 'core.administratoroffline')}" 
-                                     alt="${di:translate(pageContext, 'core.administratoroffline')}"  />
+                                <img src="${mm:treefile('/address/gfx/administrators_offline.gif', pageContext, includePath)}"
+                                     title="${di:translate('core.administratoroffline')}"
+                                     alt="${di:translate('core.administratoroffline')}"  />
                               </mm:compare>
                               <mm:compare referid="isonline" value="true">
-                                <img src="${mm:treefile('/address/gfx/administrators_online.gif', pageContext, includePath)}" 
-                                     title="${di:translate(pageContext, 'core.administratoronline')}" 
-                                     alt="${di:translate(pageContext, 'core.administratoronline')}"  />
+                                <img src="${mm:treefile('/address/gfx/administrators_online.gif', pageContext, includePath)}"
+                                     title="${di:translate('core.administratoronline')}"
+                                     alt="${di:translate('core.administratoronline')}"  />
                               </mm:compare>
                             </di:hasrole>
-                            
+
                             <di:hasrole referid="contactno" role="teacher">
                               <mm:compare referid="isonline" value="false">
                                 <img src="${mm:treefile('/address/gfx/teachers_offline.gif', pageContext, includePath)}"
-                                     title="${di:translate(pageContext, 'core.teacheroffline')}"
-                                     alt="${di:translate(pageContext, 'core.teacheroffline')}" />                                
+                                     title="${di:translate('core.teacheroffline')}"
+                                     alt="${di:translate('core.teacheroffline')}" />
                               </mm:compare>
                               <mm:compare referid="isonline" value="true">
                                 <img src="${mm:treefile('/address/gfx/teachers_online.gif', pageContext, includePath)}"
-                                     title="${di:translate(pageContext, 'core.teacheronline')}"
-                                     alt="${di:translate(pageContext, 'core.teacheronline')}" />
+                                     title="${di:translate('core.teacheronline')}"
+                                     alt="${di:translate('core.teacheronline')}" />
                               </mm:compare>
                             </di:hasrole>
-                            
+
                             <di:hasrole referid="contactno" role="student">
                               <mm:compare referid="isonline" value="false">
-                                <img src="${mm:treefile('/address/gfx/students_offline.gif', pageContext, includePath)}" 
-                                     title="${di:translate(pageContext, 'core.studentoffline')}" 
-                                     alt="${di:translate(pageContext, 'core.studentoffline')}"  />
+                                <img src="${mm:treefile('/address/gfx/students_offline.gif', pageContext, includePath)}"
+                                     title="${di:translate('core.studentoffline')}"
+                                     alt="${di:translate('core.studentoffline')}"  />
                               </mm:compare>
                               <mm:compare referid="isonline" value="true">
-                                <img src="${mm:treefile('/address/gfx/students_online.gif', pageContext, includePath)}" 
-                                     title="${di:translate(pageContext, 'core.studentonline')}" 
-                                     alt="${di:translate(pageContext, 'core.studentonline')}"  />
+                                <img src="${mm:treefile('/address/gfx/students_online.gif', pageContext, includePath)}"
+                                     title="${di:translate('core.studentonline')}"
+                                     alt="${di:translate('core.studentonline')}"  />
                               </mm:compare>
                             </di:hasrole>
                           </mm:node>
@@ -354,7 +354,7 @@
                   <input type="hidden" name="addtoworkgroup" value="1" />
                   <input type="submit" value="Ok" />
                 </mm:present>
-                
+
               </div>
             </form>
           </mm:treefile>

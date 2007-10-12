@@ -2,28 +2,28 @@
   This template updates or shows a contact of a addressbook.
   -->
 
-<mm:cloud method="delegate" 
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
-          xmlns:jsp="http://java.sun.com/JSP/Page"          
+<mm:cloud method="delegate"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
           >
   <jsp:directive.include file="/shared/setImports.jsp" />
-  <mm:content postprocessor="reducespace" language="${language}">  
-    
+  <mm:content postprocessor="reducespace" language="${language}">
+
     <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="extraheader">
         <title><di:translate key="address.updatecontact" /></title>
       </mm:param>
     </mm:treeinclude>
-    
+
     <mm:import externid="formsubmitted" />
-    
+
     <mm:import externid="addressbook"/>
     <mm:import externid="contact" required="true"/>
     <mm:import externid="callerpage"/>
     <mm:import externid="action1"/>
     <mm:import externid="action2"/>
-    
+
     <mm:node referid="contact">
       <!-- wtf -->
       <mm:maywrite>
@@ -35,46 +35,46 @@
           </mm:compare>
         </mm:nodeinfo>
       </mm:maywrite>
-      
+
       <!-- addressbook value is not always provided -->
       <mm:isgreaterthan referid="addressbook" value="0">
         <mm:node number="$addressbook" id="myaddressbook"/>
       </mm:isgreaterthan>
-    
-    
+
+
       <!-- Check if the back button is pressed -->
       <mm:import id="action2text"><di:translate key="address.back" /></mm:import>
       <mm:compare referid="action2" referid2="action2text">
         <mm:redirect referids="$referids,addressbook" page="$callerpage"/>
       </mm:compare>
-      
-      
-      <div class="rows">        
+
+
+      <div class="rows">
         <div class="navigationbar">
-          <div class="titlebar">            
+          <div class="titlebar">
             <mm:present referid="myaddressbook">
               <mm:node referid="myaddressbook">
                 <mm:field name="name"/><br/>
               </mm:node>
-            </mm:present>            
+            </mm:present>
           </div>
         </div>
-        
+
         <div class="folders">
           <div class="folderHeader">&amp;nbsp;</div>
           <div class="folderBody">&amp;nbsp;</div>
         </div>
-        
+
         <div class="mainContent">
-          
+
           <div class="contentHeader">
             <di:translate key="address.updatecontact" />
           </div>
-          
-          <div class="contentBodywit">            
+
+          <div class="contentBodywit">
             <!-- Show the form -->
             <mm:form name="updatecontact" styleClass="formInput">
-              
+
               <input type="hidden" name="formsubmitted" value="true"/>
               <table class="font">
                 <mm:import id="fields"><mm:treeinclude objectlist="$includePath" page="/address/fields.jspx" /></mm:import>
@@ -90,12 +90,12 @@
                   </tr>
                 </mm:fieldlist>
               </table>
-              <br />            
+              <br />
               <input type="hidden" name="callerpage" value="${callerpage}" />
               <input type="hidden" name="addressbook" value="${addressbook}" />
               <input type="hidden" name="contact" value="${contact}" />
               <mm:present referid="editable">
-                <input class="formbutton" type="submit" name="action1" value="${di:translate(pageContext, 'address.update')}" />
+                <input class="formbutton" type="submit" name="action1" value="${di:translate('address.update')}" />
                 <mm:valid>
                   <mm:present referid="formsubmitted">
                     <mm:commit />
@@ -105,9 +105,9 @@
                   <di:translate key="address.notvalid" />
                 </mm:valid>
               </mm:present>
-              <input class="formbutton" type="submit" name="action2" value="${di:translate(pageContext, 'address.back')}" />
+              <input class="formbutton" type="submit" name="action2" value="${di:translate('address.back')}" />
             </mm:form>
-            
+
             <mm:node number="$provider">
               <mm:relatedcontainer path="settingrel,components">
                 <mm:constraint field="components.name" value="portfolio"/>
@@ -124,11 +124,11 @@
                 </mm:related>
               </mm:relatedcontainer>
             </mm:node>
-            
+
           </div>
         </div>
       </div>
-      
+
       <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
     </mm:node>
   </mm:content>

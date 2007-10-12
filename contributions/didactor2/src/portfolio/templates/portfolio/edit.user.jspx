@@ -93,7 +93,7 @@
         </mm:valid>
       </mm:present>
 
-      <input class="formbutton" type="submit" name="change" value="${di:translate(pageContext, 'portfolio.save')}" />
+      <input class="formbutton" type="submit" name="change" value="${di:translate('portfolio.save')}" />
     </mm:form>
   </mm:cloud>
 </div>
