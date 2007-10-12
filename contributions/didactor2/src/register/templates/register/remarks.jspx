@@ -3,6 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >  
+  <jsp:output omit-xml-declaration="true" />
   <tr class="registerRemarks">
     <mm:fieldlist nodetype="people" fields="remarks">
       <td><mm:fieldinfo type="guiname" />: </td>
