@@ -5,7 +5,10 @@
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.include file="head.jspx" />
-  <mm:content type="text/html" language="en" expires="0">
+  <mm:content type="application/xhtml+xml" 
+	postprocessor="none"	
+	unacceptable="CRIPPLE"
+	language="en" expires="0">
     <body class="basic">
       <h1>Lucene admin page for <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
       <mm:import externid="logout" />
