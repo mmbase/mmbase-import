@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
-        version="2.0" xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance" 
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        version="2.0" xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance"
         ns0:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
   <tlib-version>1.0</tlib-version>
   <shortname>di</shortname>
@@ -358,15 +358,15 @@
     </description>
     <name>translate</name>
     <function-class>nl.didactor.taglib.Functions</function-class>
-    <function-signature>String translate(javax.servlet.jsp.PageContext, java.lang.String)</function-signature>
+    <function-signature>String translate(java.lang.String)</function-signature>
   </function>
   <function>
     <description>
-      Simple version of di:getsetting. Easily usuable in EL like ${di:translate(pageContext, 'email', 'showbcc')}.
+      Simple version of di:getsetting. Easily usuable in EL like ${di:setting('email', 'showbcc')}.
     </description>
     <name>setting</name>
     <function-class>nl.didactor.taglib.Functions</function-class>
-    <function-signature>String setting(javax.servlet.jsp.PageContext, java.lang.String, java.lang.String)</function-signature>
+    <function-signature>String setting(java.lang.String, java.lang.String)</function-signature>
   </function>
 
 </taglib>
