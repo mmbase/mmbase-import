@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.411 2007-09-25 12:39:51 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.412 2007-10-12 16:19:06 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -127,6 +127,22 @@ version: $Id: mmbase-taglib.xml,v 1.411 2007-09-25 12:39:51 michiel Exp $
     <since>MMBase-1.8.2</since>
     <see tag="url" />
     <see tag="link" />
+    <see function="link" />
+  </function>
+  <function>
+    <description>
+      Simple version of the 'url' tag, which can be used more concisely directly in a href attribute
+      or so. Using a ThreadLocal pageContext (set by any mmbase tag, so you should e.g. use an mm:cloud or mm:content).
+    </description>
+    <name>link</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.String link(java.lang.String)</function-signature>
+    <example>
+      &lt;link media="screen" type="text/css" href="${mm:link('/css/general.css')}" rel="stylesheet" /&gt;
+    </example>
+    <since>MMBase-1.8.5</since>
+    <see tag="url" />
+    <see tag="link" />
   </function>
   <function>
     <description>
@@ -145,6 +161,17 @@ version: $Id: mmbase-taglib.xml,v 1.411 2007-09-25 12:39:51 michiel Exp $
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
     <function-signature>java.lang.String treefile(java.lang.String, javax.servlet.jsp.PageContext, java.lang.Object)</function-signature>
     <since>MMBase-1.8.4</since>
+    <see tag="treefile" />
+    <see function="treelink" />
+  </function>
+  <function>
+    <description>
+      Simple version of the 'treefile' tag, which can be used more concisely directly in a href attribute or so. It uses the ThreadLocal pageContext.
+    </description>
+    <name>treelink</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.String treelink(java.lang.String, java.lang.Object)</function-signature>
+    <since>MMBase-1.8.5</since>
     <see tag="treefile" />
   </function>
   <function>

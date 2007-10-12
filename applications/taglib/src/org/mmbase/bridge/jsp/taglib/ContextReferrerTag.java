@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.100 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.101 2007-10-12 16:19:07 michiel Exp $
  * @see ContextTag
  */
 
@@ -84,9 +84,29 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 
     private String       thisPage = null;
 
-    void setPageContextOnly(PageContext pc) {
+
+    void setPageContextOnly(final PageContext pc) {
         super.setPageContext(pc);
         // the 'page' Context
+        setThreadPageContext(pc);
+    }
+
+    public static void setThreadPageContext(final PageContext pc) {
+        threadPageContext = new ThreadLocal() {
+                protected synchronized Object initialValue() {
+                    return pc;
+                }
+            };
+    }
+
+    private static ThreadLocal threadPageContext;
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static PageContext getThreadPageContext() {
+        if (threadPageContext == null) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
+        return (PageContext) threadPageContext.get();
     }
 
     /**
@@ -468,7 +488,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 
         if (contextTag == null ||
             // doesn't count becase it is on a different page, (this tag e.g. is in a tag-file)
-            // necessary in tomcat > 5.5.20 only. 
+            // necessary in tomcat > 5.5.20 only.
             // See http://issues.apache.org/bugzilla/show_bug.cgi?id=31804
             contextTag.getContextContainer().getPageContext() != pageContext) {
 
