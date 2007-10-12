@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.32 2007-02-11 20:42:32 nklasens Exp $
+ * @version $Id: BasicTransaction.java,v 1.33 2007-10-12 12:01:11 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -29,18 +30,41 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     /**
      * The id of the transaction for use with the transaction manager.
      */
-    protected final String transactionContext;
+    protected String transactionContext; // not final because of deserialization
 
     private boolean canceled = false;
     private boolean committed  = false;
     /**
      * The name of the transaction as used by the user.
      */
-    protected final String transactionName;
+    protected String transactionName; // not final because of deserialization
 
-    protected final BasicCloud parentCloud;
+    protected BasicCloud parentCloud; // not final because of deserialization
 
-    protected final Collection<MMObjectNode> coreNodes;
+
+    protected final Collection<MMObjectNode> getCoreNodes() {
+        // if the parent cloud is itself a transaction,
+        // do not create a new one, just use that context instead!
+        // this allows for nesting of transactions without loosing performance
+        // due to additional administration
+        if (parentCloud instanceof BasicTransaction) {
+            return ((BasicTransaction)parentCloud).getCoreNodes();
+        } else {
+            try {
+                // XXX: the current transaction manager does not allow multiple transactions with the
+                // same name for different users
+                // We solved this here, but this should really be handled in the Transactionmanager.
+                log.debug("using transaction " + transactionContext);
+                Collection<MMObjectNode> cn = BasicCloudContext.transactionManager.getTransactions().get(transactionContext);
+                if (cn == null) {
+                    cn = BasicCloudContext.transactionManager.createTransaction(transactionContext);
+                }
+                return cn;
+            } catch (TransactionManagerException e) {
+                throw new BridgeException(e.getMessage(), e);
+            }
+        }
+    }
 
     /*
      * Constructor to call from the CloudContext class.
@@ -52,30 +76,24 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         super(transactionName, cloud);
         this.transactionName = transactionName;
         this.parentCloud = cloud;
-
         // if the parent cloud is itself a transaction,
         // do not create a new one, just use that context instead!
         // this allows for nesting of transactions without loosing performance
         // due to additional administration
         if (parentCloud instanceof BasicTransaction) {
             transactionContext = ((BasicTransaction)parentCloud).transactionContext;
-            coreNodes = ((BasicTransaction)parentCloud).coreNodes;
         } else {
-            try {
-                // XXX: the current transaction manager does not allow multiple transactions with the
-                // same name for different users
-                // We solved this here, but this should really be handled in the Transactionmanager.
-                transactionContext = account + "_" + transactionName;
-                log.debug("using transaction " + transactionContext);
-                coreNodes = BasicCloudContext.transactionManager.createTransaction(transactionContext);
-            } catch (TransactionManagerException e) {
-                throw new BridgeException(e.getMessage(), e);
-            }
+            // XXX: the current transaction manager does not allow multiple transactions with the
+            // same name for different users
+            // We solved this here, but this should really be handled in the Transactionmanager.
+            transactionContext = account + "_" + transactionName;
+            log.debug("using transaction " + transactionContext);
+            getCoreNodes(); // will call 'createTransaction
         }
     }
 
     public NodeList getNodes() {
-        return new BasicNodeList(coreNodes, this);
+        return new BasicNodeList(getCoreNodes(), this);
     }
 
 
@@ -96,11 +114,13 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             // do nothing
         } else {
             try {
-                Collection<MMObjectNode> col = BasicCloudContext.transactionManager.getTransaction(transactionContext);
+                assert BasicCloudContext.transactionManager.getTransaction(transactionContext).size() == getNodes().size();
 
+                log.info("Commiting " + getNodes());
                 BasicCloudContext.transactionManager.resolve(transactionContext);
-                // This is a hack to call the commitprocessors which are only available in the bridge.
+                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
 
+                // This is a hack to call the commitprocessors which are only available in the bridge.
                 for (Node n : getNodes()) {
                     log.debug("Commiting " + n);
                     if (n == null) {
@@ -119,12 +139,12 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                     n.commit();
                 }
 
-                BasicCloudContext.transactionManager.commit(userContext, transactionContext);
+
 
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
-                throw new BridgeException(e.getMessage(), e);
+                throw new BridgeException(e.getMessage() + " for transaction with " + getNodes(), e);
             }
         }
 
@@ -265,6 +285,14 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     public boolean isCommitted() {
         return committed;
     }
+    public Object getProperty(Object key) {
+        Object value = super.getProperty(key);
+        if (value == null) {
+            return parentCloud.getProperty(key);
+        } else {
+            return value;
+        }
+    }
 
     /**
      * @see org.mmbase.bridge.Transaction#getCloudName()
@@ -276,6 +304,25 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         else {
             return parentCloud.getName();
         }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        _readObject(in);
+        transactionContext = (String) in.readObject();
+        canceled = in.readBoolean();
+        committed = in.readBoolean();
+        transactionName = (String) in.readObject();
+        parentCloud = (BasicCloud) in.readObject();
+    }
+
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        _writeObject(out);
+        out.writeObject(transactionContext);
+        out.writeBoolean(canceled);
+        out.writeBoolean(committed);
+        out.writeObject(transactionName);
+        out.writeObject(parentCloud);
     }
 }
 

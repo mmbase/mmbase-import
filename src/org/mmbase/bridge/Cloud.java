@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.62 2007-07-26 22:13:51 michiel Exp $
+ * @version $Id: Cloud.java,v 1.63 2007-10-12 12:01:11 michiel Exp $
  */
 public interface Cloud {
 
@@ -572,7 +572,9 @@ public interface Cloud {
     public Locale getLocale();
 
     /**
-     * Retrieves a property previously set for this cloud.
+     * Retrieves a property previously set for this cloud. If this Cloud has a 'parent' cloud
+     * (ie. this Cloud is a {@link Transaction}), then this will also mirror properties in this
+     * parent cloud.
      * @see #setProperty(Object, Object)
      * @param key the key of the property
      * @return the property value
