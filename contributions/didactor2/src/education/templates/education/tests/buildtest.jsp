@@ -107,30 +107,31 @@
             <c:when test="${fn:length(my_questions) + fn:length(givenanswers) ge fn:length(questions)}">
               <input type="button"
                      disabled="disabled"
-                     value="${di:translate(pageContext, 'education.buttontextdone')}" class="formbutton"
+                     value="${di:translate('education.buttontextdone')}" class="formbutton"
                      onClick="questionform.command.value='done'; postContent('${post}', questionform);"/>
             </c:when>
             <c:otherwise>
               <c:if test="${page gt 0}">
                 <input type="button"
-                       value="${di:translate(pageContext, 'education.buttontextprev')}"
+                       value="${di:translate('education.buttontextprev')}"
                        class="formbutton"
                        onClick="questionform.command.value='back'; postContent('${post}', questionform);" />
               </c:if>
               <c:if test="${learnobject.questionsperpage gt 0 or page * learnobject.questionsperpage lt fn:length(questions)}">
                 <input type="button"
-                       value="${di:translate(pageContext, 'education.buttontextnext')}"
+                       value="${di:translate('education.buttontextnext')}"
                        class="formbutton"
                        onClick="postContent('${post}', questionform);" />
               </c:if>
               <c:if test="${learnobject.questionsperpage lt 1 or page * learnobject.questionsperpage ge fn:length(questions)}">
                 <input type="button"
-                       value="${di:translate(pageContext, 'education.buttontextdone')}"
+                       value="${di:translate('education.buttontextdone')}"
                        class="formbutton"
                        onClick="questionform.command.value='done'; postContent('${post}', questionform);" />
               </c:if>
             </c:otherwise>
           </c:choose>
+
         </mm:present>
       </mm:node>
     </form>

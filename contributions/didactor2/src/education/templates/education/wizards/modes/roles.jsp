@@ -72,7 +72,7 @@
                         <mm:param name="relationRole">related</mm:param>
                         <mm:param name="relationOriginNode">${_node}</mm:param>
                         <a href="${_}${forbidtemplate}"
-                           title='${di:translate(pageContext, 'education.persons')}' target="text">
+                           title='${di:translate('education.persons')}' target="text">
                         <mm:field name="name" />
                       </a>
                     </mm:link>
@@ -97,7 +97,7 @@
                    <nobr>
                      &nbsp;
                      <a href="${_}${forbidtemplate}"
-                        title="${di:translate(pageContext, 'education.classes')}"
+                        title="${di:translate('education.classes')}"
                         target="text">
                        <di:translate key="education.classes" />
                      </a>
@@ -120,7 +120,7 @@
                    <mm:param name="directions">down</mm:param>
                    <nobr>&nbsp;
                    <a href="${_}${forbidtemplate}"
-                      title="${di:translate(pageContext, 'education.workgroups')}"  target="text">
+                      title="${di:translate('education.workgroups')}"  target="text">
                      <di:translate key="education.workgroups" />
                    </a>
                    </nobr>

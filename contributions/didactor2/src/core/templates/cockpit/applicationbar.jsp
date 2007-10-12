@@ -1,5 +1,5 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><mm:cloud method="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
 <mm:locale language="${locale}">
@@ -22,7 +22,7 @@
             <mm:fieldinfo type="guiname" />
           </mm:fieldlist>
           <input id="loginPassword" type="password" size="20" name="password" value="${sessionScope.registerPassword}" />
-          <input class="formbutton" id="loginSubmit" type="submit" value="${di:translate(pageContext, 'core.login')}" />
+          <input class="formbutton" id="loginSubmit" type="submit" value="${di:translate('core.login')}" />
         </p>
       </form>
       <mm:node number="component.register" notfound="skipbody">
@@ -37,23 +37,23 @@
   <mm:hasrank minvalue="didactor user">
     <div class="menuItemApplicationMenubar">
       <mm:import externid="reset" />
-      <mm:treefile page="/index.jsp" objectlist="$includePath" referids="reset?" write="false"> 
-        <a title="${di:translate(pageContext,'core.home')}" href="${_}" class="menubar"><di:translate key="core.home" /></a>
+      <mm:treefile page="/index.jsp" objectlist="$includePath" referids="reset?" write="false">
+        <a title="${di:translate('core.home')}" href="${_}" class="menubar"><di:translate key="core.home" /></a>
       </mm:treefile>
     </div>
 
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
       <mm:node number="${user}">
-        <a title="${di:translate(pageContext, 'core.logout')}" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar">
+        <a title="${di:translate('core.logout')}" href="<mm:treefile page="/logout.jsp" objectlist="$includePath" referids="$referids"/>" class="menubar">
         <di:translate key="core.logout" />
         <di:person />
       </a>
       </mm:node>
     </div>
-    
+
     <div class="menuSeperatorApplicationMenubar"></div>
-    
+
     <div class="menuItemApplicationMenubar">
       <mm:hasnode number="component.portfolio">
         <a title="<di:translate key="core.configuration" />" href="<mm:treefile page="/portfolio/index.jsp?edit=true" objectlist="$includePath" referids="$referids"/>" class="menubar"><di:translate key="core.configuration" /></a>
@@ -67,7 +67,7 @@
     <div class="menuItemApplicationMenubar">
       <a title="<di:translate key="core.print" />" href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
     </div>
-    
+
     <!-- region cms help and faq -->
     <mm:node number="$provider" notfound="skipbody">
       <mm:relatednodescontainer path="settingrel,components">
@@ -93,7 +93,7 @@
               <mm:import id="showcmshelp" />
             </mm:relatednodes>
           </mm:relatednodescontainer>
-        </mm:node>      
+        </mm:node>
       </mm:notpresent>
       <mm:notpresent referid="showfaq">
         <mm:node number="$education" notfound="skip">
@@ -103,25 +103,25 @@
               <mm:import id="showfaq" />
             </mm:relatednodes>
           </mm:relatednodescontainer>
-        </mm:node>      
+        </mm:node>
       </mm:notpresent>
     </mm:present>
-     
+
     <mm:present referid="showcmshelp" >
       <mm:node number="component.cmshelp" notfound="skipbody">
           <mm:treeinclude page="/cmshelp/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" >
              <mm:param name="scope">education</mm:param>
           </mm:treeinclude>
-      </mm:node>    
+      </mm:node>
     </mm:present>
-	  
+
     <mm:present referid="showfaq" >
   	  <mm:node number="component.faq" notfound="skipbody">
           <mm:treeinclude page="/faq/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" />
-  	  </mm:node> 	   
+  	  </mm:node>
     </mm:present>
     <!-- end of region cms help and faq -->
-                                
+
   </mm:hasrank>
 </div>
 
@@ -129,8 +129,8 @@
 <!--
 function printThis() {
     if (frames && frames['content']) {
-        if (frames['content'].focus) 
-            frames['content'].focus(); 
+        if (frames['content'].focus)
+            frames['content'].focus();
         if (frames['content'].print)
             frames['content'].print();
     }
