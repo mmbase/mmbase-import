@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.21 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: Functions.java,v 1.22 2007-10-12 16:19:07 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -120,6 +120,13 @@ public class Functions {
         return show.toString();
 
     }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static String link(String page) {
+        return url(page, ContextReferrerTag.getThreadPageContext());
+    }
+
 
 
     /**
@@ -133,12 +140,20 @@ public class Functions {
         String t = th.findTreeFile(page, Casting.toString(objectList), pageContext.getSession());
         return req.getContextPath() + (t.charAt(0) == '/' ? "" : "/") + t;
     }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static String treelink(String page,  Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
+        return treefile(page, ContextReferrerTag.getThreadPageContext(), objectList);
+    }
+
 
 
     /**
      * @since MMBase-1.9
      */
-    public static LocalizedString string(LocalizedString s, javax.servlet.jsp.PageContext pageContext) {
+    public static LocalizedString string(LocalizedString s) {
+        javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
         WrappedLocalizedString result = new WrappedLocalizedString(s);
         Locale locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
         if (locale == null) {
@@ -158,7 +173,7 @@ public class Functions {
     public static boolean hasAlias(Node node, String alias) {
          return node.getAliases().contains(alias);
      }
-    
+
 
 
 }
