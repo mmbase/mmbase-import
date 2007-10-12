@@ -15,8 +15,8 @@
     <html>
       <head>
         <title></title>
-        <link rel="stylesheet" href="${mm:treefile('/css/base.css', pageContext, includePath)}" />
-        <link rel="stylesheet" href="${mm:treefile('/register/css/register.css', pageContext, includePath)}"  />
+        <link rel="stylesheet" href="${mm:treelink('/css/base.css', includePath)}" />
+        <link rel="stylesheet" href="${mm:treelink('/register/css/register.css', includePath)}"  />
         <style>
           body {
           width: 80%;
@@ -79,7 +79,7 @@
               <mm:isnotempty referid="delete" inverse="true">
                 <mm:node number="$person">
                   <mm:locale language="$language">
-                    <mm:fieldlist fields="${di:setting(pageContext, 'core', 'admin_personfields')},email">
+                    <mm:fieldlist fields="${di:setting('core', 'admin_personfields')},email">
                       <mm:fieldinfo type="guiname" />: <mm:field /> <br />
                     </mm:fieldlist>
                   </mm:locale>
@@ -112,7 +112,7 @@
                               </select>
                             </td>
                             <td>
-                              <input type="submit" value="${di:translate(pageContext, 'register.choose')}" />
+                              <input type="submit" value="${di:translate('register.choose')}" />
                             </td>
                           </form>
                         </tr>
@@ -128,7 +128,7 @@
                 <hr />
                 <table class="listTable">
                   <tr>
-                    <mm:fieldlist nodetype="people" fields="number,${di:setting(pageContext, 'core', 'admin_personfields')},username">
+                    <mm:fieldlist nodetype="people" fields="number,${di:setting('core', 'admin_personfields')},username">
                       <th><mm:fieldinfo type="guiname" /></th>
                     </mm:fieldlist>
                     <th><di:translate key="register.delete" /></th>
@@ -139,13 +139,13 @@
                       <mm:compare value="0">
                         <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationid,_node@person" id="url" write="false" />
                         <tr>
-                          <mm:fieldlist nodetype="people" fields="number,${di:setting(pageContext, 'core', 'admin_personfields')},username">
+                          <mm:fieldlist nodetype="people" fields="number,${di:setting('core', 'admin_personfields')},username">
                             <td><a href="${url}"><mm:fieldinfo type="value" /></a></td>
                           </mm:fieldlist>
                           <td>
                             <mm:link referid="url">
                               <mm:param name="delete">true</mm:param>
-                              <a href="${_}" onclick="return confirm('${di:translate(pageContext, 'register.delete_areyousure')}');"><di:translate key="register.delete" /></a>
+                              <a href="${_}" onclick="return confirm('${di:translate('register.delete_areyousure')}');"><di:translate key="register.delete" /></a>
                             </mm:link>
                           </td>
                         </tr>
