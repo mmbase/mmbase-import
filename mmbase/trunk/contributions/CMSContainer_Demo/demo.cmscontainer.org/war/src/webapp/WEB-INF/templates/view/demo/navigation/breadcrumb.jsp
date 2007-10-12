@@ -1,7 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/portlet" prefix="portlet"%>
-<%@ taglib uri="http://finalist.com/csmc" prefix="cmsc"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@include file="/WEB-INF/templates/portletglobals.jsp" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <portlet:defineObjects />
 
 <cmsc:path var="listPath" />
