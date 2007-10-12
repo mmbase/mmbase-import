@@ -115,7 +115,7 @@ TODO: This JSP is much too big, and polluted with all kinds of functionality.
          <div align="right">
            <mm:link referids="$referids,learnobjecttype,class,fb_madetest,learnobject@return_to,learnobjecttype@return_to_type" page="index.jsp">
              <input type="submit" class="formbutton"
-                    value="${di:translate(pageContext, 'assessment.back_to_lession_button')}"
+                    value="${di:translate('assessment.back_to_lession_button')}"
                     onClick="parent.document.location.href='${_}'" />
              <%-- WTF is a 'lession' ? --%>
            </mm:link>

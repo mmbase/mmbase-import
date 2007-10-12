@@ -14,10 +14,6 @@
 <mm:node number="$student" notfound="skip">
   <mm:context>
     <di:copybook student="${student}">
-      <%-- wtf --%>
-      <mm:present referid="copybookNo">
-        <mm:remove referid="copybookNo" />
-      </mm:present>
       <mm:node id="copybookNo" />
     </di:copybook>
 

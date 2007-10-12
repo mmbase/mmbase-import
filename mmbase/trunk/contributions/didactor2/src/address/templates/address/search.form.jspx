@@ -1,7 +1,7 @@
 <jsp:root version="1.2"
           xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
-          xmlns:di="http://www.didactor.nl/ditaglib_1.0" 
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <mm:import externid="link" />
   <mm:import externid="field" />
@@ -18,6 +18,6 @@
       <input type="hidden" name="addr_class" value="${addr_class}" />
     </mm:present>
     <input type="text" size="20" name="addr_search"/><br/>
-    <input type="submit" value="${di:translate(pageContext, 'address.search')}" />
+    <input type="submit" value="${di:translate('address.search')}" />
   </form>
 </jsp:root>

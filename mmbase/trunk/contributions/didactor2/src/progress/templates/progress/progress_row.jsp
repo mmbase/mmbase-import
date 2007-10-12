@@ -2,8 +2,7 @@
 %><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
  %><mm:content postprocessor="reducespace" expires="0">
   <mm:cloud rank="didactor user">
-    
-    <jsp:directive.include file="/shared/setImports.jsp" />
+
     <jsp:directive.include file="/education/tests/definitions.jsp" />
     <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
     <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
@@ -33,14 +32,14 @@
           <mm:node element="classrel" id="classrel" />
       </mm:list>
     </mm:compare>
-    <mm:present referid="class">
+    <mm:isnotempty referid="class">
       <%-- people-classrel-class-related-educations --%>
       <mm:compare referid="direct_connection" value="true" inverse="true">
         <mm:list fields="classrel.number" path="people,classrel,classes" constraints="people.number=$student and classes.number=$class">
           <mm:node element="classrel" id="classrel" />
         </mm:list>
       </mm:compare>
-    </mm:present>
+    </mm:isnotempty>
 
 
     <mm:present referid="classrel">
