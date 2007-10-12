@@ -27,7 +27,10 @@
       <body>
         <div class="content">
           <p>
-            <a href="export.jsp">Export</a>
+            <mm:import id="sep" escape="substring(1,2)"><fmt:formatNumber value="0.0" minFractionDigits="1"  /></mm:import>
+            <mm:link page="export.jsp" referids="sep">
+              <a href="${_}">Export</a>
+            </mm:link>
           </p>
           <mm:import id="editcontextname" reset="true">opleidingen</mm:import><!-- TODO, this is dutch -->
           <jsp:directive.include file="/education/wizards/roles_chk.jsp" /> <!-- TODO, this is silly -->
