@@ -28,7 +28,8 @@
         <div class="content">
           <p>
             <mm:import id="sep" escape="substring(1,2)"><fmt:formatNumber value="0.0" minFractionDigits="1"  /></mm:import>
-            <mm:link page="export.jsp" referids="sep">
+            <mm:link page="export.jsp">
+              <mm:param name="sep">${sep eq ',' ? ';' : ','}</mm:param>
               <a href="${_}">Export</a>
             </mm:link>
           </p>
