@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.2 2007-06-12 12:18:21 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.3 2007-10-12 16:15:19 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -56,6 +56,8 @@ public class Functions {
             } else {
                 obj = new Integer(((Node) obj).getNumber());
             }
+        } else if (obj instanceof Collection) {
+            return col.containsAll((Collection) obj);
         }
         if (col.contains(obj)) return true;
         return col.contains(Casting.toString(obj));
@@ -83,7 +85,7 @@ public class Functions {
 
     /**
      * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
-     * 
+     *
      */
     public static String escape(String escaper, String string) {
         try {
@@ -122,17 +124,29 @@ public class Functions {
         return show.toString();
 
     }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static String link(String page) {
+        return url(page, ContextReferrerTag.getThreadPageContext());
+    }
 
     /**
      * @since MMBase-1.8.4
      */
-    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
+    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext,  Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
         org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th =
             new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
         th.setCloud((Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE));
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
         String t = th.findTreeFile(page, Casting.toString(objectList), pageContext.getSession());
         return req.getContextPath() + (t.charAt(0) == '/' ? "" : "/") + t;
+    }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static String treelink(String page,  Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
+        return treefile(page, ContextReferrerTag.getThreadPageContext(), objectList);
     }
 
 }
