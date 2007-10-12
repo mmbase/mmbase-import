@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.5 2007-06-27 13:17:08 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.6 2007-10-12 16:15:19 michiel Exp $
  * @see ContextTag
  */
 
@@ -87,11 +87,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     void setPageContextOnly(final PageContext pc) {
         super.setPageContext(pc);
         // the 'page' Context
-        //        setThreadPageContext(pc);
+        setThreadPageContext(pc);
     }
 
-    /*
-      EXPERIMENTAL
     public static void setThreadPageContext(final PageContext pc) {
         threadPageContext = new ThreadLocal() {
                 protected synchronized Object initialValue() {
@@ -100,8 +98,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
             };
     }
 
-    public static ThreadLocal threadPageContext;
-    */
+    private static ThreadLocal threadPageContext;
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static PageContext getThreadPageContext() {
+        if (threadPageContext == null) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
+        return (PageContext) threadPageContext.get();
+    }
 
     public PageContext getPageContext() {
         return pageContext;
@@ -480,7 +485,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         ContextProvider contextTag = (ContextProvider) findParentTag(cl, contextid, false);
         if (contextTag == null ||
             // doesn't count becase it is on a different page, (this tag e.g. is in a tag-file)
-            // necessary in tomcat > 5.5.20 only. 
+            // necessary in tomcat > 5.5.20 only.
             // See http://issues.apache.org/bugzilla/show_bug.cgi?id=31804
             contextTag.getContextContainer().getPageContext() != pageContext) {
 
@@ -571,7 +576,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     public Locale getLocale() throws JspTagException {
         Locale locale = getLocaleFromContext();
         if (locale == null) {
-            locale = getDefaultLocale(); 
+            locale = getDefaultLocale();
         }
         return locale;
     }
@@ -580,7 +585,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * Get the locale which is defined by surrounding tags or the cloud
      * @return a locale when defined or otherwise <code>null</code>
      * @throws JspTagException
-     * 
+     *
      * @since  MMBase-1.8.1
      */
     public Locale getLocaleFromContext() throws JspTagException {
@@ -607,10 +612,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         }
         return null;
     }
-    
+
     /**
      * Get the default locale which is set in mmbase.
-     * 
+     *
      * @since  MMBase-1.8.1
      */
     public Locale getDefaultLocale() {
