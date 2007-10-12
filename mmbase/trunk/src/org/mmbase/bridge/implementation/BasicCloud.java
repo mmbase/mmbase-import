@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.176 2007-07-26 22:13:51 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.177 2007-10-12 12:01:11 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -174,6 +174,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         // generate an unique id for this instance...
         account = "U" + uniqueId();
     }
+
 
     // Makes a node or Relation object based on an MMObjectNode
     BasicNode makeNode(MMObjectNode node, String nodeNumber) {
@@ -1068,7 +1069,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             }
         }
     }
-    
+
     /**
      * Ignored by basic cloud. See {@link BasicTransaction#remove(String)}.
      */
@@ -1078,24 +1079,32 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         node.remove(getUser());
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+
+    protected void _readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         name = in.readUTF();
         userContext = (UserContext)in.readObject();
         cloudContext = LocalContext.getCloudContext();
         description = name;
         properties = (HashMap) in.readObject();
         locale     = (Locale) in.readObject();
+        log.info("Reading " + this);
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());
-        transactions = new HashMap<String, Transaction>();
-        nodeManagerCache = new HashMap<String, BasicNodeManager>();
+        transactions = new HashMap();
+        nodeManagerCache = new HashMap();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        _readObject(in);
     }
 
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    protected void _writeObject(ObjectOutputStream out) throws IOException {
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap props = new HashMap();
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+        Iterator i = properties.entrySet().iterator();
+        while(i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
             if ((key instanceof Serializable) && (value instanceof Serializable)) {
@@ -1105,6 +1114,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         out.writeObject(props);
         out.writeObject(locale);
         log.service("Serialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
+    }
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        _writeObject(out);
     }
 
     class BasicCloudStarter implements Runnable {
@@ -1130,6 +1142,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (dot > 0) {
             n = n.substring(dot + 1);
         }
-        return  n + " '" + getName() + "' of " + getUser().getIdentifier() + " @" + Integer.toHexString(hashCode());
+        UserContext uc = getUser();
+        return  n + " '" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
     }
 }
