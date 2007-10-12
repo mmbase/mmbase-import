@@ -9,7 +9,7 @@
     <mm:param name="mode" value="ENTIRE" />
   </mm:escaper>
 
-  <mm:content type="application/csv"
+  <mm:content type="text/csv"
               disposition="registered.csv"
               escaper="csv" >
     <mm:cloud rank="editor">
@@ -17,7 +17,7 @@
       <mm:import externid="person" />
       <mm:import externid="chosenclass" />
       <mm:import externid="chosenworkgroup" />
-      <mm:import id="sep">;</mm:import><!-- See, http://www.computerwissen.de/thema/office/excel-und-csv.html excell is horrible -->
+      <mm:import id="sep">;</mm:import><!-- See, http://www.computerwissen.de/thema/office/excel-und-csv.html excel is horrible -->
       <mm:node number="$education">
         <jsp:text>#</jsp:text>
         <mm:fieldlist nodetype="people" type="all">
