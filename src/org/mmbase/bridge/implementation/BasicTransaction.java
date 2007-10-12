@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+import java.io.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
@@ -21,24 +22,26 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25.2.2 2006-12-19 14:05:30 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.3 2007-10-12 11:53:08 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
+
+    private static final long serialVersionUID = 1;
 
     private static final Logger log = Logging.getLoggerInstance(BasicTransaction.class);
     /**
      * The id of the transaction for use with the transaction manager.
      */
-    protected final String transactionContext;
+    protected String transactionContext;
 
     private boolean canceled = false;
     private boolean committed  = false;
     /**
      * The name of the transaction as used by the user.
      */
-    protected final String transactionName;
+    protected String transactionName;
 
-    protected final BasicCloud parentCloud;
+    protected  BasicCloud parentCloud;
 
     /*
      * Constructor to call from the CloudContext class.
@@ -211,6 +214,15 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         return committed;
     }
 
+    public Object getProperty(Object key) {
+        Object value = super.getProperty(key);
+        if (value == null) {
+            return parentCloud.getProperty(key);
+        } else {
+            return value;
+        }
+    }
+
     /**
      * @see org.mmbase.bridge.Transaction#getCloudName()
      */
@@ -222,5 +234,26 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return parentCloud.getName();
         }
     }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        _readObject(in);
+        transactionContext = (String) in.readObject();
+        canceled = in.readBoolean();
+        committed = in.readBoolean();
+        transactionName = (String) in.readObject();
+        parentCloud = (BasicCloud) in.readObject();
+    }
+
+
+    protected void writeObject(ObjectOutputStream out) throws IOException {
+        _writeObject(out);
+        out.writeObject(transactionContext);
+        out.writeBoolean(canceled);
+        out.writeBoolean(committed);
+        out.writeObject(transactionName);
+        out.writeObject(parentCloud);
+    }
+
+
 }
 

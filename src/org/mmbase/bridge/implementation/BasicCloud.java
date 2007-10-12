@@ -29,11 +29,13 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.161.2.3 2007-03-01 08:52:03 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.4 2007-10-12 11:53:08 michiel Exp $
  */
- public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable /*, Serializable */ {
+public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable  {
 
     private static final long serialVersionUID = 1;
+
+    private static long counter = 0;
 
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
 
@@ -42,6 +44,9 @@ import org.mmbase.util.logging.*;
     // The Id starts at - 2 and is decremented each time a new id is asked
     // until Integer.MIN_VALUE is reached (after which counting starts again at -2).
     private static int lastRequestId = Integer.MIN_VALUE;
+
+
+    private final long count = ++counter;
 
     // link to cloud context
     private CloudContext cloudContext = null;
@@ -152,9 +157,11 @@ import org.mmbase.util.logging.*;
 
         this.name = name;
         description = name;
+
     }
 
     private final void init() {
+        log.debug("Initing " + this);
         MMBase mmb = BasicCloudContext.mmb;
 
         if (! mmb.getState()) {
@@ -176,6 +183,16 @@ import org.mmbase.util.logging.*;
 
         // generate an unique id for this instance...
         account = "U" + uniqueId();
+    }
+
+    protected Authorization getAuthorization() {
+        if (mmbaseCop == null) {
+            synchronized(this) {
+
+            }
+
+        }
+        return mmbaseCop.getAuthorization();
     }
 
     // Makes a node or Relation object based on an MMObjectNode
@@ -594,7 +611,7 @@ import org.mmbase.util.logging.*;
         while (mmbaseCop == null) {
             synchronized(this) {
                 if (mmbaseCop == null) {
-                    throw new org.mmbase.security.SecurityException("No MMBaseCop"); // mmbase cop can be null if deserialization not yet ready.
+                    throw new org.mmbase.security.SecurityException("No MMBaseCop in " + this); // mmbase cop can be null if deserialization not yet ready.
                 }
             }
         }
@@ -754,11 +771,14 @@ import org.mmbase.util.logging.*;
     }
 
     public StringList getPossibleContexts() {
+        if (mmbaseCop == null) {
+            throw new NotFoundException("MMBase not yet, or not successfully initialized (check mmbase log)");
+        }
         return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(getUser()));
     }
 
     void   checkNodes(BasicNodeList resultNodeList, Query query) {
-        Authorization auth = mmbaseCop.getAuthorization();
+        Authorization auth = getAuthorization();
         resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
 
         if (log.isDebugEnabled()) {
@@ -1041,20 +1061,25 @@ import org.mmbase.util.logging.*;
     void remove(String currentObjectContext) {
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    protected void _readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         name = in.readUTF();
         userContext = (UserContext)in.readObject();
         cloudContext = LocalContext.getCloudContext();
         description = name;
         properties = (HashMap) in.readObject();
         locale     = (Locale) in.readObject();
+        log.info("Reading " + this);
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());
         transactions = new HashMap();
         nodeManagerCache = new HashMap();
     }
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        _readObject(in);
+    }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
+
+    protected void _writeObject(ObjectOutputStream out) throws IOException {
         out.writeUTF(name);
         out.writeObject(userContext);
         HashMap props = new HashMap();
@@ -1071,6 +1096,9 @@ import org.mmbase.util.logging.*;
         out.writeObject(locale);
         log.service("Serialized cloud " + BasicCloud.this + " of " + BasicCloud.this.getUser());
     }
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        _writeObject(out);
+    }
 
     class BasicCloudStarter implements Runnable {
         public void run() {
@@ -1084,11 +1112,13 @@ import org.mmbase.util.logging.*;
                     log.warn("Security implementation did not set 'authentication type' in the user object.");
                 }
                 log.service("Deserialized " + BasicCloud.this);
+                BasicCloud.this.notifyAll();
             }
         }
     }
 
     public String toString() {
-        return  "BasicCloud '" + getName() + "' of " + getUser().getIdentifier() + " @" + Integer.toHexString(hashCode());
+        UserContext uc = getUser();
+        return  "BasicCloud " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
     }
 }
