@@ -137,7 +137,7 @@ Applications build file
   </target>
 
   <target name="taglib" depends="mmbase">
-     <ant dir="taglib"  target="dependent.package" inheritAll="false">
+     <ant dir="taglib"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
