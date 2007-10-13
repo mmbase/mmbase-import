@@ -136,7 +136,7 @@ Applications build file
   </target>
 
   <target name="community" depends="mmbase,taglib">
-     <ant dir="community"  target="dependent.package" inheritAll="false">
+     <ant dir="community"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
