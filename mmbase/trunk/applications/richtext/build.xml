@@ -38,6 +38,7 @@
   </target>
 
   <target name="clean" depends="buildbase.clean">
+    <mkdir dir="mmbase/kupu" />
     <exec executable="make" dir="mmbase/kupu">
       <arg line="clean" />
     </exec>
