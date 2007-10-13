@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 #echo Removing old build stuff if there was...
 #rm -rf /export/home/nightlybuild/data/build
 
@@ -27,30 +28,49 @@ revision=MMBase-1_8
 #revision=MMBase-1_8_4_Final
 
 # STABLE branch
-stablebuilddir="/home/nightly/builds/stable/${version}"
-mkdir -p ${stablebuilddir}
+builddir="/home/nightly/builds/stable/${version}"
+mkdir -p ${builddir}
 
-cd /home/nightly/stable
 echo cleaning
 echo ${antcommand}
-${antcommand} clean > ${stablebuilddir}/messages.log 2> ${stablebuilddir}/errors.log
+#${antcommand} clean > ${builddir}/messages.log 2> ${builddir}/errors.log
 
-echo update the nightly-build.xml
-${CVS}  co -r MMBase-1_8 -p all/nightly-build.xml >  /home/nightly/stable/nightly-build.xml
+cd ${BUILD_HOME}/stable/nightly-build/cvs/mmbase
+echo update cvs to `pwd`
 
-stableoptions="-Dtag=${revision} -Dbuild.documentation=true -Dversion=${version} -Ddestination.dir=${stablebuilddir} -Ddownload.dir=${downloaddir}"
+for i in '.' 'applications' 'contributions' ; do
+    echo updating `pwd`/$i 
+    ${CVS} -q update -d -P -l -D "${version}" -r "${revision}" $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+done
+for i in 'src' 'documentation' 'tests' 'config' 'html' \
+    'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/crontab' 'applications/cloudcontext' \
+    'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
+    'applications/largeobjects' 'applications/packaging' \
+    'contributations/aselect' 'contributions/mmbar' 'contributions/thememanager' 'contributions/multilanguagegui' \
+    ; do 
+    echo updating `pwd`/$i 
+   ${CVS} -q update -d -P -D "${version}" -r "${revision}" $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+done
+echo "==========UPDATING TO HEAD========" >> ${builddir}/messages.log
+for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/didactor2' \
+    ; do
+    echo updating to HEAD `pwd`/$i 
+    echo updating to HEAD `pwd`/$i  >> ${builddir}/messages.log    
+    ${CVS} -q update -d -P -D "${version}" -A $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+done
+
+stableoptions="-Dbuild.documentation=true -Ddestination.dir=${builddir} -Ddownload.dir=${downloaddir}"
 echo "options : ${stableoptions}"
 
 echo "Ant Command: ${antcommand} ${stableoptions}"
 echo Starting nightly build
-${antcommand} ${stableoptions} >> ${stablebuilddir}/messages.log 2>> ${stablebuilddir}/errors.log
+${antcommand} ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 
-cd nightly-build/cvs/mmbase
-${CVS} log -rMMBase-1_8 -N -d"last week<now" 2> /dev/null | ${FILTER} > ${stablebuilddir}/RECENTCHANGES.txt
+
+${CVS} log -rMMBase-1_8 -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
 
 echo Creating sym for last build
 rm /home/nightly/builds/stable/latest
-cd /home/nightly/builds/stable
 
 ln -s ${version} latest
 
