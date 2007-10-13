@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.32 2006-07-17 17:26:43 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.32.2.1 2007-10-13 06:40:07 michiel Exp $
    @since    MMBase-1.6
 
 -->
@@ -95,11 +95,13 @@
       />
   </target>
 
-  <target name="cvs" depends="checkout" unless="just.checked.out">
+  <target name="cvs">
+    <!--depends="checkout" unless="just.checked.out" >
     <cvs cvsRoot="${cvsroot}"
       command="${updatecommand}"
       dest="${source.dir}"
       />
+    -->
   </target>
 
   <target name="cvs.clean" depends="init.cvs" if="checkout.available">
