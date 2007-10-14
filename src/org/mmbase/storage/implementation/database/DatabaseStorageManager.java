@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.186 2007-09-13 12:39:35 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.187 2007-10-14 19:08:10 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -810,7 +810,7 @@ public class DatabaseStorageManager implements StorageManager {
                 // try legacy
                 File legacy = getLegacyBinaryFile(node, fieldName);
                 if (legacy == null) {
-                    if (!binaryFile.getParentFile().exists()) {
+                    if (field.isNotNull() && !binaryFile.getParentFile().exists()) {
                         log.warn("The file '" + binaryFile + "' does not exist, " + desc, new Exception());
                         log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
                                  + factory.getBinaryFileBasePath()
