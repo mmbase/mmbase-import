@@ -10,9 +10,11 @@ sQuery
 package org.mmbase.notifications;
 
 import org.mmbase.bridge.*;
+
 /**
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Notification.java,v 1.2 2007-10-08 16:55:17 michiel Exp $
+ * @version $Id: Notification.java,v 1.3 2007-10-15 13:57:33 michiel Exp $
  **/
 public abstract class Notification {
 
