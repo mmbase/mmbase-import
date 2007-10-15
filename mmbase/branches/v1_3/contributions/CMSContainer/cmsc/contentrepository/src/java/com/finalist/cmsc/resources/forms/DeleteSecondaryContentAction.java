@@ -6,11 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 public class DeleteSecondaryContentAction extends MMBaseAction {
@@ -25,7 +25,12 @@ public class DeleteSecondaryContentAction extends MMBaseAction {
 		if(MMBaseAction.ADMINISTRATOR.equals(cloud.getUser().getRank().toString())) {
             try {
 				log.debug("deleting secondary content: "+number);
-				cloud.getNode(number).delete(true);
+                Node objectNode = cloud.getNode(number);
+                
+                Publish.remove(objectNode);
+                Publish.unpublish(objectNode);
+                
+                objectNode.delete(true);
             } catch (NotFoundException nfe) {
                 log.info("Failed to delete secondaryContent with number " + number + ", node not found");
             }
