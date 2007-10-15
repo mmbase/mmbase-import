@@ -6,7 +6,7 @@
 <mm:cloud loginpage="login.jsp" rank="basic user">
 	<mm:cloudinfo type="user" id="username" write="false"/>
 	<mm:listnodes type="user" constraints="username='${username}'">
-		<mm:field name="language" jspvar="language" write="false"/>
+		<mm:field name="language" id="language" write="false"/>
 	</mm:listnodes>
 </mm:cloud>
 
@@ -16,7 +16,9 @@
 		</c:when>
 		<c:otherwise>
 			<fmt:setLocale value="${language}" scope="session"/>
-            <% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale((String)pageContext.getAttribute("language")));%>
+			<mm:write referid="language" jspvar="language" vartype="String">
+            	<% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(language));%>
+            </mm:write>
         </c:otherwise>
 	</c:choose>
 
