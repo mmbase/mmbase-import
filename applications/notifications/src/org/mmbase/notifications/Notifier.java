@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.2 2007-10-08 16:55:17 michiel Exp $
+ * @version $Id: Notifier.java,v 1.3 2007-10-15 13:57:33 michiel Exp $
  **/
 public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -48,14 +48,14 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
         log.info("Loading notifyables");
         Date now = new Date();
         relevantBuilders.clear();
-        relevantBuilders.addAll(Arrays.asList(getInitParameter("builders").split("\\s*,\'s*")));
+        relevantBuilders.addAll(Arrays.asList(getInitParameter("builders").split("\\s*,\\s*")));
         queue.clear();
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
 
         NodeManager notifyables = cloud.getNodeManager("notifyables");
         NodeQuery nq = notifyables.createQuery();
         Queries.addConstraint(nq, Queries.createConstraint(nq, "lastcheck", FieldCompareConstraint.LESS, now));
-        int maxNumber = 100;
+        int maxNumber = 100; // hmmf.
         String maxParameter = getInitParameter("queue");
         if (maxParameter != null && ! "".equals(maxParameter)) {
             maxNumber = Integer.parseInt(maxParameter);
@@ -66,9 +66,10 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
 
         while (ni.hasNext()) {
 
-            Node n = ni.nextNode();
+            Node notifyable = ni.nextNode();
+            Date lastCheck = notifyable.getDateValue("lastcheck");
 
-            NodeIterator pi = n.getRelatedNodes("object", "related", null).nodeIterator();
+            NodeIterator pi = notifyable.getRelatedNodes("object", "related", null).nodeIterator();
             while (pi.hasNext()) {
                 Node p = pi.nextNode();
                 log.info("Using " + p);
@@ -77,11 +78,13 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
                     log.error("No function 'dates' defined on " + p);
                     continue;
                 }
+                Parameters params = datesFunction.createParameters();
+                params.set("since", lastCheck);
                 Collection<Date> dates = Casting.toCollection(datesFunction.getFunctionValue(null));
                 log.info("Found dates " + dates);
-                long offset = n.getLongValue("offset");
+                long offset = notifyable.getLongValue("offset");
                 for (Date date : dates) {
-                    queue.add(new Notifyable(n, date, new Date(date.getTime() + offset * 1000)));
+                    queue.add(new Notifyable(notifyable, date, new Date(date.getTime() + offset * 1000)));
                 }
             }
         }
@@ -128,9 +131,12 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
 
     // implementation of NodeEventListener
     public void notify(NodeEvent ne) {
+        log.debug("received " + ne);
         // TODO, this is a bit too crude.
         if (relevantBuilders.contains(ne.getBuilderName())) {
             loadNotifyables();
+        } else {
+            log.debug("Ignoring because " + ne.getBuilderName() + " not in " + relevantBuilders);
         }
     }
     public void notify(RelationEvent re) {
