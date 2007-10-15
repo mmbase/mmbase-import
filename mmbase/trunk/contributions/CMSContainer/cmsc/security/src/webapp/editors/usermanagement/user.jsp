@@ -9,6 +9,10 @@
 	</style>
 </cmscedit:head>
 <body style="overflow: auto">
+	<c:set var="curus"><%=request.getSession().getAttribute("javax.servlet.jsp.jstl.fmt.locale.session")%></c:set> 
+	<c:if test="${curus !='null'}">
+		<% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale((String)pageContext.getAttribute("curus")));%>
+	</c:if>
 <cmscedit:contentblock title="user.edit.title" titleClass="content_block_pink">
 <mm:cloud loginpage="../login.jsp" rank='administrator'>
 	<mm:cloudinfo type="user" id="cloudusername" write="false" />
