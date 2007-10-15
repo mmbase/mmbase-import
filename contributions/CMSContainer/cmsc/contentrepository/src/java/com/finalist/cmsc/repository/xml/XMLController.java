@@ -203,40 +203,46 @@ public class XMLController {
    
    private Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
       NodeManager manager = node.getNodeManager();
-      
-      Element nodeElement = document.createElement(manager.getName());
-      toXmlFields(node, document, nodeElement, fieldsAsAttribute);
-      addExternalUrl(node, document, nodeElement, fieldsAsAttribute);
-      
-      processedNodes.put(new Integer(node.getNumber()), node);
-
-      if (addRelations && !nodesSeenButNotProcessed.contains(new Integer(node.getNumber()))) {
-         RelationManagerList rml = manager.getAllowedRelations((NodeManager) null, null, "DESTINATION");
-         RelationManagerIterator rmi = rml.relationManagerIterator();
-         while (rmi.hasNext()) {
-            RelationManager rm = rmi.nextRelationManager();
-            
-            if (isRelationAllowed(rm)) {
-               toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes, nodesSeenButNotProcessed);
-            }
-         }
+      String managerName = manager.getName();
+      if (isTypeAllowed(managerName)) {
+          Element nodeElement = document.createElement(managerName);
+          toXmlFields(node, document, nodeElement, fieldsAsAttribute);
+          addExternalUrl(node, document, nodeElement, fieldsAsAttribute);
+          
+          processedNodes.put(new Integer(node.getNumber()), node);
+    
+          if (addRelations && !nodesSeenButNotProcessed.contains(new Integer(node.getNumber()))) {
+             RelationManagerList rml = manager.getAllowedRelations((NodeManager) null, null, "DESTINATION");
+             RelationManagerIterator rmi = rml.relationManagerIterator();
+             while (rmi.hasNext()) {
+                RelationManager rm = rmi.nextRelationManager();
+                
+                if (isRelationAllowed(rm)) {
+                   toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes, nodesSeenButNotProcessed);
+                }
+             }
+          }
+          processedNodes.remove(new Integer(node.getNumber()));
+          
+          if (root != null) {
+             root.appendChild(nodeElement);
+          }
+          else {
+             document.appendChild(nodeElement);
+          }
+          return nodeElement;
       }
-      processedNodes.remove(new Integer(node.getNumber()));
-      
-      if (root != null) {
-         root.appendChild(nodeElement);
-      }
-      else {
-         document.appendChild(nodeElement);
-      }
-      return nodeElement;
+      return null;
    }
 
     private boolean isRelationAllowed(RelationManager rm) {
+        String typeName = rm.getDestinationManager().getName();
+        String relationTypeName = rm.getReciprocalRole();
+        
         if (!allowedRelationTypes.isEmpty()) {
-            if (allowedRelationTypes.contains(rm.getReciprocalRole())) {
+            if (allowedRelationTypes.contains(relationTypeName)) {
                 if (!allowedTypes.isEmpty()) {
-                    return allowedTypes.contains(rm.getDestinationManager().getName());
+                    return allowedTypes.contains(typeName);
                 }
                 return true;
             }
@@ -244,26 +250,30 @@ public class XMLController {
         }
 
         if (!disallowedRelationTypes.isEmpty()) {
-            if (disallowedRelationTypes.contains(rm.getReciprocalRole())) {
+            if (disallowedRelationTypes.contains(relationTypeName)) {
                 return false;
             }
             else {
                 if (!disallowedTypes.isEmpty()) {
-                    return !disallowedTypes.contains(rm.getDestinationManager().getName());
+                    return !disallowedTypes.contains(typeName);
                 }
             }
             return true;
         }
         
+        return isTypeAllowed(typeName);
+   }
+
+    private boolean isTypeAllowed(String typeName) {
         if (!allowedTypes.isEmpty()) {
-            return allowedTypes.contains(rm.getDestinationManager().getName());
+            return allowedTypes.contains(typeName);
         }
         
         if (!disallowedTypes.isEmpty()) {
-            return !disallowedTypes.contains(rm.getDestinationManager().getName());
+            return !disallowedTypes.contains(typeName);
         }
         return true;
-   }
+    }
    
    private void addExternalUrl(Node node, Document document, Element nodeElement,
         boolean fieldsAsAttribute) {
