@@ -2,7 +2,8 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
     <!ENTITY mmlevel  "org.mmbase.util.logging.log4j.Log4jLevel" >
-    <!ENTITY logdir   "${catalina.base}/logs" >
+    <!ENTITY logdir   "${catalina.home}/logs" >
+    <!ENTITY logprefix  "cmsc" >
 ]>
 <log4j:configuration 
   debug="false" 
@@ -10,7 +11,7 @@
   >
 
 	<appender name="logfile" class="org.apache.log4j.DailyRollingFileAppender" >
-	    <param name="File"   value="&logdir;/cmsc.log" />
+	    <param name="File"   value="&logdir;/&logprefix;.log" />
  	    <param name="DatePattern" value="'.'yyyy-MM-dd" />
 	    <param name="Append" value="true" />
 	    <layout class="org.apache.log4j.PatternLayout">
@@ -24,7 +25,7 @@
 	</appender>
 
 	<appender name="sqllogfile" class="org.apache.log4j.DailyRollingFileAppender" >
-	    <param name="File"   value="&logdir;/cmsc-sql.log" />
+	    <param name="File"   value="&logdir;/&logprefix;-sql.log" />
  	    <param name="DatePattern" value="'.'yyyy-MM-dd" />
 	    <param name="Append" value="true" />
 	    <layout class="org.apache.log4j.PatternLayout">
