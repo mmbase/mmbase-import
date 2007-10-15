@@ -16,7 +16,8 @@
 		</c:when>
 		<c:otherwise>
 			<fmt:setLocale value="${language}" scope="session"/>
-		</c:otherwise>
+            <% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale((String)pageContext.getAttribute("language")));%>
+        </c:otherwise>
 	</c:choose>
 
 <%-- A cloud tag inside a locale tag will set the locale to the user cloud
