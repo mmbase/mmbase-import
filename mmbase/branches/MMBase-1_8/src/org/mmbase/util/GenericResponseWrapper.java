@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.17.2.2 2007-08-21 14:28:26 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.17.2.3 2007-10-16 15:22:54 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -58,6 +58,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 
     private HttpServletResponse wrappedResponse;
 
+
+    private String redirected = null;
     /**
      * Public constructor
      */
@@ -101,7 +103,14 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void sendRedirect(String location) throws IOException  {
+        redirected = location;
         getHttpServletResponse().sendRedirect(location);
+    }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public String getRedirected() {
+        return redirected;
     }
 
     public void setStatus(int s) {
