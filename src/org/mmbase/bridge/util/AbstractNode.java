@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * here, to minimalize the implementation effort of fully implemented Nodes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractNode.java,v 1.14.2.2 2007-10-08 14:12:46 michiel Exp $
+ * @version $Id: AbstractNode.java,v 1.14.2.3 2007-10-17 12:43:10 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @since MMBase-1.8
  */
@@ -261,12 +261,26 @@ public abstract class AbstractNode implements Node {
         setValueWithoutProcess(fieldName, v);
     }
 
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected Object processNull(int type, Field field) {
+        try {
+            return field.getDataType().getProcessor(DataType.PROCESS_GET, type).process(this, field, null);
+        } catch (Exception e) {
+            log.warn(e);
+            return null;
+        }
+    }
+
     public final Object getValue(String fieldName) {
         Object value = getValueWithoutProcess(fieldName);
-        if (value == null) return null;
         NodeManager nm = getNodeManager();
         if (nm.hasField(fieldName)) {
             int type = nm.getField(fieldName).getType();
+            if (value == null) {
+                return processNull(type, nm.getField(fieldName));
+            }
             switch(type) {
                 case Field.TYPE_STRING:  return getStringValue(fieldName);
                 case Field.TYPE_BINARY:    return getByteValue(fieldName);
