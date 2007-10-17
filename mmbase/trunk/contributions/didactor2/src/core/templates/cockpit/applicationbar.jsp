@@ -25,6 +25,7 @@
           <input class="formbutton" id="loginSubmit" type="submit" value="${di:translate('core.login')}" />
         </p>
       </form>
+      <!-- WTF WTF WTF WTF -->
       <mm:node number="component.register" notfound="skipbody">
         <p class="noaccount">
           <di:translate key="register.noaccountyet" />
@@ -52,6 +53,11 @@
       </mm:node>
     </div>
 
+    <!--
+         WTF WTF, specific code for yet another certain component
+         This must be gone!
+    -->
+
     <div class="menuSeperatorApplicationMenubar"></div>
 
     <div class="menuItemApplicationMenubar">
@@ -63,13 +69,18 @@
       </mm:hasnode>
     </div>
 
+
     <div class="menuSeperatorApplicationMenubar"></div>
     <div class="menuItemApplicationMenubar">
       <a title="<di:translate key="core.print" />" href="javascript:printThis();"  class="menubar"><di:translate key="core.print" /></a>
     </div>
 
-    <!-- region cms help and faq -->
-    <mm:node number="$provider" notfound="skipbody">
+    <!--
+         region cms help and faq
+         WTF, why it this present in a generic JSP??
+         Can people _please_ not hack their way?
+    -->
+    <mm:node number="$provider">
       <mm:relatednodescontainer path="settingrel,components">
         <mm:constraint field="components.name" value="cmshelp"/>
         <mm:relatednodes>
@@ -84,31 +95,30 @@
       </mm:relatednodescontainer>
     </mm:node>
 
-    <mm:present referid="education">
-      <mm:notpresent referid="showcmshelp">
-        <mm:node number="$education" notfound="skip">
-          <mm:relatednodescontainer path="settingrel,components">
-            <mm:constraint field="components.name" value="cmshelp"/>
-            <mm:relatednodes>
-              <mm:import id="showcmshelp" />
-            </mm:relatednodes>
-          </mm:relatednodescontainer>
-        </mm:node>
-      </mm:notpresent>
-      <mm:notpresent referid="showfaq">
-        <mm:node number="$education" notfound="skip">
-          <mm:relatednodescontainer path="settingrel,components">
-            <mm:constraint field="components.name" value="faq"/>
-            <mm:relatednodes>
-              <mm:import id="showfaq" />
-            </mm:relatednodes>
-          </mm:relatednodescontainer>
-        </mm:node>
-      </mm:notpresent>
-    </mm:present>
+    <mm:notpresent referid="showcmshelp"><!-- WTF -->
+      <mm:node number="$education">
+        <mm:relatednodescontainer path="settingrel,components">
+          <mm:constraint field="components.name" value="cmshelp"/>
+          <mm:relatednodes>
+            <mm:import id="showcmshelp" />
+          </mm:relatednodes>
+        </mm:relatednodescontainer>
+      </mm:node>
+    </mm:notpresent>
+
+    <mm:notpresent referid="showfaq"> <!-- WTF -->
+      <mm:node number="$education">
+        <mm:relatednodescontainer path="settingrel,components">
+          <mm:constraint field="components.name" value="faq"/>
+          <mm:relatednodes>
+            <mm:import id="showfaq" />
+          </mm:relatednodes>
+        </mm:relatednodescontainer>
+      </mm:node>
+    </mm:notpresent>
 
     <mm:present referid="showcmshelp" >
-      <mm:node number="component.cmshelp" notfound="skipbody">
+      <mm:node number="component.cmshelp">
           <mm:treeinclude page="/cmshelp/cockpit/rolerelated.jsp" objectlist="$includePath" referids="$referids" >
              <mm:param name="scope">education</mm:param>
           </mm:treeinclude>
@@ -125,6 +135,7 @@
   </mm:hasrank>
 </div>
 
+<!-- WTF: javascript for printing?. People have that in their browser -->
 <script type="text/javascript">
 <!--
 function printThis() {
@@ -133,8 +144,7 @@ function printThis() {
             frames['content'].focus();
         if (frames['content'].print)
             frames['content'].print();
-    }
-    else if (window.print) {
+    } else if (window.print) {
         window.print();
     }
 }
