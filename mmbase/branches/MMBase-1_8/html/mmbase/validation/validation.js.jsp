@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.12 2007-10-08 08:03:03 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.13 2007-10-17 08:04:41 michiel Exp $
  */
 var validators = new Array();
 
@@ -264,6 +264,11 @@ MMBaseValidator.prototype.isDateTime = function(el) {
     if (el.mm_isdatetime != null) return el.mm_isdatetime;
     el.mm_isdatetime = this.hasJavaClass(el, "org\.mmbase\.datatypes\.DateTimeDataType");
     return el.mm_isdatetime;
+}
+MMBaseValidator.prototype.isBinary = function(el) {
+    if (el.mm_isbinary != null) return el.mm_isbinary;
+    el.mm_isbinary = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BinaryDataType");
+    return el.isbinary;
 }
 
 MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
@@ -566,6 +571,7 @@ MMBaseValidator.prototype.valid = function(el) {
         this.log("Unsupported element " + el);
         return true; // not yet supported
     }
+    if (this.isBinary(el)) return true; // not yet supported
 
     if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
         if (value == "") {
