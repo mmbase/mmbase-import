@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.64 2007-10-17 13:25:43 michiel Exp $
+ * @version $Id: Forum.java,v 1.65 2007-10-17 13:33:01 michiel Exp $
  */
 public class Forum {
 
@@ -80,14 +80,17 @@ public class Forum {
         this.id = node.getNumber();
 
         this.viewcount = node.getIntValue("viewcount");
-        if (viewcount == -1)
+        if (viewcount == -1) { // wtf
             viewcount = 0;
+        }
         this.postcount = node.getIntValue("postcount");
-        if (postcount == -1)
+        if (postcount == -1) { // wtf
             postcount = 0;
+        }
         this.postthreadcount = node.getIntValue("postthreadcount");
-        if (postthreadcount == -1)
+        if (postthreadcount == -1) { // wtf
             postthreadcount = 0;
+        }
 
         this.lastpostsubject = node.getStringValue("c_lastpostsubject");
         this.lastposter = node.getStringValue("c_lastposter");
@@ -99,15 +102,21 @@ public class Forum {
         config = ForumManager.getForumConfig(name);
         ExternalProfilesManager.loadExternalHandlers(this);
         // read postareas
-        preCachePosters();
-        readSignatures();
-        readProfiles();
-        readRoles();
-        readAreas();
-        if (getNavigationMethod().equals("tree"))
-            syncTreeAreas();
-        readThreadObservers();
-        readFieldaliases();
+        ThreadPools.jobsExecutor.execute(new Runnable() {
+                public void run() {
+                    preCachePosters();
+                    readSignatures();
+                    readProfiles();
+                    readRoles();
+                    readAreas();
+                    if (getNavigationMethod().equals("tree")) {
+                        syncTreeAreas();
+                    }
+                    readThreadObservers();
+                    readFieldaliases();
+                }
+            }
+            );
     }
 
     public void resetConfig() {
