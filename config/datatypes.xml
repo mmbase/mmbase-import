@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.60 2007-10-08 08:30:21 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.61 2007-10-17 13:06:16 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -649,6 +649,24 @@
       <minInclusive value="0"  />
       <maxInclusive value="59"  />
     </specialization>
+    <specialization id="age">
+      <description xml:lang="en">
+        This field can be used as a virtual field on a nodemanager with a birthdate field. This
+        field then contains the 'age' in year. This is both settable and gettable.
+      </description>
+      <minInclusive value="0" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Age$Setter">
+          <param name="birthdateField">birthdate</param>
+        </class>
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.Age$Getter">
+          <param name="birthdateField">birthdate</param>
+        </class>
+      </getprocessor>
+    </specialization>
+
   </datatype>
 
   <datatype id="float">
