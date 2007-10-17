@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.14 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: DateTimePattern.java,v 1.15 2007-10-17 08:18:40 michiel Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -68,7 +68,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
     private static final char DONTAPPEND = (char) -1;
     private static List<String> parse(String p) {
         List<String> parsed = new ArrayList<String>();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         boolean inString = false;
         boolean inQuote = false;
 
@@ -226,7 +226,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
             }
             return new Element("year",  Calendar.YEAR,  startYear, endYear) {
                 public int getNullValue() {
-                    return Integer.MAX_VALUE; 
+                    return Integer.MAX_VALUE;
                 }
             };
         }
@@ -364,7 +364,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         }
 
         /**
-         * Normally equivalent with <code>cal.getValue(getField())</code> 
+         * Normally equivalent with <code>cal.getValue(getField())</code>
          * @return The value for this element for a certain Calendar instance
          */
         public int getValue(Calendar cal) {
@@ -380,7 +380,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
          * months, and weekdays).
          */
         public String toString(int value, Locale locale, int length) {
-            StringBuffer buf = new StringBuffer("" + value);
+            StringBuilder buf = new StringBuilder("" + value);
             while(buf.length() < length) {
                 buf.insert(0, "0");
             }
