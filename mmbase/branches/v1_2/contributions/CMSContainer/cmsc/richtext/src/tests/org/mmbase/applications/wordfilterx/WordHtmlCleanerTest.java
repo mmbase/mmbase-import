@@ -35,13 +35,13 @@ public class WordHtmlCleanerTest extends TestCase {
      */
     public void testReplaceH1() {
     	for(int count = 1; count <= 7; count++) {
-    		doTestReplace("<h"+count+">Header</h"+count+"><p>paragraph 2</p>", "<b>Header</b><br/>paragraph 2");
+    		doTestReplace("<h"+count+">Header</h"+count+"><p>paragraph 2</p>", "<strong>Header</strong><br/>paragraph 2");
     	}
     }
 
     public void testReplaceHeaderEnd() {
     	for(int count = 1; count <= 7; count++) {
-    		doTestReplace("<h"+count+">Header</h"+count+">", "<b>Header</b>");
+    		doTestReplace("<h"+count+">Header</h"+count+">", "<strong>Header</strong>");
     	}
     }
 

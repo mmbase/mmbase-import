@@ -28,20 +28,20 @@ public class WordHtmlCleanerTest extends TestCase {
      * As specified in NIJ-780, only a single <br/> should be the result of a replaced <p></p>
      */
     public void testReplaceParagraphSingleBr() {
-    	doTestReplace("<p>This is paragraph</p><p>paragraph 2</p>", "This is paragraph<br/>paragraph 2");
+    	doTestReplace("<p>This is paragraph</p><p>paragraph 2</p>", "This is paragraph<br/><br/>paragraph 2");
     }
 	/**
      * As specified in NIJ-780, h1 till h7 should be replaced by a <b>...</b><br/>
      */
     public void testReplaceH1() {
     	for(int count = 1; count <= 7; count++) {
-    		doTestReplace("<h"+count+">Header</h"+count+"><p>paragraph 2</p>", "<b>Header</b><br/>paragraph 2");
+    		doTestReplace("<h"+count+">Header</h"+count+"><p>paragraph 2</p>", "<strong>Header</strong><br/>paragraph 2");
     	}
     }
 
     public void testReplaceHeaderEnd() {
     	for(int count = 1; count <= 7; count++) {
-    		doTestReplace("<h"+count+">Header</h"+count+">", "<b>Header</b>");
+    		doTestReplace("<h"+count+">Header</h"+count+">", "<strong>Header</strong>");
     	}
     }
 
