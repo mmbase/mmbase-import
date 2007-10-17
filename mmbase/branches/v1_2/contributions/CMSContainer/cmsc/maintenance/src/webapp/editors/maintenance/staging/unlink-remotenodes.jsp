@@ -3,8 +3,7 @@
 <%@page import="com.finalist.cmsc.maintenance.staging.*"%>
 <html>
 <head>
-    <link href="../style.css" type="text/css" rel="stylesheet"/>
-    <script language="javascript" src="../script.js"></script>
+    <link href="../../style.css" type="text/css" rel="stylesheet"/>
     <title>Unlink Remotenodes</title>
 </head>
     <body>
