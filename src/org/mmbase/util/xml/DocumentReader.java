@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.29.2.2 2007-08-10 14:38:18 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.3 2007-10-17 08:47:57 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -271,12 +271,20 @@ public class DocumentReader  {
      * @return a String representing the node's textual value
      */
     public static String getNodeTextValue(Node n) {
+        return getNodeTextValue(n, true);
+    }
+    /**
+     * @since MMBase-1.8.5
+     */
+    public static String getNodeTextValue(Node n, boolean trim) {
         NodeList nl = n.getChildNodes();
         StringBuffer res = new StringBuffer();
         for (int i = 0; i < nl.getLength(); i++) {
             Node textnode = nl.item(i);
             if (textnode.getNodeType() == Node.TEXT_NODE) {
-                res.append(textnode.getNodeValue().trim());
+                String s = textnode.getNodeValue();
+                if (trim) s = s.trim();
+                res.append(s);
             } else if (textnode.getNodeType() == Node.CDATA_SECTION_NODE) {
                 res.append(textnode.getNodeValue());
             }
