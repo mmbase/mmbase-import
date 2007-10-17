@@ -211,8 +211,7 @@ public class RichTextBuilder extends MMObjectBuilder {
                                 if (RichText.hasRichtextItems(fieldValue)) {
                                     Document doc = RichText.getRichTextDocument(fieldValue);
 
-                                    resolveLinks(doc, idsList, node);
-                                    resolveImages(doc, idsList, node);
+                                    resolveResources(node, idsList, doc);
 
                                     String out = RichText.getRichTextString(doc);
                                     out = WordHtmlCleaner.fixEmptyAnchors(out);
@@ -237,6 +236,11 @@ public class RichTextBuilder extends MMObjectBuilder {
                 }
             }
         }
+    }
+
+    protected void resolveResources(MMObjectNode node, List<String> idsList, Document doc) {
+        resolveLinks(doc, idsList, node);
+        resolveImages(doc, idsList, node);
     }
 
     protected void fillIdFromImages(Document doc, List<String> idsList) {
