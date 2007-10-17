@@ -23,7 +23,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.10 2007-10-17 08:51:54 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.11 2007-10-17 12:47:45 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -117,39 +117,6 @@ public abstract class DataTypeXml {
         if (stringValue == null || "".equals(stringValue)) {
             stringValue = DocumentReader.getNodeTextValue(param, false);
             NodeList childNodes = param.getChildNodes();
-            Collection subParams = null;
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node child = childNodes.item(i);
-                if (! (child instanceof Element)) continue;
-                if (child.getLocalName().equals("param")) {
-                    Element subParam = (Element) child;
-                    if (subParams == null) subParams = new ArrayList();
-                    String name = subParam.getAttribute("name");
-                    subParams.add(new Entry(name, getParameterValue(subParam)));
-                }
-            }
-            if (subParams != null) {
-                if (! stringValue.equals("")) {
-                    log.warn("" + param + " has both a text value and sub parameters, ignoring the text value '" + stringValue + "'");
-                }
-                return subParams;
-            } else {
-                return stringValue;
-            }
-        } else {
-            NodeList childNodes = param.getChildNodes();
-            if (childNodes.getLength() > 0) {
-                log.warn("Using value attribute together with child nodes on " + param);
-            }
-            return stringValue;
-        }
-    }
-
-    private static Object getParameterValue(Element param) {
-        String stringValue = param.getAttribute("value");
-        if (stringValue == null || "".equals(stringValue)) {
-            stringValue = DocumentReader.getNodeTextValue(param, false);
-            NodeList childNodes = param.getChildNodes();
             Collection<Entry<String, Object>> subParams = null;
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node child = childNodes.item(i);
@@ -175,6 +142,19 @@ public abstract class DataTypeXml {
                 log.warn("Using value attribute together with child nodes on " + param);
             }
             return stringValue;
+        }
+    }
+    private static void fillParameters(Element paramContainer, Parameters params) {
+        NodeList childNodes = paramContainer.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if (childNodes.item(i) instanceof Element) {
+                Element paramElement = (Element) childNodes.item(i);
+                if ("param".equals(paramElement.getLocalName())) {
+                    String name = paramElement.getAttribute("name");
+                    Object value = getParameterValue(paramElement);
+                    params.set(name, value);
+                }
+            }
         }
     }
 
