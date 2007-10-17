@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.63 2007-01-17 10:39:41 ernst Exp $
+ * @version $Id: Forum.java,v 1.64 2007-10-17 13:25:43 michiel Exp $
  */
 public class Forum {
 
@@ -70,7 +70,7 @@ public class Forum {
 
     /**
      * Constructor
-     * 
+     *
      * @param node forum node
      */
     public Forum(Node node) {
@@ -116,7 +116,7 @@ public class Forum {
 
     /**
      * Set the MMBase objectnumber of the forum
-     * 
+     *
      * @param id MMase objectnumber
      */
     public void setId(int id) {
@@ -125,7 +125,7 @@ public class Forum {
 
     /**
      * Set forum to node
-     * 
+     *
      * @param node forumnode
      */
     public void setNode(Node node) {
@@ -134,7 +134,7 @@ public class Forum {
 
     /**
      * Set name of the forum
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -144,7 +144,7 @@ public class Forum {
 
     /**
      * Set the language of the forum
-     * 
+     *
      * @param language
      */
     public void setLanguage(String language) {
@@ -153,7 +153,7 @@ public class Forum {
 
     /**
      * Get the language of the forum
-     * 
+     *
      * @return the language
      */
     public String getLanguage() {
@@ -162,7 +162,7 @@ public class Forum {
 
     /**
      * Set the description of the forum
-     * 
+     *
      * @param description
      */
     public void setDescription(String description) {
@@ -172,7 +172,7 @@ public class Forum {
 
     /**
      * get the name of the forum
-     * 
+     *
      * @return name of the forum
      */
     public String getName() {
@@ -181,7 +181,7 @@ public class Forum {
 
     /**
      * get the description of the forum
-     * 
+     *
      * @return description of the forum
      */
     public String getDescription() {
@@ -190,7 +190,7 @@ public class Forum {
 
     /**
      * Get the MMBase objectnumber of the forum
-     * 
+     *
      * @return MMBase objectnumber of the forum
      */
     public int getId() {
@@ -199,7 +199,7 @@ public class Forum {
 
     /**
      * get the number of posts on the forum
-     * 
+     *
      * @return number of posts on the furum
      */
     public int getPostCount() {
@@ -208,7 +208,7 @@ public class Forum {
 
     /**
      * get the number of views on the forum
-     * 
+     *
      * @return number of views
      */
     public int getViewCount() {
@@ -217,7 +217,7 @@ public class Forum {
 
     /**
      * get the accountname / nick of the last poster on the forum
-     * 
+     *
      * @return accountname / nick of the last poster on the forum
      */
     public String getLastPoster() {
@@ -226,7 +226,7 @@ public class Forum {
 
     /**
      * get last poster on the forum
-     * 
+     *
      * @return poster id
      */
     public int getLastPosterNumber() {
@@ -235,7 +235,7 @@ public class Forum {
 
     /**
      * get the date/time (Epoch) of the last post on the forum
-     * 
+     *
      * @return date/time (Epoch) of the last post on the forum
      */
     public int getLastPostTime() {
@@ -244,7 +244,7 @@ public class Forum {
 
     /**
      * get the subject of the last post on the forum
-     * 
+     *
      * @return subject of the last post on the forum
      */
     public String getLastSubject() {
@@ -257,7 +257,7 @@ public class Forum {
 
     /**
      * "Save" the forum (add it to the syncQueue)
-     * 
+     *
      * @return <code>true</code>
      */
     public boolean save() {
@@ -274,7 +274,7 @@ public class Forum {
 
     /**
      * "Save direct" the forum
-     * 
+     *
      * @return <code>true</code>
      */
     public boolean saveDirect() {
@@ -284,7 +284,7 @@ public class Forum {
 
     /**
      * add the forum-node to the given syncQueue
-     * 
+     *
      * @param queue syncQueue that must be used
      */
     private void syncNode(int queue) {
@@ -301,7 +301,7 @@ public class Forum {
 
     /**
      * get the administrators of the forum
-     * 
+     *
      * @return administrators
      */
     public Enumeration<Poster> getAdministrators() {
@@ -331,7 +331,7 @@ public class Forum {
 
     /**
      * get the posters of the forum
-     * 
+     *
      * @return posters
      */
     public Enumeration getPosters() {
@@ -358,7 +358,7 @@ public class Forum {
 
     /**
      * get the posters that are online
-     * 
+     *
      * @return online posters
      */
     public Enumeration getPostersOnline() {
@@ -367,7 +367,7 @@ public class Forum {
 
     /**
      * determine if the given account is an administrator
-     * 
+     *
      * @param nick
      * @return <code>true</code> if the account is an administrator
      */
@@ -377,7 +377,7 @@ public class Forum {
 
     /**
      * get the online administrators (comma-seperated)
-     * 
+     *
      * @param baseurl
      * @return comma-seperated list of administrators-accounts for this forum. If the passed baseurl isn't empty it will
      *         make html-links for you
@@ -401,7 +401,7 @@ public class Forum {
 
     /**
      * get a postarea of this forum by it's MMbase objectnumber
-     * 
+     *
      * @param id MMbase objectnumber of the postarea
      */
     public PostArea getPostArea(String id) {
@@ -429,7 +429,7 @@ public class Forum {
 
     /**
      * remove a postarea of this forum by it's MMbase objectnumber
-     * 
+     *
      * @param id MMbase objectnumber of the postarea
      * @return Feedback. <code>true</code> if the action was successful, <code>false</code> if it wasn't
      */
@@ -450,7 +450,7 @@ public class Forum {
 
     /**
      * remove a folder(mailbox) for a poster
-     * 
+     *
      * @param posterid
      * @param foldername
      * @return <code>true</code> if the action was successful
@@ -465,7 +465,7 @@ public class Forum {
 
     /**
      * remove a poster from the onlineposters-Vector
-     * 
+     *
      * @param p posternode
      */
     public void removeOnlinePoster(Poster p) {
@@ -474,7 +474,7 @@ public class Forum {
 
     /**
      * get the number of postareas for this forum
-     * 
+     *
      * @return number of postareas for this forum
      */
     public int getPostAreaCount() {
@@ -483,7 +483,7 @@ public class Forum {
 
     /**
      * get all the postareas of this forum
-     * 
+     *
      * @todo This is unordered.
      * @return postareas
      */
@@ -493,7 +493,7 @@ public class Forum {
 
     /**
      * add a poster to the onlineposters-Vector
-     * 
+     *
      * @param p new online poster
      */
     public void newPosterOnline(Poster p) {
@@ -504,7 +504,7 @@ public class Forum {
 
     /**
      * add a poster to the newposters-Vector
-     * 
+     *
      * @param p new poster
      */
     public void newPoster(Poster p) {
@@ -515,7 +515,7 @@ public class Forum {
 
     /**
      * create a new postarea for this forum
-     * 
+     *
      * @param name name of the new postarea
      * @param description description of the new postarea
      * @return MMBase objectnumber for the newly created postarea
@@ -589,7 +589,7 @@ public class Forum {
 
     /**
      * get the total number of postthreads in this forum
-     * 
+     *
      * @return number of postthreads
      */
     public int getPostThreadCount() {
@@ -632,7 +632,7 @@ public class Forum {
     /**
      * signal the forum that there is a new reply updates the postcount, lastposttime, lastposter, lastpostsubject of
      * ths forum, and places it in the syncQueue
-     * 
+     *
      * @param child PostArea
      */
     public void signalNewReply(PostArea child) {
@@ -648,7 +648,7 @@ public class Forum {
     /**
      * signal the forum that a reply was removed updates the postcount, lastposttime, lastposter, lastpostsubject of ths
      * forum, and places it in the syncQueue
-     * 
+     *
      * @param child PostArea
      */
     public void signalRemovedReply(PostArea child) {
@@ -668,7 +668,7 @@ public class Forum {
 
     /**
      * signal the forum that there is a new postthread updates the postthreadcount , and places it in the syncQueue
-     * 
+     *
      * @param child PostArea
      */
     public void signalNewPost(PostArea child) {
@@ -678,7 +678,7 @@ public class Forum {
 
     /**
      * signal the forum that there was a postthread removed updates the postthreadcount , and places it in the syncQueue
-     * 
+     *
      * @param child PostArea
      */
     public void signalRemovedPost(PostArea child) {
@@ -690,7 +690,7 @@ public class Forum {
 
     /**
      * signal the forum that there's a new view
-     * 
+     *
      * @param child PostArea
      */
     public void signalViewsChanged(PostArea child) {
@@ -700,7 +700,7 @@ public class Forum {
 
     /**
      * get a poster of this forum by it's accountname/nick (???)
-     * 
+     *
      * @param posterid accountname/nick
      * @return Poster <code>null</code> if the account was not found
      */
@@ -721,7 +721,7 @@ public class Forum {
 
     /**
      * get a poster of this forum by it's MMBase Objectnumber
-     * 
+     *
      * @param posterid MMBase Objectnumber of the poster
      * @return Poster <code>null</code> if the poster was not found
      */
@@ -757,7 +757,7 @@ public class Forum {
 
     /**
      * get the total number of posters in the forum
-     * 
+     *
      * @return number of posters in the forum
      */
     public int getPostersTotalCount() {
@@ -766,7 +766,7 @@ public class Forum {
 
     /**
      * get the number of online posters for the forum
-     * 
+     *
      * @return number of online posters
      */
     public int getPostersOnlineCount() {
@@ -775,7 +775,7 @@ public class Forum {
 
     /**
      * get the number of new posters for the forum
-     * 
+     *
      * @return number of new posters
      */
     public int getPostersNewCount() {
@@ -834,7 +834,7 @@ public class Forum {
         }
 
         // very raw way to zap the cache
-        log.info("Clearing _All_ MMBase caches!");
+        log.service("Clearing _All_ MMBase caches! ");
         Cache cache = RelatedNodesCache.getCache();
         cache.clear();
         cache = NodeCache.getCache();
@@ -954,7 +954,7 @@ public class Forum {
 
     /**
      * create a new poster for the forum
-     * 
+     *
      * @param account accountname to register
      * @param password password to register
      * @return newly created Poster-object <code>null</code> if creation failed
