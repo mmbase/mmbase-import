@@ -100,7 +100,7 @@ public class ExtraStats {
       int iResult = 0;
 
       if (statstype.equals("inschrijvingen")){
-         nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number",sRealConstraints,null,null,null,false);
+         nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number",sRealConstraints,null,null,null,true);
          iResult += nl.size();
       }
 
