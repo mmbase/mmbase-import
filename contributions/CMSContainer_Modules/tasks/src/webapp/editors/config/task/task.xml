@@ -2,7 +2,8 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="task">
 
-   <title>Taak</title>
+   <title xml:lang="nl">Taak</title>
+   <title xml:lang="en">Task</title>
    <action include="config/task/create_task.xml"/>
    <action include="config/task/delete_task.xml"/>
    <action include="config/task/load_task.xml"/>
