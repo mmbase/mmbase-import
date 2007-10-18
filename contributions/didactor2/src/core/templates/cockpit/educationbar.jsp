@@ -1,5 +1,6 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
+%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
 %><%@page import="nl.didactor.component.Component, java.util.TreeMap, java.util.Iterator"
 %><mm:cloud method="asis">
 <jsp:directive.include file="/shared/setImports.jsp" />
@@ -18,7 +19,7 @@
       <div id="progressMeter">
         <mm:treeinclude page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" />
       </div>
-      
+
     </mm:hasnode>
   </mm:present>
   <%
@@ -31,7 +32,7 @@
       <mm:related path="settingrel,components">
         <mm:node element="components">
           <mm:field jspvar="cname" name="name" write="false" vartype="String">
-            <% 
+            <%
               Component c = Component.getComponent(cname);
               if ("education".equals(c.getTemplateBar())) {
                   int a = c.getBarPosition() * 100;
@@ -51,14 +52,18 @@
           Component c = (Component)i.next();
       %>
       <mm:import id="componentname" reset="true"><%=c.getName()%></mm:import>
-      <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
-        <mm:param name="name"><%=c.getName()%></mm:param>
-        <mm:param name="number"><%=c.getNumber()%></mm:param>
-        <mm:param name="type">div</mm:param>
-        <mm:param name="scope">education</mm:param>
-      </mm:treeinclude>
+      <c:catch var="ex">
+        <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+          <mm:param name="name"><%=c.getName()%></mm:param>
+          <mm:param name="number"><%=c.getNumber()%></mm:param>
+          <mm:param name="type">div</mm:param>
+          <mm:param name="scope">education</mm:param>
+        </mm:treeinclude>
+      </c:catch>
+      ${ex.message}
     <% } %>
   </mm:present>
   </div>
 </mm:isgreaterthan>
+</div>
 </mm:cloud>
