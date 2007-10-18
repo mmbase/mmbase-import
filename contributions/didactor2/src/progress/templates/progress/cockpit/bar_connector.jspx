@@ -29,6 +29,7 @@
                  width="${length}" height="13" alt="" />
             <img src="${mm:treelink('/gfx/bar_right.gif', includePath)}" width="4" height="13" alt="" />
           </c:if>
+
         </div>
       </di:hasrole>
     </div>
