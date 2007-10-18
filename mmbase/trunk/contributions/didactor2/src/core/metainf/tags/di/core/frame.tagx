@@ -13,6 +13,7 @@
   <jsp:directive.attribute name="reset" />
   <jsp:directive.attribute name="postprocessor" />
   <jsp:directive.attribute name="type" />
+  <jsp:directive.attribute name="styleClass" />
   <mm:content postprocessor="${empty postprocessor ? 'reducespace' : postprocessor}"
               type="${type}"
               unacceptable="CRIPPLE"
@@ -30,7 +31,7 @@
             <di:translate key="${title_key}" />
           </div>
         </div>
-        <div class="contentBody">
+        <div class="contentBody ${styleClass}">
           <jsp:doBody />
         </div>
       </div>
