@@ -32,7 +32,7 @@ import org.mmbase.applications.mmbob.util.transformers.PostingBody;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: PostThread.java,v 1.48 2007-01-17 10:42:02 ernst Exp $
+ * @version $Id: PostThread.java,v 1.49 2007-10-18 09:54:40 michiel Exp $
  */
 public class PostThread {
 
@@ -495,8 +495,8 @@ public class PostThread {
         }
         String lastword = "last";
         if (parent.getParent().getLanguage().equals("nl")) lastword = "laatste";
-	result += 
-            " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p + 
+	result +=
+            " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p +
             "&page=" + (i - 1) + "#reply\"" + cssclass + "> " + lastword + "</a>";
 	result += " <a href=\"" + baseurl + "?forumid=" + f + "&postareaid=" + a + "&postthreadid=" + p + "&page=" + n + "\"" + cssclass + ">&gt</a>";
 	return result;
@@ -584,7 +584,7 @@ public class PostThread {
 //            // this is broken why doesn't ForumManager.nodeDelete, delete the
 //            // node ??? Daniel.
 //            // it should already been deleted by the above loop this is done in
-//            // case of a 0 postings  
+//            // case of a 0 postings
 //            if (ForumManager.getCloud().hasNode(id)) {
 //                node = ForumManager.getCloud().getNode(id);
 //
@@ -699,11 +699,11 @@ public class PostThread {
 
     public List<Posting> searchPostings(String searchkey, int posterid) {
 	List<Posting> results = new Vector<Posting>(); // synchronized?
-	return searchPostings(results,searchkey,posterid);
+	return searchPostings(results, searchkey, posterid);
     }
 
     public List<Posting> searchPostings(List results, String searchkey, int posterid) {
-	if (postings!=null) {
+	if (postings != null) {
             for (Posting posting : postings) {
 	    	if (posting.inBody(searchkey) || posting.inSubject(searchkey)) {
                     results.add(posting);
