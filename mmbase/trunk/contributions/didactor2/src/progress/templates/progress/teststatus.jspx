@@ -14,13 +14,13 @@
         requiredscore
         goodanswers
         badanswers
-        
+
 -->
-<mm:node 
+<mm:node
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    number="$testNo">
-  
+    number="${testNo}">
+
     <!-- Determine #questions to be answered -->
     <mm:field name="questionamount">
       <mm:compare value="-1">
@@ -55,12 +55,12 @@
       <mm:relatednodes>
         <mm:remove referid="done"/>
         <mm:import id="done">true</mm:import>
-        
+
         <mm:field name="score" id="madetestscore" write="false"/>
         <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
           <mm:remove referid="tbs"/>
           <mm:import id="tbs">true</mm:import>
-        </mm:compare> 
+        </mm:compare>
         <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
           <!-- if madestestscore larger or equal than requiredscore -->
           <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
@@ -78,7 +78,7 @@
 
         <jsp:scriptlet>
           int good =0;
-          int bad = 0; 
+          int bad = 0;
         </jsp:scriptlet>
 
         <mm:relatednodes type="givenanswers">
@@ -93,21 +93,21 @@
           </mm:field>
         </mm:relatednodes>
 
-        
+
         <mm:import id="goodanswers"><jsp:expression>good</jsp:expression></mm:import>
         <mm:import id="falseanswers"><jsp:expression>bad</jsp:expression></mm:import>
-        
-        
+
+
       </mm:relatednodes>
     </mm:relatednodescontainer>
 
 
     <!-- I think this is an example of much too much use of mm:compare and mm:import: -->
-       
+
     <mm:compare referid="done" value="false">
       <mm:import id="teststatus" reset="true">incomplete</mm:import>
     </mm:compare>
-    
+
     <mm:compare referid="done" value="true">
       <mm:compare referid="tbs" value="true">
         <mm:import id="teststatus" reset="true">toberated</mm:import>
@@ -121,5 +121,5 @@
         </mm:compare>
       </mm:compare>
     </mm:compare>
-    
+
 </mm:node>
