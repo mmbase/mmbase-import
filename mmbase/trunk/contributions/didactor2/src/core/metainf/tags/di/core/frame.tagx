@@ -4,14 +4,19 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
-  <jsp:directive.tag 
+  <jsp:directive.tag
       description="Didactor template, put your component in its's body. Like so, you don't need to explicitly use ugly header and footer includes yourself."
       />
-  <jsp:directive.attribute name="title_key"    /> 
+  <jsp:directive.attribute name="title_key"    />
   <jsp:directive.attribute name="rank" />
   <jsp:directive.attribute name="expires" />
   <jsp:directive.attribute name="reset" />
-  <mm:content postprocessor="reducespace" language="${requestScope.language}" expires="${expires}">
+  <jsp:directive.attribute name="postprocessor" />
+  <jsp:directive.attribute name="type" />
+  <mm:content postprocessor="${empty postprocessor ? 'reducespace' : postprocessor}"
+              type="${type}"
+              unacceptable="CRIPPLE"
+              language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
       <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids,reset?">
         <mm:param name="extraheader">
