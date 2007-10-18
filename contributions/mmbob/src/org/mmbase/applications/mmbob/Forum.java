@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Forum.java,v 1.65 2007-10-17 13:33:01 michiel Exp $
+ * @version $Id: Forum.java,v 1.66 2007-10-18 09:54:26 michiel Exp $
  */
 public class Forum {
 
@@ -317,11 +317,11 @@ public class Forum {
         return Collections.enumeration(administrators.values());
     }
 
-    public Enumeration getNonAdministrators(String searchkey) {
-        Vector result = new Vector();
-        Enumeration e = getPosters();
+    public Enumeration<Poster> getNonAdministrators(String searchkey) {
+        Vector<Poster> result = new Vector<Poster>(); // wtf
+        Enumeration<Poster> e = getPosters();
         while (e.hasMoreElements()) {
-            Poster p = (Poster) e.nextElement();
+            Poster p = e.nextElement();
             if (!isAdministrator(p.getNick())) {
                 String account = p.getNick().toLowerCase();
                 String firstname = p.getFirstName().toLowerCase();
@@ -343,7 +343,7 @@ public class Forum {
      *
      * @return posters
      */
-    public Enumeration getPosters() {
+    public Enumeration<Poster> getPosters() {
         return Collections.enumeration(posters.values());
     }
 
