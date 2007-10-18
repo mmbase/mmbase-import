@@ -30,9 +30,11 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * This seems to be a wrapper around a Node of type 'postareas'.
  * @javadoc
+ *
  * @author Daniel Ockeloen
- * @version $Id: PostArea.java,v 1.47 2007-01-18 15:37:26 michiel Exp $:
+ * @version $Id: PostArea.java,v 1.48 2007-10-18 09:55:59 michiel Exp $:
  */
 public class PostArea {
 
@@ -40,7 +42,7 @@ public class PostArea {
 
     private int id;
     private final Forum parent;
-    private Hashtable<String, Poster> moderators = new Hashtable<String, Poster>(); // synchronized?
+    private Map<String, Poster> moderators = new Hashtable<String, Poster>(); // synchronized?
     private String moderatorsline;
     private List<PostThread> postThreads = null;
     private final Map<String, PostThread> nameCache = new Hashtable<String, PostThread>(); // synchronized?
@@ -50,7 +52,6 @@ public class PostArea {
 
     private int viewcount;
     private int postcount;
-    private int postthreadcount;
     private int lastposttime;
     private int lastpostnumber;
     private int lastposternumber;
@@ -77,8 +78,6 @@ public class PostArea {
         if (viewcount == -1) viewcount = 0;
         this.postcount = node.getIntValue("postcount");
         if (postcount == -1) postcount = 0;
-        this.postthreadcount = node.getIntValue("postthreadcount");
-        if (postthreadcount == -1) postthreadcount = 0;
 
         this.lastpostsubject = node.getStringValue("c_lastpostsubject");
         this.lastposter = node.getStringValue("c_lastposter");
@@ -160,7 +159,7 @@ public class PostArea {
      * @return number of postthreads
      */
     public int getPostThreadCount() {
-        return postthreadcount;
+        return postThreads == null ? 0 : postThreads.size();
     }
 
     /**
@@ -168,6 +167,7 @@ public class PostArea {
      * @return average number of posts per postthread
      */
     public int getPostThreadCountAvg() {
+        int postthreadcount = getPostThreadCount();
         if (postthreadcount == 0) return 0;
         return postcount / postthreadcount;
     }
@@ -217,6 +217,7 @@ public class PostArea {
      * @return the number of pages for this postarea
      */
     public int getPageCount(int pagesize) {
+        int postthreadcount = getPostThreadCount();
         int pagecount = postthreadcount / pagesize;
         if ((pagecount * pagesize) != postthreadcount) pagecount++;
         return pagecount;
@@ -322,7 +323,7 @@ public class PostArea {
         // get the range we want
         int start = (page - 1) * pagecount;
         int end = page * pagecount;
-        if (end > postthreadcount) {
+        if (end > postThreads.size()) {
             end = postThreads.size();
         }
         if (log.isDebugEnabled()) {
@@ -358,6 +359,7 @@ public class PostArea {
             cssclass = " class=\"" + cssclass + "\"";
         }
 
+        int postthreadcount = getPostThreadCount();
         // weird way must be a better way for pagecount
         int pagecount = postthreadcount / pagesize;
         if ((pagecount * pagesize) != postthreadcount) pagecount++;
@@ -394,20 +396,22 @@ public class PostArea {
     /**
      * get the moderators of the postarea
      * @return moderators
+     * @deprecated returning enumerations?!
      */
-    public Enumeration getModerators() {
-        return moderators.elements();
+    public Enumeration<Poster> getModerators() {
+        return Collections.enumeration(moderators.values());
     }
 
     /**
      * get all posters that are no moderator of the postarea
      * @return non-moderators
+     * @deprecated returning enumerations?!
      */
-    public Enumeration getNonModerators(String searchKey) {
-	Vector result =  new Vector();
-        Enumeration e = parent.getPosters();
+    public Enumeration<Poster> getNonModerators(String searchKey) {
+	Vector<Poster> result =  new Vector<Poster>(); // useless synchronization
+        Enumeration<Poster> e = parent.getPosters();
         while (e.hasMoreElements()) {
-            Poster p = (Poster) e.nextElement();
+            Poster p = e.nextElement();
             if (!isModerator(p.getNick())) {
                 String nick =  p.getNick().toLowerCase();
                 String firstName = p.getFirstName().toLowerCase();
@@ -497,9 +501,9 @@ public class PostArea {
     public String getModeratorsLine(String baseurl) {
         if (moderatorsline != null) return moderatorsline;
         moderatorsline = "";
-        Enumeration e = moderators.elements();
+        Enumeration<Poster> e = Collections.enumeration(moderators.values()); // WTF!
         while (e.hasMoreElements()) {
-            Poster p = (Poster) e.nextElement();
+            Poster p = e.nextElement();
             if (!moderatorsline.equals("")) moderatorsline += ",";
             if (baseurl.equals("")) {
                 moderatorsline += p.getNick();
@@ -558,21 +562,23 @@ public class PostArea {
                 }
                 nameCache.put("" + n2.getIntValue("postthreads.number"), postthread);
             }
-            postThreads = new CopyOnWriteArrayList<PostThread>(list); 
+            postThreads = new CopyOnWriteArrayList<PostThread>(list);
 
 
             long end = System.currentTimeMillis();
             //log.info("end reading threads time="+(end-start));
 
             // check the count number
-            if (postcount!=newcount) {
+            if (postcount != newcount) {
                 log.info("resync of postareacount : "+postcount+" "+newcount);
                 postcount = newcount;
                 save();
             }
 
+            int postthreadcount = getPostThreadCount();
+
             // check the threadcount number
-            if (postthreadcount!=newthreadcount) {
+            if (postthreadcount != newthreadcount) {
                 log.info("resync of postareathreadcount : "+postthreadcount+" "+newthreadcount);
                 postthreadcount = newthreadcount;
                 save();
@@ -651,7 +657,6 @@ public class PostArea {
                 }
                 nameCache.put("" + ptnode.getNumber(), postthread);
 
-                postthreadcount++;
                 syncNode(ForumManager.FASTSYNC);
                 parent.signalNewPost(this);
                 return ptnode.getNumber();
@@ -750,10 +755,10 @@ public class PostArea {
                                 Posting npr=npt.getPosting(nr);
                                 npr.setPostTime(p.getPostTime());
                                 npr.save();
-                                body = 
-                                    MultiLanguageGui.getConversion("mmbob.movedto", parent.getLanguage()) + 
-                                    " : " + ta.getName() + " " + 
-                                    MultiLanguageGui.getConversion("mmbob.by", parent.getLanguage()) + 
+                                body =
+                                    MultiLanguageGui.getConversion("mmbob.movedto", parent.getLanguage()) +
+                                    " : " + ta.getName() + " " +
+                                    MultiLanguageGui.getConversion("mmbob.by", parent.getLanguage()) +
                                     " " + poster.getNick() + "\n\r\n\r";
                                 body += "[url]/mmbob/thread.jsp?forumid=" + parent.getId() + "&postareaid=" + ta.getId() +
                                     "&postthreadid=" + npt.getId() + "[/url]";
@@ -828,7 +833,7 @@ public class PostArea {
         Node node = ForumManager.getCloud().getNode(id);
         node.setStringValue("name", name);
         node.setStringValue("description", description);
-        node.setIntValue("postthreadcount", postthreadcount);
+        node.setIntValue("postthreadcount", getPostThreadCount());
         node.setIntValue("postcount", postcount);
         node.setIntValue("viewcount", viewcount);
         node.setIntValue("c_lastposttime", lastposttime);
@@ -1022,12 +1027,12 @@ public class PostArea {
     }
 
 
-    public List searchPostings(String searchkey, int posterid) {
-	List results = new Vector(); // synchronized?
+    public List<Posting> searchPostings(String searchkey, int posterid) {
+	List<Posting> results = new Vector<Posting>(); // synchronized?
 	return searchPostings(results,searchkey,posterid);
     }
 
-    public List searchPostings(List results, String searchkey, int posterid) {
+    public List<Posting> searchPostings(List results, String searchkey, int posterid) {
 	// check if this area is searchable for this user (is he logged in)
 	if (posterid == -1 && getGuestReadModeType().equals("closed")) return results;
 	if (postThreads != null) {
