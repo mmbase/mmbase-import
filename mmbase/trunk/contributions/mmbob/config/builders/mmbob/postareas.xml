@@ -60,11 +60,15 @@
     </field>
 
     <field name="viewcount">
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+      </datatype>
     </field>
 
     <field name="postcount">
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+      </datatype>
     </field>
 
     <field name="c_lastposter">
