@@ -117,6 +117,12 @@ div.poll {
   padding-bottom: 2ex;
 }
 
+div.poll h1 {
+  color: black;
+  background-image: none;
+  background-color: transparent;
+
+}
 
 div.poll .results {
   overflow: visible;
