@@ -120,11 +120,15 @@ public class ExtraStats {
       }
 
       else if (statstype.equals("leden")){
-         if(!sRealConstraints.equals("")) { sRealConstraints += " AND "; }
-         sRealConstraints += " ( UPPER(deelnemers_categorie.naam) NOT like '%NIET%' )";
-         nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number,deelnemers.bron",sRealConstraints,null,null,null,false);
-         for(int i = 0; i < nl.size(); i++) {
-            iResult += nl.getNode(i).getIntValue("deelnemers.bron");
+         if (boekingenTypeName.equals(BOEKINGEN_TYPE_INDIVIDUELE_BOEKINGEN)) {
+            if(!sRealConstraints.equals("")) { sRealConstraints += " AND "; }
+            sRealConstraints += " ( UPPER(deelnemers_categorie.naam) NOT like '%NIET%' )";
+            nl = cloud.getList(sEvenementenNumbers,sRealNodepath,"inschrijvingen.number,deelnemers.bron",sRealConstraints,null,null,null,false);
+            for(int i = 0; i < nl.size(); i++) {
+               iResult += nl.getNode(i).getIntValue("deelnemers.bron");             
+            }
+         } else {
+            iResult = 0;
          }
       }
 
@@ -598,7 +602,13 @@ public class ExtraStats {
 	                 //	If we have "zonder aanmeldingscategorie" we have to subtract the column totals from the values of this row.
 	                 // NB: it is assumed this is the last row of "Groepsboekingen". ( The sListTypeName starts with a "z". )
 	                 if(sListTypeName.equals(INSCHRIJVINGS_CATEGORIE_NIET_INGEDEELD)){
-	                	 value = value - thisBoekingenTypeTotal[columnNo-1];
+
+                      if(sStatsType.equals("opbrengst")) {
+                         value = value - (thisBoekingenTypeTotal[columnNo-1] * 100);
+                      } 
+                      else {
+                         value = value - thisBoekingenTypeTotal[columnNo-1];
+                      }                     
 	                 }
 	
 	                 if(sStatsType.equals("opbrengst")) {
@@ -619,7 +629,7 @@ public class ExtraStats {
 		                    value = 0;
                        }
 	                 }
-	
+
 	                 thisBoekingenTypeTotal[columnNo-1] += value;
 	                 nValue = new jxl.write.Number(columnNo, rowNo, value);
 	                 sheet.addCell(nValue);
