@@ -197,7 +197,7 @@
 			<rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
-			<description>If get a image from all images of a page randomly</description>
+			<description>Randomly get an image from all images of a page</description>
 			<name>random</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
