@@ -19,7 +19,7 @@
     </div>
 
 	<div class="editor">
-	<div class="body"
+	<div class="body">
 		<mm:cloud jspvar="cloud" rank="administrator" method='http'>
 			<mm:import id="parentchannel" jspvar="parentchannel"><%= RepositoryUtil.ALIAS_TRASH %></mm:import>
 			<mm:import jspvar="returnurl" id="returnurl">/editors/recyclebin/index.jsp</mm:import>

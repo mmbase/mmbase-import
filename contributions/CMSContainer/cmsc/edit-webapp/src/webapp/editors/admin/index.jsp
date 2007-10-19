@@ -8,7 +8,7 @@
 	</head>
 	<frameset cols="321,*" framespacing="0" frameborder="0">
 		<frame src="adminmenu.jsp" name="leftpane" frameborder="0" scrolling="no">
-		<frame src="../empty.html" name="rightpane" frameborder="0">
+		<frame src="../admindashboard/index.jsp" name="rightpane" frameborder="0">
 	</frameset>
 </html:html>
 </mm:cloud>

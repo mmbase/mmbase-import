@@ -3,9 +3,9 @@
 <list role="namedallowrel" destination="portletdefinition" minoccurs="0" maxoccurs="*"
 	orderby="field[@name='name']" ordertype="string" hidecommand="move-up|move-down">
 	
-	<title xml:lang="nl">Portlet definitie</title>
-	<title xml:lang="en">Portlet definition</title>
-
+	<title xml:lang="en">Portlet Definition</title>
+	<title xml:lang="nl">Portlet Definitie</title>
+	
 	<item>
 		<field ftype="data" name="title">
 			<prompt xml:lang="en">Title</prompt>
@@ -18,8 +18,8 @@
 	</item>
 	
 	<command name="search" nodepath="portletdefinition" age="-1" fields="title" pagelength="20" orderby="title">
-		<prompt xml:lang="en">Search portlet definition</prompt>
-		<prompt xml:lang="nl">Zoek portlet definitie</prompt>
+		<prompt xml:lang="en">Search Portlet Definition</prompt>
+		<prompt xml:lang="nl">Zoek Portlet Definitie</prompt>
 		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>

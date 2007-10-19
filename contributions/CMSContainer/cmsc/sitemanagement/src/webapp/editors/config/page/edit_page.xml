@@ -10,8 +10,8 @@
 	</field>
 	<field name="urlfragment" dtmaxlength="40"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
-		<prompt xml:lang="en">Urlfragment</prompt>
-		<prompt xml:lang="nl">Urlfragment</prompt>
+		<prompt xml:lang="en">URL-fragment</prompt>
+		<prompt xml:lang="nl">URL-fragment</prompt>
 	</field>
 	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Description</prompt>

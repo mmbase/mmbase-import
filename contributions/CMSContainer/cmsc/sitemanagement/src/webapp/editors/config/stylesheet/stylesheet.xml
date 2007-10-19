@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="stylesheet">
-	<title xml:lang="nl">Stylesheet</title>
-	<title xml:lang="en">Stylesheet</title>
+	<title xml:lang="nl">Style Sheet</title>
+	<title xml:lang="en">Style Sheet</title>
 
    <action include="config/stylesheet/create_stylesheet.xml"/>
    <action include="config/stylesheet/delete_stylesheet.xml"/>
