@@ -36,7 +36,9 @@ body
   background: #fff;
 }
 
-ul /* also in stijl_ie.css! */
+/* also in stijl_ie.css! */
+/* CMSC-598 DISABLED THIS PART BECAUSE IT BREAKS THE INLINE EDITORS, (which of course sucks)
+ul 
 {
   padding-left: 0px;
   margin-left: 12px;
@@ -53,7 +55,7 @@ ul /* also in stijl_ie.css! */
 .right {
   float: right;
 }
-
+*/
 .hidden
 {
   display: none;
