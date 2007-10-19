@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_portletdefinition">
-	<title xml:lang="nl">Portlet definitie</title>
-	<title xml:lang="en">Portlet definition</title>
+	<title xml:lang="nl">Portlet Definitie</title>
+	<title xml:lang="en">Portlet Definition</title>
 
 	<field name="title" dtmaxlength="1024" ftype="line">
 		<prompt xml:lang="en">Title</prompt>

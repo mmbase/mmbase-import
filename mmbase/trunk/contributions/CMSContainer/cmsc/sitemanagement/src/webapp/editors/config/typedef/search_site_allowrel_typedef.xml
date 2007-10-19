@@ -2,7 +2,7 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="allowrel" destination="typedef" minoccurs="0" maxoccurs="1" >
 	<title xml:lang="nl">Contenttype</title>
-	<title xml:lang="en">Contenttype</title>
+	<title xml:lang="en">Content Type</title>
 
 	<item>
 		<field ftype="data" name="name">
@@ -12,7 +12,7 @@
 	</item>
 	
 	<command name="search" nodepath="typedef" age="-1" fields="name" pagelength="20">
-		<prompt xml:lang="en">Search contenttype</prompt>
+		<prompt xml:lang="en">Search Content Type</prompt>
 		<prompt xml:lang="nl">Zoek contenttype</prompt>
 		<search-filter>
 			<name xml:lang="en">Name contains</name>
