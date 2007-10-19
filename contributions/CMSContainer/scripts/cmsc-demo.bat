@@ -1,1 +1,1 @@
-build cleanbuild cmsc cmscImpl && build deploy-tomcat cmscImpl
+build cleanbuild cmsc ..\..\CMSContainer_Demo\demo.cmscontainer.org && build deploy-tomcat ..\..\CMSContainer_Demo\demo.cmscontainer.org
