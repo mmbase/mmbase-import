@@ -17,8 +17,8 @@
       <list include="config/view/search_portlet_viewrel_view.xml"/>
 	</item>
 	<command name="search" nodepath="portlet" age="-1" fields="title" pagelength="20">
-		<prompt xml:lang="en">Search portlet</prompt>
-		<prompt xml:lang="nl">Zoek portlet</prompt>
+		<prompt xml:lang="en">Search Portlet</prompt>
+		<prompt xml:lang="nl">Zoek Portlet</prompt>
 		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>
