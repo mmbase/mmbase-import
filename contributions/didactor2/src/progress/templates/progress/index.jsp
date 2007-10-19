@@ -6,10 +6,11 @@
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:c="http://java.sun.com/jsp/jstl/core">
   <di:frame
-      styleClass="progress"
       postprocessor="none"
       type="application/xhtml+xml"
-      rank="didactor user" title_key="progress.progresstitle">
+      rank="didactor user"
+      component="progress"
+      title_key="progress.progresstitle">
     <!--
         This JSP actually remains one entire WTF
         - bloated
@@ -40,35 +41,34 @@
         <b><mm:field name="name" write="true"/></b>
 
         <!-- WTF, style in JSP -->
-        <table class="font" border="1" cellspacing="0"
-               style="border-color:#000000; border-bottom:0px; border-top:0px; border-right:0px">
+        <table class="font">
 
           <mm:nodelistfunction name="tests" id="tests" />
 
           <mm:import externid="startAt" vartype="integer">0</mm:import>
 
           <tr>
-            <th style="border-color:#000000; border-left:0px" />
+            <th />
             <mm:node number="progresstextbackground">
-              <th style="border-color:#000000; border-left:0px">
+              <th>
                 <mm:import id="tr_progresstitle"><di:translate key="progress.progresstitle" /></mm:import>
                 <mm:image mode="img"
                           alt="${tr_progresstitle}"
                           template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_progresstitle')+rotate(90)"/>
               </th>
-              <th style="border-color:#000000; border-left:0px">
+              <th>
                 <mm:import id="tr_logins"><di:translate key="progress.logins" /></mm:import>
                 <mm:image mode="img"
                           alt="${tr_logins}"
                           template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_logins')+rotate(90)"/>
               </th>
-              <th style="border-color:#000000; border-left:0px">
+              <th>
                 <mm:import id="tr_online"><di:translate key="progress.online"/></mm:import>
                 <mm:image mode="img"
                           alt="${tr_online}"
                           template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_online')+rotate(90)"/>
               </th>
-              <th style="border-color:#000000; border-left:0px">
+              <th>
                 <mm:import id="tr_lastlogin"><di:translate key="progress.lastlogin"/></mm:import>
                 <mm:image mode="img"
                           alt="${tr_lastlogin}"
@@ -86,7 +86,7 @@
               </mm:escaper>
               <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<mm:field name="name" escape="title" />")+rotate(90)</mm:import>
               <mm:node number="progresstextbackground">
-                <th style="border-color:#000000; border-left:0px">
+                <th>
                   <mm:image
                       alt="${test.name}"
                       template="$template" mode="img" />
@@ -98,7 +98,7 @@
           <mm:isempty referid="class">
             <mm:node referid="education">
               <tr>
-                <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="100">
+                <td colspan="100">
                   <b><di:translate key="progress.directconnection" />:</b>
                 </td>
               </tr>
@@ -128,7 +128,7 @@
                 <os:cache time="${current gt 0 ? 300 : 15000}" key="progress-${education}-class-${classNode}">
 
                   <tr>
-                    <td style="border-color:#000000; border-top:0px; border-left:0px" colspan="100">
+                    <td colspan="100">
                       <b><di:translate key="progress.class" />: <mm:field name="name"/></b>
                     </td>
                   </tr>
