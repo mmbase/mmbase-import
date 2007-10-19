@@ -2,7 +2,7 @@
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="assignedrel" destination="user" minoccurs="0" maxoccurs="1" >
    <title xml:lang="nl">Uitvoerende</title>
-   <title xml:lang="en">Executive</title>
+   <title xml:lang="en">Executed by</title>
    <item>
       <field ftype="data" name="username">
          <prompt xml:lang="nl"> gebruikersnaam </prompt>
