@@ -15,11 +15,15 @@
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/searchlist.xsl"/>
 
-  <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/color/searchlist.css" />
+  <xsl:template name="extrastyle">
+    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/extra/searchlist.css" />
     <style type="text/css" xml:space="preserve">
       body { behavior: url(../../../../editors/css/hover.htc);}
     </style>
+  </xsl:template>
+
+  <xsl:template name="colorstyle">
+    <link rel="stylesheet" type="text/css" href="{$ew_context}{$templatedir}style/color/searchlist.css" />
   </xsl:template>
 
   <xsl:template name="bodycontent" >
