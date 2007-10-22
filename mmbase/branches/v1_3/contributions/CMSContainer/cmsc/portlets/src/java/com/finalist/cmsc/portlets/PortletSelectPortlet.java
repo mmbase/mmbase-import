@@ -94,4 +94,8 @@ public class PortletSelectPortlet extends CmscPortlet {
         super.doInclude("edit_defaults", null, req, res);
     }
 
+    @Override
+    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
+    }
+    
 }
