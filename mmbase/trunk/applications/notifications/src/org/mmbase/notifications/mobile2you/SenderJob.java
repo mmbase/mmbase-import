@@ -16,6 +16,8 @@ import java.util.*;
 import java.text.*;
 import java.util.concurrent.*;
 import org.mmbase.bridge.*;
+import org.mmbase.util.Casting;
+import org.mmbase.util.xml.UtilReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.SAXException;
 import org.mmbase.util.xml.XmlWriter;
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.2 2007-10-22 12:51:18 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.3 2007-10-22 16:50:21 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -54,15 +56,33 @@ public class SenderJob  extends AbstractCronJob {
                                         recipient.getNumber(), notifyable.getNumber(), date.getTime());
 
         }
-        public void add(XmlWriter w) throws SAXException {
-            AttributesImpl a = new AttributesImpl();
-            a.addAttribute("", "messageVersion", "", "CDATA", "2.0");
-            w.startElement("", "m2u_message", "", a);
-            w.startElement("header");
-            w.endElement("header");
-            w.startElement("body");
-            w.endElement("body");
-            w.endElement("m2u_message");
+        public String body() {
+            return notifyable.getStringValue("message");
+        }
+        public String phone() {
+            return Casting.toString(recipient.getFunctionValue("phone", null));
+        }
+
+        public void add(XmlWriter w, Map<String, String> config) throws SAXException {
+            w.startElement("MSG");
+            w.startElement("FROM");
+            w.characters(config.get("from"));
+            w.endElement("FROM");
+            {
+                AttributesImpl a = new AttributesImpl();
+                a.addAttribute("", "TYPE", "", "CDATA", "TEXT");
+                w.startElement("", "BODY", "", a);
+                w.characters(body());
+                w.endElement("BODY");
+            }
+            {
+                AttributesImpl a = new AttributesImpl();
+                a.addAttribute("", "OPERATOR", "", "CDATA", config.get("operator"));
+                w.startElement("", "TO", "", a);
+                w.characters(phone());
+                w.endElement("TO");
+            }
+            w.endElement("MSG");
         }
     }
 
@@ -75,15 +95,9 @@ public class SenderJob  extends AbstractCronJob {
     private static final Logger log = Logging.getLoggerInstance(SenderJob.class);
 
 
-    // TODO
     public void run() {
         try {
-            URL url = new URL(cronEntry.getConfiguration());
-            URLConnection con = url.openConnection();
-            OutputStream out = con.getOutputStream();
-            InputStream in = con.getInputStream();
-            send(out);
-            // handle response too;
+            send(cronEntry.getConfiguration());
         } catch (MalformedURLException mfue) {
             log.error(mfue);
         } catch (SAXException se) {
@@ -94,28 +108,102 @@ public class SenderJob  extends AbstractCronJob {
 
     }
 
-    protected void send(OutputStream out) throws SAXException, IOException {
+    protected void send(String configFile)  throws SAXException, IOException {
+        Map<String, String> config = new UtilReader(configFile).getProperties();
+        String u = config.get("url");
+        log.debug("Using '" + u + "'");
+        URL url = new URL(config.get("url"));
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+        OutputStream out = con.getOutputStream();
+        send(out, config);
+
+        try {
+            final InputStream in = con.getInputStream();
+            BufferedReader is = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = is.readLine()) != null) {
+                log.debug(line);
+            }
+            is.close();
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+        {
+            final InputStream error = con.getErrorStream();
+            if (error != null) {
+                BufferedReader es = new BufferedReader(new InputStreamReader(error));
+                String line;
+                while ((line = es.readLine()) != null) {
+                    log.error(line);
+                }
+                es.close();
+            }
+        }
+        out.close();
+
+
+    }
+
+    protected void send(OutputStream out, Map<String, String> config) throws SAXException, IOException {
         Writer writer = new OutputStreamWriter(out);
         XmlWriter w = new XmlWriter(writer);
-        int drain = queue.size();
         w.startDocument();
-        w.startElement("m2u_envelop");
+        {
+            AttributesImpl a = new AttributesImpl();
+            a.addAttribute("", "PID", "", "CDATA", "25");
+            w.startElement("", "MESSAGES", "", a);
+        }
+        {
+            AttributesImpl a = new AttributesImpl();
+            a.addAttribute("", "ID", "", "CDATA", config.get("customerId"));
+            w.emptyElement("", "CUSTOMER",  "", a);
+        }
+        {
+            AttributesImpl a = new AttributesImpl();
+            a.addAttribute("", "LOGIN", "", "CDATA", config.get("userLogin"));
+            a.addAttribute("", "PASSWORD", "", "CDATA", config.get("userPassword"));
+            w.emptyElement("", "USER",  "", a);
+        }
+        //w.emptyElement("ADMIN_EMAIL");
+        w.startElement("TARIFF");
+        w.characters("0");
+        w.endElement("TARIFF");
+        //w.emptyElement("REFERENCE");
+
+        int drain = queue.size();
         for (int i = 0; i < drain; i++) {
             SMS sms = queue.poll();
-            /// add to xml
+            sms.add(w, config);
 
         }
-        w.endElement("m2u_envelop");
+        w.endElement("MESSAGES");
         w.endDocument();
-        out.close();
+        w.flush();
     }
 
     /**
      * Main for testing only
      */
-    public static void main(String[] argv) throws Exception {
+    public static void main(final String[] argv) throws Exception {
         SenderJob sender = new SenderJob();
-        sender.send(System.out);
+        if (argv.length == 0) {
+            System.out.println("Use tel-number as argument");
+        } else {
+            sender.queue.offer(new SMS(null, null, null) {
+                    public String body() {
+                        return "Test test " + new Date();
+                    }
+
+                    public String phone() {
+                        return argv[0];
+                    }
+                });
+            //sender.send(System.out);
+            sender.send("sms_sender.xml");
+        }
     }
 
 

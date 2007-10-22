@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <property name="sms_sender">*/5 * * * *|org.mmbase.notifications.mobile2you.SenderJob||sms_sender.xml</property>
+    <property name="sms_receiver">*/5 * * * *|org.mmbase.notifications.mobile2you.ReceiverJob||
+    shutdown compact;</property>
+  </properties>
+</util>

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.4 2007-10-22 12:51:18 michiel Exp $
+ * @version $Id: Notifier.java,v 1.5 2007-10-22 16:50:21 michiel Exp $
  **/
 public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -74,7 +74,9 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
             NodeIterator pi = notifyable.getRelatedNodes("object", "related", null).nodeIterator();
             while (pi.hasNext()) {
                 Node p = pi.nextNode();
-                log.info("Using " + p);
+                if (log.isTraceEnabled()) {
+                    log.trace("Using " + p);
+                }
                 Function datesFunction = p.getFunction("dates");
                 if (datesFunction == null) {
                     log.error("No function 'dates' defined on " + p);
@@ -84,7 +86,7 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
                 params.set("since", lastCheck);
                 params.set("until", futureDate);
                 Collection<Date> dates = Casting.toCollection(datesFunction.getFunctionValue(null));
-                log.info("Found dates " + dates);
+                log.debug("Found dates " + dates);
                 for (Date date : dates) {
                     Notifyable.addNotifyables(queue, notifyable, date);
                 }
