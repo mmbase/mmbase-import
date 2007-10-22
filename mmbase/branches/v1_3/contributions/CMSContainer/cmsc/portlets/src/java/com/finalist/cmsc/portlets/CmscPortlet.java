@@ -184,11 +184,11 @@ public class CmscPortlet extends GenericPortlet {
         Locale siteLocale = null;
         if (mode.equals(PortletMode.VIEW) || mode.equals(PortletMode.EDIT)) {
         	siteLocale = (Locale) request.getAttribute("siteLocale");
+        	if(siteLocale == null) {
+        	    siteLocale = request.getLocale();
+        	}
+        	locales.add(siteLocale);
         }
-        if(siteLocale == null) {
-        	siteLocale = request.getLocale();
-        }
-        locales.add(siteLocale);
         Locale editorsLocale = getEditorLocale(request, siteLocale);
         
         if(editorsLocale != null && !editorsLocale.equals(siteLocale)) {
@@ -210,6 +210,10 @@ public class CmscPortlet extends GenericPortlet {
         	}
         	
         	if(editorsLocale == null) { 
+                if (defaultLocale == null) {
+                    defaultLocale = request.getLocale();
+                }
+
         		editorsLocale = defaultLocale;
         	}
         	request.setAttribute("editorsLocale", editorsLocale);
@@ -374,13 +378,13 @@ public class CmscPortlet extends GenericPortlet {
     }
 
     protected PortletRequestDispatcher getRequestDispatcher(String type, String template) {
-        String resourcveExtension = "jsp";
-        String fullTemplate = getTemplate(type, template, resourcveExtension);
+        String resourceExtension = "jsp";
+        String fullTemplate = getTemplate(type, template, resourceExtension);
         PortletRequestDispatcher rd = getPortletContext().getRequestDispatcher(fullTemplate);
         return rd;
     }
 
-    protected String getTemplate(String type, String template, String resourcveExtension) {
+    protected String getTemplate(String type, String template, String resourceExtension) {
         String baseDir = getPortletContext().getInitParameter("cmsc.portal." + type + ".base.dir");
         if (StringUtil.isEmpty(baseDir)) {
             String aggregationDir = getPortletContext().getInitParameter("cmsc.portal.aggregation.base.dir");    
@@ -395,7 +399,7 @@ public class CmscPortlet extends GenericPortlet {
         if (StringUtil.isEmpty(template)) {
             template = getInitParameter("template." + type);
             if (StringUtil.isEmpty(template)) {
-                template = getPortletName() + "." + resourcveExtension;
+                template = getPortletName() + "." + resourceExtension;
             }
         }
         return baseDir + template;
