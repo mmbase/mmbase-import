@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.3 2007-10-22 16:50:21 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.4 2007-10-22 17:20:58 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -50,12 +50,6 @@ public class SenderJob  extends AbstractCronJob {
             date = d;
         }
 
-        public String m2uId() {
-            return MessageFormat.format("{0,number,########}.{1,number,####}.{2,number,####}.{3,number,####}.{4,number,############}",
-                                        0, 0,
-                                        recipient.getNumber(), notifyable.getNumber(), date.getTime());
-
-        }
         public String body() {
             return notifyable.getStringValue("message");
         }
@@ -150,6 +144,7 @@ public class SenderJob  extends AbstractCronJob {
     protected void send(OutputStream out, Map<String, String> config) throws SAXException, IOException {
         Writer writer = new OutputStreamWriter(out);
         XmlWriter w = new XmlWriter(writer);
+        w.setSystemId("http://www.clubmessage.biz/DTD/bundles/messages.dtd");
         w.startDocument();
         {
             AttributesImpl a = new AttributesImpl();
@@ -191,12 +186,12 @@ public class SenderJob  extends AbstractCronJob {
         SenderJob sender = new SenderJob();
         if (argv.length == 0) {
             System.out.println("Use tel-number as argument");
+            sender.send(System.out, new HashMap<String, String>());
         } else {
             sender.queue.offer(new SMS(null, null, null) {
                     public String body() {
                         return "Test test " + new Date();
                     }
-
                     public String phone() {
                         return argv[0];
                     }

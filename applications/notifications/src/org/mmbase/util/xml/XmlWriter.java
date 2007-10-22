@@ -2,7 +2,7 @@
 // Written by David Megginson, david@megginson.com
 // NO WARRANTY!  This class is in the public domain.
 
-// $Id: XmlWriter.java,v 1.2 2007-10-22 16:50:21 michiel Exp $
+// $Id: XmlWriter.java,v 1.3 2007-10-22 17:20:58 michiel Exp $
 
 package org.mmbase.util.xml;
 
@@ -244,6 +244,8 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public class XmlWriter extends XMLFilterImpl {
 
+    protected String systemId;
+
     ////////////////////////////////////////////////////////////////////
     // Constructors.
     ////////////////////////////////////////////////////////////////////
@@ -325,6 +327,10 @@ public class XmlWriter extends XMLFilterImpl {
     ////////////////////////////////////////////////////////////////////
 
 
+
+    public void setSystemId(String si) {
+        systemId = si;
+    }
     /**
      * Reset the writer.
      *
@@ -479,7 +485,6 @@ public class XmlWriter extends XMLFilterImpl {
     public void startDocument () throws SAXException {
 	reset();
 	write("<?xml version=\"1.0\" standalone=\"yes\"?>\n");
-        write("<!DOCTYPE MESSAGES SYSTEM \"http://www.clubmessage.biz/DTD/bundles/messages.dtd\">\n");
 	super.startDocument();
     }
 
@@ -528,6 +533,9 @@ public class XmlWriter extends XMLFilterImpl {
      */
     public void startElement (String uri, String localName,
 			      String qName, Attributes atts) throws SAXException {
+        if (elementLevel == 0 && systemId != null) {
+            write("<!DOCTYPE " + localName + " SYSTEM \"" + systemId + "\">\n");
+        }
 	elementLevel++;
 	nsSupport.pushContext();
 	write('<');
@@ -1051,7 +1059,9 @@ public class XmlWriter extends XMLFilterImpl {
     private void writeAttributes (Attributes atts) throws SAXException {
 	int len = atts.getLength();
 	for (int i = 0; i < len; i++) {
-	    char ch[] = atts.getValue(i).toCharArray();
+            String v = atts.getValue(i);
+            if (v == null) v = "";
+	    char ch[] = v.toCharArray();
 	    write(' ');
 	    writeName(atts.getURI(i), atts.getLocalName(i),
 		      atts.getQName(i), false);
