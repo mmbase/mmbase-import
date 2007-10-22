@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * options. Note that in the configuration of mmbaseroot.xml the host should be a valid
  * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: RemoteMMCI.java,v 1.18 2007-03-31 17:15:00 nklasens Exp $
+ * @version $Id: RemoteMMCI.java,v 1.19 2007-10-22 08:56:50 nklasens Exp $
  * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
@@ -93,7 +93,6 @@ public class RemoteMMCI extends ProcessorModule {
                 host = mmbase.getHost();
                 log.debug("using host FROM MMBASEROOT " + host);
                 java.net.InetAddress.getByName(host);
-                System.setProperty("java.rmi.server.hostname", host);
             } catch (java.net.UnknownHostException uhn) {
                 log.warn("property host in mmbaseroot.xml is not set correctly.");
                 log.warn("Chances are big the Remote MMCI will not work");
@@ -101,6 +100,7 @@ public class RemoteMMCI extends ProcessorModule {
         } else {
             log.debug("RemoteMMCI is using the RMIRegistryServer{" + host + "} as hostname to create/connect to the RMI registry");
         }
+        System.setProperty("java.rmi.server.hostname", host);
         return host;
     }
 
