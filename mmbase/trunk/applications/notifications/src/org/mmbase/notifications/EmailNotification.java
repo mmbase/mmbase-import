@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 sQuery
 */
 package org.mmbase.notifications;
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -16,13 +17,13 @@ import org.mmbase.util.logging.Logging;
  * A notification implementation which sends using mmbase-email.jar
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmailNotification.java,v 1.2 2007-10-08 16:55:17 michiel Exp $
+ * @version $Id: EmailNotification.java,v 1.3 2007-10-22 12:51:18 michiel Exp $
  **/
 public  class EmailNotification extends Notification {
 
     private static final Logger log = Logging.getLoggerInstance(EmailNotification.class);
 
-    public void send(Node recipient, Node notifyable) {
+    public void send(Node recipient, Node notifyable, Date date) {
         String address = recipient.getFunctionValue("email", null).toString();
         log.service("Sending notification email to " + address);
         NodeManager emails = recipient.getCloud().getNodeManager("email");

@@ -26,7 +26,14 @@
     </field>
 
     <field name="offset">
-      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <default value="-900" /> <!-- quarter of an hour beforehand -->
+        <maxExclusive value="0" />
+        <enumeration>
+          <entry basename="org.mmbase.notifications.resources.offset" />
+        </enumeration>
+      </datatype>
      </field>
 
     <field name="lastcheck">
@@ -34,6 +41,22 @@
         <default value="today" />
       </datatype>
      </field>
+
+    <field name="status">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <required value="true" />
+        <default value="1" />
+        <enumeration>
+
+          <entry value="0"      xml:lang="nl" display="inactief" />
+          <entry value="1"      xml:lang="nl" display="actief" />
+
+          <entry value="0"      xml:lang="en" display="inactive" />
+          <entry value="1"      xml:lang="en" display="active" />
+
+        </enumeration>
+      </datatype>
+    </field>
 
 
   </fieldlist>
