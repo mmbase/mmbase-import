@@ -129,8 +129,8 @@
 
 		<br />
 		<div style="padding: 5px;">
-			<html:cancel style="width:90"><fmt:message key="user.cancel"/></html:cancel>
 			<html:submit style="width:90"><fmt:message key="user.submit"/></html:submit>
+			<html:cancel style="width:90"><fmt:message key="user.cancel"/></html:cancel>
 		</div>
 	</html:form>
 </mm:cloud>
