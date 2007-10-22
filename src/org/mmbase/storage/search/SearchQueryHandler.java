@@ -16,7 +16,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Defines methods for an object that handles search query requests.
  *
  * @author Rob van Maris
- * @version $Id: SearchQueryHandler.java,v 1.4 2005-12-10 14:21:57 michiel Exp $
+ * @version $Id: SearchQueryHandler.java,v 1.4.2.1 2007-10-22 08:42:47 nklasens Exp $
  * @since MMBase-1.7
  */
 public interface SearchQueryHandler {
@@ -115,4 +115,14 @@ public interface SearchQueryHandler {
      */
     public List getNodes(SearchQuery query, MMObjectBuilder builder)
     throws SearchQueryException;
+    
+    /**
+     * Makes a String of a query, taking into consideration if the database supports offset and
+     * maxnumber features. The resulting String is an SQL query which can be fed to the database.
+     * @param query the query to convert to sql
+     * @return the sql string
+     * @throws SearchQueryException when error occurs while making the string
+     */
+    public String createSqlString(SearchQuery query) throws SearchQueryException;
+
 }

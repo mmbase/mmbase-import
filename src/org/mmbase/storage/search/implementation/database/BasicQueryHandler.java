@@ -33,7 +33,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.52 2006-07-08 06:54:00 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.52.2.1 2007-10-22 08:42:47 nklasens Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -153,6 +153,34 @@ public class BasicQueryHandler implements SearchQueryHandler {
         } catch (Exception g) {}
     }
 
+    /**
+     * Makes a String of a query, taking into consideration if the database supports offset and
+     * maxnumber features. The resulting String is an SQL query which can be fed to the database.
+     * @param query the query to convert to sql
+     * @return the sql string
+     * @throws SearchQueryException when error occurs while making the string
+     */
+    public String createSqlString(SearchQuery query) throws SearchQueryException {
+        // Flag, set if offset must be supported by skipping results.
+        boolean mustSkipResults =
+            (query.getOffset() != SearchQuery.DEFAULT_OFFSET) &&
+            (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) == SearchQueryHandler.SUPPORT_NONE);
+
+
+        // Flag, set if sql handler supports maxnumber.
+        boolean sqlHandlerSupportsMaxNumber = sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query) != SearchQueryHandler.SUPPORT_NONE;
+
+        // report about offset and max support (for debug purposes)
+        if (log.isDebugEnabled()) {
+            log.debug("Database offset support = " + (sqlHandler.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query) != SearchQueryHandler.SUPPORT_NONE));
+            log.debug("mustSkipResults = " + mustSkipResults);
+            log.debug("Database max support = " + sqlHandlerSupportsMaxNumber);
+        }
+
+        return createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
+    }
+
+    
     /**
      * Makes a String of a query, taking into consideration if the database supports offset and
      * maxnumber features. The resulting String is an SQL query which can be fed to the database.
