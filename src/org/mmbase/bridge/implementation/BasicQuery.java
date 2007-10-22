@@ -17,7 +17,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.storage.search.implementation.database.BasicSqlHandler;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.security.Authorization;
@@ -29,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.69 2007-07-05 11:33:57 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.70 2007-10-22 08:42:40 nklasens Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -703,10 +702,10 @@ public class BasicQuery implements Query  {
         return query.toString() + (used ? "(used)" : "") + "INSECURE: " + insecureConstraint + " QUERYCHECK: " + queryCheck;
 
     }
-    private static final BasicSqlHandler sqlHandler = new BasicSqlHandler();
+
     public String toSql() {
         try {
-            return sqlHandler.toSql(this, sqlHandler);
+            return MMBase.getMMBase().getSearchQueryHandler().createSqlString(query);
         } catch (org.mmbase.storage.search.SearchQueryException sqe) {
             return sqe.getMessage() + ": " + toString();
         } catch (Exception ise) {
