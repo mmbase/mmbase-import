@@ -11,6 +11,7 @@ package org.mmbase.notifications.mobile2you;
 
 import org.mmbase.notifications.Notification;
 
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -20,14 +21,14 @@ import org.mmbase.util.logging.Logging;
  * by offering it to the (static) queue of {@link SenderJob}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Mobile2YouNotification.java,v 1.1 2007-10-15 13:52:55 michiel Exp $
+ * @version $Id: Mobile2YouNotification.java,v 1.2 2007-10-22 12:51:18 michiel Exp $
  **/
 public  class Mobile2YouNotification extends Notification {
 
     private static final Logger log = Logging.getLoggerInstance(Mobile2YouNotification.class);
 
-    public void send(Node recipient, Node notifyable) {
-        SenderJob.offer(recipient, notifyable);
+    public void send(Node recipient, Node notifyable, Date date) {
+        SenderJob.offer(recipient, notifyable, date);
 
     }
 
