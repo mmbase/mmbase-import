@@ -5,7 +5,7 @@
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.include file="head.jspx" />
-  <mm:content type="text/html" language="en" expires="0">
+  <mm:content type="text/html" language="en" expires="0" timezone="Europe/Amsterdam">
     <body class="basic">
       <h1>Notifications admin page for
       <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
@@ -51,11 +51,13 @@
                   </td>
                 </mm:node>
                 <td>
-                  <c:forEach items="${_.notifications}" var="rel" end="50">
-                    <mm:node number="${rel.source.number}">
+                  <c:forEach items="${_.notifications}" var="_node" end="50">
+                    <mm:field name="gui(type)"  />
+                    <jsp:text> </jsp:text>
+                    <mm:node number="${_node.source.number}">
                       <mm:nodeinfo type="gui" />
-                      <mm:last inverse="true">, </mm:last>
                     </mm:node>
+                    <mm:last inverse="true">, </mm:last>
                   </c:forEach>
                 </td>
               </tr>

@@ -2,7 +2,7 @@
 // Written by David Megginson, david@megginson.com
 // NO WARRANTY!  This class is in the public domain.
 
-// $Id: XmlWriter.java,v 1.1 2007-10-22 12:51:18 michiel Exp $
+// $Id: XmlWriter.java,v 1.2 2007-10-22 16:50:21 michiel Exp $
 
 package org.mmbase.util.xml;
 
@@ -479,6 +479,7 @@ public class XmlWriter extends XMLFilterImpl {
     public void startDocument () throws SAXException {
 	reset();
 	write("<?xml version=\"1.0\" standalone=\"yes\"?>\n");
+        write("<!DOCTYPE MESSAGES SYSTEM \"http://www.clubmessage.biz/DTD/bundles/messages.dtd\">\n");
 	super.startDocument();
     }
 

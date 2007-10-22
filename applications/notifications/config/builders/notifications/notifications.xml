@@ -14,6 +14,7 @@
       <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="false" />
         <default value="org.mmbase.notifications.mobile2you.Mobile2YouNotification" />
+
         <maxLength value="1024" />
 
         <enumeration enforce="oncreate">
