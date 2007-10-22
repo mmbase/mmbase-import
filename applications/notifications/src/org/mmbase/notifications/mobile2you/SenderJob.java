@@ -13,8 +13,12 @@ import org.mmbase.applications.crontab.AbstractCronJob;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.text.*;
 import java.util.concurrent.*;
 import org.mmbase.bridge.*;
+import org.xml.sax.helpers.AttributesImpl;
+import org.xml.sax.SAXException;
+import org.mmbase.util.xml.XmlWriter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.1 2007-10-15 13:52:55 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.2 2007-10-22 12:51:18 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -37,16 +41,35 @@ public class SenderJob  extends AbstractCronJob {
     public static class SMS {
         final Node recipient;
         final Node notifyable;
-        public SMS(Node r, Node n) {
+        final Date date;
+        public SMS(Node r, Node n, Date d) {
             recipient = r;
             notifyable = n;
+            date = d;
+        }
+
+        public String m2uId() {
+            return MessageFormat.format("{0,number,########}.{1,number,####}.{2,number,####}.{3,number,####}.{4,number,############}",
+                                        0, 0,
+                                        recipient.getNumber(), notifyable.getNumber(), date.getTime());
+
+        }
+        public void add(XmlWriter w) throws SAXException {
+            AttributesImpl a = new AttributesImpl();
+            a.addAttribute("", "messageVersion", "", "CDATA", "2.0");
+            w.startElement("", "m2u_message", "", a);
+            w.startElement("header");
+            w.endElement("header");
+            w.startElement("body");
+            w.endElement("body");
+            w.endElement("m2u_message");
         }
     }
 
     private static Queue<SMS> queue = new LinkedBlockingQueue<SMS>();
 
-    public static void offer(Node recipient, Node notifyable) {
-        queue.offer(new SMS(recipient, notifyable));
+    public static void offer(Node recipient, Node notifyable, Date date) {
+        queue.offer(new SMS(recipient, notifyable, date));
     }
 
     private static final Logger log = Logging.getLoggerInstance(SenderJob.class);
@@ -59,23 +82,40 @@ public class SenderJob  extends AbstractCronJob {
             URLConnection con = url.openConnection();
             OutputStream out = con.getOutputStream();
             InputStream in = con.getInputStream();
-            Writer writer = new OutputStreamWriter(out);
-            int drain = queue.size();
-            writer.write("<?xml >");
-            // Perhaps use something like http://xml-writer.cvs.sourceforge.net/xml-writer/xml-writer/java/src/com/megginson/sax/XMLWriter.java?view=markup
-            for (int i = 0; i < drain; i++) {
-                SMS sms = queue.poll();
-                /// add to xml
-
-            }
-            out.close();
+            send(out);
             // handle response too;
         } catch (MalformedURLException mfue) {
             log.error(mfue);
+        } catch (SAXException se) {
+            log.error(se);
         } catch (IOException ioe) {
             log.error(ioe);
         }
 
+    }
+
+    protected void send(OutputStream out) throws SAXException, IOException {
+        Writer writer = new OutputStreamWriter(out);
+        XmlWriter w = new XmlWriter(writer);
+        int drain = queue.size();
+        w.startDocument();
+        w.startElement("m2u_envelop");
+        for (int i = 0; i < drain; i++) {
+            SMS sms = queue.poll();
+            /// add to xml
+
+        }
+        w.endElement("m2u_envelop");
+        w.endDocument();
+        out.close();
+    }
+
+    /**
+     * Main for testing only
+     */
+    public static void main(String[] argv) throws Exception {
+        SenderJob sender = new SenderJob();
+        sender.send(System.out);
     }
 
 

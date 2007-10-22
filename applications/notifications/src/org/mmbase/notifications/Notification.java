@@ -10,15 +10,20 @@ sQuery
 package org.mmbase.notifications;
 
 import org.mmbase.bridge.*;
+import java.util.*;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notification.java,v 1.3 2007-10-15 13:57:33 michiel Exp $
+ * @version $Id: Notification.java,v 1.4 2007-10-22 12:51:18 michiel Exp $
  **/
 public abstract class Notification {
 
-    public abstract void send(Node recipient, Node notifyable);
+
+    /**
+     *
+     */
+    public abstract void send(Node recipient, Node notifyable, Date date);
 
 
 }
