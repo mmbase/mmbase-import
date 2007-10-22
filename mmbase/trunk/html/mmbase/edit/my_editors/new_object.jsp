@@ -79,8 +79,11 @@
       </mm:present>
       <div class="message">    
         <h4>
-          Your new node <mm:function name="gui" /> (<mm:field name="number" />) is saved
-          <a onclick="toggleTwo('newnode','editnewnode');return false;" href="#" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
+          <mm:link page="edit_object.jsp">
+            <mm:param name="nr"><mm:field name="number" /></mm:param>
+            Your new node <a href="${_}" title="edit this new node"><mm:function name="gui" /></a> (<mm:field name="number" />) is saved
+            <a href="${_}" title="edit this new node"><img src="img/mmbase-edit.png" alt="edit" width="21" height="20" /></a>
+          </mm:link>
         </h4>
         <mm:present referid="new_alias"><mm:compare referid="new_alias" value="" inverse="true"><p>With alias '<mm:write referid="new_alias" />'</p></mm:compare></mm:present>
       </div>
@@ -96,8 +99,8 @@
           <div class="row">
             <label for="mm_<mm:fieldinfo type="name" />">
               <strong><mm:fieldinfo type="guiname" /></strong>
-			  <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
-			  <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
+              <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
+              <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
             </label>
             <span class="content"><mm:fieldinfo type="guivalue" /></span>
             <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
@@ -105,30 +108,6 @@
         </mm:fieldlist>
         <div class="lastrow">&nbsp;</div>
       </div>
-      
-      <%-- showing the new node to edit --%>
-      <div id="editnewnode" style="display: none;">
-        <form action="<mm:url page="edit_object.jsp">
-                        <mm:param name="nr"><mm:field name="number" /></mm:param>
-                      </mm:url>" enctype="multipart/form-data" method="post">
-        <mm:fieldlist type="edit">
-          <div class="row">
-            <label for="mm_<mm:fieldinfo type="name" />">
-              <strong><mm:fieldinfo type="guiname" /></strong>
-			  <mm:fieldinfo type="description"><mm:isnotempty><a onmouseover="showBox('descr_<mm:fieldinfo type="name" />',event);return false;" onmouseout="showBox('descr_<mm:fieldinfo type="name" />',event);return false;"><mm:fieldinfo type="name" /></a></mm:isnotempty></mm:fieldinfo>
-			  <mm:fieldinfo type="description"><mm:isempty><mm:fieldinfo type="name" /></mm:isempty></mm:fieldinfo>
-            </label>
-            <span class="content"><mm:fieldinfo type="input" /></span>
-            <mm:fieldinfo type="description"><mm:isnotempty><div class="description" id="descr_<mm:fieldinfo type="name" />"><mm:write /></div></mm:isnotempty></mm:fieldinfo>
-          </div>
-        </mm:fieldlist>
-        <%@ include file="inc/aliases.jsp" %>
-        <div class="lastrow">
-          <input type="submit" name="change" value="Change" />
-        </div>
-        </form>
-      </div>
-      <%-- / showing the new node to edit --%>
     </mm:node>
   </mm:present>  <%-- /save --%>
     
