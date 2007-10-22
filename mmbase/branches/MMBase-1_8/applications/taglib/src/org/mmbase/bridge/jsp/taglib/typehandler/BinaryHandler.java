@@ -32,13 +32,13 @@ import org.apache.commons.fileupload.FileItem;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8 (was named ByteHandler previously)
- * @version $Id: BinaryHandler.java,v 1.4.2.3 2007-06-27 13:20:33 michiel Exp $
+ * @version $Id: BinaryHandler.java,v 1.4.2.4 2007-10-22 14:10:01 michiel Exp $
  */
 
 public class BinaryHandler extends AbstractTypeHandler {
     private static final Logger log = Logging.getLoggerInstance(ByteHandler.class);
     /**
-     * Constructor 
+     * Constructor
      * @param tag
      */
     public BinaryHandler(FieldInfoTag tag) {
@@ -62,7 +62,7 @@ public class BinaryHandler extends AbstractTypeHandler {
             args.set(Parameter.LOCALE, tag.getLocale());
             show.append("" + gui.getFunctionValue(args));
         }
-        show.append("<input class=\"" + getClasses(field) + "\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
+        show.append("<input class=\"" + getClasses(node, field) + "\" type=\"").append(search ? "text" : "file").append("\" name=\"").append(prefix(field.getName())).append("\" id=\"").append(prefixID(field.getName())).append("\" ");
         addExtraAttributes(show);
         show.append("/>");
         return show.toString();
@@ -87,45 +87,41 @@ public class BinaryHandler extends AbstractTypeHandler {
     public String checkHtmlInput(Node node, Field field, boolean errors) throws JspTagException {
         Object fieldValue = getFieldValue(field);
 
-        if (fieldValue != null) {
-            DataType dt = field.getDataType();
-            Collection col = dt.validate(fieldValue, node, field);
-            if (col.size() == 0) {
-                // do actually set the field, because some datatypes need cross-field checking
-                // also in an mm:form, you can simply commit.
-                if (node != null && ! field.isReadOnly()) {
-                    setValue(node, field, (FileItem) fieldValue);
-                }
-                if (errors) {
-                    return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
-                } else {
-                    return "";
-                }
+        DataType dt = field.getDataType();
+        Collection col = dt.validate(fieldValue, node, field);
+        if (col.size() == 0) {
+            // do actually set the field, because some datatypes need cross-field checking
+            // also in an mm:form, you can simply commit.
+            if (node != null && ! field.isReadOnly() && fieldValue != null) {
+                setValue(node, field, (FileItem) fieldValue);
+            }
+            if (errors) {
+                return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
             } else {
-                FormTag form =  tag.getFormTag(false, null);
-                if (form != null) {
-                    form.setValid(false);
-                }
-                if (errors) {
-                    StringBuffer show = new StringBuffer("<div id=\"");
-                    show.append(prefixError(field.getName()));
-                    show.append("\" class=\"mm_check_error\">");
-                    Locale locale =  tag.getLocale();
-                    Iterator i = col.iterator();
-                    while (i.hasNext()) {
-                        LocalizedString error = (LocalizedString) i.next();
-                        show.append("<span>");
-                        Xml.XMLEscape(error.get(locale), show);
-                        show.append("</span>");
-                    }
-                    show.append("</div>");
-                    return show.toString();
-                } else {
-                    return "";
-                }
+                return "";
             }
         } else {
-            return "";
+            FormTag form =  tag.getFormTag(false, null);
+            if (form != null) {
+                form.setValid(false);
+            }
+            if (errors) {
+                StringBuffer show = new StringBuffer("<div id=\"");
+                show.append(prefixError(field.getName()));
+                show.append("\" class=\"mm_check_error\">");
+                Locale locale =  tag.getLocale();
+                Iterator i = col.iterator();
+                while (i.hasNext()) {
+                    LocalizedString error = (LocalizedString) i.next();
+                    show.append("<span>");
+                    Xml.XMLEscape(error.get(locale), show);
+                    show.append("</span>");
+                }
+                show.append("</div>");
+                return show.toString();
+            } else {
+                return "";
+            }
         }
     }
 
@@ -162,8 +158,8 @@ public class BinaryHandler extends AbstractTypeHandler {
                 node.setValueWithoutProcess("mimetype", fileType);
             }
             Object specFileName = cc.find(tag.getPageContext(), prefix("filename"));
-            if (nm.hasField("filename") && 
-                fileName != null && 
+            if (nm.hasField("filename") &&
+                fileName != null &&
                 (! fileName.equals("")) &&
                 (specFileName == null || specFileName.equals("") || specFileName.equals(node.getStringValue("filename")))
                 ) {
@@ -179,7 +175,7 @@ public class BinaryHandler extends AbstractTypeHandler {
                 ) {
                 node.setLongValue("filesize", bytes.getSize());
             }
-        } 
+        }
     }
 
     /**
