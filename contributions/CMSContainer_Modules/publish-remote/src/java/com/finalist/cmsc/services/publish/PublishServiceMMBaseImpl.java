@@ -15,6 +15,8 @@ import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
 
 import com.finalist.cmsc.mmbase.TypeUtil;
+import com.finalist.cmsc.navigation.NavigationItemManager;
+import com.finalist.cmsc.navigation.NavigationManager;
 import com.finalist.cmsc.publish.*;
 import com.finalist.cmsc.services.workflow.Workflow;
 
@@ -74,7 +76,7 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
         if (publisher.isPublishable(node)) {
             return publisher;
         }
-        publisher = getRssFeedPublisher(node.getCloud());
+        publisher = getOptionalPublisher(node.getCloud(), node.getNodeManager().getName());
         if (publisher.isPublishable(node)) {
             return publisher;
         }
@@ -93,8 +95,14 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
         return new ChannelPublisher(cloud);
     }
 
-    private Publisher getRssFeedPublisher(Cloud cloud) {
-        return new RssFeedPublisher(cloud);
+    private Publisher getOptionalPublisher(Cloud cloud, String type) {
+		for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+			Publisher publisher = (Publisher) manager.getPublisher(cloud, type);
+			if(publisher != null) {
+				return publisher;
+			}
+		}
+		return null;
     }
 
     public void published(Node publishedNode) {

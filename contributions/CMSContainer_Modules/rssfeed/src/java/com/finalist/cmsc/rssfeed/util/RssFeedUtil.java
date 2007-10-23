@@ -1,10 +1,11 @@
-package com.finalist.cmsc.navigation;
+package com.finalist.cmsc.rssfeed.util;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
+import com.finalist.cmsc.navigation.NavigationUtil;
 
 public class RssFeedUtil {
     public static final String RSSFEED = "rssfeed";
