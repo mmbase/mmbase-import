@@ -3,6 +3,7 @@
 <wizard-schema id="contentchannel">
 	<title xml:lang="nl">Rubriek</title>
 	<title xml:lang="en">Content channel</title>
+	<title xml:lang="zh">内容频道</title>
 
    <action include="config/contentchannel/create_contentchannel.xml"/>
    <action include="config/contentchannel/delete_contentchannel.xml"/>
