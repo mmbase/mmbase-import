@@ -44,9 +44,9 @@ public abstract class SiteManagementService extends Service {
 
 	public abstract List<Page> getPages(Site site);
 	
-	public abstract Page getPage(int id);
+	public abstract NavigationItem getNavigationItem(int id);
 
-	public abstract Page getPageFromPath(String path);
+	public abstract NavigationItem getNavigationItemFromPath(String path);
 
 	public abstract Site getSiteFromPath(String path);
 
@@ -86,5 +86,7 @@ public abstract class SiteManagementService extends Service {
    
    public abstract void resetSiteCache();
 
-   public abstract RssFeed getRssFeedFromPath(String path);
+//   [FP] public abstract RssFeed getRssFeedFromPath(String path);
+//
+//   public abstract RssFeed getRssFeed(int number);
 }

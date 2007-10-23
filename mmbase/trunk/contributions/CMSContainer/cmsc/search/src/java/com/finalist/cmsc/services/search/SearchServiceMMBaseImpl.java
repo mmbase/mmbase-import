@@ -122,7 +122,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
     }
     
     private boolean evaluatePageQueryNode(Node pageQueryNode, Node content) {
-        Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
+        Page page = (Page) SiteManagement.getNavigationItem(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
         String key = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
         if (CONTENTCHANNEL.equals(key)) {
             String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
@@ -204,7 +204,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
         // The homepage (Site object) has a lower preference than a page deeper in the tree
         // For detail pages skip the homepage
         for (PageInfo info : infos) {
-            Page page = SiteManagement.getPage(info.getPageNumber());
+            Page page = (Page) SiteManagement.getNavigationItem(info.getPageNumber());
             if (page != null && !(page instanceof Site)) {
                 result.add(info);
             }
@@ -263,7 +263,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
     }
     
     private PageInfo getPageInfo(Node pageQueryNode, boolean clicktopage) {
-        Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
+        Page page = (Page) SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
         if (page != null) {
             String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "." + PortletUtil.LAYOUTID_FIELD);
             String parameterName = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);

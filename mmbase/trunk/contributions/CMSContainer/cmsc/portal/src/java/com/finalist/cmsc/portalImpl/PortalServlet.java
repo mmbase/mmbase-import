@@ -10,7 +10,8 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.servlet.ServletConfig;
@@ -25,18 +26,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
 
-import com.finalist.cmsc.beans.om.*;
+import com.finalist.cmsc.beans.om.NavigationItem;
+import com.finalist.cmsc.beans.om.Site;
+import com.finalist.cmsc.navigation.NavigationItemManager;
+import com.finalist.cmsc.navigation.NavigationManager;
 import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.pluto.portalImpl.aggregation.*;
+import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
+import com.finalist.cmsc.services.ServiceManager;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.PortalControlParameter;
 import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 import com.finalist.pluto.portalImpl.core.PortletContainerEnvironment;
 import com.finalist.pluto.portalImpl.core.PortletContainerFactory;
 import com.finalist.pluto.portalImpl.factory.FactoryAccess;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
-import com.finalist.cmsc.services.ServiceManager;
-import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 import com.finalist.pluto.portalImpl.services.log.CommonsLogging;
 
@@ -60,6 +64,10 @@ public class PortalServlet extends HttpServlet {
 
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		
+		// [FP] register the navigation item managers, this should be done by the modules in the future
+		NavigationManager.registerNavigationManager(new SiteNavigationItemManager());
+		NavigationManager.registerNavigationManager(new PageNavigationItemManager());
 
 		PortalServlet.sc = getServletConfig();
 
@@ -164,12 +172,11 @@ public class PortalServlet extends HttpServlet {
         return id != null;
     }
     
-    protected RssFeed getRssFeed(String path) {
-    	return SiteManagement.getRssFeedFromPath(path);
-    }
+//[FP]    protected RssFeed getRssFeed(String path) {
+//    	return SiteManagement.getRssFeedFromPath(path);
+//    }
     
-    private void processRenderPhase(HttpServletRequest request, HttpServletResponse response,
-            PortalRegistry registry, PortalURL currentURL) {
+    private void processRenderPhase(HttpServletRequest request, HttpServletResponse response, PortalRegistry registry, PortalURL currentURL) {
 		try {
             String path = extractPath(request, currentURL);
             log.debug("===>getScreen:'" + path + "'");
@@ -183,7 +190,13 @@ public class PortalServlet extends HttpServlet {
                     request.setAttribute("siteLocale", locale);
                 }
             }
-			ScreenFragment screen = getScreen(path);
+            
+            boolean renderSucceed = doRender(request, response, registry, path);
+            if(!renderSucceed) {
+            	log.error("Failed to find something to render for: " + currentURL.getGlobalNavigationAsString());
+            }
+            
+/*[FP]			ScreenFragment screen = getScreen(path);
 			if (screen != null) {
 				registry.setScreen(screen);
 				log.debug("===>SERVICE");
@@ -197,13 +210,15 @@ public class PortalServlet extends HttpServlet {
 				else {
 					log.error("Failed to find screen or RSS feed for: " + currentURL.getGlobalNavigationAsString());
 				}
-			}
+			}*/
 		} catch (Throwable t) {
 			log.fatal("Error processing", t);
 		}
 
     }
-    
+/*
+ * [FP]
+ 
     protected ScreenFragment getScreen(String path) {
         try {
             Page page = SiteManagement.getPageFromPath(path);
@@ -241,22 +256,18 @@ public class PortalServlet extends HttpServlet {
         return null;
     }
     
-    private PortletFragment createDefaultPortlet(ScreenFragment sf, Page page, String layoutId) {
-        try {
-            Portlet empty = SiteManagement.getPortlet(-1);
-            PortletDefinition definition = SiteManagement.getPortletDefinition(empty.getDefinition());
-            page.addPortlet(layoutId, -1);
-            EmptyFragment ef = new EmptyFragment(sc, sf, layoutId, empty, definition);
-            return ef;
-        } catch (Exception e) {
-            log.error("cannot create default portlet");
-            if (log.isDebugEnabled()) {
-                log.debug(e);
-            }
-            return null;
-        }
-    }
+*/
 
+	protected boolean doRender(HttpServletRequest request, HttpServletResponse response, PortalRegistry registry, String path) {
+		for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+			NavigationItem item = manager.getNavigationItem(path);
+			if(item != null) {
+				((NavigationItemRenderer)manager.getRenderer()).render(item, request, response, getServletContext(), sc, registry);
+				return true;
+			}
+		}
+		return false;
+	}
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		service(request, response);

@@ -27,8 +27,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
     private static final String LAYOUT_CACHE = Layout.class.getName();
     private static final String STYLESHEET_CACHE = Stylesheet.class.getName();
     private static final String VIEW_CACHE = View.class.getName();
-    private static final String PAGE_CACHE = Page.class.getName();
-    private static final String RSS_FEED_CACHE = RssFeed.class.getName();
+    private static final String NAVIGATION_CACHE = NavigationItem.class.getName();
     private static final String PORTLET_CACHE = Portlet.class.getName();
     
     private SiteCache siteCache;
@@ -70,13 +69,9 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         SelfPopulatingCache views = createSelfPopulatingCache(VIEW_CACHE, viewFactory);
         viewFactory.cacheToRefresh(views);
         
-        PageCacheEntryFactory pageFactory = new PageCacheEntryFactory();
-        SelfPopulatingCache pages = createSelfPopulatingCache(PAGE_CACHE, pageFactory);
-        pageFactory.cacheToRefresh(pages);
-        
-        RssFeedCacheEntryFactory rssFeedFactory = new RssFeedCacheEntryFactory();
-        SelfPopulatingCache rssFeeds = createSelfPopulatingCache(RSS_FEED_CACHE, rssFeedFactory);
-        rssFeedFactory.cacheToRefresh(rssFeeds);
+        NavigationCacheEntryFactory navigationFactory = new NavigationCacheEntryFactory();
+        SelfPopulatingCache navigationItems = createSelfPopulatingCache(NAVIGATION_CACHE, navigationFactory);
+        navigationFactory.cacheToRefresh(navigationItems);
         
         siteCache = new SiteCache();
     }
@@ -93,22 +88,22 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         return false;
     }
     
-    public Page getPage(String path) {
+    public NavigationItem getNavigationItem(String path) {
         if (path != null && path.length() > 0) {
-            Integer pageId = siteCache.getPage(path);
-            if (pageId != null) {
-                return getPage(pageId);
+            Integer id = siteCache.getPage(path);
+            if (id != null) {
+                return getNavigationItem(id);
             }
             else {
-                log.debug("Page not found for path " + path);
+                log.debug("NavigationItem not found for path " + path);
             }
         }
         return null;
     }
 
-    public Page getPage(int pageId) {
+    public NavigationItem getNavigationItem(int id) {
         try {
-            return (Page) getCache(PAGE_CACHE).get(pageId);
+            return (NavigationItem) getCache(NAVIGATION_CACHE).get(id);
         }
         catch (CacheException e) {
             log.info("" + e.getMessage(), e);
@@ -121,7 +116,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
             try {
                 Integer pageId = siteCache.getSite(path);
                 if (pageId != null) { 
-                    return (Site) getCache(PAGE_CACHE).get(pageId);
+                    return (Site) getCache(NAVIGATION_CACHE).get(pageId);
                 }
                 else {
                     log.debug("Site not found for path " + path);
@@ -145,7 +140,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
         try {
             List<Integer> siteIds = siteCache.getSites();
             for (Integer siteId : siteIds) {
-                Site site = (Site) getCache(PAGE_CACHE).get(siteId);
+                Site site = (Site) getCache(NAVIGATION_CACHE).get(siteId);
                 if (site != null) {
                     sites.add(site);
                 }
@@ -163,7 +158,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
             try {
                 List<Integer> pageIds = siteCache.getPagesForPath(path);
                 for (Integer pageId : pageIds) {
-                    Page page = (Page) getCache(PAGE_CACHE).get(pageId);
+                    Page page = (Page) getCache(NAVIGATION_CACHE).get(pageId);
                     if (page != null) {
                         pages.add(page);
                     }
@@ -182,9 +177,9 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
             try {
                 List<Integer> pageIds = siteCache.getChildren(findpage);
                 for (Integer pageId : pageIds) {
-                    Page page = (Page) getCache(PAGE_CACHE).get(pageId);
-                    if (page != null) {
-                        pages.add(page);
+                    NavigationItem navigationItem = (NavigationItem) getCache(NAVIGATION_CACHE).get(pageId);
+                    if (navigationItem != null && navigationItem instanceof Page) {
+                        pages.add((Page)navigationItem);
                     }
                 }
             }
@@ -325,7 +320,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
     }
 
     private List<Integer> getDefinitions(String screenId, String layoutId) {
-        Page page = getPage(Integer.parseInt(screenId));
+        Page page = (Page) getNavigationItem(Integer.parseInt(screenId));
         Layout layout = getLayout(page.getLayout());
         return layout.getAllowedDefinitions(layoutId);
     }
@@ -379,7 +374,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
 
     public void clearPage(int pageId) {
         try {
-            getCache(PAGE_CACHE).put(pageId, null);
+            getCache(NAVIGATION_CACHE).put(pageId, null);
         }
         catch (CacheException e) {
             log.info("" + e.getMessage(), e);
@@ -387,13 +382,13 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
     }
 
     public Set<String> getPagePositions(int pageId) {
-        Page page = getPage(pageId);
+        Page page = (Page)getNavigationItem(pageId);
         int layoutid = page.getLayout();
         Layout layout = getLayout(layoutid);
         return layout.getNames();
     }
 
-	public RssFeed getRssFeed(String path) {
+/* [FP]	public RssFeed getRssFeed(String path) {
        if (path != null && path.length() > 0) {
             Integer rssFeed = siteCache.getPage(path);
             if (rssFeed != null) {
@@ -408,12 +403,12 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
 
     public RssFeed getRssFeed(int rssFeedId) {
         try {
-            return (RssFeed) getCache(RSS_FEED_CACHE).get(rssFeedId);
+            return (RssFeed) getCache(NAVIGATION_CACHE).get(rssFeedId);
         }
         catch (CacheException e) {
             log.info("" + e.getMessage(), e);
         }
         return null;
     }
-	
+*/	
 }
