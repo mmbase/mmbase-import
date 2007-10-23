@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.commons.util.XmlUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.logging.Log;
@@ -43,9 +44,6 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 	
 	private final static DateFormat formatRFC822Date = new SimpleDateFormat("EE d MMM yyyy HH:mm:ss zzzzz"); 
 
-	/**
-	 * [FP] TODO: important! dangerous! use xml writer! and check on null in output... Looks less stupid when linked e.g.: a banner
-	 */
 	public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, ServletConfig sc, PortalRegistry registry) {
 		if(item instanceof RssFeed) {
 			RssFeed rssFeed = (RssFeed)item;
@@ -59,25 +57,25 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 			Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 			Node node = cloud.getNode(rssFeed.getId());
 			output.append("<title>");
-			output.append(node.getStringValue("title"));
+			output.append(xmlEscape(node.getStringValue("title")));
 			output.append("</title>");
 			output.append("<link>");
-			output.append(getServerDocRoot((HttpServletRequest) request));
+			output.append(xmlEscape(getServerDocRoot((HttpServletRequest) request)));
 			output.append("</link>");		
 			output.append("<language>");
-			output.append(node.getStringValue("language"));
+			output.append(xmlEscape(node.getStringValue("language")));
 			output.append("</language>");		
 			output.append("<description>");
-			output.append(node.getStringValue("description"));
+			output.append(xmlEscape(node.getStringValue("description")));
 			output.append("</description>");		
 			output.append("<copyright>");
-			output.append(node.getStringValue("copyright"));
+			output.append(xmlEscape(node.getStringValue("copyright")));
 			output.append("</copyright>");		
 			output.append("<managingEditor>");
-			output.append(node.getStringValue("email_managing_editor"));
+			output.append(xmlEscape(node.getStringValue("email_managing_editor")));
 			output.append("</managingEditor>");		
 			output.append("<webMaster>");
-			output.append(node.getStringValue("email_webmaster"));
+			output.append(xmlEscape(node.getStringValue("email_webmaster")));
 			output.append("</webMaster>");		
 			output.append("<generator>");
 			output.append("CMS Container RssFeed module "+VersionUtil.getCmscVersion(servletContext));
@@ -110,12 +108,12 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 		        	Node resultNode = ni.nextNode();
 		        	output.append("<item>");
 		    		output.append("<title>");
-		    		output.append(resultNode.getStringValue("title"));
+		    		output.append(xmlEscape(resultNode.getStringValue("title")));
 		    		output.append("</title>");
 		    		
 		    		String uniqueUrl = makeAbsolute(getContentUrl(resultNode), request);
 		    		output.append("<link>");
-		    		output.append(uniqueUrl);
+		    		output.append(xmlEscape(uniqueUrl));
 		    		output.append("</link>");
 		    		String description = null;
 		    		if(resultNode.getNodeManager().hasField("intro")) {
@@ -131,13 +129,13 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 		    			description = description.replaceAll("<.*?>", "");
 		    		}
 		    		output.append("<description>");    
-		    		output.append(description); 
+		    		output.append(xmlEscape(description)); 
 		    		output.append("</description>");
 		    		output.append("<pubDate>");
 		    		output.append(formatRFC822Date.format(resultNode.getDateValue("publishdate")));
 		    		output.append("</pubDate>");
 		    		output.append("<guid>");
-		    		output.append(uniqueUrl);
+		    		output.append(xmlEscape(uniqueUrl));
 		    		output.append("</guid>");
 		    		
 		    		NodeList images = resultNode.getRelatedNodes("images", "imagerel", null );
@@ -151,11 +149,11 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 		    			imageOutput = new StringBuffer();
 		    			imageOutput.append("<image>");
 		    			imageOutput.append("<url>");
-		    			imageOutput.append(imageUrl); 
+		    			imageOutput.append(xmlEscape(imageUrl)); 
 		    			imageOutput.append("</url>");
 		    			imageOutput.append("<title/>");
 		    			imageOutput.append("<link>");
-		    			imageOutput.append(uniqueUrl); 
+		    			imageOutput.append(xmlEscape(uniqueUrl)); 
 		    			imageOutput.append("</link>");
 		    			imageOutput.append("</image>");
 		    		}
@@ -191,6 +189,15 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 		}
 		else {
 			throw new IllegalArgumentException("Got a wrong type in the RssFeedNavigationRenderer (only wants RssFeed), was"+item.getClass());
+		}
+	}
+
+	private String xmlEscape(String uniqueUrl) {
+		if(uniqueUrl == null) {
+			return "";
+		}
+		else {
+			return XmlUtil.xmlEscape(uniqueUrl);
 		}
 	}
 
