@@ -11,9 +11,11 @@
 <link rel="icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
 <link rel="shortcut icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
 <link href="<cmsc:staticurl page='/editors/css/main.css'/>" type="text/css" rel="stylesheet" />
+<!--[if IE]>
 <style type="text/css" xml:space="preserve">
    body { behavior: url(<cmsc:staticurl page='/editors/css/hover.htc)'/>;}
 </style>
+<![endif]-->
 <script src="<cmsc:staticurl page='/editors/utils/rowhover.js'/>" type="text/javascript"></script>
 <script src="<cmsc:staticurl page='/js/window.js'/>" type="text/javascript"></script>
 <script src="<cmsc:staticurl page='/js/transparent_png.js'/>" type="text/javascript"></script>
