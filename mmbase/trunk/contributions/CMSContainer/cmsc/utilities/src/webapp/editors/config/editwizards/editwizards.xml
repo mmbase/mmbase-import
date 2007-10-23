@@ -3,6 +3,7 @@
 <wizard-schema id="editwizards">
 	<title xml:lang="nl">Editwizard</title>
 	<title xml:lang="en">Editwizard</title>
+	<title xml:lang="zh">编辑向导</title>
 
    <action include="config/editwizards/create_editwizards.xml"/>
    <action include="config/editwizards/delete_editwizards.xml"/>

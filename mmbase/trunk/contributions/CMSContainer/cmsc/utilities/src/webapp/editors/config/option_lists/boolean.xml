@@ -4,9 +4,11 @@
 	<option id="1">
 		<prompt xml:lang="nl">Ja</prompt>
 		<prompt xml:lang="en">Yes</prompt>
+		<prompt xml:lang="zh">是</prompt>
 	</option>
 	<option id="0">
 		<prompt xml:lang="nl">Nee</prompt>
 		<prompt xml:lang="en">No</prompt>
+		<prompt xml:lang="zh">否</prompt>
 	</option>
 </optionlist>
