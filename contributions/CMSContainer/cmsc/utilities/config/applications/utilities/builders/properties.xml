@@ -16,28 +16,29 @@
    <names>
       <singular xml:lang="nl">properties</singular>
       <singular xml:lang="en">properties</singular>
+	  <singular xml:lang="zh">属性</singular>
       <plural xml:lang="nl">properties</plural>
       <plural xml:lang="en">properties</plural>
+	  <plural xml:lang="zh">属性</plural>
    </names>
    <descriptions>
-      <description xml:lang="nl"> 
-</description>
-      <description xml:lang="en"> 
-</description>
+      <description xml:lang="nl"></description>
+      <description xml:lang="en"></description>
+	  <description xml:lang="zh"></description>
    </descriptions>
 
-	<properties>
-							</properties>
+	<properties></properties>
    <fieldlist>
       <field>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Naam</guiname>
-				<guiname xml:lang="en">Key</guiname>
+            <guiname xml:lang="nl">Naam</guiname>
+			<guiname xml:lang="en">Key</guiname>
+			<guiname xml:lang="zh">关键字</guiname>
          </gui>
          <editor>
             <positions>
@@ -56,15 +57,16 @@ Naam</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Omschrijving</guiname>
+            <guiname xml:lang="nl">Omschrijving</guiname>
             <guiname xml:lang="en">Description</guiname>
+			<guiname xml:lang="zh">描述</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>5</input>
+               <input>5</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -79,15 +81,16 @@ Omschrijving</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Waarde</guiname>
-				<guiname xml:lang="en">Value</guiname>
+            <guiname xml:lang="nl">Waarde</guiname>
+			<guiname xml:lang="en">Value</guiname>
+			<guiname xml:lang="zh">值</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>6</input>
+               <input>6</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -102,15 +105,16 @@ Waarde</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Productie</guiname>
-				<guiname xml:lang="en">Production</guiname>
+            <guiname xml:lang="nl">Productie</guiname>
+			<guiname xml:lang="en">Production</guiname>
+			<guiname xml:lang="zh">生产</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>7</input>
+               <input>7</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -125,15 +129,16 @@ Productie</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Acceptatie</guiname>
-				<guiname xml:lang="en">Acceptance</guiname>
+            <guiname xml:lang="nl">Acceptatie</guiname>
+			<guiname xml:lang="en">Acceptance</guiname>
+			<guiname xml:lang="zh">认可</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>8</input>
+               <input>8</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -148,15 +153,16 @@ Acceptatie</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Test</guiname>
-				<guiname xml:lang="en">Test</guiname>
+            <guiname xml:lang="nl">Test</guiname>
+			<guiname xml:lang="en">Test</guiname>
+			<guiname xml:lang="zh">测试</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>9</input>
+               <input>9</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -171,15 +177,16 @@ Test</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">
-Development</guiname>
-				<guiname xml:lang="en">Development</guiname>
+            <guiname xml:lang="nl">Development</guiname>
+			<guiname xml:lang="en">Development</guiname>
+			<guiname xml:lang="zh">开发</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>10</input>
+               <input>10</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
@@ -194,14 +201,16 @@ Development</guiname>
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
             <guiname xml:lang="nl">Module</guiname>
-				<guiname xml:lang="en">Module</guiname>
+			<guiname xml:lang="en">Module</guiname>
+			<guiname xml:lang="zh">模型</guiname>
          </gui>
          <editor>
             <positions>
-                                           <input>10</input>
+               <input>10</input>
                <list>-1</list>
                <search>-1</search>
             </positions>

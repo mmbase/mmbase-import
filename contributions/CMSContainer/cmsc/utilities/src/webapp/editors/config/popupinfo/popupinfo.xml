@@ -3,6 +3,7 @@
 <wizard-schema id="popupinfo">
 	<title xml:lang="nl">Popup</title>
 	<title xml:lang="en">Popup</title>
+	<title xml:lang="zh">弹出</title>
 
    <action include="config/popupinfo/create_popupinfo.xml"/>
    <action include="config/popupinfo/delete_popupinfo.xml"/>
