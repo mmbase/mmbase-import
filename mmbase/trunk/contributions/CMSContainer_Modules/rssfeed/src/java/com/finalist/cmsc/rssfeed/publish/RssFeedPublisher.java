@@ -1,10 +1,11 @@
-package com.finalist.cmsc.publish;
+package com.finalist.cmsc.rssfeed.publish;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.remotepublishing.util.PublishUtil;
 
-import com.finalist.cmsc.navigation.RssFeedUtil;
+import com.finalist.cmsc.publish.Publisher;
+import com.finalist.cmsc.rssfeed.util.RssFeedUtil;
 
 public class RssFeedPublisher extends Publisher {
 
