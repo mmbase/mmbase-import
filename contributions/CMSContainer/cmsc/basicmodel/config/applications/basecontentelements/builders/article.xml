@@ -33,7 +33,7 @@
 			<gui>
 				<guiname xml:lang="nl">Ondertitel</guiname>
 				<guiname xml:lang="en">Subtitle</guiname>
-				<guiname xml:langy="zh">副标题</guiname>
+				<guiname xml:lang="zh">副标题</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -57,7 +57,7 @@
 			<gui>
 				<guiname xml:lang="nl">Introductie</guiname>
 				<guiname xml:lang="en">Intro</guiname>
-				<guiname xml:langy="zh">引言</guiname>
+				<guiname xml:lang="zh">引言</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -81,7 +81,7 @@
 			<gui>
 				<guiname xml:lang="nl">Tekst</guiname>
 				<guiname xml:lang="en">Body</guiname>
-				<guiname xml:langy="zh">正文</guiname>
+				<guiname xml:lang="zh">正文</guiname>
 			</gui>
 			<editor>
 				<positions>
