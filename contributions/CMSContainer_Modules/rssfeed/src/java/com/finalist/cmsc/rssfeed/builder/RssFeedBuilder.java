@@ -1,7 +1,6 @@
-package com.finalist.cmsc.rssfeed.module;
+package com.finalist.cmsc.rssfeed.builder;
 
-import org.mmbase.module.Module;
-
+import com.finalist.cmsc.navigation.NavigationBuilder;
 import com.finalist.cmsc.navigation.NavigationManager;
 import com.finalist.cmsc.rssfeed.newnav.RssFeedNavigationItemManager;
 
@@ -9,9 +8,10 @@ import com.finalist.cmsc.rssfeed.newnav.RssFeedNavigationItemManager;
 /**
  * @author Freek Punt
  */
-public class RssFeedModule extends Module {
+public class RssFeedBuilder extends NavigationBuilder {
     
-	public void init() {
+	
+	public RssFeedBuilder() {
 		NavigationManager.registerNavigationManager(new RssFeedNavigationItemManager());
 	}
 
