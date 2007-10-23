@@ -7,20 +7,22 @@
 	<mm:cloudinfo type="user" id="username" write="false"/>
 	<mm:listnodes type="user" constraints="username='${username}'">
 		<mm:field name="language" id="language" write="false"/>
+		
+		<c:if test="${empty language}">
+			<c:set var="language" value="<%=request.getHeader ( "Accept-Language" )%>"/>
+			<c:if test="${fn:length(language) > 2}">
+				<c:set var="language" value="${fn:substring(language,0,2)}"/>
+			</c:if>
+			<mm:setfield name="language">${language}</mm:setfield>
+		</c:if>
 	</mm:listnodes>
 </mm:cloud>
 
-	<c:choose>
-		<c:when test="${empty language}">
-			<c:set var="language" value="client"/>
-		</c:when>
-		<c:otherwise>
-			<fmt:setLocale value="${language}" scope="session"/>
-			<mm:write referid="language" jspvar="language" vartype="String">
-            	<% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(language));%>
-            </mm:write>
-        </c:otherwise>
-	</c:choose>
+
+<fmt:setLocale value="${language}" scope="session"/>
+<mm:write referid="language" jspvar="lang" vartype="String">
+	<% request.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(lang));%>
+</mm:write>
 
 <%-- A cloud tag inside a locale tag will set the locale to the user cloud
  A local tag inside a cloud tag will only set the locale for its body
