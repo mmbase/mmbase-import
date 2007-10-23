@@ -3,6 +3,7 @@
 <wizard-schema id="mailform">
 	<title xml:lang="nl">Mailformulier</title>
 	<title xml:lang="en">Mailform</title>
+	<title xml:lang="zh">邮件表单</title>
 
    <action include="config/mailform/create_mailform.xml"/>
    <action include="config/mailform/delete_mailform.xml"/>
