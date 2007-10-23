@@ -28,13 +28,25 @@ public class NavigationUtil {
     public static final String NAVREL = "navrel";
     public static final String ALLOWREL = "allowrel";
 
-    public static String[] treeManagers = new String[] { RssFeedUtil.RSSFEED, PagesUtil.PAGE, SiteUtil.SITE };
-    public static String[] fragmentFieldnames = new String[] { RssFeedUtil.FRAGMENT_FIELD, PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD};
+    public static String[] treeManagers;// = new String[] { RssFeedUtil.RSSFEED, PagesUtil.PAGE, SiteUtil.SITE };
+    public static String[] fragmentFieldnames;// = new String[] { RssFeedUtil.FRAGMENT_FIELD, PagesUtil.FRAGMENT_FIELD, SiteUtil.FRAGMENT_FIELD};
+    
+    static {
+    
+        List<NavigationItemManager> navigationManagers = NavigationManager.getNavigationManagers();
+    	treeManagers = new String[navigationManagers.size()];
+    	fragmentFieldnames = new String[navigationManagers.size()];
+		for(int count = 0; count < navigationManagers.size(); count++) {
+			NavigationItemManager manager = navigationManagers.get(count);
+			treeManagers[navigationManagers.size()-count-1] = manager.getTreeManager();
+			fragmentFieldnames[navigationManagers.size()-count-1] = manager.getFragementFieldname();
+		}
+    }
 
     private NavigationUtil() {
         // utility
     }
-
+    
     public static RelationManager getRelationManager(Cloud cloud) {
         return TreeUtil.getRelationManager(cloud, PagesUtil.PAGE, NAVREL);
     }

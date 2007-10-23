@@ -2,6 +2,7 @@ package com.finalist.cmsc.navigation;
 
 import org.mmbase.bridge.*;
 
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
 
@@ -31,12 +32,20 @@ public class NavigationTreeModel implements TreeModel {
     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
     */
    public int getChildCount(Object parent) {
-	   int childCount = NavigationUtil.getChildCount((Node) parent);
-	   if(ModuleUtil.checkFeature(NavigationRenderer.FEATURE_RSSFEED)) {
-		   childCount += RssFeedUtil.getChildCount((Node) parent);
+	   int childCount = 0;
+	   for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+		   childCount += manager.getChildCount((Node)parent);	
 	   }
-      return childCount;
+	   return childCount;
    }
+
+// [FP]
+//	   int childCount = NavigationUtil.getChildCount((Node) parent);
+//	   if(ModuleUtil.checkFeature(NavigationRenderer.FEATURE_RSSFEED)) {
+//		   childCount += RssFeedUtil.getChildCount((Node) parent);
+//	   }
+//      return childCount;
+//   }
  
    /**
     * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
@@ -49,20 +58,33 @@ public class NavigationTreeModel implements TreeModel {
     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
     */
    public Object getChild(Object parent, int index) {
-      Node parentNode = (Node)parent;
-      NodeList pages = NavigationUtil.getOrderedChildren(parentNode); 
+	   int offset = 0;
+       Node parentNode = (Node)parent;
 
-      if (pages.size() > index) {
-         return pages.get(index);
-      }
-      
-      if(ModuleUtil.checkFeature(NavigationRenderer.FEATURE_RSSFEED)) {
-    	  NodeList feeds = RssFeedUtil.getOrderedChildren(parentNode); 
-    	  if (index - pages.size() < feeds.size()) {
-    		  return feeds.get(index - pages.size());
-    	  }
-      }
-      throw new IndexOutOfBoundsException("Child " + index + " is not available. Node " + parentNode.getNumber() + " has " + pages.size() + " children.");
+	   for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+		   int numberOfClients =  manager.getChildCount((Node)parent);
+		   if(index < offset + numberOfClients) {
+			   return manager.getChild(parentNode, index - offset);
+		   }
+		   offset += numberOfClients;
+	   }
+       throw new IndexOutOfBoundsException("Child " + index + " is not available. Node " + parentNode.getNumber() + " has " + offset + " children.");
+	   
+//		[FP]
+//      Node parentNode = (Node)parent;
+//      NodeList pages = NavigationUtil.getOrderedChildren(parentNode); 
+//
+//      if (pages.size() > index) {
+//         return pages.get(index);
+//      }
+//      
+//      if(ModuleUtil.checkFeature(NavigationRenderer.FEATURE_RSSFEED)) {
+//    	  NodeList feeds = RssFeedUtil.getOrderedChildren(parentNode); 
+//    	  if (index - pages.size() < feeds.size()) {
+//    		  return feeds.get(index - pages.size());
+//    	  }
+//      }
+//      throw new IndexOutOfBoundsException("Child " + index + " is not available. Node " + parentNode.getNumber() + " has " + pages.size() + " children.");
       
    }
 

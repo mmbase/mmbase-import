@@ -28,7 +28,7 @@ public class NavigationAjaxRenderer extends NavigationRenderer implements AjaxTr
     }
     
     @Override
-    protected TreeOption createOption(String icon, String label, String action, String target) {
+    public TreeOption createOption(String icon, String label, String action, String target) {
         return new AjaxTreeOption(icon, label, action, target);
     }
 

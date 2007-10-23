@@ -123,6 +123,13 @@
         diskPersistent="false"
         />
 
+    <cache name="com.finalist.cmsc.beans.om.NavigationItem"
+        maxElementsInMemory="1000"
+        eternal="true"
+        overflowToDisk="false"
+        diskPersistent="false"
+        />
+<!--
     <cache name="com.finalist.cmsc.beans.om.Page"
         maxElementsInMemory="1000"
         eternal="true"
@@ -136,4 +143,5 @@
         overflowToDisk="false"
         diskPersistent="false"
         />
+-->        
 </ehcache>
