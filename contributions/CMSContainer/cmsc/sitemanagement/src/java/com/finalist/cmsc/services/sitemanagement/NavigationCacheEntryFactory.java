@@ -11,8 +11,6 @@ package com.finalist.cmsc.services.sitemanagement;
 
 import java.io.Serializable;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
-
 import org.mmbase.bridge.*;
 import org.mmbase.core.event.*;
 import org.mmbase.util.logging.Logger;
@@ -22,18 +20,27 @@ import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.*;
 
 
-public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
+public class NavigationCacheEntryFactory extends MMBaseCacheEntryFactory {
 
-    public PageCacheEntryFactory() {
+    public NavigationCacheEntryFactory() {
         super(PagesUtil.PAGE);
     }
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(PageCacheEntryFactory.class.getName());
+    private static Logger log = Logging.getLoggerInstance(NavigationCacheEntryFactory.class.getName());
 
     @Override
     protected Serializable loadEntry(Serializable key) throws Exception {
-        return loadPage((Integer) key);
+        Node node = getNode(key);
+		for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+			NavigationItem navigationItem = manager.loadNavigationItem((Integer) key, node);
+			if(navigationItem != null) {
+				return navigationItem;
+			}
+		}
+		return null;
+    }
+/* [fp]        return loadPage((Integer) key);
     }
 
     private Page loadPage(Integer key) {
@@ -99,7 +106,7 @@ public class PageCacheEntryFactory extends MMBaseCacheEntryFactory {
     		 page.addPageImage(name, image);
     	 }
      }
-     
+*/     
     @Override
     protected boolean isRelationEvent(RelationEvent event, String nodeType) {
         return super.isRelationEvent(event, nodeType) || super.isRelationEvent(event, SiteUtil.SITE);

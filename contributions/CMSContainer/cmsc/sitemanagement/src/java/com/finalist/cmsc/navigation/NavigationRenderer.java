@@ -1,28 +1,30 @@
 package com.finalist.cmsc.navigation;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.util.HttpUtil;
 
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.util.bundles.JstlUtil;
-import com.finalist.tree.*;
-import com.finalist.util.module.ModuleUtil;
+import com.finalist.tree.TreeCellRenderer;
+import com.finalist.tree.TreeElement;
+import com.finalist.tree.TreeModel;
+import com.finalist.tree.TreeOption;
 
 /**
  * Renderer of the Site management tree.
  * 
  * @author Nico Klasens (Finalist IT Group)
  */
-public abstract class NavigationRenderer implements TreeCellRenderer {
+public abstract class NavigationRenderer implements TreeCellRenderer, NavigationInformationProvider{
 
-    protected static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
-    protected static final String FEATURE_RSSFEED = "rssfeed";
-    protected static final String FEATURE_WORKFLOW = "workflowitem";
+// [FP]    protected static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
+// [FP]   protected static final String FEATURE_RSSFEED = "rssfeed";
+// [FP]   protected static final String FEATURE_WORKFLOW = "workflowitem";
     
 	private String target = null;
     private HttpServletRequest request;
@@ -45,8 +47,17 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
             id = String.valueOf(parentNode.getNumber());
         }
         
-        UserRole role = null;
-        boolean isPage = false;
+        for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+        	NavigationItem item = manager.getNavigationItem(new Integer(id));
+        	if(item != null) {
+        		return manager.getRenderer().getTreeElement(this, parentNode, item, model);
+        	}
+        }
+        return null;
+    }
+        	//TreeElement element = 
+        
+/*        boolean isPage = false;
         boolean isSite = false;
         boolean isRssFeed = ModuleUtil.checkFeature(FEATURE_RSSFEED) && RssFeedUtil.isRssFeedType(parentNode);
         boolean secure = false;
@@ -213,14 +224,53 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
     private String getUrl(String url) {
         return response.encodeURL(url);
     }
-
     public String getIcon(Object node, UserRole role) {
         Node n = (Node) node;
         return "type/" + n.getNodeManager().getName() + "_"+role.getRole().getName()+".png";
     }
+*/
+    
+    public String getOpenAction(Node parentNode, boolean secure) {
+        String action = null;
+        if (ServerUtil.useServerName()) {
+            String[] pathElements = NavigationUtil.getPathElementsToRoot(parentNode, true);
 
-    protected abstract TreeOption createOption(String icon, String label, String action, String target);
+            action = HttpUtil.getWebappUri(request, pathElements[0], secure);
+            for (int i = 1; i < pathElements.length; i++) {
+                action += pathElements[i] + "/";
+            }
+            if (!request.getServerName().equals(pathElements[0])) {
+                action = HttpUtil.addSessionId(request, action);
+            }
+            else {
+                action = response.encodeURL(action);
+            }
+        }
+        else {
+            String path = NavigationUtil.getPathToRootString(parentNode, true); 
+            String webappuri = HttpUtil.getWebappUri(request, secure);
+            action = response.encodeURL(webappuri + path);
+        }
+        return action;
+    }
 
+    public String getIcon(NavigationItem item, UserRole role) {
+    	String type = item.getClass().getName().toLowerCase();
+    	type = type.substring(type.lastIndexOf(".")+1);
+        return "type/" + type + "_"+role.getRole().getName()+".png";
+    }
+    
+    public TreeOption createOption(String icon, String message, String action) {
+        String label = JstlUtil.getMessage(request, message);
+        return createOption(icon, label,  action, target);    	
+    }
+    
+    public abstract TreeOption createOption(String icon, String label, String action, String target);
+
+    public TreeElement createElement(NavigationItem item, UserRole role, String action) {
+    	return createElement(getIcon(item, role), new Integer(item.getId()).toString(), item.getTitle(), item.getUrlfragment(), action, target);
+    }
+    
     protected abstract TreeElement createElement(String icon, String id, String name, String fragment, String action, String target);
     
 }

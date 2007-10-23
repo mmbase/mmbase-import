@@ -9,27 +9,42 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.sitemanagement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Query;
 import org.mmbase.cache.CachePolicy;
-import org.mmbase.core.event.*;
+import org.mmbase.core.event.Event;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.NodeEventListener;
+import org.mmbase.core.event.RelationEvent;
+import org.mmbase.core.event.RelationEventListener;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.SortOrder;
+import org.mmbase.storage.search.StepField;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.navigation.NavigationItemManager;
+import com.finalist.cmsc.navigation.NavigationManager;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.SiteUtil;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTree;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTreeNode;
-import com.finalist.util.module.ModuleUtil;
 
 
 public class SiteCache implements RelationEventListener, NodeEventListener {
@@ -49,7 +64,10 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         
         Cloud cloud = getCloud();
 
-        NodeList sites = SiteUtil.getSites(cloud);
+		for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+			manager.loadNavigationItems(this, cloud);
+		}
+/*  [fp]      NodeList sites = SiteUtil.getSites(cloud);
         for (Iterator<Node> iter = sites.iterator(); iter.hasNext();) {
            Node siteNode = iter.next();
             
@@ -62,11 +80,12 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         loadNavigationItems(cloud, PagesUtil.PAGE);
         if(ModuleUtil.checkFeature(RssFeedUtil.RSSFEED)) {
         	loadNavigationItems(cloud, RssFeedUtil.RSSFEED);
-    	}
+    	}*/
         
     }
 
-	private void loadNavigationItems(Cloud cloud, String nodeType) {
+	@SuppressWarnings("unchecked")
+	public void loadNavigationItems(Cloud cloud, String nodeType) {
 		List<Node> unfinishedNodes = new ArrayList<Node>();
 
         NodeManager navrel = cloud.getNodeManager(NavigationUtil.NAVREL);
@@ -139,7 +158,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         MMBase.getMMBase().addNodeRelatedEventsListener(nodeType, this);
 	}
 
-    private void createTree(int siteId, String sitefragment) {
+    public void createTree(int siteId, String sitefragment) {
         PageTree siteTree = new PageTree(siteId, sitefragment);
         trees.put(sitefragment.toLowerCase(), siteTree);
     }
@@ -265,8 +284,9 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
     }
 
     public void notify(RelationEvent event) {
-        if (( PagesUtil.PAGE.equals(event.getRelationSourceType()) || SiteUtil.SITE.equals(event.getRelationSourceType()) ) 
-                && (PagesUtil.PAGE.equals(event.getRelationDestinationType()) || RssFeedUtil.RSSFEED.equals(event.getRelationDestinationType()))) {
+/* [fp]        if (( PagesUtil.PAGE.equals(event.getRelationSourceType()) || SiteUtil.SITE.equals(event.getRelationSourceType()) ) 
+                && (PagesUtil.PAGE.equals(event.getRelationDestinationType()) || RssFeedUtil.RSSFEED.equals(event.getRelationDestinationType()))) {*/
+    	if(isChangeTreeEvent(event)) {
             switch (event.getType()) {
                 case Event.TYPE_CHANGE:
                 {
@@ -348,11 +368,34 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
         }
     }
 
-    public void notify(NodeEvent event) {
+    private boolean isChangeTreeEvent(RelationEvent event) {
+    	boolean sourceIsTreeType = false;
+    	boolean destinationIsTreeType = false;
+    	
+		for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+			String treeManager = manager.getTreeManager(); 
+			if(treeManager.equals(event.getRelationSourceType())) {
+				sourceIsTreeType = true;
+			}
+			if(treeManager.equals(event.getRelationDestinationType())) {
+				destinationIsTreeType = true;
+			}
+		}
+		return sourceIsTreeType && destinationIsTreeType;
+	}
+
+	public void notify(NodeEvent event) {
         Integer key = event.getNodeNumber();
         if (key != null) {
             switch (event.getType()) {
                 case Event.TYPE_CHANGE:
+                	
+            		for(NavigationItemManager manager:NavigationManager.getNavigationManagers()) {
+            			if(manager.getTreeManager().equals(event.getBuilderName()) && event.getChangedFields().contains((String) event.getNewValue(PagesUtil.FRAGMENT_FIELD))) {
+            				manager.updateCache(trees, key, (String) event.getNewValue((String) event.getNewValue(PagesUtil.FRAGMENT_FIELD)));
+            			}
+            		}
+                	/* [fp]
                     if (SiteUtil.SITE.equals(event.getBuilderName())) {
                         if(event.getChangedFields().contains(SiteUtil.FRAGMENT_FIELD)) {
                             for (PageTree tree : trees.values()) {
@@ -377,6 +420,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                             }
                         }
                     }
+                    */
                     break;
                 case Event.TYPE_DELETE:
                     if (SiteUtil.SITE.equals(event.getBuilderName())) {

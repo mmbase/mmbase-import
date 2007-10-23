@@ -39,7 +39,7 @@ public class NavigationHtmlRenderer extends NavigationRenderer implements HTMLTr
     }
     
     @Override
-    protected TreeOption createOption(String icon, String label, String action, String target) {
+    public TreeOption createOption(String icon, String label, String action, String target) {
         return new HTMLTreeOption(icon, label, action, target, optionLabel);
     }
 

@@ -64,12 +64,12 @@ public class SiteManagement {
 		return cService.getPages(site);
 	}
 
-	public static Page getPage(int pageId) {
-		return cService.getPage(pageId);
+	public static NavigationItem getNavigationItem(int id) {
+		return cService.getNavigationItem(id);
 	}
 
-	public static Page getPageFromPath(String path) {
-		return cService.getPageFromPath(path);
+	public static NavigationItem getNavigationItemFromPath(String path) {
+		return cService.getNavigationItemFromPath(path);
 	}
 
     public static List<Stylesheet> getStylesheetForPageByPath(String path, boolean override) {
@@ -146,8 +146,28 @@ public class SiteManagement {
     public static void resetSiteCache() {
        cService.resetSiteCache();
    }
+// [FP]
+//	public static RssFeed getRssFeedFromPath(String path) {
+//		return cService.getRssFeedFromPath(path);
+//	}
+//
+//	public static RssFeed getRssFeed(int number) {
+//		return cService.getRssFeed(number);
+//	}
 
-	public static RssFeed getRssFeedFromPath(String path) {
-		return cService.getRssFeedFromPath(path);
+    /**
+     * Here for downwards compatibility
+     * @deprecated because we now have getNavigationItem
+     */
+	public static Page getPage(int number) {
+		return (Page)getNavigationItem(number);
+	}
+
+    /**
+     * Here for downwards compatibility
+     * @deprecated because we now have getNavigationItemFromPath
+     */
+	public static Page getPageFromPath(String path) {
+		return (Page)getNavigationItemFromPath(path);
 	}
 }

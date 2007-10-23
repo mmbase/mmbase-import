@@ -123,8 +123,8 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 	}
 
     @Override
-	public Page getPage(int channel) {
-	    return siteModelManager.getPage(channel);
+	public NavigationItem getNavigationItem(int channel) {
+	    return siteModelManager.getNavigationItem(channel);
 	}
 
     @Override
@@ -159,8 +159,8 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
     }
 
     @Override
-	public Page getPageFromPath(String path) {
-        return siteModelManager.getPage(path);
+	public NavigationItem getNavigationItemFromPath(String path) {
+        return siteModelManager.getNavigationItem(path);
 	}
 
     @Override
@@ -180,7 +180,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
     @Override
     public String getPath(int pageId, boolean includeRoot) {
-       Page page = siteModelManager.getPage(pageId);
+       Page page = (Page)siteModelManager.getNavigationItem(pageId);
        if(page == null) {
           return null;
        }
@@ -292,8 +292,13 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
       siteModelManager.resetSiteCache();
    }
 
-   @Override
-   public RssFeed getRssFeedFromPath(String path) {
-	   return siteModelManager.getRssFeed(path);
-   }
+//  [FP] @Override
+//   public RssFeed getRssFeedFromPath(String path) {
+//	   return siteModelManager.getRssFeed(path);
+//   }
+//
+//   @Override
+//   public RssFeed getRssFeed(int number) {
+//	   return siteModelManager.getRssFeed(number);
+//   }
 }
