@@ -47,6 +47,7 @@ public class PortalURL {
 	private HashMap<String, Object> encodedStartControlParameter = new HashMap<String, Object>();
 	private HashMap<String, String> startStateLessControlParameter = new HashMap<String, String>();
    private String host;
+   private int port;
 
 	private boolean analyzed = false;
 	private PortalEnvironment environment;
@@ -81,19 +82,29 @@ public class PortalURL {
 	
 		return result.toString();
 	}
-   
+
+   /**
+     * Creates and URL pointing to the home of the portal
+     * 
+     * @return the portal URL
+     */
+    public String getBasePortalURL() {
+        return basePortalURL;
+    }
+
    public PortalURL(String host, HttpServletRequest request, String globalNavigation) {
       this(request, globalNavigation);
       this.host = host;
    }
 
     public PortalURL(HttpServletRequest request, String globalNavigation) {
-        this(request.getContextPath(), request.isSecure(), globalNavigation);
+        this(request.getContextPath(), request.isSecure(), request.getServerPort(), globalNavigation);
     }
     
-    public PortalURL(String basePortalURL, boolean secure, String globalNavigation) {
+    public PortalURL(String basePortalURL, boolean secure, int port, String globalNavigation) {
         this.basePortalURL = basePortalURL;
         this.secure = secure;
+        this.port = port;
         if (globalNavigation != null) {
             addGlobalNavigation(globalNavigation);
         }
@@ -107,6 +118,9 @@ public class PortalURL {
 	 */  
 	public PortalURL(PortalEnvironment env) {
 		environment = env;
+		this.secure = env.getRequest().isSecure();
+		this.port = env.getRequest().getServerPort();
+		this.basePortalURL = env.getRequest().getContextPath();
 	}
 
 	/**
@@ -269,17 +283,7 @@ public class PortalURL {
 		return "";
 	}
 
-	   public String getPort(PortalEnvironment env, boolean secure) {
-	       int port = 80;
-	        if (env == null) {
-	            if (secure) {
-	                port = 443;
-	            }
-	        }
-	        else {
-	            port = env.getRequest().getServerPort();
-	        }
-	        
+	   public String getPort(boolean secure) {
 	        if ((!secure && port != 80) || (secure && port != 443)) {
 	            return ":" + port;
 	        }
@@ -298,16 +302,16 @@ public class PortalURL {
 		if (p_secure != null) {
 			secure = p_secure.booleanValue();
 		} else {
-			secure = environment == null ? this.secure : environment.getRequest().isSecure();
+			secure = this.secure;
 		}
       
       
       if(host != null) {
          url.append(secure ? SECURE_PROTOCOL : INSECURE_PROTOCOL);
          url.append(host);
-         url.append(getPort(environment, secure));
+         url.append(getPort(secure));
       }
-      url.append(getBasePortalURL(environment));
+      url.append(getBasePortalURL());
 
 		String global = getGlobalNavigationAsString();
 		if (global.length() > 0) {
@@ -366,8 +370,9 @@ public class PortalURL {
 		// check the complete pathInfo for
 		// * navigational information
 		// * control information
-		if (environment.getRequest().getServletPath() != null) {
-			String pathInfo = environment.getRequest().getServletPath();
+        String pathInfo = environment.getRequest().getServletPath();
+		if (pathInfo != null) {
+
 //            if (environment.getRequest().getAttribute("javax.servlet.error.request_uri") != null) {
 //                pathInfo = (String) environment.getRequest().getAttribute("javax.servlet.error.request_uri");
 //                if (environment.getRequest().getContextPath() != null 
