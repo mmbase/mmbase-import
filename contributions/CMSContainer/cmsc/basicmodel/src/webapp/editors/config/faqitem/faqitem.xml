@@ -3,6 +3,7 @@
 <wizard-schema id="faqitem">
 	<title xml:lang="nl">Veelgestelde vraag</title>
 	<title xml:lang="en">Frequently asked question</title>
+	<title xml:lang="zh">高频问题</title>
 
    <action include="config/faqitem/create_faqitem.xml"/>
    <action include="config/faqitem/delete_faqitem.xml"/>

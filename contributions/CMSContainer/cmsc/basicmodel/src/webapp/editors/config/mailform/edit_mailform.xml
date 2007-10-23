@@ -3,17 +3,21 @@
 <form-schema id="edit_mailform">
 	<title xml:lang="nl">Mailformulier</title>
 	<title xml:lang="en">Mailform</title>
+	<title xml:lang="zh">邮件表单</title>
 
 	<field name="title" dtmaxlength="255" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
 	</field>
 	<field name="subject" dtmaxlength="255" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Subject</prompt>
 		<prompt xml:lang="nl">Onderwerp</prompt>
+		<prompt xml:lang="zh">主题</prompt>
 	</field>
 	<field name="email">
 		<prompt xml:lang="en">Email</prompt>
 		<prompt xml:lang="nl">Email</prompt>
+		<prompt xml:lang="zh">邮件</prompt>
 	</field>
 </form-schema>

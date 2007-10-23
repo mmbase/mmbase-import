@@ -3,6 +3,7 @@
 <wizard-schema id="attachments">
 	<title xml:lang="nl">Bijlage</title>
 	<title xml:lang="en">Attachment</title>
+	<title xml:lang="zh">附件</title>
 
    <action include="config/attachments/create_attachments.xml"/>
    <action include="config/attachments/delete_attachments.xml"/>

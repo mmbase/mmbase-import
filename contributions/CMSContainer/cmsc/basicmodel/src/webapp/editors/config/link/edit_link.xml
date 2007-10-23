@@ -3,14 +3,17 @@
 <form-schema id="edit_link">
 	<title xml:lang="nl">Link</title>
 	<title xml:lang="en">Link</title>
+	<title xml:lang="zh">链接</title>
 
 	<field name="title" dtmaxlength="255" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
 	</field>
 	<field name="type" dtmaxlength="40" ftype="line" >
 		<prompt xml:lang="en">Type</prompt>
 		<prompt xml:lang="nl">Type</prompt>
+		<prompt xml:lang="zh">类型</prompt>
 	</field>
 	<list include="config/popupinfo/search_link_related_popupinfo.xml" />
 	<list include="config/urls/search_link_posrel_urls.xml" />
