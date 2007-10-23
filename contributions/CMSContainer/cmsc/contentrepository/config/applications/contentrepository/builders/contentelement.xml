@@ -17,7 +17,7 @@
 		<singular xml:lang="zh">内容元素</singular>
 		<plural xml:lang="nl">contentelement</plural>
 		<plural xml:lang="en">contentelement</plural>
-		<singular xml:lang="zh">内容元素</singular>
+		<plural xml:lang="zh">内容元素</plural>
 	</names>
 	<descriptions>
 		<description xml:lang="nl"></description>
@@ -379,7 +379,6 @@
 					<class name="com.finalist.cmsc.repository.ValueBetweenProcessorFactory">
 						<param name="from">publishdate</param>
 						<param name="to">expiredate</param>
-						<guiname xml:lang="zh">过期时间</guiname>
 					</class>
 				</commitprocessor>
 			</datatype>
