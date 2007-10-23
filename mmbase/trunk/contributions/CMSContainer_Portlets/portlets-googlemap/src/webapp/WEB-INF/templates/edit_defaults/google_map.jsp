@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
-<%@ taglib uri="http://finalist.com/csmc" prefix="cmsc" %>
-<%@ taglib uri="http://finalist.com/csmc-basicmodel" prefix="cmsc-bm" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+<%@ taglib uri="http://finalist.com/cmsc-basicmodel" prefix="cmsc-bm" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <portlet:defineObjects/>
