@@ -2,9 +2,9 @@
     Context configuration file for the mmbase example Web App
     Tomcat 5.5
 -->
-<Context path="/example" docBase="example" debug="5" reloadable="true">
+<Context debug="5" reloadable="true">
 
-	<!-- 
+	<!--  Mail settings
 		mail.smtp.host			The SMTP server to connect to.
 		mail.smtp.port			The SMTP server port to connect to, if the connect() method doesn't explicitly specify one. Defaults to 25.
 		mail.smtp.localhost 	Local host name used in the SMTP HELO or EHLO command.
@@ -41,6 +41,20 @@
 			password="mmbase2k"
 			driverClassName="com.mysql.jdbc.Driver"
 			url="jdbc:mysql://localhost:3306/mmbase?autoReconnect=true"
+	 -->
+	<!-- useServerPrepStmts=false 
+		Server-side Prepared Statements - Connector/J 3.1 will automatically detect and use server-side prepared
+		statements when they are available (MySQL server version 4.1.0 and newer).
+		Starting with version 3.1.7, the driver scans SQL you are preparing via all variants of Connection.
+		prepareStatement() to determine if it is a supported type of statement to prepare on the server side, 
+		and if it is not supported by the server, it instead prepares it as a client-side emulated prepared 
+		statement. You can disable this feature by passing 'emulateUnsupportedPstmts=false' in your JDBC URL. 
+		If your application encounters issues with server-side prepared statements, you can revert to the older 
+		client-side emulated prepared statement code that is still presently used for MySQL servers older 
+		than 4.1.0 with the following connection property: useServerPrepStmts=false
+		
+		MySql error: Incorrect arguments to mysql_stmt_execute
+		MySql error: Duplicate entry '1234' for key 1 in query
 	 -->
 
 	<Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env" type="java.lang.String" />
