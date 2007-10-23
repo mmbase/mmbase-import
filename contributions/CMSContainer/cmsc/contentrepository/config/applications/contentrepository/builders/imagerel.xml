@@ -15,12 +15,15 @@
 	<names>
 		<singular xml:lang="nl">imagerel</singular>
 		<singular xml:lang="en">imagerel</singular>
+		<singular xml:lang="zh">图片连接</singular>
 		<plural xml:lang="nl">imagerel</plural>
 		<plural xml:lang="en">imagerel</plural>
+		<plural xml:lang="zh">图片连接</plural>
 	</names>
 	<descriptions>
 		<description xml:lang="nl"></description>
 		<description xml:lang="en"></description>
+		<description xml:lang="zh"></description>
 	</descriptions>
 	<properties></properties>
 	<fieldlist>
@@ -28,10 +31,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Volgorde</guiname>
 				<guiname xml:lang="en">order</guiname>
+				<guiname xml:lang="zh">顺序</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -49,10 +54,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Positie</guiname>
 				<guiname xml:lang="en">pos</guiname>
+				<guiname xml:lang="zh">位置</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -71,10 +78,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Popup</guiname>
 				<guiname xml:lang="en">popup</guiname>
+				<guiname xml:lang="zh">弹出</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -93,10 +102,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Bijschrift</guiname>
 				<guiname xml:lang="en">legend</guiname>
+				<guiname xml:lang="zh">图例</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -115,10 +126,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Breedte</guiname>
 				<guiname xml:lang="en">Width</guiname>
+				<guiname xml:lang="zh">宽</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -136,10 +149,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Hoogte</guiname>
 				<guiname xml:lang="en">Height</guiname>
+				<guiname xml:lang="en">高</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -157,10 +172,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Afsnijden</guiname>
 				<guiname xml:lang="en">Crop</guiname>
+				<guiname xml:lang="en">裁切</guiname>
 			</gui>
 			<editor>
 				<positions>
