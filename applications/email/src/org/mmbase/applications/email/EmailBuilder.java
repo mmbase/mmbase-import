@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.26 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.27 2007-10-24 13:52:28 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -159,7 +159,11 @@ public class EmailBuilder extends MMObjectBuilder {
                     case TYPE_ONESHOT :
                         // deleting the node happens in EmailExpireHandler
                     case TYPE_ONESHOTKEEP :
-                        EmailHandler.sendMailNode(node);
+                        try {
+                            EmailHandler.sendMailNode(node);
+                        } catch (javax.mail.MessagingException me) {
+                            log.error(me.getMessage(), me);
+                        }
                         break;
                         // case TYPE_REPEATMAIL :
                     default:
@@ -183,7 +187,11 @@ public class EmailBuilder extends MMObjectBuilder {
                     case TYPE_ONESHOTKEEP :
                         org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
                                 public void run() {
-                                    EmailHandler.sendMailNode(node);
+                                    try {
+                                        EmailHandler.sendMailNode(node);
+                                    } catch (javax.mail.MessagingException me) {
+                                        log.error(me.getMessage(), me);
+                                    }
                                 }
                             });
                         break;
