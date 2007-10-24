@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.36 2007-10-11 08:57:39 michiel Exp $
+ * @version $Id: SendMail.java,v 1.37 2007-10-24 13:40:23 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -74,7 +74,7 @@ public class SendMail extends AbstractSendMail {
      * Delivers the mail represented by an MMBase node 'locally'. I.e. no actual mail is sent
      * (unless forwarded), but new objects and relations are created, to make this mail appear in
      * the mailbox of the recipients (which are represented by other MMBase nodes).
-     * 
+     *
      * The given 'body' of the node is _not_ parsed. MultiParts should be indicated by mmbase relations.
      *
      * @since MMBase-1.9
@@ -206,14 +206,18 @@ public class SendMail extends AbstractSendMail {
 
     /**
      */
-    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) {
+    public boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws javax.mail.MessagingException {
         if (log.isServiceEnabled()) {
-            log.service("Sending (multipart) mail to " + to);
+            log.service("Sending (multipart) mail from " + from + " to " + to);
+            if (log.isDebugEnabled()) {
+                log.debug("" + headers);
+            }
+
         }
+
         try {
-
             MimeMessage msg = constructMessage(from, to, headers);
-
+            if (mmpart == null) throw new NullPointerException();
             msg.setContent(mmpart);
 
             Transport.send(msg);
@@ -223,10 +227,9 @@ public class SendMail extends AbstractSendMail {
             return true;
         } catch (javax.mail.MessagingException e) {
             emailFailed++;
-            log.error("JMimeSendMail failure: " + e.getMessage());
             log.debug(e.getMessage(), e);
+            throw e;
         }
-        return false;
     }
 
     /**
@@ -349,10 +352,12 @@ public class SendMail extends AbstractSendMail {
 
         String cc = headers.get("CC");
         if (cc != null) {
+            log.info("Adding cc " + cc);
             msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
         }
         String bcc = headers.get("BCC");
         if (bcc != null) {
+            log.info("Adding bcc " + cc);
             msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(bcc));
         }
 
@@ -362,11 +367,16 @@ public class SendMail extends AbstractSendMail {
         }
         String sub = headers.get("Subject");
         if (sub == null || "".equals(sub)) sub = "<no subject>";
-        msg.setSubject(headers.get("Subject"));
+        msg.setSubject(sub);
 
         for (Map.Entry<String, String> header : headers.entrySet()) {
             if (! RECOGNIZED_HEADERS.contains(header.getKey())) {
-                msg.addHeader(header.getKey(), header.getValue());
+                String value = header.getValue();
+                if (value != null) {
+                    msg.addHeader(header.getKey(), header.getValue());
+                } else {
+                    log.warn("Got null " + header);
+                }
             }
         }
 
@@ -510,6 +520,7 @@ public class SendMail extends AbstractSendMail {
 
 
                     byte[] handle = attachment.getByteValue("handle");
+                    if (handle == null) handle = new byte[0];
                     MimeBodyPart mbp = new MimeBodyPart();
 
 

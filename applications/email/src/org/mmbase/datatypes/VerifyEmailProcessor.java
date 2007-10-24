@@ -11,14 +11,19 @@ package org.mmbase.datatypes;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.*;
 import org.mmbase.util.transformers.Base64;
 import org.mmbase.datatypes.processors.*;
 import java.util.*;
 import java.text.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
+import javax.servlet.http.*;
+import javax.servlet.*;
+import javax.servlet.jsp.*;
 
 /**
  * Using this class a Processor and as CommitProcessor on a certain field, adds 'email verification'
@@ -33,7 +38,7 @@ import javax.crypto.spec.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.2 2007-10-24 13:40:23 michiel Exp $
 
  */
 
@@ -66,6 +71,9 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     private String emailField   = "email";
     private String statusField  = null;
     private String emailTextBundle = "org.mmbase.datatypes.resources.verifyemailtemplate";
+    private String successProcessor;
+    private String url = "/mmbase/email/verify/";
+    private String includeUrl = "/core/mail.jsp";
 
 
     public void setEmailField(String ef) {
@@ -80,6 +88,17 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
     public void setReplyTo(String b) {
         emailTextBundle = b;
+    }
+
+    public void setSuccessProcessor(String p) {
+        successProcessor = p;
+    }
+    public void setUrl(String u) {
+        url = u;
+    }
+
+    public void setIncludeUrl(String u) {
+        includeUrl = u;
     }
 
 
@@ -141,6 +160,14 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                 if (value.equals(key)) {
                     node.setStringValue(emailField, email);
                     log.service("Verification of " + email + " succeeded");
+                    if (successProcessor != null) {
+                        try {
+                            Processor success = (Processor) Class.forName(successProcessor).newInstance();
+                            success.process(node, field, email);
+                        } catch (Exception e) {
+                            log.error(e);
+                        }
+                    }
                     return null;
                 } else {
                     log.service("Verification of " + email + " failed (" + value + "!=" + key + ")");
@@ -154,16 +181,21 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
         return encrypt(node.getNodeManager().getName() + SEP + field.getName() + SEP + key);
     }
     public static boolean validate(Cloud cloud, String encryptedKey) {
-        String keyChain = decrypt(encryptedKey);
+        String keyChain = decrypt(encryptedKey.replaceAll(" ", "+"));
+        log.debug("Found keyChain " + keyChain + " (from " + encryptedKey + " )");
         int pos1 = keyChain.indexOf(SEP);
         String nodeManager = keyChain.substring(0, pos1);
         int pos2 = keyChain.indexOf(SEP, pos1 + 1);
         String field = keyChain.substring(pos1 + 1, pos2);
         String fieldValue = keyChain.substring(pos2 + 1);
-        int pos3 = keyChain.indexOf(SEP, pos2 + 1);
-        String key = keyChain.substring(pos2 + 1, pos3);
-        Node node = SearchUtil.findNode(cloud, nodeManager, field, key);
-        if (node != null) {
+        String key = keyChain.substring(pos2 + 1);
+        NodeManager nm = cloud.getNodeManager(nodeManager);
+        NodeQuery query = nm.createQuery();
+
+        Queries.addConstraint(query, Queries.createConstraint(query, field, FieldCompareConstraint.LIKE, key + ":%"));
+        NodeList nl = nm.getList(query);
+        if (nl.size() == 1) {
+            Node node = nl.getNode(0);
             node.setStringValue(field, key);
             node.commit();
             return true;
@@ -172,7 +204,9 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     }
 
     public void commit(Node node, Field field) {
-        log.info("Commit for " + node + " " + emailField + " " + node.getChanged());
+        if (log.isDebugEnabled()) {
+            log.debug("Commit for " + node + " " + emailField + " " + node.getChanged());
+        }
         if ((node.getChanged().contains(emailField) && ! node.getChanged().contains(field.getName())) || node.isNew()) {
             String email = node.getStringValue(emailField);
             log.service("Sending confirmation email to '" + email + "'");
@@ -204,22 +238,54 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
             Node emailNode = emailBuilder.createNode();
 
-
-
             String toField       = emailModule.getProperty("emailbuilder.tofield");
             String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
             String bodyField     = emailModule.getProperty("emailbuilder.bodyfield");
             String fromField     = emailModule.getProperty("emailbuilder.fromfield");
 
-            emailNode.setStringValue(toField, email);
-            emailNode.setStringValue(bodyField, MessageFormat.format(emailTemplate.getString("body"), encryptedKey));
+            HttpServletRequest req = (HttpServletRequest) cloud.getProperty("request");
+            StringBuilder u = new StringBuilder();
+            StringBuffer include = new StringBuffer();
+            if (req != null) {
+                String scheme = req.getScheme();
+                u.append(scheme).append("://");
+                u.append(req.getServerName());
+                int port = req.getServerPort();
+                u.append((port == 80 && "http".equals(scheme)) ||
+                         (port == 443 && "https".equals(scheme))
+                         ? "" : ":" + port);
+                u.append(req.getContextPath());
+                log.info("Including " + includeUrl);
+                if (includeUrl != null && ! "".equals(includeUrl)) {
+                    try {
+                        PageContext pageContext = (PageContext) (Class.forName("org.mmbase.bridge.jsp.taglib.ContextReferrerTag").
+                                                                 getMethod("getThreadPageContext").invoke(null));
+                        HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
+                        RequestDispatcher requestDispatcher = req.getRequestDispatcher(includeUrl);
+                        HttpServletResponse response = new GenericResponseWrapper((HttpServletResponse) pageContext.getResponse());
+                        requestDispatcher.include(requestWrapper, response);
+                        include.append(response.toString());
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
+                }
 
+            }
+            u.append(url);
+            String sep = url.indexOf("?") > 0 ? "&amp;" : "?";
+            u.append(sep);
+            u.append("signature=" + encryptedKey);
+
+            emailNode.setStringValue(toField, email);
+            emailNode.setStringValue(bodyField,    MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString()));
             emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
 
             String from = emailTemplate.getString("from");
             emailNode.setStringValue(fromField, from);
 
             emailNode.commit();
+
+            emailNode = cloud.getNode(emailNode.getNumber());
             try {
                 Function mailFunction = emailNode.getFunction("startmail");
                 mailFunction.getFunctionValue(null);
