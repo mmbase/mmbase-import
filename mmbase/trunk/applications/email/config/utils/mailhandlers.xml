@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<!--
+     @since MMBase-1.8
+     @version $Id: mailhandlers.xml,v 1.1 2007-10-24 13:40:23 michiel Exp $
+     @author Michiel Meeuwissen
+-->
+<util>
+  <properties>
+    <property name="org.mmbase.module.smtp.VerifyEmailMailHandler" />
+    <property name="org.mmbase.module.smtp.CloudMailHandler" />
+
+  </properties>
+</util>

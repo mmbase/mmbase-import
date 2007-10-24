@@ -52,7 +52,8 @@ abstract public class AbstractSendMail extends WatchedReloadableModule { //imple
      * Sends a 'multipart' mail.
      *
      */
-    public abstract boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart);
+
+    public abstract boolean sendMultiPartMail(String from, String to, Map<String, String> headers, MimeMultipart mmpart) throws javax.mail.MessagingException;
 
 
 }

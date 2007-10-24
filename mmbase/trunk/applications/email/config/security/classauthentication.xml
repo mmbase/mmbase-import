@@ -5,6 +5,9 @@
   <authenticate class=".*components\.email.*">
     <property name="rank" value="administrator" />
   </authenticate>
+  <authenticate class=".*">
+    <property name="rank" value="administrator" />
+  </authenticate>
 
 </security>
 
