@@ -22,15 +22,15 @@ import javax.mail.*;
  * if so, handles it. Otherwise ignores the message.
  * This Handler can be put in front of the {@link ChainedMailedHandler}.
  *
- * @version $Id: VerifyEmailMailHandler.java,v 1.2 2007-10-11 17:56:46 michiel Exp $
+ * @version $Id: VerifyEmailMailHandler.java,v 1.3 2007-10-24 13:40:23 michiel Exp $
  */
 public class VerifyEmailMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(VerifyEmailMailHandler.class);
 
 
     public boolean handleMessage(Message message) {
-        log.info("Verifying " + message);
         try {
+            log.service("Verifying " + message.getSubject());
             Module emailModule = ContextProvider.getDefaultCloudContext().getModule("sendmail");
             String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
             String subject = message.getSubject();

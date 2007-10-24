@@ -12,6 +12,7 @@ package org.mmbase.applications.email;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 
 import org.mmbase.bridge.*;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.27 2007-09-10 07:49:48 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.28 2007-10-24 13:40:23 michiel Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -41,7 +42,7 @@ public class EmailHandler {
      * then parse the content for subject and body
      * lastly mail it using the sendmail module
      */
-    public static Node sendMailNode(final Node node) {
+    public static Node sendMailNode(final Node node) throws MessagingException {
         // get the sendmail module
         SendMail sendmail = EmailBuilder.getSendMail();
         if (sendmail == null) {
@@ -244,7 +245,7 @@ public class EmailHandler {
      * @return whether successful
      */
 
-    private static boolean sendMail(Node node, String from, NodeRecipient to,  String body, Map<String, String> headers) {
+    private static boolean sendMail(Node node, String from, NodeRecipient to,  String body, Map<String, String> headers) throws MessagingException {
         String obody = body;
 
         // WTF!
@@ -295,16 +296,21 @@ public class EmailHandler {
                 return true;
             } else {
 
-                boolean mailResult;
-                // get mail text to see if we have a mime msg
-                if (body.indexOf("<multipart") == -1) {
-                    mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
-                } else {
-                    MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body, node);
-                    mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
+                boolean mailResult = false;
+                MessagingException exception = null;
+                try {
+                    // get mail text to see if we have a mime msg
+                    if (body.indexOf("<multipart") == -1) {
+                        mailResult =  EmailBuilder.getSendMail().sendMail(from, to.email, body, headers);
+                    } else {
+                        MimeMultipart mmpart = MimeMessageGenerator.getMimeMultipart(body, node);
+                        if (mmpart == null) throw new NullPointerException();
+                        mailResult =  EmailBuilder.getSendMail().sendMultiPartMail(from, to.email, headers, mmpart);
+                    }
+                } catch (MessagingException me) {
+                    exception = me;
+
                 }
-
-
                 if (! mailResult) {
                     log.debug("Email -> mail failed");
                     node.setValue("mailstatus", EmailBuilder.STATE_FAILED);
@@ -316,6 +322,8 @@ public class EmailHandler {
                     log.debug("Email -> mail send");
                     node.setValue("mailstatus", EmailBuilder.STATE_DELIVERED);
                 }
+                if (exception != null) throw exception;
+
                 return true;
             }
         } else {

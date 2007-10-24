@@ -6,10 +6,10 @@
     class="mm_c mm_c_email mm_c_b_examples ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:output omit-xml-declaration="true" />
-  <mm:content language="en" postprocessor="none">
+  <mm:content language="en" postprocessor="none" expires="0">
     <mm:import id="examples" vartype="list">example1.jsp,mailstatus.jsp,group.jsp,background.jsp,example5.jsp,multipart.jsp,mmform.jspx</mm:import>
     <mm:import externid="example">example1.jsp</mm:import>
-    <mm:import externid="email">mihxiltest@gmail.com</mm:import>
+    <mm:import externid="email">mihxil@gmail.com</mm:import>
     <mm:cloud>
       <p>
         Remarks: It seems that group-mailings are broken.
@@ -35,7 +35,8 @@
             </pre>
           </td>
           <td>
-            <mm:include page="${example}" />
+            BLE BLOE ${example}
+            <mm:include debug="html" page="${example}" />
           </td>
         </tr>
       </table>

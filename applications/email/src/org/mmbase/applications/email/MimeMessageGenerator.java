@@ -47,17 +47,17 @@ public class MimeMessageGenerator {
         Map<String, MimeBodyTag> nodes = new HashMap<String, MimeBodyTag>();
         List<MimeBodyTag> rootNodes = new ArrayList<MimeBodyTag>();
 
+
         for (MimeBodyTag tag : getMimeBodyParts(text, node)) {
             try {
 		// get all the needed fields
 		String type    = tag.getType();
-		String id      = tag.getId();
 		String related = tag.getRelated();
 		String alt     = tag.getAlt();
-
+                log.info("" + tag);
 		// add it to the id cache
-                if (id != null) {
-                    nodes.put(id, tag);
+                if (tag.getId() != null) {
+                    nodes.put(tag.getId(), tag);
                 }
 
 		// is it a root node ?
@@ -85,9 +85,18 @@ public class MimeMessageGenerator {
             MimeMultipart mmp = t.getMimeMultipart();
             if (mmp != null) {
                 return mmp;
+            } else {
+                try {
+                    MimeMultipart root = new MimeMultipart();
+                    root.addBodyPart(t.getMimeBodyPart());
+                    log.info("Returing " + root);
+                    return root;
+                } catch (MessagingException e) {
+                    log.error("Root generation error" + e.getMessage());
+                }
             }
 	} else {
-            if (rootNodes.size()>1) {
+            if (rootNodes.size() > 1) {
                 try {
                     MimeMultipart root = new MimeMultipart();
                     root.setSubType("mixed");
@@ -129,6 +138,7 @@ public class MimeMessageGenerator {
         // So I'm not feeling like such a redo of this ***t right now.
         // But I may feel so soon!
 
+        log.debug("Get parts for " + body);
 
         String startkey="<multipart ";
         String endkey="</multipart>";
@@ -184,9 +194,10 @@ public class MimeMessageGenerator {
 
             // set body ready for the new part
             endpos = body.indexOf(endkey);
-            body = body.substring(endpos+endkey.length());
+            body = body.substring(endpos + endkey.length());
             pos = body.indexOf(startkey);
         }
+        log.info("Found " + results);
         return results;
     }
 
@@ -195,7 +206,6 @@ public class MimeMessageGenerator {
      * @todo I don't see the point of wrapping a body part in this things first.
      *       Why don't we parse directly to MultiPart's, and avoid about 300 lines of code...
      *
-     * @author Daniel Ockeloen
      */
     private static  class MimeBodyTag {
 
@@ -215,6 +225,11 @@ public class MimeMessageGenerator {
         private String field;
 
         private final Cloud cloud;
+
+        public String toString() {
+            return type + (altNodes == null ? "" : (" alt: " + altNodes )) + (relatedNodes == null ? "" : (" rel: "+ relatedNodes)) + (number != null ? " " + number + "." + getField() : "");
+        }
+
 
         MimeBodyTag(Cloud c) {
             cloud = c;
@@ -311,7 +326,7 @@ public class MimeMessageGenerator {
         }
 
         public String getField() {
-            return field;
+            return field == null ? "handle" : field;
         }
 
         public String getId() {
@@ -426,9 +441,13 @@ public class MimeMessageGenerator {
                     }
                     return result;
                 }
-                if (relatedNodes != null) return relatedNodes;
+                if (relatedNodes != null) {
+                    return relatedNodes;
+                } else {
+                    log.info("No multipart for " + this);
+                }
             } catch (MessagingException e) {
-                log.debug("Failed to get Multipart" + e.getMessage());
+                log.error("Failed to get Multipart" + e.getMessage());
             }
             return null;
         }
@@ -449,18 +468,19 @@ public class MimeMessageGenerator {
             try {
                 if (number != null && !number.equals("")) {
                     log.service("attachment");
-                    addNode(mmbp, number, field);
+                    addNode(mmbp, number, getField());
                 } else  if (type.equals("text/plain")) {
                     DataHandler d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                     mmbp.setDataHandler(d);
                 } else if (type.equals("text/html")) {
                     DataHandler d = new DataHandler(text, type + ";charset=\"" + encoding + "\"");
                     mmbp.setDataHandler(d);
-                } else if (type.startsWith("application/")) {
+                             } else if (type.startsWith("application/")) {
                     if (filePath.indexOf("..") == -1 && filePath.indexOf("WEB-INF") == -1) {
                         DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filePath), type);
                         DataHandler d = new DataHandler(ds);
                         mmbp.setDataHandler(d);
+                        mmbp.setDisposition("attachment");
                         mmbp.setFileName(getFileName());
                     } else {
                         log.error("file from '" + filePath + "' not allowed");
@@ -470,18 +490,20 @@ public class MimeMessageGenerator {
                         DataSource ds = new ByteArrayDataSource(ResourceLoader.getWebRoot().getResourceAsStream(filePath), type);
                         DataHandler d = new DataHandler(ds);
                         mmbp.setDataHandler(d);
-                        mmbp.setHeader("Content-ID","<"+id+">");
-                        mmbp.setHeader("Content-Disposition","inline");
+                        mmbp.setDisposition("inline");
                     } else {
                         log.error("file from '" + filePath + "' not allowed");
                     }
                 } else {
                     log.warn("don't know how to handle " + this);
                 }
-
+                if (id != null) {
+                    mmbp.setHeader("Content-ID","<"+id+">");
+                }
             } catch(Exception e){
                 log.error(e.getMessage(), e);
             }
+
 
             return mmbp;
         }
@@ -499,7 +521,6 @@ public class MimeMessageGenerator {
 
         private void addNode(MimeBodyPart mmbp, String number, String field) throws MessagingException {
             Node node = cloud.getNode(number);
-            if (field == null || "".equals(field)) field = "handle";
             String mimeType;
             try {
                 Function f = node.getFunction("mimetype");
@@ -512,16 +533,20 @@ public class MimeMessageGenerator {
             } catch (NotFoundException nfe) {
                 mimeType = "appliction/octet-stream";
             }
-            if (node.getNodeManager().hasField("fileName")) {
-                mmbp.setFileName(node.getStringValue("fileName"));
+            String fileName = "bla";
+            if (node.getNodeManager().hasField("filename")) {
+                fileName = node.getStringValue("filename");
             } else {
                 CharTransformer unhtml = getUnhtml();
-                mmbp.setFileName(unhtml.transform("" + node.getFunctionValue("gui", null)));
+                fileName = unhtml.transform("" + node.getFunctionValue("gui", null));
+            }
+            if (fileName != null) {
+                mmbp.setFileName(fileName);
+            } else {
+                mmbp.setDisposition("attachment");
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("attached node=" + node + " " + mimeType);
-            }
+
 
             byte[] b = node.getByteValue(field);
             if (b == null || b.length == 0) {
@@ -531,6 +556,10 @@ public class MimeMessageGenerator {
             }
             DataHandler d = new DataHandler(new ByteArrayDataSource(b, mimeType));
             mmbp.setDataHandler(d);
+
+            if (log.isDebugEnabled()) {
+                log.debug("attached node=" + node + " " + mimeType + " -> " + mmbp);
+            }
 
         }
 

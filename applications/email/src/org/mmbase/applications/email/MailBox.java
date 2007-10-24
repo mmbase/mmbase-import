@@ -12,6 +12,7 @@ package org.mmbase.applications.email;
 
 /**
  * At the moment just a container for some constants. This may change
+ * @version $Id: MailBox.java,v 1.3 2007-10-24 13:40:23 michiel Exp $
  */
 public abstract class MailBox {
     public static final int INBOX      = 0;
