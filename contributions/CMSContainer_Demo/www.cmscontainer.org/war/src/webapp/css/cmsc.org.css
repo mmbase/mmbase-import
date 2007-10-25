@@ -257,7 +257,7 @@ form{
    list-style-type: none;
    padding-left: 15px;  
    margin-right: 12px;  
-   background-image: url(bullet_menu.gif);
+   background-image: url(../gfx/bullet_menu.gif);
    background-repeat: no-repeat;
    background-position: left center;
 }
