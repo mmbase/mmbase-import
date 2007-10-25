@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.22 2007-10-12 16:19:07 michiel Exp $
+ * @version $Id: Functions.java,v 1.23 2007-10-25 17:26:06 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -84,7 +84,9 @@ public class Functions {
      */
     public static String escape(String escaper, String string) {
         try {
-            CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
+            javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
+            ContextTag tag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
+            CharTransformer ct = ContentTag.getCharTransformer(escaper, tag);
             return ct == null ? "" + Casting.unWrap(string) : ct.transform("" + Casting.unWrap(string));
         } catch (Exception e) {
             String mes = "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
