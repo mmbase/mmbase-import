@@ -1,33 +1,33 @@
 html, body {
-	height: 101%;
+   height: 101%;
 }
 
 .mediaplayer {
-	padding: 0;
-	font:76%/150% Arial, Helvetica, sans-serif;	
-	margin: 0;
+   padding: 0;
+   font:76%/150% Arial, Helvetica, sans-serif;  
+   margin: 0;
 }
 
 body {
-	padding:0px 0px 0px 7px;
-	font:76%/150% Arial, Helvetica, sans-serif;
-	background:#97b7c8;
-	margin: 0;
+   padding:0px 0px 0px 7px;
+   font:76%/150% Arial, Helvetica, sans-serif;
+   background:#97b7c8;
+   margin: 0;
 }
 
 #houder{
-	width: 990px;
-	text-align: left;
+   width: 990px;
+   text-align: left;
 }
 
 /* De header 
    ============================= */
 h1 {
-	background: url(../gfx/bgheader.jpg) no-repeat;
-	height: 71px;
-	margin: 0;
-	padding: 0;
-}	
+   background: url(../gfx/bgheader.jpg) no-repeat;
+   height: 71px;
+   margin: 0;
+   padding: 0;
+}  
 
 /* Einde header */
 
@@ -35,66 +35,66 @@ h1 {
    Specifiekere styling van deze onderdelen kan terugkeren bij de verschillende categorieen
    ================================ */
 h2 {
-	margin: 0;
-	padding: 0;
-	height: 20px;
+   margin: 0;
+   padding: 0;
+   height: 20px;
 }
 
 h4{
-	font-size: 1.3em;
-	padding: 0;
-	margin: 1em 0 0.5em;
+   font-size: 1.3em;
+   padding: 0;
+   margin: 1em 0 0.5em;
 }
 
 a img{
-	border: 0 none;
+   border: 0 none;
 }
 
 .foto{
-	border: 1px solid #a4a4a4;
+   border: 1px solid #a4a4a4;
 }
 
 .icon {
-	margin: 0px 12px 0px 0px;
-	float: left;
-	display: block;
-	text-indent: -1000em;
-	width: 17px;
-	height: 16px;
+   margin: 0px 12px 0px 0px;
+   float: left;
+   display: block;
+   text-indent: -1000em;
+   width: 17px;
+   height: 16px;
 }
 
 .date{
-	float: left;
-	color: #999;
-	font-weight: normal;
-	margin: 0px 12px 0px 0px;
+   float: left;
+   color: #999;
+   font-weight: normal;
+   margin: 0px 12px 0px 0px;
 }
 
 .artikellink{
-	color: #000;
+   color: #000;
 }
 .artikellink:hover{
-	text-decoration: underline;
+   text-decoration: underline;
 }
 
 h3 a,
 .artikellink{
-	text-decoration: none;
+   text-decoration: none;
 }
 
 .clear{
-	clear: both;
+   clear: both;
 }
 
 
 a {
-	text-decoration: underline;
-	color: #000;
+   text-decoration: underline;
+   color: #000;
 }
 
 a:hover {
-	text-decoration: none;
-	color: #000;
+   text-decoration: none;
+   color: #000;
 }
 
 
@@ -102,53 +102,53 @@ a:hover {
 
 
 .kolom {
-	margin: 3px 0px 3px;
-	padding: 7px;
-	border-style: none none none solid;
-	border-width: 1px;
-	border-color: #ffffff;
+   margin: 3px 0px 3px;
+   padding: 7px;
+   border-style: none none none solid;
+   border-width: 1px;
+   border-color: #ffffff;
 }
 
 
 #main .kolom {
-	background: #D1DBE1 url(../gfx/3k_no1.gif) right top no-repeat;
+   background: #D1DBE1 url(../gfx/3k_no1.gif) right top no-repeat;
 }
 
 #main{
-	float: left;
-	width: 486px;
+   float: left;
+   width: 486px;
 }
 
 
 #main1 .kolom {
-	background: #D1DBE1 url(../gfx/2k_no1.gif) right top no-repeat;
+   background: #D1DBE1 url(../gfx/2k_no1.gif) right top no-repeat;
 }
 
 #main1 {
-	float: left;
-	width: 737px;
+   float: left;
+   width: 737px;
 }
 
 
 #extra1 .kolom {
-	background: #D1DBE1 url(../gfx/3k_no2.gif) right top no-repeat;
-	margin-left:3px;
+   background: #D1DBE1 url(../gfx/3k_no2.gif) right top no-repeat;
+   margin-left:3px;
 }
 
 #extra1{
-	float: left;
-	width: 251px;
+   float: left;
+   width: 251px;
 }
 
 
 #extra2 .kolom {
-	background: #D1DBE1 url(../gfx/3k_no3.gif) right top no-repeat;
-	margin-left:3px;
+   background: #D1DBE1 url(../gfx/3k_no3.gif) right top no-repeat;
+   margin-left:3px;
 }
 
 #extra2{
-	float: left;
-	width: 250px;
+   float: left;
+   width: 250px;
 }
 
 
@@ -163,28 +163,28 @@ a:hover {
    Alle elementen die voorkomen in #footer
    ========================================= */
 #footer{
-	clear: both;
-	text-align: center;
-	background: url('../gfx/bg_bottom.gif') repeat-x;
-	padding: 7px 14px;
-	color: #939993;
-	font-family: Arial,Verdana,Helvetica;
-	font-size: 11px;
+   clear: both;
+   text-align: center;
+   background: url('../gfx/bg_bottom.gif') repeat-x;
+   padding: 7px 14px;
+   color: #939993;
+   font-family: Arial,Verdana,Helvetica;
+   font-size: 11px;
 }
 
 #footer .left{
-	float: left;
+   float: left;
 }
 #footer .right{
-	float: right;
+   float: right;
 }
 #footer a{
-	color: #666;
-	text-decoration: none;
-	font-weight: bold;
+   color: #666;
+   text-decoration: none;
+   font-weight: bold;
 }
 #footer a:hover{
-	text-decoration: underline;
+   text-decoration: underline;
 }
 
 
@@ -192,26 +192,26 @@ a:hover {
 
 .kolom
 .kolom .list a{
-	color: #000;
+   color: #000;
 }
 
 .kolom h2{
-	color: #fff;
-	font-size: 1.2em;
-	font-weight: normal;
-	letter-spacing: 2px;
-	text-transform: uppercase;
-	margin-bottom: 11px;
+   color: #fff;
+   font-size: 1.2em;
+   font-weight: normal;
+   letter-spacing: 2px;
+   text-transform: uppercase;
+   margin-bottom: 11px;
 }
 .kolom h3 a{
-	color: #071e98;
+   color: #071e98;
 }
 #main .kolom .hoofdartikel{
-	background-color: #f1f2ff;
+   background-color: #f1f2ff;
 }
 
 #main .kolom .list a:hover{
-	background: #daddf0;
+   background: #daddf0;
 }
 
 
@@ -225,149 +225,96 @@ a:hover {
 
 
 #nav{
-	padding: 14px 0px 14px 11px;
-	margin: 0;
-	background: #f4f633;
-	border-style: none none none solid;
-	border-width: 1px;
-	border-color: #ffffff;
-	letter-spacing: 2px;
-	font-size: 14px;
+   padding: 14px 0px 14px 11px;
+   margin: 0;
+   background: #f4f633;
+   border-style: none none none solid;
+   border-width: 1px;
+   border-color: #ffffff;
+   letter-spacing: 2px;
+   font-size: 14px;
 }
 
 /* Hoofdnavigatie */
 #nav, #nav li, #nav li a{
-	height: 19px;
-	color: #000;
+   height: 19px;
+   color: #000;
 }
 
 form{
-	margin: 0;
-	padding: 0;
+   margin: 0;
+   padding: 0;
 }
 
 #nav li{
-	float: left;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	width: auto;
-	margin: 0 20px 2px 0px;
-	list-style-position: inside;
-	list-style-type: none;
-	padding-left: 15px;	
-	margin-right: 12px;	
-	background-image: url(../gfx/bullet_menu.gif);
-	background-repeat: no-repeat;
-	background-position: left center;
+   float: left;
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   width: auto;
+   margin: 0 20px 2px 0px;
+   list-style-position: inside;
+   list-style-type: none;
+   padding-left: 15px;  
+   margin-right: 12px;  
+   background-image: url(bullet_menu.gif);
+   background-repeat: no-repeat;
+   background-position: left center;
 }
 
 #nav li a, #nav li a:hover, #nav li a.active{
-/*	display: block;
-	text-indent: -1000em; */
-	background-position: 8px 4px;
-	background-repeat: no-repeat;
+/* display: block;
+   text-indent: -1000em; */
+   background-position: 8px 4px;
+   background-repeat: no-repeat;
 }
 
 #nav li a {
-	text-decoration: none !important;
+   text-decoration: none !important;
 }
 
 #nav li a:hover, #nav li a.active {
-	text-decoration: underline !important;
-}
-
-/*
-#nav01 a{background: url(../gfx/nav1.gif);}
-#nav02 a{background: url(../gfx/nav2.gif);}
-#nav03 a{background: url(../gfx/nav3.gif);}
-#nav04 a{background: url(../gfx/nav4.gif);}
-#nav05 a{background: url(../gfx/nav5.gif);}
-
-#nav01 a:hover, #nav01 a.active {background: #071e98 url(../gfx/nav1a.gif);}
-#nav02 a:hover, #nav02 a.active {background: #071e98 url(../gfx/nav2a.gif);}
-#nav03 a:hover, #nav03 a.active {background: #071e98 url(../gfx/nav3a.gif);}
-#nav04 a:hover, #nav04 a.active {background: #071e98 url(../gfx/nav4a.gif);}
-#nav05 a:hover, #nav05 a.active {background: #071e98 url(../gfx/nav5a.gif);}
-
-/* Zoekveld en zoekknop */
-#nav #nav06{
-	width: 170px;
-	position: relative;
-	float: right;
-	list-style-type: none;
-	background-image: none;
-}
-#nav06 input{
-	width: 30px;
-	margin: 0 0 0 3px;
-	border: 0 none;
-	font-size: 0.8em;
-	background: #ffc102;
-	color: #071e98;
-}
-
-#nav06 #topzoek{
-	border: 1px solid;
-	border-color: #7f8d90;
-	width: 114px;
-	background: #fff;
-	color: #999;
-	padding: 1px 0px 0px 2px;
-	margin: 1px;
-	height: 14px;
-}
-
-/* Het plaatje wordt getoond als men javascript heeft aanstaan */
-#nav06 #zoeklink{
-/*	background: url(zoek.gif) no-repeat 4px 4px;*/
-	display: none;
-	float: right;
-	width: 40px;
-	height: 19px;
-}
-#nav06 #zoeklink:hover{
-/*	background:  #071e98 url(zoeka.gif) no-repeat 4px 4px;*/
+   text-decoration: underline !important;
 }
 
 /* Subnavigatie */
 .subnav{
-	position: absolute;
-	margin: 0 0 0 3px;
-	padding: 0;
-	border-style: none solid solid solid;
-	border-width: 1px;
-	border-color: #7f8d90;
-	width: 160px;
-	display: none;
-	z-index: 4;
-	left: 20px;
+   position: absolute;
+   margin: 0 0 0 3px;
+   padding: 0;
+   border-style: none solid solid solid;
+   border-width: 1px;
+   border-color: #7f8d90;
+   width: 160px;
+   display: none;
+   z-index: 4;
+   left: 20px;
 }
 
 .subnav li{
-	border: 0 none;
-	list-style: none;
+   border: 0 none;
+   list-style: none;
 }
 
 .subnav li a{
-	background: #fff;
-	text-decoration: none;
-	color: #000;
-	display: block;
-	height: 19px;
-	padding: 0 0 0 7px;
+   background: #fff;
+   text-decoration: none;
+   color: #000;
+   display: block;
+   height: 19px;
+   padding: 0 0 0 7px;
 }
 .subnav li a:hover{
-	background: #e0edf5;
-	text-indent: 0;
-	color: #000;
+   background: #e0edf5;
+   text-indent: 0;
+   color: #000;
 }
 
 #subnav02{margin: 0 0 0 74px;}
-#subnav03{margin: 0 0 0 222px;}
-#subnav04{margin: 0 0 0 327px;}
-#subnav05{margin: 0 0 0 459px;}
-
+#subnav03{margin: 0 0 0 174px;}
+#subnav04{margin: 0 0 0 246px;}
+#subnav05{margin: 0 0 0 351px;}
+#subnav06{margin: 0 0 0 442px;}
 
 
 
@@ -390,66 +337,66 @@ form{
 
 
 #navtext{
-	padding: 0px 0px 0px 11px;
-	margin: 0;
-	border: 1px solid #071e98;
-	background: #ffc102;
+   padding: 0px 0px 0px 11px;
+   margin: 0;
+   border: 1px solid #071e98;
+   background: #ffc102;
 }
 
 /* Hoofdnavigatie */
 #navtext, #navtext li, #navtext li a{
-	height: 19px;
+   height: 19px;
 }
 
 #navtext li{
-	float: left;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	border: solid #071e98;
-	border-width: 0 0 0 1px;
-	width: 160px;
+   float: left;
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   border: solid #071e98;
+   border-width: 0 0 0 1px;
+   width: 160px;
 }
 
 #navtext li a, #navtext li a:hover, #navtext li a.active{
-	display: block;
-	text-indent: 1em;
-	text-decoration: none;
-	background-image: none; 
-	text-transform: uppercase;	
-	color: #160088;
-	font-weight: bold;
+   display: block;
+   text-indent: 1em;
+   text-decoration: none;
+   background-image: none; 
+   text-transform: uppercase; 
+   color: #160088;
+   font-weight: bold;
 }
 
 /* Zoekveld en zoekknop */
 #navtext #nav06{
-	width: 165px;
+   width: 165px;
 }
 #nav06 input{
-	width: 30px;
-	margin: 0 0 0 3px;
-	border: 0 none;
-	font-size: 0.8em;
-	background: #ffc102;
-	color: #071e98;
+   width: 30px;
+   margin: 0 0 0 3px;
+   border: 0 none;
+   font-size: 0.8em;
+   background: #ffc102;
+   color: #071e98;
 }
 #nav06 #topzoek{
-	border: 1px solid;
-	border-color: #7f8d90;
-	width: 114px;
-	background: #fff;
-	color: #999;
-	padding: 1px 0px 0px 2px;
-	margin: 1px;
-	height: 14px;
+   border: 1px solid;
+   border-color: #7f8d90;
+   width: 114px;
+   background: #fff;
+   color: #999;
+   padding: 1px 0px 0px 2px;
+   margin: 1px;
+   height: 14px;
 }
 /* Het plaatje wordt getoond als men javascript heeft aanstaan */
 #nav06 #zoeklink{
-/*	background: url(zoek.gif) no-repeat 4px 4px;*/
-	display: none;
-	float: right;
-	width: 40px;
-	height: 19px;
+/* background: url(zoek.gif) no-repeat 4px 4px;*/
+   display: none;
+   float: right;
+   width: 40px;
+   height: 19px;
 }
 
 
@@ -470,44 +417,44 @@ form{
 
 
 /* paging for article list, new classes */
-a.pagerindex {	
-	text-decoration: none;	
-	color: #160088;
-	font-weight: bold;
+a.pagerindex { 
+   text-decoration: none;  
+   color: #160088;
+   font-weight: bold;
 }
 
-span.pagerindex {	
-	color: #160088;
-	font-weight: bold;
+span.pagerindex { 
+   color: #160088;
+   font-weight: bold;
 }
 
 /* Zoekresultaten, new class */
 #main1 .searchphrase{
-	font-style: italic; 
-	font-weight: bold;
-	color: #160088;
-	float: none;
-	display: inline;
+   font-style: italic; 
+   font-weight: bold;
+   color: #160088;
+   float: none;
+   display: inline;
 }
 .text img {
-	margin: 10px 10px 10px 10px;
+   margin: 10px 10px 10px 10px;
 }
-	
+   
 /* h1 header and default stylesheet */
 h1.header {
-	background: #666 url(../gfx/bgheader.jpg) no-repeat;
-	height: 71px;
-	margin: 0;
-	padding: 0;
+   background: #666 url(../gfx/bgheader.jpg) no-repeat;
+   height: 71px;
+   margin: 0;
+   padding: 0;
 }
 /* formulier */
 
 #popup h1{
-	background: url(../gfx/logo.gif) no-repeat -2px 0;
-	height: 41px;
-	text-indent: -1000em;
-	margin: 0 0 8px;
-	padding: 0;
+   background: url(../gfx/logo.gif) no-repeat -2px 0;
+   height: 41px;
+   text-indent: -1000em;
+   margin: 0 0 8px;
+   padding: 0;
 }
 
 
