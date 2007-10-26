@@ -20,6 +20,11 @@
 
     <div class="heading">
       <h2 id="content_${elementId}_title"><mm:field name="title"/></h2>
+	  <c:if test="${edit}">
+		  <script type="text/javascript">
+			new InPlaceEditor.Local('content_${elementId}_title');
+		  </script>
+	  </c:if>
     </div>
     <div class="content">
       <div class="eventinfo">
@@ -34,6 +39,12 @@
       <mm:field name="intro" escape="none">
         <mm:isnotempty>
           <p class="intro" id="content_${elementId}_intro"><mm:write /></p>
+          <c:if test="${edit}">
+          
+  		  	<script type="text/javascript">
+				new InPlaceEditor.Local('content_${elementId}_intro', {minHeight:300, htmlarea:true, formId:'contentportlet'});
+		  	</script>
+		  </c:if>
         </mm:isnotempty>
       </mm:field>
 
@@ -47,6 +58,9 @@
       </mm:field>
 	<c:if test="${edit}">
 		</div>
+	  	<script type="text/javascript">
+			new InPlaceEditor.Local('content_${elementId}_body', {minHeight:300, htmlarea:true, formId:'contentportlet'});
+	  	</script>
 	</c:if>
        
       <div class="divider3"></div>
@@ -129,24 +143,6 @@
       <cmsc-bm:linkedimages width="220" position="bottom-left" style="float: left; padding: 20px 20px 0px 0px;" />
       <cmsc-bm:linkedimages width="220" position="bottom-right" style="float: right; padding: 20px 0px 0px 20px;" />
       <cmsc-bm:linkedimages width="525" position="bottom" style="display: block; clear: both; padding-top: 20px;" />
-      
-      <!-- linkbalk -->
-      <div class="article_block">
-        <div>
-          <div class="left">
-            <a href="#" class="back" onclick="history.back( ); return false;">
-              <fmt:message key="view.back" />&nbsp;<img alt="" src="<cmsc:staticurl page='/gfx/arrow_link.gif' />" />
-            </a>
-          </div>
-          <div class="right">
-<%--
-            <a href="#">Artikel afdrukken</a>
-            <span class="space">|</span>
-            <a href="#">Download als pdf</a>
---%>
-          </div>
-        </div>
-      </div>
       <div class="clear"></div>
       <div class="divider"></div>
     </div>
@@ -154,11 +150,6 @@
 	<c:if test="${edit}">
 		<%@include file="/WEB-INF/templates/edit/itemfooter.jsp" %>
 		</form>
-		<script type="text/javascript">
-			new InPlaceEditor.Local('content_${elementId}_title');
-			new InPlaceEditor.Local('content_${elementId}_intro', {minHeight:300, htmlarea:true, formId:'contentportlet'});
-			new InPlaceEditor.Local('content_${elementId}_body', {minHeight:300, htmlarea:true, formId:'contentportlet'});
-		</script>
 	</c:if>
     
   </mm:node>
