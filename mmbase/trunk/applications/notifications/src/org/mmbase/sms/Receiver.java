@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.1 2007-10-26 15:34:36 michiel Exp $
+ * @version $Id: Receiver.java,v 1.2 2007-10-26 15:53:52 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -28,9 +28,9 @@ public  class Receiver implements Runnable {
     private static Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>();
 
     public static class SMS {
-        final String mobile;
-        final int operator;
-        final String message;
+        public final String mobile;
+        public final int operator;
+        public final String message;
         public SMS(String mob, int o, String mes) {
             this.mobile = mob;
             this.operator = o;
