@@ -2,14 +2,30 @@
 <mm:cloud>
   <mm:import externid="elementId" required="true" />
   <mm:node number="${elementId}" notfound="skip">
+	<cmsc:portletmode name="edit">
+		<mm:relatednodes type="contentchannel" role="creationrel">
+			<mm:field name="number" write="false" jspvar="channelnumber"/>
+			<cmsc:isallowededit channelNumber="${channelnumber}">
+				<c:set var="edit" value="true"/>
+			</cmsc:isallowededit>
+		</mm:relatednodes>
+	</cmsc:portletmode>
+		  
+	<c:if test="${edit}">
+		<form name="contentportlet" method="post" 
+	  		  action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
+		<%@include file="/WEB-INF/templates/edit/itemheader.jsp" %>
+	</c:if>
+
+
     <div class="heading">
-      <mm:field name="title">
-        <mm:isnotempty>
-          <h2><mm:write /></h2>
-        </mm:isnotempty>
-      </mm:field>
+      <h2 id="content_${elementId}_title"><mm:field name="title"/></h2>
+	  <c:if test="${edit}">
+		  <script type="text/javascript">
+			new InPlaceEditor.Local('content_${elementId}_title');
+		  </script>
+	  </c:if>
     </div>
-    
     <div class="content">
       <!-- top images -->      
       <cmsc-bm:linkedimages width="525" position="top" style="display: block; clear: both; padding-bottom: 20px;" />
@@ -18,15 +34,32 @@
 
       <mm:field name="intro" escape="none">
         <mm:isnotempty>
-          <p class="intro"><mm:write /></p>
+          <p class="intro" id="content_${elementId}_intro"><mm:write /></p>
+          <c:if test="${edit}">
+          
+  		  	<script type="text/javascript">
+				new InPlaceEditor.Local('content_${elementId}_intro', {minHeight:300, htmlarea:true, formId:'contentportlet'});
+		  	</script>
+		  </c:if>
         </mm:isnotempty>
       </mm:field>
 
+	<c:if test="${edit}">
+		<div id="content_${elementId}_body">
+	</c:if>
       <mm:field name="body" escape="none">
         <mm:isnotempty>
           <p class="body"><mm:write /></p>
         </mm:isnotempty>
       </mm:field>
+	<c:if test="${edit}">
+		</div>
+	  	<script type="text/javascript">
+			new InPlaceEditor.Local('content_${elementId}_body', {minHeight:300, htmlarea:true, formId:'contentportlet'});
+	  	</script>
+	</c:if>
+       
+      <div class="divider3"></div>
        
       <%-- related articles --%>
       <mm:relatednodes type="contentelement" role="posrel" orderby="posrel.pos" searchdir="destination">
@@ -106,6 +139,14 @@
       <cmsc-bm:linkedimages width="220" position="bottom-left" style="float: left; padding: 20px 20px 0px 0px;" />
       <cmsc-bm:linkedimages width="220" position="bottom-right" style="float: right; padding: 20px 0px 0px 20px;" />
       <cmsc-bm:linkedimages width="525" position="bottom" style="display: block; clear: both; padding-top: 20px;" />
+      <div class="clear"></div>
+      <div class="divider"></div>
     </div>
+    
+	<c:if test="${edit}">
+		<%@include file="/WEB-INF/templates/edit/itemfooter.jsp" %>
+		</form>
+	</c:if>
+    
   </mm:node>
 </mm:cloud>
