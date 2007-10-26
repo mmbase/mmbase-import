@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.notifications.mobile2you;
+package org.mmbase.notifications.cmtelecom;
 import org.mmbase.applications.crontab.AbstractCronJob;
 
 import java.io.*;
@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.1 2007-10-26 13:19:00 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.2 2007-10-26 15:34:36 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -150,7 +150,11 @@ public class SenderJob  extends AbstractCronJob {
         w.startDocument();
         {
             AttributesImpl a = new AttributesImpl();
-            a.addAttribute("", "PID", "", "CDATA", "25");
+            String productId = config.get("productId");
+            if (productId == null || "".equals(productId)) {
+                productId = "25";
+            }
+            a.addAttribute("", "PID", "", "CDATA", productId);
             w.startElement("", "MESSAGES", "", a);
         }
         {

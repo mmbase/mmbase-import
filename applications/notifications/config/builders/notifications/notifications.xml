@@ -27,10 +27,12 @@
           <entry value="org.mmbase.notifications.cmtelecom.CMTelecomNotification" xml:lang="nl" display="sms"   />
           <entry value="org.mmbase.notifications.cmtelecom.CMTelecomNotification" xml:lang="en" display="sms"   />
         </enumeration>
-        <commitprocessor>
           <!-- Set new nodes to status 'unconfirmed' initially -->
-          <class name="org.mmbase.notifications.cmtelecom.CommitProcessor" />
-        </commitprocessor>
+          <!--
+          <commitprocessor>
+            <class name="org.mmbase.notifications.cmtelecom.CommitProcessor" />
+          </commitprocessor>
+          -->
       </datatype>
     </field>
 

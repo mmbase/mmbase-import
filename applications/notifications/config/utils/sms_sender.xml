@@ -3,6 +3,8 @@
 <util>
   <properties>
     <property name="url">http://www.clubmessage.biz/messaging/Gateway/post-gateway.asp</property>
+    <property name="productId">25</property>
+
     <!--
     <property name="customerId"></property>
     <property name="userLogin"></property>
