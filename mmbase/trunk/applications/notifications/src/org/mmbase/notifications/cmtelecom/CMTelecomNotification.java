@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.notifications.mobile2you;
+package org.mmbase.notifications.cmtelecom;
 
 import org.mmbase.notifications.Notification;
 
@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * by offering it to the (static) queue of {@link SenderJob}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomNotification.java,v 1.1 2007-10-26 13:19:00 michiel Exp $
+ * @version $Id: CMTelecomNotification.java,v 1.2 2007-10-26 15:34:36 michiel Exp $
  **/
 public  class CMTelecomNotification extends Notification {
 
