@@ -7,7 +7,7 @@
   <articleinfo>
     <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.8 2007-08-10 18:08:47 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.9 2007-10-26 11:49:16 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -334,11 +334,21 @@
           display values.
         </para>
         <para>
-          It is also possible to specify the possible value using a ResourceBundle.<programlisting><![CDATA[
+          Enumerations are most often used on data types with 'base="integer"', but can also work
+          on string data types, and node data type (using 'query').
+        </para>
+        <para>
+          An enumeration is a restriction, but or course it is mainly a powerfull hint to produce
+          a user interface using e.g. a dropdown list or so.
+        </para>
+        <section id="resourcebundle">
+          <title>Enumeration from a Resource bundle</title>
+          <para>
+            It is also possible to specify the possible value using a ResourceBundle.<programlisting><![CDATA[
 <enumeration >
    <entry basename="org.mmbase.datatypes.resources.weekdays" />
 </enumeration>]]></programlisting>
-          where the weekdays resource bundle could look something like this:<programlisting><![CDATA[
+            where the weekdays resource bundle could look something like this:<programlisting><![CDATA[
 0=sunday
 1=monday
 2=tuesday
@@ -346,16 +356,16 @@
 4=thursday
 5=friday
 6=saturday]]></programlisting>
-          If you look in the <filename>datatypes.xml</filename> in <filename>mmbase.jar</filename>
-          you will find that this 'weekdays' enumeration actually defined like this<programlisting><![CDATA[
+            If you look in the <filename>datatypes.xml</filename> in <filename>mmbase.jar</filename>
+            you will find that this 'weekdays' enumeration actually defined like this<programlisting><![CDATA[
 <enumeration>
    <entry basename="org.mmbase.datatypes.resources.weekdays"
           javaconstants="java.util.Calendar"
 />
 </enumeration>]]></programlisting>
-          This indicates that the keys of the resource bundle are resolved to the actual values
-          using constants in the given java class. This results in that the resource bundle can look
-          like this:<programlisting><![CDATA[
+            This indicates that the keys of the resource bundle are resolved to the actual values
+            using constants in the given java class. This results in that the resource bundle can look
+            like this:<programlisting><![CDATA[
 SUNDAY=sunday
 MONDAY=monday
 TUESDAY=tuesday
@@ -365,25 +375,49 @@ FRIDAY=friday
 SATURDAY=saturday]]>
           </programlisting>
           Which looks of course a lot nicer.
-        </para>
-        <para>
-          TODO: sorterclass attribute.
-        </para>
-        <para>
-          TODO: query sub element.
-        </para>
-        <note>
-          <para>
-            Enumerations are most often used on data types with 'base="integer"', but can also work
-            on string data types, and node data type (using 'query').
           </para>
-        </note>
-        <note>
+        </section>
+        <section id="sorterclass">
+          <title>sorterclass attribute</title>
           <para>
-            An enumeration is a restriction, but or course it is mainly a powerfull hint to produce
-            a user interface using e.g. a dropdown list or so.
+            To specify an alternative presentation order, you can specify a 'Comparator' or
+            'Comparable' class name with the 'sorterclass' attribute. This will be used to order the
+            entries, using the <emphasis>keys</emphasis>. If it is a comparator, then it will need
+            the empty constructor, if it is a comparable, then it will be used to 'wrap' the keys,
+            so a constructor must exist, which can accept the keys as an argument.
           </para>
-        </note>
+<programlisting><![CDATA[
+<datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
+  <enumeration>
+    <entry
+       sorterclass="org.mmbase.util.ReverseComparator"
+       basename="org.mmbase.notifications.resources.offset" />
+  </enumeration>
+      </datatype>
+TUESDAY=tuesday
+WEDNESDAY=wednesday
+THURSDAY=thursday
+FRIDAY=friday
+SATURDAY=saturday]]></programlisting>
+          <para>
+             A special, and relatively often, value for the value of 'sorterclass' is
+             org.mmbase.util.SortedBundle$ValueWrapper. Using this, the entries will be orderd by
+             (localized) <emphasis>value</emphasis>. This will often be used for enumeration which
+             have no intrincic order. Drop downs will then be presented in alphabetical order. For
+             example, This gives all languages:
+          </para><programlisting><![CDATA[
+<enumeration>
+   <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
+          basename="org.mmbase.datatypes.resources.iso639" />
+</enumeration>]]></programlisting>
+        </section>
+        <section id="query">
+          <title>Enumerations based on MMBase queries</title>
+          <para>
+            TODO: query sub element.
+          </para>
+        </section>
+
       </section>
     </section>
     <section id="processors">
@@ -556,7 +590,7 @@ SATURDAY=saturday]]>
       using JavaScript. For that you include the javascript file
       /mmbase/validation/validation.js.jsp, plus some other utilities (see
       /mmbase/valiation/test.jspx), and instatiate an "MMBaseValidator".
-          database is associated with a field).<programlisting id="mmbasevalidator"><![CDATA[
+      <programlisting id="mmbasevalidator"><![CDATA[
 <html  xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Test</title>
