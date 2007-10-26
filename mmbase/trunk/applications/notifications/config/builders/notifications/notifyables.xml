@@ -31,7 +31,9 @@
         <default value="-900" /> <!-- quarter of an hour beforehand -->
         <maxExclusive value="0" />
         <enumeration>
-          <entry basename="org.mmbase.notifications.resources.offset" />
+          <entry
+              sorterclass="org.mmbase.util.ReverseComparator"
+              basename="org.mmbase.notifications.resources.offset" />
         </enumeration>
       </datatype>
      </field>
