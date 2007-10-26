@@ -44,9 +44,6 @@ ul
   margin-left: 12px;
 }
 
-.clear{
-	clear: both;
-}
 
 .left {
   float: left;
@@ -56,6 +53,10 @@ ul
   float: right;
 }
 */
+.clear{
+	clear: both;
+}
+
 .hidden
 {
   display: none;
