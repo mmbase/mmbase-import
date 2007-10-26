@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ReceiverJob.java,v 1.1 2007-10-15 13:52:55 michiel Exp $
+ * @version $Id: ReceiverJob.java,v 1.1 2007-10-26 13:19:00 michiel Exp $
  **/
 public  class ReceiverJob extends AbstractCronJob {
 

@@ -25,14 +25,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * If using mobile2you for notification, then this class must be scheduled as an mmbas cronjob. It
- * queues to be-send SMS-messages and then communicates with Mobile2You when this Job is
+ * If using cmtelecom for notification, then this class must be scheduled as an mmbas cronjob. It
+ * queues to be-send SMS-messages and then communicates with ClubMessage when this Job is
  * scheduled. It should run regularly, e.g. every 5 minutes or so. Or every minute. This way only
  * one external connection to mobile2you every 5 or 1 minutes is made.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.4 2007-10-22 17:20:58 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.1 2007-10-26 13:19:00 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -60,7 +60,9 @@ public class SenderJob  extends AbstractCronJob {
         public void add(XmlWriter w, Map<String, String> config) throws SAXException {
             w.startElement("MSG");
             w.startElement("FROM");
-            w.characters(config.get("from"));
+            String from = config.get("from");
+            if (from == null) from = "MMBase notifications";
+            w.characters(from);
             w.endElement("FROM");
             {
                 AttributesImpl a = new AttributesImpl();
@@ -162,11 +164,16 @@ public class SenderJob  extends AbstractCronJob {
             a.addAttribute("", "PASSWORD", "", "CDATA", config.get("userPassword"));
             w.emptyElement("", "USER",  "", a);
         }
-        //w.emptyElement("ADMIN_EMAIL");
+        w.startElement("ADMIN_EMAIL");
+        w.characters("michiel.meeuwissen@gmail.com");
+        w.endElement("ADMIN_EMAIL");
         w.startElement("TARIFF");
         w.characters("0");
         w.endElement("TARIFF");
-        //w.emptyElement("REFERENCE");
+        w.startElement("REFERENCE");
+        w.characters("mmbase reference " + System.currentTimeMillis());
+        w.endElement("REFERENCE");
+
 
         int drain = queue.size();
         for (int i = 0; i < drain; i++) {
