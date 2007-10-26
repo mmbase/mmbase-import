@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.notifications.mobile2you;
+package org.mmbase.notifications.cmtelecom;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.1 2007-10-22 12:51:18 michiel Exp $
+ * @version $Id: CommitProcessor.java,v 1.1 2007-10-26 13:19:00 michiel Exp $
  **/
 public class CommitProcessor  implements org.mmbase.datatypes.processors.CommitProcessor {
     public void commit(Node node, Field field) {
