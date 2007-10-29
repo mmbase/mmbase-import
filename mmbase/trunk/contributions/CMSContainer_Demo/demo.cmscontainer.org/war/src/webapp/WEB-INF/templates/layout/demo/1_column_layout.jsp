@@ -12,7 +12,7 @@
       <link rel="shortcut icon" href="<cmsc:staticurl page='/favicon.ico' />" type="image/x-icon" />
       <cmsc:insert-stylesheet var="stylesheet" />
       <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/css/stijl.css'/>" media="screen,projection,print" />
-      <%-- link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/css/1column.css'/>" media="screen,projection,print" />  --%>
+      link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/css/1column.css'/>" media="screen,projection,print" />
       <c:forEach var="style" items="${stylesheet}">
         <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/${style.resource}'/>" media="${style.media}" />
       </c:forEach>

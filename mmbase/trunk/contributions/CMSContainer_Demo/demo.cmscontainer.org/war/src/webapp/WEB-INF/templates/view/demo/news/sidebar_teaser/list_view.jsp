@@ -5,8 +5,7 @@
   <mm:cloud method="asis">
     <mm:node number="${elementId}"> 
 
-      <cmsc:renderURL page="${page}" window="${window}" var="renderUrl">
-        <cmsc:param name="elementId" value="${elementId}" />
+      <cmsc:renderURL page="${page}" window="${window}" elementId="${elementId}" var="renderUrl">
       </cmsc:renderURL>
   
       <div class="block">
