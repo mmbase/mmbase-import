@@ -35,3 +35,6 @@ ul
 {
   width: 194px;
 }
+#main {
+	word-wrap: break-word;
+}

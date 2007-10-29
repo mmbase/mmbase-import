@@ -6,7 +6,6 @@
 	float: left;
 	padding: 25px 20px 30px 42px;
 	background: #fff;
-	word-wrap: break-word;
 }
 
 #column1 .item {
@@ -32,5 +31,4 @@
 	padding-right: 40px;
 	background: #fff;
 	color: #777777;
-	word-wrap: break-word;
 }
