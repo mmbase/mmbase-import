@@ -9,14 +9,15 @@
  */
 package com.finalist.tree.ajax;
 
-import java.io.*;
-
+import com.finalist.tree.Tree;
+import com.finalist.tree.TreeInfo;
+import com.finalist.tree.TreeModel;
+import com.finalist.util.xml.TransformUtils;
 import net.sf.mmapps.commons.util.XmlUtil;
-
-import org.w3c.dom.Document;
+import org.w3c.dom.Document;                        
 import org.w3c.dom.Element;
 
-import com.finalist.tree.*;
+import java.io.PrintWriter;
 
 public class AjaxTree extends Tree {
 
@@ -39,7 +40,7 @@ public class AjaxTree extends Tree {
         renderNode(rootNode, tree);
         XmlUtil.createAttribute(tree, "behavior", "classic");
 
-        out.write(XmlUtil.serializeDocument(doc));
+        out.write(TransformUtils.serializeDocument(doc).toString());
     }
 
     public void renderChildren(PrintWriter out, String root) {
@@ -55,7 +56,7 @@ public class AjaxTree extends Tree {
                 renderNode(child, item);
             }
         }
-        out.write(XmlUtil.serializeDocument(doc));
+        out.write(TransformUtils.serializeDocument(doc).toString());
     }
 
     private boolean showChildren(Object o) {
@@ -67,12 +68,11 @@ public class AjaxTree extends Tree {
         te.render(element, getImgBaseUrl());
         if (getModel().isLeaf(node)) {
             XmlUtil.createAttribute(element, "loaded", true);
-        }
-        else {
+        } else {
             if (showChildren(node)) {
                 XmlUtil.createAttribute(element, "loaded", true);
                 XmlUtil.createAttribute(element, "open", true);
-    
+
                 int count = getModel().getChildCount(node);
                 if (count > 0) {
                     for (int i = 0; i < count; i++) {
@@ -81,8 +81,7 @@ public class AjaxTree extends Tree {
                         renderNode(child, item);
                     }
                 }
-            }
-            else {
+            } else {
                 XmlUtil.createAttribute(element, "loaded", false);
                 XmlUtil.createAttribute(element, "open", false);
             }
