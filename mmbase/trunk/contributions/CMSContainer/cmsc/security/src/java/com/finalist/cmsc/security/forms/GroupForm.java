@@ -9,7 +9,14 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.security.forms;
 
+import org.apache.struts.action.*;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.util.platform.setUser;
+
+import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.cmsc.struts.MMBaseForm;
+
+import javax.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
 public class GroupForm  extends MMBaseForm {
@@ -17,8 +24,8 @@ public class GroupForm  extends MMBaseForm {
     private String name;
     private String description;
 
-    private String[] members;
-    private String[] users;
+    private String[] members = new String[]{};
+    private String[] users =  new String[]{};
     
     public String getDescription() {
         return description;
@@ -54,5 +61,15 @@ public class GroupForm  extends MMBaseForm {
     public void setUsers(String[] users) {
         this.users = users;
     }
+
+	@Override
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		setName(null);
+		setDescription(null);
+		setMembers(new String[]{});
+		setUsers(new String[]{});
+	}
     
+
+
 }
