@@ -5,7 +5,6 @@
 	height: inherit;
 	float: left;
 	padding: 67px 0 0 42px;
-	word-wrap: break-word;
 }
 
 /* column2 */
@@ -14,7 +13,6 @@
 	width: 530px;
 	float: left;
 	color: #666666;
-	word-wrap: break-word;
 }
 
 #column2 .heading {
@@ -75,5 +73,4 @@
 	padding-right: 40px;
 	background: #fff;
 	color: #777777;
-	word-wrap: break-word;
 }
