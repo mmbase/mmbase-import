@@ -22,7 +22,7 @@
 				<td>
 					<logic:equal name="GroupForm" property="id" value="-1">
 						<html:text property="name" size='15' maxlength='15' />
-						<span class="notvalid"><html:errors bundle="SECURITY" property="name" /></span>
+						<span class="notvalid"><html:errors bundle="SECURITY" property="groupname" /></span>
 					</logic:equal> 
 					<logic:notEqual name="GroupForm" property="id" value="-1">
 						<bean:write name="GroupForm" property="name" />

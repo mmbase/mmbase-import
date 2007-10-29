@@ -47,6 +47,7 @@ public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServlet
          }
       } else {
          // new 
+    	  groupForm.reset(mapping, request);
           groupForm.setId(-1);
           for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
               Node user = iter.next();
