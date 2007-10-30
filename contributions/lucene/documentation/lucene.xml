@@ -5,9 +5,10 @@
   <articleinfo>
     <title>MMBase Lucene module</title>
 
-    <date>2005-12-24</date>
+    <date>2007-10-30</date>
 
-    <edition>$Id: lucene.xml,v 1.10 2007-08-22 11:43:56 michiel Exp $</edition>
+    <edition>$Id: lucene.xml,v 1.10 2007/08/22 11:43:56 michiel Exp
+    $</edition>
 
     <authorgroup>
       <author>
@@ -19,10 +20,15 @@
         <firstname>Michiel</firstname>
         <surname>Meeuwissen</surname>
       </author>
+      
+      <author>
+        <firstname>Andre</firstname>
+        <surname>van Toly</surname>
+      </author>
     </authorgroup>
 
     <abstract>
-      <para>Lucene</para>
+      <para>Lucene full text search for MMBase.</para>
     </abstract>
 
     <legalnotice>
@@ -72,6 +78,19 @@
 
     <para>Then of course you need to integrate a Lucene search in your site. A
     generic search tool is provided among the Lucene admin pages.</para>
+
+    <para>Step-by-step:</para>
+
+    <para>- Copy WEB-INF/lib/mmbase-lucene.jar to your WEB-INF/lib - Install
+    the administration pages found in templates in your webdir, e.g. in
+    '/mmbase/lucene' or '/mmbase/admin/lucene' - Copy
+    WEB-INF/config/utils/luceneindex.xml to your WEB-INF/config/utils and
+    configure your indices in it. - If you have mmbase-crontab installed, you
+    may want to schedule full indexing. See WEB-INF/config/utils/crontab.xml
+    for an example. It is not absolutely necessary, because the index is kept
+    up-to-date using MMBase events and so on. - Restart your application
+    server Once installed you can still edit luceneindex.xml (changes will be
+    noticed). Indices can be triggered and tested using the templates.</para>
   </section>
 
   <section id="configuration">
@@ -182,9 +201,9 @@
 </programlisting>
 
       <para>The use of these tags is very simular to those in de MMBase
-      taglib. Below an example with 'related'. </para>
+      taglib. Below an example with 'related'.</para>
 
-<programlisting>
+      <programlisting>
   &lt;list type="documents"&gt;
     &lt;mmsq:field name="title" boost="2" /&gt;
     &lt;mmsq:field name="subtitle" /&gt;
@@ -198,14 +217,30 @@
     &lt;/mmsq:related&gt;
   &lt;/list&gt;
 </programlisting>
-<para>
-  The 'boost' attribute will make indexing in given field 'heavier'.
-</para>
-<para>
-  The 'optional' attribute contains a regular expression which is matched on the node-manager of the
-  found node.  If it not matches, then it is not indexed. This is useful if the given type has
-  inherited types of which not all have the specified field.
-</para>
+
+      <para>The 'boost' attribute will make indexing in given field
+      'heavier'.</para>
+
+      <para>The 'optional' attribute contains a regular expression which is
+      matched on the node-manager of the found node. If it not matches, then
+      it is not indexed. This is useful if the given type has inherited types
+      of which not all have the specified field.</para>
+
+      <para>Other attributes that can be set on fields are: alias, keyword and
+      store. </para>
+
+      <para>The 'alias' attribute gives you the oportunity to use the field as
+      an input field in a search form. In the above example the field
+      'meetings.date' has an alias named 'date', which enables a searchfield
+      'date' to be used as an (extra) constraint while searching. Fieldnames
+      with similar values are pooled together.</para>
+
+      <para>The attribute keyword may be set to 'true' to store a field's
+      value as a keyword. Only exact matches of the (whole) will be returned
+      as an hit.</para>
+
+      <para>The attribute store of a field may be set to 'true' to be able to
+      return a field in the search results. </para>
     </section>
 
     <section>
@@ -276,21 +311,21 @@
 
     <section>
       <title>Search function</title>
-      <para>
-        <programlisting><![CDATA[
-        <mm:nodelistfunction module="lucene" name="search" referids="value,index,sortfields,offset,max,extraconstraints" id="searchresult"></mm:nodelistfunction>]]>
-        </programlisting>
-      </para>
+
+      <para><programlisting>
+        &lt;mm:nodelistfunction module="lucene" name="search" referids="value,index,sortfields,offset,max,extraconstraints" id="searchresult"&gt;&lt;/mm:nodelistfunction&gt;
+        </programlisting></para>
+
       <para>Returns the nodes found. The sortfields must be a keyword.</para>
     </section>
 
     <section>
       <title>searchsize function</title>
-      <para>
-        <programlisting><![CDATA[
-        <mm:import id="size"><mm:function module="lucene" name="searchsize" referids="index,catText@value,extraconstraints"/></mm:import>]]>
-        </programlisting>
-      </para>
+
+      <para><programlisting>
+        &lt;mm:import id="size"&gt;&lt;mm:function module="lucene" name="searchsize" referids="index,catText@value,extraconstraints"/&gt;&lt;/mm:import&gt;
+        </programlisting></para>
+
       <para>Returns the number of items found.</para>
     </section>
 
