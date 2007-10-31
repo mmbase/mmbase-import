@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <wizard-schema id="singleportletdefinition">
-	<title xml:lang="nl">Single Portlet Definitie</title>
-	<title xml:lang="en">Single Portlet Definition</title>
+	<title xml:lang="nl">Single Portlet Definities</title>
+	<title xml:lang="en">Single Portlet Definitions</title>
 
    <action include="config/singleportletdefinition/create_singleportletdefinition.xml"/>
    <action include="config/singleportletdefinition/delete_singleportletdefinition.xml"/>
