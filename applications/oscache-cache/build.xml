@@ -10,11 +10,14 @@
   <property name="project.config.jar.includes"   value="**" />
 
   <property name="project.jars.dir"        value="build" />
-  <property name="project.jars.includes"   value="oscache-2.4.jar" />
+
+  <property file="build.properties.default" />
+  <property name="project.jars.includes"   value="${oscache.file}" />
 
   <import file="../buildbase-include.xml" />
 
-  <property file="build.properties.default" />
+
+
   
   <target name="jar" description="Create mmbase-oscache.jar" depends="oscache.jar,project.manifest,buildbase.jar">
   </target>
