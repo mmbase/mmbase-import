@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.15 2007-10-12 16:15:19 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.16 2007-10-31 15:44:08 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4759,7 +4759,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        Specify the behaviour when the file cannot be found. Default is 'skip', but you can change
+        Specify the behaviour when the file cannot be found. Default is 'message', but you can change
         this to give an exception for non-existing files that are included.
       </info>
       <possiblevalue>
