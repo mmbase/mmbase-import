@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A helper class to implement notfound attribute
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notfound.java,v 1.2 2006-03-28 20:31:12 michiel Exp $
+ * @version $Id: Notfound.java,v 1.2.2.1 2007-10-31 15:43:58 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class  Notfound  {
@@ -32,6 +32,7 @@ public abstract class  Notfound  {
     public final static int SKIP  = 1;
     public final static int PROVIDENULL  = 2;
     public final static int MESSAGE  = 3;
+    public final static int LOG  = 4;
 
 
     public static int get(Attribute notfound,  ContextReferrerTag tag) throws JspTagException {
@@ -55,6 +56,8 @@ public abstract class  Notfound  {
             return  PROVIDENULL;
         } else if ("message".equals(is)) {
             return  MESSAGE;
+        } else if ("log".equals(is)) {
+            return  LOG;
         } else {
             throw new JspTagException("Invalid value for attribute 'notfound' " + is + "(" + notfound + ")");
         }

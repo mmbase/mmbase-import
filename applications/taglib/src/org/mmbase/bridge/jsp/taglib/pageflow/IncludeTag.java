@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66.2.3 2007-06-07 13:52:24 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.4 2007-10-31 15:43:58 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -96,10 +96,14 @@ public class IncludeTag extends UrlTag {
         return super.getPage();
     }
 
-    public int doStartTag() throws JspTagException {
+    protected void checkAttributes() throws JspTagException {
         if (page == Attribute.NULL && resource == Attribute.NULL && referid == Attribute.NULL) { // for include tags, page attribute is obligatory.
             throw new JspTagException("No attribute 'page', 'resource' or 'referid' was specified");
         }
+    }
+
+    public int doStartTag() throws JspTagException {
+
         return super.doStartTag();
     }
 
@@ -229,6 +233,10 @@ public class IncludeTag extends UrlTag {
         default:
         case 404:
             switch(Notfound.get(notFound, this)) {
+            case Notfound.LOG:
+                pageLog.warn("The requested resource '" + url + "' is not available", new Exception());
+                page = "";
+                break;
             case Notfound.SKIP:
             case Notfound.PROVIDENULL:
                 page = "";
