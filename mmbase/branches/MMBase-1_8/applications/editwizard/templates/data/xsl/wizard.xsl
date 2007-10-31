@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.12 2007-05-03 14:49:48 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.13 2007-10-31 15:20:22 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -642,7 +642,7 @@
     <xsl:if test="not(string(number(@number)) = 'NaN')">
       <xsl:apply-templates select="value" mode="line">
         <xsl:with-param name="val">
-          <xsl:value-of select="node:function($cloud, string(@number), string(value))" disable-output-escaping="yes"/>
+          <xsl:value-of select="node:saxonFunction($cloud, string(@number), string(value))" disable-output-escaping="yes"/>
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:if>
@@ -960,10 +960,10 @@
               </a>
               <br/>
               <xsl:if test="@size &gt; 0">
-                <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
+                <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
                  <br/>
                  <a
-                   href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
+                   href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
                    target="_new">
                    <xsl:call-template name="prompt_image_full" />
                  </a>
@@ -996,10 +996,10 @@
         </xsl:when>
         <xsl:otherwise>
           <span>
-            <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
+            <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
             <br/>
             <a
-              href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
+              href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
               target="_new">
               <xsl:call-template name="prompt_image_full" />
             </a>
@@ -1010,7 +1010,7 @@
     </xsl:if>
     <xsl:if test="@maywrite=&apos;false&apos;">
       <span class="readonly">
-        <img src="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
+        <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
       </span>
     </xsl:if>
   </xsl:template>
@@ -1018,7 +1018,7 @@
   <xsl:template name="ftype-file">
     <xsl:choose>
       <xsl:when test="@dttype=&apos;data&apos; or @maywrite=&apos;false&apos;">
-        <a target="_blank" href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+        <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
           <xsl:call-template name="prompt_do_download"/>
         </a>
       </xsl:when>
@@ -1035,7 +1035,7 @@
               <br/>
             </xsl:if>
             <xsl:if test="@size &gt; 0">
-              <a target="_blank" href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
+              <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
                 <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                 <xsl:call-template name="prompt_do_download"/> (<xsl:value-of select="round(@size div 100) div 10"/> K)
               </a>
@@ -1414,12 +1414,12 @@
           <xsl:when test="field[@name = 'handle']">
             <xsl:if test="field[@name = 'handle' and @size &gt; 0]">
             <!-- the image -->
-            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <img src="{node:saxonFunction($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
             </xsl:if>
           </xsl:when>
           <xsl:otherwise>
             <!-- the image -->
-            <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <img src="{node:saxonFunction($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
           </xsl:otherwise>
         </xsl:choose>
       </td>
@@ -1543,14 +1543,14 @@
     <td>
       <xsl:if test="@displaytype=&apos;audio&apos;">
         <span	class="imgbutton"	title="{$tooltip_audio}">
-          <a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
+          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_audio"/>
           </a>
         </span>
       </xsl:if>
       <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
-          <a target="_blank" href="{node:function($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
+          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_video"/>
           </a>
         </span>
