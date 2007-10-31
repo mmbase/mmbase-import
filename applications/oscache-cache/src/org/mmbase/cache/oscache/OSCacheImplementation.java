@@ -44,7 +44,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
      * This method is called by MMBase to configure the cache using the given 
      * map of configuration parameters.
      */
-    public void config(Map config) {
+    public void config(Map<String, String> config) {
        try {
            Class c = Class.forName(classname);
            if (c != null) {
@@ -84,7 +84,7 @@ public class OSCacheImplementation<K, V> implements CacheImplementationInterface
     /**
      * Wrapper around the getCount() method of the cache implementation. (not implemented)
      */
-    public int getCount(Object key) {
+    public int getCount(K key) {
         return -1; //not implemented
     }
 

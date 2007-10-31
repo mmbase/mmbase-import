@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 -->
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
-  <artifactId>mmbase-cache-oscache</artifactId>
+  <artifactId>mmbase-oscache</artifactId>
   <name>OSCache-cache</name>
   <shortDescription>MMBase OSCache cache implementation</shortDescription>
   <description>
