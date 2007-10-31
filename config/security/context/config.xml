@@ -120,6 +120,7 @@
       <operation type="change context"><grant group="administrators" /></operation>
       <possible context="admin"  />
       <possible context="import"  />
+      <possible context="default"  />
     </context>
   </contexts>
 </contextconfig>
