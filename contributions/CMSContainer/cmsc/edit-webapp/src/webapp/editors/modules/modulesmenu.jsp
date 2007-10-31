@@ -14,6 +14,12 @@
             <mm:haspage page="/editors/modules/customermenu.jsp">
 					<jsp:include page="/editors/modules/customermenu.jsp"/>
             </mm:haspage>
+             <mm:haspage page="/editors/messageoftheday">
+               <li class="messageoftheday">
+                  <c:url var="messageofthedayUrl" value="/editors/messageoftheday/index.jsp"/>
+                  <a href="${messageofthedayUrl}" target="rightpane"><fmt:message key="modules.messageoftheday" /></a>
+               </li>
+            </mm:haspage>  
             <mm:haspage page="/editors/resources/reactionsearch.jsp">
                 <li class="reactions">
                 	<a href="<mm:url page="../resources/ReactionInitAction.do"/>" target="rightpane"><fmt:message key="modules.reactions" /></a>
