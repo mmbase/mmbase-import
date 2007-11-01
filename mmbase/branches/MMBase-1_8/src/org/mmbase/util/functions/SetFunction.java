@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.13.2.4 2007-08-23 15:20:02 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.13.2.5 2007-11-01 10:10:04 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -117,36 +117,49 @@ public class SetFunction extends AbstractFunction {
         }
     }
 
+
+    /**
+     * Simple utility method to convert primitive classes to there 'sophisticated' counterparts.
+     *
+     * @since MMBase-1.8
+     */
+    protected static Class sophisticate(Class primitive) {
+
+        if (primitive.isPrimitive()) {
+            if (primitive.equals(Boolean.TYPE)) {
+                return  Boolean.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return  Character.class;
+            } else if (primitive.equals(Byte.TYPE)) {
+                return Byte.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return  Short.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Integer.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Long.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Float.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Double.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Void.class;
+            }
+        }
+        // already sophisticated
+        return primitive;
+    }
+
     private void checkReturnType() {
         if (returnType == null) {
             returnType = new ReturnType(functionMethod.getReturnType(), functionMethod.getReturnType().getClass().getName());
         }
-
-	Class returni = functionMethod.getReturnType();
-        if (returni.isPrimitive()) {
-            if (returni.equals(Boolean.TYPE)) {
-                returni = Boolean.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Character.class;
-            } else if (returni.equals(Byte.TYPE)) {
-                returni = Byte.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Short.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Integer.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Long.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Float.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Double.class;
-            } else if (returni.equals(Character.TYPE)) {
-                returni = Void.class;
-            }
-        }
-	Class returnx = returnType.getDataType().getTypeAsClass();
+        Class returni = sophisticate(functionMethod.getReturnType());
+	Class returnx = sophisticate(returnType.getDataType().getTypeAsClass());
         if (! returnx.isAssignableFrom(returni)) {
             log.warn("Return value of method " + functionMethod + " (" + returni + ") does not match method return type as specified in XML: (" + returnx + ")");
+        } else {
+            log.debug("Return value of method " + functionMethod + " (" + returni + ") does match return type as specified in XML: (" + returnx + ")");
         }
     }
 
