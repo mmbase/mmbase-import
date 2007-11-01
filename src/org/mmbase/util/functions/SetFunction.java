@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.20 2007-07-27 14:07:17 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.21 2007-11-01 10:11:38 michiel Exp $
  * @since MMBase-1.8
  * @see   FunctionSets
  */
@@ -46,6 +46,39 @@ public class SetFunction extends AbstractFunction<Object> {
     private final Object functionInstance ;
     private final Type type;
     private final int defLength;
+
+    /**
+     * Simple utility method to convert primitive classes to their 'sophisticated' counterparts.
+     *
+     * @since MMBase-1.8.5
+     */
+    protected static Class sophisticate(Class primitive) {
+
+        if (primitive.isPrimitive()) {
+            if (primitive.equals(Boolean.TYPE)) {
+                return  Boolean.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return  Character.class;
+            } else if (primitive.equals(Byte.TYPE)) {
+                return Byte.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return  Short.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Integer.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Long.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Float.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Double.class;
+            } else if (primitive.equals(Character.TYPE)) {
+                return Void.class;
+            }
+        }
+        // already sophisticated
+        return primitive;
+    }
+
 
     SetFunction(String name, Parameter[] def, ReturnType<Object> returnType, Class functionClass, String methodName, Type type) {
         super(name, def, returnType);
@@ -77,9 +110,9 @@ public class SetFunction extends AbstractFunction<Object> {
                 }
                 break;
             case INSTANCE:
-                functionInstance = null; 
+                functionInstance = null;
                 // one will be made on every calle
-                break; 
+                break;
             default:
                 functionInstance = null;
             }
@@ -90,29 +123,8 @@ public class SetFunction extends AbstractFunction<Object> {
             returnType = getReturnType();
         }
 
-	Class methodReturnType = functionMethod.getReturnType();
-        if (methodReturnType.isPrimitive()) {
-            if (methodReturnType.equals(Boolean.TYPE)) {
-                methodReturnType = Boolean.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Character.class;
-            } else if (methodReturnType.equals(Byte.TYPE)) {
-                methodReturnType = Byte.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Short.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Integer.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Long.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Float.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Double.class;
-            } else if (methodReturnType.equals(Character.TYPE)) {
-                methodReturnType = Void.class;
-            }
-        }
-	Class xmlReturnType    = returnType.getDataType().getTypeAsClass();
+	Class methodReturnType = sophisticate(functionMethod.getReturnType());
+	Class xmlReturnType    = sophisticate(returnType.getDataType().getTypeAsClass());
 
         if (! xmlReturnType.isAssignableFrom(methodReturnType)) {
             log.warn("Return value of function " + functionClass + "." + methodName + "(" + methodReturnType + ") does not match method return type as specified in XML: (" + xmlReturnType + ")");
