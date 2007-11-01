@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.80 2007-11-01 09:24:58 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.81 2007-11-01 09:32:32 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -245,7 +245,7 @@ public class IncludeTag extends UrlTag {
             switch(Notfound.get(notFound, this)) {
             case Notfound.LOG:
                 pageLog.warn("The requested resource '" + url + "' is not available", new Exception());
-                page = "";
+                output = "";
                 break;
             case Notfound.SKIP:
             case Notfound.PROVIDENULL:
