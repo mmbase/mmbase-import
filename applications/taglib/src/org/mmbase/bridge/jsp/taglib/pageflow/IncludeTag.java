@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.79 2007-07-26 23:15:37 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.80 2007-11-01 09:24:58 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -65,6 +65,7 @@ public class IncludeTag extends UrlTag {
     protected Attribute timeOut        = Attribute.NULL;
     //protected Attribute configuration   = Attribute.NULL;
 
+    protected Attribute omitXmlDeclaration = Attribute.NULL;
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -109,8 +110,17 @@ public class IncludeTag extends UrlTag {
         return super.getPage();
     }
 
-    
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected void checkAttributes() throws JspTagException {
+        if (page == Attribute.NULL && resource == Attribute.NULL && referid == Attribute.NULL) { // for include tags, page attribute is obligatory.
+            throw new JspTagException("No attribute 'page', 'resource' or 'referid' was specified");
+        }
+    }
     public int doStartTag() throws JspTagException {
+        checkAttributes();
         initTag(true);
         return EVAL_BODY_BUFFERED;
     }
@@ -233,6 +243,10 @@ public class IncludeTag extends UrlTag {
         default:
         case 404:
             switch(Notfound.get(notFound, this)) {
+            case Notfound.LOG:
+                pageLog.warn("The requested resource '" + url + "' is not available", new Exception());
+                page = "";
+                break;
             case Notfound.SKIP:
             case Notfound.PROVIDENULL:
                 output = "";
@@ -309,7 +323,7 @@ public class IncludeTag extends UrlTag {
 
             handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
 
-
+            getThreadPageContext();
         } catch (Throwable e) {
             log.error(relativeUrl + " " +  Logging.stackTrace(e));
             throw new TaglibException(relativeUrl + " " + e.getMessage(), e);
