@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.71 2007-10-01 07:50:54 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.72 2007-11-01 09:31:47 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -102,6 +102,14 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                     return SKIP_BODY;
                 }
                 break;
+            case Notfound.LOG: {
+                node = getNodeOrNull(referString);
+                if (node == null) {
+                    log.warn("Could not find node element '" + element.getString(this) + "'");
+                    return SKIP_BODY;
+                }
+                break;
+            }
             case Notfound.SKIP:         {
                 node = getNodeOrNull(referString);
                 if (node == null) return SKIP_BODY;
@@ -180,6 +188,9 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
                     }
                     if (node == null) {
                         switch(Notfound.get(notfound, this)) {
+                        case Notfound.LOG:
+                            log.warn("Could not find node element '" + elString + "'");
+                            return SKIP_BODY;
                         case Notfound.MESSAGE:
                             try {
                                 getPageContext().getOut().write("Could not find node element '" + elString + "'");
