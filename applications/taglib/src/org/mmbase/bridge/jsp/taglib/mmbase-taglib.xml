@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.412 2007-10-12 16:19:06 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.413 2007-11-01 09:35:46 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2336,6 +2336,13 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
           way, it is possible. Use on own risk!
         </info>
       </possiblevalue>
+      <possiblevalue>
+        <value>log</value>
+        <info>
+          Like 'skip' but also logs a message.
+          <since>MMBase-1.9</since>
+        </info>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>element</name>
@@ -2472,6 +2479,13 @@ access the value of title:
         <value>null|providenull</value>
         <info>
           Provides null as the value for the field
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>log</value>
+        <info>
+          Like 'skip' but logs a message.
+          <since>MMBase-1.9</since>
         </info>
       </possiblevalue>
       <since>MMBase-1.8</since>
@@ -4849,7 +4863,7 @@ like the parameter list or the session (where ever it is available) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-        Specify the behaviour when the file cannot be found. Default is 'skip', but you can change
+        Specify the behaviour when the file cannot be found. Default is 'message', but you can change
         this to give an exception for non-existing files that are included.
       </info>
       <possiblevalue>
@@ -4863,6 +4877,13 @@ like the parameter list or the session (where ever it is available) --&gt;
       <possiblevalue>
         <value>exception</value>
         <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>log</value>
+        <info>
+          Log a warning if the file cannot be found
+          <since>MMBase-1.8.5</since>
+        </info>
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
@@ -5652,6 +5673,14 @@ like the parameter list or the session (where ever it is available) --&gt;
       <possiblevalue>
         <value>exception</value>
         <info>Raise an exception if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>log</value>
+        <info>Log a message if the file cannot be found</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>message</value>
+        <info>Write message if the file cannot be found</info>
       </possiblevalue>
       <since>MMBase-1.8</since>
     </attribute>
