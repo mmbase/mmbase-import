@@ -23,7 +23,7 @@ import org.mmbase.util.transformers.*;
  * Static methods used for parsing of datatypes.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeXml.java,v 1.11 2007-10-17 12:47:45 michiel Exp $
+ * @version $Id: DataTypeXml.java,v 1.12 2007-11-01 09:44:37 michiel Exp $
  * @since MMBase-1.8
  **/
 public abstract class DataTypeXml {
@@ -129,7 +129,7 @@ public abstract class DataTypeXml {
                 }
             }
             if (subParams != null) {
-                if (! stringValue.equals("")) {
+                if (stringValue != null && ! stringValue.trim().equals("")) {
                     log.warn("" + param + " has both a text value and sub parameters, ignoring the text value '" + stringValue + "'");
                 }
                 return subParams;
