@@ -37,7 +37,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.22.2.4 2007-04-25 12:54:58 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.22.2.5 2007-11-01 13:38:34 sdeboer Exp $
  */
 public class FunctionSets {
 
@@ -275,7 +275,7 @@ public class FunctionSets {
             } else if (className.equals("Node")) {
                 return org.mmbase.bridge.Node.class;
             }
-            fullClassName = "java.lang." + fullClassName;
+            fullClassName = "java.lang." + Character.toUpperCase(fullClassName.charAt(0)) + fullClassName.substring(1);
         }
         try {
             return Class.forName(fullClassName);
