@@ -1,42 +1,41 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform" >
 
-  <xsl:variable name="REASON-WORKFLOW">This object is in worjflow and accpeted. You do not have permissions to publiah.</xsl:variable>
-  <xsl:variable name="REASON-PUBLISH">This object is in publication. This object will be locked until it is publshed.</xsl:variable>
+  <xsl:variable name="REASON-WORKFLOW">该对象已经处在被接受的工作流中,您没有权限发布.</xsl:variable>
+  <xsl:variable name="REASON-PUBLISH">对象发布中,并且将在发布完成前保持锁定状态.</xsl:variable>
 
-  <xsl:variable name="tooltip_finish">Store all changes for acceptance.</xsl:variable>
+  <xsl:variable name="tooltip_finish">保存所有修改.</xsl:variable>
   <xsl:variable name="tooltip_no_finish">
-    The changes cannot be finished since some data is not filled in correctly.
+    不能保存修改,请检查您填写的内容
   </xsl:variable>
 
-  <xsl:variable name="tooltip_accept">Accept all changes.</xsl:variable>
+  <xsl:variable name="tooltip_accept">接受所有修改.</xsl:variable>
   <xsl:variable name="tooltip_no_accept">
-    The changes cannot be accepted since some data is not filled in correctly.
+    不能接受修改,请检查您填写的内容
   </xsl:variable>
-
-  <xsl:variable name="tooltip_reject">Reject.</xsl:variable>
+  <xsl:variable name="tooltip_reject">退回.</xsl:variable>
   <xsl:variable name="tooltip_no_reject">
-    The changes cannot be rejected since some data is not filled in correctly.
+    不能退回修改,请检查您填写的内容
   </xsl:variable>
 
-  <xsl:variable name="tooltip_publish">Publish all changes.</xsl:variable>
+  <xsl:variable name="tooltip_publish">发布所有修改.</xsl:variable>
   <xsl:variable name="tooltip_no_publish">
-    The changes cannot be published since some data is not filled in correctly.
+    不能发布修改,请检查您填写的内容
   </xsl:variable>
 
   <xsl:template name="prompt_finish">
-    finish
+    完成
   </xsl:template>
 
   <xsl:template name="prompt_accept">
-    accept
+    接受
   </xsl:template>
 
   <xsl:template name="prompt_reject">
-    reject
+    退回
   </xsl:template>
   
   <xsl:template name="prompt_publish">
-    publish
+    发布
   </xsl:template>
 </xsl:stylesheet>

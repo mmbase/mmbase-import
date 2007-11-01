@@ -3,7 +3,7 @@
 <form-schema id="edit_faqitem">
 	<title xml:lang="nl">Veelgestelde vraag</title>
 	<title xml:lang="en">Frequently asked question</title>
-	<title xml:lang="zh">高频问题</title>
+	<title xml:lang="zh">常见问题</title>
 
 	<field name="title" dtmaxlength="255" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
