@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.13 2007-08-03 12:07:36 sdeboer Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.14 2007-11-01 09:32:13 michiel Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -86,6 +86,8 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
                         log.warn(ioe);
                     }
                     return SKIP_BODY;
+            case Notfound.LOG:
+                log.warn("Function value was null");
             case Notfound.SKIP:         {
                 return SKIP_BODY;
             }

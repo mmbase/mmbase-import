@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.69 2006-11-29 09:52:16 johannes Exp $
+ * @version $Id: FieldTag.java,v 1.70 2007-11-01 09:32:49 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -195,6 +195,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         boolean hasField = node != null && fieldName != null && node.getNodeManager().hasField(fieldName);
         if (! hasField) {
             switch(Notfound.get(notfound, this)) {
+            case Notfound.LOG:
+                findValue = false;
+                log.warn("Field '" + fieldName + "' does not exist in " + getNode().getNodeManager().getName());
+                break;
             case Notfound.SKIP:
                 return SKIP_BODY;
             case Notfound.PROVIDENULL:
