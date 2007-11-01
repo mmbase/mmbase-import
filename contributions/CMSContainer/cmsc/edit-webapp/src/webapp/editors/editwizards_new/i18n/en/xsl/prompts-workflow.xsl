@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform" >
 
-  <xsl:variable name="REASON-WORKFLOW">This object is in worjflow and accpeted. You do not have permissions to publiah.</xsl:variable>
+  <xsl:variable name="REASON-WORKFLOW">This object is in workflow and accpeted. You do not have permissions to publiah.</xsl:variable>
   <xsl:variable name="REASON-PUBLISH">This object is in publication. This object will be locked until it is publshed.</xsl:variable>
 
   <xsl:variable name="tooltip_finish">Store all changes for acceptance.</xsl:variable>
