@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.174 2007-06-06 11:39:58 nklasens Exp $
+    @version $Id: wizard.xsl,v 1.175 2007-11-01 17:30:09 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -46,9 +46,23 @@
     <script type="text/javascript" src="{$javascriptdir}validator.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;amp;country={$country}&amp;amp;timezone={$timezone}&amp;amp;referrer={$referrer_encoded}">
+    <xsl:element name="script">
+      <xsl:attribute name="type">text/javascript</xsl:attribute>
+      <xsl:attribute name="src">
+        <xsl:value-of select="$javascriptdir" />
+        <xsl:text disable-output-escaping="yes">editwizard.jsp</xsl:text>
+        <xsl:value-of select="$sessionid" />
+        <xsl:text disable-output-escaping="yes">?language=</xsl:text>
+        <xsl:value-of select="$language" />
+        <xsl:text disable-output-escaping="yes">&amp;country=</xsl:text>
+        <xsl:value-of select="$country" />
+        <xsl:text disable-output-escaping="yes">&amp;timezone=</xsl:text>
+        <xsl:value-of select="$timezone" />
+        <xsl:text disable-output-escaping="yes">&amp;referrer=</xsl:text>
+        <xsl:value-of select="$referrer_encoded" />
+      </xsl:attribute>
       <xsl:comment>help IE</xsl:comment>
-    </script>
+    </xsl:element>
     <script type="text/javascript">
       <xsl:text disable-output-escaping="yes">
         <![CDATA[
