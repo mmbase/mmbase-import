@@ -2,10 +2,14 @@ package org.mmbase.storage.implementation.database;
 
 import java.lang.reflect.Method;
 import java.sql.*;
+import java.util.List;
+import org.mmbase.module.database.JDBC;
+import org.mmbase.module.Module;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.database.MultiConnection;
+
 
 public class InformixStorageManager extends DatabaseStorageManager {
     private static final Logger log = Logging.getLoggerInstance(InformixStorageManager.class);
@@ -31,11 +35,13 @@ public class InformixStorageManager extends DatabaseStorageManager {
         }
     }
 
+
     private void closeInformix() {
         Connection con = ((MultiConnection)activeConnection).unwrap(Connection.class);
         try {
             Method scrub = Class.forName("com.informix.jdbc.IfxConnection").getMethod("scrubConnection");
             scrub.invoke(con);
+            ((JDBC) Module.getModule("jdbc")).getSupport().initConnection(con);
         } catch (Exception e) {
             log.error("Exception while calling releaseBlob(): " + e.getMessage());
         }
