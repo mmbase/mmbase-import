@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.47.2.3 2006-10-04 15:30:40 michiel Exp $
+ * @version $Id: JDBC.java,v 1.47.2.4 2007-11-02 11:02:06 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -143,12 +143,19 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private void loadSupport() {
         try {
             Class cl = Class.forName(databaseSupportClass);
-            databaseSupport = (DatabaseSupport)cl.newInstance();
+            databaseSupport = (DatabaseSupport) cl.newInstance();
             databaseSupport.init();
-            log.debug("Loaded load class : " + databaseSupportClass);
+            log.info("Loaded database support class : " + databaseSupportClass);
         } catch (Exception e) {
             log.error("Can't load class : " + databaseSupportClass + " " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public DatabaseSupport getSupport() {
+        return databaseSupport;
     }
 
     /**
@@ -228,7 +235,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         }
         jdbcDatabase = getInitParameter("database");
         if (databaseSupportClass == null || databaseSupportClass.length() == 0) {
-            databaseSupportClass="org.mmbase.module.database.DatabaseSupportShim";
+            databaseSupportClass = DatabaseSupportShim.class.getName();
             log.warn("database supportclass was not known, using default: " + databaseSupportClass);
         }
     }
