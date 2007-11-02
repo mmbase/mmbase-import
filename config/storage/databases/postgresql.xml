@@ -98,6 +98,7 @@
     <disallowed-field name="listen" replacement="m_listen"/>
     <disallowed-field name="load" replacement="m_load"/>
     <disallowed-field name="local" replacement="m_local" /> <!-- standard SQL keyword -->
+    <disallowed-field name="left" replacement="m_left"/>
     <disallowed-field name="merge" replacement="m_merge"/>
     <disallowed-field name="month" replacement="m_month" />
     <disallowed-field name="nothing" replacement="m_nothing"/>
@@ -123,6 +124,7 @@
     <disallowed-field name="to" replacement="m_to" /> <!-- standard SQL keyword -->
     <disallowed-field name="type" replacement="m_type" />
     <disallowed-field name="use" replacement="m_use" />
+    <disallowed-field name="user" replacement="m_user"/>
     <disallowed-field name="vacuum" replacement="m_vacuum"/>
     <disallowed-field name="verbose" replacement="m_verbose"/>
     <disallowed-field name="version" replacement="m_version"/>
