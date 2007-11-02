@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.56 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: JDBC.java,v 1.57 2007-11-02 11:33:47 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -54,7 +54,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         addFunction(new GetNodeListFunction("CONNECTIONS", PARAMS_PAGEINFO));
     }
 
-    public JDBC(String name) { 
+    public JDBC(String name) {
         super(name);
     }
 
@@ -152,6 +152,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         } catch (Exception e) {
             log.error("Can't load class : " + databaseSupportClass + " " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * @since MMBase-1.8.5
+     */
+    public DatabaseSupport getSupport() {
+        return databaseSupport;
     }
 
     /**
