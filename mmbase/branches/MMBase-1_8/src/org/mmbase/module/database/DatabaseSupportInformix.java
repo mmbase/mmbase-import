@@ -15,24 +15,23 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Interface to support specific database things
- * for the JDBC module
- * @duplicate extend {@link DatabaseSupport} instead of implementing it.
+ * This class sets the 'lock mode' to 30.
  * @author vpro
- * @version $Id: DatabaseSupportInformix.java,v 1.6 2004-10-07 17:22:34 pierre Exp $
+ * @version $Id: DatabaseSupportInformix.java,v 1.6.2.1 2007-11-02 11:35:31 michiel Exp $
+ * @deprecated Use ;IFX_LOCK_MODE_WAIT=31  on the connection string in jdbc.xml in stead
  */
 public class DatabaseSupportInformix implements DatabaseSupport {
 
-    private static Logger log = Logging.getLoggerInstance(DatabaseSupportInformix.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(DatabaseSupportInformix.class);
 
     public void init() {
     }
 
     public void initConnection(Connection con) {
-        setLockMode(con,30);
+        setLockMode(con, 30);
     }
 
-    public void setLockMode(Connection con,int sec) {
+    protected void setLockMode(Connection con,int sec) {
         PreparedStatement statement;
         try {
             if (sec>0) {
@@ -43,8 +42,7 @@ public class DatabaseSupportInformix implements DatabaseSupport {
             statement.executeUpdate();
             statement.close();
         } catch (Exception e) {
-            log.error("failed to set lock mode "+e);
-            log.error(Logging.stackTrace(e));
+            log.error("failed to set lock mode " + e.getMessage(), e);
         }
     }
 }
