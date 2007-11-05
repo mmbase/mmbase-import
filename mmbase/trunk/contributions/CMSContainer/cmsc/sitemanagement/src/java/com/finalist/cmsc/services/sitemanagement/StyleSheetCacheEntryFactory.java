@@ -31,7 +31,7 @@ public class StyleSheetCacheEntryFactory extends MMBaseCacheEntryFactory {
             return null;
         }
 
-        Stylesheet stylesheet = (Stylesheet) MMBaseNodeMapper.copyNode(stylesheetNode, Stylesheet.class);
+        Stylesheet stylesheet = MMBaseNodeMapper.copyNode(stylesheetNode, Stylesheet.class);
         return stylesheet;
     }
 

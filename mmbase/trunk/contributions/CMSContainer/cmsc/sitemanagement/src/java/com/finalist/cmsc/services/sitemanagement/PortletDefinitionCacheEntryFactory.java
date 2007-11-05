@@ -31,7 +31,7 @@ public class PortletDefinitionCacheEntryFactory extends MMBaseCacheEntryFactory 
         if (definitionNode == null || !PortletUtil.isDefinition(definitionNode)) {
             return null;
         }
-        PortletDefinition definition = (PortletDefinition) MMBaseNodeMapper.copyNode(definitionNode, PortletDefinition.class);
+        PortletDefinition definition = MMBaseNodeMapper.copyNode(definitionNode, PortletDefinition.class);
         
         NodeList nodelist = PortletUtil.getAllowedViews(definitionNode);
         NodeIterator r = nodelist.nodeIterator();
