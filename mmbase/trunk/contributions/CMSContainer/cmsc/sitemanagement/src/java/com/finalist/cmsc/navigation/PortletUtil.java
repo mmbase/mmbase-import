@@ -81,11 +81,11 @@ public class PortletUtil {
     }
     
     public static NodeList getNodeParameters(Node portlet) {
-        return portlet.getRelatedNodes(NODEPARAMETER, PARAMETERREL, DESTINATION);
+        return SearchUtil.findRelatedNodeList(portlet, NODEPARAMETER, PARAMETERREL, null, null, KEY_FIELD);
     }
 
     public static NodeList getPortletParameters(Node portlet) {
-        return portlet.getRelatedNodes(PORTLETPARAMETER, PARAMETERREL, DESTINATION);
+        return SearchUtil.findRelatedNodeList(portlet, PORTLETPARAMETER, PARAMETERREL, null, null, KEY_FIELD);
     }
 
     public static NodeList getPortletViews(Node portlet) {
@@ -232,18 +232,78 @@ public class PortletUtil {
         updatePortletParameter(portlet, key, value);
     }
 
+    public static void updatePortletParameter(Cloud cloud, String portletId, String key, List<String> values) {
+        Node portlet = cloud.getNode(portletId);
+        updatePortletParameter(portlet, key, values);
+    }
+    
+    public static void updatePortletParameter(Node portlet, String key, List<String> values) {
+        if (values == null || values.isEmpty() || values.size() == 1) {
+            String singleValue = (values == null || values.isEmpty()) ? null : values.get(0);
+            updatePortletParameter(portlet, key, singleValue);
+        }
+        else {
+            NodeList plist = SearchUtil.findRelatedNodeList(portlet, PORTLETPARAMETER, PARAMETERREL, KEY_FIELD, key);
+            if (!plist.isEmpty()) {
+                Map<String, Node> storedValues = new HashMap<String, Node>();
+                for (Iterator<Node> iterator = plist.iterator(); iterator.hasNext();) {
+                    Node storedNode = iterator.next();
+                    String storedValue = storedNode.getStringValue(VALUE_FIELD);
+                    storedValues.put(storedValue, storedNode);
+                }
+                
+                for (String newValue : values) {
+                    if (!StringUtil.isEmptyOrWhitespace(newValue)) {
+                        if (storedValues.containsKey(newValue)) {
+                            storedValues.remove(newValue);
+                        }
+                        else {
+                            log.debug("creating node for node:" + portlet.getNumber());
+                            Node newNode = createPortletParameter(portlet.getCloud(), key, newValue);
+                            addPortletParameter(portlet, newNode);
+                        }
+                    }
+                }
+                
+                for (Node storedEntry : storedValues.values()) {
+                  log.debug("removing parameter node:" + storedEntry.getNumber());
+                  storedEntry.delete(true);
+                }
+            } else {
+                for (String value : values) {
+                    if (!StringUtil.isEmptyOrWhitespace(value)) {
+                        log.debug("creating node for node:" + portlet.getNumber());
+                        Node newNode = createPortletParameter(portlet.getCloud(), key, value);
+                        addPortletParameter(portlet, newNode);
+                    }
+                }
+            }
+        }
+    }
+
     public static void updatePortletParameter(Node portlet, String key, String value) {
         NodeList plist = SearchUtil.findRelatedNodeList(portlet, PORTLETPARAMETER, PARAMETERREL, KEY_FIELD, key);
         if (!plist.isEmpty()) {
-            Node foundNode = plist.getNode(0);
             if (StringUtil.isEmptyOrWhitespace(value)) {
-                log.debug("removing parameter node:" + foundNode.getNumber());
-                foundNode.delete(true);
+                for (Iterator<Node> iterator = plist.iterator(); iterator.hasNext();) {
+                    Node foundNode = iterator.next();
+                    log.debug("removing parameter node:" + foundNode.getNumber());
+                    foundNode.delete(true);
+                }
             }
             else {
-                log.debug("updating parameter node:" + foundNode.getNumber());
-                foundNode.setStringValue(VALUE_FIELD, value);
-                foundNode.commit();
+                for (int i = 0; i < plist.size(); i++) {
+                    Node foundNode = plist.getNode(i);
+                    if (i == 0) {
+                        log.debug("updating parameter node:" + foundNode.getNumber());
+                        foundNode.setStringValue(VALUE_FIELD, value);
+                        foundNode.commit();
+                    }
+                    else {
+                        log.debug("removing parameter node:" + foundNode.getNumber());
+                        foundNode.delete(true);
+                    }
+                }
             }
         } else {
             if (!StringUtil.isEmptyOrWhitespace(value)) {
@@ -254,12 +314,62 @@ public class PortletUtil {
         }
     }
     
-    public static void updatePortletParameter(Cloud cloud, String portletId, String key, Node value) {
+    public static void updateNodeParameter(Cloud cloud, String portletId, String key, Node value) {
         Node portlet = cloud.getNode(portletId);
-        updatePortletParameter(portlet, key, value);
+        updateNodeParameter(portlet, key, value);
+    }
+
+    public static void updateNodeParameter(Cloud cloud, String portletId, String key, List<Node> values) {
+        Node portlet = cloud.getNode(portletId);
+        updateNodeParameter(portlet, key, values);
     }
     
-    public static void updatePortletParameter(Node portlet, String key, Node value) {
+    public static void updateNodeParameter(Node portlet, String key, List<Node> values) {
+        if (values == null || values.isEmpty() || values.size() == 1) {
+            Node singleValue = (values == null || values.isEmpty()) ? null : values.get(0);
+            updateNodeParameter(portlet, key, singleValue);
+        }
+        else {
+            NodeList plist = SearchUtil.findRelatedNodeList(portlet, PORTLETPARAMETER, PARAMETERREL, KEY_FIELD, key);
+            if (!plist.isEmpty()) {
+                Map<String, Node> storedValues = new HashMap<String, Node>();
+                for (Iterator<Node> iterator = plist.iterator(); iterator.hasNext();) {
+                    Node storedNode = iterator.next();
+                    String storedValue = storedNode.getStringValue(VALUE_FIELD);
+                    storedValues.put(storedValue, storedNode);
+                }
+                
+                for (Node newValue : values) {
+                    if (newValue != null) {
+                        if (storedValues.containsKey(newValue.getNumber())) {
+                            storedValues.remove(newValue.getNumber());
+                        }
+                        else {
+                            log.debug("creating node for node:" + portlet.getNumber());
+                            Node newNode = createNodeParameter(portlet.getCloud(), key, newValue);
+                            addPortletParameter(portlet, newNode);
+                        }
+                    }
+                }
+                
+                for (Node storedEntry : storedValues.values()) {
+                  log.debug("removing parameter node:" + storedEntry.getNumber());
+                  storedEntry.delete(true);
+                }
+            } else {
+                for (Node value : values) {
+                    if (value != null) {
+                        log.debug("creating node for node:" + portlet.getNumber());
+                        Node newNode = createNodeParameter(portlet.getCloud(), key, value);
+                        addPortletParameter(portlet, newNode);
+                    }
+                }
+            }
+        }
+    }
+
+    
+    public static void updateNodeParameter(Node portlet, String key, Node value) {
         NodeList plist = SearchUtil.findRelatedNodeList(portlet, NODEPARAMETER, PARAMETERREL, KEY_FIELD, key);
         if (!plist.isEmpty()) {
             Node foundNode = plist.getNode(0);
@@ -560,6 +670,9 @@ public class PortletUtil {
             nodes.add(node);
         }
     }
+
+
+
 
 
 }
