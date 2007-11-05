@@ -17,14 +17,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * Recognizes and canonicalizes phone numbers. Currently only supports dutch mobile phone numbers.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NumberRecognizer.java,v 1.2 2007-11-05 09:48:23 michiel Exp $
+ * @version $Id: NumberRecognizer.java,v 1.3 2007-11-05 14:35:12 michiel Exp $
  **/
 public  class NumberRecognizer implements Processor {
 
 
-    public Pattern DUTCH = Pattern.compile("(?:00316|06|\\+316)\\s*[\\-\\s]?\\s*([0-9]{8})");
+    public static final Pattern DUTCH = Pattern.compile("(?:00316|06|\\+316)\\s*[\\-\\s]?\\s*([0-9]{8})");
 
     public Object process(Node node, Field field, Object value) {
         String number = "" + value;
