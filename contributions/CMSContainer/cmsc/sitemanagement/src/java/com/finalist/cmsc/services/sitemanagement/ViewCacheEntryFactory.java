@@ -33,7 +33,7 @@ public class ViewCacheEntryFactory extends MMBaseCacheEntryFactory {
             return null;
         }
 
-        View view = (View) MMBaseNodeMapper.copyNode(viewNode, View.class);
+        View view = MMBaseNodeMapper.copyNode(viewNode, View.class);
         List<String> types = PortletUtil.getAllowedTypes(viewNode);
         for (String type : types) {
             view.addContenttype(type);
