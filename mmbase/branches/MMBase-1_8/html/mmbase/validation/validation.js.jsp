@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.13 2007-10-17 08:04:41 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.14 2007-11-05 17:10:00 michiel Exp $
  */
 var validators = new Array();
 
@@ -40,6 +40,7 @@ function MMBaseValidator(w, root) {
 
     this.dataTypeCache   = new Object();
     this.invalidElements = 0;
+    //this.changedElements  = 0;
     this.elements        = new Array();
     this.validateHook;
 
@@ -105,7 +106,7 @@ MMBaseValidator.prototype.getNode = function(el) {
  * Whether a restriction on a certain input element mus be enforced.
  */
 MMBaseValidator.prototype.enforce = function(el, enf) {
-    this.trace("ENformce " + enf);
+    this.trace("Enforce " + enf);
     if (enf == 'never') return false;
     if (enf == 'always') return true;
     if (enf == 'absolute') return true;
@@ -611,7 +612,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
             this.getDataTypeArguments(key) +
             (this.lang != null ? "&lang=" + this.lang : "") +
             "&value=" + value +
-            (key.node != null ? ("&node=" + key.node) : "") +
+            (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
             "&changed=" + this.isChanged(el);
         xmlhttp.open("GET", validationUrl, false);
         xmlhttp.send(null);
