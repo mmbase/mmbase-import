@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.2 2007-10-26 15:34:36 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.3 2007-11-05 14:35:12 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -88,6 +88,18 @@ public class SenderJob  extends AbstractCronJob {
         queue.offer(new SMS(recipient, notifyable, date));
     }
 
+    public static void offer(final String phoneNumber, final String message) {
+        queue.offer(new SMS(null, null, new Date()) {
+                public String body() {
+                    return message;
+                }
+                public String phone() {
+                    return phoneNumber;
+                }
+            });
+
+    }
+
     private static final Logger log = Logging.getLoggerInstance(SenderJob.class);
 
 
@@ -105,42 +117,45 @@ public class SenderJob  extends AbstractCronJob {
     }
 
     protected void send(String configFile)  throws SAXException, IOException {
-        Map<String, String> config = new UtilReader(configFile).getProperties();
-        String u = config.get("url");
-        log.debug("Using '" + u + "'");
-        URL url = new URL(config.get("url"));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        OutputStream out = con.getOutputStream();
-        send(out, config);
+        if (queue.size() > 0) {
+            Map<String, String> config = new UtilReader(configFile).getProperties();
+            String u = config.get("url");
+            log.debug("Using '" + u + "'");
+            URL url = new URL(config.get("url"));
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+            OutputStream out = con.getOutputStream();
+            send(out, config);
 
-        try {
-            final InputStream in = con.getInputStream();
-            BufferedReader is = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while ((line = is.readLine()) != null) {
-                log.debug(line);
-            }
-            is.close();
-        } catch (Exception e) {
-            log.error(e);
-        }
-
-        {
-            final InputStream error = con.getErrorStream();
-            if (error != null) {
-                BufferedReader es = new BufferedReader(new InputStreamReader(error));
+            try {
+                final InputStream in = con.getInputStream();
+                BufferedReader is = new BufferedReader(new InputStreamReader(in));
                 String line;
-                while ((line = es.readLine()) != null) {
-                    log.error(line);
+                while ((line = is.readLine()) != null) {
+                    log.debug(line);
                 }
-                es.close();
+                is.close();
+            } catch (Exception e) {
+                log.error(e);
             }
+
+            {
+                final InputStream error = con.getErrorStream();
+                if (error != null) {
+                    BufferedReader es = new BufferedReader(new InputStreamReader(error));
+                    String line;
+                    while ((line = es.readLine()) != null) {
+                        log.error(line);
+                    }
+                    es.close();
+                }
+            }
+            out.close();
+
+        } else {
+            log.service("Queue is empty, nothing to be sent");
         }
-        out.close();
-
-
     }
 
     protected void send(OutputStream out, Map<String, String> config) throws SAXException, IOException {
@@ -178,7 +193,6 @@ public class SenderJob  extends AbstractCronJob {
         w.characters("mmbase reference " + System.currentTimeMillis());
         w.endElement("REFERENCE");
 
-
         int drain = queue.size();
         for (int i = 0; i < drain; i++) {
             SMS sms = queue.poll();
@@ -188,7 +202,10 @@ public class SenderJob  extends AbstractCronJob {
         w.endElement("MESSAGES");
         w.endDocument();
         w.flush();
+
     }
+
+
 
     /**
      * Main for testing only
@@ -199,18 +216,9 @@ public class SenderJob  extends AbstractCronJob {
             System.out.println("Use tel-number as argument");
             sender.send(System.out, new HashMap<String, String>());
         } else {
-            sender.queue.offer(new SMS(null, null, null) {
-                    public String body() {
-                        return "Test test " + new Date();
-                    }
-                    public String phone() {
-                        return argv[0];
-                    }
-                });
-            //sender.send(System.out);
+            SenderJob.offer(argv[0], "Test test " + new Date());
             sender.send("sms_sender.xml");
         }
     }
-
 
 }

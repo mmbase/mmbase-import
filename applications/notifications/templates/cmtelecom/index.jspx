@@ -9,6 +9,6 @@
   <mm:import externid="message" required="true" jspvar="message" />
   <jsp:output omit-xml-declaration="true" />
   <mm:content type="text/plain" expires="0" >
-    <jsp:expression>org.mmbase.sms.Receiver.offer("cmtelecom_handlers.xml", recipient, operator, message)</jsp:expression>
+    <jsp:expression>org.mmbase.sms.Receiver.offer(recipient, operator, message)</jsp:expression>
   </mm:content>
 </jsp:root>
