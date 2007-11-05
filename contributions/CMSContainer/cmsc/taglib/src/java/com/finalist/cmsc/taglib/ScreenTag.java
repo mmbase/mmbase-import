@@ -67,11 +67,11 @@ public class ScreenTag extends CmscTag {
         return (ScreenFragment) request.getAttribute(PortalConstants.FRAGMENT);
     }
     
-	protected Layout getLayout() {
+	public Layout getLayout() {
 		return layout;
 	}
 
-	protected Page getPage() {
+	public Page getPage() {
 		return page;
 	}
 
@@ -89,7 +89,7 @@ public class ScreenTag extends CmscTag {
 		return null;
 	}
     
-    protected Collection<Fragment> getAllPortlets() {
+    public Collection<Fragment> getAllPortlets() {
         return screenFragment.getChildFragments();
     }
 }
