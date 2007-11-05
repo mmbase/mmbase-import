@@ -6,4 +6,8 @@
     <property name="rank" value="administrator" />
   </authenticate>
 
+  <authenticate class="org\.mmbase\.sms\..*">
+    <property name="rank" value="administrator" />
+  </authenticate>
+
 </security>
