@@ -98,12 +98,12 @@ public class CmscPortlet extends GenericPortlet {
         if (portletId != null) {
             for (Enumeration<String> iterator = request.getParameterNames(); iterator.hasMoreElements();) {
                 String name = iterator.nextElement();
-                String value = request.getParameter(name);
-                if (value.startsWith("node.")) {
-                    setPortletNodeParameter(portletId, name, value.substring("node.".length()));
+                String[] values = request.getParameterValues(name);
+                if (name.startsWith("node.")) {
+                    setPortletNodeParameter(portletId, name.substring("node.".length()), values);
                 }
                 else {
-                    setPortletParameter(portletId, name, value);
+                    setPortletParameter(portletId, name, values);
                 }
             }
         } else {
@@ -430,6 +430,20 @@ public class CmscPortlet extends GenericPortlet {
         SiteManagementAdmin.setPortletParameter(portletId, param);
     }
 
+    protected void setPortletNodeParameter(String portletId, String key, String[] values) {
+        PortletParameter param = new PortletParameter();
+        param.setKey(key);
+        param.setValues(values);
+        SiteManagementAdmin.setPortletNodeParameter(portletId, param);
+    }
+
+    protected void setPortletParameter(String portletId, String key, String[] values) {
+        PortletParameter param = new PortletParameter();
+        param.setKey(key);
+        param.setValues(values);
+        SiteManagementAdmin.setPortletParameter(portletId, param);
+    }
+    
     protected void setPortletView(String portletId, String viewId) {
         if (viewId != null) {
             SiteManagementAdmin.setPortletView(portletId, viewId);
