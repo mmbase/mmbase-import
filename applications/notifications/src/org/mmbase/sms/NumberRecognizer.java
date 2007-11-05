@@ -19,12 +19,12 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NumberRecognizer.java,v 1.1 2007-10-26 16:02:45 michiel Exp $
+ * @version $Id: NumberRecognizer.java,v 1.2 2007-11-05 09:48:23 michiel Exp $
  **/
 public  class NumberRecognizer implements Processor {
 
 
-    public Pattern DUTCH = Pattern.compile("(00316|06|+316)\\s*[\\-\\s]?\\s*([0-9]{8})");
+    public Pattern DUTCH = Pattern.compile("(?:00316|06|\\+316)\\s*[\\-\\s]?\\s*([0-9]{8})");
 
     public Object process(Node node, Field field, Object value) {
         String number = "" + value;
