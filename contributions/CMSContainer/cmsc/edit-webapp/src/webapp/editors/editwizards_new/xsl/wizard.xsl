@@ -719,18 +719,6 @@
   
   <xsl:template name="prompt_search">
     <xsl:value-of select="$prompt_search_link" />
-    <xsl:choose>
-      <xsl:when test="prompt!=''">
-        <xsl:attribute name="alt">
-          <xsl:value-of select="prompt" />
-        </xsl:attribute>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:attribute name="alt">
-          <xsl:value-of select="$tooltip_search" />
-        </xsl:attribute>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
 
   <!-- prompts for starting a editwizard -->
