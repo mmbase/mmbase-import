@@ -69,7 +69,7 @@ public class ScreenFragment extends AbstractFragment {
 		}
 	}
 
-    private void setupRequest(HttpServletRequest request) {
+    public void setupRequest(HttpServletRequest request) {
         request.setAttribute(PortalConstants.CMSC_OM_PAGE_ID, String.valueOf(getPage().getId()));
     }
 
