@@ -92,17 +92,19 @@ public class PortletFragment extends AbstractFragment {
                     if (objectParam instanceof PortletParameter) {
     					PortletParameter param = (PortletParameter) objectParam;
     					String key = param.getKey();
-                        String value = param.getValue();
-                        log.debug("key: " + key + " value: " + value);
-                        ps.add(key, value);
+                        List<String> values = param.getValues();
+                        if (values != null) {
+                            log.debug("key: " + key + " value: " + values);
+                            ps.add(key, values);
+                        }
                     }
                     if (objectParam instanceof NodeParameter) {
                         NodeParameter param = (NodeParameter) objectParam;
                         String key = param.getKey();
-                        String paramValue = param.getValueAsString();
-                        if (paramValue != null) {
-                            log.debug("key: " + key + " value: " + paramValue);
-                            ps.add(key, paramValue);
+                        List<String> values = param.getValues();
+                        if (values != null) {
+                            log.debug("key: " + key + " value: " + values);
+                            ps.add(key, values);
                         }
                     }
 				}
@@ -250,7 +252,7 @@ public class PortletFragment extends AbstractFragment {
         return servletDefinition;
     }
 
-    public void writeToResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+   public void writeToResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter responseWriter = response.getWriter();
         try {
             boolean unavailable = getServletDefinition().isUnavailable();

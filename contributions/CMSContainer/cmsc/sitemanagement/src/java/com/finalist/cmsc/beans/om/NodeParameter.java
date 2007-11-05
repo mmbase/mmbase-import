@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.beans.om;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.mmapps.commons.beans.NodeBean;
 
 import org.mmbase.bridge.Node;
@@ -22,7 +25,7 @@ public class NodeParameter extends NodeBean {
 
 	private String key;
 
-	private String value;
+	private List<String> values;
 
 	public String getKey() {
 		return key;
@@ -33,12 +36,43 @@ public class NodeParameter extends NodeBean {
 	}
 
 	public String getValueAsString() {
-		return value;
+	    if (values != null && values.size() > 0) {
+	        return values.get(0);	        
+	    }
+	    return null;
 	}
 
 	public void setValue(Node value) {
         if (value != null) {
-            this.value = String.valueOf(value.getNumber());
+		    if (values == null) {
+		        values = new ArrayList<String>();
+		    }
+		    if (values.size() > 0) {
+	    	    values.clear();
+		    }
+            values.add(String.valueOf(value.getNumber()));
         }
 	}
+	
+    public void addValue(Node value) {
+        if (value != null) {
+            if (values == null) {
+                values = new ArrayList<String>();
+            }
+            values.add(String.valueOf(value.getNumber()));
+        }
+    }
+    
+    public void addValue(String value) {
+        if (value != null) {
+            if (values == null) {
+                values = new ArrayList<String>();
+            }
+            values.add(value);
+        }
+    }
+    
+    public List<String> getValues() {
+        return values;
+    }
 }

@@ -45,7 +45,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
             return null;
         }
         
-        Portlet portlet = (Portlet) MMBaseNodeMapper.copyNode(portletNode, Portlet.class);
+        Portlet portlet = MMBaseNodeMapper.copyNode(portletNode, Portlet.class);
         
         Node definition = PortletUtil.getDefinition(portletNode);
         if (definition == null) {
@@ -54,29 +54,66 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
         }
         portlet.setDefinition(definition.getNumber());
 
+        loadViews(portletNode, portlet);
+        loadPortletParameters(portletNode, portlet);
+        loadNodeParameters(portletNode, portlet);
+        return portlet;
+    }
+
+    private void loadViews(Node portletNode, Portlet portlet) {
         NodeList vlist = PortletUtil.getPortletViews(portletNode);
         for (NodeIterator iter = vlist.nodeIterator(); iter.hasNext();) {
             Node viewNode = iter.nextNode();
             portlet.addView(viewNode.getNumber());
         }
+    }
 
+    private void loadPortletParameters(Node portletNode, Portlet portlet) {
+        String previousKey = null;
+        PortletParameter previousParam = null;
         NodeList plist = PortletUtil.getPortletParameters(portletNode);
+        // list is sorted based on key field
         for (NodeIterator iter = plist.nodeIterator(); iter.hasNext();) {
             Node paramNode = iter.nextNode();
-            PortletParameter param = (PortletParameter) MMBaseNodeMapper.copyNode(paramNode, PortletParameter.class);
-            portlet.addPortletparameter(param);
+            String paramterKey = paramNode.getStringValue(PortletUtil.KEY_FIELD);
+            if (previousKey == null || !previousKey.equals(paramterKey)) {
+                PortletParameter param = MMBaseNodeMapper.copyNode(paramNode, PortletParameter.class);
+                portlet.addPortletparameter(param);
+                
+                previousKey = paramterKey;
+                previousParam = param;
+            }
+            else {
+                String value = paramNode.getStringValue(PortletUtil.VALUE_FIELD);;
+                previousParam.addValue(value);
+            }
         }
+    }
 
+    private void loadNodeParameters(Node portletNode, Portlet portlet) {
+        String previousNodeKey = null;
+        NodeParameter previousNodeParam = null;
         NodeList pnodeslist = PortletUtil.getNodeParameters(portletNode);
         for (NodeIterator iter = pnodeslist.nodeIterator(); iter.hasNext();) {
             Node paramNode = iter.nextNode();
-            int qNodeNumber = paramNode.getIntValue(PortletUtil.VALUE_FIELD);
-            if (paramNode.getCloud().hasNode(qNodeNumber)) {
-                NodeParameter param = (NodeParameter) MMBaseNodeMapper.copyNode(paramNode, NodeParameter.class);
-                portlet.addPortletparameter(param);
+            String paramterKey = paramNode.getStringValue(PortletUtil.KEY_FIELD);
+            if (previousNodeKey == null || !previousNodeKey.equals(paramterKey)) {
+                int qNodeNumber = paramNode.getIntValue(PortletUtil.VALUE_FIELD);
+                if (paramNode.getCloud().hasNode(qNodeNumber)) {
+                    NodeParameter param = MMBaseNodeMapper.copyNode(paramNode, NodeParameter.class);
+                    portlet.addPortletparameter(param);
+
+                    previousNodeKey = paramterKey;
+                    previousNodeParam = param;
+                }
+            }
+            else {
+                String qNodeNumber = paramNode.getStringValue(PortletUtil.VALUE_FIELD);;
+                if (paramNode.getCloud().hasNode(qNodeNumber)) {
+                    previousNodeParam.addValue(qNodeNumber);
+                }
             }
         }
-        return portlet;
     }
 
     /**

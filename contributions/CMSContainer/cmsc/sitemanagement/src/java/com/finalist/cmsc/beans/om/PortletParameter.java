@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.beans.om;
 
+import java.util.*;
+
 import net.sf.mmapps.commons.beans.NodeBean;
 
 /**
@@ -19,7 +21,7 @@ public class PortletParameter extends NodeBean {
 
 	private String key;
 
-	private String value;
+	private List<String> values;
 
 	public String getKey() {
 		return key;
@@ -30,10 +32,34 @@ public class PortletParameter extends NodeBean {
 	}
 
 	public String getValue() {
-		return value;
+	    if (values != null && values.size() > 0) {
+	        return values.get(0);	        
+	    }
+	    return null;
 	}
 
 	public void setValue(String value) {
-		this.value = value;
+	    if (values == null) {
+	        values = new ArrayList<String>();
+	    }
+	    if (values.size() > 0) {
+	        values.clear();
+	    }
+	    values.add(value);
 	}
+	
+    public void addValue(String value) {
+        if (values == null) {
+            values = new ArrayList<String>();
+        }
+        values.add(value);
+    }
+
+    public void setValues(String[] valuesArray) {
+        values = Arrays.asList(valuesArray);
+    }
+
+    public List<String> getValues() {
+        return values;
+    }
 }
