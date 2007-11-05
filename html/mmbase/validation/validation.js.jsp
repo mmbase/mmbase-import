@@ -1,6 +1,6 @@
 // -*- mode: javascript; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
-<mm:content type="text/javascript" expires="3600">
+<mm:content type="text/javascript" expires="300">
 /**
  * See test.jspx for example usage.
 
@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.39 2007-10-03 16:40:16 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.40 2007-11-05 17:12:00 michiel Exp $
  */
 var validators = new Array();
 
@@ -23,7 +23,7 @@ function watcher() {
         if (el != null) {
             if (! el.serverValidated) {
 		if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
-                    validators[i].validateElement(validators[i].activeElement, true);
+                          validators[i].validateElement(validators[i].activeElement, true);
 		}
             }
         }
@@ -40,6 +40,7 @@ function MMBaseValidator(w, root) {
 
     this.dataTypeCache   = new Object();
     this.invalidElements = 0;
+    //this.changedElements  = 0;
     this.elements        = new Array();
     this.validateHook;
 
@@ -49,6 +50,7 @@ function MMBaseValidator(w, root) {
     this.id = validators.push(this);
     this.activeElement = null;
     this.checkAfter    = 600;
+    this.logArea       = "logarea";
 }
 
 MMBaseValidator.prototype.setup = function(w) {
@@ -70,14 +72,25 @@ MMBaseValidator.prototype.onLoad = function(event) {
 
 MMBaseValidator.prototype.log = function (msg) {
     if (this.logEnabled) {
-        // firebug console"
-        console.log(msg);
+        var errorTextArea = document.getElementById(this.logarea);
+        if (errorTextArea) {
+            errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
+        } else {
+            // firebug console
+            console.log(msg);
+        }
     }
 }
 
 MMBaseValidator.prototype.trace = function (msg) {
     if (this.traceEnabled && this.logEnabled) {
-        console.log(msg);
+        var errorTextArea = document.getElementById(this.logarea);
+        if (errorTextArea) {
+            errorTextArea.value = "TRACE: " + msg + "\n" + errorTextArea.value;
+        } else {
+            // firebug console
+            console.log(msg);
+        }
     }
 }
 
@@ -93,7 +106,7 @@ MMBaseValidator.prototype.getNode = function(el) {
  * Whether a restriction on a certain input element mus be enforced.
  */
 MMBaseValidator.prototype.enforce = function(el, enf) {
-    this.log("ENformce " + enf);
+    this.trace("Enforce " + enf);
     if (enf == 'never') return false;
     if (enf == 'always') return true;
     if (enf == 'absolute') return true;
@@ -196,7 +209,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
             var javaPattern = xml.selectSingleNode('//dt:datatype/dt:pattern').getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
-            this.log("pattern : " + el.mm_pattern + " " + el.value);
+            this.trace("pattern : " + el.mm_pattern + " " + el.value);
         }
         return el.mm_pattern.test(el.value);
     } else {
@@ -253,6 +266,11 @@ MMBaseValidator.prototype.isDateTime = function(el) {
     el.mm_isdatetime = this.hasJavaClass(el, "org\.mmbase\.datatypes\.DateTimeDataType");
     return el.mm_isdatetime;
 }
+MMBaseValidator.prototype.isBinary = function(el) {
+    if (el.mm_isbinary != null) return el.mm_isbinary;
+    el.mm_isbinary = this.hasJavaClass(el, "org\.mmbase\.datatypes\.BinaryDataType");
+    return el.isbinary;
+}
 
 MMBaseValidator.prototype.INTEGER = /^[+-]?\d+$/;
 
@@ -308,7 +326,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
                 el.mm_minInc_enforce = minInclusive != null ? minInclusive.getAttribute("enforce") : null;
                 el.mm_minInc_set = true;
             }
-            this.log("" + value + " < " + el.mm_minInc  + " " + this.enforce(el, el.mm_minInc_enforce));
+            this.trace("" + value + " < " + el.mm_minInc  + " " + this.enforce(el, el.mm_minInc_enforce));
             if (el.mm_minInc != null && this.enforce(el, el.mm_minInc_enforce) && value <  el.mm_minInc) {
 
                 return false;
@@ -323,7 +341,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
                 el.mm_minExcl_set = true;
             }
             if (el.mm_minExcl != null && this.enforce(el, el.mm_minExcl_enforce) && value <=  el.mm_minExcl) {
-                this.log("" + value + " <= " + el.mm_minInc);
+                this.trace("" + value + " <= " + el.mm_minInc);
                 return false;
             }
         }
@@ -335,7 +353,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
                 el.mm_maxInc_set = true;
             }
             if (el.mm_maxInc != null && this.enforce(el, el.mm_maxInc_enforce) && value >  el.mm_maxInc) {
-                this.log("" + value + " > " + el.mm_maxInc);
+                this.trace("" + value + " > " + el.mm_maxInc);
                 return false;
             }
         }
@@ -348,7 +366,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
                 el.mm_maxExcl_set = true;
             }
             if (el.mm_maxExcl != null && this.enforce(el, el.mm_maxExcl_enforce) && value >=  el.mm_maxExcl) {
-                this.log("" + value + " >= " + el.mm_maxExcl);
+                this.trace("" + value + " >= " + el.mm_maxExcl);
                 return false;
             }
         }
@@ -423,7 +441,7 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
             }
 
         }
-        this.log("got " + result);
+        this.trace("got " + result);
         el.mm_dataTypeStructure = result;
     }
     return el.mm_dataTypeStructure;
@@ -535,7 +553,7 @@ MMBaseValidator.prototype.getDateValue = function(el) {
 
         }
         var date = new Date(year, month - 1, day, hour , minute, second, 0);
-        this.log("date " + date);
+        this.trace("date " + date);
         return date.getTime() / 1000;
     } else {
         return el.value;
@@ -554,6 +572,7 @@ MMBaseValidator.prototype.valid = function(el) {
         this.log("Unsupported element " + el);
         return true; // not yet supported
     }
+    if (this.isBinary(el)) return true; // not yet supported
 
     if (this.isRequired(el) && this.enforce(el, el.mm_isrequired_enforce)) {
         if (value == "") {
@@ -589,14 +608,13 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var key = this.getDataTypeKey(el);
         var xmlhttp = new XMLHttpRequest();
         var value = this.getDateValue(el);
-        xmlhttp.open("GET",
-                     '<mm:url page="/mmbase/validation/valid.jspx" />' +
-                     this.getDataTypeArguments(key) +
-                     (this.lang != null ? "&lang=" + this.lang : "") +
-                     "&value=" + value +
-                     (key.node != null ? ("&node=" + key.node) : "") +
-                     "&changed=" + this.isChanged(el),
-                     false);
+        var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />' +
+            this.getDataTypeArguments(key) +
+            (this.lang != null ? "&lang=" + this.lang : "") +
+            "&value=" + value +
+            (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
+            "&changed=" + this.isChanged(el);
+        xmlhttp.open("GET", validationUrl, false);
         xmlhttp.send(null);
         el.serverValidated = true;
         return xmlhttp.responseXML;
@@ -619,7 +637,7 @@ MMBaseValidator.prototype.validResult = function(xml) {
 }
 
 /**
- * Cross browser hack.
+ * Cross browser hack. We hate all browsers. Especially IE.
  */
 MMBaseValidator.prototype.target = function(event) {
     return event.target || event.srcElement;
@@ -648,6 +666,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
     var valid;
     this.log("Validating " + element);
     this.activeElement = element;
+    element.lastChange = new Date();
     if (server) {
         var serverXml = this.serverValidation(element);
         valid = this.validResult(serverXml);
@@ -657,16 +676,18 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
             if (errorDiv) {
                 Sarissa.clearChildNodes(errorDiv);
                 var errors = serverXml.documentElement.childNodes;
+                this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
+
+
                 for (var  i = 0; i < errors.length; i++) {
                     var span = document.createElement("span");
-                    span.textContent = errors[i].textContent;
+                    span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
                     errorDiv.appendChild(span);
                 }
             }
         }
     } else {
         element.serverValidated = false;
-	element.lastChange = new Date();
         valid = this.valid(element);
     }
     if (valid != element.prevValid) {
