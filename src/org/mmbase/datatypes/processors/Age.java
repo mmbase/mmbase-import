@@ -64,7 +64,7 @@ public class Age {
             Date now = new Date();
             int age = (int) Math.floor((double) (now.getTime() - birthDate.getTime()) / (1000 * 3600 * 24 * 365.25));
             log.debug("getting age for " + node + " --> " + age);
-            return new Integer(age);
+            return Casting.toType(value.getClass(), age);
         }
     }
 
