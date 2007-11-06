@@ -21,7 +21,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.18 2007-07-17 14:37:23 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.19 2007-11-06 16:29:50 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -93,7 +93,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
 
         MMObjectNode user = users.getUser(login, password);
         if (user == null) {
-            log.debug("Found credentials, but no matching user. Returning null");
+            log.debug("Found credentials, but no matching user '" + login + "'/'" + password + "' . Returning null");
             return null;
         }
 
@@ -142,7 +142,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     }
 
     protected String getLoginPage(HttpServletRequest request) {
-        
+
         log.debug("Trying " + request.getServerName() + request.getContextPath() + ".plain.login_page property ");
         String page = request == null ? null : (String) properties.get(request.getServerName() + request.getContextPath() + ".plain.login_page");
         if (page == null) {
@@ -179,11 +179,11 @@ public class PlainSecurityComponent implements AuthenticationComponent {
             return getLoginPage(request);
         }
     }
-    
+
     public String getName() {
         return "didactor-plainlogin";
     }
-    
+
     public void logout(HttpServletRequest request, HttpServletResponse respose) {
         log.debug("logout called");
         HttpSession session = request == null ? null : request.getSession(false);
