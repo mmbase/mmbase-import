@@ -334,6 +334,7 @@
         <required value="false" />
         <minLength value="5" />
         <maxLength value="32" />
+        <pattern value="\S{5,32}" enforce="oncreate" />
         <commitprocessor>
           <class name="org.mmbase.datatypes.processors.FunctionValueIfEmptyCommitProcessor">
             <param name="functionName">generateUserName</param>
