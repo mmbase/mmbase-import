@@ -2,15 +2,15 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:node="org.mmbase.bridge.util.xml.NodeFunction" xmlns:date="org.mmbase.bridge.util.xml.DateFormat" extension-element-prefixes="node date">
   <!--
       Some Didactor-specific overrides
-    @version $Id: wizard.xsl,v 1.8 2007-05-03 14:44:37 michiel Exp $
+    @version $Id: wizard.xsl,v 1.9 2007-11-06 11:00:56 michiel Exp $
 
   -->
   <xsl:import href="ew:xsl/wizard.xsl"/>
 
 
-  
+
   <xsl:template name="extrajavascript">
-    <!-- 
+    <!--
          is the used directory ok? When it this used?
     -->
     <script type="text/javascript" src="../../education/wizards/mtmtrack.js"></script>
@@ -107,51 +107,51 @@
   <xsl:template name="listsearch-fields-default">
     <!-- always search on owner and number too -->
     <xsl:choose>
-       <xsl:when test="(@nodepath!='audiotapes')=
-                       (@nodepath!='providers')=
-                       (@nodepath!='images')=
-                       (@nodepath!='attachments')=
-                       (@nodepath!='videotapes')=
-                       (@nodepath!='classes')=
-                       (@nodepath!='tests')=
-                       (@nodepath!='people')=
-                       (@nodepath!='learnblocks')=
-                       (@nodepath!='urls')=                      
-                       (@nodepath!='competencetypes,competencies')=
-                       (@nodepath!='questions')=
-                       (@nodepath!='metadata,questions')= 
-                       (@nodepath!='mcanswers,feedback')=
-                       (@nodepath!='feedback')=
-                       (@nodepath!='learnobjects,learnblocks')=
-                       (@nodepath!='news')">      
+       <xsl:when test="(@nodepath!='audiotapes') and
+                       (@nodepath!='providers') and
+                       (@nodepath!='images') and
+                       (@nodepath!='attachments') and
+                       (@nodepath!='videotapes') and
+                       (@nodepath!='classes') and
+                       (@nodepath!='tests') and
+                       (@nodepath!='people') and
+                       (@nodepath!='learnblocks') and
+                       (@nodepath!='urls') and
+                       (@nodepath!='competencetypes,competencies') and
+                       (@nodepath!='questions') and
+                       (@nodepath!='metadata,questions') and
+                       (@nodepath!='mcanswers,feedback') and
+                       (@nodepath!='feedback') and
+                       (@nodepath!='learnobjects,learnblocks') and
+                       (@nodepath!='news')">
          <option value="number" searchtype="equals">
             <xsl:call-template name="prompt_search_number"/>
          </option>
       </xsl:when>
-    </xsl:choose>   
+    </xsl:choose>
     <xsl:choose>
-       <xsl:when test="(@nodepath!='audiotapes')=
-                       (@nodepath!='providers')=
-                       (@nodepath!='images')=
-                       (@nodepath!='attachments')=
-                       (@nodepath!='videotapes')=
-                       (@nodepath!='classes')=
-                       (@nodepath!='tests')=
-                       (@nodepath!='people')=
-                       (@nodepath!='learnblocks')=
-                       (@nodepath!='urls')=
-                       (@nodepath!='competencetypes,competencies')=
-                       (@nodepath!='questions')=
-                       (@nodepath!='metadata,questions')=
-                       (@nodepath!='mcanswers,feedback')=   
-                       (@nodepath!='feedback')=   
-                       (@nodepath!='learnobjects,learnblocks')=       
-                       (@nodepath!='news')"> 
+       <xsl:when test="(@nodepath!='audiotapes') and
+                       (@nodepath!='providers') and
+                       (@nodepath!='images') and
+                       (@nodepath!='attachments') and
+                       (@nodepath!='videotapes') and
+                       (@nodepath!='classes') and
+                       (@nodepath!='tests') and
+                       (@nodepath!='people') and
+                       (@nodepath!='learnblocks') and
+                       (@nodepath!='urls') and
+                       (@nodepath!='competencetypes,competencies') and
+                       (@nodepath!='questions') and
+                       (@nodepath!='metadata,questions') and
+                       (@nodepath!='mcanswers,feedback') and
+                       (@nodepath!='feedback') and
+                       (@nodepath!='learnobjects,learnblocks') and
+                       (@nodepath!='news')">
           <option value="owner" searchtype="like">
               <xsl:call-template name="prompt_search_owner"/>
           </option>
        </xsl:when>
-    </xsl:choose> 
+    </xsl:choose>
   </xsl:template>
 
 
