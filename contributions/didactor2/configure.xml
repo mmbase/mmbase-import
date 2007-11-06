@@ -46,6 +46,8 @@
   <property name="mmbaseroot.language" value="en" />
   <property name="mmbaseroot.datadir" value="" />
 
+  <propert  name="wizards.pages.text.ftype" value="html" />
+
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
   <property name="build.config.dir" value="${build.webapp.dir}/WEB-INF/config" />
   <property name="build.wizards.dir" value="${build.webapp.dir}/editwizards" />
@@ -202,6 +204,8 @@
       </then>
     </if>
 
+
+    <!-- NONSENSE -->
     <replace dir="${build.wizards.dir}/data/config"
              token="$${wizards.pages.text.ftype}"
              value="${wizards.pages.text.ftype}"
