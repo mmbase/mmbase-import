@@ -46,7 +46,7 @@
   <property name="mmbaseroot.language" value="en" />
   <property name="mmbaseroot.datadir" value="" />
 
-  <propert  name="wizards.pages.text.ftype" value="html" />
+  <property  name="wizards.pages.text.ftype" value="html" />
 
   <property name="build.webapp.dir" value="${build.dir}/webapp" />
   <property name="build.config.dir" value="${build.webapp.dir}/WEB-INF/config" />
@@ -55,7 +55,7 @@
 
   <target name="config" description="Configure the didactor instance with the values from the properties file">
     <tstamp>
-        <format property="war.time" pattern="hh:mm aa, dd MMMM yyyy" locale="en"/>
+      <format property="war.time" pattern="hh:mm aa, dd MMMM yyyy" locale="en"/>
     </tstamp>
     <replace file="${build.webapp.dir}/version.jsp"
              token="$${war.name}"
@@ -205,7 +205,7 @@
     </if>
 
 
-    <!-- NONSENSE -->
+    <!-- A dirty hack, if you ask me-->
     <replace dir="${build.wizards.dir}/data/config"
              token="$${wizards.pages.text.ftype}"
              value="${wizards.pages.text.ftype}"
