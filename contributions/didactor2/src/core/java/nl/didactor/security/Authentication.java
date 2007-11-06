@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.bridge.implementation.BasicCloudContext;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.Rank;
@@ -85,7 +87,7 @@ public class Authentication extends org.mmbase.security.Authentication {
      * @since Didactor-2.3
      */
     protected org.mmbase.security.UserContext request(org.mmbase.security.UserContext uc, HttpServletRequest req) {
-        Node n = org.mmbase.bridge.util.SearchUtil.findNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase"), "people", "username", uc.getIdentifier());
+        Node n = getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase"), uc.getIdentifier());
         req.setAttribute("user", n == null ? "0" : n.getNumber());
         Object education = req.getAttribute("education");
         if (education != null) {
@@ -293,9 +295,21 @@ public class Authentication extends org.mmbase.security.Authentication {
         return true;
     }
 
+    protected static Node getUserNode(Cloud cloud, String id){
+        NodeManager people = cloud.getNodeManager("people");
+        NodeQuery nq = people.createQuery();
+        Queries.addConstraint(nq, Queries.createConstraint(nq, "username", FieldCompareConstraint.EQUAL, id, null, true));
+        NodeList l = people.getList(nq);
+        if (l.size() > 0) {
+            return l.getNode(0);
+        } else {
+            return null;
+        }
+    }
 
     public static Node getCurrentUserNode(Cloud cloud){
-        return org.mmbase.bridge.util.SearchUtil.findNode(cloud, "people", "username", cloud.getUser().getIdentifier());
+        return getUserNode(cloud, cloud.getUser().getIdentifier());
+
     }
 
     private static final Parameter[]  NAME_PASSWORD_PARAMS = new Parameter[] {PARAMETER_USERNAME,
