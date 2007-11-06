@@ -59,6 +59,7 @@ public class Authentication extends org.mmbase.security.Authentication {
     static final UserContext ANONYMOUS;
     static {
         ANONYMOUS  = new UserContext("anonymous", "anonymous", Rank.ANONYMOUS, "anonymous");
+        Rank.createRank(20,  "unparticipant");
         Rank.createRank(50,  "didactor user"); // lower than 'basic' user, because normally didactor
                                                // users may not enter generic editors.
         Rank.createRank(200, "editor");
@@ -140,7 +141,7 @@ public class Authentication extends org.mmbase.security.Authentication {
 
         // Always allow anonymous access instantly
         if ("anonymous".equals(application)) {
-            log.debug("Anonymous application: returning anonymous cloud ");
+            log.trace("Anonymous application: returning anonymous cloud ");
             if (loginInfo != null && Boolean.TRUE.equals(loginInfo.get("logout"))) {
                 logout((HttpServletRequest) loginInfo.get(Parameter.REQUEST.getName()),
                        (HttpServletResponse) loginInfo.get(Parameter.RESPONSE.getName())
@@ -288,6 +289,7 @@ public class Authentication extends org.mmbase.security.Authentication {
     }
 
     public boolean isValid(org.mmbase.security.UserContext usercontext) throws org.mmbase.security.SecurityException {
+        // WTF WTF
         return true;
     }
 
