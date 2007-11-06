@@ -6,6 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="yes" />
+  <mm:content type="application/xml">
   <di:copybook>
     <mm:relatednodescontainer path="madetests,tests"  element="tests">
       <mm:constraint field="madetests.score" operator="ge" value="0" />
@@ -41,7 +42,7 @@
 
       <mm:nodeinfo type="type">
         <a href="#_${_node}"
-           onclick="if(openOnly('div${_node}','img${_node}')) { openContent( '${_}','${_node}' ); }"><mm:field name="name"/></a>
+           onclick="if(openOnly('div${_node}','img${_node}')) { openContent( '${_}','${_node}' ); }"><mm:field name="name" /></a>
 
       </mm:nodeinfo>
 
@@ -183,4 +184,5 @@
     </mm:relatednodescontainer>
   </mm:node>
 </div>
+  </mm:content>
 </mm:cloud>
