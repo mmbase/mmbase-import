@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.6 2007-10-12 16:15:19 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.7 2007-11-06 10:31:09 michiel Exp $
  * @see ContextTag
  */
 
@@ -90,22 +90,47 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         setThreadPageContext(pc);
     }
 
-    public static void setThreadPageContext(final PageContext pc) {
-        threadPageContext = new ThreadLocal() {
-                protected synchronized Object initialValue() {
-                    return pc;
-                }
-            };
+
+    private static ThreadLocal threadPageContexts = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+                return new LinkedList();
+            }
+    };
+
+
+    protected static boolean ok(PageContext pc) {
+        return pc == null || pc.getResponse() != null; // works in Tomcat
+    }
+    protected static PageContext cleanThreadPageContexts(LinkedList stack) {
+        if (stack.size() == 0) return null;
+
+        PageContext proposal = (PageContext) stack.peek();
+        while(stack.size() > 0) {
+            if (ok(proposal)) {
+                return proposal;
+            } else {
+                stack.poll();
+                proposal = (PageContext) stack.peek();
+            }
+        }
+        return null;
     }
 
-    private static ThreadLocal threadPageContext;
+    protected static void setThreadPageContext(final PageContext pc) {
+        LinkedList stack = (LinkedList) threadPageContexts.get();
+        cleanThreadPageContexts(stack);
+        if (stack.size() == 0 || stack.getFirst() != pc) {
+            stack.add(0, pc);
+        }
+    }
 
     /**
      * @since MMBase-1.8.5
      */
     public static PageContext getThreadPageContext() {
-        if (threadPageContext == null) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
-        return (PageContext) threadPageContext.get();
+        LinkedList stack = (LinkedList) threadPageContexts.get();
+        if (stack.size() == 0) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
+        return cleanThreadPageContexts(stack);
     }
 
     public PageContext getPageContext() {
