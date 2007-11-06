@@ -46,6 +46,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <class name="nl.didactor.datatypes.UserName" />
         <required value="true" />
         <minLength value="1" enforce="onchange" />
         <maxLength value="255" />
@@ -106,6 +107,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <class name="nl.didactor.datatypes.UserName" />
         <required value="true" />
         <maxLength value="255" />
       </datatype>
@@ -125,7 +127,7 @@
         <guiname xml:lang="hi">पता</guiname>
         <guiname xml:lang="eo">Adreso</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="255" />
       </datatype>
     </field>
@@ -169,10 +171,6 @@
     </field>
 
     <field name="country">
-      <descriptions>
-        <description xml:lang="en"></description>
-        <description xml:lang="nl"></description>
-      </descriptions>
       <gui>
         <guiname xml:lang="en">Country</guiname>
         <guiname xml:lang="nl">Land</guiname>
@@ -181,10 +179,13 @@
         <guiname xml:lang="bg">Държава</guiname>
         <guiname xml:lang="eo">Lando</guiname>
       </gui>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="255" />
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <pattern value="NL|BE|AW|AN|SR|BG|FR|CH|RO" />
+        <enumeration enforce="encreate">
+          <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
+                 basename="org.mmbase.datatypes.resources.iso3166" />
+        </enumeration>
       </datatype>
-      <!-- todo 'countries' could be an enumeration -->
     </field>
 
 
@@ -256,7 +257,6 @@
       </gui>
       <datatype base="verify_email" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="1024" />
-        <property name="emailField" value="email" />
       </datatype>
     </field>
 
@@ -280,6 +280,26 @@
         <guiname xml:lang="eo">Naskiĝdato</guiname>
       </gui>
       <datatype base="living-birthdate" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="age" state="virtual">
+      <gui>
+        <guiname xml:lang="en">Age</guiname>
+        <guiname xml:lang="nl">Leeftijd</guiname>
+      </gui>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+        <setprocessor>
+          <class name="org.mmbase.datatypes.processors.Age$Setter">
+            <param name="birthdateField">dayofbirth</param>
+          </class>
+        </setprocessor>
+        <getprocessor>
+          <class name="org.mmbase.datatypes.processors.Age$Getter">
+            <param name="birthdateField">dayofbirth</param>
+          </class>
+        </getprocessor>
+      </datatype>
     </field>
 
     <field name="gender">
@@ -345,7 +365,7 @@
           <class name="org.mmbase.util.transformers.RegexpReplacerFactory">
             <param name="mode">entire</param>
             <param name="patterns">
-              <param name="(.*)">{md5}$1</param>
+              <param name="^(.*)$">{md5}$1</param>
             </param>
           </class>
         </setprocessor>
@@ -436,7 +456,7 @@
       </gui>
 
       <datatype base="enableddisabled" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="true" />
+        <default value="false" />
         <required value="false" />
       </datatype>
     </field>
