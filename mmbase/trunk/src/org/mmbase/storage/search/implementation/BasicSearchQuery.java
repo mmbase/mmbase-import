@@ -23,14 +23,14 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.43 2007-08-06 09:52:35 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.44 2007-11-06 17:01:34 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
     private static final Logger log = Logging.getLoggerInstance(BasicSearchQuery.class);
 
-    /** 
-     * Distinct property.  
+    /**
+     * Distinct property.
      */
     private boolean distinct = false;
 
@@ -406,7 +406,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
             throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
         BasicStepField field = new BasicStepField(step, fieldDefs);
-        assert ! fields.contains(field) : "" + field + " is already one of " + fields; 
+        assert ! fields.contains(field) : "" + field + " is already one of " + fields;
         fields.add(field);
         hasChangedHashcode = true;
         return field;
@@ -442,7 +442,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
     public void  addFields(Step step) {
         MMBase mmb = MMBase.getMMBase();
         MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-        // http://www.mmbase.org/jira/browse/MMB-1435, 
+        // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is import for microsoft JDBC.
         for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
@@ -489,6 +489,7 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     public BasicSortOrder addSortOrder(StepField field) {
+        if (field == null) throw new IllegalArgumentException();
         BasicSortOrder sortOrder;
         if (field.getType() ==  Field.TYPE_DATETIME) {
             sortOrder = new BasicDateSortOrder(field);
