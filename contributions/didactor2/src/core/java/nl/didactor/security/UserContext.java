@@ -16,7 +16,7 @@ import java.util.*;
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @author Michiel Meeuwissen
- * @version $Id: UserContext.java,v 1.10 2007-07-26 12:58:35 michiel Exp $
+ * @version $Id: UserContext.java,v 1.11 2007-11-06 16:29:34 michiel Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser implements WeakNodeEventListener {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
@@ -46,8 +46,9 @@ public class UserContext extends org.mmbase.security.BasicUser implements WeakNo
     }
 
     /**
-     * From the org.mmbase.security.UserContext interface
+     * Mainly used for class-security and anonymous user.
      */
+
     public UserContext(String identifier, String owner, Rank rank, String app) {
         super(app);
         this.identifier = identifier;
@@ -78,7 +79,7 @@ public class UserContext extends org.mmbase.security.BasicUser implements WeakNo
                 continue;
             }
             if (roleName.equals("systemadministrator")) {
-                proposedRank = Rank.ADMIN; 
+                proposedRank = Rank.ADMIN;
                 break;
             }
             Rank user = Rank.getRank("didactor user");
@@ -122,7 +123,7 @@ public class UserContext extends org.mmbase.security.BasicUser implements WeakNo
     public Set<String> getRoles() {
         return roles;
     }
-    
+
     /**
      * From the org.mmbase.security.UserContext interface
      */
