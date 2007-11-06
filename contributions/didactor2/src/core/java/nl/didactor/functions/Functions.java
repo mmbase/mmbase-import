@@ -9,11 +9,11 @@ import java.util.*;
 /**
  * Some didactor specific Node functions (implemented as 'bean')
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.6 2007-08-03 18:32:32 michiel Exp $
+ * @version $Id: Functions.java,v 1.7 2007-11-06 15:41:17 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
-    
+
     private Node node;
 
     public void setNode(Node n) {
@@ -21,7 +21,7 @@ public class Functions {
     }
 
 
-    
+
     /**
      * Returns the locale assciated with this education.
      * Works on education nodes.
@@ -32,8 +32,8 @@ public class Functions {
         String providerPath = provider.getStringValue("path");
         String educationPath = node.getStringValue("path");
         Locale language = org.mmbase.util.LocalizedString.getLocale(provider.getStringValue("locale"));
-        
-        return new Locale(language.getLanguage(), language.getCountry(), 
+
+        return new Locale(language.getLanguage(), language.getCountry(),
                           providerPath + ("".equals(providerPath) || "".equals(educationPath) ? "" : "_") + educationPath);
 
     }
@@ -57,7 +57,7 @@ public class Functions {
         return false;
     }
 
-    
+
     /**
      * Generate a 8-character base username, consisting of the first
      * character of the firstname, and the entire lastname. Strip out
@@ -66,11 +66,11 @@ public class Functions {
      * Works on people nodes only.
      */
     public String peopleGenerateUserName() {
-        String firstName = node.getStringValue("firstname");
+        String firstName = node.getStringValue("firstname").replaceAll("\\s", "");
         if (firstName.length() > 0) {
             firstName = firstName.substring(0, 1);
         }
-        String uname = firstName + node.getStringValue("lastname");
+        String uname = firstName + node.getStringValue("lastname").replaceAll("\\s", "");
         if (uname.length() > 8) {
             uname = uname.substring(0, 8);
         }
@@ -110,7 +110,7 @@ public class Functions {
             }
         }
         return null;
-        
+
     }
 
 }
