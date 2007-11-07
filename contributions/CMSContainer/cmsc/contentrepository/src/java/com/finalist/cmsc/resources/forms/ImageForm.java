@@ -6,6 +6,7 @@ public class ImageForm extends SearchForm {
     
     private String title;
     private String description;
+    private String filename;
 
     public ImageForm() {
         super("images");
@@ -25,5 +26,12 @@ public class ImageForm extends SearchForm {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }
