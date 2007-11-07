@@ -21,7 +21,10 @@ public class GlossaryFactory
     public static Glossary getGlossary()
     {
         Glossary glossary = Glossary.instance();
-        Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+
+        if(glossary.getTerms().size()>0) return glossary;
+
+        Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
         NodeManager manager = cloud.getNodeManager("glossary");
         NodeList list = manager.createQuery().getList();

@@ -21,29 +21,40 @@ public class Glossary {
 
         for (String word : keyWords) {
 
-            Pattern pattern = Pattern.compile((new StringBuilder()).append("\\b").append(word).append("\\b").toString());
-
-            Pattern inLinkPattern = Pattern.compile((new StringBuilder()).append("<a[^<]*").append(word).append("[^>]*>").toString());
+            Pattern pattern = Pattern.compile(String.format("\\b%s\\b", word));
             Matcher matcher = pattern.matcher(material);
-            Matcher linkMatcher = inLinkPattern.matcher(material);
-            do
-                if (!matcher.find())
-                    continue;
 
-            while (linkMatcher.find() && matcher.start() > linkMatcher.start() && matcher.end() < linkMatcher.end());
+            while (matcher.find()) {
+                int start = matcher.start();
+                int end = matcher.end();
 
-            String highlight = String.format("<a href=\"#\" title=\"%s\" id=\"_glossary_%s\">%s</a>", TERMS.get(word), word, word);
-
-            material = (new StringBuilder()).append(material.substring(0, matcher.start())).append(highlight).append(material.substring(matcher.end(), material.length())).toString();
-
+                if (!isInFormatedFragment(material, word, start)) {
+                    String highlight = String.format("<a href=\"#\" title=\"%s\" id=\"_glossary_%s\" onclick=\"return false;\">%s</a>", TERMS.get(word), word, word);
+                    material = (new StringBuilder()).append(material.substring(0, start)).append(highlight).append(material.substring(end, material.length())).toString();
+                    break;
+                }
+            }
         }
         return material;
 
     }
 
+    private boolean isInFormatedFragment(String material, String keywords, int keywordStartPosition) {
+        Pattern pattern = Pattern.compile(String.format("<a[^<]*%s[^>]*>", keywords));
+        Matcher matcher = pattern.matcher(material);
+
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+
+            if (keywordStartPosition + keywords.length() < end && keywordStartPosition > start) return true;
+        }
+        return false;                                                     
+    }
+
     public static synchronized Glossary instance() {
         if (null == glossary) {
-            Glossary glossary = new Glossary();
+            glossary = new Glossary();
         }
         return glossary;
     }

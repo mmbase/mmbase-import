@@ -18,7 +18,7 @@ addLoadEvent(function() {
         return (s.src && s.src.match(/glossary\.js(\?.*)?$/))
     }).each(function(s) {
         var path = s.src.replace(/glossary\.js(\?.*)?$/, '');
-        if (path.indexOf("type")) {
+        if (path.indexOf("type") > -1) {
             var parameter = s.src.replace(/^.*glossary\.js(\?.*)?&scope=/, '')
             splitGlossaryInClient(parameter);
         }

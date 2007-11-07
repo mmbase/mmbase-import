@@ -1,3 +1,4 @@
+<meta http-equiv="Pragma" contect="no-cache">
 <%@ page import="com.finalist.cmsc.module.glossary.Glossary" %>
 <%@ page import="com.finalist.cmsc.module.glossary.GlossaryFactory" %>
 <%@ page import="java.util.Iterator" %>
