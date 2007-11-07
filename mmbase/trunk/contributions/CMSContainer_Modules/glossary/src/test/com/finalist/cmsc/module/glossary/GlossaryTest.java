@@ -26,13 +26,13 @@ public class GlossaryTest extends TestCase {
     {
         String material = "I am a test term1 term1 material";
         String result = Glossary.instance().mark(material);
-        assertEquals("I am a test <a href=\"#\" title=\"am i\" id=\"_glossary_term1\">term1</a> term1 material", result);
+        assertEquals("I am a test <a href=\"#\" title=\"am i\" id=\"_glossary_term1\" onclick=\"return false;\">term1</a> term1 material", result);
         material = "I am a test term1term1 material";
         result = Glossary.instance().mark(material);
         assertEquals("I am a test term1term1 material", result);
         material = "I am a test(term1)term1 material";
         result = Glossary.instance().mark(material);
-        assertEquals("I am a test(<a href=\"#\" title=\"am i\" id=\"_glossary_term1\">term1</a>)term1 material", result);
+        assertEquals("I am a test(<a href=\"#\" title=\"am i\" id=\"_glossary_term1\" onclick=\"return false;\">term1</a>)term1 material", result);
     }
 
     public void testIgnoreLink()
@@ -42,9 +42,16 @@ public class GlossaryTest extends TestCase {
         assertEquals("I am a <a href=\"\">test term1</a> aaa material", result);
         material = "I am a <a>test term1</a> aaa term1 material";
         result = Glossary.instance().mark(material);
-        assertEquals("I am a <a>test term1</a> aaa <a href=\"#\" title=\"am i\" id=\"_glossary_term1\">term1</a> material", result);
+        assertEquals("I am a <a>test term1</a> aaa <a href=\"#\" title=\"am i\" id=\"_glossary_term1\" onclick=\"return false;\">term1</a> material", result);
         material = "I am a <a>test term1</a> <a>aaa term1</a> term1 material";
         result = Glossary.instance().mark(material);
-        assertEquals("I am a <a>test term1</a> <a>aaa term1</a> <a href=\"#\" title=\"am i\" id=\"_glossary_term1\">term1</a> material", result);
+        assertEquals("I am a <a>test term1</a> <a>aaa term1</a> <a href=\"#\" title=\"am i\" id=\"_glossary_term1\" onclick=\"return false;\">term1</a> material", result);
+    }
+
+    public void testMarkMultiTerms(){
+        String material = "i am a term1 and a term2";
+        String result = Glossary.instance().mark(material);
+        assertEquals("i am a <a href=\"#\" title=\"am i\" id=\"_glossary_term1\" onclick=\"return false;\">term1</a> and a <a href=\"#\" title=\"im ii\" id=\"_glossary_term2\" onclick=\"return false;\">term2</a>",result);
+
     }
 }
