@@ -9,6 +9,9 @@
  */
 package com.finalist.cmsc.services.sitemanagement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletConfig;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
@@ -20,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.security.Rank;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.*;
@@ -53,10 +57,10 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 
 		if (param != null) {
             String key = param.getKey();
-            String value = param.getValue();
+            List<String> values = param.getValues();
             Cloud cloud = getUserCloud();
 
-            PortletUtil.updatePortletParameter(cloud, portletId, key, value);
+            PortletUtil.updatePortletParameter(cloud, portletId, key, values);
             updatePageForPortlet(portletId);
 
             siteModelManager.clearPortlet(portletId);
@@ -72,13 +76,20 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
 
         if (param != null) {
             String key = param.getKey();
-            String value = param.getValue();
+            List<String> values = param.getValues();
             Cloud cloud = getUserCloud();
+            List<Node> nodeList = new ArrayList<Node>();
+            
             Node node = null;
-            if (!StringUtil.isEmptyOrWhitespace(value)) {
-                node = cloud.getNode(value);
+            if (values.isEmpty()) {
+                for (String value : values) {
+                    if (!StringUtil.isEmptyOrWhitespace(value)) {
+                        node = cloud.getNode(value);
+                        nodeList.add(node);
+                    }
+                }
             }
-            PortletUtil.updatePortletParameter(cloud, portletId, key, node);
+            PortletUtil.updateNodeParameter(cloud, portletId, key, nodeList);
             updatePageForPortlet(portletId);
 
             siteModelManager.clearPortlet(portletId);
@@ -195,6 +206,22 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
         }
         return result;
     }
+    
+//    public boolean mayEdit(Block block) {
+//        boolean result = false;
+//        try {
+//            Cloud cloud = getUserCloud();
+//            String rank = block.getRank();
+//    		Rank userRank = Rank.getRank(rank);
+//            result = cloud.getUser().getRank().getInt() >= userRank.getInt();
+//        } catch (Exception e) {
+//            log.error("something went wrong checking block edit (" + block.getName() + ")");
+//            if (log.isDebugEnabled()) {
+//                log.debug(e);
+//            }
+//        }
+//        return result;
+//    }
 
     protected void updatePageForPortlet(String portletId) {
         Cloud cloud = getUserCloud();
