@@ -231,27 +231,9 @@ public abstract class NavigationRenderer implements TreeCellRenderer, Navigation
 */
     
     public String getOpenAction(Node parentNode, boolean secure) {
-        String action = null;
-        if (ServerUtil.useServerName()) {
-            String[] pathElements = NavigationUtil.getPathElementsToRoot(parentNode, true);
-
-            action = HttpUtil.getWebappUri(request, pathElements[0], secure);
-            for (int i = 1; i < pathElements.length; i++) {
-                action += pathElements[i] + "/";
-            }
-            if (!request.getServerName().equals(pathElements[0])) {
-                action = HttpUtil.addSessionId(request, action);
-            }
-            else {
-                action = response.encodeURL(action);
-            }
-        }
-        else {
-            String path = NavigationUtil.getPathToRootString(parentNode, true); 
-            String webappuri = HttpUtil.getWebappUri(request, secure);
-            action = response.encodeURL(webappuri + path);
-        }
-        return action;
+        String contextPath = request.getContextPath();
+        String action = String.format("/editors/site/NavigatorPanel.do?nodeId=%s",parentNode.getNumber());
+        return contextPath+action;
     }
 
     public String getIcon(NavigationItem item, UserRole role) {
