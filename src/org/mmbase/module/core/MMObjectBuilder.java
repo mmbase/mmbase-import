@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.418 2007-07-07 12:46:12 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.419 2007-11-09 10:09:55 sdeboer Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -151,6 +151,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     private static int cacheLocked = 0;
 
     private static final Logger log = Logging.getLoggerInstance(MMObjectBuilder.class);
+
+    private List<MMObjectBuilder> descendants;
 
     /**
      * The string that can be used inside the builder.xml as property,
@@ -701,13 +703,16 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @since MMBase-1.6.2
      */
     public List<MMObjectBuilder> getDescendants() {
-        List<MMObjectBuilder> result = new ArrayList<MMObjectBuilder>();
-        for (MMObjectBuilder builder : mmb.getBuilders()) {
-            if (builder.isExtensionOf(this)) {
-                result.add(builder);
+        if (descendants == null) {
+            List<MMObjectBuilder> result = new ArrayList<MMObjectBuilder>();
+            for (MMObjectBuilder builder : mmb.getBuilders()) {
+                if (builder.isExtensionOf(this)) {
+                    result.add(builder);
+                }
             }
+            descendants = result;
         }
-        return result;
+        return descendants;
     }
 
     /**
