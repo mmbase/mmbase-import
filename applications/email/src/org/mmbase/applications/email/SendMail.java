@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.37 2007-10-24 13:40:23 michiel Exp $
+ * @version $Id: SendMail.java,v 1.38 2007-11-09 18:29:36 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -731,6 +731,9 @@ public class SendMail extends AbstractSendMail {
         return true;
     }
 
+    public Session getSession() {
+        return session;
+    }
 
 
 }
