@@ -24,10 +24,15 @@ public class ReactionUtil {
       ArrayList<Reaction> result = new ArrayList<Reaction>();
 
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList nodeList = cloud.getList(""+number, "contentelement,reaction", "reaction.number,reaction.title,reaction.body,reaction.name,reaction.email,reaction.link", "", "reaction.number",null,null,true);
+      NodeList nodeList = cloud.getList(""+number, "contentelement,reaction", "reaction.number,reaction.title,reaction.body,reaction.name,reaction.email", "", "reaction.number",null,null,true);
       for(NodeIterator ni = nodeList.nodeIterator(); ni.hasNext();) {
          Node node = ni.nextNode();
-         result.add(new Reaction(node.getIntValue("reaction.number"), node.getStringValue("reaction.title"), node.getStringValue("reaction.body"), node.getStringValue("reaction.name"), node.getStringValue("reaction.email"), node.getStringValue("reaction.link")));
+         result.add(new Reaction(node.getIntValue("reaction.number"), 
+                 node.getStringValue("reaction.title"), 
+                 node.getStringValue("reaction.body"), 
+                 node.getStringValue("reaction.name"), 
+                 node.getStringValue("reaction.email"),
+                 null, null));
       }
       
       return result;   
