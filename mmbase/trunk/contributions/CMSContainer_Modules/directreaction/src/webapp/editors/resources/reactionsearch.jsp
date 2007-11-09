@@ -76,7 +76,12 @@
 	                  <mm:import id="url">javascript:selectElement('<mm:field name="number"/>', '<mm:field name="title" escape="js-single-quotes"/>');</mm:import>
 	                  <tr <c:if test="${useSwapStyle}">class="swap"</c:if> href="<mm:write referid="url"/>">
 	                     <td style="white-space:nowrap;">
-  						    <c:if test="${action != 'select'}">
+  						      
+                         <a href="#" onclick="showInfo(<mm:field name="number" />);" >
+                           <img src="../gfx/icons/info.png" alt="<fmt:message key="reactionsearch.icon.info" />" title="<fmt:message key="reactionsearch.icon.info" />" />
+                         </a>                        
+                        
+                        <c:if test="${action != 'select'}">
 						      <mm:hasrank minvalue="administrator">
 	                            <a href="<mm:url page="DeleteReactionAction.do" >
                                             <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
@@ -85,7 +90,9 @@
 	                            <img src="../gfx/icons/delete.png" title="<fmt:message key="reactionsearch.icon.delete" />"/></a>
 	                          </mm:hasrank>
 	                       </c:if>
+                                                  
                          </td>
+                         
                          <td onMouseDown="objClick(this);"><mm:field name="name"/></td>
 	                 <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
 	                 <mm:field name="number" write="false" jspvar="myId"/>

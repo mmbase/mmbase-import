@@ -7,7 +7,25 @@
 	<display-name>CMS Container direct reaction tags</display-name>
 	<tlib-version>1.0</tlib-version>
 	<short-name>cmsc-directreaction</short-name>
-	<uri>http://finalist.com/cmsc-directreaction</uri>
+	<uri>http://finalist.com/csmc-directreaction</uri>
+   <tag>
+      <description>Gets a specific the reaction</description>
+      <name>getreaction</name>
+      <tag-class>com.finalist.cmsc.directreaction.taglib.GetReactionTag</tag-class>
+      <body-content>scriptless</body-content>
+      <attribute>
+         <description>The number of the content element.</description>
+         <name>number</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <description>The jsp variable with a single reaction.</description>
+         <name>var</name>
+         <required>true</required>
+         <rtexprvalue>false</rtexprvalue>
+      </attribute>
+   </tag>   
 	<tag>
 		<description>Gets the reactions on a content element</description>
 		<name>get</name>
