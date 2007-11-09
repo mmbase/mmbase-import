@@ -6,6 +6,7 @@ import org.mmbase.module.*;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.applications.email.SendMail;
 import java.util.*;
 
@@ -20,6 +21,17 @@ import java.util.*;
 public class EmailBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(EmailBuilder.class);
     private SendMail sendmail;
+
+
+    public static final int TYPE_NORMAL   = 0;
+    public static final int TYPE_TOSEND   = 1;
+    public static final int TYPE_RECEIVED = 2;
+
+
+    // type parameter is ignored, but exists for compatibility with mmbase-email.jar builder.
+    public final static Parameter[] MAIL_PARAMETERS = {
+        new Parameter("type",    String.class)
+    };
 
     /**
      * Initialize the builder
@@ -46,7 +58,7 @@ public class EmailBuilder extends MMObjectBuilder {
         if (nodeNumber == -1)
             return node;
 
-        if (node.getIntValue("type") == 1) {
+        if (node.getIntValue("type") == TYPE_TOSEND) {
             // This goes wrong if the node is new, because that it cannot be gotten with
             // cloud.getNode yet....
 
@@ -63,7 +75,7 @@ public class EmailBuilder extends MMObjectBuilder {
 
             if (sendmail.sendMail(n)) {
                 log.debug("Succeeded!");
-                node.setValue("type", 0);
+                node.setValue("type", TYPE_NORMAL);
             } else {
                 log.error("Cannot send mail '" + node + "'");
                 // TODO: we have to notify the user that something went wrong. Ideally, a bounce message
@@ -71,6 +83,25 @@ public class EmailBuilder extends MMObjectBuilder {
         }
         return node;
     }
+    {
+        addFunction(new NodeFunction("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Object getFunctionValue(final Node node, Parameters parameters) {
+                    log.debug("We're in startmail - args: " + parameters);
+                    if (node.getIntValue("type") == TYPE_NORMAL) {
+                        org.mmbase.util.ThreadPools.jobsExecutor.execute(new Runnable() {
+                                public void run() {
+                                    node.setIntValue("type", TYPE_TOSEND);
+                                    node.commit();
+                                }
+                            });
+                    }
+                    return null;
+                }
+            }
+            );
+    }
+
+
 
     /**
      * Insert a new object into the cloud. This will trigger
@@ -80,7 +111,7 @@ public class EmailBuilder extends MMObjectBuilder {
         int nr = super.insert(owner, node);
         log.debug("Inserted " + nr);
         int type = node.getIntValue("type");
-        if (type == 1) {
+        if (type == TYPE_TOSEND) {
             log.debug("Calling precommit because type is 1");
             preCommit(node);
         } else {
