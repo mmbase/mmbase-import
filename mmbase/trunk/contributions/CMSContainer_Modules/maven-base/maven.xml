@@ -65,5 +65,10 @@ See http://www.MMBase.org/license
 	<goal name="all:idea" description="Generate IntelliJ IDEA files for ALL Subprojects">
 		<attainGoal name="idea:multiproject" />
 	</goal>
-
+	<postGoal name="java:compile">
+		<ant:available property="resource" file="${basedir}/resources"/>
+		<j:if test="${resource}">
+			<ant:native2ascii encoding="utf-8" src="${basedir}/resources" dest="${maven.build.dest}" includes="*"/>
+		</j:if>
+	</postGoal>
 </project>
