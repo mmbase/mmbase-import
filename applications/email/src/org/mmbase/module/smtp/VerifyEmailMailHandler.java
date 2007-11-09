@@ -22,7 +22,7 @@ import javax.mail.*;
  * if so, handles it. Otherwise ignores the message.
  * This Handler can be put in front of the {@link ChainedMailedHandler}.
  *
- * @version $Id: VerifyEmailMailHandler.java,v 1.4 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: VerifyEmailMailHandler.java,v 1.5 2007-11-09 18:26:23 michiel Exp $
  */
 public class VerifyEmailMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(VerifyEmailMailHandler.class);
@@ -56,7 +56,7 @@ public class VerifyEmailMailHandler implements MailHandler {
         }
     }
 
-    public MailBoxStatus addMailbox(String user) {
+    public MailBoxStatus addMailbox(String user, String domain) {
         for (String m : org.mmbase.datatypes.VerifyEmailProcessor.getVerificationReceivers()) {
             if (m.startsWith(user + "@")) {
                 found = true;
