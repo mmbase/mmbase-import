@@ -24,7 +24,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.3 2007-11-09 14:25:05 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.4 2007-11-09 18:26:23 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -49,16 +49,19 @@ public class CloudMailHandler implements MailHandler {
     protected static Cloud getCloud() {
         return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
+    static Map<String, String> props = null;
 
-    protected Map<String, String> getProperties() {
-        Map<String, String> props = new HashMap<String, String>();
-        Module sm = org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail");
-        if (sm != null) {
-            props.putAll(sm.getInitParameters());
-        }
-        Module s = org.mmbase.module.core.MMBase.getMMBase().getModule("smtp");
-        if (s != null) {
-            props.putAll(s.getInitParameters());
+    protected static Map<String, String> getProperties() {
+        if(props == null) {
+            props = new HashMap<String, String>();
+            Module sm = org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail");
+            if (sm != null) {
+                props.putAll(sm.getInitParameters());
+            }
+            Module s = org.mmbase.module.core.MMBase.getMMBase().getModule("smtp");
+            if (s != null) {
+                props.putAll(s.getInitParameters());
+            }
         }
         return props;
     }
@@ -285,6 +288,7 @@ public class CloudMailHandler implements MailHandler {
                 try {
                     String mailadres = user.getStringValue("email");
                     log.service("Forwarding " + email + " to " + mailadres);
+
                     SendMail sendmail = (SendMail)org.mmbase.module.Module.getModule("sendmail");
                     sendmail.startModule();
                     sendmail.sendMail(mailadres, email);
@@ -496,10 +500,10 @@ public class CloudMailHandler implements MailHandler {
      * is defined in the config file for this module.
      * @return whether or not this succeeded
      */
-    public MailBoxStatus addMailbox(String user) {
+    public MailBoxStatus addMailbox(String user, String domain) {
         Cloud cloud = getCloud();
         Map<String, String> properties = getProperties();
-        log.service("Checking mail fox for " + user + " " + properties);
+        log.service("Checking mail fox for " + user + "@" + domain + " " + properties);
 
         String usersBuilder = properties.get("usersbuilder");
         NodeManager manager = cloud.getNodeManager(usersBuilder);

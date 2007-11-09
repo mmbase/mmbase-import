@@ -27,20 +27,17 @@ import javax.mail.internet.*;
  * bootstrapped by a module {@link SMTPModule}.
  *
 
- * @version $Id: MailFetcher.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: MailFetcher.java,v 1.3 2007-11-09 18:26:23 michiel Exp $
  */
 public abstract class MailFetcher  {
     private static final Logger log = Logging.getLoggerInstance(MailFetcher.class);
 
 
-    private final MailHandler handler;
-
-    MailFetcher(MailHandler h) {
-        handler  = h;
+    MailFetcher() {
     }
 
     public MailHandler getHandler() {
-        return handler;
+        return MailHandler.Factory.getInstance();
     }
 
 

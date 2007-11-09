@@ -14,7 +14,7 @@ import javax.mail.*;
 
 /**
 
- * @version $Id: ChainedMailHandler.java,v 1.3 2007-11-09 14:25:05 michiel Exp $
+ * @version $Id: ChainedMailHandler.java,v 1.4 2007-11-09 18:26:23 michiel Exp $
  */
 public class  ChainedMailHandler implements MailHandler {
 
@@ -33,10 +33,10 @@ public class  ChainedMailHandler implements MailHandler {
         }
         return MessageStatus.IGNORED;
     }
-    public MailBoxStatus addMailbox(String user) {
+    public MailBoxStatus addMailbox(String user, String domain) {
         MailBoxStatus status = MailBoxStatus.UNDEFINED;
         for (MailHandler m : chain) {
-            status = m.addMailbox(user);
+            status = m.addMailbox(user, domain);
             if (status == MailBoxStatus.OK) return status;
         }
         return status;
