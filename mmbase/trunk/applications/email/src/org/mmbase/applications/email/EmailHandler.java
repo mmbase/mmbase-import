@@ -29,10 +29,10 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @version $Id: EmailHandler.java,v 1.28 2007-10-24 13:40:23 michiel Exp $
+ * @version $Id: EmailHandler.java,v 1.29 2007-11-09 10:14:47 michiel Exp $
  * @since  MMBase-1.7
  */
-public class EmailHandler {
+class EmailHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EmailHandler.class);
 

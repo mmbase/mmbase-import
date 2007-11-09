@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -52,24 +52,40 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
     private BufferedReader reader = null;
     private BufferedWriter writer = null;
 
-    /** State indicating we sent our '220' initial session instantiation message, and are now waiting for a HELO */
-    private final int STATE_HELO = 1;
+    enum State {
+        IDLE,
+        /**
+         * We sent our '220' initial session instantiation message, and are now waiting for a HELO
+         */
+        HELO,
+        /**
+         * We received a HELO and we are now waiting for a 'MAIL FROM:'
+         */
+        MAILFROM,
+        /**
+         * We received a MAIL FROM and we are now waiting for a 'RCPT TO:'
+         */
+         RCPTTO,
 
-    /** State indicating we received a HELO and we are now waiting for a 'MAIL FROM:' */
-    private final int STATE_MAILFROM = 2;
-
-    /** State indicating we received a MAIL FROM and we are now waiting for a 'RCPT TO:' */
-    private final int STATE_RCPTTO = 3;
-
-    /** State indicating we received a DATA and we are now processing the data */
-    private final int STATE_DATA = 4;
-
-    /** State indicating we received a QUIT, and that we may close the connection */
-    private final int STATE_FINISHED = 5;
+        /**
+         * We received a DATA and we are now processing the data
+         */
+         DATA,
+         /** We received a QUIT, and that we may close the connection */
+         FINISHED
+     }
 
     /** The current state of this handler */
-    private int state = 0;
+    private State state = State.IDLE;
+    private MailHandler.Address fromAddress = null;
+    private List<MailHandler.Address> recipients = new ArrayList<MailHandler.Address>();
 
+    public MailHandler.Address getSender() {
+        return fromAddress;
+    }
+    public List<MailHandler.Address> getRecipients() {
+        return recipients;
+    }
     private Map<String, String> properties;
     /**
      * Public constructor. Set all data that is needed for this thread to run.
@@ -111,7 +127,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
             writer.write("220 " + properties.get("hostname") + " Service ready\r\n"); // SMTP uses Windows-like newline conventions
             writer.flush();
 
-            while (state < STATE_FINISHED) {
+            while (state != State.FINISHED) {
                 String line = reader.readLine();
                 parseLine(line);
             }
@@ -146,87 +162,86 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
 
         if (uLine.startsWith("QUIT")) {
             log.debug("Sending 221 Goodbye");
-            state = STATE_FINISHED;
+            state = State.FINISHED;
             writer.write("221 Goodbye.\r\n");
             writer.flush();
             return;
         }
 
         if (uLine.startsWith("RSET")) {
-            state = STATE_MAILFROM;
-            clearMailboxes();
+            state = State.MAILFROM;
+            getHandler().clearMailboxes();
             writer.write("250 Spontanious amnesia has struck me, I forgot everything!\r\n");
             writer.flush();
             return;
         }
 
         if (uLine.startsWith("HELO")) {
-            if (state > STATE_HELO) {
+            if (state.compareTo(State.HELO) > 0) {
                 writer.write("503 5.0.0 " + properties.get("hostname") + "Duplicate HELO/EHLO\r\n");
                 writer.flush();
             } else {
                 writer.write("250 " + properties.get("hostname") + " Good day [" + socket.getInetAddress().getHostAddress() + "], how are you today?\r\n");
                 writer.flush();
-                state = STATE_MAILFROM;
+                state = State.MAILFROM;
             }
             return;
         }
 
         if (uLine.startsWith("MAIL FROM:")){
-            if (state < STATE_MAILFROM) {
+            if (state.compareTo(State.MAILFROM) < 0) {
                 writer.write("503 That's not nice! Polite people say HELO first\r\n");
                 writer.flush();
-            } else if (state > STATE_MAILFROM) {
+            } else if (state.compareTo(State.MAILFROM) > 0) {
                 writer.write("503 You cannot specify MAIL FROM after a RCPT TO\r\n");
                 writer.flush();
             } else {
-                String address = line.substring(9, line.length());
-                String sender[] = parseAddress(address);
-
-                writer.write("250 That address looks okay, I'll allow you to send mail.\r\n");
-                writer.flush();
-                state = STATE_RCPTTO;
+                fromAddress = parseAddress(line.substring(9, line.length()));
+                if (fromAddress != null) {
+                    writer.write("250 That address looks okay, I'll allow you to send mail.\r\n");
+                    writer.flush();
+                    state = State.RCPTTO;
+                } else {
+                    writer.write("550 No acceptable MAIL FROM address.\r\n");
+                    writer.flush();
+                }
             }
             return;
         }
 
         if (uLine.startsWith("RCPT TO:")) {
             log.debug(line);
-            if (state < STATE_RCPTTO) {
+            if (state.compareTo(State.RCPTTO) < 0) {
                 writer.write("503 You should say MAIL FROM first\r\n");
                 writer.flush();
-            } else if (state >= STATE_DATA) {
+            } else if (state.compareTo(State.DATA) >= 0) {
                 writer.write("503 You cannot use RCPT TO: at this state\r\n");
                 writer.flush();
             } else {
                 String address = line.substring(7, line.length());
-                String recepient[] = parseAddress(address);
-                if (recepient.length != 2) {
-                    log.service("Can't parse address " + address);
-                    writer.write("553 This user format is unknown here\r\n");//
-                    writer.flush();
-                    return;
-                }
-                String username = recepient[0];
-                String domain = recepient[1];
+                MailHandler.Address recipient = parseAddress(address);
                 String domains = properties.get("domains");
-                log.service("Incoming mail for " + username + " @ "+domain);
+                log.service("Incoming mail for " + recipient);
+
                 for (StringTokenizer st = new StringTokenizer(domains, ","); st.hasMoreTokens();) {
-                    if (domain.toLowerCase().endsWith(st.nextToken().toLowerCase())) {
-                        if (! addMailbox(username)) {
-                            log.service("Mail for " + username + " rejected: no mailbox");
-                            writer.write("550 User not found: " + username + "\r\n");
+                    if (recipient.domain.toLowerCase().endsWith(st.nextToken().toLowerCase())) {
+                        log.service("Will accept");
+                        MailHandler.MailBoxStatus status = getHandler().addMailbox(recipient.user);
+                        if (status != MailHandler.MailBoxStatus.OK) {
+                            log.service("Mail for " + recipient.user + " rejected: no mailbox");
+                            writer.write("550 User: " + recipient.user + ": " + status + "\r\n");
                             writer.flush();
                             return;
                         }
-                        log.service("Mail for " + username + " accepted");
+                        log.service("Mail for " + recipient.user + " accepted");
                         writer.write("250 Yeah, that user lives here. Bring on the data!\r\n");
                         writer.flush();
+                        recipients.add(recipient);
                         return;
                     }
                 }
-                log.service("Mail for domain " + domain + " not accepted, not one of " + domains);
-                writer.write("553 We do not accept mail for domain '" + domain + "'\r\n");
+                log.service("Mail for domain " + recipient.domain + " not accepted, not one of " + domains);
+                writer.write("553 We do not accept mail for domain '" + recipient.domain + "'\r\n");
                 writer.flush();
             }
             return;
@@ -234,13 +249,13 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
 
         if (uLine.startsWith("DATA")) {
             log.debug("data");
-            if (state < STATE_RCPTTO) {
+            if (state.compareTo(State.RCPTTO) < 0) {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
-            } else if (state != STATE_RCPTTO) {
+            } else if (state != State.RCPTTO) {
                 writer.write("503 Command not possible at this state\r\n");
                 writer.flush();
-            } else if (size() == 0) {
+            } else if (getHandler().size() == 0) {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
             } else {
@@ -304,14 +319,18 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 String result = data.substring(0, data.length() - (tooBig ? 0 : 3));
                 try {
                     log.debug("Now handling data " + result.length());
-                    if (handleData(result, headers)) {
-                        log.debug("250 Rejoice! We will deliver this email to the user.");
-                        writer.write("250 Rejoice! We will deliver this email to the user.\r\n");
+                    MailHandler.MessageStatus status = handleData(result, headers);
+                    if (status == MailHandler.MessageStatus.DELIVERED  || status == MailHandler.MessageStatus.ERRORNEOUS_DELIVERED) {
+                        if (status == MailHandler.MessageStatus.DELIVERED) {
+                            writer.write("250 Rejoice! We will deliver this email to the user.\r\n");
+                        } else {
+                            writer.write("250 " + status + " We will deliver this email to the user.\r\n");
+                        }
                         writer.flush();
-                        state = STATE_MAILFROM;
+                        state = State.MAILFROM;
                     } else  {
                         log.debug("550 Message not accepted.");
-                        writer.write("550 Message not accepted.\r\n");
+                        writer.write("550 Message not accepted. " + status + ".\r\n");
                         writer.flush();
                     }
                 } catch (Exception e) {
@@ -334,18 +353,19 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         log.info("Interrupt called");
     }
 
+
     /**
      * Parse a string of addresses, which are given in an RCPT TO: or MAIL FROM:
      * line by the client. This is a strict RFC implementation.
-     * @todo Is this really ok? Why not {@link javax.mail.InternetAddress#parse}?
      * @return an array of strings, the first element contains the username, the second element is the domain
      */
-    private String[] parseAddress(String address) {
+    private MailHandler.Address parseAddress(String address) {
         if (address == null)
-            return new String[0];
+            return null;
 
-        if (address.equals("<>"))
-            return new String[0];
+        if (address.equals("<>")) {
+            return null;
+        }
 
         int leftbracket = address.indexOf("<");
         int rightbracket = address.indexOf(">");
@@ -370,21 +390,19 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         String finaladdress = address.substring(leftbracket + 1, rightbracket).trim();
         int atsign = finaladdress.indexOf("@");
         if (atsign < 0) {
-            return new String[0];
+            return null;
         }
 
-        String[] retval = new String[2];
-        retval[0] = finaladdress.substring(0, atsign);
-        retval[1] = finaladdress.substring(atsign + 1, finaladdress.length());
-        return retval;
+        return new MailHandler.Address(finaladdress.substring(0, atsign), finaladdress.substring(atsign + 1, finaladdress.length()));
     }
+
 
 
     /**
      * Handle the data from the DATA command. This method does all the work: it creates
      * objects in mailboxes.
      */
-    private boolean handleData(String data, Map<String, String> headers) {
+    private MailHandler.MessageStatus handleData(String data, Map<String, String> headers) {
         if (log.isTraceEnabled()) {
             log.trace("Data: [" + data + "]");
         }
@@ -395,10 +413,10 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (UnsupportedEncodingException uee) {
             // should not happen. iso-8859-1  _is_ supported.
             log.fatal(uee);
-            return false;
+            return MailHandler.MessageStatus.ERROR;
         } catch (MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
-            return false;
+            return MailHandler.MessageStatus.ERROR;
         }
         try {
             if (headers != null) {
@@ -409,7 +427,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (MessagingException e) {
             log.error(e);
         }
-        return handleMessage(message);
+        return getHandler().handleMessage(message);
     }
 
 

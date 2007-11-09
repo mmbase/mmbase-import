@@ -25,7 +25,7 @@ import javax.mail.internet.*;
  * A mail fetcher that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
  *
  *
- * @version $Id: PopFetcher.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: PopFetcher.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
  */
 public class PopFetcher extends MailFetcher implements CronJob {
     private static final Logger log = Logging.getLoggerInstance(PopFetcher.class);
@@ -37,7 +37,7 @@ public class PopFetcher extends MailFetcher implements CronJob {
 
     public void init(CronEntry cronEntry) {
         entry = cronEntry;
-        addMailbox("admin");
+        getHandler().addMailbox("admin");
     }
 
     public void stop() {
@@ -140,7 +140,7 @@ public class PopFetcher extends MailFetcher implements CronJob {
                 Date date = message.getReceivedDate();
                 if (date == null) date = message.getSentDate();
                 log.debug("MESSAGE #" + message.getMessageNumber() + ":" + message.getContentType() + " of " + date + "from " + Arrays.asList(message.getFrom()));
-                handleMessage(message);
+                getHandler().handleMessage(message);
 
                 if (date != null && date.getTime() > lastDate.getTime()) {
                     log.debug("setting last date to " + date);

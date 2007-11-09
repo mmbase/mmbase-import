@@ -26,32 +26,23 @@ import javax.mail.internet.*;
  * seperate thread ({@link SMTPFetcher} is instantiated by {@link SMTPListener}), which in turn is
  * bootstrapped by a module {@link SMTPModule}.
  *
- * For convenience this abstract base implementation implements also {@link MailHandler}.
- *
- * @version $Id: MailFetcher.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+
+ * @version $Id: MailFetcher.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
  */
-public abstract class MailFetcher implements MailHandler {
+public abstract class MailFetcher  {
     private static final Logger log = Logging.getLoggerInstance(MailFetcher.class);
 
 
-    protected final MailHandler handler;
+    private final MailHandler handler;
 
     MailFetcher(MailHandler h) {
         handler  = h;
     }
 
-    public final boolean handleMessage(Message message) {
-        return handler.handleMessage(message);
+    public MailHandler getHandler() {
+        return handler;
     }
-    public final boolean addMailbox(String user) {
-        return handler.addMailbox(user);
-    }
-    public final void clearMailboxes() {
-        handler.clearMailboxes();
-    }
-    public final int size() {
-        return handler.size();
-    }
+
 
 
 }

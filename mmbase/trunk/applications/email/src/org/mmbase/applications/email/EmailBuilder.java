@@ -23,18 +23,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Email builder.
- * Rewrite of the email system, that became too complex to handle.
- * The focus on the new one is different.
- * The code is now split per mail type to allow for easer debug and better control over the 'simple'
- * mail action. The delayed and repeat mail will be handled with
- * the upcomming crontab builder
- *
- * @javadoc is a bit lame
+ * Email builder. Nodes of this type are representations of email messages. Functions are available
+ * to e.g. send these messages (using {@link SendMail}).
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.27 2007-10-24 13:52:28 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.28 2007-11-09 10:14:47 michiel Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 

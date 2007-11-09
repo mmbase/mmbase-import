@@ -14,7 +14,7 @@ import javax.mail.*;
 
 /**
 
- * @version $Id: ChainedMailHandler.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: ChainedMailHandler.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
  */
 public class  ChainedMailHandler implements MailHandler {
 
@@ -26,17 +26,20 @@ public class  ChainedMailHandler implements MailHandler {
         }
     }
 
-    public boolean handleMessage(Message message) {
+    public MessageStatus handleMessage(Message message) {
         for (MailHandler m : chain) {
-            if (m.handleMessage(message)) return true;
+            MessageStatus status = m.handleMessage(message);
+            if (status == MessageStatus.DELIVERED) return status;
         }
-        return false;
+        return MessageStatus.IGNORED;
     }
-    public boolean addMailbox(String user) {
+    public MailBoxStatus addMailbox(String user) {
+        MailBoxStatus status = MailBoxStatus.UNDEFINED;
         for (MailHandler m : chain) {
-            if (m.addMailbox(user)) return true;
+            status = m.addMailbox(user);
+            if (status == MailBoxStatus.OK) return status;
         }
-        return false;
+        return status;
     }
     public void clearMailboxes() {
         for (MailHandler m : chain) {
@@ -49,6 +52,10 @@ public class  ChainedMailHandler implements MailHandler {
             result += m.size();
         }
         return result;
+    }
+
+    public String toString() {
+        return "ChainedMailHandler" + chain;
     }
 
 }
