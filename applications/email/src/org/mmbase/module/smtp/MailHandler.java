@@ -22,7 +22,7 @@ import org.mmbase.applications.email.SendMail;
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.8 2007-11-09 14:25:05 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.9 2007-11-09 14:28:22 michiel Exp $
  */
 public interface  MailHandler {
 
@@ -84,7 +84,7 @@ public interface  MailHandler {
             } else {
                 instance = new ChainedMailHandler(mh.toArray(new MailHandler[0]));
             }
-            log.info("MailHandler: " + instance);
+            log.debug("MailHandler: " + instance);
 
             return instance;
         }
