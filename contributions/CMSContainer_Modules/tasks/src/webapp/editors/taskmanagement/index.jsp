@@ -6,7 +6,7 @@
 <html:html xhtml="true">
 	<head><title><fmt:message key="tasks.title" /></title>
 	</head>
-	<frameset cols="321,*" framespacing="0" frameborder="0">
+	<frameset cols="293,*" framespacing="0" frameborder="0">
 		<frame src="tasksmenu.jsp" name="leftpane" frameborder="0" scrolling="no">
 		<frame src="tasklist.jsp" name="rightpane" frameborder="0">
 	</frameset>

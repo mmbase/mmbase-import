@@ -6,7 +6,7 @@
 <html:html xhtml="true">
 	<head><title><fmt:message key="admin.title" /></title>
 	</head>
-	<frameset cols="321,*" framespacing="0" frameborder="0">
+	<frameset cols="293,*" framespacing="0" frameborder="0">
 		<frame src="adminmenu.jsp" name="leftpane" frameborder="0" scrolling="no">
 		<frame src="../admindashboard/index.jsp" name="rightpane" frameborder="0">
 	</frameset>
