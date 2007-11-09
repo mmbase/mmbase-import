@@ -16,14 +16,15 @@
    <names>
       <singular xml:lang="nl">Pagina wizard definitie</singular>
       <singular xml:lang="en">Page wizard definition</singular>
+	  <singular xml:lang="zh">页面向导定义</singular>
       <plural xml:lang="nl">Pagina wizard definities</plural>
       <plural xml:lang="en">Page wizard definitions</plural>
+	  <plural xml:lang="zh">页面向导定义</plural>
    </names>
    <descriptions>
-      <description xml:lang="nl"> 
-</description>
-      <description xml:lang="en"> 
-</description>
+      <description xml:lang="nl"></description>
+      <description xml:lang="en"></description>
+	  <description xml:lang="zh"></description>
    </descriptions>
 	<properties>
 		</properties>
@@ -32,10 +33,12 @@
          <descriptions>
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
 				<guiname xml:lang="nl">Naam</guiname>
             <guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="zh">名称</guiname>
          </gui>
          <editor>
             <positions>
@@ -54,10 +57,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Omschrijving</guiname>
 				<guiname xml:lang="en">Description</guiname>
+				<guiname xml:lang="zh">描述</guiname>
 			</gui>
 			<editor>
 				<positions>
