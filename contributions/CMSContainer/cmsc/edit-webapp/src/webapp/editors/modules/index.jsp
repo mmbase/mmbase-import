@@ -6,7 +6,7 @@
 <html:html xhtml="true">
 	<head><title><fmt:message key="modules.title" /></title>
 	</head>
-	<frameset cols="321,*" framespacing="0" frameborder="0">
+	<frameset cols="293,*" framespacing="0" frameborder="0">
 		<frame src="modulesmenu.jsp" name="leftpane" frameborder="0" scrolling="no">
 		<frame src="../empty.html" name="rightpane" frameborder="0">
 	</frameset>
