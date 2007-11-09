@@ -11,7 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.module.Module;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import java.util.*;
 import java.io.*;
 import javax.mail.*;
@@ -22,13 +24,17 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.3 2007-11-09 14:25:05 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
 
 
-    private class MailBox {
+    private static enum NoMailBox {
+        BOUNCE,
+        CREATE
+    }
+    private static class MailBox {
         public final Node box;  // mailbox object (mails are related to this node) Can be the user
                                 // node itself.
         public final Node user;
@@ -37,14 +43,23 @@ public class CloudMailHandler implements MailHandler {
         }
     }
 
+    private static class TooBig extends Exception {
+    }
+
     protected static Cloud getCloud() {
         return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
     }
 
     protected Map<String, String> getProperties() {
         Map<String, String> props = new HashMap<String, String>();
-        props.putAll(org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail").getInitParameters());
-        props.putAll(org.mmbase.module.core.MMBase.getMMBase().getModule("smtp").getInitParameters());
+        Module sm = org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail");
+        if (sm != null) {
+            props.putAll(sm.getInitParameters());
+        }
+        Module s = org.mmbase.module.core.MMBase.getMMBase().getModule("smtp");
+        if (s != null) {
+            props.putAll(s.getInitParameters());
+        }
         return props;
     }
 
@@ -240,6 +255,10 @@ public class CloudMailHandler implements MailHandler {
                             Relation rel = email.createRelation(attachment, cloud.getRelationManager("related"));
                             rel.commit();
                         }
+                    } catch (TooBig tb) {
+                        errorCount++;
+                        log.service("Too big an attachment found, returning " + MessageStatus.TOO_BIG);
+                        return MessageStatus.TOO_BIG;
                     } catch (Exception e) {
                         errorCount++;
                         log.error("Exception while parsing attachments: " + e.getMessage(), e);
@@ -378,7 +397,7 @@ public class CloudMailHandler implements MailHandler {
             log.debug("Found attachment with type: " + p.getContentType());
             extractPart((Part) p.getContent(), attachments, mail);
         } else {
-            log.debug("Found attachment with type: " + p.getContentType());
+            log.debug("Found attachment with type: " + p.getContentType() + " and size " + p.getSize());
             Node tempAttachment = storeAttachment(p, mail.getCloud());
             if (tempAttachment != null) {
                 attachments.add(tempAttachment);
@@ -392,7 +411,11 @@ public class CloudMailHandler implements MailHandler {
      * @param p
      * @return Node in the MMBase object cloud
      */
-    private Node storeAttachment(Part p, Cloud cloud) throws MessagingException {
+    private Node storeAttachment(Part p, Cloud cloud) throws MessagingException, TooBig {
+        if (p.getSize() > Integer.parseInt(getProperties().get("max_attachment_size"))) {
+            log.service("Size of p too big");
+            throw new TooBig();
+        }
         NodeManager attachmentManager = cloud.getNodeManager("attachments");
         try {
             String fileName = p.getFileName();
@@ -444,10 +467,9 @@ public class CloudMailHandler implements MailHandler {
                 Node attachmentNode = attachmentManager.createNode();
                 String fileName = p.getFileName();
                 attachmentNode.setStringValue("title", fileName + ": " + e.getMessage());
-
                 attachmentNode.setStringValue("mimetype", "text/plain");
                 attachmentNode.setStringValue("filename", "message.txt");
-                attachmentNode.setStringValue("handle", Logging.stackTrace(e));
+                attachmentNode.setByteValue("handle", Logging.stackTrace(e).getBytes());
                 attachmentNode.commit();
                 return attachmentNode;
             } catch (Exception ew) {
@@ -479,54 +501,54 @@ public class CloudMailHandler implements MailHandler {
         Map<String, String> properties = getProperties();
         log.service("Checking mail fox for " + user + " " + properties);
 
-        String usersbuilder = properties.get("usersbuilder");
-        NodeManager manager = cloud.getNodeManager(usersbuilder);
+        String usersBuilder = properties.get("usersbuilder");
+        NodeManager manager = cloud.getNodeManager(usersBuilder);
         NodeList nodelist = manager.getList(properties.get("usersbuilder.accountfield") + " = '" + user + "'", null, null);
         if (nodelist.size() != 1) {
             log.service("No such user");
             return MailBoxStatus.NO_SUCH_USER;
         }
-        Node usernode = nodelist.getNode(0);
+        Node userNode = nodelist.getNode(0);
         if (properties.containsKey("mailboxbuilder")) {
             String where = null;
             String mailboxbuilder = properties.get("mailboxbuilder");
+            log.service("Finding mailbox of type " + mailboxbuilder + " for user " + userNode.getNumber());
+            NodeManager mailboxesManager = cloud.getNodeManager(mailboxbuilder);
+            NodeQuery query = Queries.createRelatedNodesQuery(userNode, mailboxesManager, null, null);
             if (properties.containsKey("mailboxbuilder.where")) {
                 where = properties.get("mailboxbuilder.where");
+                Queries.addConstraints(query, where);
             }
-            log.service("Finding mailbox of type " + mailboxbuilder + " for user " + usernode.getNumber());
-            NodeList mailboxes = cloud.getList("" + usernode.getNumber(),              //startnodes
-                                               usersbuilder + "," + mailboxbuilder,    //path
-                                               mailboxbuilder + ".number",             //fields
-                                               where,                                  //constraints
-                                               null,                                   //orderby
-                                               null,                                   //directions
-                                               null,                                   //searchdir
-                                               true                                    //distinct
-                                               );
-            if (mailboxes.size() == 1) {
-                String number = mailboxes.getNode(0).getStringValue(mailboxbuilder + ".number");
-                mailboxes.add(new MailBox(cloud.getNode(number), usernode));
-                return MailBoxStatus.OK;
-            } else if (mailboxes.size() == 0) {
-                String notfoundaction = "bounce";
-                if (properties.containsKey("mailboxbuilder.notfound")) {
-                    notfoundaction = properties.get("mailboxbuilder.notfound");
-                }
-                if ("bounce".equals(notfoundaction)) {
-                    return MailBoxStatus.NO_INBOX;
-                }
-                /* this needs to be implemented
-                if ("create".equals(notfoundaction)) {
+            NodeList list = mailboxesManager.getList(query);
 
+            if (list.size() == 1) {
+                Node mailbox = list.getNode(0);
+                mailboxes.add(new MailBox(mailbox, userNode));
+                return MailBoxStatus.OK;
+            } else if (list.size() == 0) {
+                NoMailBox notfoundaction = NoMailBox.BOUNCE;
+                if (properties.containsKey("mailboxbuilder.notfound")) {
+                    notfoundaction = NoMailBox.valueOf(properties.get("mailboxbuilder.notfound").toUpperCase());
                 }
-                */
-                return MailBoxStatus.NO_INBOX;
+                switch(notfoundaction) {
+                case CREATE:
+
+                    try {
+                        Node mailbox = userNode.getFunctionValue("createInbox", null).toNode();
+                        mailboxes.add(new MailBox(mailbox, userNode));
+                        return MailBoxStatus.OK;
+                    } catch (Exception nfe) {
+                        log.error(nfe);
+                        return MailBoxStatus.CANT_CREATE_INBOX;
+                    }
+                default: return MailBoxStatus.NO_INBOX;
+                }
             } else {
                 log.error("Too many mailboxes for user '" + user + "'");
                 return MailBoxStatus.TOO_MANY_INBOXES;
             }
         } else {
-            mailboxes.add(new MailBox(usernode, usernode));
+            mailboxes.add(new MailBox(userNode, userNode));
             return MailBoxStatus.OK;
         }
 

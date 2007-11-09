@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.3 2007-11-09 14:25:05 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -129,7 +129,15 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
 
             while (state != State.FINISHED) {
                 String line = reader.readLine();
-                parseLine(line);
+                try {
+                    parseLine(line);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    writer.write("550 Exception: " + e.getMessage());
+                    writer.flush();
+                    state = State.FINISHED;
+                    break;
+                }
             }
         } catch (IOException e) {
             log.warn("Caught IOException: " + e);
@@ -268,7 +276,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 int currentpos = 0;
                 int c;
                 // 76 length of a base 64 encoded line
-                int maxAttachmentSize = (5 * 1024 * 1024 / 76) * 76; // approx 5 Mb.
+                long maxAttachmentSize = (5 * 1024 * 1024 / 76) * 76; // approx 5 Mb.
                 try {
                     maxAttachmentSize = (Integer.parseInt(properties.get("max_attachment_size")) / 76) * 76;
                 } catch (Exception e) {
@@ -285,7 +293,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                             Thread.currentThread().sleep(50);
                         } catch (InterruptedException e) {}
                     }
-                    if (data.length() < maxAttachmentSize) {
+                    if (data.length() < maxAttachmentSize * 1.5) {
                         data.append((char)c);
                     } else {
                         tooBig = true;
@@ -309,7 +317,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 }
                 Map<String, String> headers = null;
                 if (tooBig) {
-                    // should be perhaps reject the entire message?
+                    // could be perhaps reject the entire message?
                     log.warn("Attachment was too big, truncated to " + maxAttachmentSize);
                     headers = new HashMap<String, String>();
                     headers.put("X-Attachment-Truncated", "Attachment was too big, truncated to " + maxAttachmentSize);
@@ -329,7 +337,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                         writer.flush();
                         state = State.MAILFROM;
                     } else  {
-                        log.debug("550 Message not accepted.");
+                        log.debug("550 Message not accepted.", new Exception());
                         writer.write("550 Message not accepted. " + status + ".\r\n");
                         writer.flush();
                     }
@@ -427,7 +435,10 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (MessagingException e) {
             log.error(e);
         }
-        return getHandler().handleMessage(message);
+        log.info("Calling handleMessage on " + getHandler());
+        MailHandler.MessageStatus s =  getHandler().handleMessage(message);
+        log.info("Found " + s + " " + MailHandler.MessageStatus.TOO_BIG);
+        return s;
     }
 
 

@@ -14,7 +14,7 @@ import javax.mail.*;
 
 /**
 
- * @version $Id: ChainedMailHandler.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: ChainedMailHandler.java,v 1.3 2007-11-09 14:25:05 michiel Exp $
  */
 public class  ChainedMailHandler implements MailHandler {
 
@@ -29,7 +29,7 @@ public class  ChainedMailHandler implements MailHandler {
     public MessageStatus handleMessage(Message message) {
         for (MailHandler m : chain) {
             MessageStatus status = m.handleMessage(message);
-            if (status == MessageStatus.DELIVERED) return status;
+            if (status != MessageStatus.IGNORED) return status;
         }
         return MessageStatus.IGNORED;
     }
