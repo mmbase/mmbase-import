@@ -3,6 +3,7 @@
 <wizard-schema id="glossary">
 	<title xml:lang="nl">Glossary</title>
 	<title xml:lang="en">Glossary</title>
+	<title xml:lang="zh">关键字索引</title>
 
    <action include="config/glossary/create_glossary.xml"/>
    <action include="config/glossary/delete_glossary.xml"/>
