@@ -3,6 +3,7 @@
 <wizard-schema id="playlist">
 	<title xml:lang="nl">Playlist</title>
 	<title xml:lang="en">Playlist</title>
+	<title xml:lang="zh">播放列表</title>
 
    <action include="config/playlist/create_playlist.xml"/>
    <action include="config/playlist/delete_playlist.xml"/>

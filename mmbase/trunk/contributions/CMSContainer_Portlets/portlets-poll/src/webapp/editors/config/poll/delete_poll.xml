@@ -3,4 +3,6 @@
 <action type="delete">
 	<prompt xml:lang="nl">Weet u zeker dat u dit poll wilt verwijderen ?</prompt>
 	<description xml:lang="nl">Klik hier om dit poll te verwijderen.</description>
+	<prompt xml:lang="zh">你确定删除此投票测验吗?</prompt>
+	<description xml:lang="zh">点击删除此投票测验.</description>
 </action>

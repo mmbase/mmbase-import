@@ -3,4 +3,6 @@
 <action type="delete">
 	<prompt xml:lang="nl">Weet u zeker dat u deze galerij wilt verwijderen ?</prompt>
 	<description xml:lang="nl">Klik hier om deze galerij te verwijderen.</description>
+	<prompt xml:lang="zh">您确定删除此相册吗?</prompt>
+	<description xml:lang="zh">点击删除相册.</description>
 </action>

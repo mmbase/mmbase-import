@@ -3,6 +3,7 @@
 <wizard-schema id="pollchoice">
 	<title xml:lang="nl">Poll optie</title>
 	<title xml:lang="en">Poll option</title>
+	<title xml:lang="zh">投票选项</title>
 
    <action include="config/pollchoice/create_pollchoice.xml"/>
    <action include="config/pollchoice/delete_pollchoice.xml"/>

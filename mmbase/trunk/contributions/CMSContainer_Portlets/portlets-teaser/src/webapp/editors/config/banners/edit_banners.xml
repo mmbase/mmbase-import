@@ -3,10 +3,12 @@
 <form-schema id="edit_banners">
 	<title xml:lang="nl">Banner</title>
 	<title xml:lang="en">Banner</title>
+	<title xml:lang="zh">Banner</title>
 
 	<field name="title" dtmaxlength="255" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
 	</field>
 	<list include="config/images/search_banners_imagerel_images.xml" />
 	

@@ -3,6 +3,7 @@
 <wizard-schema id="mailfriend">
 	<title xml:lang="nl">Mail vriend formulier</title>
 	<title xml:lang="en">Mail friend form</title>
+	<title xml:lang="zh">给朋友发信表单</title>
 
    <action include="config/mailfriend/create_mailfriend.xml"/>
    <action include="config/mailfriend/delete_mailfriend.xml"/>
