@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.31 2007-06-28 11:56:34 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.32 2007-11-09 17:26:54 michiel Exp $
  */
 public class UtilReader {
 
@@ -170,7 +170,7 @@ public class UtilReader {
         return new PropertiesMap<Collection<Map.Entry<String,String>>>(maps);
     }
 
-    
+
     /**
      * Reports whether the configured resource (in the constructor) is actually backed. If not,
      * getProperties will certainly return an empty Map.
@@ -221,7 +221,7 @@ public class UtilReader {
                                         value = reader.getElementValue(keyorvalue);
                                     }
                                 }
-                                if (key != null && value != null) {
+                                if (key != null) {
                                     entryList.add(new Entry<String,String>(key, value));
                                 }
                             }
