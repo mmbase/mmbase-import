@@ -17,6 +17,7 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.*;
 import org.mmbase.util.transformers.Base64;
 import org.mmbase.datatypes.processors.*;
+import javax.mail.internet.*;
 import java.util.*;
 import java.text.*;
 import javax.crypto.*;
@@ -38,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.2 2007-10-24 13:40:23 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.3 2007-11-09 10:14:47 michiel Exp $
 
  */
 
@@ -68,6 +69,12 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
 
     private static int key = 0;
 
+    protected static Set<String> verificationReceivers = new HashSet<String>();
+
+    public static Set<String> getVerificationReceivers() {
+        return Collections.unmodifiableSet(verificationReceivers);
+    }
+
     private String emailField   = "email";
     private String statusField  = null;
     private String emailTextBundle = "org.mmbase.datatypes.resources.verifyemailtemplate";
@@ -84,10 +91,13 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     }
     public void setTextBundle(String b) {
         emailTextBundle = b;
-    }
-
-    public void setReplyTo(String b) {
-        emailTextBundle = b;
+        ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle);
+        try {
+            InternetAddress ia  = InternetAddress.parse(emailTemplate.getString("from"))[0];
+            verificationReceivers.add(ia.getAddress());
+        } catch (Exception e) {
+            log.error(e);
+        }
     }
 
     public void setSuccessProcessor(String p) {
@@ -180,6 +190,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     protected String encryptKey(Node node, Field field, String key) {
         return encrypt(node.getNodeManager().getName() + SEP + field.getName() + SEP + key);
     }
+
     public static boolean validate(Cloud cloud, String encryptedKey) {
         String keyChain = decrypt(encryptedKey.replaceAll(" ", "+"));
         log.debug("Found keyChain " + keyChain + " (from " + encryptedKey + " )");
@@ -279,6 +290,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
             emailNode.setStringValue(toField, email);
             emailNode.setStringValue(bodyField,    MessageFormat.format(emailTemplate.getString("body"), encryptedKey, u.toString(), include.toString()));
             emailNode.setStringValue(subjectField, MessageFormat.format(emailTemplate.getString("subject"), encryptedKey));
+
 
             String from = emailTemplate.getString("from");
             emailNode.setStringValue(fromField, from);

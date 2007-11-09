@@ -20,9 +20,11 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.3 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.4 2007-11-09 10:14:47 michiel Exp $
  */
 public class SMTPListener extends Thread {
+
+    private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
 
     private static final int THREADS = 10;
     static int number = 1;
@@ -38,7 +40,7 @@ public class SMTPListener extends Thread {
                             try {
                                 super.run();
                             } catch (Throwable t) {
-                                System.err.println("Error during job: " + t.getClass().getName() + " " + t.getMessage());
+                                log.error("Error during job: " + t.getClass().getName() + " " + t.getMessage(), t);
                             }
                         }
                     };
@@ -49,7 +51,6 @@ public class SMTPListener extends Thread {
     final ExecutorService socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue(), factory);
 
 
-    private static final Logger log = Logging.getLoggerInstance(SMTPListener.class);
     private boolean running = true;
     private ServerSocket ssocket;
     private final Map<String, String> properties;
@@ -106,7 +107,7 @@ public class SMTPListener extends Thread {
                 if (log.isDebugEnabled()) {
                     log.debug("Accepted connection: " + socket);
                 }
-                final SMTPFetcher handler = new SMTPFetcher(MailHandlerFactory.getInstance(), socket, properties);
+                final SMTPFetcher handler = new SMTPFetcher(MailHandler.Factory.getInstance(), socket, properties);
                 socketThreads.execute(handler);
             } catch (Exception e) {
                 if (ssocket != null && ! ssocket.isClosed()) {
