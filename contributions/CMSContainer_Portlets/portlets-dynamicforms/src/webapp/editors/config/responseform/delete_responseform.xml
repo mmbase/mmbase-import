@@ -3,4 +3,6 @@
 <action type="delete">
 	<prompt xml:lang="nl">Weet u zeker dat u dit dynamisch formulier wilt verwijderen ?</prompt>
 	<description xml:lang="nl">Klik hier om dit dynamisch formulier te verwijderen.</description>
+	<prompt xml:lang="zh">你确定删除此动态表单?</prompt>
+	<description xml:lang="zh">点击删除此动态表单.</description>
 </action>

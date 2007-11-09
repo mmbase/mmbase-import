@@ -3,6 +3,7 @@
 <wizard-schema id="banner">
 	<title xml:lang="nl">Banner</title>
 	<title xml:lang="en">Banner</title>
+	<title xml:lang="zh">Banner</title>
 
    <action include="config/banners/create_banners.xml"/>
    <action include="config/banners/delete_banners.xml"/>

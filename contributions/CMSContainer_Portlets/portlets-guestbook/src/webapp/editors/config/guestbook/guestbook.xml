@@ -3,6 +3,7 @@
 <wizard-schema id="guestbook">
 	<title xml:lang="nl">Gastenboek</title>
 	<title xml:lang="en">Guestbook</title>
+	<title xml:lang="zh">用户联系手册</title>
 
    <action include="config/guestbook/create_guestbook.xml"/>
    <action include="config/guestbook/delete_guestbook.xml"/>

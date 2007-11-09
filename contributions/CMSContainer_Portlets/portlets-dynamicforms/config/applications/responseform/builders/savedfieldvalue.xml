@@ -16,9 +16,11 @@
       <!-- singular names per language as defined by ISO 639 -->
       <singular xml:lang="nl">Bewaarde feld waarde</singular>
       <singular xml:lang="en">Saved field value</singular>
+	  <singular xml:lang="zh">保存框值</singular>
       <!-- plural names per language as defined by ISO 639 -->
       <plural xml:lang="nl">Bewaarde feld waarden</plural>
       <plural xml:lang="en">Saved field value</plural>
+	  <plural xml:lang="zh">保存框值</plural>
    </names>
    <!-- Descriptions are meant to provide some additional clarification to an object.
  They are useful for GUI editors to provide helptexts.
@@ -26,6 +28,7 @@
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
+	  <description xml:lang="zh"></description>
    </descriptions>
    <!-- description per language as defined by ISO 639 -->
 
@@ -44,11 +47,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Veld</guiname>
             <guiname xml:lang="en">Field</guiname>
+			<guiname xml:lang="zh">框</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -77,11 +82,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Waarde</guiname>
             <guiname xml:lang="en">Value</guiname>
+			<guiname xml:lang="zh">值</guiname>
          </gui>
          <!-- editor related -->
          <editor>

@@ -16,6 +16,7 @@
 	<descriptions>
 		<description xml:lang="nl"></description>
 		<description xml:lang="en"></description>
+		<description xml:lang="zh"></description>
 	</descriptions>
 	<properties>
 	</properties>
@@ -24,10 +25,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Introductie</guiname>
 				<guiname xml:lang="en">Intro</guiname>				
+				<guiname xml:lang="zh">简介</guiname>	
 			</gui>
 			<editor>
 				<positions>
@@ -46,10 +49,12 @@
         <descriptions>            
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>       
          <gui>
             <guiname xml:lang="nl">Alert email onderwerp</guiname>
             <guiname xml:lang="en">Alert email subject</guiname>
+			<guiname xml:lang="zh">邮件主题警告</guiname>
          </gui>       
          <editor>
             <positions>              
@@ -67,10 +72,12 @@
          <descriptions>           
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>        
          <gui>
             <guiname xml:lang="nl">Alert email tekst</guiname>
             <guiname xml:lang="en">Alert email body</guiname>
+			<guiname xml:lang="zh">邮件主体警告</guiname>
          </gui>         
          <editor>
             <positions>              
@@ -88,10 +95,12 @@
         <descriptions>            
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>       
          <gui>
             <guiname xml:lang="nl">Bevestigings email onderwerp</guiname>
             <guiname xml:lang="en">Confirmation email subject</guiname>
+			<guiname xml:lang="zh">邮件主题确认</guiname>
          </gui>       
          <editor>
             <positions>              
@@ -109,10 +118,12 @@
          <descriptions>           
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>        
          <gui>
             <guiname xml:lang="nl">Bevestigings email tekst</guiname>
             <guiname xml:lang="en">Confirmation email body</guiname>
+			<guiname xml:lang="zh">邮件主体确认</guiname>
          </gui>         
          <editor>
             <positions>              
@@ -130,10 +141,12 @@
          <descriptions>            
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>        
          <gui>
             <guiname xml:lang="nl">Afzender naam</guiname>
             <guiname xml:lang="en">Sender name</guiname>
+			<guiname xml:lang="zh">发送人</guiname>
          </gui>       
          <editor>
             <positions>              
@@ -151,10 +164,12 @@
          <descriptions>            
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>        
          <gui>
             <guiname xml:lang="nl">Afzender email</guiname>
             <guiname xml:lang="en">Sender email</guiname>
+			<guiname xml:lang="zh">发送邮件</guiname>
          </gui>       
          <editor>
             <positions>              
@@ -172,10 +187,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Bevestigings bericht</guiname>
 				<guiname xml:lang="en">Confirmation message</guiname>				
+				<guiname xml:lang="zh">确认信息</guiname>
 			</gui>
 			<editor>
 				<positions>

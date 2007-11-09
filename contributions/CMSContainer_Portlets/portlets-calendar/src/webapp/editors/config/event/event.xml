@@ -3,6 +3,7 @@
 <wizard-schema id="event">
 	<title xml:lang="nl">Evenement</title>
 	<title xml:lang="en">Event</title>
+	<title xml:lang="zh">事件</title>
 
    <action include="config/event/create_event.xml"/>
    <action include="config/event/delete_event.xml"/>

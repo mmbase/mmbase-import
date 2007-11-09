@@ -3,4 +3,6 @@
 <action type="delete">
 	<prompt xml:lang="nl">Weet u zeker dat u deze playlist wilt verwijderen ?</prompt>
 	<description xml:lang="nl">Klik hier om deze playlist te verwijderen.</description>
+	<prompt xml:lang="zh">您确定删除播放列表吗?</prompt>
+	<description xml:lang="zh">点击删除播放列表.</description>
 </action>

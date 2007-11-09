@@ -3,9 +3,11 @@
 <form-schema id="edit_pollchoice">
 	<title xml:lang="nl">Poll optie</title>
 	<title xml:lang="en">Poll option</title>
+	<title xml:lang="zh">投票选项</title>
 
 	<field dtrequired="false" ftype="text" name="answer" rows="3">
 		<prompt xml:lang="en">Answer</prompt>
 		<prompt xml:lang="nl">Antwoord</prompt>
+		<prompt xml:lang="zh">答案</prompt>
 	</field>
 </form-schema>
