@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.4 2007-11-09 14:28:22 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.5 2007-11-09 18:26:23 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -87,13 +87,16 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         return recipients;
     }
     private Map<String, String> properties;
+
+    private final MailHandler handler;
     /**
      * Public constructor. Set all data that is needed for this thread to run.
      */
-    public SMTPFetcher(MailHandler mh, java.net.Socket socket, Map<String, String> properties) {
-        super(mh);
+    public SMTPFetcher(java.net.Socket socket, Map<String, String> properties) {
+        super();
         this.socket = socket;
         this.properties = properties;
+        handler = getHandler();
     }
     protected Map<String, String> getProperties() {
         return properties;
@@ -178,7 +181,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
 
         if (uLine.startsWith("RSET")) {
             state = State.MAILFROM;
-            getHandler().clearMailboxes();
+            handler.clearMailboxes();
             writer.write("250 Spontanious amnesia has struck me, I forgot everything!\r\n");
             writer.flush();
             return;
@@ -234,7 +237,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 for (StringTokenizer st = new StringTokenizer(domains, ","); st.hasMoreTokens();) {
                     if (recipient.domain.toLowerCase().endsWith(st.nextToken().toLowerCase())) {
                         log.service("Will accept");
-                        MailHandler.MailBoxStatus status = getHandler().addMailbox(recipient.user);
+                        MailHandler.MailBoxStatus status = handler.addMailbox(recipient.user, recipient.domain);
                         if (status != MailHandler.MailBoxStatus.OK) {
                             log.service("Mail for " + recipient.user + " rejected: no mailbox");
                             writer.write("550 User: " + recipient.user + ": " + status + "\r\n");
@@ -263,7 +266,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
             } else if (state != State.RCPTTO) {
                 writer.write("503 Command not possible at this state\r\n");
                 writer.flush();
-            } else if (getHandler().size() == 0) {
+            } else if (handler.size() == 0) {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
             } else {
@@ -435,7 +438,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (MessagingException e) {
             log.error(e);
         }
-        MailHandler.MessageStatus s =  getHandler().handleMessage(message);
+        MailHandler.MessageStatus s =  handler.handleMessage(message);
         return s;
     }
 
