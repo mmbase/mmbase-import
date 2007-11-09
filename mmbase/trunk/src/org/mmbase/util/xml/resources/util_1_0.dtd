@@ -11,6 +11,6 @@
 <!ATTLIST property type NMTOKEN "string" >
 
 
-<!ELEMENT entry ( key, value ) >
+<!ELEMENT entry ( key, value? ) >
 <!ELEMENT key  ( #PCDATA ) >
 <!ELEMENT value  ( #PCDATA ) >
