@@ -27,15 +27,13 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
- * @todo
- * @todo
- * @javadoc
- * @javadoc
- * @javadoc
+ * This class contains the functionality to contain 'multipart xml', which can be used as the body
+ * of email nodes (of the type {@link EmailBuilder}.
+
  * @author Daniel Ockeloen
  *
  */
-public class MimeMessageGenerator {
+class MimeMessageGenerator {
 
     private static final Logger log = Logging.getLoggerInstance(MimeMessageGenerator.class);
 

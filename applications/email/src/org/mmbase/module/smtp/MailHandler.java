@@ -12,6 +12,7 @@ package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.*;
+import org.mmbase.util.xml.UtilReader;
 import java.util.*;
 import java.io.*;
 import javax.mail.*;
@@ -19,22 +20,71 @@ import javax.mail.internet.*;
 import org.mmbase.applications.email.SendMail;
 
 /**
-
- * @version $Id: MailHandler.java,v 1.6 2007-10-11 17:47:50 michiel Exp $
+ * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
+ * (You can use {@link Factory}).
+ * @version $Id: MailHandler.java,v 1.7 2007-11-09 10:14:47 michiel Exp $
  */
 public interface  MailHandler {
 
-    boolean handleMessage(Message message);
-    boolean addMailbox(String user);
+    enum MailBoxStatus {
+        OK,
+        NO_SUCH_USER,
+        NO_INBOX,
+        TOO_MANY_INBOXES,
+        UNDEFINED
+    }
+    enum MessageStatus {
+        DELIVERED,
+        ERRORNEOUS_DELIVERED,
+        ERROR,
+        IGNORED,
+        UNDEFINED
+    }
+
+    static class Address {
+        public final String user;
+        public final String domain;
+        Address(String u, String d) {
+            user = u; domain = d;
+        }
+    }
+    /**
+     *
+     */
+    MailBoxStatus addMailbox(String user);
+    MessageStatus handleMessage(Message message);
+
     void clearMailboxes();
     int size();
+    //List<Address> getRecipients();
 
-}
 
-class MailHandlerFactory {
-    static MailHandler instance;
+    static class Factory {
+        private static final Logger log = Logging.getLoggerInstance(Factory.class);
 
-    public static MailHandler getInstance() {
-        return instance;
+        static UtilReader.PropertiesMap  mailHandlers =
+            new UtilReader("mailhandlers.xml").getProperties();
+
+        public static MailHandler getInstance() {
+            List<MailHandler> mh = new ArrayList<MailHandler>();
+            List<Map.Entry<String, String>> classes = (List<Map.Entry<String, String>>) mailHandlers.get("classes");
+            for (Map.Entry<String, String> c : classes) {
+                String cn = c.getKey();
+                try {
+                    mh.add((MailHandler) Class.forName(cn).newInstance());
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            MailHandler instance;
+            if (mh.size() == 1) {
+                instance = mh.get(0);
+            } else {
+                instance = new ChainedMailHandler(mh.toArray(new MailHandler[0]));
+            }
+            log.info("MailHandler: " + instance);
+
+            return instance;
+        }
     }
 }

@@ -22,41 +22,55 @@ import javax.mail.*;
  * if so, handles it. Otherwise ignores the message.
  * This Handler can be put in front of the {@link ChainedMailedHandler}.
  *
- * @version $Id: VerifyEmailMailHandler.java,v 1.3 2007-10-24 13:40:23 michiel Exp $
+ * @version $Id: VerifyEmailMailHandler.java,v 1.4 2007-11-09 10:14:47 michiel Exp $
  */
 public class VerifyEmailMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(VerifyEmailMailHandler.class);
 
 
-    public boolean handleMessage(Message message) {
-        try {
-            log.service("Verifying " + message.getSubject());
-            Module emailModule = ContextProvider.getDefaultCloudContext().getModule("sendmail");
-            String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
-            String subject = message.getSubject();
-            Object[] objs = new MessageFormat("{1}" + subjectField).parse(subject, new ParsePosition(0));
-            if (objs == null) objs = new MessageFormat(subjectField).parse(subject, new ParsePosition(0));
-            if (objs != null) {
-                String key = (String) objs[0];
-                Cloud cloud = CloudMailHandler.getCloud();
-                return org.mmbase.datatypes.VerifyEmailProcessor.validate(cloud, key);
-            } else {
-                return false;
+    private boolean found = false;
+
+    public MessageStatus handleMessage(Message message) {
+        if (found) {
+            try {
+                log.service("Verifying " + message.getSubject());
+                Module emailModule = ContextProvider.getDefaultCloudContext().getModule("sendmail");
+                String subjectField  = emailModule.getProperty("emailbuilder.subjectfield");
+                String subject = message.getSubject();
+                Object[] objs = new MessageFormat("{1}" + subjectField).parse(subject, new ParsePosition(0));
+                if (objs == null) objs = new MessageFormat(subjectField).parse(subject, new ParsePosition(0));
+                if (objs != null) {
+                    String key = (String) objs[0];
+                    Cloud cloud = CloudMailHandler.getCloud();
+                    org.mmbase.datatypes.VerifyEmailProcessor.validate(cloud, key);
+                    return MessageStatus.DELIVERED;
+                } else {
+                    return MessageStatus.DELIVERED;
             }
-        } catch (Exception e) {
-            log.error(e);
+            } catch (Exception e) {
+                log.error(e);
+                return MessageStatus.ERROR;
+            }
+        } else {
+            return MessageStatus.IGNORED;
         }
-        return false;
     }
 
-    public boolean addMailbox(String user) {
-        return true;
+    public MailBoxStatus addMailbox(String user) {
+        for (String m : org.mmbase.datatypes.VerifyEmailProcessor.getVerificationReceivers()) {
+            if (m.startsWith(user + "@")) {
+                found = true;
+                return MailBoxStatus.OK;
+            }
+        }
+        return MailBoxStatus.NO_INBOX;
     }
+
     public void clearMailboxes() {
-        return;
+        found = false;
     }
     public int size() {
-        return 1;
+        return found ? 1 : 0;
     }
 
     public static void main(String[] argv) {

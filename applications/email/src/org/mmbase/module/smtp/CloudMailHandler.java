@@ -22,7 +22,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.1 2007-10-11 17:47:50 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.2 2007-11-09 10:14:47 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -42,7 +42,10 @@ public class CloudMailHandler implements MailHandler {
     }
 
     protected Map<String, String> getProperties() {
-        return org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail").getInitParameters();
+        Map<String, String> props = new HashMap<String, String>();
+        props.putAll(org.mmbase.module.core.MMBase.getMMBase().getModule("sendmail").getInitParameters());
+        props.putAll(org.mmbase.module.core.MMBase.getMMBase().getModule("smtp").getInitParameters());
+        return props;
     }
 
 
@@ -54,14 +57,14 @@ public class CloudMailHandler implements MailHandler {
 
 
 
-    protected void nodeSetHeader(Node node, String fieldName, Address[] values) {
+    protected void nodeSetHeader(Node node, String fieldName, javax.mail.Address[] values) {
         Field field = node.getNodeManager().getField(fieldName);
         long maxLength = ((org.mmbase.datatypes.StringDataType) field.getDataType()).getMaxLength();
         StringBuilder buf = new StringBuilder();
         if (values != null) {
             log.debug("Using " + values.length + " values");
             for (int i = 0 ; i < values.length; i++) {
-                Address value = values[i];
+                javax.mail.Address value = values[i];
                 if (buf.length() + value.toString().length() + 2 < maxLength) {
                     buf.append(value.toString());
                     if (i < values.length) {
@@ -115,12 +118,13 @@ public class CloudMailHandler implements MailHandler {
     }
 
 
-    public boolean handleMessage(Message message) {
+    public MessageStatus handleMessage(Message message) {
         Cloud cloud = getCloud();
         Map<String, String> properties = getProperties();
         NodeManager emailbuilder = cloud.getNodeManager(properties.get("emailbuilder"));
 
-
+        int deliverCount = 0;
+        int errorCount = 0;
         for (MailBox mailbox : mailboxes) {
             log.debug("Delivering to mailbox node " + mailbox.box.getNumber());
             Node email = emailbuilder.createNode();
@@ -138,39 +142,44 @@ public class CloudMailHandler implements MailHandler {
                     log.debug("Using headers " + headers);
                     nodeSetHeader(email, properties.get("emailbuilder.headersfield"), headers.toString());
                 } catch (MessagingException me) {
+                    errorCount++;
                     log.warn(me);
                     nodeSetHeader(email, properties.get("emailbuilder.headersfield"), headers.toString());
                 }
             }
             if (properties.containsKey("emailbuilder.tofield")) {
                 try {
-                    Address[] value = message.getRecipients(Message.RecipientType.TO);
+                    javax.mail.Address[] value = message.getRecipients(Message.RecipientType.TO);
                     nodeSetHeader(email, properties.get("emailbuilder.tofield"), value);
                 } catch (MessagingException e) {
+                    errorCount++;
                     log.service(e);
                 }
             }
             if (properties.containsKey("emailbuilder.ccfield")) {
                 try {
-                    Address[] value = message.getRecipients(Message.RecipientType.CC);
+                    javax.mail.Address[] value = message.getRecipients(Message.RecipientType.CC);
                     nodeSetHeader(email, properties.get("emailbuilder.ccfield"), value);
                 } catch (MessagingException e) {
+                    errorCount++;
                     log.service(e);
                 }
             }
             if (properties.containsKey("emailbuilder.bccfield")) {
                 try {
-                    Address[] value = message.getRecipients(Message.RecipientType.BCC);
+                    javax.mail.Address[] value = message.getRecipients(Message.RecipientType.BCC);
                     nodeSetHeader(email, properties.get("emailbuilder.bccfield"), value);
                 } catch (MessagingException e) {
+                    errorCount++;
                     log.service(e);
                 }
             }
             if (properties.containsKey("emailbuilder.fromfield")) {
                 try {
-                    Address[] value = message.getFrom();
+                    javax.mail.Address[] value = message.getFrom();
                     nodeSetHeader(email, properties.get("emailbuilder.fromfield"), value);
                 } catch (MessagingException e) {
+                    errorCount++;
                     log.service(e);
                 }
             }
@@ -180,6 +189,7 @@ public class CloudMailHandler implements MailHandler {
                     if (value == null) value = "(empty)";
                     nodeSetHeader(email, properties.get("emailbuilder.subjectfield"), value);
                 } catch (MessagingException e) {
+                    errorCount++;
                     log.service(e);
                 }
             }
@@ -191,6 +201,7 @@ public class CloudMailHandler implements MailHandler {
                     }
                     email.setIntValue(properties.get("emailbuilder.datefield"), (int)(d.getTime() / 1000));
                 } catch (MessagingException e) {
+                    errorCount++;
                     log.service(e);
                 }
             }
@@ -201,6 +212,7 @@ public class CloudMailHandler implements MailHandler {
                         nodeSetHeader(email, "mimetype", getMimeType(contentType));
                     }
                 } catch (MessagingException me) {
+                    errorCount++;
                     log.warn(me);
                 }
             }
@@ -215,6 +227,7 @@ public class CloudMailHandler implements MailHandler {
                     try {
                         email.commit();
                     } catch (Exception e) {
+                        errorCount++;
                         log.error(e);
                     }
                 } else {
@@ -228,10 +241,12 @@ public class CloudMailHandler implements MailHandler {
                             rel.commit();
                         }
                     } catch (Exception e) {
+                        errorCount++;
                         log.error("Exception while parsing attachments: " + e.getMessage(), e);
                     }
                 }
             } catch (Exception e) {
+                errorCount++;
                 log.warn(e.getMessage(), e);
                 try {
                     nodeSetHeader(email, properties.get("emailbuilder.bodyfield"), "" + message);
@@ -243,6 +258,7 @@ public class CloudMailHandler implements MailHandler {
             log.debug("Creating relation with mailbox " + mailbox);
             Relation rel = cloud.getNode(mailbox.box.getNumber()).createRelation(email, cloud.getRelationManager("related"));
             rel.commit();
+            deliverCount++;
 
             //TODO: send to this user if he wants to
             Node user = mailbox.user;
@@ -254,12 +270,16 @@ public class CloudMailHandler implements MailHandler {
                     sendmail.startModule();
                     sendmail.sendMail(mailadres, email);
                 } catch (Throwable e) {
+                    errorCount++;
                     log.warn("Exception in forward " + e.getMessage(), e);
-                    return false;
                 }
             }
         }
-        return true;
+        if (deliverCount > 0) {
+            return errorCount == 0 ? MessageStatus.DELIVERED : MessageStatus.ERRORNEOUS_DELIVERED;
+        } else {
+            return errorCount == 0 ? MessageStatus.IGNORED : MessageStatus.ERROR;
+        }
     }
 
 
@@ -454,14 +474,17 @@ public class CloudMailHandler implements MailHandler {
      * is defined in the config file for this module.
      * @return whether or not this succeeded
      */
-    public boolean addMailbox(String user) {
+    public MailBoxStatus addMailbox(String user) {
         Cloud cloud = getCloud();
         Map<String, String> properties = getProperties();
+        log.service("Checking mail fox for " + user + " " + properties);
+
         String usersbuilder = properties.get("usersbuilder");
         NodeManager manager = cloud.getNodeManager(usersbuilder);
         NodeList nodelist = manager.getList(properties.get("usersbuilder.accountfield") + " = '" + user + "'", null, null);
         if (nodelist.size() != 1) {
-            return false;
+            log.service("No such user");
+            return MailBoxStatus.NO_SUCH_USER;
         }
         Node usernode = nodelist.getNode(0);
         if (properties.containsKey("mailboxbuilder")) {
@@ -470,40 +493,42 @@ public class CloudMailHandler implements MailHandler {
             if (properties.containsKey("mailboxbuilder.where")) {
                 where = properties.get("mailboxbuilder.where");
             }
-            nodelist = cloud.getList(
-                "" + usernode.getNumber(),              //startnodes
-                usersbuilder + "," + mailboxbuilder,    //path
-                mailboxbuilder + ".number",             //fields
-                where,                                  //constraints
-                null,                                   //orderby
-                null,                                   //directions
-                null,                                   //searchdir
-                true                                    //distinct
-            );
-            if (nodelist.size() == 1) {
-                String number = nodelist.getNode(0).getStringValue(mailboxbuilder + ".number");
+            log.service("Finding mailbox of type " + mailboxbuilder + " for user " + usernode.getNumber());
+            NodeList mailboxes = cloud.getList("" + usernode.getNumber(),              //startnodes
+                                               usersbuilder + "," + mailboxbuilder,    //path
+                                               mailboxbuilder + ".number",             //fields
+                                               where,                                  //constraints
+                                               null,                                   //orderby
+                                               null,                                   //directions
+                                               null,                                   //searchdir
+                                               true                                    //distinct
+                                               );
+            if (mailboxes.size() == 1) {
+                String number = mailboxes.getNode(0).getStringValue(mailboxbuilder + ".number");
                 mailboxes.add(new MailBox(cloud.getNode(number), usernode));
-                return true;
-            } else if (nodelist.size() == 0) {
+                return MailBoxStatus.OK;
+            } else if (mailboxes.size() == 0) {
                 String notfoundaction = "bounce";
                 if (properties.containsKey("mailboxbuilder.notfound")) {
                     notfoundaction = properties.get("mailboxbuilder.notfound");
                 }
                 if ("bounce".equals(notfoundaction)) {
-                    return false;
+                    return MailBoxStatus.NO_INBOX;
                 }
                 /* this needs to be implemented
                 if ("create".equals(notfoundaction)) {
 
                 }
                 */
+                return MailBoxStatus.NO_INBOX;
             } else {
                 log.error("Too many mailboxes for user '" + user + "'");
-                return false;
+                return MailBoxStatus.TOO_MANY_INBOXES;
             }
         } else {
             mailboxes.add(new MailBox(usernode, usernode));
+            return MailBoxStatus.OK;
         }
-        return false;
+
     }
 }
