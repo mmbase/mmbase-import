@@ -15,13 +15,16 @@
 	<names>
 		<singular xml:lang="nl">workflowitem</singular>
 		<singular xml:lang="en">workflowitem</singular>
+		<singular xml:lang="zh">工作流条目</singular>
 		<plural xml:lang="nl">workflowitems</plural>
 		<plural xml:lang="en">workflowitems</plural>
+		<plural xml:lang="zh">工作流条目</plural>
 	</names>
 
 	<descriptions>
 		<description xml:lang="nl">Workflowitem van een content element</description>
 		<description xml:lang="en">Workflowitem for a content element</description>
+		<description xml:lang="zh">内容元素的工作条目</description>
 	</descriptions>
 
 	<properties>
@@ -32,10 +35,12 @@
 			<descriptions>
 				<description xml:lang="nl">Type</description>
 				<description xml:lang="en">Type</description>
+				<description xml:lang="zh">类型</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Type</guiname>
 				<guiname xml:lang="en">Type</guiname>
+				<guiname xml:lang="zh">类型</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -58,10 +63,12 @@
 			<descriptions>
 				<description xml:lang="nl">Status</description>
 				<description xml:lang="en">Status</description>
+				<description xml:lang="zh">状态</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Status</guiname>
 				<guiname xml:lang="en">Status</guiname>
+				<guiname xml:lang="zh">状态</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -85,10 +92,12 @@
 			<descriptions>
 				<description xml:lang="nl">Opmerking</description>
 				<description xml:lang="en">Remark</description>
+				<description xml:lang="zh">标注</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Opmerkingen</guiname>
 				<guiname xml:lang="en">Remark</guiname>
+				<guiname xml:lang="zh">标注</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -108,10 +117,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Aangemaakt</guiname>
 				<guiname xml:lang="en">Creationdate</guiname>
+				<guiname xml:lang="zh">创建时间</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -130,10 +141,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Gewijzigd</guiname>
 				<guiname xml:lang="en">Lastmodifieddate</guiname>
+				<guiname xml:lang="zh">最后修改时间</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -152,10 +165,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Aangemaakt door</guiname>
 				<guiname xml:lang="en">Creator</guiname>
+				<guiname xml:lang="zh">创建人</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -174,10 +189,12 @@
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Gewijzigd door</guiname>
 				<guiname xml:lang="en">Lastmodifier</guiname>
+				<guiname xml:lang="zh">最后修改人</guiname>
 			</gui>
 			<editor>
 				<positions>
