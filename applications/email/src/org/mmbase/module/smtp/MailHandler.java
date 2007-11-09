@@ -22,7 +22,7 @@ import org.mmbase.applications.email.SendMail;
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.7 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.8 2007-11-09 14:25:05 michiel Exp $
  */
 public interface  MailHandler {
 
@@ -30,6 +30,7 @@ public interface  MailHandler {
         OK,
         NO_SUCH_USER,
         NO_INBOX,
+        CANT_CREATE_INBOX,
         TOO_MANY_INBOXES,
         UNDEFINED
     }
@@ -38,6 +39,7 @@ public interface  MailHandler {
         ERRORNEOUS_DELIVERED,
         ERROR,
         IGNORED,
+        TOO_BIG,
         UNDEFINED
     }
 
