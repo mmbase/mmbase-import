@@ -3,6 +3,7 @@
 <wizard-schema id="gallery">
 	<title xml:lang="nl">Galerij</title>
 	<title xml:lang="en">Gallery</title>
+	<title xml:lang="zh">相册</title>
 
    <action include="config/gallery/create_gallery.xml"/>
    <action include="config/gallery/delete_gallery.xml"/>

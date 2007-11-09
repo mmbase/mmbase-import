@@ -20,9 +20,11 @@ extends="object" maintainer="mmbase.org" name="savedform" version="0">
       <!-- singular names per language as defined by ISO 639 -->
       <singular xml:lang="nl">Bewaarde formulier</singular>
       <singular xml:lang="en">Saved form</singular>
+	  <singular xml:lang="zh"></singular>
       <!-- plural names per language as defined by ISO 639 -->
       <plural xml:lang="nl">Bewaarde formulieren</plural>
       <plural xml:lang="en">Saved forms</plural>
+	  <plural xml:lang="zh">保存表单</plural>
    </names>
    <!-- Descriptions are meant to provide some additional clarification to an object.
  They are useful for GUI editors to provide helptexts.
@@ -30,6 +32,7 @@ extends="object" maintainer="mmbase.org" name="savedform" version="0">
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
+	  <description xml:lang="zh"></description>
    </descriptions>
    <!-- description per language as defined by ISO 639 -->
     <properties>     
@@ -44,11 +47,13 @@ extends="object" maintainer="mmbase.org" name="savedform" version="0">
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Teller</guiname>
             <guiname xml:lang="en">Count</guiname>
+			<guiname xml:lang="zh">数量</guiname>
          </gui>
          <!-- editor related -->
          <editor>

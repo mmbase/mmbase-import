@@ -3,4 +3,6 @@
 <action type="delete">
 	<prompt xml:lang="nl">Weet u zeker dat u deze formfield wilt verwijderen ?</prompt>
 	<description xml:lang="nl">Klik hier om deze formfield te verwijderen.</description>
+	<prompt xml:lang="zh">你确定删除此表单吗?</prompt>
+	<description xml:lang="zh">点击删除表单.</description>
 </action>
