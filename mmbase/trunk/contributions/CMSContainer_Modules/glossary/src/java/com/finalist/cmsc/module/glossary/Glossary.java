@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Glossary {
+    public static final String LINKPATTERN =  "<a href=\"#\" title=\"%s\" id=\"_glossary_%s\" onclick=\"return false;\">%s</a>";
     public static final String GLOSSARY = "glossary";
     private final Map<String, String> TERMS = new HashMap<String, String>();
     private static Glossary glossary = null;
@@ -29,7 +30,7 @@ public class Glossary {
                 int end = matcher.end();
 
                 if (!isInFormatedFragment(material, word, start)) {
-                    String highlight = String.format("<a href=\"#\" title=\"%s\" id=\"_glossary_%s\" onclick=\"return false;\">%s</a>", TERMS.get(word), word, word);
+                    String highlight = String.format(LINKPATTERN, TERMS.get(word), word, word);
                     material = (new StringBuilder()).append(material.substring(0, start)).append(highlight).append(material.substring(end, material.length())).toString();
                     break;
                 }
@@ -40,7 +41,7 @@ public class Glossary {
     }
 
     private boolean isInFormatedFragment(String material, String keywords, int keywordStartPosition) {
-        Pattern pattern = Pattern.compile(String.format("<a[^<]*%s[^>]*>", keywords));
+        Pattern pattern = Pattern.compile(String.format("<[abh][^</]*%s[^>]*>", keywords));
         Matcher matcher = pattern.matcher(material);
 
         while (matcher.find()) {
