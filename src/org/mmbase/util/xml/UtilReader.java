@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.25 2006-07-15 10:52:05 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.25.2.1 2007-11-09 17:26:39 michiel Exp $
  */
 public class UtilReader {
 
@@ -216,7 +216,7 @@ public class UtilReader {
                                         value = reader.getElementValue(keyorvalue);
                                     }
                                 }
-                                if (key != null && value != null) {
+                                if (key != null) {
                                     entryList.add(new Entry(key, value));
                                 }
                             }
