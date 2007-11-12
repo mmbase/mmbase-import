@@ -22,11 +22,14 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.2 2007-11-12 18:00:58 michiel Exp $
+ * @version $Id: Sender.java,v 1.3 2007-11-12 18:34:20 michiel Exp $
  **/
 public abstract class Sender  {
+    private static final Logger log = Logging.getLoggerInstance(Sender.class);
 
-    private static Sender sender = new org.mmbase.sms.cmtelecom.CMTelecomSender();
+    private static Sender sender = null;
+    private static Map<String, String> config = new UtilReader("sms_sender.xml", new Runnable() { public void run() {sender = null;} }).getProperties();
+
     /**
      * Sends an SMS.
      */
@@ -38,6 +41,15 @@ public abstract class Sender  {
 
 
     public static Sender getInstance() {
+        if (sender == null) {
+            try {
+                Class clazz = Class.forName(config.get("class"));
+                sender = (Sender) clazz.newInstance();
+                log.info("Using " + sender + " to send SMS");
+            } catch (Exception e) {
+                log.fatal(e.getMessage(), e);
+            }
+        }
         return sender;
     }
 

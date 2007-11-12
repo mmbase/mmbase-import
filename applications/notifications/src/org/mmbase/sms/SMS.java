@@ -9,8 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.sms;
 
+
+/**
+ * Representation of one SMS.
+ */
 public interface SMS {
+    /**
+     * Phone number (origin or destination, depending on context).
+     */
     public String getMobile();
+
+    /**
+     * The operator which was used to receive or sent the message(.
+     */
     public int getOperator();
+    /**
+     * The actual text.
+     */
     public String getMessage();
 }
