@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.4 2007-11-12 15:54:53 michiel Exp $
+ * @version $Id: Receiver.java,v 1.5 2007-11-12 16:28:38 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -30,26 +30,7 @@ public  class Receiver implements Runnable {
 
     private static Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>();
 
-    /**
-     * Representation of a received SMS message
-     */
-    public static class SMS {
-        public final String mobile;
-        public final int operator;
-        public final String message;
-        public SMS(String mob, int o, String mes) {
-            this.mobile = mob;
-            this.operator = o;
-            this.message  = mes;
-        }
-        public String toString() {
-            return mobile + ":" + message;
-        }
-
-    }
-
     private static BlockingQueue<SMS> queue = new LinkedBlockingQueue<SMS>();
-
 
 
     protected static synchronized boolean offer(String config, String mobile, int operator, String message) {
@@ -59,7 +40,7 @@ public  class Receiver implements Runnable {
             threads.put(config, thread);
             log.info("Started " + thread);
         }
-        SMS sms = new SMS(mobile, operator, message);
+        SMS sms = new BasicSMS(mobile, operator, message);
         boolean ok = queue.offer(sms);
         log.service("Offering " + sms + " to handlers of " + config + " " + queue.hashCode() + " " +  queue + " " + ok);
         return ok;
@@ -91,7 +72,6 @@ public  class Receiver implements Runnable {
                 }
             }
         }
-
     }
 
     /**
