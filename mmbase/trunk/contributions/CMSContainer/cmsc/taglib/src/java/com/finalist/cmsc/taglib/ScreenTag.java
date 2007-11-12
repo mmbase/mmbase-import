@@ -76,7 +76,7 @@ public class ScreenTag extends CmscTag {
 	}
 
 	protected PortletFragment getPortlet(String id) {
-        Iterator<Fragment> portlets = screenFragment.getChildFragments().iterator();
+        Iterator<PortletFragment> portlets = screenFragment.getChildFragments().iterator();
 		while(portlets.hasNext()) {
 			Fragment fragment = portlets.next();
             if (fragment instanceof PortletFragment) {
@@ -89,7 +89,7 @@ public class ScreenTag extends CmscTag {
 		return null;
 	}
     
-    public Collection<Fragment> getAllPortlets() {
+    public Collection<PortletFragment> getAllPortlets() {
         return screenFragment.getChildFragments();
     }
 }

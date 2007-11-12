@@ -21,7 +21,7 @@ import com.finalist.cmsc.portalImpl.PortalConstants;
 public class ScreenFragment extends AbstractFragment {
 	private static Log log = LogFactory.getLog(ScreenFragment.class);
     
-    private List<Fragment> children = new ArrayList<Fragment>();
+    private List<PortletFragment> children = new ArrayList<PortletFragment>();
 	
 	private Page page;
     private Layout layout;
@@ -46,7 +46,7 @@ public class ScreenFragment extends AbstractFragment {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         setupRequest(request);
 	    
-	    Iterator<Fragment> portlets = this.getChildFragments().iterator();
+	    Iterator<PortletFragment> portlets = this.getChildFragments().iterator();
         while(portlets.hasNext()) {
             Fragment portlet = portlets.next();
             // let the Portlet do it's thing
@@ -85,17 +85,17 @@ public class ScreenFragment extends AbstractFragment {
 		return this.getId();
 	}
 
-   public Collection<Fragment> getChildFragments() {
+   public Collection<PortletFragment> getChildFragments() {
         return children;
     }
 
-    public void addChild(Fragment child) {
+    public void addChild(PortletFragment child) {
         children.add(child);
     }
 
     public Fragment getFragment(String id) {
         Fragment fragment = null;
-        Iterator<Fragment> iterator = this.getChildFragments().iterator();
+        Iterator<PortletFragment> iterator = this.getChildFragments().iterator();
         while (iterator.hasNext()) {
             Fragment tmp = iterator.next();
             if (tmp != null) {
