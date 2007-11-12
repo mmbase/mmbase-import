@@ -17,9 +17,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * The core of this class is {@link #offer(String, int, Message)} which offers an SMS message to a
+ * queue. This queue is emptied and offered to {@link Handler}s which are configured in &lt;config
+ * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.3 2007-11-05 14:35:12 michiel Exp $
+ * @version $Id: Receiver.java,v 1.4 2007-11-12 15:54:53 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -27,6 +30,9 @@ public  class Receiver implements Runnable {
 
     private static Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>();
 
+    /**
+     * Representation of a received SMS message
+     */
     public static class SMS {
         public final String mobile;
         public final int operator;
@@ -45,6 +51,7 @@ public  class Receiver implements Runnable {
     private static BlockingQueue<SMS> queue = new LinkedBlockingQueue<SMS>();
 
 
+
     protected static synchronized boolean offer(String config, String mobile, int operator, String message) {
         Thread thread = threads.get(config);
         if (thread == null) {
@@ -59,13 +66,16 @@ public  class Receiver implements Runnable {
 
     }
 
+    /**
+     * Offers a SMS message for 'handling' by the SMS Handlers.
+     */
     public static synchronized boolean offer(String mobile, int operator, String message) {
         return offer("sms_handlers.xml", mobile, operator, message);
     }
 
     private List<Handler> handlers = new ArrayList<Handler>();
 
-    public Receiver(String configFile) {
+    protected Receiver(String configFile) {
         Map<String, Object> config = new UtilReader(configFile).getProperties();
         log.info("Found " + config);
         Collection<Map.Entry<String, String>> col = (Collection<Map.Entry<String, String>>) config.get("handlers");
@@ -84,7 +94,10 @@ public  class Receiver implements Runnable {
 
     }
 
-
+    /**
+     * Looks in the queue. If something found, creates a cloud (using class security) and adds SMS
+     * objects to the {@link Handler}s.
+     */
     public void run() {
         MAIN:
         while (true) {
@@ -109,7 +122,5 @@ public  class Receiver implements Runnable {
         log.info("End of Receiver Thread. Still in queue: " + queue);
 
     }
-
-
 
 }
