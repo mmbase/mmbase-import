@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.2 2007-11-12 18:00:58 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.3 2007-11-12 18:06:56 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
@@ -57,7 +57,8 @@ public  class CMTelecomSender extends Sender {
         }
         {
             AttributesImpl a = new AttributesImpl();
-            a.addAttribute("", "OPERATOR", "", "CDATA", "" + s.getOperator());
+            int op = s.getOperator();
+            a.addAttribute("", "OPERATOR", "", "CDATA", "" + (op != -1 ? "" + op : config.get("operator")));
             w.startElement("", "TO", "", a);
             w.characters(s.getMobile());
             w.endElement("TO");
