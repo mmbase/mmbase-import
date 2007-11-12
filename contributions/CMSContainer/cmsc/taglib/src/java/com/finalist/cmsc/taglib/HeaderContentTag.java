@@ -23,7 +23,6 @@ import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
 import com.finalist.cmsc.portalImpl.headerresource.LinkHeaderResource;
 import com.finalist.cmsc.portalImpl.headerresource.MetaHeaderResource;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.aggregation.Fragment;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 
 
@@ -74,13 +73,10 @@ public class HeaderContentTag  extends CmscTag {
             if (container != null) {
                 Iterator<PortletFragment> portlets = container.getAllPortlets().iterator();
                 while(portlets.hasNext()) {
-                    Fragment fragment = portlets.next();
-                    if (fragment instanceof PortletFragment) {
-                        PortletFragment pf = (PortletFragment) fragment;
-                        Collection<HeaderResource> portletResources = pf.getHeaderResources();
-                        if(portletResources != null) {
-                        	headerResources.addAll(portletResources);
-                        }
+                    PortletFragment pf = portlets.next();
+                    Collection<HeaderResource> portletResources = pf.getHeaderResources();
+                    if(portletResources != null) {
+                    	headerResources.addAll(portletResources);
                     }
                 }
             }
