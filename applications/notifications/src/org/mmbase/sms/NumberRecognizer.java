@@ -17,10 +17,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Recognizes and canonicalizes phone numbers. Currently only supports dutch mobile phone numbers.
+ * Recognizes and canonicalizes phone numbers. Currently only supports dutch mobile phone
+ * numbers. This processor can be used as a set-processor on mobile number fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NumberRecognizer.java,v 1.3 2007-11-05 14:35:12 michiel Exp $
+ * @version $Id: NumberRecognizer.java,v 1.4 2007-11-12 15:54:53 michiel Exp $
  **/
 public  class NumberRecognizer implements Processor {
 
