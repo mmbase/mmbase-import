@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Notifications</title>
     <date>2007-11-12</date>
-    <edition>$Id: notifications.xml,v 1.1 2007-11-12 15:24:41 michiel Exp $</edition>
+    <edition>$Id: notifications.xml,v 1.2 2007-11-12 16:17:26 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -43,7 +43,7 @@
     </para>
     <para>
       The only thing that is required is that those two unspecified object types contain certain
-      function to request some information.
+      functions to request some information.
     </para>
     <figure>
       <title>Notifications Example Cloud</title>
@@ -57,9 +57,89 @@
       <title>Dates</title>
       <para>
         The object about which notifications are to be sent, must be linked to an object of type
-        'notifyable' using the role 'related', and it nmost provide a function 'dates', which
-        provides a list of dates at which a notification must be sent.
+        'notifyable' using the role 'related', and it must provide a function 'dates', which
+        provides a list of dates at which a notification must be sent. This function must accept
+        parameters 'since' and 'until', to limit the list. This can e.g. be done like so in the
+        builder XML under concern:
       </para>
+      <programlisting format="linespecific" id="builderxml"><![CDATA[
+      ....
+    </field>
+
+  </fieldlist>
+  <functionlist>
+    <function key="dates">
+      <class>nl.teleacnot.mmbase.functions.ProgrammeDates</class>
+    </function>
+  </functionlist>
+
+</builder>
+]]></programlisting>
+      <para>
+        Where the mentioned class can look like so:
+      </para>
+      <programlisting format="linespecific" id="builderxml"><![CDATA[
+      package nl.teleacnot.mmbase.functions;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.DynamicDate;
+import java.util.*;
+
+/**
+ * Function wich determines for a certain t_programme node the dates for wich notifications must be
+ * issued.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: notifications.xml,v 1.2 2007-11-12 16:17:26 michiel Exp $
+ **/
+public class ProgrammeDates  {
+
+    protected Node node;
+    protected Date since;
+    protected Date until;
+    {
+        try {
+            since = DynamicDate.getInstance("yesterday");
+            until = DynamicDate.getInstance("today + 100 year");
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            // could not happen
+        }
+    }
+
+    public void setNode(Node n) {
+        node = n;
+    }
+
+    public void setSince(Date s) {
+        since = s;
+    }
+
+    public void setUntil(Date u) {
+        until = u;
+    }
+
+    public List<Date> dates() {
+        List<Date> result = new ArrayList<Date>();
+        Cloud cloud = node.getCloud();
+        NodeManager eps = cloud.getNodeManager("t_episode");
+        NodeManager trans = cloud.getNodeManager("t_transmission");
+        NodeQuery nq = Queries.createRelatedNodesQuery(node, eps, "posrel", "destination");
+        RelationStep rstep = nq.addRelationStep(trans);
+        nq.setNodeStep(rstep.getNext());
+        Queries.addConstraint(nq, Queries.createConstraint(nq, "begin", Queries.OPERATOR_BETWEEN, since, until, false));
+
+        NodeIterator i = trans.getList(nq).nodeIterator();
+        while (i.hasNext()) {
+            Node transmission = i.nextNode();
+            result.add(transmission.getDateValue("begin"));
+        }
+        return result;
+
+    }
+
+}
+]]></programlisting>
     </section>
     <section>
       <title>Contact information</title>
