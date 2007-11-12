@@ -11,6 +11,9 @@
     <property name="userPassword"></property>
     <property name="from"></property>
     <property name="operator"></property>
+
+    <property name="adminEmail">Michiel.Meeuwissen@gmail.com</property>
     -->
+
   </properties>
 </util>

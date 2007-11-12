@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.4 2007-11-12 14:49:06 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.5 2007-11-12 16:02:48 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -184,9 +184,12 @@ public class SenderJob  extends AbstractCronJob {
             a.addAttribute("", "PASSWORD", "", "CDATA", config.get("userPassword"));
             w.emptyElement("", "USER",  "", a);
         }
-        w.startElement("ADMIN_EMAIL");
-        w.characters("michiel.meeuwissen@gmail.com");
-        w.endElement("ADMIN_EMAIL");
+        String adminEmail = config.get("adminEmail");
+        if (adminEmail != null && ! adminEmail.equals("")) {
+            w.startElement("ADMIN_EMAIL");
+            w.characters(adminEmail);
+            w.endElement("ADMIN_EMAIL");
+        }
         w.startElement("TARIFF");
         w.characters("0");
         w.endElement("TARIFF");
