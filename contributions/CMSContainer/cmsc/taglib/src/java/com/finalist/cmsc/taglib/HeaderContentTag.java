@@ -72,7 +72,7 @@ public class HeaderContentTag  extends CmscTag {
             
             ScreenTag container = (ScreenTag) findAncestorWithClass(this, ScreenTag.class);
             if (container != null) {
-                Iterator<Fragment> portlets = container.getAllPortlets().iterator();
+                Iterator<PortletFragment> portlets = container.getAllPortlets().iterator();
                 while(portlets.hasNext()) {
                     Fragment fragment = portlets.next();
                     if (fragment instanceof PortletFragment) {
