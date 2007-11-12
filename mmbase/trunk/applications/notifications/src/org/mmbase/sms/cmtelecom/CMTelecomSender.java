@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.3 2007-11-12 18:06:56 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.4 2007-11-12 18:34:20 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
@@ -68,7 +68,7 @@ public  class CMTelecomSender extends Sender {
 
     protected void send(Appender body)  throws SAXException, IOException {
         String u = config.get("url");
-        log.debug("Using '" + u + "'" + config);
+        log.service("Connecting to '" + u + "' " + config);
         URL url = new URL(config.get("url"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setConnectTimeout(10000);
