@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.3 2007-11-05 14:35:12 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.4 2007-11-12 14:49:06 michiel Exp $
  **/
 public class SenderJob  extends AbstractCronJob {
 
@@ -123,6 +123,7 @@ public class SenderJob  extends AbstractCronJob {
             log.debug("Using '" + u + "'");
             URL url = new URL(config.get("url"));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setConnectTimeout(10000);
             con.setRequestMethod("POST");
             con.setDoOutput(true);
             OutputStream out = con.getOutputStream();
