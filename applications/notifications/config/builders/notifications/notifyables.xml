@@ -20,7 +20,7 @@
     </field>
 
     <field name="message">
-      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="64000" />
       </datatype>
     </field>
