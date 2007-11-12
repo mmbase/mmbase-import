@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: SenderJob.java,v 1.1 2007-11-12 17:44:06 michiel Exp $
+ * @version $Id: SenderJob.java,v 1.2 2007-11-12 18:00:58 michiel Exp $
  **/
 public class SenderJob  implements Runnable {
 
@@ -30,11 +30,15 @@ public class SenderJob  implements Runnable {
 
 
     public void run() {
-        Sender s = Sender.getInstance();
-        if (s instanceof CMTelecomSender) {
-            ((CMTelecomSender) s).trigger();
-        } else {
-            log.debug("No CMTelecom configured for SMS Sending");
+        try {
+            Sender s = Sender.getInstance();
+            if (s instanceof CMTelecomSender) {
+                ((CMTelecomSender) s).trigger();
+            } else {
+                log.debug("No CMTelecom configured for SMS Sending");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 
