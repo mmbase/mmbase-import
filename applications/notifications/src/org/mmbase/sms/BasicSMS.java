@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.sms;
 
+/**
+ * This basic SMS implementation simply explicitely stores the information in member variables.
+ */
 public class BasicSMS implements SMS {
     private final String mobile;
     private final int operator;
