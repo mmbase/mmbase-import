@@ -18,6 +18,9 @@ public class BasicSMS implements SMS {
         this.operator = o;
         this.message  = mes;
     }
+    public BasicSMS(String mob, String mes) {
+        this(mob, -1, mes);
+    }
     public String toString() {
         return mobile + ":" + message;
     }
