@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.5 2007-11-12 16:28:38 michiel Exp $
+ * @version $Id: Receiver.java,v 1.6 2007-11-12 18:21:01 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -90,7 +90,7 @@ public  class Receiver implements Runnable {
                     boolean handled = handler.handle(cloud, sms);
                     if (handled) continue MAIN;
                 }
-                log.warn("Could not handle SMS " + sms);
+                log.warn("Could not handle SMS " + sms + "None of " + handlers + " took it");
             } catch (InterruptedException ie) {
                 log.warn(ie);
                 threads.clear();
