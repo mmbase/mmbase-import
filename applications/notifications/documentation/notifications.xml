@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article class="specification">
+  <articleinfo>
+    <title>Notifications</title>
+    <date>2007-11-12</date>
+    <edition>$Id: notifications.xml,v 1.1 2007-11-12 15:24:41 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <section>
+    <title>Introduction</title>
+    <para>
+      The MMBase 'notifications' component provides basic functionality to implement a notification
+      mechanism using MMBase objects. That means that you can make any object 'notifyable' by
+      linking a 'notifyables' object to it. Website visitors can then subscribe to those notifyables
+      and receive notifications if something happens with the notifyable. In practice this is for
+      example used to send Short Message Service text message a certain time before the commence of
+      certain TV program.
+    </para>
+    <para>
+      So besides the MMBase code to model 'notifications' this component also contains the
+      interfaces to send (and receive) SMS messages. An implemention is provided to communicate with
+      'CM-Telecom'.
+    </para>
+  </section>
+  <section>
+    <title>Notifyables</title>
+    <para>
+      This component provides only one builder ('notifyables') and one relation type
+      ('notifications'). It does not define what objects are related to users nor what object types
+      can be related to a notifyable.
+    </para>
+    <para>
+      The only thing that is required is that those two unspecified object types contain certain
+      function to request some information.
+    </para>
+    <figure>
+      <title>Notifications Example Cloud</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="objects.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <section>
+      <title>Dates</title>
+      <para>
+        The object about which notifications are to be sent, must be linked to an object of type
+        'notifyable' using the role 'related', and it nmost provide a function 'dates', which
+        provides a list of dates at which a notification must be sent.
+      </para>
+    </section>
+    <section>
+      <title>Contact information</title>
+      <para>
+        Users create a relation of the type 'notifications' between their user object and the
+        notifyable object if they want to receive notifications. Necessary contact information is
+        request from the user object using the functions 'phone', for the mobile phone number to
+        which SMS text must be sent and 'email' which must return an email-address.
+      </para>
+    </section>
+  </section>
+
+  <section>
+    <title>SMS Senders and Handlers</title>
+    <para>
+    </para>
+  </section>
+  <section>
+    <title>Mobile number validation</title>
+    <para>
+      This component does not itself provide the functionality to fill in the phone number of
+      users. It should however be done, and the SMS-functionality present in this component can be
+      used to implement the 'validation' protocol which should normally be present.
+    </para>
+  </section>
+
+</article>
+
