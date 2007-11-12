@@ -397,6 +397,34 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>
+				find a page with this urlfragement. 
+				Searches in children and parent children of the current page.
+			</description>
+			<name>urlfragment</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				find a page which has a portletdefinition with this name.
+				Searches in children and parent children of the current page.
+			</description>
+			<name>portletdefinition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+        <attribute>
+            <name>defaultpage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>window</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+		<attribute>
 			<description>JSP variable name to put URL in.</description>
 			<name>var</name>
 			<required>false</required>

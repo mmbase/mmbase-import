@@ -104,7 +104,9 @@ public class Page extends NodeBean implements Comparable<Page> {
         }
         return -1;
     }
-
+    public Map<String,Integer> getPortletsWithNames(){
+    	return portlets;
+    }
     public Collection<Integer> getPortlets() {
         return portlets.values();
     }
