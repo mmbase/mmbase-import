@@ -17,11 +17,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A notification implementation which sends using the Mobile2You SMS-gateway. This is implemented
+ * A notification implementation which sends using CMTelecom SMS-gateway. This is implemented
  * by offering it to the (static) queue of {@link SenderJob}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomNotification.java,v 1.2 2007-10-26 15:34:36 michiel Exp $
+ * @version $Id: CMTelecomNotification.java,v 1.3 2007-11-12 16:02:48 michiel Exp $
  **/
 public  class CMTelecomNotification extends Notification {
 
