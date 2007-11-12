@@ -8,7 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.notifications;
-import org.mmbase.notifications.cmtelecom.CMTelecomNotification;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
@@ -20,11 +19,11 @@ import org.mmbase.util.logging.Logging;
  * Unused, so untested, at the moment.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitProcessor.java,v 1.2 2007-10-26 15:53:52 michiel Exp $
+ * @version $Id: CommitProcessor.java,v 1.3 2007-11-12 18:00:58 michiel Exp $
  **/
 public class CommitProcessor  implements org.mmbase.datatypes.processors.CommitProcessor {
     public void commit(Node node, Field field) {
-        if (node.isNew() && CMTelecomNotification.class.getName().equals(node.getStringValue(field.getName()))) {
+        if (node.isNew() && SMSNotification.class.getName().equals(node.getStringValue(field.getName()))) {
             if (node.getIntValue("status") == 1) {
                 node.setIntValue("status", 0); // people must confirm by SMS.
             }

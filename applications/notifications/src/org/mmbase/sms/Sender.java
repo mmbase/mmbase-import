@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.1 2007-11-12 17:44:06 michiel Exp $
+ * @version $Id: Sender.java,v 1.2 2007-11-12 18:00:58 michiel Exp $
  **/
 public abstract class Sender  {
 
@@ -38,7 +38,10 @@ public abstract class Sender  {
 
 
     public static Sender getInstance() {
-        return null;
+        return sender;
     }
+
+
+
 
 }

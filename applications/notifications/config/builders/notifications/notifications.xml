@@ -20,12 +20,8 @@
         <enumeration enforce="oncreate">
           <entry value="org.mmbase.notifications.EmailNotification"                 xml:lang="nl" display="email" />
           <entry value="org.mmbase.notifications.EmailNotification"                 xml:lang="en" display="email" />
-          <!--
-          <entry value="org.mmbase.notifications.mobile2you.Mobile2YouNotification" xml:lang="nl" display="sms"   />
-          <entry value="org.mmbase.notifications.mobile2you.Mobile2YouNotification" xml:lang="en" display="sms"   />
-          -->
-          <entry value="org.mmbase.notifications.cmtelecom.CMTelecomNotification" xml:lang="nl" display="sms"   />
-          <entry value="org.mmbase.notifications.cmtelecom.CMTelecomNotification" xml:lang="en" display="sms"   />
+          <entry value="org.mmbase.notifications.SMSNotification"                   xml:lang="nl" display="sms"   />
+          <entry value="org.mmbase.notifications.SMSNotification"                   xml:lang="en" display="sms"   />
         </enumeration>
           <!-- Set new nodes to status 'unconfirmed' initially -->
           <!--

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.1 2007-11-12 17:44:06 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.2 2007-11-12 18:00:58 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
@@ -38,7 +38,7 @@ public  class CMTelecomSender extends Sender {
     private Map<String, String> config = new UtilReader("sms_sender.xml").getProperties();
 
     protected interface Appender {
-        void append(XmlWriter w);
+        void append(XmlWriter w) throws SAXException;
     }
 
     public void add(SMS s, XmlWriter w) throws SAXException {
@@ -67,7 +67,7 @@ public  class CMTelecomSender extends Sender {
 
     protected void send(Appender body)  throws SAXException, IOException {
         String u = config.get("url");
-        log.debug("Using '" + u + "'");
+        log.debug("Using '" + u + "'" + config);
         URL url = new URL(config.get("url"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setConnectTimeout(10000);
@@ -152,9 +152,9 @@ public  class CMTelecomSender extends Sender {
 
     }
 
-    void trigger() {
+    void trigger() throws SAXException, IOException {
         send(new Appender() {
-                public void append(XmlWriter w) {
+                public void append(XmlWriter w) throws SAXException {
                     int drain = queue.size();
                     for (int i = 0; i < drain; i++) {
                         SMS sms = queue.poll();
@@ -164,16 +164,21 @@ public  class CMTelecomSender extends Sender {
             });
     }
     public boolean send(final SMS sms) {
-        send(new Appender() {
-                public void append(XmlWriter w) {
-                    add(sms, w);
-                }
-            });
+        try {
+            send(new Appender() {
+                    public void append(XmlWriter w) throws SAXException {
+                        add(sms, w);
+                    }
+                });
+            return true;
+        }  catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
 
-        return true;
     }
     public boolean offer(SMS sms) {
-        queue.offer(sms);
+        return queue.offer(sms);
     }
 
 
