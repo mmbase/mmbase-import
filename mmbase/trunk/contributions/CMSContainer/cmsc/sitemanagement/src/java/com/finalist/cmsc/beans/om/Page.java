@@ -11,9 +11,6 @@ package com.finalist.cmsc.beans.om;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.beans.NodeBean;
-
-
 /**
  * @author Wouter Heijke
  */
@@ -27,7 +24,7 @@ public class Page extends NavigationItem {
     private Map<String,Integer> portlets = new HashMap<String,Integer>();
     private int layout;
     private List<Integer> stylesheet = new ArrayList<Integer>();
-    private Map<String,String> pageImages = new HashMap<String,String>();
+    private Map<String,String> pageImages = new LinkedHashMap<String,String>();
 
     public boolean isInmenu() {
 		return inmenu;
@@ -77,7 +74,9 @@ public class Page extends NavigationItem {
         }
         return -1;
     }
-    
+    public Map<String,Integer> getPortletsWithNames(){
+    	return portlets;
+    }
     public Collection<Integer> getPortlets() {
         return portlets.values();
     }
@@ -99,6 +98,19 @@ public class Page extends NavigationItem {
 	public void setExternalurl(String externalurl) {
 		this.externalurl = externalurl;
 	}
+
+    public Set<Map.Entry<String, String>> getPageImages() {
+        return pageImages.entrySet();
+    }
+
+    public List<String> getImages() {
+        List<String> images = new ArrayList<String>();
+        for (String image : pageImages.values()) {
+            images.add(image);
+        }
+        return images;
+    }
+
 
 
 }

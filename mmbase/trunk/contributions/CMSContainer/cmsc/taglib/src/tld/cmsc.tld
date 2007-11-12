@@ -187,7 +187,19 @@
 		<attribute>
 			<description>The name of the position of the image (as given in namedrel builder)</description>
 			<name>name</name>
-			<required>true</required>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+        <attribute>
+			<description>The method of inherit images from parent page</description>
+			<name>inherit</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+			<description>Randomly get an image from all images of a page</description>
+			<name>random</name>
+			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
@@ -384,6 +396,34 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<description>
+				find a page with this urlfragement. 
+				Searches in children and parent children of the current page.
+			</description>
+			<name>urlfragment</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				find a page which has a portletdefinition with this name.
+				Searches in children and parent children of the current page.
+			</description>
+			<name>portletdefinition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+        <attribute>
+            <name>defaultpage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>window</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
 		<attribute>
 			<description>JSP variable name to put URL in.</description>
 			<name>var</name>
