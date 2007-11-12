@@ -20,6 +20,10 @@
     </field>
 
     <field name="message">
+      <descriptions>
+        <description xml:lang="nl">
+        </description>
+      </descriptions>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="64000" />
       </datatype>
@@ -27,8 +31,8 @@
 
     <field name="offset">
       <datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
         <default value="-900" /> <!-- quarter of an hour beforehand -->
+        <required value="true" />
         <maxExclusive value="0" />
         <enumeration>
           <entry
@@ -46,8 +50,8 @@
 
     <field name="status">
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
         <default value="1" />
+        <required value="true" />
         <enumeration>
 
           <entry value="0"      xml:lang="nl" display="inactief" />
