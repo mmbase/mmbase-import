@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.419 2007-11-09 10:09:55 sdeboer Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.420 2007-11-13 14:12:26 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -587,9 +587,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public int insert(String owner, MMObjectNode node) {
         int n = mmb.getStorageManager().create(node);
-        if (n >= 0) {
-            node.isNew = false;
-        }
 
         node.useAliases();
 
@@ -710,7 +707,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     result.add(builder);
                 }
             }
-            descendants = result;
+            if (mmb.getState()) {
+                // for some reason it gets a bit confused if this is done earlier
+                // I don't quite know why
+                descendants = result;
+            }
+            return result;
         }
         return descendants;
     }
@@ -1605,6 +1607,8 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         // end old
         return rtn;
     }
+
+
     /**
      * Like getValue, but without the 'old' code (short_ html_ etc). This is for
      * protected use, when you are sure this is not used, and you can
@@ -1949,14 +1953,14 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
 
     /**
-     * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.  
-     * 
+     * @deprecated This method will be finalized in MMBase 1.9 and removed afterwards.
+     *
      * You can implement a new smart-path for your builders, with a class like {@link
      * org.mmbase.module.core.SmartPathFunction} in stead, and configure it in your builder xml as
      * the implementation for the 'smartpath' function. This makes extensions less dependent on
      * precise arguments (e.g. 'documentRoot' is not relevant for 'resourceloader' implementation),
      * and makes this function pluggable on all builders. See also  MMB-1449.
-     * 
+     *
      */
     public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
         if (log.isDebugEnabled()) {
@@ -2546,6 +2550,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setStoragePosition(2);
             def.getDataType().setRequired(true);
+            def.setNotNull(true);
             for (CoreField field : f) {
                 int pos = field.getStoragePosition();
                 if (pos > 1) field.setStoragePosition(pos + 1);
@@ -2638,7 +2643,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     public Map getInitParameters(String contextPath) {
         Map map = new HashMap();
         map.putAll(getInitParameters());
-        
+
         try {
             Map contextMap = ApplicationContextReader.getProperties(contextPath);
             if (!contextMap.isEmpty()) {
