@@ -8,8 +8,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.HttpUtil;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -18,6 +16,12 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.mmbase.ResourcesUtil;
+import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.search.Search;
+import com.finalist.util.http.HttpUtil;
 
 @SuppressWarnings("serial")
 public class EgemExportAction extends EgemSearchAction {
