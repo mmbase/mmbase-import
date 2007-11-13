@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.72 2007-11-01 09:31:47 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.73 2007-11-13 16:52:45 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -139,7 +139,12 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             if (log.isDebugEnabled()) {
                 log.debug("node is null, number attribute: '" + n + "'");
             }
-            if (number != Attribute.NULL) { // if (! n.length() == 0) {   // if empty string should mean 'not present'. Not sure what is most conventient
+            // if (! n.length() == 0) {
+            // if empty string should mean 'not present'. Not sure what is most conventient
+            // We don't change this, becuase it was always like follows.
+            // It would not be backwards compatible.
+
+            if (number != Attribute.NULL) {
                 // explicity indicated which node (by number or alias)
                 Cloud c = getCloudVar();
                 if (! c.hasNode(n) || ! c.mayRead(n)) {
