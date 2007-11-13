@@ -4,7 +4,24 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="egemmail.title">
-  <script src="../repository/search.js"type="text/javascript" ></script>
+  <script src="../repository/search.js"type="text/javascript"></script>
+  <script type="text/javascript">  
+    function doForward(to) {
+      var elem = document.getElementById("exportForm");
+      if(elem != null) {
+        elem.forward.value = to;
+        elem.submit();
+      }
+    }
+    
+    function doChangePage(newPage) {
+      var elem = document.getElementById('exportForm');
+      if(elem != null) {
+        elem.page.value = newPage;
+        doForward('search');
+      }
+    }
+  </script>
 </cmscedit:head>
 <body onload="refreshChannels()">
     <div class="tabs">
@@ -19,8 +36,8 @@
 <mm:cloud>
 	<div class="editor">
 		<div class="body">
-			<html:form action="/editors/egemmail/EgemSearchAction">
-				<label><fmt:message key="egemmail.field.title" />:</label>
+            <html:form action="/editors/egemmail/EgemSearchAction">
+                <label><fmt:message key="egemmail.field.title" />:</label>
 				<html:text property="title"/><br/>
 				<label><fmt:message key="egemmail.field.keywords" />:</label>
 				<html:text property="keywords"/><br/>
@@ -35,69 +52,80 @@
 	 					</c:if>
 					</mm:listnodes>
 				</html:select><br/>
-				
-				<c:set var="submittext"><fmt:message key="egemmail.button.search" /></c:set>
-				<input type="submit" value="${submittext}"/>
+				<html:checkbox property="limitToLastWeek"><fmt:message key="egemmail.field.lastWeek" /></html:checkbox><br/>
+				<html:checkbox property="selectResults"><fmt:message key="egemmail.field.selectResults" /></html:checkbox><br/>
+				<br/>
+				<html:submit><fmt:message key="egemmail.button.search" /></html:submit>
 			</html:form>
 
-			<mm:present referid="results">
-			
-				<c:set var="resultsPerPage" value="50"/>
-				<c:set var="offset" value="${param.offset}"/>
-				<c:set var="listSize">${fn:length(results)}</c:set>
-				<c:set var="extraparams" value="&title=${param.title}&keywords=${param.keywords}&author=${param.author}"/>
-
+            <mm:present referid="results">
+            <html:form action="/editors/egemmail/EgemExportAction" styleId="exportForm">
+                <html:hidden property="title" />
+                <html:hidden property="keywords" />
+                <html:hidden property="author" />
+                <html:hidden property="page" />
+                <html:hidden property="forward" />
 				<mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
-
-				  <mm:first>
-				      <%@include file="../pages.jsp" %>
-				      <form action="EgemExportAction.do" name="exportForm">
-			          <table>
-			            <thead>
-			               <tr>
-			                  <th></th>
-			                  <th><fmt:message key="egemmail.field.title" /></th>
-			                  <th><fmt:message key="egemmail.field.type" /></th>
-			                  <th><fmt:message key="egemmail.field.author" /></th>
-			                  <th><fmt:message key="egemmail.field.number" /></th>
-			               </tr>
-		                </thead>
-		            </mm:first>
-		            <tr <mm:even inverse="true">class="swap"</mm:even>>
-						<mm:field name="number" jspvar="number" write="false"/>
-		            	<td>
-		            		<input type="checkbox" name="export_${number}"/>
-		            	</td>
-		            	<td>
-				            <mm:field jspvar="title" write="false" name="title" />
-							<c:if test="${fn:length(title) > 50}">
-								<c:set var="title">${fn:substring(title,0,49)}...</c:set>
-							</c:if>
-							${title}
-		            	</td>
-		            	<td><mm:nodeinfo type="guitype"/></td>
-     	               <td width="50" style="white-space: nowrap;">
-			               <mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
-		               	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
-		               		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
-		               		<c:if test="${lastmodifierFull != ''}"><c:set var="lastmodifier" value="${lastmodifierFull}"/></c:if>
-		               	</mm:listnodes>
-		               	${lastmodifier}
-		               </td>
-		            	<td>${number}</td>
-			    	</tr>
-			    	<mm:last>
-			    		</table>
-				      <%@include file="../pages.jsp" %>
-                        &nbsp;&nbsp;&nbsp;<input type="checkbox" onChange="selectAll(this.checked, 'exportForm', 'export_');" value="on" name="selectall" />
-                        <br/>
-						<c:set var="submittext"><fmt:message key="egemmail.button.export" /></c:set>
-						<input type="submit" value="${submittext}"/>
-			    		</form>
-			    	</mm:last>
-			    </mm:list>
-			</mm:present>
-			
+				    <mm:first>
+				        <egem:paging offset="${offset}" resultsPerPage="${resultsPerPage}" totalNumberOfResults="${totalNumberOfResults}" />
+				        <table>
+				            <thead>
+				             <tr>
+				                 <th></th>
+				                 <th><fmt:message key="egemmail.field.title" /></th>
+				                 <th><fmt:message key="egemmail.field.type" /></th>
+				                 <th><fmt:message key="egemmail.field.author" /></th>
+				                 <th><fmt:message key="egemmail.field.number" /></th>
+				             </tr>
+				         </thead>
+				     </mm:first>
+				     <tbody>
+				         <tr <mm:even inverse="true">class="swap"</mm:even>>
+				             <mm:field name="number" jspvar="number" write="false"/>
+                             <c:choose>
+                                <c:when test="${EgemExportForm.selectedNodes[number]}">
+				                    <td><input type="checkbox" name="export_${number}" checked="checked"/></td>
+				                </c:when>
+				                <c:otherwise>
+				                    <td><input type="checkbox" name="export_${number}"/></td>
+				                </c:otherwise>
+				                </c:choose>
+				             <td>
+				                <mm:field jspvar="title" write="false" name="title" />
+				                <c:if test="${fn:length(title) > 50}">
+				                    <c:set var="title">${fn:substring(title,0,49)}...</c:set>
+				                </c:if>
+				                    ${title}
+				                </td>
+				                <td><mm:nodeinfo type="guitype"/></td>
+				                <td width="50" style="white-space: nowrap;">
+				                    <mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
+				                    <mm:listnodes type="user" constraints="username = '${lastmodifier}'">
+				                        <c:set var="lastmodifierFull">
+				                            <mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" />
+				                        </c:set>
+				                        <c:if test="${lastmodifierFull != ''}">
+				                            <c:set var="lastmodifier" value="${lastmodifierFull}"/>
+				                        </c:if>
+				                    </mm:listnodes>
+				                    ${lastmodifier}
+				                </td>
+				                <td>${number}</td>
+				         </tr>
+				     </tbody>
+				     <mm:last>
+				            <tfoot>
+				                <tr>
+				                    <td><input type="checkbox" onChange="selectAll(this.checked, 'exportForm', 'export_');" value="on" name="selectall"/></td>
+				                </tr>
+				            </tfoot>
+				        </table>
+                        <egem:paging offset="${offset}" resultsPerPage="${resultsPerPage}" totalNumberOfResults="${totalNumberOfResults}" />				        
+				        <html:submit onclick="doForward('export');"><fmt:message key="egemmail.button.export" /></html:submit>
+				     </mm:last>
+				 </mm:list>
+            </html:form>
+            </mm:present>
 		</div>
 		<div class="side_block_end"></div>
 	</div>	
