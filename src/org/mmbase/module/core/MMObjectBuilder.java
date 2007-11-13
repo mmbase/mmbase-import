@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.12 2007-11-09 10:13:04 sdeboer Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.13 2007-11-13 14:10:42 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -359,7 +359,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
 
     protected NodeFunction smartPathFunction;
-    { 
+    {
         final int id = super.hashCode(); // a unique id for every builder instance. (tableName not yet initalized)
         try {
             BeanFunction bf = BeanFunction.getFunction(SmartPathFunction.class, "smartpath", new BeanFunction.Producer() {
@@ -629,9 +629,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      */
     public int insert(String owner, MMObjectNode node) {
         int n = mmb.getStorageManager().create(node);
-        if (n >= 0) {
-            node.isNew = false;
-        }
 
         node.useAliases();
 
@@ -753,7 +750,12 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
                     result.add(builder);
                 }
             }
-            descendants = result;
+            if (mmb.getState()) {
+                // for some reason it gets a bit confused if this is done earlier
+                // I don't quite know why
+                descendants = result;
+            }
+            return result;
         }
         return descendants;
     }
@@ -2681,6 +2683,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             // here, we should set the DBPos to 2 and adapt those of the others fields
             def.setStoragePosition(2);
             def.getDataType().setRequired(true);
+            def.setNotNull(true);
             i = f.iterator();
             while (i.hasNext()) {
                 CoreField field = (CoreField) i.next();
@@ -2753,7 +2756,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         return properties;
     }
 
-    
+
     /**
      * Override properties through application context
      * @param contextPath path in application context where properties are located
@@ -2780,7 +2783,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         Map map = new HashMap();
         loadInitParameters();
         map.putAll(getInitParameters());
-        
+
         try {
             Map contextMap = ApplicationContextReader.getProperties(contextPath);
             if (!contextMap.isEmpty()) {
@@ -2791,7 +2794,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
         return map;
     }
-    
+
     /**
      * Set a single builder property
      * The propertie will not be saved.
@@ -3051,7 +3054,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
          if (event.getRelationDestinationType().equals(getTableName())) {
              eventBackwardsCompatible(event.getMachine(), event.getRelationDestinationNumber(), NodeEvent.TYPE_RELATION_CHANGE);
          }
-         
+
          //update the cache
          Integer changedNode = new Integer((event.getRelationDestinationType().equals(getTableName()) ? event.getRelationSourceNumber() : event.getRelationDestinationNumber()));
          MMObjectNode.delRelationsCache(changedNode);
