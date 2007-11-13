@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.7 2007-06-26 14:19:56 michiel Exp $
+ * @version $Id: Images.java,v 1.8 2007-11-13 16:42:07 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -227,7 +227,7 @@ public class Images extends AbstractImages {
         return icacheNode;
     }
 
-
+    private static final org.mmbase.util.transformers.UrlEscaper URLESCAPER= new org.mmbase.util.transformers.UrlEscaper();
     /**
      * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
@@ -241,6 +241,7 @@ public class Images extends AbstractImages {
         String ses = getSession(args, num);
         StringBuilder servlet = new StringBuilder();
         HttpServletRequest req = args.get(Parameter.REQUEST);
+        boolean urlConvert = false;
         if (req != null) {
             ServletContext sx = MMBaseContext.getServletContext();
             if (sx != null && "true".equals(sx.getInitParameter("mmbase.taglib.url.makerelative"))) {
@@ -248,17 +249,28 @@ public class Images extends AbstractImages {
             } else {
                 servlet.append(getServletPath());
             }
+            if (sx != null) {
+                urlConvert = "true".equals(sx.getInitParameter("mmbase.taglib.image.urlconvert"));
+            }
         } else {
             servlet.append(getServletPath());
         }
         servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "");
         String template = (String) args.get("template");
         if (template == null) template = ImageCaches.GUI_IMAGETEMPLATE;
-        MMObjectNode icache = getCachedNode(node, template);
-        if (icache == null) {
-            throw new RuntimeException("No icache found!");
+
+        String imageThumb;
+        MMObjectNode icache;
+        if (urlConvert) {
+            icache = null;
+            imageThumb = servlet.toString() + node.getNumber() + "+" + URLESCAPER.transform(template);
+        } else {
+            icache = getCachedNode(node, template);
+            if (icache == null) {
+                throw new RuntimeException("No icache found!");
+            }
+            imageThumb = servlet.toString() + (icache != null ? "" + icache.getNumber() : "");
         }
-        String imageThumb = servlet.toString() + (icache != null ? "" + icache.getNumber() : "");
 
         servlet.append(node.getNumber());
         String image;
@@ -272,7 +284,16 @@ public class Images extends AbstractImages {
         String heightAndWidth;
         ImageCaches imageCaches = (ImageCaches) mmb.getMMObject("icaches");
         if (imageCaches != null && imageCaches.storesDimension()) {
-            Dimension dim = imageCaches.getDimension(icache);
+            Dimension dim;
+            if (icache != null) {
+                dim = imageCaches.getDimension(icache);
+            } else {
+                List ar = new ArrayList();
+                if (template != null) {
+                    ar.add(template);
+                }
+                dim = (Dimension) node.getFunctionValue("dimension", ar);
+            }
             StringBuilder buf = new StringBuilder();
             if(dim.getHeight() > 0) {
                 buf.append("height=\"").append(dim.getHeight()).append("\" ");
