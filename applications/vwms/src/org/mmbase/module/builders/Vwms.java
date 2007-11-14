@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.21 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: Vwms.java,v 1.22 2007-11-14 16:33:06 michiel Exp $
  */
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
@@ -228,7 +228,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      */
     public boolean sendMail(String who,String to,String subject, String msg) {
 
-        SendMailInterface sendmail=(SendMailInterface)Module.getModule("sendmail");
+        SendMail sendmail=(SendMail)Module.getModule("sendmail");
         if (sendmail==null) {
             log.warn("sendmail module not active, cannot send email");
             return false;
