@@ -1,7 +1,6 @@
 package com.finalist.tree.html;
 
 import java.io.PrintWriter;
-import java.io.Writer;
 
 import org.mmbase.bridge.Node;
 
