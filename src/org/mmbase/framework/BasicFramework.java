@@ -35,7 +35,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.61 2007-08-06 16:58:56 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.62 2007-11-14 16:09:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -182,7 +182,9 @@ public class BasicFramework implements Framework {
             state.render(renderer);
             setBlockParametersForRender(state, blockParameters);
             renderer.render(blockParameters, frameworkParameters, w, windowState);
-
+        } catch (FrameworkException fe) {
+            Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), renderer.getUri().toString(), 500, fe);
+            error.render(blockParameters, frameworkParameters, w, windowState);
         } finally {
             state.endBlock();
         }
