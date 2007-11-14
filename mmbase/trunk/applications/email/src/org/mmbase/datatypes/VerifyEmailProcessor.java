@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.3 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.4 2007-11-14 16:25:32 michiel Exp $
 
  */
 
@@ -300,7 +300,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
             emailNode = cloud.getNode(emailNode.getNumber());
             try {
                 Function mailFunction = emailNode.getFunction("startmail");
-                mailFunction.getFunctionValue(null);
+                mailFunction.getFunctionValue((Parameters) null);
             } catch (NotFoundException nfe) {
                 log.debug("No function 'startmail', assuming that the mail builder mailed on commit");
             }
