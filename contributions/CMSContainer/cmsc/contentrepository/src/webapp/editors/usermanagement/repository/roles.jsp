@@ -49,9 +49,15 @@
     if (!expand.equals("true")) {
     	info.collapse(channel);
     }
-    
+
+   ContentRolesRenderer chr = new ContentRolesRenderer(request, cloud, form);    
+
+   RepositoryTrashTreeModel trashModel = new RepositoryTrashTreeModel(cloud, true);
+   ServerHTMLTree tTrash = new ServerHTMLTree(trashModel, chr, info, "javascript");
+   tTrash.setImgBaseUrl("../gfx/");
+   tTrash.render(out);   
+
 	RepositoryTreeModel model = new RepositoryTreeModel(cloud, true);
-	ContentRolesRenderer chr = new ContentRolesRenderer(request, cloud, form);
 	ServerHTMLTree t = new ServerHTMLTree(model, chr, info, "javascript");
 	t.setImgBaseUrl("../gfx/");
 	t.render(out);
@@ -60,8 +66,8 @@
 </p>
 </div>
 <br>
-<html:submit style="width:90"><fmt:message key="contentroles.submit"/></html:submit>
 <html:cancel style="width:90"><fmt:message key="contentroles.cancel"/></html:cancel>
+<html:submit style="width:90"><fmt:message key="contentroles.submit"/></html:submit>
 </div>
 <div class="side_block_end"></div>
 </div>	

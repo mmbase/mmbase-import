@@ -1,6 +1,7 @@
 package com.finalist.tree.html;
 
 import java.io.PrintWriter;
+import java.io.Writer;
 
 import org.mmbase.bridge.Node;
 
@@ -64,7 +65,22 @@ protected boolean showChildren(Object node) {
 protected boolean isActive(Object node) {
       return info.isOpen(node);
    }
-
+   
+   @Override
+   public void render(Writer out) {
+       PrintWriter pw = new PrintWriter(out);
+       getScript(pw);
+       Object rootNode = getModel().getRoot();
+       boolean isExpanded = showChildren(rootNode);
+       
+       if (getModel().getChildCount(rootNode) != 0) {
+           renderNode(rootNode, 0, pw, "node", "<nobr>", getImage(false, true, isExpanded), true);
+       } else {
+           renderNode(rootNode, 0, pw, "node", "<nobr>", getImage(true, false, false), true);
+       }
+       pw.flush();
+    }   
+   
    @Override
 protected void renderChild(int level, PrintWriter out, String base, String preHtml, int count, int i, Object child) {
       String img = getImage(getModel().isLeaf(child), (i == count - 1), info.isOpen(child));
