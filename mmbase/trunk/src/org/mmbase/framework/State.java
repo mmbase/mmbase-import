@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.13 2007-09-14 06:51:32 michiel Exp $
+ * @version $Id: State.java,v 1.14 2007-11-14 16:09:15 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -193,7 +193,7 @@ public class State {
         setType(renderer != null ? renderer.getType() : Renderer.Type.NOT);
 
         this.frameworkParameters = frameworkParameters;
-        log.info("Start rendering for " + frameworkParameters);
+        log.debug("Start rendering for " + frameworkParameters);
 
         id = generateId(count);
 
