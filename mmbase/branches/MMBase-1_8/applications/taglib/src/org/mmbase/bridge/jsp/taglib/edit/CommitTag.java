@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * serves as a baseclass for e.g. CancelTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: CommitTag.java,v 1.18 2006-04-29 17:15:20 michiel Exp $
+ * @version $Id: CommitTag.java,v 1.18.2.1 2007-11-14 14:26:07 michiel Exp $
  */
 
 public class CommitTag extends CloudReferrerTag {
@@ -36,14 +36,25 @@ public class CommitTag extends CloudReferrerTag {
     }
 
     protected void doAction(Transaction t) {
-
+        log.debug("Committing " + t);
         t.commit();
     }
 
-    public int doStartTag() throws JspTagException{
+    /**
+     * @since MMBase-1.8.5
+     */
+    protected Transaction getTransactionVar() throws JspTagException {
         // find the parent transaction:
-        TransactionTag tt = (TransactionTag)  findParentTag(TransactionTag.class, (String) transaction.getValue(this), true);
-        Transaction trans = (Transaction) tt.getCloudVar();
+        TransactionTag tt = (TransactionTag)  findParentTag(TransactionTag.class, transaction.getString(this), false);
+        if (tt != null) return (Transaction) tt.getCloudVar();
+        Transaction t = (Transaction) pageContext.getAttribute(TransactionTag.KEY, TransactionTag.SCOPE);
+        if (t != null) return t;
+        throw new JspTagException("Could not find parent transaction provider");
+    }
+
+
+    public int doStartTag() throws JspTagException{
+        Transaction trans = getTransactionVar();
         doAction(trans);
         return SKIP_BODY;
     }
