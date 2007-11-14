@@ -76,15 +76,25 @@
 			</div>
 				
 			<ul class="shortcuts">
+            
+            <mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
+               <mm:field name="number" jspvar="trashNumber" vartype="Integer">
+               
+                  <cmsc:rights nodeNumber="<%=trashNumber.intValue()%>" var="rolename"/>
+                  <c:if test="${rolename eq 'webmaster'}">
+                     <li class="trashbin">
+                        <a href="<mm:url page="../recyclebin/index.jsp"/>" target="content">
+                           <fmt:message key="selector.recyclebin" />
+                        </a>
+                        (<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
+                     </li>
+                  </c:if>
+                  
+               </mm:field>
+            </mm:node>
+         
 				<mm:hasrank minvalue="administrator">
-				<li class="trashbin">
-					<a href="<mm:url page="../recyclebin/index.jsp"/>" target="content">
-						<fmt:message key="selector.recyclebin" />
-						<mm:node number="<%= RepositoryUtil.ALIAS_TRASH %>">
-							(<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
-						</mm:node>
-					</a>
-				</li>
+
 				</mm:hasrank>
         			<li class="images"><a href="<mm:url page="../resources/ImageInitAction.do"/>" target="content"><fmt:message key="selector.images" /></a></li>
 				<li class="attachements"><a href="<mm:url page="../resources/AttachmentInitAction.do"/>" target="content"><fmt:message key="selector.attachments" /></a></li>
