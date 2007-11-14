@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.edit;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 import java.io.IOException;
 
@@ -29,18 +30,23 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.27 2007-10-01 15:26:22 michiel Exp $
+ * @version $Id: TransactionTag.java,v 1.28 2007-11-14 14:29:12 michiel Exp $
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionTag.class);
+    public static final String KEY = "org.mmbase.transaction";
+    public static final int SCOPE = PageContext.REQUEST_SCOPE;
+
+
     protected Transaction transaction;
     protected Attribute commit = Attribute.NULL;
     protected Attribute name   = Attribute.NULL;
     protected String jspvar = null;
 
     protected Object prevCloud;
+    protected Object prevTransaction;
 
     public void setCommitonclose(String c) throws JspTagException {
         commit = getAttribute(c);
@@ -107,10 +113,12 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             }
         }
         prevCloud = pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        prevTransaction = pageContext.getAttribute(TransactionTag.KEY, TransactionTag.SCOPE);
         if (prevCloud != null) {
             log.debug("Found previous cloud " + prevCloud);
        }
         pageContext.setAttribute(CloudTag.KEY, transaction, CloudTag. SCOPE);
+        pageContext.setAttribute(TransactionTag.KEY, transaction, TransactionTag. SCOPE);
 
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, transaction);
@@ -130,8 +138,10 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             }
         }
         pageContext.setAttribute(CloudTag.KEY, prevCloud, CloudTag.SCOPE);
+        pageContext.setAttribute(TransactionTag.KEY, prevTransaction, TransactionTag.SCOPE);
         transaction = null;
         prevCloud = null;
+        prevTransaction = null;
         return super.doEndTag();
     }
     public int doAfterBody() throws JspTagException {
