@@ -93,10 +93,7 @@
                </mm:field>
             </mm:node>
          
-				<mm:hasrank minvalue="administrator">
-
-				</mm:hasrank>
-        			<li class="images"><a href="<mm:url page="../resources/ImageInitAction.do"/>" target="content"><fmt:message key="selector.images" /></a></li>
+        		<li class="images"><a href="<mm:url page="../resources/ImageInitAction.do"/>" target="content"><fmt:message key="selector.images" /></a></li>
 				<li class="attachements"><a href="<mm:url page="../resources/AttachmentInitAction.do"/>" target="content"><fmt:message key="selector.attachments" /></a></li>
 				<li class="urls"><a href="<mm:url page="../resources/UrlInitAction.do"/>" target="content"><fmt:message key="selector.urls" /></a></li>
 			</ul>
