@@ -26,7 +26,7 @@ import javax.servlet.jsp.PageContext;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.6.2.3 2007-09-05 12:22:06 michiel Exp $
+ * @version $Id: FormTag.java,v 1.6.2.4 2007-11-14 14:23:57 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -34,7 +34,7 @@ public class FormTag extends TransactionTag implements Writer {
     private static final Logger log = Logging.getLoggerInstance(FormTag.class);
 
     public static final String KEY = "org.mmbase.bridge.jsp.taglib.form";
-    public static final int SCOPE = PageContext.REQUEST_SCOPE;
+    public static final int SCOPE  = PageContext.REQUEST_SCOPE;
 
     public static final int MODE_HTML_FORM       = 0;
     public static final int MODE_URL             = 1;
@@ -123,23 +123,6 @@ public class FormTag extends TransactionTag implements Writer {
     public int doEndTag() throws JspTagException {
         pageContext.setAttribute(KEY, previous, SCOPE);
         previous = null;
-        try {
-            if (! transaction.isCanceled() && ! transaction.isCommitted()) {
-                if (commit.getBoolean(this, getDefaultCommit())) {
-                    transaction.commit();
-                } else {
-                    transaction.cancel();
-                }
-            }
-        } catch (Throwable t) {
-            try {
-                // should not happen, but if it happens, don't fail the complete page, this probably is
-                // an editor!
-                pageContext.getOut().write(t.getMessage());
-            } catch (java.io.IOException ioe) {
-                throw new TaglibException(ioe);
-            }
-        }
         switch(m) {
         case MODE_HTML_FORM:
             try {

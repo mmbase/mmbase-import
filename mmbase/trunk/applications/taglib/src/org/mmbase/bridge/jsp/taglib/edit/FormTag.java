@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.13 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: FormTag.java,v 1.14 2007-11-14 14:24:43 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -95,7 +95,7 @@ public class FormTag extends TransactionTag implements Writer {
         Url u = new Url(this, page.getString(this), Url.getComponent(this));
         u.setAction();
         String url = u.toString();
-            
+
         switch(m) {
         case MODE_URL:
             helper.setValue(url);
@@ -106,7 +106,7 @@ public class FormTag extends TransactionTag implements Writer {
             try {
                 pageContext.getOut().write("<form " + (id != null ? "id=\"" + id + "\" " : "") +
                                            "action=\"" + url + "\" method=\"post\" enctype=\"multipart/form-data\" class=\"mm_form" +
-                                           ("".equals(c) ? "" : " " + c) + 
+                                           ("".equals(c) ? "" : " " + c) +
                                            "\" >");
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
@@ -120,23 +120,6 @@ public class FormTag extends TransactionTag implements Writer {
     public int doEndTag() throws JspTagException {
         pageContext.setAttribute(KEY, previous, SCOPE);
         previous = null;
-        try {
-            if (! transaction.isCanceled() && ! transaction.isCommitted()) {
-                if (commit.getBoolean(this, getDefaultCommit())) {
-                    transaction.commit();
-                } else {
-                    transaction.cancel();
-                }
-            }
-        } catch (Throwable t) {
-            try {
-                // should not happen, but if it happens, don't fail the complete page, this probably is
-                // an editor!
-                pageContext.getOut().write(t.getMessage());
-            } catch (java.io.IOException ioe) {
-                throw new TaglibException(ioe);
-            }
-        }
         switch(m) {
         case MODE_HTML_FORM:
             try {
