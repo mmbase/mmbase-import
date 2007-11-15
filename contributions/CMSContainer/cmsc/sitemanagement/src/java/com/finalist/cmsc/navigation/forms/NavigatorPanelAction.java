@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
+import net.sf.mmapps.commons.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +43,9 @@ public class NavigatorPanelAction extends MMBaseAction {
             String webappuri = HttpUtil.getWebappUri(request, secure);
             pathofpage = response.encodeURL(webappuri + path);
         }
-
+		String fresh=request.getParameter("fresh");
+		if(!StringUtil.isEmpty(fresh))
+			request.setAttribute("fresh",fresh);
         String page = request.getParameter("page");
         request.setAttribute("toolbar", "toolbar.jsp");
         request.setAttribute("nodeId",nodeId);

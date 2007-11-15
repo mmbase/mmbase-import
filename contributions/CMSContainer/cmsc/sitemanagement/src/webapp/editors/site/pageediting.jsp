@@ -1,12 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page language="java" contentType="text/html;charset=utf-8" import="com.finalist.tree.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link href="../css/toolbar.css" rel="stylesheet" type="text/css">
-</head>
 <script type="text/javascript">
     function preview() {
         var contentLocation = this.frames["pcontent"].location.href;
@@ -35,12 +31,19 @@
             }
         }
     }
+
+		function reload(){
+			preview();
+			<c:if test="${not empty requestScope.fresh}">
+				parent.frames['pages'].location.reload();
+			</c:if>
+		}
 </script>
 
 <c:set var="str">${requestScope.toolbar}?number=${requestScope.nodeId}&pagepath=${requestScope.pathofpage}</c:set>
 <frameset rows="35,*" framespacing="0" border="0">
     <frame frameborder="0" src="${str}" name="toolbar" scrolling="no"/>
-    <frame frameborder="0" src="${requestScope.pathofpage}" onload="preview()" name="pcontent"/>
+	    <frame frameborder="0" src="${requestScope.pathofpage}" onload="reload()" name="pcontent"/>
 </frameset>
 
 </html>
