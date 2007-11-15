@@ -316,6 +316,10 @@ public class Authentication extends org.mmbase.security.Authentication {
                                                                               PARAMETER_PASSWORD,
                                                                               Parameter.REQUEST,
                                                                               Parameter.RESPONSE};
+
+    private static final Parameter[]  REINCARNATE_PARAMS = new Parameter[] {PARAMETER_USERNAME,
+                                                                            Parameter.CLOUD};
+
     private static final Parameter[]  DEFAULT_PARAMS = new Parameter[] { Parameter.REQUEST, Parameter.RESPONSE};
 
     private static final Parameter[]  ANONYMOUS_PARAMS = new Parameter[] {new Parameter.Wrapper(PARAMETERS_ANONYMOUS),
@@ -333,6 +337,8 @@ public class Authentication extends org.mmbase.security.Authentication {
             parameters = new Parameters(NAME_PASSWORD_PARAMS);
         } else if ("login".equals(application)) {
             parameters = new Parameters(DEFAULT_PARAMS);
+        } else if ("reincarnate".equals(application)) {
+            parameters = new Parameters(REINCARNATE_PARAMS);
         } else {
             parameters = new Parameters(DEFAULT_PARAMS);
         }
@@ -355,14 +361,14 @@ public class Authentication extends org.mmbase.security.Authentication {
         case METHOD_ASIS:
             return new String[] {"anonymous", "login", "class"};
         case METHOD_HTTP:
-            return new String[] {"name/password"};
+            return new String[] {"name/password", "reincarnate"};
         case METHOD_DELEGATE:
         case METHOD_SESSIONDELEGATE:
-            return new String[] {"login", "name/password"}; // redirect page
+            return new String[] {"login", "name/password", "reincarnate"}; // redirect page
         case METHOD_LOGINPAGE:
-            return new String[] {"name/password", "login"};
+            return new String[] {"name/password", "login", "reincarnate"};
         default:
-            return new String[] {"name/password", "login", "class"};
+            return new String[] {"name/password", "login", "class", "reincarnate"};
         }
     }
 

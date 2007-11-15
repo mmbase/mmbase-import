@@ -180,6 +180,7 @@
         <guiname xml:lang="eo">Lando</guiname>
       </gui>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="false" />
         <pattern value="NL|BE|AW|AN|SR|BG|FR|CH|RO" />
         <enumeration enforce="encreate">
           <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"

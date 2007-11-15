@@ -2,8 +2,10 @@
 <!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module>
   <status>active</status>
-  <class>nl.didactor.mail.ExtendedJMSendMail</class>
+  <class>org.mmbase.applications.email.SendMail</class>
   <properties>
+
+
     <!-- for SendMail: -->
     <property name="mailhost">${sendmail.smarthost}</property>
     <!-- for JMSendMail (j2ee way). Can also use mailhost, then
@@ -20,6 +22,19 @@
         globally, to avoid unnecessary spamming of real users.
     -->
     <property name="noforwarding">false</property>
+
+    <property name="emailbuilder">emails</property>
+
+    <property name="emailbuilder.bodyfield">body</property>
+    <property name="emailbuilder.tofield">to</property>
+    <property name="emailbuilder.ccfield">cc</property>
+    <property name="emailbuilder.bccfield">bcc</property>
+    <property name="emailbuilder.fromfield">from</property>
+    <property name="emailbuilder.subjectfield">subject</property>
+    <property name="emailbuilder.headersfield">headers</property>
+    <property name="emailbuilder.datefield">date</property>
+    <property name="emailbuilder.typefield">type</property>
+
   </properties>
 
 

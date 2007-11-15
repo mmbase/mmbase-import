@@ -189,9 +189,9 @@
           <entry value="0" xml:lang="nl" display="een normale mail" />
           <entry value="1" xml:lang="nl" display="te verzenden mail" />
           <entry value="2" xml:lang="nl" display="binnengekomen (ongelezen) mail" />
-          <entry value="0" display="normal mail" />
-          <entry value="1" display="to be sent mail" />
-          <entry value="2" display="newly arrived (unread) mail" />
+          <entry value="0" xml:lang="en" display="normal mail" />
+          <entry value="1" xml:lang="en" display="to be sent mail" />
+          <entry value="2" xml:lang="en" display="newly arrived (unread) mail" />
         </enumeration>
       </datatype>
     </field>
