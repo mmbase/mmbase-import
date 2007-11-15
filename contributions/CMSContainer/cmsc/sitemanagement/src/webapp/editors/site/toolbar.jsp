@@ -12,20 +12,14 @@
     <ul>
         <c:set var="hs"><fmt:message key="toolbar.hidetree"/></c:set>
         <li><input type="button" class="tlink4" onclick="return switchChannelPanel(this);" value="${hs}"/></li>
-        <li><a href="${param.pagepath}" class="tlink1" target="pcontent"
-               onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.editpage"/></a></li>
-        <li><a href="PageEdit.do?number=${param.number}" class="tlink2" target="pcontent"
-               onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.properties"/></a></li>
-        <li><a href="${param.pagepath}?mode=preview" class="tlink3" target="pcontent"
-               onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.preview"/></a></li>
-        <mm:haspage page="/editors/publish-remote">
+		<li><a href="${param.pagepath}" class="tlink1" target="pcontent" onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.editpage"/></a></li>
+		<li><a href="PageEdit.do?number=${param.number}" class="tlink2" target="pcontent" onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.properties"/></a></li>
+		<li><a href="${param.pagepath}?mode=preview" class="tlink3" target="pcontent" onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.preview"/></a></li>
             <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
                 <mm:hasrank minvalue="administrator">
-                    <li><a href="../workflow/publish.jsp?number=${param.number}" class="tlink5" target="pcontent"
-                           onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.publish"/></a></li>
+				<li><a href="../workflow/publish.jsp?number=${param.number}" class="tlink5" target="pcontent" onclick="selectMenu(this.parentNode)"><fmt:message key="toolbar.publish"/></a></li>
                 </mm:hasrank>
             </mm:cloud>
-        </mm:haspage>
     </ul>
 </div>
 
