@@ -21,9 +21,6 @@
     <description xml:lang="en">A folder in a workspace, where attachments can be stored</description>
   </descriptions>
 
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
 
   <fieldlist>
     <!-- POS 3 : <field> 'name'  -->

@@ -53,7 +53,7 @@ public class UserName extends StringDataType implements NodeEventListener {
         if (errors == VALID) errors = new ArrayList();
         for (Pattern p : disallowed) {
             if (p.matcher("" + castValue).matches()) {
-                errors.add(new LocalizedString("Dit is geen acceptabele username"));
+                errors.add(new LocalizedString("Dit is geen acceptabele " + field.getGUIName()));
                 break;
             }
         }

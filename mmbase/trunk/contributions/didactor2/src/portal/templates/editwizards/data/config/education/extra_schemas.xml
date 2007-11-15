@@ -2,7 +2,7 @@
   <title xml:lang="nl">Webblokken</title>
   <title xml:lang="en">Web blocks</title>
 
-  <field name="name" ftype="data"/> 
+  <field name="name" ftype="data"/>
 
   <list destination="webblocks" role="blockposrel" minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='x']">
     <item>

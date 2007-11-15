@@ -25,7 +25,7 @@ import java.util.*;
  */
 public abstract class Component {
     private static final Logger log = Logging.getLoggerInstance(Component.class);
- 
+
     private static Map<String, Component> components = new HashMap<String, Component>();
 
     private List<Component> interestedComponents = new ArrayList<Component>();
@@ -81,13 +81,13 @@ public abstract class Component {
     abstract public String getName();
 
     /**
-     * Initializes the component. This is called during startup 
+     * Initializes the component. This is called during startup
      * of Didactor. This method will be called every time your Didactor
      * installation is restarted.
      */
     public void init() {
         String configFile = "components/" + getName() + ".xml";
-        try {                
+        try {
             if (ResourceLoader.getConfigurationRoot().getResource(configFile).openConnection().getDoInput()) {
                 Document doc = ResourceLoader.getConfigurationRoot().getDocument(configFile, true, Component.class);
                 log.service("Reading component configuration from '" + doc.getDocumentURI() + "'");
@@ -127,7 +127,7 @@ public abstract class Component {
                                     String settingType = getAttribute(settingNode, "type");
                                     String settingDefault = getAttribute(settingNode, "default");
                                     String settingPrompt = getAttribute(settingNode, "prompt");
-                                    
+
                                     Setting setting = new Setting(settingName, settingType, settingPrompt);
 
                                     if ("domain".equals(settingType)) {
@@ -162,7 +162,7 @@ public abstract class Component {
                         if (builder == null) {
                             log.warn("Cannot load builder '" + builderName + "' for component '" + getName() + "')");
                         }
-                        
+
                         NodeList childNodes2 = builderNode.getChildNodes();
                         for (int j = 0; j< childNodes2.getLength(); j++) {
                             if ("field".equals(childNodes2.item(j).getNodeName())) {
@@ -175,7 +175,7 @@ public abstract class Component {
                                 } else if ("integer".equals(fieldType)) {
                                     ftype = FieldDefs.TYPE_INTEGER;
                                 }
-                            
+
                                 FieldDefs fd = new FieldDefs(fieldName, fieldType, -1, -1, fieldName, ftype, 200, FieldDefs.DBSTATE_VIRTUAL);
                                 // position 300: used later on internally to figure out which virtual fields are didactor-managed
                                 fd.setDBPos(300);
@@ -190,7 +190,7 @@ public abstract class Component {
         }
     }
     /**
-     * Installs the component. This method will only be called once, 
+     * Installs the component. This method will only be called once,
      * during the first initial installation of the component. The component
      * can update objectstructures if it needs to.
      */
@@ -206,7 +206,7 @@ public abstract class Component {
 
     /**
      * This method is called just before when a new object is added to Didactor. If the component
-     * needs to insert objects for this object, it can do so. 
+     * needs to insert objects for this object, it can do so.
      */
     public boolean preInsert(MMObjectNode node) {
         return true;
@@ -214,7 +214,7 @@ public abstract class Component {
 
     /**
      * This method is called just after when a new object is added to Didactor. If the component
-     * needs to insert objects for this object, it can do so. 
+     * needs to insert objects for this object, it can do so.
      */
     public boolean postInsert(MMObjectNode node) {
         return true;
@@ -276,7 +276,7 @@ public abstract class Component {
      * of the scopes in the context, the default value for the setting will be returned.
      * This differs from {@link getObjectSetting} in that it falls back to defaults provided by
      * 'parent' scopes.
-     * @param settingName The name of the setting for which a value should be 
+     * @param settingName The name of the setting for which a value should be
      * returned
      * @param context A Map containing name-value pairs, that can be needed
      * to retrieve the setting value. For instance the current username or
@@ -292,7 +292,7 @@ public abstract class Component {
         }
         List<String> scope = setting.getScope();
         Object retval = null;
-        
+
         for (String scopeName : scope) {
             String scopeReferId = scopes.get(scopeName);
             if (log.isDebugEnabled()) {
@@ -302,9 +302,13 @@ public abstract class Component {
             if ("component".equals(scopeName)) {
                 objectid =  node.getNumber();
             } else if (context.get(scopeReferId) != null) {
-                objectid = Integer.parseInt(org.mmbase.util.Casting.toString(context.get(scopeReferId)));
-                if (log.isDebugEnabled()) {
-                    log.debug("" + scopeReferId + " = " + objectid);
+                try {
+                    objectid = Integer.parseInt(org.mmbase.util.Casting.toString(context.get(scopeReferId)));
+                    if (log.isDebugEnabled()) {
+                        log.debug("" + scopeReferId + " = " + objectid);
+                    }
+                } catch (NumberFormatException nfe) {
+                    log.warn(nfe);
                 }
             }
 
@@ -477,7 +481,7 @@ public abstract class Component {
         }
         org.mmbase.bridge.Node settingRelNode = settingrel.getNode(0);
         org.mmbase.bridge.NodeList settings = settingRelNode.getRelatedNodes("settings");
-        
+
         for (org.mmbase.bridge.NodeIterator i = settings.nodeIterator(); i.hasNext();) {
             org.mmbase.bridge.Node settingNode = i.nextNode();
             if (settingNode.getStringValue("name").equals(settingname)) {

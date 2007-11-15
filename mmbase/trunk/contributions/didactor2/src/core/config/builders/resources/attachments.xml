@@ -41,10 +41,9 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" enforce="never"/>
+      </datatype>
     </field>
 
     <field name="description">

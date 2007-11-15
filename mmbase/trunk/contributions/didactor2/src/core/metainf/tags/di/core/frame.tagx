@@ -13,7 +13,7 @@
   <jsp:directive.attribute name="reset" />
   <jsp:directive.attribute name="postprocessor" />
   <jsp:directive.attribute name="type" />
-  <jsp:directive.attribute name="styleClass" />
+  <jsp:directive.attribute name="component" />
   <mm:content postprocessor="${empty postprocessor ? 'reducespace' : postprocessor}"
               type="${type}"
               unacceptable="CRIPPLE"
@@ -22,6 +22,11 @@
       <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids,reset?">
         <mm:param name="extraheader">
           <title><di:translate key="education.learnenvironmenttitle" /></title>
+          <mm:haspage page="/${component}/style/base.css">
+            <mm:link page="/${component}/style/base.css">
+              <link rel="stylesheet" type="text/css" href="${_}" />
+            </mm:link>
+          </mm:haspage>
         </mm:param>
       </mm:treeinclude>
 
@@ -31,7 +36,7 @@
             <di:translate key="${title_key}" />
           </div>
         </div>
-        <div class="contentBody ${styleClass}">
+        <div class="contentBody mm_c_${component}">
           <jsp:doBody />
         </div>
       </div>
