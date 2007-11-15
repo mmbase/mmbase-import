@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="images" maintainer="mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.module.builders.Images</class>
@@ -33,7 +33,7 @@
   </descriptions>
 
 
-  
+
   <properties>
 
      <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
@@ -42,9 +42,6 @@
 
     <!-- convert using ImageMagick -->
     <property name="ImageConvertClass">org.mmbase.util.images.ImageMagickImageConverter</property>
-    <property name="ImageConvert.ConverterCommand">${imageconvert.convertercommand}</property>
-    <property name="ImageConvert.ConverterRoot">${imageconvert.converterroot}</property>
-
 
     <property name="ImageConvert.DefaultImageFormat">asis</property> <!-- The default format of icache-objects. Defaults to jpeg if this option is missing here. 'asis' means, same format as the images object -->
 

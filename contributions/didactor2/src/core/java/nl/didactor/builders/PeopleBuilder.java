@@ -36,9 +36,13 @@ public class PeopleBuilder extends DidactorBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField usernameField = query.getField(getField("username"));
             query.setConstraint(new BasicFieldValueConstraint(usernameField, username));
+            SearchQueryHandler handler = MMBase.getMMBase().getSearchQueryHandler();
+            log.info("Using query " + query + " --> " +
+                     handler.createSqlString(query));
+
             //StepField passwordField = query.getField(getField("password"));
             //query.setConstraint(new BasicFieldValueConstraint(passwordField, "{md5}" + encoder.encode(password)));
-    
+
             List nodelist = getNodes(query);
             if (nodelist.size() == 0) {
                 log.service("No users with the name '" + username + "'");
@@ -52,11 +56,12 @@ public class PeopleBuilder extends DidactorBuilder {
                 }
                 return null;
             } else {
-                log.debug( "1 user found: " + username + " " + password);
+                log.debug("1 user found: " + username + " " + password);
                 MMObjectNode node = (MMObjectNode)nodelist.get(0);
-                String storedpassword = node.getStringValue("password");
-                if (storedpassword == null || !storedpassword.equals("{md5}" + MD5.encode(password))) {
-                    log.debug("Invalid password");
+                String storedPassword = node.getStringValue("password");
+                String md5 = "{md5}" + MD5.encode(password);
+                if (storedPassword == null || ! storedPassword.equals(md5)) {
+                    log.debug("Invalid password " + storedPassword + "!=" + md5);
                     return null;
                 }
                 return node;
@@ -66,7 +71,7 @@ public class PeopleBuilder extends DidactorBuilder {
             return null;
         }
     }
- 
+
     public MMObjectNode getUser(final String username) {
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -149,7 +154,7 @@ public class PeopleBuilder extends DidactorBuilder {
         }
 
         if ("isonline".equals(field)) {
-            int now = (int)(System.currentTimeMillis() / 1000);    
+            int now = (int)(System.currentTimeMillis() / 1000);
             int oldtime = node.getIntValue("lastactivity");
             if (now - oldtime > 60 * 5) {
                 return Boolean.FALSE;
@@ -192,14 +197,14 @@ public class PeopleBuilder extends DidactorBuilder {
             }
         }
         int number = super.insert(owner, node);
-        Event event = new Event((String) node.getValues().get("username"), null, null, null, null, 
+        Event event = new Event((String) node.getValues().get("username"), null, null, null, null,
                                 "peopleaccountcreated", (new Integer(number)).toString(), "accountcreated");
         EventDispatcher.report(event, null, null);
         log.info("insert people node");
         return number;
     }
 
-    
+
     private int countUsernamesInCloud(String username) {
         try {
             NodeSearchQuery nsq = new NodeSearchQuery(this);

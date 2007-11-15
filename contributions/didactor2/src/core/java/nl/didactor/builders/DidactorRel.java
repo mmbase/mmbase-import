@@ -70,7 +70,7 @@ public class DidactorRel extends InsRel {
     }
 
     /**
-     * Overridden 'insert' from MMObjectBuilder. It will call the 'preInsert()' 
+     * Overridden 'insert' from MMObjectBuilder. It will call the 'preInsert()'
      * method for all registered components just before inserting the node. It
      * calls the 'postInsert()' for all registered components after inserting the node.
      */
@@ -78,14 +78,14 @@ public class DidactorRel extends InsRel {
         Iterator i = preInsertComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
-            log.info("Firing " + c.getName() + ".preInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+            log.service("Firing " + c.getName() + ".preInsert() on object of type '" + node.getBuilder().getTableName() + "'");
             c.preInsert(node);
         }
         int res = super.insert(owner, node);
         i = postInsertComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
-            log.info("Firing " + c.getName() + ".postInsert() on object of type '" + node.getBuilder().getTableName() + "'");
+            log.service("Firing " + c.getName() + ".postInsert() on object of type '" + node.getBuilder().getTableName() + "'");
             c.postInsert(node);
         }
         return res;
@@ -93,7 +93,7 @@ public class DidactorRel extends InsRel {
 
 
     /**
-     * Overridden 'preCommit' from MMObjectBuilder. It will call the 'preCommit()' 
+     * Overridden 'preCommit' from MMObjectBuilder. It will call the 'preCommit()'
      * method for all registered components.
      */
     public MMObjectNode preCommit(MMObjectNode node) {
@@ -132,7 +132,7 @@ public class DidactorRel extends InsRel {
         Iterator i = preDeleteComponents.iterator();
         while (i.hasNext()) {
             Component c = ((EventInstance)i.next()).component;
-            log.info("Firing " + c.getName() + ".preDelete() on object of type '" + node.getBuilder().getTableName() + "'");
+            log.service("Firing " + c.getName() + ".preDelete() on object of type '" + node.getBuilder().getTableName() + "'");
             c.preDelete(node);
         }
         return true;
@@ -146,7 +146,7 @@ public class DidactorRel extends InsRel {
     private class EventInstance implements Comparable {
         protected Component component;
         protected int priority;
-      
+
         /**
          * Public constructor
          */
