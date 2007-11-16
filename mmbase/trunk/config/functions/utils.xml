@@ -49,4 +49,11 @@
     <method>getMMBase</method>
   </function>
 
+  <function name="toString">
+    <type>class</type>
+    <class>org.mmbase.util.Casting</class>
+    <method>toString</method>
+    <param name="object" type="Object" />
+  </function>
+
 </functionset>
