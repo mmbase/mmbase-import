@@ -7,7 +7,8 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.framework;
+package org.mmbase.framework.basic;
+import org.mmbase.framework.*;
 
 import java.util.*;
 import org.mmbase.util.functions.*;
@@ -22,7 +23,7 @@ import org.mmbase.util.functions.*;
  * They will be chained one after another.
 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.9 2007-11-16 17:31:57 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {

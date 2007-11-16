@@ -7,7 +7,8 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.framework;
+package org.mmbase.framework.basic;
+import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
@@ -24,12 +25,12 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
- * Basic implementation of UrlConverter. Essential component, should typically be
+ * Basic implementation of UrlConverter. Essential, should typically be
  * chained last in ChainedUrlConverter by the framework.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.19 2007-11-16 15:28:18 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -82,9 +83,9 @@ public final class BasicUrlConverter implements UrlConverter {
         return show;
     }
 
-    private final Framework framework;
+    private final BasicFramework framework;
 
-    public BasicUrlConverter(Framework fw) {
+    public BasicUrlConverter(BasicFramework fw) {
         framework = fw;
 
     }

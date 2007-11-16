@@ -7,7 +7,8 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.framework;
+package org.mmbase.framework.basic;
+import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
@@ -35,7 +36,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.64 2007-11-16 16:06:30 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -343,6 +344,7 @@ public class BasicFramework extends Framework {
             }
         }
     }
+
 
 
 
