@@ -1,7 +1,7 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.9 2007-08-07 19:33:27 andre Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.10 2007-11-16 11:40:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -59,7 +59,7 @@ public class MMBaseUrlConverter implements UrlConverter {
     }
 
     public StringBuilder getUrl(String path,
-                                Collection<Map.Entry<String, Object>> parameters,
+                                Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
             log.debug("path '" + path + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
@@ -92,7 +92,7 @@ public class MMBaseUrlConverter implements UrlConverter {
         assert component != null;
 
         boolean filteredMode = FrameworkFilter.getPath(request).startsWith(dir);
-        
+
 
         if (state.isRendering() && (! filteredMode || state.getDepth() > 0)) {
             log.debug("we are rendering a sub-component, deal with that as if  no mmbaseurlconverter. " + filteredMode);
@@ -140,7 +140,6 @@ public class MMBaseUrlConverter implements UrlConverter {
 
 
         Map<String, Object> map = new TreeMap<String, Object>();
-
         if (log.isDebugEnabled()) {
             log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state + " category " + category);
         }
@@ -171,7 +170,7 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         if (! processUrl) {
             Parameters blockParameters = block.createParameters();
-            for (Map.Entry<String, Object> entry : parameters) {
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 blockParameters.set(entry.getKey(), entry.getValue());
             }
             map.putAll(framework.prefix(state, blockParameters.toMap()));
@@ -195,11 +194,11 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         //path == null || subComponent ?
 
-        StringBuilder sb = BasicUrlConverter.getUrl(page, map.entrySet(), request, escapeAmps);
+        StringBuilder sb = BasicUrlConverter.getUrl(page, map , request, escapeAmps);
         return sb;
 
     }
-    public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith(dir)) {
