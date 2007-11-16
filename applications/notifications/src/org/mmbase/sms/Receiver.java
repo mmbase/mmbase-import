@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.6 2007-11-12 18:21:01 michiel Exp $
+ * @version $Id: Receiver.java,v 1.7 2007-11-16 18:23:36 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -57,7 +57,7 @@ public  class Receiver implements Runnable {
     private List<Handler> handlers = new ArrayList<Handler>();
 
     protected Receiver(String configFile) {
-        Map<String, Object> config = new UtilReader(configFile).getProperties();
+        Map<String, ?> config = new UtilReader(configFile).getProperties();
         log.info("Found " + config);
         Collection<Map.Entry<String, String>> col = (Collection<Map.Entry<String, String>>) config.get("handlers");
         if (col == null) {

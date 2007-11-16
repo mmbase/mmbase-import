@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.5 2007-10-22 16:50:21 michiel Exp $
+ * @version $Id: Notifier.java,v 1.6 2007-11-16 18:23:36 michiel Exp $
  **/
 public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -85,7 +85,7 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
                 Parameters params = datesFunction.createParameters();
                 params.set("since", lastCheck);
                 params.set("until", futureDate);
-                Collection<Date> dates = Casting.toCollection(datesFunction.getFunctionValue(null));
+                Collection<Date> dates = Casting.toCollection(datesFunction.getFunctionValue((Parameters) null));
                 log.debug("Found dates " + dates);
                 for (Date date : dates) {
                     Notifyable.addNotifyables(queue, notifyable, date);
