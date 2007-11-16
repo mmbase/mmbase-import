@@ -35,10 +35,10 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.63 2007-11-16 11:40:08 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.64 2007-11-16 16:06:30 michiel Exp $
  * @since MMBase-1.9
  */
-public class BasicFramework implements Framework {
+public class BasicFramework extends Framework {
     private static final Logger log = Logging.getLoggerInstance(BasicFramework.class);
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
@@ -119,11 +119,66 @@ public class BasicFramework implements Framework {
         log.info("Configured BasicFrameWork: " + this);
 
     }
-
-    public Block getBlock(Parameters frameworkParameters) {
-        ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+    public Block getRenderingBlock(Parameters frameworkParameters) {
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
         return state.getBlock();
+    }
+
+
+    public Block getBlock(Parameters frameworkParameters) {
+        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        State state = State.getState(request);
+        /*
+        // BasicFramework always shows only one component
+        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(MMBaseUrlConverter.COMPONENT));
+        boolean explicitComponent = component != null;
+        if (state != null && state.isRendering()) {
+            component = state.getBlock().getComponent();
+        } else {
+            log.debug("No state object found");
+        }
+
+        if (component == null || !component.getName().equals("mynews")) {
+            log.debug("Not currently rendering mynews component");
+            return null;
+        } else {
+            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
+            boolean filteredMode =
+                (state == null && explicitComponent) ||
+                request.getServletPath().startsWith("/magazine");
+
+            log.debug("Using " + component);
+
+            Block block;
+            String blockParam = frameworkParameters.get(MMBaseUrlConverter.BLOCK);
+            if (blockParam != null) {
+                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
+                block = component.getBlock(blockParam);
+            } else {
+                block = component.getBlock(path);
+                if (block == null && path != null && ! "".equals(path)) {
+                    log.debug("No block '" + path + "' found");
+                    return null;
+                }
+
+            }
+            if (block == null && state != null) {
+                block = state.getRenderer().getBlock();
+            }
+
+            if (block == null) {
+                log.debug("Cannot determin a block for '" + path + "' suppose it a normal link");
+                if (filteredMode) {
+                    return null;
+                } else {
+                    throw new IllegalArgumentException("not such block '" + path + " for component " + block);
+                }
+            }
+            return block;
+        }
+        */
+        return null;
     }
 
 

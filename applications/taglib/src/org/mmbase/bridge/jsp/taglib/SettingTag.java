@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspException;
  * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.2 2007-07-27 08:14:31 michiel Exp $
+ * @version $Id: SettingTag.java,v 1.3 2007-11-16 16:12:11 michiel Exp $
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {
@@ -56,8 +56,8 @@ public class SettingTag extends CloudReferrerTag implements Writer {
     public int doStartTag() throws JspTagException {
         Setting<?> setting = getComponent().getSetting(name.getString(this));
         if (setting == null) throw new JspTagException("No setting '" + name.getString(this) + "' in component '" + getComponent() + "'");
-        Framework fw = getCloudContext().getFramework();
-        Parameters parameters = fw.createSettingValueParameters(); 
+        Framework fw = Framework.getInstance();
+        Parameters parameters = fw.createSettingValueParameters();
         fillStandardParameters(parameters);
         helper.setValue(fw.getSettingValue(setting, parameters));
         if (getId() != null) {

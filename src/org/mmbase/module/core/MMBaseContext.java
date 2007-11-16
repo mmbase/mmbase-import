@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.55 2007-04-19 13:29:36 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.56 2007-11-16 16:06:59 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -315,8 +315,11 @@ public class MMBaseContext {
      * Returns a string representing the HtmlRootUrlPath, this is the path under
      * the webserver, what is the root for this instance.
      * this will return '/' or something like '/mmbase/' or so...
+     *
+     * This information should be requested from the ServletRequest, but if for some reason you
+     * don't have one handy, this method can be used.
+
      * @return  the HtmlRootUrlPath
-     * @deprecated  should not be needed, and this information should be requested from the ServletRequest
      */
     public synchronized static String getHtmlRootUrlPath() {
         if (! htmlRootUrlPathInitialized) {
@@ -367,6 +370,14 @@ public class MMBaseContext {
         }
         return htmlRootUrlPath;
     }
+
+    /**
+     * @since MMBase-1.8.4
+     */
+    public static File getDataDir() {
+        return null;
+    }
+
 
     /**
      * Returns whether this class has been initialized.
