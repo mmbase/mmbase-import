@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * They will be chained one after another.
 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.6 2007-11-14 16:09:42 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.7 2007-11-16 11:40:08 michiel Exp $
  * @since MMBase-1.9
  * @todo Parameters are passed as Collections of Map.Entry. Not sure that is handy/correct. The main
  * reason is that you can create such objects easily from both Parameters as from Maps, and that you
@@ -54,9 +54,9 @@ public interface UrlConverter {
      * or <code>null</code> if this UrlConvert does not know how produce an url for given parameteters.
      */
     StringBuilder getUrl(String path,
-                                Collection<Map.Entry<String, Object>> parameters,
-                                Parameters frameworkParameters,
-                                boolean escapeAmps);
+                         Map<String, Object> parameters,
+                         Parameters frameworkParameters,
+                         boolean escapeAmps);
 
 
     /**
@@ -75,8 +75,8 @@ public interface UrlConverter {
      * or <code>null</code> if this UrlConvert does not know how produce an url for given parameteters.
      */
     StringBuilder getInternalUrl(String path,
-                                        Collection<Map.Entry<String, Object>> params,
-                                        Parameters frameworkParameters);
+                                 Map<String, Object> params,
+                                 Parameters frameworkParameters);
 
 
 }
