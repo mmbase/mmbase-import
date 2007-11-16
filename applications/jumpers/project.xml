@@ -8,13 +8,10 @@ See http://www.MMBase.org/license
 -->
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
-  <artifactId>mmbase-myyahoo</artifactId>
+  <artifactId>mmbase-jumpers</artifactId>
   <name>MyYahoo</name>
-  <shortDescription>MMBase 'Yahoo' example</shortDescription>
+  <shortDescription>MMBase Jumpers</shortDescription>
   <description>
-    The MyYahoo application is one of the oldest MMBase examples that still exists. It shows you a very simple
-    approach to a site containing URLs in categories.
-    In its simplicity it is a good example to see how the basic MMBase taglib works.
   </description>
   <properties>
     <type>example</type>
