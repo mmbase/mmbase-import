@@ -49,7 +49,7 @@
     <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
     <head>
       <class name="org.mmbase.framework.StringRenderer">
-        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/edit/x/style.css.jspx" type="text/css" />]]></param>
+        <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/components/core/style.css" type="text/css" />]]></param>
       </class>
     </head>
     <body jsp="servers.jspx">
