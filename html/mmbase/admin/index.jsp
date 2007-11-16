@@ -16,8 +16,8 @@
     <mm:cloud rank="administrator" >
       <mm:import externid="category">about</mm:import>
       <mm:import externid="subcategory"></mm:import>
-      <mm:import externid="component">core</mm:import>
-      <mm:import externid="block">welcome</mm:import>
+      <mm:import externid="component" />
+      <mm:import externid="block" />
       <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
         <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
           <head>
@@ -29,7 +29,17 @@
               <link rel="icon" href="${_}" type="image/x-icon" />
               <link rel="shortcut icon" href="${_}" type="image/x-icon" />
             </mm:link>
-            <mm:component name="$component" block="$block" render="head" />
+            <mm:present referid="block"><mm:component name="$component" block="$block" render="head" /></mm:present>
+            <mm:notpresent referid="block">
+              <mm:functioncontainer>
+                <mm:param name="id">mmbase.${category}</mm:param>
+                <mm:function set="components" name="blockClassification">
+                  <c:set var="component" value="${_[0].blocks[0].component.name}" />
+                  <c:set var="block" value="${_[0].blocks[0].name}" />
+                  <mm:component name="$component" block="$block" render="head" />
+                </mm:function>
+              </mm:functioncontainer>
+            </mm:notpresent>
           </head>
         </mm:formatter>
         <body>
@@ -50,16 +60,15 @@
                   <mm:param name="id">mmbase</mm:param>
                   <mm:listfunction set="components" name="blockClassification">
                     <mm:stringlist referid="_.subTypes" id="cat">
-                      <mm:link  id="link"><mm:frameworkparam  name="category">${cat.name}</mm:frameworkparam></mm:link>
+                      <mm:link id="link"><mm:frameworkparam name="category">${cat.name}</mm:frameworkparam></mm:link>
                       <li><a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${cat.name}</a>
-                      
                       <mm:compare referid="category" value="${cat.name}">
                         <ul>
                           <c:forEach var="subcat" items="${cat.blocks}">
                             <mm:link>
                               <mm:frameworkparam name="category">${category}</mm:frameworkparam>
                               <mm:frameworkparam name="component">${subcat.component.name}</mm:frameworkparam>
-                              <mm:frameworkparam  name="block">${subcat.name}</mm:frameworkparam>
+                              <mm:frameworkparam name="block">${subcat.name}</mm:frameworkparam>
                               <li class="${subcat.name eq block and subcat.component.name eq component ? 'current' : ''}">
                                 <a title="${subcat.description}" href="${_}">${subcat.name}
                                 <span class="component">(${subcat.component.name})</span>
@@ -76,12 +85,11 @@
               </ul>
             </div>
             <div id="content">
-              <mm:present referid="component">
-                <h2 class="top"><mm:write referid="block" /></h2>
                 <c:catch var="exception">
-                  <mm:component debug="xml" name="$component" block="$block">
-                    <mm:frameworkparam name="category">${category}</mm:frameworkparam>
-                  </mm:component>
+				  <h2 class="top"><mm:write referid="block" /></h2> 
+				  <mm:component debug="xml" name="$component" block="$block">
+					<mm:frameworkparam name="category">${category}</mm:frameworkparam>
+				  </mm:component>
                 </c:catch>
                 <c:if test="${! empty exception}">
                   <pre>
@@ -95,7 +103,7 @@
                     ${mm:escape('text/xml', exception.cause)}
                   </pre>
                 </c:if>
-              </mm:present>
+               
             </div>
             <div id="footer">
               <ul>
