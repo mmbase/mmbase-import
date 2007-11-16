@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * present the error.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.6 2007-11-16 10:11:20 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.7 2007-11-16 10:23:31 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -72,9 +72,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 w.write(url);
                 w.write("</h1>");
                 w.write("<pre>");
-                Writer t = new TransformingWriter(w, new Xml());
-                error.getErrorReport(t, request);
-                t.flush();
+                error.getErrorReport(w, request);
                 w.write("</pre>");
                 w.write("</div>");
 
@@ -103,6 +101,7 @@ public class ErrorRenderer extends AbstractRenderer {
             status = s; exception = e;
         }
         public Writer getErrorReport(Writer msg, final HttpServletRequest request) throws IOException {
+            CharTransformer escape = new Xml(Xml.ESCAPE);
             String ticket = new Date().toString();
             Throwable e = exception;
             Stack stack = new Stack();
@@ -129,21 +128,21 @@ public class ErrorRenderer extends AbstractRenderer {
             Enumeration en = request.getHeaderNames();
             while (en.hasMoreElements()) {
                 String name = (String) en.nextElement();
-                msg.append(name+": "+request.getHeader(name)+"\n");
+                msg.append(escape.transform(name + ": "+request.getHeader(name)+"\n"));
             }
 
             msg.append("\nAttributes\n----------\n");
             Enumeration en2 = request.getAttributeNames();
             while (en2.hasMoreElements()) {
                 String name = (String) en2.nextElement();
-                msg.append(name+": "+request.getAttribute(name)+"\n");
+                msg.append(escape.transform(name+": "+request.getAttribute(name)+"\n"));
             }
             msg.append("\n");
             msg.append("Misc. properties\n----------\n");
 
-            msg.append("method: ").append(request.getMethod()).append("\n");
-            msg.append("querystring: ").append(request.getQueryString()).append("\n");
-            msg.append("requesturl: ").append(request.getRequestURL()).append("\n");
+            msg.append("method: ").append(escape.transform(request.getMethod())).append("\n");
+            msg.append("querystring: ").append(escape.transform(request.getQueryString())).append("\n");
+            msg.append("requesturl: ").append(escape.transform(request.getRequestURL().toString())).append("\n");
             msg.append("mmbase version: ").append(org.mmbase.Version.get()).append("\n");
             msg.append("status: ").append("" + status).append("\n\n");
 
@@ -153,9 +152,9 @@ public class ErrorRenderer extends AbstractRenderer {
             en = request.getParameterNames();
             while (en.hasMoreElements()) {
                 String name = (String) en.nextElement();
-                msg.append(name).append(": ").append(request.getParameter(name)).append("\n");
+                msg.append(name).append(": ").append(escape.transform(request.getParameter(name))).append("\n");
             }
-            msg.append("\nException\n----------\n\n" + (exception != null ? (exception.getClass().getName()) : "NO EXCEPTION") + ": ");
+            msg.append("\nException\n----------\n\n" + (exception != null ? (escape.transform(exception.getClass().getName())) : "NO EXCEPTION") + ": ");
 
 
             while (! stack.isEmpty()) {
@@ -169,8 +168,8 @@ public class ErrorRenderer extends AbstractRenderer {
                         StackTraceElement el = t.getStackTrace()[0];
                         title = t.getClass().getName().substring(t.getClass().getPackage().getName().length() + 1) + " " + el.getFileName() + ":" + el.getLineNumber();
                     }
-                    msg.append(message).append("\n");
-                    msg.append(org.mmbase.util.logging.Logging.stackTrace(t));
+                    msg.append(escape.transform(message)).append("\n");
+                    msg.append(escape.transform(org.mmbase.util.logging.Logging.stackTrace(t)));
                     if (! stack.isEmpty()) {
                         msg.append("\n-------caused:\n");
                     }
