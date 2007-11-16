@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.413 2007-11-01 09:35:46 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.414 2007-11-16 13:37:10 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -150,7 +150,7 @@ version: $Id: mmbase-taglib.xml,v 1.413 2007-11-01 09:35:46 michiel Exp $
     </description>
     <name>string</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
-    <function-signature>org.mmbase.util.LocalizedString string(org.mmbase.util.LocalizedString, javax.servlet.jsp.PageContext)</function-signature>
+    <function-signature>org.mmbase.util.LocalizedString string(org.mmbase.util.LocalizedString)</function-signature>
     <since>MMBase-1.9</since>
   </function>
   <function>
@@ -8602,5 +8602,13 @@ The 0 is just counter, which starts at 0 on every page.
     </info>
     <since>MMBase-1.9</since>
   </tag-file>
+  <!--
+  <tag-file>
+    <type>util.html</type>
+    <name>tabs</name>
+    <path>/META-INF/tags/mm/u/tabs.tagx</path>
+    <since>MMBase-1.9</since>
+  </tag-file>
+  -->
 
 </taglib>
