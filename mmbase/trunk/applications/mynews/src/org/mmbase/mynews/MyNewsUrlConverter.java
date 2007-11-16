@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.6 2007-11-16 12:10:23 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.7 2007-11-16 13:47:22 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -33,66 +33,23 @@ public class MyNewsUrlConverter implements UrlConverter {
     }
 
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] {MMBaseUrlConverter.COMPONENT, MMBaseUrlConverter.BLOCK };
+        return new Parameter[] {};
     }
 
     public StringBuilder getUrl(String path,
                                 Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
-        if (log.isDebugEnabled()) {
-            log.debug(" framework parameters " + frameworkParameters);
-        }
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
-        State state = State.getState(request);
-        // BasicFramework always shows only one component
-        Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(MMBaseUrlConverter.COMPONENT));
-        boolean explicitComponent = component != null;
-        if (state != null && state.isRendering()) {
-            component = state.getBlock().getComponent();
-        } else {
-            log.debug("No state object found");
-        }
 
-        if (component == null || !component.getName().equals("mynews")) {
-            log.debug("Not currently rendering mynews component");
+        Block block = framework.getBlock(frameworkParameters);
+        if (block == null) {
             return null;
         } else {
-            // can explicitely state new block by either 'path' (of mm:url) or framework parameter  'block'.
-            boolean filteredMode =
-                (state == null && explicitComponent) ||
-                request.getServletPath().startsWith("/magazine");
-
-            log.debug("Using " + component);
-
-            Block block;
-            String blockParam = frameworkParameters.get(MMBaseUrlConverter.BLOCK);
-            if (blockParam != null) {
-                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
-                block = component.getBlock(blockParam);
+            if (block.getComponent().getName().equals("mynews")) {
+                Object n = parameters.get("n");
+                return new StringBuilder("/magazine/" + (block.getName().equals("article") ? n : ""));
             } else {
-                block = component.getBlock(path);
-                if (block == null && path != null && ! "".equals(path)) {
-                    log.debug("No block '" + path + "' found");
-                    return null;
-                }
-
+                return null;
             }
-            if (block == null && state != null) {
-                block = state.getRenderer().getBlock();
-            }
-
-            if (block == null) {
-                log.debug("Cannot determin a block for '" + path + "' suppose it a normal link");
-                if (filteredMode) {
-                    return null;
-                } else {
-                    throw new IllegalArgumentException("not such block '" + path + " for component " + block);
-                }
-            }
-
-            Object n = parameters.get("n");
-
-            return new StringBuilder("/magazine/" + (block.getName().equals("article") ? n : ""));
         }
     }
 
