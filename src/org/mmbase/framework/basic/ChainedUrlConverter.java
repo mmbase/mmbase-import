@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.framework;
+package org.mmbase.framework.basic;
 
 import java.io.*;
 import java.util.*;
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.8 2007-11-16 11:40:08 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {

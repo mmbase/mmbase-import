@@ -7,7 +7,8 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.framework;
+package org.mmbase.framework.basic;
+import org.mmbase.framework.*;
 import java.util.*;
 import org.mmbase.util.*;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.10 2007-11-16 11:40:08 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -42,11 +43,11 @@ public class MMBaseUrlConverter implements UrlConverter {
     public static final Parameter<String> CATEGORY  = new Parameter<String>("category", String.class);
 
 
-    private final Framework framework;
+    private final BasicFramework framework;
 
     protected String dir = "/mmbase/";
 
-    public MMBaseUrlConverter(Framework fw) {
+    public MMBaseUrlConverter(BasicFramework fw) {
         framework = fw;
     }
 

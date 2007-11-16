@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.38 2007-11-16 17:30:33 michiel Exp $
+ * @version $Id: Framework.java,v 1.39 2007-11-16 18:10:07 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -50,7 +50,7 @@ public abstract class Framework {
                             ComponentRepository.getInstance();
                             org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, Framework.class);
                             if (fwConfiguration == null)  {
-                                framework = new BasicFramework();
+                                framework = new org.mmbase.framework.basic.BasicFramework();
                             } else {
                                 org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
                                 try {
@@ -61,7 +61,7 @@ public abstract class Framework {
                             }
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
-                            framework = new BasicFramework();
+                            framework = new org.mmbase.framework.basic.BasicFramework();
                         }
                     }
                 };
@@ -162,12 +162,6 @@ public abstract class Framework {
      * @throws UnsupportedOperationException
      */
     public abstract String getUserBuilder();
-
-
-    /**
-     * Prepares a map of parameters to add to URL
-     */
-    public abstract Map<String, Object> prefix(State state, Map<String, Object> params);
 
 
     /**
