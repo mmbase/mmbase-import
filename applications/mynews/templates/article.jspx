@@ -42,6 +42,7 @@
         </li>
       </mm:relatednodes>
     </ul>
+    <hr />
     <mm:link page="magazine">
       <a href="${_}">Back</a>
     </mm:link>
