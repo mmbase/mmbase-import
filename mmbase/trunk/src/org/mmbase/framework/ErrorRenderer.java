@@ -17,6 +17,7 @@ import javax.servlet.*;
 import java.io.*;
 import org.mmbase.bridge.NotFoundException;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.transformers.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * present the error.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.5 2007-11-14 16:09:54 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.6 2007-11-16 10:11:20 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -71,9 +72,12 @@ public class ErrorRenderer extends AbstractRenderer {
                 w.write(url);
                 w.write("</h1>");
                 w.write("<pre>");
-                error.getErrorReport(w, request);
+                Writer t = new TransformingWriter(w, new Xml());
+                error.getErrorReport(t, request);
+                t.flush();
                 w.write("</pre>");
                 w.write("</div>");
+
             } catch (IOException eio) {
                 throw new FrameworkException(eio.getMessage(), eio);
             }
