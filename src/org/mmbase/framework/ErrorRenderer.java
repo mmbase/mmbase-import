@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * present the error.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.7 2007-11-16 10:23:31 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.8 2007-11-16 13:55:32 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -68,11 +68,13 @@ public class ErrorRenderer extends AbstractRenderer {
                 w.write("\">");
                 w.write("<h1>" + error.status );
                 w.write(": ");
-                w.write(error.exception.getMessage());
+                CharTransformer escape = new Xml(Xml.ESCAPE);
+                w.write(escape.transform(error.exception.getMessage()));
+                w.write(" ");
                 w.write(url);
                 w.write("</h1>");
                 w.write("<pre>");
-                error.getErrorReport(w, request);
+                error.getErrorReport(w, request, escape);
                 w.write("</pre>");
                 w.write("</div>");
 
@@ -100,8 +102,8 @@ public class ErrorRenderer extends AbstractRenderer {
         public Error(int s, Throwable e) {
             status = s; exception = e;
         }
-        public Writer getErrorReport(Writer msg, final HttpServletRequest request) throws IOException {
-            CharTransformer escape = new Xml(Xml.ESCAPE);
+        public Writer getErrorReport(Writer msg, final HttpServletRequest request, CharTransformer escape) throws IOException {
+
             String ticket = new Date().toString();
             Throwable e = exception;
             Stack stack = new Stack();
