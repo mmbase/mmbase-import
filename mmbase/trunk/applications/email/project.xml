@@ -18,8 +18,17 @@ See http://www.MMBase.org/license
     <type>library</type>
     <status>stable</status>
   </properties>
-
   <dependencies>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-crontab</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+
     <dependency>
       <groupId>javamail</groupId>
       <artifactId>mail</artifactId>
