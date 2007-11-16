@@ -26,7 +26,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.database.MultiConnection;
+import org.mmbase.module.database.ConnectionWrapper;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.util.Scheme;
 import org.mmbase.util.Casting;
@@ -66,7 +66,7 @@ public class PostgresqlLargeObjectStorageManager extends
 	 *      String)
 	 */
 	protected void delete(MMObjectNode node, MMObjectBuilder builder,
-			List blobFileField, String tablename) {
+			List<CoreField> blobFileField, String tablename) {
 
 		deleteLargeObjects(node, builder, blobFileField);
 
@@ -84,12 +84,12 @@ public class PostgresqlLargeObjectStorageManager extends
 	 * @param blobFileField
 	 */
 	protected void deleteLargeObjects(MMObjectNode node,
-			MMObjectBuilder builder, List blobFileField) {
+			MMObjectBuilder builder, List<CoreField> blobFileField) {
 		// delete all binary fields stored as OID
 		//
-		List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-		for (Iterator f = builderFields.iterator(); f.hasNext();) {
-			CoreField field = (CoreField) f.next();
+		List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+		for (Iterator<CoreField> f = builderFields.iterator(); f.hasNext();) {
+			CoreField field = f.next();
 			if (field.inStorage() && field.getType() == Field.TYPE_BINARY
 					&& !blobFileField.contains(field)) {
 				// TODO: implement logic to differentiate between OID and BYTEA
@@ -309,11 +309,18 @@ public class PostgresqlLargeObjectStorageManager extends
 		if (activeConnection == null) {
 			throw new IllegalStateException("no active connection present");
 		}
-
-		final Connection conn = ((MultiConnection) activeConnection)
-				.getRealConnection();
-		final LargeObjectManager largeObjectManager = ((org.postgresql.PGConnection) conn)
-				.getLargeObjectAPI();
+		final LargeObjectManager largeObjectManager;
+		if (activeConnection instanceof ConnectionWrapper) {
+            ConnectionWrapper connWrapper = (ConnectionWrapper) activeConnection;
+            if (connWrapper.isWrapperFor(org.postgresql.PGConnection.class)) {
+                org.postgresql.PGConnection pgconn = connWrapper.unwrap(org.postgresql.PGConnection.class);
+                largeObjectManager = pgconn.getLargeObjectAPI();
+            }
+            throw new IllegalStateException("Connection does not wrap org.postgresql.PGConnection");
+		}
+		else { 
+		    largeObjectManager = ((org.postgresql.PGConnection) activeConnection).getLargeObjectAPI();
+		}
 		return largeObjectManager;
 	}
 
