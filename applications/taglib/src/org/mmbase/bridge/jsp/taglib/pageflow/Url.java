@@ -19,6 +19,7 @@ import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.util.Casting;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
+import org.mmbase.framework.basic.State;
 import org.mmbase.framework.basic.BasicUrlConverter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.34 2007-11-16 18:10:39 michiel Exp $;
+ * @version $Id: Url.java,v 1.35 2007-11-16 19:38:21 andre Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
