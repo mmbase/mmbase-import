@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.*;
 import org.mmbase.framework.*;
+import org.mmbase.framework.basic.State;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
@@ -24,7 +25,7 @@ import javax.servlet.jsp.JspException;
  * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.3 2007-11-16 16:12:11 michiel Exp $
+ * @version $Id: SettingTag.java,v 1.4 2007-11-16 20:02:19 andre Exp $
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {

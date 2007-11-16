@@ -16,12 +16,13 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.framework.*;
+import org.mmbase.framework.basic.State;
 
 /**
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.26 2007-11-16 16:12:11 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.27 2007-11-16 20:02:19 andre Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
