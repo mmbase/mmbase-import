@@ -13,7 +13,7 @@
               unacceptable="CRIPPLE"
               postprocessor="none" language="client">
 
-    <mm:cloud rank="administrator" >
+    <mm:cloud rank="basic user">
       <mm:import externid="category">about</mm:import>
       <mm:import externid="subcategory"></mm:import>
       <mm:import externid="component" />
