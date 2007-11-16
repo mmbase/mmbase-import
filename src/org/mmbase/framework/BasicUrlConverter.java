@@ -29,7 +29,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.17 2007-08-07 19:33:27 andre Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.18 2007-11-16 11:40:08 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -46,7 +46,7 @@ public final class BasicUrlConverter implements UrlConverter {
      * @param writeamp Wheter amperstands must be XML-escaped. Typically needed if the URL is used
      * in (X)HTML.
      */
-    public static StringBuilder getUrl(String page, Collection<Map.Entry<String, Object>> params, HttpServletRequest req, boolean escapeamp) {
+    public static StringBuilder getUrl(String page, Map<String, Object> params, HttpServletRequest req, boolean escapeamp) {
         StringBuilder show = new StringBuilder();
         if (escapeamp && page != null) {
             page = page.replaceAll("&", "&amp;");
@@ -62,7 +62,7 @@ public final class BasicUrlConverter implements UrlConverter {
             String connector = (show.indexOf("?") == -1 ? "?" : amp);
 
             Writer w = new StringBuilderWriter(show);
-            for (Map.Entry<String, ? extends Object> entry : params) {
+            for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
                 Object value = entry.getValue();
                 if (value != null && Casting.isStringRepresentable(value.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
                     if (value instanceof Iterable) {
@@ -97,13 +97,13 @@ public final class BasicUrlConverter implements UrlConverter {
         return new Parameter[] {Parameter.REQUEST, State.ACTION, Framework.PROCESS};
     }
     public StringBuilder getUrl(String path,
-                                Collection<Map.Entry<String, Object>> parameters,
+                                Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
         Map<String, Object> map = new HashMap<String, Object>();
 
-        for (Map.Entry<String, Object> e : parameters) {
+        for (Map.Entry<String, Object> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
         if (state.isRendering()) {
@@ -127,9 +127,9 @@ public final class BasicUrlConverter implements UrlConverter {
                 }
             }
         }
-        return BasicUrlConverter.getUrl(path, map.entrySet(), request, escapeAmps);
+        return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
     }
-    public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         return BasicUrlConverter.getUrl(page, params, request, false);
     }

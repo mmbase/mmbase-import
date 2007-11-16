@@ -35,7 +35,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.62 2007-11-14 16:09:54 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.63 2007-11-16 11:40:08 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework implements Framework {
@@ -73,12 +73,12 @@ public class BasicFramework implements Framework {
     }
 
 
-    public StringBuilder getUrl(String path, Collection<Map.Entry<String, Object>> parameters,
+    public StringBuilder getUrl(String path, Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }
 
-    public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         log.debug("we're calling urlConverter");
         return urlConverter.getInternalUrl(page, params, frameworkParameters);
     }

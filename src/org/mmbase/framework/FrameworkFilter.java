@@ -30,13 +30,13 @@ import org.mmbase.util.logging.Logging;
  * Requestfilter that filters out all URL's looking for virtual 'userfriendly' links that have a
  * corresponding page (technical URL) within the website. When the recieved URL is not
  * recognized by the framework as an 'userfriendly' one, it just gets forwarded in its original
- * form. The filtering and conversion to an URL pointing to an existing JSP template is done by 
+ * form. The filtering and conversion to an URL pointing to an existing JSP template is done by
  * an UrlConverter, of which the framework extends.
  * Regular expressions that define URL's to be excluded from filtering should be listed in the
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.15 2007-09-14 06:50:37 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.16 2007-11-16 11:40:08 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -173,7 +173,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (params.containsParameter(Parameter.RESPONSE)) {
                 params.set(Parameter.RESPONSE, res);
             }
-            String forwardUrl = fw.getInternalUrl(path, req.getParameterMap().entrySet(), params).toString();
+            String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params).toString();
 
             if (log.isDebugEnabled()) {
                 log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
