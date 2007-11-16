@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div
-    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns="http://www.w3.org/1999/xhtml"
     class="mm_c mm_c_core mm_c_b_components ${requestScope.componentClassName}"
     id="${requestScope.componentId}"
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
@@ -14,41 +14,41 @@
     <mm:cloud rank="administrator">
       <mm:import externid="component" from="request" />
       <mm:import externid="view"      from="request" />
-        
+
       <mm:notpresent referid="component">
         <h2><fmt:message key="components.title" /></h2>
 	    <table summary="components" border="0" cellspacing="0" cellpadding="3">
 		  <caption>
 			Information about components on this MMBase system
-		  </caption>
-          <mm:function set="utils" name="mmbase">
-            <tr><th>Framework</th><td>${_.framework}</td></tr>
-          </mm:function>
-          <tr><th>Failed components</th><td><mm:function  set="components" name="failed" /></td></tr>
-        </table>
-        <h3><fmt:message key="components.available" /></h3>
-        <ul>
-          <mm:listfunction id="comp" set="components" name="list" >
-            <li>
-              <mm:link>
-                <mm:param name="component">${comp.name}</mm:param>
-                <a href="${_}" class="navigate">${comp.name}</a>
-                <jsp:text> (version: ${comp.version}).</jsp:text>
-              </mm:link>
-            </li>
-          </mm:listfunction>
-        </ul>
-        <mm:link page="component-block-tree">
-          <a href="${_}">Tree view</a>
-        </mm:link>
+      </caption>
+      <mm:function set="utils" name="mmbase">
+        <tr><th>Framework</th><td>${_.framework}</td></tr>
+      </mm:function>
+      <tr><th>Failed components</th><td><mm:function  set="components" name="failed" /></td></tr>
+      </table>
+      <h3><fmt:message key="components.available" /></h3>
+      <ul>
+        <mm:listfunction id="comp" set="components" name="list" >
+          <li>
+            <mm:link>
+              <mm:param name="component">${comp.name}</mm:param>
+              <a href="${_}" class="navigate">${comp.name}</a>
+              <jsp:text> (version: ${comp.version}).</jsp:text>
+            </mm:link>
+          </li>
+        </mm:listfunction>
+      </ul>
+      <mm:link page="component-block-tree">
+        <a href="${_}">Tree view</a>
+      </mm:link>
       </mm:notpresent>
       <mm:present referid="component">
         <h2>'${component}'</h2>
         <mm:function set="components" name="get" referids="component@name" id="c">
           <table summary="component" border="0" cellspacing="0" cellpadding="3">
-			<caption>
-			  ${c.description}
-			</caption>
+            <caption>
+              ${c.description}
+            </caption>
             <tr><th>Version</th><td>${c.version}</td></tr>
             <tr><th>Defined in</th><td>${c.uri}</td></tr>
             <tr><th>Translations</th><td>${c.bundle}</td></tr>
@@ -58,40 +58,40 @@
             </c:if>
           </table>
           <h3>Settings for this component</h3>
-		  <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
-			  <h4>${s.name}</h4>
-			  <table summary="component settings" border="0" cellspacing="0" cellpadding="3">
-				<caption>
-				  Component settings
-				</caption>
-				<tr><th>Data type</th><td>${s.dataType}</td></tr>
-				<tr><th>Description</th><td>${mm:string(s.description, pageContext)}</td></tr>
-				<tr><th>Current value</th><td><strong><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getFramework().getSettingValue(s, null)</jsp:expression></strong></td></tr>
-			  </table>
-			<!--
-			<mm:fieldinfo type="input" datatype="s.dataType" />
-			-->
-		  </mm:stringlist>
+          <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
+            <h4>${s.name}</h4>
+            <table summary="component settings" border="0" cellspacing="0" cellpadding="3">
+              <caption>
+                Component settings
+              </caption>
+              <tr><th>Data type</th><td>${s.dataType}</td></tr>
+              <tr><th>Description</th><td>${mm:string(s.description)}</td></tr>
+              <tr><th>Current value</th><td><strong><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getFramework().getSettingValue(s, null)</jsp:expression></strong></td></tr>
+            </table>
+            <!--
+                <mm:fieldinfo type="input" datatype="s.dataType" />
+            -->
+          </mm:stringlist>
           <h3><fmt:message  key="components.blocks" /></h3>
           <p>Default block: ${c.defaultBlock.name}</p>
-            <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
-			  <h4>${b.name}</h4>
-			  <table summary="block" border="0" cellspacing="0" cellpadding="3">
-				<caption>
-				  ${mm:string(b.description, pageContext)}
-				</caption>
-				<tr><th>HEAD</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></td></tr>
-				<tr><th>BODY</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></td></tr>
-				<tr><th>Processor</th><td><jsp:expression>b.getProcessor()</jsp:expression></td></tr>
-			  </table>
-            </mm:stringlist>
+          <mm:stringlist referid="c.blocks" id="b" jspvar="b" vartype="org.mmbase.framework.Block">
+            <h4>${b.name}</h4>
+            <table summary="block" border="0" cellspacing="0" cellpadding="3">
+              <caption>
+                ${mm:string(b.description)}
+              </caption>
+              <tr><th>HEAD</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.HEAD)</jsp:expression></mm:escape></td></tr>
+              <tr><th>BODY</th><td><mm:escape><jsp:expression>b.getRenderer(Renderer.Type.BODY)</jsp:expression></mm:escape></td></tr>
+              <tr><th>Processor</th><td><jsp:expression>b.getProcessor()</jsp:expression></td></tr>
+            </table>
+          </mm:stringlist>
         </mm:function>
-		<p>
-		  <mm:link>
-			<a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}"  alt="back" /></a>
-			<a href="${_}">Return to Components Overview</a>
-		  </mm:link>
-		</p>
+        <p>
+          <mm:link>
+            <a href="${_}"><img src="${mm:url('/mmbase/style/images/back.png', pageContext)}"  alt="back" /></a>
+            <a href="${_}">Return to Components Overview</a>
+          </mm:link>
+        </p>
 
       </mm:present>
     </mm:cloud>
