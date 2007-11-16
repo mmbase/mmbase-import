@@ -46,5 +46,34 @@ See http://www.MMBase.org/license
         <eclipse.dependency>true</eclipse.dependency>
       </properties>
     </dependency>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-jumpers</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>javamail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
+      <url>http://java.sun.com/products/javamail/</url>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>jaf</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.0.2</version>
+      <url>http://java.sun.com/products/javabeans/jaf/</url>
+      <properties>
+        <scope>compile</scope>
+      </properties>
+    </dependency>
+
   </dependencies>
 </project>
