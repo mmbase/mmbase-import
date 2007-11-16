@@ -716,6 +716,28 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+	<tag>
+		<description>Generate html checkbox tag</description>
+		<name>checkbox</name>
+		<tag-class>com.finalist.cmsc.taglib.form.CheckboxTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>JSP variable to set selected.</description>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>value attribute.</description>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+
+
 	<tag>
 		<description>Generate html input text tag</description>
 		<name>text</name>
