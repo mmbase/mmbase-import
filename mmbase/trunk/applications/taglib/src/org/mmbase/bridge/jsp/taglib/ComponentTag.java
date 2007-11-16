@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.24 2007-07-30 17:22:59 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.25 2007-11-16 13:51:48 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -86,6 +86,8 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             Renderer.Type type = rt == null || "".equals(rt) ? Renderer.Type.BODY : Renderer.Type.valueOf(rt.toUpperCase());
             String ws = windowState.getString(this);
             Renderer.WindowState windowStateValue = ws == null || "".equals(ws) ? Renderer.WindowState.NORMAL : Renderer.WindowState.valueOf(ws.toUpperCase());
+
+
             Renderer renderer = block.getRenderer(type);
             Parameters params = block.createParameters();
             fillStandardParameters(params);
@@ -140,6 +142,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
 
     // if EVAL_BODY == EVAL_BODY_BUFFERED
     public int doAfterBody() throws JspTagException {
+        helper.doAfterBody();
 
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
