@@ -19,7 +19,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.31 2007-07-26 21:28:42 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.32 2007-11-16 16:07:15 michiel Exp $
  */
 public interface CloudContext {
 
@@ -193,9 +193,4 @@ public interface CloudContext {
      * @since MMBase-1.8
      */
     public void assertUp();
-
-    /**
-     * @since MMBase-1.9
-     */
-    public org.mmbase.framework.Framework getFramework();
  }

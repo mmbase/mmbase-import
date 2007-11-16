@@ -13,7 +13,6 @@ import javax.servlet.http.*;
 import javax.servlet.*;
 import java.io.*;
 import java.util.Arrays;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.GenericResponseWrapper;
 import org.mmbase.util.logging.Logger;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Processor implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspProcessor.java,v 1.13 2007-07-26 23:35:50 michiel Exp $
+ * @version $Id: JspProcessor.java,v 1.14 2007-11-16 16:06:30 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspProcessor extends AbstractProcessor {
@@ -52,7 +51,7 @@ public class JspProcessor extends AbstractProcessor {
             HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
             GenericResponseWrapper respw = new GenericResponseWrapper(response);
             HttpServletRequest request = blockParameters.get(Parameter.REQUEST);
-            Framework framework = MMBase.getMMBase().getFramework();
+            Framework framework = Framework.getInstance();
             // String url = framework.getInternalUrl(getPath(), this, parent.getComponent(), blockParameters.toEntryList(), frameworkParameters).toString();
             String url = getPath();
             if (log.isDebugEnabled()) {

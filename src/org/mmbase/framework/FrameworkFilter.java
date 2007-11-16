@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.16 2007-11-16 11:40:08 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.17 2007-11-16 16:06:30 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -165,7 +165,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             }
 
             // URL is not excluded, pass it to UrlConverter to process and forward the request
-            Framework fw =  MMBase.getMMBase().getFramework();
+            Framework fw =  Framework.getInstance();
             Parameters params = fw.createParameters();
             if (params.containsParameter(Parameter.REQUEST)) {
                 params.set(Parameter.REQUEST, req);

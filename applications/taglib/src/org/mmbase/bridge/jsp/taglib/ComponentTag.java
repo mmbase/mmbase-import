@@ -21,7 +21,7 @@ import org.mmbase.framework.*;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.25 2007-11-16 13:51:48 michiel Exp $
+ * @version $Id: ComponentTag.java,v 1.26 2007-11-16 16:12:11 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -96,7 +96,7 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             for (Map.Entry<String, Object> entry : extraParameters) {
                 params.set(entry.getKey(), entry.getValue());
             }
-            Framework fw = getCloudContext().getFramework();
+            Framework fw = Framework.getInstance();
             if (fw == null) throw new JspTagException("No MMBase Framework found");
             Parameters frameworkParams = fw.createParameters();
             fillStandardParameters(frameworkParams);
