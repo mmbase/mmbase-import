@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.17 2007-11-16 16:06:30 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.18 2007-11-16 18:29:12 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -179,7 +179,6 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
             }
 
-            State state = State.getState(request);
             if (forwardUrl != null && !forwardUrl.equals("")) {
                 res.setHeader("X-MMBase-forward", forwardUrl);
                 /*
@@ -192,7 +191,6 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
                 chain.doFilter(request, response);
             }
-            state.end();
         } else {
             if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
             chain.doFilter(request, response);
