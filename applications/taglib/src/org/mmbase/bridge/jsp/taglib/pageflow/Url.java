@@ -25,14 +25,14 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * <p>
- * A lazy 'URL' creator. A container object that contains all necessary to construct an URL, but
+ * A lazy 'URL' creator. A container object that contains all necessary information to construct an URL, but
  * will only do it on actual request (by the {@link #get}) method. This is also what is stored by an
  * url-tag with an id attribute.
  * </p>
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.31 2007-07-30 17:22:59 michiel Exp $;
+ * @version $Id: Url.java,v 1.32 2007-11-16 12:11:10 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -42,8 +42,8 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private final ContextReferrerTag tag;
     private final String page;
     //private final Component component;
-    protected final Collection<Map.Entry<String, Object>> params;
-    protected final Collection<Map.Entry<String, Object>> frameworkParams;
+    protected final Map<String, Object> params;
+    protected final Map<String, Object> frameworkParams;
     private final String abs;
     private final boolean encodeUrl;
     private final boolean escapeAmps;
@@ -56,10 +56,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
 
     private boolean legacy = false;
 
-    public Url(UrlTag t, 
-               String p, 
-               Collection<Map.Entry<String, Object>> framework, 
-               Collection<Map.Entry<String, Object>> pars, 
+    public Url(UrlTag t,
+               String p,
+               Map<String, Object> framework,
+               Map<String, Object> pars,
                boolean intern) throws JspTagException {
         tag = t;
         abs = t.getAbsolute();
@@ -70,11 +70,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         frameworkParams = framework;
         internal = intern;
     }
-    
-    public Url(UrlTag t, 
-               Url u, 
-               Collection<Map.Entry<String, Object>> framework, 
-               Collection<Map.Entry<String, Object>> pars, 
+
+    public Url(UrlTag t,
+               Url u,
+               Map<String, Object> framework,
+               Map<String, Object> pars,
                boolean intern) throws JspTagException {
         tag = t;
         abs = t.getAbsolute();
@@ -92,9 +92,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         encodeUrl = true;
         escapeAmps = true;
         page = p;
-        params = new ArrayList<Map.Entry<String, Object>>();
+        params = new HashMap<String, Object>();
         frameworkParams = null;
-        internal = false; 
+        internal = false;
     }
 
     public static Component getComponent(ContextReferrerTag tag) {
@@ -110,21 +110,19 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     public void setAction() {
         action = true;
     }
-    
+
     public void setLegacy() {
         this.legacy = true;
     }
 
     public String getLegacy(boolean writeamp) throws JspTagException {
         Map<String, Object> m = new HashMap<String, Object>();
-        for (Map.Entry<String, ?> entry : params) {
-            m.put(entry.getKey(), entry.getValue());
-        }
-        String res = BasicUrlConverter.getUrl(page, m.entrySet(), (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
+        m.putAll(params);
+        String res = BasicUrlConverter.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
       }
-    
+
     /**
      * Returns the URL as a String, always without the application context.
      */
@@ -133,7 +131,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         if (legacy) {
             return getLegacy(writeamp);
         }
-        
+
         String result = writeamp ? cacheAmp : cacheNoAmp;
         if (result != null) return result;
 
@@ -150,11 +148,11 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         tag.fillStandardParameters(frameworkParameters);
 
         if (frameworkParams != null) {
-            for (Map.Entry<String, Object> entry : frameworkParams) {
+            for (Map.Entry<String, Object> entry : frameworkParams.entrySet()) {
                 frameworkParameters.set(entry.getKey(), entry.getValue());
             }
         }
-        
+
         if (internal) {
             log.debug("Creating internal url link to page: " + page, new Exception());
             result = framework.getInternalUrl(page, params, frameworkParameters).toString();
@@ -187,7 +185,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             int port = req.getServerPort();
             String scheme = req.getScheme();
             show.append((port == 80 && "http".equals(scheme)) ||
-                        (port == 443 && "https".equals(scheme)) 
+                        (port == 443 && "https".equals(scheme))
                         ? "" : ":" + port);
         } else if (abs.equals("server")) {
             //show.append("/");

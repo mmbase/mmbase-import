@@ -11,16 +11,16 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
 
+import org.mmbase.util.*;
 import org.mmbase.framework.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Referids;
+
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.110 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.111 2007-11-16 12:11:10 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -39,8 +39,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
     private static Boolean makeRelative       = null;
     protected Attribute  referids             = Attribute.NULL;
-    protected List<Map.Entry<String, Object>> extraParameters  = null;
-    protected List<Map.Entry<String, Object>> frameworkParameters  = null;
+    protected Map<String, Object> extraParameters  = null;
+    protected Map<String, Object> frameworkParameters  = null;
     protected UrlParameters parameters;
     protected Attribute  page                 = Attribute.NULL;
     protected Attribute  block                = Attribute.NULL;
@@ -98,7 +98,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
 
     public void addParameter(String key, Object value) throws JspTagException {
-        extraParameters.add(new Entry<String, Object>(key, value));
+        extraParameters.put(key, value);
         if (url != null) {
             url.invalidate();
         }
@@ -111,7 +111,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
      * @since MMBase-1.9
      */
     public void addFrameworkParameter(String key, Object value) throws JspTagException {
-        frameworkParameters.add(new Entry<String, Object>(key, value));
+        frameworkParameters.put(key, value);
         if (url != null) {
             url.invalidate();
         }
@@ -121,8 +121,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     }
 
     protected void initTag(boolean internal) throws JspTagException {
-        extraParameters = new ArrayList<Map.Entry<String, Object>>();
-        frameworkParameters = new ArrayList<Map.Entry<String, Object>>();
+        extraParameters = new HashMap<String, Object>();
+        frameworkParameters = new HashMap<String, Object>();
         parameters = new UrlParameters(this);
         helper.useEscaper    (false);
         if (referid != Attribute.NULL) {
@@ -133,12 +133,12 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
             Object o = getObject(getReferid());
             if (o instanceof Url) {
                 Url u = (Url) getObject(getReferid());
-                extraParameters.addAll(u.params);
-                frameworkParameters.addAll(u.frameworkParams);
+                extraParameters.putAll(u.params);
+                frameworkParameters.putAll(u.frameworkParams);
                 url = new Url(this, u, frameworkParameters, parameters, internal);
             } else {
-                url = new Url(this, 
-                              getPage(Casting.toString(o)), 
+                url = new Url(this,
+                              getPage(Casting.toString(o)),
                               frameworkParameters,
                               parameters, internal);
             }
@@ -148,11 +148,11 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
         if (getId() != null) {
             parameters.getWrapped(); // dereference this
-            getContextProvider().getContextContainer().register(getId(), url); 
+            getContextProvider().getContextContainer().register(getId(), url);
         }
-        
+
     }
-    
+
 
     public int doStartTag() throws JspTagException {
         initTag(false);
@@ -162,6 +162,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     protected String getPage(String p) throws JspTagException {
         return p;
     }
+
     /**
      * Return the page.
      */
@@ -223,7 +224,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
      * The specified parameters, by the referids attirbute and by sub-param-tags.
      * @since MMBase-1.9
      */
-    protected List<Map.Entry<String, Object>> getParameters() {
+    protected Map<String, Object> getParameters() {
         return parameters;
     }
 
@@ -261,41 +262,4 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     }
 
 
-    /**
-     * Combines the parameters from the 'referids' attribute with the explicit mm:param's
-     * subtags. This happens 'lazily'. So, the referids are evaluated only when used.
-     * @since MMBase-1.9.
-     */
-    protected static class UrlParameters extends AbstractList<Map.Entry<String, Object>> {
-        List<Map.Entry<String, Object>> wrapped = null;
-        private UrlTag tag;
-        UrlParameters(UrlTag tag) {
-            this.tag = tag;
-        }
-        protected void getWrapped() {
-            if (wrapped == null) {
-                try {
-                    List<Map.Entry<String, Object>> refs = Referids.getList(tag.referids, tag);
-                    wrapped = tag.extraParameters == null ? refs : 
-                        new ChainedList<Map.Entry<String, Object>>(refs, tag.extraParameters);
-                    if (log.isDebugEnabled()) {
-                        log.debug("url parameters " + wrapped + " " + refs + "/" + tag.extraParameters);
-                    }
-                    tag = null; // no need any more. dereference.
-                } catch (JspTagException je) {
-                    throw new RuntimeException(je);
-                }
-            } else {
-                log.debug("url parameters. " + wrapped);
-            }
-        }
-        public int size() {
-            getWrapped();
-            return wrapped.size();
-        }
-        public Map.Entry<String, Object> get(int i) {
-            getWrapped();
-            return wrapped.get(i);
-        }
-    }
 }

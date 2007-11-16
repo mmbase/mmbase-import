@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<builder 
+<?xml version="1.0" ?>
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="news" maintainer="mmbase.org" version="0" extends="object">
   <class>org.mmbase.mynews.MyNewsBuilder</class>
   <searchage>14</searchage>
@@ -69,7 +69,7 @@
         <guiname xml:lang="en">Intro</guiname>
         <guiname xml:lang="fr">Intro</guiname>
         <guiname xml:lang="nl">Intro</guiname>
-        <guiname xml:lang="eo">Enkonduko</guiname> 
+        <guiname xml:lang="eo">Enkonduko</guiname>
       </gui>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="2048" />
@@ -147,7 +147,7 @@
   </fieldlist>
   <functionlist>
     <!--
-        As an example, we add some functions to this builder 
+        As an example, we add some functions to this builder
         All based on ExampleBean.
         But you can also add functions by FunctionProvider or Function implementations.
     -->
