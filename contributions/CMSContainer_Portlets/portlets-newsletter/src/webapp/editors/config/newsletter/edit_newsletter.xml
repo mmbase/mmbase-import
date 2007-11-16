@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_newsletter">
+	<title xml:lang="nl">Nieuwsbrief</title>
+	<title xml:lang="en">newsletter</title>
+	<field name="title" dtmaxlength="40"  dtrequired="true">
+		<prompt xml:lang="en">Subject</prompt>
+		<prompt xml:lang="nl">Onderwerp</prompt>
+	</field>
+	<field name="urlfragment" dtmaxlength="40"
+		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
+		<prompt xml:lang="en">Urlfragment</prompt>
+		<prompt xml:lang="nl">Urlfragment</prompt>
+	</field>
+	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+	</field>
+	<field name="use_test" ftype="enum">
+		<prompt xml:lang="en">Use test e-mail</prompt>
+		<prompt xml:lang="nl">Gebruik test e-mail</prompt>
+		<optionlist select="boolean" />
+	</field>
+
+	<list include="config/layout/search_page_layoutrel_layout.xml" />
+	<list include="config/stylesheet/search_page_stylerel_stylesheet.xml" />
+	<list include="config/images/search_page_namedrel_images.xml" />
+	<list include="config/newslettertheme/search_newsletter_related_newslettertheme.xml" />
+</form-schema>

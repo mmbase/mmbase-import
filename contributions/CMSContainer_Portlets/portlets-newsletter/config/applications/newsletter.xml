@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="newsletter" maintainer="finalist.com" version="2" auto-deploy="true">
+	<requirements>
+		<requires name="sitemanagement" maintainer="finalist.com" version="1" type="application" />
+		<requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
+	</requirements>
+	<neededbuilderlist>
+		<builder maintainer="finalist.com" version="1">newsletter</builder>
+		<builder maintainer="finalist.com" version="1">newslettertheme</builder>
+		<builder maintainer="finalist.com" version="1">newsletterpublication</builder>
+		<builder maintainer="finalist.com" version="1">newsletterpublicationtheme</builder>
+	</neededbuilderlist>
+	<neededreldeflist></neededreldeflist>
+	<allowedrelationlist>
+		<relation from="article" to="newslettertheme" type="related" />
+		<relation from="article" to="newsletterpublicationtheme" type="related" />
+		<relation from="newsletter" to="newslettertheme" type="related" />
+		<relation from="newsletter" to="newsletterpublication" type="related" />
+		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="related" />
+		<relation from="newsletterpublicationtheme" to="newslettertheme" type="related" />
+		
+	</allowedrelationlist>
+	<datasourcelist>
+		<datasource builder="portletdefinition" path="newsletter/portletdefinition.xml" />
+		<datasource builder="view" path="newsletter/view.xml" />
+		<datasource builder="editwizards" path="newsletter/editwizards.xml" />
+		<datasource builder="properties" path="newsletter/properties.xml" />
+		<datasource builder="newsletter" path="newsletter/newsletter.xml" />
+		<datasource builder="newslettertheme" path="newsletter/newslettertheme.xml" />
+		<datasource builder="newsletterpublication" path="newsletter/newsletterpublication.xml" />
+		<datasource builder="newsletterpublicationtheme" path="newsletter/newsletterpublicationtheme.xml" />
+		<datasource builder="article" path="basecontentelements/article.xml" />
+		<datasource builder="cronjobs" path="newsletter/cronjobs.xml" />
+	</datasourcelist>
+	<relationsourcelist></relationsourcelist>
+	<contextsourcelist></contextsourcelist>
+</application>
