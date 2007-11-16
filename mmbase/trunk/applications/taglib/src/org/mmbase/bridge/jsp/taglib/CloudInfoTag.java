@@ -23,7 +23,7 @@ import org.mmbase.util.functions.Parameters;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.12 2007-06-18 17:29:20 michiel Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.13 2007-11-16 16:23:37 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -53,15 +53,15 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             return TYPE_USER;
         } else if ("usernode".equals(t)) {
             return TYPE_USERNODE;
-        } else if ("rank".equals(t)) { 
+        } else if ("rank".equals(t)) {
             return TYPE_RANK;
-        } else if ("rankint".equals(t)) { 
+        } else if ("rankint".equals(t)) {
             return TYPE_RANK_INT;
-        } else if ("authenticate".equals(t)) { 
+        } else if ("authenticate".equals(t)) {
             return TYPE_AUTHENTICATE;
-        } else if ("mmbaseversion".equals(t)) { 
+        } else if ("mmbaseversion".equals(t)) {
             return TYPE_MMBASEVERSION;
-        } else if ("taglibversion".equals(t)) { 
+        } else if ("taglibversion".equals(t)) {
             return TYPE_TAGLIBVERSION;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
@@ -83,7 +83,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             show = cloud.getUser().getIdentifier();
             break;
         case TYPE_USERNODE:
-            Framework fw = org.mmbase.module.core.MMBase.getMMBase().getFramework();
+            Framework fw = Framework.getInstance();
             Parameters frameworkParams = fw.createParameters();
             fillStandardParameters(frameworkParams);
             frameworkParams.setAutoCasting(true);

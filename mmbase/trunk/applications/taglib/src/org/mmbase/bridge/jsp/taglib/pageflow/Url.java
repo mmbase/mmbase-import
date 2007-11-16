@@ -14,7 +14,6 @@ import java.net.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.mmbase.module.core.MMBase; // TODO
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 import org.mmbase.util.Casting;
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.32 2007-11-16 12:11:10 michiel Exp $;
+ * @version $Id: Url.java,v 1.33 2007-11-16 16:24:08 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -135,12 +134,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         String result = writeamp ? cacheAmp : cacheNoAmp;
         if (result != null) return result;
 
-        // TODO we should not use core.
-        Framework framework = MMBase.getMMBase().getFramework();
-        // perhaps this?
-        //Framework is of course always only relevant for local cloud context.
-        //Framework framework = LocalContext.getCloudContext().getFramework();
-
+        Framework framework = Framework.getInstance();
 
 
         Parameters frameworkParameters = framework.createParameters();
