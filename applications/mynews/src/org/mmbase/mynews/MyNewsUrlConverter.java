@@ -15,12 +15,12 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
 /**
- * The UrlConverter that can filter and create urls for the MyNews example application. 
+ * The UrlConverter that can filter and create urls for the MyNews example application.
  * Links start with '/magazine/'.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.5 2007-08-10 08:03:24 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.6 2007-11-16 12:10:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -37,7 +37,7 @@ public class MyNewsUrlConverter implements UrlConverter {
     }
 
     public StringBuilder getUrl(String path,
-                                Collection<Map.Entry<String, Object>> parameters,
+                                Map<String, Object> parameters,
                                 Parameters frameworkParameters, boolean escapeAmps) {
         if (log.isDebugEnabled()) {
             log.debug(" framework parameters " + frameworkParameters);
@@ -90,16 +90,13 @@ public class MyNewsUrlConverter implements UrlConverter {
                 }
             }
 
-            Object n = null;
-            for (Map.Entry e : parameters) {
-                if (e.getKey().equals("n")) n = e.getValue();
-            }
+            Object n = parameters.get("n");
 
             return new StringBuilder("/magazine/" + (block.getName().equals("article") ? n : ""));
         }
     }
 
-    public StringBuilder getInternalUrl(String page, Collection<Map.Entry<String, Object>> params, Parameters frameworkParameters) {
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith("/magazine")) {
