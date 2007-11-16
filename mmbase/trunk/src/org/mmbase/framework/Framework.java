@@ -13,6 +13,8 @@ import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A framework displays and processes components.
@@ -23,10 +25,53 @@ import org.mmbase.util.functions.*;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.36 2007-08-07 19:33:27 andre Exp $
+ * @version $Id: Framework.java,v 1.37 2007-11-16 16:06:30 michiel Exp $
  * @since MMBase-1.9
  */
-public interface Framework extends UrlConverter {
+public abstract class Framework implements UrlConverter {
+
+    private static final Logger log = Logging.getLoggerInstance(Framework.class);
+
+    /**
+     * Reference to the Framework singleton.
+     * @since MMBase-1.9
+     */
+    static Framework framework = null;
+
+    /**
+     * Return the framework, or null if there is no framework defined in mmbaseroot.xml
+     * @return the framework
+     */
+    public static Framework getInstance() {
+        if (framework == null) {
+            org.mmbase.util.ResourceWatcher frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
+                    public void onChange(String resourceName) {
+                        try {
+                            ComponentRepository.getInstance();
+                            org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, Framework.class);
+                            if (fwConfiguration == null)  {
+                                framework = new BasicFramework();
+                            } else {
+                                org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
+                                try {
+                                    framework = (Framework) ComponentRepository.getInstance(el, el);
+                                } catch (NoSuchMethodError nsme) {
+                                    framework = (Framework) ComponentRepository.getInstance(el);
+                                }
+                            }
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                            framework = new BasicFramework();
+                        }
+                    }
+                };
+            frameworkWatcher.add("framework.xml");
+            frameworkWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+            frameworkWatcher.start();
+            frameworkWatcher.onChange();
+        }
+        return framework;
+    }
 
     /**
      * CSS-id to be used on block
@@ -47,24 +92,25 @@ public interface Framework extends UrlConverter {
     /**
      * Return the name of the framework
      */
-    public String getName();
+    public abstract String getName();
 
 
     /**
-     * Returns the current block, according to the framework.
+     * Returns the block which is specified by framework parameters.
      */
-    public Block getBlock(Parameters frameworkParameters);
+    public abstract Block getBlock(Parameters frameworkParameters);
 
 
+    public abstract Block getRenderingBlock(Parameters frameworkParameters);
 
     /**
      * Return a Parameters object that needs to be passed on to the getUrl() call.
      *
-     * Many components will be implemented as servlets, so will not work if the framework does not 
+     * Many components will be implemented as servlets, so will not work if the framework does not
      * at least include {@link Parameter.REQUEST} and {@link Parameter.RESPONSE}. So it is
      * recommended that those parameters are supported by the framework.
      *
-     * 
+     *
      *
      * The MMBase taglib component tag will e.g. auto-fill those parameters. Other parameters can be
      * added using 'mm:frameworkparameter'
@@ -73,7 +119,7 @@ public interface Framework extends UrlConverter {
      * If the framework does not use the MMBase taglib for rendering of components, it needs to provide it's own mechanism to
      * fill the above parameters with default values (such as through a servlet or portlet).
      */
-    public Parameters createParameters();
+    public abstract Parameters createParameters();
 
     /**
      * Render content (such as HTML or XML) using a Renderer obtained from a component's block.
@@ -87,7 +133,7 @@ public interface Framework extends UrlConverter {
      * @param state the window state in which the content should be rendered
      * @throws FrameworkException when the renderer failed to create content or could not write data to the writer
      */
-    public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException;
+    public abstract void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState state) throws FrameworkException;
 
     /**
      * Processes a block. This method can change or se state information and should be called prior to rendering a component's block.
@@ -98,7 +144,7 @@ public interface Framework extends UrlConverter {
      * @param frameworkParameters The parameters that are required by the framework, such as the 'request' and 'cloud' objects.
      * @throws FrameworkException when the process failed to run
      */
-    public void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException;
+    public abstract void process(Processor processor, Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException;
 
     /**
      * Return an MMBase Node for the user currently using the framework. It is recommended that this
@@ -106,7 +152,7 @@ public interface Framework extends UrlConverter {
      * using a {@link Parameter.CLOUD} as a framework parameter. It can be implemented differently,
      * if the framework chooses not to use MMBase security to distinguish between users.
      */
-    public Node getUserNode(Parameters frameworkParameters);
+    public abstract Node getUserNode(Parameters frameworkParameters);
 ;
 
     /**
@@ -115,20 +161,20 @@ public interface Framework extends UrlConverter {
      * @TODO What if the framework wants to return virtual nodes?
      * @throws UnsupportedOperationException
      */
-    public String getUserBuilder();
+    public abstract String getUserBuilder();
 
 
     /**
      * Prepares a map of parameters to add to URL
      */
-    public Map<String, Object> prefix(State state, Map<String, Object> params);
+    public abstract Map<String, Object> prefix(State state, Map<String, Object> params);
 
 
     /**
      * @see #getSettingValue(Setting, Parameters)
      * @see #setSettingValue(Setting, Parameters, Object)
      */
-    public Parameters createSettingValueParameters();
+    public abstract Parameters createSettingValueParameters();
 
 
     /**
@@ -142,14 +188,14 @@ public interface Framework extends UrlConverter {
      * implement context specific values for a setting. It can e.g. use a request object, and store
      * user specific value as cookies.
      */
-    public <C> C getSettingValue(Setting<C> setting, Parameters parameters);
+    public abstract <C> C getSettingValue(Setting<C> setting, Parameters parameters);
 
     /**
      * See {@link #getSettingValue}. Depending on the framework, the set value may not necessarily be persistant.
      *
      * @throws SecurityException If you are not allowed to change the setting.
      */
-    public <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) throws SecurityException;
+    public abstract <C> C setSettingValue(Setting<C> setting, Parameters parameters, C value) throws SecurityException;
 
 
 }

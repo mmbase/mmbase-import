@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.230 2007-10-08 16:11:20 michiel Exp $
+ * @version $Id: MMBase.java,v 1.231 2007-11-16 16:06:59 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -135,12 +135,6 @@ public class MMBase extends ProcessorModule {
     private Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap<String, MMObjectBuilder>();
 
     private CloudModel cloudModel;
-
-    /**
-     * Reference to the Framework singleton.
-     * @since MMBase-1.9
-     */
-    private Framework framework = null;
 
     /**
      * Determines whether MMBase is in development mode.
@@ -344,31 +338,6 @@ public class MMBase extends ProcessorModule {
             host = localHost;
         }
 
-        org.mmbase.util.ResourceWatcher frameworkWatcher = new org.mmbase.util.ResourceWatcher() {
-                public void onChange(String resourceName) {
-                    try {
-                        org.mmbase.framework.ComponentRepository.getInstance();
-                        org.w3c.dom.Document fwConfiguration = getResourceLoader().getDocument(resourceName, true, org.mmbase.framework.Framework.class);
-                        if (fwConfiguration == null)  {
-                            framework = new BasicFramework();
-                        } else {
-                            org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
-                            try {
-                                framework = (Framework) org.mmbase.framework.ComponentRepository.getInstance(el, el);
-                            } catch (NoSuchMethodError nsme) {
-                                framework = (Framework) org.mmbase.framework.ComponentRepository.getInstance(el);
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                        framework = new BasicFramework();
-                    }
-                }
-            };
-        frameworkWatcher.add("framework.xml");
-        frameworkWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
-        frameworkWatcher.start();
-        frameworkWatcher.onChange();
 
         org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
 
@@ -656,14 +625,6 @@ public class MMBase extends ProcessorModule {
         return mmbaseroot;
     }
 
-    /**
-     * Return the framework, or null if there is no framework defined in mmbaseroot.xml
-     * @return the framework
-     * @since MMBase-1.9
-     */
-    public Framework getFramework() {
-        return framework;
-    }
 
     /**
      * Retrieves the loaded security manager(MMBaseCop).
