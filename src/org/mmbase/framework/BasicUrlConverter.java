@@ -29,7 +29,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.18 2007-11-16 11:40:08 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.19 2007-11-16 15:28:18 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -101,13 +101,13 @@ public final class BasicUrlConverter implements UrlConverter {
                                 Parameters frameworkParameters, boolean escapeAmps) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new TreeMap<String, Object>();
 
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
         if (state.isRendering()) {
-            map = new HashMap<String, Object>(framework.prefix(state, map));
+            map = new TreeMap<String, Object>(framework.prefix(state, map));
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
