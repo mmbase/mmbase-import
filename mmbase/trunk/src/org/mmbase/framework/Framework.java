@@ -12,6 +12,7 @@ package org.mmbase.framework;
 import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.39 2007-11-16 18:10:07 michiel Exp $
+ * @version $Id: Framework.java,v 1.40 2007-11-16 18:14:37 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -37,6 +38,13 @@ public abstract class Framework {
      * @since MMBase-1.9
      */
     static Framework framework = null;
+
+
+    public static final String XSD = "framework.xsd";
+    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
+    static {
+        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
+    }
 
     /**
      * Return the framework, or null if there is no framework defined in mmbaseroot.xml

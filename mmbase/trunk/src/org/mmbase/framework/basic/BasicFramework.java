@@ -36,19 +36,13 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.2 2007-11-16 18:14:37 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
     private static final Logger log = Logging.getLoggerInstance(BasicFramework.class);
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
-
-    public static final String XSD = "framework.xsd";
-    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/framework";
-    static {
-        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, BasicFramework.class);
-    }
 
     /**
      * A framework must be able to provide a node to the rendered blocks. This parameter could
