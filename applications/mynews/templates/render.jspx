@@ -1,7 +1,7 @@
 <html
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <mm:content type="text/html">
     <mm:import externid="block">magazine</mm:import>
@@ -16,7 +16,7 @@
       </mm:link>
       <mm:component name="mynews" block="$block" render="head" />
     </head>
-    <body>    
+    <body>
       <mm:component name="mynews" block="${block}" />
     </body>
   </mm:content>
