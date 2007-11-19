@@ -338,9 +338,11 @@ public class ResponseFormPortlet extends ContentPortlet {
     private DataSource processUserRequest(ActionRequest request, Map<String, String> errorMessages, Map<String, String> parameterMap) {
     	List<FileItem> fileItems = null;
     	DataSource attachment = null;
+        String encoding = "UTF-8";
         try {
         	DiskFileItemFactory factory = new DiskFileItemFactory();            
         	PortletFileUpload upload = new PortletFileUpload(factory);            
+        	upload.setHeaderEncoding(encoding);
             fileItems = upload.parseRequest(request);
         } catch (FileUploadException e) {
         	getLogger().error("error parsing request", e);
@@ -351,7 +353,12 @@ public class ResponseFormPortlet extends ContentPortlet {
 	        while (itFileItems.hasNext()) {
 	           FileItem fileItem = itFileItems.next();           
 	           if(fileItem.isFormField()) {          	   
-	        	   parameterMap.put(fileItem.getFieldName(), fileItem.getString());
+                  try {
+	                 parameterMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
+                  }
+                  catch (UnsupportedEncodingException e) {
+                     getLogger().error("UnsupportedEncoding " + encoding);
+                  }
 	           }
 	           else { 	
 	        	   if (!StringUtil.isEmptyOrWhitespace(fileItem.getName())) {	        		   
