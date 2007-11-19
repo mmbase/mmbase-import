@@ -17,12 +17,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The core of this class is {@link #offer(String, int, Message)} which offers an SMS message to a
- * queue. This queue is emptied and offered to {@link Handler}s which are configured in &lt;config
- * dir&gt;utils/sms_handlers.xml.
+ * The core of this class are {@link #offer(SMS)} and {@link #send(SMS)}, which both send an SMS,
+ * but the first one allows for some delay.
+ *
+ * This class is abstract and must be extended. The method {@link getInstance} returns one instance
+ * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.3 2007-11-12 18:34:20 michiel Exp $
+ * @version $Id: Sender.java,v 1.4 2007-11-19 12:03:12 michiel Exp $
  **/
 public abstract class Sender  {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);
@@ -31,11 +33,12 @@ public abstract class Sender  {
     private static Map<String, String> config = new UtilReader("sms_sender.xml", new Runnable() { public void run() {sender = null;} }).getProperties();
 
     /**
-     * Sends an SMS.
+     * Sends an SMS, immediately.
      */
     public abstract boolean send(SMS sms);
     /**
-     * Offers an SMS for sending. It needs not do this immediately, but may collect some.
+     * Offers an SMS for sending. It needs not do this immediately, but may collect some, and offer
+     * them in batch to an SMS gateway.
      */
     public  abstract boolean offer(SMS sms);
 

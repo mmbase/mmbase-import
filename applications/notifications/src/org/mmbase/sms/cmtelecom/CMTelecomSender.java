@@ -23,19 +23,19 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The core of this class is {@link #offer(String, int, Message)} which offers an SMS message to a
- * queue. This queue is emptied and offered to {@link Handler}s which are configured in &lt;config
- * dir&gt;utils/sms_handlers.xml.
+ * A realization of {@link Sender}, which communicates to a server implemented by
+ * 'cmtelecom'. (http://www.clubmessage.biz/).
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.4 2007-11-12 18:34:20 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.5 2007-11-19 12:03:12 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
 
     private Queue<SMS> queue = new LinkedBlockingQueue<SMS>();
 
-    private Map<String, String> config = new UtilReader("sms_sender.xml").getProperties();
+    public static final Map<String, String> configuration = new UtilReader("cmtelecom.xml").getProperties();
 
     protected interface Appender {
         void append(XmlWriter w) throws SAXException;
@@ -44,7 +44,7 @@ public  class CMTelecomSender extends Sender {
     public void add(SMS s, XmlWriter w) throws SAXException {
         w.startElement("MSG");
         w.startElement("FROM");
-        String from = config.get("from");
+        String from = configuration.get("from");
         if (from == null) from = "MMBase notifications";
         w.characters(from);
         w.endElement("FROM");
@@ -58,7 +58,7 @@ public  class CMTelecomSender extends Sender {
         {
             AttributesImpl a = new AttributesImpl();
             int op = s.getOperator();
-            a.addAttribute("", "OPERATOR", "", "CDATA", "" + (op != -1 ? "" + op : config.get("operator")));
+            a.addAttribute("", "OPERATOR", "", "CDATA", "" + (op != -1 ? "" + op : configuration.get("operator")));
             w.startElement("", "TO", "", a);
             w.characters(s.getMobile());
             w.endElement("TO");
@@ -67,9 +67,9 @@ public  class CMTelecomSender extends Sender {
     }
 
     protected void send(Appender body)  throws SAXException, IOException {
-        String u = config.get("url");
-        log.service("Connecting to '" + u + "' " + config);
-        URL url = new URL(config.get("url"));
+        String u = configuration.get("url");
+        log.service("Connecting to '" + u + "' " + configuration);
+        URL url = new URL(configuration.get("url"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setConnectTimeout(10000);
         con.setRequestMethod("POST");
@@ -112,7 +112,7 @@ public  class CMTelecomSender extends Sender {
         w.startDocument();
         {
             AttributesImpl a = new AttributesImpl();
-            String productId = config.get("productId");
+            String productId = configuration.get("productId");
             if (productId == null || "".equals(productId)) {
                 productId = "25";
             }
@@ -121,16 +121,16 @@ public  class CMTelecomSender extends Sender {
         }
         {
             AttributesImpl a = new AttributesImpl();
-            a.addAttribute("", "ID", "", "CDATA", config.get("customerId"));
+            a.addAttribute("", "ID", "", "CDATA", configuration.get("customerId"));
             w.emptyElement("", "CUSTOMER",  "", a);
         }
         {
             AttributesImpl a = new AttributesImpl();
-            a.addAttribute("", "LOGIN", "", "CDATA", config.get("userLogin"));
-            a.addAttribute("", "PASSWORD", "", "CDATA", config.get("userPassword"));
+            a.addAttribute("", "LOGIN", "", "CDATA", configuration.get("userLogin"));
+            a.addAttribute("", "PASSWORD", "", "CDATA", configuration.get("userPassword"));
             w.emptyElement("", "USER",  "", a);
         }
-        String adminEmail = config.get("adminEmail");
+        String adminEmail = configuration.get("adminEmail");
         if (adminEmail != null && ! adminEmail.equals("")) {
             w.startElement("ADMIN_EMAIL");
             w.characters(adminEmail);
