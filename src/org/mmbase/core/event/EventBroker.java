@@ -69,7 +69,7 @@ public abstract class EventBroker {
      * @throws ClassCastException
      */
     protected abstract void notifyEventListener(Event event, EventListener listener) throws ClassCastException;
-    
+
 
     public abstract boolean addListener(EventListener listener);
 
@@ -96,7 +96,7 @@ public abstract class EventBroker {
                 notifyEventListener(event, listener);
             } catch (ClassCastException e) {
                 // (this should never happen)
-                log.error("could not notify listener " + listener + " of event " + event);
+                log.error("Could not notify listener " + listener + " of event " + event + " " + e.getMessage(), e);
             }
         }
     }
