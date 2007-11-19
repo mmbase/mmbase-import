@@ -34,6 +34,7 @@ Applications build file
     <available file="codings/build.xml" property="codings.exists"/>
     <available file="mynews/build.xml" property="mynews.exists"/>
     <available file="jumpers/build.xml" property="jumpers.exists"/>
+    <available file="notifications/build.xml" property="notifications.exists"/>
   </target>
 
   <target name="all.not.compiling" depends="" />
@@ -264,6 +265,15 @@ Applications build file
 
   <target name="resources" depends="mmbase" if="resources.exists">
     <ant dir="resources"  target="package" inheritAll="false">
+      <property name="project.zip.dir"        value="${applications.build.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"        value="${download.dir}" />
+    </ant>
+  </target>
+
+
+  <target name="notifications" depends="mmbase" if="notifications.exists">
+    <ant dir="notifications"  target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${applications.build.dir}" />
       <property name="build.dir"        value="${build.dir}" />
       <property name="download.dir"        value="${download.dir}" />
