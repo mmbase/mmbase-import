@@ -4,6 +4,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="urlinfo.title" />
+<script type="text/javascript">
+		function modifycontent(str) {
+			var openerurl ="../WizardInitAction.do?objectnumber="+str;
+			var returnurl = "${param.returnUrl}";
+			var order = "${param.order}";
+			var direction = "${param.direction}";
+			var offset = "${param.offset}";
+			var url = openerurl+"&returnurl="+returnurl+"%26order="+order+"%26direction="+direction+"%26offset="+offset;
+			window.opener.location.href=url;
+			window.close();	
+        }
+	</script>
 <body>
     <div class="tabs">
         <div class="tab_active">
@@ -57,9 +69,11 @@
 			            <ul>
 			            <mm:relatednodes type="contentelement">
 			            	<li>
-			            		<mm:field name="title"/><br/>
+								<mm:field name="number" jspvar="thenumber" write="false"/>
+			            		<a href="" onclick="modifycontent(${thenumber})">
+								<mm:field name="title"/></a><br/>
 			            		<fmt:message key="urlinfo.otype" />: <mm:nodeinfo type="guitype"/><br/>
-			            		<fmt:message key="urlinfo.number" />: <mm:field name="number"/>
+			            		<fmt:message key="urlinfo.number" />: ${thenumber}
 			            	</li>
 			            </mm:relatednodes>
 			           	</ul>
