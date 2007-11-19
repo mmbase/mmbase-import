@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.61 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.62 2007-11-19 15:14:08 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -37,6 +37,7 @@ public class ImportTag extends ContextReferrerTag {
 
     private   boolean found = false;
     private   String  useId = null;
+    private   Object value = null;
 
     /**
      * The extern id it the identifier in some external source.
@@ -78,6 +79,7 @@ public class ImportTag extends ContextReferrerTag {
         Object value = null;
         helper.overrideWrite(false);
         log.trace("dostarttag of import");
+        findWriter(false);
 
         if (getId() == null) {
             log.trace("No id was given, using externid ");
@@ -137,14 +139,6 @@ public class ImportTag extends ContextReferrerTag {
             }
         }
         if (found) {
-            setValue(value, WriterHelper.NOIMPLICITLIST);
-            if (useId != null) {
-                ContextContainer cc = getContextProvider().getContextContainer();
-                if (log.isDebugEnabled()) {
-                    log.debug("Using " + cc + " to register" + useId);
-                }
-                cc.reregister(useId, helper.getValue());
-            }
             return SKIP_BODY;
         } else {
             setValue(null);
@@ -157,22 +151,32 @@ public class ImportTag extends ContextReferrerTag {
      * Retrieves the value from the writer-helper, but escapes if necessary (using 'escape' attribute)
      * @since MMBase-1.7.2
      */
-    protected void setValue(Object value, boolean noImplicitList) throws JspTagException {
-        value = getEscapedValue(value);
+    protected void setValue(Object v, boolean noImplicitList) throws JspTagException {
+        v = getEscapedValue(v);
         if (log.isDebugEnabled()) {
-            log.debug("Setting " + value + " " + (value == null ? "NULL" : "" + value.getClass()));
+            log.debug("Setting " + v + " " + (v== null ? "NULL" : "" + v.getClass()));
         }
-        helper.setValue(value, noImplicitList);
+        helper.setValue(v, noImplicitList);
     }
     /**
      * @since MMBase-1.7.2
      */
-    protected void setValue(Object value) throws JspTagException {
-        setValue(value, WriterHelper.IMPLICITLIST);
+    protected void setValue(Object v) throws JspTagException {
+        setValue(v, WriterHelper.IMPLICITLIST);
     }
 
 
     public int doEndTag() throws JspTagException {
+        if (found) {
+            setValue(value, WriterHelper.NOIMPLICITLIST);
+            if (useId != null) {
+                ContextContainer cc = getContextProvider().getContextContainer();
+                cc.reregister(useId, helper.getValue());
+            }
+        } else {
+            setValue(null);
+        }
+        value = null; // not needed anymore.
         if (log.isDebugEnabled()) {
             log.debug("endtag of import with id:" + id + " externid: " + externid.getString(this));
         }
