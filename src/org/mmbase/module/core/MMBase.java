@@ -15,8 +15,6 @@ import java.text.DateFormat;
 
 import org.mmbase.core.event.*;
 import org.mmbase.datatypes.DataTypes;
-import org.mmbase.framework.Framework;
-import org.mmbase.framework.basic.BasicFramework;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.builders.Versions;
@@ -46,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.232 2007-11-16 19:39:59 andre Exp $
+ * @version $Id: MMBase.java,v 1.233 2007-11-19 09:36:17 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
