@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.7 2007-07-23 13:56:38 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.8 2007-11-19 15:38:39 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -279,7 +279,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the new node key (number field), or -1 if the insert failed
      */
     public int insert(String userName) {
-        return parent.insert(userName, this);
+        int n = parent.insert(userName, this);
+        /*
+        if (n >= 0) {
+            isNew = false;
+        }
+        */
+        return n;
     }
 
     /**
@@ -1018,7 +1024,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
              Node node = (Node) value;
              if (node.isNew()) {
                  throw new UnsupportedOperationException("dropped tmpnodemanager...");
-             } else if (value instanceof org.mmbase.bridge.implementation.VirtualNode) { 
+             } else if (value instanceof org.mmbase.bridge.implementation.VirtualNode) {
                  res = new VirtualNode(new org.mmbase.bridge.util.NodeMap(node));
              } else {
                  res = parent.getNode(node.getNumber());
@@ -1686,7 +1692,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             snodes.add("" + getNumber());
 
             SearchQuery query = clusterBuilder.getMultiLevelSearchQuery(snodes, fields, "NO", tables,  null, ordered, directions, search_type);
-            
+
             RelatedNodesCache relatedCache = RelatedNodesCache.getCache();
             List v = (List) relatedCache.get(query);
             if (v == null) {
