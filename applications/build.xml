@@ -29,11 +29,13 @@ Applications build file
 
   <target name="init">
     <mkdir dir="${applications.build.dir}" />
+    <available file="jumpers/build.xml" property="jumpers.exists"/>
+    <available file="notifications/build.xml" property="notifications.exists"/>
   </target>
 
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
-  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,oscache-cache,largeobjects" />
+  <target name="all18" depends="init,all17,rmmci,crontab,vwms,scan,packaging,clustering,oscache-cache,largeobjects,jumpers,notifications" />
 
   <target name="all"   depends="init,all18" />
 
@@ -169,7 +171,7 @@ Applications build file
   </target>
 
   <target name="clustering" depends="mmbase">
-     <ant dir="clustering"  target="dependent.package" inheritAll="false">
+     <ant dir="clustering"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
@@ -198,6 +200,21 @@ Applications build file
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
      </ant>
+  </target>
+  <target name="jumpers" depends="mmbase" if="jumpers.exists">
+     <ant dir="jumpers"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+
+  <target name="notifications" depends="mmbase" if="notifications.exists">
+    <ant dir="notifications"  target="package" inheritAll="false">
+      <property name="project.zip.dir"        value="${applications.build.dir}" />
+      <property name="build.dir"        value="${build.dir}" />
+      <property name="download.dir"        value="${download.dir}" />
+    </ant>
   </target>
 
   <target name="install">
