@@ -238,14 +238,6 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-  
-  <target name="notifications">
-     <ant dir="notifications"  target="package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
 
   <target name="mynews" depends="init" if="mynews.exists">
      <ant dir="mynews"  target="package" inheritAll="false">
