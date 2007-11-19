@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.4 2007-08-02 09:57:55 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.5 2007-11-19 15:32:15 michiel Exp $
  */
 public class BasicUser implements UserContext {
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
@@ -88,10 +88,10 @@ public class BasicUser implements UserContext {
     public boolean equals(Object o) {
         if (o instanceof BasicUser) {
             BasicUser ou = (BasicUser) o;
-            return 
+            return
                 (authenticationType == null ? ou.authenticationType == null : authenticationType.equals(ou.authenticationType)) &&
-                getIdentifier().equals(ou.getIdentifier()) &&
-                getRank().equals(ou.getRank());
+                getIdentifier() == null ? ou.getIdentifier() == null : getIdentifier().equals(ou.getIdentifier()) &&
+                getRank() == null ? ou.getRank() == null : getRank().equals(ou.getRank());
         } else {
             return false;
         }

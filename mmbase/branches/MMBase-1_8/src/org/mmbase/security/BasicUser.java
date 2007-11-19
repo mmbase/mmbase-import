@@ -21,7 +21,7 @@ package org.mmbase.security;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.2 2006-02-13 18:17:16 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.2.2.1 2007-11-19 15:31:34 michiel Exp $
  */
 public class BasicUser implements UserContext {
 
@@ -80,10 +80,10 @@ public class BasicUser implements UserContext {
     public boolean equals(Object o) {
         if (o instanceof BasicUser) {
             BasicUser ou = (BasicUser) o;
-            return 
+            return
                 (authenticationType == null ? ou.authenticationType == null : authenticationType.equals(ou.authenticationType)) &&
-                getIdentifier().equals(ou.getIdentifier()) &&
-                getRank().equals(ou.getRank());
+                getIdentifier() == null ? ou.getIdentifier() == null : getIdentifier().equals(ou.getIdentifier()) &&
+                getRank() == null ? ou.getRank() == null : getRank().equals(ou.getRank());
         } else {
             return false;
         }
