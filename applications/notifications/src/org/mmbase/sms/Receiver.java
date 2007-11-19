@@ -18,30 +18,40 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The core of this class is {@link #offer(String, int, Message)} which offers an SMS message to a
+ * The core of this class is {@link #offer(SMS)} which offers an SMS message to a
  * queue. This queue is emptied and offered to {@link Handler}s which are configured in &lt;config
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.8 2007-11-19 14:15:27 michiel Exp $
+ * @version $Id: Receiver.java,v 1.9 2007-11-19 15:05:42 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
+    public static final String DEFAULT_CONFIG_FILE = "sms_handlers.xml";
+
     private static final Logger log = Logging.getLoggerInstance(Receiver.class);
 
-    private static Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>();
+    private static Map<String, Receiver> threads = new ConcurrentHashMap<String, Receiver>();
 
     private static BlockingQueue<SMS> queue = new LinkedBlockingQueue<SMS>();
 
 
-    protected static synchronized boolean offer(String config, String mobile, int operator, String message) {
-        Thread thread = threads.get(config);
+    protected static Receiver getReceiver(String config) {
+        Receiver thread = threads.get(config);
         if (thread == null) {
-            thread = org.mmbase.module.core.MMBaseContext.startThread(new Receiver(config), Receiver.class.getName());
+            thread = new Receiver(config);
+            Thread t = org.mmbase.module.core.MMBaseContext.startThread(thread, Receiver.class.getName());
             threads.put(config, thread);
             log.info("Started " + thread);
         }
-        SMS sms = new BasicSMS(mobile, operator, message);
+        return thread;
+    }
+    public static Receiver getReceiver() {
+        return getReceiver(DEFAULT_CONFIG_FILE);
+    }
+
+    protected static synchronized boolean offer(String config, SMS sms) {
+        getReceiver(config);
         boolean ok = queue.offer(sms);
         log.service("Offering " + sms + " to handlers of " + config + " " + queue.hashCode() + " " +  queue + " " + ok);
         return ok;
@@ -51,8 +61,8 @@ public  class Receiver implements Runnable {
     /**
      * Offers a SMS message for 'handling' by the SMS Handlers.
      */
-    public static synchronized boolean offer(String mobile, int operator, String message) {
-        return offer("sms_handlers.xml", mobile, operator, message);
+    public static synchronized boolean offer(SMS sms) {
+        return offer(DEFAULT_CONFIG_FILE, sms);
     }
 
     private List<Handler> handlers = new ArrayList<Handler>();
@@ -61,7 +71,7 @@ public  class Receiver implements Runnable {
         Map<String, ?> config = new UtilReader(configFile).getProperties();
         log.info("Found " + config);
         if (config.size() == 0) {
-            log.error("No SMS-handlers found");
+            log.error("No SMS-handlers found in " + configFile );
         } else {
             for (Map.Entry<String, ?> entry : config.entrySet()) {
                 String clazz = entry.getKey();
@@ -69,6 +79,7 @@ public  class Receiver implements Runnable {
                     Class claz = Class.forName(clazz);
                     Handler handler = (Handler) claz.newInstance();
                     Collection<Map.Entry<String, String>> properties = (Collection<Map.Entry<String, String>>) entry.getValue();
+                    log.info("Setting properties " + properties + " on " + handler);
                     for (Map.Entry<String, String> property : properties) {
                         String key   = property.getKey();
                         String value = property.getValue();
@@ -82,6 +93,10 @@ public  class Receiver implements Runnable {
 
             }
         }
+    }
+
+    public List<Handler> getHandlers() {
+        return Collections.unmodifiableList(handlers);
     }
 
     /**
