@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.79.2.2 2007-03-08 13:33:14 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.79.2.3 2007-11-19 15:18:21 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -66,7 +66,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     public void setEncode(String e) throws JspTagException {
        encode = getAttribute(e);
     }
-    
+
     /**
      * @since MMBase-1.8
      */
@@ -94,6 +94,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     protected String getPage() throws JspTagException {
         return page.getString(this);
+    }
+    protected String getPage(String p) throws JspTagException {
+        return p;
     }
 
     /**
@@ -156,7 +159,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             show.append(req.getServerName());
             int port = req.getServerPort();
             show.append((port == 80 && "http".equals(scheme)) ||
-                        (port == 443 && "https".equals(scheme)) 
+                        (port == 443 && "https".equals(scheme))
                         ? "" : ":" + port);
         } else if (abs.equals("server")) {
             //show.append("/");
@@ -201,7 +204,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 show.append(url);
             }
         } else {
-            String page = getPage();
+            String page = getPage(getPage());
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
             if (page.equals("")) { // means _this_ page
                 String requestURI = req.getRequestURI();
@@ -251,12 +254,20 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             paramEscaper.transform(new StringReader(Casting.toString(param.getValue())), w);
             connector = amp;
         }
+        appendMoreParameters(connector, amp, show);
         if (encodeUrl) {
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
             return response.encodeURL(show.toString());
         } else {
             return show.toString();
         }
+    }
+
+    /**
+     * Can be overriden in extensions.
+     * @since MMBase-1.8.5
+     */
+    protected void appendMoreParameters(String connector, String amp, StringBuffer buf) throws JspTagException {
     }
 
     protected String getUrl() throws JspTagException {
