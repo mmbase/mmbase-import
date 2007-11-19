@@ -11,6 +11,8 @@ package org.mmbase.sms;
 
 /**
  * This basic SMS implementation simply explicitely stores the information in member variables.
+ * @author Michiel Meeuwissen
+ * @version $Id: BasicSMS.java,v 1.4 2007-11-19 12:03:12 michiel Exp $
  */
 public class BasicSMS implements SMS {
     private final String mobile;

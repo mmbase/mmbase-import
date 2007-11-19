@@ -12,10 +12,10 @@ package org.mmbase.sms;
 import org.mmbase.bridge.*;
 
 /**
- * Implementations of these SMS handler can perform action on receivel of an SMS message.
+ * Implementations of these SMS handlers can perform action on receival of an SMS message.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.3 2007-11-12 16:28:38 michiel Exp $
+ * @version $Id: Handler.java,v 1.4 2007-11-19 12:03:12 michiel Exp $
  **/
 public interface Handler {
 

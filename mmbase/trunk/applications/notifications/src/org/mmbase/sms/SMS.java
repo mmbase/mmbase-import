@@ -12,6 +12,9 @@ package org.mmbase.sms;
 
 /**
  * Representation of one SMS.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: SMS.java,v 1.3 2007-11-19 12:03:12 michiel Exp $
  */
 public interface SMS {
     /**

@@ -3,19 +3,5 @@
 <util>
   <properties>
     <property name="class">org.mmbase.sms.cmtelecom.CMTelecomSender</property>
-
-    <property name="url">http://www.clubmessage.biz/messaging/Gateway/post-gateway.asp</property>
-    <property name="productId">25</property>
-
-    <!--
-    <property name="customerId"></property>
-    <property name="userLogin"></property>
-    <property name="userPassword"></property>
-    <property name="from"></property>
-    <property name="operator"></property>
-
-    <property name="adminEmail">Michiel.Meeuwissen@gmail.com</property>
-    -->
-
   </properties>
 </util>
