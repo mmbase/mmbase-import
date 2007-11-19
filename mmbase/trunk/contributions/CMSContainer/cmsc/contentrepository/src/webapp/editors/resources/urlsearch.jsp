@@ -13,10 +13,9 @@
 				window.top.opener.selectElement(element, title, src);
 				window.top.close();
 			}
-		}
-		
-		function showInfo(objectnumber) {
-			openPopupWindow('urlinfo', '500', '500', 'urlinfo.jsp?objectnumber='+objectnumber);
+		}	
+		function showInfo(objectnumber,returnUrl) {
+			openPopupWindow('urlinfo', '500', '500', 'urlinfo.jsp?objectnumber='+objectnumber+'&returnUrl='+returnUrl);
         }
 	</script>
 </cmscedit:head>
@@ -86,7 +85,7 @@
 									<img src="../gfx/icons/delete.png" title="<fmt:message key="urlsearch.icon.delete" />" /></a>
 								</mm:hasrank>
 							  </c:if>
-	                          <a href="javascript:showInfo(<mm:field name="number" />)">
+	                          <a href="javascript:showInfo(<mm:field name="number" />,'<%="/editors/resources/UrlAction.do" + request.getAttribute("geturl")%>')">
 	                            <img src="../gfx/icons/info.png" title="<fmt:message key="urlsearch.icon.info" />" /></a>
 							</td>
 							<mm:field name="name" jspvar="name" write="false"/>
