@@ -22,7 +22,7 @@
     -->
 
     <!-- Used by mmbase/notifications/cmtelecom/index.jspx -->
-    <property name="postHost">(127\.0\.0\.1|213.201.221.6)</property>
+    <property name="postHost">(127\.0\.0\.1|213\.201\.221\.6)</property>
 
   </properties>
 </util>
