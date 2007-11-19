@@ -13,7 +13,7 @@
     <field name="type">
       <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="false" />
-        <default value="org.mmbase.notifications.cmtelecom.CMTelecomNotification" />
+        <default value="org.mmbase.notifications.SMSNotification" />
 
         <maxLength value="1024" />
 
