@@ -6,8 +6,11 @@
   -->
   <properties>
     <!--
-    <property name="handlers" type="map">
-      <entry><key>1</key><value>nl.teleacnot.mmbase.sms.Handler</value></entry>
+    <property name="nl.teleacnot.mmbase.sms.Handler" type="map">
+      <entry>
+        <key>prefix</key>
+        <value>TELEAC </value>
+      </entry>
     </property>
     -->
   </properties>

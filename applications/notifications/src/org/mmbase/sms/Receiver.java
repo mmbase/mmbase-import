@@ -13,6 +13,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.xml.UtilReader;
 import java.util.*;
 import java.util.concurrent.*;
+import java.lang.reflect.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * dir&gt;utils/sms_handlers.xml.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Receiver.java,v 1.7 2007-11-16 18:23:36 michiel Exp $
+ * @version $Id: Receiver.java,v 1.8 2007-11-19 14:15:27 michiel Exp $
  **/
 public  class Receiver implements Runnable {
 
@@ -59,17 +60,26 @@ public  class Receiver implements Runnable {
     protected Receiver(String configFile) {
         Map<String, ?> config = new UtilReader(configFile).getProperties();
         log.info("Found " + config);
-        Collection<Map.Entry<String, String>> col = (Collection<Map.Entry<String, String>>) config.get("handlers");
-        if (col == null) {
+        if (config.size() == 0) {
             log.error("No SMS-handlers found");
         } else {
-            for (Map.Entry<String, String> entry : col) {
-                String clazz = entry.getValue();
+            for (Map.Entry<String, ?> entry : config.entrySet()) {
+                String clazz = entry.getKey();
                 try {
-                    handlers.add((Handler) Class.forName(clazz).newInstance());
+                    Class claz = Class.forName(clazz);
+                    Handler handler = (Handler) claz.newInstance();
+                    Collection<Map.Entry<String, String>> properties = (Collection<Map.Entry<String, String>>) entry.getValue();
+                    for (Map.Entry<String, String> property : properties) {
+                        String key   = property.getKey();
+                        String value = property.getValue();
+                        Method method = claz.getMethod("set" + key.substring(0, 1).toUpperCase() + key.substring(1), String.class);
+                        method.invoke(handler, value);
+                    }
+                    handlers.add(handler);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
+
             }
         }
     }
