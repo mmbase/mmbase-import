@@ -32,7 +32,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.13.2.3 2007-06-07 13:52:24 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.13.2.4 2007-11-19 15:17:31 michiel Exp $
  */
 
 public class TreeHelper {
@@ -75,7 +75,9 @@ public class TreeHelper {
             return encodedPath(includePage);
         }
         String lf = getLeafFile("/", objectlist, includePage, true, session);
-        log.debug("findLeafFile = [" + lf + "]");
+        if (log.isDebugEnabled()) {
+            log.debug("findLeafFile = [" + lf + "]");
+        }
         return encodedPath(lf);
     }
 
@@ -304,10 +306,12 @@ public class TreeHelper {
         params.set("loader", htmlRoot);
         params.set("root", MMBaseContext.getHtmlRoot());
         params.set("backwardsCompatible",  backwardsCompatible ? Boolean.TRUE : Boolean.FALSE);
+        String result = (String) f.getFunctionValue(params);
         if (log.isDebugEnabled()) {
-            log.debug("Using " + params);
+            log.debug("Using " + params +  " -> " + result);
         }
-        return (String) f.getFunctionValue(params);
+        return result;
+        
     }
     
     /**
