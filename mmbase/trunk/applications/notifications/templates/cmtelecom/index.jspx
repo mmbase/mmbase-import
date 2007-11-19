@@ -12,7 +12,7 @@
     <mm:import externid="operator" required="true" vartype="integer" jspvar="operator" />
     <mm:import externid="originator" vartype="integer" />
     <mm:import externid="message" required="true" jspvar="message" />
-    <jsp:expression>org.mmbase.sms.Receiver.offer(recipient, operator, message)</jsp:expression>
+    <jsp:expression>org.mmbase.sms.Receiver.offer(new org.mmbase.sms.BasicSMS(recipient, operator, message))</jsp:expression>
     <jsp:scriptlet>
       } else {
       out.println("your IP '" + request.getRemoteAddr() + "' is not allowed to offer SMS's");
