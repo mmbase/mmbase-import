@@ -480,7 +480,7 @@
 			<type>plugin</type>
 			<url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
 		</dependency>
-
+		
 	</dependencies>
 	<build>
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
