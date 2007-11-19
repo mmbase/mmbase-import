@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  *</p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedString.java,v 1.25.2.2 2007-05-23 13:22:59 michiel Exp $
+ * @version $Id: LocalizedString.java,v 1.25.2.3 2007-11-19 15:22:17 michiel Exp $
  * @since MMBase-1.8
  */
 public class LocalizedString implements java.io.Serializable, Cloneable {
@@ -118,23 +118,25 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
         if (locale == null) {
             locale = defaultLocale == null ? Locale.getDefault() : defaultLocale;
         }
+        if (log.isTraceEnabled()) {
+            log.trace("Getting  for " + locale);
+        }
         if (values != null) {
             String result = (String) values.get(locale);
 
             if (result != null) return result;
-
-            String variant  = locale.getVariant();
-            String country  = locale.getCountry();
-            String language = locale.getLanguage();
-
-            if (! "".equals(variant)) {
-                result = (String) values.get(new Locale(language, country));
-                if (result != null) return result;
+            Locale original = locale;
+            while (result == null && locale != null) {
+                locale = degrade(locale, original);
+                result = (String) values.get(locale);
             }
 
-            if (! "".equals(country)) {
-                result = (String) values.get(new Locale(language));
-                if (result != null) return result;
+            if (result == null) {
+                log.trace("no result  found");
+                locale = defaultLocale;
+            } else {
+                log.trace("Found " + result + " for " + locale);
+                return result;
             }
 
             // Some LocalizedString instances may have a default value stored with the key 'null'
@@ -150,11 +152,18 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
                     return result;
                 }
             }
+            locale = original;
         }
 
         if (bundle != null) {
+            //String k = key;
+            //while (k.length() > 0) {
             try {
-                return ResourceBundle.getBundle(bundle, locale).getString(key);
+                String res = ResourceBundle.getBundle(bundle, locale).getString(key);
+                if (log.isTraceEnabled()) {
+                    log.trace("Getting '" + key + "' from bundle " + bundle + " using locale " + locale + " -> " + res);
+                }
+                return res;
             } catch (MissingResourceException mre) {
                 // fall back to key.
                 if (log.isDebugEnabled()) {
@@ -272,7 +281,7 @@ public class LocalizedString implements java.io.Serializable, Cloneable {
      * @param locale The locale to be degraded
      * @param originalLocale The original locale (used to find back the original variant after
      * dropping the country)
-     * @return A degraded Locale of <code>null</code> if the locale could not be degraded any further.
+     * @return A degraded Locale or <code>null</code> if the locale could not be degraded any further.
      *
      * @since MMBase-1.8.5
      */
