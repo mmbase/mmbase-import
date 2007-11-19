@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.32 2007-11-09 17:26:54 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.33 2007-11-19 15:01:36 michiel Exp $
  */
 public class UtilReader {
 
@@ -218,7 +218,7 @@ public class UtilReader {
                                     if (keyorvalue.getTagName().equals("key")) {
                                         key = reader.getElementValue(keyorvalue);
                                     } else {
-                                        value = reader.getElementValue(keyorvalue);
+                                        value = reader.getNodeTextValue(keyorvalue, false);
                                     }
                                 }
                                 if (key != null) {
