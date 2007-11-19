@@ -14,6 +14,10 @@
 	<classpathentry kind="src" path="tasks/src/java"/>
 	<classpathentry kind="src" path="versioning/src/java"/>
 	<classpathentry kind="src" path="workflow/src/java"/>
+	<classpathentry kind="src" path="community/src/java"/>
+	<classpathentry kind="src" path="glossary/src/java"/>
+	<classpathentry kind="src" path="import-excelmenu/src/java"/>
+	<classpathentry kind="src" path="staticdownload/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar"/>
@@ -22,7 +26,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-constructs-0.6.jar" sourcepath="C:/projects/MMBase/ehcache-constructs-0.6-src/src"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar"/>
