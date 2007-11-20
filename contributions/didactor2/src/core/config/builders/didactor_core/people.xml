@@ -494,6 +494,9 @@
     <function key="createInbox">
       <class>nl.didactor.builders.PeopleEmailFunctions</class>
     </function>
+    <function key="forwardEmail">
+      <class>nl.didactor.builders.PeopleEmailFunctions</class>
+    </function>
 
   </functionlist>
 
