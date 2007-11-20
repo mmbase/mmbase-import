@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2007-10-10</date>
-    <edition>$Id: email.xml,v 1.12 2007-11-20 11:08:53 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.13 2007-11-20 11:17:15 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -50,32 +50,29 @@
   <section>
     <title>Sending our first email (oneshot)</title>
     <para>Sending one email from mmbase is as simple as creating a object !, This works because the email objects are "smart" objects that can react when you create/talk to them. Here is a a taglib example :</para>
-			<programlisting format="linespecific">
-			<![CDATA[
-  (from example1.jsp)
-
-  <!--  create the email node -->
-  <mm:createnode id="mail1" type="email">
-         <mm:setfield name="from">Daniel <daniel@mmbase.org></mm:setfield>
-         <mm:setfield name="to">daniel@mmbase.org</mm:setfield>
-         <mm:setfield name="cc">michiel@mmbase.org,documentation@mmbase.org</mm:setfield>
-         <mm:setfield name="subject">my first mmbase email !!</mm:setfield>
-         <mm:setfield name="body">Just testing email</mm:setfield>
-         <mm:function name="mail" /><!-- mail the email node -->
-   </mm:createnode>
-
-			]]>
-			</programlisting>
-			<para>
-        Here the Node is created and filled the with the fields we
-        need, most of the normal headers can be set (to, from, reply-to, subject, cc, bcc, body),
-        and even before it is commited, it is send with the 'mail'
-        function on it. The mail function has one parameter 'type', which defaults to 'oneshot' (so it is
-        not supplied here). The oneshot type means the email will be deleted once its mailed, for reasons
-        you will find out in following examples its not deleted right away but only after the email expire
-        time passed.
-      </para>
-	</section>
+    <programlisting format="linespecific">
+      <![CDATA[
+(from example1.jsp)
+<!--  create the email node -->
+<mm:createnode id="mail1" type="email">
+  <mm:setfield name="from">Daniel <daniel@mmbase.org></mm:setfield>
+  <mm:setfield name="to">daniel@mmbase.org</mm:setfield>
+  <mm:setfield name="cc">michiel@mmbase.org,documentation@mmbase.org</mm:setfield>
+  <mm:setfield name="subject">my first mmbase email !!</mm:setfield>
+  <mm:setfield name="body">Just testing email</mm:setfield>
+  <mm:function name="mail" /><!-- mail the email node -->
+</mm:createnode> ]]>
+    </programlisting>
+    <para>
+      Here the Node is created and filled the with the fields we
+      need, most of the normal headers can be set (to, from, reply-to, subject, cc, bcc, body),
+      and even before it is commited, it is send with the 'mail'
+      function on it. The mail function has one parameter 'type', which defaults to 'oneshot' (so it is
+      not supplied here). The oneshot type means the email will be deleted once its mailed, for reasons
+      you will find out in following examples its not deleted right away but only after the email expire
+      time passed.
+    </para>
+  </section>
   <section>
     <title>Finding out what happened to the email</title>
     <para>
@@ -84,37 +81,35 @@
     </para>
 			<programlisting format="linespecific">
 			<![CDATA[
-  (from example2.jsp)
+(from example2.jsp)
+<!--  create the email node -->
+<mm:createnode id="mail1" type="email">
+  <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
+  <mm:setfield name="to">daniel@mmbase.org</mm:setfield>
+  <mm:setfield name="subject">my first mmbase email !!</mm:setfield>
+  <mm:setfield name="body">Just testing email</mm:setfield>
+</mm:createnode>
 
- <!--  create the email node -->
-  <mm:createnode id="mail1" type="email">
-         <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
-         <mm:setfield name="to">daniel@mmbase.org</mm:setfield>
-         <mm:setfield name="subject">my first mmbase email !!</mm:setfield>
-         <mm:setfield name="body">Just testing email</mm:setfield>
-   </mm:createnode>
+<!-- mail the email node -->
+<mm:node referid="mail1">
+  <mm:functioncontainer>
+    <mm:param name="type" value="oneshot" />
+    <mm:function name="mail" />
+  </mm:functioncontainer>
+</mm:node>
 
-   <!-- mail the email node -->
-   <mm:node referid="mail1">
-        <mm:functioncontainer>
-          <mm:param name="type" value="oneshot" />
-          <mm:function name="mail" />
-        </mm:functioncontainer>
-   </mm:node>
-
- <!--check if mmbase could mail the message -->
-  <mm:node referid="mail1">
-         <mm:field name="mailstatus">
-                 <mm:compare value="1">
-                         Mail was delivered at <mm:field name="mailedtime"><mm:time format=":LONG.LONG" /></mm:field>
-                  </mm:compare>
-                   <mm:compare value="2">
-                         Mail failed
-                    </mm:compare>
-          </mm:field>
-   </mm:node>
-      ]]>
-			</programlisting>
+<!--check if mmbase could mail the message -->
+<mm:node referid="mail1">
+  <mm:field name="mailstatus">
+    <mm:compare value="1">
+      Mail was delivered at <mm:field name="mailedtime"><mm:time format=":LONG.LONG" /></mm:field>
+    </mm:compare>
+    <mm:compare value="2">
+      Mail failed
+    </mm:compare>
+  </mm:field>
+</mm:node> ]]>
+      </programlisting>
       <para>
         Here you see 2 parts in the first we create the node and it is given an
         id so we can refer to it for sending and finding out what happened.
@@ -137,30 +132,25 @@
         users and mails them.  The application sends the mail to a specific address, so it is needed
         you provide the 'to' field like info@mmbase.org in this example.
       </para>
-      <programlisting format="linespecific">
-			<![CDATA[
+      <programlisting format="linespecific"><![CDATA[
+<!--  create the email node -->
+<mm:createnode id="mail1" type="email">
+  <mm:setfield name="to">info@mmbase.org</mm:setfield>
+  <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
+  <mm:setfield name="subject">MMBase group mail</mm:setfield>
+  <mm:setfield name="body">Hi to all our group members !</mm:setfield>
+</mm:createnode>
 
+<!-- get the group node we want to mail -->
+<mm:node id="group1" number="groups.testgroep" />
 
-  <!--  create the email node -->
-  <mm:createnode id="mail1" type="email">
-           <mm:setfield name="to">info@mmbase.org</mm:setfield>
-           <mm:setfield name="from">daniel@mmbase.org</mm:setfield>
-           <mm:setfield name="subject">MMBase group mail</mm:setfield>
-           <mm:setfield name="body">Hi to all our group members !</mm:setfield>
-   </mm:createnode>
+<!-- create a relation to the group -->
+<mm:createrelation source="mail1" destination="group1" role="related" />
 
-   <!-- get the group node we want to mail -->
-   <mm:node id="group1" number="groups.testgroep" />
-
-  <!-- create a relation to the group -->
-  <mm:createrelation source="mail1" destination="group1" role="related" />
-
-  <!-- start the mailer and wait for it to finish -->
-  <mm:node referid="mail1">
-    <mm:function name="mail" />
-  </mm:node>
-
-
+<!-- start the mailer and wait for it to finish -->
+<mm:node referid="mail1">
+  <mm:function name="mail" />
+</mm:node>
 			]]>
 			</programlisting>
       <para>
@@ -247,7 +237,6 @@
 Daniel Ockeloen with user number : 320
 Piet Hein with user number : 343
 
-
 It will include for Daniel Ockeloen
 
 example5_subject.jsp?usernumber=320 for the subject
@@ -261,13 +250,13 @@ example5_body.jsp?usernumer=343 for the body
       </programlisting>
       <programlisting format="linespecific"><![CDATA[The example5_subject.jsp :
 
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud>
-<mm:import externid="usernumber" />
-<mm:node number="$usernumber">update for
-<mm:field name="firstname" />
-<mm:field name="lastname" /> !
-</mm:node>
+  <mm:import externid="usernumber" />
+  <mm:node number="$usernumber">update for
+    <mm:field name="firstname" />
+    <mm:field name="lastname" /> !
+  </mm:node>
 </mm:cloud>
 
 ]]>
@@ -277,25 +266,24 @@ example5_body.jsp?usernumer=343 for the body
       As you can see there is nothing special in this page, it imports the usernumber param, opens the node and creates a subject line using the first and last name of the user. What is special is that MMBase will automatically remove all returns from the subject line since returns are not allowed in subject lines.</para>
       <programlisting format="linespecific">
 <![CDATA[The example5_body.jsp
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud>
-<mm:import externid="usernumber" />
-<mm:node number="$usernumber">
-Hi <mm:field name="firstname" /> <mm:field name="lastname" /> !
-<p />
-Nice to see you again, These are your settings :
-<p>
-firstname : <mm:field name="firstname" /><br/>
-lastname : <mm:field name="lastname" /><br/>
-email : <mm:field name="email" /><br/>
-account : <mm:field name="account" /><br/>
-password : <mm:field name="password" /><br/>
-<p>
-Bye,<br />
-MMBase Email Team.
-</mm:node>
+  <mm:import externid="usernumber" />
+  <mm:node number="$usernumber">
+    <p>Hi <mm:field name="firstname" /> <mm:field name="lastname" /> !</p>
+    <p>Nice to see you again, These are your settings :</p>
+    <p>
+    firstname : <mm:field name="firstname" /><br/>
+    lastname : <mm:field name="lastname" /><br/>
+    email : <mm:field name="email" /><br/>
+    account : <mm:field name="account" /><br/>
+    password : <mm:field name="password" /><br/>
+    </p>
+    <p>
+    Bye,<br />
+    MMBase Email Team.</p>
+  </mm:node>
 </mm:cloud>
-
 ]]>
       </programlisting>
       <para>
@@ -305,17 +293,17 @@ MMBase Email Team.
         the html &gt;br /> and &gt;p> tabs. If they are used in a body url we will convert them
         before emailing to single and dubble returns.
       </para>
+      <programlisting format="linespecific">
       <![CDATA[Todo : Tell about multipart mail (example6.jsp),  mailing attachments (example7.jsp)
-
 <mm:setfield name="body">
   <multipart id="plaintext" type="text/plain" encoding="UTF-8">
-  This is plain text !
+    This is plain text !
   </multipart>
   <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-  <h1>This is in html !</h1>
+    <h1>This is in html !</h1>
   </multipart>
 </mm:setfield>
-]]>
+      ]]></programlisting>
 
     </section>
     <section id="receiving">
@@ -397,7 +385,6 @@ MMBase Email Team.
             'sendmail' module has a init-parameter 'noforwarding' with value 'true'.
           </para>
         </section>
-
 
       </section>
     </section>
