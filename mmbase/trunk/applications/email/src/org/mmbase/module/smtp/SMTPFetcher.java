@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.5 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.6 2007-11-20 09:22:42 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -236,7 +236,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
 
                 for (StringTokenizer st = new StringTokenizer(domains, ","); st.hasMoreTokens();) {
                     if (recipient.domain.toLowerCase().endsWith(st.nextToken().toLowerCase())) {
-                        log.service("Will accept");
+                        log.debug("Will accept");
                         MailHandler.MailBoxStatus status = handler.addMailbox(recipient.user, recipient.domain);
                         if (status != MailHandler.MailBoxStatus.OK) {
                             log.service("Mail for " + recipient.user + " rejected: no mailbox");
@@ -244,7 +244,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                             writer.flush();
                             return;
                         }
-                        log.service("Mail for " + recipient.user + " accepted");
+                        log.debug("Mail for " + recipient.user + " accepted");
                         writer.write("250 Yeah, that user lives here. Bring on the data!\r\n");
                         writer.flush();
                         recipients.add(recipient);
