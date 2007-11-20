@@ -25,7 +25,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.5 2007-11-20 10:37:10 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.6 2007-11-20 11:07:48 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -293,9 +293,13 @@ public class CloudMailHandler implements MailHandler {
                     try {
                         log.service("Forwarding " + email + " to " + mailadres + " because function 'forwardEmail' in node '" + user.getNumber() + "' returned that address.");
 
-                        SendMail sendmail = (SendMail) org.mmbase.module.Module.getModule("sendmail");
-                        sendmail.startModule();
-                        sendmail.sendMail(mailadres, email);
+                        SendMail sendMail = (SendMail) org.mmbase.module.Module.getModule("sendmail");
+                        if ("true".equals(sendMail.getInitParameter("noforwarding"))) {
+                            log.service("Canceling forward because 'noforwarding property of sendmail is true");
+                        } else {
+                            sendMail.startModule();
+                            sendMail.sendMail(mailadres, email);
+                        }
                     } catch (Throwable e) {
                         errorCount++;
                         log.warn("Exception in forward " + e.getMessage(), e);
