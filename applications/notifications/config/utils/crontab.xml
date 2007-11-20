@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
-<util>
-  <properties>
-    <property name="sms_sender">*/5 * * * *|org.mmbase.sms.cmtelecom.SenderJob||sms_sender.xml</property>
-  </properties>
-</util>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<form-schema id="edit_keywords">
-   <field name="word"><prompt>trefwoord</prompt></field>
-   <!-- <field name="description" ftype="html" rows="20"><prompt>omschrijving</prompt></field> -->
-   <list include="config/items/add_items_related_natmm.xml" />
-   <list include="config/images/zoek_contentelement_related_images.xml" />
-</form-schema>
