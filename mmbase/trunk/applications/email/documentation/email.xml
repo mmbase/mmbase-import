@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2007-10-10</date>
-    <edition>$Id: email.xml,v 1.11 2007-11-20 11:00:06 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.12 2007-11-20 11:08:53 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -392,7 +392,9 @@ MMBase Email Team.
           </para>
           <para>
             If the node associated with the person receiving the email has a function 'forwardEmail'
-            which returns a non-empty value, then the message will also be forwarded to that address.
+            which returns a non-empty value, then the message will also be forwarded to that
+            address. This behaviour may be disable alltogether (in test environments), if the
+            'sendmail' module has a init-parameter 'noforwarding' with value 'true'.
           </para>
         </section>
 
