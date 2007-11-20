@@ -20,7 +20,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.5 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.6 2007-11-20 09:23:15 michiel Exp $
  */
 public class SMTPListener extends Thread {
 
@@ -59,6 +59,10 @@ public class SMTPListener extends Thread {
         this.properties = properties;
     }
 
+
+    public ServerSocket getSocket() {
+        return ssocket;
+    }
     /**
      * Main run method; it will listen for new connections and spawn
      * new threads for incoming connections.
