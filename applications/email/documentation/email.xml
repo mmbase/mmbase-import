@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2007-10-10</date>
-    <edition>$Id: email.xml,v 1.10 2007-11-20 10:37:10 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.11 2007-11-20 11:00:06 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -347,20 +347,31 @@ MMBase Email Team.
         <para>
           Mail which was received by one of the methods mentioned before, is then processed by
           <emphasis>MailHandler</emphasis>s. The mail handlers are configured in a file
-          conf/util/mailhandlers.xml.
+          &lt;config dir&gt;/utils/mailhandlers.xml. The mailhandlers are used in the order as they are present in
+          that resource. Every mailhandler can either handle or ignore the message, if it ignores
+          the message, it is passed to the next one.
         </para>
-        <section id="cloudmailhandler">
-          <title>CloudMailHandler</title>
+        <para>
+          The default configurations looks like this.
+        </para>
+        <programlisting format="linespecific"><![CDATA[
+   <properties>
+     <property name="classes" type="map">
+      <entry><key>org.mmbase.module.smtp.Forwarder</key></entry>
+      <entry><key>org.mmbase.module.smtp.VerifyEmailMailHandler</key></entry>
+      <entry><key>org.mmbase.module.smtp.CloudMailHandler</key></entry>
+    </property>
+  </properties>
+]]></programlisting>
+        <para>
+          This also shows a few implementations, which will be a bit elaborated on in the next sections.
+        </para>
+        <section id="forwardmailhandler">
+          <title>Forwarder</title>
           <para>
-            The implementation org.mmbase.module.smtp.CloudMailHandler will convert the received
-            emails into MMBase objects. This gives the possiblity to have a webmail. TODO: implement a
-            simple webmail (the one in didactor is too complex and messy).
+            The Mailhandler 'Forwarder' only forwards email. In a resource &lt;config
+            dir&gt;/utils/forwards.xml is maintained what addresses are forwarded, and to where.
           </para>
-          <para>
-            If the node associated with the person receiving the email has a function 'forwardEmail'
-            which return a non-empty value, then the message will also be forwarded to that address.
-          </para>
-
         </section>
         <section id="verifymailhandler">
           <title>VerifyEmailMailHandler</title>
@@ -372,12 +383,19 @@ MMBase Email Team.
             recipient can reply to such an email.
           </para>
         </section>
-        <section id="forwardmailhandler">
-          <title>Forwarder</title>
+        <section id="cloudmailhandler">
+          <title>CloudMailHandler</title>
           <para>
-            The Mailhandler 'Forwarder' only forwards email.
+            The implementation org.mmbase.module.smtp.CloudMailHandler will convert the received
+            emails into MMBase objects. This gives the possiblity to have a webmail. TODO: implement a
+            simple webmail (the one in didactor is too complex and messy).
+          </para>
+          <para>
+            If the node associated with the person receiving the email has a function 'forwardEmail'
+            which returns a non-empty value, then the message will also be forwarded to that address.
           </para>
         </section>
+
 
       </section>
     </section>
