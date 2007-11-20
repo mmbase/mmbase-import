@@ -24,7 +24,7 @@ import java.util.Properties;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.22 2006-03-24 18:00:30 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.22.2.1 2007-11-20 16:18:03 michiel Exp $
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -32,7 +32,8 @@ public class XsltTag extends ContextReferrerTag  {
 
     private static final Logger log = Logging.getLoggerInstance(XsltTag.class);
 
-    private Attribute ext = Attribute.NULL;
+    private Attribute ext     = Attribute.NULL;
+    private Attribute version = Attribute.NULL;
     private FormatterTag formatter;
 
 
@@ -45,6 +46,9 @@ public class XsltTag extends ContextReferrerTag  {
      */
     public void setExtends(String e) throws JspTagException {
         ext = getAttribute(e);
+    }
+    public void setVersion(String v) throws JspTagException {
+        version = getAttribute(v);
     }
 
     public int doStartTag() throws JspTagException{
@@ -64,7 +68,7 @@ public class XsltTag extends ContextReferrerTag  {
     }
 
     /**
-     * 
+     *
      */
     public int doEndTag() throws JspTagException {
         String xsltString;
@@ -80,21 +84,23 @@ public class XsltTag extends ContextReferrerTag  {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), xsltString);
         }
-        if (formatter != null) { 
+        if (formatter != null) {
             String totalString;
             if (xsltString.startsWith("<xsl:stylesheet")) {
                 totalString = xsltString;
             } else {
+                String v = version.getString(this);
+                if ("".equals(v)) v = "1.0";
                 totalString =
-                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" " + 
-                    " xmlns:taglib=\"" +  Functions.class.getName() + "\"" + 
-                    " xmlns:mm=\"" +  Functions.class.getName() + "\"" + 
+                    "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" " +
+                    " xmlns:taglib=\"" +  Functions.class.getName() + "\"" +
+                    " xmlns:mm=\"" +  Functions.class.getName() + "\"" +
                     " xmlns:node=\"" + org.mmbase.bridge.util.xml.NodeFunction.class.getName() + "\""+
-                    " xmlns:o=\"" + org.mmbase.bridge.util.xml.Generator.NAMESPACE + "\"" + 
+                    " xmlns:o=\"" + org.mmbase.bridge.util.xml.Generator.NAMESPACE + "\"" +
                     " xmlns:mmxf=\"http://www.mmbase.org/xmlns/mmxf\"" +
                     " extension-element-prefixes=\"mm taglib node\"" +
                     " exclude-result-prefixes=\"node mmxf o mm taglib node\"" +
-                    " version=\"1.0\"" + 
+                    " version=\"" + v + "\"" +
                     " >" +
                     xsltString +
                     "</xsl:stylesheet>";
