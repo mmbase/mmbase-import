@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2007-10-10</date>
-    <edition>$Id: email.xml,v 1.9 2007-10-11 20:59:47 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.10 2007-11-20 10:37:10 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -230,7 +230,7 @@
       the usernumber so you can create email based on it.</para>
       <programlisting format="linespecific">
         <![CDATA[(from example5.jsp)
-                 
+
  <!--  create the email node -->
  <mm:createnode id="mail1" type="email">
    <mm:setfield name="from">daniel@submarine.nl</mm:setfield>
@@ -272,7 +272,7 @@ example5_body.jsp?usernumer=343 for the body
 
 ]]>
       </programlisting>
-      
+
       <para>
       As you can see there is nothing special in this page, it imports the usernumber param, opens the node and creates a subject line using the first and last name of the user. What is special is that MMBase will automatically remove all returns from the subject line since returns are not allowed in subject lines.</para>
       <programlisting format="linespecific">
@@ -316,7 +316,7 @@ MMBase Email Team.
   </multipart>
 </mm:setfield>
 ]]>
-      
+
     </section>
     <section id="receiving">
       <title>Receiving email</title>
@@ -349,19 +349,36 @@ MMBase Email Team.
           <emphasis>MailHandler</emphasis>s. The mail handlers are configured in a file
           conf/util/mailhandlers.xml.
         </para>
-        <para>
-          The implementation org.mmbase.module.smtp.CloudMailHandler will convert the received
-          emails into MMBase objects. This gives the possiblity to have a webmail. TODO: implement a
-          simple webmail (the one in didactor is too complex and messy).
-        </para>
-        <para>
-          Another provided mail-handler is org.mmbase.module.smtp.VerifyEmailMailHandler. This one
-          work in conjuction with the 'verify_email' data type which is provided by the email
-          component too. A builder which has next to some 'email' field also a 'verify_email' field,
-          will automaticly send emails containing the request to 'validate' the address. The
-          recipient can reply to such an email. 
-        </para>
-        
+        <section id="cloudmailhandler">
+          <title>CloudMailHandler</title>
+          <para>
+            The implementation org.mmbase.module.smtp.CloudMailHandler will convert the received
+            emails into MMBase objects. This gives the possiblity to have a webmail. TODO: implement a
+            simple webmail (the one in didactor is too complex and messy).
+          </para>
+          <para>
+            If the node associated with the person receiving the email has a function 'forwardEmail'
+            which return a non-empty value, then the message will also be forwarded to that address.
+          </para>
+
+        </section>
+        <section id="verifymailhandler">
+          <title>VerifyEmailMailHandler</title>
+          <para>
+            Another provided mail-handler is org.mmbase.module.smtp.VerifyEmailMailHandler. This one
+            work in conjuction with the 'verify_email' data type which is provided by the email
+            component too. A builder which has next to some 'email' field also a 'verify_email' field,
+            will automaticly send emails containing the request to 'validate' the address. The
+            recipient can reply to such an email.
+          </para>
+        </section>
+        <section id="forwardmailhandler">
+          <title>Forwarder</title>
+          <para>
+            The Mailhandler 'Forwarder' only forwards email.
+          </para>
+        </section>
+
       </section>
     </section>
 </article>

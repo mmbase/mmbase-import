@@ -14,6 +14,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.module.Module;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.functions.*;
 import java.util.*;
 import java.io.*;
 import javax.mail.*;
@@ -24,7 +25,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.4 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.5 2007-11-20 10:37:10 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -284,18 +285,24 @@ public class CloudMailHandler implements MailHandler {
 
             //TODO: send to this user if he wants to
             Node user = mailbox.user;
-            if (user.getBooleanValue("email-mayforward")) {
-                try {
-                    String mailadres = user.getStringValue("email");
-                    log.service("Forwarding " + email + " to " + mailadres);
+            try {
+                Function forwardEmail = user.getFunction("forwardEmail");
+                Parameters params = forwardEmail.createParameters();
+                String mailadres = forwardEmail.getFunctionValue(params).toString();
+                if (mailadres != null && ! "".equals(mailadres)) {
+                    try {
+                        log.service("Forwarding " + email + " to " + mailadres + " because function 'forwardEmail' in node '" + user.getNumber() + "' returned that address.");
 
-                    SendMail sendmail = (SendMail)org.mmbase.module.Module.getModule("sendmail");
-                    sendmail.startModule();
-                    sendmail.sendMail(mailadres, email);
-                } catch (Throwable e) {
-                    errorCount++;
-                    log.warn("Exception in forward " + e.getMessage(), e);
+                        SendMail sendmail = (SendMail) org.mmbase.module.Module.getModule("sendmail");
+                        sendmail.startModule();
+                        sendmail.sendMail(mailadres, email);
+                    } catch (Throwable e) {
+                        errorCount++;
+                        log.warn("Exception in forward " + e.getMessage(), e);
+                    }
                 }
+            } catch (NotFoundException nfe) {
+                log.debug("No function 'forwardEmail' on user node, so will not forward");
             }
         }
         if (deliverCount > 0) {
@@ -516,7 +523,7 @@ public class CloudMailHandler implements MailHandler {
         if (properties.containsKey("mailboxbuilder")) {
             String where = null;
             String mailboxbuilder = properties.get("mailboxbuilder");
-            log.service("Finding mailbox of type " + mailboxbuilder + " for user " + userNode.getNumber());
+            log.debug("Finding mailbox of type " + mailboxbuilder + " for user " + userNode.getNumber());
             NodeManager mailboxesManager = cloud.getNodeManager(mailboxbuilder);
             NodeQuery query = Queries.createRelatedNodesQuery(userNode, mailboxesManager, null, null);
             if (properties.containsKey("mailboxbuilder.where")) {
@@ -538,6 +545,7 @@ public class CloudMailHandler implements MailHandler {
                 case CREATE:
 
                     try {
+                        log.service("Creting inbox for user " + userNode + " because one is missing");
                         Node mailbox = userNode.getFunctionValue("createInbox", null).toNode();
                         mailboxes.add(new MailBox(mailbox, userNode));
                         return MailBoxStatus.OK;

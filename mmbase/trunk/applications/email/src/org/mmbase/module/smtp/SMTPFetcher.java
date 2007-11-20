@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.6 2007-11-20 09:22:42 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.7 2007-11-20 10:37:10 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -438,6 +438,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (MessagingException e) {
             log.error(e);
         }
+        log.debug("Handling message with " + handler);
         MailHandler.MessageStatus s =  handler.handleMessage(message);
         return s;
     }

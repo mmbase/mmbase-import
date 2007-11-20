@@ -22,7 +22,7 @@ import org.mmbase.applications.email.SendMail;
 /**
  * Forwarding MailHandler. Fill {@link #forwards} to make this actually do something.
  *
- * @version $Id: Forwarder.java,v 1.1 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: Forwarder.java,v 1.2 2007-11-20 10:37:10 michiel Exp $
  */
 public class Forwarder implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(Forwarder.class);
@@ -48,6 +48,9 @@ public class Forwarder implements MailHandler {
 
 
     public MessageStatus handleMessage(Message message) {
+
+        if (mailboxes.size() == 0) return MessageStatus.IGNORED;
+
         try {
             SendMail sendmail = (SendMail)org.mmbase.module.Module.getModule("sendmail");
             //forwarded.setSender(message.getFrom());
