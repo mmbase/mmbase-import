@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.7 2007-11-06 10:31:09 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.8 2007-11-20 12:53:45 michiel Exp $
  * @see ContextTag
  */
 
@@ -104,13 +104,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     protected static PageContext cleanThreadPageContexts(LinkedList stack) {
         if (stack.size() == 0) return null;
 
-        PageContext proposal = (PageContext) stack.peek();
+        PageContext proposal = stack.size() > 0 ? (PageContext) stack.get(0) : null;
         while(stack.size() > 0) {
             if (ok(proposal)) {
                 return proposal;
             } else {
-                stack.poll();
-                proposal = (PageContext) stack.peek();
+                stack.remove(0);
+                proposal = stack.size() > 0 ? (PageContext) stack.get(0) : null;
             }
         }
         return null;
