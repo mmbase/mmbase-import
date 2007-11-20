@@ -2,6 +2,7 @@ package nl.didactor.builders;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.*;
+import nl.didactor.component.Component;
 import org.mmbase.applications.email.MailBox;
 import java.util.*;
 
@@ -31,6 +32,16 @@ public class PeopleEmailFunctions {
         Relation r = rm.createRelation(node, mailbox);
         r.commit();
         return mailbox;
+    }
+    public String forwardEmail() {
+        Component c = Component.getComponent("email");
+        Object value = c.getUserSetting("mayforward", "" + node.getNumber(), node.getCloud());
+        if (Boolean.TRUE.equals(value)) {
+            return node.getStringValue("email");
+        } else {
+            return null;
+        }
+
     }
 }
 
