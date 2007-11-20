@@ -182,7 +182,7 @@
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <required value="false" />
         <pattern value="NL|BE|AW|AN|SR|BG|FR|CH|RO" />
-        <enumeration enforce="encreate">
+        <enumeration enforce="oncreate">
           <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
                  basename="org.mmbase.datatypes.resources.iso3166" />
         </enumeration>
