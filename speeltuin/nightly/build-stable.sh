@@ -45,9 +45,11 @@ echo ${antcommand}
 #${antcommand} clean > ${builddir}/messages.log 2> ${builddir}/errors.log
 
 cd ${BUILD_HOME}/stable/nightly-build/cvs/mmbase
+
+rm -rf ${builddir}/*
 echo update cvs to `pwd`  >  ${builddir}/messages.log 2> ${builddir}/errors.log
 
-if ( false ) ; then 
+if ( true ) ; then 
     for i in '.' 'applications' 'contributions' ; do
 	echo updating `pwd`/$i 
 	${CVS} -q update -d -P -l -D "${cvsversion}" -r "${revision}" $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
@@ -75,20 +77,28 @@ echo "options : ${stableoptions}"
 
 echo "Ant Command: ${antcommand} ${stableoptions}  " 
 
-echo cleaning
-find . -name build | xargs rm -r
+if ( true ) ; then 
+    echo cleaning
+    find . -name build | xargs rm -r
+    
+    echo "Starting nightly build" + `pwd`
+    ${antcommand} bindist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd applications
+    ${antcommand} all ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ../contributions
+    ${antcommand} all ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ..
+    ${antcommand} srcdist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    ${antcommand} war ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    
+    ${CVS} log -rMMBase-1_8 -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
+fi
 
-echo "Starting nightly build" + `pwd`
-${antcommand} bindist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-cd applications
-${antcommand} all ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-cd ../contributions
-${antcommand} all ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-cd ..
+for i in `find . -regex ".*/mmbase-.*\.zip"` ; do
+    cp  -a $i ${builddir}
+done
 
-${CVS} log -rMMBase-1_8 -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
-
-for i in `find . -name *.zip` ; do
+for i in `find . -regex ".*/mmbase.*\.war"` ; do
     cp  -a $i ${builddir}
 done
 
