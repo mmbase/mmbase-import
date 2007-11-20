@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.4 2007-11-14 16:25:32 michiel Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.5 2007-11-20 17:15:06 michiel Exp $
 
  */
 
@@ -273,7 +273,15 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
                                                                  getMethod("getThreadPageContext").invoke(null));
                         HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
                         RequestDispatcher requestDispatcher = req.getRequestDispatcher(includeUrl);
-                        HttpServletResponse response = new GenericResponseWrapper((HttpServletResponse) pageContext.getResponse());
+                        HttpServletResponse response = new GenericResponseWrapper((HttpServletResponse) pageContext.getResponse()) {
+                                // don't wrap status to including request.
+                                public void setStatus(int status) {
+                                }
+                                public void sendError(int sc, String mes) {
+                                }
+                                public void sendError(int sc) {
+                                }
+                            };
                         requestDispatcher.include(requestWrapper, response);
                         include.append(response.toString());
                     } catch (Exception e) {
