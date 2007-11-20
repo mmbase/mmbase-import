@@ -30,6 +30,14 @@
   <property name="jdbc.connections"  value="20" />
 
 
+  <property name="chat.server.logfile" value="${catalina.base}/logs/ircserver.log" />
+  <property name="chat.engine.logfile" value="${catalina.base}/logs/ircengine.log" />
+
+  <property name="chat.internal.port"      value="5557" />
+  <property name="chat.external.flashport" value="5557" />
+  <property name="chat.external.ircport"   value="6667" />
+
+
   <!-- defaults to mysql (should be hsql?)  -->
   <property name="jdbc.url"          value="jdbc:mysql://$HOST:$PORT/$DBM?useUnicode=true&amp;amp;characterEncoding=UTF-8" />
   <property name="jdbc.port"         value="3306" />
