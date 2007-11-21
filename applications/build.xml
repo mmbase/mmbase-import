@@ -195,7 +195,7 @@ Applications build file
   </target>
 
   <target name="largeobjects" depends="mmbase">
-     <ant dir="largeobjects"  target="dependent.package" inheritAll="false">
+     <ant dir="largeobjects"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
