@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
+<!DOCTYPE project
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
@@ -10,5 +10,6 @@
 	<!-- property name="project.extra.path" location="../classsecurity/build/mmbase-classsecurity.jar" /-->
   <property name="project.config.dir.includes"   value="security/**" />
   <property name="project.config.jar.includes"   value="**" />
+  <property name="java.source.version" value="1.4" />
   &base;
 </project>
