@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author
- * @version $Id: BestelAction.java,v 1.18 2007-07-27 08:53:36 evdberg Exp $
+ * @version $Id: BestelAction.java,v 1.19 2007-11-21 12:54:05 evdberg Exp $
  *
  * @struts:action name="BestelForm"
  *                path="/vastgoed/BestelAction"
@@ -179,8 +179,8 @@ public class BestelAction  extends Action {
 
          // send mail
          Node emailNode = cloud.getNodeManager("email").createNode();
-         emailNode.setValue("from",NMIntraConfig.fromEmailAddress);
-         emailNode.setValue("to", NMIntraConfig.gisEmailAddress);
+         emailNode.setValue("from",NMIntraConfig.getFromEmailAddress());
+         emailNode.setValue("to", NMIntraConfig.getGisEmailAddress());
          emailNode.setValue("subject", "Nieuwe kaarten besteld - " + bestelForm.getNaam());
          emailNode.setValue("replyto", "");
          emailNode.setValue("body",

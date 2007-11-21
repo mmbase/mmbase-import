@@ -117,9 +117,9 @@ if(application.getAttribute("request_url")==null) {
    application.setAttribute("request_url", javax.servlet.http.HttpUtils.getRequestURL(request).toString());
 }
 
-if(!(new java.io.File( NatMMConfig.incomingDir )).exists()) {
+if(!(new java.io.File( NatMMConfig.getIncomingDir() )).exists()) {
    %><div style="position:absolute;color:red;font-weight:bold;padding:30px;">
-         WARNING: The settings in NatMMConfig are incorrect: <%= NatMMConfig.incomingDir %> is not a directory on this server.
+         WARNING: The settings in NatMMConfig are incorrect: <%= NatMMConfig.getIncomingDir() %> is not a directory on this server.
          Please change the settings and place a new natmm.jar
    </div><%
 }

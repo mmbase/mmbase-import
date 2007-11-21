@@ -10,7 +10,7 @@
 <mm:cloud method="http" rank="basic user" jspvar="cloud">
 <%
     boolean debug = false;
-    String fotoDir =  NMIntraConfig.incomingDir + "fotos/";
+    String fotoDir =  NMIntraConfig.getIncomingDir() + "fotos/";
     NodeList thisnodesList =  cloud.getNodeManager("medewerkers").getList(null,null,null);
     int i = 0;
     int numberOfPhotos = 0;

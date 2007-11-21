@@ -32,8 +32,8 @@ if(isMember) {
          </mm:field>
       </mm:list>
       <%
-      String messageTitle = "Alleen toegankelijk voor " + NatMMConfig.companyName + " leden";
-      String messageText = "Deze pagina is alleen toegankelijk voor leden van " + NatMMConfig.companyName + ".<br/>";
+      String messageTitle = "Alleen toegankelijk voor " + NatMMConfig.getCompanyName() + " leden";
+      String messageText = "Deze pagina is alleen toegankelijk voor leden van " + NatMMConfig.getCompanyName() + ".<br/>";
       String messageText2 = "";
       String submitButton = "LOG IN ALS LID";
       %><mm:relatednodes type="formulier" max="1" jspvar="thisForm"><%

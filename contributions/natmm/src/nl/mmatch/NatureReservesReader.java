@@ -78,11 +78,11 @@ public class NatureReservesReader implements Runnable {
                 
         String logSubject = "Log import website";
 
-        String toEmailAddress = NatMMConfig.toEmailAddress;
-        String fromEmailAddress = NatMMConfig.fromEmailAddress; 
-        String root = NatMMConfig.rootDir;
-        String incoming = NatMMConfig.incomingDir;
-        String temp = NatMMConfig.tempDir;;
+        String toEmailAddress = NatMMConfig.getToEmailAddress();
+        String fromEmailAddress = NatMMConfig.getFromEmailAddress(); 
+        String root = NatMMConfig.getRootDir();
+        String incoming = NatMMConfig.getIncomingDir();
+        String temp = NatMMConfig.getTempDir();
         
         String natureReservesFile = root + "Natuurgebieden.csv";
             

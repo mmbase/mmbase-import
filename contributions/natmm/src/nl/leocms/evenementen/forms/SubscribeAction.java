@@ -341,7 +341,7 @@ public class SubscribeAction extends Action {
    public static String [] getPhoneAndEmail(Node thisParent, String newline) {
 
       String bookPhone = "(035) 655 99 55";
-      String bookEmail = NatMMConfig.fromCADAddress;
+      String bookEmail = NatMMConfig.getFromCADAddress();
       String phoneNumbers = "";
       String emailAddresses = "";
 
@@ -507,10 +507,10 @@ public class SubscribeAction extends Action {
          emailMsg.append("\nA.u.b. contact opnemen met " + thisParticipantName);
          
          Node emailNode = cloud.getNodeManager("email").createNode();
-         emailNode.setValue("to", NatMMConfig.fromCADAddress);
-         emailNode.setValue("from", NatMMConfig.fromCADAddress);
+         emailNode.setValue("to", NatMMConfig.getFromCADAddress());
+         emailNode.setValue("from", NatMMConfig.getFromCADAddress());
          emailNode.setValue("subject", "Internet aanmelding ontvangen met bijzonderheden");
-         emailNode.setValue("replyto", NatMMConfig.fromCADAddress);
+         emailNode.setValue("replyto", NatMMConfig.getFromCADAddress());
          emailNode.setValue("body", emailMsg.toString());
          emailNode.commit();
          emailNode.getValue("mail(oneshotkeep)");         
@@ -521,7 +521,7 @@ public class SubscribeAction extends Action {
    
    private static String sendConfirmEmail(Cloud cloud, Node thisEvent, Node thisParent, Node thisSubscription, Node thisParticipant, String confirmUrl, String extraText) {
 
-      String fromEmailAddress = NatMMConfig.fromCADAddress;
+      String fromEmailAddress = NatMMConfig.getFromCADAddress();
       String emailSubject = "";
 
       if(thisEvent!=null && thisSubscription !=null && thisParticipant!=null) {
@@ -546,7 +546,7 @@ public class SubscribeAction extends Action {
 
             // set mail reciever
             if(confirmUrl.equals("confirmation-period-expired")) {
-               emailNode.setValue("to", toEmailAddress + "," + NatMMConfig.fromCADAddress);
+               emailNode.setValue("to", toEmailAddress + "," + NatMMConfig.getFromCADAddress());
             } else {
                emailNode.setValue("to", toEmailAddress);
             }
@@ -842,7 +842,7 @@ public class SubscribeAction extends Action {
                      thisParticipant = subscribeForm.createParticipant(cloud,action,thisEvent,thisSubscription,"-1",subscribeForm.getParticipantsPerCat(0));
                }
 
-               String confirmUrl = NatMMConfig.liveUrl[0] + "events.jsp";
+               String confirmUrl = NatMMConfig.getLiveUrl() + "events.jsp";
                confirmUrl += "?action=confirm&s=" + thisSubscription.getStringValue("datum_inschrijving") + "_" + thisSubscription.getStringValue("number");
                Node thisParent = cloud.getNode(subscribeForm.getParent());
                
