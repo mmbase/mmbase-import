@@ -1,28 +1,19 @@
 <?xml version="1.0"?>
-<!DOCTYPE project 
- [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
->
+<project name="MMBase database largeobjects" default="jar" basedir=".">
 
-<project name="MMBase database largeobjects" default="dependent.jar" basedir=".">
-  
   <property name="project.name"      value="largeobjects"/>
   <property name="project.package"   value="org/mmbase" />
   <property name="project.comment"   value="MMBase database largeobjects implementation" />
 
   <property name="project.jars.dir"        value="build" />
   <property name="project.jars.includes"   value="postgresql-8.2-506.jdbc3.jar" />
+  <property name="java.source.version" value="1.5" />
 
-  &base;
+  <import file="../buildbase-include.xml" />
+
   <property file="build.properties.default" />
-  
-  <target name="dependent.package"       depends="dependent.jar,package" />
 
-  <target name="dependent.jar" description="Create mmbase-largeobjects.jar" depends="postgresql.jar,project.manifest,jar">
-  </target>
-
-  <target name="dependent.install" description="Install largeobjects implementation" 
-	  depends="dependent.jar,install" >
-  </target>
+  <target name="jar" description="Create mmbase-largeobjects.jar" depends="postgresql.jar,buildbase.jar" />
 
   <target name="postgresql.jar" description="Get postgresql jar">
     <antcall target="download">
