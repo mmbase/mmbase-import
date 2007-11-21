@@ -43,6 +43,9 @@ Applications build file
   <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,resources,largeobjects,notifications" />
   <target name="all19" depends="init,all18" />
 
+  <target name="all18_14" depends="init,taglib,editwizard,dove,crontab,cloudcontext,rmmci,vwms,scan,clustering,oscache-cache,media,packaging,community" />
+  <target name="all18_15" depends="init,email,richtext,jumpers,largeobjects,commandserver,notifications" />
+
   <target name="all"   depends="init,all19" />
 
 
