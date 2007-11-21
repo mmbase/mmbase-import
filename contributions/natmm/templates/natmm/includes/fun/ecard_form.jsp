@@ -44,7 +44,7 @@
          <% } %>
       </td>
       <td valign="top" align="center">
-         <img src="media/ecard_stamp.jpg" alt="Groeten van <%= NatMMConfig.companyName %>!!" width="91" height="92" border="0" align="right"><br clear="all"><br><br>
+         <img src="media/ecard_stamp.jpg" alt="Groeten van <%= NatMMConfig.getCompanyName() %>!!" width="91" height="92" border="0" align="right"><br clear="all"><br><br>
          <table border="0" cellspacing="0" cellpadding="0">
             <tr><td style="font-weight:bold;" colspan="2">AAN</td></tr>
             <tr>

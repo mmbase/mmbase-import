@@ -48,7 +48,7 @@
 		</ul>
       <a href="<%= request.getParameter("ref") %>">Terug naar het overzicht vacatures</a>
       <br/><br/>
-      <iframe src="<%= NatMMConfig.liveUrl[0] + "vacatures.jsp?p=vacatures&preview=on" %>" style="padding:0px;width:780px;height:400px;"></iframe>
+      <iframe src="<%= NatMMConfig.getLiveUrl() + "vacatures.jsp?p=vacatures&preview=on" %>" style="padding:0px;width:780px;height:400px;"></iframe>
 <%	} else { %>
 		<h3 color="red"><b>Uw vacature is niet gepubliceerd op www.natuurmonumenten.nl!</h3>
       <br/>

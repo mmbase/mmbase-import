@@ -1,6 +1,6 @@
 <%
-String fromEmail = NatMMConfig.fromEmailAddress;
-String toEmail = NatMMConfig.toEmailAddress;
+String fromEmail = NatMMConfig.getFromEmailAddress();
+String toEmail = NatMMConfig.getToEmailAddress();
 %>
 <mm:node number="<%= paginaID %>" jspvar="thisPage">
    <%

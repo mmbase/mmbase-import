@@ -65,9 +65,9 @@ if(isPosting) {
            /><mm:field name="title" jspvar="page_title"  vartype="String" write="false"
                ><mm:createnode type="email" id="thismail"
                    ><mm:setfield name="subject"><%= "Bevestigen plaatsing bericht op " + thisPage.getStringValue("titel") %></mm:setfield
-                   ><mm:setfield name="from"><%= NMIntraConfig.fromEmailAddress %></mm:setfield
+                   ><mm:setfield name="from"><%= NMIntraConfig.getFromEmailAddress() %></mm:setfield
                    ><mm:setfield name="to"><%= emailId %></mm:setfield
-                   ><mm:setfield name="replyto"><%= NMIntraConfig.fromEmailAddress %></mm:setfield
+                   ><mm:setfield name="replyto"><%= NMIntraConfig.getFromEmailAddress() %></mm:setfield
                    ><mm:setfield name="body">
                        <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                        </multipart>

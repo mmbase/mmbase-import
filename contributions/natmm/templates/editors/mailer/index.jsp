@@ -10,7 +10,7 @@
 // 4. the newsletters only contain absolute urls e.g. http://www.submarine.nl/media/spacer.gif instead of media/spacer.gif
 
 String message = "";
-String newsLetterFrom = NatMMConfig.fromEmailAddress;
+String newsLetterFrom = NatMMConfig.getFromEmailAddress();
 String newsLetterUri = "";
 String newsLetterUrl = HttpUtils.getRequestURL(request).toString();
 newsLetterUrl = newsLetterUrl.substring(0,newsLetterUrl.substring(7).indexOf("/")+7); 

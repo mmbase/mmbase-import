@@ -35,7 +35,7 @@ if(request.getParameter("memberid")!=null) {
 
          %><%@include file="/editors/mailer/util/memberid_set.jsp" %>
          <%
-         String emailAddresses = NatMMConfig.toEmailAddress;
+         String emailAddresses = NatMMConfig.getToEmailAddress();
          String pages_title = "";
          String subject = "";
          %>
@@ -52,7 +52,7 @@ if(request.getParameter("memberid")!=null) {
             <mm:relatednodes type="email" max="1" constraints="<%= "email.subject ='" + subject + "'" %>" id="emailsent" />
             <mm:notpresent referid="emailsent">
                <mm:createnode type="email" id="mail1">
-                  <mm:setfield name="from"><%= NatMMConfig.fromEmailAddress %></mm:setfield>
+                  <mm:setfield name="from"><%= NatMMConfig.getFromEmailAddress() %></mm:setfield>
                   <mm:setfield name="subject"><%= subject %></mm:setfield>
                   <mm:setfield name="replyto"><%= emailAddresses %></mm:setfield>
                   <mm:setfield name="mailtype">3</mm:setfield>

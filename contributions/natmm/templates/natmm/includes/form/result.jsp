@@ -20,7 +20,7 @@ if(referer!=null) {
    String okLink = "Naar de homepage";
    String okTitleDefault = "Bedankt voor uw bericht.";
    String okMessageDefault = "We zullen u zo spoedig mogelijk een reactie sturen.";
-   String responseTextDefault = "E-mail verstuurd vanaf " + NatMMConfig.liveUrl[0] + " / pagina: ";
+   String responseTextDefault = "E-mail verstuurd vanaf " + NatMMConfig.getLiveUrl() + " / pagina: ";
 
    String noAnswer = "-";
 
@@ -30,7 +30,7 @@ if(referer!=null) {
 
    String pages_title = "";
 
-   String defaultEmailAddress = NatMMConfig.fromEmailAddress;
+   String defaultEmailAddress = NatMMConfig.getFromEmailAddress();
    
    Vector okTitle = new Vector();
    Vector okMessage = new Vector();
@@ -72,7 +72,7 @@ if(referer!=null) {
             if(!thisForm.getStringValue("emailadressen").equals("")) { 
                emailAddress.add(thisForm.getStringValue("emailadressen").trim());
             } else {
-               emailAddress.add(NatMMConfig.toEmailAddress);
+               emailAddress.add(NatMMConfig.getToEmailAddress());
             }
             boolean extraLineBreak = false;
             if(thisForm.getStringValue("titel_de")!=null&&thisForm.getStringValue("titel_de").equals("1")) {

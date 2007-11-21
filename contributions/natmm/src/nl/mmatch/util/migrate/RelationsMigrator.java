@@ -21,7 +21,7 @@ public class RelationsMigrator {
 
    public static void run() throws Exception{
 
-      String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
+      String sFolder = NMIntraConfig.getIncomingDir() + "NMIntraXML/";
      
       log.info("RelationsMigrator.run()");
       log.info("Importing files from " + sFolder);

@@ -9,7 +9,7 @@
 <mm:cloud name="mmbase" method="http" jspvar="cloud">
 <mm:import externid="objectnumber"/>
 	<mm:node referid="objectnumber">
-   <form action="<%= nl.leocms.applications.NMIntraConfig.sCorporateEditors + "vacatures/vacature_receive.jsp" %>" method="POST">
+   <form action="<%= nl.leocms.applications.NMIntraConfig.getSCorporateEditors() + "vacatures/vacature_receive.jsp" %>" method="POST">
 	<% ArrayList al = new ArrayList();
 	   al.add("titel"); 
 		al.add("embargo"); 

@@ -30,7 +30,7 @@
 String [] fields = { "externid", "lastname", "suffix", "initials", "gender", "firstname", "dayofbirth", "privatephone", "companyphone", "cellularphone", "email", "job" };
 String [] values = new String[fields.length];
 
-String dataFile = NMIntraConfig.incomingDir + "medewerkers.csv";
+String dataFile = NMIntraConfig.getIncomingDir() + "medewerkers.csv";
 
 BufferedReader dataFileReader = new BufferedReader(new FileReader(dataFile));
 String nextLine = dataFileReader.readLine() + ";";

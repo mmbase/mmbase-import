@@ -349,7 +349,7 @@ public class OptionedStats {
       String sAttachmentId = "";
       NodeList nl = cloud.getList("","events_attachments","events_attachments.number","events_attachments.filename = '" + fileName + "'",null,null,null,false);
       if(nl.isEmpty()) {
-         WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.tempDir + fileName));
+         WritableWorkbook workbook = Workbook.createWorkbook(new File(NatMMConfig.getTempDir() + fileName));
          WritableSheet sheet = workbook.createSheet("CAD Statistieken", 0);
          WritableCellFormat wrappedText = new WritableCellFormat(WritableWorkbook.ARIAL_10_PT);
          wrappedText.setWrap(true);
@@ -413,7 +413,7 @@ public class OptionedStats {
          workbook.write();
          workbook.close();
 
-         String sFile = NatMMConfig.tempDir + fileName;
+         String sFile = NatMMConfig.getTempDir() + fileName;
          File f = new File(sFile);
          int fsize = (int)f.length();
          byte[] thedata = new byte[fsize];

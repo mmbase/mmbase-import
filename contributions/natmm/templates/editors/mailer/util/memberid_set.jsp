@@ -5,7 +5,7 @@
 session.setAttribute("memberid",(memberid == null ? "-1" : memberid));
 
 int maxAge = 60 * 60 * 24 * 365; // one year for members
-if(memberid!=null && memberid.equals(NatMMConfig.tmpMemberId)) {
+if(memberid!=null && memberid.equals(NatMMConfig.getTmpMemberId())) {
    maxAge = 60 * 60 * 24; // one day for users with a temporary Id
 }
 Cookie thisCookie = null;

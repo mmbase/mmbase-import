@@ -15,7 +15,7 @@
    int thisImageNumber = 1;
    String imageId = request.getParameter("i");
    String offsetID= request.getParameter("o");
-   String pageTitle = " " + NatMMConfig.companyName + ": ";
+   String pageTitle = " " + NatMMConfig.getCompanyName() + ": ";
    String pageText = "<table cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"430\">"; %>
 <%@include file="../includes/splitimagelist.jsp"%>
 <% String pageUrl = "slideshow.jsp?o=" + offsetID+ "&r=" + rubriekID; %>
