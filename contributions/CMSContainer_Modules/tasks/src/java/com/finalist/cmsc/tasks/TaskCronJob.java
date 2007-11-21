@@ -69,6 +69,7 @@ public class TaskCronJob implements CronJob {
 			Node contentNode = contentElementListIterator.nextNode();
 			if (!TasksUtil.hasTask(contentNode)) {
 				Node userNode = ContentElementUtil.getOwner(contentNode);
+				// TODO use bundle of user language
 				String description = bundle.getString("task.cronjob.expire");
 				TasksUtil.createExpireTask(cloud, contentNode.getStringValue(ContentElementUtil.TITLE_FIELD), description,
 						contentNode.getDateValue(ContentElementUtil.EXPIREDATE_FIELD), userNode, contentNode.getNodeManager()

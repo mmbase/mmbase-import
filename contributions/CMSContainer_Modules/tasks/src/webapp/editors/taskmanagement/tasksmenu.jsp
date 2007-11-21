@@ -17,7 +17,7 @@
                <a href="<mm:url page="/editors/WizardInitAction.do">
 					<mm:param name="objectnumber" value="new"/>
 					<mm:param name="contenttype" value="task"/>
-       				<mm:param name="returnurl" value="taskmanagement/tasklist.jsp"/>
+       				<mm:param name="returnurl" value="taskmanagement/TaskCreate.do"/>
 			   </mm:url>" target="rightpane"><fmt:message key="tasks.new" /></a>
 				</li>               
 			</ul>
