@@ -43,7 +43,7 @@ Applications build file
   <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,resources,largeobjects,notifications" />
   <target name="all19" depends="init,all18" />
 
-  <target name="all18_14" depends="init,taglib,editwizard,dove,crontab,cloudcontext,rmmci,vwms,scan,clustering,oscache-cache,media,packaging,community" />
+  <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,rmmci,vwms,scan,clustering,oscache-cache,media,packaging,community" />
   <target name="all18_15" depends="init,email,richtext,jumpers,largeobjects,commandserver,notifications" />
 
   <target name="all"   depends="init,all19" />
@@ -211,7 +211,7 @@ Applications build file
   </target>
 
   <target name="largeobjects" depends="mmbase">
-     <ant dir="largeobjects"  target="dependent.package" inheritAll="false">
+     <ant dir="largeobjects"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
