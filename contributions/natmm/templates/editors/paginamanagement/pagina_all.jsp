@@ -144,7 +144,7 @@ if ((request.getRequestURL()).indexOf("internet") < 0) cookieVarName = "selected
 	<span style="width:600px">
 	<%
       PaginaTreeModel model = new PaginaTreeModel(cloud);
-      HTMLTree t = new HTMLTree(model,"pagina");
+	   HTMLSiteNavigatorTree t = new HTMLSiteNavigatorTree(model,"pagina");
 
       // set subsiteid
       String pSubSiteId = null;

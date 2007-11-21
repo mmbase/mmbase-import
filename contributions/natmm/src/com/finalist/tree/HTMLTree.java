@@ -22,7 +22,6 @@ package com.finalist.tree;
 
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.NoSuchElementException;
 
 import javax.swing.tree.TreeModel;
 
@@ -52,8 +51,6 @@ public class HTMLTree {
    public String treeId = "";
 
    public TreeModel model;
-   
-   public int subSiteId = 0;
 
    public HTMLTree() {
       model = null;
@@ -132,8 +129,8 @@ public class HTMLTree {
       return expandAll;
    }
 
-	public void renderCookieScripts(PrintWriter pw) {
-	   pw.println("function saveCookie(name,value,days) {");
+   public void renderCookieScripts(PrintWriter pw) {
+      pw.println("function saveCookie(name,value,days) {");
       pw.println("   if (days) {");
       pw.println("      var date = new Date();");
       pw.println("      date.setTime(date.getTime()+(days*24*60*60*1000))");
@@ -160,8 +157,8 @@ public class HTMLTree {
       pw.println("      if(lastclicknode!=null) { clickNode(lastclicknode); }");
       pw.println("   }");
       pw.println("}");
-	}
-	
+   }
+   
    public void render(Writer out) {
       PrintWriter pw = new PrintWriter(out);
       pw.println("<script>");
@@ -221,29 +218,13 @@ public class HTMLTree {
             preHtml += "<img src='" + buildImgUrl("vertline.gif") + "' align='center' valign='middle' border='0'/>";
          }
 
-         if (level == 0) {
-            // get subsite node
-            Object child = null;
-            try {
-               child = model.getChild(node, subSiteId);
-            } catch (NoSuchElementException ex) {
-               child = model.getChild(node, 0);   
-            }   
+         int count = model.getChildCount(node);
+         for (int i = 0; i < count; i++) {
+            Object child = model.getChild(node, i);
             out.print(preHtml);
-            String img = getImage(model.isLeaf(child), true);
-            renderNode(child, level + 1, out, base + "_" + subSiteId, preHtml, img, true);            
-            
-         } else {
-            // get child nodes
-            int count = model.getChildCount(node);
-            for (int i = 0; i < count; i++) {
-               Object child = model.getChild(node, i);
-               out.print(preHtml);
-               String img = getImage(model.isLeaf(child), (i == count - 1));
-               renderNode(child, level + 1, out, base + "_" + i, preHtml, img, (i == count - 1));
-            }
+            String img = getImage(model.isLeaf(child), (i == count - 1));
+            renderNode(child, level + 1, out, base + "_" + i, preHtml, img, (i == count - 1));
          }
-         
          out.println("</div>\n");
       }
    }
@@ -276,12 +257,5 @@ public class HTMLTree {
       this.model = model;
    }
 
-   /**
-    * @param subSiteId
-    */
-   public void setSubSiteId(int subSiteId) {
-      this.subSiteId = subSiteId;
-   }   
-   
 }
 
