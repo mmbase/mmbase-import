@@ -33,8 +33,8 @@ Contributions build file
   <target name="all.not.compiling" depends="thememanager,multilanguagegui,mmbob" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
 
-  <target name="all18_14" depends="init,aselect,mmbar,thememanager,multilanguagegui" />
-  <target name="all18_15" depends="init,lucene,mmbob" />
+  <target name="all18_14" depends="init,aselect,mmbar,thememanager,multilanguagegui,principletracker" />
+  <target name="all18_15" depends="init,lucene,mmbob,calendar,poll,didactor" />
 
   <target name="jars" depends="all">
     <copy todir="${contributions.build.dir}/jars" flatten="true" preservelastmodified="true" >
