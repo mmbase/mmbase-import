@@ -27,7 +27,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/struts/jars/struts-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-2.3.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/xml-apis/jars/xml-apis-1.3.03.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
