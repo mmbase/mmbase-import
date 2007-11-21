@@ -12,7 +12,7 @@
     <ant dir="${applications.dir}/dove" inheritAll="false" />
   </target>
 
-  <target name="jar" depends="dove,buidbase.jar" />
+  <target name="jar" depends="dove,buildbase.jar" />
 
   <!-- installs tinymce in the templates directory -->
   <target name="tinymce">
