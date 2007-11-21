@@ -20,7 +20,7 @@ public class NMIntraToNatMMigrator {
 
   public static void run() throws Exception{
 
-      String sFolder = NMIntraConfig.incomingDir + "NMIntraXML/";
+      String sFolder = NMIntraConfig.getIncomingDir() + "NMIntraXML/";
 
       MigrateUtil mu = new MigrateUtil();
 

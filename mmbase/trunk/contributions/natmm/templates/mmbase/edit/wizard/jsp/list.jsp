@@ -10,7 +10,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.5 2006-09-14 14:32:58 henk Exp $
+     * @version  $Id: list.jsp,v 1.6 2007-11-21 13:04:27 evdberg Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -271,7 +271,7 @@ for (int i=0; i < results.size(); i++) {
        }
 		 if (lPublishDate<nowSec){
           String sViewTitle = "Klik hier om deze vacature op de landelijke website te bekijken.";
-		 	 String sUrlView = "<a href=\"" + nl.leocms.applications.NMIntraConfig.sCorporateWebsite + "vacatures.jsp?p=vacatures&v=" + item.getIntValue("number") 
+		 	 String sUrlView = "<a href=\"" + nl.leocms.applications.NMIntraConfig.getSCorporateWebsite() + "vacatures.jsp?p=vacatures&v=" + item.getIntValue("number") 
                + "&preview=on\" title=\"" + sViewTitle + "\"><img src='"+pathPrefix+"/img/preview.gif' border='0' alt='" + sViewTitle + "'/></a>";
 			 addField(obj, "", sUrlView, "string");
 		 }

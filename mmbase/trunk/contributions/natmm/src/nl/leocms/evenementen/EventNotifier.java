@@ -36,7 +36,7 @@ public class EventNotifier implements Runnable {
 
    public int sendEventNotification(Cloud cloud, Node thisEvent, String eventType, String eventMessage) {
       
-      String fromEmailAddress = NatMMConfig.fromCADAddress;
+      String fromEmailAddress = NatMMConfig.getFromCADAddress();
       String emailSubject = eventType + " " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue();
       int nEmailSend = 0;
 
@@ -246,16 +246,16 @@ public class EventNotifier implements Runnable {
       if(type.equals("plain")) { newline = "\n"; }
       return "Dit bericht is verstuurd in het kader van de driemaandelijkse controle op de in de website gebruikte emailaddressen." + newline
          + "Stuur alstublieft ter controle een reply op deze email naar" + newline + newline
-         + "Email:" + NatMMConfig.toEmailAddress + newline + newline
+         + "Email:" + NatMMConfig.getToEmailAddress() + newline + newline
          + "Bij voorbaat dank, de webmasters." + newline + newline;
    }
    
    public String checkEmailAccounts(Cloud cloud) {
       
       TreeSet emailAccounts = new TreeSet();
-      emailAccounts.add(NatMMConfig.fromEmailAddress);
-      emailAccounts.add(NatMMConfig.fromCADAddress);
-      emailAccounts.add(NatMMConfig.toSubscribeAddress);
+      emailAccounts.add(NatMMConfig.getFromEmailAddress());
+      emailAccounts.add(NatMMConfig.getFromCADAddress());
+      emailAccounts.add(NatMMConfig.getToSubscribeAddress());
       NodeList nlFormulieren = cloud.getNodeManager("formulier").getList("emailadressen != ''",null,null);
       for(int n=0; n<nlFormulieren.size(); n++) {
          String thisEmailAddres =  nlFormulieren.getNode(n).getStringValue("emailadressen") + ";";
@@ -268,8 +268,8 @@ public class EventNotifier implements Runnable {
          }
       }
       Node emailNode = cloud.getNodeManager("email").createNode();
-      emailNode.setValue("from", NatMMConfig.toEmailAddress);
-      emailNode.setValue("replyto", NatMMConfig.toEmailAddress);
+      emailNode.setValue("from", NatMMConfig.getToEmailAddress());
+      emailNode.setValue("replyto", NatMMConfig.getToEmailAddress());
       emailNode.setValue("body",
              "<multipart id=\"plaintext\" type=\"text/plain\" encoding=\"UTF-8\">"
                 + getCheckAccountMessage("plain")
@@ -349,15 +349,15 @@ public class EventNotifier implements Runnable {
 
       String emailSubject = "Notificatie van " + requestUrl;
 
-      String toEmailAddress = NatMMConfig.toEmailAddress;
-      String fromEmailAddress = NatMMConfig.fromEmailAddress; 
+      String toEmailAddress = NatMMConfig.getToEmailAddress();
+      String fromEmailAddress = NatMMConfig.getFromEmailAddress(); 
 
       log.info("Started updateEventDB");
       String logMessage =  "\n<br>Started updateEventDB " + new Date();
 
-      Boolean isProduction = new Boolean("@natmmconfig.is.production@");
+      boolean isProduction = NatMMConfig.isProductionApplication();
       
-      if(isProduction.booleanValue()) {
+      if(isProduction) {
          logMessage += "\n<br>Site is production; reminder emails are send";
          log.info("Site is production; reminder emails are send");            
          

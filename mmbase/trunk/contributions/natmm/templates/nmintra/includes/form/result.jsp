@@ -89,7 +89,7 @@ String username =  "";
           answers.add(answerValue);
           // *** hack: to send email about news to specific address ***
           if(paginaID.equals(sWvjePageId)&&answerValue.indexOf("nieuws")>-1) {
-            formulier_emailaddresses = NMIntraConfig.newsEmailAddress;
+            formulier_emailaddresses = NMIntraConfig.getNewsEmailAddress();
           }
           q++;
         } 

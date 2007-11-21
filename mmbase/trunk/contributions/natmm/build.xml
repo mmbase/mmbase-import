@@ -104,6 +104,8 @@
 			</fileset>
 		</copy>
 
+                <mkdir dir="${basedir}/natmm/META-INF" />
+                
 	</target>
 
 	<target name="buildjaronly">
@@ -159,12 +161,20 @@
 			<fileset dir="${build.dir}/natmm" />
 		</copy>
 
+                <mkdir dir="${build.dir}/mmbase-webapp/META-INF" />
+                
+                <copy todir="${build.dir}/mmbase-webapp/META-INF" overwrite="true">
+                   <fileset dir="${basedir}/META-INF/natmm-internet">
+                   </fileset>
+                   <filterset filtersfile="${conf.dir}/natmmconfig.properties"/>
+                </copy>
+                
 		<copy todir="${build.dir}/mmbase-webapp/WEB-INF/config" overwrite="true">
 			<fileset dir="${build.dir}/natmm/WEB-INF/config">
 				<include name="**/jdbc.xml" />
 				<include name="**/mmbaseroot.xml" />
 			   <include name="**/log4j.xml" />
-            <include name="**/sendmail.xml" />
+                           <include name="**/sendmail.xml" />
 			</fileset>
 			<filterset filtersfile="${conf.dir}/filters.properties"/>
 		</copy>		
@@ -182,7 +192,7 @@
 			</fileset>
 			<filterset filtersfile="${conf.dir}/filters.properties"/>
 		</copy>		
-		
+                
 		<!-- delete mysql connector from the lib directory -->
 		<delete file="${build.dir}/mmbase-webapp/WEB-INF/lib/mysql-connector-java-5.0.5-bin.jar"/>
 		
@@ -200,6 +210,14 @@
 			<fileset dir="${build.dir}/natmm" />
 		</copy>
 
+                <mkdir dir="${build.dir}/mmbase-webapp/META-INF" />
+                
+                <copy todir="${build.dir}/mmbase-webapp/META-INF" overwrite="true">
+                   <fileset dir="${basedir}/META-INF/natmm-intranet">
+                   </fileset>
+                   <filterset filtersfile="${conf.dir}/nmintraconfig.properties"/>
+                </copy>
+                
 		<copy todir="${build.dir}/mmbase-webapp/WEB-INF/config" overwrite="true">
 			<fileset dir="${build.dir}/natmm/WEB-INF/config">
 				<include name="**/jdbc.xml" />

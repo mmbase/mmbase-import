@@ -29,13 +29,13 @@ hostName = hostName.substring(0,hostName.lastIndexOf("/"));
             
 try {
    String msg_subject = "Er ligt een ecard klaar van een vriend(in)";
-   if(NatMMConfig.companyName.equals("Natuurmonumenten")) { 
+   if(NatMMConfig.getCompanyName().equals("Natuurmonumenten")) { 
       msg_subject = "Er ligt een ecard klaar van een natuurvriend(in)";
    }
    String msg_body = "Beste " + toname + ",\n\n";
-   msg_body += fromname + " heeft je een " +  NatMMConfig.companyName + " e-card gestuurd. Klik op de link om je e-card op te halen.\n\n";
+   msg_body += fromname + " heeft je een " +  NatMMConfig.getCompanyName() + " e-card gestuurd. Klik op de link om je e-card op te halen.\n\n";
    msg_body += hostName+"/ecard.jsp?id="+imgID+"&card="+account+"\n\n";
-   if(NatMMConfig.companyName.equals("Natuurmonumenten")) { 
+   if(NatMMConfig.getCompanyName().equals("Natuurmonumenten")) { 
       msg_body += "Op de hoogte blijven van de laatste natuurnieuwtjes? Meld je aan en ontvang maandelijks de Natuurbrief.\nhttp://www.natuurmonumenten.nl/natuurbrief\n\n";
       msg_body += "Natuurmonumenten beschermt de natuur in Nederland. Help mee en steun ons:\nhttp://www.natuurmonumenten.nl/steunons\n\n";
    }
@@ -43,7 +43,7 @@ try {
    props.put( "mail.smtp.host", "localhost" );
    Session s = Session.getInstance( props, null );
    MimeMessage message = new MimeMessage( s );
-   InternetAddress from = new InternetAddress(NatMMConfig.fromEmailAddress, NatMMConfig.companyName, "iso8859-1" );
+   InternetAddress from = new InternetAddress(NatMMConfig.getFromEmailAddress(), NatMMConfig.getCompanyName(), "iso8859-1" );
    message.setFrom( from );
    InternetAddress to = new InternetAddress( emailNew );
    message.addRecipient( Message.RecipientType.TO, to );
@@ -52,7 +52,7 @@ try {
    Transport.send( message );
    sendOK = true; 
    %>
-   <strong>Uw <%= NatMMConfig.companyName %> e-card is verzonden!</strong><br/><br/>
+   <strong>Uw <%= NatMMConfig.getCompanyName() %> e-card is verzonden!</strong><br/><br/>
    Verstuurd naar: <strong><%= toemail %></strong><br/>
    Inhoud tekst: <%= body %><br/><br/>
    Nog een e-card verzenden? <a href="ecard.jsp">Klik hier.</a><br/><br/>

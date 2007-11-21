@@ -70,9 +70,9 @@ if(isPosting) {
            /><mm:field name="title" jspvar="page_title"  vartype="String" write="false"
                ><mm:createnode type="email" id="thismail"
                    ><mm:setfield name="subject"><%= "Bevestigen plaatsing bericht op " + thisPage.getStringValue("titel") %></mm:setfield
-                   ><mm:setfield name="from"><%= NatMMConfig.fromEmailAddress %></mm:setfield
+                   ><mm:setfield name="from"><%= NatMMConfig.getFromEmailAddress() %></mm:setfield
                    ><mm:setfield name="to"><%= emailID %></mm:setfield
-                   ><mm:setfield name="replyto"><%= NatMMConfig.fromEmailAddress %></mm:setfield
+                   ><mm:setfield name="replyto"><%= NatMMConfig.getFromEmailAddress() %></mm:setfield
                    ><mm:setfield name="body">
                        <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                        </multipart>

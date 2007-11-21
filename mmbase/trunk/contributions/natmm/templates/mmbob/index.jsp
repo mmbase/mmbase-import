@@ -156,7 +156,7 @@ if(NatMMConfig.hasClosedUserGroup) {
                       <%
                    } else {
                       %>
-                      Alleen <%= NatMMConfig.companyName %> abonnees kunnen mee discussi&euml;ren op dit forum.
+                      Alleen <%= NatMMConfig.getCompanyName() %> abonnees kunnen mee discussi&euml;ren op dit forum.
                       <a href="/lidworden" target="_blank">klik hier om lid te worden</a>
                       <%
                    } %>
