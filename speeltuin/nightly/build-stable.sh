@@ -8,17 +8,17 @@ echo setting PATH, JAVA HOME and ANT HOME
 export PATH=/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/ccs/bin:/home/nightly/bin:/usr/local/ant/bin
 
 ## java 1.4
-#export JAVA_HOME=/usr/java/jdk
+JAVA_HOME14=/usr/java/jdk
+JAVAC14=${JAVA_HOME14}/bin/javac
 
 #$ java 1.5
-## We build with java 1.5 nowadays.
-export JAVA_HOME=/home/nightly/jdk
-export JAVAC=${JAVA_HOME}/bin/javac
+JAVA_HOME15=/home/nightly/jdk
+JAVAC15=${JAVA_HOME15}/bin/javac
 
 export ANT_HOME=/usr/ant
-export CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
-export FILTER="/home/nightly/filterlog"
-export BUILD_HOME="/home/nightly"
+CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
+FILTER="/home/nightly/filterlog"
+BUILD_HOME="/home/nightly"
 
 # settings
 antcommand="/usr/bin/ant"
@@ -40,65 +40,91 @@ revision=MMBase-1_8
 builddir="/home/nightly/builds/stable/${version}"
 mkdir -p ${builddir}
 
-echo cleaning
+me=`cd -P -- "$(dirname -- "$0")" && pwd -P`/$0
+
+
+echo cleaning $0
 echo ${antcommand}
 #${antcommand} clean > ${builddir}/messages.log 2> ${builddir}/errors.log
 
-cd ${BUILD_HOME}/stable/nightly-build/cvs/mmbase
+STABLE=${BUILD_HOME}/stable/nightly-build/cvs/mmbase
+
+cd ${STABLE}
 
 rm -rf ${builddir}/*
-echo update cvs to `pwd`  >  ${builddir}/messages.log 2> ${builddir}/errors.log
+echo update cvs to `pwd`  using -r '${cvsversion}' | tee  ${builddir}/messages.log
 
-if ( true ) ; then 
-    for i in '.' 'applications' 'contributions' ; do
-	echo updating `pwd`/$i 
-	${CVS} -q update -d -P -l -D "${cvsversion}" -r "${revision}" $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+if ( true ) ; then
+    for i in '.' 'applications' 'contributions'; do
+	echo updating `pwd`/$i | tee -a ${builddir}/messages.log
+	${CVS} -q update -d -P -l -D "${cvsversion}" -r "${revision}"  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
+    for i in 'applications/build.xml' 'contributions/build.xml' 'download.xml' ; do
+	echo updating `pwd`/$i to  HEAD | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
+	${CVS} -q update -d -P -l -D "${cvsversion}" -A  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    done
+    echo "Build from ${revision} ${cvsversion} against java 1.4 are" > ${builddir}/README
     for i in 'src' 'documentation' 'tests' 'config' 'html' \
 	'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/crontab' 'applications/cloudcontext' \
 	'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
-	'applications/largeobjects' 'applications/packaging' \
+	'applications/media' 'applications/packaging' 'applications/community' \
 	'contributions/aselect' 'contributions/mmbar' 'contributions/thememanager' 'contributions/multilanguagegui' \
-	; do 
-      echo updating `pwd`/$i 
-      ${CVS} -q update -d -P -D "${cvsversion}" -r "${revision}" $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+	; do
+      echo updating `pwd`/$i | tee -a ${builddir}/messages.log
+      echo $i >> ${builddir}/README
+      ${CVS} -q update -d -P -D "${cvsversion}" -r "${revision}" $i | tee  -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     echo "==========UPDATING TO HEAD========" >> ${builddir}/messages.log
+    echo "Build from HEAD ${cvsversion} against java 1.5 are" >> ${builddir}/README
     for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/didactor2' 'applications/richtext' \
+	'applications/jumpers' 'applications/largeobjects' 'applications/commandserver' 'applications/notifications' \
 	; do
-      echo updating to HEAD `pwd`/$i 
-      echo updating to HEAD `pwd`/$i  >> ${builddir}/messages.log    
-      ${CVS} -q update -d -P -D "${cvsversion}" -A $i >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+	echo updating to HEAD `pwd`/$i | tee -a   ${builddir}/messages.log
+	echo $i >> ${builddir}/README
+	${CVS} -q update -d -P -D "${cvsversion}" -A $i | tee -a   ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
-
 fi
 stableoptions="-Doptional.lib.dir=${optdir} -Dbuild.documentation=false -Ddestination.dir=${builddir} -Ddownload.dir=${downloaddir}"
 echo "options : ${stableoptions}"
 
-echo "Ant Command: ${antcommand} ${stableoptions}  " 
+echo "Ant Command: ${antcommand} ${stableoptions}  "
 
-if ( true ) ; then 
-    echo cleaning
+if ( true ) ; then
+    echo cleaning in ${STABLE} | tee -a ${builddir}/messages.log
+    cd ${STABLE}
     find . -name build | xargs rm -r
-    
+
     echo "Starting nightly build" + `pwd`
+    export JAVA_HOME=${JAVA_HOME14}
+    export JAVAC=${JAVAC14}
     ${antcommand} bindist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-    cd applications
-    ${antcommand} all ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-    cd ../contributions
-    ${antcommand} all ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-    cd ..
+    cd ${STABLE}/applications
+    ${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}/contributions
+    ${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}
     ${antcommand} srcdist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     ${antcommand} war ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-    
-    ${CVS} log -rMMBase-1_8 -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
+
+    echo "JAVA 15 from now on" | tee -a ${builddir}/messages.log
+    export JAVA_HOME=${JAVA_HOME15}
+    export JAVAC=${JAVAC15}
+
+    cd ${STABLE}/applications
+    ${antcommand} all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}/contributions
+    ${antcommand} all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 fi
 
+cd ${STABLE}
 for i in `find . -regex ".*/mmbase-.*\.zip"` ; do
     cp  -a $i ${builddir}
 done
 
 for i in `find . -regex ".*/mmbase.*\.war"` ; do
+    cp  -a $i ${builddir}
+done
+for i in 'documentation/releases/release-notes.txt' $me ; do
     cp  -a $i ${builddir}
 done
 
