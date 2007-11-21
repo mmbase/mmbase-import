@@ -38,8 +38,19 @@ public class JstlUtil {
         ResourceBundle rb = getResourceBundle(request);
         return rb.getString(key);
     }
+
+    public static String getMessage(String language, String baseName, String key) {
+        ResourceBundle rb = getResourceBundle(baseName, language);
+        return rb.getString(key);
+	}
     
-    public static ResourceBundle getResourceBundle(HttpServletRequest request) {
+    
+    private static ResourceBundle getResourceBundle(String baseName, String language) {
+        ResourceBundle rb = ResourceBundle.getBundle(baseName, new Locale(language));
+        return rb;
+	}
+
+	public static ResourceBundle getResourceBundle(HttpServletRequest request) {
         LocalizationContext i18nContext = (LocalizationContext)
                 Config.get(request, Config.FMT_LOCALIZATION_CONTEXT);
         ResourceBundle rb = i18nContext.getResourceBundle();
@@ -72,6 +83,6 @@ public class JstlUtil {
         LocalizationContext ctx = new LocalizationContext(bundle);
         Config.set(request,Config.FMT_LOCALIZATION_CONTEXT,ctx);
     }
-    
+
     
 }
