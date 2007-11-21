@@ -12,6 +12,7 @@ import org.mmbase.storage.search.AggregatedField;
 import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.util.bundles.JstlUtil;
 
 public class TasksUtil {
 
@@ -35,6 +36,8 @@ public class TasksUtil {
     
     public static final String ASSIGNEDREL = "assignedrel";
     private static final String CREATORREL = "creatorrel";
+    
+	private static final String LOCALE_BASENAME = "cmsc-tasks";
     
     private TasksUtil() {
         // Utility
@@ -116,8 +119,11 @@ public class TasksUtil {
             String title = taskNode.getStringValue(TITLE);
             String decription = taskNode.getStringValue(DESCRIPTION);
 
-            String subject = PropertiesUtil.getProperty("tasks,user.subject");
-            String emailMessage = PropertiesUtil.getProperty("tasks,user.message");
+            
+            String language = userNode.getStringValue("language");
+            
+            String subject = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.user.subject");
+            String emailMessage = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.user.message");
 
             String name = SecurityUtil.getFullname(userNode); 
             String email = userNode.getStringValue("emailaddress");
@@ -139,8 +145,11 @@ public class TasksUtil {
     public static void sendExpireNotification(Node userNode, Node userFromNode, int numberOfTasks) {
         boolean emailSignal = userNode.getBooleanValue("emailsignal");
         if (emailSignal) {
-            String subject = PropertiesUtil.getProperty("tasks,expire.subject");
-            String emailMessage = PropertiesUtil.getProperty("tasks,expire.message");
+        	
+        	String language = userNode.getStringValue("language");
+        	
+            String subject = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.expire.subject");
+            String emailMessage = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.expire.message");
 
             String name = SecurityUtil.getFullname(userNode); 
             String email = userNode.getStringValue("emailaddress");
@@ -187,5 +196,5 @@ public class TasksUtil {
         int count = contentNode.countRelatedNodes(manager, TASKREL, "source");
         return count > 0;
     }
-
+ 
 }
