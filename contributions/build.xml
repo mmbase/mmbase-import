@@ -16,7 +16,7 @@ Contributions build file
   <property file="${source.dir}/build.properties" />
 
   <property name="build.dir"    value="${source.dir}/build" />
-  <property name="download.dir" value="${build.dir}/download" />
+  <property name="download.dir" value="${source.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
   <property name="mmbase.jar"    value="${build.dir}/mmbase.jar"/>
@@ -29,9 +29,12 @@ Contributions build file
     <mkdir dir="${contributions.build.dir}" />
   </target>
 
-  <target name="all.compiling"   depends="init,aselect,mmbar,lucene,principletracker,calendar,poll,didactor" />
+  <target name="all.compiling"   depends="init,aselect,mmbar,lucene,principletracker,calendar,poll" />
   <target name="all.not.compiling" depends="thememanager,multilanguagegui,mmbob" />
   <target name="all"   depends="all.compiling,all.not.compiling" />
+
+  <target name="all18_14" depends="init,aselect,mmbar,thememanager,multilanguagegui" />
+  <target name="all18_15" depends="init,lucene,mmbob" />
 
   <target name="jars" depends="all">
     <copy todir="${contributions.build.dir}/jars" flatten="true" preservelastmodified="true" >
@@ -56,7 +59,7 @@ Contributions build file
       <property name="download.dir"        value="${download.dir}" />
     </ant>
   </target>
-  
+
   <target name="mmbob" depends="mmbase">
     <ant dir="mmbob"      target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
@@ -81,8 +84,8 @@ Contributions build file
       <property name="download.dir"        value="${download.dir}" />
     </ant>
   </target>
-  
-  
+
+
   <target name="multilanguagegui" depends="mmbase">
     <ant dir="multilanguagegui"      target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
@@ -90,7 +93,7 @@ Contributions build file
       <property name="download.dir"        value="${download.dir}" />
     </ant>
   </target>
-  
+
   <target name="thememanager" depends="mmbase">
     <ant dir="thememanager"      target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
@@ -98,7 +101,7 @@ Contributions build file
       <property name="download.dir"        value="${download.dir}" />
     </ant>
   </target>
-  
+
   <target name="lucene" depends="mmbase">
     <ant dir="lucene"   inheritAll="false">
       <property name="project.zip.dir"        value="${contributions.build.dir}" />
@@ -106,7 +109,7 @@ Contributions build file
       <property name="download.dir"        value="${download.dir}" />
     </ant>
   </target>
-  
+
   <target name="calendar" depends="mmbase">
     <ant dir="calendar"   inheritAll="false">
       <property name="project.zip.dir"      value="${contributions.build.dir}" />
