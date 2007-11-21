@@ -30,7 +30,9 @@
          <cmsc:insert-portlet layoutid="submenu" />
          <div id="main">
             <cmsc:insert-portlet layoutid="breadcrumb" />
-            <cmsc:insert-portlet layoutid="main" />
+            <cmsc:insert-portlet layoutid="column1_1" />
+            <cmsc:insert-portlet layoutid="column1_2" />
+            <cmsc:insert-portlet layoutid="column1_3" />
          </div>
          <%@include file="includes/footer.jsp" %>
          <div class="clear"></div>
