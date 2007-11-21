@@ -221,7 +221,7 @@ Applications build file
     <ant dir="taglib"        target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <ant dir="editwizard"    target="dependent.install" inheritAll="false">
+    <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
     <ant dir="dove"          target="install" inheritAll="false">
