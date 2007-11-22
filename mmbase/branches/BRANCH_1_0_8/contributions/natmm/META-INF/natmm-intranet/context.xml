@@ -1,0 +1,15 @@
+<!-- Context configuration file for the Tomcat NatMM Intranet Web App -->
+<Context path="/natmm-intranet" docBase="natmm-intranet" debug="5" reloadable="true">
+   <Environment name="nmintraconf.fromEmailAddress" value="@nmintraconf.fromEmailAddress@" type="java.lang.String" />
+   <Environment name="nmintraconf.defaultPZAddress" value="@nmintraconf.defaultPZAddress@" type="java.lang.String" />
+   <Environment name="nmintraconf.defaultFZAddress" value="@nmintraconf.defaultFZAddress@" type="java.lang.String" />
+   <Environment name="nmintraconf.toEmailAddress" value="@nmintraconf.toEmailAddress@" type="java.lang.String" />
+   <Environment name="nmintraconf.newsEmailAddress" value="@nmintraconf.newsEmailAddress@" type="java.lang.String" />
+   <Environment name="nmintraconf.gisEmailAddress" value="@nmintraconf.gisEmailAddress@" type="java.lang.String" />
+   <Environment name="nmintraconf.sDocumentsUrl" value="@nmintraconf.sDocumentsUrl@" type="java.lang.String" />
+   <Environment name="nmintraconf.sDocumentsRoot" value="@nmintraconf.sDocumentsRoot@" type="java.lang.String" />
+   <Environment name="nmintraconf.incomingDir" value="@nmintraconf.incomingDir@" type="java.lang.String" />
+   <Environment name="nmintraconf.tempDir" value="@nmintraconf.tempDir@" type="java.lang.String" />
+   <Environment name="nmintraconf.sCorporateWebsite" value="@nmintraconf.sCorporateWebsite@" type="java.lang.String" />
+   <Environment name="nmintraconf.sCorporateEditors" value="@nmintraconf.sCorporateEditors@" type="java.lang.String" />
+</Context>
