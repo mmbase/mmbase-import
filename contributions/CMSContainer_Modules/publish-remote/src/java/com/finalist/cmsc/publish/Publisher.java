@@ -12,6 +12,7 @@ package com.finalist.cmsc.publish;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.util.PublishUtil;
 
 import com.finalist.cmsc.mmbase.TypeUtil;
@@ -89,11 +90,11 @@ public abstract class Publisher {
     }
 
     public int getLiveNumber(Node node) {
-//        Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
-//        Iterator<Integer> iter = numbers.values().iterator();
-//        if (iter.hasNext()) {
-//            return iter.next();
-//        }
+        Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
+        Iterator<Integer> iter = numbers.values().iterator();
+        if (iter.hasNext()) {
+            return iter.next();
+        }
         return -1;
     }
 
