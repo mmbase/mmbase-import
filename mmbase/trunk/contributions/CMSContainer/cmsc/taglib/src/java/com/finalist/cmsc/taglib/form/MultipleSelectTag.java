@@ -10,6 +10,11 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.taglib.form;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -19,20 +24,26 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 public class MultipleSelectTag extends SimpleTagSupport {
 
 	private String var;
-	private String[] selected;
+	private List<String> selected;
 	private int size = 0;
 
 	@Override
 	public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-		
-		
+
+		selected = new ArrayList<String>();
 		Object values = request.getAttribute(var);
-		if ( values != null ) {
-		selected = (String[]) values;
+		if (values != null) {
+			List valueList = Arrays.asList(values);
+			if (valueList != null && valueList.size() > 0) {
+				for (int i = 0; i < valueList.size(); i++) {
+					String value = (String) valueList.get(i).toString();
+					selected.add(value);
+				}
+			}
 		}
-		
+
 		ctx.getOut().print("<select name=\"" + var + "\"");
 
 		if (size > 0) {
@@ -58,10 +69,8 @@ public class MultipleSelectTag extends SimpleTagSupport {
 
 	public boolean isSelected(String key) {
 		if (selected != null) {
-			for (int i = 0; i < selected.length; i++) {
-				if (selected[i].equals(key)) {
-					return (true);
-				}
+			if (selected.contains(key)) {
+				return (true);
 			}
 		}
 		return (false);
