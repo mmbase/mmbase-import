@@ -6,8 +6,8 @@
 
 	<item>
 		<field ftype="data" name="pathfragment">
-			<prompt xml:lang="en">Urlfragment</prompt>
-			<prompt xml:lang="nl">Urlfragment</prompt>
+			<prompt xml:lang="en">URL-fragment</prompt>
+			<prompt xml:lang="nl">URL-fragment</prompt>
 		</field>
 		<field ftype="data" name="name">
 			<prompt xml:lang="en">Name</prompt>
