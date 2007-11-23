@@ -81,7 +81,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
             List<Node> nodeList = new ArrayList<Node>();
             
             Node node = null;
-            if (values.isEmpty()) {
+            if (!values.isEmpty()) {
                 for (String value : values) {
                     if (!StringUtil.isEmptyOrWhitespace(value)) {
                         node = cloud.getNode(value);
