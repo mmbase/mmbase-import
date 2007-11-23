@@ -716,7 +716,48 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
+	<tag>
+		<description>Generate html select tag with multiple select capability</description>
+		<name>multipleselect</name>
+		<tag-class>com.finalist.cmsc.taglib.form.MultipleSelectTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>JSP variable to set selected.</description>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>Size of the list.</description>
+			<name>size</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<description>Generate html option tag</description>
+		<name>multipleoption</name>
+		<tag-class>com.finalist.cmsc.taglib.form.MultipleOptionTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>key in Resourcebundle.</description>
+			<name>message</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>name attribute of html option.</description>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>value attribute of html option.</description>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 	<tag>
 		<description>Generate html checkbox tag</description>
 		<name>checkbox</name>
