@@ -1,5 +1,13 @@
 <!-- Context configuration file for the Tomcat NatMM Web App -->
-<Context path="/natmm-internet" docBase="natmm-internet" debug="5" reloadable="true">
+<Context path="/natmm-internet" docBase="natmm-internet" debug="0" reloadable="true" crossContext="true">
+   <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
+   <ResourceParams name="mail/Session">
+      <parameter>
+         <name>mail.smtp.host</name>
+         <value>localhost</value>
+      </parameter>
+   </ResourceParams>
+
    <Environment name="natmmconf.companyName" value="@natmmconf.companyName@" type="java.lang.String" />
    <Environment name="natmmconf.fromEmailAddress" value="@natmmconf.fromEmailAddress@" type="java.lang.String" />
    <Environment name="natmmconf.fromCADAddress" value="@natmmconf.fromCADAddress@" type="java.lang.String" />
