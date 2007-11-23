@@ -323,7 +323,7 @@
 		<field>
 			<descriptions>
 				<description xml:lang="en">The complete path for this page</description>
-				<description xml:lang="nl">Het path van dit page</description>
+				<description xml:lang="nl">Het path van deze page</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="en">Path</guiname>
@@ -344,7 +344,7 @@
 		<field>
 			<descriptions>
 				<description xml:lang="en">The old path for this page</description>
-				<description xml:lang="nl">Het oude path van dit page</description>
+				<description xml:lang="nl">Het oude path van deze page</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="en">Old Path</guiname>
