@@ -376,7 +376,7 @@
 		<field>
 			<descriptions>
 				<description xml:lang="en">The complete path for this page</description>
-				<description xml:lang="nl">Het path van dit page</description>
+				<description xml:lang="nl">Het path van deze page</description>
 				<description xml:lang="zh">页面完整路径</description>
 
 			</descriptions>
@@ -402,7 +402,7 @@
 		<field>
 			<descriptions>
 				<description xml:lang="en">The old path for this page</description>
-				<description xml:lang="nl">Het oude path van dit page</description>
+				<description xml:lang="nl">Het oude path van deze page</description>
 				<description xml:lang="zh">页面原路径</description>
 			</descriptions>
 			<gui>
