@@ -25,18 +25,16 @@ import org.apache.pluto.Constants;
  * Tag to get a name/value from the PortletPreferences for the active portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class PortletPreferencesTag extends SimpleTagSupport {
 
 	private String name;
-
 	private String value;
-
 	private String var;
 
 	@Override
-    public void doTag() throws JspException, IOException {
+	public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 		PortletRequest renderRequest = (PortletRequest) request.getAttribute(Constants.PORTLET_REQUEST);
@@ -61,12 +59,21 @@ public class PortletPreferencesTag extends SimpleTagSupport {
 				}
 			} else {
 				if (var != null) {
+					// Set a map of all preferences to a variable with the name in var
 					request.setAttribute(var, preferences.getMap());
 				} else {
 					Enumeration<String> p = preferences.getNames();
 					while (p.hasMoreElements()) {
 						String pref = p.nextElement();
-						request.setAttribute(pref, preferences.getValue(pref, null));
+						String[] values = preferences.getValues(pref, null);
+						if (values != null) {
+							if (values.length > 1) {
+								request.setAttribute(pref, values);
+							} else {
+								String value = values[0];
+								request.setAttribute(pref, value);
+							}
+						}
 					}
 				}
 			}
