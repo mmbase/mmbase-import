@@ -367,7 +367,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
 
-  <target name="documentation" description="Documentation" depends="init,javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
+  <target name="documentation" description="Documentation" depends="init,javadocs,documentation.html,documentation.rawhtml">
     <available property="documentation.build.available"        file="${project.build.dir}/documentation"/>
   </target>
 
