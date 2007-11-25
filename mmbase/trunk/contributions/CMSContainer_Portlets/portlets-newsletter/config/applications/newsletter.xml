@@ -11,11 +11,15 @@
 		<builder maintainer="finalist.com" version="1">newsletterpublication</builder>
 		<builder maintainer="finalist.com" version="1">newsletterpublicationtheme</builder>
 	</neededbuilderlist>
-	<neededreldeflist></neededreldeflist>
+	<neededreldeflist>
+		 <reldef source="defaulttheme" target="defaulttheme" direction="bidirectional" guisourcename="defaulttheme" guitargetname="defaulttheme" builder="insrel" />
+		 <reldef source="newslettercontent" target="newslettercontent" direction="bidirectional" guisourcename="newslettercontent" guitargetname="newslettercontent" builder="insrel" />		
+	</neededreldeflist>
 	<allowedrelationlist>
-		<relation from="article" to="newslettertheme" type="related" />
-		<relation from="article" to="newsletterpublicationtheme" type="related" />
+		<relation from="article" to="newslettertheme" type="newslettercontent" />
+		<relation from="article" to="newsletterpublicationtheme" type="newslettercontent" />
 		<relation from="newsletter" to="newslettertheme" type="related" />
+		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
 		<relation from="newsletter" to="newsletterpublication" type="related" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="related" />
 		<relation from="newsletterpublicationtheme" to="newslettertheme" type="related" />

@@ -41,14 +41,19 @@
 			<tr>
 				<td>
 					<input type="hidden" name="page" value="${page}" />
-					<fmt:message key="edit_defaults.view" />
+					<fmt:message key="edit_defaults.available_newsletters" />
 				</td>
 				<td>
-					<cmsc:select var="view">
-						<c:forEach var="v" items="${views}">
-							<cmsc:option value="${v.id}" name="${v.title}" />
-						</c:forEach>
-					</cmsc:select>
+				                    <mm:cloud>
+					<cmsc:multipleselect var="newsletters" size="5">
+						<mm:listnodes type="newsletter">
+							<mm:field name="number" id="number" write="false" />
+							<mm:field name="title"  id="title" write="false" />
+							<cmsc:multipleoption value="${number}" name="${title}" />
+						</mm:listnodes>
+					</cmsc:multipleselect>
+					</mm:cloud>
+
 				</td>
 			</tr>
 			<tr>
@@ -63,23 +68,6 @@
 					</cmsc:select>
 				</td>
 			</tr>
-            <tr>
-                <td>
-                    <fmt:message key="edit_defaults.theme" />
-                <td>
-                    <mm:cloud>
-						<mm:node number="${page}" notfound="skip">
-							<cmsc:select var="themes">
-								<mm:relatednodes type="newslettertheme">
-									<mm:field name="title" id="themetitle" write="false"  />
-									<mm:field name="number" id="themeid" write="false"  />
-									<cmsc:option name="${themetitle}" value="${themeid}" />
-								</mm:relatednodes>
-							</cmsc:select>
-						</mm:node>
-					</mm:cloud>
-                </td>
-            </tr>
 			<tr>
 				<td colspan="2">
 					<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">

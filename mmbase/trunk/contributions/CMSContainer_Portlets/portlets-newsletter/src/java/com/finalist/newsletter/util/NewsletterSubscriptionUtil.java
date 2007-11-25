@@ -27,6 +27,12 @@ public abstract class NewsletterSubscriptionUtil {
 		return (themeList);
 	}
 
+	public static List<String> getUserSubscribedThemes(String userName) {
+		List<String> themeList = CommunityManager.getUserPreferenceValues(userName, "newslettertheme");
+		return (themeList);
+	}
+	
+	
 	public static String getPreferredMimeType(String userName) {
 		String mimeType = CommunityManager.getUserPreference(userName, PREFERRED_MIMETYPE);
 		// if (AVAILABLE_MIMETYPES.contains(mimeType)) {

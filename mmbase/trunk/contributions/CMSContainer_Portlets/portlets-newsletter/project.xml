@@ -2,8 +2,8 @@
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-portlets-newsletter</artifactId>
-    <name>Newsletter portlet</name>
-    <shortDescription>Newsletter portlet</shortDescription>
+    <name>Newsletter bundle</name>
+    <shortDescription>Newsletter bundle</shortDescription>
 	<dependencies>
  
 	</dependencies>

@@ -21,6 +21,7 @@ import org.mmbase.bridge.Node;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
@@ -32,29 +33,19 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
 		if (StringUtil.isEmptyOrWhitespace(action)) {
 			request.getSession().setAttribute("parentnewsletter", parentnewsletter);
+			// Initialize the new publication
+			Node publicationNode = NewsletterPublicationUtil.createPublication(parentnewsletter);
+			request.getSession().removeAttribute("parentnewsletter");
 
-			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"
-					+ "&contenttype=newsletterpublication" + "&returnurl=" + mapping.findForward("returnurl").getPath());
+			addToRequest(request, "showpage", publicationNode);
+
+			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=EDIT" + "&contenttype=newsletterpublication"
+					+ "&returnurl=" + mapping.findForward("returnurl").getPath());
 			ret.setRedirect(true);
 			return ret;
-		} else {
-			if ("save".equals(action)) {
-				String ewnodelastedited = getParameter(request, "ewnodelastedited");
-				NavigationUtil.appendChild(cloud, parentnewsletter, ewnodelastedited);
-
-				Node newNewsletterPublication = cloud.getNode(ewnodelastedited);
-				Node layoutNode = PagesUtil.getLayout(newNewsletterPublication);
-				PagesUtil.linkPortlets(newNewsletterPublication, layoutNode);
-				request.getSession().removeAttribute("parentnewsletter");
-
-				addToRequest(request, "showpage", ewnodelastedited);
-				ActionForward ret = mapping.findForward(SUCCESS);
-				return ret;
-			}
-			request.getSession().removeAttribute("parentnewsletter");
-			ActionForward ret = mapping.findForward(CANCEL);
-			return ret;
 		}
+		request.getSession().removeAttribute("parentnewsletter");
+		ActionForward ret = mapping.findForward(CANCEL);
+		return ret;
 	}
-
 }

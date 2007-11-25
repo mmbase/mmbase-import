@@ -6,19 +6,16 @@ import javax.mail.Message;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.applications.email.SendMail;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.util.Mail;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
-public class NewsletterPublisher {
+public class NewsletterPublisher extends Thread {
 
 	private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
 
@@ -31,7 +28,7 @@ public class NewsletterPublisher {
 		log.debug("A new  instance of NewsletterPublisher is created for publication with number " + publicationNumber);
 	}
 
-	public void startPublishing() {
+	private void startPublishing() {
 		log.debug("Starting the publishing cylcus for publication with number " + publicationNumber);
 		Node publicationNode = cloud.getNode(this.publicationNumber);
 		NodeList newsletterNodeList = publicationNode.getRelatedNodes(NewsletterUtil.NEWSLETTER);
@@ -56,10 +53,17 @@ public class NewsletterPublisher {
 			return (content);
 		}
 		return (null);
-	}
+	}	
+
 
 	private boolean createEmailNode(Node publicationNode, Message newsletter, String userName) {
 
 		return (false);
 	}
+
+	@Override
+	public void run() {
+		startPublishing();
+	}
+
 }

@@ -12,11 +12,11 @@
 		</portlet-class>
 		<init-param>
 			<name>template.edit_defaults</name>
-			<value>newsletter/newsletter.jsp</value>
+			<value>newsletter/newslettercontent.jsp</value>
 		</init-param>
 		<init-param>
 			<name>template.help</name>
-			<value>newsletter/newsletter.jsp</value>
+			<value>newsletter/newslettercontent.jsp</value>
 		</init-param>
 		<supports>
 			<mime-type>text/html</mime-type>
@@ -27,7 +27,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
-		<resource-bundle>portlets-newsletter</resource-bundle>
+		<resource-bundle>portlets-newslettercontent</resource-bundle>
 		<portlet-info>
 			<title>newsletter Portlet</title>
 			<short-title>newsletter</short-title>
@@ -51,6 +51,14 @@
 			<name>template.help</name>
 			<value>newsletter/newslettersubscription.jsp</value>
 		</init-param>
+		<init-param>
+			<name>template.options</name>
+			<value>newsletter/subscription/options.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.subscribe</name>
+			<value>newsletter/subscription/subscribe.jsp</value>
+		</init-param>
 		<supports>
 			<mime-type>text/html</mime-type>
 			<portlet-mode>VIEW</portlet-mode>
@@ -61,7 +69,7 @@
 		</supports>
 		<supported-locale>en</supported-locale>
 		<supported-locale>nl</supported-locale>
-		<resource-bundle>portlets-newsletter</resource-bundle>
+		<resource-bundle>portlets-newslettersubscription</resource-bundle>
 		<portlet-info>
 			<title>Newsletter Subscription Portlet</title>
 			<short-title>newslettersubscription</short-title>
