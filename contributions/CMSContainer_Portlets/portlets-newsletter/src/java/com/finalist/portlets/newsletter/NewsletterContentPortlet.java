@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -98,7 +97,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 				setAttribute(req, "themes", themes);
 				for (int i = 0; i < themes.size(); i++) {
 					String themeNumber = themes.get(i);
-					ArrayList<String> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
+					List<String> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
 					if (articles != null && articles.size() > 0) {
 						setAttribute(req, themeNumber, articles);
 						log.debug("Found " + articles.size() + " articles for theme " + themeNumber);

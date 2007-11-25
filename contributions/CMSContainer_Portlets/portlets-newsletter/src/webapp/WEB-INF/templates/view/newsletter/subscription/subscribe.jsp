@@ -1,5 +1,7 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
+<cmsc:portlet-preferences />
+
 <mm:cloud>
 	<form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:actionURL><cmsc:param name="action" value="subscribe"/></cmsc:actionURL>" target="_parent">
 	<input type="hidden" name="template" value="newsletter/subscription/options.jsp">
@@ -9,7 +11,8 @@
 	<div class="content">
 		<p><fmt:message key="subscription.subscribe.info" /></p>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<mm:listnodes type="newsletter">
+		<c:forEach var="newsletternumber" items="newsletters">
+		<mm:node number="${newsletternumber}" notfound="skip">
 			<tr>
 				<td colspan="2">
 					<b><mm:field name="title" write="true" /></b>
@@ -29,13 +32,16 @@
 				</tr>				
 			</mm:relatednodes>
 			<tr><td>&nbsp;</td></tr>
-			</mm:listnodes>
+			</mm:node>
+			</c:forEach>
 			<tr><td colspan="2"><fmt:message key="subscription.mimetype.info" /></td></tr>
 			<tr>
 				<td><fmt:message key="subscription.mimetype.select" /></td>
 				<td>
 				<cmsc:select var="mimetype">
-				
+					<c:forEach var="v" items="${mimetypes}">
+						<cmsc:option name="${v}" value="${v}" />
+					</c:forEach>
 				</cmsc:select>
 				</td>
 			</tr>

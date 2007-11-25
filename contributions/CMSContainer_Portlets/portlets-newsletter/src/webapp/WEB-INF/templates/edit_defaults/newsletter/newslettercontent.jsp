@@ -39,6 +39,10 @@
 	
 		<table class="editcontent">
 			<tr>
+				<td><fmt:message key="edit_defaults.newsletter" /></td>
+				<td>${page} - ${cur.title}</td>
+			</tr>
+			<tr>
 				<td>
 					<input type="hidden" name="page" value="${page}" />
 					<fmt:message key="edit_defaults.view" />

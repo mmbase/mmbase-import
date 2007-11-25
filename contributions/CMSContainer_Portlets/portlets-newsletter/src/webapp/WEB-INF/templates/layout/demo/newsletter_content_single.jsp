@@ -4,16 +4,14 @@
 <cmsc:location var="cur" sitevar="site" />
 <c:set var="page" value="${cur.id}" />
 
-<p>${page}</p>
 <mm:content type="text/html" encoding="UTF-8">
-	<cmsc:location var="cur" sitevar="site" />
 	<html xmlns="http://www.w3.org/1999/xhtml" lang="${site.language}" xml:lang="${site.language}">
 	<cmsc:screen>
 		<head>
-		<title>Newsletter</title>
+		<title>${cur.title}</title>
 		</head>
 		<body>
-		<br><br>
+		<h1>${cur.title}</h1>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td><cmsc:insert-portlet layoutid="column1_1" /></td>

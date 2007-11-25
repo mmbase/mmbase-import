@@ -3,5 +3,5 @@
 <form-schema id="edit_article">
 	<title xml:lang="nl">Nieuwsbrief</title>
 	<title xml:lang="en">Newsletter</title>
-	<list include="config/newslettertheme/search_newslettertheme_related_article.xml" />
+	<list include="config/newslettertheme/search_newslettertheme.xml" />
 </form-schema>

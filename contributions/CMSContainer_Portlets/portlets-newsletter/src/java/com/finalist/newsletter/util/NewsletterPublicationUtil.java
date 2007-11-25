@@ -3,7 +3,6 @@ package com.finalist.newsletter.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
@@ -13,6 +12,10 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.newsletter.CloneUtil;
 
 public abstract class NewsletterPublicationUtil {
 
@@ -34,61 +37,31 @@ public abstract class NewsletterPublicationUtil {
 
 	public static Node createPublication(String newsletterNumber) {
 		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-		// Get the newsletternode for the newsletter for which the publication
-		// // is requested
 		Node newsletterNode = cloud.getNode(newsletterNumber);
-		// Create a publicationnode
-		NodeManager publicationNodeManager = cloud.getNodeManager("newsletterpublication");
-		// TODO - Use transaction
-		Transaction transaction = cloud.createTransaction();
-		Node publicationNode = publicationNodeManager.createNode();
-		// Copy the newsletter properties to the publication
-		String newsletterTitle = newsletterNode.getStringValue("title");
-		String newsletterDescription = newsletterNode.getStringValue("description");
-		publicationNode.setStringValue("title", newsletterTitle);
-		publicationNode.setStringValue("description", newsletterDescription);
-		publicationNode.setBooleanValue("inmenu", false);
-		publicationNode.setBooleanValue("secure", false);
-		publicationNode.setBooleanValue("accepted", false);
-		// Relate the just created publication to the newsletter
-		RelationUtil.createRelation(newsletterNode, publicationNode, "related");
-		// Copy newsletterthemes to newsletterpublicationthemes
-		NodeManager publicationThemeNodeManager = cloud.getNodeManager("newsletterpublicationtheme");
-		NodeList newsletterThemeNodes = newsletterNode.getRelatedNodes("newslettertheme");
-		for (int i = 0; i < newsletterThemeNodes.size(); i++) {
-			Node newsletterThemeNode = newsletterThemeNodes.getNode(i);
-			Node publicationThemeNode = publicationThemeNodeManager.createNode();
-			String themeTitle = newsletterThemeNode.getStringValue("title");
-			String themeShortDescription = newsletterThemeNode.getStringValue("shortdescription");
-			String themeDescription = newsletterThemeNode.getStringValue("description");
-			publicationThemeNode.setStringValue("title", themeTitle);
-			publicationThemeNode.setStringValue("shortdescription", themeShortDescription);
-			publicationThemeNode.setStringValue("description", themeDescription);
-			// relate the publicationtheme to the publication
-			RelationUtil.createRelation(publicationNode, publicationThemeNode, "related");
-			// Copy relations from theme to article
-			NodeList relatedArticles = newsletterThemeNode.getRelatedNodes("article");
-			for (int a = 0; a < relatedArticles.size(); a++) {
-				Node articleNode = relatedArticles.getNode(a);
-				RelationUtil.createRelation(publicationThemeNode, articleNode, "related");
-			}
-		}
+		NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme");
 
-		if (transaction.commit() == true) {
-			return (publicationNode);
-		}
-		return (null);
+		Node publicationNode = CloneUtil.cloneNodeWithRelations(newsletterNode, "newsletterpublication");
+		for (int i = 0; i < newsletterThemeList.size(); i++) {
+			Node oldThemeNode = newsletterThemeList.getNode(i);
+			Node newThemeNode = CloneUtil.cloneNode(oldThemeNode, "newsletterpublicationtheme");
+			CloneUtil.cloneRelations(oldThemeNode, newThemeNode, "newslettercontent", null);
+		}		
+		NavigationUtil.appendChild(newsletterNode, publicationNode);
+		Node layoutNode = PagesUtil.getLayout(newsletterNode);
+		PagesUtil.linkPortlets(publicationNode, layoutNode);
+
+		
+		return (publicationNode);
 	}
 
 	// Delete a publication, only if not yet published
-	public static boolean deleteTestPublication(String publicationNumber) {
+	public static void deletePublication(String publicationNumber) {
 		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 		NodeManager publicationManager = cloud.getNodeManager("newsletterpublication");
 		NodeManager publicationThemeManager = cloud.getNodeManager("newsletterpublicationtheme");
 		Node publicationNode = cloud.getNode(publicationNumber);
 		NodeList publicationThemeList = publicationNode.getRelatedNodes(publicationThemeManager);
-		// TODO - Use transaction
-		Transaction transaction = cloud.createTransaction();
+
 		for (int i = 0; i < publicationThemeList.size(); i++) {
 			Node publicationThemeNode = publicationThemeList.getNode(i);
 			publicationThemeNode.deleteRelations();
@@ -96,7 +69,8 @@ public abstract class NewsletterPublicationUtil {
 		}
 		publicationNode.deleteRelations();
 		publicationNode.delete();
-		return (transaction.commit());
+		NavigationUtil.deletePage(publicationNode);
+		
 	}
 
 	public static boolean acceptTestNewsletter(String publicationNumber) {

@@ -15,10 +15,10 @@ public class NewsletterGeneratorFactory {
 	}
 
 	public static NewsletterGeneratorFactory getInstance() {
-	         if (instance==null) {
-	                  instance = new NewsletterGeneratorFactory();
-	         }
-	return instance;
+		if (instance == null) {
+			instance = new NewsletterGeneratorFactory();
+		}
+		return instance;
 	}
 
 	public NewsletterGenerator getNewsletterGenerator(String publicationNumber, String mimeType) {
