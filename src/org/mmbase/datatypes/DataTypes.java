@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.25 2007-08-10 13:08:00 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.26 2007-11-25 18:26:23 nklasens Exp $
  */
 
 public class DataTypes {
@@ -114,7 +114,7 @@ public class DataTypes {
      * @param classType The class of the datatype to create. If <code>null</code> is passed, the
       *          dataType returned is based on Object.class.
      */
-    public static BasicDataType createDataType(String name, Class classType) {
+    public static <C> BasicDataType<C> createDataType(String name, Class<C> classType) {
         int type = Fields.classToType(classType);
         if (name == null && classType != null) {
             name = classType.getName();
@@ -122,7 +122,7 @@ public class DataTypes {
         if (type != Field.TYPE_UNKNOWN || classType == null) {
             return createDataType(name, type, classType.isPrimitive());
         } else {
-            return new BasicDataType(name, classType);
+            return new BasicDataType<C>(name, classType);
         }
     }
 
