@@ -18,13 +18,13 @@ import org.mmbase.util.logging.Logging;
  * The gui function of MMObjectBuilder
  *
  * @author Michiel Meeuwissen
- * @version $Id: GuiFunction.java,v 1.4 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: GuiFunction.java,v 1.5 2007-11-25 18:25:49 nklasens Exp $
  * @since MMBase-1.9
  */
 public class GuiFunction extends NodeFunction<String> {
 
     private static final Logger log = Logging.getLoggerInstance(GuiFunction.class);
-    public static final Parameter[] PARAMETERS = {
+    public static final Parameter<?>[] PARAMETERS = {
         Parameter.FIELD,
         Parameter.LANGUAGE,
         new Parameter<String>("session", String.class),

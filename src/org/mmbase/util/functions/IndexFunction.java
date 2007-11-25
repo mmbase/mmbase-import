@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.regex.*;
 
 import org.mmbase.cache.Cache;
+import org.mmbase.core.event.NodeEvent;
+import org.mmbase.core.event.NodeEventListener;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.transformers.RomanTransformer;
@@ -32,14 +34,14 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexFunction.java,v 1.14 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: IndexFunction.java,v 1.15 2007-11-25 18:25:49 nklasens Exp $
  * @since MMBase-1.8
  */
 public class IndexFunction extends FunctionProvider {
 
     private static final Logger log = Logging.getLoggerInstance(IndexFunction.class);
 
-    protected static Cache indexCache = new Cache(400) {
+    protected static Cache<String,String> indexCache = new Cache<String,String>(400) {
             public  String getName() {
                 return "IndexNumberCache";
             }
@@ -54,29 +56,22 @@ public class IndexFunction extends FunctionProvider {
 
     }
 
-    private static MMBaseObserver observer = null;
+    private static NodeEventListener observer = null;
     private static synchronized void initObserver() {
         if (observer == null) {
-            MMBaseObserver o = null;
+            NodeEventListener o = null;
             try {
-                 o = new MMBaseObserver() {
-                        public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
-                            return nodeChanged(machine, number, builder, ctype);
+                 o = new NodeEventListener() {
+                        public void notify(NodeEvent event) {
+                            nodeChanged(event.getMachine(), event.getNodeNumber(), event.getBuilderName());
                         }
-                        public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
-                            return nodeChanged(machine, number, builder, ctype);
-                        }
-                        public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-                            log.info("Received change " + machine + "/" + number + "/" +  builder + "/" + ctype);
+                        public void nodeChanged(String machine, int number, String builder) {
+                            log.info("Received change " + machine + "/" + number + "/" +  builder);
                             indexCache.clear(); // this could be done smarter.
-                            return true;
                         }
-
-
                     };
                 MMObjectBuilder indexRelation = MMBase.getMMBase().getBuilder("indexrel");
-                indexRelation.addLocalObserver(o);
-                indexRelation.addRemoteObserver(o);
+                indexRelation.addEventListener(o);
             } catch (Exception e) {
                 log.service("" + e + " retrying later");
                 return;
@@ -180,9 +175,8 @@ public class IndexFunction extends FunctionProvider {
     private static Parameter<String> SEPARATOR = new Parameter<String>("separator", String.class, "\\.");
     private static Parameter<String> JOINER    = new Parameter<String>("joiner", String.class, ".");
     private static Parameter<String> ROLE      = new Parameter<String>("role", String.class, "index");
-    private static Parameter<Node> NEWROOT     = new Parameter<Node>("newroot", Node.class, false);
 
-    private static Parameter[] INDEX_ARGS = new Parameter[] {
+    private static Parameter<?>[] INDEX_ARGS = new Parameter[] {
         Parameter.CLOUD, ROOT, SEPARATOR, JOINER, ROMAN, ROLE
     };
 
@@ -227,7 +221,7 @@ public class IndexFunction extends FunctionProvider {
                 final String key = getKey(node, parameters);
 
                 initObserver();
-                String result = (String) indexCache.get(key);
+                String result = indexCache.get(key);
                 if (result != null) {
                     if (log.isDebugEnabled()) {
                         log.debug("Found index '" + result + "' for node " + node.getNumber() + " from cache (key " + key + ")");

@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  * A bean can be accessed through the function framework. 
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.10 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: ExampleBean.java,v 1.11 2007-11-25 18:25:49 nklasens Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
@@ -71,8 +71,8 @@ public final class ExampleBean {
     /**
      * A function returning a Map
      */
-    public Map mapFunction() {
-        Map map = new HashMap();
+    public Map<String,String> mapFunction() {
+        Map<String,String> map = new HashMap<String,String>();
         map.put("bloe", parameter1);
         return map;
     }
@@ -91,20 +91,20 @@ public final class ExampleBean {
      * A function returning a Node as a bridge object, but based on a Map of values.
      */
     public Node nodeFunction2() {
-        Map map = new HashMap();
+        Map<String,String> map = new HashMap<String,String>();
         map.put("bloe", parameter1);   
         return new org.mmbase.bridge.util.MapNode(map);
     }
 
 
-    public Collection nodeListFunction() {
-        List result = new ArrayList();
+    public Collection<Object> nodeListFunction() {
+        List<Object> result = new ArrayList<Object>();
         result.add(nodeFunction1());
         result.add(nodeFunction2());
         return result;
     }
     public NodeList nodeListFunction1() {
-        Collection col = nodeListFunction();
+        Collection<Object> col = nodeListFunction();
         col.add(mapFunction());
         return new org.mmbase.bridge.util.CollectionNodeList(col);
     }
@@ -136,8 +136,8 @@ public final class ExampleBean {
             query.addSortOrder(field);
             query.setMaxNumber(1);
             try {
-                java.util.Iterator i = builder.getNodes(query).iterator();
-                return i.hasNext() ? ((MMObjectNode) i.next()) : null;
+                java.util.Iterator<MMObjectNode> i = builder.getNodes(query).iterator();
+                return i.hasNext() ?  i.next() : null;
             } catch (Exception e) {
                 return null;
             }

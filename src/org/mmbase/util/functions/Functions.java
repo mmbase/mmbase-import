@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.16 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: Functions.java,v 1.17 2007-11-25 18:25:49 nklasens Exp $
  */
 public class Functions {
 
@@ -35,7 +35,7 @@ public class Functions {
     /**
      * Converts a certain List to an Parameters if it is not already one.
      */
-    public static Parameters buildParameters(Parameter[] def, List args) {
+    public static Parameters buildParameters(Parameter<?>[] def, List<?> args) {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
@@ -49,7 +49,7 @@ public class Functions {
      * Adds the definitions to a List. Resolves the {@link Parameter.Wrapper}'s (recursively).
      * @return List with only simple Parameter's.
      */
-    public static List<Parameter> define(Parameter[] def, List<Parameter> list) {
+    public static List<Parameter<?>> define(Parameter<?>[] def, List<Parameter<?>> list) {
         if (def == null) return list;
         for (Parameter d : def) {
             if (d instanceof Parameter.Wrapper) {
@@ -63,14 +63,14 @@ public class Functions {
     /**
      * @since MMBase-1.9
      */
-    public static List<Parameter> define(Parameter[] def) {
-        return define(def, new ArrayList<Parameter>());
+    public static List<Parameter<?>> define(Parameter<?>[] def) {
+        return define(def, new ArrayList<Parameter<?>>());
     }
 
     /**
      * @javadoc
      */
-    public static Method getMethodFromClass(Class claz, String name) {
+    public static Method getMethodFromClass(Class<?> claz, String name) {
         Method method = null;
         Method[] methods = claz.getMethods();
         for (Method element : methods) {
@@ -119,7 +119,7 @@ public class Functions {
      * @param map
      * @return A map of parameter definitions (Parameter[] objects), keys by function name (String)
     */
-    public static Map<String, Parameter[]> getParameterDefinitonsByReflection(Class clazz, Map<String, Parameter[]> map) {
+    public static Map<String, Parameter<?>[]> getParameterDefinitonsByReflection(Class<?> clazz, Map<String, Parameter<?>[]> map) {
 
         log.debug("Searching " + clazz);
         Field[] fields = clazz.getDeclaredFields();
@@ -136,7 +136,7 @@ public class Functions {
                 }
                 if (! map.containsKey(name)) { // overriding works, but don't do backwards :-)
                     try {
-                        Parameter[] params = (Parameter[])field.get(null);
+                        Parameter<?>[] params = (Parameter<?>[])field.get(null);
                         if (log.isDebugEnabled()) {
                             log.debug("Found a function definition '" + name + "' in " + clazz + " with parameters " + Arrays.asList(params));
                         }
@@ -148,7 +148,7 @@ public class Functions {
                 }
              }
         }
-        Class sup = clazz.getSuperclass();
+        Class<?> sup = clazz.getSuperclass();
         if (sup != null) {
             getParameterDefinitonsByReflection(sup, map);
         }

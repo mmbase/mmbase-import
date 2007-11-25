@@ -36,7 +36,7 @@ import java.net.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.30 2007-07-27 14:07:17 michiel Exp $
+ * @version $Id: FunctionSets.java,v 1.31 2007-11-25 18:25:49 nklasens Exp $
  */
 public class FunctionSets {
 
@@ -63,10 +63,10 @@ public class FunctionSets {
      * @param functionName the name of the function
      * @return the {@link Function}, or <code>nulll</code> if either the fucntion or set is not defined
      */
-    public static Function getFunction(String setName, String functionName) {
+    public static Function<?> getFunction(String setName, String functionName) {
         FunctionSet set = getFunctionSet(setName);
         if (set != null) {
-            Function fun = set.getFunction(functionName);
+            Function<?> fun = set.getFunction(functionName);
             if (fun != null) {
                 return fun;
             } else {
@@ -215,7 +215,7 @@ public class FunctionSets {
 
                 // read the parameters
 
-                Parameter[] parameters = Parameter.readArrayFromXml(element);
+                Parameter<?>[] parameters = Parameter.readArrayFromXml(element);
                 for (Parameter param : parameters) {
                     if (param.getClass().isPrimitive() && param.getDefaultValue() == null) {
                         // that would give enigmatic IllegalArgumentExceptions, so fix that.

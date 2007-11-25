@@ -15,7 +15,6 @@ import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
-import java.util.Map.Entry;
 import java.io.*;
 import org.w3c.dom.*;
 
@@ -28,7 +27,7 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMFunctionParam)
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.45 2007-07-30 17:33:33 michiel Exp $
+ * @version $Id: Parameter.java,v 1.46 2007-11-25 18:25:49 nklasens Exp $
  * @see Parameters
  */
 
@@ -74,13 +73,13 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * @since MMBase-1.9
      */
-    public static Parameter[] readArrayFromXml(Element element) {
-        List<Parameter> list = new ArrayList();
+    public static Parameter<?>[] readArrayFromXml(Element element) {
+        List<Parameter<?>> list = new ArrayList<Parameter<?>>();
         org.w3c.dom.NodeList params = element.getChildNodes();
         for (int i = 0 ; i < params.getLength(); i++) {
             Node n = params.item(i);
             if (n instanceof Element && "param".equals(n.getNodeName())) {
-                Parameter parameter = readFromXml((Element) n);
+                Parameter<?> parameter = readFromXml((Element) n);
                 list.add(parameter);
             }
         }
@@ -90,12 +89,12 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * @since MMBase-1.9
      */
-    public static Parameter readFromXml(Element element) {
+    public static <C> Parameter<C> readFromXml(Element element) {
         String name = element.getAttribute("name");
         String type = element.getAttribute("type");
         String required = element.getAttribute("required");
         String description   = element.getAttribute("description"); // actually description as attribute is not very sane
-        Parameter parameter = new Parameter(name, getClassForName(type));
+        Parameter<C> parameter = new Parameter<C>(name, (Class<C>) getClassForName(type));
         if (! "".equals(description)) {
             parameter.getLocalizedDescription().set(description, null); // just set it for the default locale...
         }
@@ -111,8 +110,8 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * @since MMBase-1.9
      */
-    public static Class getClassForName(String type) {
-        Class clazz;
+    public static Class<?> getClassForName(String type) {
+        Class<?> clazz;
         try {
             boolean fullyQualified = type.indexOf('.') > -1;
             if (!fullyQualified) {
@@ -149,7 +148,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         key          = in.readUTF();
         description  = (LocalizedString) in.readObject();
         guiName      = (LocalizedString) in.readObject();
-        dataType     = (DataType) in.readObject();
+        dataType     = (DataType<C>) in.readObject();
     }
 
     /**
@@ -191,7 +190,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      * @param name the name of the parameter
      * @param type the class of the parameter's possible value
      */
-    public Parameter(String name, Class<? extends C> type) {
+    public Parameter(String name, Class<C> type) {
         super(name);
         dataType = DataTypes.createDataType(name, type);
     }
@@ -218,14 +217,17 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
         dataType.setDefaultValue(defaultValue);
     }
 
+    @SuppressWarnings("unchecked")
     public Parameter(String name, C defaultValue) {
         this(name, (Class<C>) defaultValue.getClass());
         dataType.setDefaultValue(defaultValue);
     }
 
-    protected static Class getClass(Object v) {
-        return v == null ? Object.class : v.getClass();
+    @SuppressWarnings("unchecked")
+    protected static <C> Class<C> getClass(C v) {
+        return (Class<C>) (v == null ? Object.class : v.getClass());
     }
+    
     /**
      * Create Parameter definition by example value
      * @since MMBase-1.9
@@ -237,7 +239,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * Copy-constructor, just to copy it with different requiredness
      */
-    public Parameter(Parameter p, boolean required) {
+    public Parameter(Parameter<C> p, boolean required) {
         this(p.key, p.getDataType());
         dataType.setRequired(required);
     }
@@ -245,7 +247,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
     /**
      * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
      */
-    public Parameter(Parameter p, C defaultValue) {
+    public Parameter(Parameter<C> p, C defaultValue) {
         this(p.key, p.getDataType());
         dataType.setDefaultValue(defaultValue);
     }
@@ -322,7 +324,7 @@ public class Parameter<C> extends AbstractDescriptor implements java.io.Serializ
      */
     public boolean equals(Object o) {
         if (o instanceof Parameter) {
-            Parameter a = (Parameter) o;
+            Parameter<?> a = (Parameter<?>) o;
             return a.getName().equals(getName()) && a.getDataType().equals(getDataType());
         }
         return false;
