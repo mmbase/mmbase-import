@@ -12,7 +12,7 @@ public class NewsletterGeneratorPlain extends NewsletterGenerator {
 	@Override
 	protected Message generateNewsletterContent(String userName) {
 		// TODO Auto-generated method stub
-		 
+
 		return null;
 	}
 

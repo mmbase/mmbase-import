@@ -11,12 +11,14 @@ package com.finalist.newsletter.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
@@ -47,6 +49,24 @@ public class NewsletterCreate extends MMBaseFormlessAction {
 				PagesUtil.linkPortlets(newNewsletter, layoutNode);
 				request.getSession().removeAttribute("parentnewsletter");
 
+				// Create a default theme for this newsletter
+				String newsletterTitle = "" + newNewsletter.getStringValue("title");
+				String newsletterDescription = "" + newNewsletter.getStringValue("description");
+				
+				String themeTitle = newsletterTitle;
+				String themeDescription = newsletterDescription;
+				String themeShortDescription = newsletterDescription;
+				
+				NodeManager themeNodeManager = cloud.getNodeManager("newslettertheme");
+				Node themeNode = themeNodeManager.createNode();
+				
+				themeNode.setStringValue("title", themeTitle);
+				themeNode.setStringValue("description", themeDescription);
+				themeNode.setStringValue("shortdescription", themeShortDescription);
+				themeNode.commit();
+				
+				RelationUtil.createRelation(newNewsletter, themeNode, "defaulttheme");
+				
 				addToRequest(request, "showpage", ewnodelastedited);
 				ActionForward ret = mapping.findForward(SUCCESS);
 				return ret;

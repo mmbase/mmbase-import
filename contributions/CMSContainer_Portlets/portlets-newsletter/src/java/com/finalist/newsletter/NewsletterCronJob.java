@@ -12,22 +12,26 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterCronJob implements CronJob {
 
+	private static Logger log = Logging.getLoggerInstance(NewsletterCronJob.class.getName());
+
 	public void run() {
+		log.debug("Running NewsletterCronJob");
 		long startTime = System.currentTimeMillis();
 		List<Node> newslettersToPublish = getNewslettersToPublish();
 		for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
 			Node newsletterNode = newslettersToPublish.get(newsletterIterator);
 			String newsletterNumber = newsletterNode.getStringValue("number");
 			Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber);
-			String publicationNumber = publicationNode.getStringValue("number");
-			NewsletterPublisher publisher = new NewsletterPublisher(publicationNumber);
-			publisher.startPublishing();
+			Publish.publish(publicationNode);
 		}
 	}
 
@@ -38,20 +42,31 @@ public class NewsletterCronJob implements CronJob {
 		NodeQuery query = manager.createQuery();
 		NodeList newsletters = manager.getList(query);
 		List<Node> newslettersToPublish = new ArrayList<Node>();
+		log.debug("Found " + newsletters.size() + " newsletter in database");
 		for (int i = 0; i < newsletters.size(); i++) {
 			Node newsletter = newsletters.getNode(i);
-			long publicationInterval = newsletter.getLongValue("publishinterval");
+			if (Publish.isPublished(newsletter)) {
+				long publishInterval = newsletter.getLongValue("publishinterval");
+				if (publishInterval > 0) {
+					newslettersToPublish.add(newsletter);
+					log.debug("Newsletter " + newsletter.getNumber() + " is added to the list of newsletters to publish.");
+				} else {
+					log.debug("Newsletter " + newsletter.getNumber() + " requires manual publication and will not be processed.");
+				}
+			} else {
+				log.debug("Newsletter " + newsletter.getNumber() + " is not published to the Live site and will not be processed");
+			}
 		}
 		return (newslettersToPublish);
 	}
 
 	public void init(CronEntry arg0) {
-		// TODO Auto-generated method stub
+		log.debug("NewsletterCronJob init");
 
 	}
 
 	public void stop() {
-		// TODO Auto-generated method stub
+		log.debug("NewsletterCronJob stop !");
 
 	}
 

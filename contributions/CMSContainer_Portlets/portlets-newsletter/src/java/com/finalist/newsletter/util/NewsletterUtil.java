@@ -1,6 +1,7 @@
 package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -16,13 +17,13 @@ public abstract class NewsletterUtil {
 
 	public static final String NEWSLETTER = "newsletter";
 	public static final String NEWSLETTERPUBLICATION = "newsletterpublication";
-	
+
 	public static final String THEMETYPE_NEWSLETTER = "newslettertheme";
 	public static final String THEMETYPE_NEWSLETTERPUBLICATION = "newsletterpublicationtheme";
-	
-	public static ArrayList<String> getAllThemes(String number, String themeType) {
+
+	public static List<String> getAllThemes(String number, String themeType) {
 		log.debug("GetAllThemes " + number);
-		ArrayList<String> themes = new ArrayList<String>();
+		List<String> themes = new ArrayList<String>();
 		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 		Node newsletterNode = cloud.getNode(number);
 		NodeList themeList = newsletterNode.getRelatedNodes(themeType);
@@ -35,9 +36,9 @@ public abstract class NewsletterUtil {
 		return (themes);
 	}
 
-	public static ArrayList<String> getArticlesForTheme(String themeNumber) {
+	public static List<String> getArticlesForTheme(String themeNumber) {
 		log.debug("GetArticlesForTheme " + themeNumber);
-		ArrayList<String> articles = new ArrayList<String>();
+		List<String> articles = new ArrayList<String>();
 		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 		Node themeNode = cloud.getNode(themeNumber);
 		NodeList articleList = themeNode.getRelatedNodes("article");
