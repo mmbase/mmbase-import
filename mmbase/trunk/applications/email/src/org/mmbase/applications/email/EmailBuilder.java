@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: EmailBuilder.java,v 1.28 2007-11-09 10:14:47 michiel Exp $
+ * @version $Id: EmailBuilder.java,v 1.29 2007-11-25 18:25:49 nklasens Exp $
  */
 public class EmailBuilder extends MMObjectBuilder {
 
@@ -142,8 +142,8 @@ public class EmailBuilder extends MMObjectBuilder {
     }
 
     {
-        addFunction(new NodeFunction("mail", MAIL_PARAMETERS, ReturnType.VOID) {
-                protected Object getFunctionValue(Node node, Parameters parameters) {
+        addFunction(new NodeFunction<Void>("mail", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Void getFunctionValue(Node node, Parameters parameters) {
                     log.debug("We're in mail - args: " + parameters);
                     setType(node, parameters);
 
@@ -168,8 +168,8 @@ public class EmailBuilder extends MMObjectBuilder {
                 }
             }
             );
-        addFunction(new NodeFunction("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
-                protected Object getFunctionValue(final Node node, Parameters parameters) {
+        addFunction(new NodeFunction<Void>("startmail", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Void getFunctionValue(final Node node, Parameters parameters) {
                     log.debug("We're in startmail - args: " + parameters);
                     setType(node, parameters);
 
@@ -202,8 +202,8 @@ public class EmailBuilder extends MMObjectBuilder {
 
         // This is a silly function.
         // We could override setStringValue on 'type' itself. Perhaps that even already works.
-        addFunction(new NodeFunction("settype", MAIL_PARAMETERS, ReturnType.VOID) {
-                protected Object getFunctionValue(final Node node, Parameters parameters) {
+        addFunction(new NodeFunction<Void>("settype", MAIL_PARAMETERS, ReturnType.VOID) {
+                protected Void getFunctionValue(final Node node, Parameters parameters) {
                     log.debug("We're in startmail - args: " + parameters);
                     setType(node, parameters);
                     return null;

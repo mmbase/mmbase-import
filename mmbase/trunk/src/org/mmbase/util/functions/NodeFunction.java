@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * the Parameter array of the constructor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.30 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: NodeFunction.java,v 1.31 2007-11-25 18:25:49 nklasens Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -79,7 +79,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
         return functionName;
     }
 
-    public NodeFunction(String name, Parameter[] def, ReturnType<R> returnType) {
+    public NodeFunction(String name, Parameter<?>[] def, ReturnType<R> returnType) {
         super(name, getNodeParameterDef(def), returnType);
     }
     /**
@@ -211,7 +211,7 @@ public abstract class NodeFunction<R> extends AbstractFunction<R> {
      */
     public static <S> NodeFunction<S> wrap(Function<S> function) {
         if (function instanceof NodeFunction) {
-            return (NodeFunction) function;
+            return (NodeFunction<S>) function;
         } else {
             // if it contains a 'node' parameter, it can be wrapped into a node-function,
             // and be available on nodes of this builder.

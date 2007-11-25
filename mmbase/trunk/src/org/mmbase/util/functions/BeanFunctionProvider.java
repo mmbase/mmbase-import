@@ -15,7 +15,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunctionProvider.java,v 1.2 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: BeanFunctionProvider.java,v 1.3 2007-11-25 18:25:49 nklasens Exp $
  * @see org.mmbase.util.functions.BeanFunction
  * @since MMBase-1.9
  */
@@ -23,7 +23,7 @@ public class BeanFunctionProvider extends FunctionProvider{
     private static final Logger log = Logging.getLoggerInstance(BeanFunctionProvider.class);
 
 
-    public BeanFunctionProvider(Class clazz) {
+    public BeanFunctionProvider(Class<?> clazz) {
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 0) {
                 try {
