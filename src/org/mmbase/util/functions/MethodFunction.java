@@ -20,7 +20,7 @@ import java.lang.annotation.*;
  * annotate acutal parameter names.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MethodFunction.java,v 1.10 2006-10-24 09:39:36 michiel Exp $
+ * @version $Id: MethodFunction.java,v 1.11 2007-11-25 18:25:49 nklasens Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @see org.mmbase.util.functions.BeanFunction
@@ -29,14 +29,14 @@ import java.lang.annotation.*;
 public class MethodFunction extends AbstractFunction<Object> {
 
 
-    public static Function getFunction(Method method, String name) {
+    public static Function<Object> getFunction(Method method, String name) {
         return new MethodFunction(method, name); // could be cached...
     }
     
     /**
      * @since MMBase-1.9
      */
-    public static Function getFunction(Method method, String name, Object instance) {
+    public static Function<Object> getFunction(Method method, String name, Object instance) {
         return new MethodFunction(method, name, instance); // could be cached...
     }
 
@@ -45,12 +45,12 @@ public class MethodFunction extends AbstractFunction<Object> {
      * methods whith that name, the one with the largest number of by name annotated parameters is taken.
      * @since MMBase-1.9
      */
-    public static Function getFunction(Class clazz, String name) {
+    public static Function<Object> getFunction(Class<?> clazz, String name) {
         // Finding method to use
         Method method = getMethod(clazz, name);
         return getFunction(method, method.getName());
     }
-    public static Method getMethod(Class clazz, String name) {
+    public static Method getMethod(Class<?> clazz, String name) {
         // Finding method to use
         Method method = null;
         float score = -1.0f;
@@ -113,7 +113,7 @@ public class MethodFunction extends AbstractFunction<Object> {
 
         Annotation[][] annots = method.getParameterAnnotations();
         Class[] parameters = method.getParameterTypes();
-        Parameter[] def = new Parameter[parameters.length];
+        Parameter<?>[] def = new Parameter[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             String paramName = null;
             for (Annotation annot : annots[i]) {

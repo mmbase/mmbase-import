@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * A combined function combines other function object. Depending on the provided filled paramters it calls the right function.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CombinedFunction.java,v 1.6 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: CombinedFunction.java,v 1.7 2007-11-25 18:25:49 nklasens Exp $
  * @since MMBase-1.9
  */
 public class CombinedFunction<R> implements Function<R> {
@@ -40,7 +40,7 @@ public class CombinedFunction<R> implements Function<R> {
         if (returnType == null) {
             returnType = func.getReturnType();
         } else {
-            ReturnType funcType = func.getReturnType();
+            ReturnType<R> funcType = func.getReturnType();
             if (returnType.getTypeAsClass().isAssignableFrom(funcType.getTypeAsClass())) {
                 // 
             } else if (funcType.getTypeAsClass().isAssignableFrom(returnType.getTypeAsClass())) {
@@ -63,7 +63,7 @@ public class CombinedFunction<R> implements Function<R> {
         for (Function<R> f : functions) {
             // determin score here
             int scoreCounter = 0;
-            for (Parameter p : f.getParameterDefinition()) {
+            for (Parameter<?> p : f.getParameterDefinition()) {
                 if (p.isRequired() && parameters.get(p) == null) {
                     // required parameter missing, that is baaad!
                     scoreCounter = 0;
@@ -89,14 +89,14 @@ public class CombinedFunction<R> implements Function<R> {
 
     protected void determinDefinition() {
         if (functions.size() == 0) throw new IllegalStateException("No functions added");
-        for (Function f : functions) {
-            Parameter[] fd = f.getParameterDefinition();
+        for (Function<R> f : functions) {
+            Parameter<?>[] fd = f.getParameterDefinition();
             if (parameterDefinition == null) {
                 parameterDefinition = fd;
                 continue;
             }
-            List<Parameter> existing = new ArrayList(Arrays.asList(parameterDefinition));
-            for (Parameter extra : fd) {
+            List<Parameter<?>> existing = new ArrayList<Parameter<?>>(Arrays.asList(parameterDefinition));
+            for (Parameter<?> extra : fd) {
                 if (! existing.contains(extra)) {
                     existing.add(extra);
                 }
