@@ -11,6 +11,7 @@ package org.mmbase.mynews;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.framework.*;
+import org.mmbase.framework.basic.UrlConverter;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.*;
 
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.7 2007-11-16 13:47:22 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.8 2007-11-25 18:29:01 nklasens Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
