@@ -34,13 +34,14 @@ Applications build file
     <available file="codings/build.xml" property="codings.exists"/>
     <available file="mynews/build.xml" property="mynews.exists"/>
     <available file="jumpers/build.xml" property="jumpers.exists"/>
+  	<available file="myyahoo/build.xml" property="myyahoo.exists"/>
     <available file="notifications/build.xml" property="notifications.exists"/>
   </target>
 
   <target name="all.not.compiling" depends="" />
   <target name="all16" depends="init,media,bugtracker,email" />
   <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,rmmci" />
-  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,resources,largeobjects,notifications" />
+  <target name="all18" depends="init,all17,crontab,clustering,richtext,oscache-cache,commandserver,resources,mynews,jumpers,myyahoo,resources,largeobjects,notifications" />
   <target name="all19" depends="init,all18" />
 
   <target name="all18_14" depends="init,taglib,dove,editwizard,crontab,cloudcontext,rmmci,vwms,scan,clustering,oscache-cache,media,packaging,community,largeobjects" />
@@ -258,6 +259,14 @@ Applications build file
      </ant>
   </target>
 
+  <target name="myyahoo">
+     <ant dir="myyahoo"  target="package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+       <property name="build.dir"        value="${build.dir}" />
+       <property name="download.dir"        value="${download.dir}" />
+     </ant>
+  </target>
+	
   <target name="resources" depends="mmbase" if="resources.exists">
     <ant dir="resources"  target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${applications.build.dir}" />
@@ -308,8 +317,13 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
+  <target name="install.myyahoo" if="myyahoo.exists">
+    <ant dir="myyahoo"      target="install" inheritAll="false">
+      <property name="build.dir"        value="${build.dir}" />
+    </ant>
+  </target>
 
-  <target name="install" depends="minimalistic.install,install.rmmci,install.codings,install.mynews,install.resources,install.jumpers">
+  <target name="install" depends="minimalistic.install,install.rmmci,install.codings,install.mynews,install.resources,install.jumpers,install.myyahoo">
 
     <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -401,6 +415,7 @@ Applications build file
      <ant dir="mycompany"      target="clean" inheritAll="false" />
      <ant dir="mynews"      target="clean" inheritAll="false" />
      <ant dir="jumpers"      target="clean" inheritAll="false" />
+     <ant dir="myyahoo"      target="clean" inheritAll="false" />
      <ant dir="resources"      target="clean" inheritAll="false" />
 
      <delete dir="${applications.build.dir}" />
