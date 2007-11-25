@@ -372,19 +372,27 @@ public class PortletUtil {
     public static void updateNodeParameter(Node portlet, String key, Node value) {
         NodeList plist = SearchUtil.findRelatedNodeList(portlet, NODEPARAMETER, PARAMETERREL, KEY_FIELD, key);
         if (!plist.isEmpty()) {
-            Node foundNode = plist.getNode(0);
             if (value == null) {
-                log.debug("removing parameter node:" + foundNode.getNumber());
-                foundNode.delete(true);
-            }
-            else {
-                log.debug("updating parameter node:" + foundNode.getNumber());
-                Node oldValue = foundNode.getNodeValue(VALUE_FIELD);
-                if (oldValue == null || oldValue.getNumber() != value.getNumber()) {
-                    foundNode.setNodeValue(VALUE_FIELD, value);
-                    foundNode.commit();
+                for (int i = 0; i < plist.size(); i++) {
+                    Node foundNode = plist.getNode(i);
+                    log.debug("removing parameter node:" + foundNode.getNumber());
+                    foundNode.delete(true);
                 }
             }
+            else {
+                for (int i = 0; i < plist.size(); i++) {
+                    Node foundNode = plist.getNode(i);
+                    if (i == 0) {
+                        log.debug("updating parameter node:" + foundNode.getNumber());
+                        foundNode.setNodeValue(VALUE_FIELD, value);
+                        foundNode.commit();
+                    }
+                    else {
+                        log.debug("removing parameter node:" + foundNode.getNumber());
+                        foundNode.delete(true);
+                    }
+                }
+            }            
         } else {
             if (value != null) {
                 log.debug("creating node for node:" + portlet.getNumber());
