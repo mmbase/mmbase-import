@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.93 2007-08-06 13:00:26 michiel Exp $
+ * @version $Id: Module.java,v 1.94 2007-11-25 18:28:34 nklasens Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -263,12 +263,20 @@ public abstract class Module extends DescribedFunctionProvider {
 
     /**
      * Override properties through application context
-     * @param contextPath path in application context where properties are located
      * @since MMBase 1.8.5
      */
     public void loadInitParameters() {
+        loadInitParameters("mmbase/" + getName());        
+    }
+
+    /**
+     * Override properties through application context
+     * @param contextPath path in application context where properties are located
+     * @since MMBase 1.8.5
+     */
+    protected void loadInitParameters(String contextPath) {
         try {
-            Map<String, String> contextMap = ApplicationContextReader.getProperties("mmbase/" + getName());
+            Map<String, String> contextMap = ApplicationContextReader.getProperties(contextPath);
             properties.putAll(contextMap);
 
         } catch (javax.naming.NamingException ne) {
@@ -508,7 +516,7 @@ public abstract class Module extends DescribedFunctionProvider {
                         URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
                         Class<?> newClass = c.loadClass(className);
                         try {
-                            Constructor constructor = newClass.getConstructor(String.class);
+                            Constructor<?> constructor = newClass.getConstructor(String.class);
                             mod = (Module) constructor.newInstance(moduleName);
                         } catch (NoSuchMethodException nsme) {
                             log.warn(nsme);
@@ -518,7 +526,7 @@ public abstract class Module extends DescribedFunctionProvider {
                     } else {
                         Class<?> newClass = Class.forName(className);
                         try {
-                            Constructor constructor = newClass.getConstructor(String.class);
+                            Constructor<?> constructor = newClass.getConstructor(String.class);
                             mod =  (Module) constructor.newInstance(moduleName);
                         } catch (NoSuchMethodException nsme) {
                             log.service("Constructor with no name-argument is deprecated", nsme); 
