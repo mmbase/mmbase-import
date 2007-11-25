@@ -9,9 +9,11 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-jumpers</artifactId>
-  <name>MyYahoo</name>
+  <name>Jumpers</name>
   <shortDescription>MMBase Jumpers</shortDescription>
   <description>
+    The jumpers application could be used to make short urls which 
+    redirects to a long one.
   </description>
   <properties>
     <type>example</type>
