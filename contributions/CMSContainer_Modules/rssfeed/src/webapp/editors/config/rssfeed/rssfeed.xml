@@ -10,6 +10,7 @@
 
    <lists> 
       <optionlist include="config/option_lists/languages.xml"/>
+      <optionlist include="config/option_lists/boolean.xml"/>
    </lists>
    
    <steps>

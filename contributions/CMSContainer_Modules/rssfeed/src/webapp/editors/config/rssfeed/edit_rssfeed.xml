@@ -37,7 +37,11 @@
 		<prompt xml:lang="en">Email webmaster</prompt>
 		<prompt xml:lang="nl">Email webmaster</prompt>
 	</field>
-	
+	<field name="secure" ftype="enum">
+      <prompt xml:lang="en">Secure</prompt>
+      <prompt xml:lang="nl">Beveiligd</prompt>
+      <optionlist select="boolean" />
+   </field>
 	<list include="config/contentchannel/search_rssfeed_related_contentchannel.xml" />
  	<list include="config/typedef/search_site_allowrel_typedef.xml" />
 </form-schema>
