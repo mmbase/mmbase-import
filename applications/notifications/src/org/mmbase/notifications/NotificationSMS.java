@@ -40,4 +40,7 @@ public class NotificationSMS implements SMS {
     public Date getDate() {
         return date;
     }
+    public String toString() {
+        return notifyable.getFunctionValue("gui", null) + " -> " + getMobile();
+    }
 }

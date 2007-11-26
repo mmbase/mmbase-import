@@ -15,10 +15,9 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notification.java,v 1.4 2007-10-22 12:51:18 michiel Exp $
+ * @version $Id: Notification.java,v 1.5 2007-11-26 15:50:38 michiel Exp $
  **/
 public abstract class Notification {
-
 
     /**
      *
