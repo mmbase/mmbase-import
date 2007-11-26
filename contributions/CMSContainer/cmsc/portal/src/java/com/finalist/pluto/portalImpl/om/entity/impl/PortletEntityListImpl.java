@@ -31,55 +31,58 @@ import org.apache.pluto.om.entity.PortletEntityListCtrl;
 import com.finalist.pluto.portalImpl.om.common.AbstractSupportSet;
 import com.finalist.pluto.portalImpl.om.common.Support;
 
-public class PortletEntityListImpl extends AbstractSupportSet implements PortletEntityList, PortletEntityListCtrl, Serializable, Support {
+public class PortletEntityListImpl extends AbstractSupportSet implements PortletEntityList, PortletEntityListCtrl,
+      Serializable, Support {
 
-	// PortletEntityList implementation.
+   // PortletEntityList implementation.
 
-	public PortletEntity get(ObjectID objectId) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			PortletEntity portletEntity = (PortletEntity) iterator.next();
-			if (portletEntity.getId().equals(objectId)) {
-				return portletEntity;
-			}
-		}
-		return null;
-	}
+   public PortletEntity get(ObjectID objectId) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         PortletEntity portletEntity = (PortletEntity) iterator.next();
+         if (portletEntity.getId().equals(objectId)) {
+            return portletEntity;
+         }
+      }
+      return null;
+   }
 
-	// PortletEntityListCtrl implementation.
 
-	public PortletEntity add(PortletApplicationEntity appEntity, String definitionId) {
-		PortletEntityImpl entity = new PortletEntityImpl();
+   // PortletEntityListCtrl implementation.
 
-		int id = -1;
-		for (Iterator iter = iterator(); iter.hasNext();) {
-			PortletEntityImpl ent = (PortletEntityImpl) iter.next();
-			// TODO no more castor woutz
-//			try {
-//				id = Math.max(id, Integer.parseInt(ent.getCastorId()));
-//			} catch (NumberFormatException e) {
-//				// don't care
-//			}
-		}
-		entity.setId(Integer.toString(++id));
-		entity.setDefinitionId(definitionId);
-		entity.setPortletApplicationEntity(appEntity);
+   public PortletEntity add(PortletApplicationEntity appEntity, String definitionId) {
+      PortletEntityImpl entity = new PortletEntityImpl();
 
-		add(entity);
+      int id = -1;
+      for (Iterator iter = iterator(); iter.hasNext();) {
+         PortletEntityImpl ent = (PortletEntityImpl) iter.next();
+         // TODO no more castor woutz
+         // try {
+         // id = Math.max(id, Integer.parseInt(ent.getCastorId()));
+         // } catch (NumberFormatException e) {
+         // // don't care
+         // }
+      }
+      entity.setId(Integer.toString(++id));
+      entity.setDefinitionId(definitionId);
+      entity.setPortletApplicationEntity(appEntity);
 
-		return entity;
-	}
+      add(entity);
 
-	// additional methods.
+      return entity;
+   }
 
-	public PortletEntity get(String objectId) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			PortletEntity portletEntity = (PortletEntity) iterator.next();
-			if (portletEntity.getId().equals(objectId)) {
-				return portletEntity;
-			}
-		}
-		return null;
-	}
+
+   // additional methods.
+
+   public PortletEntity get(String objectId) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         PortletEntity portletEntity = (PortletEntity) iterator.next();
+         if (portletEntity.getId().equals(objectId)) {
+            return portletEntity;
+         }
+      }
+      return null;
+   }
 }

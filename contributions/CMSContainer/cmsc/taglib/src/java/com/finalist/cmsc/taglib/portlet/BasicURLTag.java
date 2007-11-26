@@ -19,297 +19,299 @@ import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 /**
- * Supporting class for the <CODE>actionURL</CODE> and <CODE>renderURL</CODE> tag.
- * Creates a url that points to the current Portlet and triggers an action request
- * with the supplied parameters.
- *
+ * Supporting class for the <CODE>actionURL</CODE> and <CODE>renderURL</CODE>
+ * tag. Creates a url that points to the current Portlet and triggers an action
+ * request with the supplied parameters.
  */
-public abstract class BasicURLTag extends TagSupport
-{
+public abstract class BasicURLTag extends TagSupport {
 
-    public static class TEI extends TagExtraInfo
-    {
-        @Override
-        public VariableInfo[] getVariableInfo(TagData tagData)
-        {
-            VariableInfo vi[] = null;
-            String var = tagData.getAttributeString("var");
-            if (var != null)
-            {
-                vi = new VariableInfo[1];
-                vi[0] = new VariableInfo(var, "java.lang.String", true, VariableInfo.AT_END);
-            }
-            return vi;
-        }
-    }
+   public static class TEI extends TagExtraInfo {
+      @Override
+      public VariableInfo[] getVariableInfo(TagData tagData) {
+         VariableInfo vi[] = null;
+         String var = tagData.getAttributeString("var");
+         if (var != null) {
+            vi = new VariableInfo[1];
+            vi[0] = new VariableInfo(var, "java.lang.String", true, VariableInfo.AT_END);
+         }
+         return vi;
+      }
+   }
 
-    protected String page;
-    protected String window;
-    protected String elementId;
+   protected String page;
+   protected String window;
+   protected String elementId;
 
-    protected String portletMode;
-    protected String secure;
-    protected Boolean secureBoolean;
-    protected String windowState;
-    protected String var;
+   protected String portletMode;
+   protected String secure;
+   protected Boolean secureBoolean;
+   protected String windowState;
+   protected String var;
 
-    protected PortletURL url;
-    protected String contenturl;
-    
-    /* (non-Javadoc)
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
-     */
-    @Override
-    public int doStartTag() throws JspException {
-        if (var != null)
-        {
-            pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
-        }
-        // make sure we start with an unset url variable;
-        setUrl(null);
+   protected PortletURL url;
+   protected String contenturl;
 
-        if (StringUtil.isEmpty(page) && StringUtil.isEmpty(window) && !StringUtil.isEmpty(elementId)) {
-            contenturl = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", elementId, null);
-            return EVAL_PAGE;
-        }
-        
-        PortletURL renderUrl = getRenderUrl();
-        if (renderUrl == null) {
-            throw new JspException("RenderUrl is not found");
-        }
-        else {
-            setUrl(renderUrl);
-            if (portletMode != null)
-            {
-                try
-                {
-                    PortletMode mode = new PortletMode(portletMode);
-                    url.setPortletMode(mode);
-                }
-                catch (PortletModeException e)
-                {
-                    throw new JspException(e);
-                }
-            }
-            if (windowState != null)
-            {
-                try
-                {
-                    WindowState state = new WindowState(windowState);
-                    url.setWindowState(state);
-                }
-                catch (WindowStateException e)
-                {
-                    throw new JspException(e);
-                }
-            }
-            if (secure != null)
-            {
-                try
-                {
-                    url.setSecure(getSecureBoolean());
-                }
-                catch (PortletSecurityException e)
-                {
-                    throw new JspException(e);
-                }
-            }
-            if (elementId != null)
-            {
-                url.setParameter("elementId", elementId);
-            }
-        }
-        return EVAL_PAGE;
-    }
 
-    protected abstract PortletURL getRenderUrl();
+   /*
+    * (non-Javadoc)
+    * 
+    * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+    */
+   @Override
+   public int doStartTag() throws JspException {
+      if (var != null) {
+         pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
+      }
+      // make sure we start with an unset url variable;
+      setUrl(null);
 
-    /**
-     *
-     * @return int
-     */
-    @Override
-    public int doEndTag() throws JspException {
-        if (var == null)
-        {
-            try
-            {
-                JspWriter writer = pageContext.getOut();
-                if (url == null) {
-                    writer.print(contenturl);
-                }
-                else {
-                    writer.print(url);
-                }
+      if (StringUtil.isEmpty(page) && StringUtil.isEmpty(window) && !StringUtil.isEmpty(elementId)) {
+         contenturl = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", elementId, null);
+         return EVAL_PAGE;
+      }
+
+      PortletURL renderUrl = getRenderUrl();
+      if (renderUrl == null) {
+         throw new JspException("RenderUrl is not found");
+      }
+      else {
+         setUrl(renderUrl);
+         if (portletMode != null) {
+            try {
+               PortletMode mode = new PortletMode(portletMode);
+               url.setPortletMode(mode);
             }
-            catch (IOException ioe)
-            {
-                throw new JspException("actionURL/renderURL Tag Exception: cannot write to the output writer.", ioe);
+            catch (PortletModeException e) {
+               throw new JspException(e);
             }
-        } else {
+         }
+         if (windowState != null) {
+            try {
+               WindowState state = new WindowState(windowState);
+               url.setWindowState(state);
+            }
+            catch (WindowStateException e) {
+               throw new JspException(e);
+            }
+         }
+         if (secure != null) {
+            try {
+               url.setSecure(getSecureBoolean());
+            }
+            catch (PortletSecurityException e) {
+               throw new JspException(e);
+            }
+         }
+         if (elementId != null) {
+            url.setParameter("elementId", elementId);
+         }
+      }
+      return EVAL_PAGE;
+   }
+
+
+   protected abstract PortletURL getRenderUrl();
+
+
+   /**
+    * @return int
+    */
+   @Override
+   public int doEndTag() throws JspException {
+      if (var == null) {
+         try {
+            JspWriter writer = pageContext.getOut();
             if (url == null) {
-                pageContext.setAttribute (var, contenturl, PageContext.PAGE_SCOPE);
+               writer.print(contenturl);
             }
             else {
-                pageContext.setAttribute (var, url.toString(), PageContext.PAGE_SCOPE);
+               writer.print(url);
             }
-        }
-        page = null;
-        window = null;
-        elementId = null;
+         }
+         catch (IOException ioe) {
+            throw new JspException("actionURL/renderURL Tag Exception: cannot write to the output writer.", ioe);
+         }
+      }
+      else {
+         if (url == null) {
+            pageContext.setAttribute(var, contenturl, PageContext.PAGE_SCOPE);
+         }
+         else {
+            pageContext.setAttribute(var, url.toString(), PageContext.PAGE_SCOPE);
+         }
+      }
+      page = null;
+      window = null;
+      elementId = null;
 
-        portletMode = null;
-        secure = null;
-        secureBoolean = null;
-        windowState = null;
-        var = null;
+      portletMode = null;
+      secure = null;
+      secureBoolean = null;
+      windowState = null;
+      var = null;
 
-        url = null;
-        contenturl = null;
-        
-        return EVAL_PAGE;
-    }
+      url = null;
+      contenturl = null;
 
-    public String getLink() {
-        String link= "";
-        Page pageObject;
-        try {
-            pageObject = SiteManagement.getPage(Integer.parseInt(page));
-        }
-        catch (NumberFormatException e) {
-            pageObject = SiteManagement.getPageFromPath(page);
-        }
-        if (pageObject != null) {
-            link = SiteManagement.getPath(pageObject, !ServerUtil.useServerName());
-        }
-        else {
-            link = page;
-        }
+      return EVAL_PAGE;
+   }
 
-        return link;
-    }
 
-    
-    /**
-     * Returns the portletMode.
-     * @return String
-     */
-    public String getPortletMode()
-    {
-        return portletMode;
-    }
+   public String getLink() {
+      String link = "";
+      Page pageObject;
+      try {
+         pageObject = SiteManagement.getPage(Integer.parseInt(page));
+      }
+      catch (NumberFormatException e) {
+         pageObject = SiteManagement.getPageFromPath(page);
+      }
+      if (pageObject != null) {
+         link = SiteManagement.getPath(pageObject, !ServerUtil.useServerName());
+      }
+      else {
+         link = page;
+      }
 
-    /**
-     * @return secure as String
-     */
-    public String getSecure()
-    {
-        return secure;
-    }
+      return link;
+   }
 
-    /**
-     * @return secure as Boolean
-     */
-    public boolean getSecureBoolean()
-    {
-        return this.secureBoolean.booleanValue();
-    }
 
-    /**
-     * Returns the windowState.
-     * @return String
-     */
-    public String getWindowState()
-    {
-        return windowState;
-    }
+   /**
+    * Returns the portletMode.
+    * 
+    * @return String
+    */
+   public String getPortletMode() {
+      return portletMode;
+   }
 
-    /**
-     * @return PortletURL
-     */
-    public PortletURL getUrl()
-    {
-        return url;
-    }
 
-    /**
-     * Returns the var.
-     * @return String
-     */
-    public String getVar()
-    {
-        return var;
-    }
+   /**
+    * @return secure as String
+    */
+   public String getSecure() {
+      return secure;
+   }
 
-    /**
-     * Sets the portletMode.
-     * @param portletMode The portletMode to set
-     */
-    public void setPortletMode(String portletMode)
-    {
-        this.portletMode = portletMode;
-    }
 
-    /**
-     * Sets secure to boolean value of the string
-     * @param secure
-     */
-    public void setSecure(String secure)
-    {
-        this.secure = secure;
-        this.secureBoolean = new Boolean(secure);
-    }
+   /**
+    * @return secure as Boolean
+    */
+   public boolean getSecureBoolean() {
+      return this.secureBoolean.booleanValue();
+   }
 
-    /**
-     * Sets the windowState.
-     * @param windowState The windowState to set
-     */
-    public void setWindowState(String windowState)
-    {
-        this.windowState = windowState;
-    }
 
-    /**
-     * Sets the url.
-     * @param url The url to set
-     */
-    public void setUrl(PortletURL url)
-    {
-        this.url = url;
-    }
+   /**
+    * Returns the windowState.
+    * 
+    * @return String
+    */
+   public String getWindowState() {
+      return windowState;
+   }
 
-    /**
-     * Sets the var.
-     * @param var The var to set
-     */
-    public void setVar(String var)
-    {
-        this.var = var;
-    }
 
-    
-    public String getPage() {
-        return page;
-    }
+   /**
+    * @return PortletURL
+    */
+   public PortletURL getUrl() {
+      return url;
+   }
 
-    
-    public void setPage(String page) {
-        this.page = page;
-    }
 
-    public String getWindow() {
-        return window;
-    }
+   /**
+    * Returns the var.
+    * 
+    * @return String
+    */
+   public String getVar() {
+      return var;
+   }
 
-    public void setWindow(String window) {
-        this.window = window;
-    }
 
-    public String getElementId() {
-        return elementId;
-    }
-    
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
-    }
+   /**
+    * Sets the portletMode.
+    * 
+    * @param portletMode
+    *           The portletMode to set
+    */
+   public void setPortletMode(String portletMode) {
+      this.portletMode = portletMode;
+   }
+
+
+   /**
+    * Sets secure to boolean value of the string
+    * 
+    * @param secure
+    */
+   public void setSecure(String secure) {
+      this.secure = secure;
+      this.secureBoolean = new Boolean(secure);
+   }
+
+
+   /**
+    * Sets the windowState.
+    * 
+    * @param windowState
+    *           The windowState to set
+    */
+   public void setWindowState(String windowState) {
+      this.windowState = windowState;
+   }
+
+
+   /**
+    * Sets the url.
+    * 
+    * @param url
+    *           The url to set
+    */
+   public void setUrl(PortletURL url) {
+      this.url = url;
+   }
+
+
+   /**
+    * Sets the var.
+    * 
+    * @param var
+    *           The var to set
+    */
+   public void setVar(String var) {
+      this.var = var;
+   }
+
+
+   public String getPage() {
+      return page;
+   }
+
+
+   public void setPage(String page) {
+      this.page = page;
+   }
+
+
+   public String getWindow() {
+      return window;
+   }
+
+
+   public void setWindow(String window) {
+      this.window = window;
+   }
+
+
+   public String getElementId() {
+      return elementId;
+   }
+
+
+   public void setElementId(String elementId) {
+      this.elementId = elementId;
+   }
 }

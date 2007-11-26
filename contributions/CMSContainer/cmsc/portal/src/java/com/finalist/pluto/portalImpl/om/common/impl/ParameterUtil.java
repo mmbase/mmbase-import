@@ -17,19 +17,20 @@ package com.finalist.pluto.portalImpl.om.common.impl;
 
 public class ParameterUtil {
 
-	/**
-	 * Returns the parameters as map with name as the parameter's name and value
-	 * as the parameter's value. The description is not represented in the
-	 * resulting map.
-	 * 
-	 * @param parameters the parameters to be converted
-	 * @return the parameters as map
-	 */
-	/*
-	 * static public Map createParameterMap(Collection parameters) { Map
-	 * returnValue = new HashMap(); Iterator iterator = parameters.iterator();
-	 * while (iterator.hasNext()) { Parameter parameter =
-	 * (Parameter)iterator.next(); returnValue.put(parameter.getName(),
-	 * parameter.getValue()); } return returnValue; }
-	 */
+   /**
+    * Returns the parameters as map with name as the parameter's name and value
+    * as the parameter's value. The description is not represented in the
+    * resulting map.
+    * 
+    * @param parameters
+    *           the parameters to be converted
+    * @return the parameters as map
+    */
+   /*
+    * static public Map createParameterMap(Collection parameters) { Map
+    * returnValue = new HashMap(); Iterator iterator = parameters.iterator();
+    * while (iterator.hasNext()) { Parameter parameter =
+    * (Parameter)iterator.next(); returnValue.put(parameter.getName(),
+    * parameter.getValue()); } return returnValue; }
+    */
 }

@@ -20,73 +20,82 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * * Wraps around the internal Object IDs. By holding both * the string and the integer version of
- * an Object ID this class * helps speed up the internal processing.
+ * * Wraps around the internal Object IDs. By holding both * the string and the
+ * integer version of an Object ID this class * helps speed up the internal
+ * processing.
  */
 
 public class ObjectID implements org.apache.pluto.om.common.ObjectID, java.io.Serializable {
 
-    private String stringOID;
+   private String stringOID;
 
-    private int intOID;
+   private int intOID;
 
-    private ObjectID(int oid, String stringOID) {
-        this.stringOID = stringOID;
-        intOID = oid;
-    }
 
-    // internal methods.
+   private ObjectID(int oid, String stringOID) {
+      this.stringOID = stringOID;
+      intOID = oid;
+   }
 
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        intOID = stream.readInt();
 
-        stringOID = String.valueOf(intOID);
-    }
+   // internal methods.
 
-    private void writeObject(ObjectOutputStream stream) throws IOException {
-        stream.write(intOID);
-    }
+   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+      intOID = stream.readInt();
 
-    // addtional methods.
+      stringOID = String.valueOf(intOID);
+   }
 
-    public boolean equals(Object object) {
-        boolean result = false;
 
-        if (object instanceof ObjectID)
-            result = (intOID == ((ObjectID) object).intOID);
-        else
-            if (object instanceof String)
-                result = stringOID.equals(object);
-            else
-                if (object instanceof Integer) result = (intOID == ((Integer) object).intValue());
-        return (result);
-    }
+   private void writeObject(ObjectOutputStream stream) throws IOException {
+      stream.write(intOID);
+   }
 
-    public int hashCode() {
-        return (intOID);
-    }
 
-    public String toString() {
-        return (stringOID);
-    }
+   // addtional methods.
 
-    public int intValue() {
-        return (intOID);
-    }
+   public boolean equals(Object object) {
+      boolean result = false;
 
-    static public ObjectID createFromString(String idStr) {
-//        char[] id = idStr.toCharArray();
-//        int _id = 1;
-//        for (int i = 0; i < id.length; i++) {
-//            if ((i % 2) == 0)
-//                _id *= id[i];
-//            else
-//                _id ^= id[i];
-//            _id = Math.abs(_id);
-//        }
-        
-        // The above seems very complicated and has the smae result with "" and "45"
-        int _id = idStr.hashCode();
-        return new ObjectID(_id, idStr);
-    }
+      if (object instanceof ObjectID)
+         result = (intOID == ((ObjectID) object).intOID);
+      else if (object instanceof String)
+         result = stringOID.equals(object);
+      else if (object instanceof Integer)
+         result = (intOID == ((Integer) object).intValue());
+      return (result);
+   }
+
+
+   public int hashCode() {
+      return (intOID);
+   }
+
+
+   public String toString() {
+      return (stringOID);
+   }
+
+
+   public int intValue() {
+      return (intOID);
+   }
+
+
+   static public ObjectID createFromString(String idStr) {
+      // char[] id = idStr.toCharArray();
+      // int _id = 1;
+      // for (int i = 0; i < id.length; i++) {
+      // if ((i % 2) == 0)
+      // _id *= id[i];
+      // else
+      // _id ^= id[i];
+      // _id = Math.abs(_id);
+      // }
+
+      // The above seems very complicated and has the smae result with "" and
+      // "45"
+      int _id = idStr.hashCode();
+      return new ObjectID(_id, idStr);
+   }
 }

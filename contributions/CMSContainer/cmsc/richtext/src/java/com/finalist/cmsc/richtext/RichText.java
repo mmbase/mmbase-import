@@ -27,18 +27,16 @@ import org.w3c.dom.Document;
  */
 public class RichText {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(RichText.class.getName());
-    
-   public final static String RICHTEXT_ROOT_OPEN =
-      "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-      "<richtext>";
+   /** MMbase logging system */
+   private static Logger log = Logging.getLoggerInstance(RichText.class.getName());
+
+   public final static String RICHTEXT_ROOT_OPEN = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<richtext>";
 
    public final static String RICHTEXT_ROOT_CLOSE = "</richtext>";
 
    public final static String LINK_TAGNAME = "a";
    public final static String IMG_TAGNAME = "img";
-   
+
    public final static String DESTINATION_ATTR = "destination";
    public final static String RELATIONID_ATTR = "relationID";
 
@@ -60,35 +58,39 @@ public class RichText {
    public final static String IMAGEINLINEREL_NM = "imageinlinerel";
    public static final String REFERID_FIELD = "referid";
 
+
    public final static boolean hasRichtextItems(String in) {
-       return (in.indexOf("<"+RichText.LINK_TAGNAME) > -1 || in.indexOf("<"+RichText.IMG_TAGNAME) > -1);
+      return (in.indexOf("<" + RichText.LINK_TAGNAME) > -1 || in.indexOf("<" + RichText.IMG_TAGNAME) > -1);
    }
+
 
    public final static String cleanRichText(String originalValue) {
-       // if string is null or empty, (re)set it's value to empty string
-       String newValue = "";
-       if (originalValue != null && !"".equals(originalValue.trim())) {
-           // Edited value: clean.
-           log.debug("before cleaning: " + originalValue);
-           newValue = WordHtmlCleaner.cleanHtml(originalValue);
-           log.debug("after cleaning: " + newValue);
-       }
-       return newValue;
+      // if string is null or empty, (re)set it's value to empty string
+      String newValue = "";
+      if (originalValue != null && !"".equals(originalValue.trim())) {
+         // Edited value: clean.
+         log.debug("before cleaning: " + originalValue);
+         newValue = WordHtmlCleaner.cleanHtml(originalValue);
+         log.debug("after cleaning: " + newValue);
+      }
+      return newValue;
    }
+
 
    public final static String getRichTextString(Document doc) {
-       // to string and strip root node, doctype and xmldeclaration
-       String out = XmlUtil.serializeDocument(doc, false, false, true, true);
-       out = out.replaceAll("<.?richtext.?>", "");
-       out = XmlUtil.unescapeXMLEntities(out);
-       return out;
+      // to string and strip root node, doctype and xmldeclaration
+      String out = XmlUtil.serializeDocument(doc, false, false, true, true);
+      out = out.replaceAll("<.?richtext.?>", "");
+      out = XmlUtil.unescapeXMLEntities(out);
+      return out;
    }
 
+
    public final static Document getRichTextDocument(String in) {
-       String out = XmlUtil.escapeXMLEntities(in);
-       out = RichText.RICHTEXT_ROOT_OPEN + out + RichText.RICHTEXT_ROOT_CLOSE;
-       Document doc = XmlUtil.toDocument(out, false);
-       return doc;
+      String out = XmlUtil.escapeXMLEntities(in);
+      out = RichText.RICHTEXT_ROOT_OPEN + out + RichText.RICHTEXT_ROOT_CLOSE;
+      Document doc = XmlUtil.toDocument(out, false);
+      return doc;
    }
 
 }

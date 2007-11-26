@@ -29,62 +29,72 @@ import org.apache.pluto.util.PrintWriterServletOutputStream;
 
 public class StoredServletResponseImpl extends ServletResponseImpl {
 
-    private boolean usingWriter;
-    private boolean usingStream;
+   private boolean usingWriter;
+   private boolean usingStream;
 
-    private ServletOutputStream wrappedStream;
-    private PrintWriter writer;
+   private ServletOutputStream wrappedStream;
+   private PrintWriter writer;
 
-	public StoredServletResponseImpl(HttpServletResponse response, PrintWriter _writer) {
-		super(response);
-		writer = _writer;
-	}
 
-	public void setResponse(HttpServletResponse response) {
-		super.setResponse(response);
-	}
+   public StoredServletResponseImpl(HttpServletResponse response, PrintWriter _writer) {
+      super(response);
+      writer = _writer;
+   }
 
-    public ServletOutputStream getOutputStream() throws IllegalStateException, IOException {
-        if (usingWriter) { throw new IllegalStateException(
-                "getOutputStream can't be used after getWriter was invoked"); }
 
-        if (wrappedStream == null) {
-            wrappedStream = new PrintWriterServletOutputStream(writer, getResponse()
-                    .getCharacterEncoding());
-        }
+   public void setResponse(HttpServletResponse response) {
+      super.setResponse(response);
+   }
 
-        usingStream = true;
 
-        return wrappedStream;
-    }
+   public ServletOutputStream getOutputStream() throws IllegalStateException, IOException {
+      if (usingWriter) {
+         throw new IllegalStateException("getOutputStream can't be used after getWriter was invoked");
+      }
 
-	public PrintWriter getWriter() throws IOException {
-        if (usingStream) { throw new IllegalStateException(
-                "getWriter can't be used after getOutputStream was invoked"); }
+      if (wrappedStream == null) {
+         wrappedStream = new PrintWriterServletOutputStream(writer, getResponse().getCharacterEncoding());
+      }
 
-        usingWriter = true;
+      usingStream = true;
 
-        return writer;
-    }
-    
-    public void setBufferSize(int size) {
-        // ignore
-    }
+      return wrappedStream;
+   }
 
-    public int getBufferSize() {
-        return 0;
-    }
-    
-	public void flushBuffer() throws IOException {
-		writer.flush();
-	}
-    
-    public boolean isCommitted() {
-        return false;
-    }
 
-    public void reset() {
-        // ignore right now
-    }
+   public PrintWriter getWriter() throws IOException {
+      if (usingStream) {
+         throw new IllegalStateException("getWriter can't be used after getOutputStream was invoked");
+      }
+
+      usingWriter = true;
+
+      return writer;
+   }
+
+
+   public void setBufferSize(int size) {
+      // ignore
+   }
+
+
+   public int getBufferSize() {
+      return 0;
+   }
+
+
+   public void flushBuffer() throws IOException {
+      writer.flush();
+   }
+
+
+   public boolean isCommitted() {
+      return false;
+   }
+
+
+   public void reset() {
+      // ignore right now
+   }
 
 }

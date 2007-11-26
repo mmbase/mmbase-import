@@ -23,12 +23,13 @@ import net.sf.mmapps.commons.web.FriendlyUrlFilter;
  */
 public class ControllerFilter extends FriendlyUrlFilter {
 
-    protected String getServlet() {
-        return PortalConstants.CMSC_PORTAL_SERVLET;
-    }
+   protected String getServlet() {
+      return PortalConstants.CMSC_PORTAL_SERVLET;
+   }
 
-    protected boolean isFriendlyUrl(HttpServletRequest req, HttpServletResponse resp) {
-        return PortalServlet.isNavigation(req, resp);
-    }
+
+   protected boolean isFriendlyUrl(HttpServletRequest req, HttpServletResponse resp) {
+      return PortalServlet.isNavigation(req, resp);
+   }
 
 }

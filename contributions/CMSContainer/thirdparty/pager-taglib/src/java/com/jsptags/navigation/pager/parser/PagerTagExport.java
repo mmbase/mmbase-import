@@ -22,26 +22,28 @@ package com.jsptags.navigation.pager.parser;
 
 public final class PagerTagExport {
 
-    public static final String
-	PAGE_OFFSET = "pageOffset",
-	PAGE_NUMBER = "pageNumber";
+   public static final String PAGE_OFFSET = "pageOffset", PAGE_NUMBER = "pageNumber";
 
-    private String pageOffset = null;
-    private String pageNumber = null;
+   private String pageOffset = null;
+   private String pageNumber = null;
 
-    final void setPageOffset(String id) {
-	pageOffset = id;
-    }
 
-    final void setPageNumber(String id) {
-	pageNumber = id;
-    }
+   final void setPageOffset(String id) {
+      pageOffset = id;
+   }
 
-    public final String getPageOffset() {
-	return pageOffset;
-    }
 
-    public final String getPageNumber() {
-	return pageNumber;
-    }
+   final void setPageNumber(String id) {
+      pageNumber = id;
+   }
+
+
+   public final String getPageOffset() {
+      return pageOffset;
+   }
+
+
+   public final String getPageNumber() {
+      return pageNumber;
+   }
 }

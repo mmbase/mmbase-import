@@ -21,34 +21,39 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ChangePasswordAction extends MMBaseAction {
 
-    /** MMbase logging system */
-    private static transient Logger log = Logging.getLoggerInstance(ChangePasswordAction.class.getName());
+   /** MMbase logging system */
+   private static transient Logger log = Logging.getLoggerInstance(ChangePasswordAction.class.getName());
 
-    /**
-     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
-        
-        if (!isCancelled(request)) {
-	        // Make sure we have the logged in user and not a user from a cloudprovider
-	        Cloud userCloud = getCloudFromSession(request);
-	
-	        log.debug("ChangePasswordAction - doPerform()");
-	        if (!isCancelled(request)) {
-	            ChangePasswordForm changePasswordForm = (ChangePasswordForm) form;
-	            Node userNode = SecurityUtil.getUserNode(userCloud);
-	            String newpassword = changePasswordForm.getNewpassword();
-                SecurityUtil.changePassword(userNode, newpassword);
-	        }
-	        ActionForward af = mapping.findForward(SUCCESS);
-	        af = new ActionForward(af.getPath() + "?succeeded=true");
-	        return af;
-        }
-        else {
-	        return mapping.findForward("cancel");
-        }
-    }
+
+   /**
+    * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
+    *      org.apache.struts.action.ActionForm,
+    *      javax.servlet.http.HttpServletRequest,
+    *      javax.servlet.http.HttpServletResponse)
+    */
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
+
+      if (!isCancelled(request)) {
+         // Make sure we have the logged in user and not a user from a
+         // cloudprovider
+         Cloud userCloud = getCloudFromSession(request);
+
+         log.debug("ChangePasswordAction - doPerform()");
+         if (!isCancelled(request)) {
+            ChangePasswordForm changePasswordForm = (ChangePasswordForm) form;
+            Node userNode = SecurityUtil.getUserNode(userCloud);
+            String newpassword = changePasswordForm.getNewpassword();
+            SecurityUtil.changePassword(userNode, newpassword);
+         }
+         ActionForward af = mapping.findForward(SUCCESS);
+         af = new ActionForward(af.getPath() + "?succeeded=true");
+         return af;
+      }
+      else {
+         return mapping.findForward("cancel");
+      }
+   }
 
 }

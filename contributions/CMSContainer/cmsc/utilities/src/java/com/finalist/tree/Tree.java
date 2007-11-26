@@ -11,33 +11,39 @@ package com.finalist.tree;
 
 public class Tree {
 
-    private TreeModel model;
-    private TreeInfo info;
-    private String imgBaseUrl = "editors/gfx/";
+   private TreeModel model;
+   private TreeInfo info;
+   private String imgBaseUrl = "editors/gfx/";
 
-    public Tree(TreeModel model, TreeInfo info) {
-        this.model = model;
-        this.info = info;
-    }
-    
-    public String getImgBaseUrl() {
-        return imgBaseUrl;
-    }
 
-    public TreeModel getModel() {
-        return model;
-    }
+   public Tree(TreeModel model, TreeInfo info) {
+      this.model = model;
+      this.info = info;
+   }
 
-    public TreeInfo getInfo() {
-        return info;
-    }
 
-    public void setImgBaseUrl(String imgBaseUrl) {
-        this.imgBaseUrl = imgBaseUrl;
-    }
+   public String getImgBaseUrl() {
+      return imgBaseUrl;
+   }
 
-    protected String buildImgUrl(String image) {
-        return getImgBaseUrl() + image;
-    }
+
+   public TreeModel getModel() {
+      return model;
+   }
+
+
+   public TreeInfo getInfo() {
+      return info;
+   }
+
+
+   public void setImgBaseUrl(String imgBaseUrl) {
+      this.imgBaseUrl = imgBaseUrl;
+   }
+
+
+   protected String buildImgUrl(String image) {
+      return getImgBaseUrl() + image;
+   }
 
 }

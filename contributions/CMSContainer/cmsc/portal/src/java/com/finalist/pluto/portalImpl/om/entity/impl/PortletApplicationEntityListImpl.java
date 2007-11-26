@@ -31,58 +31,59 @@ import com.finalist.pluto.portalImpl.om.common.AbstractSupportSet;
 import com.finalist.pluto.portalImpl.om.common.Support;
 
 public class PortletApplicationEntityListImpl extends AbstractSupportSet implements PortletApplicationEntityList,
-		PortletApplicationEntityListCtrl, Serializable, Support {
+      PortletApplicationEntityListCtrl, Serializable, Support {
 
-	// PortletApplicationEntityList implementation.
+   // PortletApplicationEntityList implementation.
 
-	public PortletApplicationEntity get(ObjectID objectId) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			PortletApplicationEntity portletApplicationEntity = (PortletApplicationEntity) iterator.next();
-			if (portletApplicationEntity.getId().equals(objectId)) {
-				return portletApplicationEntity;
-			}
-		}
-		return null;
-	}
-
-	// PortletApplicationEntityListCtrl implementation.
-
-	public PortletApplicationEntity add(String definitionId) {
-		PortletApplicationEntityImpl entity = new PortletApplicationEntityImpl();
-
-		int id = -1;
-		for (Iterator iter = iterator(); iter.hasNext();) {
-			PortletApplicationEntityImpl ent = (PortletApplicationEntityImpl) iter.next();
-// TODO woutz no more castor
-			//			try {
-//				id = Math.max(id, Integer.parseInt(ent.getCastorId()));
-//			} catch (NumberFormatException e) {
-//				// don't care
-//			}
-		}
-		entity.setId(Integer.toString(++id));
-		entity.setDefinitionId(definitionId);
-
-		add(entity);
-
-		return entity;
-	}
+   public PortletApplicationEntity get(ObjectID objectId) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         PortletApplicationEntity portletApplicationEntity = (PortletApplicationEntity) iterator.next();
+         if (portletApplicationEntity.getId().equals(objectId)) {
+            return portletApplicationEntity;
+         }
+      }
+      return null;
+   }
 
 
-	// additional methods.
+   // PortletApplicationEntityListCtrl implementation.
 
-	// additional internal methods
+   public PortletApplicationEntity add(String definitionId) {
+      PortletApplicationEntityImpl entity = new PortletApplicationEntityImpl();
 
-	public PortletApplicationEntity get(String objectId) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			PortletApplicationEntity portletApplicationEntity = (PortletApplicationEntity) iterator.next();
-			if (portletApplicationEntity.getId().toString().equals(objectId)) {
-				return portletApplicationEntity;
-			}
-		}
-		return null;
-	}
+      int id = -1;
+      for (Iterator iter = iterator(); iter.hasNext();) {
+         PortletApplicationEntityImpl ent = (PortletApplicationEntityImpl) iter.next();
+         // TODO woutz no more castor
+         // try {
+         // id = Math.max(id, Integer.parseInt(ent.getCastorId()));
+         // } catch (NumberFormatException e) {
+         // // don't care
+         // }
+      }
+      entity.setId(Integer.toString(++id));
+      entity.setDefinitionId(definitionId);
+
+      add(entity);
+
+      return entity;
+   }
+
+
+   // additional methods.
+
+   // additional internal methods
+
+   public PortletApplicationEntity get(String objectId) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         PortletApplicationEntity portletApplicationEntity = (PortletApplicationEntity) iterator.next();
+         if (portletApplicationEntity.getId().toString().equals(objectId)) {
+            return portletApplicationEntity;
+         }
+      }
+      return null;
+   }
 
 }

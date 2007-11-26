@@ -13,7 +13,7 @@ import javax.naming.NamingException;
 
 /**
  * Utility methods to check wether we are running in staging or live.
- *
+ * 
  * @author Edwin van der Elst, Finalist IT-Group - Date :Nov 14, 2003
  */
 public class ServerUtil {
@@ -27,26 +27,31 @@ public class ServerUtil {
 
    private static boolean loaded;
 
+
    public static boolean isLive() {
       getSetting();
       return live;
    }
+
 
    public static boolean isStaging() {
       getSetting();
       return !live;
    }
 
+
    public static boolean isProduction() {
-       getSetting();
-       return production;
-    }
-   
+      getSetting();
+      return production;
+   }
+
+
    public static boolean useServerName() {
-       getSetting();
-       return useServerName;
-    }
-   
+      getSetting();
+      return useServerName;
+   }
+
+
    private static void getSetting() {
       if (!loaded) {
          live = false;
@@ -58,12 +63,12 @@ public class ServerUtil {
 
             String useServerNameStr = (String) env.lookup("server/useServerName");
             if (useServerNameStr != null && useServerNameStr.length() > 0) {
-                useServerName = Boolean.valueOf(useServerNameStr);
+               useServerName = Boolean.valueOf(useServerNameStr);
             }
 
             String productionStr = (String) env.lookup("server/production");
             if (productionStr != null && productionStr.length() > 0) {
-                production = Boolean.valueOf(productionStr);
+               production = Boolean.valueOf(productionStr);
             }
          }
          catch (NamingException ne) {
@@ -72,21 +77,22 @@ public class ServerUtil {
          loaded = true;
       }
    }
-   
+
+
    /*
     * Returns the value of the context setting given as a string.
     */
    public static String getEnvironmentVariableValue(String contextSetting) {
-	   String result = "";
-	   try {
-		   InitialContext context = new InitialContext();
-		   Context env = (Context) context.lookup("java:comp/env");
-		   result = (String) env.lookup(contextSetting);
-	   }
-	   catch (NamingException ne) {
-		   log.debug("Error looking up context setting '" + contextSetting + "'", ne);		   
-	   }
-	   
-	   return result;
+      String result = "";
+      try {
+         InitialContext context = new InitialContext();
+         Context env = (Context) context.lookup("java:comp/env");
+         result = (String) env.lookup(contextSetting);
+      }
+      catch (NamingException ne) {
+         log.debug("Error looking up context setting '" + contextSetting + "'", ne);
+      }
+
+      return result;
    }
 }

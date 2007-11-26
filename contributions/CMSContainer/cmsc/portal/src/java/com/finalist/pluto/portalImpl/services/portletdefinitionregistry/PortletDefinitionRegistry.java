@@ -31,26 +31,30 @@ import com.finalist.cmsc.services.ServiceManager;
  */
 public class PortletDefinitionRegistry {
 
-	// removed final modifier for hot deploy
-	private static PortletDefinitionRegistryService cService = (PortletDefinitionRegistryService) ServiceManager
-			.getService(PortletDefinitionRegistryService.class);
+   // removed final modifier for hot deploy
+   private static PortletDefinitionRegistryService cService = (PortletDefinitionRegistryService) ServiceManager
+         .getService(PortletDefinitionRegistryService.class);
 
-	/**
-	 * Returns a set containg all portlet application definitions
-	 * 
-	 * @return the portlet application definition set
-	 */
-	public static PortletApplicationDefinitionList getPortletApplicationDefinitionList() {
-		return cService.getPortletApplicationDefinitionList();
-	}
 
-	/**
-	 * Returns the portlet definition to the given object id
-	 * @param id ObjectID of the portlet definition
-	 * @return the portlet definition
-	 */
-	public static PortletDefinition getPortletDefinition(ObjectID id) {
-		return cService.getPortletDefinition(id);
-	}
+   /**
+    * Returns a set containg all portlet application definitions
+    * 
+    * @return the portlet application definition set
+    */
+   public static PortletApplicationDefinitionList getPortletApplicationDefinitionList() {
+      return cService.getPortletApplicationDefinitionList();
+   }
+
+
+   /**
+    * Returns the portlet definition to the given object id
+    * 
+    * @param id
+    *           ObjectID of the portlet definition
+    * @return the portlet definition
+    */
+   public static PortletDefinition getPortletDefinition(ObjectID id) {
+      return cService.getPortletDefinition(id);
+   }
 
 }

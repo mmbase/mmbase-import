@@ -33,44 +33,48 @@ import com.finalist.pluto.portalImpl.factory.InformationProviderFactory;
 
 public class InformationProviderServiceFactoryImpl implements InformationProviderFactory, InformationProviderService {
 
-	private ServletConfig servletConfig;
+   private ServletConfig servletConfig;
 
-	// InformationProviderFactory implementation.
-	// InformationProviderService implementation.
 
-	public StaticInformationProvider getStaticProvider() {
-		ServletContext context = servletConfig.getServletContext();
+   // InformationProviderFactory implementation.
+   // InformationProviderService implementation.
 
-		StaticInformationProvider provider = (StaticInformationProvider) context
-				.getAttribute("com.finalist.pluto.portalImpl.StaticInformationProvider");
+   public StaticInformationProvider getStaticProvider() {
+      ServletContext context = servletConfig.getServletContext();
 
-		if (provider == null) {
-			provider = new StaticInformationProviderImpl(servletConfig);
-			context.setAttribute("com.finalist.pluto.portalImpl.StaticInformationProvider", provider);
-		}
+      StaticInformationProvider provider = (StaticInformationProvider) context
+            .getAttribute("com.finalist.pluto.portalImpl.StaticInformationProvider");
 
-		return provider;
-	}
+      if (provider == null) {
+         provider = new StaticInformationProviderImpl(servletConfig);
+         context.setAttribute("com.finalist.pluto.portalImpl.StaticInformationProvider", provider);
+      }
 
-	public DynamicInformationProvider getDynamicProvider(HttpServletRequest request) {
-		DynamicInformationProvider provider = (DynamicInformationProvider) request
-				.getAttribute("com.finalist.pluto.portalImpl.DynamicInformationProvider");
+      return provider;
+   }
 
-		if (provider == null) {
-			provider = new DynamicInformationProviderImpl(request, servletConfig);
-			request.setAttribute("com.finalist.pluto.portalImpl.DynamicInformationProvider", provider);
-		}
 
-		return provider;
-	}
+   public DynamicInformationProvider getDynamicProvider(HttpServletRequest request) {
+      DynamicInformationProvider provider = (DynamicInformationProvider) request
+            .getAttribute("com.finalist.pluto.portalImpl.DynamicInformationProvider");
 
-	// additional methods.
+      if (provider == null) {
+         provider = new DynamicInformationProviderImpl(request, servletConfig);
+         request.setAttribute("com.finalist.pluto.portalImpl.DynamicInformationProvider", provider);
+      }
 
-	public void init(ServletConfig config, Map properties) throws Exception {
-		servletConfig = config;
-	}
+      return provider;
+   }
 
-	public void destroy() throws Exception {
-	}
+
+   // additional methods.
+
+   public void init(ServletConfig config, Map properties) throws Exception {
+      servletConfig = config;
+   }
+
+
+   public void destroy() throws Exception {
+   }
 
 }

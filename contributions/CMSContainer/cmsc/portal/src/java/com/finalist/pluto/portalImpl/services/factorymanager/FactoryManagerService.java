@@ -25,23 +25,25 @@ import com.finalist.cmsc.services.Service;
 
 /**
  * Manages the life-time of factories registered during container startup. A
- * service has to derive from {@link Factory} and implement the <CODE>init()</CODE>
- * and <CODE>destroy()</CODE> methods as appropriate.
+ * service has to derive from {@link Factory} and implement the
+ * <CODE>init()</CODE> and <CODE>destroy()</CODE> methods as appropriate.
  * 
  * @see Factory
  */
-public abstract class FactoryManagerService extends Service implements org.apache.pluto.services.factory.FactoryManagerService {
+public abstract class FactoryManagerService extends Service implements
+      org.apache.pluto.services.factory.FactoryManagerService {
 
-	// org.apache.pluto.services.factory.FactoryManagerService implementation.
+   // org.apache.pluto.services.factory.FactoryManagerService implementation.
 
-	/**
-	 * * Returns the service implementation for the given service class, or *
-	 * <CODE>null</CODE> if no such service is registered. * *
-	 * 
-	 * @param theClass * the service class * *
-	 * @return the service implementation
-	 */
+   /**
+    * * Returns the service implementation for the given service class, or *
+    * <CODE>null</CODE> if no such service is registered. * *
+    * 
+    * @param theClass *
+    *           the service class * *
+    * @return the service implementation
+    */
 
-	public abstract Factory getFactory(Class theClass);
+   public abstract Factory getFactory(Class theClass);
 
 }

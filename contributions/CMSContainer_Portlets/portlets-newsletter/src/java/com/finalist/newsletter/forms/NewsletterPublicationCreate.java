@@ -25,27 +25,27 @@ import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
-	@Override
-	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
+   @Override
+   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-		String parentnewsletter = getParameter(request, "parentnewsletter", true);
-		String action = getParameter(request, "action");
+      String parentnewsletter = getParameter(request, "parentnewsletter", true);
+      String action = getParameter(request, "action");
 
-		if (StringUtil.isEmptyOrWhitespace(action)) {
-			request.getSession().setAttribute("parentnewsletter", parentnewsletter);
-			// Initialize the new publication
-			Node publicationNode = NewsletterPublicationUtil.createPublication(parentnewsletter);
-			request.getSession().removeAttribute("parentnewsletter");
+      if (StringUtil.isEmptyOrWhitespace(action)) {
+         request.getSession().setAttribute("parentnewsletter", parentnewsletter);
+         // Initialize the new publication
+         Node publicationNode = NewsletterPublicationUtil.createPublication(parentnewsletter);
+         request.getSession().removeAttribute("parentnewsletter");
 
-			addToRequest(request, "showpage", publicationNode);
+         addToRequest(request, "showpage", publicationNode);
 
-			ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=EDIT" + "&contenttype=newsletterpublication"
-					+ "&returnurl=" + mapping.findForward("returnurl").getPath());
-			ret.setRedirect(true);
-			return ret;
-		}
-		request.getSession().removeAttribute("parentnewsletter");
-		ActionForward ret = mapping.findForward(CANCEL);
-		return ret;
-	}
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=EDIT"
+               + "&contenttype=newsletterpublication" + "&returnurl=" + mapping.findForward("returnurl").getPath());
+         ret.setRedirect(true);
+         return ret;
+      }
+      request.getSession().removeAttribute("parentnewsletter");
+      ActionForward ret = mapping.findForward(CANCEL);
+      return ret;
+   }
 }

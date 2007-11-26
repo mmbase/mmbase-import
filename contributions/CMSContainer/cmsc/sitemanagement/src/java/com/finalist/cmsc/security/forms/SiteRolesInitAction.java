@@ -7,9 +7,9 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 
 public class SiteRolesInitAction extends RolesInitAction {
 
-    @Override
-    protected RolesInfo getRolesInfo(Cloud cloud, Node group) {
-        return NavigationUtil.getRolesInfo(cloud, group);
-    }
+   @Override
+   protected RolesInfo getRolesInfo(Cloud cloud, Node group) {
+      return NavigationUtil.getRolesInfo(cloud, group);
+   }
 
 }

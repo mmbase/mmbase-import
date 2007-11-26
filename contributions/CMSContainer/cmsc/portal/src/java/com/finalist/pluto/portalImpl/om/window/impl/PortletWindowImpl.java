@@ -21,63 +21,69 @@ import org.apache.pluto.om.window.PortletWindowCtrl;
 
 import com.finalist.pluto.portalImpl.util.ObjectID;
 
-
 public class PortletWindowImpl implements PortletWindow, PortletWindowCtrl {
 
-	private ObjectID objectId;
+   private ObjectID objectId;
 
-	private String id;
+   private String id;
 
-	private PortletEntity portletEntity;
+   private PortletEntity portletEntity;
 
-	public PortletWindowImpl(String id) {
-		this.setId(id);
-	}
 
-	// PortletWindow implementation.
+   public PortletWindowImpl(String id) {
+      this.setId(id);
+   }
 
-	/**
-	 * Returns the identifier of this portlet instance window as object id
-	 * 
-	 * @return the object identifier
-	 */
-	public ObjectID getId() {
-		if (objectId == null) {
-			objectId = ObjectID.createFromString(id);
-		}
-		return objectId;
-	}
 
-	/**
-	 * Returns the portlet entity
-	 * 
-	 * @return the portlet entity
-	 */
-	public PortletEntity getPortletEntity() {
-		return portletEntity;
-	}
+   // PortletWindow implementation.
 
-	// PortletWindowCtrl implementation.
-	/**
-	 * binds an identifier to this portlet window
-	 * 
-	 * @param id the new identifier
-	 */
-	public void setId(String id) {
-		id = id.toLowerCase();
-		id = id.replaceAll("[,\\s]+", "");
-		id = id.replaceAll("[^a-zA-Z_0-9-]", "");
-		this.id = id;
-		objectId = null;
-	}
+   /**
+    * Returns the identifier of this portlet instance window as object id
+    * 
+    * @return the object identifier
+    */
+   public ObjectID getId() {
+      if (objectId == null) {
+         objectId = ObjectID.createFromString(id);
+      }
+      return objectId;
+   }
 
-	/**
-	 * binds a portlet instance to this portlet window
-	 * 
-	 * @param portletEntity a portlet entity object
-	 */
-	public void setPortletEntity(PortletEntity portletEntity) {
-		this.portletEntity = portletEntity;
-	}
+
+   /**
+    * Returns the portlet entity
+    * 
+    * @return the portlet entity
+    */
+   public PortletEntity getPortletEntity() {
+      return portletEntity;
+   }
+
+
+   // PortletWindowCtrl implementation.
+   /**
+    * binds an identifier to this portlet window
+    * 
+    * @param id
+    *           the new identifier
+    */
+   public void setId(String id) {
+      id = id.toLowerCase();
+      id = id.replaceAll("[,\\s]+", "");
+      id = id.replaceAll("[^a-zA-Z_0-9-]", "");
+      this.id = id;
+      objectId = null;
+   }
+
+
+   /**
+    * binds a portlet instance to this portlet window
+    * 
+    * @param portletEntity
+    *           a portlet entity object
+    */
+   public void setPortletEntity(PortletEntity portletEntity) {
+      this.portletEntity = portletEntity;
+   }
 
 }

@@ -25,36 +25,42 @@ import com.finalist.pluto.portalImpl.services.config.Config;
  */
 public class PortletContainerFactory {
 
-	public static final String ENTRANCE_IMPL = "portletcontainer.entrance.impl";
+   public static final String ENTRANCE_IMPL = "portletcontainer.entrance.impl";
 
-	public static final String ENTRANCE_WRAPPER_IMPL = "portletcontainer.entrance.wrapper.impl";
+   public static final String ENTRANCE_WRAPPER_IMPL = "portletcontainer.entrance.wrapper.impl";
 
-	private static PortletContainer portletContainer;
+   private static PortletContainer portletContainer;
 
-	private static PortletContainer portletContainerWrapper;
+   private static PortletContainer portletContainerWrapper;
 
-	static {
-		try {
-			portletContainer = (PortletContainer) Class.forName(Config.getParameters().getString(ENTRANCE_IMPL)).newInstance();
-			portletContainerWrapper = (PortletContainer) Class.forName(Config.getParameters().getString(ENTRANCE_WRAPPER_IMPL))
-					.newInstance();
-		} catch (java.lang.IllegalAccessException e) {
-			System.err.println("PortletContainerFactory.static constructor");
-			e.printStackTrace(System.err);
-		} catch (java.lang.InstantiationException e) {
-			System.err.println("PortletContainerFactory.static constructor");
-			e.printStackTrace(System.err);
-		} catch (java.lang.ClassNotFoundException e) {
-			System.err.println("PortletContainerFactory.static constructor");
-			e.printStackTrace(System.err);
-		}
-	}
+   static {
+      try {
+         portletContainer = (PortletContainer) Class.forName(Config.getParameters().getString(ENTRANCE_IMPL))
+               .newInstance();
+         portletContainerWrapper = (PortletContainer) Class.forName(
+               Config.getParameters().getString(ENTRANCE_WRAPPER_IMPL)).newInstance();
+      }
+      catch (java.lang.IllegalAccessException e) {
+         System.err.println("PortletContainerFactory.static constructor");
+         e.printStackTrace(System.err);
+      }
+      catch (java.lang.InstantiationException e) {
+         System.err.println("PortletContainerFactory.static constructor");
+         e.printStackTrace(System.err);
+      }
+      catch (java.lang.ClassNotFoundException e) {
+         System.err.println("PortletContainerFactory.static constructor");
+         e.printStackTrace(System.err);
+      }
+   }
 
-	static PortletContainer getPortletContainerOriginal() {
-		return portletContainer;
-	}
 
-	public static PortletContainer getPortletContainer() {
-		return portletContainerWrapper;
-	}
+   static PortletContainer getPortletContainerOriginal() {
+      return portletContainer;
+   }
+
+
+   public static PortletContainer getPortletContainer() {
+      return portletContainerWrapper;
+   }
 }

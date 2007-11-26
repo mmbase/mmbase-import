@@ -24,54 +24,66 @@ import org.apache.pluto.services.log.Logger;
 
 public class LoggerImpl implements Logger {
 
-    private Log log = null;
+   private Log log = null;
 
-    public LoggerImpl(Log log) {
-        this.log = log;
-    }
 
-    public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
-    }
+   public LoggerImpl(Log log) {
+      this.log = log;
+   }
 
-    public boolean isInfoEnabled() {
-        return log.isInfoEnabled();
-    }
 
-    public boolean isWarnEnabled() {
-        return log.isWarnEnabled();
-    }
+   public boolean isDebugEnabled() {
+      return log.isDebugEnabled();
+   }
 
-    public boolean isErrorEnabled() {
-        return log.isErrorEnabled();
-    }
 
-    public void debug(String aMessage) {
-        log.debug(aMessage);
-    }
+   public boolean isInfoEnabled() {
+      return log.isInfoEnabled();
+   }
 
-    public void debug(String aMessage, Throwable aThrowable) {
-        log.debug(aMessage, aThrowable);
-    }
 
-    public void info(String aMessage) {
-        log.info(aMessage);
-    }
+   public boolean isWarnEnabled() {
+      return log.isWarnEnabled();
+   }
 
-    public void warn(String aMessage) {
-        log.warn(aMessage);
-    }
 
-    public void error(String aMessage) {
-        log.error(aMessage);
-    }
+   public boolean isErrorEnabled() {
+      return log.isErrorEnabled();
+   }
 
-    public void error(String aMessage, Throwable aThrowable) {
-        log.error(aMessage, aThrowable);
-    }
 
-    public void error(Throwable aThrowable) {
-        log.error("Exception caught: ", aThrowable);
-    }
+   public void debug(String aMessage) {
+      log.debug(aMessage);
+   }
+
+
+   public void debug(String aMessage, Throwable aThrowable) {
+      log.debug(aMessage, aThrowable);
+   }
+
+
+   public void info(String aMessage) {
+      log.info(aMessage);
+   }
+
+
+   public void warn(String aMessage) {
+      log.warn(aMessage);
+   }
+
+
+   public void error(String aMessage) {
+      log.error(aMessage);
+   }
+
+
+   public void error(String aMessage, Throwable aThrowable) {
+      log.error(aMessage, aThrowable);
+   }
+
+
+   public void error(Throwable aThrowable) {
+      log.error("Exception caught: ", aThrowable);
+   }
 
 }

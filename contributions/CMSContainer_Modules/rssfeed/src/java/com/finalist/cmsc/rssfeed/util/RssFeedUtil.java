@@ -8,18 +8,22 @@ import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 
 public class RssFeedUtil {
-    public static final String RSSFEED = "rssfeed";
-    public static final String FRAGMENT_FIELD = "title";
+   public static final String RSSFEED = "rssfeed";
+   public static final String FRAGMENT_FIELD = "title";
 
-    public static NodeList getOrderedChildren(Node parentNode) {
-		return SearchUtil.findRelatedOrderedNodeList(parentNode, RssFeedUtil.RSSFEED, NavigationUtil.NAVREL, FRAGMENT_FIELD);
-	}
 
-	public static int getChildCount(Node node) {
-		return TreeUtil.getChildCount(node, node.getCloud().getNodeManager(RSSFEED), NavigationUtil.NAVREL);
-	}
+   public static NodeList getOrderedChildren(Node parentNode) {
+      return SearchUtil.findRelatedOrderedNodeList(parentNode, RssFeedUtil.RSSFEED, NavigationUtil.NAVREL,
+            FRAGMENT_FIELD);
+   }
 
-	public static boolean isRssFeedType(Node node) {
-		return node.getNodeManager().getName().equals(RSSFEED);
-	}
+
+   public static int getChildCount(Node node) {
+      return TreeUtil.getChildCount(node, node.getCloud().getNodeManager(RSSFEED), NavigationUtil.NAVREL);
+   }
+
+
+   public static boolean isRssFeedType(Node node) {
+      return node.getNodeManager().getName().equals(RSSFEED);
+   }
 }

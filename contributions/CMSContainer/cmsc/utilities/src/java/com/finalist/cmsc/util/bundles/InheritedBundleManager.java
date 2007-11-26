@@ -1,13 +1,14 @@
 package com.finalist.cmsc.util.bundles;
+
 import java.util.Locale;
 import java.util.Hashtable;
 
 /**
  * Manager class which should be used in parallel with
- * InheritedPropertyResourceBundle instances.  This manager
- * will ensure that instances of bundles are minimized in the
- * JVM.  The manager is also used by all internal classes
- * for the same reason.
+ * InheritedPropertyResourceBundle instances. This manager will ensure that
+ * instances of bundles are minimized in the JVM. The manager is also used by
+ * all internal classes for the same reason.
+ * 
  * @author Eric Olson <eolson@imation.com>
  * @version 1.
  */
@@ -19,13 +20,15 @@ public class InheritedBundleManager {
    private static InheritedBundleManager instance = null;
 
    /**
-    * The master table of all InheritedPropertyResourceBundles
-    * which have been created and cached.
+    * The master table of all InheritedPropertyResourceBundles which have been
+    * created and cached.
     */
    private Hashtable<InheritedBundleKey, InheritedPropertyResourceBundle> bundles = null;
 
+
    /**
     * The static method for returning the singleton instance.
+    * 
     * @return the singleton manager instance.
     */
    public static InheritedBundleManager getInstance() {
@@ -37,6 +40,7 @@ public class InheritedBundleManager {
       return instance;
    }
 
+
    /**
     * Constructs a new manager.
     */
@@ -45,34 +49,34 @@ public class InheritedBundleManager {
 
    }
 
+
    /**
-    * Gets the appropriate InheritedPropertyResourceBundle.  If 
-    * the bundle does not already exist in the cache, a new one
-    * is created and stored.
-    * @param baseName the resource bundle base name.
-    * @param locale the locale.  This is optional.  If no locale is
-    * specified, the default locale is used.
-    * @param loader the class loader used to locate resource bundles
-    * and the relationships file.  This is optional.  If no class loader
-    * is specified, the system class loader is used.
+    * Gets the appropriate InheritedPropertyResourceBundle. If the bundle does
+    * not already exist in the cache, a new one is created and stored.
+    * 
+    * @param baseName
+    *           the resource bundle base name.
+    * @param locale
+    *           the locale. This is optional. If no locale is specified, the
+    *           default locale is used.
+    * @param loader
+    *           the class loader used to locate resource bundles and the
+    *           relationships file. This is optional. If no class loader is
+    *           specified, the system class loader is used.
     * @return the resource bundle.
     */
-   public InheritedPropertyResourceBundle getBundle(String baseName,
-                                                    Locale locale,
-                                                    ClassLoader loader) {
+   public InheritedPropertyResourceBundle getBundle(String baseName, Locale locale, ClassLoader loader) {
 
       // create a new key
-      InheritedBundleKey key = new InheritedBundleKey(baseName, locale,
-                                                      loader);
-      
+      InheritedBundleKey key = new InheritedBundleKey(baseName, locale, loader);
+
       // get the instance from the table.
       InheritedPropertyResourceBundle bundle = bundles.get(key);
 
-      // the instance has not yet been created.  Create a new one
+      // the instance has not yet been created. Create a new one
       // and cache it.
       if (bundle == null) {
-         bundle = new InheritedPropertyResourceBundle(baseName, locale,
-                                                      loader);
+         bundle = new InheritedPropertyResourceBundle(baseName, locale, loader);
          bundles.put(key, bundle);
       }
 
@@ -81,26 +85,29 @@ public class InheritedBundleManager {
 
 
    /**
-    * Gets the appropriate InheritedPropertyResourceBundle.  If 
-    * the bundle does not already exist in the cache, a new one
-    * is created and stored.
-    * @param baseName the resource bundle base name.
-    * @param locale the locale.  This is optional.  If no locale is
-    * specified, the default locale is used.
+    * Gets the appropriate InheritedPropertyResourceBundle. If the bundle does
+    * not already exist in the cache, a new one is created and stored.
+    * 
+    * @param baseName
+    *           the resource bundle base name.
+    * @param locale
+    *           the locale. This is optional. If no locale is specified, the
+    *           default locale is used.
     * @return the resource bundle.
     */
-    
-   public InheritedPropertyResourceBundle getBundle(String baseName,
-                                                    Locale locale) {
+
+   public InheritedPropertyResourceBundle getBundle(String baseName, Locale locale) {
 
       return getBundle(baseName, locale, null);
    }
 
+
    /**
-    * Gets the appropriate InheritedPropertyResourceBundle.  If 
-    * the bundle does not already exist in the cache, a new one
-    * is created and stored.
-    * @param baseName the resource bundle base name.
+    * Gets the appropriate InheritedPropertyResourceBundle. If the bundle does
+    * not already exist in the cache, a new one is created and stored.
+    * 
+    * @param baseName
+    *           the resource bundle base name.
     * @return the resource bundle.
     */
    public InheritedPropertyResourceBundle getBundle(String baseName) {
@@ -132,9 +139,13 @@ class InheritedBundleKey {
 
    /**
     * Creates a new bundle key.
-    * @param baseName the bundle base name.
-    * @param locale the locale.
-    * @param loader the class loader.
+    * 
+    * @param baseName
+    *           the bundle base name.
+    * @param locale
+    *           the locale.
+    * @param loader
+    *           the class loader.
     */
    InheritedBundleKey(String baseName, Locale locale, ClassLoader loader) {
       this.baseName = baseName;
@@ -142,33 +153,40 @@ class InheritedBundleKey {
       this.loader = loader;
    }
 
-   @Override
-public boolean equals(Object o) {
-      if (o instanceof InheritedBundleKey) {
-         InheritedBundleKey other = (InheritedBundleKey)o;
 
-         // determine if locales are equal.  These are equal if both are
+   @Override
+   public boolean equals(Object o) {
+      if (o instanceof InheritedBundleKey) {
+         InheritedBundleKey other = (InheritedBundleKey) o;
+
+         // determine if locales are equal. These are equal if both are
          // null, or both are not null, and equals() returns true.
          if (locale == null) {
-            if (other.locale != null) return false;
-         } else {
+            if (other.locale != null)
+               return false;
+         }
+         else {
             if (other.locale == null) {
                return false;
-            } else {
+            }
+            else {
                if (!locale.equals(other.locale)) {
                   return false;
                }
             }
          }
 
-         // determine if loaders are equal.  These are equal if both are
+         // determine if loaders are equal. These are equal if both are
          // null, or both are not null, and equals() returns true.
          if (loader == null) {
-            if (other.loader != null) return false;
-         } else {
+            if (other.loader != null)
+               return false;
+         }
+         else {
             if (other.loader == null) {
                return false;
-            } else {
+            }
+            else {
                if (!loader.equals(other.loader)) {
                   return false;
                }
@@ -181,14 +199,18 @@ public boolean equals(Object o) {
       return false;
    }
 
+
    @Override
-public int hashCode() {
+   public int hashCode() {
       int retVal = 0;
 
-      //XOR all hashCodes for the three instance variables.
-      if (baseName != null) retVal = retVal | baseName.hashCode();
-      if (locale != null) retVal = retVal | locale.hashCode();
-      if (loader != null) retVal = retVal | loader.hashCode();
+      // XOR all hashCodes for the three instance variables.
+      if (baseName != null)
+         retVal = retVal | baseName.hashCode();
+      if (locale != null)
+         retVal = retVal | locale.hashCode();
+      if (loader != null)
+         retVal = retVal | loader.hashCode();
 
       return retVal;
    }

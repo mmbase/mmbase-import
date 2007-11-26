@@ -19,29 +19,32 @@ import com.finalist.tree.ajax.SelectAjaxRenderer;
 
 public class SelectRenderer extends SelectAjaxRenderer {
 
-    public SelectRenderer(HttpServletResponse response, String linkPattern, String target) {
-       super(response, linkPattern, target);
-    }
-    
-    @Override
-    protected String getName(Node parentNode) {
-        return parentNode.getStringValue(RepositoryUtil.NAME_FIELD);
-    }
+   public SelectRenderer(HttpServletResponse response, String linkPattern, String target) {
+      super(response, linkPattern, target);
+   }
 
-    @Override
-    protected String getFragment(Node parentNode) {
-        return parentNode.getStringValue( RepositoryUtil.getFragmentFieldname(parentNode) );
-    }
-    
-    @Override
-    public String getIcon(Object node) {
-        Node n = (Node) node;
-        if(RepositoryUtil.isContentChannel(n)) {
-            UserRole role = RepositoryUtil.getRole(n.getCloud(), n, false);
-            return "type/" + n.getNodeManager().getName() + "_"+role.getRole().getName()+".png";
-        }
-        else {
-            return "type/" + n.getNodeManager().getName()+".png";
-        }
-    }
+
+   @Override
+   protected String getName(Node parentNode) {
+      return parentNode.getStringValue(RepositoryUtil.NAME_FIELD);
+   }
+
+
+   @Override
+   protected String getFragment(Node parentNode) {
+      return parentNode.getStringValue(RepositoryUtil.getFragmentFieldname(parentNode));
+   }
+
+
+   @Override
+   public String getIcon(Object node) {
+      Node n = (Node) node;
+      if (RepositoryUtil.isContentChannel(n)) {
+         UserRole role = RepositoryUtil.getRole(n.getCloud(), n, false);
+         return "type/" + n.getNodeManager().getName() + "_" + role.getRole().getName() + ".png";
+      }
+      else {
+         return "type/" + n.getNodeManager().getName() + ".png";
+      }
+   }
 }

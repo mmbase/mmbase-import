@@ -28,236 +28,254 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
- * @author Nico Klasens
- * 
- * This class contains code which extends wizard.jsp
+ * @author Nico Klasens This class contains code which extends wizard.jsp
  */
 public class WizardController {
 
-    /**
-     * MMbase logging system
-     */
-    private static Logger log = Logging.getLoggerInstance(WizardController.class.getName());
+   /**
+    * MMbase logging system
+    */
+   private static Logger log = Logging.getLoggerInstance(WizardController.class.getName());
 
-    /**
-     * Additional actions to open the wizard
-     * 
-     * @param request - http request
-     * @param ewconfig - editwizard config
-     * @param config - wizard config
-     * @param cloud - cloud
-     * @return Paramters to pass to the wizard transformation
-     */
-    public Map<String, String> openWizard(HttpServletRequest request, Config ewconfig,
-            Config.WizardConfig config, Cloud cloud) {
 
-        HttpSession session = request.getSession();
-        String objectnr = config.objectNumber;
-        String contenttype = null;
-        if (objectnr != null && "new".equals(objectnr)) {
-            contenttype = (String) session.getAttribute("contenttype");
-        }
-        else {
+   /**
+    * Additional actions to open the wizard
+    * 
+    * @param request -
+    *           http request
+    * @param ewconfig -
+    *           editwizard config
+    * @param config -
+    *           wizard config
+    * @param cloud -
+    *           cloud
+    * @return Paramters to pass to the wizard transformation
+    */
+   public Map<String, String> openWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig config,
+         Cloud cloud) {
+
+      HttpSession session = request.getSession();
+      String objectnr = config.objectNumber;
+      String contenttype = null;
+      if (objectnr != null && "new".equals(objectnr)) {
+         contenttype = (String) session.getAttribute("contenttype");
+      }
+      else {
+         Node node = cloud.getNode(objectnr);
+         contenttype = node.getNodeManager().getName();
+      }
+      log.debug("contenttype " + contenttype);
+
+      String readonly = (String) session.getAttribute("readonly");
+      if (StringUtil.isEmptyOrWhitespace(readonly)) {
+         readonly = "false";
+      }
+
+      Map<String, String> params = new HashMap<String, String>();
+      params.put("READONLY", readonly);
+      params.put("READONLY-REASON", "NONE");
+      log.debug("readonly " + readonly);
+
+      Node creationNode = null;
+      if (!StringUtil.isEmpty(contenttype)) {
+         String creation = (String) session.getAttribute("creation");
+         if (!StringUtil.isEmpty(creation)) {
+            creationNode = cloud.getNode(creation);
+         }
+         if (creationNode == null && objectnr != null && !"new".equals(objectnr)) {
             Node node = cloud.getNode(objectnr);
-            contenttype = node.getNodeManager().getName();
-        }
-        log.debug("contenttype " + contenttype);
-        
-        String readonly = (String) session.getAttribute("readonly");
-        if (StringUtil.isEmptyOrWhitespace(readonly)) {
-            readonly = "false";
-        }
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("READONLY", readonly);
-        params.put("READONLY-REASON", "NONE");
-        log.debug("readonly " + readonly);
+            if (PagesUtil.isPageType(node)) {
+               creationNode = node;
+               session.setAttribute("creation", "" + creationNode.getNumber());
+            }
+            if (ContentElementUtil.isContentType(contenttype)) {
+               if (RepositoryUtil.hasCreationChannel(node)) {
+                  creationNode = RepositoryUtil.getCreationChannel(node);
+                  session.setAttribute("creation", "" + creationNode.getNumber());
+               }
+            }
+         }
+      }
 
-        Node creationNode = null;
-        if (!StringUtil.isEmpty(contenttype)) {
-            String creation = (String) session.getAttribute("creation");
-            if (!StringUtil.isEmpty(creation)) {
-                creationNode = cloud.getNode(creation);
-            }
-            if (creationNode == null && objectnr != null && !"new".equals(objectnr)) {
-                Node node = cloud.getNode(objectnr);
+      UserRole userrole = null;
+      if (creationNode != null) {
+         if (RepositoryUtil.isContentChannel(creationNode)) {
+            userrole = RepositoryUtil.getRole(creationNode.getCloud(), creationNode, false);
+         }
+         if (PagesUtil.isPageType(creationNode)) {
+            userrole = NavigationUtil.getRole(creationNode.getCloud(), creationNode, false);
+         }
+      }
 
-                if (PagesUtil.isPageType(node)) {
-                    creationNode = node;
-                    session.setAttribute("creation", "" + creationNode.getNumber());
-                }
-                if (ContentElementUtil.isContentType(contenttype)) {
-                    if (RepositoryUtil.hasCreationChannel(node)) {
-                        creationNode = RepositoryUtil.getCreationChannel(node);
-                        session.setAttribute("creation", "" + creationNode.getNumber());
-                    }
-                }
-            }
-        }
+      if (userrole != null) {
+         log.debug("role = " + userrole.getRole());
+         int roleId = userrole.getRole().getId();
+         if (roleId >= Role.WEBMASTER.getId()) {
+            params.put("WEBMASTER", "true");
+         }
+         if (roleId >= Role.CHIEFEDITOR.getId()) {
+            params.put("CHIEFEDITOR", "true");
+         }
+         if (roleId >= Role.EDITOR.getId()) {
+            params.put("EDITOR", "true");
+         }
+         if (roleId >= Role.WRITER.getId()) {
+            params.put("WRITER", "true");
+         }
+         else {
+            params.put("READONLY", "true");
+            params.put("READONLY-REASON", "RIGHTS");
+         }
+      }
+      else {
+         if (Rank.ADMIN_INT <= cloud.getUser().getRank().getInt()) {
+            params.put("WEBMASTER", "true");
+         }
+      }
 
-        UserRole userrole = null;
-        if (creationNode != null) {
-            if (RepositoryUtil.isContentChannel(creationNode)) {
-                userrole = RepositoryUtil.getRole(creationNode.getCloud(), creationNode, false);
-            }
-            if (PagesUtil.isPageType(creationNode)) {
-                userrole = NavigationUtil.getRole(creationNode.getCloud(), creationNode, false);
-            }
-        }
+      openWizard(request, ewconfig, config, cloud, params, userrole, contenttype);
 
-        if (userrole != null) {
-            log.debug("role = " + userrole.getRole());
-            int roleId = userrole.getRole().getId();
-            if (roleId >= Role.WEBMASTER.getId()) {
-                params.put("WEBMASTER", "true");
-            }
-            if (roleId >= Role.CHIEFEDITOR.getId()) {
-                params.put("CHIEFEDITOR", "true");
-            }
-            if (roleId >= Role.EDITOR.getId()) {
-                params.put("EDITOR", "true");
-            }
-            if (roleId >= Role.WRITER.getId()) {
-                params.put("WRITER", "true");
+      log.debug("params = " + params);
+      return params;
+   }
+
+
+   @SuppressWarnings("unused")
+   public void openWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig config, Cloud cloud,
+         Map<String, String> params, UserRole userrole, String contenttype) {
+      // nothing to do
+   }
+
+
+   /**
+    * Additional actions to close the wizard
+    * 
+    * @param request -
+    *           http request
+    * @param ewconfig -
+    *           editwizard config
+    * @param wizardConfig -
+    *           wizard config
+    * @param cloud -
+    *           cloud
+    */
+   public void closeWizard(HttpServletRequest request, Config ewconfig, Config.WizardConfig wizardConfig, Cloud cloud) {
+
+      if (ewconfig != null && wizardConfig != null) {
+         HttpSession session = request.getSession();
+
+         if (isMainWizard(ewconfig, wizardConfig)) {
+            if (wizardConfig.wiz.committed()) {
+               session.setAttribute("wizardaction", "save");
             }
             else {
-                params.put("READONLY", "true");
-                params.put("READONLY-REASON", "RIGHTS");
+               session.setAttribute("wizardaction", "cancel");
             }
-        }
-        else {
-            if (Rank.ADMIN_INT <= cloud.getUser().getRank().getInt()) {
-                params.put("WEBMASTER", "true");
+         }
+
+         Node editNode = null;
+         String contenttype = null;
+
+         String objectnr = wizardConfig.objectNumber;
+         log.debug("objectnr " + objectnr);
+         if (!StringUtil.isEmpty(objectnr)) {
+            if (!"new".equals(objectnr) || wizardConfig.wiz.committed()) {
+               if ("new".equals(objectnr)) {
+                  // We are closing a wizard which was called with
+                  // objectnumber=new.
+                  // let's find out the objectnumber in mmbase
+                  log.debug("wiz.objectnr " + wizardConfig.wiz.getObjectNumber());
+
+                  editNode = cloud.getNode(wizardConfig.wiz.getObjectNumber());
+               }
+               else {
+                  editNode = cloud.getNode(objectnr);
+               }
+               session.setAttribute("ewnode-lastedited", "" + editNode.getNumber());
             }
-        }
+         }
 
-        openWizard(request, ewconfig, config, cloud, params, userrole, contenttype);
-        
-        log.debug("params = " + params);
-        return params;
-    }
+         if (editNode != null) {
+            if (ContentElementUtil.isContentElement(editNode)) {
+               if ("new".equals(objectnr)) {
+                  String channelnr = (String) session.getAttribute("creation");
+                  log.debug("Creation " + channelnr);
 
-    @SuppressWarnings("unused")
-    public void openWizard(HttpServletRequest request, Config ewconfig,
-            Config.WizardConfig config, Cloud cloud, Map<String, String> params, UserRole userrole, String contenttype) {
-        // nothing to do
-    }
-
-
-    /**
-     * Additional actions to close the wizard
-     * 
-     * @param request - http request
-     * @param ewconfig - editwizard config
-     * @param wizardConfig - wizard config
-     * @param cloud - cloud
-     */
-    public void closeWizard(HttpServletRequest request, Config ewconfig,
-            Config.WizardConfig wizardConfig, Cloud cloud) {
-
-        if (ewconfig != null && wizardConfig != null) {
-            HttpSession session = request.getSession();
-
-            if (isMainWizard(ewconfig, wizardConfig)) {
-                if (wizardConfig.wiz.committed()) {
-                    session.setAttribute("wizardaction", "save");
-                }
-                else {
-                    session.setAttribute("wizardaction", "cancel");
-                }
-            }
-
-            Node editNode = null;
-            String contenttype = null;
-
-            String objectnr = wizardConfig.objectNumber;
-            log.debug("objectnr " + objectnr);
-            if (!StringUtil.isEmpty(objectnr)) {
-                if (!"new".equals(objectnr) || wizardConfig.wiz.committed()) {
-                    if ("new".equals(objectnr)) {
-                        // We are closing a wizard which was called with objectnumber=new.
-                        // let's find out the objectnumber in mmbase
-                        log.debug("wiz.objectnr " + wizardConfig.wiz.getObjectNumber());
-
-                        editNode = cloud.getNode(wizardConfig.wiz.getObjectNumber());
-                    }
-                    else {
-                        editNode = cloud.getNode(objectnr);
-                    }
-                    session.setAttribute("ewnode-lastedited", "" + editNode.getNumber());
-                }
-            }
-
-            if (editNode != null) {
-                if (ContentElementUtil.isContentElement(editNode)) {
-                    if ("new".equals(objectnr)) {
-                        String channelnr = (String) session.getAttribute("creation");
-                        log.debug("Creation " + channelnr);
-
-                        // this has creation channel check is needed, because with it will create double creationchannels when first "save" and then "save and close"
-                        if (!RepositoryUtil.hasCreationChannel(editNode)) {
-                            if (!StringUtil.isEmpty(channelnr)) {
-                               RepositoryUtil.addCreationChannel(editNode, channelnr);
-                               ContentElementUtil.addOwner(editNode);
-                               if (isMainWizard(ewconfig, wizardConfig)) {
-                                   RepositoryUtil.addContentToChannel(editNode, channelnr);
-                               }
-                           }
-                           else {
-                               log.warn("ContentElement: Creationchannel was not found in session");
-                           }
+                  // this has creation channel check is needed, because with it
+                  // will create double creationchannels when first "save" and
+                  // then "save and close"
+                  if (!RepositoryUtil.hasCreationChannel(editNode)) {
+                     if (!StringUtil.isEmpty(channelnr)) {
+                        RepositoryUtil.addCreationChannel(editNode, channelnr);
+                        ContentElementUtil.addOwner(editNode);
+                        if (isMainWizard(ewconfig, wizardConfig)) {
+                           RepositoryUtil.addContentToChannel(editNode, channelnr);
                         }
-                    }
-                    else {
-                        if (!ContentElementUtil.hasOwner(editNode)) {
-                            ContentElementUtil.addOwner(editNode);
-                        }
+                     }
+                     else {
+                        log.warn("ContentElement: Creationchannel was not found in session");
+                     }
+                  }
+               }
+               else {
+                  if (!ContentElementUtil.hasOwner(editNode)) {
+                     ContentElementUtil.addOwner(editNode);
+                  }
 
-                        if (!RepositoryUtil.hasCreationChannel(editNode)) {
-                            String channelnr = (String) session.getAttribute("creation");
-                            log.debug("Creation " + channelnr);
+                  if (!RepositoryUtil.hasCreationChannel(editNode)) {
+                     String channelnr = (String) session.getAttribute("creation");
+                     log.debug("Creation " + channelnr);
 
-                            if (!StringUtil.isEmpty(channelnr)) {
-                                RepositoryUtil.addCreationChannel(editNode, channelnr);
-                            }
-                        }
-                    }
+                     if (!StringUtil.isEmpty(channelnr)) {
+                        RepositoryUtil.addCreationChannel(editNode, channelnr);
+                     }
+                  }
+               }
 
-                   try {
-                      if (wizardConfig.wiz.committed()) {
-                        Versioning.addVersion(editNode);
-                      }
-                   } catch (VersioningException e) {
-                      log.error("Problem while adding version for node : " + objectnr, e);
-                   }
-                }
-                contenttype = editNode.getNodeManager().getName();
+               try {
+                  if (wizardConfig.wiz.committed()) {
+                     Versioning.addVersion(editNode);
+                  }
+               }
+               catch (VersioningException e) {
+                  log.error("Problem while adding version for node : " + objectnr, e);
+               }
             }
-            log.debug("contenttype " + contenttype);
-            
-            closeWizard(request, ewconfig, wizardConfig, cloud, editNode, contenttype);
-        }
-    }
-    
-    @SuppressWarnings("unused")
-    public void closeWizard(HttpServletRequest request, Config ewconfig, WizardConfig wizardConfig, Cloud cloud, Node editNode, String contenttype) {
-        // nothing to do
-    }
+            contenttype = editNode.getNodeManager().getName();
+         }
+         log.debug("contenttype " + contenttype);
 
-    /**
-     * Is this wizard the main wizard on the editwizard stack
-     * 
-     * @param ewconfig - editwizard config
-     * @param wconfig - current wizard config
-     * @return <code>true</code> when main wizard
-     */
-    public static boolean isMainWizard(Config ewconfig, Config.WizardConfig wconfig) {
-        Stack configs = ewconfig.subObjects;
-        Iterator iter = configs.iterator();
-        while (iter.hasNext()) {
-            Object element = iter.next();
-            if (element instanceof Config.WizardConfig) { return element == wconfig; }
-        }
-        return false;
-    }
+         closeWizard(request, ewconfig, wizardConfig, cloud, editNode, contenttype);
+      }
+   }
+
+
+   @SuppressWarnings("unused")
+   public void closeWizard(HttpServletRequest request, Config ewconfig, WizardConfig wizardConfig, Cloud cloud,
+         Node editNode, String contenttype) {
+      // nothing to do
+   }
+
+
+   /**
+    * Is this wizard the main wizard on the editwizard stack
+    * 
+    * @param ewconfig -
+    *           editwizard config
+    * @param wconfig -
+    *           current wizard config
+    * @return <code>true</code> when main wizard
+    */
+   public static boolean isMainWizard(Config ewconfig, Config.WizardConfig wconfig) {
+      Stack configs = ewconfig.subObjects;
+      Iterator iter = configs.iterator();
+      while (iter.hasNext()) {
+         Object element = iter.next();
+         if (element instanceof Config.WizardConfig) {
+            return element == wconfig;
+         }
+      }
+      return false;
+   }
 }

@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package com.finalist.pluto.portalImpl.factory;
 
 import org.apache.pluto.services.information.DynamicInformationProvider;
@@ -17,24 +17,28 @@ import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 
 public class FactoryAccess {
 
-	public static StaticInformationProvider getStaticProvider() {
-		return getProviderFactory().getStaticProvider();
-	}
+   public static StaticInformationProvider getStaticProvider() {
+      return getProviderFactory().getStaticProvider();
+   }
 
-	public static DynamicInformationProvider getDynamicProvider(javax.servlet.http.HttpServletRequest request) {
-		return getProviderFactory().getDynamicProvider(request);
-	}
 
-	public static InformationProviderService getInformationProviderContainerService() {
-		return getProviderService();
-	}
+   public static DynamicInformationProvider getDynamicProvider(javax.servlet.http.HttpServletRequest request) {
+      return getProviderFactory().getDynamicProvider(request);
+   }
 
-	private static InformationProviderFactory getProviderFactory() {
-		return (InformationProviderFactory) FactoryManager.getFactory(InformationProviderFactory.class);
-	}
 
-	private static InformationProviderService getProviderService() {
-		return (InformationProviderService) FactoryManager.getFactory(InformationProviderFactory.class);
-	}
+   public static InformationProviderService getInformationProviderContainerService() {
+      return getProviderService();
+   }
+
+
+   private static InformationProviderFactory getProviderFactory() {
+      return (InformationProviderFactory) FactoryManager.getFactory(InformationProviderFactory.class);
+   }
+
+
+   private static InformationProviderService getProviderService() {
+      return (InformationProviderService) FactoryManager.getFactory(InformationProviderFactory.class);
+   }
 
 }

@@ -30,77 +30,88 @@ import org.apache.pluto.om.common.SecurityRoleRef;
 import org.apache.pluto.util.StringUtils;
 
 public class SecurityRoleRefImpl implements SecurityRoleRef, Serializable {
-	private static Log log = LogFactory.getLog(SecurityRoleRefImpl.class);
-	
-	private String roleName;
+   private static Log log = LogFactory.getLog(SecurityRoleRefImpl.class);
 
-	private String roleLink;
+   private String roleName;
 
-	private DescriptionSetImpl descriptions;
+   private String roleLink;
 
-	public SecurityRoleRefImpl() {
-		descriptions = new DescriptionSetImpl();
-	}
+   private DescriptionSetImpl descriptions;
 
-	// SecurityRoleRef implementation.
 
-	public String getRoleName() {
-		return roleName;
-	}
+   public SecurityRoleRefImpl() {
+      descriptions = new DescriptionSetImpl();
+   }
 
-	public String getRoleLink() {
-		return roleLink;
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.pluto.om.common.SecurityRoleRef#getDescription(Locale)
-	 */
-	public Description getDescription(Locale locale) {
-		return descriptions.get(locale);
-	}
+   // SecurityRoleRef implementation.
 
-	public void setRoleName(String roleName) {
-		log.debug("### setRoleName='" + roleName + "'");
-		this.roleName = roleName;
-	}
+   public String getRoleName() {
+      return roleName;
+   }
 
-	// additional methods.
 
-	public void setRoleLink(String roleLink) {
-		log.debug("### setRoleLink='" + roleLink + "'");
-		this.roleLink = roleLink;
-	}
+   public String getRoleLink() {
+      return roleLink;
+   }
 
-	public DescriptionSet getDescriptionSet() {
-		return descriptions;
-	}
 
-	public void setDescriptionSet(DescriptionSet descriptions) {
-		this.descriptions = (DescriptionSetImpl) descriptions;
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.apache.pluto.om.common.SecurityRoleRef#getDescription(Locale)
+    */
+   public Description getDescription(Locale locale) {
+      return descriptions.get(locale);
+   }
 
-	// digester methods
-	public void addDescription(DescriptionSet description) {
-		descriptions.add(description);
-	}
 
-    public String toString() {
-        return toString(0);
-    }
+   public void setRoleName(String roleName) {
+      log.debug("### setRoleName='" + roleName + "'");
+      this.roleName = roleName;
+   }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": role-name='");
-        buffer.append(roleName);
-        buffer.append("', role-link='");
-        buffer.append(roleLink);
-        buffer.append("'");
-        StringUtils.newLine(buffer, indent);
-        buffer.append((descriptions).toString(indent));
-        return buffer.toString();
-    }
+
+   // additional methods.
+
+   public void setRoleLink(String roleLink) {
+      log.debug("### setRoleLink='" + roleLink + "'");
+      this.roleLink = roleLink;
+   }
+
+
+   public DescriptionSet getDescriptionSet() {
+      return descriptions;
+   }
+
+
+   public void setDescriptionSet(DescriptionSet descriptions) {
+      this.descriptions = (DescriptionSetImpl) descriptions;
+   }
+
+
+   // digester methods
+   public void addDescription(DescriptionSet description) {
+      descriptions.add(description);
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": role-name='");
+      buffer.append(roleName);
+      buffer.append("', role-link='");
+      buffer.append(roleLink);
+      buffer.append("'");
+      StringUtils.newLine(buffer, indent);
+      buffer.append((descriptions).toString(indent));
+      return buffer.toString();
+   }
 }

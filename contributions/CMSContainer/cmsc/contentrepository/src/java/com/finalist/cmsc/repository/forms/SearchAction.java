@@ -28,199 +28,204 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SearchAction extends PagerAction {
 
-    private static final String GETURL = "geturl";
+   private static final String GETURL = "geturl";
 
-    private static final String PERSONAL = "personal";
-    private static final String AUTHOR = "author";
-    private static final String OBJECTID = "objectid";
-    private static final String PARENTCHANNEL = "parentchannel";
-    private static final String CONTENTTYPES = "contenttypes";
+   private static final String PERSONAL = "personal";
+   private static final String AUTHOR = "author";
+   private static final String OBJECTID = "objectid";
+   private static final String PARENTCHANNEL = "parentchannel";
+   private static final String CONTENTTYPES = "contenttypes";
 
-    private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
+   private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
+   /** MMbase logging system */
+   private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
 
-        log.debug("Starting the search:");
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
 
-        // Initialize
-        SearchForm searchForm = (SearchForm) form;
+      log.debug("Starting the search:");
 
-       // First prepare the typeList, we'll need this one anyway:
-       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
+      // Initialize
+      SearchForm searchForm = (SearchForm) form;
 
-       List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
-       List<String> hiddenTypes = PropertiesUtil.getHiddenTypes();
-       for (NodeManager manager : types) {
-       	String name = manager.getName();
-       	if(!hiddenTypes.contains(name)) {
-       		LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
-       		typesList.add(bean);
-       	}
-       }
-       addToRequest(request, "typesList", typesList);
+      // First prepare the typeList, we'll need this one anyway:
+      List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
-       // Switching tab, no searching.
-       if ("false".equalsIgnoreCase(searchForm.getSearch())) {
-          return mapping.getInputForward();
-       }
+      List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
+      List<String> hiddenTypes = PropertiesUtil.getHiddenTypes();
+      for (NodeManager manager : types) {
+         String name = manager.getName();
+         if (!hiddenTypes.contains(name)) {
+            LabelValueBean bean = new LabelValueBean(manager.getGUIName(), name);
+            typesList.add(bean);
+         }
+      }
+      addToRequest(request, "typesList", typesList);
 
-        NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
-        QueryStringComposer queryStringComposer = new QueryStringComposer();
-        NodeQuery query = cloud.createNodeQuery();
+      // Switching tab, no searching.
+      if ("false".equalsIgnoreCase(searchForm.getSearch())) {
+         return mapping.getInputForward();
+      }
 
-        // First we add the contenttype parameter
-        queryStringComposer.addParameter(CONTENTTYPES, searchForm.getContenttypes());
+      NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
+      QueryStringComposer queryStringComposer = new QueryStringComposer();
+      NodeQuery query = cloud.createNodeQuery();
 
-        // First add the proper step to the query.
-        Step theStep = null;
-        if (!StringUtil.isEmpty(searchForm.getParentchannel())) {
-            Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
-            query.addNode(step, cloud.getNode(searchForm.getParentchannel()));
-            theStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
-            query.setNodeStep(theStep);
-            queryStringComposer.addParameter(PARENTCHANNEL, searchForm.getParentchannel());
-        }
-        else {
-            theStep = query.addStep(nodeManager);
-            query.setNodeStep(theStep);
-        }
+      // First we add the contenttype parameter
+      queryStringComposer.addParameter(CONTENTTYPES, searchForm.getContenttypes());
 
-        // Order the result by:
-        String order = searchForm.getOrder();
-        
-        // set default order field
-        if (StringUtil.isEmpty(order)) {
-            if (nodeManager.hasField("title")) {
-                order = "title";
+      // First add the proper step to the query.
+      Step theStep = null;
+      if (!StringUtil.isEmpty(searchForm.getParentchannel())) {
+         Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
+         query.addNode(step, cloud.getNode(searchForm.getParentchannel()));
+         theStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
+         query.setNodeStep(theStep);
+         queryStringComposer.addParameter(PARENTCHANNEL, searchForm.getParentchannel());
+      }
+      else {
+         theStep = query.addStep(nodeManager);
+         query.setNodeStep(theStep);
+      }
+
+      // Order the result by:
+      String order = searchForm.getOrder();
+
+      // set default order field
+      if (StringUtil.isEmpty(order)) {
+         if (nodeManager.hasField("title")) {
+            order = "title";
+         }
+         if (nodeManager.hasField("name")) {
+            order = "name";
+         }
+      }
+      if (StringUtil.isEmpty(order)) {
+         queryStringComposer.addParameter(ORDER, searchForm.getOrder());
+         queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
+         query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
+      }
+
+      query.setDistinct(true);
+
+      // Set some date constraints.
+      queryStringComposer.addParameter(ContentElementUtil.CREATIONDATE_FIELD, "" + searchForm.getCreationdate());
+      SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.CREATIONDATE_FIELD, searchForm
+            .getCreationdate());
+      queryStringComposer.addParameter(ContentElementUtil.PUBLISHDATE_FIELD, "" + searchForm.getPublishdate());
+      SearchUtil
+            .addDayConstraint(query, nodeManager, ContentElementUtil.PUBLISHDATE_FIELD, searchForm.getPublishdate());
+      queryStringComposer.addParameter(ContentElementUtil.EXPIREDATE_FIELD, "" + searchForm.getExpiredate());
+      SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.EXPIREDATE_FIELD, searchForm.getExpiredate());
+      queryStringComposer
+            .addParameter(ContentElementUtil.LASTMODIFIEDDATE_FIELD, "" + searchForm.getLastmodifieddate());
+      SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIEDDATE_FIELD, searchForm
+            .getLastmodifieddate());
+
+      // Perhaps we have some more constraints if the nodetype was specified (=>
+      // not
+      // contentelement).
+      if (!ContentElementUtil.CONTENTELEMENT.equalsIgnoreCase(nodeManager.getName())) {
+         FieldList fields = nodeManager.getFields();
+         FieldIterator fieldIterator = fields.fieldIterator();
+
+         while (fieldIterator.hasNext()) {
+            Field field = fieldIterator.nextField();
+            String paramName = nodeManager.getName() + "." + field.getName();
+            String paramValue = request.getParameter(paramName);
+            if (!StringUtil.isEmpty(paramValue)) {
+               SearchUtil.addLikeConstraint(query, field, paramValue);
             }
-            if (nodeManager.hasField("name")) {
-                order = "name";
-            }
-        }
-        if (StringUtil.isEmpty(order)) {
-            queryStringComposer.addParameter(ORDER, searchForm.getOrder());
-            queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
-            query.addSortOrder(query.getStepField(nodeManager.getField(order)),
-                    searchForm.getDirection());
-        }
-        
-        query.setDistinct(true);
+            queryStringComposer.addParameter(paramName, paramValue);
+         }
+      }
 
-        // Set some date constraints.
-        queryStringComposer.addParameter(ContentElementUtil.CREATIONDATE_FIELD, "" + searchForm.getCreationdate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.CREATIONDATE_FIELD, searchForm.getCreationdate());
-        queryStringComposer.addParameter(ContentElementUtil.PUBLISHDATE_FIELD, "" + searchForm.getPublishdate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.PUBLISHDATE_FIELD, searchForm.getPublishdate());
-        queryStringComposer.addParameter(ContentElementUtil.EXPIREDATE_FIELD, "" + searchForm.getExpiredate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.EXPIREDATE_FIELD, searchForm.getExpiredate());
-        queryStringComposer.addParameter(ContentElementUtil.LASTMODIFIEDDATE_FIELD, "" + searchForm.getLastmodifieddate());
-        SearchUtil.addDayConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIEDDATE_FIELD, searchForm.getLastmodifieddate());
+      // Add the title constraint:
+      if (!StringUtil.isEmpty(searchForm.getTitle())) {
 
-        // Perhaps we have some more constraints if the nodetype was specified (=> not
-        // contentelement).
-        if (!ContentElementUtil.CONTENTELEMENT.equalsIgnoreCase(nodeManager.getName())) {
-            FieldList fields = nodeManager.getFields();
-            FieldIterator fieldIterator = fields.fieldIterator();
+         queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle());
+         Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
+         Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
+         SearchUtil.addConstraint(query, titleConstraint);
+      }
 
-            while (fieldIterator.hasNext()) {
-                Field field = fieldIterator.nextField();
-                String paramName = nodeManager.getName() + "." + field.getName();
-                String paramValue = request.getParameter(paramName);
-                if (!StringUtil.isEmpty(paramValue)) {
-                    SearchUtil.addLikeConstraint(query, field, paramValue);
-                }
-                queryStringComposer.addParameter(paramName, paramValue);
-            }
-        }
+      // And some keyword searching
+      if (!StringUtil.isEmpty(searchForm.getKeywords())) {
+         queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
+         Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
+         List<String> keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
+         for (String keyword : keywords) {
+            Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);
+            SearchUtil.addORConstraint(query, keywordConstraint);
+         }
+      }
 
-        // Add the title constraint:
-        if (!StringUtil.isEmpty(searchForm.getTitle())) {
-
-            queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle());
-            Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
-            Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
-            SearchUtil.addConstraint(query, titleConstraint);
-        }
-
-        // And some keyword searching
-        if (!StringUtil.isEmpty(searchForm.getKeywords())) {
-            queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
-            Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
-            List<String> keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
-            for (String keyword : keywords) {
-               Constraint keywordConstraint = SearchUtil.createLikeConstraint(query, keywordField, keyword);
-               SearchUtil.addORConstraint(query, keywordConstraint);
-            }
-        }
-        
-        // Set the objectid constraint
-        if (!StringUtil.isEmpty(searchForm.getObjectid())) {
-            Integer objectId = null;
-            if (searchForm.getObjectid().matches("^\\d+$")) {
-                objectId = new Integer(searchForm.getObjectid());
+      // Set the objectid constraint
+      if (!StringUtil.isEmpty(searchForm.getObjectid())) {
+         Integer objectId = null;
+         if (searchForm.getObjectid().matches("^\\d+$")) {
+            objectId = new Integer(searchForm.getObjectid());
+         }
+         else {
+            if (cloud.hasNode(searchForm.getObjectid())) {
+               objectId = new Integer(cloud.getNode(searchForm.getObjectid()).getNumber());
             }
             else {
-                if (cloud.hasNode(searchForm.getObjectid())) {
-                    objectId = new Integer(cloud.getNode(searchForm.getObjectid()).getNumber());
-                }
-                else {
-                    objectId = new Integer(-1);
-                }
+               objectId = new Integer(-1);
             }
-            SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.NUMBER_FIELD, objectId);
-            queryStringComposer.addParameter(OBJECTID, searchForm.getObjectid());
-        }
+         }
+         SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.NUMBER_FIELD, objectId);
+         queryStringComposer.addParameter(OBJECTID, searchForm.getObjectid());
+      }
 
-        // Add the user personal:
-        if (!StringUtil.isEmpty(searchForm.getPersonal())) {
+      // Add the user personal:
+      if (!StringUtil.isEmpty(searchForm.getPersonal())) {
 
-            String useraccount = cloud.getUser().getIdentifier();
-            if (ContentElementUtil.LASTMODIFIER_FIELD.equals(searchForm.getPersonal())) {
-                SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
-            }
-            if (AUTHOR.equals(searchForm.getPersonal())) {
-                SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.CREATOR_FIELD, useraccount);
-            }
-            queryStringComposer.addParameter(PERSONAL, searchForm.getPersonal());
-        }
+         String useraccount = cloud.getUser().getIdentifier();
+         if (ContentElementUtil.LASTMODIFIER_FIELD.equals(searchForm.getPersonal())) {
+            SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
+         }
+         if (AUTHOR.equals(searchForm.getPersonal())) {
+            SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.CREATOR_FIELD, useraccount);
+         }
+         queryStringComposer.addParameter(PERSONAL, searchForm.getPersonal());
+      }
 
-        // Add the user
-        if (!StringUtil.isEmpty(searchForm.getUseraccount())) {
-           String useraccount = searchForm.getUseraccount();
-           SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
-        }
+      // Add the user
+      if (!StringUtil.isEmpty(searchForm.getUseraccount())) {
+         String useraccount = searchForm.getUseraccount();
+         SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
+      }
 
-        // Set the maximum result size.
-        String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
-        if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {
-            query.setMaxNumber(25);
-        }
-        else {
-            query.setMaxNumber(Integer.parseInt(resultsPerPage));
-        }
+      // Set the maximum result size.
+      String resultsPerPage = PropertiesUtil.getProperty(REPOSITORY_SEARCH_RESULTS_PER_PAGE);
+      if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {
+         query.setMaxNumber(25);
+      }
+      else {
+         query.setMaxNumber(Integer.parseInt(resultsPerPage));
+      }
 
-        // Set the offset (used for paging).
-        if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
-            query.setOffset(query.getMaxNumber() * Integer.parseInt(searchForm.getOffset()));
-            queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
-        }
+      // Set the offset (used for paging).
+      if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
+         query.setOffset(query.getMaxNumber() * Integer.parseInt(searchForm.getOffset()));
+         queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
+      }
 
-        log.debug("QUERY: " + query);
+      log.debug("QUERY: " + query);
 
-        int resultCount = Queries.count(query);
-        NodeList results = cloud.getList(query);
-        
-        // Set everyting on the request.
-        searchForm.setResultCount(resultCount);
-        searchForm.setResults(results);
-        request.setAttribute(GETURL, queryStringComposer.getQueryString());
+      int resultCount = Queries.count(query);
+      NodeList results = cloud.getList(query);
 
-        return super.execute(mapping, form, request, response, cloud);
-    }
+      // Set everyting on the request.
+      searchForm.setResultCount(resultCount);
+      searchForm.setResults(results);
+      request.setAttribute(GETURL, queryStringComposer.getQueryString());
+
+      return super.execute(mapping, form, request, response, cloud);
+   }
 
 }

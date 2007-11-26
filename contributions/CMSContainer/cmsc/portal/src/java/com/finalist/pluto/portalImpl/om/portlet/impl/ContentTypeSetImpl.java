@@ -23,51 +23,55 @@ import com.finalist.pluto.portalImpl.om.common.Support;
 
 public class ContentTypeSetImpl extends AbstractSupportSet implements ContentTypeSet, Serializable, Support {
 
-	private ContentType anyContentType;
+   private ContentType anyContentType;
 
-	public ContentType get(String contentType) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			ContentType _contentType = (ContentType) iterator.next();
-			if (_contentType.getContentType().equals(contentType)) {
-				return _contentType;
-			}
-		}
-		return null;
-	}
 
-	public boolean supportsPortletMode(PortletMode mode) {
-		// Always support "VIEW". Some portlet vendors do not indicate view
-		// in the deployment descriptor.
-		if (mode.equals(PortletMode.VIEW)) {
-			return true;
-		}
+   public ContentType get(String contentType) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         ContentType _contentType = (ContentType) iterator.next();
+         if (_contentType.getContentType().equals(contentType)) {
+            return _contentType;
+         }
+      }
+      return null;
+   }
 
-		Iterator itr = this.iterator();
-		while (itr.hasNext()) {
-			ContentType p = (ContentType) itr.next();
-			if (p.supportsPortletMode(mode)) {
-				return true;
-			}
-		}
 
-		return false;
-	}
+   public boolean supportsPortletMode(PortletMode mode) {
+      // Always support "VIEW". Some portlet vendors do not indicate view
+      // in the deployment descriptor.
+      if (mode.equals(PortletMode.VIEW)) {
+         return true;
+      }
 
-    public String toString() {
-        return toString(0);
-    }
+      Iterator itr = this.iterator();
+      while (itr.hasNext()) {
+         ContentType p = (ContentType) itr.next();
+         if (p.supportsPortletMode(mode)) {
+            return true;
+         }
+      }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": ");
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            buffer.append(((ContentTypeImpl) iterator.next()).toString(indent + 2));
-        }
-        return buffer.toString();
-    }
+      return false;
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": ");
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         buffer.append(((ContentTypeImpl) iterator.next()).toString(indent + 2));
+      }
+      return buffer.toString();
+   }
 
 }

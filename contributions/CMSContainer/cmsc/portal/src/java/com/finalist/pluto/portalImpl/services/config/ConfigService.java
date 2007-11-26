@@ -32,48 +32,57 @@ import com.finalist.cmsc.services.Service;
 
 public abstract class ConfigService extends Service {
 
-	/**
-	 * * Returns the configuration parameters managed by this service. * *
-	 * 
-	 * @return the configuration parameters
-	 */
+   /**
+    * * Returns the configuration parameters managed by this service. * *
+    * 
+    * @return the configuration parameters
+    */
 
-	public abstract Parameters getParameters();
+   public abstract Parameters getParameters();
 
-	public String getString(String name) {
-		return getParameters().getString(name);
-	}
 
-	public String getString(String name, String defaultValue) {
-		return getParameters().getString(name, defaultValue);
-	}
+   public String getString(String name) {
+      return getParameters().getString(name);
+   }
 
-	public Integer getInteger(String name) {
-		return getParameters().getInteger(name);
-	}
 
-	public Integer getInteger(String name, Integer defaultValue) {
-		return getParameters().getInteger(name, defaultValue);
-	}
+   public String getString(String name, String defaultValue) {
+      return getParameters().getString(name, defaultValue);
+   }
 
-	public int getInteger(String name, int defaultValue) {
-		return getParameters().getInteger(name, defaultValue);
-	}
 
-	public Boolean getBoolean(String name) {
-		return getParameters().getBoolean(name);
-	}
+   public Integer getInteger(String name) {
+      return getParameters().getInteger(name);
+   }
 
-	public Boolean getBoolean(String name, Boolean defaultValue) {
-		return getParameters().getBoolean(name, defaultValue);
-	}
 
-	public boolean getBoolean(String name, boolean defaultValue) {
-		return getParameters().getBoolean(name, defaultValue);
-	}
+   public Integer getInteger(String name, Integer defaultValue) {
+      return getParameters().getInteger(name, defaultValue);
+   }
 
-	public Iterator keys() {
-		return getParameters().keys();
-	}
+
+   public int getInteger(String name, int defaultValue) {
+      return getParameters().getInteger(name, defaultValue);
+   }
+
+
+   public Boolean getBoolean(String name) {
+      return getParameters().getBoolean(name);
+   }
+
+
+   public Boolean getBoolean(String name, Boolean defaultValue) {
+      return getParameters().getBoolean(name, defaultValue);
+   }
+
+
+   public boolean getBoolean(String name, boolean defaultValue) {
+      return getParameters().getBoolean(name, defaultValue);
+   }
+
+
+   public Iterator keys() {
+      return getParameters().keys();
+   }
 
 }

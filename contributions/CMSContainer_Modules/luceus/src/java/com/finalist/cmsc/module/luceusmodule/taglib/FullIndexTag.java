@@ -22,22 +22,24 @@ import org.apache.commons.logging.LogFactory;
  * @author Wouter Heijke
  */
 public class FullIndexTag extends LuceusmoduleTag {
-	private static Log log = LogFactory.getLog(FullIndexTag.class);
+   private static Log log = LogFactory.getLog(FullIndexTag.class);
 
-	/**
-	 * Erase index first, so do a clean-fullindex.
-	 */
-	public boolean erase = false;
-	
-	@Override
-	public void doTag() throws JspException, IOException {
-		if (isRunning()) {
-			getModule().startFullIndex(erase);
-		}
-	}
+   /**
+    * Erase index first, so do a clean-fullindex.
+    */
+   public boolean erase = false;
 
-	public void setErase(boolean erase) {
-		this.erase = erase;
-	}
-	
+
+   @Override
+   public void doTag() throws JspException, IOException {
+      if (isRunning()) {
+         getModule().startFullIndex(erase);
+      }
+   }
+
+
+   public void setErase(boolean erase) {
+      this.erase = erase;
+   }
+
 }

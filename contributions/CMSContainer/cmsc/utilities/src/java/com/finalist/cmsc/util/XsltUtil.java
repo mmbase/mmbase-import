@@ -21,7 +21,6 @@ import javax.xml.transform.stream.StreamSource;
 
 /**
  * @author <a href="mailto:nico@klasens.net"> Nico Klasens </A>
- *
  */
 public class XsltUtil {
 
@@ -61,17 +60,20 @@ public class XsltUtil {
    /** Mime type */
    private String mimeType = null;
 
+
    /**
     * Constuctor XsltUtil.
-    * @param xmlSource Source XML
-    * @param xslSource Source XSL
-    * @param mimetype mime type
-    * @param usefop use apache.org's FOP
+    * 
+    * @param xmlSource
+    *           Source XML
+    * @param xslSource
+    *           Source XSL
+    * @param mimetype
+    *           mime type
+    * @param usefop
+    *           use apache.org's FOP
     */
-   public XsltUtil(
-      Object xmlSource,
-      Object xslSource,
-      String mimetype) {
+   public XsltUtil(Object xmlSource, Object xslSource, String mimetype) {
 
       setXMLSource(xmlSource);
       setXSLSource(xslSource);
@@ -79,56 +81,66 @@ public class XsltUtil {
       factory = TransformerFactory.newInstance();
    }
 
+
    /**
     * create XSL Source.
+    * 
     * @return Source
-    * @throws IOException if IO fails
+    * @throws IOException
+    *            if IO fails
     */
    private final Source createXSLSource() throws IOException {
       return createSource(xslSource, xslSourceType);
    }
 
+
    /**
     * create XML Source.
+    * 
     * @return Source
-    * @throws IOException if IO fails
+    * @throws IOException
+    *            if IO fails
     */
    private final Source createXMLSource() throws IOException {
       return createSource(xmlSource, xmlSourceType);
    }
 
+
    /**
     * create Source.
-    * @param source data
-    * @param sourceType source type
+    * 
+    * @param source
+    *           data
+    * @param sourceType
+    *           source type
     * @return Source
-    * @throws IOException if IO fails
+    * @throws IOException
+    *            if IO fails
     */
-   private final Source createSource(Object source, int sourceType)
-      throws IOException {
+   private final Source createSource(Object source, int sourceType) throws IOException {
 
       switch (sourceType) {
-         case SOURCE_FILE : // '\005'
+         case SOURCE_FILE: // '\005'
             File file = (File) source;
             StreamSource streamsource4 = new StreamSource(file);
             return streamsource4;
 
-         case SOURCE_URL : // '\004'
+         case SOURCE_URL: // '\004'
             URL url = (URL) source;
             StreamSource streamsource = new StreamSource(url.openStream());
             return streamsource;
 
-         case SOURCE_STRING : // '\003'
+         case SOURCE_STRING: // '\003'
             String s = (String) source;
             StreamSource streamsource1 = new StreamSource(new StringReader(s));
             return streamsource1;
 
-         case SOURCE_INPUT_STREAM : // '\002'
+         case SOURCE_INPUT_STREAM: // '\002'
             InputStream inputstream = (InputStream) source;
             StreamSource streamsource2 = new StreamSource(inputstream);
             return streamsource2;
 
-         case SOURCE_READER : // '\001'
+         case SOURCE_READER: // '\001'
             Reader reader = (Reader) source;
             StreamSource streamsource3 = new StreamSource(reader);
             return streamsource3;
@@ -137,9 +149,12 @@ public class XsltUtil {
       return null;
    }
 
+
    /**
     * set XSL Source.
-    * @param obj XSL source
+    * 
+    * @param obj
+    *           XSL source
     */
    public void setXSLSource(Object obj) {
       if (obj == null) {
@@ -148,17 +163,17 @@ public class XsltUtil {
 
       xslSourceType = getType(obj);
       if (xslSourceType == 0) {
-         throw new IllegalArgumentException(
-            "The XSL source type '"
-               + obj.getClass().getName()
-               + "' is unsupported.");
+         throw new IllegalArgumentException("The XSL source type '" + obj.getClass().getName() + "' is unsupported.");
       }
       xslSource = obj;
    }
 
+
    /**
     * set XML Source.
-    * @param obj XML source
+    * 
+    * @param obj
+    *           XML source
     */
    public void setXMLSource(Object obj) {
       if (obj == null) {
@@ -167,18 +182,18 @@ public class XsltUtil {
 
       xmlSourceType = getType(obj);
       if (xmlSourceType == 0) {
-         throw new IllegalArgumentException(
-            "The XML source type '"
-               + obj.getClass().getName()
-               + "' is unsupported.");
+         throw new IllegalArgumentException("The XML source type '" + obj.getClass().getName() + "' is unsupported.");
       }
       xmlSource = obj;
 
    }
 
+
    /**
     * get Type.of source
-    * @param obj Source
+    * 
+    * @param obj
+    *           Source
     * @return int
     */
    private int getType(Object obj) {
@@ -200,25 +215,33 @@ public class XsltUtil {
       return 0;
    }
 
+
    /**
     * setURIResolver.
-    * @param uriresolver resolver
+    * 
+    * @param uriresolver
+    *           resolver
     */
    public void setURIResolver(URIResolver uriresolver) {
       factory.setURIResolver(uriresolver);
    }
 
+
    /**
     * getURIResolver.
+    * 
     * @return URIResolver
     */
    public URIResolver getURIResolver() {
       return factory.getURIResolver();
    }
 
+
    /**
     * setOutputMimeType.
-    * @param s String
+    * 
+    * @param s
+    *           String
     */
    public void setOutputMimeType(String s) {
       if (s == null) {
@@ -229,23 +252,31 @@ public class XsltUtil {
       }
    }
 
+
    /**
     * getOutputMimeType.
+    * 
     * @return String
     */
    public String getOutputMimeType() {
       return mimeType;
    }
 
+
    /**
     * XSL Transform.
-    * @param streamresult result
-    * @param params The params to be placed. Standard name/value pairs.
-    * @throws TransformerException if Transformation fails
-    * @throws IOException if IO fails
+    * 
+    * @param streamresult
+    *           result
+    * @param params
+    *           The params to be placed. Standard name/value pairs.
+    * @throws TransformerException
+    *            if Transformation fails
+    * @throws IOException
+    *            if IO fails
     */
-   private final void xsltTransform(StreamResult streamresult, Map<String,Object> params)
-      throws TransformerException, IOException {
+   private final void xsltTransform(StreamResult streamresult, Map<String, Object> params) throws TransformerException,
+         IOException {
 
       Source source = createXSLSource();
       Source source1 = createXMLSource();
@@ -255,57 +286,68 @@ public class XsltUtil {
       transformer.transform(source1, streamresult);
    }
 
+
    /**
     * This method can set the stylesheetparams for a transformer.
-    *
-    * @param       transformer     The transformer.
-    * @param       params          The params to be placed. Standard name/value pairs.
+    * 
+    * @param transformer
+    *           The transformer.
+    * @param params
+    *           The params to be placed. Standard name/value pairs.
     */
-   private static void setStylesheetParams(Transformer transformer, Map<String,Object> params){
-       if (params==null) return;
+   private static void setStylesheetParams(Transformer transformer, Map<String, Object> params) {
+      if (params == null)
+         return;
 
-       Iterator<Map.Entry<String,Object>> i = params.entrySet().iterator();
-       while (i.hasNext()){
-           Map.Entry<String,Object> entry = i.next();
-           transformer.setParameter( entry.getKey(), entry.getValue());
-       }
+      Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
+      while (i.hasNext()) {
+         Map.Entry<String, Object> entry = i.next();
+         transformer.setParameter(entry.getKey(), entry.getValue());
+      }
    }
-   
+
 
    /**
     * Method transformToString.
-    * @param params The params to be placed. Standard name/value pairs.
+    * 
+    * @param params
+    *           The params to be placed. Standard name/value pairs.
     * @return String
-    * @throws FOPException if FOP fails
-    * @throws IOException if IO fails
-    * @throws TransformerException if Transformation fails
+    * @throws FOPException
+    *            if FOP fails
+    * @throws IOException
+    *            if IO fails
+    * @throws TransformerException
+    *            if Transformation fails
     */
-   public String transformToString(Map<String,Object> params)
-      throws
-         IOException,
-         TransformerException {
+   public String transformToString(Map<String, Object> params) throws IOException, TransformerException {
 
       CharArrayWriter caw = new CharArrayWriter();
       xsltTransform(new StreamResult(caw), params);
-      return caw.toString();   
+      return caw.toString();
    }
+
 
    /**
     * transform To ServletResponse.
-    * @param response HTTP response
-    * @param params The params to be placed. Standard name/value pairs.
-    * @throws FOPException if FOP fails
-    * @throws IOException if IO fails
-    * @throws TransformerException if Transformation fails
+    * 
+    * @param response
+    *           HTTP response
+    * @param params
+    *           The params to be placed. Standard name/value pairs.
+    * @throws FOPException
+    *            if FOP fails
+    * @throws IOException
+    *            if IO fails
+    * @throws TransformerException
+    *            if Transformation fails
     */
-   public void transformToServletResponse(HttpServletResponse response, Map<String,Object> params)
-      throws
-         IOException,
+   public void transformToServletResponse(HttpServletResponse response, Map<String, Object> params) throws IOException,
          TransformerException {
 
       String xml = transformToString(params);
       response.setContentType(mimeType);
-      response.setContentLength(xml.length());   
+      response.setContentLength(xml.length());
       response.getWriter().write(xml);
    }
 

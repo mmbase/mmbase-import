@@ -18,50 +18,58 @@ import com.finalist.pluto.portalImpl.om.common.Support;
 
 public class DescriptionImpl implements Description, java.io.Serializable, Support {
 
-	private String description;
+   private String description;
 
-	private Locale locale;
+   private Locale locale;
 
-	public String getDescription() {
-		return description;
-	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+   public String getDescription() {
+      return description;
+   }
 
-	public Locale getLocale() {
-		return locale;
-	}
 
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
+   public void setDescription(String description) {
+      this.description = description;
+   }
 
-	// digester methods
-	public void setLanguage(String lang) {
-		this.locale = new Locale(lang);
-	}
-    
-    public String toString() {
-        return toString(0);
-    }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": description='");
-        buffer.append(description);
-        buffer.append("', locale='");
-        buffer.append(locale);
-        buffer.append("'");
-        return buffer.toString();
-    }
+   public Locale getLocale() {
+      return locale;
+   }
 
-    public void postLoad(Object parameter) throws Exception {
-        if (locale == null) {
-            locale = Locale.ENGLISH;
-        }
-    }
+
+   public void setLocale(Locale locale) {
+      this.locale = locale;
+   }
+
+
+   // digester methods
+   public void setLanguage(String lang) {
+      this.locale = new Locale(lang);
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": description='");
+      buffer.append(description);
+      buffer.append("', locale='");
+      buffer.append(locale);
+      buffer.append("'");
+      return buffer.toString();
+   }
+
+
+   public void postLoad(Object parameter) throws Exception {
+      if (locale == null) {
+         locale = Locale.ENGLISH;
+      }
+   }
 }

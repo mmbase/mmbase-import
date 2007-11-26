@@ -24,36 +24,41 @@ import javax.servlet.jsp.*;
 
 public abstract class SkipTagSupport extends PageTagSupport {
 
-	private boolean ifnull = false;
+   private boolean ifnull = false;
 
-	public final void setIfnull(boolean b) {
-		ifnull = b;
-	}
 
-	public final boolean getIfnull() {
-		return ifnull;
-	}
+   public final void setIfnull(boolean b) {
+      ifnull = b;
+   }
 
-	protected abstract boolean skip();
 
-	public int doStartTag() throws JspException {
-		super.doStartTag();
+   public final boolean getIfnull() {
+      return ifnull;
+   }
 
-		if (!skip()) {
 
-			if (!ifnull)
-				return SKIP_BODY;
+   protected abstract boolean skip();
 
-			removeAttributes();
-		}
 
-		return EVAL_BODY_INCLUDE;
-	}
+   public int doStartTag() throws JspException {
+      super.doStartTag();
 
-	public void release() {
-		ifnull = false;
-		super.release();
-	}
+      if (!skip()) {
+
+         if (!ifnull)
+            return SKIP_BODY;
+
+         removeAttributes();
+      }
+
+      return EVAL_BODY_INCLUDE;
+   }
+
+
+   public void release() {
+      ifnull = false;
+      super.release();
+   }
 }
 
 /* vim:set ts=4 sw=4: */

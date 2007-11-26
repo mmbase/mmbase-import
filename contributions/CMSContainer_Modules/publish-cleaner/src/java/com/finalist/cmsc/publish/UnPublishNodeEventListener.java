@@ -16,69 +16,74 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 public class UnPublishNodeEventListener implements NodeEventListener, RelationEventListener {
 
-    /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(UnPublishNodeEventListener.class.getName());
-    
+   /** MMbase logging system */
+   private static Logger log = Logging.getLoggerInstance(UnPublishNodeEventListener.class.getName());
+
+
    public void notify(NodeEvent event) {
       if (event.getType() == Event.TYPE_DELETE) {
-          int nodeNumber = event.getNodeNumber();
-          Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
-          
-          if (log.isDebugEnabled() && PublishManager.isImported(cloud.getNode(nodeNumber))) {
-              log.debug("node removed but not unlinked: " + nodeNumber);
-          }
+         int nodeNumber = event.getNodeNumber();
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
+
+         if (log.isDebugEnabled() && PublishManager.isImported(cloud.getNode(nodeNumber))) {
+            log.debug("node removed but not unlinked: " + nodeNumber);
+         }
       }
    }
 
-    public void notify(RelationEvent event) {
-        if (event.getType() == Event.TYPE_DELETE) {
-            Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
 
-            String sourceType = event.getRelationSourceType();
-            String destType = event.getRelationDestinationType();
-            
-            NodeManager sourceManager = cloud.getNodeManager(sourceType);
-            NodeManager destManager = cloud.getNodeManager(destType);
+   public void notify(RelationEvent event) {
+      if (event.getType() == Event.TYPE_DELETE) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
 
-            int destNumber = event.getRelationDestinationNumber();
+         String sourceType = event.getRelationSourceType();
+         String destType = event.getRelationDestinationType();
 
-            if(TypeUtil.isSystemType(destType)) {
-                return;
+         NodeManager sourceManager = cloud.getNodeManager(sourceType);
+         NodeManager destManager = cloud.getNodeManager(destType);
+
+         int destNumber = event.getRelationDestinationNumber();
+
+         if (TypeUtil.isSystemType(destType)) {
+            return;
+         }
+
+         if (PagesUtil.isPageType(sourceManager)) {
+            if (PortletUtil.isPortletType(destManager)) {
+               Node portletNode = cloud.getNode(destNumber);
+               if (!PortletUtil.isSinglePortlet(portletNode)) {
+                  Set<Node> nodes = new HashSet<Node>();
+                  PortletUtil.findPortletNodes(portletNode, nodes, true, true);
+
+                  for (Node deleteNode : nodes) {
+                     // Portlet parameter nodes will be cleaned by this method
+                     // when the relation is deleted
+                     if (deleteNode.isRelation()) {
+                        deleteNode(deleteNode);
+                     }
+                  }
+                  deleteNode(portletNode);
+               }
             }
-            
-            if (PagesUtil.isPageType(sourceManager)) {
-                if (PortletUtil.isPortletType(destManager)) {
-                    Node portletNode = cloud.getNode(destNumber);
-                    if (!PortletUtil.isSinglePortlet(portletNode)) {
-                        Set<Node> nodes = new HashSet<Node>();
-                        PortletUtil.findPortletNodes(portletNode, nodes, true, true);
-
-                        for (Node deleteNode : nodes) {
-                            // Portlet parameter nodes will be cleaned by this method when the relation is deleted
-                            if (deleteNode.isRelation()) {
-                                deleteNode(deleteNode);
-                            }
-                        }
-                        deleteNode(portletNode);
-                    }
-                }
+         }
+         else {
+            if (PortletUtil.isPortletType(sourceManager)) {
+               if (PortletUtil.isParameterType(destManager)) {
+                  deleteNode(cloud, destNumber);
+               }
             }
-            else {
-                if (PortletUtil.isPortletType(sourceManager)) {
-                    if (PortletUtil.isParameterType(destManager)) {
-                        deleteNode(cloud, destNumber);
-                    }
-                }
-            }
-        }
-    }
+         }
+      }
+   }
 
-    private void deleteNode(Cloud cloud, int number) {
-        deleteNode(cloud.getNode(number));
-    }
 
-    private void deleteNode(Node deleteNode) {
-        PublishManager.unLinkNode(deleteNode);
-        deleteNode.delete(false);
-    }
+   private void deleteNode(Cloud cloud, int number) {
+      deleteNode(cloud.getNode(number));
+   }
+
+
+   private void deleteNode(Node deleteNode) {
+      PublishManager.unLinkNode(deleteNode);
+      deleteNode.delete(false);
+   }
 }

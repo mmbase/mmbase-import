@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package com.finalist.pluto.portalImpl.aggregation;
 
 import javax.servlet.ServletConfig;
@@ -21,8 +21,9 @@ import com.finalist.cmsc.beans.om.PortletDefinition;
  */
 public class EmptyFragment extends PortletFragment {
 
-	public EmptyFragment(ServletConfig config, Fragment parent, String layoutId, Portlet portlet, PortletDefinition definition) throws Exception {
-		super(config, parent, layoutId, portlet, definition, null);
+   public EmptyFragment(ServletConfig config, Fragment parent, String layoutId, Portlet portlet,
+         PortletDefinition definition) throws Exception {
+      super(config, parent, layoutId, portlet, definition, null);
 
-	}
+   }
 }

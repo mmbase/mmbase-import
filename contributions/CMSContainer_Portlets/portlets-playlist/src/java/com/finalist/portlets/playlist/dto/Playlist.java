@@ -5,7 +5,6 @@
 // Generated on: 2006.09.11 at 05:02:54 PM CEST 
 //
 
-
 package com.finalist.portlets.playlist.dto;
 
 import java.util.ArrayList;
@@ -17,146 +16,130 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for playlist element declaration.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for playlist element declaration.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
- * &lt;element name="playlist">
- *   &lt;complexType>
- *     &lt;complexContent>
- *       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *         &lt;sequence>
- *           &lt;element ref="{}item" maxOccurs="unbounded"/>
- *         &lt;/sequence>
- *         &lt;attribute name="endtime" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
- *         &lt;attribute name="starttime" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
- *         &lt;attribute name="station" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
- *       &lt;/restriction>
- *     &lt;/complexContent>
- *   &lt;/complexType>
- * &lt;/element>
+ * &lt;element name=&quot;playlist&quot;&gt;
+ *   &lt;complexType&gt;
+ *     &lt;complexContent&gt;
+ *       &lt;restriction base=&quot;{http://www.w3.org/2001/XMLSchema}anyType&quot;&gt;
+ *         &lt;sequence&gt;
+ *           &lt;element ref=&quot;{}item&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+ *         &lt;/sequence&gt;
+ *         &lt;attribute name=&quot;endtime&quot; use=&quot;required&quot; type=&quot;{http://www.w3.org/2001/XMLSchema}anySimpleType&quot; /&gt;
+ *         &lt;attribute name=&quot;starttime&quot; use=&quot;required&quot; type=&quot;{http://www.w3.org/2001/XMLSchema}anySimpleType&quot; /&gt;
+ *         &lt;attribute name=&quot;station&quot; use=&quot;required&quot; type=&quot;{http://www.w3.org/2001/XMLSchema}anySimpleType&quot; /&gt;
+ *       &lt;/restriction&gt;
+ *     &lt;/complexContent&gt;
+ *   &lt;/complexType&gt;
+ * &lt;/element&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "item"
-})
+@XmlType(name = "", propOrder = { "item" })
 @XmlRootElement(name = "playlist")
 public class Playlist {
 
-    @XmlElement(required = true)
-    protected List<Item> item;
-    @XmlAttribute(required = true)
-    protected String endtime;
-    @XmlAttribute(required = true)
-    protected String starttime;
-    @XmlAttribute(required = true)
-    protected String station;
+   @XmlElement(required = true)
+   protected List<Item> item;
+   @XmlAttribute(required = true)
+   protected String endtime;
+   @XmlAttribute(required = true)
+   protected String starttime;
+   @XmlAttribute(required = true)
+   protected String station;
 
-    /**
-     * Gets the value of the item property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the item property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getItem().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Item }
-     * 
-     * 
-     */
-    public List<Item> getItem() {
-        if (item == null) {
-            item = new ArrayList<Item>();
-        }
-        return this.item;
-    }
 
-    /**
-     * Gets the value of the endtime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEndtime() {
-        return endtime;
-    }
+   /**
+    * Gets the value of the item property.
+    * <p>
+    * This accessor method returns a reference to the live list, not a snapshot.
+    * Therefore any modification you make to the returned list will be present
+    * inside the JAXB object. This is why there is not a <CODE>set</CODE>
+    * method for the item property.
+    * <p>
+    * For example, to add a new item, do as follows:
+    * 
+    * <pre>
+    * getItem().add(newItem);
+    * </pre>
+    * 
+    * <p>
+    * Objects of the following type(s) are allowed in the list {@link Item }
+    */
+   public List<Item> getItem() {
+      if (item == null) {
+         item = new ArrayList<Item>();
+      }
+      return this.item;
+   }
 
-    /**
-     * Sets the value of the endtime property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEndtime(String value) {
-        this.endtime = value;
-    }
 
-    /**
-     * Gets the value of the starttime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getStarttime() {
-        return starttime;
-    }
+   /**
+    * Gets the value of the endtime property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getEndtime() {
+      return endtime;
+   }
 
-    /**
-     * Sets the value of the starttime property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setStarttime(String value) {
-        this.starttime = value;
-    }
 
-    /**
-     * Gets the value of the station property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getStation() {
-        return station;
-    }
+   /**
+    * Sets the value of the endtime property.
+    * 
+    * @param value
+    *           allowed object is {@link String }
+    */
+   public void setEndtime(String value) {
+      this.endtime = value;
+   }
 
-    /**
-     * Sets the value of the station property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setStation(String value) {
-        this.station = value;
-    }
+
+   /**
+    * Gets the value of the starttime property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getStarttime() {
+      return starttime;
+   }
+
+
+   /**
+    * Sets the value of the starttime property.
+    * 
+    * @param value
+    *           allowed object is {@link String }
+    */
+   public void setStarttime(String value) {
+      this.starttime = value;
+   }
+
+
+   /**
+    * Gets the value of the station property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getStation() {
+      return station;
+   }
+
+
+   /**
+    * Sets the value of the station property.
+    * 
+    * @param value
+    *           allowed object is {@link String }
+    */
+   public void setStation(String value) {
+      this.station = value;
+   }
 
 }

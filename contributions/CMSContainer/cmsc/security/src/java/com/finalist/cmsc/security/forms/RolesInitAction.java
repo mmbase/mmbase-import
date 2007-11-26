@@ -15,15 +15,16 @@ import com.finalist.cmsc.struts.MMBaseAction;
 public abstract class RolesInitAction extends MMBaseAction {
 
    @Override
-public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
       RolesForm userForm = (RolesForm) form;
 
       String id = request.getParameter("nodeNumber");
       if (id != null) {
          userForm.clear();
-         
+
          Node node = cloud.getNode(id);
-         
+
          userForm.setId(node.getNumber());
          userForm.setName(node.getStringValue("name"));
          userForm.setDescription(node.getStringValue("description"));
@@ -33,7 +34,8 @@ public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServlet
       }
       return mapping.findForward("nouser");
    }
-   
-   protected abstract RolesInfo getRolesInfo(Cloud cloud, Node group) ;
+
+
+   protected abstract RolesInfo getRolesInfo(Cloud cloud, Node group);
 
 }

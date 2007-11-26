@@ -13,30 +13,31 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 public class SecondaryEditAction extends MMBaseAction {
 
-	@Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
-		SecondaryEditForm editForm = (SecondaryEditForm) form;
-		if(SecondaryEditForm.ACTION_SAVE.equals(editForm.getAction())) {
-			Node node = cloud.getNode(editForm.getNumber());
-			node.setStringValue("title", editForm.getTitle());
-			node.setStringValue("description", editForm.getDescription());
-			node.commit();
-			
-			ActionForward actionForward = new ActionForward(editForm.getReturnUrl());
-			actionForward.setRedirect(true);
-			return actionForward;
-		}
-		else if(SecondaryEditForm.ACTION_CANCEL.equals(editForm.getAction())) {
-			ActionForward actionForward = new ActionForward(editForm.getReturnUrl());
-			actionForward.setRedirect(true);
-			return actionForward;
-		}
-		else if(SecondaryEditForm.ACTION_INIT.equals(editForm.getAction())) {
-			Node node = cloud.getNode(editForm.getNumber());
-			editForm.setTitle(node.getStringValue("title"));
-			editForm.setDescription(node.getStringValue("description"));
-		}
-		
-		return mapping.findForward(SUCCESS);
-	}
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
+      SecondaryEditForm editForm = (SecondaryEditForm) form;
+      if (SecondaryEditForm.ACTION_SAVE.equals(editForm.getAction())) {
+         Node node = cloud.getNode(editForm.getNumber());
+         node.setStringValue("title", editForm.getTitle());
+         node.setStringValue("description", editForm.getDescription());
+         node.commit();
+
+         ActionForward actionForward = new ActionForward(editForm.getReturnUrl());
+         actionForward.setRedirect(true);
+         return actionForward;
+      }
+      else if (SecondaryEditForm.ACTION_CANCEL.equals(editForm.getAction())) {
+         ActionForward actionForward = new ActionForward(editForm.getReturnUrl());
+         actionForward.setRedirect(true);
+         return actionForward;
+      }
+      else if (SecondaryEditForm.ACTION_INIT.equals(editForm.getAction())) {
+         Node node = cloud.getNode(editForm.getNumber());
+         editForm.setTitle(node.getStringValue("title"));
+         editForm.setDescription(node.getStringValue("description"));
+      }
+
+      return mapping.findForward(SUCCESS);
+   }
 }

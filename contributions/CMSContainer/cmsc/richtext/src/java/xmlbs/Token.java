@@ -23,14 +23,14 @@ package xmlbs;
 
 /**
  * Interface for tokens created by tokenizer.
- *
+ * 
  * @see xmlbs.Tokenizer
  * @author R.W. van 't Veer
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface Token {
-    /**
-     * @return wellformed representation of token
-     */
-    String toString ();
+   /**
+    * @return wellformed representation of token
+    */
+   String toString();
 }

@@ -32,125 +32,138 @@ import com.finalist.pluto.portalImpl.services.config.Config;
 
 public class PortalContextProviderImpl implements PortalContextProvider {
 
-	/** Portal information */
-	private String info;
-	/** supported portlet modes by this portal */
-	private Vector<PortletMode> modes;
+   /** Portal information */
+   private String info;
+   /** supported portlet modes by this portal */
+   private Vector<PortletMode> modes;
 
-	/** supported window states by this portal */
-	private Vector<WindowState> states;
+   /** supported window states by this portal */
+   private Vector<WindowState> states;
 
-	/** portal properties */
-	private HashMap<String, String> properties = new HashMap<String, String>();
+   /** portal properties */
+   private HashMap<String, String> properties = new HashMap<String, String>();
 
-	public PortalContextProviderImpl() {
-		// these are the minimum modes that the portal needs to support
-		modes = getDefaultModes();
-		// these are the minimum states that the portal needs to support
-		states = getDefaultStates();
-		// set info
-		info = Config.getParameters().getString("portaldriver.info");
-	}
 
-	// PortalContextProvider implementation.
+   public PortalContextProviderImpl() {
+      // these are the minimum modes that the portal needs to support
+      modes = getDefaultModes();
+      // these are the minimum states that the portal needs to support
+      states = getDefaultStates();
+      // set info
+      info = Config.getParameters().getString("portaldriver.info");
+   }
 
-	public java.lang.String getProperty(java.lang.String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Property name == null");
-		}
 
-		return properties.get(name);
-	}
+   // PortalContextProvider implementation.
 
-	public java.util.Collection<String> getPropertyNames() {
-		return properties.keySet();
-	}
+   public java.lang.String getProperty(java.lang.String name) {
+      if (name == null) {
+         throw new IllegalArgumentException("Property name == null");
+      }
 
-	public java.util.Collection<PortletMode> getSupportedPortletModes() {
-		return modes;
-	}
+      return properties.get(name);
+   }
 
-	public java.util.Collection<WindowState> getSupportedWindowStates() {
-		return states;
-	}
 
-	public String getPortalInfo() {
-		return info;
-	}
+   public java.util.Collection<String> getPropertyNames() {
+      return properties.keySet();
+   }
 
-	// internal methods.
 
-	private Vector<PortletMode> getDefaultModes() {
+   public java.util.Collection<PortletMode> getSupportedPortletModes() {
+      return modes;
+   }
 
-		Vector<PortletMode> m = new Vector<PortletMode>();
 
-		String[] supportedModes = Config.getParameters().getStrings("supported.portletmode");
+   public java.util.Collection<WindowState> getSupportedWindowStates() {
+      return states;
+   }
 
-		for (String element : supportedModes) {
-			m.add(new PortletMode(element.toString().toLowerCase()));
-		}
 
-		return m;
-	}
+   public String getPortalInfo() {
+      return info;
+   }
 
-	private Vector<WindowState> getDefaultStates() {
-		Vector<WindowState> s = new Vector<WindowState>();
 
-		String[] supportedStates = Config.getParameters().getStrings("supported.windowstate");
+   // internal methods.
 
-		for (String element : supportedStates) {
-			s.add(new WindowState(element.toString().toLowerCase()));
-		}
+   private Vector<PortletMode> getDefaultModes() {
 
-		return s;
-	}
+      Vector<PortletMode> m = new Vector<PortletMode>();
 
-	// additional methods.
+      String[] supportedModes = Config.getParameters().getStrings("supported.portletmode");
 
-	// methods used container internally to set
+      for (String element : supportedModes) {
+         m.add(new PortletMode(element.toString().toLowerCase()));
+      }
 
-	public void setProperty(String name, String value) {
-		if (name == null) {
-			throw new IllegalArgumentException("Property name == null");
-		}
+      return m;
+   }
 
-		properties.put(name, value);
-	}
 
-	// expects enumeration of PortletMode objects
-	public void setSupportedPortletModes(Enumeration<PortletMode> portletModes) {
-		Vector<PortletMode> v = new Vector<PortletMode>();
-		while (portletModes.hasMoreElements()) {
-			v.add(portletModes.nextElement());
-		}
-		modes = v;
-	}
+   private Vector<WindowState> getDefaultStates() {
+      Vector<WindowState> s = new Vector<WindowState>();
 
-	// expects enumeration of WindowState objects
-	public void setSupportedWindowStates(Enumeration<WindowState> windowStates) {
-		Vector<WindowState> v = new Vector<WindowState>();
-		while (windowStates.hasMoreElements()) {
-			v.add(windowStates.nextElement());
-		}
-		states = v;
-	}
+      String[] supportedStates = Config.getParameters().getStrings("supported.windowstate");
 
-	/**
-	 * reset all values to default portlet modes and window states; delete all
-	 * properties and set the given portlet information as portlet info string.
-	 * 
-	 * @param portalInfo portal information string that will be returned by the
-	 *        <code>getPortalInfo</code> call.
-	 */
-	public void reset(String portalInfo) {
-		info = new String(portalInfo);
+      for (String element : supportedStates) {
+         s.add(new WindowState(element.toString().toLowerCase()));
+      }
 
-		// these are the minimum modes that the portal needs to support
-		modes = getDefaultModes();
-		// these are the minimum states that the portal needs to support
-		states = getDefaultStates();
+      return s;
+   }
 
-		properties.clear();
-	}
+
+   // additional methods.
+
+   // methods used container internally to set
+
+   public void setProperty(String name, String value) {
+      if (name == null) {
+         throw new IllegalArgumentException("Property name == null");
+      }
+
+      properties.put(name, value);
+   }
+
+
+   // expects enumeration of PortletMode objects
+   public void setSupportedPortletModes(Enumeration<PortletMode> portletModes) {
+      Vector<PortletMode> v = new Vector<PortletMode>();
+      while (portletModes.hasMoreElements()) {
+         v.add(portletModes.nextElement());
+      }
+      modes = v;
+   }
+
+
+   // expects enumeration of WindowState objects
+   public void setSupportedWindowStates(Enumeration<WindowState> windowStates) {
+      Vector<WindowState> v = new Vector<WindowState>();
+      while (windowStates.hasMoreElements()) {
+         v.add(windowStates.nextElement());
+      }
+      states = v;
+   }
+
+
+   /**
+    * reset all values to default portlet modes and window states; delete all
+    * properties and set the given portlet information as portlet info string.
+    * 
+    * @param portalInfo
+    *           portal information string that will be returned by the
+    *           <code>getPortalInfo</code> call.
+    */
+   public void reset(String portalInfo) {
+      info = new String(portalInfo);
+
+      // these are the minimum modes that the portal needs to support
+      modes = getDefaultModes();
+      // these are the minimum states that the portal needs to support
+      states = getDefaultStates();
+
+      properties.clear();
+   }
 
 }

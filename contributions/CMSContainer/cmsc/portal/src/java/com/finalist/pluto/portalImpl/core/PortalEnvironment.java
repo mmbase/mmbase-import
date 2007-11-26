@@ -22,63 +22,72 @@ import javax.servlet.http.HttpServletResponse;
 
 public class PortalEnvironment {
 
-	public final static String REQUEST_PORTALENV = "com.finalist.pluto.portalImpl.core.PortalEnvironment";
+   public final static String REQUEST_PORTALENV = "com.finalist.pluto.portalImpl.core.PortalEnvironment";
 
-	private HttpServletRequest request;
+   private HttpServletRequest request;
 
-	private HttpServletResponse response;
+   private HttpServletResponse response;
 
-	private ServletConfig config;
+   private ServletConfig config;
 
-	private PortalURL requestedPortalURL;
+   private PortalURL requestedPortalURL;
 
-	private PortalControlParameter portalControl;
+   private PortalControlParameter portalControl;
 
-	public PortalEnvironment(HttpServletRequest request, HttpServletResponse response, ServletConfig config) {
-		this.request = request;
-		this.response = response;
-		this.config = config;
 
-		requestedPortalURL = new PortalURL(this);
-		// get navigational information and prepare PortalURL object
-		requestedPortalURL.analyzeRequestInformation();
-		portalControl = new PortalControlParameter(requestedPortalURL);
+   public PortalEnvironment(HttpServletRequest request, HttpServletResponse response, ServletConfig config) {
+      this.request = request;
+      this.response = response;
+      this.config = config;
 
-		registerEnvironment();
-	}
+      requestedPortalURL = new PortalURL(this);
+      // get navigational information and prepare PortalURL object
+      requestedPortalURL.analyzeRequestInformation();
+      portalControl = new PortalControlParameter(requestedPortalURL);
 
-    public void registerEnvironment() {
-        // set Environment in Request for later use
-		this.request.setAttribute(REQUEST_PORTALENV, this);
-    }
+      registerEnvironment();
+   }
 
-	public static PortalEnvironment getPortalEnvironment(HttpServletRequest request) {
-		return (PortalEnvironment) request.getAttribute(REQUEST_PORTALENV);
-	}
 
-	public HttpServletRequest getRequest() {
-		return request;
-	}
+   public void registerEnvironment() {
+      // set Environment in Request for later use
+      this.request.setAttribute(REQUEST_PORTALENV, this);
+   }
 
-	public HttpServletResponse getResponse() {
-		return response;
-	}
 
-	public ServletConfig getConfig() {
-		return config;
-	}
+   public static PortalEnvironment getPortalEnvironment(HttpServletRequest request) {
+      return (PortalEnvironment) request.getAttribute(REQUEST_PORTALENV);
+   }
 
-	public PortalURL getRequestedPortalURL() {
-		return requestedPortalURL;
-	}
 
-	public PortalControlParameter getPortalControlParameter() {
-		return portalControl;
-	}
+   public HttpServletRequest getRequest() {
+      return request;
+   }
 
-	public void changeRequestedPortalURL(PortalURL url, PortalControlParameter control) {
-		requestedPortalURL = url;
-		requestedPortalURL.analyzeControlInformation(control);
-		portalControl = control;
-	}
+
+   public HttpServletResponse getResponse() {
+      return response;
+   }
+
+
+   public ServletConfig getConfig() {
+      return config;
+   }
+
+
+   public PortalURL getRequestedPortalURL() {
+      return requestedPortalURL;
+   }
+
+
+   public PortalControlParameter getPortalControlParameter() {
+      return portalControl;
+   }
+
+
+   public void changeRequestedPortalURL(PortalURL url, PortalControlParameter control) {
+      requestedPortalURL = url;
+      requestedPortalURL.analyzeControlInformation(control);
+      portalControl = control;
+   }
 }

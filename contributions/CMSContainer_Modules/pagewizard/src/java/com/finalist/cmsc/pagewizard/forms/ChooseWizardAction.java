@@ -11,12 +11,12 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 public class ChooseWizardAction extends MMBaseAction {
 
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
-		PageWizardForm wizardForm = (PageWizardForm) form;
-		wizardForm.loadDefinition(cloud);
-		
-		return mapping.findForward(SUCCESS);
-	}
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
+      PageWizardForm wizardForm = (PageWizardForm) form;
+      wizardForm.loadDefinition(cloud);
 
+      return mapping.findForward(SUCCESS);
+   }
 
 }

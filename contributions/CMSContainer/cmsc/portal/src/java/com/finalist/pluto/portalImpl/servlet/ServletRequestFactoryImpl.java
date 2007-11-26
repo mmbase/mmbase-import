@@ -21,20 +21,22 @@ import org.apache.pluto.om.window.PortletWindow;
 
 public class ServletRequestFactoryImpl implements ServletRequestFactory {
 
-	// ServletRequestFactory implementation.
+   // ServletRequestFactory implementation.
 
-	public HttpServletRequest getServletRequest(HttpServletRequest request, PortletWindow portletWindow) {
-		HttpServletRequest servletRequest = new ServletRequestImpl(request, portletWindow);
-		return servletRequest;
-	}
+   public HttpServletRequest getServletRequest(HttpServletRequest request, PortletWindow portletWindow) {
+      HttpServletRequest servletRequest = new ServletRequestImpl(request, portletWindow);
+      return servletRequest;
+   }
 
-	// additional methods.
-	public void init(javax.servlet.ServletConfig config, java.util.Map properties) throws Exception {
-		// nothing to do
-	}
 
-	public void destroy() throws Exception {
-		// nothing to do
-	}
+   // additional methods.
+   public void init(javax.servlet.ServletConfig config, java.util.Map properties) throws Exception {
+      // nothing to do
+   }
+
+
+   public void destroy() throws Exception {
+      // nothing to do
+   }
 
 }

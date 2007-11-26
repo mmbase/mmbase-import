@@ -33,23 +33,23 @@ public class XMLController {
    public final static List<String> defaultDisallowedTypes = new ArrayList<String>();
    public final static List<String> defaultDisallowedRelationTypes = new ArrayList<String>();
    static {
-       defaultDisallowedTypes.add(RepositoryUtil.CONTENTCHANNEL);
-       defaultDisallowedTypes.add(RepositoryUtil.CONTENTELEMENT);
-       defaultDisallowedTypes.add(SecurityUtil.USER);
+      defaultDisallowedTypes.add(RepositoryUtil.CONTENTCHANNEL);
+      defaultDisallowedTypes.add(RepositoryUtil.CONTENTELEMENT);
+      defaultDisallowedTypes.add(SecurityUtil.USER);
 
-       defaultDisallowedTypes.add("layout");
-       defaultDisallowedTypes.add("portletdefinition");
-       defaultDisallowedTypes.add("view");
-       defaultDisallowedTypes.add("stylesheet");
-       defaultDisallowedTypes.add("portlet");
-       
-       defaultDisallowedRelationTypes.add(RepositoryUtil.CREATIONREL);
-       defaultDisallowedRelationTypes.add(RepositoryUtil.DELETIONREL);
-       defaultDisallowedRelationTypes.add(SecurityUtil.ROLEREL);
-       defaultDisallowedRelationTypes.add("navrel");
-       defaultDisallowedRelationTypes.add("namedrel");
+      defaultDisallowedTypes.add("layout");
+      defaultDisallowedTypes.add("portletdefinition");
+      defaultDisallowedTypes.add("view");
+      defaultDisallowedTypes.add("stylesheet");
+      defaultDisallowedTypes.add("portlet");
+
+      defaultDisallowedRelationTypes.add(RepositoryUtil.CREATIONREL);
+      defaultDisallowedRelationTypes.add(RepositoryUtil.DELETIONREL);
+      defaultDisallowedRelationTypes.add(SecurityUtil.ROLEREL);
+      defaultDisallowedRelationTypes.add("navrel");
+      defaultDisallowedRelationTypes.add("namedrel");
    }
-   
+
    private List<String> disallowedTypes;
    private List<String> allowedTypes;
 
@@ -59,268 +59,293 @@ public class XMLController {
    private List<String> disallowedFields;
    private List<String> allowedFields;
 
-   public XMLController(List<String> disallowedRelationTypes, List<String> allowedRelationTypes, 
-           List<String> disallowedTypes, List<String> allowedTypes,
-           List<String> disallowedFields, List<String> allowedFields) {
-       
-       this.disallowedRelationTypes = setypList(disallowedRelationTypes);
-       this.allowedRelationTypes = setypList(allowedRelationTypes);
 
-       this.disallowedTypes = setypList(disallowedTypes);
-       this.allowedTypes = setypList(allowedTypes);
+   public XMLController(List<String> disallowedRelationTypes, List<String> allowedRelationTypes,
+         List<String> disallowedTypes, List<String> allowedTypes, List<String> disallowedFields,
+         List<String> allowedFields) {
 
-       this.disallowedFields = setypList(disallowedFields);
-       this.allowedFields = setypList(allowedFields);
+      this.disallowedRelationTypes = setypList(disallowedRelationTypes);
+      this.allowedRelationTypes = setypList(allowedRelationTypes);
+
+      this.disallowedTypes = setypList(disallowedTypes);
+      this.allowedTypes = setypList(allowedTypes);
+
+      this.disallowedFields = setypList(disallowedFields);
+      this.allowedFields = setypList(allowedFields);
    }
 
-    private List<String> setypList(List<String> allowedRelationTypes) {
-       if (allowedRelationTypes != null) {
-           return allowedRelationTypes;
-       }
-       else {
-           return new ArrayList<String>();
-       }
-    }
+
+   private List<String> setypList(List<String> allowedRelationTypes) {
+      if (allowedRelationTypes != null) {
+         return allowedRelationTypes;
+      }
+      else {
+         return new ArrayList<String>();
+      }
+   }
+
 
    public String toXmlNumbersOnly(Node node, NodeList nodes, int contentSize) throws Exception {
-        try {
-           Document document = getDocument();
-           toXml(node, document, null, false);
+      try {
+         Document document = getDocument();
+         toXml(node, document, null, false);
 
-           Element root = document.getDocumentElement();
+         Element root = document.getDocumentElement();
 
-           Element sizeElement = document.createElement("childcount");
-           sizeElement.appendChild(document.createTextNode(String
-                   .valueOf(contentSize)));
-           root.appendChild(sizeElement);
+         Element sizeElement = document.createElement("childcount");
+         sizeElement.appendChild(document.createTextNode(String.valueOf(contentSize)));
+         root.appendChild(sizeElement);
 
-           NodeIterator nli = nodes.nodeIterator();
-           while (nli.hasNext()) {
-               Node n = nli.nextNode();
+         NodeIterator nli = nodes.nodeIterator();
+         while (nli.hasNext()) {
+            Node n = nli.nextNode();
 
-               Element nodeElement = document.createElement(n.getNodeManager().getName());
-               Element nymberElement = document.createElement("number");
-               nymberElement.appendChild(document.createTextNode(String.valueOf(n.getNumber())));
-               nodeElement.appendChild(nymberElement);
+            Element nodeElement = document.createElement(n.getNodeManager().getName());
+            Element nymberElement = document.createElement("number");
+            nymberElement.appendChild(document.createTextNode(String.valueOf(n.getNumber())));
+            nodeElement.appendChild(nymberElement);
 
-               root.appendChild(nodeElement);
-           }
+            root.appendChild(nodeElement);
+         }
 
-           return writeXml(document);
-       } catch (Exception e) {
-           e.printStackTrace();
-           throw new Exception(e);
-       }
-  }
+         return writeXml(document);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+         throw new Exception(e);
+      }
+   }
+
 
    public String toXml(Node node) throws Exception {
       try {
          Document document = getDocument();
          toXml(node, document, null);
          return writeXml(document);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          e.printStackTrace();
          throw new Exception(e);
       }
    }
+
 
    public String toXml(Node node, boolean addRelations) throws Exception {
       try {
          Document document = getDocument();
          toXml(node, document, null, addRelations);
          return writeXml(document);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          e.printStackTrace();
          throw new Exception(e);
       }
    }
-   
+
+
    public String toXml(Node node, NodeList nodes, int contentSize) throws Exception {
       try {
          Document document = getDocument();
          toXml(node, document, null, false);
-         
+
          Element root = document.getDocumentElement();
 
          Element sizeElement = document.createElement("childcount");
          sizeElement.appendChild(document.createTextNode(String.valueOf(contentSize)));
          root.appendChild(sizeElement);
-         
+
          List<Integer> nodesSeenButNotProcessed = new ArrayList<Integer>();
          NodeIterator nli1 = nodes.nodeIterator();
          while (nli1.hasNext()) {
             Node relatedNode = nli1.nextNode();
             nodesSeenButNotProcessed.add(new Integer(relatedNode.getNumber()));
          }
-         
+
          NodeIterator nli = nodes.nodeIterator();
-         while(nli.hasNext()) {
+         while (nli.hasNext()) {
             Node n = nli.nextNode();
             nodesSeenButNotProcessed.remove(new Integer(n.getNumber()));
             toXmlNode(n, document, root, true, false, new HashMap<Integer, Node>(), nodesSeenButNotProcessed);
          }
 
          return writeXml(document);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          e.printStackTrace();
          throw new Exception(e);
       }
    }
-   
+
+
    public String toXml(Node node, String nodeName) throws Exception {
       return toXml(node, nodeName, true);
    }
 
+
    public String toXml(Node node, String nodeName, boolean addReleations) throws Exception {
-   	try {
+      try {
          Document document = getDocument();
          Element channelEl = document.createElement(nodeName);
          document.appendChild(channelEl);
          toXml(node, document, channelEl, addReleations);
          return writeXml(document);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          e.printStackTrace();
          throw new Exception(e);
       }
    }
 
-   
+
    public Element toXml(Node node, Document document, Element root) {
       return toXml(node, document, root, true);
    }
 
+
    public Element toXml(Node node, Document document, Element root, boolean addRelations) {
       return toXmlNode(node, document, root, addRelations, false, new HashMap<Integer, Node>());
    }
-   
+
+
    public Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute) {
       return toXmlNode(node, document, root, addRelations, fieldsAsAttribute, new HashMap<Integer, Node>());
    }
 
-   private Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
+
+   private Element toXmlNode(Node node, Document document, Element root, boolean addRelations,
+         boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
       return toXmlNode(node, document, root, addRelations, fieldsAsAttribute, processedNodes, new ArrayList<Integer>());
    }
-   
-   private Element toXmlNode(Node node, Document document, Element root, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
+
+
+   private Element toXmlNode(Node node, Document document, Element root, boolean addRelations,
+         boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
       NodeManager manager = node.getNodeManager();
       String managerName = manager.getName();
       if (isTypeAllowed(managerName)) {
-          Element nodeElement = document.createElement(managerName);
-          toXmlFields(node, document, nodeElement, fieldsAsAttribute);
-          addExternalUrl(node, document, nodeElement, fieldsAsAttribute);
-          
-          processedNodes.put(new Integer(node.getNumber()), node);
-    
-          if (addRelations && !nodesSeenButNotProcessed.contains(new Integer(node.getNumber()))) {
-             RelationManagerList rml = manager.getAllowedRelations((NodeManager) null, null, "DESTINATION");
-             RelationManagerIterator rmi = rml.relationManagerIterator();
-             while (rmi.hasNext()) {
-                RelationManager rm = rmi.nextRelationManager();
-                
-                if (isRelationAllowed(rm)) {
-                   toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes, nodesSeenButNotProcessed);
-                }
-             }
-          }
-          processedNodes.remove(new Integer(node.getNumber()));
-          
-          if (root != null) {
-             root.appendChild(nodeElement);
-          }
-          else {
-             document.appendChild(nodeElement);
-          }
-          return nodeElement;
+         Element nodeElement = document.createElement(managerName);
+         toXmlFields(node, document, nodeElement, fieldsAsAttribute);
+         addExternalUrl(node, document, nodeElement, fieldsAsAttribute);
+
+         processedNodes.put(new Integer(node.getNumber()), node);
+
+         if (addRelations && !nodesSeenButNotProcessed.contains(new Integer(node.getNumber()))) {
+            RelationManagerList rml = manager.getAllowedRelations((NodeManager) null, null, "DESTINATION");
+            RelationManagerIterator rmi = rml.relationManagerIterator();
+            while (rmi.hasNext()) {
+               RelationManager rm = rmi.nextRelationManager();
+
+               if (isRelationAllowed(rm)) {
+                  toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes,
+                        nodesSeenButNotProcessed);
+               }
+            }
+         }
+         processedNodes.remove(new Integer(node.getNumber()));
+
+         if (root != null) {
+            root.appendChild(nodeElement);
+         }
+         else {
+            document.appendChild(nodeElement);
+         }
+         return nodeElement;
       }
       return null;
    }
 
-    private boolean isRelationAllowed(RelationManager rm) {
-        String typeName = rm.getDestinationManager().getName();
-        String relationTypeName = rm.getReciprocalRole();
-        
-        if (!allowedRelationTypes.isEmpty()) {
-            if (allowedRelationTypes.contains(relationTypeName)) {
-                if (!allowedTypes.isEmpty()) {
-                    return allowedTypes.contains(typeName);
-                }
-                return true;
-            }
-            return false;
-        }
 
-        if (!disallowedRelationTypes.isEmpty()) {
-            if (disallowedRelationTypes.contains(relationTypeName)) {
-                return false;
-            }
-            else {
-                if (!disallowedTypes.isEmpty()) {
-                    return !disallowedTypes.contains(typeName);
-                }
+   private boolean isRelationAllowed(RelationManager rm) {
+      String typeName = rm.getDestinationManager().getName();
+      String relationTypeName = rm.getReciprocalRole();
+
+      if (!allowedRelationTypes.isEmpty()) {
+         if (allowedRelationTypes.contains(relationTypeName)) {
+            if (!allowedTypes.isEmpty()) {
+               return allowedTypes.contains(typeName);
             }
             return true;
-        }
-        
-        return isTypeAllowed(typeName);
+         }
+         return false;
+      }
+
+      if (!disallowedRelationTypes.isEmpty()) {
+         if (disallowedRelationTypes.contains(relationTypeName)) {
+            return false;
+         }
+         else {
+            if (!disallowedTypes.isEmpty()) {
+               return !disallowedTypes.contains(typeName);
+            }
+         }
+         return true;
+      }
+
+      return isTypeAllowed(typeName);
    }
 
-    private boolean isTypeAllowed(String typeName) {
-        if (!allowedTypes.isEmpty()) {
-            return allowedTypes.contains(typeName);
-        }
-        
-        if (!disallowedTypes.isEmpty()) {
-            return !disallowedTypes.contains(typeName);
-        }
-        return true;
-    }
-   
-   private void addExternalUrl(Node node, Document document, Element nodeElement,
-        boolean fieldsAsAttribute) {
-    
-       String url = null;
-       String builderName = node.getNodeManager().getName();
 
-       if ("attachments".equals(builderName) || "images".equals(builderName)) {
-           url = ResourcesUtil.getServletPath(node, node.getStringValue("number"));
-       } else {
-           if ("urls".equals(builderName)) {
-               url = node.getStringValue("url");
-           }
-           else {
-               if (ContentElementUtil.isContentElement(node)) {
-                   url =  ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 
-                       node.getStringValue("number"), node.getStringValue("title"));
-               }
-               else {
-                   if ("page".equals(builderName) || "site".equals(builderName)) {
-                       url = node.getStringValue("externalurl");
-                       if (StringUtil.isEmpty(url)) {
-                           url =  ResourcesUtil.getServletPathWithAssociation("content", "/content/*", 
-                                   node.getStringValue("number"), node.getStringValue("title"));
-                       }
-                   }
-               }
-           }
-       }
-       if (!StringUtil.isEmpty(url)) {
-           if (fieldsAsAttribute) {
-               nodeElement.setAttribute("externalUrl", url);
+   private boolean isTypeAllowed(String typeName) {
+      if (!allowedTypes.isEmpty()) {
+         return allowedTypes.contains(typeName);
+      }
+
+      if (!disallowedTypes.isEmpty()) {
+         return !disallowedTypes.contains(typeName);
+      }
+      return true;
+   }
+
+
+   private void addExternalUrl(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute) {
+
+      String url = null;
+      String builderName = node.getNodeManager().getName();
+
+      if ("attachments".equals(builderName) || "images".equals(builderName)) {
+         url = ResourcesUtil.getServletPath(node, node.getStringValue("number"));
+      }
+      else {
+         if ("urls".equals(builderName)) {
+            url = node.getStringValue("url");
+         }
+         else {
+            if (ContentElementUtil.isContentElement(node)) {
+               url = ResourcesUtil.getServletPathWithAssociation("content", "/content/*",
+                     node.getStringValue("number"), node.getStringValue("title"));
             }
             else {
-               Element element = document.createElement("externalUrl");
-               element.appendChild(document.createTextNode(url));
-               nodeElement.appendChild(element);
+               if ("page".equals(builderName) || "site".equals(builderName)) {
+                  url = node.getStringValue("externalurl");
+                  if (StringUtil.isEmpty(url)) {
+                     url = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", node
+                           .getStringValue("number"), node.getStringValue("title"));
+                  }
+               }
             }
-       }
-       
+         }
+      }
+      if (!StringUtil.isEmpty(url)) {
+         if (fieldsAsAttribute) {
+            nodeElement.setAttribute("externalUrl", url);
+         }
+         else {
+            Element element = document.createElement("externalUrl");
+            element.appendChild(document.createTextNode(url));
+            nodeElement.appendChild(element);
+         }
+      }
+
    }
+
 
    public void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute) {
       toXmlFields(node, document, nodeElement, fieldsAsAttribute, false);
    }
 
-   public void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute, boolean relationFields) {
+
+   public void toXmlFields(Node node, Document document, Element nodeElement, boolean fieldsAsAttribute,
+         boolean relationFields) {
 
       FieldList fieldList = node.getNodeManager().getFields();
       fieldList.sort();
@@ -329,10 +354,10 @@ public class XMLController {
          Field field = fieldIterator.nextField();
          String fieldName = field.getName();
          if ((field.getState() == Field.STATE_PERSISTENT || field.getState() == Field.STATE_VIRTUAL)
-               && !isMMBaseField(fieldName) && isFieldAllowed(node.getNodeManager(),fieldName)) {
-            
+               && !isMMBaseField(fieldName) && isFieldAllowed(node.getNodeManager(), fieldName)) {
+
             int type = field.getType();
-            
+
             Object value = null;
             if ("number".equals(fieldName)) {
                value = new Integer(node.getNumber());
@@ -343,7 +368,7 @@ public class XMLController {
             else {
                value = node.getValue(fieldName);
             }
-            
+
             String val = "";
             if (value != null) {
                if (Field.TYPE_BOOLEAN == type) {
@@ -358,7 +383,7 @@ public class XMLController {
                   val = DateFormat.getDateTimeInstance().format(value);
                }
                else {
-                    val = value.toString();
+                  val = value.toString();
                }
             }
             if (fieldsAsAttribute) {
@@ -373,76 +398,88 @@ public class XMLController {
       }
    }
 
-   private boolean isFieldAllowed(NodeManager nodeManager, String fieldName) {
-       if (!allowedFields.isEmpty()) {
-           if (!allowedFields.contains(fieldName)) {
-               NodeManager testManager = nodeManager;
-               while (testManager != null) {
-                   if (allowedFields.contains(testManager.getName() + "." + fieldName)) {
-                       return true;
-                   }
-                   try {
-                       testManager = testManager.getParent();
-                   }
-                   catch(NotFoundException nfe) {
-                       testManager = null;
-                   }
-               }
-               return false;
-           }
-           return true;
-       }
-       
-       if (!disallowedFields.isEmpty()) {
-           if (!disallowedFields.contains(fieldName)) {
-               NodeManager testManager = nodeManager;
-               while (testManager != null) {
-                   if (disallowedFields.contains(testManager.getName() + "." + fieldName)) {
-                       return false;
-                   }
-                   try {
-                       testManager = testManager.getParent();
-                   }
-                   catch(NotFoundException nfe) {
-                       testManager = null;
-                   }
-               }
-               return true;
-           }
-           return false;
-       }
 
-       return true;
+   private boolean isFieldAllowed(NodeManager nodeManager, String fieldName) {
+      if (!allowedFields.isEmpty()) {
+         if (!allowedFields.contains(fieldName)) {
+            NodeManager testManager = nodeManager;
+            while (testManager != null) {
+               if (allowedFields.contains(testManager.getName() + "." + fieldName)) {
+                  return true;
+               }
+               try {
+                  testManager = testManager.getParent();
+               }
+               catch (NotFoundException nfe) {
+                  testManager = null;
+               }
+            }
+            return false;
+         }
+         return true;
+      }
+
+      if (!disallowedFields.isEmpty()) {
+         if (!disallowedFields.contains(fieldName)) {
+            NodeManager testManager = nodeManager;
+            while (testManager != null) {
+               if (disallowedFields.contains(testManager.getName() + "." + fieldName)) {
+                  return false;
+               }
+               try {
+                  testManager = testManager.getParent();
+               }
+               catch (NotFoundException nfe) {
+                  testManager = null;
+               }
+            }
+            return true;
+         }
+         return false;
+      }
+
+      return true;
    }
+
 
    private boolean isMMBaseField(String fieldName) {
-      return "owner".equals(fieldName) || "snumber".equals(fieldName) 
-            || "dnumber".equals(fieldName) || "rnumber".equals(fieldName)
-            || "dir".equals(fieldName) || fieldName.startsWith("_");
+      return "owner".equals(fieldName) || "snumber".equals(fieldName) || "dnumber".equals(fieldName)
+            || "rnumber".equals(fieldName) || "dir".equals(fieldName) || fieldName.startsWith("_");
    }
 
-   public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
-       toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes, new ArrayList<Integer>());
+
+   public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm,
+         boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes) {
+      toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, processedNodes,
+            new ArrayList<Integer>());
    }
-    
-   public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
+
+
+   public void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm,
+         boolean addRelations, boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes,
+         List<Integer> nodesSeenButNotProcessed) {
       if (rm.hasField("pos")) {
          Comparator<Node> comparator = new NodeFieldComparator("pos");
-         toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, comparator, processedNodes, nodesSeenButNotProcessed);
+         toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, comparator, processedNodes,
+               nodesSeenButNotProcessed);
       }
       else {
-         toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, null, processedNodes, nodesSeenButNotProcessed);
+         toXmlRelations(node, document, nodeElement, rm, addRelations, fieldsAsAttribute, null, processedNodes,
+               nodesSeenButNotProcessed);
       }
    }
 
-   private void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm, boolean addRelations, boolean fieldsAsAttribute, Comparator<Node> comparator, HashMap<Integer, Node> processedNodes, List<Integer> parentNodesSeenButNotProcessed) {
+
+   private void toXmlRelations(Node node, Document document, Element nodeElement, RelationManager rm,
+         boolean addRelations, boolean fieldsAsAttribute, Comparator<Node> comparator,
+         HashMap<Integer, Node> processedNodes, List<Integer> parentNodesSeenButNotProcessed) {
       String relatedRole = rm.getForwardRole();
       NodeManager destination = rm.getDestinationManager();
       RelationList rl = node.getRelations(relatedRole, destination, "DESTINATION");
       if (comparator != null) {
          Collections.sort(rl, comparator);
       }
-      
+
       List<Integer> nodesSeenButNotProcessed = new ArrayList<Integer>();
       nodesSeenButNotProcessed.addAll(parentNodesSeenButNotProcessed);
       RelationIterator rli1 = rl.relationIterator();
@@ -451,41 +488,49 @@ public class XMLController {
          Node relatedNode = relation.getDestination();
          nodesSeenButNotProcessed.add(new Integer(relatedNode.getNumber()));
       }
-      
+
       RelationIterator rli = rl.relationIterator();
       int skippedChildren = 0;
       while (rli.hasNext()) {
-        Relation relation = rli.nextRelation();
-        Node relatedNode = relation.getDestination();
-         if(!processedNodes.containsKey(new Integer(relatedNode.getNumber()))) {
+         Relation relation = rli.nextRelation();
+         Node relatedNode = relation.getDestination();
+         if (!processedNodes.containsKey(new Integer(relatedNode.getNumber()))) {
             nodesSeenButNotProcessed.remove(new Integer(relatedNode.getNumber()));
-            toXmlNode(relatedNode, document, nodeElement, addRelations, fieldsAsAttribute, processedNodes, nodesSeenButNotProcessed);
+            toXmlNode(relatedNode, document, nodeElement, addRelations, fieldsAsAttribute, processedNodes,
+                  nodesSeenButNotProcessed);
             toXmlFields(relation, document, (Element) nodeElement.getLastChild(), true, true);
             ((Element) nodeElement.getLastChild()).setAttribute("relationname", relatedRole);
-         } else {
-            // Node already processed.. make sure we don't get circular references
+         }
+         else {
+            // Node already processed.. make sure we don't get circular
+            // references
             skippedChildren++;
             log.debug("Skipping child " + relatedNode + ", since it was already processed");
          }
       }
-      if(skippedChildren > 0) {
-         // This node was already done, make sure the client knows about it as well.
+      if (skippedChildren > 0) {
+         // This node was already done, make sure the client knows about it as
+         // well.
          nodeElement.setAttribute("skippedChildCount", Integer.toString(skippedChildren));
       }
    }
 
+
    public Document getDocument() throws Exception {
-       try {
+      try {
          return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-      } catch (ParserConfigurationException e) {
+      }
+      catch (ParserConfigurationException e) {
          e.printStackTrace();
          throw new Exception(e);
-      } catch (FactoryConfigurationError e) {
+      }
+      catch (FactoryConfigurationError e) {
          e.printStackTrace();
          throw new Exception(e);
       }
    }
-   
+
+
    public String writeXml(Document document) throws Exception {
       StringWriter output;
       try {
@@ -494,16 +539,20 @@ public class XMLController {
          transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
          output = new StringWriter();
          transformer.transform(new DOMSource(document), new StreamResult(output));
-      } catch (TransformerConfigurationException e) {
+      }
+      catch (TransformerConfigurationException e) {
          e.printStackTrace();
          throw new Exception(e);
-      } catch (IllegalArgumentException e) {
+      }
+      catch (IllegalArgumentException e) {
          e.printStackTrace();
          throw new Exception(e);
-      } catch (TransformerFactoryConfigurationError e) {
+      }
+      catch (TransformerFactoryConfigurationError e) {
          e.printStackTrace();
          throw new Exception(e);
-      } catch (TransformerException e) {
+      }
+      catch (TransformerException e) {
          e.printStackTrace();
          throw new Exception(e);
       }

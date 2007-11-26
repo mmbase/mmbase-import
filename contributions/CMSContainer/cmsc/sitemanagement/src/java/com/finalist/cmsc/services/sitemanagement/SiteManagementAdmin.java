@@ -19,42 +19,51 @@ import com.finalist.cmsc.services.ServiceManager;
  * @author Wouter Heijke
  */
 public class SiteManagementAdmin {
-    
-	private final static SiteManagementAdminService cService = (SiteManagementAdminService) ServiceManager
-			.getService(SiteManagementAdminService.class);
 
-	public static boolean setPortletParameter(String portletId, PortletParameter param) {
-		return cService.setPortletParameter(portletId, param);
-	}
+   private final static SiteManagementAdminService cService = (SiteManagementAdminService) ServiceManager
+         .getService(SiteManagementAdminService.class);
 
-    public static boolean setPortletNodeParameter(String portletId, PortletParameter param) {
-        return cService.setPortletNodeParameter(portletId, param);
-    }
 
-	public static boolean setPortletView(String portletId, String viewId) {
-		return cService.setPortletView(portletId, viewId);
-	}
+   public static boolean setPortletParameter(String portletId, PortletParameter param) {
+      return cService.setPortletParameter(portletId, param);
+   }
 
-	public static boolean setScreenPortlet(String screenId, String portletId, String layoutId) {
-		return cService.setPagePortlet(screenId, portletId, layoutId);
-	}
 
-	public static boolean createScreenPortlet(String screenId, String portletName, String definitionName, String layoutId, String viewId) {
-		return cService.createPagePortlet(screenId, portletName, definitionName, layoutId, viewId);
-	}
+   public static boolean setPortletNodeParameter(String portletId, PortletParameter param) {
+      return cService.setPortletNodeParameter(portletId, param);
+   }
 
-	public static void deleteScreenPortlet(Page page, Portlet portlet, String layoutId) {
-        if (page != null && portlet != null) {
-            cService.deletePagePortlet(page, portlet, layoutId);
-        }
-	}
-	
-    public static boolean mayEdit(Page page) {
-        return cService.mayEdit(page);
-    }
 
-    public static boolean mayEdit(Portlet portlet) {
-        return cService.mayEdit(portlet);
-    }
+   public static boolean setPortletView(String portletId, String viewId) {
+      return cService.setPortletView(portletId, viewId);
+   }
+
+
+   public static boolean setScreenPortlet(String screenId, String portletId, String layoutId) {
+      return cService.setPagePortlet(screenId, portletId, layoutId);
+   }
+
+
+   public static boolean createScreenPortlet(String screenId, String portletName, String definitionName,
+         String layoutId, String viewId) {
+      return cService.createPagePortlet(screenId, portletName, definitionName, layoutId, viewId);
+   }
+
+
+   public static void deleteScreenPortlet(Page page, Portlet portlet, String layoutId) {
+      if (page != null && portlet != null) {
+         cService.deletePagePortlet(page, portlet, layoutId);
+      }
+   }
+
+
+   public static boolean mayEdit(Page page) {
+      return cService.mayEdit(page);
+   }
+
+
+   public static boolean mayEdit(Portlet portlet) {
+      return cService.mayEdit(portlet);
+   }
 
 }

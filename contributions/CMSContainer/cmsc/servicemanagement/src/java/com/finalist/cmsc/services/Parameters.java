@@ -24,75 +24,79 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-
 public class Parameters extends NameValuePairs {
 
-    public Parameters(Map<String,String> params) {
-        Iterator<String> iterator = params.keySet().iterator();
+   public Parameters(Map<String, String> params) {
+      Iterator<String> iterator = params.keySet().iterator();
 
-        while (iterator.hasNext()) {
-            String name = iterator.next();
+      while (iterator.hasNext()) {
+         String name = iterator.next();
 
-            super.add(name, params.get(name));
-        }
-    }
+         super.add(name, params.get(name));
+      }
+   }
 
-    public Parameters(ServletConfig aConfig) {
-        for (Enumeration<String> e = aConfig.getInitParameterNames(); e.hasMoreElements();) {
-            String name = e.nextElement();
 
-            super.add(name, aConfig.getInitParameter(name));
-        }
-    }
+   public Parameters(ServletConfig aConfig) {
+      for (Enumeration<String> e = aConfig.getInitParameterNames(); e.hasMoreElements();) {
+         String name = e.nextElement();
 
-    public Parameters(ServletContext aContext) {
-        for (Enumeration<String> e = aContext.getInitParameterNames(); e.hasMoreElements();) {
-            String name = e.nextElement();
+         super.add(name, aConfig.getInitParameter(name));
+      }
+   }
 
-            super.add(name, aContext.getInitParameter(name));
-        }
-    }
 
-    public void setString(String aKey, String aValue) {
-        if (aKey == null)
-            throw (new IllegalArgumentException("Parameters: Argument \"aKey\" cannot be null."));
-        if (aValue == null)
-            throw (new IllegalArgumentException("Parameters: Argument \"aValue\" cannot be null."));
+   public Parameters(ServletContext aContext) {
+      for (Enumeration<String> e = aContext.getInitParameterNames(); e.hasMoreElements();) {
+         String name = e.nextElement();
 
-        super.add(aKey, aValue);
-    }
+         super.add(name, aContext.getInitParameter(name));
+      }
+   }
 
-    /**
-     * * Removes all values with the given name. * *
-     * 
-     * @param aName *
-     *            the name of a pair
-     */
 
-    public void remove(String aName) {
-        super.removeEntry(aName);
-    }
+   public void setString(String aKey, String aValue) {
+      if (aKey == null)
+         throw (new IllegalArgumentException("Parameters: Argument \"aKey\" cannot be null."));
+      if (aValue == null)
+         throw (new IllegalArgumentException("Parameters: Argument \"aValue\" cannot be null."));
 
-    /**
-     * * Removes all values with names that start with the given prefix. * *
-     * 
-     * @param aPrefix *
-     *            the name prefix
-     */
+      super.add(aKey, aValue);
+   }
 
-    public void removeWithPrefix(String aPrefix) {
-        List<String> deletables = new ArrayList<String>();
 
-        for (Iterator<String> iter = names(); iter.hasNext();) {
-            String name = iter.next();
+   /**
+    * * Removes all values with the given name. * *
+    * 
+    * @param aName *
+    *           the name of a pair
+    */
 
-            if (name.startsWith(aPrefix)) {
-                deletables.add(name);
-            }
-        }
+   public void remove(String aName) {
+      super.removeEntry(aName);
+   }
 
-        for (Iterator<String> iter = deletables.iterator(); iter.hasNext();) {
-            super.removeEntry(iter.next());
-        }
-    }
+
+   /**
+    * * Removes all values with names that start with the given prefix. * *
+    * 
+    * @param aPrefix *
+    *           the name prefix
+    */
+
+   public void removeWithPrefix(String aPrefix) {
+      List<String> deletables = new ArrayList<String>();
+
+      for (Iterator<String> iter = names(); iter.hasNext();) {
+         String name = iter.next();
+
+         if (name.startsWith(aPrefix)) {
+            deletables.add(name);
+         }
+      }
+
+      for (Iterator<String> iter = deletables.iterator(); iter.hasNext();) {
+         super.removeEntry(iter.next());
+      }
+   }
 }

@@ -20,21 +20,22 @@ import org.mmbase.bridge.RelationManagerList;
 
 /**
  * TODO: javadoc
- *
+ * 
  * @author Nico Klasens
  */
 public class Comparer {
-   
+
    public static List<String> compareModels(Cloud localCloud, Cloud remoteCloud) {
       List<String> messages = new ArrayList<String>();
-      
+
       compareNodeManagers(localCloud, remoteCloud, messages);
       compareRelationManagers(localCloud, remoteCloud, messages);
       return messages;
    }
 
+
    public static void compareNodeManagers(Cloud localCloud, Cloud remoteCloud, List<String> messages) {
-      NodeManagerList localManagers = localCloud.getNodeManagers(); 
+      NodeManagerList localManagers = localCloud.getNodeManagers();
       NodeManagerList remoteManagers = remoteCloud.getNodeManagers();
 
       NodeManagerIterator localIter = localManagers.nodeManagerIterator();
@@ -56,7 +57,7 @@ public class Comparer {
             }
          }
       }
-      
+
       NodeManagerIterator localIter2 = localManagers.nodeManagerIterator();
       while (localIter2.hasNext()) {
          NodeManager localManager = localIter2.nextNodeManager();
@@ -68,46 +69,47 @@ public class Comparer {
          messages.add("ERR NodeManager: " + remoteManager.getName() + " NOT found in local cloud");
       }
    }
-   
+
+
    public static void compareFields(NodeManager localManager, NodeManager remoteManager, List<String> messages) {
-      FieldList localFields = localManager.getFields(); 
+      FieldList localFields = localManager.getFields();
       FieldList remoteFields = remoteManager.getFields();
 
       FieldIterator localIter = localFields.fieldIterator();
       while (localIter.hasNext()) {
          Field localField = localIter.nextField();
          String localName = localField.getName();
-         
+
          FieldIterator remoteIter = remoteFields.fieldIterator();
          while (remoteIter.hasNext()) {
             Field remoteField = remoteIter.nextField();
             String remoteName = remoteField.getName();
-            
+
             if (localName.equals(remoteName)) {
                localIter.remove();
                remoteIter.remove();
-               
+
                if (localField.getState() != remoteField.getState()) {
-                  messages.add("ERR Field: " + localName + " state local = " + localField.getState() 
-                               + " and remote = " + remoteField.getState());
+                  messages.add("ERR Field: " + localName + " state local = " + localField.getState() + " and remote = "
+                        + remoteField.getState());
                }
                if (localField.getType() != remoteField.getType()) {
-                  messages.add("ERR Field: " + localName + " type local = " + localField.getType() 
-                        + " and remote = " + remoteField.getType());
+                  messages.add("ERR Field: " + localName + " type local = " + localField.getType() + " and remote = "
+                        + remoteField.getType());
                }
                if (!localField.getGUIType().equals(remoteField.getGUIType())) {
-                  messages.add("ERR Field: " + localName + " guitype local = " + localField.getDataType().getName() 
+                  messages.add("ERR Field: " + localName + " guitype local = " + localField.getDataType().getName()
                         + " and remote = " + remoteField.getDataType().getName());
                }
                if (localField.getMaxLength() != remoteField.getMaxLength()) {
-                  messages.add("ERR Field: " + localName + " maxlength local = " + localField.getMaxLength() 
+                  messages.add("ERR Field: " + localName + " maxlength local = " + localField.getMaxLength()
                         + " and remote = " + remoteField.getMaxLength());
                }
                break;
             }
          }
       }
-      
+
       FieldIterator localIter2 = localFields.fieldIterator();
       while (localIter2.hasNext()) {
          Field localField = localIter2.nextField();
@@ -120,10 +122,11 @@ public class Comparer {
       }
    }
 
+
    public static void compareRelationManagers(Cloud localCloud, Cloud remoteCloud, List<String> messages) {
       RelationManagerList localManagers = localCloud.getRelationManagers();
       RelationManagerList remoteManagers = remoteCloud.getRelationManagers();
-      
+
       RelationManagerIterator localIter = localManagers.relationManagerIterator();
       while (localIter.hasNext()) {
          RelationManager localManager = localIter.nextRelationManager();
@@ -143,50 +146,45 @@ public class Comparer {
             int remoteDir = remoteManager.getDirectionality();
             String remoteSourceName = remoteManager.getSourceManager().getName();
             String remoteSestinationName = remoteManager.getDestinationManager().getName();
-            
-            if (localName.equals(remoteName)
-                && localForwardRole.equals(remoteForwardRole)
-                && localReciprocalRole.equals(remoteReciprocalRole)
-                && localDir == remoteDir
-                && localSourceName.equals(remoteSourceName)
-                && localSestinationName.equals(remoteSestinationName)) {
-               
+
+            if (localName.equals(remoteName) && localForwardRole.equals(remoteForwardRole)
+                  && localReciprocalRole.equals(remoteReciprocalRole) && localDir == remoteDir
+                  && localSourceName.equals(remoteSourceName) && localSestinationName.equals(remoteSestinationName)) {
+
                localIter.remove();
                remoteIter.remove();
-               messages.add("RelationManager: " + localName + " found in both clouds ("
-                            + localSourceName + ","+ localForwardRole + "," + localSestinationName + ")");
+               messages.add("RelationManager: " + localName + " found in both clouds (" + localSourceName + ","
+                     + localForwardRole + "," + localSestinationName + ")");
                break;
             }
          }
       }
-      
+
       RelationManagerIterator localIter2 = localManagers.relationManagerIterator();
       while (localIter2.hasNext()) {
          RelationManager localManager = localIter2.nextRelationManager();
          messages.add("ERR RelationManager: " + localManager.getName() + " NOT found in remote cloud ("
-                           + localManager.getSourceManager().getName() + "," 
-                           + localManager.getForwardRole() + ","
-                           + localManager.getDestinationManager().getName() + ")");
+               + localManager.getSourceManager().getName() + "," + localManager.getForwardRole() + ","
+               + localManager.getDestinationManager().getName() + ")");
       }
       RelationManagerIterator remoteIter2 = remoteManagers.relationManagerIterator();
       while (remoteIter2.hasNext()) {
          RelationManager remoteManager = remoteIter2.nextRelationManager();
          messages.add("ERR RelationManager: " + remoteManager.getName() + " NOT found in local cloud ("
-                      + remoteManager.getSourceManager().getName() + "," 
-                      + remoteManager.getForwardRole() + ","
-                      + remoteManager.getDestinationManager().getName() + ")");
+               + remoteManager.getSourceManager().getName() + "," + remoteManager.getForwardRole() + ","
+               + remoteManager.getDestinationManager().getName() + ")");
       }
    }
-   
-   
+
+
    public static List<String> compareManagers(Cloud localCloud, Cloud remoteCloud, String managerName, String keyField) {
       List<String> messages = new ArrayList<String>();
-      
-      NodeManager localManager = localCloud.getNodeManager(managerName); 
+
+      NodeManager localManager = localCloud.getNodeManager(managerName);
       NodeManager remoteManager = remoteCloud.getNodeManager(managerName);
-      
-      NodeList localProps = localManager.getList(null,null,null);
-      NodeList remoteProps = remoteManager.getList(null,null,null);
+
+      NodeList localProps = localManager.getList(null, null, null);
+      NodeList remoteProps = remoteManager.getList(null, null, null);
 
       NodeIterator localIter = localProps.nodeIterator();
       while (localIter.hasNext()) {
@@ -197,7 +195,7 @@ public class Comparer {
          while (remoteIter.hasNext()) {
             Node remoteNode = remoteIter.nextNode();
             Object remoteName = remoteNode.getValue(keyField);
-            
+
             if (localName.equals(remoteName)) {
                localIter.remove();
                remoteIter.remove();
@@ -207,7 +205,7 @@ public class Comparer {
             }
          }
       }
-      
+
       NodeIterator localIter2 = localProps.nodeIterator();
       while (localIter2.hasNext()) {
          Node localNode = localIter2.nextNode();
@@ -218,18 +216,19 @@ public class Comparer {
          Node remoteNode = remoteIter2.nextNode();
          messages.add("ERR Property: " + remoteNode.getStringValue(keyField) + " NOT found in local cloud");
       }
-      
+
       return messages;
    }
+
 
    public static void compareNodes(List<String> messages, NodeManager localManager, Node localNode, Node remoteNode) {
       FieldList fields = localManager.getFields();
       for (Iterator<Field> iter = fields.iterator(); iter.hasNext();) {
          Field field = iter.next();
          if (!localNode.getValue(field.getName()).equals(remoteNode.getValue(field.getName()))) {
-            messages.add("ERR: field '"+field.getName()+"' not equal");
+            messages.add("ERR: field '" + field.getName() + "' not equal");
          }
       }
    }
-   
+
 }

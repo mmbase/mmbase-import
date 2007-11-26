@@ -34,35 +34,42 @@ import org.apache.pluto.services.PortletContainerEnvironment;
  */
 public class PortletContainerWrapperImpl implements PortletContainer {
 
-	// PortletContainer implementation.
+   // PortletContainer implementation.
 
-	public void init(String uniqueContainerName, ServletConfig servletConfig, PortletContainerEnvironment environment,
-			Properties properties) throws PortletContainerException {
-		PortletContainerFactory.getPortletContainerOriginal().init(uniqueContainerName, servletConfig, environment, properties);
-	}
+   public void init(String uniqueContainerName, ServletConfig servletConfig, PortletContainerEnvironment environment,
+         Properties properties) throws PortletContainerException {
+      PortletContainerFactory.getPortletContainerOriginal().init(uniqueContainerName, servletConfig, environment,
+            properties);
+   }
 
-	public void shutdown() throws PortletContainerException {
-		PortletContainerFactory.getPortletContainerOriginal().shutdown();
-	}
 
-	public void renderPortlet(PortletWindow portletWindow, HttpServletRequest servletRequest, HttpServletResponse servletResponse)
-			throws PortletException, IOException, PortletContainerException {
-		PortletContainerFactory.getPortletContainerOriginal().renderPortlet(portletWindow, servletRequest, servletResponse);
-	}
+   public void shutdown() throws PortletContainerException {
+      PortletContainerFactory.getPortletContainerOriginal().shutdown();
+   }
 
-	public void processPortletAction(PortletWindow portletWindow, HttpServletRequest servletRequest,
-			HttpServletResponse servletResponse) throws PortletException, IOException, PortletContainerException {
-		PortletContainerFactory.getPortletContainerOriginal()
-				.processPortletAction(portletWindow, servletRequest, servletResponse);
-	}
 
-	public void portletLoad(PortletWindow portletWindow, HttpServletRequest servletRequest, HttpServletResponse servletResponse)
-			throws PortletException, PortletContainerException {
-		PortletContainerFactory.getPortletContainerOriginal().portletLoad(portletWindow, servletRequest, servletResponse);
-	}
+   public void renderPortlet(PortletWindow portletWindow, HttpServletRequest servletRequest,
+         HttpServletResponse servletResponse) throws PortletException, IOException, PortletContainerException {
+      PortletContainerFactory.getPortletContainerOriginal().renderPortlet(portletWindow, servletRequest,
+            servletResponse);
+   }
 
-	public boolean isInitialized() {
-		return PortletContainerFactory.getPortletContainerOriginal().isInitialized();
-	}
+
+   public void processPortletAction(PortletWindow portletWindow, HttpServletRequest servletRequest,
+         HttpServletResponse servletResponse) throws PortletException, IOException, PortletContainerException {
+      PortletContainerFactory.getPortletContainerOriginal().processPortletAction(portletWindow, servletRequest,
+            servletResponse);
+   }
+
+
+   public void portletLoad(PortletWindow portletWindow, HttpServletRequest servletRequest,
+         HttpServletResponse servletResponse) throws PortletException, PortletContainerException {
+      PortletContainerFactory.getPortletContainerOriginal().portletLoad(portletWindow, servletRequest, servletResponse);
+   }
+
+
+   public boolean isInitialized() {
+      return PortletContainerFactory.getPortletContainerOriginal().isInitialized();
+   }
 
 }

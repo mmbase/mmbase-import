@@ -11,5 +11,6 @@ import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 
 public interface NavigationItemRenderer extends NavigationTreeItemRenderer {
 
-	public abstract void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext, ServletConfig sc, PortalRegistry registry);
+   public abstract void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
+         ServletContext servletContext, ServletConfig sc, PortalRegistry registry);
 }

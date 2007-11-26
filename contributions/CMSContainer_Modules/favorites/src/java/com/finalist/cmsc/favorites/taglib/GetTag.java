@@ -14,18 +14,20 @@ public class GetTag extends SimpleTagSupport {
    private String user;
    private String var;
 
+
    public void doTag() throws JspException, IOException {
       List<Favorite> favorites = FavoritesUtil.getUserFavorites(user);
       getJspContext().setAttribute(var, favorites);
    }
 
+
    public void setUser(String user) {
       this.user = user;
    }
+
 
    public void setVar(String var) {
       this.var = var;
    }
 
-   
 }

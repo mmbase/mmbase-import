@@ -22,22 +22,34 @@ import com.finalist.cmsc.services.Service;
  */
 public abstract class ContentRepositoryService extends Service {
 
-	abstract public List<ContentElement> getContentElements(ContentChannel channel);
+   abstract public List<ContentElement> getContentElements(ContentChannel channel);
 
-	abstract public List<NodetypeBean> getContentTypes();
 
-    abstract public List<ContentElement> getContentElements(String channel);
+   abstract public List<NodetypeBean> getContentTypes();
 
-    abstract public int countContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumbers, int year, int month, int day);
 
-	abstract public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumbers, int year, int month, int day);
+   abstract public List<ContentElement> getContentElements(String channel);
 
-    abstract public List<ContentChannel> getContentChannels(ContentChannel channel);
 
-    abstract public List<ContentChannel> getContentChannels(String channel);
+   abstract public int countContentElements(String channel, List<String> contenttypes, String orderby,
+         String direction, boolean useLifecycle, String archive, int offset, int maxNumbers, int year, int month,
+         int day);
 
-    abstract public boolean mayEdit(String number);
 
-    abstract public ContentElement getContentElement(String elementId);
+   abstract public List<ContentElement> getContentElements(String channel, List<String> contenttypes, String orderby,
+         String direction, boolean useLifecycle, String archive, int offset, int maxNumbers, int year, int month,
+         int day);
+
+
+   abstract public List<ContentChannel> getContentChannels(ContentChannel channel);
+
+
+   abstract public List<ContentChannel> getContentChannels(String channel);
+
+
+   abstract public boolean mayEdit(String number);
+
+
+   abstract public ContentElement getContentElement(String elementId);
 
 }

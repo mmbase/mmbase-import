@@ -23,38 +23,46 @@ package xmlbs;
 
 /**
  * Token to represent and hold comment blocks.
- * <P><EM>TODO <TT>For compatibility, the string "--"
- * (double-hyphen) must not occur within comments.</TT></EM></P>
- * <P><EM>TODO ensure <TT>--&gt;</TT> not part of
- * comment</EM></P>
- *
+ * <P>
+ * <EM>TODO <TT>For compatibility, the string "--"
+ * (double-hyphen) must not occur within comments.</TT></EM>
+ * </P>
+ * <P>
+ * <EM>TODO ensure <TT>--&gt;</TT> not part of
+ * comment</EM>
+ * </P>
+ * 
  * @see <A href="http://www.w3.org/TR/REC-xml#sec-comments">XML: Comments</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CommentToken implements Token {
-    /** comment data */
-    private String data;
+   /** comment data */
+   private String data;
 
-    /**
-     * @param data comment data without &lt;!-- and --&gt;
-     */
-    public CommentToken (String data) {
-        this.data = data;
-    }
 
-    /**
-     * @return comment data
-     */
-    public String getData () {
-        return data;
-    }
+   /**
+    * @param data
+    *           comment data without &lt;!-- and --&gt;
+    */
+   public CommentToken(String data) {
+      this.data = data;
+   }
 
-    /**
-     * @return wellformed comment
-     */
-    @Override
-    public String toString () {
-        return "<!--" + getData() + "-->";
-    }
+
+   /**
+    * @return comment data
+    */
+   public String getData() {
+      return data;
+   }
+
+
+   /**
+    * @return wellformed comment
+    */
+   @Override
+   public String toString() {
+      return "<!--" + getData() + "-->";
+   }
 }
