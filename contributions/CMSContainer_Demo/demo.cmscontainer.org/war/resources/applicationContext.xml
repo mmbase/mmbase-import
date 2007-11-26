@@ -8,7 +8,7 @@
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>/WEB-INF/config/HibernateClasses.properties</value>
+				<value>classpath:HibernateClasses.properties</value>
 			</list>
 		</property>
 	</bean>
