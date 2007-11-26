@@ -24,24 +24,27 @@ public class LinkWorkflowAction extends WorkflowAction {
     }
 
     @Override
-    protected NodeQuery createDetailQuery(Cloud cloud, String orderby) {
+    protected NodeQuery createDetailQuery(Cloud cloud, String orderby ,boolean aord) {
         NodeManager manager = cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL);
         NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
-
+        
+        boolean ad=false;
+        ad=(aord?false:false);
+        	
         wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + ".number");
         wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + "." + RepositoryUtil.TITLE_FIELD);
 
         if(orderby.equals(RepositoryUtil.TITLE_FIELD)) {
-            addOrderBy(manager, wfQuery, RepositoryUtil.TITLE_FIELD);
+            addOrderBy(manager, wfQuery, RepositoryUtil.TITLE_FIELD ,ad);
         }
         else if(orderby.equals("number")) {
-            addOrderBy(manager, wfQuery, "number");
+            addOrderBy(manager, wfQuery, "number" ,ad);
         }
         else if(orderby.equals( WorkflowManager.REMARK_FIELD)) {
-            addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD);
+            addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD ,ad);
         }
         else {
-            addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD);
+            addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD ,ad);
         }
         return wfQuery;
     }
