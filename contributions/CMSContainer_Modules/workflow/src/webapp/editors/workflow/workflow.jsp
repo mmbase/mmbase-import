@@ -3,12 +3,24 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="workflow.title">
-   <script src="workflow.js" type="text/javascript"></script>
-   <style>
-   		table.centerData td {text-align: center;}
-   </style>
-</cmscedit:head>
+
+<head>
+<title>
+	Title
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="icon" href="/cmsc-staging/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="/cmsc-staging/favicon.ico" type="image/x-icon" />
+<link href="/cmsc-staging/editors/css/main.css" type="text/css" rel="stylesheet" />
+<style type="text/css" xml:space="preserve">
+   body { behavior: url(/cmsc-staging/editors/css/hover.htc);}
+</style>
+<script src="/cmsc-staging/editors/utils/rowhover.js" type="text/javascript"></script>
+<script src="/cmsc-staging/js/window.js" type="text/javascript"></script>
+<script src="workflow.js" type="text/javascript"></script>
+<link href="../css/workflow.css" rel="stylesheet" type="text/css" />
+</head>
+
 <body>
 <div id="left">
 	<cmscedit:sideblock title="workflow.status.header">
@@ -64,109 +76,108 @@
 <mm:import externid="status">draft</mm:import>
 <mm:import externid="results" jspvar="nodeList" vartype="List" />
 
-   <div class="content">
-      <div class="tabs">
-        <c:choose>
-           <c:when test="${status == 'draft' }">
-             <div class="tab_active">
-           </c:when>
-           <c:otherwise>
-             <div class="tab">
-           </c:otherwise>
-         </c:choose>
-            <div class="body">
-               <div>
-                  <a href="#" onClick="selectTab('draft');"><fmt:message key="workflow.tab.draft" /></a>
-               </div>
-            </div>
-         </div>
+<div class="content">
+	<div class="tabs">
+		<c:choose>
+			<c:when test="${status == 'draft' }">
+				<div class="tab_active">
+			</c:when>
+			<c:otherwise>
+				<div class="tab">
+			</c:otherwise>
+		</c:choose>
+		<div class="body">
+			<div>
+			<a href="#" onClick="selectTab('draft');"><fmt:message key="workflow.tab.draft" /></a>
+			</div>
+		</div>
+	</div>
 
-        <c:choose>
-           <c:when test="${status == 'finished' }">
-            <div class="tab_active">
-           </c:when>
-           <c:otherwise>
-             <div class="tab">
-           </c:otherwise>
-         </c:choose>
-            <div class="body">
-               <div>
-                  <a href="#" onClick="selectTab('finished');"><fmt:message key="workflow.tab.finished" /></a>
-               </div>
-            </div>
-         </div>
+	<c:choose>
+		<c:when test="${status == 'finished' }">
+			<div class="tab_active">
+		</c:when>
+		<c:otherwise>
+			<div class="tab">
+		</c:otherwise>
+	</c:choose>
+	<div class="body">
+		<div>
+			<a href="#" onClick="selectTab('finished');"><fmt:message key="workflow.tab.finished" /></a>
+		</div>
+	</div>
+</div>
 
-        <c:if test="${acceptedEnabled}">
-        <c:choose>
-           <c:when test="${status == 'approved' }">
-            <div class="tab_active">
-           </c:when>
-           <c:otherwise>
-             <div class="tab">
-           </c:otherwise>
-         </c:choose>
-            <div class="body">
-               <div>
-                  <a href="#" onClick="selectTab('approved');"><fmt:message key="workflow.tab.approved" /></a>
-               </div>
-            </div>
-         </div>
-        </c:if>
-        <c:choose>
-           <c:when test="${status == 'published' }">
-            <div class="tab_active">
-           </c:when>
-           <c:otherwise>
-             <div class="tab">
-           </c:otherwise>
-         </c:choose>
-            <div class="body">
-               <div>
-                  <a href="#" onClick="selectTab('published');"><fmt:message key="workflow.tab.published" /></a>
-               </div>
-            </div>
-         </div>
+<c:if test="${acceptedEnabled}">
+	<c:choose>
+		<c:when test="${status == 'approved' }">
+        <div class="tab_active">
+        </c:when>
+        <c:otherwise>
+        <div class="tab">
+        </c:otherwise>
+	</c:choose>
+		<div class="body">
+			<div>
+				<a href="#" onClick="selectTab('approved');"><fmt:message key="workflow.tab.approved" /></a>
+			</div>
+		</div>
+		</div>
+</c:if>
+<c:choose>
+	<c:when test="${status == 'published' }">
+		<div class="tab_active">
+	</c:when>
+    <c:otherwise>
+    <div class="tab">
+    </c:otherwise>
+</c:choose>
+	<div class="body">
+		<div>
+			<a href="#" onClick="selectTab('published');"><fmt:message key="workflow.tab.published" /></a>
+		</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div class="editor" style="width: a">
+		<c:if test="${not empty errors}">
+		<mm:import externid="errors" vartype="List" />
+			<div class="messagebox_red">
+			<div class="box">
+				<div class="top"><div></div></div>
+					<div class="body">
+						<p><fmt:message key="workflow.publish.failed" /></p>
+							<table>
+								<thead>
+									<tr>
+										<th><fmt:message key="workflow.content.type" /></th>
+										<th><fmt:message key="workflow.title" /></th>
+										<th><fmt:message key="workflow.lastmodifier" /></th>
+										<th><fmt:message key="workflow.lastmodifieddate" /></th>
+									</tr>
+								</thead>
+								<tbody>
+									<mm:listnodes referid="errors">
+									<tr>
+									   <td><mm:nodeinfo type="guitype" /></td>
+									   <td><mm:hasfield name="title"> <mm:field name="title"/> </mm:hasfield>
+										   <mm:hasfield name="name"> <mm:field name="name"/> </mm:hasfield></td>
+									   <td><mm:hasfield name="lastmodifier"> <mm:field name="lastmodifier" /> </mm:hasfield></td>
+									   <td><mm:hasfield name="lastmodifieddate"> <mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field> </mm:hasfield></td>
+									</tr>
+									</mm:listnodes>
+								</tbody>
+							</table>
+					</div>
+					<div class="bottom"><div></div></div>
+				</div>
+			</div>
+		</c:if>
 
-      </div>
-   </div>
-   <div class="editor" style="width: a">
-      <c:if test="${not empty errors}">
-       <mm:import externid="errors" vartype="List" />
-         <div class="messagebox_red">
-         <div class="box">
-            <div class="top"><div></div></div>
-            <div class="body">
-               <p><fmt:message key="workflow.publish.failed" /></p>
-               <table>
-                  <thead>
-                     <tr>
-                        <th><fmt:message key="workflow.content.type" /></th>
-                        <th><fmt:message key="workflow.title" /></th>
-                        <th><fmt:message key="workflow.lastmodifier" /></th>
-                        <th><fmt:message key="workflow.lastmodifieddate" /></th>
-                     </tr>
-                  </thead>
-                 <tbody>
-                    <mm:listnodes referid="errors">
-                    <tr>
-                       <td><mm:nodeinfo type="guitype" /></td>
-                       <td><mm:hasfield name="title"> <mm:field name="title"/> </mm:hasfield>
-	                       <mm:hasfield name="name"> <mm:field name="name"/> </mm:hasfield></td>
-                       <td><mm:hasfield name="lastmodifier"> <mm:field name="lastmodifier" /> </mm:hasfield></td>
-                       <td><mm:hasfield name="lastmodifieddate"> <mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field> </mm:hasfield></td>
-                    </tr>
-                    </mm:listnodes>
-                  </tbody>
-               </table>
-            </div>
-            <div class="bottom"><div></div></div>
-         </div>
-         </div>
-      </c:if>
-
-      <div class="ruler_green"><div>
+		<div class="ruler_green"><div>
 		<c:if test="${workflowType == 'content' }">
-		    <fmt:message key="workflow.title.content" />
+			<fmt:message key="workflow.title.content" />
 		</c:if>
 		<c:if test="${workflowType == 'link' }">
 		    <fmt:message key="workflow.title.link" />
@@ -174,65 +185,116 @@
 		<c:if test="${workflowType == 'page' }">
 		    <fmt:message key="workflow.title.page" />
 		</c:if>
-         </div></div>
+		</div></div>
 
-   <div class="body" style="display: none;" id="workflow-wait">
-   		<fmt:message key="workflow.wait" />
-   </div>
-
-   <div class="body" id="workflow-canvas">
-
-<c:set var="orderby" value="${param.orderby}"/>
-
-     <form action='?' method="post" onsubmit="return submitValid(false);">
+	<div class="body" style="display: none;" id="workflow-wait">
+		<fmt:message key="workflow.wait" />
+	</div>
+	<div class="body" id="workflow-canvas">
+	<c:set var="orderby" value="${param.orderby}"/>
+     <form action='?' method="post" onSubmit="return submitValid(false);">
         <input type="hidden" name="orderby" value="${orderby}"/>
         <input type="hidden" name="status" value="${status}" />
-
-
+		<input type="hidden" name="laststatus"/>
+		<c:set var="lastvalue" value="<%=request.getAttribute("laststatus")%>"/>
+				
 <c:set var="resultsPerPage" value="50"/>
 <c:set var="offset" value="${param.offset}"/>
 <c:set var="listSize">${fn:length(nodeList)}</c:set>
-
 <mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
-
   <mm:first>
-	  
-      <%@include file="../pages.jsp" %>
-	  
+	<%@include file="../pages.jsp" %>
       <table>
         <thead>
            <tr>
-           <th style="width: 20px;"></th>
+           <th style="width: 20px;"></th>		   
            <th style="width: 100px;" nowrap="true">
-               <a class="headerlink" href="#" onclick="selectTab('${status}', 'title');">
-                  <fmt:message key="workflow.title" />
+               <a href="#"
+			   <c:if test="${orderby==null ||orderby=='' || orderby!='title'}">
+					onClick="selectTab('${status}', 'title', 'false');"
+			   </c:if>
+			   <c:if test="${orderby=='title'}">
+					<c:choose>
+						<c:when test="${lastvalue}"> class="sortup"</c:when>
+						<c:otherwise> class="sortdown"</c:otherwise>
+					</c:choose>
+					onClick="selectTab('${status}', 'title', '${lastvalue}');"
+			   </c:if>
+			   >
+                  <fmt:message key="workflow.title" />  
                </a>
            </th>
            <th>
-               <a class="headerlink" href="#" onclick="selectTab('${status}', 'remark');">
+               <a href="#" 
+				<c:if test="${orderby==null || orderby=='' || orderby!='remark'}">
+					onClick="selectTab('${status}','remark','false');"
+			   </c:if>
+			   <c:if test="${orderby=='remark'}">
+					<c:choose>
+						<c:when test="${lastvalue}"> class="sortup"</c:when>
+						<c:otherwise> class="sortdown"</c:otherwise>
+					</c:choose>
+					onClick="selectTab('${status}', 'remark', '${lastvalue}');"
+			   </c:if>
+			   >
                   <fmt:message key="workflow.remark" />
                </a>
            </th>
-           <th style="width: 60px;">
-               <a class="headerlink" href="#" onclick="selectTab('${status}', 'lastmodifier');">
+           <th style="width: 140px;">
+				<a href="#" 
+				<c:if test="${orderby==null || orderby=='' || orderby!='lastmodifier'}">
+					onClick="selectTab('${status}','lastmodifier','false');"
+			   </c:if>
+			   <c:if test="${orderby=='lastmodifier'}">
+					<c:choose>
+						<c:when test="${lastvalue}"> class="sortup"</c:when>
+						<c:otherwise> class="sortdown"</c:otherwise>
+					</c:choose>
+					onClick="selectTab('${status}', 'lastmodifier', '${lastvalue}');"
+			   </c:if>
+			   >
                   <fmt:message key="workflow.lastmodifier" />
                </a>
            </th>
 		<c:if test="${workflowType == 'page' || workflowType == 'content' }">
-           <th style="width: 110px;">
-               <a class="headerlink" href="#" onclick="selectTab('${status}', 'lastmodifieddate');">
+           <th style="width: 140px;">		   		
+               <a href="#"
+               <c:if test="${orderby==null || orderby=='' || orderby=='undefined'}">
+			   		onClick="selectTab('${status}','lastmodifieddate','true');" class="sortup"
+			   </c:if>
+			   <c:if test="${orderby=='lastmodifieddate'}">
+			   		<c:choose>
+						<c:when test="${lastvalue}"> class="sortup"</c:when>
+						<c:otherwise> class="sortdown"</c:otherwise>
+					</c:choose>
+					onClick="selectTab('${status}','lastmodifieddate','${lastvalue}');"
+			   </c:if>
+			   <c:if test="${orderby!=null && orderby!='' && orderby!='lastmodifieddate'}">
+			   		onClick="selectTab('${status}','lastmodifieddate','false');"
+			   </c:if>
+			   >
                   <fmt:message key="workflow.lastmodifieddate" />
                </a>
            </th>
 		</c:if>
 		<c:if test="${workflowType == 'content' }">
-           <th>
-               <a class="headerlink" href="#" onclick="selectTab('${status}', 'contentchannel');">
+           <th style="width: 140px;">
+               <a href="#" 
+			   <c:if test="${orderby==null || orderby=='' || orderby!='contentchannel'}">
+			   		onClick="selectTab('${status}','contentchannel','false');"
+			   </c:if>
+			   <c:if test="${orderby=='contentchannel'}">
+			   		<c:choose>
+						<c:when test="${lastvalue}"> class="sortup"</c:when>
+						<c:otherwise> class="sortdown"</c:otherwise>
+					</c:choose>
+					onClick="selectTab('${status}', 'contentchannel', '${lastvalue}');"
+			   </c:if>
+			   >
                   <fmt:message key="workflow.contentchannel" />
                </a>
            </th>
 		</c:if>
-
            </tr>
         </thead>
         <tbody class="hover">
@@ -325,7 +387,6 @@
 
    </div>
    </div>
-
 </mm:cloud>
 </div>
 </body>

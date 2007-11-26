@@ -22,9 +22,12 @@ public class PageWorkflowAction extends WorkflowAction {
     }
     
     @Override
-    protected NodeQuery createDetailQuery(Cloud cloud, String orderby) {
+    protected NodeQuery createDetailQuery(Cloud cloud, String orderby ,boolean aord) {
         NodeManager manager = cloud.getNodeManager(PagesUtil.PAGE);
         NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
+        
+        boolean ad=false;
+        ad=(aord?false:true);
         
         wfQuery.addField(PagesUtil.PAGE + ".number");
         wfQuery.addField(PagesUtil.PAGE + "." + PagesUtil.TITLE_FIELD);
@@ -32,22 +35,22 @@ public class PageWorkflowAction extends WorkflowAction {
         wfQuery.addField(PagesUtil.PAGE + "." + PagesUtil.LASTMODIFIER_FIELD);
         
         if(orderby.equals(PagesUtil.TITLE_FIELD)) {
-            addOrderBy(manager, wfQuery, PagesUtil.TITLE_FIELD);
+            addOrderBy(manager, wfQuery, PagesUtil.TITLE_FIELD,ad);
         }
         else if(orderby.equals(PagesUtil.LASTMODIFIER_FIELD)) {
-            addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIER_FIELD);
+            addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIER_FIELD,ad);
         }
         else if(orderby.equals(PagesUtil.LASTMODIFIEDDATE_FIELD)) {
-            addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIEDDATE_FIELD);
+            addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIEDDATE_FIELD,ad);
         }
         else if(orderby.equals("number")) {
-            addOrderBy(manager, wfQuery, "number");
+            addOrderBy(manager, wfQuery, "number",ad);
         }
         else if(orderby.equals( WorkflowManager.REMARK_FIELD)) {
-            addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD);
+            addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD,ad);
         }
         else {
-            addOrderBy(manager, wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD);
+            addOrderBy(manager, wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD,ad);
         }
         return wfQuery;
     }
