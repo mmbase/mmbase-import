@@ -69,7 +69,7 @@
         <input type="button" value="submit" id="submit" />
       </form>
       <hr />
-      <mm:link page=".">
+      <mm:link page="." referids="nodemanager?,field?">
         <a href="${_}" class="navigate">
           <img src="${back}" alt="back" class="navigate" />
         </a>
