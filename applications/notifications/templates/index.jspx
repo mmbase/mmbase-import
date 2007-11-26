@@ -51,14 +51,17 @@
                   </td>
                 </mm:node>
                 <td>
-                  <c:forEach items="${_.notifications}" var="_node" end="50">
-                    <mm:field name="gui(type)"  />
-                    <jsp:text> </jsp:text>
-                    <mm:node number="${_node.source.number}">
+                  <mm:listnodes referid="_.notifications" max="50">
+                    <mm:functioncontainer>
+                      <mm:param name="field">type</mm:param>
+                      <mm:function name="gui" />
+                    </mm:functioncontainer>
+                    <jsp:text>: </jsp:text>
+                    <mm:node number="${_node.snumber.number}">
                       <mm:nodeinfo type="gui" />
                     </mm:node>
                     <mm:last inverse="true">, </mm:last>
-                  </c:forEach>
+                  </mm:listnodes>
                 </td>
               </tr>
             </c:catch>
