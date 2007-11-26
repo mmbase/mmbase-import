@@ -10,6 +10,7 @@
 	<field name="copyright" />
 	<field name="email_managing_editor" />
 	<field name="email_webmaster" />
+	<field name="secure" />
 	
 	<relation destination="contentchannel" role="related" />
 	<relation destination="typedef" role="allowrel" />
