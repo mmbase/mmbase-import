@@ -221,7 +221,7 @@
 		<field>
 			<descriptions>
 				<description xml:lang="en">The complete path for this page</description>
-				<description xml:lang="nl">Het path van dit page</description>
+				<description xml:lang="nl">Het path van deze page</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="en">Path</guiname>
@@ -242,7 +242,7 @@
 		<field>
 			<descriptions>
 				<description xml:lang="en">The old path for this page</description>
-				<description xml:lang="nl">Het oude path van dit page</description>
+				<description xml:lang="nl">Het oude path van deze page</description>
 			</descriptions>
 			<gui>
 				<guiname xml:lang="en">Old Path</guiname>
@@ -260,5 +260,27 @@
 				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
 			</db>
 		</field>
+		<field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Beveiligd</guiname>
+            <guiname xml:lang="en">Secure</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>-1</input>
+               <list>-1</list>
+               <search>-1</search>
+            </positions>
+         </editor>
+         <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>secure</name>
+            <type key="false" required="true" state="persistent">BOOLEAN</type>
+         </db>
+      </field>
 	</fieldlist>
 </builder>

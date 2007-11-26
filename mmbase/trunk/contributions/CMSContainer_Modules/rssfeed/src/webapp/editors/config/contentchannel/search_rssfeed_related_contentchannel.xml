@@ -19,8 +19,8 @@
 		<prompt xml:lang="en">Search contentchannel</prompt>
 		<prompt xml:lang="nl">Zoek rubriek</prompt> 
 		<search-filter>
-			<name xml:lang="en">Urlfragment contains</name>
-			<name xml:lang="nl">Urlfragment bevat</name>
+			<name xml:lang="en">URL-fragment contains</name>
+			<name xml:lang="nl">URL-fragment bevat</name>
 			<search-fields>[pathfragment]</search-fields>
 		</search-filter>
 		<search-filter>
