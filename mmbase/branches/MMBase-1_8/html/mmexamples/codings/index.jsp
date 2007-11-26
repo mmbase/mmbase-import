@@ -34,8 +34,11 @@
         then. Orion > 2.0.2 will also work with UTF-8 (provided that included page is also UTF-8).
       </p>
     </li>
-    <li>     
+    <li>
       <a href="<mm:url page="poster.jsp" />">Simple tests of forms (without using database)</a>. Pushing the buttons should not result in a visual change.
+    </li>
+    <li>
+      <a href="<mm:url page="poster1.jsp" />">Same thing, but now on a latin-1 page.</a>. You notice that non-recognized character are indeed not working.
     </li>
   </ul>
   <hr />
