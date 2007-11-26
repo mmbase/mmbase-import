@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module_1_0.dtd">
-<module>
-  <class>org.mmbase.notifications.Notifier</class>
-  <properties>
-  </properties>
-</module>

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.5 2007-11-19 12:03:12 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.6 2007-11-26 15:50:38 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
@@ -82,7 +82,7 @@ public  class CMTelecomSender extends Sender {
             BufferedReader is = new BufferedReader(new InputStreamReader(in));
             String line;
             while ((line = is.readLine()) != null) {
-                log.debug(line);
+                log.info(line);
             }
             is.close();
         } catch (Exception e) {
@@ -153,16 +153,29 @@ public  class CMTelecomSender extends Sender {
 
     }
 
-    void trigger() throws SAXException, IOException {
-        send(new Appender() {
+    protected void send(OutputStream out, final SMS sms) throws SAXException, IOException {
+        send(out, new Appender() {
                 public void append(XmlWriter w) throws SAXException {
-                    int drain = queue.size();
-                    for (int i = 0; i < drain; i++) {
-                        SMS sms = queue.poll();
-                        add(sms, w);
-                    }
+                    add(sms, w);
                 }
             });
+    }
+
+    void trigger() throws SAXException, IOException {
+        final int drain = queue.size();
+        if (drain > 0) {
+            log.service("Sending " + drain + " SMS messages");
+            send(new Appender() {
+                    public void append(XmlWriter w) throws SAXException {
+                        for (int i = 0; i < drain; i++) {
+                            SMS sms = queue.poll();
+                            add(sms, w);
+                        }
+                    }
+                });
+        } else  {
+            log.service("Nothing queued, nothing to be sent");
+        }
     }
     public boolean send(final SMS sms) {
         try {
@@ -182,6 +195,10 @@ public  class CMTelecomSender extends Sender {
         return queue.offer(sms);
     }
 
+    public Collection<SMS> getQueue() {
+        return Collections.unmodifiableCollection(queue);
+    }
+
 
     /**
      * Main for testing only
@@ -190,10 +207,11 @@ public  class CMTelecomSender extends Sender {
         CMTelecomSender sender = new CMTelecomSender();
         if (argv.length == 0) {
             System.out.println("Use tel-number as argument");
-            sender.send(System.out, null);
+            sender.send(System.out, (Appender) null);
         } else {
-            sender.offer(new BasicSMS(argv[0], 20416, "Test test " + new Date()));
-            sender.trigger();
+            SMS sms = new BasicSMS(argv[0], 20416, "Test test " + new Date());
+            sender.send(sms);
+            sender.send(System.out, sms);
         }
     }
 
