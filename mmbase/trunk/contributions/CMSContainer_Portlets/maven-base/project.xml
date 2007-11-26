@@ -233,16 +233,6 @@
 
 <!-- MMBase third-party dependencies -->
 		<dependency>
-		  <groupId>spring</groupId>
-		  <artifactId>maven-spring-plugin</artifactId>
-		  <version>custom</version>
-		  <type>jar</type>
-			<properties>
-				<war.bundle>${war.bundle}</war.bundle>
-			</properties>
-		</dependency>
-
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.8</version>
