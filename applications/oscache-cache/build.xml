@@ -28,6 +28,14 @@
 
     <echo message="${project.jars.dir}${project.jars.includes}" />
     <copy file="${oscache.dest}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+    <antcall target="download">
+      <param name="sourcefile" value="${commonslogging.loc}"/>
+      <param name="destfile" value="${commonslogging.dest}"/>
+    </antcall>
+
+    <echo message="${project.jars.dir}${project.jars.includes}" />
+    <copy file="${commonslogging.dest}" todir="${project.jar.dir}" preservelastmodified="true" />
   </target>
 
 
