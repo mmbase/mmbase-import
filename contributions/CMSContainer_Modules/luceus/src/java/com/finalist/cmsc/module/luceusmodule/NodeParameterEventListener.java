@@ -22,64 +22,67 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Handles events on content linked to a portlet
- * 
  */
 public class NodeParameterEventListener implements NodeEventListener {
 
-	protected final static String TYPE_PORTLET_PARAMETER = "nodeparameter";
+   protected final static String TYPE_PORTLET_PARAMETER = "nodeparameter";
 
-	protected static final String FIELD_KEY = "key";
+   protected static final String FIELD_KEY = "key";
 
-	protected static final String FIELD_VALUE = "value";
+   protected static final String FIELD_VALUE = "value";
 
-	protected static final String KEY_CONTENT_CHANNEL = "contentchannel";
+   protected static final String KEY_CONTENT_CHANNEL = "contentchannel";
 
-	protected static final String KEY_CONTENT_ELEMENT = "contentelement";
+   protected static final String KEY_CONTENT_ELEMENT = "contentelement";
 
-	private LuceusModule module;
+   private LuceusModule module;
 
-	private static Logger log = Logging.getLoggerInstance(NodeParameterEventListener.class.getName());
+   private static Logger log = Logging.getLoggerInstance(NodeParameterEventListener.class.getName());
 
-	public NodeParameterEventListener(LuceusModule module) {
-		this.module = module;
-		MMBase.getMMBase().addNodeRelatedEventsListener(TYPE_PORTLET_PARAMETER, this);
-		log.info("registered listener for: " + TYPE_PORTLET_PARAMETER);
-	}
 
-	public void notify(NodeEvent event) {
-		log.debug("NodeParameterEventListener NodeEvent: " + event.getNodeNumber());
-		switch (event.getType()) {
-		case Event.TYPE_CHANGE:
-			if (event.getNewValue(FIELD_VALUE) != null) {
-				Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-				Node node = cloud.getNode(event.getNodeNumber());
-				String updateKey = node.getStringValue(FIELD_KEY);
-				int updateNumber = ((Integer) event.getNewValue(FIELD_VALUE)).intValue();
-				doUpdate(updateKey, updateNumber);
-			}
-			break;
-		case Event.TYPE_DELETE:
-			if (event.getOldValue(FIELD_VALUE) != null) {
-				String deleteKey = (String) event.getOldValue(FIELD_KEY);
-				int deleteNumber = ((Integer) event.getOldValue(FIELD_VALUE)).intValue();
-				doUpdate(deleteKey, deleteNumber);
-			}
-			break;
-		case Event.TYPE_NEW:
-			if (event.getNewValue(FIELD_VALUE) != null) {
-				String newKey = (String) event.getNewValue(FIELD_KEY);
-				int newNumber = ((Integer) event.getNewValue(FIELD_VALUE)).intValue();
-				doUpdate(newKey, newNumber);
-			}
-			break;
-		}
-	}
+   public NodeParameterEventListener(LuceusModule module) {
+      this.module = module;
+      MMBase.getMMBase().addNodeRelatedEventsListener(TYPE_PORTLET_PARAMETER, this);
+      log.info("registered listener for: " + TYPE_PORTLET_PARAMETER);
+   }
 
-	private void doUpdate(String key, int nodeNumber) {
-		if (KEY_CONTENT_CHANNEL.equals(key)) {
-			module.updateContentChannelIndex(nodeNumber);
-		} else if (KEY_CONTENT_ELEMENT.equals(key)) {
-			module.updateContentIndex(nodeNumber);
-		}
-	}
+
+   public void notify(NodeEvent event) {
+      log.debug("NodeParameterEventListener NodeEvent: " + event.getNodeNumber());
+      switch (event.getType()) {
+         case Event.TYPE_CHANGE:
+            if (event.getNewValue(FIELD_VALUE) != null) {
+               Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+               Node node = cloud.getNode(event.getNodeNumber());
+               String updateKey = node.getStringValue(FIELD_KEY);
+               int updateNumber = ((Integer) event.getNewValue(FIELD_VALUE)).intValue();
+               doUpdate(updateKey, updateNumber);
+            }
+            break;
+         case Event.TYPE_DELETE:
+            if (event.getOldValue(FIELD_VALUE) != null) {
+               String deleteKey = (String) event.getOldValue(FIELD_KEY);
+               int deleteNumber = ((Integer) event.getOldValue(FIELD_VALUE)).intValue();
+               doUpdate(deleteKey, deleteNumber);
+            }
+            break;
+         case Event.TYPE_NEW:
+            if (event.getNewValue(FIELD_VALUE) != null) {
+               String newKey = (String) event.getNewValue(FIELD_KEY);
+               int newNumber = ((Integer) event.getNewValue(FIELD_VALUE)).intValue();
+               doUpdate(newKey, newNumber);
+            }
+            break;
+      }
+   }
+
+
+   private void doUpdate(String key, int nodeNumber) {
+      if (KEY_CONTENT_CHANNEL.equals(key)) {
+         module.updateContentChannelIndex(nodeNumber);
+      }
+      else if (KEY_CONTENT_ELEMENT.equals(key)) {
+         module.updateContentIndex(nodeNumber);
+      }
+   }
 }

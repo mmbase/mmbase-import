@@ -10,16 +10,17 @@ import com.finalist.cmsc.navigation.select.forms.SelectorAction;
 
 public class RemoteSelectorAction extends SelectorAction {
 
-    @Override
-    public Cloud getCloud() {
-        CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-        Cloud cloud = cloudProvider.getCloud();
-        return CloudManager.getCloud(cloud, "live.server");
-    }
-    
-    @Override
-    public String getRequiredRankStr() {
-        return null;
-    }
+   @Override
+   public Cloud getCloud() {
+      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
+      Cloud cloud = cloudProvider.getCloud();
+      return CloudManager.getCloud(cloud, "live.server");
+   }
+
+
+   @Override
+   public String getRequiredRankStr() {
+      return null;
+   }
 
 }

@@ -28,31 +28,36 @@ import com.finalist.cmsc.services.Parameters;
 
 public interface Fragment {
 
-	/**
-	 * Is called to render the fragment. This may be a page, column or even a
-	 * portlet.
-	 * 
-	 * @param request the servlet request
-	 * @param response the servlet response
-	 * @exception ServletException
-	 * @exception IOException
-	 */
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+   /**
+    * Is called to render the fragment. This may be a page, column or even a
+    * portlet.
+    * 
+    * @param request
+    *           the servlet request
+    * @param response
+    *           the servlet response
+    * @exception ServletException
+    * @exception IOException
+    */
+   public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 
-	/**
-	 * Returns the identifier of this fragment. Mostly this is a name visible in
-	 * the Portal URL.
-	 * 
-	 * @return the identifier of this fragment
-	 */
-	public String getId();
 
-	/**
-	 * Returns the initialization parameters of this fragment
-	 * 
-	 * @return the init parameters
-	 */
-	public Parameters getInitParameters();
+   /**
+    * Returns the identifier of this fragment. Mostly this is a name visible in
+    * the Portal URL.
+    * 
+    * @return the identifier of this fragment
+    */
+   public String getId();
 
-	public String getKey();
+
+   /**
+    * Returns the initialization parameters of this fragment
+    * 
+    * @return the init parameters
+    */
+   public Parameters getInitParameters();
+
+
+   public String getKey();
 }

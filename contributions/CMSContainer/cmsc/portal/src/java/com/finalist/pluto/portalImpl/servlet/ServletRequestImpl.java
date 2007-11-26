@@ -31,77 +31,84 @@ import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 
 public class ServletRequestImpl extends HttpServletRequestWrapper {
 
-	PortalControlParameter control = null;
+   PortalControlParameter control = null;
 
-	PortletWindow portletWindow = null;
+   PortletWindow portletWindow = null;
 
-	public ServletRequestImpl(HttpServletRequest servletRequest, PortletWindow window) {
-		super(servletRequest);
 
-		this.portletWindow = window;
-		control = new PortalControlParameter(PortalEnvironment.getPortalEnvironment(servletRequest).getRequestedPortalURL());
+   public ServletRequestImpl(HttpServletRequest servletRequest, PortletWindow window) {
+      super(servletRequest);
 
-	}
+      this.portletWindow = window;
+      control = new PortalControlParameter(PortalEnvironment.getPortalEnvironment(servletRequest)
+            .getRequestedPortalURL());
 
-	// HttpServletRequestWrapper overlay
+   }
 
-	public java.lang.String getContentType() {
-		String contentType = super.getContentType();
-		return contentType;
-	}
 
-	// ServletRequestWrapper overlay
+   // HttpServletRequestWrapper overlay
 
-	public String getParameter(String name) {
-		String[] values = this.getParameterMap().get(name);
-		if (values != null) {
-			return values[0];
-		}
-		return null;
-	}
+   public java.lang.String getContentType() {
+      String contentType = super.getContentType();
+      return contentType;
+   }
 
-	public Map<String, String[]> getParameterMap() {
-		// get control params
-		Map<String, String[]> portletParameters = new HashMap<String, String[]>();
 
-		Iterator<String> iterator = control.getRenderParamNames(portletWindow);
-		while (iterator.hasNext()) {
-			String name = iterator.next();
+   // ServletRequestWrapper overlay
 
-			String[] values = control.getRenderParamValues(portletWindow, name);
+   public String getParameter(String name) {
+      String[] values = this.getParameterMap().get(name);
+      if (values != null) {
+         return values[0];
+      }
+      return null;
+   }
 
-			portletParameters.put(name, values);
 
-		}
+   public Map<String, String[]> getParameterMap() {
+      // get control params
+      Map<String, String[]> portletParameters = new HashMap<String, String[]>();
 
-		// get request params
-		String pid = control.getPIDValue();
-		String wid = portletWindow.getId().toString();
-		if (pid.equals(wid)) {
-			for (Enumeration parameters = super.getParameterNames(); parameters.hasMoreElements();) {
-				String paramName = (String) parameters.nextElement();
-				String[] paramValues = super.getParameterValues(paramName);
-				String[] values = portletParameters.get(paramName);
+      Iterator<String> iterator = control.getRenderParamNames(portletWindow);
+      while (iterator.hasNext()) {
+         String name = iterator.next();
 
-				if (values != null) {
-					String[] temp = new String[paramValues.length + values.length];
-					System.arraycopy(paramValues, 0, temp, 0, paramValues.length);
-					System.arraycopy(values, 0, temp, paramValues.length, values.length);
-					paramValues = temp;
-				}
-				portletParameters.put(paramName, paramValues);
-			}
-		}
+         String[] values = control.getRenderParamValues(portletWindow, name);
 
-		return Collections.unmodifiableMap(portletParameters);
-	}
+         portletParameters.put(name, values);
 
-	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(this.getParameterMap().keySet());
-	}
+      }
 
-	public String[] getParameterValues(String name) {
-		return this.getParameterMap().get(name);
-	}
+      // get request params
+      String pid = control.getPIDValue();
+      String wid = portletWindow.getId().toString();
+      if (pid.equals(wid)) {
+         for (Enumeration parameters = super.getParameterNames(); parameters.hasMoreElements();) {
+            String paramName = (String) parameters.nextElement();
+            String[] paramValues = super.getParameterValues(paramName);
+            String[] values = portletParameters.get(paramName);
+
+            if (values != null) {
+               String[] temp = new String[paramValues.length + values.length];
+               System.arraycopy(paramValues, 0, temp, 0, paramValues.length);
+               System.arraycopy(values, 0, temp, paramValues.length, values.length);
+               paramValues = temp;
+            }
+            portletParameters.put(paramName, paramValues);
+         }
+      }
+
+      return Collections.unmodifiableMap(portletParameters);
+   }
+
+
+   public Enumeration<String> getParameterNames() {
+      return Collections.enumeration(this.getParameterMap().keySet());
+   }
+
+
+   public String[] getParameterValues(String name) {
+      return this.getParameterMap().get(name);
+   }
 
 }

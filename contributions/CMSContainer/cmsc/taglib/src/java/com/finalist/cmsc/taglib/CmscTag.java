@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package com.finalist.cmsc.taglib;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,19 +17,18 @@ import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 
-
 public class CmscTag extends SimpleTagSupport {
 
-    protected String getPath() {
-        PageContext ctx = (PageContext) getJspContext();
-        HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-        PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
-        PortalURL currentURL = env.getRequestedPortalURL();
-        String path = currentURL.getGlobalNavigationAsString();
-        if (ServerUtil.useServerName()) {
-            path = request.getServerName() + "/" + path;
-        }
-        return path;
-    }
+   protected String getPath() {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+      PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
+      PortalURL currentURL = env.getRequestedPortalURL();
+      String path = currentURL.getGlobalNavigationAsString();
+      if (ServerUtil.useServerName()) {
+         path = request.getServerName() + "/" + path;
+      }
+      return path;
+   }
 
 }

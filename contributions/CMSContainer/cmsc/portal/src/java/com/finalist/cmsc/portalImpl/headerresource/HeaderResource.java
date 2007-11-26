@@ -2,15 +2,18 @@ package com.finalist.cmsc.portalImpl.headerresource;
 
 public abstract class HeaderResource {
 
-	private boolean dublin;
-	
-	public HeaderResource(boolean dublin) {
-		this.dublin = dublin;
-	}
+   private boolean dublin;
 
-	public boolean isDublin() {
-		return dublin;
-	}
 
-	public abstract void render(StringBuffer buffer);
+   public HeaderResource(boolean dublin) {
+      this.dublin = dublin;
+   }
+
+
+   public boolean isDublin() {
+      return dublin;
+   }
+
+
+   public abstract void render(StringBuffer buffer);
 }

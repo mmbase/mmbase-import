@@ -22,13 +22,14 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
  */
 public class PublishBuilderAction extends MMBaseFormlessAction {
 
-    protected static final String DESTINATION = "DESTINATION";
-    
+   protected static final String DESTINATION = "DESTINATION";
+
    private static Logger log = Logging.getLoggerInstance(PublishBuilderAction.class);
+
 
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-       Locale locale = request.getLocale();
+      Locale locale = request.getLocale();
 
       MessageResources resources = getResources(request, "PUBLISH-REMOTE");
 
@@ -61,42 +62,46 @@ public class PublishBuilderAction extends MMBaseFormlessAction {
       return mapping.findForward("result");
    }
 
-   private boolean publishPortletdefinition(Cloud cloud, String builderName, List<String> errors,  MessageResources messageResources, Locale locale) {
-       if (cloud.hasNodeManager(builderName)) {
-           NodeIterator nodeIterator = SearchUtil.findNodeList(cloud, builderName).nodeIterator();
 
-           while (nodeIterator.hasNext()) {
-              Node node = nodeIterator.nextNode();
-              PublishUtil.publishOrUpdateNode(node);
-              if (PortletUtil.isSingleDefinition(node)) {
-                  Node portlet = PortletUtil.getPortletForDefinition(node);
-                  if (portlet != null) {
-                      PublishUtil.publishOrUpdateNode(portlet);
-                      NodeList params = PortletUtil.getParameters(portlet);
-                      for (Iterator<Node> iter = params.iterator(); iter.hasNext();) {
-                        Node param = iter.next();
-                        PublishUtil.publishOrUpdateNode(param);
-                     }
+   private boolean publishPortletdefinition(Cloud cloud, String builderName, List<String> errors,
+         MessageResources messageResources, Locale locale) {
+      if (cloud.hasNodeManager(builderName)) {
+         NodeIterator nodeIterator = SearchUtil.findNodeList(cloud, builderName).nodeIterator();
+
+         while (nodeIterator.hasNext()) {
+            Node node = nodeIterator.nextNode();
+            PublishUtil.publishOrUpdateNode(node);
+            if (PortletUtil.isSingleDefinition(node)) {
+               Node portlet = PortletUtil.getPortletForDefinition(node);
+               if (portlet != null) {
+                  PublishUtil.publishOrUpdateNode(portlet);
+                  NodeList params = PortletUtil.getParameters(portlet);
+                  for (Iterator<Node> iter = params.iterator(); iter.hasNext();) {
+                     Node param = iter.next();
+                     PublishUtil.publishOrUpdateNode(param);
                   }
-              }
-           }
+               }
+            }
+         }
 
-           return true;
-        }
-        else {
-           log.warn("Could not publish nodes of " + builderName);
-           errors.add(messageResources.getMessage(locale, "publish.builder.notfound", builderName));
-           return false;
-        }
+         return true;
+      }
+      else {
+         log.warn("Could not publish nodes of " + builderName);
+         errors.add(messageResources.getMessage(locale, "publish.builder.notfound", builderName));
+         return false;
+      }
    }
+
 
    @Override
    public String getRequiredRankStr() {
       return Rank.ADMIN.toString();
    }
 
+
    public boolean publishNodesOfBuilder(Cloud cloud, String builderName, List<String> errors,
-            MessageResources messageResources, boolean children) {
+         MessageResources messageResources, boolean children) {
       if (cloud.hasNodeManager(builderName)) {
          NodeIterator nodeIterator = SearchUtil.findNodeList(cloud, builderName).nodeIterator();
 
@@ -104,7 +109,7 @@ public class PublishBuilderAction extends MMBaseFormlessAction {
             Node node = nodeIterator.nextNode();
             PublishUtil.publishOrUpdateNode(node);
             if (children) {
-                publishChildren(node);
+               publishChildren(node);
             }
          }
 
@@ -117,15 +122,16 @@ public class PublishBuilderAction extends MMBaseFormlessAction {
       }
    }
 
+
    private void publishChildren(Node node) {
-        RelationManagerList rml = node.getNodeManager().getAllowedRelations((NodeManager) null, null, DESTINATION);
-        if (!rml.isEmpty()) {
-            NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
-            while (childs.hasNext()) {
-                Node childNode = childs.nextNode();
-                PublishUtil.publishOrUpdateNode(childNode);
-                publishChildren(childNode);
-            }
-        }
-    }
+      RelationManagerList rml = node.getNodeManager().getAllowedRelations((NodeManager) null, null, DESTINATION);
+      if (!rml.isEmpty()) {
+         NodeIterator childs = node.getRelatedNodes("object", null, DESTINATION).nodeIterator();
+         while (childs.hasNext()) {
+            Node childNode = childs.nextNode();
+            PublishUtil.publishOrUpdateNode(childNode);
+            publishChildren(childNode);
+         }
+      }
+   }
 }

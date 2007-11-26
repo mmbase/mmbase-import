@@ -16,14 +16,14 @@ import com.octo.captcha.engine.image.ListImageCaptchaEngine;
 import com.octo.captcha.image.gimpy.GimpyFactory;
 
 public class NumberListImageCaptchaEngine extends ListImageCaptchaEngine {
- 
-     protected void buildInitialFactories() {
-         WordGenerator wordGenerator = new RandomWordGenerator("0123456789");
-         TextPaster textPaster = new RandomTextPaster(new Integer(5), new Integer(6), Color.BLACK);
-         BackgroundGenerator backgroundGenerator = new GradientBackgroundGenerator(new Integer(180), new Integer(40), Color.GRAY, Color.WHITE);
-         FontGenerator fontGenerator = new TwistedAndShearedRandomFontGenerator(
-                 new Integer(16), new Integer(22));
-         WordToImage wordToImage = new ComposedWordToImage(fontGenerator, backgroundGenerator, textPaster);
-         this.addFactory(new GimpyFactory(wordGenerator, wordToImage));
-    }
+
+   protected void buildInitialFactories() {
+      WordGenerator wordGenerator = new RandomWordGenerator("0123456789");
+      TextPaster textPaster = new RandomTextPaster(new Integer(5), new Integer(6), Color.BLACK);
+      BackgroundGenerator backgroundGenerator = new GradientBackgroundGenerator(new Integer(180), new Integer(40),
+            Color.GRAY, Color.WHITE);
+      FontGenerator fontGenerator = new TwistedAndShearedRandomFontGenerator(new Integer(16), new Integer(22));
+      WordToImage wordToImage = new ComposedWordToImage(fontGenerator, backgroundGenerator, textPaster);
+      this.addFactory(new GimpyFactory(wordGenerator, wordToImage));
+   }
 }

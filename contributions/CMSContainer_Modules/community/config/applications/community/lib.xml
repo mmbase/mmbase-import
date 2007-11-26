@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE libs SYSTEM "lib/lib.dtd">
+
+<libs>
+ <noInclude></noInclude>
+
+   <war>
+      <lib file="Libs/log4j.jar" version="v1_2_8" />
+      
+
+      <lib file="Libs/mysql-connector.jar" version="v3_1"/>
+
+      <lib file="Libs/commons/commons-dbcp.jar" version="v1_2_1"/>
+      <lib file="Libs/commons/commons-pool.jar" version="v1_2"/>
+      <lib file="Libs/commons/commons-collections.jar" version="v3_1"/>  
+      <lib file="Libs/commons/commons-httpclient.jar" version="v3_1_b1"/>  
+      <lib file="Libs/commons/commons-codec.jar" version="v1_3"/>  
+   
+      
+      <!-- Spring -->
+      <lib file="Libs/springframework/spring.jar" version="v1_2_6"/>
+      <lib file="Libs/springframework/spring-mock.jar" version="v1_2_6"/>
+
+      <!-- Xalan. -->
+      <!-- Xalan is included in JDK 1.4, but not in JDK 1.5. -->
+      <lib file="Libs/Xalan-j/xalan.jar" version="xalan-j_2_7_0" />
+      <lib file="Libs/Xalan-j/serializer.jar" version="xalan-j_2_7_0" />
+      <!-- Xerces. -->
+		<lib file="Libs/xerces.jar" version="v2_6_2"/>
+		     
+      <!-- Hibernate -->
+      <lib file="Libs/hibernate/hibernate3/hibernate.jar" version="v3_1"/>
+      <lib file="Libs/hibernate/hibernate3/hibernate-tools.jar" version="v3_1_0_beta2"/>
+      <lib file="Libs/hibernate/hibernate3/hibernate-annotations.jar" version="v3_1_beta7"/>
+      <lib file="Libs/hibernate/hibernate3/ejb-persistence.jar" version="v3_0_pd1_20050804"/>
+      <lib file="Libs/hibernate/hibernate3/c3p0.jar" version="v0_9_0"/>
+      <lib file="Libs/hibernate/hibernate3/ehcache.jar" version="v1_1"/>
+      <lib file="Libs/hibernate/hibernate3/cglib.jar" version="v2_1_3"/>
+      <lib file="Libs/hibernate/hibernate3/asm.jar" version="v1_5_3"/>
+      <lib file="Libs/hibernate/hibernate3/antlr.jar" version="v2_7_6_rc1"/>
+      <lib file="Libs/hibernate/hibernate3/jtidy.jar" version="r8_21122004"/>
+      <lib file="Libs/hibernate/hibernate3/velocity.jar" version="v1_4"/>
+      <lib file="Libs/hibernate/hibernate3/velocity-tools-generic.jar" version="v1_1"/>
+      <lib file="Libs/jta.jar" version="v1_0_1b"/>
+    
+   </war>
+   <ear />
+</libs>

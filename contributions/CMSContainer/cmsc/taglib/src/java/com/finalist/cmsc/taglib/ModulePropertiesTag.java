@@ -8,28 +8,31 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 
-
 public class ModulePropertiesTag extends SimpleTagSupport {
 
-    public String module;
-    
+   public String module;
+
    private String var;
-   
+
+
    public void setModule(String module) {
       this.module = module;
    }
 
-    public void setVar(String var) {
-        this.var = var;
-    }
-    public String getVar() {
-        return var;
-    }
+
+   public void setVar(String var) {
+      this.var = var;
+   }
+
+
+   public String getVar() {
+      return var;
+   }
 
 
    @Override
-public void doTag() {
-      Map<String,String> properties = PropertiesUtil.getModuleProperties(module);
+   public void doTag() {
+      Map<String, String> properties = PropertiesUtil.getModuleProperties(module);
 
       PageContext ctx = (PageContext) getJspContext();
       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();

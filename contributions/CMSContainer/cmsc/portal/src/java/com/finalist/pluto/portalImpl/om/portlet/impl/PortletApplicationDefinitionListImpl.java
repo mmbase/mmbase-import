@@ -18,45 +18,47 @@ import org.apache.pluto.om.portlet.PortletApplicationDefinition;
 import org.apache.pluto.om.portlet.PortletApplicationDefinitionList;
 import org.apache.pluto.util.StringUtils;
 
-public class PortletApplicationDefinitionListImpl extends HashSet implements PortletApplicationDefinitionList, Serializable {
+public class PortletApplicationDefinitionListImpl extends HashSet implements PortletApplicationDefinitionList,
+      Serializable {
 
-	public PortletApplicationDefinition get(ObjectID objectId) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			PortletApplicationDefinition portletApplicationDefinition = (PortletApplicationDefinition) iterator.next();
-			if (portletApplicationDefinition.getId().equals(objectId)) {
-				return portletApplicationDefinition;
-			}
-		}
-		return null;
-	}
+   public PortletApplicationDefinition get(ObjectID objectId) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         PortletApplicationDefinition portletApplicationDefinition = (PortletApplicationDefinition) iterator.next();
+         if (portletApplicationDefinition.getId().equals(objectId)) {
+            return portletApplicationDefinition;
+         }
+      }
+      return null;
+   }
 
-	public PortletApplicationDefinition get(String objectId) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			PortletApplicationDefinition portletApplicationDefinition = (PortletApplicationDefinition) iterator.next();
-			if (portletApplicationDefinition.getId().toString().equals(objectId)) {
-				return portletApplicationDefinition;
-			}
-		}
-		return null;
-	}
-	
-    public String toString() {
-        return toString(0);
-    }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": ");
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            buffer
-                    .append(((PortletApplicationDefinitionImpl) iterator.next())
-                            .toString(indent + 2));
-        }
-        return buffer.toString();
-    }
+   public PortletApplicationDefinition get(String objectId) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         PortletApplicationDefinition portletApplicationDefinition = (PortletApplicationDefinition) iterator.next();
+         if (portletApplicationDefinition.getId().toString().equals(objectId)) {
+            return portletApplicationDefinition;
+         }
+      }
+      return null;
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": ");
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         buffer.append(((PortletApplicationDefinitionImpl) iterator.next()).toString(indent + 2));
+      }
+      return buffer.toString();
+   }
 }

@@ -8,15 +8,16 @@ import org.mmbase.util.logging.Logging;
 
 public class TestEventListener implements NodeEventListener {
 
-	
-    private static Logger log = Logging.getLoggerInstance(TestEventListener.class.getName());
-	
-    public TestEventListener(LuceusModule module) {
-        MMBase.getMMBase().addNodeRelatedEventsListener("object", this);
-		log.info("registered listener for: "+"object");
-    }
-    
-	public void notify(NodeEvent event) {
-		log.info("test: "+event);
-	}
+   private static Logger log = Logging.getLoggerInstance(TestEventListener.class.getName());
+
+
+   public TestEventListener(LuceusModule module) {
+      MMBase.getMMBase().addNodeRelatedEventsListener("object", this);
+      log.info("registered listener for: " + "object");
+   }
+
+
+   public void notify(NodeEvent event) {
+      log.info("test: " + event);
+   }
 }

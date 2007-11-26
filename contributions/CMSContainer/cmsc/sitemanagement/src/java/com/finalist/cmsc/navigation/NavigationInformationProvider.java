@@ -9,10 +9,12 @@ import com.finalist.tree.TreeOption;
 
 public interface NavigationInformationProvider {
 
-	String getOpenAction(Node parentNode, boolean secure);
+   String getOpenAction(Node parentNode, boolean secure);
 
-	TreeElement createElement(NavigationItem item, UserRole role, String action);
 
-	TreeOption createOption(String icon, String message, String action);
+   TreeElement createElement(NavigationItem item, UserRole role, String action);
+
+
+   TreeOption createOption(String icon, String message, String action);
 
 }

@@ -20,193 +20,215 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Nico Klasens
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class WizardMaker {
-	private static Logger log = Logging.getLoggerInstance(WizardMaker.class.getName());
+   private static Logger log = Logging.getLoggerInstance(WizardMaker.class.getName());
 
-	private static String DEFAULT_SESSION_KEY = "editwizard";
+   private static String DEFAULT_SESSION_KEY = "editwizard";
 
-	private Cloud cloud;
+   private Cloud cloud;
 
-	private HttpServletRequest request;
+   private HttpServletRequest request;
 
-	private String templates = "/editors/editwizards/";
+   private String templates = "/editors/editwizards/";
 
-	private String sessionKey = DEFAULT_SESSION_KEY;
+   private String sessionKey = DEFAULT_SESSION_KEY;
 
-	private String wizardJsp = "/mmbase/edit/wizard/jsp/wizard.jsp";
+   private String wizardJsp = "/mmbase/edit/wizard/jsp/wizard.jsp";
 
-	private String referrer = "/editors/WizardCloseAction.do";
+   private String referrer = "/editors/WizardCloseAction.do";
 
-	private String wizardConfigName;
+   private String wizardConfigName;
 
-	private String objectNumber;
+   private String objectNumber;
 
-	private String language;
+   private String language;
 
-	private String returnUrl;
+   private String returnUrl;
 
-	private String popup;
+   private String popup;
 
-	private String creation;
+   private String creation;
 
-	private String[] contentTypes;
+   private String[] contentTypes;
 
-	private String action;
+   private String action;
 
-	private String contentType;
+   private String contentType;
 
-	private String newTypesUrl;
+   private String newTypesUrl;
 
-	public WizardMaker(HttpServletRequest request, Cloud cloud) {
-		this.cloud = cloud;
-		this.request = request;
-		setSessionKey(request.getParameter("sessionkey"));
-		setObjectNumber(request.getParameter("objectnumber"));
-		setReturnUrl(request.getParameter("returnurl"));
-		setPopup(request.getParameter("popup"));
-		setCreation(request.getParameter("creation"));
-		setWizardConfigName(request.getParameter("wizardConfigName"));
-		setContentTypes(request.getParameterValues("contenttype"));
-		setAction(request.getParameter("action"));
-	}
 
-	public String makeWizard() {
+   public WizardMaker(HttpServletRequest request, Cloud cloud) {
+      this.cloud = cloud;
+      this.request = request;
+      setSessionKey(request.getParameter("sessionkey"));
+      setObjectNumber(request.getParameter("objectnumber"));
+      setReturnUrl(request.getParameter("returnurl"));
+      setPopup(request.getParameter("popup"));
+      setCreation(request.getParameter("creation"));
+      setWizardConfigName(request.getParameter("wizardConfigName"));
+      setContentTypes(request.getParameterValues("contenttype"));
+      setAction(request.getParameter("action"));
+   }
 
-		if ("create".equals(action)) {
-			objectNumber = "new";
-		}
 
-		HttpSession session = request.getSession();
+   public String makeWizard() {
 
-		if (!StringUtil.isEmpty(this.returnUrl)) {
-			session.setAttribute("returnurl", this.returnUrl);
-		}
+      if ("create".equals(action)) {
+         objectNumber = "new";
+      }
 
-		if (!StringUtil.isEmpty(this.popup)) {
-			session.setAttribute("popup", this.popup);
-		}
+      HttpSession session = request.getSession();
 
-		if (!StringUtil.isEmpty(this.creation)) {
-			session.setAttribute("creation", this.creation);
-		}
+      if (!StringUtil.isEmpty(this.returnUrl)) {
+         session.setAttribute("returnurl", this.returnUrl);
+      }
 
-		if (contentType != null) {
-			if (contentTypes == null) {
-				contentTypes = new String[] { contentType };
-			}
-		}
+      if (!StringUtil.isEmpty(this.popup)) {
+         session.setAttribute("popup", this.popup);
+      }
 
-		if (contentTypes == null || contentTypes.length == 0) {
-			if (objectNumber != null && !"new".equals(objectNumber)) {
-				Node node = cloud.getNode(objectNumber);
-				contentType = node.getNodeManager().getName();
-			} else {
-				throw new RuntimeException("No criteria available to find a wizard." + " Provide a contenttype or objectnumber");
-			}
-		} else {
-			if (contentTypes.length == 1) {
-				contentType = contentTypes[0];
-			} else {
-				List<String> list = Arrays.asList(contentTypes);
-				request.setAttribute("contenttypes", list);
-				return newTypesUrl;
-			}
-		}
-		log.debug("contenttype='" + contentType + "'");
+      if (!StringUtil.isEmpty(this.creation)) {
+         session.setAttribute("creation", this.creation);
+      }
 
-		session.setAttribute("contenttype", contentType);
+      if (contentType != null) {
+         if (contentTypes == null) {
+            contentTypes = new String[] { contentType };
+         }
+      }
 
-		if (StringUtil.isEmpty(wizardConfigName)) {
-			NodeList list = null;
-			NodeManager manager = cloud.getNodeManager("editwizards");
-			list = manager.getList("nodepath = '" + contentType + "'", null, null);
-			if (list.isEmpty()) {
-				throw new RuntimeException("Unable to find a wizard for contenttype " + contentType + " or objectnumber "
-						+ objectNumber);
-			}
+      if (contentTypes == null || contentTypes.length == 0) {
+         if (objectNumber != null && !"new".equals(objectNumber)) {
+            Node node = cloud.getNode(objectNumber);
+            contentType = node.getNodeManager().getName();
+         }
+         else {
+            throw new RuntimeException("No criteria available to find a wizard."
+                  + " Provide a contenttype or objectnumber");
+         }
+      }
+      else {
+         if (contentTypes.length == 1) {
+            contentType = contentTypes[0];
+         }
+         else {
+            List<String> list = Arrays.asList(contentTypes);
+            request.setAttribute("contenttypes", list);
+            return newTypesUrl;
+         }
+      }
+      log.debug("contenttype='" + contentType + "'");
 
-			Node wizard = list.getNode(0);
-			wizardConfigName = wizard.getStringValue("wizard");
-		}
+      session.setAttribute("contenttype", contentType);
 
-		String contextpath = request.getContextPath();
-		if (templates.startsWith(contextpath)) {
-			templates = templates.substring(contextpath.length());
-		}
+      if (StringUtil.isEmpty(wizardConfigName)) {
+         NodeList list = null;
+         NodeManager manager = cloud.getNodeManager("editwizards");
+         list = manager.getList("nodepath = '" + contentType + "'", null, null);
+         if (list.isEmpty()) {
+            throw new RuntimeException("Unable to find a wizard for contenttype " + contentType + " or objectnumber "
+                  + objectNumber);
+         }
 
-		String link = wizardJsp + "?wizard=" + wizardConfigName + "&objectnumber=" + objectNumber + "&templates=" + templates
-				+ "&referrer=" + referrer + "&sessionkey=" + sessionKey + "&language=" + language;
+         Node wizard = list.getNode(0);
+         wizardConfigName = wizard.getStringValue("wizard");
+      }
 
-		log.debug("wizard link='" + link + "'");
+      String contextpath = request.getContextPath();
+      if (templates.startsWith(contextpath)) {
+         templates = templates.substring(contextpath.length());
+      }
 
-		return link;
+      String link = wizardJsp + "?wizard=" + wizardConfigName + "&objectnumber=" + objectNumber + "&templates="
+            + templates + "&referrer=" + referrer + "&sessionkey=" + sessionKey + "&language=" + language;
 
-	}
+      log.debug("wizard link='" + link + "'");
 
-	public void setAction(String parameter) {
-		this.action = parameter;
-	}
+      return link;
 
-	public void setContentTypes(String[] types) {
-		this.contentTypes = types;
-	}
+   }
 
-	public void setCreation(String parameter) {
-		this.creation = parameter;
-	}
 
-	public void setPopup(String parameter) {
-		this.popup = parameter;
-	}
+   public void setAction(String parameter) {
+      this.action = parameter;
+   }
 
-	public void setReturnUrl(String parameter) {
-		this.returnUrl = parameter;
-	}
 
-	public void setWizardJsp(String parameter) {
-		this.wizardJsp = parameter;
-	}
+   public void setContentTypes(String[] types) {
+      this.contentTypes = types;
+   }
 
-	public void setTemplates(String parameter) {
-		this.templates = parameter;
-	}
 
-	public void setReferrer(String parameter) {
-		this.referrer = parameter;
-	}
+   public void setCreation(String parameter) {
+      this.creation = parameter;
+   }
 
-	public void setWizardConfigName(String parameter) {
-		this.wizardConfigName = parameter;
-	}
 
-	public void setObjectNumber(String parameter) {
-		this.objectNumber = parameter;
-	}
+   public void setPopup(String parameter) {
+      this.popup = parameter;
+   }
 
-	public void setContentType(String parameter) {
-		this.contentType = parameter;
-	}
 
-	public void setSessionKey(String parameter) {
-		if (parameter == null || parameter.length() == 0) {
-			this.sessionKey = DEFAULT_SESSION_KEY;
-		} else {
-			this.sessionKey = parameter;
-		}
-	}
+   public void setReturnUrl(String parameter) {
+      this.returnUrl = parameter;
+   }
 
-	public void setLanguage(String parameter) {
-		this.language = parameter;
-	}
 
-	public String getSessionKey() {
-		return this.sessionKey;
-	}
+   public void setWizardJsp(String parameter) {
+      this.wizardJsp = parameter;
+   }
 
-	public void setNewTypesUrl(String parameter) {
-		this.newTypesUrl = parameter;
-	}
+
+   public void setTemplates(String parameter) {
+      this.templates = parameter;
+   }
+
+
+   public void setReferrer(String parameter) {
+      this.referrer = parameter;
+   }
+
+
+   public void setWizardConfigName(String parameter) {
+      this.wizardConfigName = parameter;
+   }
+
+
+   public void setObjectNumber(String parameter) {
+      this.objectNumber = parameter;
+   }
+
+
+   public void setContentType(String parameter) {
+      this.contentType = parameter;
+   }
+
+
+   public void setSessionKey(String parameter) {
+      if (parameter == null || parameter.length() == 0) {
+         this.sessionKey = DEFAULT_SESSION_KEY;
+      }
+      else {
+         this.sessionKey = parameter;
+      }
+   }
+
+
+   public void setLanguage(String parameter) {
+      this.language = parameter;
+   }
+
+
+   public String getSessionKey() {
+      return this.sessionKey;
+   }
+
+
+   public void setNewTypesUrl(String parameter) {
+      this.newTypesUrl = parameter;
+   }
 
 }

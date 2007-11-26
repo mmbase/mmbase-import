@@ -15,15 +15,16 @@ import com.finalist.tree.html.HTMLTreeElement;
  */
 public abstract class RolesRenderer implements HTMLTreeCellRenderer {
 
-   protected RolesForm form = null; 
+   protected RolesForm form = null;
    protected Node user = null;
    private HttpServletRequest request;
+
 
    public RolesRenderer(HttpServletRequest request, Cloud cloud, RolesForm form) {
       super();
       this.request = request;
       this.form = form;
-      if (form.getId() > -1) { 
+      if (form.getId() > -1) {
          this.user = cloud.getNode(form.getId());
       }
       else {
@@ -31,38 +32,42 @@ public abstract class RolesRenderer implements HTMLTreeCellRenderer {
       }
    }
 
+
    /**
-     * @see com.finalist.tree.TreeCellRenderer#getElement(com.finalist.tree.TreeModel, java.lang.Object, java.lang.String)
-     */
-    public HTMLTreeElement getElement(TreeModel model, Object node, String id) {
+    * @see com.finalist.tree.TreeCellRenderer#getElement(com.finalist.tree.TreeModel,
+    *      java.lang.Object, java.lang.String)
+    */
+   public HTMLTreeElement getElement(TreeModel model, Object node, String id) {
       Node n = (Node) node;
-      
-      UserRole userRole = form.getRole(n.getNumber()); 
-      if (userRole==null) {
+
+      UserRole userRole = form.getRole(n.getNumber());
+      if (userRole == null) {
          userRole = getRole(n);
-         if (userRole!=null) {
+         if (userRole != null) {
             form.addRole(n.getNumber(), userRole);
          }
       }
-      
+
       int roleId;
-      if (userRole==null || userRole.isInherited()) {
+      if (userRole == null || userRole.isInherited()) {
          roleId = -1;
-      } else {
+      }
+      else {
          roleId = userRole.getRole().getId();
       }
 
       String title = "";
       if (n.getNodeManager().hasField("name")) {
-          title = n.getStringValue("name");
+         title = n.getStringValue("name");
       }
       if (n.getNodeManager().hasField("title")) {
-          title = n.getStringValue("title");
+         title = n.getStringValue("title");
       }
-      
+
       return new RoleTreeElement(request, null, id, title, null, "treeitem", n.getNumber(), roleId);
    }
-   
+
+
    protected abstract UserRole getRole(Node channel);
 
 }

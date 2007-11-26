@@ -33,88 +33,91 @@ import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 
 public class TaskCronJob implements CronJob {
-	private static Logger log = Logging.getLoggerInstance(TaskCronJob.class.getName());
+   private static Logger log = Logging.getLoggerInstance(TaskCronJob.class.getName());
 
-	private long lastExecutionTime;
+   private long lastExecutionTime;
 
-	private ResourceBundle bundle;
+   private ResourceBundle bundle;
 
-	public void init(CronEntry cronEntry) {
-		Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-		lastExecutionTime = TasksUtil.getLastTaskCreationTime(cloud, TasksUtil.TYPE_EXPIRE);
-		bundle = ResourceBundle.getBundle("cmsc-tasks");
-	}
 
-	public void stop() {
-		// nothing to do
-	}
+   public void init(CronEntry cronEntry) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+      lastExecutionTime = TasksUtil.getLastTaskCreationTime(cloud, TasksUtil.TYPE_EXPIRE);
+      bundle = ResourceBundle.getBundle("cmsc-tasks");
+   }
 
-	public void run() {
-		log.debug("TaskCronJob running");
-		long fromTime = lastExecutionTime;
-		lastExecutionTime = System.currentTimeMillis();
-		long toTime = lastExecutionTime;
 
-		List<Node> usersToNotify = new ArrayList<Node>();
+   public void stop() {
+      // nothing to do
+   }
 
-		Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-		NodeManager manager = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
-		Field notificationField = manager.getField(ContentElementUtil.NOTIFICATIONDATE_FIELD);
 
-		NodeQuery query = manager.createQuery();
-		SearchUtil.addDatetimeConstraint(query, notificationField, fromTime, toTime);
+   public void run() {
+      log.debug("TaskCronJob running");
+      long fromTime = lastExecutionTime;
+      lastExecutionTime = System.currentTimeMillis();
+      long toTime = lastExecutionTime;
 
-		HugeNodeListIterator contentElementListIterator = new HugeNodeListIterator(query);
-		while (contentElementListIterator.hasNext()) {
-			Node contentNode = contentElementListIterator.nextNode();
-			if (!TasksUtil.hasTask(contentNode)) {
-				Node userNode = ContentElementUtil.getOwner(contentNode);
-				// TODO use bundle of user language
-				String description = bundle.getString("task.cronjob.expire");
-				TasksUtil.createExpireTask(cloud, contentNode.getStringValue(ContentElementUtil.TITLE_FIELD), description,
-						contentNode.getDateValue(ContentElementUtil.EXPIREDATE_FIELD), userNode, contentNode.getNodeManager()
-								.getName(), contentNode);
+      List<Node> usersToNotify = new ArrayList<Node>();
 
-				if (!usersToNotify.contains(userNode)) {
-					usersToNotify.add(userNode);
-				}
-			}
-		}
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+      NodeManager manager = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
+      Field notificationField = manager.getField(ContentElementUtil.NOTIFICATIONDATE_FIELD);
 
-		if (!usersToNotify.isEmpty()) {
-			Node cloudUserNode = SecurityUtil.getUserNode(cloud);
+      NodeQuery query = manager.createQuery();
+      SearchUtil.addDatetimeConstraint(query, notificationField, fromTime, toTime);
 
-			for (Node user : usersToNotify) {
-				NodeQuery taskQuery = SearchUtil.createRelatedNodeListQuery(user, TasksUtil.TASK, TasksUtil.ASSIGNEDREL,
-						TasksUtil.STATUS, TasksUtil.STATUS_INIT, null, null, SearchUtil.SOURCE);
-				int numberOfTasks = Queries.count(taskQuery);
-				TasksUtil.sendExpireNotification(user, cloudUserNode, numberOfTasks);
+      HugeNodeListIterator contentElementListIterator = new HugeNodeListIterator(query);
+      while (contentElementListIterator.hasNext()) {
+         Node contentNode = contentElementListIterator.nextNode();
+         if (!TasksUtil.hasTask(contentNode)) {
+            Node userNode = ContentElementUtil.getOwner(contentNode);
+            // TODO use bundle of user language
+            String description = bundle.getString("task.cronjob.expire");
+            TasksUtil.createExpireTask(cloud, contentNode.getStringValue(ContentElementUtil.TITLE_FIELD), description,
+                  contentNode.getDateValue(ContentElementUtil.EXPIREDATE_FIELD), userNode, contentNode.getNodeManager()
+                        .getName(), contentNode);
 
-				HugeNodeListIterator taskListIterator = new HugeNodeListIterator(taskQuery);
-				while (taskListIterator.hasNext()) {
-					Node taskNode = taskListIterator.nextNode();
-					TasksUtil.notified(taskNode);
-				}
-			}
-		}
+            if (!usersToNotify.contains(userNode)) {
+               usersToNotify.add(userNode);
+            }
+         }
+      }
 
-		// clean old tasks
-		NodeManager tman = cloud.getNodeManager(TasksUtil.TASK);
-		Field deadlineField = tman.getField(TasksUtil.DEADLINE);
+      if (!usersToNotify.isEmpty()) {
+         Node cloudUserNode = SecurityUtil.getUserNode(cloud);
 
-		Calendar c = Calendar.getInstance();
-		c.roll(Calendar.DAY_OF_YEAR, -7);
-		toTime = c.getTimeInMillis();
+         for (Node user : usersToNotify) {
+            NodeQuery taskQuery = SearchUtil.createRelatedNodeListQuery(user, TasksUtil.TASK, TasksUtil.ASSIGNEDREL,
+                  TasksUtil.STATUS, TasksUtil.STATUS_INIT, null, null, SearchUtil.SOURCE);
+            int numberOfTasks = Queries.count(taskQuery);
+            TasksUtil.sendExpireNotification(user, cloudUserNode, numberOfTasks);
 
-		NodeQuery cleanup = tman.createQuery();
-		SearchUtil.addDatetimeConstraint(cleanup, deadlineField, 0, toTime);
+            HugeNodeListIterator taskListIterator = new HugeNodeListIterator(taskQuery);
+            while (taskListIterator.hasNext()) {
+               Node taskNode = taskListIterator.nextNode();
+               TasksUtil.notified(taskNode);
+            }
+         }
+      }
 
-		HugeNodeListIterator taskListIterator = new HugeNodeListIterator(cleanup);
-		while (taskListIterator.hasNext()) {
-			Node taskNode = taskListIterator.nextNode();
-			taskNode.delete(true);
-		}
+      // clean old tasks
+      NodeManager tman = cloud.getNodeManager(TasksUtil.TASK);
+      Field deadlineField = tman.getField(TasksUtil.DEADLINE);
 
-	}
+      Calendar c = Calendar.getInstance();
+      c.roll(Calendar.DAY_OF_YEAR, -7);
+      toTime = c.getTimeInMillis();
+
+      NodeQuery cleanup = tman.createQuery();
+      SearchUtil.addDatetimeConstraint(cleanup, deadlineField, 0, toTime);
+
+      HugeNodeListIterator taskListIterator = new HugeNodeListIterator(cleanup);
+      while (taskListIterator.hasNext()) {
+         Node taskNode = taskListIterator.nextNode();
+         taskNode.delete(true);
+      }
+
+   }
 
 }

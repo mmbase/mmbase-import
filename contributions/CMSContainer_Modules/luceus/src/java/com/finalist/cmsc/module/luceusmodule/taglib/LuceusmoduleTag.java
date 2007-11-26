@@ -26,37 +26,41 @@ import com.finalist.cmsc.module.luceusmodule.LuceusModule;
  * @author Wouter Heijke
  */
 public class LuceusmoduleTag extends SimpleTagSupport {
-	private static Log log = LogFactory.getLog(LuceusmoduleTag.class);
+   private static Log log = LogFactory.getLog(LuceusmoduleTag.class);
 
-	private LuceusModule mod;
+   private LuceusModule mod;
 
-	/**
-	 * JSP variable name.
-	 */
-	public String var;
-	
-	protected LuceusModule getModule() {
-		if (mod == null) {
-			mod = (LuceusModule) Module.getModule("luceusmodule");
-		}
-		if (mod.hasStarted()) {
-			return mod;
-		}
-		return null;
-	}
-	
-	protected boolean isRunning() {
-		if (getModule() != null) {
-			return true;
-		}
-		return false;
-	}
-	
-	protected Cloud getAnonymousCloud() {
-		return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
-	}
+   /**
+    * JSP variable name.
+    */
+   public String var;
 
-	public void setVar(String var) {
-		this.var = var;
-	}
+
+   protected LuceusModule getModule() {
+      if (mod == null) {
+         mod = (LuceusModule) Module.getModule("luceusmodule");
+      }
+      if (mod.hasStarted()) {
+         return mod;
+      }
+      return null;
+   }
+
+
+   protected boolean isRunning() {
+      if (getModule() != null) {
+         return true;
+      }
+      return false;
+   }
+
+
+   protected Cloud getAnonymousCloud() {
+      return CloudProviderFactory.getCloudProvider().getAnonymousCloud();
+   }
+
+
+   public void setVar(String var) {
+      this.var = var;
+   }
 }

@@ -25,51 +25,50 @@ import com.jsptags.navigation.pager.parser.*;
 
 public final class IndexTagExtraInfo extends TagExtraInfo {
 
-	public VariableInfo[] getVariableInfo(TagData tagData) {
-		String export = tagData.getAttributeString("export");
-		if (export != null) {
-			try {
-				IndexTagExport indexTagExport =
-					TagExportParser.parseIndexTagExport(export);
-				int len = 0;
-				if (indexTagExport.getItemCount() != null)
-					len++;
-				if (indexTagExport.getPageCount() != null)
-					len++;
+   public VariableInfo[] getVariableInfo(TagData tagData) {
+      String export = tagData.getAttributeString("export");
+      if (export != null) {
+         try {
+            IndexTagExport indexTagExport = TagExportParser.parseIndexTagExport(export);
+            int len = 0;
+            if (indexTagExport.getItemCount() != null)
+               len++;
+            if (indexTagExport.getPageCount() != null)
+               len++;
 
-				VariableInfo[] varinfo = new VariableInfo[len];
-				int i = 0;
+            VariableInfo[] varinfo = new VariableInfo[len];
+            int i = 0;
 
-				String name;
-				if ((name = indexTagExport.getItemCount()) != null)
-					varinfo[i++] = new VariableInfo(name,
-							java.lang.Integer.class.getName(),
-							true, VariableInfo.NESTED);
-				if ((name = indexTagExport.getPageCount()) != null)
-					varinfo[i++] = new VariableInfo(name,
-							java.lang.Integer.class.getName(),
-							true, VariableInfo.NESTED);
+            String name;
+            if ((name = indexTagExport.getItemCount()) != null)
+               varinfo[i++] = new VariableInfo(name, java.lang.Integer.class.getName(), true, VariableInfo.NESTED);
+            if ((name = indexTagExport.getPageCount()) != null)
+               varinfo[i++] = new VariableInfo(name, java.lang.Integer.class.getName(), true, VariableInfo.NESTED);
 
-				return varinfo;
-			} catch (ParseException ex)  {
-				return new VariableInfo[0];
-			}
-		} else {
-			return new VariableInfo[0];
-		}
-	}
+            return varinfo;
+         }
+         catch (ParseException ex) {
+            return new VariableInfo[0];
+         }
+      }
+      else {
+         return new VariableInfo[0];
+      }
+   }
 
-	public boolean isValid(TagData tagData) {
-		String export = tagData.getAttributeString("export");
-		if (export != null) {
-			try {
-				TagExportParser.parseIndexTagExport(export);
-			} catch (ParseException ex)  {
-				return false;
-			}
-		}
-		return true;
-	}
+
+   public boolean isValid(TagData tagData) {
+      String export = tagData.getAttributeString("export");
+      if (export != null) {
+         try {
+            TagExportParser.parseIndexTagExport(export);
+         }
+         catch (ParseException ex) {
+            return false;
+         }
+      }
+      return true;
+   }
 }
 
 /* vim:set ts=4 sw=4: */

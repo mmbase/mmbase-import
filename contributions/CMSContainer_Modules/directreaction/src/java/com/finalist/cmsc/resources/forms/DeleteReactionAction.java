@@ -15,36 +15,40 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 public class DeleteReactionAction extends DeleteSecondaryContentAction {
 
-    private static final Logger log = Logging.getLoggerInstance(DeleteReactionAction.class.getName());
-    
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response,
-            Cloud cloud) throws Exception {
+   private static final Logger log = Logging.getLoggerInstance(DeleteReactionAction.class.getName());
 
-        DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
 
-        String number = deleteForm.getObjectnumber();
-        if (MMBaseAction.ADMINISTRATOR.equals(cloud.getUser().getRank().toString())) {
-            log.debug("deleting secondary content: " + number);
-            Cloud remoteCloud = getRemoteCloud(cloud);
-            remoteCloud.getNode(number).delete(true);
-        } else {
-            log.warn("did not delete secondary content because user was not administrator: " + number + " (" + cloud.getUser()
-                    + ":" + cloud.getUser().getRank() + ")");
-        }
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
 
-        String returnurl = deleteForm.getReturnurl();
-        return new ActionForward(returnurl);
+      DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
 
-    }
+      String number = deleteForm.getObjectnumber();
+      if (MMBaseAction.ADMINISTRATOR.equals(cloud.getUser().getRank().toString())) {
+         log.debug("deleting secondary content: " + number);
+         Cloud remoteCloud = getRemoteCloud(cloud);
+         remoteCloud.getNode(number).delete(true);
+      }
+      else {
+         log.warn("did not delete secondary content because user was not administrator: " + number + " ("
+               + cloud.getUser() + ":" + cloud.getUser().getRank() + ")");
+      }
 
-    public Cloud getRemoteCloud(Cloud cloud) {
-        Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
-        return remoteCloud;
-    }
-    
-    public String getRequiredRankStr() {
-        return ADMINISTRATOR;
-    }
-    
+      String returnurl = deleteForm.getReturnurl();
+      return new ActionForward(returnurl);
+
+   }
+
+
+   public Cloud getRemoteCloud(Cloud cloud) {
+      Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
+      return remoteCloud;
+   }
+
+
+   public String getRequiredRankStr() {
+      return ADMINISTRATOR;
+   }
+
 }

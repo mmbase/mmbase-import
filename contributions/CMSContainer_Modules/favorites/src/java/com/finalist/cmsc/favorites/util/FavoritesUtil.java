@@ -24,30 +24,35 @@ public class FavoritesUtil {
 
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager nodeManager = cloud.getNodeManager("favorite");
-      NodeList nodeList = nodeManager.getList("user = '"+user+"'", null, null);
-      for(NodeIterator ni = nodeList.nodeIterator(); ni.hasNext();) {
+      NodeList nodeList = nodeManager.getList("user = '" + user + "'", null, null);
+      for (NodeIterator ni = nodeList.nodeIterator(); ni.hasNext();) {
          Node node = ni.nextNode();
          result.add(new Favorite(node.getNumber(), node.getStringValue("name"), node.getStringValue("url")));
       }
-      
+
       return result;
    }
 
+
    /**
-    * Removes the favorite only when the user of this favorite is the given user. 
+    * Removes the favorite only when the user of this favorite is the given
+    * user.
+    * 
     * @param user
     * @param number
     */
    public static void removeFavorite(String user, int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node node = cloud.getNode(number);
-      if(node != null && node.getStringValue("user").equals(user)) {
+      if (node != null && node.getStringValue("user").equals(user)) {
          node.delete();
       }
    }
 
+
    /**
     * Create a favorite for a certain user
+    * 
     * @param user
     * @param name
     * @param url
@@ -62,5 +67,4 @@ public class FavoritesUtil {
       newNode.commit();
    }
 
-   
 }

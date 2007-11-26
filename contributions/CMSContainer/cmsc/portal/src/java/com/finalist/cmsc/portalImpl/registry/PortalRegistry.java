@@ -17,30 +17,33 @@ import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
  * Registry to keep track of things in the CMSC Portal
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class PortalRegistry {
 
-	private static final String PORTAL_REGISTRY = "com.finalist.pluto.portalImpl.core.PortalRegistry";
+   private static final String PORTAL_REGISTRY = "com.finalist.pluto.portalImpl.core.PortalRegistry";
 
-	private ScreenFragment screen;
+   private ScreenFragment screen;
 
-	public static PortalRegistry getPortalRegistry(HttpServletRequest request) {
-		PortalRegistry reg = (PortalRegistry) request.getSession().getAttribute(PORTAL_REGISTRY);
-		if (reg == null) {
-			reg = new PortalRegistry();
-			request.getSession().setAttribute(PORTAL_REGISTRY, reg);
-		}
-		
-		return reg;
-	}
-	
-	public void setScreen(ScreenFragment screen) {
-		this.screen = screen;
-	}
 
-	public ScreenFragment getScreen() {
-		return this.screen;
-	}
+   public static PortalRegistry getPortalRegistry(HttpServletRequest request) {
+      PortalRegistry reg = (PortalRegistry) request.getSession().getAttribute(PORTAL_REGISTRY);
+      if (reg == null) {
+         reg = new PortalRegistry();
+         request.getSession().setAttribute(PORTAL_REGISTRY, reg);
+      }
+
+      return reg;
+   }
+
+
+   public void setScreen(ScreenFragment screen) {
+      this.screen = screen;
+   }
+
+
+   public ScreenFragment getScreen() {
+      return this.screen;
+   }
 
 }

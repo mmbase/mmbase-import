@@ -14,24 +14,33 @@ import com.finalist.cmsc.services.Service;
 
 /**
  * <P>
- * The <CODE>SiteManagementAdminService</CODE> interface can be used to modify the site and all children
+ * The <CODE>SiteManagementAdminService</CODE> interface can be used to modify
+ * the site and all children
  */
 public abstract class SiteManagementAdminService extends Service {
 
-	public abstract boolean setPortletParameter(String portletId, PortletParameter param);
+   public abstract boolean setPortletParameter(String portletId, PortletParameter param);
 
-    public abstract boolean setPortletNodeParameter(String portletId, PortletParameter param);
-    
-	public abstract boolean setPortletView(String portletId, String viewId);
 
-	public abstract boolean setPagePortlet(String pageId, String portletId, String id);
+   public abstract boolean setPortletNodeParameter(String portletId, PortletParameter param);
 
-	public abstract boolean createPagePortlet(String pageId, String portletName, String definitionName, String id, String viewId);
 
-	public abstract void deletePagePortlet(Page page, Portlet portlet, String layoutId);
+   public abstract boolean setPortletView(String portletId, String viewId);
 
-    public abstract boolean mayEdit(Page page);
 
-    public abstract boolean mayEdit(Portlet portlet);
+   public abstract boolean setPagePortlet(String pageId, String portletId, String id);
+
+
+   public abstract boolean createPagePortlet(String pageId, String portletName, String definitionName, String id,
+         String viewId);
+
+
+   public abstract void deletePagePortlet(Page page, Portlet portlet, String layoutId);
+
+
+   public abstract boolean mayEdit(Page page);
+
+
+   public abstract boolean mayEdit(Portlet portlet);
 
 }

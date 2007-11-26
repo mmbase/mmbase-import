@@ -12,7 +12,7 @@ import com.finalist.cmsc.struts.MMBaseAction;
 
 /**
  * Form bean for the ChangePasswordForm page.
- *
+ * 
  * @author Nico Klasens
  */
 @SuppressWarnings("serial")
@@ -22,8 +22,9 @@ public class ChangePasswordForm extends ActionForm {
    private String newpassword;
    private String confirmnewpassword;
 
+
    @Override
-public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+   public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
       ActionErrors errors = new ActionErrors();
 
       if (getPassword() == null || getPassword().trim().length() == 0) {
@@ -32,7 +33,8 @@ public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
       if (getNewpassword() == null || getNewpassword().trim().length() < 5 || getNewpassword().trim().length() > 15) {
          errors.add("newpassword", new ActionMessage("error.password.invalid"));
       }
-      if (getConfirmnewpassword() == null || getConfirmnewpassword().trim().length() < 5 || getConfirmnewpassword().trim().length() > 15) {
+      if (getConfirmnewpassword() == null || getConfirmnewpassword().trim().length() < 5
+            || getConfirmnewpassword().trim().length() > 15) {
          errors.add("confirmnewpassword", new ActionMessage("error.password.invalid"));
       }
       if (!getConfirmnewpassword().equals(getNewpassword())) {
@@ -43,41 +45,48 @@ public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
             errors.add("newpassword", new ActionMessage("error.newpassword.incorrect"));
          }
          else {
-             try {
-             Cloud cloud = MMBaseAction.getCloudFromSession(request);
-             HashMap<String,String> user = new HashMap<String,String>();
-             user.put("username", cloud.getUser().getIdentifier());
-             user.put("password", password);
-             ContextProvider.getCloudContext(ContextProvider.getDefaultCloudContextName()).getCloud("mmbase","name/password", user);
-             }
-             catch(java.lang.SecurityException se) {
-                 errors.add("password", new ActionMessage("error.password.incorrect")); 
-             }
-          }
+            try {
+               Cloud cloud = MMBaseAction.getCloudFromSession(request);
+               HashMap<String, String> user = new HashMap<String, String>();
+               user.put("username", cloud.getUser().getIdentifier());
+               user.put("password", password);
+               ContextProvider.getCloudContext(ContextProvider.getDefaultCloudContextName()).getCloud("mmbase",
+                     "name/password", user);
+            }
+            catch (java.lang.SecurityException se) {
+               errors.add("password", new ActionMessage("error.password.incorrect"));
+            }
+         }
 
       }
       return errors;
    }
 
+
    public String getPassword() {
       return password;
    }
 
-  public void setPassword(String password) {
+
+   public void setPassword(String password) {
       this.password = password;
    }
+
 
    public String getNewpassword() {
       return newpassword;
    }
 
+
    public void setNewpassword(String newpassword) {
       this.newpassword = newpassword;
    }
-   
+
+
    public String getConfirmnewpassword() {
       return confirmnewpassword;
    }
+
 
    public void setConfirmnewpassword(String confirmnewpassword) {
       this.confirmnewpassword = confirmnewpassword;

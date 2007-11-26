@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package com.finalist.cmsc.workflow;
 
 import java.util.List;
@@ -16,32 +16,33 @@ import org.mmbase.bridge.*;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.Role;
 
-public abstract class RepositoryWorkflow  extends WorkflowManager {
-    
-    
-    public RepositoryWorkflow(Cloud cloud) {
-        super(cloud);
-    }
+public abstract class RepositoryWorkflow extends WorkflowManager {
 
-    protected Node getContentNode(Node wfItem) {
-        NodeList list = wfItem.getRelatedNodes(RepositoryUtil.CONTENTELEMENT, WORKFLOWREL, DESTINATION);
-        if (!list.isEmpty()) {
-            return list.getNode(0);
-        }
-        return null;
-    }
-    
-    protected Node getLinkChannel(Node wfItem) {
-        NodeList channels = wfItem.getRelatedNodes(RepositoryUtil.CONTENTCHANNEL, WORKFLOWREL, DESTINATION);
-        if (!channels.isEmpty()) {
-            return channels.getNode(0);
-        }
-        return null;
-    }
+   public RepositoryWorkflow(Cloud cloud) {
+      super(cloud);
+   }
 
-    
-    public List<Node> getUsersWithRights(Node channel, Role role) {
-        return RepositoryUtil.getUsersWithRights(channel, role);
-    }
+
+   protected Node getContentNode(Node wfItem) {
+      NodeList list = wfItem.getRelatedNodes(RepositoryUtil.CONTENTELEMENT, WORKFLOWREL, DESTINATION);
+      if (!list.isEmpty()) {
+         return list.getNode(0);
+      }
+      return null;
+   }
+
+
+   protected Node getLinkChannel(Node wfItem) {
+      NodeList channels = wfItem.getRelatedNodes(RepositoryUtil.CONTENTCHANNEL, WORKFLOWREL, DESTINATION);
+      if (!channels.isEmpty()) {
+         return channels.getNode(0);
+      }
+      return null;
+   }
+
+
+   public List<Node> getUsersWithRights(Node channel, Role role) {
+      return RepositoryUtil.getUsersWithRights(channel, role);
+   }
 
 }

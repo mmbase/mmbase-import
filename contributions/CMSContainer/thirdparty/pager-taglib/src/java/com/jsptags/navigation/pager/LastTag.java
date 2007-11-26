@@ -22,9 +22,9 @@ package com.jsptags.navigation.pager;
 
 public final class LastTag extends JumpTagSupport {
 
-	protected int getJumpPage() {
-		return (pagerTag.getPageCount() - 1);
-	}
+   protected int getJumpPage() {
+      return (pagerTag.getPageCount() - 1);
+   }
 }
 
 /* vim:set ts=4 sw=4: */

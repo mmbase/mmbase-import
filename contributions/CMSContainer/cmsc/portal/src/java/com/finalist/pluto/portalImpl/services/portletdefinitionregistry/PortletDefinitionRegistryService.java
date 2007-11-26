@@ -46,17 +46,20 @@ import com.finalist.cmsc.services.Service;
  */
 public abstract class PortletDefinitionRegistryService extends Service {
 
-	/**
-	 * Returns a set containg all portlet application definitions
-	 * 
-	 * @return the portlet application definition set
-	 */
-	abstract public PortletApplicationDefinitionList getPortletApplicationDefinitionList();
+   /**
+    * Returns a set containg all portlet application definitions
+    * 
+    * @return the portlet application definition set
+    */
+   abstract public PortletApplicationDefinitionList getPortletApplicationDefinitionList();
 
-	/**
-	 * Returns the portlet definition to the given object id
-	 * @param id ObjectID of the portlet definition
-	 * @return the portlet definition
-	 */
-	abstract public PortletDefinition getPortletDefinition(ObjectID id);
+
+   /**
+    * Returns the portlet definition to the given object id
+    * 
+    * @param id
+    *           ObjectID of the portlet definition
+    * @return the portlet definition
+    */
+   abstract public PortletDefinition getPortletDefinition(ObjectID id);
 }

@@ -23,84 +23,113 @@ package xmlbs;
 
 /**
  * Interface for writing document structure descriptions.
- *
+ * 
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface DocumentStructure {
-    /**
-     * Set ignore case flag for matching tagnames, attributes and
-     * entities.
-     * @param icase true where character case should be ignored
-     */
-    void setIgnoreCase (boolean icase);
+   /**
+    * Set ignore case flag for matching tagnames, attributes and entities.
+    * 
+    * @param icase
+    *           true where character case should be ignored
+    */
+   void setIgnoreCase(boolean icase);
 
-    /**
-     * Get ignore case flag.
-     * @return true where character case should be ignored
-     */
-    boolean getIgnoreCase ();
 
-    /**
-     * Get tag name.
-     * Ignoring character case if needed.
-     * @param name tag name to lookup
-     * @return tag name in proper case
-     */
-    String getTagName (String name);
+   /**
+    * Get ignore case flag.
+    * 
+    * @return true where character case should be ignored
+    */
+   boolean getIgnoreCase();
 
-    /**
-     * Get attribute name.
-     * Ignoring character case if needed.
-     * @param name tag name to lookup
-     * @param attr attribute name to lookup
-     * @return attribute name in proper case
-     */
-    String getTagAttribute (String name, String attr);
 
-    /**
-     * Get entity reference.
-     * Ignoring character case if needed.
-     * @param name entity reference name
-     * @return entity reference name in proper case or
-     * <tt>null</tt> if no such entity exists
-     */
-    String getEntityRef (String name);
+   /**
+    * Get tag name. Ignoring character case if needed.
+    * 
+    * @param name
+    *           tag name to lookup
+    * @return tag name in proper case
+    */
+   String getTagName(String name);
 
-    /**
-     * Determine if tag is known.
-     * @param tag tag token to lookup
-     * @return true if tag is known
-     */
-    boolean isKnownTag (TagToken tag);
 
-    /**
-     * Retain only known attributes.
-     * <P><EM>TODO return number of modifications?</EM></P>
-     * @param tag tag token to handle
-     */
-    void retainKnownAttributes (TagToken tag);
+   /**
+    * Get attribute name. Ignoring character case if needed.
+    * 
+    * @param name
+    *           tag name to lookup
+    * @param attr
+    *           attribute name to lookup
+    * @return attribute name in proper case
+    */
+   String getTagAttribute(String name, String attr);
 
-    /**
-     * Determine if tag can be placed into other tag.
-     * @param parent top tag
-     * @param child sub tag
-     * @return true when allowed
-     */
-    boolean canContain (TagToken parent, Token child);
-    
-    /**
-     * Determine if tag can be placed into other tag.
-     * @param tag top tag
-     * @param name child tag name
-     * @return true when allowed
-     */
-    boolean canContainTag(TagToken tag, String name);
-    
-    /**
-     * Determine if tag can be contain text.
-     * @param tag top tag
-     * @return true when allowed
-     */
-    boolean canContainText(TagToken tag);
+
+   /**
+    * Get entity reference. Ignoring character case if needed.
+    * 
+    * @param name
+    *           entity reference name
+    * @return entity reference name in proper case or <tt>null</tt> if no such
+    *         entity exists
+    */
+   String getEntityRef(String name);
+
+
+   /**
+    * Determine if tag is known.
+    * 
+    * @param tag
+    *           tag token to lookup
+    * @return true if tag is known
+    */
+   boolean isKnownTag(TagToken tag);
+
+
+   /**
+    * Retain only known attributes.
+    * <P>
+    * <EM>TODO return number of modifications?</EM>
+    * </P>
+    * 
+    * @param tag
+    *           tag token to handle
+    */
+   void retainKnownAttributes(TagToken tag);
+
+
+   /**
+    * Determine if tag can be placed into other tag.
+    * 
+    * @param parent
+    *           top tag
+    * @param child
+    *           sub tag
+    * @return true when allowed
+    */
+   boolean canContain(TagToken parent, Token child);
+
+
+   /**
+    * Determine if tag can be placed into other tag.
+    * 
+    * @param tag
+    *           top tag
+    * @param name
+    *           child tag name
+    * @return true when allowed
+    */
+   boolean canContainTag(TagToken tag, String name);
+
+
+   /**
+    * Determine if tag can be contain text.
+    * 
+    * @param tag
+    *           top tag
+    * @return true when allowed
+    */
+   boolean canContainText(TagToken tag);
 }

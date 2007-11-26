@@ -19,23 +19,23 @@ import com.finalist.pluto.portalImpl.services.portletdefinitionregistry.PortletD
  * List the available portlet definitions
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ListPortletDefinitionsTag extends AbstractListTag<PortletDefinition> {
 
-	@Override
-    public List<PortletDefinition> getList() {
-		List<PortletDefinition> portlets = new ArrayList<PortletDefinition>();
-		PortletApplicationDefinitionList registry = PortletDefinitionRegistry.getPortletApplicationDefinitionList();
-		
-		for (Iterator<PortletApplicationDefinition> i = registry.iterator(); i.hasNext();) {
-			PortletApplicationDefinition application = i.next();
-			for (Iterator<PortletDefinition> j = application.getPortletDefinitionList().iterator(); j.hasNext();) {
-				PortletDefinition portlet = j.next();
-				portlets.add(portlet);
-			}
-		}
-        return portlets;
-	}
+   @Override
+   public List<PortletDefinition> getList() {
+      List<PortletDefinition> portlets = new ArrayList<PortletDefinition>();
+      PortletApplicationDefinitionList registry = PortletDefinitionRegistry.getPortletApplicationDefinitionList();
+
+      for (Iterator<PortletApplicationDefinition> i = registry.iterator(); i.hasNext();) {
+         PortletApplicationDefinition application = i.next();
+         for (Iterator<PortletDefinition> j = application.getPortletDefinitionList().iterator(); j.hasNext();) {
+            PortletDefinition portlet = j.next();
+            portlets.add(portlet);
+         }
+      }
+      return portlets;
+   }
 
 }

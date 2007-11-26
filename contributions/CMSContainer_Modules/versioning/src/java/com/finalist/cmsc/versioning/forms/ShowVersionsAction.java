@@ -28,7 +28,8 @@ import java.util.Locale;
 public class ShowVersionsAction extends MMBaseAction {
 
    @Override
-   public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+   public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
 
       Locale locale = request.getLocale();
 
@@ -44,7 +45,6 @@ public class ShowVersionsAction extends MMBaseAction {
          NodeList archiveNodeList = manager.getList(query);
          request.setAttribute("archiveNodesSize", archiveNodeList.size());
          request.setAttribute("archiveNodes", archiveNodeList);
-
 
          UserRole role = RepositoryUtil.getRole(cloud, RepositoryUtil.getCreationChannel(node), false);
          request.setAttribute("isAllowed", SecurityUtil.isWriter(role));

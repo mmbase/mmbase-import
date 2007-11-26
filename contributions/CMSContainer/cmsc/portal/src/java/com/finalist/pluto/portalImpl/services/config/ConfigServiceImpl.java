@@ -30,28 +30,31 @@ import com.finalist.cmsc.services.Properties;
  * its own configuration file.
  */
 public class ConfigServiceImpl extends ConfigService {
-	private static Log log = LogFactory.getLog(ConfigServiceImpl.class);
-	
-	private Parameters iParameters;
-	
-	public void init(ServletConfig aConfig, Properties aProperties) throws Exception {
-		log.debug("init ConfigServiceImpl");
+   private static Log log = LogFactory.getLog(ConfigServiceImpl.class);
 
-		iParameters = new Parameters(aConfig);
+   private Parameters iParameters;
 
-        Parameters contextParams = new Parameters(aConfig.getServletContext());
 
-		contextParams.setParent(aProperties);
+   public void init(ServletConfig aConfig, Properties aProperties) throws Exception {
+      log.debug("init ConfigServiceImpl");
 
-		iParameters.setParent(contextParams);
-	}
+      iParameters = new Parameters(aConfig);
 
-	public void destroy() {
-		iParameters = null;
-	}
+      Parameters contextParams = new Parameters(aConfig.getServletContext());
 
-	public Parameters getParameters() {
-		return (iParameters);
-	}
+      contextParams.setParent(aProperties);
+
+      iParameters.setParent(contextParams);
+   }
+
+
+   public void destroy() {
+      iParameters = null;
+   }
+
+
+   public Parameters getParameters() {
+      return (iParameters);
+   }
 
 }

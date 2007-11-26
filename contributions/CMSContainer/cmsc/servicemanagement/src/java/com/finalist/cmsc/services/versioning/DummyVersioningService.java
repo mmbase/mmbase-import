@@ -10,16 +10,18 @@ public class DummyVersioningService extends VersioningService {
 
    @Override
    public void addVersion(Node node) {
-       // nothing
+      // nothing
    }
+
 
    @Override
    public Node restoreVersion(Node node) {
-	   return null;
+      return null;
    }
+
 
    @Override
    public void removeVersions(Node node) {
-       // nothing
+      // nothing
    }
 }

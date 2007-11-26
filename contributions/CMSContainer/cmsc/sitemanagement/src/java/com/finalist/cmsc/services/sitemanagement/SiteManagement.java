@@ -27,147 +27,179 @@ import com.finalist.cmsc.services.security.LoginSession;
  * @author Wouter Heijke
  */
 public class SiteManagement {
-    private static Log log = LogFactory.getLog(SiteManagement.class);
-    
-	private final static SiteManagementService cService = (SiteManagementService) ServiceManager
-			.getService(SiteManagementService.class);
+   private static Log log = LogFactory.getLog(SiteManagement.class);
 
-	public static boolean isNavigation(String path) {
-        if (cService == null) {
-            log.info("SiteManagementService not started");
-            return false;
-        }
-		return cService.isNavigation(path);
-	}
+   private final static SiteManagementService cService = (SiteManagementService) ServiceManager
+         .getService(SiteManagementService.class);
 
-	public static LoginSession getLoginSession(HttpServletRequest request) {
-        if (cService == null) {
-            log.info("SiteManagementService not started");
-            return null;
-        }
-		return cService.getLoginSession(request);
-	}
 
-	public static List<Site> getSites() {
-        if (cService == null) {
-            log.info("SiteManagementService not started");
-            return new ArrayList<Site>();
-        }
-		return cService.getSites();
-	}
-	
-	public static List<Page> getPages(Page page) {
-		return cService.getPages(page);
-	}
-
-	public static List<Page> getPages(Site site) {
-		return cService.getPages(site);
-	}
-
-	public static NavigationItem getNavigationItem(int id) {
-		return cService.getNavigationItem(id);
-	}
-
-	public static NavigationItem getNavigationItemFromPath(String path) {
-		return cService.getNavigationItemFromPath(path);
-	}
-
-    public static List<Stylesheet> getStylesheetForPageByPath(String path, boolean override) {
-		return cService.getStylesheetForPageByPath(path, override);
-	}
-	public static Site getSiteFromPath(String path) {
-		return cService.getSiteFromPath(path);
-	}
-	
-	public static String getPath(Page page, boolean includeRoot) {
-		return cService.getPath(page, includeRoot);
-	}
-
-    public static String getPath(int pageid, boolean includeRoot) {
-        return cService.getPath(pageid, includeRoot);
-    }
-    
-	public static List<Page> getListFromPath(String path) {
-		return cService.getListFromPath(path);
-	}
-
-    public static List<View> getViews(String pageId, String layoutId) {
-        return cService.getViews(pageId, layoutId);
-    }
-
-    public static List<View> getViews(String definitionId) {
-        return cService.getViews(definitionId);
-    }
-    
-    public static List<View> getViews(PortletDefinition definition) {
-        return cService.getViews(definition);
-    }
-    
-    public static List<PortletDefinition> getSingletonPortlets(String pageId, String layoutId) {
-        return cService.getSingletonPortlets(pageId, layoutId);
-    }
-
-    public static List<PortletDefinition> getPortletDefintions(String pageId, String layoutId) {
-        return cService.getPortletDefintions(pageId, layoutId);
-    }
-
-    public static List<String> getContentTypes(String portletId) {
-        return cService.getContentTypes(portletId);
-    }
-
-    public static Set<String> getPagePositions(String pageId) {
-        return cService.getPagePositions(pageId);
-    }
-
-	public static String getPageImageForPage(String name, String path) {
-		return cService.getPageImageForPath(name, path);
-	}
-
-    public static Layout getLayout(int layout) {
-        return cService.getLayout(layout);
-    }
-
-    public static Portlet getPortlet(Integer portletId){
-        return cService.getPortlet(portletId);
-    }
-
-    public static PortletDefinition getPortletDefinition(int definition) {
-        return cService.getPortletDefinition(definition);
-    }
-
-    public static View getView(int view) {
-        return cService.getView(view);
-    }
-
-    public static String getSite(Page page) {
-       return cService.getSite(page);
-    }
-
-    public static void resetSiteCache() {
-       cService.resetSiteCache();
+   public static boolean isNavigation(String path) {
+      if (cService == null) {
+         log.info("SiteManagementService not started");
+         return false;
+      }
+      return cService.isNavigation(path);
    }
-// [FP]
-//	public static RssFeed getRssFeedFromPath(String path) {
-//		return cService.getRssFeedFromPath(path);
-//	}
-//
-//	public static RssFeed getRssFeed(int number) {
-//		return cService.getRssFeed(number);
-//	}
 
-    /**
-     * Here for downwards compatibility
-     * @deprecated because we now have getNavigationItem
-     */
-	public static Page getPage(int number) {
-		return (Page)getNavigationItem(number);
-	}
 
-    /**
-     * Here for downwards compatibility
-     * @deprecated because we now have getNavigationItemFromPath
-     */
-	public static Page getPageFromPath(String path) {
-		return (Page)getNavigationItemFromPath(path);
-	}
+   public static LoginSession getLoginSession(HttpServletRequest request) {
+      if (cService == null) {
+         log.info("SiteManagementService not started");
+         return null;
+      }
+      return cService.getLoginSession(request);
+   }
+
+
+   public static List<Site> getSites() {
+      if (cService == null) {
+         log.info("SiteManagementService not started");
+         return new ArrayList<Site>();
+      }
+      return cService.getSites();
+   }
+
+
+   public static List<Page> getPages(Page page) {
+      return cService.getPages(page);
+   }
+
+
+   public static List<Page> getPages(Site site) {
+      return cService.getPages(site);
+   }
+
+
+   public static NavigationItem getNavigationItem(int id) {
+      return cService.getNavigationItem(id);
+   }
+
+
+   public static NavigationItem getNavigationItemFromPath(String path) {
+      return cService.getNavigationItemFromPath(path);
+   }
+
+
+   public static List<Stylesheet> getStylesheetForPageByPath(String path, boolean override) {
+      return cService.getStylesheetForPageByPath(path, override);
+   }
+
+
+   public static Site getSiteFromPath(String path) {
+      return cService.getSiteFromPath(path);
+   }
+
+
+   public static String getPath(Page page, boolean includeRoot) {
+      return cService.getPath(page, includeRoot);
+   }
+
+
+   public static String getPath(int pageid, boolean includeRoot) {
+      return cService.getPath(pageid, includeRoot);
+   }
+
+
+   public static List<Page> getListFromPath(String path) {
+      return cService.getListFromPath(path);
+   }
+
+
+   public static List<View> getViews(String pageId, String layoutId) {
+      return cService.getViews(pageId, layoutId);
+   }
+
+
+   public static List<View> getViews(String definitionId) {
+      return cService.getViews(definitionId);
+   }
+
+
+   public static List<View> getViews(PortletDefinition definition) {
+      return cService.getViews(definition);
+   }
+
+
+   public static List<PortletDefinition> getSingletonPortlets(String pageId, String layoutId) {
+      return cService.getSingletonPortlets(pageId, layoutId);
+   }
+
+
+   public static List<PortletDefinition> getPortletDefintions(String pageId, String layoutId) {
+      return cService.getPortletDefintions(pageId, layoutId);
+   }
+
+
+   public static List<String> getContentTypes(String portletId) {
+      return cService.getContentTypes(portletId);
+   }
+
+
+   public static Set<String> getPagePositions(String pageId) {
+      return cService.getPagePositions(pageId);
+   }
+
+
+   public static String getPageImageForPage(String name, String path) {
+      return cService.getPageImageForPath(name, path);
+   }
+
+
+   public static Layout getLayout(int layout) {
+      return cService.getLayout(layout);
+   }
+
+
+   public static Portlet getPortlet(Integer portletId) {
+      return cService.getPortlet(portletId);
+   }
+
+
+   public static PortletDefinition getPortletDefinition(int definition) {
+      return cService.getPortletDefinition(definition);
+   }
+
+
+   public static View getView(int view) {
+      return cService.getView(view);
+   }
+
+
+   public static String getSite(Page page) {
+      return cService.getSite(page);
+   }
+
+
+   public static void resetSiteCache() {
+      cService.resetSiteCache();
+   }
+
+
+   // [FP]
+   // public static RssFeed getRssFeedFromPath(String path) {
+   // return cService.getRssFeedFromPath(path);
+   // }
+   //
+   // public static RssFeed getRssFeed(int number) {
+   // return cService.getRssFeed(number);
+   // }
+
+   /**
+    * Here for downwards compatibility
+    * 
+    * @deprecated because we now have getNavigationItem
+    */
+   public static Page getPage(int number) {
+      return (Page) getNavigationItem(number);
+   }
+
+
+   /**
+    * Here for downwards compatibility
+    * 
+    * @deprecated because we now have getNavigationItemFromPath
+    */
+   public static Page getPageFromPath(String path) {
+      return (Page) getNavigationItemFromPath(path);
+   }
 }

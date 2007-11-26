@@ -25,6 +25,7 @@ public class SqlExecutor {
    private static Logger log = Logging.getLoggerInstance(SqlExecutor.class.getName());
    private Connection connection;
 
+
    public String execute(SqlAction sqlAction) {
       String result = "";
 
@@ -34,9 +35,9 @@ public class SqlExecutor {
       }
       MMBase mmb = MMBase.getMMBase();
       sqlAction.setMmb(mmb);
-      
+
       String sql = sqlAction.getSql();
-      
+
       Connection con = null;
       PreparedStatement stmt = null;
       ResultSet rs = null;
@@ -44,93 +45,104 @@ public class SqlExecutor {
          con = getConnection();
          stmt = con.prepareStatement(sql);
          rs = stmt.executeQuery();
-         
+
          result = sqlAction.process(rs);
-      } catch (Exception e) {
-       log.warn("Database connection failed " + Logging.stackTrace(e));
-      } finally {
+      }
+      catch (Exception e) {
+         log.warn("Database connection failed " + Logging.stackTrace(e));
+      }
+      finally {
          try {
             if (rs != null) {
                rs.close();
             }
-         } catch (Exception e) {
-          log.debug("Statement close failed");
+         }
+         catch (Exception e) {
+            log.debug("Statement close failed");
          }
          try {
             if (stmt != null) {
                stmt.close();
             }
-         } catch (Exception e) {
-          log.debug("Statement close failed");
+         }
+         catch (Exception e) {
+            log.debug("Statement close failed");
          }
          try {
             if (con != null) {
                con.close();
             }
-         } catch (Exception e) {
-          log.debug("Connection close failed");
+         }
+         catch (Exception e) {
+            log.debug("Connection close failed");
          }
       }
-      return result + "<br /> Done"; 
+      return result + "<br /> Done";
    }
+
 
    private Connection getConnection() {
-        if (connection == null) {
-            MMBase mmbase = MMBase.getMMBase();
-            StorageManagerFactory sf = mmbase.getStorageManagerFactory();
-            if (sf instanceof DatabaseStorageManagerFactory) {
-                try {
-                    DatabaseStorageManagerFactory df = (DatabaseStorageManagerFactory) sf;
-                    connection = df.getDataSource().getConnection();
-                }
-                catch (SQLException e) {
-                    log.debug("Failed to get connection " + e.getMessage(), e);
-                }
+      if (connection == null) {
+         MMBase mmbase = MMBase.getMMBase();
+         StorageManagerFactory sf = mmbase.getStorageManagerFactory();
+         if (sf instanceof DatabaseStorageManagerFactory) {
+            try {
+               DatabaseStorageManagerFactory df = (DatabaseStorageManagerFactory) sf;
+               connection = df.getDataSource().getConnection();
             }
-            else {
-                String dataSourceURI = mmbase.getInitParameter("datasource");
-                if (dataSourceURI != null) {
-                    try {
-                        String contextName = mmbase.getInitParameter("datasource-context");
-                        if (contextName == null) {
-                            contextName = "java:comp/env";
-                        }
-                        log.service("Using configured datasource " + dataSourceURI);
-                        Context initialContext = new InitialContext();
-                        Context environmentContext = (Context) initialContext.lookup(contextName);
-                        DataSource ds = (DataSource)environmentContext.lookup(dataSourceURI);
-                        if (ds == null) {
-                            connection = ds.getConnection();
-                        }
-                    } catch(NamingException ne) {
-                        log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage() + "). Attempt to use JDBC Module to access database.");
-                    }
-                    catch (SQLException e) {
-                        log.debug("Failed to get connection " + e.getMessage(), e);
-                    }
-                }
+            catch (SQLException e) {
+               log.debug("Failed to get connection " + e.getMessage(), e);
             }
-            if (connection == null) {    
-                throw new NullPointerException("connection not set. Write code to get it from MMBase datasource!");
+         }
+         else {
+            String dataSourceURI = mmbase.getInitParameter("datasource");
+            if (dataSourceURI != null) {
+               try {
+                  String contextName = mmbase.getInitParameter("datasource-context");
+                  if (contextName == null) {
+                     contextName = "java:comp/env";
+                  }
+                  log.service("Using configured datasource " + dataSourceURI);
+                  Context initialContext = new InitialContext();
+                  Context environmentContext = (Context) initialContext.lookup(contextName);
+                  DataSource ds = (DataSource) environmentContext.lookup(dataSourceURI);
+                  if (ds == null) {
+                     connection = ds.getConnection();
+                  }
+               }
+               catch (NamingException ne) {
+                  log.warn("Datasource '" + dataSourceURI + "' not available. (" + ne.getMessage()
+                        + "). Attempt to use JDBC Module to access database.");
+               }
+               catch (SQLException e) {
+                  log.debug("Failed to get connection " + e.getMessage(), e);
+               }
             }
-        }
-        return connection;
+         }
+         if (connection == null) {
+            throw new NullPointerException("connection not set. Write code to get it from MMBase datasource!");
+         }
+      }
+      return connection;
    }
 
+
    public void setConnection(Connection connection) {
-       this.connection = connection;
+      this.connection = connection;
    }
 
    public static final String DEFAULT_SESSIONNAME = "cloud_mmbase";
    public static final String DEFAULT_CLOUD_NAME = "mmbase";
    public static final String DEFAULT_AUTHENTICATION = "name/password";
-   
+
+
    private static Cloud getCloud() {
       return CloudProviderFactory.getCloudProvider().getAdminCloud();
    }
-   
-   public static Map<String,String> getUserCredentials(String username, String password) {
-      Map<String,String> result = new HashMap<String,String>(3, 0.7f);
+
+
+   public static Map<String, String> getUserCredentials(String username, String password) {
+      Map<String, String> result = new HashMap<String, String>(3, 0.7f);
       result.put("username", username);
       result.put("password", password);
       return result;

@@ -22,14 +22,14 @@ package com.jsptags.navigation.pager;
 
 public final class NextTag extends SkipTagSupport {
 
-	protected boolean skip() {
-		boolean hasPage = pagerTag.hasNextPage();
+   protected boolean skip() {
+      boolean hasPage = pagerTag.hasNextPage();
 
-		if (hasPage)
-			setOffsetAttributes(pagerTag.getNextOffset());
+      if (hasPage)
+         setOffsetAttributes(pagerTag.getNextOffset());
 
-		return hasPage;
-	}
+      return hasPage;
+   }
 }
 
 /* vim:set ts=4 sw=4: */
