@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page session="false" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@page session="false"
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><mm:content type="text/html">
 <mm:cloud>
 <html>
@@ -10,7 +10,7 @@
   <link rel="icon"          href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
   <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
 </head>
-<body >      
+<body >
   <table>
     <tr>
       <th class="main" colspan="3">MMBase Demos</th>
@@ -29,8 +29,8 @@
         </p>
       </td>
     </tr>
-    
-    
+
+
     <tr>
       <th class="main" colspan="3">Jsp/Taglib Demo's</th>
     </tr>
@@ -38,7 +38,7 @@
       <th>Name demo</th>
       <th colspan="2">Description</th>
     </tr>
-    
+
     <tr>
       <td>My News</td>
       <td>
@@ -58,7 +58,7 @@
         <a href="<mm:url page="myyahoo.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
-    
+
     <tr>
       <td>Taglib</td>
       <td>
@@ -68,7 +68,7 @@
         <a href="<mm:url page="taglib/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />"  /></a>
       </td>
     </tr>
-    
+
     <tr>
       <td>Editors</td>
       <td>
@@ -90,16 +90,16 @@
         <a href="<mm:url page="/mmbase/edit/x/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
-    
+
     <tr>
       <th class="header" colspan="3">Other Demo's</th>
     </tr>
-    
+
     <tr>
       <th>Name demo</th>
       <th colspan="2">Description</th>
     </tr>
-    
+
     <tr>
       <td>Editwizard</td>
       <td>
@@ -109,7 +109,7 @@
         <a href="<mm:url page="editwizard/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
-    
+
 
     <tr>
       <td>Codings</td>
@@ -128,10 +128,10 @@
         MMBase 1.8 has powerful support for datatypes.
       </td>
       <td class="link" >
-        <a href="<mm:url page="validation/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
+        <a href="<mm:url page="/mmbase/validation/" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.png" />" /></a>
       </td>
     </tr>
-    
+
   </table>
   <div class="link">
     <a href="<mm:url page=".." />"><img alt="back" src="<mm:url page="/mmbase/style/images/back.png" />" /></a>
