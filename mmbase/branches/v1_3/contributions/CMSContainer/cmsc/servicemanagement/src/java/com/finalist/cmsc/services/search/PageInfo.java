@@ -12,14 +12,14 @@ package com.finalist.cmsc.services.search;
 public class PageInfo {
     
     private int pageNumber;
-    private String host;
-    private String path;
     private String windowName;
-    private String layout;
-
-    private int priority = -1;
     private String parametername;
     private String parametervalue;
+
+    private String host;
+    private String path;
+    private String layout;
+    private int priority = -1;
     private boolean isSite;
 
     public PageInfo(int pageNumber, String host, String path, String windowName, String layout, 
@@ -70,27 +70,40 @@ public class PageInfo {
     public boolean isSite() {
         return isSite;
     }
-    
+
     @Override
     public int hashCode() {
-        final int PRIME = 31;
+        final int prime = 31;
         int result = 1;
-        result = PRIME * result + pageNumber;
-        result = PRIME * result + ((windowName == null) ? 0 : windowName.hashCode());
+        result = prime * result + pageNumber;
+        result = prime * result + ((windowName == null) ? 0 : windowName.hashCode());
+        result = prime * result + ((parametername == null) ? 0 : parametername.hashCode());
+        result = prime * result + ((parametervalue == null) ? 0 : parametervalue.hashCode());
         return result;
-}
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        final PageInfo other = (PageInfo) obj;
+        PageInfo other = (PageInfo) obj;
         if (pageNumber != other.pageNumber) return false;
         if (windowName == null) {
             if (other.windowName != null) return false;
         }
         else
             if (!windowName.equals(other.windowName)) return false;
+        if (parametername == null) {
+            if (other.parametername != null) return false;
+        }
+        else
+            if (!parametername.equals(other.parametername)) return false;
+        if (parametervalue == null) {
+            if (other.parametervalue != null) return false;
+        }
+        else
+            if (!parametervalue.equals(other.parametervalue)) return false;
         return true;
     }
 

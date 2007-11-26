@@ -118,7 +118,7 @@ public class RedirectServlet extends BridgeServlet {
         
         if (redirect != null) {
             if (this.forwardRequest) {
-                if (!redirect.startsWith("/") && redirect.indexOf("://") > -1 && ServerUtil.useServerName()) {
+                if (redirect.indexOf("://") > -1 && ServerUtil.useServerName()) {
                     // not a valid forward dispatch url, but it might be converted to one.
                     String currentHost = request.getServerName();
                     int hostIndex = redirect.indexOf("://" + currentHost);
@@ -126,9 +126,6 @@ public class RedirectServlet extends BridgeServlet {
                         // The same host as the contenturl. strip servername and port
                         int firstSlash = redirect.indexOf("/", hostIndex + "://".length());
                         redirect = redirect.substring(firstSlash);
-                        if (!"/".equals(request.getContextPath())) {
-                            redirect = redirect.substring( request.getContextPath().length());
-                        }
                     }
                     else {
                         // can not convert so just redirect.
@@ -136,11 +133,17 @@ public class RedirectServlet extends BridgeServlet {
                         return;
                     }
                 }
+                if (!"/".equals(request.getContextPath())) {
+                    if (redirect.startsWith(request.getContextPath() + "/")) {
+                        redirect = redirect.substring( request.getContextPath().length());
+                    }
+                }
+                
                 redirect = response.encodeURL(redirect);
                 try {
                     RequestDispatcher rd = super.getServletContext().getNamedDispatcher(PortalConstants.CMSC_PORTAL_SERVLET);
                     HttpServletRequest internalRequest = new InternalRedirectHttpServletRequest(request, redirect);
-                    PortalEnvironment insternalEnv = new PortalEnvironment(internalRequest, response, this.getServletConfig());
+                    PortalEnvironment internalEnv = new PortalEnvironment(internalRequest, response, this.getServletConfig());
                     rd.forward(internalRequest, response);
                 }
                 catch (ServletException e) {
