@@ -21,7 +21,7 @@
     </div>
 
     <div class="body"><c:if test="${not empty rows}">
-        <%@include file="includes/searchpages.jsp"%>
+        <%@include file="includes/searchpages.jsp"%>             
         <table>
             <tr class="listheader">
                 <th></th>
