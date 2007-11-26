@@ -22,51 +22,56 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
  */
 public class ListPagesTag extends AbstractListTag<Page> {
 
-    private static final String MODE_ALL = "all";
-    private static final String MODE_HIDDEN = "hidden";
-    private static final String MODE_MENU = "menu";
-    
-    private String mode = MODE_MENU;
-    
-	@Override
-    protected List<Page> getList() {
-        List<Page> pages = null;
-		if (origin != null) {
-			if (origin instanceof Site) {
-                pages = SiteManagement.getPages((Site)origin);
-	        } else if (origin instanceof Page) {
-                pages =  SiteManagement.getPages((Page)origin);
-	        }
-		} else {
-            pages = new ArrayList<Page>(SiteManagement.getSites());
-		}
-        if (pages != null ) {
-            if (MODE_MENU.equalsIgnoreCase(mode)) {
-                for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
-                    Page page = iter.next();
-                    if (!page.isInmenu()) {
-                        iter.remove();
-                    }
-                }
+   private static final String MODE_ALL = "all";
+   private static final String MODE_HIDDEN = "hidden";
+   private static final String MODE_MENU = "menu";
+
+   private String mode = MODE_MENU;
+
+
+   @Override
+   protected List<Page> getList() {
+      List<Page> pages = null;
+      if (origin != null) {
+         if (origin instanceof Site) {
+            pages = SiteManagement.getPages((Site) origin);
+         }
+         else if (origin instanceof Page) {
+            pages = SiteManagement.getPages((Page) origin);
+         }
+      }
+      else {
+         pages = new ArrayList<Page>(SiteManagement.getSites());
+      }
+      if (pages != null) {
+         if (MODE_MENU.equalsIgnoreCase(mode)) {
+            for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
+               Page page = iter.next();
+               if (!page.isInmenu()) {
+                  iter.remove();
+               }
             }
-            if (MODE_HIDDEN.equalsIgnoreCase(mode)) {
-                for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
-                    Page page = iter.next();
-                    if (page.isInmenu()) {
-                        iter.remove();
-                    }
-                }
+         }
+         if (MODE_HIDDEN.equalsIgnoreCase(mode)) {
+            for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
+               Page page = iter.next();
+               if (page.isInmenu()) {
+                  iter.remove();
+               }
             }
-        }
-		return pages;
-	}
-    
-    public String getMode() {
-        return mode;
-    }
-    
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-    
+         }
+      }
+      return pages;
+   }
+
+
+   public String getMode() {
+      return mode;
+   }
+
+
+   public void setMode(String mode) {
+      this.mode = mode;
+   }
+
 }

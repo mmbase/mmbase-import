@@ -21,57 +21,66 @@ import com.finalist.cmsc.util.bundles.JstlUtil;
 
 public class MultipleOptionTag extends SimpleTagSupport {
 
-	private String value;
-	private String name;
-	private String message;
+   private String value;
+   private String name;
+   private String message;
 
-	@Override
-	public void doTag() throws IOException {
-		PageContext ctx = (PageContext) getJspContext();
 
-		MultipleSelectTag container = (MultipleSelectTag) findAncestorWithClass(this, MultipleSelectTag.class);
-		boolean isSelected = container.isSelected(value);
+   @Override
+   public void doTag() throws IOException {
+      PageContext ctx = (PageContext) getJspContext();
 
-		ctx.getOut().print("<option value=\"" + value + "\"");
-		if (isSelected == true) {
-			ctx.getOut().print(" selected=\"selected\"");
-		}
-		ctx.getOut().print(">");
-		if (!StringUtil.isEmpty(name)) {
-			ctx.getOut().print(name);
-		} else {
-			if (!StringUtil.isEmpty(message)) {
-				HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-				ctx.getOut().print(JstlUtil.getMessage(request, message));
-			} else {
-				ctx.getOut().print(value);
-			}
-		}
-		ctx.getOut().print("</option>");
-	}
+      MultipleSelectTag container = (MultipleSelectTag) findAncestorWithClass(this, MultipleSelectTag.class);
+      boolean isSelected = container.isSelected(value);
 
-	public String getMessage() {
-		return message;
-	}
+      ctx.getOut().print("<option value=\"" + value + "\"");
+      if (isSelected == true) {
+         ctx.getOut().print(" selected=\"selected\"");
+      }
+      ctx.getOut().print(">");
+      if (!StringUtil.isEmpty(name)) {
+         ctx.getOut().print(name);
+      }
+      else {
+         if (!StringUtil.isEmpty(message)) {
+            HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+            ctx.getOut().print(JstlUtil.getMessage(request, message));
+         }
+         else {
+            ctx.getOut().print(value);
+         }
+      }
+      ctx.getOut().print("</option>");
+   }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
 
-	public String getName() {
-		return name;
-	}
+   public String getMessage() {
+      return message;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
-	public String getValue() {
-		return value;
-	}
+   public void setMessage(String message) {
+      this.message = message;
+   }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+
+   public String getName() {
+      return name;
+   }
+
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+
+   public String getValue() {
+      return value;
+   }
+
+
+   public void setValue(String value) {
+      this.value = value;
+   }
 
 }

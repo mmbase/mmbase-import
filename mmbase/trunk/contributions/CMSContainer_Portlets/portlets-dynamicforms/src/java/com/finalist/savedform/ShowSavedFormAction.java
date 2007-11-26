@@ -22,37 +22,38 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ShowSavedFormAction extends MMBaseAction {
 
-	@Override
-	   public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
 
-	      String nodeNumber = request.getParameter("nodenumber");
-	      if (!StringUtil.isEmptyOrWhitespace(nodeNumber) && cloud.hasNode(nodeNumber)) {
-	    	
-	    	 Set<String> headersNumbers = new TreeSet<String>();
-	         Node responseForm = cloud.getNode(nodeNumber);	       
-	         
-	         NodeList savedFormNodeList = responseForm.getRelatedNodes("savedform"); 	       
-	         NodeIterator savedFormIterator = savedFormNodeList.nodeIterator();
-	         while(savedFormIterator.hasNext()) {
-	        	 Node savedForm = savedFormIterator.nextNode();
-	        	 NodeList savedFieldsList = savedForm.getRelatedNodes("savedfieldvalue");
-	        	 NodeIterator savedFieldIterator = savedFieldsList.nodeIterator();
-	        	 while(savedFieldIterator.hasNext()) {
-	        		 Node savedField = savedFieldIterator.nextNode();
-	        		 headersNumbers.add(savedField.getStringValue("field"));
-	        	 }
-	         }	      
-	         request.setAttribute("headerNumbers", headersNumbers);
-	         request.setAttribute("savedFormNodeList", savedFormNodeList);             	         
-	         
-	         UserRole role = RepositoryUtil.getRole(cloud, RepositoryUtil.getCreationChannel(responseForm), false);
-	         request.setAttribute("isAllowed", SecurityUtil.isWriter(role));
-	      }
-	      else {
-	         String message = getResources(request, "SAVEDFORM").getMessage("incorrect.nodenumber", nodeNumber);
-	         request.setAttribute("error", message);
-	      }
+      String nodeNumber = request.getParameter("nodenumber");
+      if (!StringUtil.isEmptyOrWhitespace(nodeNumber) && cloud.hasNode(nodeNumber)) {
 
-	      return mapping.findForward("success");
-	   }
+         Set<String> headersNumbers = new TreeSet<String>();
+         Node responseForm = cloud.getNode(nodeNumber);
+
+         NodeList savedFormNodeList = responseForm.getRelatedNodes("savedform");
+         NodeIterator savedFormIterator = savedFormNodeList.nodeIterator();
+         while (savedFormIterator.hasNext()) {
+            Node savedForm = savedFormIterator.nextNode();
+            NodeList savedFieldsList = savedForm.getRelatedNodes("savedfieldvalue");
+            NodeIterator savedFieldIterator = savedFieldsList.nodeIterator();
+            while (savedFieldIterator.hasNext()) {
+               Node savedField = savedFieldIterator.nextNode();
+               headersNumbers.add(savedField.getStringValue("field"));
+            }
+         }
+         request.setAttribute("headerNumbers", headersNumbers);
+         request.setAttribute("savedFormNodeList", savedFormNodeList);
+
+         UserRole role = RepositoryUtil.getRole(cloud, RepositoryUtil.getCreationChannel(responseForm), false);
+         request.setAttribute("isAllowed", SecurityUtil.isWriter(role));
+      }
+      else {
+         String message = getResources(request, "SAVEDFORM").getMessage("incorrect.nodenumber", nodeNumber);
+         request.setAttribute("error", message);
+      }
+
+      return mapping.findForward("success");
+   }
 }

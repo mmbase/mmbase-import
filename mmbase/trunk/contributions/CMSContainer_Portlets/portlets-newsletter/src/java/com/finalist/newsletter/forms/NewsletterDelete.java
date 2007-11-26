@@ -23,43 +23,46 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class NewsletterDelete extends MMBaseFormlessAction {
 
-	/** name of submit button in jsp to confirm removal */
-	private static final String ACTION_REMOVE = "remove";
+   /** name of submit button in jsp to confirm removal */
+   private static final String ACTION_REMOVE = "remove";
 
-	/** name of submit button in jsp to cancel removal */
-	private static final String ACTION_CANCEL = "cancel";
+   /** name of submit button in jsp to cancel removal */
+   private static final String ACTION_CANCEL = "cancel";
 
-	@Override
-	public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-		if (isRemoveAction(request)) {
-			String objectnumber = getParameter(request, "number", true);
-			Node newsletterNode = cloud.getNode(objectnumber);
+   @Override
+   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-			UserRole role = NavigationUtil.getRole(newsletterNode.getCloud(), newsletterNode, false);
-			boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
+      if (isRemoveAction(request)) {
+         String objectnumber = getParameter(request, "number", true);
+         Node newsletterNode = cloud.getNode(objectnumber);
 
-			if (NavigationUtil.getChildCount(newsletterNode) > 0 && !isWebMaster) {
-				return mapping.findForward("newsletterdeletewarning");
-			}
-			NavigationUtil.deletePage(newsletterNode);
-			return mapping.findForward(SUCCESS);
-		}
+         UserRole role = NavigationUtil.getRole(newsletterNode.getCloud(), newsletterNode, false);
+         boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
 
-		if (isCancelAction(request)) {
-			return mapping.findForward(SUCCESS);
-		}
+         if (NavigationUtil.getChildCount(newsletterNode) > 0 && !isWebMaster) {
+            return mapping.findForward("newsletterdeletewarning");
+         }
+         NavigationUtil.deletePage(newsletterNode);
+         return mapping.findForward(SUCCESS);
+      }
 
-		// neither remove or cancel, show confirmation page
-		return mapping.findForward("newsletterdelete");
-	}
+      if (isCancelAction(request)) {
+         return mapping.findForward(SUCCESS);
+      }
 
-	private boolean isRemoveAction(HttpServletRequest request) {
-		return getParameter(request, ACTION_REMOVE) != null;
-	}
+      // neither remove or cancel, show confirmation page
+      return mapping.findForward("newsletterdelete");
+   }
 
-	private boolean isCancelAction(HttpServletRequest request) {
-		return getParameter(request, ACTION_CANCEL) != null;
-	}
+
+   private boolean isRemoveAction(HttpServletRequest request) {
+      return getParameter(request, ACTION_REMOVE) != null;
+   }
+
+
+   private boolean isCancelAction(HttpServletRequest request) {
+      return getParameter(request, ACTION_CANCEL) != null;
+   }
 
 }

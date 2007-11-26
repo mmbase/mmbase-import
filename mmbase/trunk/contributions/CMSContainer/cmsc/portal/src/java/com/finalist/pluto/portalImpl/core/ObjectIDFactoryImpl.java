@@ -22,20 +22,22 @@ import com.finalist.pluto.portalImpl.util.ObjectID;
 
 public class ObjectIDFactoryImpl implements org.apache.pluto.factory.ObjectIDFactory {
 
-	// org.apache.pluto.factory.ObjectIDFactory implementation.
+   // org.apache.pluto.factory.ObjectIDFactory implementation.
 
-	public ObjectID createObjectID(String portletGUID) {
-		return ObjectID.createFromString(portletGUID);
-	}
+   public ObjectID createObjectID(String portletGUID) {
+      return ObjectID.createFromString(portletGUID);
+   }
 
-	// additional methods.
 
-	public void init(ServletConfig config, java.util.Map properties) throws Exception {
-		// nothing to do
-	}
+   // additional methods.
 
-	public void destroy() throws Exception {
-		// nothing to do
-	}
+   public void init(ServletConfig config, java.util.Map properties) throws Exception {
+      // nothing to do
+   }
+
+
+   public void destroy() throws Exception {
+      // nothing to do
+   }
 
 }

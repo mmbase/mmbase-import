@@ -25,5 +25,5 @@ import org.apache.pluto.om.window.PortletWindow;
 
 public interface ServletRequestFactory extends org.apache.pluto.factory.Factory {
 
-	public HttpServletRequest getServletRequest(HttpServletRequest request, PortletWindow portletWindow);
+   public HttpServletRequest getServletRequest(HttpServletRequest request, PortletWindow portletWindow);
 }

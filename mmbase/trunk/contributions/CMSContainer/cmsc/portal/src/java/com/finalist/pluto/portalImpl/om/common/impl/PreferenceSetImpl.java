@@ -28,71 +28,80 @@ import org.apache.pluto.util.StringUtils;
  * Set preferences for portlets
  */
 public class PreferenceSetImpl extends HashSet<Preference> implements PreferenceSet, PreferenceSetCtrl, Serializable {
-	private static Log log = LogFactory.getLog(PreferenceSetImpl.class);
+   private static Log log = LogFactory.getLog(PreferenceSetImpl.class);
 
-	public Preference get(String name) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			Preference preference = (Preference) iterator.next();
-			if (preference.getName().equals(name)) {
-				return preference;
-			}
-		}
-		return null;
-	}
 
-	public PreferencesValidator getPreferencesValidator() {
-		log.warn("Portlet class loader not yet available to load preferences validator.");
-		return null;
-	}
+   public Preference get(String name) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         Preference preference = (Preference) iterator.next();
+         if (preference.getName().equals(name)) {
+            return preference;
+         }
+      }
+      return null;
+   }
 
-	public Preference add(String name, List values) {
-		PreferenceImpl preference = new PreferenceImpl();
-		preference.setName(name);
-		preference.setValues(values);
-		super.add(preference);
-		return preference;
-	}
 
-	public Preference add(String name, Object value) {
-		ArrayList<Object> values = new ArrayList<Object>();
-		values.add(value);
-		return this.add(name, values);
-	}
+   public PreferencesValidator getPreferencesValidator() {
+      log.warn("Portlet class loader not yet available to load preferences validator.");
+      return null;
+   }
 
-	public Preference add(String name, int value) {
-		return this.add(name, String.valueOf(value));
-	}
-	
-	public Preference remove(String name) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			Preference preference = (Preference) iterator.next();
-			if (preference.getName().equals(name)) {
-				super.remove(preference);
-				return preference;
-			}
-		}
-		return null;
-	}
 
-	public void remove(Preference preference) {
-		super.remove(preference);
-	}
-    
-    public String toString() {
-        return toString(0);
-    }
+   public Preference add(String name, List values) {
+      PreferenceImpl preference = new PreferenceImpl();
+      preference.setName(name);
+      preference.setValues(values);
+      super.add(preference);
+      return preference;
+   }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": ");
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            buffer.append(((PreferenceImpl) iterator.next()).toString(indent + 2));
-        }
-        return buffer.toString();
-    }
+
+   public Preference add(String name, Object value) {
+      ArrayList<Object> values = new ArrayList<Object>();
+      values.add(value);
+      return this.add(name, values);
+   }
+
+
+   public Preference add(String name, int value) {
+      return this.add(name, String.valueOf(value));
+   }
+
+
+   public Preference remove(String name) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         Preference preference = (Preference) iterator.next();
+         if (preference.getName().equals(name)) {
+            super.remove(preference);
+            return preference;
+         }
+      }
+      return null;
+   }
+
+
+   public void remove(Preference preference) {
+      super.remove(preference);
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": ");
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         buffer.append(((PreferenceImpl) iterator.next()).toString(indent + 2));
+      }
+      return buffer.toString();
+   }
 }

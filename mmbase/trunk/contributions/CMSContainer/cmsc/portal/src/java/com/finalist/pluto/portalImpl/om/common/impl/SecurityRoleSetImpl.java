@@ -27,72 +27,78 @@ import org.apache.pluto.om.common.SecurityRoleSet;
 
 public class SecurityRoleSetImpl extends HashSet implements SecurityRoleSet, java.io.Serializable {
 
-	// unmodifiable part
+   // unmodifiable part
 
-	public static class Unmodifiable extends UnmodifiableSet implements
-			SecurityRoleSet {
+   public static class Unmodifiable extends UnmodifiableSet implements SecurityRoleSet {
 
-		public Unmodifiable(SecurityRoleSet c) {
-			super(c);
-		}
+      public Unmodifiable(SecurityRoleSet c) {
+         super(c);
+      }
 
-		public SecurityRole get(String roleName) {
-			return ((SecurityRoleSet) c).get(roleName);
-		}
 
-	}
+      public SecurityRole get(String roleName) {
+         return ((SecurityRoleSet) c).get(roleName);
+      }
 
-	public SecurityRoleSetImpl() {
-	}
+   }
 
-	// SecurityRoleSet implementation.
 
-	public SecurityRole get(String roleName) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			SecurityRole securityRole = (SecurityRole) iterator.next();
-			if (securityRole.getRoleName().equals(roleName)) {
-				return securityRole;
-			}
-		}
-		return null;
-	}
+   public SecurityRoleSetImpl() {
+   }
 
-	// additional methods.
 
-	public SecurityRole add(SecurityRole securityRole) {
-		SecurityRoleImpl newSecurityRole = new SecurityRoleImpl();
-		newSecurityRole.setRoleName(securityRole.getRoleName());
-		newSecurityRole.setDescription(securityRole.getDescription());
+   // SecurityRoleSet implementation.
 
-		super.add(newSecurityRole);
+   public SecurityRole get(String roleName) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         SecurityRole securityRole = (SecurityRole) iterator.next();
+         if (securityRole.getRoleName().equals(roleName)) {
+            return securityRole;
+         }
+      }
+      return null;
+   }
 
-		return newSecurityRole;
-	}
 
-	public SecurityRole add(String roleName, String description) {
-		SecurityRoleImpl securityRole = new SecurityRoleImpl();
-		securityRole.setRoleName(roleName);
-		securityRole.setDescription(description);
+   // additional methods.
 
-		super.add(securityRole);
+   public SecurityRole add(SecurityRole securityRole) {
+      SecurityRoleImpl newSecurityRole = new SecurityRoleImpl();
+      newSecurityRole.setRoleName(securityRole.getRoleName());
+      newSecurityRole.setDescription(securityRole.getDescription());
 
-		return securityRole;
-	}
+      super.add(newSecurityRole);
 
-	public void remove(SecurityRole securityRole) {
-		super.remove(securityRole);
-	}
+      return newSecurityRole;
+   }
 
-	public SecurityRole remove(String roleName) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			SecurityRole securityRole = (SecurityRole) iterator.next();
-			if (securityRole.getRoleName().equals(roleName)) {
-				super.remove(securityRole);
-				return securityRole;
-			}
-		}
-		return null;
-	}
+
+   public SecurityRole add(String roleName, String description) {
+      SecurityRoleImpl securityRole = new SecurityRoleImpl();
+      securityRole.setRoleName(roleName);
+      securityRole.setDescription(description);
+
+      super.add(securityRole);
+
+      return securityRole;
+   }
+
+
+   public void remove(SecurityRole securityRole) {
+      super.remove(securityRole);
+   }
+
+
+   public SecurityRole remove(String roleName) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         SecurityRole securityRole = (SecurityRole) iterator.next();
+         if (securityRole.getRoleName().equals(roleName)) {
+            super.remove(securityRole);
+            return securityRole;
+         }
+      }
+      return null;
+   }
 }

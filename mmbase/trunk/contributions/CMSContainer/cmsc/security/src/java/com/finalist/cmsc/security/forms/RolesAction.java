@@ -21,28 +21,29 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class RolesAction extends MMBaseAction {
 
    @Override
-public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cloud) throws Exception {
       if (this.isCancelled(request)) {
-          removeFromSession(request, form);
+         removeFromSession(request, form);
          return mapping.findForward("savecancel");
       }
-      
-      Map<Integer,UserRole> requestRoles = SecurityUtil.buildRolesFromRequest(request);
+
+      Map<Integer, UserRole> requestRoles = SecurityUtil.buildRolesFromRequest(request);
       RolesForm groupForm = (RolesForm) form;
 
       groupForm.addRequestRoles(requestRoles);
-      
+
       String save = request.getParameter("savetree");
       if ("true".equals(save)) {
          int id = groupForm.getId();
          Node groupNode = cloud.getNode(id);
-         
+
          setGroupRights(cloud, groupForm, groupNode);
-         
+
          removeFromSession(request, form);
          return mapping.findForward("savecancel");
       }
-      
+
       String id = request.getParameter("nodeNumber");
       if (id != null) {
          Node node = cloud.getNode(id);
@@ -51,11 +52,13 @@ public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServlet
          RolesInfo info = getRolesInfo(cloud, node);
          groupForm.setRolesInfo(info);
       }
-      
+
       return mapping.findForward(SUCCESS);
    }
 
-   protected abstract RolesInfo getRolesInfo(Cloud cloud, Node group) ;
+
+   protected abstract RolesInfo getRolesInfo(Cloud cloud, Node group);
+
 
    protected abstract void setGroupRights(Cloud cloud, RolesForm groupForm, Node groupNode);
 }

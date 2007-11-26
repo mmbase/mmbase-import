@@ -25,25 +25,29 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ServletResponseFactoryImpl implements ServletResponseFactory {
 
-	// ServletResponseFactory implementation.
+   // ServletResponseFactory implementation.
 
-	public javax.servlet.http.HttpServletResponse getServletResponse(HttpServletResponse response) {
-		HttpServletResponse servletResponse = new ServletResponseImpl(response);
-		return servletResponse;
-	}
+   public javax.servlet.http.HttpServletResponse getServletResponse(HttpServletResponse response) {
+      HttpServletResponse servletResponse = new ServletResponseImpl(response);
+      return servletResponse;
+   }
 
-	public javax.servlet.http.HttpServletResponse getStoredServletResponse(HttpServletResponse response, PrintWriter writer) {
-		HttpServletResponse servletResponse = new StoredServletResponseImpl(response, writer);
-		return servletResponse;
-	}
 
-	// additional methods.
+   public javax.servlet.http.HttpServletResponse getStoredServletResponse(HttpServletResponse response,
+         PrintWriter writer) {
+      HttpServletResponse servletResponse = new StoredServletResponseImpl(response, writer);
+      return servletResponse;
+   }
 
-	public void init(javax.servlet.ServletConfig config, java.util.Map properties) throws Exception {
-		// nothing to do
-	}
 
-	public void destroy() throws Exception {
-		// nothing to do
-	}
+   // additional methods.
+
+   public void init(javax.servlet.ServletConfig config, java.util.Map properties) throws Exception {
+      // nothing to do
+   }
+
+
+   public void destroy() throws Exception {
+      // nothing to do
+   }
 }

@@ -26,31 +26,35 @@ import com.finalist.cmsc.module.luceusmodule.LuceusModule;
  * @author Wouter Heijke
  */
 public class RepositoryNameTag extends LuceusmoduleTag {
-	private static Log log = LogFactory.getLog(ServerUrlTag.class);
+   private static Log log = LogFactory.getLog(ServerUrlTag.class);
 
-	@Override
-	public void doTag() throws JspException, IOException {
-		PageContext ctx = (PageContext) getJspContext();
-		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-		LuceusModule module = getModule();
-		if (module != null) {
-			String url = module.getRepositoryName();
+   @Override
+   public void doTag() throws JspException, IOException {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-			// handle result
-			if (var != null) {
-				// put in variable
-				if (url != null) {
-					request.setAttribute(var, url);
-				} else {
-					request.removeAttribute(var);
-				}
-			} else {
-				// write
-				ctx.getOut().print(url);
-			}
-		} else {
-			log.warn("Luceusmodule not running");
-		}
-	}
+      LuceusModule module = getModule();
+      if (module != null) {
+         String url = module.getRepositoryName();
+
+         // handle result
+         if (var != null) {
+            // put in variable
+            if (url != null) {
+               request.setAttribute(var, url);
+            }
+            else {
+               request.removeAttribute(var);
+            }
+         }
+         else {
+            // write
+            ctx.getOut().print(url);
+         }
+      }
+      else {
+         log.warn("Luceusmodule not running");
+      }
+   }
 }

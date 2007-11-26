@@ -9,30 +9,34 @@ import com.finalist.cmsc.rssfeed.util.RssFeedUtil;
 
 public class RssFeedPublisher extends Publisher {
 
-	public RssFeedPublisher(Cloud cloud) {
-		super(cloud);
-	}
+   public RssFeedPublisher(Cloud cloud) {
+      super(cloud);
+   }
 
-    @Override
-	public boolean isPublishable(Node node) {
-        return RssFeedUtil.isRssFeedType(node);
-	}
 
-	@Override
-	public void publish(Node node) {
-        PublishUtil.publishOrUpdateNode(cloud, node.getNumber());
-	}
+   @Override
+   public boolean isPublishable(Node node) {
+      return RssFeedUtil.isRssFeedType(node);
+   }
 
-    @Override
-    /**
-     * no automatic unpublish possible
-     */
-    public void remove(Node node) {
 
-    }
-    
-    @Override
-    public void unpublish(Node node) {
-        PublishUtil.removeNode(cloud, node.getNumber());
-    }
+   @Override
+   public void publish(Node node) {
+      PublishUtil.publishOrUpdateNode(cloud, node.getNumber());
+   }
+
+
+   @Override
+   /**
+    * no automatic unpublish possible
+    */
+   public void remove(Node node) {
+
+   }
+
+
+   @Override
+   public void unpublish(Node node) {
+      PublishUtil.removeNode(cloud, node.getNumber());
+   }
 }

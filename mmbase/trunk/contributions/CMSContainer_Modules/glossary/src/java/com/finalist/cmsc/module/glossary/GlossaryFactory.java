@@ -11,31 +11,30 @@ import java.util.Iterator;
 // Referenced classes of package com.finalist.cmsc.module.glossary:
 //            Glossary
 
-public class GlossaryFactory
-{
+public class GlossaryFactory {
 
-    public GlossaryFactory()
-    {
-    }
+   public GlossaryFactory() {
+   }
 
-    public static Glossary getGlossary()
-    {
-        Glossary glossary = Glossary.instance();
 
-        if(glossary.getTerms().size()>0) return glossary;
+   public static Glossary getGlossary() {
+      Glossary glossary = Glossary.instance();
 
-        Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      if (glossary.getTerms().size() > 0)
+         return glossary;
 
-        NodeManager manager = cloud.getNodeManager("glossary");
-        NodeList list = manager.createQuery().getList();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
-        Iterator<Node> nodeListIterator = list.iterator();
+      NodeManager manager = cloud.getNodeManager("glossary");
+      NodeList list = manager.createQuery().getList();
 
-        while (nodeListIterator.hasNext()) {
-            Node node = nodeListIterator.next();
-            Glossary.instance().addTerm(node.getStringValue("term"), node.getStringValue("definition"));
-        }
-      
-        return glossary;
-    }
+      Iterator<Node> nodeListIterator = list.iterator();
+
+      while (nodeListIterator.hasNext()) {
+         Node node = nodeListIterator.next();
+         Glossary.instance().addTerm(node.getStringValue("term"), node.getStringValue("definition"));
+      }
+
+      return glossary;
+   }
 }

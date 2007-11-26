@@ -26,36 +26,39 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.services.ContainerService;
 
 public class PortletContainerEnvironment implements org.apache.pluto.services.PortletContainerEnvironment {
-	private static Log log = LogFactory.getLog(PortletContainerEnvironment.class);
-	
-	private HashMap<Class, ContainerService> services = new HashMap<Class, ContainerService>();
+   private static Log log = LogFactory.getLog(PortletContainerEnvironment.class);
 
-	public PortletContainerEnvironment() {
-	}
+   private HashMap<Class, ContainerService> services = new HashMap<Class, ContainerService>();
 
-	// org.apache.pluto.services.PortletContainerEnvironment implementation.
 
-	public ContainerService getContainerService(Class service) {
-		return services.get(service);
-	}
+   public PortletContainerEnvironment() {
+   }
 
-	// additional methods.
 
-	public void addContainerService(ContainerService service) {
-		Class serviceClass = service.getClass();
-		log.debug("class='"+serviceClass.getName()+"'");
-		while (serviceClass != null) {
-			Class[] interfaces = serviceClass.getInterfaces();
-			for (Class element : interfaces) {
-				Class[] interfaces2 = element.getInterfaces();
-				for (Class element2 : interfaces2) {
-					if (element2.equals(ContainerService.class)) {
-						services.put(element, service);
-					}
-				}
-			}
-			serviceClass = serviceClass.getSuperclass();
-		}
-	}
+   // org.apache.pluto.services.PortletContainerEnvironment implementation.
+
+   public ContainerService getContainerService(Class service) {
+      return services.get(service);
+   }
+
+
+   // additional methods.
+
+   public void addContainerService(ContainerService service) {
+      Class serviceClass = service.getClass();
+      log.debug("class='" + serviceClass.getName() + "'");
+      while (serviceClass != null) {
+         Class[] interfaces = serviceClass.getInterfaces();
+         for (Class element : interfaces) {
+            Class[] interfaces2 = element.getInterfaces();
+            for (Class element2 : interfaces2) {
+               if (element2.equals(ContainerService.class)) {
+                  services.put(element, service);
+               }
+            }
+         }
+         serviceClass = serviceClass.getSuperclass();
+      }
+   }
 
 }

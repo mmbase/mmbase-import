@@ -20,59 +20,64 @@ import org.apache.pluto.util.StringUtils;
 
 public class ParameterSetImpl extends HashSet implements ParameterSet, ParameterSetCtrl, Serializable {
 
-	// ParameterSet implementation.
-	public Parameter get(String name) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			Parameter parameter = (Parameter) iterator.next();
-			if (parameter.getName().equals(name)) {
-				return parameter;
-			}
-		}
-		return null;
-	}
+   // ParameterSet implementation.
+   public Parameter get(String name) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         Parameter parameter = (Parameter) iterator.next();
+         if (parameter.getName().equals(name)) {
+            return parameter;
+         }
+      }
+      return null;
+   }
 
-	// ParameterSetCtrl implementation.
-	public Parameter add(String name, String value) {
-		ParameterImpl parameter = new ParameterImpl();
-		parameter.setName(name);
-		parameter.setValue(value);
 
-		super.add(parameter);
+   // ParameterSetCtrl implementation.
+   public Parameter add(String name, String value) {
+      ParameterImpl parameter = new ParameterImpl();
+      parameter.setName(name);
+      parameter.setValue(value);
 
-		return parameter;
-	}
+      super.add(parameter);
 
-	public Parameter remove(String name) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			Parameter parameter = (Parameter) iterator.next();
-			if (parameter.getName().equals(name)) {
-				super.remove(parameter);
-				return parameter;
-			}
-		}
-		return null;
-	}
+      return parameter;
+   }
 
-	public void remove(Parameter parameter) {
-		super.remove(parameter);
-	}
-    
-    public String toString() {
-        return toString(0);
-    }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": ");
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            buffer.append(((ParameterImpl) iterator.next()).toString(indent + 2));
-        }
-        return buffer.toString();
-    }
+   public Parameter remove(String name) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         Parameter parameter = (Parameter) iterator.next();
+         if (parameter.getName().equals(name)) {
+            super.remove(parameter);
+            return parameter;
+         }
+      }
+      return null;
+   }
+
+
+   public void remove(Parameter parameter) {
+      super.remove(parameter);
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": ");
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         buffer.append(((ParameterImpl) iterator.next()).toString(indent + 2));
+      }
+      return buffer.toString();
+   }
 
 }

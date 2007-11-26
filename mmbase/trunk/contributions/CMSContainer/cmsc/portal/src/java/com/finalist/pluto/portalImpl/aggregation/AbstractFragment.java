@@ -24,62 +24,69 @@ import com.finalist.cmsc.services.Parameters;
 
 public abstract class AbstractFragment implements Fragment {
 
-	private String id;
+   private String id;
 
-	private ServletConfig config;
+   private ServletConfig config;
 
-	private Parameters initParameters;
+   private Parameters initParameters;
 
-	public AbstractFragment(String id, ServletConfig config, Fragment parent) throws Exception {
-		StringBuffer compId = new StringBuffer();
-		if (parent != null) {
-			String parentID = parent.getId();
-			if (parentID != null) {
-				compId.append(parentID);
-				compId.append("_");
-			}
-		}
 
-		if (id != null) {
-			compId.append(id);
-			this.id = compId.toString();
-		}
+   public AbstractFragment(String id, ServletConfig config, Fragment parent) throws Exception {
+      StringBuffer compId = new StringBuffer();
+      if (parent != null) {
+         String parentID = parent.getId();
+         if (parentID != null) {
+            compId.append(parentID);
+            compId.append("_");
+         }
+      }
 
-		this.config = config;
-	}
+      if (id != null) {
+         compId.append(id);
+         this.id = compId.toString();
+      }
 
-	public String getId() {
-		return id;
-	}
+      this.config = config;
+   }
 
-	public Parameters getInitParameters() {
-		return initParameters;
-	}
 
-	// additional methods.
-	public ServletConfig getServletConfig() {
-		return config;
-	}
+   public String getId() {
+      return id;
+   }
 
-    public String getServletContextParameterValue(String name, String defaultValue) {
-        String contextValue = getServletConfig().getServletContext().getInitParameter(name);
-        if (contextValue != null && !"".equals(contextValue)) {
-            return contextValue;
-        }
-        return defaultValue;
-    }
 
-    public RequestDispatcher getMainRequestDispatcher(String resourceName) {
-        return getRequestDispatcher("cmsc.portal.layout.base.dir", "/WEB-INF/templates/layout/", resourceName.trim());
-    }
+   public Parameters getInitParameters() {
+      return initParameters;
+   }
 
-    public RequestDispatcher getRequestDispatcher(String contentName, String defaultValue, String resourceName) {
-        String root = getServletContextParameterValue(contentName, defaultValue);
-        return getServletConfig().getServletContext().getRequestDispatcher(root + resourceName);
-    }
-    
-    
-	public String getInitParameterValue(String name) {
-		return initParameters.getString(name);
-	}
+
+   // additional methods.
+   public ServletConfig getServletConfig() {
+      return config;
+   }
+
+
+   public String getServletContextParameterValue(String name, String defaultValue) {
+      String contextValue = getServletConfig().getServletContext().getInitParameter(name);
+      if (contextValue != null && !"".equals(contextValue)) {
+         return contextValue;
+      }
+      return defaultValue;
+   }
+
+
+   public RequestDispatcher getMainRequestDispatcher(String resourceName) {
+      return getRequestDispatcher("cmsc.portal.layout.base.dir", "/WEB-INF/templates/layout/", resourceName.trim());
+   }
+
+
+   public RequestDispatcher getRequestDispatcher(String contentName, String defaultValue, String resourceName) {
+      String root = getServletContextParameterValue(contentName, defaultValue);
+      return getServletConfig().getServletContext().getRequestDispatcher(root + resourceName);
+   }
+
+
+   public String getInitParameterValue(String name) {
+      return initParameters.getString(name);
+   }
 }

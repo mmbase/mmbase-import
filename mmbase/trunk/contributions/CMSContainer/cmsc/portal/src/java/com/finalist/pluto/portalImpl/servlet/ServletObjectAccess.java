@@ -30,23 +30,27 @@ import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 
 public class ServletObjectAccess {
 
-	public static HttpServletRequest getServletRequest(HttpServletRequest request, PortletWindow portletWindow) {
-		return getRequestFactory().getServletRequest(request, portletWindow);
-	}
+   public static HttpServletRequest getServletRequest(HttpServletRequest request, PortletWindow portletWindow) {
+      return getRequestFactory().getServletRequest(request, portletWindow);
+   }
 
-	public static HttpServletResponse getServletResponse(HttpServletResponse response) {
-		return getResponseFactory().getServletResponse(response);
-	}
 
-	public static HttpServletResponse getStoredServletResponse(HttpServletResponse response, PrintWriter writer) {
-		return getResponseFactory().getStoredServletResponse(response, writer);
-	}
+   public static HttpServletResponse getServletResponse(HttpServletResponse response) {
+      return getResponseFactory().getServletResponse(response);
+   }
 
-	private static ServletRequestFactory getRequestFactory() {
-		return (ServletRequestFactory) FactoryManager.getFactory(javax.servlet.http.HttpServletRequest.class);
-	}
 
-	private static ServletResponseFactory getResponseFactory() {
-		return (ServletResponseFactory) FactoryManager.getFactory(javax.servlet.http.HttpServletResponse.class);
-	}
+   public static HttpServletResponse getStoredServletResponse(HttpServletResponse response, PrintWriter writer) {
+      return getResponseFactory().getStoredServletResponse(response, writer);
+   }
+
+
+   private static ServletRequestFactory getRequestFactory() {
+      return (ServletRequestFactory) FactoryManager.getFactory(javax.servlet.http.HttpServletRequest.class);
+   }
+
+
+   private static ServletResponseFactory getResponseFactory() {
+      return (ServletResponseFactory) FactoryManager.getFactory(javax.servlet.http.HttpServletResponse.class);
+   }
 }

@@ -25,72 +25,83 @@ import org.apache.pluto.Constants;
  * Tag to get a name/value from the PortletPreferences for the active portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class PortletPreferencesTag extends SimpleTagSupport {
 
-	private String name;
-	private String value;
-	private String var;
+   private String name;
+   private String value;
+   private String var;
 
-	@Override
-	public void doTag() throws JspException, IOException {
-		PageContext ctx = (PageContext) getJspContext();
-		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-		PortletRequest renderRequest = (PortletRequest) request.getAttribute(Constants.PORTLET_REQUEST);
 
-		if (renderRequest != null) {
-			PortletPreferences preferences = renderRequest.getPreferences();
+   @Override
+   public void doTag() throws JspException, IOException {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+      PortletRequest renderRequest = (PortletRequest) request.getAttribute(Constants.PORTLET_REQUEST);
 
-			if (name != null) {
-				value = preferences.getValue(name, value);
+      if (renderRequest != null) {
+         PortletPreferences preferences = renderRequest.getPreferences();
 
-				// handle result
-				if (var != null) {
-					// put in variable
-					if (value != null) {
-						request.setAttribute(var, value);
-					} else {
-						request.removeAttribute(var);
-					}
-				} else {
-					// write
-					ctx.getOut().print(String.valueOf(value));
-				}
-			} else {
-				if (var != null) {
-					// Set a map of all preferences to a variable with the name in var
-					request.setAttribute(var, preferences.getMap());
-				} else {
-					Enumeration<String> p = preferences.getNames();
-					while (p.hasMoreElements()) {
-						String pref = p.nextElement();
-						String[] values = preferences.getValues(pref, null);
-						if (values != null) {
-							if (values.length > 1) {
-								request.setAttribute(pref, values);
-							} else {
-								String value = values[0];
-								request.setAttribute(pref, value);
-							}
-						}
-					}
-				}
-			}
-		} else {
-			throw new JspException("Couldn't find a Portlet");
-		}
-	}
+         if (name != null) {
+            value = preferences.getValue(name, value);
 
-	public void setName(String name) {
-		this.name = name;
-	}
+            // handle result
+            if (var != null) {
+               // put in variable
+               if (value != null) {
+                  request.setAttribute(var, value);
+               }
+               else {
+                  request.removeAttribute(var);
+               }
+            }
+            else {
+               // write
+               ctx.getOut().print(String.valueOf(value));
+            }
+         }
+         else {
+            if (var != null) {
+               // Set a map of all preferences to a variable with the name in
+               // var
+               request.setAttribute(var, preferences.getMap());
+            }
+            else {
+               Enumeration<String> p = preferences.getNames();
+               while (p.hasMoreElements()) {
+                  String pref = p.nextElement();
+                  String[] values = preferences.getValues(pref, null);
+                  if (values != null) {
+                     if (values.length > 1) {
+                        request.setAttribute(pref, values);
+                     }
+                     else {
+                        String value = values[0];
+                        request.setAttribute(pref, value);
+                     }
+                  }
+               }
+            }
+         }
+      }
+      else {
+         throw new JspException("Couldn't find a Portlet");
+      }
+   }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
 
-	public void setVar(String var) {
-		this.var = var;
-	}
+   public void setName(String name) {
+      this.name = name;
+   }
+
+
+   public void setValue(String value) {
+      this.value = value;
+   }
+
+
+   public void setVar(String var) {
+      this.var = var;
+   }
 }

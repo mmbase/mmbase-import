@@ -25,78 +25,80 @@ import com.jsptags.navigation.pager.parser.*;
 
 public final class IndexTag extends PagerTagSupport {
 
-	private String export = null;
+   private String export = null;
 
-	private IndexTagExport indexTagExport = null;
-	private Object oldItemCount = null;
-	private Object oldPageCount = null;
-
-
-	public final void setExport(String value) throws JspException {
-		if (export != value) {
-			try {
-				indexTagExport = TagExportParser.parseIndexTagExport(value);
-			} catch (ParseException ex) {
-				throw new JspTagException(ex.getMessage());
-			}
-		}
-		export = value;
-	}
-
-	public final String getExport() {
-		return export;
-	}
+   private IndexTagExport indexTagExport = null;
+   private Object oldItemCount = null;
+   private Object oldPageCount = null;
 
 
-	public int doStartTag() throws JspException {
-		super.doStartTag();
+   public final void setExport(String value) throws JspException {
+      if (export != value) {
+         try {
+            indexTagExport = TagExportParser.parseIndexTagExport(value);
+         }
+         catch (ParseException ex) {
+            throw new JspTagException(ex.getMessage());
+         }
+      }
+      export = value;
+   }
 
-		if (indexTagExport != null) {
-			String name; 
-			if ((name = indexTagExport.getItemCount()) != null) {
-				oldItemCount = pageContext.getAttribute(name);
-				pageContext.setAttribute(name,
-					new Integer(pagerTag.getItemCount()));
-			}
 
-			if ((name = indexTagExport.getPageCount()) != null) {
-				oldPageCount = pageContext.getAttribute(name);
-				pageContext.setAttribute(name,
-					new Integer(pagerTag.getPageCount()));
-			}
-		}
+   public final String getExport() {
+      return export;
+   }
 
-		return (pagerTag.isIndexNeeded() ? EVAL_BODY_INCLUDE : SKIP_BODY);
-	}
 
-	public int doEndTag() throws JspException {
+   public int doStartTag() throws JspException {
+      super.doStartTag();
 
-		if (indexTagExport != null) {
-			String name;
-			if ((name = indexTagExport.getItemCount()) != null) {
-				restoreAttribute(name, oldItemCount);
-				oldItemCount = null;
-			}
+      if (indexTagExport != null) {
+         String name;
+         if ((name = indexTagExport.getItemCount()) != null) {
+            oldItemCount = pageContext.getAttribute(name);
+            pageContext.setAttribute(name, new Integer(pagerTag.getItemCount()));
+         }
 
-			if ((name = indexTagExport.getPageCount()) != null) {
-				restoreAttribute(name, oldPageCount);
-				oldPageCount = null;
-			}
-		}
+         if ((name = indexTagExport.getPageCount()) != null) {
+            oldPageCount = pageContext.getAttribute(name);
+            pageContext.setAttribute(name, new Integer(pagerTag.getPageCount()));
+         }
+      }
 
-		super.doEndTag();
+      return (pagerTag.isIndexNeeded() ? EVAL_BODY_INCLUDE : SKIP_BODY);
+   }
 
-		return EVAL_PAGE;
-	}
 
-	public void release() {
-		export = null;
-		indexTagExport = null;
-		oldItemCount = null;
-		oldPageCount = null;
+   public int doEndTag() throws JspException {
 
-		super.release();
-	}
+      if (indexTagExport != null) {
+         String name;
+         if ((name = indexTagExport.getItemCount()) != null) {
+            restoreAttribute(name, oldItemCount);
+            oldItemCount = null;
+         }
+
+         if ((name = indexTagExport.getPageCount()) != null) {
+            restoreAttribute(name, oldPageCount);
+            oldPageCount = null;
+         }
+      }
+
+      super.doEndTag();
+
+      return EVAL_PAGE;
+   }
+
+
+   public void release() {
+      export = null;
+      indexTagExport = null;
+      oldItemCount = null;
+      oldPageCount = null;
+
+      super.release();
+   }
 }
 
 /* vim:set ts=4 sw=4: */

@@ -15,10 +15,10 @@ import org.mmbase.bridge.jsp.taglib.pageflow.UrlTag;
 
 public class StaticUrlTag extends UrlTag {
 
-    @Override
-    public int doStartTag() throws JspTagException {
-        setEncode("false");
-        return super.doStartTag();
-    }
+   @Override
+   public int doStartTag() throws JspTagException {
+      setEncode("false");
+      return super.doStartTag();
+   }
 
 }

@@ -28,65 +28,90 @@ import com.finalist.cmsc.services.security.LoginSession;
  */
 public abstract class SiteManagementService extends Service {
 
-	public abstract boolean isNavigation(String path);
+   public abstract boolean isNavigation(String path);
 
-	/**
-	 * Returns a LoginSession object from the content repository
-	 * 
-	 * @param request
-	 * @return LoginSession
-	 */
-	public abstract LoginSession getLoginSession(HttpServletRequest request);
 
-	public abstract List<Site> getSites();
-	
-	public abstract List<Page> getPages(Page page);
+   /**
+    * Returns a LoginSession object from the content repository
+    * 
+    * @param request
+    * @return LoginSession
+    */
+   public abstract LoginSession getLoginSession(HttpServletRequest request);
 
-	public abstract List<Page> getPages(Site site);
-	
-	public abstract NavigationItem getNavigationItem(int id);
 
-	public abstract NavigationItem getNavigationItemFromPath(String path);
+   public abstract List<Site> getSites();
 
-	public abstract Site getSiteFromPath(String path);
 
-	public abstract String getPath(Page page, boolean includeRoot);
+   public abstract List<Page> getPages(Page page);
 
-    public abstract String getPath(int pageid, boolean includeRoot);
-    
-    public abstract List<Stylesheet> getStylesheetForPageByPath(String page, boolean override);     
-        
-	public abstract List<Page> getListFromPath(String path);
 
-    public abstract List<View> getViews(String screenId, String layoutId);
+   public abstract List<Page> getPages(Site site);
 
-    public abstract List<View> getViews(String definitionId);
-    
-    public abstract List<View> getViews(PortletDefinition definition);
 
-    public abstract List<PortletDefinition> getSingletonPortlets(String screenId, String layoutId);
+   public abstract NavigationItem getNavigationItem(int id);
 
-    public abstract List<PortletDefinition> getPortletDefintions(String screenId, String layoutId);
 
-    public abstract List<String> getContentTypes(String portletId);
+   public abstract NavigationItem getNavigationItemFromPath(String path);
 
-    public abstract Set<String> getPagePositions(String pageId);
 
-	public abstract String getPageImageForPath(String name, String path);
+   public abstract Site getSiteFromPath(String path);
 
-    public abstract Layout getLayout(int layout);
 
-    public abstract Portlet getPortlet(int portletId);
+   public abstract String getPath(Page page, boolean includeRoot);
 
-    public abstract PortletDefinition getPortletDefinition(int definition);
 
-    public abstract View getView(int view);
+   public abstract String getPath(int pageid, boolean includeRoot);
+
+
+   public abstract List<Stylesheet> getStylesheetForPageByPath(String page, boolean override);
+
+
+   public abstract List<Page> getListFromPath(String path);
+
+
+   public abstract List<View> getViews(String screenId, String layoutId);
+
+
+   public abstract List<View> getViews(String definitionId);
+
+
+   public abstract List<View> getViews(PortletDefinition definition);
+
+
+   public abstract List<PortletDefinition> getSingletonPortlets(String screenId, String layoutId);
+
+
+   public abstract List<PortletDefinition> getPortletDefintions(String screenId, String layoutId);
+
+
+   public abstract List<String> getContentTypes(String portletId);
+
+
+   public abstract Set<String> getPagePositions(String pageId);
+
+
+   public abstract String getPageImageForPath(String name, String path);
+
+
+   public abstract Layout getLayout(int layout);
+
+
+   public abstract Portlet getPortlet(int portletId);
+
+
+   public abstract PortletDefinition getPortletDefinition(int definition);
+
+
+   public abstract View getView(int view);
+
 
    public abstract String getSite(Page page);
-   
+
+
    public abstract void resetSiteCache();
 
-//   [FP] public abstract RssFeed getRssFeedFromPath(String path);
-//
-//   public abstract RssFeed getRssFeed(int number);
+   // [FP] public abstract RssFeed getRssFeedFromPath(String path);
+   //
+   // public abstract RssFeed getRssFeed(int number);
 }

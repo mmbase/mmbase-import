@@ -27,85 +27,93 @@ import org.apache.pluto.util.StringUtils;
 
 public class SecurityRoleRefSetImpl extends HashSet implements SecurityRoleRefSet, SecurityRoleRefSetCtrl, Serializable {
 
-	public SecurityRoleRefSetImpl() {
-	}
+   public SecurityRoleRefSetImpl() {
+   }
 
-	// SecurityRoleRefSet implementation.
-	public SecurityRoleRef get(String roleName) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			SecurityRoleRef securityRoleRef = (SecurityRoleRef) iterator.next();
-			if (securityRoleRef.getRoleName().equals(roleName)) {
-				return securityRoleRef;
-			}
-		}
-		return null;
-	}
 
-	// SecurityRoleRefSetCtrl implementation.
-	public SecurityRoleRef add(SecurityRoleRef securityRoleRef) {
-		SecurityRoleRefImpl newSecurityRoleRef = new SecurityRoleRefImpl();
-		newSecurityRoleRef.setRoleName(securityRoleRef.getRoleName());
-		newSecurityRoleRef.setRoleLink(securityRoleRef.getRoleLink());
-		newSecurityRoleRef.setDescriptionSet(((SecurityRoleRefImpl) securityRoleRef).getDescriptionSet());
-		super.add(newSecurityRoleRef);
-		return newSecurityRoleRef;
-	}
+   // SecurityRoleRefSet implementation.
+   public SecurityRoleRef get(String roleName) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         SecurityRoleRef securityRoleRef = (SecurityRoleRef) iterator.next();
+         if (securityRoleRef.getRoleName().equals(roleName)) {
+            return securityRoleRef;
+         }
+      }
+      return null;
+   }
 
-	public SecurityRoleRef remove(String roleName) {
-		Iterator iterator = this.iterator();
-		while (iterator.hasNext()) {
-			SecurityRoleRef securityRoleRef = (SecurityRoleRef) iterator.next();
-			if (securityRoleRef.getRoleName().equals(roleName)) {
-				super.remove(securityRoleRef);
-				return securityRoleRef;
-			}
-		}
-		return null;
-	}
 
-	public void remove(SecurityRoleRef securityRoleRef) {
-		super.remove(securityRoleRef);
-	}
+   // SecurityRoleRefSetCtrl implementation.
+   public SecurityRoleRef add(SecurityRoleRef securityRoleRef) {
+      SecurityRoleRefImpl newSecurityRoleRef = new SecurityRoleRefImpl();
+      newSecurityRoleRef.setRoleName(securityRoleRef.getRoleName());
+      newSecurityRoleRef.setRoleLink(securityRoleRef.getRoleLink());
+      newSecurityRoleRef.setDescriptionSet(((SecurityRoleRefImpl) securityRoleRef).getDescriptionSet());
+      super.add(newSecurityRoleRef);
+      return newSecurityRoleRef;
+   }
 
-	// additional methods.
-	public SecurityRoleRef add(String roleName, String roleLink, DescriptionSet descriptions) {
-		SecurityRoleRefImpl securityRoleRef = new SecurityRoleRefImpl();
-		securityRoleRef.setRoleName(roleName);
-		securityRoleRef.setRoleLink(roleLink);
-		securityRoleRef.setDescriptionSet(descriptions);
 
-		super.add(securityRoleRef);
+   public SecurityRoleRef remove(String roleName) {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         SecurityRoleRef securityRoleRef = (SecurityRoleRef) iterator.next();
+         if (securityRoleRef.getRoleName().equals(roleName)) {
+            super.remove(securityRoleRef);
+            return securityRoleRef;
+         }
+      }
+      return null;
+   }
 
-		return securityRoleRef;
-	}
 
-    public String toString() {
-        return toString(0);
-    }
+   public void remove(SecurityRoleRef securityRoleRef) {
+      super.remove(securityRoleRef);
+   }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(": ");
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            buffer.append(((SecurityRoleRefImpl) iterator.next()).toString(indent + 2));
-        }
-        return buffer.toString();
-    }
-    
-	// unmodifiable part
-	public static class Unmodifiable extends UnmodifiableSet implements SecurityRoleRefSet {
 
-		public Unmodifiable(SecurityRoleRefSet c) {
-			super(c);
-		}
+   // additional methods.
+   public SecurityRoleRef add(String roleName, String roleLink, DescriptionSet descriptions) {
+      SecurityRoleRefImpl securityRoleRef = new SecurityRoleRefImpl();
+      securityRoleRef.setRoleName(roleName);
+      securityRoleRef.setRoleLink(roleLink);
+      securityRoleRef.setDescriptionSet(descriptions);
 
-		// additional methods.
-		public SecurityRoleRef get(String roleName) {
-			return ((SecurityRoleRefSet) c).get(roleName);
-		}
-	}
+      super.add(securityRoleRef);
+
+      return securityRoleRef;
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(": ");
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         buffer.append(((SecurityRoleRefImpl) iterator.next()).toString(indent + 2));
+      }
+      return buffer.toString();
+   }
+
+   // unmodifiable part
+   public static class Unmodifiable extends UnmodifiableSet implements SecurityRoleRefSet {
+
+      public Unmodifiable(SecurityRoleRefSet c) {
+         super(c);
+      }
+
+
+      // additional methods.
+      public SecurityRoleRef get(String roleName) {
+         return ((SecurityRoleRefSet) c).get(roleName);
+      }
+   }
 }

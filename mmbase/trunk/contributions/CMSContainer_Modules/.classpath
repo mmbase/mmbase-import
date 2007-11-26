@@ -26,7 +26,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-constructs-0.6.jar" sourcepath="C:/projects/MMBase/ehcache-constructs-0.6-src/src"/>
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar"/>
@@ -57,5 +56,19 @@
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.5-20070919.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20070919.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.12.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jta/Jars/jta-custom.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-dbcp/jars/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-pool/Jars/commons-pool-1.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/dom4j/Jars/dom4j-1.6.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/asm/Jars/asm-2.2.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/cglib/Jars/cglib-2.1.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.1rc2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-annotations-3.1beta4.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/spring/jars/spring-1.0.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/spring/jars/spring-mock-1.0.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/Jars/spring-1.2.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/ejb-persistence/jars/ejb-persistence-3.1beta6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

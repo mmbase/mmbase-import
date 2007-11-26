@@ -37,82 +37,94 @@ import com.finalist.pluto.portalImpl.services.config.Config;
 
 public class DynamicInformationProviderImpl implements DynamicInformationProvider {
 
-	private final static int NumberOfKnownMimetypes = 15;
+   private final static int NumberOfKnownMimetypes = 15;
 
-	private ServletConfig config;
+   private ServletConfig config;
 
-	private PortalEnvironment env;
+   private PortalEnvironment env;
 
-	HttpServletRequest request;
+   HttpServletRequest request;
 
-	public DynamicInformationProviderImpl(HttpServletRequest request, ServletConfig config) {
-		this.request = request;
-		this.config = config;
 
-		env = PortalEnvironment.getPortalEnvironment(request);
-	}
+   public DynamicInformationProviderImpl(HttpServletRequest request, ServletConfig config) {
+      this.request = request;
+      this.config = config;
 
-	// DynamicInformationProviderImpl implementation.
+      env = PortalEnvironment.getPortalEnvironment(request);
+   }
 
-	public PortletMode getPortletMode(PortletWindow portletWindow) {
-		return env.getPortalControlParameter().getMode(portletWindow);
-	}
 
-	public PortletURLProvider getPortletURLProvider(PortletWindow portletWindow) {
-		return new PortletURLProviderImpl(this, portletWindow);
-	}
+   // DynamicInformationProviderImpl implementation.
 
-	public ResourceURLProvider getResourceURLProvider(PortletWindow portletWindow) {
-		return new ResourceURLProviderImpl(this, portletWindow);
-	}
+   public PortletMode getPortletMode(PortletWindow portletWindow) {
+      return env.getPortalControlParameter().getMode(portletWindow);
+   }
 
-	public PortletActionProvider getPortletActionProvider(PortletWindow portletWindow) {
-		return new PortletActionProviderImpl(request, config, portletWindow);
-	}
 
-	public PortletMode getPreviousPortletMode(PortletWindow portletWindow) {
-		return env.getPortalControlParameter().getPrevMode(portletWindow);
-	}
+   public PortletURLProvider getPortletURLProvider(PortletWindow portletWindow) {
+      return new PortletURLProviderImpl(this, portletWindow);
+   }
 
-	public WindowState getPreviousWindowState(PortletWindow portletWindow) {
-		return env.getPortalControlParameter().getPrevState(portletWindow);
-	}
 
-	public String getResponseContentType() {
-		return "text/html";
-	}
+   public ResourceURLProvider getResourceURLProvider(PortletWindow portletWindow) {
+      return new ResourceURLProviderImpl(this, portletWindow);
+   }
 
-	public Iterator getResponseContentTypes() {
-		HashSet responseMimeTypes = new HashSet(NumberOfKnownMimetypes);
-		responseMimeTypes.add("text/html");
 
-		return responseMimeTypes.iterator();
-	}
+   public PortletActionProvider getPortletActionProvider(PortletWindow portletWindow) {
+      return new PortletActionProviderImpl(request, config, portletWindow);
+   }
 
-	public WindowState getWindowState(PortletWindow portletWindow) {
-		return env.getPortalControlParameter().getState(portletWindow);
-	}
 
-	public boolean isPortletModeAllowed(PortletMode mode) {
-		// checks whether PortletMode is supported as example
-		String[] supportedModes = Config.getParameters().getStrings("supported.portletmode");
-		for (String element : supportedModes) {
-			if (element.equalsIgnoreCase(mode.toString())) {
-				return true;
-			}
-		}
-		return false;
-	}
+   public PortletMode getPreviousPortletMode(PortletWindow portletWindow) {
+      return env.getPortalControlParameter().getPrevMode(portletWindow);
+   }
 
-	public boolean isWindowStateAllowed(WindowState state) {
-		// checks whether WindowState is supported as example
-		String[] supportedStates = Config.getParameters().getStrings("supported.windowstate");
-		for (String element : supportedStates) {
-			if (element.equalsIgnoreCase(state.toString())) {
-				return true;
-			}
-		}
-		return false;
-	}
+
+   public WindowState getPreviousWindowState(PortletWindow portletWindow) {
+      return env.getPortalControlParameter().getPrevState(portletWindow);
+   }
+
+
+   public String getResponseContentType() {
+      return "text/html";
+   }
+
+
+   public Iterator getResponseContentTypes() {
+      HashSet responseMimeTypes = new HashSet(NumberOfKnownMimetypes);
+      responseMimeTypes.add("text/html");
+
+      return responseMimeTypes.iterator();
+   }
+
+
+   public WindowState getWindowState(PortletWindow portletWindow) {
+      return env.getPortalControlParameter().getState(portletWindow);
+   }
+
+
+   public boolean isPortletModeAllowed(PortletMode mode) {
+      // checks whether PortletMode is supported as example
+      String[] supportedModes = Config.getParameters().getStrings("supported.portletmode");
+      for (String element : supportedModes) {
+         if (element.equalsIgnoreCase(mode.toString())) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+
+   public boolean isWindowStateAllowed(WindowState state) {
+      // checks whether WindowState is supported as example
+      String[] supportedStates = Config.getParameters().getStrings("supported.windowstate");
+      for (String element : supportedStates) {
+         if (element.equalsIgnoreCase(state.toString())) {
+            return true;
+         }
+      }
+      return false;
+   }
 
 }

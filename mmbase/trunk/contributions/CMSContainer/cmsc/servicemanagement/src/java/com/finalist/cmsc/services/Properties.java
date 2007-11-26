@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-
 /**
  * * This class loads name/value pairs from a properties * file. The properties
  * file is specified as input stream * and follows the usual convention for Java
@@ -30,72 +29,73 @@ import java.util.Iterator;
 
 public class Properties extends NameValuePairs {
 
-	/**
-	 * * Loads name/value pairs from the given input stream.
-	 */
+   /**
+    * * Loads name/value pairs from the given input stream.
+    */
 
-	public void load(InputStream aInputStream) throws IOException {
-		if (aInputStream == null)
-			return;
+   public void load(InputStream aInputStream) throws IOException {
+      if (aInputStream == null)
+         return;
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(aInputStream, "UTF-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(aInputStream, "UTF-8"));
 
-		String line;
+      String line;
 
-		while ((line = reader.readLine()) != null) {
-			if (line.startsWith("#") || line.startsWith("//")) {
-				continue;
-			}
+      while ((line = reader.readLine()) != null) {
+         if (line.startsWith("#") || line.startsWith("//")) {
+            continue;
+         }
 
-			int index = line.indexOf('=');
+         int index = line.indexOf('=');
 
-			if (index > 0) {
-				String name = line.substring(0, index).trim();
+         if (index > 0) {
+            String name = line.substring(0, index).trim();
 
-				if (name.length() == 0)
-					name = null;
+            if (name.length() == 0)
+               name = null;
 
-				String value = null;
+            String value = null;
 
-				if (index + 1 < line.length()) {
-					value = line.substring(index + 1).trim();
+            if (index + 1 < line.length()) {
+               value = line.substring(index + 1).trim();
 
-					if (value.length() == 0)
-						value = null;
-				}
+               if (value.length() == 0)
+                  value = null;
+            }
 
-				if (name != null && value != null) {
-					add(name, value);
-				}
-			}
-		}
-	}
+            if (name != null && value != null) {
+               add(name, value);
+            }
+         }
+      }
+   }
 
-	/**
-	 * * Returns a subset of the NameValuePairs where the names are starting
-	 * with the specified prefix. * As keys of the result set all start with the
-	 * same prefix, this prfix is cut off.</br> * E.g:</br> * Given following
-	 * set: {[A1,x], [A2,y], [A3,z], [B1,x], [B2,y]]}</br> * getSubSet("A")
-	 * returns {[1,x], [2,y], [3,z]}
-	 * </p> * * Please note: the implementation of this method is <b>slow</b>,
-	 * to be used only for initialisation tasks or alike! * *
-	 * 
-	 * @param aNamePrefix * the prefix that all returned pair names have in
-	 *        common.
-	 */
 
-	public Properties getSubSet(String aNamePrefix) {
-		Properties subset = new Properties();
-		int prefixLength = aNamePrefix.length();
-		String name;
+   /**
+    * * Returns a subset of the NameValuePairs where the names are starting with
+    * the specified prefix. * As keys of the result set all start with the same
+    * prefix, this prfix is cut off.</br> * E.g:</br> * Given following set:
+    * {[A1,x], [A2,y], [A3,z], [B1,x], [B2,y]]}</br> * getSubSet("A") returns
+    * {[1,x], [2,y], [3,z]}
+    * </p> * * Please note: the implementation of this method is <b>slow</b>,
+    * to be used only for initialisation tasks or alike! * *
+    * 
+    * @param aNamePrefix *
+    *           the prefix that all returned pair names have in common.
+    */
 
-		for (Iterator<String> iter = this.names(); iter.hasNext();) {
-			name = iter.next();
+   public Properties getSubSet(String aNamePrefix) {
+      Properties subset = new Properties();
+      int prefixLength = aNamePrefix.length();
+      String name;
 
-			if (name.startsWith(aNamePrefix)) {
-				subset.add(name.substring(prefixLength), getStrings(name));
-			}
-		}
-		return (subset);
-	}
+      for (Iterator<String> iter = this.names(); iter.hasNext();) {
+         name = iter.next();
+
+         if (name.startsWith(aNamePrefix)) {
+            subset.add(name.substring(prefixLength), getStrings(name));
+         }
+      }
+      return (subset);
+   }
 }

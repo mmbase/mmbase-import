@@ -14,14 +14,12 @@ import com.finalist.cmsc.tasks.TasksUtil;
  */
 public class TaskDoneAction extends MMBaseFormlessAction {
 
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud)
-            throws Exception {
+   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
       String id = request.getParameter("id");
-      if (id!=null) {
+      if (id != null) {
          TasksUtil.finishTask(cloud, id);
       }
       return mapping.findForward(SUCCESS);
    }
-
 
 }

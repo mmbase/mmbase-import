@@ -15,6 +15,7 @@ public class StartTag extends SimpleTagSupport {
 
    private String startedVar;
 
+
    public void doTag() throws JspException, IOException {
 
       PageContext ctx = (PageContext) getJspContext();
@@ -25,20 +26,24 @@ public class StartTag extends SimpleTagSupport {
       String storePath = PropertiesUtil.getProperty("staticdownload.storepath");
       String wgetPath = PropertiesUtil.getProperty("staticdownload.wgetpath");
       String downloadUrl = PropertiesUtil.getProperty("staticdownload.downloadurl");
-      DownloadSettings downloadSettings = new DownloadSettings(50, tempPath, storePath, wgetPath, downloadUrl, ctx.getServletContext());
-      
-//    DownloadThread downloadThread = new DownloadThread("http://www.cmscontainer.org", downloadSettings);
-//    DownloadThread downloadThread = new DownloadThread("http://nijmegen-demo.finalist.com/nijmegen-live/www.nijmegen.nl", downloadSettings);
+      DownloadSettings downloadSettings = new DownloadSettings(50, tempPath, storePath, wgetPath, downloadUrl, ctx
+            .getServletContext());
+
+      // DownloadThread downloadThread = new
+      // DownloadThread("http://www.cmscontainer.org", downloadSettings);
+      // DownloadThread downloadThread = new
+      // DownloadThread("http://nijmegen-demo.finalist.com/nijmegen-live/www.nijmegen.nl",
+      // downloadSettings);
       boolean started = StaticDownload.startDownload(liveUrl, downloadSettings);
 
-      if(startedVar != null) {
+      if (startedVar != null) {
          request.setAttribute(startedVar, new Boolean(started));
       }
    }
-   
+
+
    public void setStartedVar(String startedVar) {
       this.startedVar = startedVar;
    }
-   
-}
 
+}

@@ -21,49 +21,52 @@ import net.sf.mmapps.commons.util.StringUtil;
 
 public class CheckboxTag extends SimpleTagSupport {
 
-	public String var;
-	public String value;
-	public String[] selected;
-
-	@Override
-	public void doTag() throws JspException, IOException {
-		PageContext ctx = (PageContext) getJspContext();
-		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-
-		selected = (String[]) request.getParameterValues(var);
+   public String var;
+   public String value;
+   public String[] selected;
 
 
-		boolean isSelected = false;
-		if (selected != null) {
-			for (int i = 0; i < selected.length; i++) {
-				if (selected[i].equals(value)) {
-					isSelected = true;
-					continue;
-				}
-			}
-		}
+   @Override
+   public void doTag() throws JspException, IOException {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-		ctx.getOut().print("<input type=\"checkbox\" name=\"" + var + "\" value=\"" + value + "\" ");
-		if (isSelected) {
-			ctx.getOut().print("selected");
-		}
-		ctx.getOut().print(">");
-		JspFragment frag = getJspBody();
-		if (frag != null) {
-			frag.invoke(null);
-		}
-	}
+      selected = (String[]) request.getParameterValues(var);
 
-	public void setVar(String var) {
-		this.var = var;
-	}
+      boolean isSelected = false;
+      if (selected != null) {
+         for (int i = 0; i < selected.length; i++) {
+            if (selected[i].equals(value)) {
+               isSelected = true;
+               continue;
+            }
+         }
+      }
 
-	public String getValue() {
-		return value;
-	}
+      ctx.getOut().print("<input type=\"checkbox\" name=\"" + var + "\" value=\"" + value + "\" ");
+      if (isSelected) {
+         ctx.getOut().print("selected");
+      }
+      ctx.getOut().print(">");
+      JspFragment frag = getJspBody();
+      if (frag != null) {
+         frag.invoke(null);
+      }
+   }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+
+   public void setVar(String var) {
+      this.var = var;
+   }
+
+
+   public String getValue() {
+      return value;
+   }
+
+
+   public void setValue(String value) {
+      this.value = value;
+   }
 
 }

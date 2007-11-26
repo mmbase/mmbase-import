@@ -11,15 +11,14 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 /**
  * DeleteTaskAction
- *
+ * 
  * @author Nico Klasens
  */
 public class DeleteTaskAction extends MMBaseFormlessAction {
 
-   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud)
-            throws Exception {
+   public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
       String id = request.getParameter("id");
-      if (id!=null) {
+      if (id != null) {
          Node task = cloud.getNode(id);
          task.delete(true);
       }

@@ -23,21 +23,22 @@ import org.apache.pluto.om.common.Preference;
 
 public class PreferenceUtil {
 
-	/**
-	 * Returns the preferences as map with name as the preference's name and
-	 * value as the preference object itself.
-	 * 
-	 * @param preferences the preferences to be converted
-	 * @return the preferences as map
-	 */
-	static public HashMap<String, Iterator<Object>> createPreferenceMap(Collection preferences) {
-		HashMap<String, Iterator<Object>> returnValue = new HashMap<String, Iterator<Object>>();
-		Iterator iterator = preferences.iterator();
-		while (iterator.hasNext()) {
-			Preference preference = (Preference) iterator.next();
-			returnValue.put(preference.getName(), preference.getValues());
-		}
-		return returnValue;
-	}
+   /**
+    * Returns the preferences as map with name as the preference's name and
+    * value as the preference object itself.
+    * 
+    * @param preferences
+    *           the preferences to be converted
+    * @return the preferences as map
+    */
+   static public HashMap<String, Iterator<Object>> createPreferenceMap(Collection preferences) {
+      HashMap<String, Iterator<Object>> returnValue = new HashMap<String, Iterator<Object>>();
+      Iterator iterator = preferences.iterator();
+      while (iterator.hasNext()) {
+         Preference preference = (Preference) iterator.next();
+         returnValue.put(preference.getName(), preference.getValues());
+      }
+      return returnValue;
+   }
 
 }

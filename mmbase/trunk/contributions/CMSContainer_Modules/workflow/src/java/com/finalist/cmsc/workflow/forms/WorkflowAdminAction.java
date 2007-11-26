@@ -28,6 +28,7 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
    private static final String STATUS_RUNNING = "running";
    private static final String STATUS_DONE = "done'";
 
+
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = request.getParameter("action");
@@ -36,10 +37,11 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
       getResources(request);
       if (!STATUS_RUNNING.equals(workflowTask.getStatus()) && "start".equals(action)) {
          workflowTask.start();
-      } 
+      }
 
       return mapping.findForward("success");
    }
+
 
    public AddWorkflowTask getAddWorkflowTask() {
       if (task == null) {
@@ -47,6 +49,7 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
       }
       return task;
    }
+
 
    @Override
    public String getRequiredRankStr() {
@@ -61,14 +64,16 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
 
 
       AddWorkflowTask() {
-          // nothing
+         // nothing
       }
+
 
       public void start() {
          status = STATUS_INIT;
          startTime = new Date();
          new Thread(this).start();
       }
+
 
       public void run() {
          status = STATUS_RUNNING;
@@ -93,31 +98,37 @@ public class WorkflowAdminAction extends MMBaseFormlessAction {
                setEstimatedTime(new Date(estimatedTime));
             }
          }
-         finally{
+         finally {
             status = STATUS_DONE;
          }
 
       }
 
+
       public String getStatus() {
          return status;
       }
+
 
       public void setStatus(String status) {
          this.status = status;
       }
 
+
       public Date getStartTime() {
          return startTime;
       }
+
 
       public void setStartTime(Date startTime) {
          this.startTime = startTime;
       }
 
+
       public Date getEstimatedTime() {
          return estimatedTime;
       }
+
 
       public void setEstimatedTime(Date estimatedTime) {
          this.estimatedTime = estimatedTime;

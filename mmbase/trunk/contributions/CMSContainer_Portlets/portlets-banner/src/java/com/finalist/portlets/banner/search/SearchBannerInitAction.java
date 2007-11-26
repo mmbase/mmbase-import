@@ -33,61 +33,63 @@ import com.finalist.cmsc.struts.MMBaseAction;
  */
 public class SearchBannerInitAction extends MMBaseAction {
 
-    private static Log log = LogFactory.getLog(SearchBannerInitAction.class);
+   private static Log log = LogFactory.getLog(SearchBannerInitAction.class);
 
-    /**
-     * Puts the results in a list of maps, so the searching is done inside the
-     * action because most of the mm-tags do not work with a remote cloud. The
-     * result are put on the request and displayed by the JSP view. The
-     * searching might be a bit complicated but I don't have a clue how mmbase
-     * works.
-     */
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response,
-            Cloud cld) throws Exception {
 
-    
-        BannerForm bannerForm = (BannerForm) form;
-        Cloud cloud = getCloud(bannerForm.isRemote());
+   /**
+    * Puts the results in a list of maps, so the searching is done inside the
+    * action because most of the mm-tags do not work with a remote cloud. The
+    * result are put on the request and displayed by the JSP view. The searching
+    * might be a bit complicated but I don't have a clue how mmbase works.
+    */
+   @Override
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+         HttpServletResponse response, Cloud cld) throws Exception {
 
-        NodeManager manager = cloud.getNodeManager("customer");
-        NodeQuery query = manager.createQuery();
-        SearchUtil.addSortOrder(query, manager, "name", "up");
-        log.debug("Query: " + query.toSql());
-        NodeList nodes = query.getList();
-        List<Map> customers = populateCustomersRows(nodes);
+      BannerForm bannerForm = (BannerForm) form;
+      Cloud cloud = getCloud(bannerForm.isRemote());
 
-        request.setAttribute("customers", customers);
+      NodeManager manager = cloud.getNodeManager("customer");
+      NodeQuery query = manager.createQuery();
+      SearchUtil.addSortOrder(query, manager, "name", "up");
+      log.debug("Query: " + query.toSql());
+      NodeList nodes = query.getList();
+      List<Map> customers = populateCustomersRows(nodes);
 
-        return mapping.findForward("success");
-    }
+      request.setAttribute("customers", customers);
 
-    @Override
-    public String getRequiredRankStr() {
-        return null;
-    }
+      return mapping.findForward("success");
+   }
 
-    private Cloud getCloud(boolean isRemote) {
-        CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-        Cloud cloud = cloudProvider.getCloud();
-        log.debug("Using remote cloud?: " + isRemote);
-        if (isRemote) {
-            return CloudManager.getCloud(cloud, "live.server");
-        }
-        return cloud;
-    }
 
-    private List<Map> populateCustomersRows(NodeList nodes) {
-        List<Map> rows = new ArrayList<Map>();
-        for (NodeIterator iter = nodes.nodeIterator(); iter.hasNext();) {
-            Node node = iter.nextNode();
-            Map<String, Object> columns = new HashMap<String, Object>();
-            rows.add(columns);
-            columns.put("number", node.getStringValue("number"));
-            columns.put("name", node.getStringValue("name"));
-            log.debug("Adding columns: " + columns);
-        }
-        return rows;
-    }
+   @Override
+   public String getRequiredRankStr() {
+      return null;
+   }
+
+
+   private Cloud getCloud(boolean isRemote) {
+      CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
+      Cloud cloud = cloudProvider.getCloud();
+      log.debug("Using remote cloud?: " + isRemote);
+      if (isRemote) {
+         return CloudManager.getCloud(cloud, "live.server");
+      }
+      return cloud;
+   }
+
+
+   private List<Map> populateCustomersRows(NodeList nodes) {
+      List<Map> rows = new ArrayList<Map>();
+      for (NodeIterator iter = nodes.nodeIterator(); iter.hasNext();) {
+         Node node = iter.nextNode();
+         Map<String, Object> columns = new HashMap<String, Object>();
+         rows.add(columns);
+         columns.put("number", node.getStringValue("number"));
+         columns.put("name", node.getStringValue("name"));
+         log.debug("Adding columns: " + columns);
+      }
+      return rows;
+   }
 
 }

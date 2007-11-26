@@ -22,30 +22,34 @@ package com.jsptags.navigation.pager;
 
 public final class SkipTag extends SkipTagSupport {
 
-	private int pages = 0;
+   private int pages = 0;
 
-	public final void setPages(int value) {
-	    pages = value;
-	}
 
-	public final int getPages() {
-	    return pages;
-	}
+   public final void setPages(int value) {
+      pages = value;
+   }
 
-	protected boolean skip() {
-		int skipPage = pagerTag.getPageNumber() + pages;
 
-		boolean hasPage = pagerTag.hasPage(skipPage);
-		if (hasPage)
-			setPageAttributes(skipPage);
+   public final int getPages() {
+      return pages;
+   }
 
-		return hasPage;
-	}
 
-	public void release() {
-		pages = 0;
-		super.release();
-	}
+   protected boolean skip() {
+      int skipPage = pagerTag.getPageNumber() + pages;
+
+      boolean hasPage = pagerTag.hasPage(skipPage);
+      if (hasPage)
+         setPageAttributes(skipPage);
+
+      return hasPage;
+   }
+
+
+   public void release() {
+      pages = 0;
+      super.release();
+   }
 }
 
 /* vim:set ts=4 sw=4: */

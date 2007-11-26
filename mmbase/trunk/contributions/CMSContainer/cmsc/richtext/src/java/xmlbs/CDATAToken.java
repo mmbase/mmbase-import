@@ -23,34 +23,39 @@ package xmlbs;
 
 /**
  * Token to represent and hold CDATA blocks.
- *
- * @see <A href="http://www.w3.org/TR/REC-xml#sec-cdata-sect">XML: CDATA Sections</A>
+ * 
+ * @see <A href="http://www.w3.org/TR/REC-xml#sec-cdata-sect">XML: CDATA
+ *      Sections</A>
  * @author R.W. van 't Veer
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CDATAToken implements Token {
-    /** character data */
-    private String data;
+   /** character data */
+   private String data;
 
-    /**
-     * @param data CDATA content without &lt;![CDATA[ and ]]&gt;
-     */
-    public CDATAToken (String data) {
-        this.data = data;
-    }
 
-    /**
-     * @return CDATA content
-     */
-    public String getData () {
-        return data;
-    }
+   /**
+    * @param data
+    *           CDATA content without &lt;![CDATA[ and ]]&gt;
+    */
+   public CDATAToken(String data) {
+      this.data = data;
+   }
 
-    /**
-     * @return wellformed CDATA block
-     */
-    @Override
-    public String toString () {
-        return "<![CDATA[" + getData() + "]]>";
-    }
+
+   /**
+    * @return CDATA content
+    */
+   public String getData() {
+      return data;
+   }
+
+
+   /**
+    * @return wellformed CDATA block
+    */
+   @Override
+   public String toString() {
+      return "<![CDATA[" + getData() + "]]>";
+   }
 }

@@ -12,13 +12,16 @@ public class RemoveTag extends SimpleTagSupport {
    private int number;
    private String user;
 
+
    public void doTag() throws JspException, IOException {
       FavoritesUtil.removeFavorite(user, number);
    }
 
+
    public void setNumber(int number) {
       this.number = number;
    }
+
 
    public void setUser(String user) {
       this.user = user;

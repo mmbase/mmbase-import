@@ -23,10 +23,11 @@ import java.util.Locale;
 /**
  * @author Jeoffrey Bakker, Finalist IT Group
  */
-public class RestoreAction  extends MMBaseFormlessAction {
+public class RestoreAction extends MMBaseFormlessAction {
 
    private static Log log = LogFactory.getLog(RestoreAction.class);
-   
+
+
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       Locale locale = request.getLocale();

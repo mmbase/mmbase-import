@@ -8,5 +8,6 @@ import com.finalist.tree.TreeModel;
 
 public interface NavigationTreeItemRenderer {
 
-	public abstract TreeElement getTreeElement(NavigationInformationProvider renderer, Node parentNode, NavigationItem item, TreeModel model);
+   public abstract TreeElement getTreeElement(NavigationInformationProvider renderer, Node parentNode,
+         NavigationItem item, TreeModel model);
 }

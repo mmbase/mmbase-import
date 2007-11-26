@@ -22,190 +22,195 @@ import com.finalist.cmsc.services.workflow.WorkflowException;
  * Publish a nodes
  * 
  * @author Freek Punt
- * @author Nico Klasens 
+ * @author Nico Klasens
  */
 @SuppressWarnings("serial")
 public class PublishTag extends NodeReferrerTag {
-    static Log log = LogFactory.getLog(PublishTag.class);
-    
-    /**
-     * Node number
-     */
-    private int number;
-    private boolean children;
-    private String var;
-    private boolean execute = true;
-    
-    @Override
-    public int doStartTag() throws JspException {
+   static Log log = LogFactory.getLog(PublishTag.class);
 
-        List<Node> toPublishNodes = new ArrayList<Node>();
+   /**
+    * Node number
+    */
+   private int number;
+   private boolean children;
+   private String var;
+   private boolean execute = true;
 
-        Node node = null;
-        int nr = number;
-        if (number <= 0) {
-            node = getNode();
-        }
-        else {
-            node = getCloudVar().getNode(nr);
-        }
-        
-        Map<Node, List<Node>> errors = new HashMap<Node, List<Node>>();
-        if(children) {
-            findNodes(node, toPublishNodes);
-            
-            List<Integer> publishNumbers = new ArrayList<Integer>();
-            for (Node toPublishNode : toPublishNodes) {
-                publishNumbers.add(toPublishNode.getNumber());
-            }
-            
-            for (Node toPublishNode : toPublishNodes) {
-                List<Node> nodeErrors = Workflow.isReadyToPublish(toPublishNode, publishNumbers);
-                if(!nodeErrors.isEmpty()) {
-                    errors.put(toPublishNode, nodeErrors);
-                }
-            }
-        }
-        else {
-            toPublishNodes.add(node);
-            List<Integer> publishNumbers = new ArrayList<Integer>();
 
-            publishNumbers.add(node.getNumber());
-            
-            if (RepositoryUtil.isContentChannel(node)) {
-               NodeList content = RepositoryUtil.getLinkedElements(node);
-               for (Iterator<Node> iter = content.iterator(); iter.hasNext();) {
-                   Node child = iter.next();
-                   publishNumbers.add(child.getNumber());
-                   toPublishNodes.add(child);
-               }
+   @Override
+   public int doStartTag() throws JspException {
 
-               NodeList channels = RepositoryUtil.getChildren(node);
-               for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
-                   Node child = iter.next();
-                   publishNumbers.add(child.getNumber());
-                   toPublishNodes.add(child);
-               }
-            }
+      List<Node> toPublishNodes = new ArrayList<Node>();
 
-            if(Workflow.isWorkflowElement(node)) {
-	            List<Node> nodeErrors = Workflow.isReadyToPublish(node, publishNumbers);
-	            if(!nodeErrors.isEmpty()) {
-	                errors.put(node, nodeErrors);
-	            }
+      Node node = null;
+      int nr = number;
+      if (number <= 0) {
+         node = getNode();
+      }
+      else {
+         node = getCloudVar().getNode(nr);
+      }
+
+      Map<Node, List<Node>> errors = new HashMap<Node, List<Node>>();
+      if (children) {
+         findNodes(node, toPublishNodes);
+
+         List<Integer> publishNumbers = new ArrayList<Integer>();
+         for (Node toPublishNode : toPublishNodes) {
+            publishNumbers.add(toPublishNode.getNumber());
+         }
+
+         for (Node toPublishNode : toPublishNodes) {
+            List<Node> nodeErrors = Workflow.isReadyToPublish(toPublishNode, publishNumbers);
+            if (!nodeErrors.isEmpty()) {
+               errors.put(toPublishNode, nodeErrors);
             }
-        }
-        
-        if (var != null) {
-           HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-           request.setAttribute(var, toPublishNodes.size());
-        }
-        
-        if(execute) {
-           if (errors.isEmpty()) {
-               Thread runner = new MassPublishThread(toPublishNodes);
-               runner.start();
-           }
-           else {
-               HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-               request.setAttribute("errors", errors);
-           }
-        }
-        return EVAL_BODY_BUFFERED;
-    }
-    
-    private void findNodes(Node node, List<Node> toPublishNodes) {
-        toPublishNodes.add(node);
-        
-        if (PagesUtil.isPageType(node)) {
-            NodeList children = NavigationUtil.getChildren(node);
-            for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
-                Node child = iter.next();
-                findNodes(child, toPublishNodes);
-            }
-        }
-        else if (RepositoryUtil.isContentChannel(node)) {
+         }
+      }
+      else {
+         toPublishNodes.add(node);
+         List<Integer> publishNumbers = new ArrayList<Integer>();
+
+         publishNumbers.add(node.getNumber());
+
+         if (RepositoryUtil.isContentChannel(node)) {
             NodeList content = RepositoryUtil.getLinkedElements(node);
             for (Iterator<Node> iter = content.iterator(); iter.hasNext();) {
-                Node child = iter.next();
-                toPublishNodes.add(child);
+               Node child = iter.next();
+               publishNumbers.add(child.getNumber());
+               toPublishNodes.add(child);
             }
 
-            NodeList channels = 
-                node.getRelatedNodes(RepositoryUtil.CONTENTCHANNEL, RepositoryUtil.CHILDREL, "DESTINATION");
+            NodeList channels = RepositoryUtil.getChildren(node);
             for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
-                Node child = iter.next();
-                findNodes(child, toPublishNodes);
+               Node child = iter.next();
+               publishNumbers.add(child.getNumber());
+               toPublishNodes.add(child);
             }
-            
-            NodeList collectionChannels = RepositoryUtil.getCollectionChannels(node);
-            for (Iterator<Node> iter = collectionChannels.iterator(); iter.hasNext();) {
-                Node child = iter.next();
-                findNodes(child, toPublishNodes);
+         }
+
+         if (Workflow.isWorkflowElement(node)) {
+            List<Node> nodeErrors = Workflow.isReadyToPublish(node, publishNumbers);
+            if (!nodeErrors.isEmpty()) {
+               errors.put(node, nodeErrors);
             }
-        }
-    }
+         }
+      }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+      if (var != null) {
+         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+         request.setAttribute(var, toPublishNodes.size());
+      }
 
-    public void setChildren(boolean children) {
-        this.children = children;
-    }
-    
-    
+      if (execute) {
+         if (errors.isEmpty()) {
+            Thread runner = new MassPublishThread(toPublishNodes);
+            runner.start();
+         }
+         else {
+            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            request.setAttribute("errors", errors);
+         }
+      }
+      return EVAL_BODY_BUFFERED;
+   }
 
-    static class MassPublishThread extends Thread {
-        
-        private List<Node> toPublishNodes = new ArrayList<Node>();
 
-        public MassPublishThread(List<Node> toPublishNodes) {
-            super("Mass publish");
-            setDaemon(true);
-            this.toPublishNodes = toPublishNodes;
-        }
+   private void findNodes(Node node, List<Node> toPublishNodes) {
+      toPublishNodes.add(node);
 
-        @Override
-        public void run() {
-            List<Integer> publishNumbers = new ArrayList<Integer>();
-            for (Node toPublishNode : toPublishNodes) {
-                publishNumbers.add(toPublishNode.getNumber());
+      if (PagesUtil.isPageType(node)) {
+         NodeList children = NavigationUtil.getChildren(node);
+         for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node child = iter.next();
+            findNodes(child, toPublishNodes);
+         }
+      }
+      else if (RepositoryUtil.isContentChannel(node)) {
+         NodeList content = RepositoryUtil.getLinkedElements(node);
+         for (Iterator<Node> iter = content.iterator(); iter.hasNext();) {
+            Node child = iter.next();
+            toPublishNodes.add(child);
+         }
+
+         NodeList channels = node
+               .getRelatedNodes(RepositoryUtil.CONTENTCHANNEL, RepositoryUtil.CHILDREL, "DESTINATION");
+         for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
+            Node child = iter.next();
+            findNodes(child, toPublishNodes);
+         }
+
+         NodeList collectionChannels = RepositoryUtil.getCollectionChannels(node);
+         for (Iterator<Node> iter = collectionChannels.iterator(); iter.hasNext();) {
+            Node child = iter.next();
+            findNodes(child, toPublishNodes);
+         }
+      }
+   }
+
+
+   public void setNumber(int number) {
+      this.number = number;
+   }
+
+
+   public void setChildren(boolean children) {
+      this.children = children;
+   }
+
+   static class MassPublishThread extends Thread {
+
+      private List<Node> toPublishNodes = new ArrayList<Node>();
+
+
+      public MassPublishThread(List<Node> toPublishNodes) {
+         super("Mass publish");
+         setDaemon(true);
+         this.toPublishNodes = toPublishNodes;
+      }
+
+
+      @Override
+      public void run() {
+         List<Integer> publishNumbers = new ArrayList<Integer>();
+         for (Node toPublishNode : toPublishNodes) {
+            publishNumbers.add(toPublishNode.getNumber());
+         }
+
+         for (Node toPublishNode : toPublishNodes) {
+            publishNode(toPublishNode, publishNumbers);
+         }
+      }
+
+
+      private void publishNode(Node node, List<Integer> publishNumbers) {
+         try {
+            log.debug("Publising node using taglib: " + node.getNumber());
+
+            if (!Workflow.isWorkflowType(node.getNodeManager().getName())) {
+               Publish.publish(node);
             }
-            
-            for (Node toPublishNode : toPublishNodes) {
-                publishNode(toPublishNode, publishNumbers);
+            else {
+               if (!Workflow.hasWorkflow(node)) {
+                  Workflow.create(node, "");
+               }
+               if (!Workflow.getStatus(node).equals(Workflow.STATUS_PUBLISHED)) {
+                  Workflow.publish(node, publishNumbers);
+               }
             }
-        }
-
-        private void publishNode(Node node,  List<Integer> publishNumbers) {
-            try {
-                log.debug("Publising node using taglib: "+node.getNumber());
-                
-                if(!Workflow.isWorkflowType(node.getNodeManager().getName())) {
-                    Publish.publish(node);
-                }
-                else {
-                    if(!Workflow.hasWorkflow(node)) {
-                        Workflow.create(node, "");
-                    }
-                    if(!Workflow.getStatus(node).equals(Workflow.STATUS_PUBLISHED)) {
-                        Workflow.publish(node, publishNumbers);
-                    }
-                }
-                log.debug("- published node using taglib: "+node.getNumber());
-            }
-            catch(WorkflowException wfe) {
-                log.error("unable to publish node: "+node.getNumber(), wfe);
-            }
-        }
-    }
-
+            log.debug("- published node using taglib: " + node.getNumber());
+         }
+         catch (WorkflowException wfe) {
+            log.error("unable to publish node: " + node.getNumber(), wfe);
+         }
+      }
+   }
 
 
    public void setExecute(boolean execute) {
       this.execute = execute;
    }
+
 
    public void setVar(String var) {
       this.var = var;

@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.pluto.util.StringUtils;
 
-
 /**
  * * This class collects name/value pairs and provides * convenient methods to
  * access them as different types. * *
@@ -32,302 +31,335 @@ import org.apache.pluto.util.StringUtils;
 
 public abstract class NameValuePairs {
 
-	/**
-	 * * Returns the number of name/value pairs. Names * that have more than one
-	 * value are counted as one name. * *
-	 * 
-	 * @return the number of name/value pairs
-	 */
+   /**
+    * * Returns the number of name/value pairs. Names * that have more than one
+    * value are counted as one name. * *
+    * 
+    * @return the number of name/value pairs
+    */
 
-	public int size() {
-		return (iEntries.size());
-	}
+   public int size() {
+      return (iEntries.size());
+   }
 
-	/**
-	 * * Returns the value for the given name as string, * or <CODE>null</CODE>
-	 * if there is no pair with the given name. * *
-	 * 
-	 * @param aName * the name of a pair * *
-	 * @return the value of the pair
-	 */
 
-	public String getString(String aName) {
-		return (findString(aName));
-	}
+   /**
+    * * Returns the value for the given name as string, * or <CODE>null</CODE>
+    * if there is no pair with the given name. * *
+    * 
+    * @param aName *
+    *           the name of a pair * *
+    * @return the value of the pair
+    */
 
-	/**
-	 * * Returns the value for the given name as string, * or the given default
-	 * if there is no pair with the given name. * *
-	 * 
-	 * @param aName * the name of a pair *
-	 * @param aDefault * the default value * *
-	 * @return the value of the pair
-	 */
+   public String getString(String aName) {
+      return (findString(aName));
+   }
 
-	public String getString(String aName, String aDefault) {
-		String result = findString(aName);
 
-		if (result == null)
-			result = aDefault;
+   /**
+    * * Returns the value for the given name as string, * or the given default
+    * if there is no pair with the given name. * *
+    * 
+    * @param aName *
+    *           the name of a pair *
+    * @param aDefault *
+    *           the default value * *
+    * @return the value of the pair
+    */
 
-		return (result);
-	}
+   public String getString(String aName, String aDefault) {
+      String result = findString(aName);
 
-	/**
-	 * * Returns all values for the given name as a string array, * or <CODE>null</CODE>
-	 * if there is no pair with the given name. * *
-	 * 
-	 * @param aName * the name of a pair * *
-	 * @return the values of the pair
-	 */
+      if (result == null)
+         result = aDefault;
 
-	public String[] getStrings(String aName) {
-		String[] result = null;
+      return (result);
+   }
 
-		Entry entry = findEntry(aName);
 
-		if (entry != null)
-			result = entry.iValues;
+   /**
+    * * Returns all values for the given name as a string array, * or
+    * <CODE>null</CODE> if there is no pair with the given name. * *
+    * 
+    * @param aName *
+    *           the name of a pair * *
+    * @return the values of the pair
+    */
 
-		return (result);
+   public String[] getStrings(String aName) {
+      String[] result = null;
 
-	}
+      Entry entry = findEntry(aName);
 
-	public Integer getInteger(String aName) {
-		return (getInteger(aName, null));
-	}
+      if (entry != null)
+         result = entry.iValues;
 
-	public Integer getInteger(String aName, Integer aDefault) {
-		Integer result = aDefault;
+      return (result);
 
-		String value = findString(aName);
+   }
 
-		if (value != null)
-			result = Integer.valueOf(value);
 
-		return (result);
-	}
+   public Integer getInteger(String aName) {
+      return (getInteger(aName, null));
+   }
 
-	public int getInteger(String aName, int aDefault) {
-		int result = aDefault;
 
-		String value = findString(aName);
+   public Integer getInteger(String aName, Integer aDefault) {
+      Integer result = aDefault;
 
-		if (value != null)
-			result = Integer.parseInt(value);
+      String value = findString(aName);
 
-		return (result);
-	}
+      if (value != null)
+         result = Integer.valueOf(value);
 
-	public Boolean getBoolean(String aName) {
-		return (getBoolean(aName, null));
-	}
+      return (result);
+   }
 
-	public Boolean getBoolean(String aName, Boolean aDefault) {
-		Boolean result = aDefault;
 
-		String value = findString(aName);
+   public int getInteger(String aName, int aDefault) {
+      int result = aDefault;
 
-		if (value != null) {
-			result = StringUtils.booleanOf(value);
-		}
+      String value = findString(aName);
 
-		return (result);
-	}
+      if (value != null)
+         result = Integer.parseInt(value);
 
-	public boolean getBoolean(String aName, boolean aDefault) {
-		return (getBoolean(aName, aDefault ? Boolean.TRUE : Boolean.FALSE).booleanValue());
-	}
+      return (result);
+   }
 
-	public Iterator<String> names() {
-		return (new EntryIterator(this));
-	}
 
-	public final Iterator<String> keys() {
-		return (names());
-	}
+   public Boolean getBoolean(String aName) {
+      return (getBoolean(aName, null));
+   }
 
-	public void setParent(NameValuePairs aParent) {
-		iParent = aParent;
-	}
 
-	@Override
-    public String toString() {
-		return (iEntries.toString());
-	}
+   public Boolean getBoolean(String aName, Boolean aDefault) {
+      Boolean result = aDefault;
 
-	// --- PROTECTED MEMBERS --- //
+      String value = findString(aName);
 
-	protected NameValuePairs() {
-	}
+      if (value != null) {
+         result = StringUtils.booleanOf(value);
+      }
 
-	protected void add(String aName, String aValue) {
-		add(aName, new String[] { aValue });
-	}
+      return (result);
+   }
 
-	protected void add(String aName, String[] aValues) {
-		if (aName == null)
-			throw (new IllegalArgumentException("NameValuePairs: Argument \"aName\" cannot be null."));
-		if (aValues == null)
-			throw (new IllegalArgumentException("NameValuePairs: Argument \"aValues\" cannot be null."));
 
-		for (String element : aValues) {
-			if (element == null)
-				throw (new IllegalArgumentException("NameValuePairs: Argument \"aValues\" cannot contain null."));
-		}
+   public boolean getBoolean(String aName, boolean aDefault) {
+      return (getBoolean(aName, aDefault ? Boolean.TRUE : Boolean.FALSE).booleanValue());
+   }
 
-		Entry entry = findEntry(aName);
 
-		if (entry == null) {
-			entry = new Entry(aName, aValues);
+   public Iterator<String> names() {
+      return (new EntryIterator(this));
+   }
 
-			iEntries.add(entry);
-		} else {
-			String[] values = new String[entry.iValues.length + aValues.length];
 
-			System.arraycopy(entry.iValues, 0, values, 0, entry.iValues.length);
-			System.arraycopy(aValues, 0, values, entry.iValues.length, aValues.length);
+   public final Iterator<String> keys() {
+      return (names());
+   }
 
-			entry.iValues = values;
-		}
-	}
 
-	protected Entry findEntry(String aName) {
-		if (aName == null)
-			throw (new IllegalArgumentException("NameValuePairs: Argument \"aName\" cannot be null!"));
+   public void setParent(NameValuePairs aParent) {
+      iParent = aParent;
+   }
 
-		Entry result = null;
 
-		for (Iterator<Entry> iter = iEntries.iterator(); iter.hasNext();) {
-			Entry entry = iter.next();
+   @Override
+   public String toString() {
+      return (iEntries.toString());
+   }
 
-			if (entry.iName.equals(aName)) {
-				result = entry;
-				break;
-			}
-		}
 
-		if (result == null && iParent != null) {
-			result = iParent.findEntry(aName);
-		}
+   // --- PROTECTED MEMBERS --- //
 
-		return (result);
-	}
+   protected NameValuePairs() {
+   }
 
-	protected void removeEntry(String aName) {
-		if (aName == null)
-			throw (new IllegalArgumentException("NameValuePairs: Argument \"aName\" cannot be null!"));
 
-		boolean found = false;
+   protected void add(String aName, String aValue) {
+      add(aName, new String[] { aValue });
+   }
 
-		for (Iterator<Entry> iter = iEntries.iterator(); iter.hasNext();) {
-			Entry entry = iter.next();
 
-			if (entry.iName.equals(aName)) {
-				iter.remove();
+   protected void add(String aName, String[] aValues) {
+      if (aName == null)
+         throw (new IllegalArgumentException("NameValuePairs: Argument \"aName\" cannot be null."));
+      if (aValues == null)
+         throw (new IllegalArgumentException("NameValuePairs: Argument \"aValues\" cannot be null."));
 
-				found = true;
-				break;
-			}
-		}
+      for (String element : aValues) {
+         if (element == null)
+            throw (new IllegalArgumentException("NameValuePairs: Argument \"aValues\" cannot contain null."));
+      }
 
-		if (!found && iParent != null) {
-			iParent.removeEntry(aName);
-		}
-	}
+      Entry entry = findEntry(aName);
 
-	private NameValuePairs iParent;
+      if (entry == null) {
+         entry = new Entry(aName, aValues);
 
-	private List<Entry> iEntries = new LinkedList<Entry>();
+         iEntries.add(entry);
+      }
+      else {
+         String[] values = new String[entry.iValues.length + aValues.length];
 
-	private String findString(String aName) {
-		String result = null;
+         System.arraycopy(entry.iValues, 0, values, 0, entry.iValues.length);
+         System.arraycopy(aValues, 0, values, entry.iValues.length, aValues.length);
 
-		Entry entry = findEntry(aName);
+         entry.iValues = values;
+      }
+   }
 
-		if (entry != null)
-			result = entry.iValues[0];
 
-		return (result);
-	}
+   protected Entry findEntry(String aName) {
+      if (aName == null)
+         throw (new IllegalArgumentException("NameValuePairs: Argument \"aName\" cannot be null!"));
 
-	NameValuePairs getParent() {
-		return iParent;
-	}
+      Entry result = null;
 
-	List<Entry> getEntries() {
-		return iEntries;
-	}
+      for (Iterator<Entry> iter = iEntries.iterator(); iter.hasNext();) {
+         Entry entry = iter.next();
 
-	public static class Entry {
+         if (entry.iName.equals(aName)) {
+            result = entry;
+            break;
+         }
+      }
 
-		String iName;
+      if (result == null && iParent != null) {
+         result = iParent.findEntry(aName);
+      }
 
-		String[] iValues;
+      return (result);
+   }
 
-		protected Entry(String aName, String[] aValues) {
-			iName = aName;
-			iValues = aValues;
-		}
 
-		@Override
-        public String toString() {
-			StringBuffer result = new StringBuffer();
+   protected void removeEntry(String aName) {
+      if (aName == null)
+         throw (new IllegalArgumentException("NameValuePairs: Argument \"aName\" cannot be null!"));
 
-			result.append(iName);
-			result.append(" = ");
+      boolean found = false;
 
-			for (int i = 0; i < iValues.length; i++) {
-				if (i > 0)
-					result.append(", ");
+      for (Iterator<Entry> iter = iEntries.iterator(); iter.hasNext();) {
+         Entry entry = iter.next();
 
-				result.append(iValues[i]);
-			}
+         if (entry.iName.equals(aName)) {
+            iter.remove();
 
-			return (result.toString());
-		}
-	}
+            found = true;
+            break;
+         }
+      }
 
-	private static class EntryIterator implements Iterator<String> {
+      if (!found && iParent != null) {
+         iParent.removeEntry(aName);
+      }
+   }
 
-		private NameValuePairs iPairs;
+   private NameValuePairs iParent;
 
-		private Iterator<Entry> iIterator;
+   private List<Entry> iEntries = new LinkedList<Entry>();
 
-		private EntryIterator(NameValuePairs aPairs) {
-			iPairs = aPairs;
-			iIterator = iPairs.getEntries().iterator();
-		}
 
-		// Iterator implementation.
+   private String findString(String aName) {
+      String result = null;
 
-		public boolean hasNext() {
-			if (!nextParent())
-				return false;
-			return (iIterator.hasNext());
-		}
+      Entry entry = findEntry(aName);
 
-		public String next() {
-			if (!nextParent())
-				return null;
-			return (iIterator.next().iName);
-		}
+      if (entry != null)
+         result = entry.iValues[0];
 
-		public void remove() {
-			iIterator.remove();
-		}
+      return (result);
+   }
 
-		// additional methods.
 
-		private boolean nextParent() {
-			while (!iIterator.hasNext()) {
-				iPairs = iPairs.getParent();
-				if (iPairs == null)
-					return false;
-				iIterator = iPairs.getEntries().iterator();
-			}
-			return true;
-		}
+   NameValuePairs getParent() {
+      return iParent;
+   }
 
-	}
+
+   List<Entry> getEntries() {
+      return iEntries;
+   }
+
+   public static class Entry {
+
+      String iName;
+
+      String[] iValues;
+
+
+      protected Entry(String aName, String[] aValues) {
+         iName = aName;
+         iValues = aValues;
+      }
+
+
+      @Override
+      public String toString() {
+         StringBuffer result = new StringBuffer();
+
+         result.append(iName);
+         result.append(" = ");
+
+         for (int i = 0; i < iValues.length; i++) {
+            if (i > 0)
+               result.append(", ");
+
+            result.append(iValues[i]);
+         }
+
+         return (result.toString());
+      }
+   }
+
+   private static class EntryIterator implements Iterator<String> {
+
+      private NameValuePairs iPairs;
+
+      private Iterator<Entry> iIterator;
+
+
+      private EntryIterator(NameValuePairs aPairs) {
+         iPairs = aPairs;
+         iIterator = iPairs.getEntries().iterator();
+      }
+
+
+      // Iterator implementation.
+
+      public boolean hasNext() {
+         if (!nextParent())
+            return false;
+         return (iIterator.hasNext());
+      }
+
+
+      public String next() {
+         if (!nextParent())
+            return null;
+         return (iIterator.next().iName);
+      }
+
+
+      public void remove() {
+         iIterator.remove();
+      }
+
+
+      // additional methods.
+
+      private boolean nextParent() {
+         while (!iIterator.hasNext()) {
+            iPairs = iPairs.getParent();
+            if (iPairs == null)
+               return false;
+            iIterator = iPairs.getEntries().iterator();
+         }
+         return true;
+      }
+
+   }
 }

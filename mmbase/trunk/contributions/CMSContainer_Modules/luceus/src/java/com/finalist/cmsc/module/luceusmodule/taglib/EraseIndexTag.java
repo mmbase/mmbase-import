@@ -20,16 +20,17 @@ import org.apache.commons.logging.LogFactory;
  * Erase all Luceus content from this repository
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class EraseIndexTag extends LuceusmoduleTag {
-	private static Log log = LogFactory.getLog(EraseIndexTag.class);
+   private static Log log = LogFactory.getLog(EraseIndexTag.class);
 
-	@Override
-	public void doTag() throws JspException, IOException {
-		if (isRunning()) {
-			getModule().startEraseIndex();
-		}
-	}
+
+   @Override
+   public void doTag() throws JspException, IOException {
+      if (isRunning()) {
+         getModule().startEraseIndex();
+      }
+   }
 
 }

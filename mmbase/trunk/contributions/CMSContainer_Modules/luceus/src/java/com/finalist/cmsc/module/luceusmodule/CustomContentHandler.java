@@ -21,8 +21,9 @@ import org.mmbase.bridge.Node;
  */
 public interface CustomContentHandler {
 
-	public abstract Set<Node> findLinkedContent(Node contentElement);
+   public abstract Set<Node> findLinkedContent(Node contentElement);
 
-	public abstract void registerListeners(LuceusModule module);
+
+   public abstract void registerListeners(LuceusModule module);
 
 }

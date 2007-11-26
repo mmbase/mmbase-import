@@ -25,8 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface ServletResponseFactory extends org.apache.pluto.factory.Factory {
 
-	public HttpServletResponse getServletResponse(HttpServletResponse response);
+   public HttpServletResponse getServletResponse(HttpServletResponse response);
 
-	public HttpServletResponse getStoredServletResponse(HttpServletResponse response, PrintWriter writer);
+
+   public HttpServletResponse getStoredServletResponse(HttpServletResponse response, PrintWriter writer);
 
 }

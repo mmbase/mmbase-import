@@ -13,17 +13,21 @@ public class AddTag extends SimpleTagSupport {
    private String name;
    private String url;
 
+
    public void doTag() throws JspException, IOException {
       FavoritesUtil.addFavorite(user, name, url);
    }
+
 
    public void setName(String name) {
       this.name = name;
    }
 
+
    public void setUrl(String url) {
       this.url = url;
    }
+
 
    public void setUser(String user) {
       this.user = user;

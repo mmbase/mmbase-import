@@ -11,8 +11,10 @@ public class Reaction {
    private String email;
    private Date creationdate;
    private String contenttitle;
-   
-   public Reaction(int number, String title, String body, String name, String email, Date creationdate, String contenttitle) {
+
+
+   public Reaction(int number, String title, String body, String name, String email, Date creationdate,
+         String contenttitle) {
       this.number = number;
       this.title = title;
       this.body = body;
@@ -21,25 +23,39 @@ public class Reaction {
       this.creationdate = creationdate;
       this.contenttitle = contenttitle;
    }
+
+
    public String getBody() {
       return body;
    }
+
+
    public String getEmail() {
       return email;
    }
+
+
    public String getName() {
       return name;
    }
+
+
    public int getNumber() {
       return number;
    }
+
+
    public String getTitle() {
       return title;
    }
-    public Date getCreationdate() {
-        return creationdate;
-    }
-    public String getContentTitle() {
-        return contenttitle;
-    }
+
+
+   public Date getCreationdate() {
+      return creationdate;
+   }
+
+
+   public String getContentTitle() {
+      return contenttitle;
+   }
 }

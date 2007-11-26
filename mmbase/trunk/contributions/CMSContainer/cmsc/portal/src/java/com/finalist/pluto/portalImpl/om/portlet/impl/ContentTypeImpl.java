@@ -32,73 +32,83 @@ import org.apache.pluto.util.StringUtils;
 import com.finalist.pluto.portalImpl.om.common.Support;
 
 public class ContentTypeImpl implements ContentType, Serializable, Support {
-	
-	private String contentType;
 
-	private Collection<PortletMode> portletModes;
+   private String contentType;
 
-	public ContentTypeImpl() {
-		portletModes = new HashSet<PortletMode>();
-	}
+   private Collection<PortletMode> portletModes;
 
-	public String getContentType() {
-		return contentType;
-	}
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+   public ContentTypeImpl() {
+      portletModes = new HashSet<PortletMode>();
+   }
 
-	public Iterator<PortletMode> getPortletModes() {
-		return portletModes.iterator();
-	}
 
-	public boolean supportsPortletMode(PortletMode portletMode) {
-		return portletModes.contains(portletMode);
-	}
+   public String getContentType() {
+      return contentType;
+   }
 
-	public void addPortletMode(PortletMode mode) {
-		portletModes.add(mode);
-	}
 
-	public void addPortletMode(String mode) {
-		portletModes.add(new PortletMode(mode));
-	}
+   public void setContentType(String contentType) {
+      this.contentType = contentType;
+   }
 
-    public void postLoad(Object parameter) throws Exception {
-        if (!portletModes.contains(javax.portlet.PortletMode.VIEW)) {
-            portletModes.add(javax.portlet.PortletMode.VIEW);
-        }
-    }
-    
-    public String toString() {
-        return toString(0);
-    }
 
-    public String toString(int indent) {
-        StringBuffer buffer = new StringBuffer(50);
-        StringUtils.newLine(buffer, indent);
-        buffer.append(getClass().toString());
-        buffer.append(":");
-        StringUtils.newLine(buffer, indent);
-        buffer.append("{");
-        StringUtils.newLine(buffer, indent);
-        buffer.append("contentType='");
-        buffer.append(contentType);
-        buffer.append("'");
-        int i = 0;
-        Iterator<PortletMode> iterator = portletModes.iterator();
-        while (iterator.hasNext()) {
-            StringUtils.newLine(buffer, indent);
-            buffer.append("portletMode[");
-            buffer.append(i++);
-            buffer.append("]='");
-            buffer.append(iterator.next());
-            buffer.append("'");
-        }
-        StringUtils.newLine(buffer, indent);
-        buffer.append("}");
-        return buffer.toString();
-    }
+   public Iterator<PortletMode> getPortletModes() {
+      return portletModes.iterator();
+   }
+
+
+   public boolean supportsPortletMode(PortletMode portletMode) {
+      return portletModes.contains(portletMode);
+   }
+
+
+   public void addPortletMode(PortletMode mode) {
+      portletModes.add(mode);
+   }
+
+
+   public void addPortletMode(String mode) {
+      portletModes.add(new PortletMode(mode));
+   }
+
+
+   public void postLoad(Object parameter) throws Exception {
+      if (!portletModes.contains(javax.portlet.PortletMode.VIEW)) {
+         portletModes.add(javax.portlet.PortletMode.VIEW);
+      }
+   }
+
+
+   public String toString() {
+      return toString(0);
+   }
+
+
+   public String toString(int indent) {
+      StringBuffer buffer = new StringBuffer(50);
+      StringUtils.newLine(buffer, indent);
+      buffer.append(getClass().toString());
+      buffer.append(":");
+      StringUtils.newLine(buffer, indent);
+      buffer.append("{");
+      StringUtils.newLine(buffer, indent);
+      buffer.append("contentType='");
+      buffer.append(contentType);
+      buffer.append("'");
+      int i = 0;
+      Iterator<PortletMode> iterator = portletModes.iterator();
+      while (iterator.hasNext()) {
+         StringUtils.newLine(buffer, indent);
+         buffer.append("portletMode[");
+         buffer.append(i++);
+         buffer.append("]='");
+         buffer.append(iterator.next());
+         buffer.append("'");
+      }
+      StringUtils.newLine(buffer, indent);
+      buffer.append("}");
+      return buffer.toString();
+   }
 
 }

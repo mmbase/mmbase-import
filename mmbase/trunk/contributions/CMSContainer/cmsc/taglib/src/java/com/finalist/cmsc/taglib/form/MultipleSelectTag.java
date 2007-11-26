@@ -23,68 +23,75 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public class MultipleSelectTag extends SimpleTagSupport {
 
-	private String var;
-	private List<String> selected;
-	private int size = 0;
+   private String var;
+   private List<String> selected;
+   private int size = 0;
 
-	@Override
-	public void doTag() throws JspException, IOException {
-		PageContext ctx = (PageContext) getJspContext();
-		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-		selected = new ArrayList<String>();
-		Object values = request.getAttribute(var);
-		if (values != null) {
-			List valueList = Arrays.asList(values);
-			if (valueList != null && valueList.size() > 0) {
-				for (int i = 0; i < valueList.size(); i++) {
-					String value = (String) valueList.get(i).toString();
-					selected.add(value);
-				}
-			}
-		}
+   @Override
+   public void doTag() throws JspException, IOException {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-		ctx.getOut().print("<select name=\"" + var + "\"");
+      selected = new ArrayList<String>();
+      Object values = request.getAttribute(var);
+      if (values != null) {
+         List valueList = Arrays.asList(values);
+         if (valueList != null && valueList.size() > 0) {
+            for (int i = 0; i < valueList.size(); i++) {
+               String value = (String) valueList.get(i).toString();
+               selected.add(value);
+            }
+         }
+      }
 
-		if (size > 0) {
-			ctx.getOut().print(" size=\"" + size + "\"");
-		}
+      ctx.getOut().print("<select name=\"" + var + "\"");
 
-		ctx.getOut().print(" multiple=\"multiple\">");
+      if (size > 0) {
+         ctx.getOut().print(" size=\"" + size + "\"");
+      }
 
-		JspFragment frag = getJspBody();
-		if (frag != null) {
-			frag.invoke(null);
-		}
-		ctx.getOut().print("</select>");
-	}
+      ctx.getOut().print(" multiple=\"multiple\">");
 
-	public String getVar() {
-		return var;
-	}
+      JspFragment frag = getJspBody();
+      if (frag != null) {
+         frag.invoke(null);
+      }
+      ctx.getOut().print("</select>");
+   }
 
-	public void setVar(String var) {
-		this.var = var;
-	}
 
-	public boolean isSelected(String key) {
-		if (selected != null) {
-			if (selected.contains(key)) {
-				return (true);
-			}
-		}
-		return (false);
-	}
+   public String getVar() {
+      return var;
+   }
 
-	public int getSize() {
-		return size;
-	}
 
-	public void setSize(int size) {
-		if (size > 0) {
-			this.size = size;
-		} else {
-			this.size = 0;
-		}
-	}
+   public void setVar(String var) {
+      this.var = var;
+   }
+
+
+   public boolean isSelected(String key) {
+      if (selected != null) {
+         if (selected.contains(key)) {
+            return (true);
+         }
+      }
+      return (false);
+   }
+
+
+   public int getSize() {
+      return size;
+   }
+
+
+   public void setSize(int size) {
+      if (size > 0) {
+         this.size = size;
+      }
+      else {
+         this.size = 0;
+      }
+   }
 }

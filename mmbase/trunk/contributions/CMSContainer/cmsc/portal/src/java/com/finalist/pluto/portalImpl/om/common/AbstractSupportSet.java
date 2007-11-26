@@ -24,24 +24,26 @@ import java.util.Iterator;
 
 public abstract class AbstractSupportSet extends HashSet implements java.io.Serializable, Support {
 
-    public AbstractSupportSet() {
-    }
+   public AbstractSupportSet() {
+   }
 
-    // support implemenation.
-    public void postLoad(Object parameter) throws Exception {
-        dispatch(parameter, POST_LOAD);
-    }
 
-    // additional methods.
-    protected void dispatch(Object parameter, int id) throws Exception {
-        Iterator iterator = this.iterator();
-        while (iterator.hasNext()) {
-            Support support = (Support) iterator.next();
-            switch (id) {
-                case POST_LOAD:
-                    support.postLoad(parameter);
-                    break;
-            }
-        }
-    }
+   // support implemenation.
+   public void postLoad(Object parameter) throws Exception {
+      dispatch(parameter, POST_LOAD);
+   }
+
+
+   // additional methods.
+   protected void dispatch(Object parameter, int id) throws Exception {
+      Iterator iterator = this.iterator();
+      while (iterator.hasNext()) {
+         Support support = (Support) iterator.next();
+         switch (id) {
+            case POST_LOAD:
+               support.postLoad(parameter);
+               break;
+         }
+      }
+   }
 }

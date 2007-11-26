@@ -26,19 +26,20 @@ import com.finalist.cmsc.services.ServiceManager;
 
 public class Config {
 
-	/**
-	 * *
-	 * 
-	 * @see ConfigService#getParameters
-	 */
+   /**
+    * *
+    * 
+    * @see ConfigService#getParameters
+    */
 
-	public static Parameters getParameters() {
-		return (cService.getParameters());
-	}
+   public static Parameters getParameters() {
+      return (cService.getParameters());
+   }
 
-	public static ConfigService getService() {
-		return cService;
-	}
 
-	private final static ConfigService cService = (ConfigService) ServiceManager.getService(ConfigService.class);
+   public static ConfigService getService() {
+      return cService;
+   }
+
+   private final static ConfigService cService = (ConfigService) ServiceManager.getService(ConfigService.class);
 }

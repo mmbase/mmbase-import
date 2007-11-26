@@ -25,30 +25,32 @@ import com.finalist.cmsc.services.ServiceManager;
 
 /**
  * Manages the life-time of factories registered during container startup. A
- * service has to derive from {@link Factory} and implement the <CODE>init()</CODE>
- * and <CODE>destroy()</CODE> methods as appropriate.
+ * service has to derive from {@link Factory} and implement the
+ * <CODE>init()</CODE> and <CODE>destroy()</CODE> methods as appropriate.
  * 
  * @see Factory
  */
 public class FactoryManager {
 
-	/**
-	 * * Returns the service implementation for the given service class, or *
-	 * <CODE>null</CODE> if no such service is registered. * *
-	 * 
-	 * @param theClass * the service class * *
-	 * @return the service implementation
-	 */
+   /**
+    * * Returns the service implementation for the given service class, or *
+    * <CODE>null</CODE> if no such service is registered. * *
+    * 
+    * @param theClass *
+    *           the service class * *
+    * @return the service implementation
+    */
 
-	public static Factory getFactory(Class theClass) {
-		return cService.getFactory(theClass);
-	}
+   public static Factory getFactory(Class theClass) {
+      return cService.getFactory(theClass);
+   }
 
-	public static FactoryManagerService getService() {
-		return cService;
-	}
 
-	private final static FactoryManagerService cService = (FactoryManagerService) ServiceManager
-			.getService(FactoryManagerService.class);
+   public static FactoryManagerService getService() {
+      return cService;
+   }
+
+   private final static FactoryManagerService cService = (FactoryManagerService) ServiceManager
+         .getService(FactoryManagerService.class);
 
 }

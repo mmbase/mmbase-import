@@ -11,16 +11,18 @@ import java.util.Iterator;
 /**
  * @author Jeoffrey Bakker (Finalist IT Group)
  */
-public class LoggingMMBaseObserver implements MMBaseObserver{
+public class LoggingMMBaseObserver implements MMBaseObserver {
    private final static Logger log = Logging.getLoggerInstance(MMBaseObserver.class);
 
    private ArrayList<LogConstraint> logLocalConstraints = new ArrayList<LogConstraint>();
    private ArrayList<LogConstraint> logRemoteConstraints = new ArrayList<LogConstraint>();
    private static LoggingMMBaseObserver instance = null;
 
+
    private LoggingMMBaseObserver() {
       MMBase.getMMBase().getBuilder("object").addLocalObserver(this);
    }
+
 
    public static LoggingMMBaseObserver getInstance() {
       if (instance == null) {
@@ -28,6 +30,7 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
       }
       return instance;
    }
+
 
    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
       Iterator<LogConstraint> logConstraintIter = logRemoteConstraints.iterator();
@@ -44,6 +47,7 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
       return true;
    }
 
+
    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
       Iterator<LogConstraint> logConstraintIter = logLocalConstraints.iterator();
       while (logConstraintIter.hasNext()) {
@@ -59,6 +63,7 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
       return true;
    }
 
+
    public void addLogConstraints(LogConstraint logConstraint, boolean local, boolean remote) {
       if (local) {
          logLocalConstraints.add(logConstraint);
@@ -66,19 +71,22 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
       if (remote) {
          logRemoteConstraints.add(logConstraint);
       }
-      if (local ^! remote) {
+      if (local ^ !remote) {
          logLocalConstraints.add(logConstraint);
          logRemoteConstraints.add(logConstraint);
       }
    }
 
+
    public void addLogConstraints(LogConstraint logConstraint) {
       addLogConstraints(logConstraint, true, true);
    }
 
+
    public void removeLogConstraints(LogConstraint logConstraint) {
       removeLogConstraints(logConstraint, true, true);
    }
+
 
    public void removeLogConstraints(LogConstraint logConstraint, boolean local, boolean remote) {
       if (local) {
@@ -87,15 +95,17 @@ public class LoggingMMBaseObserver implements MMBaseObserver{
       if (remote) {
          logRemoteConstraints.remove(logConstraint);
       }
-      if (local ^! remote) {
+      if (local ^ !remote) {
          logLocalConstraints.remove(logConstraint);
          logRemoteConstraints.remove(logConstraint);
       }
    }
 
+
    public ArrayList<LogConstraint> getLogLocalConstraints() {
       return logLocalConstraints;
    }
+
 
    public ArrayList<LogConstraint> getLogRemoteConstraints() {
       return logRemoteConstraints;

@@ -25,50 +25,54 @@ import javax.servlet.jsp.tagext.*;
 
 public abstract class PagerTagSupport extends TagSupport {
 
-	protected PagerTag pagerTag = null;
+   protected PagerTag pagerTag = null;
 
-	protected final void restoreAttribute(String name, Object oldValue) {
-		if (oldValue != null)
-			pageContext.setAttribute(name, oldValue);
-		else 
-			pageContext.removeAttribute(name);
-	}
 
-	private final PagerTag findRequestPagerTag(String pagerId) {
-		Object obj = pageContext.getRequest().getAttribute(pagerId);
-		if (obj instanceof PagerTag)
-			return (PagerTag) obj;
-		return null;
-	}
+   protected final void restoreAttribute(String name, Object oldValue) {
+      if (oldValue != null)
+         pageContext.setAttribute(name, oldValue);
+      else
+         pageContext.removeAttribute(name);
+   }
 
-	public int doStartTag() throws JspException {
-		if (id != null) {
-			pagerTag = findRequestPagerTag(id);
-			if (pagerTag == null)
-				throw new JspTagException("pager tag with id of \"" + id +
-											"\" not found.");
-		} else {
-			pagerTag = (PagerTag) findAncestorWithClass(this, PagerTag.class);
-			if (pagerTag == null) {
-				pagerTag = findRequestPagerTag(PagerTag.DEFAULT_ID);
-				if (pagerTag == null)
-					throw new JspTagException("not nested within a pager tag" +
-								" and no pager tag found at request scope.");
-			}
-		}
 
-		return EVAL_BODY_INCLUDE;
-	}
+   private final PagerTag findRequestPagerTag(String pagerId) {
+      Object obj = pageContext.getRequest().getAttribute(pagerId);
+      if (obj instanceof PagerTag)
+         return (PagerTag) obj;
+      return null;
+   }
 
-	public int doEndTag() throws JspException {
-		pagerTag = null;
-		return EVAL_PAGE;
-	}
 
-	public void release() {
-		pagerTag = null;
-		super.release();
-	}
+   public int doStartTag() throws JspException {
+      if (id != null) {
+         pagerTag = findRequestPagerTag(id);
+         if (pagerTag == null)
+            throw new JspTagException("pager tag with id of \"" + id + "\" not found.");
+      }
+      else {
+         pagerTag = (PagerTag) findAncestorWithClass(this, PagerTag.class);
+         if (pagerTag == null) {
+            pagerTag = findRequestPagerTag(PagerTag.DEFAULT_ID);
+            if (pagerTag == null)
+               throw new JspTagException("not nested within a pager tag" + " and no pager tag found at request scope.");
+         }
+      }
+
+      return EVAL_BODY_INCLUDE;
+   }
+
+
+   public int doEndTag() throws JspException {
+      pagerTag = null;
+      return EVAL_PAGE;
+   }
+
+
+   public void release() {
+      pagerTag = null;
+      super.release();
+   }
 }
 
 /* vim:set ts=4 sw=4: */

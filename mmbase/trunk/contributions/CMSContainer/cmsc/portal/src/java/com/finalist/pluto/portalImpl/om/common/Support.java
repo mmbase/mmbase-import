@@ -21,7 +21,8 @@ package com.finalist.pluto.portalImpl.om.common;
 
 public interface Support {
 
-    public static final int POST_LOAD = 2;
+   public static final int POST_LOAD = 2;
 
-    public void postLoad(Object parameter) throws Exception;
+
+   public void postLoad(Object parameter) throws Exception;
 }

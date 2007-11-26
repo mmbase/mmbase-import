@@ -17,49 +17,47 @@ import com.finalist.cmsc.workflow.*;
 
 public class ContentWorkflowAction extends WorkflowAction {
 
-	@Override
-	protected String getWorkflowType() {
-		return ContentWorkflow.TYPE_CONTENT;
-	}
+   @Override
+   protected String getWorkflowType() {
+      return ContentWorkflow.TYPE_CONTENT;
+   }
 
-	@Override
-	protected NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean aord) {
-		NodeManager manager = cloud
-				.getNodeManager(ContentElementUtil.CONTENTELEMENT);
-		NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
 
-		NodeManager channelManager = cloud
-				.getNodeManager(RepositoryUtil.CONTENTCHANNEL);
-		wfQuery.addRelationStep(channelManager, RepositoryUtil.CREATIONREL,
-				null);
+   @Override
+   protected NodeQuery createDetailQuery(Cloud cloud, String orderby, boolean aord) {
+      NodeManager manager = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
+      NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
 
-		wfQuery.addField(ContentElementUtil.CONTENTELEMENT + ".number");
-		wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "."
-				+ ContentElementUtil.TITLE_FIELD);
-		wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "."
-				+ ContentElementUtil.LASTMODIFIEDDATE_FIELD);
-		wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "."
-				+ ContentElementUtil.LASTMODIFIER_FIELD);
-		wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + "."
-				+ RepositoryUtil.NAME_FIELD);
-		if (orderby.equals(ContentElementUtil.TITLE_FIELD)) {
-			addOrderBy(manager, wfQuery, ContentElementUtil.TITLE_FIELD,aord);
-		} else if (orderby.equals(ContentElementUtil.LASTMODIFIER_FIELD)) {
-			addOrderBy(manager, wfQuery, ContentElementUtil.LASTMODIFIER_FIELD,aord);
-		} else if (orderby.equals(ContentElementUtil.LASTMODIFIEDDATE_FIELD)) {
-			addOrderBy(manager, wfQuery,
-					ContentElementUtil.LASTMODIFIEDDATE_FIELD,aord);
-		} else if (orderby.equals(RepositoryUtil.CONTENTCHANNEL)) {
-			addOrderBy(channelManager, wfQuery, RepositoryUtil.NAME_FIELD,aord);
-		} else if (orderby.equals("number")) {
-			addOrderBy(manager, wfQuery, "number",aord);
-		} else if (orderby.equals(WorkflowManager.REMARK_FIELD)) {
-			addOrderBy(WorkflowManager.getManager(cloud), wfQuery,
-					WorkflowManager.REMARK_FIELD,aord);
-		} else {
-			addOrderBy(manager, wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD,aord);
-		}
-		return wfQuery;
-	}
+      NodeManager channelManager = cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL);
+      wfQuery.addRelationStep(channelManager, RepositoryUtil.CREATIONREL, null);
+
+      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + ".number");
+      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "." + ContentElementUtil.TITLE_FIELD);
+      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "." + ContentElementUtil.LASTMODIFIEDDATE_FIELD);
+      wfQuery.addField(ContentElementUtil.CONTENTELEMENT + "." + ContentElementUtil.LASTMODIFIER_FIELD);
+      wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + "." + RepositoryUtil.NAME_FIELD);
+      if (orderby.equals(ContentElementUtil.TITLE_FIELD)) {
+         addOrderBy(manager, wfQuery, ContentElementUtil.TITLE_FIELD, aord);
+      }
+      else if (orderby.equals(ContentElementUtil.LASTMODIFIER_FIELD)) {
+         addOrderBy(manager, wfQuery, ContentElementUtil.LASTMODIFIER_FIELD, aord);
+      }
+      else if (orderby.equals(ContentElementUtil.LASTMODIFIEDDATE_FIELD)) {
+         addOrderBy(manager, wfQuery, ContentElementUtil.LASTMODIFIEDDATE_FIELD, aord);
+      }
+      else if (orderby.equals(RepositoryUtil.CONTENTCHANNEL)) {
+         addOrderBy(channelManager, wfQuery, RepositoryUtil.NAME_FIELD, aord);
+      }
+      else if (orderby.equals("number")) {
+         addOrderBy(manager, wfQuery, "number", aord);
+      }
+      else if (orderby.equals(WorkflowManager.REMARK_FIELD)) {
+         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD, aord);
+      }
+      else {
+         addOrderBy(manager, wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD, aord);
+      }
+      return wfQuery;
+   }
 
 }
