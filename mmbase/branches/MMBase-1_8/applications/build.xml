@@ -106,7 +106,7 @@ Applications build file
   </target>
 
   <target name="editwizard" depends="dove,mmbase">
-     <ant dir="editwizard" target="dependent.package" inheritAll="false">
+     <ant dir="editwizard" target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
        <property name="download.dir"        value="${download.dir}" />
