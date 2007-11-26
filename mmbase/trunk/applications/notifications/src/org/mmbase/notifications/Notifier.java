@@ -15,7 +15,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.bridge.util.*;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.Casting;
+import org.mmbase.util.*;
+
 import java.util.concurrent.*;
 import java.util.*;
 
@@ -27,16 +28,18 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.6 2007-11-16 18:23:36 michiel Exp $
+ * @version $Id: Notifier.java,v 1.7 2007-11-26 15:50:38 michiel Exp $
  **/
 public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(Notifier.class);
 
     protected boolean running = true;
-    protected final Set<String> relevantBuilders = new HashSet<String>();
-
     DelayQueue<Notifyable> queue = new DelayQueue<Notifyable>();
+
+    protected Collection<String> getRelevantBuilders() {
+        return Arrays.asList(getInitParameter("builders").split("\\s*,\\s*"));
+    }
 
     @Override
     public void reload() {
@@ -44,16 +47,19 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
     }
 
 
-    protected void loadNotifyables() {
+    protected synchronized void loadNotifyables() {
         log.info("Loading notifyables");
         Date now = new Date();
-        relevantBuilders.clear();
-        relevantBuilders.addAll(Arrays.asList(getInitParameter("builders").split("\\s*,\\s*")));
         queue.clear();
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
 
         NodeManager notifyables = cloud.getNodeManager("notifyables");
         NodeQuery nq = notifyables.createQuery();
+
+        SortedMap<Object, Object> map = SortedBundle.getResource("org.mmbase.notifications.resources.offset",
+                                                                 null, null, null, Integer.class, null);
+
+        Integer first = (Integer) map.entrySet().iterator().next().getKey();
         Queries.addConstraint(nq, Queries.createConstraint(nq, "lastcheck", FieldCompareConstraint.LESS, now));
         Queries.addConstraint(nq, Queries.createConstraint(nq, "status", FieldCompareConstraint.EQUAL, 1));
 
@@ -69,7 +75,7 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
 
             Node notifyable = ni.nextNode();
             Date lastCheck  = notifyable.getDateValue("lastcheck");
-            Date futureDate = new Date(lastCheck.getTime() + 1000 * future);
+            Date futureDate = new Date(new Date().getTime() + 1000 * future);
 
             NodeIterator pi = notifyable.getRelatedNodes("object", "related", null).nodeIterator();
             while (pi.hasNext()) {
@@ -86,13 +92,12 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
                 params.set("since", lastCheck);
                 params.set("until", futureDate);
                 Collection<Date> dates = Casting.toCollection(datesFunction.getFunctionValue((Parameters) null));
-                log.debug("Found dates " + dates);
+                log.debug("Found dates " + dates + " between " + lastCheck + " and " + futureDate + " for notifyable " + p.getNumber());
                 for (Date date : dates) {
-                    Notifyable.addNotifyables(queue, notifyable, date);
+                    Notifyable.addNotifyables(queue, notifyable, date, lastCheck);
                 }
             }
         }
-        log.info("Loaded " + queue);
     }
 
     @Override
@@ -115,7 +120,6 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
                 log.service("Found notifyiable " + notifyable);
                 Node n = notifyable.getNode();
                 notifyable.send();
-
                 n.setDateValue("lastcheck", new Date());
                 n.commit();
 
@@ -138,9 +142,12 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
         if (log.isTraceEnabled()) {
             log.trace("received " + ne);
         }
+        Collection<String> relevantBuilders = getRelevantBuilders();
         // TODO, this is a bit too crude.
         if (relevantBuilders.contains(ne.getBuilderName())) {
+            log.debug("Received " + ne + "");
             loadNotifyables();
+
         } else {
             if (log.isTraceEnabled()) {
                 log.trace("Ignoring because " + ne.getBuilderName() + " not in " + relevantBuilders);
@@ -149,6 +156,7 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
     }
     public void notify(RelationEvent re) {
         // TODO, this is a bit too crude.
+        Collection<String> relevantBuilders = getRelevantBuilders();
         if (relevantBuilders.contains(re.getRelationSourceType()) || relevantBuilders.contains(re.getRelationDestinationType())) {
             loadNotifyables();
         }
@@ -158,7 +166,9 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
     {
         addFunction(new AbstractFunction/*<List>*/("list", new Parameter[] {}, ReturnType.LIST) {
                 public Object getFunctionValue(Parameters arguments) {
-                    return new ArrayList<Notifyable>(queue);
+                    synchronized(Notifier.this) {
+                        return new ArrayList<Notifyable>(queue);
+                    }
                 }
             });
 

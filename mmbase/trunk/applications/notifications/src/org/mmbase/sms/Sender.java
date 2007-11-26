@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.4 2007-11-19 12:03:12 michiel Exp $
+ * @version $Id: Sender.java,v 1.5 2007-11-26 15:50:38 michiel Exp $
  **/
 public abstract class Sender  {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);
@@ -40,7 +40,9 @@ public abstract class Sender  {
      * Offers an SMS for sending. It needs not do this immediately, but may collect some, and offer
      * them in batch to an SMS gateway.
      */
-    public  abstract boolean offer(SMS sms);
+    public abstract boolean offer(SMS sms);
+
+    public abstract Collection<SMS> getQueue();
 
 
     public static Sender getInstance() {

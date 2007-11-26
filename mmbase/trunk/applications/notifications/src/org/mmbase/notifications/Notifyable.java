@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A Notifyable is a wrapper arround an MMBase node of the type 'Notifyable'.
  * @author Michiel Meeuwissen
- * @version $Id: Notifyable.java,v 1.4 2007-10-22 16:50:21 michiel Exp $
+ * @version $Id: Notifyable.java,v 1.5 2007-11-26 15:50:38 michiel Exp $
  **/
 public class Notifyable implements Delayed {
 
@@ -33,7 +33,7 @@ public class Notifyable implements Delayed {
     protected final int offset;
     protected final boolean offsetNull;
 
-    public static void addNotifyables(Queue queue, Node notifyable, Date date) {
+    public static void addNotifyables(Queue queue, Node notifyable, Date date, Date after) {
         SortedSet<Integer> sortedOffsets = new TreeSet<Integer>();
         for (String offset : Collections.list(ResourceBundle.getBundle("org.mmbase.notifications.resources.offset").getKeys())) {
             sortedOffsets.add(Integer.parseInt(offset));
@@ -41,7 +41,15 @@ public class Notifyable implements Delayed {
 
         int prevOffset = Integer.MIN_VALUE;
         for (int offset : sortedOffsets) {
-            queue.add(new Notifyable(notifyable, date, prevOffset, offset));
+            Calendar help = Calendar.getInstance();
+            help.setTime(date);
+            help.add(Calendar.SECOND, offset);
+            Date occurDate = help.getTime();
+            if (occurDate.after(after)) {
+                Notifyable not = new Notifyable(notifyable, date, prevOffset, offset);
+                log.service("Queuing " + not);
+                queue.add(not);
+            }
             prevOffset = offset;
         }
 
@@ -58,7 +66,7 @@ public class Notifyable implements Delayed {
 
     public long getDelay(TimeUnit u) {
         Date now = new Date();
-        long result =  u.convert(date.getTime() - now.getTime() + (1000L * offset), TimeUnit.MILLISECONDS);
+        long result =  u.convert(date.getTime() - now.getTime() + (1000L * offset) - 5000, TimeUnit.MILLISECONDS);
         return result;
     }
 
@@ -71,7 +79,7 @@ public class Notifyable implements Delayed {
             Cloud cloud = getNode().getCloud();
 
             NodeQuery query = Queries.createRelationNodesQuery(getNode(), cloud.getNodeManager("object"), "notify", null);
-            log.info("" + query);
+            log.debug("" + query);
             Queries.addConstraint(query, Queries.createConstraint(query, "notify.status", FieldValueConstraint.EQUAL, 1));
             Constraint cons = Queries.createConstraint(query, "notify.offset", Queries.OPERATOR_BETWEEN,
                                                        prevOffset + 1, offset, false);
