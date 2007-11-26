@@ -10,9 +10,13 @@ function editRemark(id, oldRemark) {
    }
 }
 
-function selectTab(val, orderby) {
+function selectTab(val, orderby, laststatus) {
    document.forms[0].orderby.value = orderby;
    document.forms[0].status.value = val;
+   if(laststatus==null ||laststatus=="")
+		document.forms[0].laststatus.vlaue="true";
+   else
+   		document.forms[0].laststatus.value=laststatus;
    document.forms[0].submit();
 }
 
@@ -36,7 +40,7 @@ function checkAllBoolean(what, type) {
          e.checked = what;
 
          if (what == false) {
-            var theElement = document.getElementById(e.name);
+            var theElement = document.getElementsById(e.name);
             if (theElement != null) {
                theElement.value = null;
             }
