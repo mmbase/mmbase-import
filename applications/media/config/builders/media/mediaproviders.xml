@@ -82,7 +82,7 @@
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <enumeration>
-          <entry bundle="org.mmbase.applications.media.builders.resources.providerstates" />
+          <entry basename="org.mmbase.applications.media.builders.resources.providerstates" />
         </enumeration>
       </datatype>
     </field>
