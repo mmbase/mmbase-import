@@ -35,8 +35,8 @@
 			<description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Urlfragment</guiname>
-            <guiname xml:lang="en">Urlfragment</guiname>
+            <guiname xml:lang="nl">URL-fragment</guiname>
+            <guiname xml:lang="en">URL-fragment</guiname>
 			<guiname xml:lang="zh">URL片段</guiname>
          </gui>
          <editor>

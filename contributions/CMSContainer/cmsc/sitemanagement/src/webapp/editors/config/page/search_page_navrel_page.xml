@@ -7,8 +7,8 @@
 
 	<item>
 		<field ftype="data" name="urlfragment">
-			<prompt xml:lang="en">Urlfragment</prompt>
-			<prompt xml:lang="nl">Urlfragment</prompt>
+			<prompt xml:lang="en">URL-fragment</prompt>
+			<prompt xml:lang="nl">URL-fragment</prompt>
 		</field>
 		<field ftype="data" name="title">
 			<prompt xml:lang="en">Title</prompt>
