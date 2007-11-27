@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.37.2.4 2007-03-29 13:10:31 pierre Exp $
+ * @version  $Id: validator.js,v 1.37.2.5 2007-11-27 12:18:32 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -209,18 +209,17 @@ Validator.prototype.validateElement = function (el, silent) {
 
     minlength = el.getAttribute("dtminlength");
     required = el.getAttribute("dtrequired");
-    if (!isEmpty(minlength) || (!isEmpty(required) && (required == "true"))) {
+    if ((!isEmpty(minlength) &&  "0" != minlength) || (!isEmpty(required) && (required == "true"))) {
         if (ftype=="enum" || dttype=="enum") {
             if (el.options[el.selectedIndex].value == "-") {
                 err += getToolTipValue(form,'message_required',
                    "value is required; please select a value");
             }
 
-        }
-        else {
+        } else {
             if (isEmpty(v)) {
                 err += getToolTipValue(form,'message_required',
-                   "value is required");
+				       "value is required");
             }
         }
     }
@@ -662,7 +661,7 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
 }
 
 function isEmpty(value) {
-        return (value == null) || (value == "");
+    return (value == null) || (value == "");
 }
 
 function getTargetElement(evt) {
