@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.5 2007-09-11 17:13:37 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.6 2007-11-27 15:17:33 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -60,7 +60,18 @@ public class Jumpers extends MMObjectBuilder {
     /**
      * Cache for URL jumpers.
      */
-    protected JumpersCache jumpCache = new JumpersCache(DEFAULT_JUMP_CACHE_SIZE);
+    protected Cache jumpCache = new  Cache/*<String,String>*/(DEFAULT_JUMP_CACHE_SIZE) {
+            public String getName() {
+                return "JumpersCache";
+            }
+
+            public String getDescription() {
+                return "Cache for Jumpers";
+            }
+        };
+    {
+        jumpCache.putCache();
+    }
 
     /**
      * Default redirect if no jumper can be found. If this field is
@@ -359,6 +370,7 @@ public class Jumpers extends MMObjectBuilder {
             if (url == null) {
                 // Search jumpers with name;
                 url = getJumpByField("name", key);
+                log.debug("jump by name '" + url + "'");
             }
             int ikey = -1;
             if (url == null) {
@@ -368,6 +380,7 @@ public class Jumpers extends MMObjectBuilder {
                 // Search jumpers with number (parent);
                 if (ikey >= 0) {
                     url = getJumpByField("id", key);
+                    log.debug("jump by id '" + url + "'");
                 }
             }
             if (url == null) {
@@ -380,7 +393,8 @@ public class Jumpers extends MMObjectBuilder {
                             log.debug("Found node " + ikey);
                             synchronized(this) {
                                 url = (String) jumpCache.get(key);
-                                if (url != null) {
+                                log.debug("found from jumpcache '" + url + "'");
+                                if (url == null) {
                                     log.debug("Applying " + strategy);
                                     url = strategy.calculate(node);
                                     if (url != null) {
@@ -578,17 +592,3 @@ public class Jumpers extends MMObjectBuilder {
 
 }
 
-class JumpersCache extends Cache/*<String,String>*/ {
-    public String getName() {
-        return "JumpersCache";
-    }
-
-    public String getDescription() {
-        return "Cache for Jumpers";
-    }
-
-    JumpersCache(int size) {
-        super(size);
-        this.putCache();
-    }
-}
