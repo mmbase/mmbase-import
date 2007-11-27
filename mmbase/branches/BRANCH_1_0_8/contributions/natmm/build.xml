@@ -167,6 +167,7 @@
                    <fileset dir="${basedir}/META-INF/natmm-internet">
                    </fileset>
                    <filterset filtersfile="${conf.dir}/natmmconfig.properties"/>
+                   <filterset filtersfile="${conf.dir}/filters.properties"/>
                 </copy>
                 
 		<copy todir="${build.dir}/mmbase-webapp/WEB-INF/config" overwrite="true">
@@ -216,6 +217,7 @@
                    <fileset dir="${basedir}/META-INF/natmm-intranet">
                    </fileset>
                    <filterset filtersfile="${conf.dir}/nmintraconfig.properties"/>
+                   <filterset filtersfile="${conf.dir}/filters.properties"/>
                 </copy>
                 
 		<copy todir="${build.dir}/mmbase-webapp/WEB-INF/config" overwrite="true">
