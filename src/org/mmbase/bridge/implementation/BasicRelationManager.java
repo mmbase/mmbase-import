@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.34 2005-12-27 22:14:14 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.34.2.1 2007-11-27 13:01:55 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -59,6 +59,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
     public final boolean isRelationManager() {
+
         return true;
     }
     public final  RelationManager toRelationManager() {
@@ -70,7 +71,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * passed node (reldef or typerel), and fills temporary variables to maintain status.
      */
     protected void initManager() {
-        MMObjectBuilder bul = noderef.getBuilder();        
+        MMObjectBuilder bul = noderef.getBuilder();
         if (bul instanceof RelDef) {
             relDefNode = noderef;
         } else if (bul instanceof TypeRel) {
@@ -82,7 +83,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         } else {
             throw new RuntimeException("The builder of node " + noderef.getNumber() + " is not reldef or typerel, but " + bul.getTableName() + " cannot instantiate a relation manager with this");
         }
-        
+
         RelDef relDef = (RelDef) relDefNode.getBuilder();
         if (relDef != null) {
             builder = relDef.getBuilder(relDefNode.getNumber());
@@ -194,5 +195,13 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
         return cloud.check(Operation.CREATE, builder.getNumber(),
                            sourceNode.getNumber(), destinationNode.getNumber());
+    }
+
+    public String toString() {
+        return "RelationManager " +
+            (typeRelNode != null ? getSourceManager().getName() : "???") +
+            " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
+            (typeRelNode != null ? getDestinationManager().getName() : "???") +
+            " ( " + getNode().getNumber() + ")";
     }
 }
