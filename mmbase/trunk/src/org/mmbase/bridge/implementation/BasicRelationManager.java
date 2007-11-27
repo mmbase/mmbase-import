@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.39 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: BasicRelationManager.java,v 1.40 2007-11-27 13:02:35 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -170,7 +170,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
-            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds.");
+            throw new BridgeException("Relationmanager and source node are not in the same transaction or in different clouds." + sourceNode.getCloud() + " != " + cloud);
         }
         if (destinationNode.getCloud() != cloud) {
             throw new BridgeException("Relationmanager and destination node are not in the same transaction or in different clouds.");
@@ -197,5 +197,12 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
         return cloud.check(Operation.CREATE, builder.getNumber(),
                            sourceNode.getNumber(), destinationNode.getNumber());
+    }
+    public String toString() {
+        return "RelationManager " +
+            (typeRelNode != null ? getSourceManager().getName() : "???") +
+            " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
+            (typeRelNode != null ? getDestinationManager().getName() : "???") +
+            " ( " + getNode().getNumber() + ")";
     }
 }
