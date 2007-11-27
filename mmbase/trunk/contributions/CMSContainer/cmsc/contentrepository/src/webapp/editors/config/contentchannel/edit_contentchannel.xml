@@ -12,8 +12,8 @@
 	</field>
 	<field name="pathfragment" dtmaxlength="255"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
-		<prompt xml:lang="en">Urlfragment</prompt>
-		<prompt xml:lang="nl">Urlfragment</prompt>
+		<prompt xml:lang="en">URL-fragment</prompt>
+		<prompt xml:lang="nl">URL-fragment</prompt>
 		<prompt xml:lang="zh">URL片段</prompt>
 	</field>
 

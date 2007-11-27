@@ -6,8 +6,8 @@
 
 	<item>
 		<field ftype="data" name="pathfragment">
-			<prompt xml:lang="en">Urlfragment</prompt>
-			<prompt xml:lang="nl">Urlfragment</prompt>
+			<prompt xml:lang="en">URL-fragment</prompt>
+			<prompt xml:lang="nl">URL-fragment</prompt>
 		</field>
 		<field ftype="data" name="name">
 			<prompt xml:lang="en">Name</prompt>
@@ -20,8 +20,8 @@
 		<prompt xml:lang="en">Search collectionchannel</prompt>
 		<prompt xml:lang="nl">Zoek rubriek</prompt>
 		<search-filter>
-			<name xml:lang="en">Urlfragment contains</name>
-			<name xml:lang="nl">Urlfragment bevat</name>
+			<name xml:lang="en">URL-fragment contains</name>
+			<name xml:lang="nl">URL-fragment bevat</name>
 			<search-fields>[pathfragment]</search-fields>
 		</search-filter>
 		<search-filter>

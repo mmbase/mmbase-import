@@ -166,8 +166,8 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Urlfragment</guiname>
-				<guiname xml:lang="en">Urlfragment</guiname>
+				<guiname xml:lang="nl">URL-fragment</guiname>
+				<guiname xml:lang="en">URL-fragment</guiname>
 			</gui>
 			<editor>
 				<positions>
