@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.14 2007-11-14 14:24:43 michiel Exp $
+ * @version $Id: FormTag.java,v 1.15 2007-11-28 18:01:00 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -131,8 +131,12 @@ public class FormTag extends TransactionTag implements Writer {
         if (getId() != null) {
             getContextProvider().getContextContainer().unRegister(getId());
         }
-        transaction = null;
-        return super.doEndTag();
+        Transaction t = transaction;
+        int result = super.doEndTag();
+        if (! t.isCommitted()) {
+            t.cancel();
+        }
+        return result;
     }
 
     // never commit on close, unless, explicitely requested, of course.
