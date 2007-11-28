@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+	<!-- ========== Data Sources Definitions =================================== -->
+	<!-- ========== Form Bean Definitions =================================== -->
+	<!-- ========== Global Exceptions Definitions =================================== -->
+	<!-- ========== Global Forward Definitions =================================== -->
+	<!-- ========== Action Mapping Definitions =================================== -->
+	<action-mappings>
+		<action path="/alert/confirm" type="com.finalist.emailalert.ConfirmAction"
+			 scope="request" unknown="false" validate="false">			
+		</action>	
+		<action path="/alert/unsubscribe" type="com.finalist.emailalert.UnsubscribeAction"
+			 scope="request" unknown="false" validate="false">			
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="EmailAlert" key="EMAILALERT" />	
+	
+</struts-config>
