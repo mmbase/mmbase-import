@@ -39,7 +39,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.53.2.7 2007-07-30 09:00:16 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.53.2.8 2007-11-28 17:07:46 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -171,11 +171,11 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                 if (p.getProperty("cache.path") == null) {
                     p.setProperty("cache.path", mmb.getInitParameter("datadir") + java.io.File.separator + "oscache");
                 }
-                
+
                 Class osCache = Class.forName("com.opensymphony.oscache.web.ServletCacheAdministrator");
                 Method m = osCache.getMethod("getInstance", new Class [] {ServletContext.class, Properties.class});
                 m.invoke(null, new Object[] { getServletContext(), p});
-                log.service("Using " + p + " for oscache");                
+                log.service("Using " + p + " for oscache");
             } catch (Exception e) {
                 log.service(e.getMessage());
             }
@@ -456,8 +456,15 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                      (seconds > 0 || minutes > 0 ? " " + (seconds == 1 ? "1 second" : "" + seconds + " seconds") : ""));
 
         } else if ("server".equals(q)) {
-            String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for other ap-servers.
-            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ") " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getHostName() + " " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+            String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for
+                                                                    // other ap-servers.
+            String root = "" + getServletContext().getResource("/");
+            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") +
+                     " (" + System.getProperty("java.vendor") + ") " +
+                     (appserver == null ? "" : appserver) +
+                     "@" + java.net.InetAddress.getLocalHost().getHostName() + " " +
+                     System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch")  +
+                     "\n" + root);
         }
         pw.close();
     }
@@ -619,7 +626,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     Module.shutdownModules();
                 } catch (Throwable t) {
                     log.error(t.getMessage(), t);
-                }   
+                }
                 try {
                     ThreadGroup threads = MMBaseContext.getThreadGroup();
                     log.service("Send interrupt to " + threads.activeCount() + " threads in " +
