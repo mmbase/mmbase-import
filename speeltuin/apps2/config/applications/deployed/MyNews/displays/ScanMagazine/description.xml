@@ -1,9 +1,0 @@
-<display name="ScanMagazine" version="1" create-date="Dec 20, 2001 10:19:41 AM" MD5="hier moet nog een functie voor komen">
-
-	<description>The scan web pages for showing the news articles.</description>
-
-	<requires>
-	</requires>
-
-	<default-web-path>mmexamples/mynews/scan</default-web-path>
-</display>
