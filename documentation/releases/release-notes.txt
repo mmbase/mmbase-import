@@ -35,6 +35,27 @@ Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
 --------------------
 General New Features:
 --------------------
+[1.8.5]
+    * [MMB-405] - Searching in list with startnode. Cannot make new links to startnode.
+    * [MMB-1450] - Missing 'gender' datatype
+    * [MMB-1483] - org.mmbase.util.functions.SetFunction could be public.
+    * [MMB-1447] - It would be comfortable if mm:constraint operator constants would also include the EL values like eq gt lt ge le
+    * [MMB-1460] - Image-conversion should have some 'maximal image-size result' setting.
+    * [MMB-1469] - mm:hasalias
+    * [MMB-1470] - Since a certain browser still does not accept application/xhtml+xml it would be handy if mm:content could do the check.
+    * [MMB-1477] - You cannot edit security contexts with editwizards.
+    * [MMB-1482] - Needing 'Weak' EventBrokers
+    * [MMB-1492] - notfound parameter for nodefunction tag
+    * [MMB-1510] - mm:listfunction could have listdelimiter.
+    * [MMB-1513] - A way to fill content-disposition with mm:content
+    * [MMB-1516] - Ignore autodeploy applications.
+    * [MMB-1517] - Flash type
+    * [MMB-1523] - Properties of Transaction do not mirror the ones in the parent cloud object.
+    * [MMB-1525] - PageContext to be available as a ThreadLocal
+    * [MMB-1536] - Desired feature notfound="log"
+    * [MMB-1502] - DataType framework needs javascript validation library.
+
+
 [1.8.4]
 
     * [MMB-194] - Writer-value conversion (e.g. to bridge.Node) not yet completely implemented.
@@ -231,6 +252,52 @@ Bug Fixes:
 ------------------
 
 [1.8.5]
+
+ * [MMB-535] - basic bridge implementation: cannot delete node if lacking write rights
+    * [MMB-1254] - Searchbox of editwizard's list always talks about 'Title contains'.
+    * [MMB-1270] - Date-editing does not make less significant fields 0.
+    * [MMB-1296] - Password gets reset when you edit  a user in the security editors
+    * [MMB-1307] - If field is virtual, e.g. because not present in database, it is still added to searchqueries.
+    * [MMB-1357] - Loginmethod is not passed arround
+    * [MMB-1404] - TreeList can give IndexOutOfBoundException
+    * [MMB-1435] - MS-SQL does not work
+    * [MMB-1436] - <minLength value="0" does not quite work as one would think (e.g. in mm:fieldinfo).
+    * [MMB-1439] - ${_} in body of mm:import does not work properly
+    * [MMB-1441] - fmt-locale is unset by mm:content, mm:locale, if they don't set locale themselves (no language attribute)
+    * [MMB-1442] - mm:import from request in an mm:context messes up that request attribute itself.
+    * [MMB-1443] - mm:createnode mm:createrelation don't show body if buffering disabled.
+    * [MMB-1444] - LocalizedEntryListFactory does not decently degrade locales.
+    * [MMB-1449] - treeinclude, treefile don't work in a war.
+    * [MMB-1453] - EL does not work nice if Nodes are written e.g. to request.
+    * [MMB-1457] - If handle field of icache is 'not null', image-conversion does not work.
+    * [MMB-1459] - Image-converion 'per url' does not work very well any more.
+    * [MMB-1461] - CharsetRemover filter does not work any more.
+    * [MMB-1467] - sorters must be grouped in xml, otherwise dont' work as expected.
+    * [MMB-1471] - deleting of node 'with relations' goes wrong, if the relations themselves have relations.
+    * [MMB-1472] - Dove, check for 'editable' fields it too simple. Cannot edit virtual/system fields now.
+    * [MMB-1479] - check field existance not used for getInputStreamValue, getSize.
+    * [MMB-1480] - getSize seems not to work on multilevel nodes.
+    * [MMB-1496] - BasicSqlHandler a bit too stupid when it comes to datetime fields.
+    * [MMB-1497] - javascript escapers should also escape newlines.
+    * [MMB-1499] - Tag with explicit escape-value, changes escaping of current _-variable.
+    * [MMB-1500] - Client specifc rendering and caching. Need to use 'Vary' header.
+    * [MMB-1506] - ConcurrentModificationException from TemplateCaches
+    * [MMB-1508] - Informix sql layer. It is doubtfull that adding {+ORDERED} to queries is a definite good idea.
+    * [MMB-1509] - node attribute missing on mm:relatednodescontainer
+    * [MMB-1515] - mm:node element="bla" notfound="skip" is broken.
+    * [MMB-1518] - Question marks in filename may lead to non-working image-urls
+    * [MMB-1520] - Deadlock if obtaining cloud in init of module.
+    * [MMB-1524] - Problems with serialization of Transaction objects.
+    * [MMB-1527] - Datatypes: Cannot specify param values containing only of white-space.
+    * [MMB-1528] - null-values are not processed through the 'getprocessor.
+    * [MMB-1531] - BasicQuery.toSql returns generic sql and not the real generated sql
+    * [MMB-1532] - java.rmi.server.hostname is not set when RMIRegistryServer is used
+    * [MMB-1534] - Context 'import' is not easy to convert to 'default'
+    * [MMB-1535] - oscache-cache depends on oscache version 2.4 but 2.2 was still mentioned in build.properties
+    * [MMB-1537] - Informix: Calling scrubConnection resets lock-mode.
+    * [MMB-1538] - mm:fieldinfo type="guivalue" does not honor 'urlconvert' parameter if presenting an image.
+    * [MMB-1541] - Daymarkers: getDayCountAge() always returns 0
+    * [MMB-1544] - dtminlength=0 makes the field required.
 
 
 [1.8.4]
