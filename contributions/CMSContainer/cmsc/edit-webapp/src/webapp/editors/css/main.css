@@ -1376,3 +1376,13 @@ label {
 	height: 100px; 
 	border:0px; 
 }
+
+span.warning {
+	font-weight: bold; 
+	color: #FF0000;
+}
+
+a.channeldelete {
+	font-weight:bold;
+	text-decoration:none;
+}
