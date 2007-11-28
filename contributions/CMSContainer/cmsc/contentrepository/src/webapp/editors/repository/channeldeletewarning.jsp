@@ -23,22 +23,75 @@
 <div class="editor">
 	<div class="body">
 
+      <c:set var="relcount1" value="0"/>
+      <c:set var="relcount2" value="0"/>
+      
+      <mm:list nodes="$parentchannel" path="contentchannel,creationrel,contentelement"> 
+         <mm:field name="contentelement.number" id="cenumber" write="false"/>
+         
+         <mm:list nodes="$cenumber" path="contentelement,contentrel,contentchannel">
+            <mm:first>
+               <mm:size id="relcount" write="false"/>
+               <c:choose>
+                  <c:when test="${relcount gt 1}">
+                     <c:set var="relcount2" value="${relcount2 + 1}"/>
+                  </c:when>
+                  <c:otherwise>
+                     <c:set var="relcount1" value="${relcount1 + 1}"/>
+                  </c:otherwise>
+               </c:choose>
+            </mm:first>
+         </mm:list>
+         
+      </mm:list>
+
 		<p>
 			<fmt:message key="channeldelete.warning" />
 			<b><mm:node number="$parentchannel"><mm:field name="name" /></mm:node></b>.
 		</p>
-		<form action="ChannelDelete.do" method="post" onsubmit="return unlinkAll();" name="deleteAllForm">
-			<input type="hidden" name="remove" value="unlinkall" /> 
-			<input type="hidden" name="number" value="<mm:write referid="parentchannel"/>" /> 
-			<ul class="shortcuts">
-            	<li class="delete">
-					<a href="javascript:document.forms['deleteAllForm'].submit();"><fmt:message key="channeldelete.removeall" /></a>
-				</li>
-			</ul>
-		</form>
+      <p>
+         <fmt:message key="channeldelete.intro" />
+         <ul>
+            <li>
+               <fmt:message key="channeldelete.message.1">
+                  <fmt:param >${relcount1}</fmt:param>
+               </fmt:message>
+            </li>
+            <li>
+               <fmt:message key="channeldelete.message.2">
+                  <fmt:param >${relcount2}</fmt:param>
+               </fmt:message>            
+            </li>
+         </ul>
+      </p>
+      <p>
+         <fmt:message key="channeldelete.choice" />
+         <ul>
+            <li>
+               <a class="channeldelete" href="javascript:document.forms['deleteAllForm'].remove.value='delete';document.forms['deleteAllForm'].submit();">
+               <img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="channeldelete.remove" />" />
+               <fmt:message key="channeldelete.remove.message" />    
+            </li>
+            <li>
+               <a class="channeldelete" href="javascript:document.forms['deleteAllForm'].remove.value='move';document.forms['deleteAllForm'].submit();">
+               <img src="../gfx/icons/arrow_right.png" width="16" height="16" alt="<fmt:message key="channeldelete.move" />" />
+               <fmt:message key="channeldelete.move.message" />
+            </li>
+            <li>
+               <a class="channeldelete" href="javascript:document.forms['deleteAllForm'].remove.value='cancel';document.forms['deleteAllForm'].submit();">
+               <img src="../gfx/icons/arrow_undo.png" width="16" height="16" alt="<fmt:message key="channeldelete.cancel" />" />
+               <fmt:message key="channeldelete.cancel.message" />
+            </li>
+         </ul>         
+      </p>
+      
+      <form action="ChannelDelete.do" method="post" onsubmit="return unlinkAll();" name="deleteAllForm">
+         <input type="hidden" name="remove" value="" /> 
+         <input type="hidden" name="number" value="<mm:write referid="parentchannel"/>" /> 
+      </form>
 		<div style="clear:both; height:10px;"></div>
 	
-        <div class="ruler_green"><div><fmt:message key="channeldelete.content" /></div></div>
+      <div class="ruler_green"><div><fmt:message key="channeldelete.content" /></div></div>
 
 		<mm:import id="lastotype" />
 
