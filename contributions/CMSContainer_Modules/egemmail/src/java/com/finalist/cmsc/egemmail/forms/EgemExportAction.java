@@ -159,9 +159,9 @@ public class EgemExportAction extends EgemSearchAction {
    private String getContentUrl(Node node) {
       if (Publish.isPublished(node) && Search.hasContentPages(node)) {
          int remoteNumber = Publish.getLiveNumber(node);
-         String appPath = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", String
-               .valueOf(remoteNumber), node.getStringValue("title"));
          String livePath = PropertiesUtil.getProperty(EGEMMAIL_LIVEPATH);
+         String appPath = "/content/" + remoteNumber;
+
          return livePath + appPath;
       }
       return null;
