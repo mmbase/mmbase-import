@@ -37,7 +37,7 @@ import org.mmbase.util.xml.DocumentReader;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.70 2007-07-24 16:20:43 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.71 2007-11-28 17:10:04 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -444,8 +444,16 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                      (seconds > 0 || minutes > 0 ? " " + (seconds == 1 ? "1 second" : "" + seconds + " seconds") : ""));
 
         } else if ("server".equals(q)) {
-            String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for other ap-servers.
-            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ") " + (appserver == null ? "" : appserver) + "@" + java.net.InetAddress.getLocalHost().getCanonicalHostName() + " " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+            String appserver = System.getProperty("catalina.base"); // to do: similar arrangment for
+                                                                    // other ap-servers.
+            String root = "" + getServletContext().getResource("/");
+            pw.print("\n" + getServletContext().getServerInfo() + " " + System.getProperty("java.version") +
+                     " (" + System.getProperty("java.vendor") + ") " +
+                     (appserver == null ? "" : appserver) +
+                     "@" + java.net.InetAddress.getLocalHost().getCanonicalHostName() + " " +
+                     System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch")  +
+                     "\n" + root);
+
         }
         pw.close();
     }
@@ -605,7 +613,7 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                     Module.shutdownModules();
                 } catch (Throwable t) {
                     log.error(t.getMessage(), t);
-                }   
+                }
                 try {
                     ThreadGroup threads = MMBaseContext.getThreadGroup();
                     log.service("Send interrupt to " + threads.activeCount() + " threads in " +
