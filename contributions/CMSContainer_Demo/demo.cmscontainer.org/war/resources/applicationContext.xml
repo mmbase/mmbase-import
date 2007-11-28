@@ -28,8 +28,7 @@
 	-->
 	<bean
 		class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
-		<property name="transactionInterceptor"
-			ref="transactionInterceptor" />
+		<property name="transactionInterceptor" ref="transactionInterceptor" />
 	</bean>
 
 	<!--

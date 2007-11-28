@@ -58,6 +58,7 @@ public class User {
     */
    @Column(name = "user_id", nullable = false)
    public String getUserId() {
+      System.out.println("Username: " + userId);
       return userId;
    }
 
@@ -102,6 +103,7 @@ public class User {
     */
    @Column(name = "firstname", nullable = false)
    public String getName() {
+      System.out.println("Voornaam: " + firstname);
       return firstname;
    }
 
@@ -124,6 +126,7 @@ public class User {
     */
    @Column(name = "lastname", nullable = false)
    public String getLastname() {
+      System.out.println("Achternaam: " + lastname);
       return lastname;
    }
 
@@ -146,6 +149,7 @@ public class User {
     */
    @Column(name = "emailAdress", nullable = true)
    public String getEmailadress() {
+      System.out.println("Email-Adres: " + emailAdress);
       return emailAdress;
    }
 
