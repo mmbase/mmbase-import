@@ -35,7 +35,7 @@ echo generating version, and some directories
 
 #nightly build:
 #version=`date '+%Y-%m-%d'`
-#cvsversion="-D ${version} `date '+%H:%M:%S'`"
+#cvsversion=-D "${version} `date '+%H:%M:%S'`"
 #revision=MMBase-1_8
 #headrevision="-A"
 
@@ -69,33 +69,33 @@ echo update cvs to `pwd`  using -r '${cvsversion}' | tee -a  ${builddir}/message
 
 if ( true ) ; then
     for i in '.' 'applications' 'contributions'; do
-	echo updating `pwd`/$i | tee -a ${builddir}/messages.log
-	${CVS} -q update -d -P -l "${cvsversion}" -r "${revision}"  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    echo updating `pwd`/$i | tee -a ${builddir}/messages.log
+    ${CVS} -q update -d -P -l ${cvsversion} -r "${revision}"  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     for i in 'applications/build.xml' 'contributions/build.xml' 'download.xml' ; do
-	echo updating `pwd`/$i to  HEAD | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
-	${CVS} -q update -d -P -l -D "${cvsversion}" ${headrevision}  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    echo updating `pwd`/$i to  HEAD | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
+    ${CVS} -q update -d -P -l ${cvsversion} ${headrevision}  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     echo "Build from ${revision} ${cvsversion} against java 1.4 are" > ${builddir}/README
     for i in 'src' 'documentation' 'tests' 'config' 'html' \
-	'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/crontab' 'applications/cloudcontext' \
-	'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
-	'applications/media' 'applications/packaging' 'applications/community' 'applications/largeobjects' \
-	'contributions/aselect' 'contributions/mmbar' 'contributions/thememanager' 'contributions/multilanguagegui'\
-	'contributions/principletracker' \
-	; do
+        'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/crontab' 'applications/cloudcontext' \
+        'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
+        'applications/media' 'applications/packaging' 'applications/community' 'applications/largeobjects' \
+        'contributions/aselect' 'contributions/mmbar'  'contributions/multilanguagegui' \
+        'contributions/principletracker' \
+    ; do
       echo updating `pwd`/$i | tee -a ${builddir}/messages.log
       echo $i >> ${builddir}/README
-      ${CVS} -q update -d -P -D "${cvsversion}" -r "${revision}" $i | tee  -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+      ${CVS} -q update -d -P ${cvsversion} -r "${revision}" $i | tee  -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     echo "==========UPDATING TO HEAD========" >> ${builddir}/messages.log
     echo "Build from HEAD ${cvsversion} against java 1.5 are" >> ${builddir}/README
-    for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/didactor2' 'applications/richtext' \
-	'applications/jumpers' 'applications/commandserver' 'applications/notifications' 'contributions/poll' 'contributions/calendar' \
-	; do
-	echo updating to HEAD `pwd`/$i | tee -a   ${builddir}/messages.log
-	echo $i >> ${builddir}/README
-	${CVS} -q update -d -P -D "${cvsversion}" ${headrevision} $i | tee -a   ${builddir}/messages.log 2>> ${builddir}/errors.log
+    for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/thememanager' 'contributions/didactor2' 'applications/richtext' \
+        'applications/jumpers' 'applications/commandserver' 'applications/notifications' 'contributions/poll' 'contributions/calendar' \
+    ; do
+    echo updating to HEAD `pwd`/$i | tee -a   ${builddir}/messages.log
+    echo $i >> ${builddir}/README
+    ${CVS} -q update -d -P ${cvsversion} ${headrevision} $i | tee -a   ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
 fi
 stableoptions="-Doptional.lib.dir=${optdir} -Dbuild.documentation=false -Ddestination.dir=${builddir} -Ddownload.dir=${downloaddir}"
@@ -109,22 +109,22 @@ if ( true ) ; then
     export JAVAC=${JAVAC14}
     ${antcommand} bindist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     if ( true ) ; then
-	cd ${STABLE}/applications
-	${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-	cd ${STABLE}/contributions
-	${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-	cd ${STABLE}
-	${antcommand} srcdist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-	${antcommand} war ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}/applications
+    ${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}/contributions
+    ${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}
+    ${antcommand} srcdist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    ${antcommand} minimalistic-war ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 
-	echo "JAVA 15 from now on" | tee -a ${builddir}/messages.log
-	export JAVA_HOME=${JAVA_HOME15}
-	export JAVAC=${JAVAC15}
+    echo "JAVA 15 from now on" | tee -a ${builddir}/messages.log
+    export JAVA_HOME=${JAVA_HOME15}
+    export JAVAC=${JAVAC15}
 
-	cd ${STABLE}/applications
-	${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-	cd ${STABLE}/contributions
-	${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}/applications
+    ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd ${STABLE}/contributions
+    ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     fi
 fi
 
