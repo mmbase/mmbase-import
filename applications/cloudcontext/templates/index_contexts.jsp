@@ -84,7 +84,7 @@
             <mm:maydelete>
               <mm:field id="curcontext"  name="name" write="false" />
               <mm:listnodescontainer type="object">
-                <mm:constraint field="owner" value="$curcontext" />
+                <mm:constraint field="owner" value="$curcontext" casesensitive="true" />
                 <mm:size>
                   <mm:compare value="0">
                     <mm:import id="prompt">reallydeletecontexts</mm:import>
