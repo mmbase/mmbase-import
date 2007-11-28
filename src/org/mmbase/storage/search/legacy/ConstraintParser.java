@@ -112,7 +112,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.34 2007-02-25 18:18:24 nklasens Exp $
+ * @version $Id: ConstraintParser.java,v 1.35 2007-11-28 10:17:47 michiel Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -133,7 +133,7 @@ public class ConstraintParser {
      */
     private static String convertClausePartToDBS(String constraints) {
         StorageManagerFactory<?> factory = MMBase.getMMBase().getStorageManagerFactory();
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int posa = constraints.indexOf('[');
         while (posa > -1) {
             int posb = constraints.indexOf(']', posa);
@@ -177,7 +177,7 @@ public class ConstraintParser {
 
         //keesj: what does this code do?
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         //if there is a quote in the constraints posa will not be equals -1
 
         int quoteOpen = constraints.indexOf('\'');
@@ -340,7 +340,7 @@ public class ConstraintParser {
                 // String, delimited by single or double quotes.
                 if (token.equals("'") || token.equals("\"")) {
                     tokens.add("'");
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     while (true) {
                         String token2 = st.nextToken(token);
                         if (token2.equals(token)) {
