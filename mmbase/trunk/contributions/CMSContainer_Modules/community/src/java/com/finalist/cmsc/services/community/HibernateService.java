@@ -45,6 +45,16 @@ public class HibernateService {
        * Long(1)); } catch (Exception e) { // TODO Auto-generated //catch block
        * e.printStackTrace(); }
        */
+      //List users = null;
+      
+      //users = (List)userDAO.getUser(userId);
+      
+      //User user = (User)users.get(0);
+      
+      //String test = user.getUserId();
+      
+      //System.out.println("DIT IS EEN TEST WERKT HIBERNATE? ZOJA: " + test);
+      
       return userDAO.getUser(userId);
    }
 

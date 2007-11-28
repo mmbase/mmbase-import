@@ -134,6 +134,33 @@
       <filter-name>ControllerFilter</filter-name>
       <url-pattern>/*</url-pattern>
    </filter-mapping>
+   
+   <!-- 
+		Hibernate settings/For Community Module
+   
+	
+   <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:applicationContext.xml</param-value>
+   </context-param>
+   
+   <listener>
+      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener>
+
+   <filter>
+      <filter-name>hibernateFilter</filter-name>
+      <filter-class>
+         org.springframework.orm.hibernate3.support.OpenSessionInViewFilter
+      </filter-class>
+   </filter>
+   
+   <filter-mapping>
+        <filter-name>hibernateFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+   </filter-mapping>
+	
+	-->
 
     <servlet>
         <display-name>Pluto Driver</display-name>

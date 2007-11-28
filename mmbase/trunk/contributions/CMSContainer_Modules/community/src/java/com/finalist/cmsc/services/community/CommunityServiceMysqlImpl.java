@@ -29,11 +29,13 @@ public class CommunityServiceMysqlImpl extends CommunityService {
 
       aC = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-      HibernateService hibservice = (HibernateService) aC.getBean("service");
-
-      Object userObj = hibservice.getUser(userText);
-
-      log.info("USEROBJECT= " + userObj);
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      
+      log.info(hibservice.getUser(userText));
+      
+      //List users = null;
+      
+      //users = (List)hibservice.getUser(userText);
 
       boolean loginSuccesfull;
 

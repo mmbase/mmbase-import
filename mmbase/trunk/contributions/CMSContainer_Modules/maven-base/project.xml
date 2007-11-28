@@ -235,7 +235,7 @@
 		<dependency>
 		  <groupId>asm</groupId>
 		  <artifactId>asm</artifactId>
-		  <version>2.2.2</version>
+		  <version>1.5.3</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -275,7 +275,7 @@
 		<dependency>
 		  <groupId>dom4j</groupId>
 		  <artifactId>dom4j</artifactId>
-		  <version>1.6.1</version>
+		  <version>1.5</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -284,18 +284,18 @@
 		
 		<dependency>
 		  <groupId>ejb-persistence</groupId>
-		  <artifactId>ejb-persistence</artifactId>
-		  <version>3.1beta6</version>
+          <artifactId>ejb3-persistence</artifactId>
+          <version>3.1beta4</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
-		</dependency>
+        </dependency>
 		
 		<dependency>
 		  <groupId>hibernate</groupId>
 		  <artifactId>hibernate</artifactId>
-		  <version>3.1rc2</version>
+		  <version>3.1</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -305,7 +305,7 @@
 		<dependency>
 		  <groupId>hibernate</groupId>
 		  <artifactId>hibernate-annotations</artifactId>
-		  <version>3.1beta4</version>
+		  <version>3.1beta7</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -313,9 +313,9 @@
 		</dependency>
 		
 		<dependency>
-		  <groupId>jta</groupId>
+		  <groupId>javax.transaction</groupId>
 		  <artifactId>jta</artifactId>
-		  <version>1.1</version>
+		  <version>1.0.1B</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -333,19 +333,9 @@
 		</dependency>
 		
 		<dependency>
-		  <groupId>spring</groupId>
+		  <groupId>springframework</groupId>
 		  <artifactId>spring</artifactId>
-		  <version>1.0.2</version>
-		  <type>jar</type>
-			<properties>
-				<war.bundle>${war.bundle}</war.bundle>
-			</properties>
-		</dependency>
-		
-		<dependency>
-		  <groupId>spring</groupId>
-		  <artifactId>spring-mock</artifactId>
-		  <version>1.0.2</version>
+		  <version>1.2.7</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -354,8 +344,118 @@
 		
 		<dependency>
 		  <groupId>springframework</groupId>
-		  <artifactId>spring</artifactId>
-		  <version>1.2.6</version>
+		  <artifactId>spring-aop</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-beans</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-context</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-core</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-dao</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-hibernate</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-jdbc</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-mock</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-orm</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-remoting</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-support</artifactId>
+		  <version>1.2.7</version>
+		  <type>jar</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+		  <groupId>springframework</groupId>
+		  <artifactId>spring-web</artifactId>
+		  <version>1.2.7</version>
 		  <type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
