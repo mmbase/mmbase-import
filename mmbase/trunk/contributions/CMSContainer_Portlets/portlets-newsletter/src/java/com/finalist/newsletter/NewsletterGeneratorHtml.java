@@ -1,6 +1,6 @@
 package com.finalist.newsletter;
 
-import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
 
 public class NewsletterGeneratorHtml extends NewsletterGenerator {
 
@@ -9,9 +9,8 @@ public class NewsletterGeneratorHtml extends NewsletterGenerator {
       // TODO Auto-generated constructor stub
    }
 
-
    @Override
-   protected Message generateNewsletterContent(String userName) {
+   protected MimeMessage generateNewsletterContent(String userName) {
 
       return null;
    }

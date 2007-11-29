@@ -10,7 +10,6 @@ public class NewsletterModule extends Module {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterModule.class.getName());
 
-
    @Override
    public void init() {
       String nodeName = "newsletterpublication";

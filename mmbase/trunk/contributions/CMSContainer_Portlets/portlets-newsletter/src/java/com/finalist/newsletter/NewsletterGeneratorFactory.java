@@ -1,5 +1,8 @@
 package com.finalist.newsletter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -10,11 +13,17 @@ public class NewsletterGeneratorFactory {
    private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
    private static NewsletterGeneratorFactory instance;
 
+   public static final String AVAILABLE_MIMETYPES = "mimetypes";
+   public static final String MIMETYPE_HTML = "text/html";
+   public static final String MIMETYPE_PLAIN = "text/plain";
+   public static List<String> mimeTypes = new ArrayList<String>();
 
-   private NewsletterGeneratorFactory() {
+   public static final String MIMETYPE_DEFAULT = MIMETYPE_HTML;
 
+   static {
+      mimeTypes.add(MIMETYPE_HTML);
+      mimeTypes.add(MIMETYPE_PLAIN);
    }
-
 
    public static NewsletterGeneratorFactory getInstance() {
       if (instance == null) {
@@ -23,15 +32,16 @@ public class NewsletterGeneratorFactory {
       return instance;
    }
 
+   private NewsletterGeneratorFactory() {
+
+   }
 
    public NewsletterGenerator getNewsletterGenerator(String publicationNumber, String mimeType) {
       if (mimeType.equals(NewsletterSubscriptionUtil.MIMETYPE_HTML)) {
          return (new NewsletterGeneratorHtml(publicationNumber));
-      }
-      else if (mimeType.equals(NewsletterSubscriptionUtil.MIMETYPE_PLAIN)) {
+      } else if (mimeType.equals(NewsletterSubscriptionUtil.MIMETYPE_PLAIN)) {
          return (new NewsletterGeneratorPlain(publicationNumber));
-      }
-      else {
+      } else {
          log.debug("No NewsletterGenerator returned because of unsupported mimetype");
          return (null);
       }

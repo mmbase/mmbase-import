@@ -9,18 +9,25 @@
 		<h3><fmt:message key="subscription.subscribe.title" /></h3>
 	</div>
 	<div class="content">
-		<p><fmt:message key="subscription.subscribe.info" /></p>
+		<p><fmt:message key="subscription.subscribe.info" /></p><br>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<c:forEach var="newsletternumber" items="newsletters">
+		<c:forEach var="newsletternumber" items="${newsletters}">
 		<mm:node number="${newsletternumber}" notfound="skip">
 			<tr>
 				<td colspan="2">
-					<b><mm:field name="title" write="true" /></b>
+					<b><fmt:message key="newsletter" />: <mm:field name="title" write="true" /></b>
 				</td>					
 			</tr>
 			<tr>
-			<td colspan="2"><mm:field name="description" write="true" />
-			</td>
+				<td colspan="2"><mm:field name="description" write="true" />	</td>
+			</tr>
+			<tr>
+				<td colspan="2"><cmsc:checkbox var="newsletter" value="${newsletternumber}" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
+			<tr>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="2"><b><fmt:message key="additionalthemes" /></b></td>
 			</tr>
 			<mm:relatednodes type="newslettertheme" role="related">
 				<mm:field name="number" write="false" jspvar="theme"/>

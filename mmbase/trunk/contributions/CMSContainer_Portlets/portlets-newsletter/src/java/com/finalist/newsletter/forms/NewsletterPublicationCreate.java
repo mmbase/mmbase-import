@@ -18,8 +18,6 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
@@ -39,8 +37,8 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
          addToRequest(request, "showpage", publicationNode);
 
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=EDIT"
-               + "&contenttype=newsletterpublication" + "&returnurl=" + mapping.findForward("returnurl").getPath());
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=EDIT" + "&contenttype=newsletterpublication"
+               + "&returnurl=" + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
          return ret;
       }
