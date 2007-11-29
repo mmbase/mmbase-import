@@ -57,6 +57,19 @@
 			</tr>
 			<tr>
 				<td>
+					<fmt:message key="edit_defaults.duplicatehandling" />
+				</td>
+				<td>
+					<cmsc:select var="duplicatehandling">
+						<c:forEach var="v" items="${duplicatehandlers}">
+							<cmsc:option value="${v}" name="${v}" />
+						</c:forEach>
+					</cmsc:select>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
 					<fmt:message key="edit_defaults.window" />
 				</td>
 				<td>

@@ -12,7 +12,6 @@ public class NewsletterPublicationListener implements NodeEventListener {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterPublicationListener.class.getName());
 
-
    public void notify(NodeEvent event) {
       log.debug("NewsletterPublicationListener invoked");
       if (ServerUtil.isLive()) {
@@ -25,17 +24,14 @@ public class NewsletterPublicationListener implements NodeEventListener {
 
             try {
                wait(10000);
-            }
-            catch (InterruptedException iex) {
+            } catch (InterruptedException iex) {
 
             }
             publisher.start();
-         }
-         else {
+         } else {
             log.debug("The event is of type " + event.getBuilderName() + " and does not need processing");
          }
-      }
-      else {
+      } else {
          log.debug("The server is not live, processing of event not neccesary");
       }
    }

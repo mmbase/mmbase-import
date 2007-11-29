@@ -11,7 +11,6 @@
 		<title>${cur.title}</title>
 		</head>
 		<body>
-		<h1>${cur.title}</h1>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td><cmsc:insert-portlet layoutid="column1_1" /></td>

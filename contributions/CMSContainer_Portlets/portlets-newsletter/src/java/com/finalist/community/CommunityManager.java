@@ -14,7 +14,6 @@ public class CommunityManager {
 
    public static final String TEMPLATE_LOGIN = "newsletter/subscription/login.jsp";
 
-
    // A note to Menno: The community must be able to handle multiple
    // preferences with the same key. For example, there can be multiple
    // preferences with key "newslettertheme", but each key has a different
@@ -25,11 +24,6 @@ public class CommunityManager {
    // key/value pair of "newsletter" / "949" this method returns all users that
    // have this preference set.
 
-   public static List<String> getUsersWithPreference(String key, String value) {
-      return null;
-   }
-
-
    // This method retuns the value for the given username and key from the
    // users preferences
    public static String getUserPreference(String userName, String key) {
@@ -38,18 +32,6 @@ public class CommunityManager {
       }
       return (null);
    }
-
-
-   // This method can be used to store a preference for a user. It takes the
-   // username and a key/value pair
-   public static boolean setUserPreference(String userName, String key, String value) {
-      if (key != null && value != null) {
-         prefs.put(key, value);
-         return (true);
-      }
-      return (false);
-   }
-
 
    // This method returns a list of values for the specified user and key. This
    // method can be compared to the getParameterValues method of the
@@ -60,17 +42,16 @@ public class CommunityManager {
       return (null);
    }
 
-
-   // I do not yet need this one, but may be handy. This method receives a list
-   // or map of key/value paires and sets them for the given user.
-   public static boolean setUserPreferenceValues(String userName, Map<String, String> preferences) {
-      if (preferences != null && preferences.size() > 0) {
-         prefs.putAll(preferences);
-         return (true);
-      }
-      return (false);
+   public static List<String> getUsersWithPreference(String key, String value) {
+      return null;
    }
 
+   // This methods allows a module or portlet to check if a given user has the
+   // requested permission. The clinet does not care about the role or group of
+   // the user.
+   public static boolean hasPermission(String userName, String permission) {
+      return (true); // temp
+   }
 
    // This method removes all occurrences of the given key from the givenusers
    // preference listing For example, if there is a key "newslettertheme" with
@@ -84,18 +65,29 @@ public class CommunityManager {
       return (false);
    }
 
-
    // This method removes the given key/value combination from the given users
    // preferencelist
    public static void removeUserPreference(String userName, String key, String value) {
 
    }
 
+   // This method can be used to store a preference for a user. It takes the
+   // username and a key/value pair
+   public static boolean setUserPreference(String userName, String key, String value) {
+      if (key != null && value != null) {
+         prefs.put(key, value);
+         return (true);
+      }
+      return (false);
+   }
 
-   // This methods allows a module or portlet to check if a given user has the
-   // requested permission. The clinet does not care about the role or group of
-   // the user.
-   public static boolean hasPermission(String userName, String permission) {
-      return (true); // temp
+   // I do not yet need this one, but may be handy. This method receives a list
+   // or map of key/value paires and sets them for the given user.
+   public static boolean setUserPreferenceValues(String userName, Map<String, String> preferences) {
+      if (preferences != null && preferences.size() > 0) {
+         prefs.putAll(preferences);
+         return (true);
+      }
+      return (false);
    }
 }

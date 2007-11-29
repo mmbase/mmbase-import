@@ -30,12 +30,11 @@ public class NewsletterPublicationEdit extends MMBaseFormlessAction {
       if (StringUtil.isEmptyOrWhitespace(action)) {
          String objectnumber = getParameter(request, "number", true);
 
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber="
-               + objectnumber + "&returnurl=" + mapping.findForward("returnurl").getPath());
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+               + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
          return ret;
-      }
-      else {
+      } else {
          SecurityUtil.clearUserRoles(cloud);
          String ewnodelastedited = getParameter(request, "ewnodelastedited");
          addToRequest(request, "showpage", ewnodelastedited);
