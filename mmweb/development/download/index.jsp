@@ -1,7 +1,7 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
 %><%@ page language="java" contentType="text/html; charset=utf-8"
 %><mm:cloud
-><%@ include file="/includes/getids.jsp" 
+><%@ include file="/includes/getids.jsp"
 %><%@ include file="/includes/alterheader.jsp" %>
 
 <%@ include file="last_builds.jsp" %>
@@ -27,7 +27,7 @@
 <h3>Latest MMBase release</h3>
 <%-- Last official MMBase release --%>
 <mm:list path="pages2,releases,mmevents" searchdir="destination"
-  fields="releases.number,mmevents.start" 
+  fields="releases.number,mmevents.start"
   orderby="mmevents.start" directions="DOWN" max="1">
   <mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
   <mm:node element="releases">
@@ -49,9 +49,9 @@
 
 <h3>Packages and other applications</h3>
 <h5>Packages</h5>
-<p>More about the MMBase package manager (apps2) and the packages you can install 
+<p>More about the MMBase package manager (apps2) and the packages you can install
 and download with it can be found at
-<a href="http://www.mmbase.org/packages">this page</a> and at 
+<a href="http://www.mmbase.org/packages">this page</a> and at
 <a href="http://packages.mmbase.org/mmbase/packagemanager/public/">packages.mmbase.org</a>.
 </p>
 
@@ -68,24 +68,24 @@ and download with it can be found at
 </mm:list>
 
 <h3>MMBase builds</h3>
-<p>Latest builds from the previous stable branch (MMBase-1_7, MMBase-1_8)</p>
+<p>Latest builds from the previous stable branch (MMBase-1_8)</p>
 <ul>
-<% 
+<%
 Iterator j = getStableBuilds(3).iterator();
-while (j.hasNext()) { 
+while (j.hasNext()) {
   BuildInfo info = (BuildInfo) j.next(); %>
   <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
-</ul>
-
-<p>Latest builds from the HEAD branch. The 1.8 branch was made on 2006-08-30. Builds after that are 1.9.0.</p>
-<ul>
 <% ListIterator l = getReleaseBuilds(3).listIterator();
 while (l.hasNext()) l.next();
 while (l.hasPrevious()) {
   BuildInfo info = (BuildInfo) l.previous(); %>
   <li><%= info.dateString %> <%= info.remarks %> <a href="<mm:url page="<%= info.link %>" />">view</a></li>
 <% } %>
+</ul>
+
+<p>Latest builds from the HEAD branch. The 1.8 branch was made on 2006-08-30. Builds after that are 1.9.0.</p>
+<ul>
 </ul>
 <ul>
 <% Iterator k = getHeadBuilds(3).iterator();
@@ -100,7 +100,7 @@ while (k.hasNext()) {
 
 <h3>Source</h3>
 <p>You can access MMBase's CVS repository anonymously. You must of course have
-cvs installed. More about how to access the repository can be found on 
+cvs installed. More about how to access the repository can be found on
 <a href="<mm:url page="index.jsp" referids="portal">
   <mm:param name="page" value="page_cvs" />
 </mm:url>">these pages</a>.
