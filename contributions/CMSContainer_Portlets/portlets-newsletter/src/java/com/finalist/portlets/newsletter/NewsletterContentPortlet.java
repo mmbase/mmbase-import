@@ -10,7 +10,9 @@ See http://www.MMBase.org/license
 package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -33,105 +35,128 @@ import com.finalist.newsletter.util.NewsletterUtil;
 public class NewsletterContentPortlet extends AbstractContentPortlet {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterContentPortlet.class.getName());
+   private static ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettercontent");
 
    public static final String NEWSLETTERNUMBER = "newsletternumber";
    public static final String PUBLICATIONNUMBER = "publicationnumber";
+   public static final String ARTICLES = "articles";
 
    public static final String DISPLAYTYPE = "displaytype";
    public static final String DISPLAYTYPE_NORMAL = "all";
    public static final String DISPLAYTYPE_PERSONALIZED = "personalized";
    public static final String DISPLAYTYPE_DEFAULT = DISPLAYTYPE_NORMAL;
 
+   public static final String DUPLICATE_HANDLING = "duplicatehandling";
+   public static final String DUPLICATE_HANDLING_SHOW = rb.getString("duplicatehandling.show");
+   public static final String DUPLICATE_HANDLING_HIDE = rb.getString("duplicatehandling.hide");
+   public static final String DUPLICATE_HANDLING_DEFAULT = DUPLICATE_HANDLING_HIDE;
 
    @Override
-   protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
-      log.debug("Executing the doView of the newsletter content portlet");
-      PortletPreferences preferences = req.getPreferences();
-      PortletSession session = req.getPortletSession(true);
-      String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-      String page = preferences.getValue(PAGE, null);
-      String newsletterNumber = page;
+   protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
+      List<String> duplicateHandlers = new ArrayList<String>();
+      duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_SHOW);
+      duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_HIDE);
+      req.setAttribute("duplicatehandlers", duplicateHandlers);
+      super.doEditDefaults(req, res);
+   }
 
-      if (newsletterNumber != null && !StringUtil.isEmptyOrWhitespace(newsletterNumber)) {
-         log.debug("NewsletterNumber is " + newsletterNumber);
-         setAttribute(req, PAGE, newsletterNumber);
-         String displayType = "" + req.getParameter(DISPLAYTYPE);
-         if (StringUtil.isEmpty(displayType)) {
+   @Override
+   protected void doView(RenderRequest request, RenderResponse res) throws PortletException, java.io.IOException {
+      log.debug("Executing the doView of the newsletter content portlet");
+      PortletPreferences preferences = request.getPreferences();
+      PortletSession session = request.getPortletSession(true);
+      String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
+      String duplicateHandling = preferences.getValue(DUPLICATE_HANDLING, null);
+      String page = preferences.getValue(PAGE, null);
+
+      if (page != null && !StringUtil.isEmptyOrWhitespace(page)) {
+
+         String displayType = request.getParameter(DISPLAYTYPE);
+         if (displayType == null) {
             log.debug("Display type is not set, default wil be used. Default is: " + DISPLAYTYPE_DEFAULT);
             displayType = DISPLAYTYPE_DEFAULT;
          }
 
-         String userName = (String) session.getAttribute("username");
-         List<String> themes = null;
-         String themeType = null;
          String number = null;
+         String themeType = null;
+         String newsletterNumber = page;
+         String publicationNumber = request.getParameter(PUBLICATIONNUMBER);
 
-         String publicationNumber = req.getParameter(PUBLICATIONNUMBER);
-         if (!StringUtil.isEmpty(publicationNumber)) {
+         if (publicationNumber != null && !StringUtil.isEmptyOrWhitespace(publicationNumber)) {
             log.debug("User requeste to view publication: " + publicationNumber);
             themeType = NewsletterUtil.THEMETYPE_NEWSLETTERPUBLICATION;
             number = publicationNumber;
-         }
-         else {
+         } else {
             log.debug("User requested to view the default newsletter: " + newsletterNumber);
             themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
             number = newsletterNumber;
          }
 
+         List<String> additionalThemes = null;
          List<String> availableThemes = NewsletterUtil.getAllThemes(number, themeType);
-         if (availableThemes != null || availableThemes.size() > 0) {
-            log.debug("Found " + availableThemes.size() + " available themes");
-            if (displayType.equals(DISPLAYTYPE_NORMAL)) {
+         if (availableThemes != null && availableThemes.size() > 0) {
+            if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
                log.debug("The user requested to view the output in normal style");
-               themes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName,
-                     newsletterNumber);
-            }
-            else {
+               String userName = "" + session.getAttribute("username");
+               additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, number);
+            } else {
                log.debug("The user did not specify a display type and will get the default");
-               themes = availableThemes;
+               additionalThemes = availableThemes;
             }
-         }
-         else {
+         } else {
             log.debug("No available themes have been found for number " + number + " and themetype " + themeType);
          }
 
-         //
+         String defaultTheme = NewsletterUtil.getDefaultTheme(number, themeType);
+         List<String> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
+         if (defaultArticles != null && defaultArticles.size() > 0) {
+            request.setAttribute("defaulttheme", defaultTheme);
+            request.setAttribute(ARTICLES.concat(defaultTheme), defaultArticles);
+         }
 
-         if (themes != null && themes.size() > 0) {
-            log.debug("After checking themes: " + themes.size() + " themes");
-            setAttribute(req, "themes", themes);
-            for (int i = 0; i < themes.size(); i++) {
-               String themeNumber = themes.get(i);
+         if (additionalThemes != null && additionalThemes.size() > 0) {
+            log.debug("Processing " + additionalThemes.size() + " additional themes");
+
+            List<String> temporaryArticleListing = defaultArticles;
+
+            for (int i = 0; i < additionalThemes.size(); i++) {
+               String themeNumber = additionalThemes.get(i);
                List<String> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
-               if (articles != null && articles.size() > 0) {
-                  setAttribute(req, themeNumber, articles);
-                  log.debug("Found " + articles.size() + " articles for theme " + themeNumber);
+               if (duplicateHandling.equals(DUPLICATE_HANDLING_HIDE)) {
+                  articles = NewsletterUtil.removeDuplicates(temporaryArticleListing, articles);
                }
-               else {
+               if (articles != null && articles.size() > 0) {
+                  request.setAttribute(ARTICLES + themeNumber, articles);
+                  for (int a = 0; a < articles.size(); a++) {
+                     temporaryArticleListing.add(articles.get(a));
+                  }
+               } else {
                   log.debug("No articles could are available for theme " + themeNumber);
+                  additionalThemes.remove(themeNumber);
+                  i--;
                }
             }
-         }
-         else {
+            request.setAttribute("themes", additionalThemes);
+         } else {
             log.debug("No themes are available");
          }
-      }
-      else {
+      } else {
          log.debug("The page number could not be found");
       }
-      doInclude("view", template, req, res);
+      doInclude("view", template, request, res);
    }
-
-
-   @Override
-   protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
-      super.doEditDefaults(req, res);
-   }
-
 
    @Override
    public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       log.debug("processEditDefaults - PAGE = " + request.getParameter(PAGE));
+      PortletPreferences preferences = request.getPreferences();
+      String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
+
+      String duplicateHandling = request.getParameter(DUPLICATE_HANDLING);
+      if (duplicateHandling == null) {
+         duplicateHandling = DUPLICATE_HANDLING_DEFAULT;
+      }
+      setPortletParameter(portletId, DUPLICATE_HANDLING, duplicateHandling);
       super.processEditDefaults(request, response);
    }
 }

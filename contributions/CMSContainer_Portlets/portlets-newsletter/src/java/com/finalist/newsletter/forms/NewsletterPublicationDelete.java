@@ -29,7 +29,6 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
    /** name of submit button in jsp to cancel removal */
    private static final String ACTION_CANCEL = "cancel";
 
-
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
@@ -55,14 +54,12 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
       return mapping.findForward("newsletterpublicationdelete");
    }
 
+   private boolean isCancelAction(HttpServletRequest request) {
+      return getParameter(request, ACTION_CANCEL) != null;
+   }
 
    private boolean isRemoveAction(HttpServletRequest request) {
       return getParameter(request, ACTION_REMOVE) != null;
-   }
-
-
-   private boolean isCancelAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_CANCEL) != null;
    }
 
 }

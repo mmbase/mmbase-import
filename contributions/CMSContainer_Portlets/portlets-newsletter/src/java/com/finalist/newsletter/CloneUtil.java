@@ -10,7 +10,14 @@ package com.finalist.newsletter;
 
  */
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.FieldIterator;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationIterator;
+import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.StringList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -19,56 +26,12 @@ public class CloneUtil {
    /** MMbase logging system */
    private static Logger log = Logging.getLoggerInstance(CloneUtil.class.getName());
 
-
-   private CloneUtil() {
-      // utility
+   public static void cloneAliasses(Node localNode, Node destNode) {
+      StringList list = localNode.getAliases();
+      for (int x = 0; x < list.size(); x++) {
+         destNode.createAlias(list.getString(x));
+      }
    }
-
-
-   /**
-    * Clone a node with all relations
-    * 
-    * @param localNode
-    *           the node to be cloned
-    * @return the cloned copy of localNode
-    */
-   public static Node cloneNodeWithRelations(Node localNode) {
-      log.debug("clone node (number,type)" + localNode.getNumber() + "," + localNode.getNodeManager().getName() + ")");
-
-      Node newNode = cloneNode(localNode);
-      if (newNode == null) {
-         throw new NullPointerException("clone node #" + localNode.getNumber() + " returned null");
-      }
-      else {
-         if (log.isDebugEnabled()) {
-            log.debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + ","
-                  + newNode.getNodeManager().getName() + ")");
-         }
-      }
-      cloneRelations(localNode, newNode);
-
-      return newNode;
-   }
-
-
-   public static Node cloneNodeWithRelations(Node localNode, String childNodeType) {
-      log.debug("clone node (number,type)" + localNode.getNumber() + "," + localNode.getNodeManager().getName() + ")");
-
-      Node newNode = cloneNode(localNode, childNodeType);
-      if (newNode == null) {
-         throw new NullPointerException("clone node #" + localNode.getNumber() + " returned null");
-      }
-      else {
-         if (log.isDebugEnabled()) {
-            log.debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + ","
-                  + newNode.getNodeManager().getName() + ")");
-         }
-      }
-      cloneRelations(localNode, newNode);
-
-      return newNode;
-   }
-
 
    /**
     * Clone a node to a cloud, including any fields without keeping
@@ -81,8 +44,7 @@ public class CloneUtil {
    public static Node cloneNode(Node localNode) {
       if (isRelation(localNode)) {
          return cloneRelation(localNode);
-      }
-      else {
+      } else {
          NodeManager localNodeManager = localNode.getNodeManager();
          NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
          Node newNode = nodeManager.createNode();
@@ -93,8 +55,7 @@ public class CloneUtil {
             String fieldName = field.getName();
 
             if (field.getState() == Field.STATE_PERSISTENT) {
-               if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype") || (fieldName
-                     .indexOf("_") == 0))) {
+               if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype") || (fieldName.indexOf("_") == 0))) {
                   cloneNodeField(localNode, newNode, field);
                }
             }
@@ -105,15 +66,12 @@ public class CloneUtil {
       }
    }
 
-
    public static Node cloneNode(Node localNode, String childNodeType) {
       if (isRelation(localNode)) {
          return cloneRelation(localNode);
-      }
-      else if (childNodeType == null || childNodeType.length() == 0) {
+      } else if (childNodeType == null || childNodeType.length() == 0) {
          throw new NullPointerException("clone node #" + localNode.getNumber() + " returned null");
-      }
-      else {
+      } else {
          NodeManager localNodeManager = localNode.getNodeManager();
          NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
          NodeManager childNodeManager = localNode.getCloud().getNodeManager(childNodeType);
@@ -125,8 +83,7 @@ public class CloneUtil {
             String fieldName = field.getName();
 
             if (field.getState() == Field.STATE_PERSISTENT) {
-               if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype") || (fieldName
-                     .indexOf("_") == 0))) {
+               if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype") || (fieldName.indexOf("_") == 0))) {
                   cloneNodeField(localNode, newNode, field);
                }
             }
@@ -136,7 +93,6 @@ public class CloneUtil {
          return newNode;
       }
    }
-
 
    /**
     * cloneNodeField copies node fields from one node to an other
@@ -154,39 +110,81 @@ public class CloneUtil {
 
       if (destinationNode.getNodeManager().hasField(fieldName) == true) {
          switch (fieldType) {
-            case Field.TYPE_BINARY:
-               destinationNode.setByteValue(fieldName, sourceNode.getByteValue(fieldName));
-               break;
-            case Field.TYPE_BOOLEAN:
-               destinationNode.setBooleanValue(fieldName, sourceNode.getBooleanValue(fieldName));
-               break;
-            case Field.TYPE_DATETIME:
-               destinationNode.setDateValue(fieldName, sourceNode.getDateValue(fieldName));
-               break;
-            case Field.TYPE_DOUBLE:
-               destinationNode.setDoubleValue(fieldName, sourceNode.getDoubleValue(fieldName));
-               break;
-            case Field.TYPE_FLOAT:
-               destinationNode.setFloatValue(fieldName, sourceNode.getFloatValue(fieldName));
-               break;
-            case Field.TYPE_INTEGER:
-               destinationNode.setIntValue(fieldName, sourceNode.getIntValue(fieldName));
-               break;
-            case Field.TYPE_LONG:
-               destinationNode.setLongValue(fieldName, sourceNode.getIntValue(fieldName));
-               break;
-            case Field.TYPE_NODE:
-               destinationNode.setNodeValue(fieldName, sourceNode.getNodeValue(fieldName));
-               break;
-            case Field.TYPE_STRING:
-               destinationNode.setStringValue(fieldName, sourceNode.getStringValue(fieldName));
-               break;
-            default:
-               destinationNode.setValue(fieldName, sourceNode.getValue(fieldName));
+         case Field.TYPE_BINARY:
+            destinationNode.setByteValue(fieldName, sourceNode.getByteValue(fieldName));
+            break;
+         case Field.TYPE_BOOLEAN:
+            destinationNode.setBooleanValue(fieldName, sourceNode.getBooleanValue(fieldName));
+            break;
+         case Field.TYPE_DATETIME:
+            destinationNode.setDateValue(fieldName, sourceNode.getDateValue(fieldName));
+            break;
+         case Field.TYPE_DOUBLE:
+            destinationNode.setDoubleValue(fieldName, sourceNode.getDoubleValue(fieldName));
+            break;
+         case Field.TYPE_FLOAT:
+            destinationNode.setFloatValue(fieldName, sourceNode.getFloatValue(fieldName));
+            break;
+         case Field.TYPE_INTEGER:
+            destinationNode.setIntValue(fieldName, sourceNode.getIntValue(fieldName));
+            break;
+         case Field.TYPE_LONG:
+            destinationNode.setLongValue(fieldName, sourceNode.getIntValue(fieldName));
+            break;
+         case Field.TYPE_NODE:
+            destinationNode.setNodeValue(fieldName, sourceNode.getNodeValue(fieldName));
+            break;
+         case Field.TYPE_STRING:
+            destinationNode.setStringValue(fieldName, sourceNode.getStringValue(fieldName));
+            break;
+         default:
+            destinationNode.setValue(fieldName, sourceNode.getValue(fieldName));
          }
       }
    }
 
+   /**
+    * Clone a node with all relations
+    * 
+    * @param localNode
+    *           the node to be cloned
+    * @return the cloned copy of localNode
+    */
+   public static Node cloneNodeWithRelations(Node localNode) {
+      log.debug("clone node (number,type)" + localNode.getNumber() + "," + localNode.getNodeManager().getName() + ")");
+
+      Node newNode = cloneNode(localNode);
+      if (newNode == null) {
+         throw new NullPointerException("clone node #" + localNode.getNumber() + " returned null");
+      } else {
+         if (log.isDebugEnabled()) {
+            log
+                  .debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + "," + newNode.getNodeManager().getName()
+                        + ")");
+         }
+      }
+      cloneRelations(localNode, newNode);
+
+      return newNode;
+   }
+
+   public static Node cloneNodeWithRelations(Node localNode, String childNodeType) {
+      log.debug("clone node (number,type)" + localNode.getNumber() + "," + localNode.getNodeManager().getName() + ")");
+
+      Node newNode = cloneNode(localNode, childNodeType);
+      if (newNode == null) {
+         throw new NullPointerException("clone node #" + localNode.getNumber() + " returned null");
+      } else {
+         if (log.isDebugEnabled()) {
+            log
+                  .debug("cloned the node to the new cloud new node(number,type)" + newNode.getNumber() + "," + newNode.getNodeManager().getName()
+                        + ")");
+         }
+      }
+      cloneRelations(localNode, newNode);
+
+      return newNode;
+   }
 
    public static Node cloneRelation(Node localRelation) {
       Node sourceNode = localRelation.getNodeValue("snumber");
@@ -195,14 +193,12 @@ public class CloneUtil {
       return cloneRelation(localRelation, sourceNode, destinationNode);
    }
 
-
    public static Node cloneRelation(Node localRelation, Node sourceNode, Node destinationNode) {
       RelationManager relationManager = null;
       if (localRelation instanceof Relation) {
          Relation localRel = (Relation) localRelation;
          relationManager = localRel.getRelationManager();
-      }
-      else {
+      } else {
          Node relationTypeNode = localRelation.getNodeValue("rnumber");
          String relName = relationTypeNode.getStringValue("sname");
          relationManager = localRelation.getCloud().getRelationManager(sourceNode.getNodeManager().getName(),
@@ -216,9 +212,8 @@ public class CloneUtil {
          String fieldName = field.getName();
 
          if (field.getState() == Field.STATE_PERSISTENT) {
-            if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype")
-                  || (fieldName.indexOf("_") == 0) || fieldName.equals("snumber") || fieldName.equals("dir")
-                  || fieldName.equals("dnumber") || fieldName.equals("rnumber"))) {
+            if (!(fieldName.equals("owner") || fieldName.equals("number") || fieldName.equals("otype") || (fieldName.indexOf("_") == 0)
+                  || fieldName.equals("snumber") || fieldName.equals("dir") || fieldName.equals("dnumber") || fieldName.equals("rnumber"))) {
                cloneNodeField(localRelation, newRelation, field);
             }
          }
@@ -227,7 +222,6 @@ public class CloneUtil {
 
       return newRelation;
    }
-
 
    public static void cloneRelations(Node localNode, Node newNode) {
       RelationIterator ri = localNode.getRelations().relationIterator();
@@ -238,15 +232,13 @@ public class CloneUtil {
          Relation rel = ri.nextRelation();
          if (rel.getSource().getNumber() == localNode.getNumber()) {
             cloneRelation(rel, newNode, rel.getDestination());
-         }
-         else {
+         } else {
             if (rel.getDestination().getNumber() == localNode.getNumber()) {
                cloneRelation(rel, rel.getSource(), newNode);
             }
          }
       }
    }
-
 
    public static void cloneRelations(Node localNode, Node newNode, String relationName, String managerName) {
       RelationIterator ri = localNode.getRelations(relationName, managerName).relationIterator();
@@ -257,23 +249,13 @@ public class CloneUtil {
          Relation rel = ri.nextRelation();
          if (rel.getSource().getNumber() == localNode.getNumber()) {
             cloneRelation(rel, newNode, rel.getDestination());
-         }
-         else {
+         } else {
             if (rel.getDestination().getNumber() == localNode.getNumber()) {
                cloneRelation(rel, rel.getSource(), newNode);
             }
          }
       }
    }
-
-
-   public static void cloneAliasses(Node localNode, Node destNode) {
-      StringList list = localNode.getAliases();
-      for (int x = 0; x < list.size(); x++) {
-         destNode.createAlias(list.getString(x));
-      }
-   }
-
 
    /**
     * quick test to see if node is a relation by testing fieldnames
@@ -299,6 +281,10 @@ public class CloneUtil {
       }
 
       return false;
+   }
+
+   private CloneUtil() {
+      // utility
    }
 
 }

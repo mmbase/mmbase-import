@@ -20,6 +20,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterDelete extends MMBaseFormlessAction {
 
@@ -28,7 +29,6 @@ public class NewsletterDelete extends MMBaseFormlessAction {
 
    /** name of submit button in jsp to cancel removal */
    private static final String ACTION_CANCEL = "cancel";
-
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
@@ -43,7 +43,13 @@ public class NewsletterDelete extends MMBaseFormlessAction {
          if (NavigationUtil.getChildCount(newsletterNode) > 0 && !isWebMaster) {
             return mapping.findForward("newsletterdeletewarning");
          }
+
+         String number = newsletterNode.getStringValue("number");
+         String themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
+         NewsletterUtil.deleteNewsletterThemesForNewsletter(number, themeType);
+
          NavigationUtil.deletePage(newsletterNode);
+
          return mapping.findForward(SUCCESS);
       }
 
@@ -55,14 +61,12 @@ public class NewsletterDelete extends MMBaseFormlessAction {
       return mapping.findForward("newsletterdelete");
    }
 
+   private boolean isCancelAction(HttpServletRequest request) {
+      return getParameter(request, ACTION_CANCEL) != null;
+   }
 
    private boolean isRemoveAction(HttpServletRequest request) {
       return getParameter(request, ACTION_REMOVE) != null;
-   }
-
-
-   private boolean isCancelAction(HttpServletRequest request) {
-      return getParameter(request, ACTION_CANCEL) != null;
    }
 
 }

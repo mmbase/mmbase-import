@@ -6,7 +6,8 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import javax.mail.Message;
+
+import javax.mail.internet.MimeMessage;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -24,14 +25,11 @@ public abstract class NewsletterGenerator {
 
    private String publicationNumber;
 
-
    public NewsletterGenerator(String publicationNumber) {
       this.publicationNumber = publicationNumber;
    }
 
-
-   protected abstract Message generateNewsletterContent(String userName);
-
+   protected abstract MimeMessage generateNewsletterContent(String userName);
 
    protected String getContent(String userName) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
@@ -69,8 +67,7 @@ public abstract class NewsletterGenerator {
          inputString = inputString.trim();
          log.debug("Input = " + inputString);
          return (inputString);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
          log.debug("Error");
       }
       return (null);

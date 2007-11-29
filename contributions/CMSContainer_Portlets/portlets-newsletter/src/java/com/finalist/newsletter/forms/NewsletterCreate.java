@@ -35,12 +35,11 @@ public class NewsletterCreate extends MMBaseFormlessAction {
       if (StringUtil.isEmptyOrWhitespace(action)) {
          request.getSession().setAttribute("parentnewsletter", parentnewsletter);
 
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"
-               + "&contenttype=newsletter" + "&returnurl=" + mapping.findForward("returnurl").getPath());
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create" + "&contenttype=newsletter"
+               + "&returnurl=" + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
          return ret;
-      }
-      else {
+      } else {
          if ("save".equals(action)) {
             String ewnodelastedited = getParameter(request, "ewnodelastedited");
             NavigationUtil.appendChild(cloud, parentnewsletter, ewnodelastedited);
