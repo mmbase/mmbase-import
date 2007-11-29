@@ -29,6 +29,7 @@ public class GoogleMapPortlet extends CmscPortlet
     private static final String INFO = "info";
     private static final String KEY = "key";
 
+
     public GoogleMapPortlet() {
     }
 
