@@ -22,7 +22,7 @@
 
 List  showDirs(File thisDir, String prefix, int max, String start) throws IOException {
   List buildInfos = new ArrayList();
-  File[] content = thisDir.listFiles(); 
+  File[] content = thisDir.listFiles();
   Arrays.sort(content, new DirSorter());
   int found = 0;
   DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
@@ -70,7 +70,7 @@ List  showDirs(File thisDir, String prefix, int max, String start) throws IOExce
 	return showDirs(new File("/home/mmweb/nightly/builds"), "head", max, "20");
  }
  List getReleaseBuilds(int max) throws IOException{
-	return showDirs(new File("/home/mmweb/nightly/builds"), "head", max, "mmbase");
+	return showDirs(new File("/home/mmweb/nightly/builds/stable"), "stable", max, "mmbase");
  }
 
  List getStableBuilds(int max) throws IOException{
