@@ -9,13 +9,14 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.24 2007-11-23 10:05:41 michiel Exp $
+  @version $Id: prompts.xsl,v 1.25 2007-11-29 14:47:19 mark Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
 <!-- prompts for starting a editwizard -->
 <xsl:variable name="tooltip_edit_wizard">Wijzigen...</xsl:variable>
 <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
+<xsl:variable name="please_save">Eerst opslaan AUB</xsl:variable>
 <!-- prompts for datefields -->
 <xsl:variable name="date_january">januari</xsl:variable>
 <xsl:variable name="date_february">februari</xsl:variable>
