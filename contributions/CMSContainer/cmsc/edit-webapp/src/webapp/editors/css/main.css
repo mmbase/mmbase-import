@@ -1377,8 +1377,16 @@ label {
 	border:0px; 
 }
 
+.page_list_navfalse{
+
+}
+
+.page_list_navtrue{
+    text-decoration:none;
+}
+
 span.warning {
-	font-weight: bold; 
+	font-weight: bold;
 	color: #FF0000;
 }
 
