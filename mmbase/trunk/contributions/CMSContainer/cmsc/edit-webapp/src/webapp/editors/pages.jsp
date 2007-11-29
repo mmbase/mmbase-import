@@ -1,180 +1,113 @@
- <script   language="JavaScript">
- 
-  function   gotopage()
-  {    
-      if (document.getElementById('page').value == "")
-    alert("please input again !")
-  else {
-	var max = document.getElementById('max').value;
-	var offset = document.getElementById('page').value-1;
-		if(offset > max)
-			  {var offset = max;}
-		else if (offset < 0)
-			  {var offset = 0;}
-	var status = document.getElementById('status').value;
-	var orderby = document.getElementById('orderby').value;
-	var extraparams = document.getElementById('extraparams').value;
-	 var url = "?status="+status+"&offset="+offset+"&orderby="+orderby+extraparams;
-	 window.location.href=url; 
-  }
-  }
-  function enterTo()
-	{ 
-	  if   (window.event.keyCode   ==   13){ 
-		 gotopage();
-	  }
-  }   
+<%@ page import="org.apache.commons.lang.RandomStringUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+
+<!--todo : get default page size from system properties.-->
+
+<fmt:bundle basename="cmsc">
+    <fmt:message key="pages.message" var="error"/>
+    <fmt:message key="pages.go" var="go"/>
+    <fmt:message key="searchpages.showresults" var="searchresult">
+        <fmt:param>${offset * resultsPerPage +1}</fmt:param>
+        <fmt:param>${(listSize > (offset+1) * resultsPerPage)?((offset+1) * resultsPerPage):listSize }</fmt:param>
+        <fmt:param>${listSize}</fmt:param>
+    </fmt:message>
+</fmt:bundle>
+
+
+<script language="JavaScript">
+
+    function gotopage(targetfield) {
+
+        var inputValue = document.getElementById(targetfield).value;
+        var re = new RegExp("^[1-9][0-9]*$");
+
+        if (re.test(inputValue) && inputValue <= Math.ceil(${maxPage})) {
+            var url = "?status=&offset=" + (inputValue - 1) + "&orderby=" + "${extraparams}";
+            window.location.href = url;
+        } else {
+            alert("${error}");
+        }
+    }
+
+    function enterto(event, targetfield) {
+        if (event.keyCode == 13) {
+            gotopage(targetfield)
+        }
+    }
 </script>
+
+<c:set var="baselink">
+    ?status=${status}&orderby=${orderby}${extraparams}
+</c:set>
+
+<c:if test="${empty offset}"><c:set var="offset" value="0"/></c:if>
+<c:set var="maxPage" value="${ cmsc:ceil(listSize/resultsPerPage)-1}"/>
+
 <table border="0" width="100%">
-   <tr>
-      <td style="width:50%;">
-	     <fmt:message key="searchpages.showresults">
- 	     	<fmt:param>${offset * resultsPerPage +1}</fmt:param>
-	     	<fmt:param>${(listSize > (offset+1) * resultsPerPage)?((offset+1) * resultsPerPage):listSize }</fmt:param>
-	     	<fmt:param>${listSize}</fmt:param>
-	     </fmt:message>
-      </td>
-      <td style="text-align:right;width:50%;">
-	     <fmt:message key="searchpages.page" />
-				<c:set var="maxPage" value="${listSize/resultsPerPage - ((listSize > 0 && listSize mod resultsPerPage == 0)?1:0)}"/>
-         		<c:if test="${maxPage < 1}">
-				1
-				</c:if>
-				
-				<c:if test="${maxPage >= 1}">
-				<c:choose>
-					<c:when test="${maxPage<13}">
-						<c:if test="${offset == null || offset ==0 }">
-							<c:forEach var="count" begin="0" end="${maxPage}">
-								<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}" 
-								<c:if test="${count == 0}">
-								style="text-decoration:none"
-								</c:if>
-								> ${count+1}</a>
-							</c:forEach>|
-							<a href="?status=${status}&offset=${offset+1}&orderby=${orderby}${extraparams}" style="text-decoration:none"><fmt:message key="pages.next"/>&gt;&gt;</a>
-						</c:if>
+    <tr>
+        <td style="width:50%;">
+            ${searchresult}
+        </td>
+        <td style="text-align:right;width:50%;">
+            <fmt:message key="searchpages.page"/>
+            <c:choose>
+                <c:when test="${maxPage>0&&maxPage<13}">
+                    <c:forEach var="count" begin="0" end="${maxPage}">
+                        <a href="${baselink}&offset=${count}" class="page_list_nav${offset==count}">
+                                ${count+1}
+                        </a>
+                        |
+                    </c:forEach>
+                </c:when>
 
-						<c:if test="${offset >= maxPage-1}">
-							<a href="?status=${status}&offset=${offset-1}&orderby=${orderby}${extraparams}" style="text-decoration:none">&lt;&lt;<fmt:message key="pages.previous"/></a>
-							<c:forEach var="count" begin="0" end="${maxPage}">
-								|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}" 
-								<c:if test="${count >= maxPage-1}">
-								style="text-decoration:none"
-								</c:if>
-								> ${count+1}</a>
-							</c:forEach>
-						</c:if>
+                <c:when test="${maxPage>=13}">
+                    <c:set var="length_of_prefix" value="${offset <6 ? offset+2 : 2}"/>
+                    <c:forEach var="count" begin="0" end="${length_of_prefix}">
+                        <a href="${baselink}&offset=${count}" class="page_list_nav${offset==count}">
+                                ${count+1}
+                        </a>
+                        |
+                    </c:forEach>
+                    ...
 
-						<c:if test="${offset > 0 && offset < maxPage-1}">
-							<a href="?status=${status}&offset=${offset-1}&orderby=${orderby}${extraparams}" style="text-decoration:none">&lt;&lt;<fmt:message key="pages.previous"/></a>
-								<c:forEach var="count" begin="0" end="${maxPage}">
-									|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}" 
-									<c:if test="${count == offset}">
-									style="text-decoration:none"
-									</c:if>
-									> ${count+1}</a>
-								</c:forEach>|
-							<a href="?status=${status}&offset=${offset+1}&orderby=${orderby}${extraparams}" style="text-decoration:none"><fmt:message key="pages.next"/>&gt;&gt;</a>
-						</c:if>
-					</c:when>
+                    <c:if test="${5<offset&&offset <maxPage-5}">
+                        <c:forEach var="count" begin="${offset-2}" end="${offset+2}">
+                            <a href="${baselink}&offset=${count}" class="page_list_nav${offset==count}">
+                                    ${count+1}
+                            </a>
+                            |
+                        </c:forEach>
+                        ...
+                    </c:if>
 
-					<c:when test="${maxPage>=13}">
-						<!-- offset == null || offset ==0 -->
-						<c:if test="${offset == null || offset ==0 }">
-							<c:forEach var="count" begin="0" end="2">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}"
-								<c:if test="${count == 0}">
-									style="text-decoration:none"
-								</c:if>>${count+1}</a>
-							</c:forEach>
-						...
-							<c:forEach var="count" begin="${maxPage-2}" end="${maxPage}">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}">${count+1}</a>
-							</c:forEach>|<a href="?status=${status}&offset=${offset+1}&orderby=${orderby}${extraparams}" style="text-decoration:none"><fmt:message key="pages.next"/>&gt;&gt;</a>
-						</c:if>
-						
-						<!-- offset > 0 && offset <= 5 -->
-						<c:if test="${offset > 0 && offset <= 5}">
-							<a href="?status=${status}&offset=${offset-1}&orderby=${orderby}${extraparams}" style="text-decoration:none">&lt;&lt;<fmt:message key="pages.previous"/></a>
-							<c:forEach var="count" begin="0" end="${offset+2}">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}"
-							<c:if test="${count == offset}">
-							style="text-decoration:none"
-							</c:if>
-							>${count+1}</a>
-							</c:forEach>
-						...
-							<c:forEach var="count" begin="${maxPage-2}" end="${maxPage}">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}">${count+1}</a>
-							</c:forEach>|<a href="?status=${status}&offset=${offset+1}&orderby=${orderby}${extraparams}" style="text-decoration:none"><fmt:message key="pages.next"/>&gt;&gt;</a>
-						</c:if>
-						
-						<!-- offset >5 && offset < maxPage-5-->
-						<c:if test="${offset >5 && offset < maxPage-5}">
-							<a href="?status=${status}&offset=${offset-1}&orderby=${orderby}${extraparams}" style="text-decoration:none">&lt;&lt;Previous</a>
-							<c:forEach var="count" begin="0" end="2">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}">${count+1}</a>
-							</c:forEach>
-						...
-							<c:forEach var="count" begin="${offset-2}" end="${offset+2}">
-								|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}"
-								<c:if test="${count == offset}">
-								style="text-decoration:none"
-								</c:if>
-							>${count+1}</a>
-							</c:forEach>
-						...
-							<c:forEach var="count" begin="${maxPage-2}" end="${maxPage}">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}">${count+1}</a>
-							</c:forEach>|<a href="?status=${status}&offset=${offset+1}&orderby=${orderby}${extraparams}" style="text-decoration:none"><fmt:message key="pages.next"/>&gt;&gt;</a>
-						 </c:if>
-						
-						<!-- offset >= maxPage-5 && offset < maxPage-->
-						<c:if test="${offset >= maxPage-5 && offset < maxPage-1}">
-							<a href="?status=${status}&offset=${offset-1}&orderby=${orderby}${extraparams}" style="text-decoration:none">&lt;&lt;<fmt:message key="pages.previous"/></a>
-						    <c:forEach var="count" begin="0" end="2">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}">${count+1}</a>
-							</c:forEach>
-						...
-						    <c:forEach var="count" begin="${offset-2}" end="${maxPage}">
-							|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}"
-							<c:if test="${count == offset}">
-							style="text-decoration:none"
-							</c:if>
-							>${count+1}</a>|
-							</c:forEach>|<a href="?status=${status}&offset=${offset+1}&orderby=${orderby}${extraparams}" style="text-decoration:none"><fmt:message key="pages.next"/>&gt;&gt;</a>
-						</c:if>
-						
-						<!-- offset==maxPage-->
-						<c:if test="${offset >= maxPage-1}">
-							<a href="?status=${status}&offset=${offset-1}&orderby=${orderby}${extraparams}" style="text-decoration:none">&lt;&lt;<fmt:message key="pages.previous"/></a>
-								<c:forEach var="count" begin="0" end="2">
-								|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}">${count+1}</a>
-								</c:forEach>
-							...
-								<c:forEach var="count" begin="${offset-2}" end="${maxPage}">
-								|<a href="?status=${status}&offset=${count}&orderby=${orderby}${extraparams}"
-								<c:if test="${count >= maxPage-1}">
-								style="text-decoration:none"
-								</c:if>
-								>${count+1}</a>|
-								</c:forEach>
-						</c:if>
-					</c:when>
-	         	</c:choose>
-				</br>
-					<c:forEach var="max" begin="${maxPage}" end="${maxPage}">
-						<input type="hidden" name="max" value="${max}"/>
-					</c:forEach>
-						<input type="hidden" name="status" id="status" value="${status}"/>
-						<input type="hidden" name="orderby" id="orderby" value="${orderby}"/>
-						<input type="hidden" name="extraparams" id="extraparams" value="${extraparams}"/>
-					<fmt:message key="pages.goto"/><input type="text" name="page" size="4" onKeyPress="enterTo()"/>
-					<input type="button" name="goto" value="<fmt:message key="pages.go" />"  onclick="gotopage()"/>
-			
-				</c:if>
-			</td>
-   </tr>
+                    <c:set var="length_of_postfix" value="${offset>(maxPage-6) ? offset-2 : (maxPage-2)}"/>
+                    <c:forEach var="count" begin="${length_of_postfix}" end="${maxPage}">
+                        <a href="${baselink}&offset=${count}" class="page_list_nav${offset==count}">
+                                ${count+1}
+                        </a>
+                        |
+                    </c:forEach>
+                </c:when>
+
+                <c:otherwise>
+                    The page you request is not existed.
+                </c:otherwise>
+
+            </c:choose>
+
+            <c:set var="targetfield">
+                <%=RandomStringUtils.randomAlphabetic(5)%>
+            </c:set>
+
+
+            <input type="text" name="targetpage" id="${targetfield}" size="4"
+                   onKeyPress="enterto(event,'${targetfield}')"/>
+
+            <input type="button" id="goto" value="${go}"
+                   onclick="gotopage('${targetfield}')"/>
+        </td>
+    </tr>
+
 </table>
-  
