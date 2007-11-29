@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.175 2007-11-01 17:30:09 michiel Exp $
+    @version $Id: wizard.xsl,v 1.176 2007-11-29 14:47:19 mark Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1577,31 +1577,30 @@
     <!-- The item row is the trigger for startwizard at the moment. -->
     <td>
       <xsl:for-each select="field[@ftype='startwizard']">
+        <span class="imgbutton">
         <xsl:choose>
-          <xsl:when test="@wizardjsp">
-            <span	class="imgbutton">
+          <xsl:when test="starts-with(@objectnumber,'n')">
+            <a href="javascript:alert('{$please_save}')" class="inactive"><xsl:call-template name="prompt_edit_wizard"/></a>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:if test="@wizardjsp">
               <a href="{$ew_context}{@wizardjsp}/?objectnumber={@objectnumber}&amp;origin={@origin}&amp;wizard={@wizardname}">
                 <xsl:call-template name="prompt_edit_wizard" />
               </a>
-            </span>
-          </xsl:when>
-          <xsl:otherwise>
-        <xsl:if test="@inline='true'">
-          <span	class="imgbutton">
-            <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-              <xsl:call-template name="prompt_edit_wizard"/>
-            </a>
-          </span>
-        </xsl:if>
-        <xsl:if test="not(@inline='true')">
-          <span	class="imgbutton">
-            <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
-              <xsl:call-template name="prompt_edit_wizard"/>
-            </a>
-          </span>
-        </xsl:if>
+            </xsl:if>
+            <xsl:if test="@inline='true'">
+              <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+                <xsl:call-template name="prompt_edit_wizard"/>
+              </a>
+            </xsl:if>
+            <xsl:if test="not(@inline='true')">
+              <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
+                <xsl:call-template name="prompt_edit_wizard"/>
+              </a>
+            </xsl:if>
           </xsl:otherwise>
         </xsl:choose>
+        </span>
       </xsl:for-each>
     </td>
   </xsl:template>
