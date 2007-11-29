@@ -25,7 +25,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.6 2007-11-20 11:07:48 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.7 2007-11-29 11:03:52 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -427,7 +427,8 @@ public class CloudMailHandler implements MailHandler {
      * @return Node in the MMBase object cloud
      */
     private Node storeAttachment(Part p, Cloud cloud) throws MessagingException, TooBig {
-        if (p.getSize() > Integer.parseInt(getProperties().get("max_attachment_size"))) {
+        int maxSize = SMTPFetcher.getMaxAttachmentSize(getProperties());
+        if (p.getSize() > maxSize) {
             log.service("Size of p too big");
             throw new TooBig();
         }
