@@ -2,6 +2,7 @@ package com.finalist.cmsc.tasks;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 
@@ -10,7 +11,6 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.AggregatedField;
 
 import com.finalist.cmsc.mmbase.EmailUtil;
-import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 
@@ -37,8 +37,7 @@ public class TasksUtil {
    public static final String ASSIGNEDREL = "assignedrel";
    private static final String CREATORREL = "creatorrel";
 
-   private static final String LOCALE_BASENAME = "cmsc-tasks";
-
+   private static final String RESOURCEBUNDLE_BASENAME = "cmsc-tasks";
 
    private TasksUtil() {
       // Utility
@@ -132,9 +131,10 @@ public class TasksUtil {
          String decription = taskNode.getStringValue(DESCRIPTION);
 
          String language = userNode.getStringValue("language");
+         Locale locale = new Locale(language);
 
-         String subject = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.user.subject");
-         String emailMessage = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.user.message");
+         String subject = JstlUtil.getMessage(RESOURCEBUNDLE_BASENAME, locale, "tasks.email.user.subject");
+         String emailMessage = JstlUtil.getMessage(RESOURCEBUNDLE_BASENAME, locale, "tasks.email.user.message");
 
          String name = SecurityUtil.getFullname(userNode);
          String email = userNode.getStringValue("emailaddress");
@@ -159,9 +159,10 @@ public class TasksUtil {
       if (emailSignal) {
 
          String language = userNode.getStringValue("language");
-
-         String subject = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.expire.subject");
-         String emailMessage = JstlUtil.getMessage(language, LOCALE_BASENAME, "tasks.email.expire.message");
+         Locale locale = new Locale(language);
+         
+         String subject = JstlUtil.getMessage(RESOURCEBUNDLE_BASENAME, locale, "tasks.email.expire.subject");
+         String emailMessage = JstlUtil.getMessage(RESOURCEBUNDLE_BASENAME, locale, "tasks.email.expire.message");
 
          String name = SecurityUtil.getFullname(userNode);
          String email = userNode.getStringValue("emailaddress");
