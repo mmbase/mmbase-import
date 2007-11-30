@@ -41,14 +41,14 @@ public class JstlUtil {
    }
 
 
-   public static String getMessage(String language, String baseName, String key) {
-      ResourceBundle rb = getResourceBundle(baseName, language);
+   public static String getMessage(String baseName, Locale locale, String key) {
+      ResourceBundle rb = getResourceBundle(baseName, locale);
       return rb.getString(key);
    }
 
 
-   private static ResourceBundle getResourceBundle(String baseName, String language) {
-      ResourceBundle rb = ResourceBundle.getBundle(baseName, new Locale(language));
+   private static ResourceBundle getResourceBundle(String baseName, Locale locale) {
+      ResourceBundle rb = ResourceBundle.getBundle(baseName, locale);
       return rb;
    }
 

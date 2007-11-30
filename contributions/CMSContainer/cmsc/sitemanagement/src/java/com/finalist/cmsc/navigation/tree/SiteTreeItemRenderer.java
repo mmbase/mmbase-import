@@ -38,47 +38,47 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
        if (SecurityUtil.isEditor(role)) {
 
           if (SecurityUtil.isChiefEditor(role)) {
-             element.addOption(renderer.createOption("edit_defaults.png", 
+             element.addOption(renderer.createTreeOption("edit_defaults.png", 
                          "site.site.edit", "SiteEdit.do?number=" + id));
           }
 
-          element.addOption(renderer.createOption("new.png", 
+          element.addOption(renderer.createTreeOption("new.png", 
                       "site.page.new", "PageCreate.do?parentpage=" + id));
 
           if (ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
-             element.addOption(renderer.createOption("rss_new.png", "site.rss.new",
+             element.addOption(renderer.createTreeOption("rss_new.png", "site.rss.new",
                    "../rssfeed/RssFeedCreate.do?parentpage=" + id));
           }
 
           if (SecurityUtil.isChiefEditor(role)
                 && ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role))) {
-             element.addOption(renderer.createOption("delete.png", "site.site.remove", 
+             element.addOption(renderer.createTreeOption("delete.png", "site.site.remove", 
                          "SiteDelete.do?number=" + id));
           }
 
           if (NavigationUtil.getChildCount(parentNode) >= 2) {
-             element.addOption(renderer.createOption("reorder.png", "site.page.reorder", 
+             element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", 
                          "reorder.jsp?parent=" + id));
           }
 
           if (SecurityUtil.isChiefEditor(role)) {
-             element.addOption(renderer.createOption("paste.png", "site.page.paste", 
+             element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", 
                          "javascript:paste('" + id + "');"));
           }
 
           if (ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
-             element.addOption(renderer.createOption("wizard.png", "site.page.wizard",
+             element.addOption(renderer.createTreeOption("wizard.png", "site.page.wizard",
                    "../pagewizard/StartPageWizardAction.do?number=" + id));
           }
 
           if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-             element.addOption(renderer.createOption("publish.png", "site.page.publish",
+             element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
                    "../workflow/publish.jsp?number=" + id));
-             element.addOption(renderer.createOption("masspublish.png", "site.page.masspublish",
+             element.addOption(renderer.createTreeOption("masspublish.png", "site.page.masspublish",
                    "../workflow/masspublish.jsp?number=" + id));
           }
        }
-       element.addOption(renderer.createOption("rights.png", "site.page.rights",
+       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
              "../usermanagement/pagerights.jsp?number=" + id));
 
        return element;
