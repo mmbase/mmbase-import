@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.155 2007-07-07 13:32:06 michiel Exp $
+ * @version $Id: Wizard.java,v 1.156 2007-11-30 13:48:52 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1019,6 +1019,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                         if (fieldDataNode != null) {
                             // create normal formfield.
+                            NodeList optionlist = Utils.selectNodeList(fieldDataNode, "optionlist");
+                            Utils.appendNodeList(optionlist, field);
+
+
                             int endFieldContextXpath = xpath.lastIndexOf("/") > -1 ? xpath.lastIndexOf('/') : 0;
                             String fieldContextXPath = xpath.substring(0, endFieldContextXpath);
                             String mayWriteXPath = "".equals(fieldContextXPath) ? "@maywrite" : fieldContextXPath + "/@maywrite";

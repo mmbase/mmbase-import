@@ -22,6 +22,7 @@ import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
 import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.logging.*;
 
 /**
@@ -55,7 +56,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.86 2007-07-18 05:31:22 michiel Exp $
+ * @version $Id: Dove.java,v 1.87 2007-11-30 13:48:11 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -147,8 +148,19 @@ public class Dove extends AbstractDove {
         } else {
             fel = addContentElement(FIELD, node.isNull(fname) ? null : node.getStringValue(fname), out);
         }
+
         fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
         fel.setAttribute(ELM_NAME, fname);
+        fel.setAttribute("nodemanager", nm.getName());
+        Iterator<Map.Entry<?, String>> i = dataType.getEnumerationValues(node.getCloud().getLocale(), node.getCloud(), node, f);
+        if (i != null) {
+            Element ol = addContentElement("optionlist", "", fel);
+            while (i.hasNext()) {
+                Map.Entry<?, String> entry = i.next();
+                Element o = addContentElement("option", "" + entry.getKey(), ol);
+                o.setAttribute("id", "" + entry.getValue());
+            }
+        }
         return fel;
     }
 
@@ -544,8 +556,10 @@ public class Dove extends AbstractDove {
             }
 
             // singular name
-            Element elm = addContentElement(SINGULARNAME,nm.getGUIName(NodeManager.GUI_SINGULAR, locale), out);
-            if (lang != null) elm.setAttribute(ELM_LANG, lang);
+            Element elm = addContentElement(SINGULARNAME, nm.getGUIName(NodeManager.GUI_SINGULAR, locale), out);
+            if (lang != null) {
+                elm.setAttribute(ELM_LANG, lang);
+            }
 
             // plural name
             elm = addContentElement(PLURALNAME,nm.getGUIName(NodeManager.GUI_PLURAL, locale), out);
@@ -578,20 +592,20 @@ public class Dove extends AbstractDove {
             }
 
             // fields
-            Element fields=doc.createElement(FIELDS);
+            Element fields = doc.createElement(FIELDS);
             out.appendChild(fields);
             for(FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
-                Field fielddef=i.nextField();
-                String fname=fielddef.getName();
+                Field fielddef = i.nextField();
+                String fname = fielddef.getName();
                 // Filter out the owner/otype/number/CacheCount fields and
                 // the virtual fields.
-                if (isDataField(nm,fielddef)) {
-                    Element field=doc.createElement(FIELD);
-                    field.setAttribute(ELM_NAME,fname);
+                if (isDataField(nm, fielddef)) {
+                    Element field = doc.createElement(FIELD);
+                    field.setAttribute(ELM_NAME, fname);
                     fields.appendChild(field);
                     // guiname (XXX:language is ignored)
-                    elm = addContentElement(GUINAME, fielddef.getGUIName(locale),field);
-                    elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
+                    elm = addContentElement(GUINAME, fielddef.getGUIName(locale), field);
+                    elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale), field);
                     if (lang != null) elm.setAttribute(ELM_LANG, lang);
                     // guitype
                     DataType dataType = fielddef.getDataType();
@@ -603,9 +617,12 @@ public class Dove extends AbstractDove {
                             specialization = origin.getName();
                         }
                     }
-                    // exceptions, for backward comp. with old guitypes
-                    if (specialization.equals("field")) {
-                        specialization = "text";
+                    if (datatype instanceof StringDataType) {
+                        if (dataType.getPattern().matcher("a\na").matches()) {
+                            specialization = "text";
+                        } else {
+                            specialization = "line";
+                        }
                     } else if (specialization.equals("eventtime")) {
                         baseType = "datetime";
                         specialization = "datetime";
@@ -614,6 +631,9 @@ public class Dove extends AbstractDove {
                     } else if (specialization.equals("newfile")) {
                         specialization = "file";
                     } else {
+                        if (dataType.getEnumerationValues(nm.getCloud().getLocale(), nm.getCloud(), null, fielddef) != null) {
+                            specialization = "enum";
+                        }
                         // backward compatibility: NODE and XML are passed as int and string
                         // TODO: should change ?
                         if (dataType instanceof NodeDataType) {
@@ -630,8 +650,8 @@ public class Dove extends AbstractDove {
                         }
                     }
                     String guiType = baseType + "/" + specialization;
-
                     addContentElement(GUITYPE, guiType, field);
+
                     int maxLength = fielddef.getMaxLength();
                     if (maxLength > 0) {
                         addContentElement(MAXLENGTH, "" + maxLength, field);
