@@ -3,7 +3,6 @@ package com.finalist.cmsc.repository.status;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.sf.mmapps.commons.util.StringUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.applications.crontab.CronEntry;
@@ -25,7 +24,6 @@ import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 
 public class StatusCronJob implements CronJob {
