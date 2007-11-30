@@ -1,4 +1,4 @@
-<%@include file="includes/taglibs.jsp" %>
+<%@include file="includes/taglibs.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <mm:content type="text/html" encoding="UTF-8">
   <cmsc:location var="cur" sitevar="site" />
@@ -21,7 +21,7 @@
       <![endif]-->
       <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/css/print.css'/>" media="print" />
       <cmscf:editresources />
-      <%@include file="includes/header.jsp" %>
+      <%@include file="includes/header.jsp"%>
     </head>
     <body>
        <div id="holder">
@@ -50,7 +50,7 @@
                   <cmsc:insert-portlet layoutid="column3_6" />
                </div>
             </div>
-            <%@include file="includes/footer.jsp" %>
+            <%@include file="includes/footer.jsp"%>
             <div class="clear"></div>
          </div>
       </div>

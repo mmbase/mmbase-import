@@ -1,4 +1,4 @@
-<%@include file="/WEB-INF/templates/portletglobals.jsp" %>
+<%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 <c:set var="itemTemplate" value="/WEB-INF/templates/view/demo/news/intro_only/list_view.jsp" />
 <c:set var="elementTemplate" value="/WEB-INF/templates/edit/demo/news/detail_view.jsp" />
 <c:set var="listHeader" value="/WEB-INF/templates/view/demo/news/intro_only/header.jsp" />
