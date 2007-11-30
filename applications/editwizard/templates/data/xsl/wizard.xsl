@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.177 2007-11-30 11:42:32 michiel Exp $
+    @version $Id: wizard.xsl,v 1.178 2007-11-30 14:00:55 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -67,12 +67,15 @@
       <xsl:text disable-output-escaping="yes">
         <![CDATA[
       <!--
-        // Mozilla does not like this.
-        var hist = window.history;
-        if (hist) {
-            hist.go(1);
-        }
-        window.onresize = function(e){ resizeEditTable(); }
+      // Mozilla does not like this.
+      // See also http://www.mmbase.org/jira/browse/MMB-1234
+      // May I please drop this nonsense?
+      var hist = window.history;
+      if (hist) {
+         hist.go(1);
+      }
+
+      window.onresize = function(e){ resizeEditTable(); }
       -->
       ]]></xsl:text>
     </script>
@@ -696,7 +699,9 @@
     <xsl:choose>
       <xsl:when test="@maywrite!='false'">
         <span>
-          <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
+          <textarea
+              class="input mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}"
+              name="{@fieldname}" id="{@fieldname}"  wrap="soft">
             <xsl:if test="@ftype = 'html'">
               <xsl:attribute name="class">htmlarea</xsl:attribute>
             </xsl:if>
@@ -927,7 +932,8 @@
       </xsl:call-template>
     </select>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-    <input class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
+    <input
+        class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
     <xsl:call-template name="date-picker" />
   </xsl:template>
 
@@ -1144,7 +1150,9 @@
 
   <xsl:template match="value" mode="inputline">
     <xsl:param name="val" select="."/>
-    <input type="text" name="{../@fieldname}" value="{$val}" class="input">
+    <input
+        class="input mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}"
+        type="text" name="{../@fieldname}" value="{$val}">
       <xsl:if test="../@dtmaxlength">
         <xsl:attribute name="maxlength"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
         <xsl:choose>
@@ -1156,13 +1164,18 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
+      <!-- this produces _invalid_ HTML -->
+      <!--
       <xsl:apply-templates select="../@*"/>
+      -->
     </input>
   </xsl:template>
 
   <xsl:template name="realposition">
     <span style="width:128">
-      <input type="text" name="{@fieldname}" value="{value}" class="input">
+      <input
+          class="input mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}"
+          type="text" name="{@fieldname}" value="{value}">
         <xsl:apply-templates select="@*"/>
       </input>
       <input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();"/>
