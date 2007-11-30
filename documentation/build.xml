@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.44 2007-08-04 10:08:48 michiel Exp $
+  $Id: build.xml,v 1.45 2007-11-30 15:50:31 michiel Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -166,6 +166,7 @@
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
+      <jvmarg value="-Dorg.mmbase.XSLTransformer.validation=false" />
       <!-- jvmarg value="-Dusecache=false" /-->
       <jvmarg value="-mx200m" />
       <classpath>
@@ -326,7 +327,6 @@
       <param name="destfile"     value="${fop.dest}"/>
       <param name="expandedfile" value="${fop.exp}"/>
     </antcall>
-
     <echo message="xalan" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${xalan.loc}"/>
