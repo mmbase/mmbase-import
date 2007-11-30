@@ -92,7 +92,7 @@
                 </c:when>
 
                 <c:otherwise>
-                    The page you request is not existed.
+                    The page you requested does not exist.
                 </c:otherwise>
 
             </c:choose>
