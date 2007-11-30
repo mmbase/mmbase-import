@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.156 2007-11-30 13:48:52 michiel Exp $
+ * @version $Id: Wizard.java,v 1.157 2007-11-30 15:00:00 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1018,9 +1018,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         fieldDataNode = Utils.selectSingleNode(dataContext, xpath);
 
                         if (fieldDataNode != null) {
-                            // create normal formfield.
-                            NodeList optionlist = Utils.selectNodeList(fieldDataNode, "optionlist");
-                            Utils.appendNodeList(optionlist, field);
 
 
                             int endFieldContextXpath = xpath.lastIndexOf("/") > -1 ? xpath.lastIndexOf('/') : 0;
@@ -1031,7 +1028,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                             createFormField(form, field, fieldDataNode);
                         } else {
                             String ftype = Utils.getAttribute(field, "ftype");
-
                             if ("function".equals(ftype)) {
                                 log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
 
@@ -1056,7 +1052,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                                 }
                             }
                         }
-                    }
+                    } else
                     // A list "field". Needs special processing.
                     if (nodeName.equals("list")) {
                         NodeList fieldInstances = Utils.selectNodeList(dataContext, xpath);
@@ -2667,6 +2663,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             } else if ("datetime".equals(dttype) &&
                        (!"date".equals(ftype) && !"time".equals(ftype) && !"duration".equals(ftype))) {
                 ftype = "datetime";
+            }
+        }
+
+        if ("enum".equals(ftype)) {
+
+            // create normal formfield.
+            String nodeManager = Utils.getAttribute(fieldNode, "nodemanager");
+            String xpath = "../optionlist[@name = '_" + nodeManager + "_" +   fieldName + "']";
+            NodeList optionlist = Utils.selectNodeList(fieldNode, xpath);
+            if (optionlist.getLength() > 0 && Utils.selectNodeList(fieldDef, "optionlist").getLength() == 0) {
+                Utils.appendNodeList(optionlist, fieldDef);
+                ((Element) optionlist.item(0)).removeAttribute("name");
+                ((Element) optionlist.item(0)).removeAttribute("select");
             }
         }
 
