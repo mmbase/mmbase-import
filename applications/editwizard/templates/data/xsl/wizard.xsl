@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.178 2007-11-30 14:00:55 michiel Exp $
+    @version $Id: wizard.xsl,v 1.179 2007-11-30 14:01:37 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1165,9 +1165,7 @@
         </xsl:choose>
       </xsl:if>
       <!-- this produces _invalid_ HTML -->
-      <!--
       <xsl:apply-templates select="../@*"/>
-      -->
     </input>
   </xsl:template>
 
