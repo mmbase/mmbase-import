@@ -37,42 +37,42 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
        TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
 
        if (SecurityUtil.isEditor(role)) {
-          element.addOption(renderer.createOption("edit_defaults.png", "site.page.edit", "PageEdit.do?number=" + id));
-          element.addOption(renderer.createOption("new.png", "site.page.new", "PageCreate.do?parentpage=" + id));
+          element.addOption(renderer.createTreeOption("edit_defaults.png", "site.page.edit", "PageEdit.do?number=" + id));
+          element.addOption(renderer.createTreeOption("new.png", "site.page.new", "PageCreate.do?parentpage=" + id));
 
           if (ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
-             element.addOption(renderer.createOption("rss_new.png", "site.rss.new",
-                   "../rssfeed/RssFeedCreate.do?parentpage=" + id));
+             element.addOption(renderer.createTreeOption("rss_new.png", "site.rss.new",
+                     "cmsc-modules-rssfeed", "../rssfeed/RssFeedCreate.do?parentpage=" + id));
           }
 
           if (SecurityUtil.isWebmaster(role)
                 || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
-             element.addOption(renderer.createOption("delete.png", "site.page.remove", "PageDelete.do?number=" + id));
+             element.addOption(renderer.createTreeOption("delete.png", "site.page.remove", "PageDelete.do?number=" + id));
           }
 
           if (NavigationUtil.getChildCount(parentNode) >= 2) {
-             element.addOption(renderer.createOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
+             element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
           }
 
           if (SecurityUtil.isChiefEditor(role)) {
-             element.addOption(renderer.createOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
-             element.addOption(renderer.createOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
-             element.addOption(renderer.createOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
+             element.addOption(renderer.createTreeOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
+             element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
+             element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
           }
 
           if (ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
-             element.addOption(renderer.createOption("wizard.png", "site.page.wizard",
+             element.addOption(renderer.createTreeOption("wizard.png", "site.page.wizard",
                    "../pagewizard/StartPageWizardAction.do?number=" + id));
           }
 
           if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-             element.addOption(renderer.createOption("publish.png", "site.page.publish",
+             element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
                    "../workflow/publish.jsp?number=" + id));
-             element.addOption(renderer.createOption("masspublish.png", "site.page.masspublish",
+             element.addOption(renderer.createTreeOption("masspublish.png", "site.page.masspublish",
                    "../workflow/masspublish.jsp?number=" + id));
           }
        }
-       element.addOption(renderer.createOption("rights.png", "site.page.rights",
+       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
              "../usermanagement/pagerights.jsp?number=" + id));
 
        return element;

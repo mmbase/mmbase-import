@@ -21,6 +21,8 @@ import com.finalist.tree.TreeModel;
 
 public class RssFeedTreeItemRenderer implements NavigationTreeItemRenderer {
 
+    private static final String RESOURCEBUNDLE = "cmsc-modules-rssfeed";
+
     public TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model) {
          Node parentParentNode = NavigationUtil.getParent(parentNode);
          UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentParentNode, false);
@@ -32,10 +34,10 @@ public class RssFeedTreeItemRenderer implements NavigationTreeItemRenderer {
          TreeElement element = renderer.createElement(parentNode, role, name, fragment, false);
 
          if (SecurityUtil.isEditor(role)) {
-            element.addOption(renderer.createOption("edit_defaults.png", "site.rss.edit",
-                        "../rssfeed/RssFeedEdit.do?number=" + id));
-            element.addOption(renderer.createOption("delete.png", "site.rss.remove", 
-                        "../rssfeed/RssFeedDelete.do?number=" + id));
+            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.rss.edit",
+                        RESOURCEBUNDLE, "../rssfeed/RssFeedEdit.do?number=" + id));
+            element.addOption(renderer.createTreeOption("delete.png", "site.rss.remove", 
+                    RESOURCEBUNDLE, "../rssfeed/RssFeedDelete.do?number=" + id));
          }
 
          return element;

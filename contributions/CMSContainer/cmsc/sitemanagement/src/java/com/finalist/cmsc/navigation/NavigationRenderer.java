@@ -1,5 +1,7 @@
 package com.finalist.cmsc.navigation;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -228,8 +230,18 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
         String action = String.format("/editors/site/NavigatorPanel.do?nodeId=%s",parentNode.getNumber());
         return contextPath+action;
     }
+
+    public TreeOption createTreeOption(String icon, String message, String resourcebundle, String action) {
+        Locale locale = JstlUtil.getLocale(request);
+        String label = JstlUtil.getMessage(resourcebundle, locale, message);
+        if (!action.startsWith("javascript:")) {
+            action = getUrl(action);
+        }
+        return createOption(icon, label,  action, target);      
+        
+    }
     
-    public TreeOption createOption(String icon, String message, String action) {
+    public TreeOption createTreeOption(String icon, String message, String action) {
         String label = JstlUtil.getMessage(request, message);
         if (!action.startsWith("javascript:")) {
             action = getUrl(action);
