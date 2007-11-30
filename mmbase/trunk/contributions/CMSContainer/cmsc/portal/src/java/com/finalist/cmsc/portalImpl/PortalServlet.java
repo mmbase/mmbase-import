@@ -28,9 +28,7 @@ import org.apache.pluto.PortletContainerException;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Site;
-import com.finalist.cmsc.navigation.NavigationItemManager;
-import com.finalist.cmsc.navigation.NavigationManager;
-import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.ServiceManager;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
@@ -145,7 +143,6 @@ public class PortalServlet extends HttpServlet {
       log.debug("===>REQ spth='" + request.getServletPath() + "'");
       log.debug("===>REQ qry='" + request.getQueryString() + "'");
 
-      PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
 
       PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
       PortalURL currentURL = env.getRequestedPortalURL();
@@ -168,12 +165,13 @@ public class PortalServlet extends HttpServlet {
          log.debug("===>CONTROL='" + control.toString() + "'");
          log.debug("===>WINDOW='" + id + "'");
 
+         PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
          ScreenFragment screen = registry.getScreen();
          screen.processAction(request, response, id);
          return; // we issued an redirect, so return directly
       }
 
-      processRenderPhase(request, response, registry, currentURL);
+      processRenderPhase(request, response, currentURL);
       log.debug("===>PortalServlet.doGet EXIT!");
    }
 
@@ -183,12 +181,7 @@ public class PortalServlet extends HttpServlet {
       return id != null;
    }
 
-
-   // [FP] protected RssFeed getRssFeed(String path) {
-   // return SiteManagement.getRssFeedFromPath(path);
-   // }
-
-   private void processRenderPhase(HttpServletRequest request, HttpServletResponse response, PortalRegistry registry,
+   private void processRenderPhase(HttpServletRequest request, HttpServletResponse response,
          PortalURL currentURL) {
       try {
          String path = extractPath(request, currentURL);
@@ -204,59 +197,25 @@ public class PortalServlet extends HttpServlet {
             }
          }
 
-         boolean renderSucceed = doRender(request, response, registry, path);
+         boolean renderSucceed = doRender(request, response, path);
          if (!renderSucceed) {
             log.error("Failed to find something to render for: " + currentURL.getGlobalNavigationAsString());
          }
-
-         /*
-          * [FP] ScreenFragment screen = getScreen(path); if (screen != null) {
-          * registry.setScreen(screen); log.debug("===>SERVICE");
-          * screen.service(request, response); log.debug("===>SERVICE DONE"); }
-          * else { RssFeed rssFeed = getRssFeed(path); if(rssFeed != null) {
-          * rssFeed.service(request, response, getServletContext()); } else {
-          * log.error("Failed to find screen or RSS feed for: " +
-          * currentURL.getGlobalNavigationAsString()); } }
-          */
       }
       catch (Throwable t) {
          log.fatal("Error processing", t);
       }
-
    }
 
-
-   /*
-    * [FP] protected ScreenFragment getScreen(String path) { try { Page page =
-    * SiteManagement.getPageFromPath(path); if (page != null) { Layout layout =
-    * SiteManagement.getLayout(page.getLayout()); ScreenFragment sf = new
-    * ScreenFragment(sc, page, layout); // place portletfragments and
-    * emptyfragments in the screenfragment Set<String> names =
-    * layout.getNames(); for (Iterator iter = names.iterator(); iter.hasNext();) {
-    * String layoutId = (String) iter.next(); Integer portletId =
-    * page.getPortlet(layoutId); Portlet portlet =
-    * SiteManagement.getPortlet(portletId); if (portlet != null) {
-    * PortletDefinition definition =
-    * SiteManagement.getPortletDefinition(portlet.getDefinition()); View view =
-    * SiteManagement.getView(portlet.getView()); PortletFragment pf = new
-    * PortletFragment(sc, sf, layoutId, portlet, definition, view); if (pf !=
-    * null) { sf.addChild(pf); } } else { PortletFragment pf =
-    * createDefaultPortlet(sf, page, layoutId); if (pf != null) {
-    * sf.addChild(pf); } } } return sf; } } catch (Exception e) {
-    * log.error("Error while constructing screen:'" + path + "'", e); } return
-    * null; }
-    */
-
-   protected boolean doRender(HttpServletRequest request, HttpServletResponse response, PortalRegistry registry,
-         String path) {
-      for (NavigationItemManager manager : NavigationManager.getNavigationManagers()) {
-         NavigationItem item = manager.getNavigationItem(path);
-         if (item != null) {
-            ((NavigationItemRenderer) manager.getRenderer()).render(item, request, response, getServletContext(), sc,
-                  registry);
+   protected boolean doRender(HttpServletRequest request, HttpServletResponse response, String path) {
+     NavigationItem item = SiteManagement.getNavigationItemFromPath(path);
+     if (item != null) {
+        NavigationItemRenderer manager = NavigationManager.getRenderer(item);
+        if (manager != null) {
+            manager.render(item, request, response, sc);
             return true;
-         }
-      }
+        }
+     }
       return false;
    }
 

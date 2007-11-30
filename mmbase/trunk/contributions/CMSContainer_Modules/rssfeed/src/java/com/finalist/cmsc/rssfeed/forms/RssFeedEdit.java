@@ -17,7 +17,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
-import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class RssFeedEdit extends MMBaseFormlessAction {

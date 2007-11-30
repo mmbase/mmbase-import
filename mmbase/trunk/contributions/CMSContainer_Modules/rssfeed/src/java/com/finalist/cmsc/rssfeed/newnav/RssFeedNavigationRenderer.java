@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,17 +24,10 @@ import org.mmbase.bridge.NodeQuery;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
-import com.finalist.cmsc.navigation.NavigationInformationProvider;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.portalImpl.NavigationItemRenderer;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
+import com.finalist.cmsc.navigation.NavigationItemRenderer;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.rssfeed.beans.om.RssFeed;
-import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.security.UserRole;
-import com.finalist.tree.TreeElement;
-import com.finalist.tree.TreeModel;
 import com.finalist.util.version.VersionUtil;
 
 public class RssFeedNavigationRenderer implements NavigationItemRenderer {
@@ -46,7 +38,8 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
 
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
-         ServletContext servletContext, ServletConfig sc, PortalRegistry registry) {
+           ServletConfig servletConfig) {
+       
       if (item instanceof RssFeed) {
          RssFeed rssFeed = (RssFeed) item;
 
@@ -62,7 +55,7 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
          output.append(xmlEscape(node.getStringValue("title")));
          output.append("</title>");
          output.append("<link>");
-         output.append(xmlEscape(getServerDocRoot((HttpServletRequest) request)));
+         output.append(xmlEscape(getServerDocRoot(request)));
          output.append("</link>");
          output.append("<language>");
          output.append(xmlEscape(node.getStringValue("language")));
@@ -80,7 +73,7 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
          output.append(xmlEscape(node.getStringValue("email_webmaster")));
          output.append("</webMaster>");
          output.append("<generator>");
-         output.append("CMS Container RssFeed module " + VersionUtil.getCmscVersion(servletContext));
+         output.append("CMS Container RssFeed module " + VersionUtil.getCmscVersion(servletConfig.getServletContext()));
          output.append("</generator>");
          output.append("<docs>");
          output.append("http://blogs.law.harvard.edu/tech/rss");
@@ -228,7 +221,7 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
 
    private String makeAbsolute(String url, HttpServletRequest request) {
-      String webapp = getServerDocRoot((HttpServletRequest) request);
+      String webapp = getServerDocRoot(request);
       if (url.startsWith("/")) {
          url = webapp + url.substring(1);
       }
@@ -238,20 +231,4 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
       return url;
    }
 
-
-   public TreeElement getTreeElement(NavigationInformationProvider renderer, Node parentNode, NavigationItem item,
-         TreeModel model) {
-      Node parentParentNode = NavigationUtil.getParent(parentNode);
-      UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentParentNode, false);
-      TreeElement element = renderer.createElement(item, role, renderer.getOpenAction(parentNode, false));
-
-      if (SecurityUtil.isEditor(role)) {
-         element.addOption(renderer.createOption("edit_defaults.png", "site.rss.edit",
-               "../rssfeed/RssFeedEdit.do?number=" + parentNode.getNumber()));
-         element.addOption(renderer.createOption("delete.png", "site.rss.remove", "../rssfeed/RssFeedDelete.do?number="
-               + parentNode.getNumber()));
-      }
-
-      return element;
-   }
 }

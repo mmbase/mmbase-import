@@ -10,7 +10,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
