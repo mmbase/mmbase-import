@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.edit;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.pageflow.Url;
+import org.mmbase.bridge.Transaction;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import org.mmbase.util.logging.Logger;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.15 2007-11-28 18:01:00 michiel Exp $
+ * @version $Id: FormTag.java,v 1.16 2007-11-30 12:07:05 andre Exp $
  * @since MMBase-1.8
  */
 
