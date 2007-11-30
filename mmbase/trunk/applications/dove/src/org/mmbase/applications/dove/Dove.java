@@ -56,7 +56,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.87 2007-11-30 13:48:11 michiel Exp $
+ * @version $Id: Dove.java,v 1.88 2007-11-30 15:00:36 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -154,7 +154,8 @@ public class Dove extends AbstractDove {
         fel.setAttribute("nodemanager", nm.getName());
         Iterator<Map.Entry<?, String>> i = dataType.getEnumerationValues(node.getCloud().getLocale(), node.getCloud(), node, f);
         if (i != null) {
-            Element ol = addContentElement("optionlist", "", fel);
+            Element ol = addContentElement("optionlist", "", out);
+            ol.setAttribute("name", "_" + node.getNodeManager().getName() + "_" + f.getName());
             while (i.hasNext()) {
                 Map.Entry<?, String> entry = i.next();
                 Element o = addContentElement("option", "" + entry.getKey(), ol);
@@ -617,8 +618,10 @@ public class Dove extends AbstractDove {
                             specialization = origin.getName();
                         }
                     }
-                    if (datatype instanceof StringDataType) {
-                        if (dataType.getPattern().matcher("a\na").matches()) {
+                    if (dataType.getEnumerationValues(nm.getCloud().getLocale(), nm.getCloud(), null, fielddef) != null) {
+                        specialization = "enum";
+                    } else if (dataType instanceof StringDataType) {
+                        if (((StringDataType) dataType).getPattern().matcher("a\na").matches()) {
                             specialization = "text";
                         } else {
                             specialization = "line";
@@ -631,9 +634,7 @@ public class Dove extends AbstractDove {
                     } else if (specialization.equals("newfile")) {
                         specialization = "file";
                     } else {
-                        if (dataType.getEnumerationValues(nm.getCloud().getLocale(), nm.getCloud(), null, fielddef) != null) {
-                            specialization = "enum";
-                        }
+
                         // backward compatibility: NODE and XML are passed as int and string
                         // TODO: should change ?
                         if (dataType instanceof NodeDataType) {
