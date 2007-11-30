@@ -37,17 +37,12 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.38 2007-04-16 08:41:06 nklasens Exp $
+ * @version $Id: XSLTransformer.java,v 1.39 2007-11-30 15:49:52 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
 
     public static final String NS_AWARE = "org.mmbase.util.XSLTransformer.namespaceAware";
-    /**
-     * Empty constructor
-     * @deprecated All methods are static.
-     */
-    public XSLTransformer() {}
 
     /**
      * Transform an XML document using a certain XSL document.
@@ -195,7 +190,11 @@ public class XSLTransformer {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
         // turn validating on
-        XMLEntityResolver resolver = new XMLEntityResolver(true);
+        boolean validation = ! "false".equals(System.getProperty("org.mmbase.XSLTransformer.validation"));
+        if (! validation) {
+            log.service("disabled validation");
+        }
+        XMLEntityResolver resolver = new XMLEntityResolver(validation);
         dfactory.setNamespaceAware(true);
         if (params != null && Boolean.FALSE.equals(params.get(NS_AWARE))) {
             dfactory.setNamespaceAware(false);

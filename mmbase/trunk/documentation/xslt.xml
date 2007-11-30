@@ -48,8 +48,10 @@
           failonerror="no">
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <jvmarg value="-Dmmbase.config=${source.dir}/config" />
+      <jvmarg value="-Dorg.mmbase.XSLTransformer.validation=false" />
       <jvmarg value="-mx100m" />
       <classpath>
+        <pathelement location="${xalan.jar}" />
         <pathelement location="${build.dir}/classes" />
       </classpath>
       <arg value="${xsl}" />
