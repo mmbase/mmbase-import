@@ -95,7 +95,6 @@ Create a build.xml with a DOCTYPE like this:
   <property name="jspapi.jar" value="${build.dir}/lib/jsp-api-2.0.jar"/>
   <property name="mail.jar" value="${build.dir}/lib/mail.jar"/>
   <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
-  <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
 
   <property name="project.name" value="${ant.project.name}" />
