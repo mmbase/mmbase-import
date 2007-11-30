@@ -38,7 +38,7 @@
             <cmsc:insert-portlet layoutid="column2_2" />
           </div>
         </div>
-        <%@include file="includes/footer.jsp"% >
+        <%@include file="includes/footer.jsp"%>
         <div class="clear"></div>
       </div>
     </body>
