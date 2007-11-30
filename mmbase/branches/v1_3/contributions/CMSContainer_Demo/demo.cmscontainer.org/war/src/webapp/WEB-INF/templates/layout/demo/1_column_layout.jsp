@@ -21,12 +21,12 @@
       <![endif]-->
       <link rel="stylesheet" type="text/css" href="<cmsc:staticurl page='/css/print.css'/>" media="print" />
       <cmscf:editresources />
-      <%@include file="includes/header.jsp" %>
+      <%@include file="includes/header.jsp"%>
     </head>
     <body>
        <h1 class="hidden"><cmsc:title /></h1>
        <div id="holder">
-         <%@include file="includes/top.jsp" %>
+         <%@include file="includes/top.jsp"%>
          <cmsc:insert-portlet layoutid="submenu" />
          <div id="main">
             <cmsc:insert-portlet layoutid="breadcrumb" />
@@ -34,7 +34,7 @@
             <cmsc:insert-portlet layoutid="column1_2" />
             <cmsc:insert-portlet layoutid="column1_3" />
          </div>
-         <%@include file="includes/footer.jsp" %>
+         <%@include file="includes/footer.jsp"%>
          <div class="clear"></div>
       </div>
       </body>

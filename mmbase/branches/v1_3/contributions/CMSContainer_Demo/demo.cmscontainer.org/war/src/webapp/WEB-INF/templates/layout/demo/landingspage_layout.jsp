@@ -26,7 +26,7 @@
     <body>
        <div id="holder">
           <h1 class="hidden"><cmsc:title /></h1>
-          <%@include file="includes/top.jsp" %>
+          <%@include file="includes/top.jsp"%>
           <cmsc:insert-portlet layoutid="submenu" />
           <div id="background">
              <div class="clear"></div>
@@ -50,7 +50,7 @@
                   <cmsc:insert-portlet layoutid="column3_6" />
                </div>
             </div>
-            <%@include file="includes/footer.jsp" %>
+            <%@include file="includes/footer.jsp"%>
             <div class="clear"></div>
          </div>
       </div>
