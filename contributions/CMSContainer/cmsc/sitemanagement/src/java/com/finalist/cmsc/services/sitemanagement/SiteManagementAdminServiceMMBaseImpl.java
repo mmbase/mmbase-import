@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.security.Rank;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.*;
@@ -217,24 +216,6 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
       }
       return result;
    }
-
-
-   // public boolean mayEdit(Block block) {
-   // boolean result = false;
-   // try {
-   // Cloud cloud = getUserCloud();
-   // String rank = block.getRank();
-   // Rank userRank = Rank.getRank(rank);
-   // result = cloud.getUser().getRank().getInt() >= userRank.getInt();
-   // } catch (Exception e) {
-   // log.error("something went wrong checking block edit (" + block.getName() +
-   // ")");
-   // if (log.isDebugEnabled()) {
-   // log.debug(e);
-   // }
-   // }
-   // return result;
-   // }
 
    protected void updatePageForPortlet(String portletId) {
       Cloud cloud = getUserCloud();

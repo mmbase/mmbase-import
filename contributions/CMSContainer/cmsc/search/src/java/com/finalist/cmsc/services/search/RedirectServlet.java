@@ -18,6 +18,7 @@ import javax.servlet.http.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.servlet.BridgeServlet;
 
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
@@ -89,9 +90,9 @@ public class RedirectServlet extends BridgeServlet {
         }
         
         if (PagesUtil.isPageType(node)) {
-            Page page = SiteManagement.getPage(node.getNumber());
-            if (page != null) {
-                redirect = getPortalUrl(request, page);
+            NavigationItem item = SiteManagement.getNavigationItem(node.getNumber());
+            if (item != null) {
+                redirect = getPortalUrl(request, item);
             }
         }
         
@@ -159,13 +160,13 @@ public class RedirectServlet extends BridgeServlet {
         }
     }
     
-    private String getPortalUrl(HttpServletRequest request, Page page) {
+    private String getPortalUrl(HttpServletRequest request, NavigationItem item) {
         String host = null;
         if(ServerUtil.useServerName()) {
-           host = SiteManagement.getSite(page);
+           host = SiteManagement.getSite(item);
         }
 
-        String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
+        String link = SiteManagement.getPath(item, !ServerUtil.useServerName());
         PortalURL u = new PortalURL(host, request, link);
         return u.toString();
     }

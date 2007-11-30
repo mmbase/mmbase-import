@@ -90,8 +90,8 @@ public class SiteManagement {
    }
 
 
-   public static String getPath(Page page, boolean includeRoot) {
-      return cService.getPath(page, includeRoot);
+   public static String getPath(NavigationItem item, boolean includeRoot) {
+      return cService.getPath(item, includeRoot);
    }
 
 
@@ -165,7 +165,7 @@ public class SiteManagement {
    }
 
 
-   public static String getSite(Page page) {
+   public static String getSite(NavigationItem page) {
       return cService.getSite(page);
    }
 
@@ -173,16 +173,6 @@ public class SiteManagement {
    public static void resetSiteCache() {
       cService.resetSiteCache();
    }
-
-
-   // [FP]
-   // public static RssFeed getRssFeedFromPath(String path) {
-   // return cService.getRssFeedFromPath(path);
-   // }
-   //
-   // public static RssFeed getRssFeed(int number) {
-   // return cService.getRssFeed(number);
-   // }
 
    /**
     * Here for downwards compatibility

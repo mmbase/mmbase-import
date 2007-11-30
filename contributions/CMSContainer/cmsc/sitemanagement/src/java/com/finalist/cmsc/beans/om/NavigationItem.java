@@ -4,6 +4,7 @@ import java.util.Date;
 
 import net.sf.mmapps.commons.beans.NodeBean;
 
+@SuppressWarnings("serial")
 public class NavigationItem extends NodeBean implements Comparable<NavigationItem> {
 
    private String title;

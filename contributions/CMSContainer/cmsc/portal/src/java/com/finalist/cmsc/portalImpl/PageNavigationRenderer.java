@@ -5,14 +5,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.beans.om.Layout;
 import com.finalist.cmsc.beans.om.NavigationItem;
@@ -20,35 +18,24 @@ import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.beans.om.Portlet;
 import com.finalist.cmsc.beans.om.PortletDefinition;
 import com.finalist.cmsc.beans.om.View;
-import com.finalist.cmsc.navigation.NavigationInformationProvider;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.NavigationItemRenderer;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
-import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.aggregation.EmptyFragment;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
-import com.finalist.tree.TreeElement;
-import com.finalist.tree.TreeModel;
-import com.finalist.util.module.ModuleUtil;
 
 public class PageNavigationRenderer implements NavigationItemRenderer {
 
-   protected static final String FEATURE_RSSFEED = "rssfeed";
-   protected static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
-   protected static final String FEATURE_WORKFLOW = "workflowitem";
-
    private static Log log = LogFactory.getLog(NavigationItemRenderer.class);
 
-
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
-         ServletContext servletContext, ServletConfig sc, PortalRegistry registry) {
+         ServletConfig sc) {
       if (item instanceof Page) {
          ScreenFragment screen = getScreen((Page) item, sc);
 
+         PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
+         
          registry.setScreen(screen);
          log.debug("===>SERVICE");
          try {
@@ -78,8 +65,8 @@ public class PageNavigationRenderer implements NavigationItemRenderer {
          // place portletfragments and emptyfragments in the screenfragment
 
          Set<String> names = layout.getNames();
-         for (Iterator iter = names.iterator(); iter.hasNext();) {
-            String layoutId = (String) iter.next();
+         for (Iterator<String> iter = names.iterator(); iter.hasNext();) {
+            String layoutId = iter.next();
             Integer portletId = page.getPortlet(layoutId);
             Portlet portlet = SiteManagement.getPortlet(portletId);
             if (portlet != null) {
@@ -125,59 +112,4 @@ public class PageNavigationRenderer implements NavigationItemRenderer {
       }
    }
 
-
-   public TreeElement getTreeElement(NavigationInformationProvider renderer, Node parentNode, NavigationItem item,
-         TreeModel model) {
-      UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentNode, false);
-      boolean secure = parentNode.getBooleanValue(PagesUtil.SECURE_FIELD);
-      TreeElement element = renderer.createElement(item, role, renderer.getOpenAction(parentNode, secure));
-
-      if (SecurityUtil.isEditor(role)) {
-         element.addOption(renderer.createOption("edit_defaults.png", "site.page.edit", "PageEdit.do?number="
-               + parentNode.getNumber()));
-         element.addOption(renderer.createOption("new.png", "site.page.new", "PageCreate.do?parentpage="
-               + parentNode.getNumber()));
-
-         if (ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
-            element.addOption(renderer.createOption("rss_new.png", "site.rss.new",
-                  "../rssfeed/RssFeedCreate.do?parentpage=" + parentNode.getNumber()));
-         }
-
-         if (SecurityUtil.isWebmaster(role)
-               || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
-            element.addOption(renderer.createOption("delete.png", "site.page.remove", "PageDelete.do?number="
-                  + parentNode.getNumber()));
-         }
-
-         if (NavigationUtil.getChildCount(parentNode) >= 2) {
-            element.addOption(renderer.createOption("reorder.png", "site.page.reorder", "reorder.jsp?parent="
-                  + parentNode.getNumber()));
-         }
-
-         if (SecurityUtil.isChiefEditor(role)) {
-            element.addOption(renderer.createOption("cut.png", "site.page.cut", "javascript:cut('"
-                  + parentNode.getNumber() + "');"));
-            element.addOption(renderer.createOption("copy.png", "site.page.copy", "javascript:copy('"
-                  + parentNode.getNumber() + "');"));
-            element.addOption(renderer.createOption("paste.png", "site.page.paste", "javascript:paste('"
-                  + parentNode.getNumber() + "');"));
-         }
-
-         if (ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
-            element.addOption(renderer.createOption("wizard.png", "site.page.wizard",
-                  "../pagewizard/StartPageWizardAction.do?number=" + parentNode.getNumber()));
-         }
-
-         if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-            element.addOption(renderer.createOption("publish.png", "site.page.publish",
-                  "../workflow/publish.jsp?number=" + parentNode.getNumber()));
-            element.addOption(renderer.createOption("masspublish.png", "site.page.masspublish",
-                  "../workflow/masspublish.jsp?number=" + parentNode.getNumber()));
-         }
-      }
-      element.addOption(renderer.createOption("rights.png", "site.page.rights",
-            "../usermanagement/pagerights.jsp?number=" + parentNode.getNumber()));
-
-      return element;
-   }
 }
