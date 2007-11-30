@@ -72,7 +72,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    @Override
    public boolean isNavigation(String path) {
       log.debug("isNavigation:'" + path + "'");
-      return siteModelManager.hasPage(path);
+      return siteModelManager.hasNavigationItem(path);
    }
 
 
@@ -191,8 +191,8 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
 
    @Override
-   public String getPath(Page page, boolean includeRoot) {
-      return siteModelManager.getPath(page, includeRoot);
+   public String getPath(NavigationItem item, boolean includeRoot) {
+      return siteModelManager.getPath(item, includeRoot);
    }
 
 
@@ -316,8 +316,8 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
 
    @Override
-   public String getSite(Page page) {
-      return siteModelManager.getSite(page);
+   public String getSite(NavigationItem item) {
+      return siteModelManager.getSite(item);
    }
 
 
@@ -325,14 +325,4 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    public void resetSiteCache() {
       siteModelManager.resetSiteCache();
    }
-
-   // [FP] @Override
-   // public RssFeed getRssFeedFromPath(String path) {
-   // return siteModelManager.getRssFeed(path);
-   // }
-   //
-   // @Override
-   // public RssFeed getRssFeed(int number) {
-   // return siteModelManager.getRssFeed(number);
-   // }
 }

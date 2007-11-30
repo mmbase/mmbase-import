@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.util.version.VersionUtil;
 
@@ -80,25 +81,21 @@ public class PortalErrorServlet extends PortalServlet {
             }
             if (errorPageSite != null) {
                String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
-               /**
-                * [FP] ScreenFragment screen = getScreen(errorPagePath); if
-                * (screen != null) { logError(request); HttpServletRequest
-                * errorRequest = new ErrorHttpServletRequest(request,
-                * errorPagePath); PortalEnvironment errorEnv = new
-                * PortalEnvironment(errorRequest, response, config);
-                * PortalRegistry registry =
-                * PortalRegistry.getPortalRegistry(request);
-                * response.setContentType(CONTENT_TYPE); ScreenFragment
-                * oldScreen = registry.getScreen(); registry.setScreen(screen);
-                * screen.service(request, response);
-                * registry.setScreen(oldScreen); }
-                */
-
-               PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
-               boolean renderSucceed = doRender(request, response, registry, errorPagePath);
-               if (!renderSucceed) {
-                  defaultError(request, response, statusCode);
-               }
+               
+               
+                logError(request); 
+                HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPagePath); 
+                PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response, config);
+                PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
+                response.setContentType(CONTENT_TYPE); 
+                ScreenFragment oldScreen = registry.getScreen();
+                
+                boolean renderSucceed = doRender(errorRequest, response, errorPagePath);
+                if (!renderSucceed) {
+                   defaultError(request, response, statusCode);
+                }
+                
+                registry.setScreen(oldScreen);
             }
             else {
                defaultError(request, response, statusCode);

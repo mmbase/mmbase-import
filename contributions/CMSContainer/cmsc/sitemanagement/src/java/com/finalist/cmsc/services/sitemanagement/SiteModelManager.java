@@ -83,7 +83,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   public boolean hasPage(String path) {
+   public boolean hasNavigationItem(String path) {
       if (path != null && path.length() > 0) {
          Integer pageId = siteCache.getPage(path);
          return pageId != null;
@@ -136,9 +136,8 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   public String getSite(Page page) {
-
-      return siteCache.getSite(page);
+   public String getSite(NavigationItem item) {
+      return siteCache.getSite(item);
    }
 
 
@@ -180,7 +179,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   public List<Page> getChildren(Page findpage) {
+   public List<Page> getChildren(NavigationItem findpage) {
       List<Page> pages = new ArrayList<Page>();
       if (findpage != null) {
          try {
@@ -343,8 +342,8 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   public String getPath(Page page, boolean includeRoot) {
-      return siteCache.getPath(page, includeRoot);
+   public String getPath(NavigationItem item, boolean includeRoot) {
+      return siteCache.getPath(item, includeRoot);
    }
 
 

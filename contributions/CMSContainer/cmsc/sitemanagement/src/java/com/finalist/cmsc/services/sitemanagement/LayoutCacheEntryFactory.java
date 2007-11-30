@@ -31,7 +31,7 @@ public class LayoutCacheEntryFactory extends MMBaseCacheEntryFactory {
       if (layoutNode == null || !PagesUtil.isLayout(layoutNode)) {
          return null;
       }
-      Layout layout = (Layout) MMBaseNodeMapper.copyNode(layoutNode, Layout.class);
+      Layout layout = MMBaseNodeMapper.copyNode(layoutNode, Layout.class);
 
       RelationList rellist = PagesUtil.getAllowedNamedRelations(layoutNode);
       for (RelationIterator iter = rellist.relationIterator(); iter.hasNext();) {
