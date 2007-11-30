@@ -28,7 +28,7 @@
 			<url>http://www.mozilla.org/MPL/</url>
 		</license>
 	</licenses>
-	<issueTrackingUrl>http://jira.finalist.com</issueTrackingUrl>
+	<issueTrackingUrl>http://jira.finalist.com/browse/CMSC</issueTrackingUrl>
 	<repository>
 		<connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</connection>
 		<developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:contributions/CMSContainer</developerConnection>
@@ -480,7 +480,7 @@
 			<type>plugin</type>
 			<url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
