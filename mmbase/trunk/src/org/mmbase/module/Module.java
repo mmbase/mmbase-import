@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.94 2007-11-25 18:28:34 nklasens Exp $
+ * @version $Id: Module.java,v 1.95 2007-12-03 17:00:37 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -405,7 +405,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * @since MMBase-1.9
      */
     public static <C extends Module> C getModule(Class<C> clazz) {
-        checkModules();
+        checkModules(true);
         for (Module m : modules.values()) {
             if (clazz.isInstance(m)) {
                 return (C) m;
@@ -418,7 +418,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * Makes sure that modules are loaded and started.
      * @since MMBase-1.9
      */
-    private static synchronized void checkModules() {
+    private static synchronized void checkModules(boolean startOnLoad) {
         // are the modules loaded yet ? if not load them
         if (modules == null) { // still null after obtaining lock
             log.service("Loading MMBase modules...");
@@ -426,9 +426,12 @@ public abstract class Module extends DescribedFunctionProvider {
             if (log.isDebugEnabled()) {
                 log.debug("Modules not loaded, loading them..");
             }
-            startModules();
+            if (startOnLoad) {
+                startModules();
+            }
             // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
             new ModuleProbe().start();
+
         }
     }
 
@@ -447,7 +450,7 @@ public abstract class Module extends DescribedFunctionProvider {
      *      module does not exist or is inactive.
      */
     public static Module getModule(String name, boolean startOnLoad) {
-        checkModules();
+        checkModules(startOnLoad);
         // try to obtain the ref to the wanted module
         Module obj = modules.get(name.toLowerCase());
         if (obj == null) { // try case sensitivily as well?
