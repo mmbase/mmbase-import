@@ -5,7 +5,18 @@
     <name>Newsletter bundle</name>
     <shortDescription>Newsletter bundle</shortDescription>
 	<dependencies>
- 
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-contentrepository</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency> 
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-sitemanagement</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency> 
 	</dependencies>
 </project>
 
