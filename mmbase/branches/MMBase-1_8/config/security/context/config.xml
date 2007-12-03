@@ -68,10 +68,11 @@
         <context name="admin">
             <!-- for every operation, groups can be granted the rights -->
             <!-- this may be one or more groups -->
-            <operation type="read">          <grant group="everyone" />     </operation>
-            <operation type="write">         <grant group="administrators" />        </operation>
-            <operation type="link">          <grant group="users" />        </operation>
-            <operation type="delete">        <grant group="administrators" />        </operation>
+            <operation type="create">        <grant group="users" />         </operation>
+            <operation type="read">          <grant group="everyone" />      </operation>
+            <operation type="write">         <grant group="administrators" /></operation>
+            <operation type="link">          <grant group="users" />         </operation>
+            <operation type="delete">        <grant group="administrators" /></operation>
             <operation type="change context"><grant group="administrators" /></operation>
             <!--
             When the rights change of the object of this context,
