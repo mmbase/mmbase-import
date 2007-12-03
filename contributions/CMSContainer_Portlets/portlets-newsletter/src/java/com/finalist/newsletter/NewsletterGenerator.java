@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -29,7 +30,9 @@ public abstract class NewsletterGenerator {
       this.publicationNumber = publicationNumber;
    }
 
-   protected abstract MimeMessage generateNewsletterContent(String userName);
+   protected abstract MimeMultipart generateNewsletterContent(String userName);
+   
+   
 
    protected String getContent(String userName) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();

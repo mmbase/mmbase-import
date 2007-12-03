@@ -5,13 +5,15 @@ import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
 import javax.mail.Transport;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.mmbase.applications.email.SendMail;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.util.Mail;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -48,38 +50,31 @@ public class NewsletterPublisher extends Thread {
       for (int subscribersIterator = 0; subscribersIterator < subscribers.size(); subscribersIterator++) {
          String userName = subscribers.get(subscribersIterator);
          String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
-         MimeMessage newsletter = generateNewsletter(userName, publicationNumber, mimeType);
-         boolean result = sendNewsletter(newsletter, userName, publicationNode);
+         MimeMultipart content = generateNewsletter(userName, publicationNumber, mimeType);
+         sendNewsletter(content, userName, publicationNode);
       }
    }
 
-   private MimeMessage generateNewsletter(String userName, String publicationNumber, String mimeType) {
+   private MimeMultipart generateNewsletter(String userName, String publicationNumber, String mimeType) {
       log.debug("Request to generate a newsletter for user " + userName + " from publication " + publicationNumber + " with mimetype " + mimeType);
       NewsletterGeneratorFactory factory = NewsletterGeneratorFactory.getInstance();
       NewsletterGenerator generator = factory.getNewsletterGenerator(publicationNumber, mimeType);
       if (generator != null) {
-         MimeMessage content = generator.generateNewsletterContent(userName);
+         MimeMultipart content = generator.generateNewsletterContent(userName);
          return (content);
       }
       return (null);
    }
 
-   private boolean sendNewsletter(MimeMessage newsletter, String userName, Node publicationNode) {
+   private void sendNewsletter(MimeMultipart content, String userName, Node publicationNode) {
       ResourceBundle rb = ResourceBundle.getBundle("newsletter");
       String userEmail = CommunityManager.getUserPreference(userName, "email");
       String subject = publicationNode.getStringValue("subject");
       String description = publicationNode.getStringValue("description");
 
-      try {
-         newsletter.setSubject(subject);
-         newsletter.setDescription(description);
+      SendMail mailer = new SendMail();
+      
 
-         Transport.send(newsletter);
-         return (true);
-      } catch (MessagingException mex) {
-         log.debug("Unable to send newsletter to " + userName + " due to exception " + mex.getMessage());
-         return (false);
-      }
    }
 
 }

@@ -39,7 +39,7 @@ public abstract class NewsletterPublicationUtil {
       Node newsletterNode = cloud.getNode(newsletterNumber);
       log.debug("Creating a new publication for newsletter " + newsletterNode.getNumber());
 
-      Node publicationNode = CloneUtil.cloneNodeWithRelations(newsletterNode, "newsletterpublication");
+      Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
       if (publicationNode != null) {
          log.debug("Creation of publication node successfull. Now copying themes and content");
          NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme");
@@ -51,7 +51,7 @@ public abstract class NewsletterPublicationUtil {
                if (newThemeNode != null) {
                   log.debug("Theme " + oldThemeNode.getNumber() + " copied");
                   NodeList content = SearchUtil.findRelatedNodeList(oldThemeNode, null, "newslettercontent");
-                  if (content != null) {
+                  if (content != null && content.size() > 0 ) {
                      log.debug("Found " + content.size() + " content items for theme " + oldThemeNode.getNumber());
                      for (int a = 0; a < content.size(); a++) {
                         Node contentNode = content.getNode(a);
