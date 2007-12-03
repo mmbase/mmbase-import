@@ -1,5 +1,8 @@
 package com.finalist.cmsc.portalImpl;
 
+import java.util.List;
+import java.util.Map;
+
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
 import org.mmbase.bridge.Cloud;
@@ -85,15 +88,8 @@ public class PageNavigationItemManager implements NavigationItemManager {
     }
 
      private void loadPageImages(Node pageNode, Page page) {
-    	 RelationList relations = pageNode.getRelations(null, "images");
-    	 for(RelationIterator iter = relations.relationIterator(); iter.hasNext();) {
-    		 Relation relation = iter.nextRelation();
-    		 String name = relation.getStringValue("name");
-    		 
-    		 // this is a bit of a hack, but saves on the loading of the actual node
-    		 String image = ""+relation.getStringValue("dnumber");
-    		 page.addPageImage(name, image);
-    	 }
+         Map<String, List<Integer>> pageImages = PagesUtil.getPageImages(pageNode);
+         page.setPageImages(pageImages);
      }
 
 
