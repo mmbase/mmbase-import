@@ -27,7 +27,7 @@ import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 
 public class PageNavigationRenderer implements NavigationItemRenderer {
 
-   private static Log log = LogFactory.getLog(NavigationItemRenderer.class);
+   private static Log log = LogFactory.getLog(PageNavigationRenderer.class);
 
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
          ServletConfig sc) {

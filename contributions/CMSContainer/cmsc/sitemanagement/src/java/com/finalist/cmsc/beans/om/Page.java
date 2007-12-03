@@ -24,7 +24,7 @@ public class Page extends NavigationItem {
    private Map<String, Integer> portlets = new HashMap<String, Integer>();
    private int layout;
    private List<Integer> stylesheet = new ArrayList<Integer>();
-   private Map<String, String> pageImages = new LinkedHashMap<String, String>();
+   private Map<String,List<Integer>> pageImages = new HashMap<String,List<Integer>>();
 
 
    public boolean isInmenu() {
@@ -62,15 +62,24 @@ public class Page extends NavigationItem {
    }
 
 
-   public String getPageImage(String name) {
-      return pageImages.get(name);
-   }
+    public List<Integer> getPageImage(String name) {
+    	return pageImages.get(name);
+    }
+    
 
 
-   public void addPageImage(String name, String image) {
-      pageImages.put(name, image);
-   }
+    public void addPageImage(String name, int image) {
+        List<Integer> images = pageImages.get(name);
+        if (images == null) {
+            images = new ArrayList<Integer>();
+            pageImages.put(name, images);
+        }
+    	images.add(image);
+    }
 
+    public void setPageImages(Map<String, List<Integer>> images) {
+        this.pageImages = images;
+    }
 
    public void addPortlet(String layoutId, Integer p) {
       if (p != null) {
@@ -116,18 +125,16 @@ public class Page extends NavigationItem {
       this.externalurl = externalurl;
    }
 
+    public Set<Map.Entry<String, List<Integer>>> getPageImages() {
+        return pageImages.entrySet();
+    }
 
-   public Set<Map.Entry<String, String>> getPageImages() {
-      return pageImages.entrySet();
-   }
-
-
-   public List<String> getImages() {
-      List<String> images = new ArrayList<String>();
-      for (String image : pageImages.values()) {
-         images.add(image);
-      }
-      return images;
-   }
+    public List<Integer> getImages() {
+        List<Integer> images = new ArrayList<Integer>();
+        for (List<Integer> image : pageImages.values()) {
+            images.addAll(image);
+        }
+        return images;
+    }
 
 }

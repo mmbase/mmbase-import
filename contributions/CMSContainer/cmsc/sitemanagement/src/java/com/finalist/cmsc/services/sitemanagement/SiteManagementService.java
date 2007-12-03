@@ -91,7 +91,7 @@ public abstract class SiteManagementService extends Service {
    public abstract Set<String> getPagePositions(String pageId);
 
 
-   public abstract String getPageImageForPath(String name, String path);
+   public abstract List<Integer> getPageImagesForPath(String name, String path);
 
 
    public abstract Layout getLayout(int layout);

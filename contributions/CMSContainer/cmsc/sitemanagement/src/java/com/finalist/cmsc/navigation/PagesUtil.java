@@ -36,6 +36,8 @@ public class PagesUtil {
    public static final String PAGE = "page";
    public static final String LAYOUT = "layout";
    public static final String POPUPINFO = "popupinfo";
+   public static final String STYLESHEET = "stylesheet";
+   public static final String IMAGES = "images";
 
    public static final String TITLE_FIELD = "title";
    public static final String FRAGMENT_FIELD = "urlfragment";
@@ -56,12 +58,10 @@ public class PagesUtil {
    public static final String RELATED = "related";
    public static final String LAYOUTREL = "layoutrel";
    public static final String STYLEREL = "stylerel";
+   public static final String NAMEDALLOWEDREL = "namedallowrel";
+   public static final String NAMEDREL = "namedrel";
 
    public static final String POS_FIELD = "pos";
-
-   private static final String NAMEDALLOWEDREL = "namedallowrel";
-
-   public static final String STYLESHEET = "stylesheet";
 
 
    public static NodeManager getNodeManager(Cloud cloud) {
@@ -309,7 +309,32 @@ public class PagesUtil {
       return SearchUtil.findNode(cloud, STYLESHEET, RESOURCE_FIELD, layout);
    }
 
+    public static Map<String, List<Integer>> getPageImages(Node pageNode) {
+        Map<String,List<Integer>> pageImages = new HashMap<String,List<Integer>>();
+        RelationList relations = PagesUtil.getImages(pageNode);
+        for(RelationIterator iter = relations.relationIterator(); iter.hasNext();) {
+            Relation relation = iter.nextRelation();
+            String name = relation.getStringValue(NAME_FIELD);
+             
+            // this is a bit of a hack, but saves on the loading of the actual node
+            int image = relation.getIntValue("dnumber");
+             
+            List<Integer> images = pageImages.get(name);
+            if (images == null) {
+                images = new ArrayList<Integer>();
+                pageImages.put(name, images);
+            }
+            images.add(image);
+        }
+        return pageImages;
+    }
 
+    public static RelationList getImages(Node pageNode) {
+        RelationList namedrels = pageNode.getRelations(NAMEDREL, pageNode.getCloud().getNodeManager(IMAGES), DESTINATION);
+        Collections.sort(namedrels, new NodeFieldComparator(NAME_FIELD));
+        return namedrels;
+    }
+    
    public static Node copyPopupinfo(Node popupinfo) {
       return CloneUtil.cloneNode(popupinfo);
    }
@@ -391,7 +416,6 @@ public class PagesUtil {
    public static Node getPage(Node portlet) {
       if (!PortletUtil.isSinglePortlet(portlet)) {
          NodeList pages = portlet.getRelatedNodes(PAGE, PortletUtil.PORTLETREL, SOURCE);
-         ;
          if (!pages.isEmpty()) {
             return pages.getNode(0);
          }
