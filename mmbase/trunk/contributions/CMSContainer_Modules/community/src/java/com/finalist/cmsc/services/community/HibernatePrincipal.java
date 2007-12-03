@@ -15,69 +15,58 @@ import java.security.Principal;
  * @version 1.0
  */
 
-public class RdbmsPrincipal implements Principal, java.io.Serializable {
+public class HibernatePrincipal implements Principal, java.io.Serializable {
 
    private String name;
 
 
    /**
-    * Create a <code>RdbmsPrincipal</code> with no user name.
+    * Create a <code>HibernatePrincipal</code> with no user name.
     */
-   public RdbmsPrincipal() {
+   public HibernatePrincipal() {
       name = "";
    }
 
 
    /**
-    * Create a <code>RdbmsPrincipal</code> using a <code>String</code>
+    * Create a <code>HibernatePrincipal</code> using a <code>String</code>
     * representation of the user name.
     * <p>
     * 
     * @param name
     *           the user identification number (UID) for this user.
     */
-   public RdbmsPrincipal(String newName) {
+   public HibernatePrincipal(String newName) {
       name = newName;
    }
 
 
    /**
-    * Compares the specified Object with this <code>RdbmsPrincipal</code> for
+    * Compares the specified Object with this <code>HibernatePrincipal</code> for
     * equality. Returns true if the given object is also a
-    * <code>RdbmsPrincipal</code> and the two RdbmsPrincipals have the same
+    * <code>HibernatePrincipal</code> and the two HibernatePrincipals have the same
     * name.
     * <p>
     * 
     * @param o
     *           Object to be compared for equality with this
-    *           <code>RdbmsPrincipal</code>.
+    *           <code>HibernatePrincipal</code>.
     * @return true if the specified Object is equal equal to this
-    *         <code>RdbmsPrincipal</code>.
+    *         <code>HibernatePrincipal</code>.
     */
    public boolean equals(Object o) {
-
-      if (o == null)
+      if (!(o instanceof HibernatePrincipal)) {
          return false;
-
-      if (this == o)
-         return true;
-
-      if (o instanceof RdbmsPrincipal) {
-         if (((RdbmsPrincipal) o).getName().equals(name))
-            return true;
-         else
-            return false;
       }
-      else
-         return false;
+      return name.equals(((HibernatePrincipal) o).name);
    }
 
 
    /**
-    * Return a hash code for this <code>RdbmsPrincipal</code>.
+    * Return a hash code for this <code>HibernatePrincipal</code>.
     * <p>
     * 
-    * @return a hash code for this <code>RdbmsPrincipal</code>.
+    * @return a hash code for this <code>HibernatePrincipal</code>.
     */
    public int hashCode() {
       return (name.hashCode());
@@ -85,10 +74,10 @@ public class RdbmsPrincipal implements Principal, java.io.Serializable {
 
 
    /**
-    * Return a string representation of this <code>RdbmsPrincipal</code>.
+    * Return a string representation of this <code>HibernatePrincipal</code>.
     * <p>
     * 
-    * @return a string representation of this <code>RdbmsPrincipal</code>.
+    * @return a string representation of this <code>HibernatePrincipal</code>.
     */
    public String toString() {
       return name;
@@ -96,10 +85,10 @@ public class RdbmsPrincipal implements Principal, java.io.Serializable {
 
 
    /**
-    * Return the user name for this <code>RdbmsPrincipal</code>.
+    * Return the user name for this <code>HibernatePrincipal</code>.
     * <p>
     * 
-    * @return the user name for this <code>RdbmsPrincipal</code>
+    * @return the user name for this <code>HibernatePrincipal</code>
     */
    public String getName() {
       return name;
