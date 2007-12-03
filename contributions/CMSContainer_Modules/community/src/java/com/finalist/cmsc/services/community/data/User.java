@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.GeneratorType;
 import javax.persistence.Table;
 
 /**
@@ -15,8 +16,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "users")
-// @SequenceGenerator(name = "SEQ_ID", sequenceName = "\"id_sequence\"")
-public class User {
+//@SequenceGenerator(name = "SEQ_ID", sequenceName = "id_sequence", allocationSize=1)
+public class User implements Serializable{
 
    private static final long serialVersionUID = 1L;
    private Long id;
@@ -26,13 +27,12 @@ public class User {
    private String lastname;
    private String emailAdress;
 
-
    /**
     * Get the id.
     * 
     * @return Long representing the id
     */
-   // @Id(generate = GeneratorType.SEQUENCE, generator = "SEQ_ID")
+   //@Id(generate = GeneratorType.SEQUENCE, generator = "SEQ_ID")
    @Id
    @Column(name = "id", nullable = false)
    public Long getId() {

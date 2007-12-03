@@ -1,7 +1,6 @@
 package com.finalist.cmsc.services.community;
 
 import javax.security.auth.login.LoginContext;
-import javax.security.auth.*;
 import java.util.*;
 
 import javax.portlet.ActionRequest;
@@ -15,30 +14,23 @@ import javax.portlet.PortletSession;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.finalist.cmsc.services.community.data.User;
+import com.finalist.cmsc.services.community.data.NewsPref;
+import com.finalist.cmsc.services.community.HibernateService;
+
 public class CommunityServiceMysqlImpl extends CommunityService {
 
    private static Log log = LogFactory.getLog(CommunityServiceMysqlImpl.class);
 
    private PortletSession session;
-
-   ApplicationContext aC;
-
-
+   
+   private ApplicationContext aC;
+   
    // @Override
    public boolean loginUser(ActionRequest request, ActionResponse response, String userText, String passText) {
-
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
       
-      log.info(hibservice.getUser(userText));
-      
-      //List users = null;
-      
-      //users = (List)hibservice.getUser(userText);
-
       boolean loginSuccesfull;
-
+      
       String firstName = "";
       String lastName = "";
       String emailAdress = "";
@@ -49,7 +41,7 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          LoginContext lc = new LoginContext("jaasdb", cbh);
 
          lc.login();
-
+         
          log.info("PortletSession: " + request.getPortletSession());
 
          PortletSession session = request.getPortletSession();
@@ -116,5 +108,113 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          logoutSuccesfull = false;
       }
       return logoutSuccesfull;
+   }
+   
+   public List<String> getUsersWithPreferences(String key, String value){
+
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      
+      HibernateService hibservice = (HibernateService)aC.getBean("service");;
+
+      List<String> resultList = hibservice.getUsersWithPreferences(key, value);
+      
+      return resultList;
+   }
+   
+   public String getUserPreference(String userName, String key) {
+      
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      
+      HibernateService hibservice = (HibernateService)aC.getBean("service");;
+      
+      String preference = hibservice.getUserPreference(userName, key);
+      
+      return preference;
+   }
+   
+   public List<String> getUserPreferences(String userName, String key) {
+      
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      
+      HibernateService hibservice = (HibernateService)aC.getBean("service");;
+      
+      List<String> preferenceList = hibservice.getUserPreferences(userName, key);
+      
+      return preferenceList;
+   }
+   
+   public boolean setUserPreference(String userName, String key, String value){
+      
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      boolean succes;
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      try{
+         NewsPref newsPref = hibservice.createUserPreference(userName, key, value);
+         if(newsPref != null){
+            succes = true;
+         }
+         else{
+            succes = false;
+         }
+      }
+      catch (Exception e){
+         succes = false;
+      }
+      
+      return succes;
+   }
+   
+   public boolean setUserPreferenceValues(String userName, Map<String, String> preferences) {
+      
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      boolean succes;
+      NewsPref newsPref = new NewsPref();
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      try{
+         
+         Iterator keys = preferences.keySet().iterator();
+         Iterator values = preferences.values().iterator();
+         
+         while(keys.hasNext() && values.hasNext()){
+            newsPref = hibservice.createUserPreference(userName, keys.next().toString(), values.next().toString());
+         }
+         if (newsPref != null){
+            succes = true;
+         }
+         else{
+            succes = false;
+         }
+      }
+      catch (Exception e){
+         succes = false;
+      }
+      return succes;
+   }
+   
+   public boolean removeUserPreference(String userName, String key){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      boolean succes;
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      succes = hibservice.removeUserPreference(userName, key);
+      return succes;
+   }
+   
+   public void removeUserPreference(String userName, String key, String value){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      hibservice.removeUserPreference(userName, key, value);
+   }
+   
+   public boolean hasPermission(String userName, String permission){
+      
+      boolean permissionB;
+      
+      if(userName == "jaspers" || userName == "admin"){
+         permissionB = true;
+      }
+      else{
+         permissionB = false;
+      }
+      return permissionB;
    }
 }
