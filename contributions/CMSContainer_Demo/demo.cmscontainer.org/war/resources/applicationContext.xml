@@ -70,6 +70,7 @@
 		<property name="annotatedClasses">
 			<list>
 				<value>com.finalist.cmsc.services.community.data.User</value>
+				<value>com.finalist.cmsc.services.community.data.NewsPref</value>
 			</list>
 		</property>
 	</bean>
@@ -85,12 +86,19 @@
 		lazy-init="default" autowire="default" dependency-check="default">
 		<property name="sessionFactory" ref="sessionFactory" />	
    </bean>
+   
+   <bean name="newsPrefDAO" 
+		class="com.finalist.cmsc.services.community.dao.NewsPrefDAOImpl" 
+		lazy-init="default" autowire="default" dependency-check="default">
+		<property name="sessionFactory" ref="sessionFactory" />	
+   </bean>
 
    <!-- Service  -->
    <bean name="service" 
    		class="com.finalist.cmsc.services.community.HibernateService" 
 		lazy-init="false" autowire="default" dependency-check="default">
-		<property name="userDAO" ref="userDAO" />		
+		<property name="userDAO" ref="userDAO" />
+		<property name="newsPrefDAO" ref="newsPrefDAO" />		
    </bean>
 	
 </beans>

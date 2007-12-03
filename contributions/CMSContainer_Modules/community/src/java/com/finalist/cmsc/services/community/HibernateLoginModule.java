@@ -14,10 +14,15 @@ import javax.security.auth.callback.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.finalist.cmsc.services.community.data.User;
+import com.finalist.cmsc.services.community.HibernateService;
 
 /**
  * <p>
- * RdbmsLoginModule is a LoginModule that authenticates a given
+ * HibernateLoginModule is a LoginModule that authenticates a given
  * username/password credential against a JDBC datasource.
  * <p>
  * This <code>LoginModule</code> interoperates with any conformant JDBC
@@ -49,20 +54,21 @@ import org.apache.commons.logging.LogFactory;
  * @version 1.0
  */
 
-public class RdbmsLoginModule implements LoginModule {
+public class HibernateLoginModule implements LoginModule {
 
-   private static Log log = LogFactory.getLog(RdbmsLoginModule.class);
+   private static Log log = LogFactory.getLog(HibernateLoginModule.class);
 
    // initial state
    CallbackHandler callbackHandler;
    Subject subject;
    Map sharedState;
    Map options;
+   //Digest digest;
 
    // temporary state
    Vector tempCredentials;
    Vector tempPrincipals;
-
+ 
    // the authentication status
    boolean success;
 
@@ -70,13 +76,16 @@ public class RdbmsLoginModule implements LoginModule {
    boolean debug;
    String url;
    String driverClass;
+   
+   //Hibernate Configcontext file
+   ApplicationContext aC;
 
 
    /**
     * <p>
     * Creates a login module that can authenticate against a JDBC datasource.
     */
-   public RdbmsLoginModule() {
+   public HibernateLoginModule() {
       tempCredentials = new Vector();
       tempPrincipals = new Vector();
       success = false;
@@ -118,9 +127,9 @@ public class RdbmsLoginModule implements LoginModule {
       driverClass = (String) options.get("driver");
 
       if (debug) {
-         System.out.println("\t\t[RdbmsLoginModule] initialize");
-         System.out.println("\t\t[RdbmsLoginModule] url: " + url);
-         System.out.println("\t\t[RdbmsLoginModule] driver: " + driverClass);
+         System.out.println("\t\t[HibernateLoginModule] initialize");
+         System.out.println("\t\t[HibernateLoginModule] url: " + url);
+         System.out.println("\t\t[HibernateLoginModule] driver: " + driverClass);
       }
    }
 
@@ -141,7 +150,7 @@ public class RdbmsLoginModule implements LoginModule {
    public boolean login() throws LoginException {
 
       if (debug)
-         System.out.println("\t\t[RdbmsLoginModule] login");
+         System.out.println("\t\t[HibernateLoginModule] login");
 
       if (callbackHandler == null)
          throw new LoginException("Error: no CallbackHandler available "
@@ -159,7 +168,7 @@ public class RdbmsLoginModule implements LoginModule {
 
          ((PasswordCallback) callbacks[1]).clearPassword();
 
-         success = rdbmsValidate(username, password);
+         success = HibernateValidate(username, password);
 
          callbacks[0] = null;
          callbacks[1] = null;
@@ -188,7 +197,7 @@ public class RdbmsLoginModule implements LoginModule {
     * <p>
     * If this LoginModule's own authentication attempt succeeded (checked by
     * retrieving the private state saved by the <code>login</code> method),
-    * then this method associates a <code>RdbmsPrincipal</code> with the
+    * then this method associates a <code>HibernatePrincipal</code> with the
     * <code>Subject</code> located in the <code>LoginModule</code>. If this
     * LoginModule's own authentication attempted failed, then this method
     * removes any state that was originally saved.
@@ -202,7 +211,7 @@ public class RdbmsLoginModule implements LoginModule {
    public boolean commit() throws LoginException {
 
       if (debug)
-         System.out.println("\t\t[RdbmsLoginModule] commit");
+         System.out.println("\t\t[HibernateLoginModule] commit");
 
       if (success) {
 
@@ -215,7 +224,7 @@ public class RdbmsLoginModule implements LoginModule {
 
             if (debug) {
                while (it.hasNext())
-                  System.out.println("\t\t[RdbmsLoginModule] Principal: " + it.next().toString());
+                  System.out.println("\t\t[HibernateLoginModule] Principal: " + it.next().toString());
             }
 
             subject.getPrincipals().addAll(tempPrincipals);
@@ -262,7 +271,7 @@ public class RdbmsLoginModule implements LoginModule {
    public boolean abort() throws javax.security.auth.login.LoginException {
 
       if (debug)
-         System.out.println("\t\t[RdbmsLoginModule] abort");
+         System.out.println("\t\t[HibernateLoginModule] abort");
 
       // Clean out state
       success = false;
@@ -294,7 +303,7 @@ public class RdbmsLoginModule implements LoginModule {
    public boolean logout() throws javax.security.auth.login.LoginException {
 
       if (debug)
-         System.out.println("\t\t[RdbmsLoginModule] logout");
+         System.out.println("\t\t[HibernateLoginModule] logout");
 
       tempPrincipals.clear();
       tempCredentials.clear();
@@ -303,20 +312,20 @@ public class RdbmsLoginModule implements LoginModule {
          ((PassiveCallbackHandler) callbackHandler).clearPassword();
 
       // remove the principals the login module added
-      Iterator it = subject.getPrincipals(RdbmsPrincipal.class).iterator();
+      Iterator it = subject.getPrincipals(HibernatePrincipal.class).iterator();
       while (it.hasNext()) {
-         RdbmsPrincipal p = (RdbmsPrincipal) it.next();
+         HibernatePrincipal p = (HibernatePrincipal) it.next();
          if (debug)
-            System.out.println("\t\t[RdbmsLoginModule] removing principal " + p.toString());
+            System.out.println("\t\t[HibernateLoginModule] removing principal " + p.toString());
          subject.getPrincipals().remove(p);
       }
 
       // remove the credentials the login module added
-      it = subject.getPublicCredentials(RdbmsCredential.class).iterator();
+      it = subject.getPublicCredentials(HibernateCredential.class).iterator();
       while (it.hasNext()) {
-         RdbmsCredential c = (RdbmsCredential) it.next();
+         HibernateCredential c = (HibernateCredential) it.next();
          if (debug)
-            System.out.println("\t\t[RdbmsLoginModule] removing credential " + c.toString());
+            System.out.println("\t\t[HibernateLoginModule] removing credential " + c.toString());
          subject.getPrincipals().remove(c);
       }
 
@@ -337,109 +346,45 @@ public class RdbmsLoginModule implements LoginModule {
     * @exception Exception
     *               if the validation fails.
     */
-   private boolean rdbmsValidate(String user, String pass) throws Exception {
+   private boolean HibernateValidate(String user, String pass) throws Exception {
 
-      Connection con;
-      String queryUser = "SELECT * FROM USERS where user_id='" + user + "'";
-      String queryUserGroups = "SELECT GROUP_ID, ROLE_ID FROM USER_GROUPS where user_id='" + user + "'";
-      Statement stmt;
-      RdbmsPrincipal p = null;
-      RdbmsCredential c = null;
+      HibernatePrincipal p = null;
+      HibernateCredential c = null;
       boolean passwordMatch = false;
 
-      try {
-         Class.forName(driverClass);
+      String dbUsername = null, dbPassword = null, dbFname = null;
+      String dbLname = null, dbEmailAdress = null;
+      boolean isEqual = false;
+      
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      
+      User users = hibservice.getUser(user);
+      
+      dbUsername = users.getUserId();
+      dbPassword = users.getPassword();
+      dbFname = users.getName();
+      dbLname = users.getLastname();
+      dbEmailAdress = users.getEmailadress();
+      
+      
+      if (dbPassword == null)
+         throw new LoginException("User " + user + " not found");
+
+      if (debug)
+         System.out.println("\t\t[HibernateLoginModule] '" + pass + "' equals '" + dbPassword + "'?");
+
+      passwordMatch = pass.equals(dbPassword);
+      if (passwordMatch) {
+         if (debug)
+            System.out.println("\t\t[HibernateLoginModule] passwords match!");
+         this.tempCredentials.add(c);
+         this.tempPrincipals.add(new HibernatePrincipal(dbFname + " " + dbLname + " " + dbEmailAdress));
       }
-      catch (java.lang.ClassNotFoundException e) {
-         System.err.print("ClassNotFoundException: ");
-         System.err.println(e.getMessage());
-         throw new LoginException("Database driver class not found: " + driverClass);
-      }
-
-      try {
+      else {
          if (debug)
-            System.out.println("\t\t[RdbmsLoginModule] Trying to connect...");
-
-         con = DriverManager.getConnection(url, "root", "");
-
-         if (debug)
-            System.out.println("\t\t[RdbmsLoginModule] connected!");
-
-         stmt = con.createStatement();
-
-         if (debug)
-            System.out.println("\t\t[RdbmsLoginModule] " + queryUser);
-
-         ResultSet resultUser = stmt.executeQuery(queryUser);
-         String dbPassword = null, dbFname = null, dbLname = null;
-         String updatePerm = null, deletePerm = null;
-         String dbEmailAdress = null;
-         boolean isEqual = false;
-
-         while (resultUser.next()) {
-            if (!resultUser.isFirst())
-               throw new LoginException("Ambiguous user (located more than once): " + user);
-            dbPassword = resultUser.getString(resultUser.findColumn("password"));
-            dbFname = resultUser.getString(resultUser.findColumn("firstname"));
-            dbLname = resultUser.getString(resultUser.findColumn("lastname"));
-            dbEmailAdress = resultUser.getString(resultUser.findColumn("emailAdress"));
-         }
-
-         if (dbPassword == null)
-            throw new LoginException("User " + user + " not found");
-
-         if (debug)
-            System.out.println("\t\t[RdbmsLoginModule] '" + pass + "' equals '" + dbPassword + "'?");
-
-         ResultSet resultUserGroups = stmt.executeQuery(queryUserGroups);
-
-         int rowCount = 0;
-         while (resultUserGroups.next()) {
-            rowCount++;
-         }
-
-         resultUserGroups.first();
-
-         String[] dbGroups = new String[rowCount];
-         String[] dbRoles = new String[rowCount];
-         c = new RdbmsCredential();
-
-         for (int i = 0; i < rowCount; i++, resultUserGroups.next()) {
-            dbGroups[i] = resultUserGroups.getString(resultUserGroups.findColumn("group_id"));
-            if (resultUserGroups.getString(resultUserGroups.findColumn("role_id")) == null) {
-               dbRoles[i] = "Geen";
-            }
-            else {
-               dbRoles[i] = resultUserGroups.getString(resultUserGroups.findColumn("role_id"));
-            }
-
-            int identifier = i;
-
-            if (identifier == i) {
-               identifier++;
-            }
-            c.setProperty("Groep" + identifier + " ", dbGroups[i]);
-            c.setProperty("Rol" + identifier + " ", dbRoles[i]);
-         }
-
-         passwordMatch = pass.equals(dbPassword);
-         if (passwordMatch) {
-            if (debug)
-               System.out.println("\t\t[RdbmsLoginModule] passwords match!");
-            this.tempCredentials.add(c);
-            this.tempPrincipals.add(new RdbmsPrincipal(dbFname + " " + dbLname + " " + dbEmailAdress));
-         }
-         else {
-            if (debug)
-               System.out.println("\t\t[RdbmsLoginModule] passwords do NOT match!");
-         }
-         stmt.close();
-         con.close();
-      }
-      catch (SQLException ex) {
-         System.err.print("SQLException: ");
-         System.err.println(ex.getMessage());
-         throw new LoginException("SQLException: " + ex.getMessage());
+            System.out.println("\t\t[HibernateLoginModule] passwords do NOT match!");
       }
       return (passwordMatch);
    }

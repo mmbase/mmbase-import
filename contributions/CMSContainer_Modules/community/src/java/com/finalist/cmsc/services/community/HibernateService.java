@@ -8,10 +8,12 @@ import org.apache.commons.logging.LogFactory;
 import com.finalist.cmsc.services.community.dao.UserDAO;
 import com.finalist.cmsc.services.community.dao.GroupDAO;
 import com.finalist.cmsc.services.community.dao.RoleDAO;
+import com.finalist.cmsc.services.community.dao.NewsPrefDAO;
 
 import com.finalist.cmsc.services.community.data.User;
 import com.finalist.cmsc.services.community.data.Group;
 import com.finalist.cmsc.services.community.data.Role;
+import com.finalist.cmsc.services.community.data.NewsPref;
 
 import java.util.List;
 
@@ -30,14 +32,52 @@ public class HibernateService {
    private UserDAO userDAO = null;
    private GroupDAO groupDAO = null;
    private RoleDAO roleDAO = null;
+   private NewsPrefDAO newsPrefDAO = null;
 
 
    @Transactional(readOnly = false)
    public void setUserDAO(UserDAO userDAO) {
       this.userDAO = userDAO;
    }
+   
+   @Transactional(readOnly = false)
+   public void setNewsPrefDAO(NewsPrefDAO newsPrefDAO) {
+      this.newsPrefDAO = newsPrefDAO;
+   }
 
-
+   @Transactional(readOnly = false)
+   public List<String> getUsersWithPreferences(String key, String value){
+      return newsPrefDAO.getUsersWithPreferences(key, value);
+   }
+   
+   public String getUserPreference(String userName, String key){
+      List<String> resultList = newsPrefDAO.getUserPreference(userName, key);
+      String userPreference = resultList.get(0);
+      return userPreference;
+   }
+   
+   public List<String> getUserPreferences(String userName, String key){
+      return newsPrefDAO.getUserPreference(userName, key);
+   }
+   
+   public NewsPref createUserPreference(String userName, String key, String value) throws Exception{
+      
+      NewsPref newsPref = new NewsPref();
+      newsPref.setNewsletterKey(key);
+      newsPref.setNewsletterValue(value);
+      newsPref.setUserId(userName);
+      
+      return newsPrefDAO.insertNewsPref(newsPref);
+   }
+   
+   public boolean removeUserPreference(String userName, String key){
+      return newsPrefDAO.deleteNewsPrefByCriteria(userName, key);
+   }
+   
+   public void removeUserPreference(String userName, String key, String value){
+      newsPrefDAO.removeNewsPref(userName, key, value);
+   }
+   
    @Transactional(readOnly = false)
    public User getUser(String userId) {
       /*
