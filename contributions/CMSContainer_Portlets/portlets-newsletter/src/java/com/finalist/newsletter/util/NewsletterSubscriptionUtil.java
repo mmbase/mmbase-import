@@ -6,7 +6,7 @@ import java.util.List;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.community.CommunityManager;
+import com.finalist.cmsc.services.community.Community;
 import com.finalist.newsletter.NewsletterGeneratorFactory;
 
 public abstract class NewsletterSubscriptionUtil {
@@ -28,7 +28,7 @@ public abstract class NewsletterSubscriptionUtil {
    // public static final List AVAILABLE_MIMETYPES = new ArrayList<String>()
    // {MIMETYPE_HTML, MIMETYPE_PLAIN;;
 
-   public static List<String> compareToUserSubscribedThemes(List compareWithThemes, String userName, String newsletterNumber) {
+   public static List<String> compareToUserSubscribedThemes(List<String> compareWithThemes, String userName, String newsletterNumber) {
       if (compareWithThemes == null || userName == null || newsletterNumber == null) {
          return (null);
       }
@@ -45,40 +45,40 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static String getPreferredMimeType(String userName) {
       if (userName != null) {
-         return (CommunityManager.getUserPreference(userName, PREFERRED_MIMETYPE));
+         return (Community.getUserPreference(userName, PREFERRED_MIMETYPE));
       }
       return (null);
    }
 
    public static List<String> getSubscribersForNewsletter(String newsletterNumber) {
-      List<String> subscribers = CommunityManager.getUsersWithPreference(NewsletterUtil.NEWSLETTER, newsletterNumber);
+      List<String> subscribers = Community.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
       return (subscribers);
    }
 
    public static String getSubscriptionStatus(String userName) {
       if (userName != null) {
-         return (CommunityManager.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
+         return (Community.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
       }
       return (null);
    }
 
    public static List<String> getUserSubscribedThemes(String userName) {
-      List<String> themeList = CommunityManager.getUserPreferenceValues(userName, "newslettertheme");
+      List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
       return (themeList);
    }
 
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
-      List<String> themeList = CommunityManager.getUserPreferenceValues(userName, "newslettertheme");
+      List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
       return (themeList);
    }
 
    public static boolean pauseUserSubscriptions(String userName) {
-      CommunityManager.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
+      Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
       return (true);
    }
 
    public static boolean resumeUserSubscriptions(String userName) {
-      CommunityManager.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_ACTIVE);
+      Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_ACTIVE);
       return (true);
    }
 
@@ -87,14 +87,14 @@ public abstract class NewsletterSubscriptionUtil {
          if (mimeType == null) {
             mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
          }
-         CommunityManager.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
+         Community.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
          return (true);
       }
       return (false);
    }
 
    public static boolean subscribeToTheme(String userName, String theme) {
-      CommunityManager.setUserPreference(userName, NEWSLETTER_THEME, theme);
+      Community.setUserPreference(userName, NEWSLETTER_THEME, theme);
       return (true);
    }
 
@@ -102,7 +102,7 @@ public abstract class NewsletterSubscriptionUtil {
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
             String themeNumber = themes.get(i);
-            CommunityManager.setUserPreference(userName, NEWSLETTER_THEME, themeNumber);
+            Community.setUserPreference(userName, NEWSLETTER_THEME, themeNumber);
             log.debug("Subscribing user " + userName + " to theme " + themeNumber);
          }
          return (true);
@@ -111,7 +111,7 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static boolean terminateUserSubscription(String userName) {
-      CommunityManager.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+      Community.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
       return (true);
    }
 
@@ -125,14 +125,14 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static boolean unsubscribeFromTheme(String userName, String theme) {
-      CommunityManager.removeUserPreference(userName, NEWSLETTER_THEME, theme);
+      Community.removeUserPreference(userName, NEWSLETTER_THEME, theme);
       return (true);
    }
 
    public static boolean unsubscribeFromThemes(String userName, List<String> themes) {
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
-            CommunityManager.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
+            Community.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
          }
       }
       return (true);

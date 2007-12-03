@@ -3,16 +3,11 @@
 <wizard-schema id="newsletterpublication">
 	<title xml:lang="nl">Nieuwsbriefpublicatie</title>
 	<title xml:lang="en">Newsletterpublication</title>
-	<action include="config/newsletterpublication/create_newsletterpublication.xml"/>
 	<action include="config/newsletterpublication/delete_newsletterpublication.xml"/>
 	<action include="config/newsletterpublication/load_newsletterpublication.xml"/>
 	<lists include="config/option_lists/all_optionlists.xml"/>
 	<steps>
 		<step form-schema="edit_newsletterpublication"/>
-		<step form-schema="edit_newsletterpublicationfields"/>
-		<step form-schema="edit_pageadmin"/>
 	</steps>
 	<form-schema id="edit_newsletterpublication" extends="config/newsletterpublication/edit_newsletterpublication.xml"/>
-	<form-schema id="edit_newsletterpublicationfields" extends="config/newsletterpublication/edit_newsletterpublicationfields.xml"/>
-	<form-schema id="edit_pageadmin" extends="config/page/edit_pageadmin.xml"/>
 </wizard-schema>
