@@ -15,6 +15,7 @@ public class NewsletterPublicationNavigationItemManager extends PageNavigationIt
       return NewsletterUtil.NEWSLETTERPUBLICATION;
    }
 
+   @Override
    public NavigationTreeItemRenderer getTreeRenderer() {
       return treeRenderer;
   }

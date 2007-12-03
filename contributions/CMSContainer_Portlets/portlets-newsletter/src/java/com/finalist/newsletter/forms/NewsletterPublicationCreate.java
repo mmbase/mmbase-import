@@ -17,33 +17,38 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
+   private static Logger log = Logging.getLoggerInstance(NewsletterPublicationCreate.class.getName());
+
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      String parentnewsletter = getParameter(request, "parentnewsletter", true);
       String action = getParameter(request, "action");
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
-         request.getSession().setAttribute("parentnewsletter", parentnewsletter);
-         // Initialize the new publication
-         Node publicationNode = NewsletterPublicationUtil.createPublication(parentnewsletter);
-         request.getSession().removeAttribute("parentnewsletter");
+      if (StringUtil.isEmptyOrWhitespace(action)) { // Initialize the new
+         String parent = getParameter(request, "parent", true);                                                      // publication
+         Node publicationNode = NewsletterPublicationUtil.createPublication(parent);
+         String objectnumber = String.valueOf(publicationNode.getNumber());
+         log.debug("Publication created succesfully");
 
-         addToRequest(request, "showpage", publicationNode);
+         request.getSession().removeAttribute("parent");
 
-         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=EDIT" + "&contenttype=newsletterpublication"
-               + "&returnurl=" + mapping.findForward("returnurl").getPath());
+         ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
+               + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
          return ret;
       }
-      request.getSession().removeAttribute("parentnewsletter");
-      ActionForward ret = mapping.findForward(CANCEL);
-      return ret;
+      
+      String ewnodelastedited = getParameter(request, "ewnodelastedited");
+      addToRequest(request, "showpage", ewnodelastedited);
+      ActionForward ret = mapping.findForward("SUCCESS");
+      return ret;             
    }
 }

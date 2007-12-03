@@ -27,7 +27,6 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
-import com.finalist.community.CommunityManager;
 import com.finalist.newsletter.NewsletterGeneratorFactory;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
@@ -38,16 +37,9 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    private static final String USER_SUBSCRIBED_THEMES = "subscriptions";
    private static final String AVAILABLE_NEWSLETTERS = "newsletters";
-   private final String TEMPLATE_LOGIN = CommunityManager.TEMPLATE_LOGIN;
 
    private final String TEMPLATE_OPTIONS = "newsletter/subscription/options.jsp";
    private final String TEMPLATE_SUBSCRIBE = "newsletter/subscription/subscribe.jsp";
-
-   @Override
-   protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
-      PortletPreferences preferences = request.getPreferences();
-      super.doEditDefaults(request, response);
-   }
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
@@ -61,9 +53,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
          if (action == null) {
             log.debug("Action = null");
-
             request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, NewsletterGeneratorFactory.mimeTypes);
-
             List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
             if (subscriptions != null) {
                log.debug(userName + " has " + subscriptions.size() + " subscriptions");
@@ -82,7 +72,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          }
       } else {
          if (action != null && action.equals("login")) {
-            doInclude("view", TEMPLATE_LOGIN, request, response);
+
          } else {
             String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
             if (template != null && template.length() > 0) {
@@ -159,7 +149,6 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    @Override
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
-      PortletPreferences pref = request.getPreferences();
       PortletSession session = request.getPortletSession();
 
       String action = request.getParameter("action");

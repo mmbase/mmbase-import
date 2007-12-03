@@ -12,9 +12,9 @@
 	<action-mappings>
 		<!-- ==== Site management ==== -->
 
-		<action path="/editors/newsletter/NewsletterPublicationCreate"	type="com.finalist.newsletter.forms.NewsletterPublicationCreate" unknown="false" validate="false">
+		<action path="/editors/newsletter/NewsletterPublicationCreate" type="com.finalist.newsletter.forms.NewsletterPublicationCreate" unknown="false" validate="false">
 			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
-			<forward name="returnurl" path="/editors/newsletter/NewsletterPublicationCreate.do" redirect="false" />
+			<forward name="returnurl" path="/editors/newsletter/NewsletterPublicationEdit.do" redirect="false" />
 			<forward name="cancel" path="/editors/empty.html" redirect="true" />
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>

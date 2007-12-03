@@ -22,19 +22,10 @@ public abstract class NewsletterPublicationUtil {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterPublicationUtil.class.getName());
 
-   public static boolean acceptTestNewsletter(String publicationNumber) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node publicationNode = cloud.getNode(publicationNumber);
-      if (publicationNode == null) {
-         return (false);
-      }
-      publicationNode.setBooleanValue("accepted", true);
-      publicationNode.commit();
-      return (true);
-   }
-
    public static Node createPublication(String newsletterNumber) {
-
+      if (newsletterNumber == null) {
+         return(null);
+      }
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(newsletterNumber);
       log.debug("Creating a new publication for newsletter " + newsletterNode.getNumber());
@@ -42,6 +33,10 @@ public abstract class NewsletterPublicationUtil {
       Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
       if (publicationNode != null) {
          log.debug("Creation of publication node successfull. Now copying themes and content");
+         NavigationUtil.appendChild(newsletterNode, publicationNode);
+         Node layoutNode = PagesUtil.getLayout(newsletterNode);
+         PagesUtil.linkPortlets(publicationNode, layoutNode);
+
          NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme");
          if (newsletterThemeList != null) {
             log.debug("Found " + newsletterThemeList.size() + " themes for newsletter " + newsletterNode.getNumber());
@@ -51,7 +46,7 @@ public abstract class NewsletterPublicationUtil {
                if (newThemeNode != null) {
                   log.debug("Theme " + oldThemeNode.getNumber() + " copied");
                   NodeList content = SearchUtil.findRelatedNodeList(oldThemeNode, null, "newslettercontent");
-                  if (content != null && content.size() > 0 ) {
+                  if (content != null && content.size() > 0) {
                      log.debug("Found " + content.size() + " content items for theme " + oldThemeNode.getNumber());
                      for (int a = 0; a < content.size(); a++) {
                         Node contentNode = content.getNode(a);
@@ -62,18 +57,15 @@ public abstract class NewsletterPublicationUtil {
                }
             }
          }
+         return (publicationNode);
       }
-      NavigationUtil.appendChild(newsletterNode, publicationNode);
-      Node layoutNode = PagesUtil.getLayout(newsletterNode);
-      PagesUtil.linkPortlets(publicationNode, layoutNode);
-
-      return (publicationNode);
+      return (null);
    }
 
    // Delete a publication, only if not yet published
    public static void deletePublication(String publicationNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeManager publicationManager = cloud.getNodeManager("newsletterpublication");
+
       NodeManager publicationThemeManager = cloud.getNodeManager("newsletterpublicationtheme");
       Node publicationNode = cloud.getNode(publicationNumber);
       NodeList publicationThemeList = publicationNode.getRelatedNodes(publicationThemeManager);
@@ -102,11 +94,4 @@ public abstract class NewsletterPublicationUtil {
       return (themes);
    }
 
-   public static boolean isAcceptedPublication(String publicationNumber) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node publicationNode = cloud.getNode(publicationNumber);
-      boolean result = publicationNode.getBooleanValue("accepted");
-      log.debug("Asking if the publication with number " + publicationNumber + " is accepted. Answer is: " + result);
-      return (result);
-   }
 }
