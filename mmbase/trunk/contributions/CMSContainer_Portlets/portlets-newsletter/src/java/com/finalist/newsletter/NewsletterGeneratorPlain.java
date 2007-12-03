@@ -1,7 +1,8 @@
 package com.finalist.newsletter;
 
-import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+
 
 public class NewsletterGeneratorPlain extends NewsletterGenerator {
 
@@ -11,7 +12,7 @@ public class NewsletterGeneratorPlain extends NewsletterGenerator {
    }
 
    @Override
-   protected MimeMultipart generateNewsletterContent(String userName) {
+   protected MimeMultipart generateNewsletterMessage(String userName) {
       // TODO Auto-generated method stub
 
       return null;

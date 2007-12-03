@@ -22,29 +22,5 @@
 	</descriptions>
 	<properties></properties>
 	<fieldlist>
-		<field>
-			<descriptions>
-				<description xml:lang="nl"></description>
-				<description xml:lang="en"></description>
-			</descriptions>
-			<gui>
-				<guiname xml:lang="nl">Test geaccepteerd</guiname>
-				<guiname xml:lang="en">Test accepted</guiname>
-			</gui>
-			<editor>
-				<positions>
-					<input>7</input>
-					<list>-1</list>
-					<search>-1</search>
-				</positions>
-			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="yesno">
-				<default value="false" />
-			</datatype>
-			<db>
-				<name>accepted</name>
-				<type key="false" notnull="false" state="persistent">BOOLEAN</type>
-			</db>
-		</field>
 	</fieldlist>
 </builder>

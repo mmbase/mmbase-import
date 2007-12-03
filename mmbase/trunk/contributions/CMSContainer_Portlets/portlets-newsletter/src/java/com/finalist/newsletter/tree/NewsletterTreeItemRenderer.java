@@ -30,7 +30,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
 
       if (SecurityUtil.isEditor(role)) {
          element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletter.edit", "newsletter", "../newsletter/NewsletterEdit.do?number=" + id));
-         element.addOption(renderer.createTreeOption("new.png", "site.newsletterpublication.new", "newsletter",  "../newsletter/NewsletterPublicationCreate.do?parentnewsletter=" + id));
+         element.addOption(renderer.createTreeOption("new.png", "site.newsletterpublication.new", "newsletter",  "../newsletter/NewsletterPublicationCreate.do?parent=" + id));
 
          
          if (SecurityUtil.isWebmaster(role)
