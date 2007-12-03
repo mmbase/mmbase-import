@@ -140,8 +140,8 @@ public class SiteManagement {
    }
 
 
-   public static String getPageImageForPage(String name, String path) {
-      return cService.getPageImageForPath(name, path);
+   public static List<Integer> getPageImagesForPage(String name, String path) {
+      return cService.getPageImagesForPath(name, path);
    }
 
 

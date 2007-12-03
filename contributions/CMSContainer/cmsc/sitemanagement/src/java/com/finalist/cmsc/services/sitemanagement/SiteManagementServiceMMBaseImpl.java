@@ -277,12 +277,12 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
 
    @Override
-   public String getPageImageForPath(String name, String path) {
+   public List<Integer> getPageImagesForPath(String name, String path) {
       List<Page> pagesToRoot = getListFromPath(path);// get all pages to root
 
       for (int count = pagesToRoot.size() - 1; count >= 0; count--) {
          Page page = pagesToRoot.get(count);
-         String image = page.getPageImage(name);
+         List<Integer> image = page.getPageImage(name);
          if (image != null) {
             return image;
          }
