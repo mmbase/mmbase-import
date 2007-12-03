@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.66 2007-08-06 16:15:38 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.67 2007-12-03 17:01:15 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -254,7 +254,17 @@ public class XMLEntityResolver implements EntityResolver {
     protected static synchronized String getMMEntities() {
         if (ents == null) {
             StringBuilder sb = new StringBuilder();
-            appendEntities(sb, org.mmbase.module.core.MMBase.getMMBase(), "mmbase", 0, new HashSet<Object>());
+            try {
+                org.mmbase.module.Module  mmbase = org.mmbase.module.Module.getModule("mmbaseroot", false);
+                if (mmbase != null) {
+                    appendEntities(sb, mmbase, "mmbase", 0, new HashSet<Object>());
+                } else {
+                    return sb.toString();
+                }
+            } catch (Throwable ie) {
+                log.warn(ie.getMessage());
+                return sb.toString();
+            }
             ents = sb.toString();
             if (logEnts) {
                 log.debug("Using entities\n" + ents);
