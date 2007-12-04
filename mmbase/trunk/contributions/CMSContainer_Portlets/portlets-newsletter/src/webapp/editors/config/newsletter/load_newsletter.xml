@@ -12,7 +12,6 @@
 	<field name="description" />
 	<field name="externalurl"/>
 	<field name="publishinterval" />
-	<field name="use_test" />
 
 	<relation destination="images" role="namedrel" />
 	<relation destination="layout" role="allowrel" />

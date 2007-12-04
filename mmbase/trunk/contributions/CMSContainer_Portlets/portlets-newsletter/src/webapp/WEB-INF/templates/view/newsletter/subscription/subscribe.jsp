@@ -4,7 +4,7 @@
 
 <mm:cloud>
 	<form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:actionURL><cmsc:param name="action" value="subscribe"/></cmsc:actionURL>" target="_parent">
-	<input type="hidden" name="template" value="newsletter/subscription/options.jsp">
+	<input type="hidden" name="template" value="newsletter/subscription/overview.jsp">
 	<div class="heading">
 		<h3><fmt:message key="subscription.subscribe.title" /></h3>
 	</div>
@@ -15,7 +15,7 @@
 		<mm:node number="${newsletternumber}" notfound="skip">
 			<tr>
 				<td colspan="2">
-					<b><fmt:message key="newsletter" />: <mm:field name="title" write="true" /></b>
+					<b><fmt:message key="newsletter" />: <mm:field id="newslettertitle" name="title" write="true" /></b>
 				</td>					
 			</tr>
 			<tr>
@@ -27,7 +27,7 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="2"><b><fmt:message key="additionalthemes" /></b></td>
+				<td colspan="2"><b><fmt:message key="additionalthemes" />: ${newslettertitle}</b></td>
 			</tr>
 			<mm:relatednodes type="newslettertheme" role="related">
 				<mm:field name="number" write="false" jspvar="theme"/>
@@ -41,13 +41,14 @@
 			<tr><td>&nbsp;</td></tr>
 			</mm:node>
 			</c:forEach>
+			<tr><td colspan="2"><b><fmt:message key="subscription.mimetype.title" /></b></td></tr>
 			<tr><td colspan="2"><fmt:message key="subscription.mimetype.info" /></td></tr>
 			<tr>
 				<td><fmt:message key="subscription.mimetype.select" /></td>
 				<td>
 				<cmsc:select var="mimetype">
-					<c:forEach var="v" items="${mimetypes}">
-						<cmsc:option name="${v}" value="${v}" />
+					<c:forEach var="m" items="${mimetypeoptions}">
+						<cmsc:option name="${m}" value="${m}" />
 					</c:forEach>
 				</cmsc:select>
 				</td>
