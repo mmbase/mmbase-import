@@ -13,7 +13,7 @@ public class NewsletterGeneratorFactory {
    private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
    private static NewsletterGeneratorFactory instance;
 
-   public static final String AVAILABLE_MIMETYPES = "mimetypes";
+   public static final String AVAILABLE_MIMETYPES = "mimetypeoptions";
    public static final String MIMETYPE_HTML = "text/html";
    public static final String MIMETYPE_PLAIN = "text/plain";
    public static List<String> mimeTypes = new ArrayList<String>();
