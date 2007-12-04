@@ -46,8 +46,12 @@ public class HibernateService {
    }
 
    @Transactional(readOnly = false)
-   public List<String> getUsersWithPreferences(String key, String value){
-      return newsPrefDAO.getUsersWithPreferences(key, value);
+   public List<String> getUsersWithPreferences(String key, String value){   
+      List<String> usersWithPreferences = newsPrefDAO.getUsersWithPreferences(key, value);
+      if (usersWithPreferences != null && usersWithPreferences.size() > 0) {
+         return usersWithPreferences;
+      }
+      return (null);
    }
    
    public String getUserPreference(String userName, String key) {
@@ -60,7 +64,11 @@ public class HibernateService {
    }
    
    public List<String> getUserPreferences(String userName, String key){
-      return newsPrefDAO.getUserPreference(userName, key);
+      List<String> userPreferences = newsPrefDAO.getUserPreference(userName, key);
+      if (userPreferences != null && userPreferences.size() > 0) {
+         return userPreferences;
+      }
+      return (null);
    }
    
    public NewsPref createUserPreference(String userName, String key, String value) throws Exception{
