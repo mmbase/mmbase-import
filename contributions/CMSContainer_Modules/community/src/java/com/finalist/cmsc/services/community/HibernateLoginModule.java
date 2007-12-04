@@ -228,7 +228,7 @@ public class HibernateLoginModule implements LoginModule {
             }
 
             subject.getPrincipals().addAll(tempPrincipals);
-            subject.getPublicCredentials().addAll(tempCredentials);
+            //subject.getPublicCredentials().addAll(tempCredentials);
 
             tempPrincipals.clear();
             tempCredentials.clear();
@@ -321,13 +321,13 @@ public class HibernateLoginModule implements LoginModule {
       }
 
       // remove the credentials the login module added
-      it = subject.getPublicCredentials(HibernateCredential.class).iterator();
-      while (it.hasNext()) {
-         HibernateCredential c = (HibernateCredential) it.next();
-         if (debug)
-            System.out.println("\t\t[HibernateLoginModule] removing credential " + c.toString());
-         subject.getPrincipals().remove(c);
-      }
+      //it = subject.getPublicCredentials(HibernateCredential.class).iterator();
+      //while (it.hasNext()) {
+      //   HibernateCredential c = (HibernateCredential) it.next();
+      //   if (debug)
+      //      System.out.println("\t\t[HibernateLoginModule] removing credential " + c.toString());
+      //   subject.getPrincipals().remove(c);
+      //}
 
       return (true);
    }
@@ -349,7 +349,7 @@ public class HibernateLoginModule implements LoginModule {
    private boolean HibernateValidate(String user, String pass) throws Exception {
 
       HibernatePrincipal p = null;
-      HibernateCredential c = null;
+      //HibernateCredential c = null;
       boolean passwordMatch = false;
 
       String dbUsername = null, dbPassword = null, dbFname = null;
@@ -379,7 +379,7 @@ public class HibernateLoginModule implements LoginModule {
       if (passwordMatch) {
          if (debug)
             System.out.println("\t\t[HibernateLoginModule] passwords match!");
-         this.tempCredentials.add(c);
+         //this.tempCredentials.add(c);
          this.tempPrincipals.add(new HibernatePrincipal(dbUsername + " " + dbFname + " " + dbLname + " " + dbEmailAdress));
       }
       else {
