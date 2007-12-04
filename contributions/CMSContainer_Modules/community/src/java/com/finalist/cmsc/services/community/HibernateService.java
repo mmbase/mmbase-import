@@ -50,10 +50,13 @@ public class HibernateService {
       return newsPrefDAO.getUsersWithPreferences(key, value);
    }
    
-   public String getUserPreference(String userName, String key){
+   public String getUserPreference(String userName, String key) {
       List<String> resultList = newsPrefDAO.getUserPreference(userName, key);
-      String userPreference = resultList.get(0);
-      return userPreference;
+      if (resultList != null && resultList.size() > 0) {
+         String userPreference = resultList.get(0);
+         return userPreference;
+      }
+      return (null);
    }
    
    public List<String> getUserPreferences(String userName, String key){
