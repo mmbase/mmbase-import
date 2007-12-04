@@ -4,15 +4,6 @@
     "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <!--propertyt config-->
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<list>
-				<value>classpath:HibernateClasses.properties</value>
-			</list>
-		</property>
-	</bean>
-
 	<!--interceptor beans config-->
 	<!--
 		This bean is a post-processor that will automatically apply relevant advisors
