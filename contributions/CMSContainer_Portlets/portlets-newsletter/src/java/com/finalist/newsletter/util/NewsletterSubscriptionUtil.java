@@ -2,6 +2,7 @@ package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -12,6 +13,7 @@ import com.finalist.newsletter.NewsletterGeneratorFactory;
 public abstract class NewsletterSubscriptionUtil {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionUtil.class.getName());
+   private static final ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettersubscription");
 
    public static final String NEWSLETTER_THEME = "newslettertheme";
    public static final String PREFERRED_MIMETYPE = "preferredmimetype";
@@ -21,9 +23,16 @@ public abstract class NewsletterSubscriptionUtil {
    public static final String MIMETIPE_DEFAULT = MIMETYPE_HTML;
    public static final String USERNAME = "username";
 
-   public static final String SUBSCRIPTION_STATUS_KEY = "newslettersubscriptionstatus";
-   public static final String SUBSCRIPTION_STATUS_ACTIVE = "active";
-   public static final String SUBSCRIPTION_STATUS_INACTIVE = "inactive";
+   public static final String SUBSCRIPTION_STATUS_KEY = "subscriptionstatus";
+   public static final String SUBSCRIPTION_STATUS_ACTIVE = rb.getString("status.active");
+   public static final String SUBSCRIPTION_STATUS_INACTIVE = rb.getString("status.inactive");
+
+   private static List<String> statusOptions = new ArrayList<String>();
+
+   static {
+      statusOptions.add(SUBSCRIPTION_STATUS_ACTIVE);
+      statusOptions.add(SUBSCRIPTION_STATUS_INACTIVE);
+   }
 
    // public static final List AVAILABLE_MIMETYPES = new ArrayList<String>()
    // {MIMETYPE_HTML, MIMETYPE_PLAIN;;
@@ -63,11 +72,11 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static List<String> getUserSubscribedThemes(String userName) {
-      if ( userName != null ) {
-      List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
-      return (themeList);
+      if (userName != null) {
+         List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
+         return (themeList);
       }
-      return(null);
+      return (null);
    }
 
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
@@ -78,13 +87,15 @@ public abstract class NewsletterSubscriptionUtil {
       return (null);
    }
 
-   public static boolean pauseUserSubscriptions(String userName) {      
+   public static boolean pauseUserSubscriptions(String userName) {
       Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
+      log.debug("Subscriptionstatus for user " + userName + " set to " + SUBSCRIPTION_STATUS_INACTIVE);
       return (true);
    }
 
    public static boolean resumeUserSubscriptions(String userName) {
       Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_ACTIVE);
+      log.debug("Subscriptionstatus for user " + userName + " set to " + SUBSCRIPTION_STATUS_ACTIVE);
       return (true);
    }
 
@@ -94,6 +105,7 @@ public abstract class NewsletterSubscriptionUtil {
             mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
          }
          Community.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
+         log.debug("Preferred mimetype for user " + userName + " set to " + mimeType);
          return (true);
       }
       return (false);
@@ -143,5 +155,9 @@ public abstract class NewsletterSubscriptionUtil {
          }
       }
       return (true);
+   }
+
+   public static List<String> getStatusOptions() {
+      return (statusOptions);
    }
 }

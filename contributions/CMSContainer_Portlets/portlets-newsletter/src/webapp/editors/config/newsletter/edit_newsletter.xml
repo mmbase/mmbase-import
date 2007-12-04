@@ -16,11 +16,6 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
-	<field name="use_test" ftype="enum">
-		<prompt xml:lang="en">Use test e-mail</prompt>
-		<prompt xml:lang="nl">Gebruik test e-mail</prompt>
-		<optionlist select="boolean" />
-	</field>
 
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/images/search_page_namedrel_images.xml" />

@@ -1,12 +1,3 @@
-/*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
- */
 package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
@@ -33,13 +24,14 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
 
+   private static final String ACTION_SUBSCRIBE = "subscribe";
+   private static final String ACTION_CHANGE = "change";
+   private static final String ACTION_TERMINATE = "terminate";
+
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionPortlet.class.getName());
 
    private static final String USER_SUBSCRIBED_THEMES = "subscriptions";
    private static final String AVAILABLE_NEWSLETTERS = "newsletters";
-
-   private final String TEMPLATE_OPTIONS = "newsletter/subscription/options.jsp";
-   private final String TEMPLATE_SUBSCRIBE = "newsletter/subscription/subscribe.jsp";
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
@@ -50,35 +42,41 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
       if (isLoggedIn(session) == true) {
          String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
-
-         if (action == null) {
-            log.debug("Action = null");
+         List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
+         
+         boolean hasSubscriptions = false;
+         if (subscriptions != null && subscriptions.size() > 0) {
+            request.setAttribute("hassubscriptions", true);
+            hasSubscriptions = true;
+         }
+         if (action != null) {
+            log.debug("Action != null");
             request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, NewsletterGeneratorFactory.mimeTypes);
-            List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
-            if (subscriptions != null && subscriptions.size() > 0) {
+            if (hasSubscriptions) {
                log.debug(userName + " has " + subscriptions.size() + " subscriptions");
                request.setAttribute(USER_SUBSCRIBED_THEMES, subscriptions);
                String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-               request.setAttribute("status", status);
-               doInclude("view", TEMPLATE_OPTIONS, request, response);
+               request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
+               List<String> statusOptions = NewsletterSubscriptionUtil.getStatusOptions();
+               request.setAttribute("statusoptions", statusOptions);
+               request.setAttribute("hassubscriptions", true);
             } else {
                log.debug(userName + " has no subscriptions");
-               doInclude("view", TEMPLATE_SUBSCRIBE, request, response);
+               request.setAttribute("hassubscriptions", false);
             }
-         } else {
             String template = "" + request.getParameter("template");
+            doInclude("view", template, request, response);
+         } else {
+            String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
             doInclude("view", template, request, response);
          }
       } else {
-         String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-         if (template != null && template.length() > 0) {
-            doInclude("view", template, request, response);
-         }
+
       }
    }
 
    private boolean isLoggedIn(PortletSession session) {
-      String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE); 
+      String userName = getUserName(session);
       if (userName != null && userName.length() > 0) {
          log.debug("Logged in as: " + userName);
          return (true);
@@ -87,9 +85,16 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       return (false);
    }
 
-   private void processChangeSubscription(ActionRequest request, String userName) {
+   private String getUserName(PortletSession session) {
+      return ((String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE));
+
+   }
+
+   private void processChangeSubscription(ActionRequest request, ActionResponse response) {
+      PortletSession session = request.getPortletSession();
+      String userName = getUserName(session);
       NewsletterSubscriptionUtil.unsubscribeFromAllThemes(userName);
-      processNewSubscription(request);
+      processNewSubscription(request, response);
    }
 
    @Override
@@ -111,9 +116,9 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       super.processEditDefaults(request, response);
    }
 
-   private void processNewSubscription(ActionRequest request) {
+   private void processNewSubscription(ActionRequest request, ActionResponse response) {
       PortletSession session = request.getPortletSession();
-      String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
+      String userName = getUserName(session);
       List<String> subscribeToThemes = new ArrayList<String>();
       String[] newsletters = request.getParameterValues("newsletter");
       if (newsletters != null) {
@@ -152,19 +157,15 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       String action = request.getParameter("action");
 
       if (isLoggedIn(session) == true) {
-         String userName = (String) session.getAttribute("username");
+         String userName = getUserName(session);
          if (action != null) {
             response.setWindowState(WindowState.MAXIMIZED);
-            if (action.equals("subscribe")) {
-               processNewSubscription(request);
-            } else if (action.equals("change")) {
-               processChangeSubscription(request, userName);
-            } else if (action.equals("terminate")) {
+            if (action.equals(ACTION_SUBSCRIBE)) {
+               processNewSubscription(request, response);
+            } else if (action.equals(ACTION_CHANGE)) {
+               processChangeSubscription(request, response);
+            } else if (action.equals(ACTION_TERMINATE)) {
                NewsletterSubscriptionUtil.terminateUserSubscription(userName);
-            } else if (action.equals("pause")) {
-               NewsletterSubscriptionUtil.pauseUserSubscriptions(userName);
-            } else if (action.equals("resume")) {
-               NewsletterSubscriptionUtil.resumeUserSubscriptions(userName);
             }
          }
       }
