@@ -63,16 +63,22 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static List<String> getUserSubscribedThemes(String userName) {
+      if ( userName != null ) {
       List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
       return (themeList);
+      }
+      return(null);
    }
 
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
-      List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
-      return (themeList);
+      if (userName != null && newsletterNumber != null) {
+         List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
+         return (themeList);
+      }
+      return (null);
    }
 
-   public static boolean pauseUserSubscriptions(String userName) {
+   public static boolean pauseUserSubscriptions(String userName) {      
       Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
       return (true);
    }
@@ -99,6 +105,7 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static boolean subscribeToThemes(String userName, List<String> themes) {
+      log.debug("subscribeToThemes " + userName + " - " + themes);
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
             String themeNumber = themes.get(i);
