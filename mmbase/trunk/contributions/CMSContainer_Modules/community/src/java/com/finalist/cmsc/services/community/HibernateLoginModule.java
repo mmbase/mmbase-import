@@ -380,7 +380,7 @@ public class HibernateLoginModule implements LoginModule {
          if (debug)
             System.out.println("\t\t[HibernateLoginModule] passwords match!");
          this.tempCredentials.add(c);
-         this.tempPrincipals.add(new HibernatePrincipal(dbFname + " " + dbLname + " " + dbEmailAdress));
+         this.tempPrincipals.add(new HibernatePrincipal(dbUsername + " " + dbFname + " " + dbLname + " " + dbEmailAdress));
       }
       else {
          if (debug)
