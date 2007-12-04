@@ -53,7 +53,8 @@ public class CommunityServiceMysqlImpl extends CommunityService {
             for (int i = 0; i < values.length; i++) {
                if (i == 0) {
                   String def = "Username: ";
-                  firstName = values[i];
+                  userName = values[i];
+                  System.out.println("USERNAME USERNAME USERNAME: " + userName);
                   session.setAttribute("userName", userName, PortletSession.APPLICATION_SCOPE);
                }
                if (i == 1) {
@@ -75,10 +76,10 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          }
          session.setAttribute("logout", "false", PortletSession.APPLICATION_SCOPE);
 
-         it = lc.getSubject().getPublicCredentials(Properties.class).iterator();
+         //it = lc.getSubject().getPublicCredentials(Properties.class).iterator();
 
-         while (it.hasNext())
-            log.info(it.next().toString());
+         //while (it.hasNext())
+            //log.info(it.next().toString());
 
          lc.logout();
          loginSuccesfull = true;
