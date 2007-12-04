@@ -31,6 +31,7 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       
       boolean loginSuccesfull;
       
+      String userName = "";
       String firstName = "";
       String lastName = "";
       String emailAdress = "";
@@ -45,23 +46,27 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          log.info("PortletSession: " + request.getPortletSession());
 
          PortletSession session = request.getPortletSession();
-
          Iterator it = lc.getSubject().getPrincipals().iterator();
          while (it.hasNext()) {
             String tempPrin = it.next().toString();
             String values[] = tempPrin.split(" ");
             for (int i = 0; i < values.length; i++) {
                if (i == 0) {
+                  String def = "Username: ";
+                  firstName = values[i];
+                  session.setAttribute("userName", userName, PortletSession.APPLICATION_SCOPE);
+               }
+               if (i == 1) {
                   String def = "First name: ";
                   firstName = values[i];
                   session.setAttribute("firstName", firstName, PortletSession.APPLICATION_SCOPE);
                }
-               if (i == 1) {
+               if (i == 2) {
                   String def = "Last name: ";
                   lastName = values[i];
                   session.setAttribute("lastName", lastName, PortletSession.APPLICATION_SCOPE);
                }
-               if (i == 2) {
+               if (i == 3) {
                   String def = "E-mail adres: ";
                   emailAdress = values[i];
                   session.setAttribute("emailAdress", emailAdress, PortletSession.APPLICATION_SCOPE);
