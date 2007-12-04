@@ -21,7 +21,7 @@ import com.finalist.cmsc.services.community.Community;
  * Fulltext login portlet
  * 
  * @author Menno Menninga
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class LoginPortlet extends CmscPortlet {
 
@@ -73,6 +73,7 @@ public class LoginPortlet extends CmscPortlet {
       }
       if (loginSuccesfull == true) {
          getLogger().info("Gelukt als het goed is");
+         log.info(request.getPortletSession().getAttribute("userName"));
          log.info(request.getPortletSession().getAttribute("firstName"));
          log.info(request.getPortletSession().getAttribute("lastName"));
       }
