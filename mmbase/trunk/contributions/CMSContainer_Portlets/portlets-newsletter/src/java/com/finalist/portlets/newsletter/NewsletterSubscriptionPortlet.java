@@ -43,23 +43,22 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-      PortletSession session = request.getPortletSession();
+      PortletSession session = request.getPortletSession(true);
       PortletPreferences preferences = request.getPreferences();
 
       String action = request.getParameter("action");
 
       if (isLoggedIn(session) == true) {
-         String userName = (String) session.getAttribute("username");
+         String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
 
          if (action == null) {
             log.debug("Action = null");
             request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, NewsletterGeneratorFactory.mimeTypes);
             List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
-            if (subscriptions != null) {
+            if (subscriptions != null && subscriptions.size() > 0) {
                log.debug(userName + " has " + subscriptions.size() + " subscriptions");
                request.setAttribute(USER_SUBSCRIBED_THEMES, subscriptions);
                String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-
                request.setAttribute("status", status);
                doInclude("view", TEMPLATE_OPTIONS, request, response);
             } else {
@@ -71,29 +70,26 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             doInclude("view", template, request, response);
          }
       } else {
-         if (action != null && action.equals("login")) {
-
-         } else {
-            String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-            if (template != null && template.length() > 0) {
-               doInclude("view", template, request, response);
-            }
+         String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
+         if (template != null && template.length() > 0) {
+            doInclude("view", template, request, response);
          }
       }
    }
 
    private boolean isLoggedIn(PortletSession session) {
-      String userName = (String) session.getAttribute("username");
+      String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE); 
       if (userName != null && userName.length() > 0) {
          log.debug("Logged in as: " + userName);
          return (true);
       }
+      log.debug("Not logged in");
       return (false);
    }
 
    private void processChangeSubscription(ActionRequest request, String userName) {
       NewsletterSubscriptionUtil.unsubscribeFromAllThemes(userName);
-      processNewSubscription(request, userName);
+      processNewSubscription(request);
    }
 
    @Override
@@ -115,7 +111,9 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       super.processEditDefaults(request, response);
    }
 
-   private void processNewSubscription(ActionRequest request, String userName) {
+   private void processNewSubscription(ActionRequest request) {
+      PortletSession session = request.getPortletSession();
+      String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
       List<String> subscribeToThemes = new ArrayList<String>();
       String[] newsletters = request.getParameterValues("newsletter");
       if (newsletters != null) {
@@ -158,7 +156,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          if (action != null) {
             response.setWindowState(WindowState.MAXIMIZED);
             if (action.equals("subscribe")) {
-               processNewSubscription(request, userName);
+               processNewSubscription(request);
             } else if (action.equals("change")) {
                processChangeSubscription(request, userName);
             } else if (action.equals("terminate")) {
