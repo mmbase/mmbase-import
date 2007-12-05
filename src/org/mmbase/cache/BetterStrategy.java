@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.29 2007-09-17 08:57:55 michiel Exp $
+ * @version $Id: BetterStrategy.java,v 1.30 2007-12-05 10:31:16 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -258,14 +258,15 @@ public class BetterStrategy extends ReleaseStrategy {
             RelationStep step = (RelationStep) i.next();
             Step nextStep = i.next();
             stepDest = nextStep.getTableName();
-            boolean matchesProper =
-                (eventSourceType.equals(stepSource) || eventSource.isExtensionOf(mmb.getBuilder(stepSource))) &&
-                (eventDestType.equals(stepDest)     || eventDest.isExtensionOf(mmb.getBuilder(stepDest)));
-            boolean matches = matchesProper ||
-                ( // matchesInverse
-                 (eventDestType.equals(stepSource)  || eventDest.isExtensionOf(mmb.getBuilder(stepSource))) &&
-                 (eventSourceType.equals(stepDest)  || eventSource.isExtensionOf(mmb.getBuilder(stepDest)))
-                 );
+            //when source or destination are null (no active builders), this event can not affect the cache of this mmbase app
+            boolean matchesProper = (eventSource != null && eventDest != null)
+                    && (eventSourceType.equals(stepSource) || eventSource.isExtensionOf(mmb.getBuilder(stepSource)))
+                    && (eventDestType.equals(stepDest) || eventDest.isExtensionOf(mmb.getBuilder(stepDest)));
+            boolean matches = matchesProper || ( // matchesInverse
+                    (eventSource != null && eventDest != null)
+                            && (eventDestType.equals(stepSource) || eventDest.isExtensionOf(mmb.getBuilder(stepSource)))
+                            && (eventSourceType.equals(stepDest) || eventSource.isExtensionOf(mmb.getBuilder(stepDest))));
+
 
             Integer role = step.getRole();
             if (matches &&
