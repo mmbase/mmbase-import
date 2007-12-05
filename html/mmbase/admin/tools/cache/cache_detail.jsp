@@ -1,38 +1,44 @@
 <tr align="left">
-  <th class="header" colspan="5"><span style="font-size: 120%"><%= cache.getName() %> </span>:<%= cache.getDescription() %> Cache</th>
-  <th class="header" colspan="1">
-  <% if(cache.isActive()) { %>
-    <a href="<mm:url>
-        <mm:param name="cache"><%=cache.getName()%></mm:param>
-        <mm:param name="active">off</mm:param>
-      </mm:url>" >Turn off</a> | 
-    <a href="<mm:url>
-       <mm:param name="cache"><%=cache.getName()%></mm:param>
-       <mm:param name="clear">clear</mm:param>
-       </mm:url>">Clear</a>    
-        <% } else { %>
-    <a href="<mm:url>
-        <mm:param name="cache"><%=cache.getName()%></mm:param>
-        <mm:param name="active">on</mm:param>
-      </mm:url>" >Turn on</a>
-  <% }  %>
+  <th colspan="4">
+    <%= cache.getName() %>:<%= cache.getDescription() %> Cache
   </th>
-</tr>
-<tr>
-  <td class="data">Requests</td>
-  <td class="data"><%= cache.getHits() + cache.getMisses() %></td>
-  <td class="data">Hits</td>
-  <td class="data"><%= cache.getHits() %></td>
-  <td class="data">Misses</td>
-  <td class="data"><%= cache.getMisses() %></td>
-</tr>
-<tr>
-  <td class="data">Size</td>
-  <td class="data"><%= cache.size() %> / <%= cache.maxSize() %></td>
-  <td class="data">Performance</td>
-  <td class="data"><%= cache.getRatio() * 100 %> %</td>
-  <td class="data">Show first 500 entry's of the cache</td>
-  <td class="navigate">
-    <a href="<mm:url page="showcache"><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>" ><img src="<mm:url page="/mmbase/style/images/next.gif" />" alt="next" border="0" align="right"></a>
+  <th colspan="2">
+  <% if(cache.isActive()) { %>
+    <mm:link>
+      <mm:param name="cache"><%= cache.getName() %></mm:param>
+      <mm:param name="active">off</mm:param>
+      <a href="${_}">Turn off</a>
+    </mm:link> | 
+    <mm:link>
+      <mm:param name="cache"><%= cache.getName() %></mm:param>
+      <mm:param name="clear">clear</mm:param>
+      <a href="${_}">Clear</a>
+    </mm:link>    
+  <% } else { %>
+    <mm:link>
+      <mm:param name="cache"><%= cache.getName() %></mm:param>
+      <mm:param name="active">on</mm:param>
+      <a href="${_}">Turn on</a>
+    </mm:link>
+  <% } %>
+  </th>
+</tr><tr>
+  <td>Requests</td>
+  <td><%= cache.getHits() + cache.getMisses() %></td>
+  <td>Hits</td>
+  <td><%= cache.getHits() %></td>
+  <td>Misses</td>
+  <td><%= cache.getMisses() %></td>
+</tr><tr>
+  <td>Size</td>
+  <td><%= cache.size() %> / <%= cache.maxSize() %></td>
+  <td>Performance</td>
+  <td><%= cache.getRatio() * 100 %> %</td>
+  <td>Show first 500 entry's of the cache</td>
+  <td>
+    <mm:link page="showcache">
+      <mm:param name="cache"><%= cache.getName() %></mm:param>
+      <a href="${_}"><mm:link page="/mmbase/style/images/next.gif"><img src="${_}" alt="next" /></a></mm:link>
+    </mm:link>
   </td>
 </tr>
