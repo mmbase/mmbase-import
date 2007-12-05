@@ -45,6 +45,28 @@
 			</db>
 		</field>
 		<field>
+         <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">URL-fragment</guiname>
+            <guiname xml:lang="en">URL-fragment</guiname>
+         </gui>
+         <editor>
+            <positions>
+                   <input>10</input>
+               <list>10</list>
+               <search>10</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>urlfragment</name>
+            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+		<field>
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
