@@ -19,6 +19,8 @@ public interface UserDAO {
 
 
    public User getUser(String userId);
+   
+   public List<String> getAllUsers();
 
 
    /**

@@ -35,6 +35,11 @@
 									<fmt:message key="modules.newsletter" />
 									</a> </li>
 							</mm:haspage>
+							<mm:haspage page="/editors/community/admin.jsp">
+								<li class="versioning"><a href="<mm:url page="../community/admin.jsp"/>" target="rightpane">
+									<fmt:message key="modules.community" />
+									</a> </li>
+							</mm:haspage>
 							<mm:haspage page="/editors/egemmail">
 								<li class="egem"> <a href="../egemmail/search.jsp" target="rightpane">
 									<fmt:message key="modules.egemmail.export" />

@@ -24,6 +24,8 @@ public interface NewsPrefDAO {
 
    public List<String> getUserPreference(String userName, String key);
    
+   public List<String> getAllNewsPrefs();
+   
    /**
     * Deletes a NewsPref from the persistence mechanism.
     * 
