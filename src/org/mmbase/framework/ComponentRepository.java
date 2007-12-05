@@ -10,9 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import java.util.*;
-import java.lang.reflect.*;
 import org.w3c.dom.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.Instantiator;
+
 
 
 import org.mmbase.util.logging.Logger;
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.25 2007-08-10 14:00:06 andre Exp $
+ * @version $Id: ComponentRepository.java,v 1.26 2007-12-05 16:31:51 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -168,63 +169,6 @@ public class ComponentRepository {
 
     }
 
-    /**
-     * Instantiates any object using an Dom Element and constructor arguments. Sub-param tags are
-     * used on set-methods on the newly created object. This is a pretty generic method, it should
-     * perhaps be moved to org.mmbase.util.
-     */
-    public static Object getInstance(Element classElement, Object... args) 
-        throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        String className = classElement.getAttribute("name");
-        if ("".equals(className)) className = classElement.getAttribute("class"); // for urlconverters config (not ok yet)
-        Class claz = Class.forName(className);
-        List<Class> argTypes = new ArrayList<Class>(args.length);
-        for (Object arg : args) {
-            argTypes.add(arg.getClass());
-        }
-        Class[] argTypesArray = argTypes.toArray(new Class[] {});
-        Constructor constructor = null;
-        for (Constructor c : claz.getConstructors()) {
-            Class[] parameterTypes = c.getParameterTypes();
-            if (parameterTypes.length != argTypesArray.length) continue;
-            for (int i = 0; i < parameterTypes.length; i++) {
-                if (! parameterTypes[i].isAssignableFrom(argTypesArray[i])) continue;
-            }
-            constructor = c;
-            break;
-        }
-        if (constructor == null) throw new NoSuchMethodError("No constructors found for " + args);
-        Object o = constructor.newInstance(args);
-
-        NodeList params = classElement.getChildNodes();
-        for (int i = 0 ; i < params.getLength(); i++) {
-            try {
-                Node node = params.item(i);
-                if (node instanceof Element && node.getNodeName().equals("param")) {
-                    Element param = (Element)node;
-                    String name = param.getAttribute("name");
-                    String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
-                    Method method = claz.getMethod("set" + name.substring(0, 1).toUpperCase() + name.substring(1), String.class);
-                    method.invoke(o, value);
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        return o;
-    }
-
-    public static Object getInstanceWithSubElement(Element element, Object... args) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
-        NodeList childs =  element.getChildNodes();
-        Object instance = null;
-        for (int i = 0; i < childs.getLength(); i++) {
-            Node node = childs.item(i);
-            if (node instanceof Element && node.getNodeName().equals("class")) {
-                instance =  getInstance((Element) node, args);
-            }
-        }
-        return instance;
-    }
 
 
     /**
@@ -232,11 +176,11 @@ public class ComponentRepository {
      */
     protected Component getComponent(String name, Document doc) throws org.xml.sax.SAXException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
 
-        Component component = (Component) getInstanceWithSubElement(doc.getDocumentElement(), name);
+        Component component = (Component) Instantiator.getInstanceWithSubElement(doc.getDocumentElement(), name);
         if (component == null) {
             component = new BasicComponent(name);
         }
-        component.configure(doc.getDocumentElement()); 
+        component.configure(doc.getDocumentElement());
         return component;
     }
 
