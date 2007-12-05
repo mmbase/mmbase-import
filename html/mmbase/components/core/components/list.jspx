@@ -21,8 +21,8 @@
 		  <caption>
 			Information about components on this MMBase system
       </caption>
-      <mm:function set="utils" name="mmbase">
-        <tr><th>Framework</th><td>${_.framework}</td></tr>
+      <mm:function set="utils" name="framework">
+        <tr><th>Framework</th><td>${_}</td></tr>
       </mm:function>
       <tr><th>Failed components</th><td><mm:function  set="components" name="failed" /></td></tr>
       </table>
@@ -66,7 +66,7 @@
               </caption>
               <tr><th>Data type</th><td>${s.dataType}</td></tr>
               <tr><th>Description</th><td>${mm:string(s.description)}</td></tr>
-              <tr><th>Current value</th><td><strong><jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getFramework().getSettingValue(s, null)</jsp:expression></strong></td></tr>
+              <tr><th>Current value</th><td><strong><jsp:expression>Framework.getInstance().getSettingValue(s, null)</jsp:expression></strong></td></tr>
             </table>
             <!--
                 <mm:fieldinfo type="input" datatype="s.dataType" />
