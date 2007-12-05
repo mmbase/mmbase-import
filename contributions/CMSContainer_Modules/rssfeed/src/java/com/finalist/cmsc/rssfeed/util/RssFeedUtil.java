@@ -9,7 +9,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 
 public class RssFeedUtil {
    public static final String RSSFEED = "rssfeed";
-   public static final String FRAGMENT_FIELD = "title";
+   public static final String FRAGMENT_FIELD = "urlfragment";
    public static final String TITLE_FIELD = "title";
 
 
