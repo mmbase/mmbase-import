@@ -95,10 +95,10 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         log.info("using " + rl + " for resolving " + s + " -> " + rl.getResource(s));
         configWatcher = new ResourceWatcher (rl) {
                 public void onChange(String s) {
-                doConfigure(resourceLoader.getResourceAsStream(s));
-            }
-        };
-
+                    doConfigure(resourceLoader.getResourceAsStream(s));
+                }
+            };
+        
         configWatcher.clear();
         configWatcher.add(s);
 
