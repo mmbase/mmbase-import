@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.106 2007-11-25 18:25:19 nklasens Exp $
+ * @version $Id: Casting.java,v 1.107 2007-12-05 20:36:49 michiel Exp $
  */
 
 import java.util.*;
@@ -471,15 +471,16 @@ public class Casting {
      * happens. If it is a Map, then the 'entry set' is returned. A string is interpreted as a
      * comma-separated list of strings. Other objects are wrapped in an ArrayList with one element.
      *
-     * @since MMBase-1.8
+     * @since MMBase-1.8.5
      */
-    public static Collection toCollection(Object o) {
+    public static Collection toCollection(Object o, String delimiter) {
         if (o instanceof Collection) {
             return (Collection)o;
         } else if (o instanceof Map) {
             return ((Map)o).entrySet();
         } else if (o instanceof String) {
-            return StringSplitter.split((String)o);
+            if ("".equals(delimiter) || delimiter == null) delimiter = ",";
+            return StringSplitter.split((String)o, delimiter);
         } else if (o instanceof Object[]) {
             return Arrays.asList((Object[]) o);
         } else {
@@ -489,6 +490,13 @@ public class Casting {
             return Collections.singletonList(o);
         }
     }
+    /**
+     * @since MMBase-1.8
+     */
+    public static Collection toCollection(Object o) {
+        return toCollection(o, ",");
+    }
+
 
     /**
      * Convert the value to a <code>Document</code> object.
