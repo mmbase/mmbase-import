@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.81 2007-11-01 09:32:32 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.82 2007-12-05 17:16:13 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -528,7 +528,7 @@ public class IncludeTag extends UrlTag {
     protected Debug getDebug() throws JspTagException {
 
         if (debugType == Attribute.NULL) return Debug.NONE;
-        String dtype = debugType.getString(this).toLowerCase();
+        String dtype = debugType.getString(this).toUpperCase();
         if (dtype.length() == 0) return Debug.NONE;
         return Debug.valueOf(dtype);
     }
