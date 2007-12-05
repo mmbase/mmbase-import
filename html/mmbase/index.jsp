@@ -24,7 +24,8 @@
       </mm:haspage>
       <mm:haspage page="admin">
         <mm:link>
-          <mm:frameworkparam  name="category">about</mm:frameworkparam>
+          <mm:frameworkparam name="component">core</mm:frameworkparam>
+          <mm:frameworkparam name="category">about</mm:frameworkparam>
           <li><a href="${_}">Admin pages</a></li>
         </mm:link>
       </mm:haspage>

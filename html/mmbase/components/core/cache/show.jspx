@@ -41,21 +41,21 @@
 
       <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
         <mm:context>
-          <mm:voidfunction id="k"  set="utils" name="toString" referids="entry.key@object" />
+          <mm:voidfunction id="k" set="utils" name="toString" referids="entry.key@object" />
 
           <mm:write value="${k}">
             <mm:compare  regexp="${key}">
               <mm:write value="${entry.value}">
                 <mm:compare  regexp="${value}">
                   <tr>
-                    <td class="data"><mm:index /></td>
-                    <td class="data">${cache.counts[entry.key]}</td>
-                    <td class="data">${k}</td>
-                    <td class="data">${entry.value}</td>
+                    <td><mm:index /></td>
+                    <td>${cache.counts[entry.key]}</td>
+                    <td>${k}</td>
+                    <td>${entry.value}</td>
                     <mm:link referids="name@cache">
                       <mm:param name="deletekey" value="${entry.key}" />
                       <mm:param name="deleteentry" value="${status.index}" />
-                      <td class="data"><a href="${_}">remove</a></td>
+                      <td><a href="${_}">remove</a></td>
                     </mm:link>
                   </tr>
                 </mm:compare>
@@ -65,7 +65,7 @@
         </mm:context>
       </c:forEach>
       <tr class="footer">
-        <td class="navigate">
+        <td>
           <a href="${mm:url('cache', pageContext)}">
             <img src="${mm:url('/mmbase/style/images/back.png', pageContext)}" alt="back" border="0" />
           </a>
