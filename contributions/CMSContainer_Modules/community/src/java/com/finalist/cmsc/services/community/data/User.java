@@ -16,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "users")
-//@SequenceGenerator(name = "SEQ_ID", sequenceName = "id_sequence", allocationSize=1)
+@SequenceGenerator(name = "SEQ_ID", sequenceName = "id_sequence", allocationSize=1)
 public class User implements Serializable{
 
    private static final long serialVersionUID = 1L;
@@ -32,8 +32,7 @@ public class User implements Serializable{
     * 
     * @return Long representing the id
     */
-   //@Id(generate = GeneratorType.SEQUENCE, generator = "SEQ_ID")
-   @Id
+   @Id(generate = GeneratorType.AUTO)
    @Column(name = "id", nullable = false)
    public Long getId() {
       return id;
@@ -58,7 +57,6 @@ public class User implements Serializable{
     */
    @Column(name = "user_id", nullable = false)
    public String getUserId() {
-      System.out.println("Username: " + userId);
       return userId;
    }
 
@@ -103,7 +101,6 @@ public class User implements Serializable{
     */
    @Column(name = "firstname", nullable = false)
    public String getName() {
-      System.out.println("Voornaam: " + firstname);
       return firstname;
    }
 
@@ -126,7 +123,6 @@ public class User implements Serializable{
     */
    @Column(name = "lastname", nullable = false)
    public String getLastname() {
-      System.out.println("Achternaam: " + lastname);
       return lastname;
    }
 
@@ -149,7 +145,6 @@ public class User implements Serializable{
     */
    @Column(name = "emailAdress", nullable = true)
    public String getEmailadress() {
-      System.out.println("Email-Adres: " + emailAdress);
       return emailAdress;
    }
 

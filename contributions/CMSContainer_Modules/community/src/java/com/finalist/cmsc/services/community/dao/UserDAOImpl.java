@@ -47,7 +47,6 @@ public class UserDAOImpl extends HibernateDaoSupport implements UserDAO {
       DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
       criteria.add(Restrictions.eq("userId", userId));
       List resultList = getHibernateTemplate().findByCriteria(criteria);
-      System.out.println("dit is de resultlist in UserDAOImpl: " + resultList);
       return (resultList.size() != 1) ? null : (User) resultList.get(0);
    }
 
@@ -89,5 +88,11 @@ public class UserDAOImpl extends HibernateDaoSupport implements UserDAO {
       Set<User> set = new HashSet<User>();
       set.add(user);
       saveRecords(set);
+   }
+   
+   public List<String> getAllUsers(){
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      List<String> resultList = getHibernateTemplate().findByCriteria(criteria);
+      return resultList;
    }
 }

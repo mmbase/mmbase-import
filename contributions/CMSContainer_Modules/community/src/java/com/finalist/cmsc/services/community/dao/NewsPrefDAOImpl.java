@@ -161,4 +161,10 @@ public class NewsPrefDAOImpl extends HibernateDaoSupport implements NewsPrefDAO{
       set.add(newsPref);
       saveRecords(set);
    }
+   
+   public List<String> getAllNewsPrefs(){
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      List<String> resultList = (List<String>)getHibernateTemplate().findByCriteria(criteria);
+      return resultList;
+   }
 }

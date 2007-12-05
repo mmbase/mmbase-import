@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratorType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -29,7 +30,7 @@ public class Role {
     * @return Long representing the id
     */
    @Column(name = "id", nullable = false)
-   @Id
+   @Id(generate = GeneratorType.AUTO)
    public Long getId() {
       return id;
    }
