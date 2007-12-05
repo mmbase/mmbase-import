@@ -37,8 +37,8 @@ import java.util.*;
  </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: LinkMap.java,v 1.2 2007-02-24 21:57:50 nklasens Exp $
- * @since MMBase-1.9.0
+ * @version $Id: LinkMap.java,v 1.3 2007-12-05 20:40:01 michiel Exp $
+ * @since MMBase-1.9
  */
 public class LinkMap<K, V> extends AbstractMap<K,V> {
 
