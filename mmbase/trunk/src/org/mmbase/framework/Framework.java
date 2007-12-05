@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.40 2007-11-16 18:14:37 michiel Exp $
+ * @version $Id: Framework.java,v 1.41 2007-12-05 16:31:51 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -62,9 +63,9 @@ public abstract class Framework {
                             } else {
                                 org.w3c.dom.Element el = fwConfiguration.getDocumentElement();
                                 try {
-                                    framework = (Framework) ComponentRepository.getInstance(el, el);
+                                    framework = (Framework) Instantiator.getInstance(el, el);
                                 } catch (NoSuchMethodError nsme) {
-                                    framework = (Framework) ComponentRepository.getInstance(el);
+                                    framework = (Framework) Instantiator.getInstance(el);
                                 }
                             }
                         } catch (Exception e) {
