@@ -178,7 +178,7 @@ html>body #navigation li a { width: auto; }
 /*********** content classes etc. ***********/
 h2.top
 {
-    padding-left: 1ex;
+    padding-left: 6px;
     font-size: 1.8em;
     margin-top: 0px;
     text-transform: capitalize;
