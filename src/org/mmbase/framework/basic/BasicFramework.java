@@ -10,10 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.framework.basic;
 import org.mmbase.framework.*;
 import java.util.*;
-import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import org.mmbase.util.*;
+import org.mmbase.util.xml.Instantiator;
 import org.mmbase.datatypes.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
@@ -36,7 +37,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.2 2007-11-16 18:14:37 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.3 2007-12-05 16:31:51 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -89,6 +90,7 @@ public class BasicFramework extends Framework {
      * containing a list with UrlConverters.
      */
     protected void configure(Element el) {
+        log.info("Configuring " + getClass() + " with " + el.getOwnerDocument().getDocumentURI());
         try {
             description.fillFromXml("description", el);
 
@@ -97,9 +99,9 @@ public class BasicFramework extends Framework {
                 Element element = (Element) urlconverters.item(i);
                 UrlConverter uc;
                 try {
-                    uc = (UrlConverter) ComponentRepository.getInstance(element, (Framework) this);
+                    uc = (UrlConverter) Instantiator.getInstance(element, (Framework) this);
                 } catch (NoSuchMethodException nsme) {
-                    uc = (UrlConverter) ComponentRepository.getInstance(element);
+                    uc = (UrlConverter) Instantiator.getInstance(element);
                 }
                 urlConverter.add(uc);
             }
