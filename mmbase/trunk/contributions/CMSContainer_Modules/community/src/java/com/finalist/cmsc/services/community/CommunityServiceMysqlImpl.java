@@ -54,7 +54,6 @@ public class CommunityServiceMysqlImpl extends CommunityService {
                if (i == 0) {
                   String def = "Username: ";
                   userName = values[i];
-                  System.out.println("USERNAME USERNAME USERNAME: " + userName);
                   session.setAttribute("userName", userName, PortletSession.APPLICATION_SCOPE);
                }
                if (i == 1) {
@@ -100,6 +99,7 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       PortletSession session = request.getPortletSession();
 
       try {
+         session.removeAttribute("userName", PortletSession.APPLICATION_SCOPE);
          session.removeAttribute("firstName", PortletSession.APPLICATION_SCOPE);
          session.removeAttribute("lastName", PortletSession.APPLICATION_SCOPE);
          session.removeAttribute("emailAdress", PortletSession.APPLICATION_SCOPE);
@@ -123,8 +123,10 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       HibernateService hibservice = (HibernateService)aC.getBean("service");;
 
       List<String> resultList = hibservice.getUsersWithPreferences(key, value);
-      
-      return resultList;
+      if (resultList != null && resultList.size() > 0){
+         return resultList;
+      }
+      return (null);
    }
    
    public String getUserPreference(String userName, String key) {
@@ -134,8 +136,10 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       HibernateService hibservice = (HibernateService)aC.getBean("service");;
       
       String preference = hibservice.getUserPreference(userName, key);
-      
-      return preference;
+      if (preference != null){
+         return preference;
+      }
+      return (null);
    }
    
    public List<String> getUserPreferences(String userName, String key) {
@@ -145,8 +149,10 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       HibernateService hibservice = (HibernateService)aC.getBean("service");;
       
       List<String> preferenceList = hibservice.getUserPreferences(userName, key);
-      
-      return preferenceList;
+      if (preferenceList != null && preferenceList.size() > 0){
+         return preferenceList;
+      }
+      return (null);
    }
    
    public boolean setUserPreference(String userName, String key, String value){
@@ -223,4 +229,36 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       }
       return permissionB;
    }
-}
+   
+   public List<String> getAllUsers(){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      List<String> users = hibservice.getAllUsers();
+      if (users != null && users.size() > 0){
+         return users;
+      }
+      return (null);
+   }
+   
+   public List<String> getAllNewsPrefs(){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      List<String> newsPrefs = hibservice.getAllNewsPrefs();
+      if (newsPrefs != null && newsPrefs.size() > 0){
+         return newsPrefs;
+      }
+      return (null);
+   }
+   
+   public void setUser(String userName, String password, String firstName, String lastName, String emailadres){
+      
+         aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+         HibernateService hibservice = (HibernateService)aC.getBean("service");
+         try{
+            User user = hibservice.createUser(userName, password, firstName, lastName, emailadres);
+         }
+         catch (Exception e){
+            //werkt niet
+         }
+      }
+   }

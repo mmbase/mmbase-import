@@ -47,14 +47,6 @@
 	<classpathentry kind="src" path="rating/src/java"/>
 	<classpathentry kind="src" path="knownvisitor/src/java"/>
 	<classpathentry kind="src" path="knownvisitor-ntlm/src/java"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-rmmci-server-1.8.2-20061020.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.12.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
@@ -80,5 +72,13 @@
 	<classpathentry kind="var" path="MAVEN_REPO/ejb-persistence/jars/ejb3-persistence-3.1beta4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-annotations-3.1beta7.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-rmmci-server-1.8.2-20061020.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.5-20071130.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

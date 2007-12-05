@@ -108,6 +108,46 @@ public class HibernateService {
       
       return userDAO.getUser(userId);
    }
+   
+   @Transactional(readOnly = false)
+   public List<String> getAllUsers() {
+      /*
+       * Example of method use User user = new User(); try { user = getUser(new
+       * Long(1)); } catch (Exception e) { // TODO Auto-generated //catch block
+       * e.printStackTrace(); }
+       */
+      //List users = null;
+      
+      //users = (List)userDAO.getUser(userId);
+      
+      //User user = (User)users.get(0);
+      
+      //String test = user.getUserId();
+      
+      //System.out.println("DIT IS EEN TEST WERKT HIBERNATE? ZOJA: " + test);
+      
+      return userDAO.getAllUsers();
+   }
+   
+   @Transactional(readOnly = false)
+   public List<String> getAllNewsPrefs() {
+      /*
+       * Example of method use User user = new User(); try { user = getUser(new
+       * Long(1)); } catch (Exception e) { // TODO Auto-generated //catch block
+       * e.printStackTrace(); }
+       */
+      //List users = null;
+      
+      //users = (List)userDAO.getUser(userId);
+      
+      //User user = (User)users.get(0);
+      
+      //String test = user.getUserId();
+      
+      //System.out.println("DIT IS EEN TEST WERKT HIBERNATE? ZOJA: " + test);
+      
+      return newsPrefDAO.getAllNewsPrefs();
+   }
 
 
    @Transactional(readOnly = false)
@@ -195,5 +235,17 @@ public class HibernateService {
    @Transactional(readOnly = false)
    public void deleteRole(Role r, Role role) throws Exception {
       roleDAO.deleteRole(r);
+   }
+   
+   public User createUser(String userName, String password, String firstName, String lastName, String emailadres) throws Exception{
+      
+      User user = new User();
+      user.setUserId(userName);
+      user.setPassword(password);
+      user.setName(firstName);
+      user.setLastname(lastName);
+      user.setEmailadress(emailadres);
+      
+      return userDAO.insertUser(user);
    }
 }
