@@ -49,6 +49,12 @@
     <method>getMMBase</method>
   </function>
 
+  <function name="framework">
+    <type>class</type>
+    <class>org.mmbase.framework.Framework</class>
+    <method>getInstance</method>
+  </function>
+
   <function name="toString">
     <type>class</type>
     <class>org.mmbase.util.Casting</class>
