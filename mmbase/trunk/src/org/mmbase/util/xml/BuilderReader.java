@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.90 2007-07-27 14:36:13 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.91 2007-12-05 16:30:54 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -401,7 +401,7 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        
+
         for (Element indexElement : getChildElements("builder.indexlist","index")) {
             String indexName = indexElement.getAttribute("name");
             if (indexName != null && !indexName.equals("")) {
@@ -437,7 +437,7 @@ public class BuilderReader extends DocumentReader {
                 String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
 
                 Function function;
-                log.debug("Using " + functionClass);
+                log.debug("Using function class '" + functionClass + "'");
                 final Class claz = Class.forName(functionClass);
                 if (Function.class.isAssignableFrom(claz)) {
                     if (!providerKey.equals("")) {
