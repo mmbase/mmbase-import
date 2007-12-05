@@ -16,8 +16,8 @@ import java.util.*;
  * Simple utility to chain several lists into a new one.
  *
  * @author	Michiel Meeuwissen
- * @since	MMBase-1.8
- * @version $Id: ChainedList.java,v 1.2 2006-10-25 20:41:52 michiel Exp $
+ * @since	MMBase-1.9
+ * @version $Id: ChainedList.java,v 1.3 2007-12-05 20:39:35 michiel Exp $
  * @see ChainedIterator
  */
 public class ChainedList<E> extends AbstractList<E> {
@@ -29,8 +29,9 @@ public class ChainedList<E> extends AbstractList<E> {
         }
     }
 
-    public void addList(List<? extends E> l) {
+    public ChainedList<E> addList(List<? extends E> l) {
         lists.add(l);
+        return this;
     }
     public int size() {
         int size = 0;
