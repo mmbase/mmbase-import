@@ -37,13 +37,10 @@ a{
 }
 
 .tlink5{
-	background:url(../gfx/icons/publish.png) no-repeat left;
+	background:url(../gfx/icons/publish.gif) no-repeat left;
 	padding-left:20px;
 }
-.tlink6{
-	background:url(../gfx/icons/workflow.png) no-repeat left;
-	padding-left:20px;
-}
+
 #menu
 {
 	display: block;
