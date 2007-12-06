@@ -18,7 +18,7 @@ import org.mmbase.cache.Cacheable;
  * This corresponds to a SELECT query in SQL syntax.
  *
  * @author Rob van Maris
- * @version $Id: SearchQuery.java,v 1.5 2007-03-31 17:12:58 nklasens Exp $
+ * @version $Id: SearchQuery.java,v 1.6 2007-12-06 08:13:36 michiel Exp $
  * @since MMBase-1.7
  */
 public interface SearchQuery extends Cacheable {
@@ -76,8 +76,9 @@ public interface SearchQuery extends Cacheable {
     int getMaxNumber();
 
     /**
-     * Gets the (zerobased) offset in the list of results, of the first result to return. Note that, since it is zerobased, it is equal to the number of results that are skipped.<p>
-     * Note: skipping results may not be supported by the database layer.
+     * Gets the (zerobased) offset in the list of results, of the first result to return. Note that,
+     * since it is zerobased, it is equal to the number of results that are skipped.<p> Note:
+     * skipping results may not be supported by the database layer.
      */
     int getOffset();
 
@@ -132,9 +133,5 @@ public interface SearchQuery extends Cacheable {
      */
     public String toString();
 
-    /** @link dependency
-     * @label constraint
-     * @clientRole 0-1
-     * @supplierRole 0-1*/
-    /*#Constraint lnkConstraint;*/
+
 }
