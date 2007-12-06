@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: WrappedFunction.java,v 1.14 2006-10-09 14:45:10 pierre Exp $
+ * @version $Id: WrappedFunction.java,v 1.15 2007-12-06 08:21:42 michiel Exp $
  */
 public abstract class WrappedFunction<R> implements Function<R> {
 
@@ -87,7 +87,7 @@ public abstract class WrappedFunction<R> implements Function<R> {
         return getName().hashCode();
     }
     public String toString() {
-        return "WRAPPED " + getReturnType() + " " + getName() + java.util.Arrays.asList(getParameterDefinition());
+        return "WRAPPED " + wrappedFunction.toString();
     }
 
 
