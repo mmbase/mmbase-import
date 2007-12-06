@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.7 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: LoggerWrapper.java,v 1.8 2007-12-06 08:28:07 michiel Exp $
  **/
 
 public class LoggerWrapper implements Logger {
@@ -52,20 +52,21 @@ public class LoggerWrapper implements Logger {
         return org;
     }
 
+
     final public void trace   (Object m) {
-        log.trace(m);
+        if (log != null) log.trace(m);
     }
 
     final public void trace   (Object m, Throwable t) {
-        log.trace(m, t);
+        if (log != null) log.trace(m, t);
     }
 
     final public void debug   (Object m) {
-        log.debug(m);
+        if (log != null) log.debug(m);
     }
 
     final public void debug   (Object m, Throwable t) {
-        log.debug(m, t);
+        if (log != null) log.debug(m, t);
     }
 
     final public void service (Object m) {
@@ -111,7 +112,7 @@ public class LoggerWrapper implements Logger {
     final public boolean isTraceEnabled() {
         return log.isTraceEnabled();
     }
-    
+
     final public boolean isDebugEnabled() {
         return log.isDebugEnabled();
     }
