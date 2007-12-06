@@ -22,7 +22,7 @@
 				<td colspan="2"><mm:field name="description" write="true" />	</td>
 			</tr>
 			<tr>
-				<td colspan="2"><cmsc:checkbox var="newsletter" value="${newsletternumber}" /><fmt:message key="subscription.change.tothisnewsletter" /></td></tr>
+				<td colspan="2"><cmsc:checkbox var="newsletter" value="${newsletternumber}" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
 			<tr>
 				<td>&nbsp;</td>
 			</tr>
@@ -55,6 +55,9 @@
 					</c:forEach>
 				</cmsc:select>
 				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
 			</tr>
 			<tr><td colspan="2"><b><fmt:message key="subscription.status.title" /></b></td></tr>
 			<tr><td colspan="2"><fmt:message key="subscription.status.info" /></td></tr>

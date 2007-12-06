@@ -25,6 +25,7 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
 
+   private static final String HAS_SUBSCRIPTIONS = "hassubscriptions";
    private static final String ACTION_SUBSCRIBE = "subscribe";
    private static final String ACTION_CHANGE = "change";
    private static final String ACTION_TERMINATE = "terminate";
@@ -45,30 +46,24 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
          List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
 
-         request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, NewsletterGeneratorFactory.mimeTypes);
-         request.setAttribute("statusoptions", NewsletterSubscriptionUtil.getStatusOptions());
+         List<String> mimeTypes = NewsletterGeneratorFactory.getMimeTypes();
+         request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, mimeTypes);
 
-         boolean hasSubscriptions = false;
+         List<String> statusOptions = NewsletterSubscriptionUtil.getStatusOptions();
+         request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, statusOptions);
+
          if (subscriptions != null && subscriptions.size() > 0) {
-            request.setAttribute("hassubscriptions", true);
-            request.setAttribute(NewsletterSubscriptionUtil.NEWSLETTER_THEME, subscriptions);
+            request.setAttribute(HAS_SUBSCRIPTIONS, true);
             request.setAttribute(USER_SUBSCRIBED_THEMES, subscriptions);
+
             String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
             request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
+
             String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
             request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
-            request.setAttribute("hassubscriptions", true);
-            hasSubscriptions = true;
          }
 
          if (action != null) {
-            log.debug("Action != null");
-            if (hasSubscriptions) {
-               log.debug(userName + " has " + subscriptions.size() + " subscriptions");
-            } else {
-               log.debug(userName + " has no subscriptions");
-               request.setAttribute("hassubscriptions", false);
-            }
             String template = "" + request.getParameter("template");
             doInclude("view", template, request, response);
          } else {
@@ -150,14 +145,15 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             }
          }
       }
-      if ( newsletters != null)
-      {
+      if (newsletters != null) {
          List<String> newsletterList = Arrays.asList(newsletters);
          NewsletterSubscriptionUtil.subscribeToNewsletters(userName, newsletterList);
       }
       NewsletterSubscriptionUtil.subscribeToThemes(userName, subscribeToThemes);
       String preferredMimeType = request.getParameter(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE);
       NewsletterSubscriptionUtil.setPreferredMimeType(userName, preferredMimeType);
+      String status = request.getParameter(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY);
+      NewsletterSubscriptionUtil.setSubscriptionStatus(userName, status);
    }
 
    @Override
@@ -183,7 +179,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
       PortletPreferences preferences = request.getPreferences();
-      String[] newsletters = preferences.getValues(this.AVAILABLE_NEWSLETTERS, null);
+      String[] newsletters = preferences.getValues(AVAILABLE_NEWSLETTERS, null);
       if (newsletters != null) {
          List<String> availableNewsletters = Arrays.asList(newsletters);
          request.setAttribute(AVAILABLE_NEWSLETTERS, availableNewsletters);

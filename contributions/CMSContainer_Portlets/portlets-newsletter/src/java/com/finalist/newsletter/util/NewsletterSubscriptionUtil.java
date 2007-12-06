@@ -27,6 +27,8 @@ public abstract class NewsletterSubscriptionUtil {
    public static final String SUBSCRIPTION_STATUS_KEY = "subscriptionstatus";
    public static final String SUBSCRIPTION_STATUS_ACTIVE = rb.getString("status.active");
    public static final String SUBSCRIPTION_STATUS_INACTIVE = rb.getString("status.inactive");
+   public static final String SUBSCRIPTION_STATUS_DEFAULT = SUBSCRIPTION_STATUS_ACTIVE;
+   public static final String STATUS_OPTIONS = "statusoptions";
 
    private static List<String> statusOptions = new ArrayList<String>();
 
@@ -65,13 +67,6 @@ public abstract class NewsletterSubscriptionUtil {
       return (subscribers);
    }
 
-   public static String getSubscriptionStatus(String userName) {
-      if (userName != null) {
-         return (NewsLetterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
-      }
-      return (null);
-   }
-
    public static List<String> getUserSubscribedThemes(String userName) {
       if (userName != null) {
          List<String> themeList = NewsLetterCommunication.getUserPreferences(userName, "newslettertheme");
@@ -88,16 +83,22 @@ public abstract class NewsletterSubscriptionUtil {
       return (null);
    }
 
-   public static boolean pauseUserSubscriptions(String userName) {
-      NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
-      log.debug("Subscriptionstatus for user " + userName + " set to " + SUBSCRIPTION_STATUS_INACTIVE);
-      return (true);
+   public static void setSubscriptionStatus(String userName, String status) {
+      if (status == null) {
+         status = SUBSCRIPTION_STATUS_DEFAULT;
+      }
+      if (userName != null && status != null) {
+         if (statusOptions.contains(status)) {
+            NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
+            log.debug("Subscription status for user " + userName + " set to " + status);
+            return;
+         }
+         log.debug("Unknown status type: " + status);
+      }
    }
 
-   public static boolean resumeUserSubscriptions(String userName) {
-      NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_ACTIVE);
-      log.debug("Subscriptionstatus for user " + userName + " set to " + SUBSCRIPTION_STATUS_ACTIVE);
-      return (true);
+   public static String getSubscriptionStatus(String userName) {
+      return (NewsLetterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
    }
 
    public static boolean setPreferredMimeType(String userName, String mimeType) {
@@ -120,7 +121,7 @@ public abstract class NewsletterSubscriptionUtil {
    public static void subscribeToNewsletters(String userName, List<String> newsletters) {
       subscribe(userName, newsletters, NEWSLETTER);
    }
-   
+
    public static void subscribeToThemes(String userName, List<String> themes) {
       subscribe(userName, themes, NEWSLETTER_THEME);
    }
@@ -131,8 +132,8 @@ public abstract class NewsletterSubscriptionUtil {
             String objectNumber = objects.get(i);
             NewsLetterCommunication.setUserPreference(userName, prefType, objectNumber);
             log.debug("Adding preference " + prefType + " - " + objectNumber + " to user " + userName);
-         }         
-      }      
+         }
+      }
    }
 
    public static boolean terminateUserSubscription(String userName) {

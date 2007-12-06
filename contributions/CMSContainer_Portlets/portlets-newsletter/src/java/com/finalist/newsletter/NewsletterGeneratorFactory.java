@@ -16,7 +16,8 @@ public class NewsletterGeneratorFactory {
    public static final String AVAILABLE_MIMETYPES = "mimetypeoptions";
    public static final String MIMETYPE_HTML = "text/html";
    public static final String MIMETYPE_PLAIN = "text/plain";
-   public static List<String> mimeTypes = new ArrayList<String>();
+
+   private static List<String> mimeTypes = new ArrayList<String>();
 
    public static final String MIMETYPE_DEFAULT = MIMETYPE_HTML;
 
@@ -45,5 +46,9 @@ public class NewsletterGeneratorFactory {
          log.debug("No NewsletterGenerator returned because of unsupported mimetype");
          return (null);
       }
+   }
+
+   public static List<String> getMimeTypes() {
+      return mimeTypes;
    }
 }

@@ -46,7 +46,7 @@
 			<tr>
 				<td><fmt:message key="subscription.mimetype.select" /></td>
 				<td>
-				<cmsc:select var="mimetype">
+				<cmsc:select var="preferredmimetype">
 					<c:forEach var="m" items="${mimetypeoptions}">
 						<cmsc:option name="${m}" value="${m}" />
 					</c:forEach>
