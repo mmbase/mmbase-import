@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.21 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: Versions.java,v 1.22 2007-12-06 08:03:47 michiel Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -45,7 +45,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
                 String key = type + "_" + name;
                 if (versionsCache.containsKey(key)) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append("versions node[number,version,maintainer]:");
                     sb.append("[");
                     sb.append(versionNode.getNumber());
@@ -55,8 +55,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
                     sb.append(versionNode.getStringValue("maintainer"));
                     sb.append("]");
                     log.warn("more than one version was found for " + type + " with name " + name + " ." + sb.toString());
-                }
-                else {
+                } else {
                     versionsCache.put(key, number);
                 }
             }
