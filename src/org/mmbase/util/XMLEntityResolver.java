@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.67 2007-12-03 17:01:15 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.68 2007-12-06 08:19:29 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -77,7 +77,7 @@ public class XMLEntityResolver implements EntityResolver {
         private final Class<?> clazz;
         private final String file;
         FileResource(Class<?> c, String f) {
-            clazz = c; 
+            clazz = c;
             file = f;
         }
 
@@ -127,6 +127,8 @@ public class XMLEntityResolver implements EntityResolver {
         registerSystemID("http://www.w3.org/2001/03/XMLSchema.dtd", "XMLSchema.dtd", null);
         registerSystemID("http://www.w3.org/2001/03/datatypes.dtd", "datatypes.dtd", null);
 
+        //registerSystemID("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd", "docbookx.dtd", null);
+        //registerSystemID("http://www.oasis-open.org/docbook/xml/4.1.2/dbnotnx.mod", "dbnotnx.mod", null);
     }
 
 
@@ -213,7 +215,7 @@ public class XMLEntityResolver implements EntityResolver {
         } else {
             for (Method m : o.getClass().getMethods()) {
                 String name = m.getName();
-                if (m.getParameterTypes().length == 0 && 
+                if (m.getParameterTypes().length == 0 &&
                     ! name.equals("getNodes")  &&
                     ! name.equals("getConnection") && // see  	 MMB-1490, we should not call
                                                       // getConnection, while we won't close it.
@@ -326,7 +328,7 @@ public class XMLEntityResolver implements EntityResolver {
                 } else {
                     // perhaps this should not be done if it is about resolving _entities_ rather then dtd.
                     log.debug("Not validating, no need to resolve DTD (?), returning empty resource for " + systemId);
-                    return new InputSource(new ByteArrayInputStream(new byte[0])); 
+                    return new InputSource(new ByteArrayInputStream(new byte[0]));
                 }
             } else {
                 log.debug("mmbase resource");
