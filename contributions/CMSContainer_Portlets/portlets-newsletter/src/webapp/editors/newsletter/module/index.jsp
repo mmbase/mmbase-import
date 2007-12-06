@@ -7,5 +7,8 @@ r
 <div>
 	<h3><fmt:message key="module.index.title" /></h3>
 	<%@include file="statistics.jsp" %>
-	<p><a href="NewsletterModuleSubscriptionManagement.do"><fmt:message key="module.index.subscriptionoverview" /></a></p>
+</div>
+<br>
+<div>
+	<%@include file="subscriptionmanagement.jsp" %>
 </div>

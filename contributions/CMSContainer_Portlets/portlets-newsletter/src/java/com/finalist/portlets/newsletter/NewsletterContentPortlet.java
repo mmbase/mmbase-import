@@ -34,6 +34,10 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterContentPortlet extends AbstractContentPortlet {
 
+   private static final String DEFAULTTHEME = "defaulttheme";
+   private static final String ADDITIONAL_THEMES = "additionalthemes";
+   private static final String DEFAULTARTICLES = "defaultarticles";
+
    private static Logger log = Logging.getLoggerInstance(NewsletterContentPortlet.class.getName());
    private static ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettercontent");
 
@@ -71,7 +75,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 
       if (page != null && !StringUtil.isEmptyOrWhitespace(page)) {
 
-         String displayType = request.getParameter(DISPLAYTYPE);
+         String displayType = (String) request.getAttribute(DISPLAYTYPE);
          if (displayType == null) {
             log.debug("Display type is not set, default wil be used. Default is: " + DISPLAYTYPE_DEFAULT);
             displayType = DISPLAYTYPE_DEFAULT;
@@ -97,8 +101,13 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          if (availableThemes != null && availableThemes.size() > 0) {
             if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
                log.debug("The user requested to view the output in normal style");
-               String userName = "" + session.getAttribute("username");
-               additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, number);
+               String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
+               if (userName == null) {
+                  userName = request.getParameter("userName");
+               }
+               if (userName != null) {
+                  additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, number);
+               }
             } else {
                log.debug("The user did not specify a display type and will get the default");
                additionalThemes = availableThemes;
@@ -110,14 +119,15 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          String defaultTheme = NewsletterUtil.getDefaultTheme(number, themeType);
          List<String> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
          if (defaultArticles != null && defaultArticles.size() > 0) {
-            request.setAttribute("defaulttheme", defaultTheme);
-            request.setAttribute(ARTICLES.concat(defaultTheme), defaultArticles);
+            request.setAttribute(DEFAULTTHEME, defaultTheme);
+            request.setAttribute(DEFAULTARTICLES, defaultArticles);
          }
 
          if (additionalThemes != null && additionalThemes.size() > 0) {
             log.debug("Processing " + additionalThemes.size() + " additional themes");
 
-            List<String> temporaryArticleListing = defaultArticles;
+            List<String> temporaryArticleListing = new ArrayList<String>();
+            temporaryArticleListing.addAll(defaultArticles);
 
             for (int i = 0; i < additionalThemes.size(); i++) {
                String themeNumber = additionalThemes.get(i);
@@ -136,7 +146,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
                   i--;
                }
             }
-            request.setAttribute("themes", additionalThemes);
+            request.setAttribute(ADDITIONAL_THEMES, additionalThemes);
          } else {
             log.debug("No themes are available");
          }

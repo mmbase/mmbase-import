@@ -32,8 +32,17 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionPortlet.class.getName());
 
-   private static final String USER_SUBSCRIBED_THEMES = "subscriptions";
    private static final String AVAILABLE_NEWSLETTERS = "newsletters";
+
+   @Override
+   protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
+      PortletPreferences preferences = request.getPreferences();
+      String[] newsletters = preferences.getValues(AVAILABLE_NEWSLETTERS, null);
+      if (newsletters != null) {
+         request.setAttribute(AVAILABLE_NEWSLETTERS, newsletters);
+      }
+      super.doEditDefaults(request, response);
+   }
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
@@ -43,7 +52,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       String action = request.getParameter("action");
 
       if (isLoggedIn(session) == true) {
-         String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
+         String userName = getUserName(session);
          List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
 
          List<String> mimeTypes = NewsletterGeneratorFactory.getMimeTypes();
@@ -54,7 +63,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
          if (subscriptions != null && subscriptions.size() > 0) {
             request.setAttribute(HAS_SUBSCRIPTIONS, true);
-            request.setAttribute(USER_SUBSCRIBED_THEMES, subscriptions);
+            request.setAttribute(NewsletterSubscriptionUtil.NEWSLETTER_THEME, subscriptions);
 
             String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
             request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
@@ -75,6 +84,11 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       }
    }
 
+   private String getUserName(PortletSession session) {
+      return ((String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE));
+
+   }
+
    private boolean isLoggedIn(PortletSession session) {
       String userName = getUserName(session);
       if (userName != null && userName.length() > 0) {
@@ -83,11 +97,6 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       }
       log.debug("Not logged in");
       return (false);
-   }
-
-   private String getUserName(PortletSession session) {
-      return ((String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE));
-
    }
 
    private void processChangeSubscription(ActionRequest request, ActionResponse response) {
@@ -105,7 +114,6 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
          if (portletId != null) {
             setPortletNodeParameter(portletId, AVAILABLE_NEWSLETTERS, availableNewsletters);
-
          } else {
             log.debug("No portletId");
          }
@@ -175,15 +183,5 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             }
          }
       }
-   }
-
-   protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
-      PortletPreferences preferences = request.getPreferences();
-      String[] newsletters = preferences.getValues(AVAILABLE_NEWSLETTERS, null);
-      if (newsletters != null) {
-         List<String> availableNewsletters = Arrays.asList(newsletters);
-         request.setAttribute(AVAILABLE_NEWSLETTERS, availableNewsletters);
-      }
-      super.doEditDefaults(request, response);
    }
 }

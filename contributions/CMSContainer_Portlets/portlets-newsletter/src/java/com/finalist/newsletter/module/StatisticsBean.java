@@ -1,9 +1,9 @@
 package com.finalist.newsletter.module;
 
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
-
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 public class StatisticsBean {
    
@@ -25,32 +25,32 @@ public class StatisticsBean {
       return totalNewsletters;
    }
 
-   public void setTotalNewsletters(int totalNewsletters) {
-      this.totalNewsletters = totalNewsletters;
-   }
-
-   public int getTotalThemes() {
-      return totalThemes;
-   }
-
-   public void setTotalThemes(int totalThemes) {
-      this.totalThemes = totalThemes;
-   }
-
    public int getTotalPublications() {
       return totalPublications;
-   }
-
-   public void setTotalPublications(int totalPublications) {
-      this.totalPublications = totalPublications;
    }
 
    public int getTotalSubscriptions() {
       return totalSubscriptions;
    }
 
+   public int getTotalThemes() {
+      return totalThemes;
+   }
+
+   public void setTotalNewsletters(int totalNewsletters) {
+      this.totalNewsletters = totalNewsletters;
+   }
+
+   public void setTotalPublications(int totalPublications) {
+      this.totalPublications = totalPublications;
+   }
+
    public void setTotalSubscriptions(int totalSubscriptions) {
       this.totalSubscriptions = totalSubscriptions;
+   }
+
+   public void setTotalThemes(int totalThemes) {
+      this.totalThemes = totalThemes;
    }
 
 }

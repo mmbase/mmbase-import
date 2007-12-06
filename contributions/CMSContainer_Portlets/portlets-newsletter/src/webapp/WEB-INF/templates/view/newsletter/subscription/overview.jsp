@@ -14,7 +14,7 @@
 <div>
 	<p><b><ftm:message key="subscription.overview.subscriptions" /></b></p>
 	<table>
-	<c:forEach var="newsletternumber" items="${subscriptions}">
+	<c:forEach var="newsletternumber" items="${newslettertheme}">
 	<mm:node number="${newsletternumber}" notfound="skip">
 		<tr><td><mm:field name="title" write="true" /></td></tr>		
 	</mm:node>
