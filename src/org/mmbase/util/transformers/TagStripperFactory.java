@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.10 2007-08-04 07:45:52 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.11 2007-12-06 08:26:13 michiel Exp $
  * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory<CharTransformer>  {
@@ -29,13 +29,13 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
     private static final String NL_TOKEN = "XXXX_NL_XXXX";
 
-    protected static final Parameter<String> TAGS         =
+    public static final Parameter<String> TAGS         =
         new Parameter<String>("tags", String.class, "");  // allowed tags, default no tags are permitted.
 
-    protected static final Parameter<Boolean> ADD_BRS     =
+    public static final Parameter<Boolean> ADD_BRS     =
         new Parameter<Boolean>("addbrs", Boolean.class, Boolean.FALSE);
 
-    protected static final Parameter<Boolean> ESCAPE_AMPS =
+    public static final Parameter<Boolean> ESCAPE_AMPS =
         new Parameter<Boolean>("escapeamps", Boolean.class, Boolean.FALSE);
 
     protected static final Parameter[] PARAMS = new Parameter[] { TAGS, ADD_BRS, ESCAPE_AMPS };
