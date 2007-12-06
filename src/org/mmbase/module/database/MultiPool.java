@@ -20,14 +20,14 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.60 2007-06-11 12:29:03 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.61 2007-12-06 08:05:51 michiel Exp $
  */
 public class MultiPool {
 
     private static final Logger log    = Logging.getLoggerInstance(MultiPool.class);
 
-    private List<MultiConnection>              pool     = null;
-    private List<MultiConnection>              busyPool = new ArrayList<MultiConnection>();
+    private final List<MultiConnection>              pool     = new ArrayList<MultiConnection>();
+    private final List<MultiConnection>              busyPool = new ArrayList<MultiConnection>();
     private int               conMax   = 4;
     private DijkstraSemaphore semaphore = null;
     private int      totalConnections = 0;
@@ -83,13 +83,16 @@ public class MultiPool {
     }
 
     /**
-     * Creates and fills the connection pool
+     * Fills the connection pool
      * @since MMBase-1.7
     */
     protected void createPool() {
-        pool = new ArrayList<MultiConnection>();
         MMBase mmb = MMBase.getMMBase();
         boolean logStack = true;
+        if (semaphore != null) {
+            log.error("Was already created");
+            pool.clear();
+        }
         try {
             while (!fillPool(logStack)) {
                 log.error("Cannot run with no connections, retrying after 10 seconds for " + mmb + " " + (mmb.isShutdown() ? "(shutdown)" : ""));
@@ -283,7 +286,7 @@ public class MultiPool {
 
                 if (isClosed) {
                     MultiConnection newCon = null;
-                    log.warn("WILL KILL SQL because connection was closed. ID=" + con.hashCode() + " SQL: " + con.getLastSQL());
+                    log.warn("WILL KILL SQL because connection was closed. ID=" + con.hashCode() + " SQL: " + con.getLastSQL(), con.getStackTrace());
                     try {
                         // get a new connection to replace this one
                         newCon = getMultiConnection();
@@ -326,7 +329,7 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newCon = null;
-                    log.warn("WILL KILL SQL. It took already " + (diff / 1000) + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.getLastSQL());
+                    log.warn("WILL KILL SQL. It took already " + (diff / 1000) + " seconds, which is too long. ID=" + con.hashCode() + " SQL: " + con.getLastSQL(), con.getStackTrace());
                     try {
                         // get a new connection to replace this one
                         newCon = getMultiConnection();
