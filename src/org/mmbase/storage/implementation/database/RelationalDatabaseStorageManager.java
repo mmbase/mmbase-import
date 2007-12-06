@@ -13,6 +13,10 @@ import java.util.Iterator;
 
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageException;
+import org.mmbase.core.CoreField;
+import org.mmbase.bridge.Field;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A JDBC implementation of a storage manager for relational databases.
@@ -20,13 +24,12 @@ import org.mmbase.storage.StorageException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.10 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.11 2007-12-06 08:16:03 michiel Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 
-    /**
-     * Constructor
-     */
+    private static final Logger log = Logging.getLoggerInstance(RelationalDatabaseStorageManager.class);
+
     public RelationalDatabaseStorageManager() {
     }
 
@@ -52,9 +55,13 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         }
         try {
             // insert in parent tables (from parents to childs) (especially because foreign keys on object's number may exist)
-            Iterator<MMObjectBuilder> i = builder.getAncestors().iterator();
-            while(i.hasNext()) {
-                MMObjectBuilder b = i.next();
+            for (MMObjectBuilder b : builder.getAncestors()) {
+                for (CoreField f : b.getFields()) {
+                    if (f.getType() == Field.TYPE_BINARY) {
+                        // if the value is an inputstream at the moment, convert it to a byte-array, because it must be stored again..
+                        node.storeValue(f.getName(), org.mmbase.util.Casting.toByte(node.retrieveValue(f.getName())));
+                    }
+                }
                 super.create(node, b);
             }
             super.create(node, builder);
@@ -73,7 +80,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
      */
     public void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         boolean localTransaction = !inTransaction;
-        if (localTransaction) {       
+        if (localTransaction) {
             beginTransaction();
         }
         try {
@@ -99,7 +106,7 @@ public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
         if (localTransaction) {
             beginTransaction();
         }
-        
+
         try {
             do {
                 super.delete(node, builder);
