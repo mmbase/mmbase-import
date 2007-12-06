@@ -22,7 +22,10 @@ public interface MultiConnection {
 
     public void setLastSQL(String sql);
     public String getLastSQL();
+    public Exception getStackTrace();
+
     public String getStateString();
+
     public void resetUsage();
     public void claim();
     public MultiPool getParent();
