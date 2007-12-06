@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="newsletter" maintainer="finalist.com" version="4" auto-deploy="true">
+<application name="newsletter" maintainer="finalist.com" version="5" auto-deploy="true">
 	<requirements>
 		<requires name="sitemanagement" maintainer="finalist.com" version="1" type="application" />
 		<requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
 	</requirements>
 	<neededbuilderlist>
-		<builder maintainer="finalist.com" version="1">newsletter</builder>
-		<builder maintainer="finalist.com" version="1">newslettertheme</builder>
-		<builder maintainer="finalist.com" version="1">newsletterpublication</builder>
-		<builder maintainer="finalist.com" version="1">newsletterpublicationtheme</builder>
+		<builder maintainer="finalist.com" version="2">newsletter</builder>
+		<builder maintainer="finalist.com" version="2">newslettertheme</builder>
+		<builder maintainer="finalist.com" version="2">newsletterpublication</builder>
+		<builder maintainer="finalist.com" version="2">newsletterpublicationtheme</builder>
 	</neededbuilderlist>
 	<neededreldeflist>
 		 <reldef source="defaulttheme" target="defaulttheme" direction="bidirectional" guisourcename="defaulttheme" guitargetname="defaulttheme" builder="insrel" />

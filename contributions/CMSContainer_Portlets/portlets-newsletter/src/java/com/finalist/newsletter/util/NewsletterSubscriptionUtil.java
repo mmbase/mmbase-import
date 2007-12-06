@@ -15,6 +15,7 @@ public abstract class NewsletterSubscriptionUtil {
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionUtil.class.getName());
    private static final ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettersubscription");
 
+   public static final String NEWSLETTER = "newsletter";
    public static final String NEWSLETTER_THEME = "newslettertheme";
    public static final String PREFERRED_MIMETYPE = "preferredmimetype";
 
@@ -116,17 +117,22 @@ public abstract class NewsletterSubscriptionUtil {
       return (true);
    }
 
-   public static boolean subscribeToThemes(String userName, List<String> themes) {
-      log.debug("subscribeToThemes " + userName + " - " + themes);
-      if (userName != null && themes != null) {
-         for (int i = 0; i < themes.size(); i++) {
-            String themeNumber = themes.get(i);
-            Community.setUserPreference(userName, NEWSLETTER_THEME, themeNumber);
-            log.debug("Subscribing user " + userName + " to theme " + themeNumber);
-         }
-         return (true);
-      }
-      return (false);
+   public static void subscribeToNewsletters(String userName, List<String> newsletters) {
+      subscribe(userName, newsletters, NEWSLETTER);
+   }
+   
+   public static void subscribeToThemes(String userName, List<String> themes) {
+      subscribe(userName, themes, NEWSLETTER_THEME);
+   }
+
+   private static void subscribe(String userName, List<String> objects, String prefType) {
+      if (userName != null && objects != null) {
+         for (int i = 0; i < objects.size(); i++) {
+            String objectNumber = objects.get(i);
+            Community.setUserPreference(userName, prefType, objectNumber);
+            log.debug("Adding preference " + prefType + " - " + objectNumber + " to user " + userName);
+         }         
+      }      
    }
 
    public static boolean terminateUserSubscription(String userName) {

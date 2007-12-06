@@ -45,30 +45,16 @@
 				</td>
 				<td>
 				                    <mm:cloud>
-					<cmsc:multipleselect var="newsletters" size="5">
-						<mm:listnodes type="newsletter">
-							<mm:field name="number" id="number" write="false" />
-							<mm:field name="title"  id="title" write="false" />
-							<cmsc:multipleoption value="${number}" name="${title}" />
-						</mm:listnodes>
-					</cmsc:multipleselect>
+					<mm:listnodes type="newsletter">
+						<mm:field name="number" id="number" write="false" />
+						<mm:field name="title"  id="title" write="false" />
+						<span><cmsc:checkbox var="newsletters" value="${number}" />${title}</span></td></tr><tr><td>&nbsp;</td><td>
+					</mm:listnodes>
 					</mm:cloud>
 
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<fmt:message key="edit_defaults.window" />
-				</td>
-				<td>
-					<cmsc:select var="window">
-						<c:forEach var="position" items="${pagepositions}">
-							<cmsc:option value="${position}" />
-						</c:forEach>
-					</cmsc:select>
-				</td>
-			</tr>
-			<tr>
+
 				<td colspan="2">
 					<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
 						<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>

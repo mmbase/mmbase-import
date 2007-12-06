@@ -5,7 +5,7 @@
 	<title xml:lang="en">Newslettertheme selection</title>
 
 	<item>
-		<field name="title" dtmaxlength="100">
+		<field name="title" ftype="data">
 			<prompt xml:lang="en">Theme</prompt>
 			<prompt xml:lang="nl">Thema</prompt>
 		</field>

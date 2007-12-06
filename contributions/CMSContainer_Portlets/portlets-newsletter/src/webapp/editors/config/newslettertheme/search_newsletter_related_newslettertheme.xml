@@ -21,6 +21,18 @@
 	</item>
 
 
+	<command name="search" nodepath="newslettertheme" age="-1" fields="title">
+		<prompt xml:lang="en">Search newslettertheme</prompt>
+		<prompt xml:lang="nl">Zoek nieuwsbriefthema</prompt>
+		<search-filter>
+			<name xml:lang="en">Title contains</name>
+			<name xml:lang="nl">Titel bevat</name>
+			<search-fields>[title]</search-fields>
+		</search-filter>
+	</command>
+
+
+
 	<command name="insert" objectnumber="new">
 		<prompt xml:lang="en">New</prompt>
 		<prompt xml:lang="nl">Nieuw</prompt>
