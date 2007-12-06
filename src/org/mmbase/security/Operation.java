@@ -10,10 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
- * This class is a kind of enumeration (introduces before java 1.5 enumerations) of the operations
+ * This class is a kind of enumeration (introduced before java 1.5 enumerations) of the operations
  * possible within the security authorization.
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.12 2007-01-17 19:58:15 michiel Exp $
+ * @version $Id: Operation.java,v 1.13 2007-12-06 08:08:13 michiel Exp $
  * @see Authorization
  */
 public final class Operation {
