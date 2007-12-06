@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.95 2007-12-03 17:00:37 michiel Exp $
+ * @version $Id: Module.java,v 1.96 2007-12-06 08:06:43 michiel Exp $
  */
 public abstract class Module extends DescribedFunctionProvider {
 
@@ -266,7 +266,7 @@ public abstract class Module extends DescribedFunctionProvider {
      * @since MMBase 1.8.5
      */
     public void loadInitParameters() {
-        loadInitParameters("mmbase/" + getName());        
+        loadInitParameters("mmbase/" + getName());
     }
 
     /**
@@ -344,17 +344,17 @@ public abstract class Module extends DescribedFunctionProvider {
                 return;
             }
             if( log.isDebugEnabled() ) {
-                log.debug("startModules(): modules.onload(" + mod + ")");
+                log.debug("Starting module " + mod + "");
             }
             try {
                 mod.onload();
             } catch (Exception f) {
-                log.warn("startModules(): modules(" + mod + ") not found to 'onload'!", f);
+                log.warn("Exception in onload of module '" + mod + "' ! " + f.getMessage(), f);
             }
         }
         // so now really give em their init
         if (log.isDebugEnabled()) {
-            log.debug("startModules(): init the modules(" + modules + ")");
+            log.debug("Initing the modules " + modules + "");
         }
         for (Module mod : modules.values()) {
             if (Thread.currentThread().isInterrupted()) {
@@ -362,14 +362,10 @@ public abstract class Module extends DescribedFunctionProvider {
                 return;
             }
             log.info("Starting module " + mod.getName());
-            if ( log.isDebugEnabled()) {
-                log.debug("startModules(): mod.startModule(" + mod + ")");
-            }
             try {
                 mod.startModule();
             } catch (Exception f) {
-                log.error("startModules(): module(" + mod + ") not found to 'init'!: " + f.getClass() + ": " + f.getMessage());
-                log.error(Logging.stackTrace(f));
+                log.error("Exception in startModule of module '" + mod + "' ! " + f.getMessage(), f);
             }
         }
     }
@@ -532,8 +528,8 @@ public abstract class Module extends DescribedFunctionProvider {
                             Constructor<?> constructor = newClass.getConstructor(String.class);
                             mod =  (Module) constructor.newInstance(moduleName);
                         } catch (NoSuchMethodException nsme) {
-                            log.service("Constructor with no name-argument is deprecated", nsme); 
-                            mod = (Module) newClass.newInstance(); 
+                            log.service("Constructor with no name-argument is deprecated " + nsme.getMessage());
+                            mod = (Module) newClass.newInstance();
                             mod.setName(moduleName); // I think a module has one name.
                         }
                     }
