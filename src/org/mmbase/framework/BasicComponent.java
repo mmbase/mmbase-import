@@ -13,6 +13,7 @@ import java.util.*;
 import org.w3c.dom.*;
 import java.net.URI;
 import org.mmbase.security.*;
+import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.LocalizedString;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.*;
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.37 2007-09-14 06:54:36 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.38 2007-12-06 08:17:51 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -110,7 +111,7 @@ public class BasicComponent implements Component {
                     Element element = (Element) actionElements.item(i);
                     String name = element.getAttribute("name");
                     String rank = element.getAttribute("rank");
-                    Object c = ComponentRepository.getInstanceWithSubElement(element);
+                    Object c = Instantiator.getInstanceWithSubElement(element);
                     Action a;
                     if (c != null) {
                         if (! "".equals(rank)) {
@@ -176,13 +177,13 @@ public class BasicComponent implements Component {
         for (int i = 0; i < renderElements.getLength(); i++) {
             Element renderElement = (Element) renderElements.item(i);
             String jsp = renderElement.getAttribute("jsp");
-        
+
             Renderer subRenderer;
             if (!"".equals(jsp)) {
                 subRenderer = new JspRenderer(name.toUpperCase(), jsp, b);
             } else {
                 try {
-                    subRenderer = (Renderer) ComponentRepository.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
+                    subRenderer = (Renderer) Instantiator.getInstanceWithSubElement(renderElement, name.toUpperCase(), b);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     return null;
@@ -219,7 +220,7 @@ public class BasicComponent implements Component {
             processor = new JspProcessor(jsp, b);
         } else {
             try {
-                processor = (Processor) ComponentRepository.getInstanceWithSubElement(processorElement, name.toUpperCase(), b);
+                processor = (Processor) Instantiator.getInstanceWithSubElement(processorElement, name.toUpperCase(), b);
             } catch (Exception e) {
                 log.error(e);
                 return null;
