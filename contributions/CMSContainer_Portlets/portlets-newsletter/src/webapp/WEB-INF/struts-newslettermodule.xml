@@ -12,8 +12,8 @@
 	<action-mappings>
 		<!-- ==== Site management ==== -->
 
-		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false">
-			<forward name="success" path="/editors/newsletter/module/index.jsp" redirect="false" />
+		<action path="/editors/newsletter/module/SubscriptionManagement" type="com.finalist.newsletter.module.SubscriptionManagement" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/subscriptionmanagement.jsp" redirect="false" />
 		</action>
 
 		<!-- ==== Select page nodes ==== -->

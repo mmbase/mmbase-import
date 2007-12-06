@@ -10,11 +10,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import com.finalist.newsletter.forms.NewsletterPublicationCreate;
 
 /**
  * @author Jasper
