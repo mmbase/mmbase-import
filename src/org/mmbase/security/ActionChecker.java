@@ -15,7 +15,7 @@ package org.mmbase.security;
  * Authorization#check(UserContext, Action)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ActionChecker.java,v 1.2 2007-07-25 07:17:40 michiel Exp $
+ * @version $Id: ActionChecker.java,v 1.3 2007-12-06 08:08:35 michiel Exp $
  * @since MMBase-1.9
  */
 public interface ActionChecker extends java.io.Serializable {
@@ -34,6 +34,9 @@ public interface ActionChecker extends java.io.Serializable {
         }
         public boolean check(UserContext user, Action ac) {
             return user.getRank().getInt() >= rank.getInt();
+        }
+        public String toString() {
+            return "at least " + rank;
         }
     }
 }
