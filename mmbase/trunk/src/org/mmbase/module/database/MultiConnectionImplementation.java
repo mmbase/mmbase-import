@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnectionImplementation.java,v 1.1 2007-06-11 12:29:03 michiel Exp $
+ * @version $Id: MultiConnectionImplementation.java,v 1.2 2007-12-06 08:05:51 michiel Exp $
  * @since MMBase-1.9 (as 'MultiConnection' in < 1.9)
  */
 public class MultiConnectionImplementation extends ConnectionWrapper implements MultiConnection {
@@ -52,6 +52,8 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      * @javadoc
      */
     String lastSql;
+
+    Exception stackTrace;
 
     private long startTimeMillis = 0;
     private int usage = 0;
@@ -101,6 +103,10 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      */
     public String getLastSQL() {
         return lastSql;
+    }
+
+    public Exception getStackTrace() {
+        return stackTrace;
     }
 
     /**
@@ -200,7 +206,7 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
             log.trace("because", new Exception());
         }
         
-        state = CON_FINISHED;
+        state = CON_FINISHED;        
         // If there is a parent object, this connection belongs to a pool and should not be closed,
         // but placed back in the pool
         // If there is no parent, the connection belongs to a datasource (thus pooling is done by the appserver)
@@ -234,6 +240,9 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
         usage++;
         queries++;
         startTimeMillis = System.currentTimeMillis();
+        if (log.isDebugEnabled()) {
+            stackTrace = new Exception();
+        }
     }
 
     /**
@@ -241,6 +250,7 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      */
     public void release() {
         startTimeMillis = 0;
+        stackTrace = null;
     }
 
     /**
