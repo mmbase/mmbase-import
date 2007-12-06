@@ -4,6 +4,10 @@
 	<title xml:lang="nl">Nieuwsbrief</title>
 	<title xml:lang="en">newsletter</title>
 	<field name="title" dtmaxlength="40"  dtrequired="true">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+	</field>
+	<field name="subject" dtmaxlength="40"  dtrequired="true">
 		<prompt xml:lang="en">Subject</prompt>
 		<prompt xml:lang="nl">Onderwerp</prompt>
 	</field>

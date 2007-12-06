@@ -1,4 +1,4 @@
-<%@include file="includes/taglibs.jsp" %>
+<%@include file="../demo/includes/taglibs.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <cmsc:location var="cur" sitevar="site" />

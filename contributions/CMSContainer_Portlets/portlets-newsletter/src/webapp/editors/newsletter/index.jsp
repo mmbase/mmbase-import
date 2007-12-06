@@ -1,7 +1,8 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
+r
 <%@include file="../globals.jsp" %>
 
-<fmt:setBundle basename="newsletter" scope="application" />
+<fmt:setBundle basename="newsletter" scope="request" />
 
 <h3><fmt:message key="stats.title" /></h3>
 <p><fmt:message key="stats.intro" /></p>

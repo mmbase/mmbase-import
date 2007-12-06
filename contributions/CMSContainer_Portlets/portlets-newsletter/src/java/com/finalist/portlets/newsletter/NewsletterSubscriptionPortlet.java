@@ -2,6 +2,7 @@ package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -43,23 +44,27 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       if (isLoggedIn(session) == true) {
          String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
          List<String> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
-         
+
+         request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, NewsletterGeneratorFactory.mimeTypes);
+         request.setAttribute("statusoptions", NewsletterSubscriptionUtil.getStatusOptions());
+
          boolean hasSubscriptions = false;
          if (subscriptions != null && subscriptions.size() > 0) {
             request.setAttribute("hassubscriptions", true);
+            request.setAttribute(NewsletterSubscriptionUtil.NEWSLETTER_THEME, subscriptions);
+            request.setAttribute(USER_SUBSCRIBED_THEMES, subscriptions);
+            String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
+            request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
+            String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
+            request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
+            request.setAttribute("hassubscriptions", true);
             hasSubscriptions = true;
          }
+
          if (action != null) {
             log.debug("Action != null");
-            request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, NewsletterGeneratorFactory.mimeTypes);
             if (hasSubscriptions) {
                log.debug(userName + " has " + subscriptions.size() + " subscriptions");
-               request.setAttribute(USER_SUBSCRIBED_THEMES, subscriptions);
-               String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-               request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
-               List<String> statusOptions = NewsletterSubscriptionUtil.getStatusOptions();
-               request.setAttribute("statusoptions", statusOptions);
-               request.setAttribute("hassubscriptions", true);
             } else {
                log.debug(userName + " has no subscriptions");
                request.setAttribute("hassubscriptions", false);
@@ -145,6 +150,11 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             }
          }
       }
+      if ( newsletters != null)
+      {
+         List<String> newsletterList = Arrays.asList(newsletters);
+         NewsletterSubscriptionUtil.subscribeToNewsletters(userName, newsletterList);
+      }
       NewsletterSubscriptionUtil.subscribeToThemes(userName, subscribeToThemes);
       String preferredMimeType = request.getParameter(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE);
       NewsletterSubscriptionUtil.setPreferredMimeType(userName, preferredMimeType);
@@ -169,5 +179,15 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             }
          }
       }
+   }
+
+   protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
+      PortletPreferences preferences = request.getPreferences();
+      String[] newsletters = preferences.getValues(this.AVAILABLE_NEWSLETTERS, null);
+      if (newsletters != null) {
+         List<String> availableNewsletters = Arrays.asList(newsletters);
+         request.setAttribute(AVAILABLE_NEWSLETTERS, availableNewsletters);
+      }
+      super.doEditDefaults(request, response);
    }
 }
