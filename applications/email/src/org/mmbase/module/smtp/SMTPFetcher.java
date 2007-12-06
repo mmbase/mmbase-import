@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.8 2007-11-29 11:03:52 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.9 2007-12-06 10:58:22 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -352,7 +352,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                         writer.flush();
                     }
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    log.error("Exception during handling data '" + result + "' (" + headers + "): " + e.getMessage(), e);
                     writer.write("550 Message error " + e.getMessage() + "\r\n");
                     writer.flush();
                 }
@@ -435,6 +435,9 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
             return MailHandler.MessageStatus.ERROR;
+        } catch (RuntimeException t) {
+            log.warn("Exception in MimeMessage instantiation " + t, t);
+            throw t;
         }
         try {
             if (headers != null) {
@@ -443,8 +446,9 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 }
             }
         } catch (MessagingException e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
+        if (handler == null) throw new RuntimeException("No handler configured!");
         log.debug("Handling message with " + handler);
         MailHandler.MessageStatus s =  handler.handleMessage(message);
         return s;
