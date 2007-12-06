@@ -14,7 +14,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.services.community.Community;
+import com.finalist.cmsc.services.community.NewsLetterCommunication;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -50,7 +50,7 @@ public class NewsletterPublisher extends Thread {
 
    private void sendNewsletter(MimeMultipart content, String userName, Node publicationNode) {
       ResourceBundle rb = ResourceBundle.getBundle("newsletter");
-      String userEmail = Community.getUserPreference(userName, "email");
+      String userEmail = NewsLetterCommunication.getUserPreference(userName, "email");
       String subject = publicationNode.getStringValue("subject");
       String description = publicationNode.getStringValue("description");
 

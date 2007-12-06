@@ -1,12 +1,14 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="../globals.jsp" %>
+
 <%@page import="com.finalist.cmsc.services.community.CommunityServiceMysqlImpl"%>
 <jsp:useBean id = "community" class="com.finalist.cmsc.services.community.CommunityServiceMysqlImpl" scope="request" />
+<jsp:useBean id = "newsletter" class="com.finalist.cmsc.services.community.NewsLetterCommunicationServiceMysqlImpl" scope="request" />
 
-<fmt:setBundle basename="community" scope="application" />
+<fmt:setBundle basename="community" scope="request" />
 
-<h3><fmt:message key="View or add an user" /></h3>
-<p><fmt:message key="View or add an user" /></p>
+<h3><fmt:message key="view.adduser" /></h3>
+<p><fmt:message key="view.adduserr" /></p>
 
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">  
 <form name="form" method="post"
@@ -14,46 +16,58 @@
 <table>
 				<tr>
 					<td>
-						<fmt:message key="Username" />
+						<fmt:message key="mod.username" />
 					</td>
 					<td>
-						<input type="text" id="userText" name="userText" class="userText" value="${userText}" />
+						<input type="text" id="userText" 
+
+name="userText" class="userText" value="${userText}" />
 					</td>
 				</tr>
 				<tr>
 					<td>
-                    	<fmt:message key="Password" />
+                    	<fmt:message key="mod.password" />
                 	</td>
                 	<td>
-                    	<input type="text" id="passText" name="passText" class="passText" value="${passText}" />
-                	</td>
-                </tr>
-				<tr>
-                	<td>
-                    	<fmt:message key="Firstname" />
-                	</td>
-                	<td>
-                    	<input type="text" id="firstname" name="firstname" class="firstname" value="${firstname}" />
+                    	<input type="text" id="passText" name="passText" 
+
+class="passText" value="${passText}" />
                 	</td>
                 </tr>
 				<tr>
                 	<td>
-                    	<fmt:message key="Lastname" />
+                    	<fmt:message key="mod.firstname" />
                 	</td>
                 	<td>
-                    	<input type="text" id="lastname" name="lastname" class="lastname" value="${lastname}" />
+                    	<input type="text" id="firstname" name="firstname" 
+
+class="firstname" value="${firstname}" />
                 	</td>
                 </tr>
 				<tr>
                 	<td>
-                    	<fmt:message key="Emailadress" />
+                    	<fmt:message key="mod.lastname" />
                 	</td>
                 	<td>
-                    	<input type="text" id="emailadres" name="emailadres" class="emailadres" value="${emailadres}" />
+                    	<input type="text" id="lastname" name="lastname" 
+
+class="lastname" value="${lastname}" />
+                	</td>
+                </tr>
+				<tr>
+                	<td>
+                    	<fmt:message key="mod.emailaddress" />
+                	</td>
+                	<td>
+                    	<input type="text" id="emailadres" name="emailadres" 
+
+class="emailadres" value="${emailadres}" />
                 	</td>
                 <tr>
                 	<td>
-                	   <input type="submit" name="addUser" value="<fmt:message key="mod.add" />"/>
+                	   <input type="submit" name="addUser" value="<fmt:message 
+
+key="mod.add" />"/>
                 	</td>
             	</tr>
             	<tr>
@@ -140,7 +154,7 @@
             	      Newsletter key:<br>
             	      Newsletter value:
             	   </td>
-            	   <c:set var="users" value="<%=community.getAllNewsPrefs()%>"/>
+            	   <c:set var="users" value="<%=newsletter.getAllNewsPrefs()%>"/>
             	   <c:forEach var="user" items="${users}">
             	      <td>
             	      	 ${user.userId}<br>

@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.finalist.cmsc.services.community.data.User;
-import com.finalist.cmsc.services.community.data.NewsPref;
 import com.finalist.cmsc.services.community.HibernateService;
 
 public class CommunityServiceMysqlImpl extends CommunityService {
@@ -116,136 +115,12 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       return logoutSuccesfull;
    }
    
-   public List<String> getUsersWithPreferences(String key, String value){
-
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      
-      HibernateService hibservice = (HibernateService)aC.getBean("service");;
-
-      List<String> resultList = hibservice.getUsersWithPreferences(key, value);
-      if (resultList != null && resultList.size() > 0){
-         return resultList;
-      }
-      return (null);
-   }
-   
-   public String getUserPreference(String userName, String key) {
-      
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      
-      HibernateService hibservice = (HibernateService)aC.getBean("service");;
-      
-      String preference = hibservice.getUserPreference(userName, key);
-      if (preference != null){
-         return preference;
-      }
-      return (null);
-   }
-   
-   public List<String> getUserPreferences(String userName, String key) {
-      
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      
-      HibernateService hibservice = (HibernateService)aC.getBean("service");;
-      
-      List<String> preferenceList = hibservice.getUserPreferences(userName, key);
-      if (preferenceList != null && preferenceList.size() > 0){
-         return preferenceList;
-      }
-      return (null);
-   }
-   
-   public boolean setUserPreference(String userName, String key, String value){
-      
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      boolean succes;
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
-      try{
-         NewsPref newsPref = hibservice.createUserPreference(userName, key, value);
-         if(newsPref != null){
-            succes = true;
-         }
-         else{
-            succes = false;
-         }
-      }
-      catch (Exception e){
-         succes = false;
-      }
-      
-      return succes;
-   }
-   
-   public boolean setUserPreferenceValues(String userName, Map<String, String> preferences) {
-      
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      boolean succes;
-      NewsPref newsPref = new NewsPref();
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
-      try{
-         
-         Iterator keys = preferences.keySet().iterator();
-         Iterator values = preferences.values().iterator();
-         
-         while(keys.hasNext() && values.hasNext()){
-            newsPref = hibservice.createUserPreference(userName, keys.next().toString(), values.next().toString());
-         }
-         if (newsPref != null){
-            succes = true;
-         }
-         else{
-            succes = false;
-         }
-      }
-      catch (Exception e){
-         succes = false;
-      }
-      return succes;
-   }
-   
-   public boolean removeUserPreference(String userName, String key){
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      boolean succes;
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
-      succes = hibservice.removeUserPreference(userName, key);
-      return succes;
-   }
-   
-   public void removeUserPreference(String userName, String key, String value){
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
-      hibservice.removeUserPreference(userName, key, value);
-   }
-   
-   public boolean hasPermission(String userName, String permission){
-      
-      boolean permissionB;
-      
-      if(userName == "jaspers" || userName == "admin"){
-         permissionB = true;
-      }
-      else{
-         permissionB = false;
-      }
-      return permissionB;
-   }
-   
    public List<String> getAllUsers(){
       aC = new ClassPathXmlApplicationContext("applicationContext.xml");
       HibernateService hibservice = (HibernateService)aC.getBean("service");
       List<String> users = hibservice.getAllUsers();
       if (users != null && users.size() > 0){
          return users;
-      }
-      return (null);
-   }
-   
-   public List<String> getAllNewsPrefs(){
-      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
-      List<String> newsPrefs = hibservice.getAllNewsPrefs();
-      if (newsPrefs != null && newsPrefs.size() > 0){
-         return newsPrefs;
       }
       return (null);
    }
