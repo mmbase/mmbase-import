@@ -81,7 +81,13 @@
    <bean name="service" 
    		class="com.finalist.cmsc.services.community.HibernateService" 
 		lazy-init="false" autowire="default" dependency-check="default">
-		<property name="userDAO" ref="userDAO" />
+		<property name="userDAO" ref="userDAO" />	
+   </bean>
+   
+   <!-- Service  -->
+   <bean name="serviceNewsLetter" 
+   		class="com.finalist.cmsc.services.community.HibernateNewsPrefService" 
+		lazy-init="false" autowire="default" dependency-check="default">
 		<property name="newsPrefDAO" ref="newsPrefDAO" />		
    </bean>
 	

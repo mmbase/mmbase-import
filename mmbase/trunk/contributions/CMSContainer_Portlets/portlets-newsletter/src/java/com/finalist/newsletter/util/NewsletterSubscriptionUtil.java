@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.services.community.Community;
+import com.finalist.cmsc.services.community.NewsLetterCommunication;
 import com.finalist.newsletter.NewsletterGeneratorFactory;
 
 public abstract class NewsletterSubscriptionUtil {
@@ -55,26 +55,26 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static String getPreferredMimeType(String userName) {
       if (userName != null) {
-         return (Community.getUserPreference(userName, PREFERRED_MIMETYPE));
+         return (NewsLetterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE));
       }
       return (null);
    }
 
    public static List<String> getSubscribersForNewsletter(String newsletterNumber) {
-      List<String> subscribers = Community.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
+      List<String> subscribers = NewsLetterCommunication.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
       return (subscribers);
    }
 
    public static String getSubscriptionStatus(String userName) {
       if (userName != null) {
-         return (Community.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
+         return (NewsLetterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
       }
       return (null);
    }
 
    public static List<String> getUserSubscribedThemes(String userName) {
       if (userName != null) {
-         List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
+         List<String> themeList = NewsLetterCommunication.getUserPreferences(userName, "newslettertheme");
          return (themeList);
       }
       return (null);
@@ -82,20 +82,20 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
       if (userName != null && newsletterNumber != null) {
-         List<String> themeList = Community.getUserPreferences(userName, "newslettertheme");
+         List<String> themeList = NewsLetterCommunication.getUserPreferences(userName, "newslettertheme");
          return (themeList);
       }
       return (null);
    }
 
    public static boolean pauseUserSubscriptions(String userName) {
-      Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
+      NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_INACTIVE);
       log.debug("Subscriptionstatus for user " + userName + " set to " + SUBSCRIPTION_STATUS_INACTIVE);
       return (true);
    }
 
    public static boolean resumeUserSubscriptions(String userName) {
-      Community.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_ACTIVE);
+      NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, SUBSCRIPTION_STATUS_ACTIVE);
       log.debug("Subscriptionstatus for user " + userName + " set to " + SUBSCRIPTION_STATUS_ACTIVE);
       return (true);
    }
@@ -105,7 +105,7 @@ public abstract class NewsletterSubscriptionUtil {
          if (mimeType == null) {
             mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
          }
-         Community.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
+         NewsLetterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
          log.debug("Preferred mimetype for user " + userName + " set to " + mimeType);
          return (true);
       }
@@ -113,7 +113,7 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static boolean subscribeToTheme(String userName, String theme) {
-      Community.setUserPreference(userName, NEWSLETTER_THEME, theme);
+      NewsLetterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
       return (true);
    }
 
@@ -129,14 +129,14 @@ public abstract class NewsletterSubscriptionUtil {
       if (userName != null && objects != null) {
          for (int i = 0; i < objects.size(); i++) {
             String objectNumber = objects.get(i);
-            Community.setUserPreference(userName, prefType, objectNumber);
+            NewsLetterCommunication.setUserPreference(userName, prefType, objectNumber);
             log.debug("Adding preference " + prefType + " - " + objectNumber + " to user " + userName);
          }         
       }      
    }
 
    public static boolean terminateUserSubscription(String userName) {
-      Community.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+      NewsLetterCommunication.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
       return (true);
    }
 
@@ -150,14 +150,14 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static boolean unsubscribeFromTheme(String userName, String theme) {
-      Community.removeUserPreference(userName, NEWSLETTER_THEME, theme);
+      NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, theme);
       return (true);
    }
 
    public static boolean unsubscribeFromThemes(String userName, List<String> themes) {
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
-            Community.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
+            NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
          }
       }
       return (true);
