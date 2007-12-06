@@ -15,7 +15,7 @@
 		<mm:node number="${newsletternumber}" notfound="skip">
 			<tr>
 				<td colspan="2">
-					<b><fmt:message key="newsletter" />: <mm:field id="newslettertitle" name="title" write="true" /></b>
+					<b><fmt:message key="newsletter" />: <mm:field jspvar="newslettertitle" name="title" write="true" /></b>
 				</td>					
 			</tr>
 			<tr>
@@ -49,7 +49,7 @@
 			<tr>
 				<td><fmt:message key="subscription.mimetype.select" /></td>
 				<td>
-				<cmsc:select var="mimetype">
+				<cmsc:select var="preferredmimetype">
 					<c:forEach var="m" items="${mimetypeoptions}">
 						<cmsc:option name="${m}" value="${m}" />
 					</c:forEach>

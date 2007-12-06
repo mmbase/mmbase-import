@@ -43,12 +43,12 @@
 					<input type="hidden" name="page" value="${page}" />
 					<fmt:message key="edit_defaults.available_newsletters" />
 				</td>
-				<td>
+				<td class="#">
 				                    <mm:cloud>
 					<mm:listnodes type="newsletter">
 						<mm:field name="number" id="number" write="false" />
 						<mm:field name="title"  id="title" write="false" />
-						<span><cmsc:checkbox var="newsletters" value="${number}" />${title}</span></td></tr><tr><td>&nbsp;</td><td>
+						<cmsc:checkbox var="newsletters" value="${number}" selected="${newsletters}" />${title}</td></tr><tr><td>&nbsp;</td><td>
 					</mm:listnodes>
 					</mm:cloud>
 

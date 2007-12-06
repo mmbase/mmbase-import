@@ -15,7 +15,7 @@
 		<mm:node number="${newsletternumber}" notfound="skip">
 			<tr>
 				<td colspan="2">
-					<b><fmt:message key="newsletter" />: <mm:field id="newslettertitle" name="title" write="true" /></b>
+					<b><fmt:message key="newsletter" />: <mm:field jspvar="newslettertitle" name="title" write="true" /></b>
 				</td>					
 			</tr>
 			<tr>

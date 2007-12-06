@@ -33,6 +33,10 @@ public class NewsletterGeneratorFactory {
       return instance;
    }
 
+   public static List<String> getMimeTypes() {
+      return mimeTypes;
+   }
+
    private NewsletterGeneratorFactory() {
 
    }
@@ -46,9 +50,5 @@ public class NewsletterGeneratorFactory {
          log.debug("No NewsletterGenerator returned because of unsupported mimetype");
          return (null);
       }
-   }
-
-   public static List<String> getMimeTypes() {
-      return mimeTypes;
    }
 }

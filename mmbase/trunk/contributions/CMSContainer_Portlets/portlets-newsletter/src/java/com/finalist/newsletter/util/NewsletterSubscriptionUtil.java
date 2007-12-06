@@ -47,7 +47,7 @@ public abstract class NewsletterSubscriptionUtil {
       List<String> userThemes = getUserSubscribedThemes(userName, newsletterNumber);
       List<String> themes = new ArrayList<String>();
       for (int i = 0; i < compareWithThemes.size(); i++) {
-         String theme = (String) compareWithThemes.get(i);
+         String theme = compareWithThemes.get(i);
          if (userThemes.contains(theme)) {
             themes.add(theme);
          }
@@ -57,14 +57,24 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static String getPreferredMimeType(String userName) {
       if (userName != null) {
-         return (NewsLetterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE));
+         String preferredMimeType = NewsLetterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE);
+         log.debug("Found preferred mimetype " + preferredMimeType + " for user " + userName);
+         return (preferredMimeType);
       }
       return (null);
+   }
+
+   public static List<String> getStatusOptions() {
+      return (statusOptions);
    }
 
    public static List<String> getSubscribersForNewsletter(String newsletterNumber) {
       List<String> subscribers = NewsLetterCommunication.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
       return (subscribers);
+   }
+
+   public static String getSubscriptionStatus(String userName) {
+      return (NewsLetterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
    }
 
    public static List<String> getUserSubscribedThemes(String userName) {
@@ -83,47 +93,30 @@ public abstract class NewsletterSubscriptionUtil {
       return (null);
    }
 
+   public static void setPreferredMimeType(String userName, String mimeType) {
+      if (userName != null) {
+         if (mimeType == null) {
+            mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
+         }
+         NewsLetterCommunication.removeUserPreference(userName, PREFERRED_MIMETYPE);
+         NewsLetterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
+         log.debug("Preferred mimetype for user " + userName + " set to " + mimeType);
+      }
+   }
+
    public static void setSubscriptionStatus(String userName, String status) {
       if (status == null) {
          status = SUBSCRIPTION_STATUS_DEFAULT;
       }
       if (userName != null && status != null) {
          if (statusOptions.contains(status)) {
+            NewsLetterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
             NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
             log.debug("Subscription status for user " + userName + " set to " + status);
             return;
          }
          log.debug("Unknown status type: " + status);
       }
-   }
-
-   public static String getSubscriptionStatus(String userName) {
-      return (NewsLetterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
-   }
-
-   public static boolean setPreferredMimeType(String userName, String mimeType) {
-      if (userName != null) {
-         if (mimeType == null) {
-            mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
-         }
-         NewsLetterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
-         log.debug("Preferred mimetype for user " + userName + " set to " + mimeType);
-         return (true);
-      }
-      return (false);
-   }
-
-   public static boolean subscribeToTheme(String userName, String theme) {
-      NewsLetterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
-      return (true);
-   }
-
-   public static void subscribeToNewsletters(String userName, List<String> newsletters) {
-      subscribe(userName, newsletters, NEWSLETTER);
-   }
-
-   public static void subscribeToThemes(String userName, List<String> themes) {
-      subscribe(userName, themes, NEWSLETTER_THEME);
    }
 
    private static void subscribe(String userName, List<String> objects, String prefType) {
@@ -136,35 +129,43 @@ public abstract class NewsletterSubscriptionUtil {
       }
    }
 
-   public static boolean terminateUserSubscription(String userName) {
-      NewsLetterCommunication.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
-      return (true);
+   public static void subscribeToNewsletters(String userName, List<String> newsletters) {
+      subscribe(userName, newsletters, NEWSLETTER);
    }
 
-   public static boolean unsubscribeFromAllThemes(String userName) {
-      if (userName != null) {
-         List<String> themes = getUserSubscribedThemes(userName);
-         unsubscribeFromThemes(userName, themes);
-         return (true);
+   public static void subscribeToTheme(String userName, String theme) {
+      if (userName != null && theme  != null) {
+         NewsLetterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
       }
-      return (false);
    }
 
-   public static boolean unsubscribeFromTheme(String userName, String theme) {
-      NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, theme);
-      return (true);
+   public static void subscribeToThemes(String userName, List<String> themes) {
+      subscribe(userName, themes, NEWSLETTER_THEME);
    }
 
-   public static boolean unsubscribeFromThemes(String userName, List<String> themes) {
+   public static void terminateUserSubscription(String userName) {
+      if (userName != null) {
+         NewsLetterCommunication.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+      }
+   }
+
+   public static void unsubscribeFromAllThemes(String userName) {
+      if (userName != null) {
+         NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME);
+      }
+   }
+
+   public static void unsubscribeFromTheme(String userName, String theme) {
+      if (userName != null && theme != null) {
+         NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, theme);
+      }
+   }
+
+   public static void unsubscribeFromThemes(String userName, List<String> themes) {
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
             NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
          }
       }
-      return (true);
-   }
-
-   public static List<String> getStatusOptions() {
-      return (statusOptions);
    }
 }

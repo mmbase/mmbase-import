@@ -4,8 +4,8 @@
 
 <mm:cloud>
 	<table width="75%" border="0" cellspacing="0" cellpadding="0">
-		<mm:import jspvar="articles" vartype="List" externid="articles${defaulttheme}" />
-		<c:forEach var="articlenumber" items="${articles}">
+
+		<c:forEach var="articlenumber" items="${defaultarticles}">
 			<mm:node number="${articlenumber}" notfound="skip">
 			<cmsc:contenturl number="${articlenumber}" absolute="true" jspvar="url" write="false" />
 			<tr><td><a href="${url}"><b><mm:field name="title" write="true" /></b></a></td></tr>				
@@ -14,7 +14,7 @@
 			<tr><td>&nbsp;</td></tr>
 		</c:forEach>
 
-		<c:forEach var="theme" items="${themes}">
+		<c:forEach var="theme" items="${additionalthemes}">
 			<mm:node number="${theme}" notfound="skip">
 			<tr><td><h3><mm:field name="title" write="true" /></h3></td></tr>
 			<mm:import jspvar="articles" vartype="List" reset="true" externid="articles${theme}" />

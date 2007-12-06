@@ -67,20 +67,6 @@
 					</cmsc:select>
 				</td>
 			</tr>
-
-			<tr>
-				<td>
-					<fmt:message key="edit_defaults.window" />
-				</td>
-				<td>
-					<cmsc:select var="window">
-						<c:forEach var="position" items="${pagepositions}">
-							<cmsc:option value="${position}" />
-						</c:forEach>
-					</cmsc:select>
-				</td>
-			</tr>
-
 			<tr>
 				<td colspan="2">
 					<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
