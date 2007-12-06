@@ -22,7 +22,7 @@ import org.mmbase.applications.email.SendMail;
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.10 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.11 2007-12-06 10:40:01 michiel Exp $
  */
 public interface  MailHandler {
 
@@ -48,6 +48,9 @@ public interface  MailHandler {
         public final String domain;
         Address(String u, String d) {
             user = u; domain = d;
+        }
+        public String toString() {
+            return user + "@" + domain;
         }
     }
     /**
