@@ -9,6 +9,7 @@
 	<field name="use_expirydate" />
 	<field name="urlfragment" />
 	<field name="title" />
+	<field name="subject" />
 	<field name="description" />
 	<field name="externalurl"/>
 
