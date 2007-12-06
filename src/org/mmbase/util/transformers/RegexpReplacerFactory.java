@@ -63,12 +63,26 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
         String firstParam = parameters.get(REPLACE_FIRST);
         boolean replaceFirst = "true".equals(firstParam);
         boolean replaceFirstAll = "all".equals(firstParam);
-        trans.configure(c.config + 
-                        (replaceFirst ? RegexpReplacer.REPLACE_FIRST : 0) + 
+        trans.configure(c.config +
+                        (replaceFirst ? RegexpReplacer.REPLACE_FIRST : 0) +
                         (replaceFirstAll ? RegexpReplacer.REPLACE_FIRST_ALL : 0)
                         );
         return trans;
     }
+
+    public static void main(String[] argv) {
+        RegexpReplacerFactory fact = new RegexpReplacerFactory();
+        Parameters pars = fact.createParameters();
+        pars.set("mode", "ENTIRE");
+        List<Map.Entry<String, String>> patterns = new ArrayList<Map.Entry<String, String>>();
+        patterns.add(new Entry<String, String>("\\s+", " "));
+        pars.set("patterns", patterns);
+        CharTransformer reg = fact.createTransformer(pars);
+
+        System.out.println(reg.transform(argv[0]));
+
+    }
+
 
 
 }
