@@ -41,7 +41,7 @@
 									</a> </li>
 							</mm:haspage>
 							<mm:haspage page="/editors/egemmail">
-								<li class="egem"> <a href="../egemmail/search.jsp" target="rightpane">
+								<li class="egem"> <a href="../egemmail/EgemSearchInitAction.do" target="rightpane">
 									<fmt:message key="modules.egemmail.export" />
 									</a> </li>
 								<li class="egem"> <a href="<cmsc:property key="egemmail.beheer.path"/>" target="_blank">

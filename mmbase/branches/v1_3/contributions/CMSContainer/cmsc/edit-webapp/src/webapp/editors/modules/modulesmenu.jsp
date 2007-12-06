@@ -37,7 +37,7 @@
                             </mm:haspage>
                             <mm:haspage page="/editors/egemmail">
                                 <li class="egem">
-                                    <a href="../egemmail/search.jsp" target="rightpane">
+                                    <a href="../egemmail/EgemSearchInitAction.do" target="rightpane">
                                         <fmt:message key="modules.egemmail.export"/>
                                     </a>
                                 </li>
