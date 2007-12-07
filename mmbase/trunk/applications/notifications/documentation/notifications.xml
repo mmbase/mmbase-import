@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Notifications</title>
     <date>2007-11-12</date>
-    <edition>$Id: notifications.xml,v 1.3 2007-12-07 10:16:06 michiel Exp $</edition>
+    <edition>$Id: notifications.xml,v 1.4 2007-12-07 13:35:13 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -91,7 +91,7 @@ import java.util.*;
  * issued.
  *
  * @author Michiel Meeuwissen
- * @version $Id: notifications.xml,v 1.3 2007-12-07 10:16:06 michiel Exp $
+ * @version $Id: notifications.xml,v 1.4 2007-12-07 13:35:13 michiel Exp $
  **/
 public class ProgrammeDates  {
 
@@ -206,6 +206,33 @@ public class ProgrammeDates  {
       An example you can find in nl.teleacnot.example package. (A Processor for a phone number field and a Handler).
     </para>
   </section>
-
+  <section>
+    <title>Clustering</title>
+    <para>
+      This application is aware of the fact that MMBase may be 'clustered'.
+    </para>
+    <section>
+      <title>Notifications</title>
+      <para>
+        Normally you should make sure that only precisely one servers of the MMBase cluster is
+        responsible for sending the notifications. This can be arranged using the 'active' property
+        in module/notifier.xml.
+      </para>
+    </section>
+    <section>
+      <title>Sending SMS</title>
+      <para>
+        You can also, if you like, make sure that precisely one of the servers of the cluster is
+        responsible for sending the actual SMS'es. This can be, but is not necessarly the same
+        server as the one responsible for maintaining the notifications. This is done with the
+        'active' property in utils/sms_sender.xml.
+      </para>
+      <para>
+        If you've done this, and an SMS-request is originating from one of the other servers, they
+        will use the MMBase event mechanism, and issue an SMSEvent. The server responsible for
+        sending SMS will pick it up. (So make sure it is only one, otherwise the SMS may be sent
+        multiple times).
+      </para>
+    </section>
+  </section>
 </article>
-
