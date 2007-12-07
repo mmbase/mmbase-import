@@ -10,6 +10,8 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Relation;
+import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,12 +32,18 @@ public abstract class NewsletterPublicationUtil {
       Node newsletterNode = cloud.getNode(newsletterNumber);
       log.debug("Creating a new publication for newsletter " + newsletterNode.getNumber());
 
-      Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
-      if (publicationNode != null) {
+      Node publication = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
+      if (publication != null) {
          log.debug("Creation of publication node successfull. Now copying themes and content");
-         NavigationUtil.appendChild(newsletterNode, publicationNode);
+         NavigationUtil.appendChild(newsletterNode, publication);
          Node layoutNode = PagesUtil.getLayout(newsletterNode);
-         PagesUtil.linkPortlets(publicationNode, layoutNode);
+         PagesUtil.linkPortlets(publication, layoutNode);
+         
+         RelationList relations = newsletterNode.getRelations();
+         if ( relations != null )
+         {
+
+         }
 
          NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme");
          if (newsletterThemeList != null) {
@@ -57,7 +65,7 @@ public abstract class NewsletterPublicationUtil {
                }
             }
          }
-         return (publicationNode);
+         return (publication);
       }
       return (null);
    }
