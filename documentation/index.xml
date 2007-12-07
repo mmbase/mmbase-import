@@ -7,7 +7,7 @@
 
     <date>2007-08-05</date>
 
-    <edition>$Id: index.xml,v 1.65 2007-08-05 15:08:49 andre Exp $</edition>
+    <edition>$Id: index.xml,v 1.66 2007-12-07 10:24:41 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -248,8 +248,8 @@
       <listitem>
         <para>
           <ulink url="backenddevelopers/components.html">Component Framework</ulink>
-          document describing the MMBase Component Framework, as of version 1.9. 
-          Applications developed with the component requirements will be compitable 
+          document describing the MMBase Component Framework, as of version 1.9.
+          Applications developed with the component requirements will be compitable
           with all websites implementing this framework.
         </para>
       </listitem>
@@ -335,6 +335,11 @@
       </listitem>
 
       <listitem>
+        <para><ulink url="applications/notifications/notifications.html">MMBase
+        Notifications and SMS</ulink></para>
+      </listitem>
+
+      <listitem>
         <para><ulink
         url="applications/media/applications/media/index.html">Media project
         documentation</ulink></para>
@@ -371,7 +376,7 @@
       <listitem>
         <para><ulink
         url="applications/taglib/frontenddevelopers/taglib/taglib-tutorial.html">Taglib
-        Tutorial</ulink> - a tutorial for page designers and JSP developers to build web 
+        Tutorial</ulink> - a tutorial for page designers and JSP developers to build web
         pages using the MMBase Tag Library</para>
       </listitem>
 
