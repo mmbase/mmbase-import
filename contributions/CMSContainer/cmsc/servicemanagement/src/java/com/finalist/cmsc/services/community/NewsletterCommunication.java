@@ -31,7 +31,7 @@ public class NewsletterCommunication {
    }
    
    public static void removeUserPreference(String userName, String key, String value){
-      
+      cService.removeUserPreference(userName, key, value);
    }
    
    public static boolean setUserPreferenceValues(String userName, Map<String, String> preferences){
@@ -43,7 +43,7 @@ public class NewsletterCommunication {
    }
    
    public static void removeNewsPrefByUser(String userName){
-      
+      cService.removeNewsPrefByUser(userName);
    }
    
    public static int countK(String key, String value) {
