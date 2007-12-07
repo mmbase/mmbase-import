@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.notifications;
 import org.mmbase.module.*;
 import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.core.event.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -19,6 +20,7 @@ import org.mmbase.util.*;
 
 import java.util.concurrent.*;
 import java.util.*;
+import java.util.regex.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,13 +30,13 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.7 2007-11-26 15:50:38 michiel Exp $
+ * @version $Id: Notifier.java,v 1.8 2007-12-07 13:07:27 michiel Exp $
  **/
 public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(Notifier.class);
 
-    protected boolean running = true;
+    protected boolean running = false;
     DelayQueue<Notifyable> queue = new DelayQueue<Notifyable>();
 
     protected Collection<String> getRelevantBuilders() {
@@ -43,7 +45,18 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
 
     @Override
     public void reload() {
-        loadNotifyables();
+        boolean active = determinActive();
+        if (active) {
+            loadNotifyables();
+            if (! running) {
+                startThread();
+            }
+        } else {
+            if (running) {
+                queue.clear();
+                running = false;
+            }
+        }
     }
 
 
@@ -102,10 +115,52 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
 
     @Override
     public void init() {
-        loadNotifyables();
+        super.init();
+        if (determinActive()) {
+            loadNotifyables();
+            startThread();
+        } else {
+            log.service("Notifier not active");
+        }
+    }
+
+    protected void startThread() {
+        log.service("Starting notifier thread");
         Thread thread = new Thread(MMBaseContext.getThreadGroup(), this);
         thread.start();
         EventManager.getInstance().addEventListener(this);
+        running = true;
+    }
+
+    /**
+     * @todo Similar code in org.mmbase.module.lucene.Lucene, org.mmbase.sms.Sender Generalize this.
+     */
+    protected boolean determinActive() {
+
+        boolean active = true;
+
+        String setting = getInitParameter("active");
+        while (setting != null && setting.startsWith("system:")) {
+            setting = System.getProperty(setting.substring(7));
+        }
+        if (setting != null) {
+            if (setting.startsWith("host:")) {
+                Pattern host = Pattern.compile(setting.substring(5));
+                try {
+                    active =
+                        host.matcher(java.net.InetAddress.getLocalHost().getHostName()).matches() ||
+                        host.matcher((System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName())).matches();
+                } catch (java.net.UnknownHostException uhe) {
+                    log.error(uhe);
+                }
+            } else if (setting.startsWith("machinename:")) {
+                Pattern machineName = Pattern.compile(setting.substring(12));
+                active = machineName.matcher(MMBase.getMMBase().getMachineName()).matches();
+            } else {
+                 active = "true".equals(setting);
+            }
+        }
+        return active;
     }
 
     @Override
@@ -165,10 +220,19 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
 
     {
         addFunction(new AbstractFunction/*<List>*/("list", new Parameter[] {}, ReturnType.LIST) {
-                public Object getFunctionValue(Parameters arguments) {
+                public List getFunctionValue(Parameters arguments) {
                     synchronized(Notifier.this) {
                         return new ArrayList<Notifyable>(queue);
                     }
+                }
+            });
+
+    }
+
+    {
+        addFunction(new AbstractFunction/*<Boolean>*/("running", new Parameter[] {}, ReturnType.LIST) {
+                public Boolean getFunctionValue(Parameters arguments) {
+                    return running;
                 }
             });
 
