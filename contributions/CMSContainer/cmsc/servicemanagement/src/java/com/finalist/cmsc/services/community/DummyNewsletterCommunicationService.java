@@ -3,7 +3,7 @@ package com.finalist.cmsc.services.community;
 import java.util.List;
 import java.util.Map;
 
-public class DummyNewsLetterCommunicationService extends NewsLetterCommunicationService{
+public class DummyNewsletterCommunicationService extends NewsletterCommunicationService{
 
    public List<String> getUsersWithPreferences(String key, String value){
       return null;
@@ -35,5 +35,21 @@ public class DummyNewsLetterCommunicationService extends NewsLetterCommunication
    
    public boolean hasPermission(String userName, String permission){
       return false;
+   }
+   
+   public void removeNewsPrefByUser(String userName){
+      
+   }
+   
+   public int countK(String key, String value) {
+      return 0;
+   }
+
+   public int count(String userName, String key) {
+      return 0;
+   }
+
+   public int count(String userName, String key, String value) {
+      return 0;
    }
 }

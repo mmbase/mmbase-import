@@ -29,7 +29,6 @@ public class CommunityServiceMysqlImpl extends CommunityService {
    public boolean loginUser(ActionRequest request, ActionResponse response, String userText, String passText) {
       
       boolean loginSuccesfull;
-      
       String userName = "";
       String firstName = "";
       String lastName = "";

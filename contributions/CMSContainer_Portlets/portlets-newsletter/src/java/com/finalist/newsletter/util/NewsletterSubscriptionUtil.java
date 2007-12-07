@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.services.community.NewsLetterCommunication;
+import com.finalist.cmsc.services.community.NewsletterCommunication;
 import com.finalist.newsletter.NewsletterGeneratorFactory;
 
 public abstract class NewsletterSubscriptionUtil {
@@ -57,7 +57,7 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static String getPreferredMimeType(String userName) {
       if (userName != null) {
-         String preferredMimeType = NewsLetterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE);
+         String preferredMimeType = NewsletterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE);
          log.debug("Found preferred mimetype " + preferredMimeType + " for user " + userName);
          return (preferredMimeType);
       }
@@ -69,17 +69,17 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static List<String> getSubscribersForNewsletter(String newsletterNumber) {
-      List<String> subscribers = NewsLetterCommunication.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
+      List<String> subscribers = NewsletterCommunication.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
       return (subscribers);
    }
 
    public static String getSubscriptionStatus(String userName) {
-      return (NewsLetterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
+      return (NewsletterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
    }
 
    public static List<String> getUserSubscribedThemes(String userName) {
       if (userName != null) {
-         List<String> themeList = NewsLetterCommunication.getUserPreferences(userName, "newslettertheme");
+         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");
          return (themeList);
       }
       return (null);
@@ -87,7 +87,7 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
       if (userName != null && newsletterNumber != null) {
-         List<String> themeList = NewsLetterCommunication.getUserPreferences(userName, "newslettertheme");
+         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");
          return (themeList);
       }
       return (null);
@@ -98,8 +98,8 @@ public abstract class NewsletterSubscriptionUtil {
          if (mimeType == null) {
             mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
          }
-         NewsLetterCommunication.removeUserPreference(userName, PREFERRED_MIMETYPE);
-         NewsLetterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
+         NewsletterCommunication.removeUserPreference(userName, PREFERRED_MIMETYPE);
+         NewsletterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
          log.debug("Preferred mimetype for user " + userName + " set to " + mimeType);
       }
    }
@@ -110,8 +110,8 @@ public abstract class NewsletterSubscriptionUtil {
       }
       if (userName != null && status != null) {
          if (statusOptions.contains(status)) {
-            NewsLetterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
-            NewsLetterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
+            NewsletterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
+            NewsletterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
             log.debug("Subscription status for user " + userName + " set to " + status);
             return;
          }
@@ -123,7 +123,7 @@ public abstract class NewsletterSubscriptionUtil {
       if (userName != null && objects != null) {
          for (int i = 0; i < objects.size(); i++) {
             String objectNumber = objects.get(i);
-            NewsLetterCommunication.setUserPreference(userName, prefType, objectNumber);
+            NewsletterCommunication.setUserPreference(userName, prefType, objectNumber);
             log.debug("Adding preference " + prefType + " - " + objectNumber + " to user " + userName);
          }
       }
@@ -135,7 +135,7 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static void subscribeToTheme(String userName, String theme) {
       if (userName != null && theme  != null) {
-         NewsLetterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
+         NewsletterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
       }
    }
 
@@ -145,26 +145,26 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static void terminateUserSubscription(String userName) {
       if (userName != null) {
-         NewsLetterCommunication.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+         NewsletterCommunication.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
       }
    }
 
    public static void unsubscribeFromAllThemes(String userName) {
       if (userName != null) {
-         NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME);
+         NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME);
       }
    }
 
    public static void unsubscribeFromTheme(String userName, String theme) {
       if (userName != null && theme != null) {
-         NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, theme);
+         NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, theme);
       }
    }
 
    public static void unsubscribeFromThemes(String userName, List<String> themes) {
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
-            NewsLetterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
+            NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
          }
       }
    }

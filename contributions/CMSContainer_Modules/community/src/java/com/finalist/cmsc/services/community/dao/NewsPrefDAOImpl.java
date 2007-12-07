@@ -1,8 +1,5 @@
 package com.finalist.cmsc.services.community.dao;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
@@ -136,6 +133,28 @@ public class NewsPrefDAOImpl extends HibernateDaoSupport implements NewsPrefDAO{
       }
       getSession().flush();
    }
+   
+   public List<String> getUserWithPreferenceId(String userName){
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      criteria.add(Restrictions.eq("userId", userName));
+      criteria.setProjection(Projections.property("id"));
+      List<String> resultList = (List<String>)getHibernateTemplate().findByCriteria(criteria);
+      return resultList;
+   }
+   
+   @Transactional(readOnly = false)
+   public void removeNewsPrefByUser(String userName){
+
+      List<String> deleteId = getUserWithPreferenceId(userName);
+      
+      Iterator de = deleteId.listIterator();
+      while (de.hasNext()) {
+         String idString = de.next().toString();
+         Long id = Long.parseLong(idString.trim());
+         removeObject(id);
+      }
+      getSession().flush();
+   }
 
    @Transactional(readOnly = false)
    public void removeObject(final Long id) {
@@ -166,5 +185,36 @@ public class NewsPrefDAOImpl extends HibernateDaoSupport implements NewsPrefDAO{
       DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
       List<String> resultList = (List<String>)getHibernateTemplate().findByCriteria(criteria);
       return resultList;
+   }
+   
+   public List countK(String key, String value){
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      criteria.setProjection(Projections.rowCount());
+      criteria.add(Restrictions.eq("newsletterKey", key));
+      criteria.add(Restrictions.eq("newsletterValue", value));
+      List result = (List)getHibernateTemplate().findByCriteria(criteria);
+      
+      return result;
+   }
+   
+   public List count(String userName, String key) {
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      criteria.setProjection(Projections.rowCount());
+      criteria.add(Restrictions.eq("userId", userName));
+      criteria.add(Restrictions.eq("newsletterKey", key));
+      List result = (List)getHibernateTemplate().findByCriteria(criteria);
+      
+      return result;
+   }
+
+   public List count(String userName, String key, String value) {
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      criteria.setProjection(Projections.rowCount());
+      criteria.add(Restrictions.eq("userId", userName));
+      criteria.add(Restrictions.eq("newsletterKey", key));
+      criteria.add(Restrictions.eq("newsletterValue", value));
+      List result = (List)getHibernateTemplate().findByCriteria(criteria);
+      
+      return result;
    }
 }
