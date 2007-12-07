@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.6 2007-11-26 15:50:38 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.7 2007-12-07 09:42:41 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
@@ -68,7 +68,11 @@ public  class CMTelecomSender extends Sender {
 
     protected void send(Appender body)  throws SAXException, IOException {
         String u = configuration.get("url");
-        log.service("Connecting to '" + u + "' " + configuration);
+        if (log.isDebugEnabled()) {
+            log.debug("Connecting to '" + u + "' " + configuration);
+        } else {
+            log.service("Connecting to '" + u + "' ");
+        }
         URL url = new URL(configuration.get("url"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setConnectTimeout(10000);
@@ -174,7 +178,7 @@ public  class CMTelecomSender extends Sender {
                     }
                 });
         } else  {
-            log.service("Nothing queued, nothing to be sent");
+            log.debug("Nothing queued, nothing to be sent");
         }
     }
     public boolean send(final SMS sms) {
