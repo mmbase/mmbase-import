@@ -1,5 +1,6 @@
 package com.finalist.cmsc.navigation;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,12 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.bridge.Node;
 
+import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.util.bundles.JstlUtil;
 import com.finalist.tree.TreeCellRenderer;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.tree.TreeOption;
+import com.finalist.util.module.ModuleUtil;
 
 /**
  * Renderer of the Site management tree.
@@ -21,6 +24,8 @@ import com.finalist.tree.TreeOption;
  */
 public abstract class NavigationRenderer implements TreeCellRenderer {
 
+    protected static final String FEATURE_WORKFLOW = "workflowitem";
+	
 	private String target = null;
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -32,7 +37,7 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
     }
 
     /**
-     * Render een node van de tree.
+     * Render a node of a tree.
      * 
      * @see com.finalist.tree.TreeCellRenderer#getElement(TreeModel, Object, String)
      */
@@ -44,7 +49,12 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
         
         NavigationItemManager manager = NavigationManager.getNavigationManager(parentNode);
     	if(manager != null) {
-    		return manager.getTreeRenderer().getTreeElement(this, parentNode, model);
+    		TreeElement treeElement = manager.getTreeRenderer().getTreeElement(this, parentNode, model);
+    		for (NavigationItemManager managerOption : NavigationManager.getNavigationManagers()) {
+				managerOption.getTreeRenderer().addParentOption(this, treeElement, id);
+			}
+    		
+			return treeElement;
     	}
         return null;
     }

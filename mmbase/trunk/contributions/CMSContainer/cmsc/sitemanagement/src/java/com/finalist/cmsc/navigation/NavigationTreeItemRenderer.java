@@ -7,5 +7,8 @@ import com.finalist.tree.TreeModel;
 
 public interface NavigationTreeItemRenderer {
 
-   public abstract TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model);
+   TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model);
+   
+   //Adds items to the site tree, as right-click options 
+   void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId);
 }

@@ -21,8 +21,6 @@ import com.finalist.util.module.ModuleUtil;
 
 public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
 
-    protected static final String FEATURE_RSSFEED = "rssfeed";
-    protected static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
     protected static final String FEATURE_WORKFLOW = "workflowitem";
 
     public TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model) {
@@ -45,11 +43,6 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
           element.addOption(renderer.createTreeOption("new.png", 
                       "site.page.new", "PageCreate.do?parentpage=" + id));
 
-          if (ModuleUtil.checkFeature(FEATURE_RSSFEED)) {
-             element.addOption(renderer.createTreeOption("rss_new.png", "site.rss.new",
-                   "../rssfeed/RssFeedCreate.do?parentpage=" + id));
-          }
-
           if (SecurityUtil.isChiefEditor(role)
                 && ((model.getChildCount(parentNode) == 0) || SecurityUtil.isWebmaster(role))) {
              element.addOption(renderer.createTreeOption("delete.png", "site.site.remove", 
@@ -66,11 +59,6 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
                          "javascript:paste('" + id + "');"));
           }
 
-          if (ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
-             element.addOption(renderer.createTreeOption("wizard.png", "site.page.wizard",
-                   "../pagewizard/StartPageWizardAction.do?number=" + id));
-          }
-
           if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
              element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
                    "../workflow/publish.jsp?number=" + id));
@@ -84,4 +72,8 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
        return element;
     }
 
+	public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
+		// has no parent
+	}
+    
 }
