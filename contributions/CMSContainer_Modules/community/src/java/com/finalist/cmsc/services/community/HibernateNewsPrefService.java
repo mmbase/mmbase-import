@@ -70,4 +70,20 @@ public class HibernateNewsPrefService {
    public void removeUserPreference(String userName, String key, String value){
       newsPrefDAO.removeNewsPref(userName, key, value);
    } 
+   
+   public void removeNewsPrefByUser(String userName){
+      newsPrefDAO.removeNewsPrefByUser(userName);
+   }
+   
+   public List countK(String key, String value){
+      return newsPrefDAO.countK(key, value);
+   }
+   
+   public List count(String userName, String key) {
+      return newsPrefDAO.count(userName, key);
+   }
+
+   public List count(String userName, String key, String value) {
+      return newsPrefDAO.count(userName, key, value);
+   }
 }

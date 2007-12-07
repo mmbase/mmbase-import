@@ -3,16 +3,12 @@ package com.finalist.cmsc.services.community;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.servlet.http.HttpServletRequest;
-
 import com.finalist.cmsc.services.ServiceManager;
-import com.finalist.cmsc.services.community.NewsLetterCommunicationService;
+import com.finalist.cmsc.services.community.NewsletterCommunicationService;
 
-public class NewsLetterCommunication {
-   private final static NewsLetterCommunicationService cService = (NewsLetterCommunicationService) ServiceManager
-   .getService(NewsLetterCommunicationService.class);
+public class NewsletterCommunication {
+   private final static NewsletterCommunicationService cService = (NewsletterCommunicationService) ServiceManager
+   .getService(NewsletterCommunicationService.class);
    
    public static List<String> getUsersWithPreferences(String key, String value){
       return cService.getUsersWithPreferences(key, value);
@@ -44,5 +40,21 @@ public class NewsLetterCommunication {
    
    public static boolean hasPermission(String userName, String permission){
       return cService.hasPermission(userName, permission);
+   }
+   
+   public static void removeNewsPrefByUser(String userName){
+      
+   }
+   
+   public static int countK(String key, String value) {
+      return cService.countK(key, value);
+   }
+
+   public static int count(String userName, String key) {
+      return cService.count(userName, key);
+   }
+
+   public static int count(String userName, String key, String value) {
+      return cService.count(userName, key, value);
    }
 }

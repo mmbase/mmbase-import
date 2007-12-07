@@ -36,10 +36,18 @@ public interface NewsPrefDAO {
    public boolean deleteNewsPrefByCriteria(String userName, String key);
    
    public void removeNewsPref(String userName, String key, String value);
+   
+   public void removeNewsPrefByUser(String userName);
 
    public void saveRecords(final Set<NewsPref> records) throws Exception;
 
 
    public void updateNewsPref(NewsPref newsPref) throws Exception;
+   
+   public List countK(String key, String value);
+   
+   public List count(String userName, String key);
+
+   public List count(String userName, String key, String value);
    
 }
