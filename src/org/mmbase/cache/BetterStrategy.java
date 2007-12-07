@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase 1.8
  * @author Ernst Bunders
- * @version $Id: BetterStrategy.java,v 1.30 2007-12-05 10:31:16 ernst Exp $
+ * @version $Id: BetterStrategy.java,v 1.31 2007-12-07 14:41:59 ernst Exp $
  */
 public class BetterStrategy extends ReleaseStrategy {
 
@@ -362,13 +362,16 @@ public class BetterStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
-        for (Step step : query.getSteps()) {
-            String table = step.getTableName();
-            if (! (table.equals(eventTable) ||
-                   eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
-            Set<Integer> nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
-                return true;
+        //perhaps the builder of the event is locally inactive
+        if(eventBuilder != null){
+            for (Step step : query.getSteps()) {
+                String table = step.getTableName();
+                if (! (table.equals(eventTable) ||
+                       eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
+                Set<Integer> nodes = step.getNodes();
+                if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
+                    return true;
+                }
             }
         }
         return false;
