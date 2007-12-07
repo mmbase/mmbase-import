@@ -25,8 +25,8 @@
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
 	<field name="copyright" dtmaxlength="2048" ftype="text" rows="3">
-		<prompt xml:lang="en">Copyright</prompt>
-		<prompt xml:lang="nl">Copyright</prompt>
+		<prompt xml:lang="en">Copyright text</prompt>
+		<prompt xml:lang="nl">Copyright tekst</prompt>
 	</field>
 	<field name="email_managing_editor" dtmaxlength="100"  dtrequired="true">
 		<prompt xml:lang="en">Email editor</prompt>
