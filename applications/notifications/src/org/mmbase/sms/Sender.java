@@ -10,8 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.sms;
 
 import org.mmbase.bridge.*;
+import org.mmbase.core.event.EventManager;
 import org.mmbase.util.xml.UtilReader;
 import java.util.*;
+import java.util.regex.*;
 import java.util.concurrent.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,9 +26,9 @@ import org.mmbase.util.logging.Logging;
  * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.5 2007-11-26 15:50:38 michiel Exp $
+ * @version $Id: Sender.java,v 1.6 2007-12-07 13:06:43 michiel Exp $
  **/
-public abstract class Sender  {
+public abstract class Sender {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);
 
     private static Sender sender = null;
@@ -45,11 +47,49 @@ public abstract class Sender  {
     public abstract Collection<SMS> getQueue();
 
 
+
+    /**
+     * @todo Similar code in org.mmbase.module.lucene.Lucene, org.mmbase.notifications.Notifier Generalize this.
+     */
+    protected static boolean determinActive() {
+
+        boolean active = true;
+
+        String setting = config.get("active");
+        while (setting != null && setting.startsWith("system:")) {
+            setting = System.getProperty(setting.substring(7));
+        }
+        if (setting != null) {
+            if (setting.startsWith("host:")) {
+                Pattern host = Pattern.compile(setting.substring(5));
+                try {
+                    active =
+                        host.matcher(java.net.InetAddress.getLocalHost().getHostName()).matches() ||
+                        host.matcher((System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName())).matches();
+                } catch (java.net.UnknownHostException uhe) {
+                    log.error(uhe);
+                }
+            } else if (setting.startsWith("machinename:")) {
+                Pattern machineName = Pattern.compile(setting.substring(12));
+                active = machineName.matcher(org.mmbase.module.core.MMBase.getMMBase().getMachineName()).matches();
+            } else {
+                 active = "true".equals(setting);
+            }
+        }
+        return active;
+    }
+
     public static Sender getInstance() {
         if (sender == null) {
             try {
-                Class clazz = Class.forName(config.get("class"));
-                sender = (Sender) clazz.newInstance();
+                if (determinActive()) {
+                    Class clazz = Class.forName(config.get("class"));
+                    sender = (Sender) clazz.newInstance();
+                    EventManager.getInstance().addEventListener(SMSEventListener.getInstance());
+                } else {
+                    sender = new EventSender();
+                    EventManager.getInstance().removeEventListener(SMSEventListener.getInstance());
+                }
                 log.info("Using " + sender + " to send SMS");
             } catch (Exception e) {
                 log.fatal(e.getMessage(), e);
@@ -57,6 +97,7 @@ public abstract class Sender  {
         }
         return sender;
     }
+
 
 
 

@@ -14,9 +14,9 @@ package org.mmbase.sms;
  * Representation of one SMS.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SMS.java,v 1.3 2007-11-19 12:03:12 michiel Exp $
+ * @version $Id: SMS.java,v 1.4 2007-12-07 13:06:43 michiel Exp $
  */
-public interface SMS {
+public interface SMS extends  java.io.Serializable {
     /**
      * Phone number (origin or destination, depending on context).
      */

@@ -12,9 +12,12 @@ package org.mmbase.sms;
 /**
  * This basic SMS implementation simply explicitely stores the information in member variables.
  * @author Michiel Meeuwissen
- * @version $Id: BasicSMS.java,v 1.4 2007-11-19 12:03:12 michiel Exp $
+ * @version $Id: BasicSMS.java,v 1.5 2007-12-07 13:06:43 michiel Exp $
  */
 public class BasicSMS implements SMS {
+
+    private static final long serialVersionUID = 1L;
+
     private final String mobile;
     private final int operator;
     private final String message;
