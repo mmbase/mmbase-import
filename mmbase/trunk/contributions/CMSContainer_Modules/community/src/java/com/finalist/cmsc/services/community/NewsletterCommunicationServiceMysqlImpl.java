@@ -13,9 +13,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.finalist.cmsc.services.community.data.NewsPref;
 import com.finalist.cmsc.services.community.HibernateNewsPrefService;
 
-public class NewsLetterCommunicationServiceMysqlImpl extends NewsLetterCommunicationService {
+public class NewsletterCommunicationServiceMysqlImpl extends NewsletterCommunicationService {
 
-   private static Log log = LogFactory.getLog(NewsLetterCommunicationServiceMysqlImpl.class);
+   private static Log log = LogFactory.getLog(NewsletterCommunicationServiceMysqlImpl.class);
 
    private PortletSession session;
    
@@ -130,6 +130,51 @@ public class NewsLetterCommunicationServiceMysqlImpl extends NewsLetterCommunica
       aC = new ClassPathXmlApplicationContext("applicationContext.xml");
       HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");
       hibservice.removeUserPreference(userName, key, value);
+   }
+   
+   public void removeNewsPrefByUser(String userName){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");
+      hibservice.removeNewsPrefByUser(userName);
+   }
+   
+   public int countK(String key, String value) {
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");
+      List result = hibservice.countK(key, value);
+      Iterator countL = result.iterator();
+      String countS = "0";
+      while(countL.hasNext()){
+         countS = countL.next().toString();
+      }
+      int count = Integer.parseInt(countS);
+      return count;
+   }
+
+   public int count(String userName, String key) {
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");
+      List result = hibservice.count(userName, key);
+      Iterator countL = result.iterator();
+      String countS = "0";
+      while(countL.hasNext()){
+         countS = countL.next().toString();
+      }
+      int count = Integer.parseInt(countS);
+      return count;
+   }
+
+   public int count(String userName, String key, String value) {
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");
+      List result = hibservice.count(userName, key, value);
+      Iterator countL = result.iterator();
+      String countS = "0";
+      while(countL.hasNext()){
+         countS = countL.next().toString();
+      }
+      int count = Integer.parseInt(countS);
+      return count;
    }
    
    public boolean hasPermission(String userName, String permission){

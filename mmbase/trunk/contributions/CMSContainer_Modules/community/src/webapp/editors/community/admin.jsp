@@ -3,7 +3,7 @@
 
 <%@page import="com.finalist.cmsc.services.community.CommunityServiceMysqlImpl"%>
 <jsp:useBean id = "community" class="com.finalist.cmsc.services.community.CommunityServiceMysqlImpl" scope="request" />
-<jsp:useBean id = "newsletter" class="com.finalist.cmsc.services.community.NewsLetterCommunicationServiceMysqlImpl" scope="request" />
+<jsp:useBean id = "newsletter" class="com.finalist.cmsc.services.community.NewsletterCommunicationServiceMysqlImpl" scope="request" />
 
 <fmt:setBundle basename="community" scope="request" />
 
