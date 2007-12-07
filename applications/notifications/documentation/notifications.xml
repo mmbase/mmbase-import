@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Notifications</title>
     <date>2007-11-12</date>
-    <edition>$Id: notifications.xml,v 1.2 2007-11-12 16:17:26 michiel Exp $</edition>
+    <edition>$Id: notifications.xml,v 1.3 2007-12-07 10:16:06 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -91,7 +91,7 @@ import java.util.*;
  * issued.
  *
  * @author Michiel Meeuwissen
- * @version $Id: notifications.xml,v 1.2 2007-11-12 16:17:26 michiel Exp $
+ * @version $Id: notifications.xml,v 1.3 2007-12-07 10:16:06 michiel Exp $
  **/
 public class ProgrammeDates  {
 
@@ -146,7 +146,7 @@ public class ProgrammeDates  {
       <para>
         Users create a relation of the type 'notifications' between their user object and the
         notifyable object if they want to receive notifications. Necessary contact information is
-        request from the user object using the functions 'phone', for the mobile phone number to
+        requested from the user object using the function 'phone', for the mobile phone number to
         which SMS text must be sent and 'email' which must return an email-address.
       </para>
     </section>
@@ -155,7 +155,45 @@ public class ProgrammeDates  {
   <section>
     <title>SMS Senders and Handlers</title>
     <para>
+      One SMS Sender can be configured using the property 'class' in &lt;config
+      dir&gt;utils/sms_sender.xml. So there can be only one.
     </para>
+    <para>
+      The file is watched, if you change it a new Sender wil be instantiated. This one instance is obtained by calling
+      org.mmbase.sms.Sender.getInstance().
+    </para>
+    <para>
+      The sender may offer the possibility to collect messages and send them in bulk. Use the method
+      'offer' is this allowed, mmbase-crontab can be used to periodically call 'trigger', to send pending messages.
+    </para>
+    <para>
+      For receival of SMS, multiple 'Handlers' can be configured though. Those are implementions of org.mmbase.sms.Handler.
+    </para>
+    <programlisting format="linespecific" id="sms_handlers"><![CDATA[
+<?xml version="1.0"?>
+<!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
+<util>
+  <properties>
+    <property name="nl.teleacnot.mmbase.sms.Handler" type="map">
+      <entry>
+        <key>prefix</key>
+        <value>TELEAC </value>
+      </entry>
+    </property>
+  </properties>
+</util>
+      ]]></programlisting>
+      <para>
+        An SMS handler can decide to not handle the message, and leave it to the next one.
+      </para>
+      <para>
+        The SMS Handlers are called by the class org.mmbase.sms.Receiver. The receiver is offered
+        received messages with it's method 'offer', which is called by the implemention code for
+        actual retreival. E.g. in the case of CMTelecom this is a very simple JSP in
+        /mmbase/notifications/cmtelecom. Which can be actively called by their system. Other
+        implementations may work differntly.
+      </para>
+
   </section>
   <section>
     <title>Mobile number validation</title>
@@ -163,6 +201,9 @@ public class ProgrammeDates  {
       This component does not itself provide the functionality to fill in the phone number of
       users. It should however be done, and the SMS-functionality present in this component can be
       used to implement the 'validation' protocol which should normally be present.
+    </para>
+    <para>
+      An example you can find in nl.teleacnot.example package. (A Processor for a phone number field and a Handler).
     </para>
   </section>
 
