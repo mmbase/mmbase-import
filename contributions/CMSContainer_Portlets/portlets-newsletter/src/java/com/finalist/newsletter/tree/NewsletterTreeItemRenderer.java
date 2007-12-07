@@ -61,5 +61,11 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       return element;
    }
 
+   public void addParentOption(NavigationRenderer renderer, TreeElement element,
+		String parentId) {
+	   throw new UnsupportedOperationException("IMPLEMENT");
+	
+   }
+
 
 }
