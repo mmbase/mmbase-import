@@ -5,9 +5,7 @@
 <html:html xhtml="true">
 
 <head>
-<title>
-	Title
-</title>
+<cmscedit:head title="workflow.title">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="icon" href="/cmsc-staging/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="/cmsc-staging/favicon.ico" type="image/x-icon" />
@@ -197,7 +195,7 @@
         <input type="hidden" name="status" value="${status}" />
 		<input type="hidden" name="laststatus"/>
 		<c:set var="lastvalue" value="<%=request.getAttribute("laststatus")%>"/>
-				
+
 <c:set var="resultsPerPage" value="50"/>
 <c:set var="offset" value="${param.offset}"/>
 <c:set var="listSize">${fn:length(nodeList)}</c:set>
@@ -207,7 +205,7 @@
       <table>
         <thead>
            <tr>
-           <th style="width: 20px;"></th>		   
+           <th style="width: 20px;"></th>
            <th style="width: 100px;" nowrap="true">
                <a href="#"
 			   <c:if test="${orderby==null ||orderby=='' || orderby!='title'}">
@@ -221,11 +219,11 @@
 					onClick="selectTab('${status}', 'title', '${lastvalue}');"
 			   </c:if>
 			   >
-                  <fmt:message key="workflow.title" />  
+                  <fmt:message key="workflow.title" />
                </a>
            </th>
            <th>
-               <a href="#" 
+               <a href="#"
 				<c:if test="${orderby==null || orderby=='' || orderby!='remark'}">
 					onClick="selectTab('${status}','remark','false');"
 			   </c:if>
@@ -241,7 +239,7 @@
                </a>
            </th>
            <th style="width: 140px;">
-				<a href="#" 
+				<a href="#"
 				<c:if test="${orderby==null || orderby=='' || orderby!='lastmodifier'}">
 					onClick="selectTab('${status}','lastmodifier','false');"
 			   </c:if>
@@ -257,7 +255,7 @@
                </a>
            </th>
 		<c:if test="${workflowType == 'page' || workflowType == 'content' }">
-           <th style="width: 140px;">		   		
+           <th style="width: 140px;">
                <a href="#"
                <c:if test="${orderby==null || orderby=='' || orderby=='undefined'}">
 			   		onClick="selectTab('${status}','lastmodifieddate','true');" class="sortup"
@@ -279,7 +277,7 @@
 		</c:if>
 		<c:if test="${workflowType == 'content' }">
            <th style="width: 140px;">
-               <a href="#" 
+               <a href="#"
 			   <c:if test="${orderby==null || orderby=='' || orderby!='contentchannel'}">
 			   		onClick="selectTab('${status}','contentchannel','false');"
 			   </c:if>
@@ -320,7 +318,7 @@
 			<c:set var="field" value="title"/>
 			<c:set var="returnAction" value="PageWorkflowAction.do"/>
 		</c:if>
-		
+
          <td style="white-space: nowrap;">
 
 	        <mm:field name="${type}.number" jspvar="number" write="false"/>
