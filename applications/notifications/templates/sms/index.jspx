@@ -29,7 +29,7 @@
       </mm:present>
       <mm:cloud rank="administrator">
         <table>
-          <form>
+          <form method="post">
             <tr>
               <th>Phone number</th>
               <td><input type="text" name="mobile" value="${mobile}" /></td>
