@@ -21,7 +21,7 @@
 
     <field name="message">
       <descriptions>
-        <description xml:lang="nl">
+        <description xml:lang="en">Message of the to be send notification.
         </description>
       </descriptions>
       <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
