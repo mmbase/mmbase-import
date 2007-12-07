@@ -28,23 +28,20 @@ public class LinkWorkflowAction extends WorkflowAction {
       NodeManager manager = cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL);
       NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
 
-      boolean ad = false;
-      ad = (aord ? false : false);
-
       wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + ".number");
       wfQuery.addField(RepositoryUtil.CONTENTCHANNEL + "." + RepositoryUtil.TITLE_FIELD);
 
       if (orderby.equals(RepositoryUtil.TITLE_FIELD)) {
-         addOrderBy(manager, wfQuery, RepositoryUtil.TITLE_FIELD, ad);
+         addOrderBy(manager, wfQuery, RepositoryUtil.TITLE_FIELD, aord);
       }
       else if (orderby.equals("number")) {
-         addOrderBy(manager, wfQuery, "number", ad);
+         addOrderBy(manager, wfQuery, "number", aord);
       }
       else if (orderby.equals(WorkflowManager.REMARK_FIELD)) {
-         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD, ad);
+         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD, aord);
       }
       else {
-         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD, ad);
+         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD, aord);
       }
       return wfQuery;
    }
