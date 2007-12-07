@@ -109,17 +109,13 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    @Override
    public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       String[] availableNewsletters = request.getParameterValues(AVAILABLE_NEWSLETTERS);
-      if (availableNewsletters != null && availableNewsletters.length > 0) {
          PortletPreferences preferences = request.getPreferences();
          String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
-         if (portletId != null) {
+         if (portletId != null) {            
             setPortletNodeParameter(portletId, AVAILABLE_NEWSLETTERS, availableNewsletters);
          } else {
             log.debug("No portletId");
          }
-      } else {
-         log.debug("No newsletters selected");
-      }
 
       super.processEditDefaults(request, response);
    }

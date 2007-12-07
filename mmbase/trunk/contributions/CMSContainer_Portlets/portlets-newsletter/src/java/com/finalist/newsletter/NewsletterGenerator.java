@@ -7,12 +7,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.mail.Session;
 import javax.mail.internet.MimeMultipart;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -73,5 +78,43 @@ public abstract class NewsletterGenerator {
          log.debug("Error");
       }
       return (null);
+   }
+
+   public static Session getMailSession() {
+      Module sendmailModule = Module.getModule("sendmail");
+      if (sendmailModule == null) {
+         log.fatal("Sendmail module not installed which is required for newsletter generation");
+         return null;
+      }
+      else {
+         String context = sendmailModule.getInitParameter("context");
+         if (context == null) {
+            context = "java:comp/env";
+            log.warn("The property 'context' is missing, taking default " + context);
+         }
+         String dataSource = sendmailModule.getInitParameter("datasource");
+         if (dataSource == null) {
+            dataSource = "mail/Session";
+            log.warn("The property 'datasource' is missing, taking default " + dataSource);
+        }
+         
+         Session session = null;
+         try {
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context)initCtx.lookup(context);
+            Object o = envCtx.lookup(dataSource);
+            if (o instanceof Session) {
+                session = (javax.mail.Session) o;
+            } else {
+                log.fatal("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
+                return null;
+            }
+         } catch (NamingException e) {
+            log.fatal("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session ");
+            return null;
+         }
+         log.debug("Email session obtained");
+         return session;
+      }
    }
 }

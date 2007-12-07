@@ -145,7 +145,8 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static void terminateUserSubscription(String userName) {
       if (userName != null) {
-         NewsletterCommunication.removeUserPreference(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+         NewsletterCommunication.removeNewsPrefByUser(userName);
+        log.debug("Subscriptions for user " + userName + " terminated");
       }
    }
 
