@@ -30,9 +30,9 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.8 2007-12-07 13:07:27 michiel Exp $
+ * @version $Id: Notifier.java,v 1.9 2007-12-07 13:27:13 michiel Exp $
  **/
-public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
+public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(Notifier.class);
 
@@ -157,7 +157,7 @@ public class Notifier extends ReloadableModule implements NodeEventListener, Rel
                 Pattern machineName = Pattern.compile(setting.substring(12));
                 active = machineName.matcher(MMBase.getMMBase().getMachineName()).matches();
             } else {
-                 active = "true".equals(setting);
+                active = "true".equals(setting);
             }
         }
         return active;
