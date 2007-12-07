@@ -359,12 +359,12 @@ public class PortletUtil {
          updateNodeParameter(portlet, key, singleValue);
       }
       else {
-         NodeList plist = SearchUtil.findRelatedNodeList(portlet, PORTLETPARAMETER, PARAMETERREL, KEY_FIELD, key);
+         NodeList plist = SearchUtil.findRelatedNodeList(portlet, NODEPARAMETER, PARAMETERREL, KEY_FIELD, key);
          if (!plist.isEmpty()) {
-            Map<String, Node> storedValues = new HashMap<String, Node>();
+            Map<Integer, Node> storedValues = new HashMap<Integer, Node>();
             for (Iterator<Node> iterator = plist.iterator(); iterator.hasNext();) {
                Node storedNode = iterator.next();
-               String storedValue = storedNode.getStringValue(VALUE_FIELD);
+               Integer storedValue = storedNode.getIntValue(VALUE_FIELD);
                storedValues.put(storedValue, storedNode);
             }
 

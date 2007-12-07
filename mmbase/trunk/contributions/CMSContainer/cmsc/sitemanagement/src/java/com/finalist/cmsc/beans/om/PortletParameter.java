@@ -62,7 +62,12 @@ public class PortletParameter extends NodeBean {
 
 
    public void setValues(String[] valuesArray) {
-      values = Arrays.asList(valuesArray);
+      if (valuesArray == null) {
+         values = new ArrayList<String>();
+      }
+      else {
+         values = Arrays.asList(valuesArray);
+      }
    }
 
 
