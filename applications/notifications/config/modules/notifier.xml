@@ -3,6 +3,12 @@
 <module>
   <class>org.mmbase.notifications.Notifier</class>
   <properties>
+
+    <!--
+        Regular expression for the mmbase machine name on which this must active.
+    -->
+    <property name="active">host:/e/as/teleac@morph\.omroep\.nl|.*localhost</property>
+
     <!--
         Default schedule notifications a week ahead.
     -->
