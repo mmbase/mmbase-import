@@ -15,10 +15,15 @@ import org.mmbase.bridge.*;
  * Implementations of these SMS handlers can perform action on receival of an SMS message.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Handler.java,v 1.4 2007-11-19 12:03:12 michiel Exp $
+ * @version $Id: Handler.java,v 1.5 2007-12-07 13:06:43 michiel Exp $
  **/
 public interface Handler {
 
+
+    /**
+     * Handle an SMS.
+     * @return true if the SMS was understood and could be handled. False otherwise.
+     */
     boolean handle(Cloud cloud, SMS sms);
 
 
