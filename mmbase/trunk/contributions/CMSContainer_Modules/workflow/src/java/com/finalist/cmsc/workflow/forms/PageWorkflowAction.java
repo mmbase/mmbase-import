@@ -27,31 +27,28 @@ public class PageWorkflowAction extends WorkflowAction {
       NodeManager manager = cloud.getNodeManager(PagesUtil.PAGE);
       NodeQuery wfQuery = WorkflowManager.createDetailQuery(cloud, manager);
 
-      boolean ad = false;
-      ad = (aord ? false : true);
-
       wfQuery.addField(PagesUtil.PAGE + ".number");
       wfQuery.addField(PagesUtil.PAGE + "." + PagesUtil.TITLE_FIELD);
       wfQuery.addField(PagesUtil.PAGE + "." + PagesUtil.LASTMODIFIEDDATE_FIELD);
       wfQuery.addField(PagesUtil.PAGE + "." + PagesUtil.LASTMODIFIER_FIELD);
 
       if (orderby.equals(PagesUtil.TITLE_FIELD)) {
-         addOrderBy(manager, wfQuery, PagesUtil.TITLE_FIELD, ad);
+         addOrderBy(manager, wfQuery, PagesUtil.TITLE_FIELD, aord);
       }
       else if (orderby.equals(PagesUtil.LASTMODIFIER_FIELD)) {
-         addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIER_FIELD, ad);
+         addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIER_FIELD, aord);
       }
       else if (orderby.equals(PagesUtil.LASTMODIFIEDDATE_FIELD)) {
-         addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIEDDATE_FIELD, ad);
+         addOrderBy(manager, wfQuery, PagesUtil.LASTMODIFIEDDATE_FIELD, aord);
       }
       else if (orderby.equals("number")) {
-         addOrderBy(manager, wfQuery, "number", ad);
+         addOrderBy(manager, wfQuery, "number", aord);
       }
       else if (orderby.equals(WorkflowManager.REMARK_FIELD)) {
-         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD, ad);
+         addOrderBy(WorkflowManager.getManager(cloud), wfQuery, WorkflowManager.REMARK_FIELD, aord);
       }
       else {
-         addOrderBy(manager, wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD, ad);
+         addOrderBy(manager, wfQuery, WorkflowManager.LASTMODIFIEDDATE_FIELD, aord);
       }
       return wfQuery;
    }
