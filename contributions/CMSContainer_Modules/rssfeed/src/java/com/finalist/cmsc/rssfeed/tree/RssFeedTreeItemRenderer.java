@@ -43,4 +43,9 @@ public class RssFeedTreeItemRenderer implements NavigationTreeItemRenderer {
          return element;
       }
 
+   public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
+      element.addOption(renderer.createTreeOption("rss_new.png", "site.rss.new",
+             "cmsc-modules-rssfeed", "../rssfeed/RssFeedCreate.do?parentpage=" + parentId));
+   }
+
 }
