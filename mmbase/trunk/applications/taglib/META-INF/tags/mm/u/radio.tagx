@@ -1,4 +1,4 @@
-<jsp:root 
+<jsp:root
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
@@ -34,6 +34,8 @@
   <jsp:directive.attribute name="tabindex" />
   <jsp:directive.attribute name="onchange" />
 
+  <jsp:directive.attribute name="type" />
+
   <c:if test="! empty referid">
     <mm:write id="compare" referid="${referid}" write="false" />
   </c:if>
@@ -44,7 +46,7 @@
     <input><jsp:doBody /></input>
     <mm:xslt xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:template match="input">
-        <input value="${value}" type="radio">
+        <input value="${value}" type="${empty type ? 'radio' : type}">
           <c:if test="${! empty checked}">
             <xsl:attribute name="checked">${checked}</xsl:attribute>
           </c:if>
