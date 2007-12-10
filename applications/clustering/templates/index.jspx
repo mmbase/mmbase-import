@@ -63,7 +63,7 @@
             <td>
               total: ${receive.cost}  ms (${receive.cost / receive.count} ms / message)<br />
               parsing:  ${receive.parseCost} ms (${receive.parseCost / receive.count} ms / message)<br />
-            </td>            
+            </td>
           </tr>
           <tr>
             <th>Number of received bytes</th>
@@ -78,12 +78,12 @@
             <th>Send Cost</th>
             <td>
               total: ${sent.cost} ms (${sent.cost / sent.count} ms / message)<br />
-              parsing:  ${sent.parseCost} ms(${sent.parseCost / sent.count} ms / message)<br />
-            </td>            
+              parsing:  ${sent.parseCost} ms (${sent.parseCost / sent.count} ms / message)<br />
+            </td>
           </tr>
           <tr>
             <th>Number of sent bytes</th>
-            <td>${sent.bytes} byte(${sent.bytes / sent.count} byte / message)</td>
+            <td>${sent.bytes} byte (${sent.bytes / sent.count} byte / message)</td>
           </tr>
           <tr>
             <th>Reload page</th>
