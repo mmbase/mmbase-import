@@ -19,8 +19,7 @@
 		<c:set var="pagerIndex" value="/WEB-INF/templates/pagerindex.jsp" />
 	</c:if>
 
-	<cmsc:renderURL var="renderUrl" />
-	<pg:pager url="${renderUrl}" maxPageItems="${elementsPerPage}" items="${totalElements}" 
+	<cmsc:pager maxPageItems="${elementsPerPage}" items="${totalElements}" 
 			index="${pagesIndex}" maxIndexPages="${showPages}" isOffset="true"
 			export="offset,currentPage=pageNumber">
 	<c:if test="${usePaging}">
@@ -85,5 +84,5 @@
 		<c:remove var="startPage" scope="request"/>  
 		<c:remove var="endPage" scope="request"/>
 	</c:if>
-	</pg:pager>
+	</cmsc:pager>
 </c:if>
