@@ -9,6 +9,7 @@ sQuery
 */
 package org.mmbase.notifications;
 import java.util.*;
+import java.text.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -17,20 +18,24 @@ import org.mmbase.util.logging.Logging;
  * A notification implementation which sends using mmbase-email.jar
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmailNotification.java,v 1.4 2007-12-10 15:51:11 michiel Exp $
+ * @version $Id: EmailNotification.java,v 1.5 2007-12-10 18:15:05 michiel Exp $
  **/
 public  class EmailNotification extends Notification {
 
     private static final Logger log = Logging.getLoggerInstance(EmailNotification.class);
 
-    public void send(Node recipient, Node notifyable, Date date) {
+    @Override
+    public void send(Relation notification, Date date) {
+        Node recipient = notification.getSource();
         String address = recipient.getFunctionValue("email", null).toString();
         log.service("Sending notification email to " + address);
         NodeManager emails = recipient.getCloud().getNodeManager("email");
         Node email = emails.createNode();
         email.setStringValue("to", address);
-        email.setStringValue("subject", notifyable.getStringValue("title"));
-        email.setStringValue("body", getMessage(notifyable, this.getClass().getName()));
+        Node notifyable = notification.getDestination();
+        Object[] parameters = getFormatParameters(notification, date);
+        email.setStringValue("subject",  format(notification, notifyable.getStringValue("title"), parameters));
+        email.setStringValue("body",  format(notification, getMessage(notification), parameters));
         email.commit();
         email.getFunctionValue("startmail", null);
 
