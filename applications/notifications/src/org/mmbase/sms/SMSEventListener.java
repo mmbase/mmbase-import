@@ -8,11 +8,15 @@
 package org.mmbase.sms;
 
 import org.mmbase.core.event.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Michiel Meeuwissen
  */
 public class SMSEventListener implements EventListener {
+
+    private static final Logger log = Logging.getLoggerInstance(SMSEventListener.class);
 
     private static final SMSEventListener instance = new SMSEventListener();
 
@@ -23,6 +27,7 @@ public class SMSEventListener implements EventListener {
 
     }
     public void notify(SMSEvent event) {
+        log.debug("Received " + event);
         if (event.isImmediate()) {
             Sender.getInstance().send(event.getSMS());
         } else {
