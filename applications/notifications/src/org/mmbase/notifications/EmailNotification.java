@@ -17,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * A notification implementation which sends using mmbase-email.jar
  *
  * @author Michiel Meeuwissen
- * @version $Id: EmailNotification.java,v 1.3 2007-10-22 12:51:18 michiel Exp $
+ * @version $Id: EmailNotification.java,v 1.4 2007-12-10 15:51:11 michiel Exp $
  **/
 public  class EmailNotification extends Notification {
 
@@ -30,7 +30,7 @@ public  class EmailNotification extends Notification {
         Node email = emails.createNode();
         email.setStringValue("to", address);
         email.setStringValue("subject", notifyable.getStringValue("title"));
-        email.setStringValue("body", notifyable.getStringValue("message"));
+        email.setStringValue("body", getMessage(notifyable, this.getClass().getName()));
         email.commit();
         email.getFunctionValue("startmail", null);
 

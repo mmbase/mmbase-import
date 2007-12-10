@@ -28,7 +28,7 @@ public class NotificationSMS implements SMS {
     }
 
     public String getMessage() {
-        return notifyable.getStringValue("message");
+        return Notification.getMessage(notifyable, SMSNotification.class.getName());
     }
     public String getMobile() {
         return Casting.toString(recipient.getFunctionValue("phone", null));
