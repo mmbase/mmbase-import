@@ -20,10 +20,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * SMS Sender implementation, which only wraps the message in an {@link #SMSEvent} and offers it to
- * the Event Manager.
+ * the Event Manager. Assumed is that precisely one of the mmbases in the cluster is configured with
+ * some actual SMS sending implementation and accepts the event.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EventSender.java,v 1.1 2007-12-07 13:06:43 michiel Exp $
+ * @version $Id: EventSender.java,v 1.2 2007-12-10 10:22:12 michiel Exp $
  **/
 public class EventSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(EventSender.class);
