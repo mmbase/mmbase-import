@@ -1,13 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
-    <artifactId>cmsc-modules-community</artifactId>
-    <name>Community module</name>
-    <shortDescription>Remember users and roles.</shortDescription>
-    <description>
-    	Remember users and roles.
-    </description>
-    <dependencies>
+    <artifactId>cmsc-community</artifactId>
+    <name>Custom CMS Container staging web application</name>
+    <shortDescription>CMS Container single web application</shortDescription>
+	<dependencies>
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-demo-webapp</artifactId>
+			<version>${application.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-rssfeed</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>   		
+		
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-tasks</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>   		
+		
+		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-tasks</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-versioning</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>
+        <dependency>
+            <groupId>finalist</groupId>
+            <artifactId>cmsc-modules-linkvalidator</artifactId>
+            <version>${cmscmodules.version}</version>
+            <type>mmbase-module</type>
+        </dependency>
+        <dependency>
+            <groupId>finalist</groupId>
+            <artifactId>cmsc-modules-community</artifactId>
+            <version>${cmscmodules.version}</version>
+            <type>mmbase-module</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>finalist</groupId>
+            <artifactId>cmsc-portlets-login</artifactId>
+            <version>${cmscportlets.version}</version>
+            <type>mmbase-module</type>
+        </dependency>
+        
+        
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-newsletter</artifactId>
+         <version>${cmscportlets.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+
+
+
+
 <!-- Hibernate dependencies -->
 		<dependency>
 		  <groupId>asm</groupId>
@@ -238,6 +299,7 @@
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
 		</dependency>
-    </dependencies>
-</project>
+		
 
+	</dependencies>
+</project>

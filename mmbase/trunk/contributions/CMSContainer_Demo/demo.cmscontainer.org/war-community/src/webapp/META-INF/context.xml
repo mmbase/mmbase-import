@@ -33,7 +33,19 @@
 		password="cmsc"
 		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
-		
+
+    <Resource name="jdbc/jaasdb" auth="Container" type="javax.sql.DataSource"
+		removeAbandoned="true" 
+		removeAbandonedTimeout="60"
+		logAbandoned="true" 
+		maxActive="10"
+		maxIdle="1" 
+		maxWait="10000" 
+		username="cmsc" 
+		password="cmsc"
+		driverClassName="com.mysql.jdbc.Driver" 
+		url="jdbc:mysql://localhost:3306/jaasdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
+
 	<!-- zeroDateTimeBehavior=convertToNull 
 		Datetimes with all-zero components ('0000-00-00 ...') - These values can not be represented reliably
 		in Java. Connector/J 3.0.x always converted them to NULL when being read from a ResultSet.
@@ -65,19 +77,12 @@
 
 	<Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env" type="java.lang.String" />
 	<Environment name="mmbase/mmbaseroot/datasource" value="jdbc/cmsc" type="java.lang.String" />
-	<!-- <Environment name="mmbase/mmbaseroot/basename" value="mm" type="java.lang.String" /> -->
+<!--	<Environment name="mmbase/mmbaseroot/basename" value="mm" type="java.lang.String" /> -->
 	
 	<Environment name="mmbase/imaging/ImageConvertClass"
 		value="org.mmbase.module.builders.ConvertImageMagick" type="java.lang.String" />
 	<Environment name="mmbase/imaging/ImageConvert.ConverterCommand" value="convert" type="java.lang.String" />
 	<Environment name="mmbase/imaging/ImageConvert.ConverterRoot" value="" type="java.lang.String" />
-
-	<Environment name="mmbase/rmmci/port" value="1111" type="java.lang.String" />
-	<Environment name="mmbase/rmmci/stubport" value="1112" type="java.lang.String" />
-	<Environment name="mmbase/rmmci/bindname" value="remotecontext" type="java.lang.String" />
-	<!-- if RMIRegistryServer is not set RemoteMMCI looks for a RMIRegistryServer
-		on the host defined in the mmbaseroot.xml module. -->
-	<!-- <Environment name="mmbase/rmmci/RMIRegistryServer" value="localhost" type="java.lang.String" /> -->
 
 	<!-- Contains value 'live' or 'staging' to determine whether this server is Live or Staging. -->
 	<Environment name="server/LiveOrStaging" value="staging" type="java.lang.String" />
