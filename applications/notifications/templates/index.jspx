@@ -46,7 +46,7 @@
                       <td>
                         <mm:index />
                       </td>
-                      <td>${_.date}</td>
+                      <td>${_.date} due in ${_.due}</td>
                       <td>${_.notificationDate}</td>
                       <mm:node number="${_.node.number}">
                         <td>
