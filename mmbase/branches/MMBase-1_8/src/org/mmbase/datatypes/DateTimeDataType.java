@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DateTimeDataType.java,v 1.34.2.1 2007-09-20 13:23:06 michiel Exp $
+ * @version $Id: DateTimeDataType.java,v 1.34.2.2 2007-12-10 12:26:46 michiel Exp $
  * @since MMBase-1.8
  */
 public class DateTimeDataType extends ComparableDataType {
@@ -58,7 +58,9 @@ public class DateTimeDataType extends ComparableDataType {
     }
 
     public void setDefaultValue(Object o) {
-        super.setDefaultValue(Casting.toDate(o));
+        log.debug("Setting default value " + o);
+        //super.setDefaultValue(Casting.toDate(o));
+        super.setDefaultValue(o == null ? null : Casting.toDate(o));
     }
 
     protected void inheritProperties(BasicDataType origin) {
