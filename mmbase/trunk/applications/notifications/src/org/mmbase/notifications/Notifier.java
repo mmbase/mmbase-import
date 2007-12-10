@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.10 2007-12-10 09:57:00 michiel Exp $
+ * @version $Id: Notifier.java,v 1.11 2007-12-10 15:51:11 michiel Exp $
  **/
 public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -90,7 +90,7 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
             Date lastCheck  = notifyable.getDateValue("lastcheck");
             Date futureDate = new Date(new Date().getTime() + 1000 * future);
 
-            NodeIterator pi = notifyable.getRelatedNodes("object", "related", null).nodeIterator();
+            NodeIterator pi = notifyable.getRelatedNodes("object", "related", "source").nodeIterator();
             while (pi.hasNext()) {
                 Node p = pi.nextNode();
                 if (log.isTraceEnabled()) {
