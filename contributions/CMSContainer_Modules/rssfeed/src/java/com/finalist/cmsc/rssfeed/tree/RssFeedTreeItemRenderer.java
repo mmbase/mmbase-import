@@ -39,7 +39,18 @@ public class RssFeedTreeItemRenderer implements NavigationTreeItemRenderer {
             element.addOption(renderer.createTreeOption("delete.png", "site.rss.remove", 
                     RESOURCEBUNDLE, "../rssfeed/RssFeedDelete.do?number=" + id));
          }
+         
+         if (SecurityUtil.isChiefEditor(role)) {
+             element.addOption(renderer.createTreeOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
+             /** Not a good idea until this is fully implemented for every scenario
+             * element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
+             * element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
+             */
+          }
 
+         element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
+                 "../usermanagement/pagerights.jsp?number=" + id));
+         
          return element;
       }
 
