@@ -2,6 +2,9 @@
 <!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd">
 <util>
   <properties>
-    <property name="sms_sender">* * * * *|org.mmbase.sms.cmtelecom.SenderJob||sms_sender.xml</property>
+    <!--
+        If Sender is CMTelecomSender, this job will periodically trigger sending of pending messages
+    -->
+    <property name="sms_sender">* * * * *|org.mmbase.sms.cmtelecom.SenderJob||</property>
   </properties>
 </util>
