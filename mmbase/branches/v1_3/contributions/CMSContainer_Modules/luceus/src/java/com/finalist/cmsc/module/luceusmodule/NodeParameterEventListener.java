@@ -22,7 +22,6 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Handles events on content linked to a portlet
- * 
  */
 public class NodeParameterEventListener implements NodeEventListener {
 
@@ -54,8 +53,12 @@ public class NodeParameterEventListener implements NodeEventListener {
 				Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 				Node node = cloud.getNode(event.getNodeNumber());
 				String updateKey = node.getStringValue(FIELD_KEY);
-				int updateNumber = ((Integer) event.getNewValue(FIELD_VALUE)).intValue();
-				doUpdate(updateKey, updateNumber);
+
+                int updateOldNumber = ((Integer) event.getOldValue(FIELD_VALUE)).intValue();
+                doUpdateChannel(updateKey, updateOldNumber);
+               
+                int updateNewNumber = ((Integer) event.getNewValue(FIELD_VALUE)).intValue();
+                doUpdate(updateKey, updateNewNumber);
 			}
 			break;
 		case Event.TYPE_DELETE:
@@ -75,11 +78,21 @@ public class NodeParameterEventListener implements NodeEventListener {
 		}
 	}
 
-	private void doUpdate(String key, int nodeNumber) {
-		if (KEY_CONTENT_CHANNEL.equals(key)) {
-			module.updateContentChannelIndex(nodeNumber);
-		} else if (KEY_CONTENT_ELEMENT.equals(key)) {
-			module.updateContentIndex(nodeNumber);
-		}
-	}
+   private void doUpdate(String key, int nodeNumber) {
+      doUpdateChannel(key, nodeNumber);
+      doUpdateContent(key, nodeNumber);
+   }
+
+    private void doUpdateChannel(String key, int nodeNumber) {
+        if (KEY_CONTENT_CHANNEL.equals(key)) {
+            module.updateContentChannelIndex(nodeNumber);
+        }
+    }
+
+    private void doUpdateContent(String key, int nodeNumber) {
+        if (KEY_CONTENT_ELEMENT.equals(key)) {
+            module.updateContentIndex(nodeNumber);
+        }
+    }
+
 }
