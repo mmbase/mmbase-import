@@ -34,18 +34,6 @@
 		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
 
-    <Resource name="jdbc/jaasdb" auth="Container" type="javax.sql.DataSource"
-		removeAbandoned="true" 
-		removeAbandonedTimeout="60"
-		logAbandoned="true" 
-		maxActive="10"
-		maxIdle="1" 
-		maxWait="10000" 
-		username="cmsc" 
-		password="cmsc"
-		driverClassName="com.mysql.jdbc.Driver" 
-		url="jdbc:mysql://localhost:3306/jaasdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
-
 	<!-- zeroDateTimeBehavior=convertToNull 
 		Datetimes with all-zero components ('0000-00-00 ...') - These values can not be represented reliably
 		in Java. Connector/J 3.0.x always converted them to NULL when being read from a ResultSet.

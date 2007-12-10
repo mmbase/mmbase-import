@@ -3,11 +3,11 @@
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-demo</artifactId>
     <name>Custom CMS Container staging web application</name>
-    <shortDescription>CMS Container staging web application</shortDescription>
+    <shortDescription>CMS Container single web application</shortDescription>
 	<dependencies>
 		<dependency>
 			<groupId>finalist</groupId>
-			<artifactId>cmsc-webapp</artifactId>
+			<artifactId>cmsc-demo-webapp</artifactId>
 			<version>${application.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
@@ -42,18 +42,6 @@
             <groupId>finalist</groupId>
             <artifactId>cmsc-modules-linkvalidator</artifactId>
             <version>${cmscmodules.version}</version>
-            <type>mmbase-module</type>
-        </dependency>
-        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-modules-community</artifactId>
-            <version>${cmscmodules.version}</version>
-            <type>mmbase-module</type>
-        </dependency>
-        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-portlets-login</artifactId>
-            <version>${cmscportlets.version}</version>
             <type>mmbase-module</type>
         </dependency>
 	</dependencies>
