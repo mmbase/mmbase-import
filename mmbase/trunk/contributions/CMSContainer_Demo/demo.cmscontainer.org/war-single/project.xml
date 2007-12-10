@@ -2,7 +2,7 @@
 <project>
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-demo</artifactId>
-    <name>Custom CMS Container staging web application</name>
+    <name>Custom CMS Container single web application</name>
     <shortDescription>CMS Container single web application</shortDescription>
 	<dependencies>
 		<dependency>
