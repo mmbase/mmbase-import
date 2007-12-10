@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.11 2007-12-10 15:51:11 michiel Exp $
+ * @version $Id: Notifier.java,v 1.12 2007-12-10 18:15:05 michiel Exp $
  **/
 public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -96,8 +96,10 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
                 if (log.isTraceEnabled()) {
                     log.trace("Using " + p);
                 }
-                Function datesFunction = p.getFunction("dates");
-                if (datesFunction == null) {
+                Function datesFunction;
+                try {
+                    datesFunction = p.getFunction("dates");
+                } catch (NotFoundException nfe) {
                     log.error("No function 'dates' defined on " + p);
                     continue;
                 }

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.notifications;
 import org.mmbase.sms.*;
 import java.util.*;
+import org.mmbase.util.Casting;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -18,17 +19,23 @@ import org.mmbase.util.logging.Logging;
  * A notification implementation which uses SMS.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SMSNotification.java,v 1.2 2007-11-26 16:15:48 michiel Exp $
+ * @version $Id: SMSNotification.java,v 1.3 2007-12-10 18:15:05 michiel Exp $
  **/
 public  class SMSNotification extends Notification {
 
     private static final Logger log = Logging.getLoggerInstance(SMSNotification.class);
 
-    public void send(Node recipient, Node notifyable, Date date) {
-        SMS sms = new NotificationSMS(recipient, notifyable, date);
-        if (sms.getOperator() < 0) {
-            log.service("Ignoring sms " + sms + " because recipient's phone number not yet validated");
+    @Override
+    public void send(Relation notification, Date date) {
+        Node recipient = notification.getSource();
+        int operator = Casting.toInt(recipient.getFunctionValue("operator", null));
+        if (operator < 0) {
+            log.service("Ignoring sms to " + recipient + " because recipient's phone number not yet validated");
         } else {
+            Node notifyable = notification.getDestination();
+            String message = format(notification, getMessage(notification), getFormatParameters(notification, date));
+            String mobile = Casting.toString(recipient.getFunctionValue("phone", null));
+            SMS sms = new BasicSMS(mobile, operator, message);
             Sender.getInstance().offer(sms);
         }
     }
