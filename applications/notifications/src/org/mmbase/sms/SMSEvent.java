@@ -15,7 +15,7 @@ import org.mmbase.module.core.MMBase;
  * An SMS wrapped into an event.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SMSEvent.java,v 1.1 2007-12-07 13:06:43 michiel Exp $
+ * @version $Id: SMSEvent.java,v 1.2 2007-12-10 09:57:41 michiel Exp $
  */
 public class  SMSEvent extends Event {
 
@@ -32,5 +32,9 @@ public class  SMSEvent extends Event {
     }
     public boolean isImmediate() {
         return immediate;
+    }
+
+    public String toString() {
+        return super.toString() + ":" + sms.toString();
     }
 }
