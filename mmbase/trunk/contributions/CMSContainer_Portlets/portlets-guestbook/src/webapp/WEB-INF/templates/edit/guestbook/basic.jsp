@@ -34,8 +34,7 @@
                 <mm:size id="totalitems" />
             </c:set>
 
-            <cmsc:renderURL var="renderUrl" />
-            <pg:pager url="${renderUrl}" maxPageItems="${elementsPerPage}" items="${totalElements}" index="center"
+            <cmsc:pager maxPageItems="${elementsPerPage}" items="${totalElements}" index="center"
                 maxIndexPages="${10}" export="offset,currentPage=pageNumber">
                 <table>
                     <mm:relatednodes offset="${offset}" max="${offset + elementsPerPage}">
@@ -70,7 +69,7 @@
                     </mm:relatednodes>
                 </table>
                 <%@include file="/WEB-INF/templates/pagerindex.jsp"%>
-            </pg:pager>
+            </cmsc:pager>
         </mm:relatednodescontainer>
     </mm:node> <input type="submit" name="save" value="<fmt:message key="edit.submit" />:" /><br />
 
