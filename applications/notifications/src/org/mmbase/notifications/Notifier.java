@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.9 2007-12-07 13:27:13 michiel Exp $
+ * @version $Id: Notifier.java,v 1.10 2007-12-10 09:57:00 michiel Exp $
  **/
 public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -147,15 +147,19 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
             if (setting.startsWith("host:")) {
                 Pattern host = Pattern.compile(setting.substring(5));
                 try {
+                    String hostName = java.net.InetAddress.getLocalHost().getHostName();
+                    String catalinaName = (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName());
                     active =
-                        host.matcher(java.net.InetAddress.getLocalHost().getHostName()).matches() ||
-                        host.matcher((System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName())).matches();
+                        host.matcher(hostName).matches() ||
+                        host.matcher(catalinaName).matches();
+                    log.debug("" + host + " matches " + hostName + " or " + catalinaName + ": " + active);
                 } catch (java.net.UnknownHostException uhe) {
                     log.error(uhe);
                 }
             } else if (setting.startsWith("machinename:")) {
                 Pattern machineName = Pattern.compile(setting.substring(12));
                 active = machineName.matcher(MMBase.getMMBase().getMachineName()).matches();
+                log.debug("" + machineName + " matches " + MMBase.getMMBase().getMachineName() + ": " + active);
             } else {
                 active = "true".equals(setting);
             }
