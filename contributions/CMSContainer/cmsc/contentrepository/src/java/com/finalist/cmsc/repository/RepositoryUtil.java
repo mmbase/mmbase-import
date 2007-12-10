@@ -918,9 +918,24 @@ public class RepositoryUtil {
             info = new RepositoryInfo();
             cloud.setProperty(RepositoryInfo.class.getName(), info);
             TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, CHILDREL);
-            for (String path : channelsWithRole.keySet()) {
-                Node channel = getChannelFromPath(cloud, path);
-                info.expand(channel.getNumber());
+            
+            for(Map.Entry<String,UserRole> entry : channelsWithRole.entrySet()) {
+                UserRole role = entry.getValue();
+                if (!Role.NONE.equals(role.getRole())) {
+                    String path = entry.getKey();
+                    Node channel = getChannelFromPath(cloud, path);
+                    if(channel != null) {
+                        if (isRoot(channel)) {
+                            info.expand(channel.getNumber());
+                        }
+                        else {
+                            List<Node> pathNodes = getPathToRoot(channel);
+                            for (Node pathNode : pathNodes) {
+                                info.expand(pathNode.getNumber());
+                            }
+                        }
+                    }
+                }
             }
         }
         return info;

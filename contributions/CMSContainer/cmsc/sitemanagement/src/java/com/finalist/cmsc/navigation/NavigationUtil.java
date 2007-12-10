@@ -428,8 +428,8 @@ public class NavigationUtil {
         if (info == null) {
             info = new NavigationInfo();
             cloud.setProperty(NavigationInfo.class.getName(), info);
-            addPagesWithRoleToInfo(cloud, info);
             addAllSiteToInfo(cloud, info);
+            addPagesWithRoleToInfo(cloud, info);
         }
         return info;
     }
@@ -440,27 +440,25 @@ public class NavigationUtil {
 			Node site = i.nextNode();
 			info.expand(site.getNumber());
 		}
-		
 	}
 
 	private static void addPagesWithRoleToInfo(Cloud cloud, NavigationInfo info) {
 		TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, NAVREL);
-		for (String path : pagesWithRole.keySet()) {
-		    Node page = getPageFromPath(cloud, path);
-		    if(page != null) {
-		       info.expand(page.getNumber());
-		       addParentsToInfo(info, page);
-		    }
-		}
-	}
-
-
-	private static void addParentsToInfo(NavigationInfo info, Node page) {
-   	   Node parent = NavigationUtil.getParent(page);
-   	   if(parent != null) {
-           info.expand(parent.getNumber());
-           addParentsToInfo(info, parent);
-   	   }
+        for(Map.Entry<String,UserRole> entry : pagesWithRole.entrySet()) {
+            UserRole role = entry.getValue();
+            if (!Role.NONE.equals(role.getRole())) {
+                String path = entry.getKey();
+                Node page = getPageFromPath(cloud, path);
+                if(page != null) {
+                    if (!SiteUtil.isSite(page)) {
+                        List<Node> pathNodes = getPathToRoot(page);
+                        for (Node pathNode : pathNodes) {
+                            info.expand(pathNode.getNumber());
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 	public static RolesInfo getRolesInfo(Cloud cloud, Node group) {
