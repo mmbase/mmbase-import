@@ -28,27 +28,15 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
       TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
 
       if (SecurityUtil.isEditor(role)) {
-         element
-               .addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletterpublication.edit", "newsletter", "../newsletter/NewsletterEdit.do?number=" + id));
+         element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletterpublication.edit", "newsletter", "../newsletter/NewsletterEdit.do?number=" + id));
 
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
-            element
-                  .addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter", "../newsletter/NewsletterDelete.do?number=" + id));
+            element.addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter", "../newsletter/NewsletterDelete.do?number=" + id));
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {
             element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
          }
-
-         /*
-          * if (SecurityUtil.isChiefEditor(role)) {
-          * element.addOption(renderer.createTreeOption("cut.png", "site.page.cut",
-          * "javascript:cut('" + id + "');"));
-          * element.addOption(renderer.createTreeOption("copy.png",
-          * "site.page.copy", "javascript:copy('" + id + "');"));
-          * element.addOption(renderer.createTreeOption("paste.png",
-          * "site.page.paste", "javascript:paste('" + id + "');")); }
-          */
 
          if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
             element.addOption(renderer.createTreeOption("publish.png", "site.newsletterpublication.publish", "newsletter", "../workflow/publish.jsp?number=" + id));
@@ -59,10 +47,9 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
       return element;
    }
    
-   public void addParentOption(NavigationRenderer renderer, TreeElement element,
-			String parentId) {
-	   throw new UnsupportedOperationException("IMPLEMENT");
-	
+   @SuppressWarnings("unused")
+   public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
+	  // nothing
    }
 
 }
