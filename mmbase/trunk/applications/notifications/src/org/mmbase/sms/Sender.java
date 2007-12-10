@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.7 2007-12-07 13:27:39 michiel Exp $
+ * @version $Id: Sender.java,v 1.8 2007-12-10 09:58:23 michiel Exp $
  **/
 public abstract class Sender {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);
@@ -87,13 +87,14 @@ public abstract class Sender {
                     Class clazz = Class.forName(config.get("class"));
                     sender = (Sender) clazz.newInstance();
                     EventManager.getInstance().addEventListener(SMSEventListener.getInstance());
+                    log.info("Using " + sender + " to send SMS. " + SMSEventListener.getInstance() + " is listening for remote SMSs");
                     listening = true;
                 } else {
                     sender = new EventSender();
                     if (listening) EventManager.getInstance().removeEventListener(SMSEventListener.getInstance());
                     listening = false;
+                    log.info("Using " + sender + " to send SMS");
                 }
-                log.info("Using " + sender + " to send SMS");
             } catch (Exception e) {
                 log.fatal(e.getMessage(), e);
             }
