@@ -355,50 +355,50 @@ public class NavigationUtil {
      * Get the role for the user for a page
      *
      * @param group Node of group
-     * @param page get role for this page
+     * @param item get role for this navigation item
      * @return UserRole - rights of a user
      */
-    public static UserRole getRole(Node group, Node page) {
-        return getRole(group, page, false);
+    public static UserRole getRole(Node group, Node item) {
+        return getRole(group, item, false);
     }
 
     /**
      * Get the role for the user for a page
      *
      * @param cloud Cloud with user
-     * @param page get role for this page
+     * @param item get role for this navigation item
      * @return UserRole - rights of a user
      */
-    public static UserRole getRole(Cloud cloud, int page) {
-        return getRole(cloud, cloud.getNode(page), false);
+    public static UserRole getRole(Cloud cloud, int item) {
+        return getRole(cloud, cloud.getNode(item), false);
     }
 
     /**
      * Get the role for the user for a page
      *
      * @param cloud Cloud with user
-     * @param page get role for this page
-     * @param rightsInherited inherit rights from parent chennal
+     * @param item get role for this navigation item
+     * @param rightsInherited inherit rights from parent navigation item
      * @return UserRole - rights of a user
      */
-    public static UserRole getRole(Cloud cloud, Node page, boolean rightsInherited) {
+    public static UserRole getRole(Cloud cloud, Node item, boolean rightsInherited) {
         TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, NAVREL);
-        return SecurityUtil.getRole(page, rightsInherited, pagesWithRole);
+        return SecurityUtil.getRole(item, rightsInherited, pagesWithRole);
     }
 
     /**
      * Get the role for the user for a page
      *
      * @param group Node of group
-     * @param page get role for this page
-     * @param rightsInherited inherit rights from parent chennal
+     * @param item get role for this navigation item
+     * @param rightsInherited inherit rights from parent navigation item
      * @return UserRole - rights of a user
      */
-    public static UserRole getRole(Node group, Node page, boolean rightsInherited) {
+    public static UserRole getRole(Node group, Node item, boolean rightsInherited) {
        // retrieve a TreeMap where the pages (keys) are ordered on level and path
        TreeMap<String,UserRole> pagesWithRole = SecurityUtil.getNewRolesMap();
        SecurityUtil.fillChannelsWithRole(group, pagesWithRole, treeManagers, NAVREL);
-       return SecurityUtil.getRole(page, rightsInherited, pagesWithRole);
+       return SecurityUtil.getRole(item, rightsInherited, pagesWithRole);
     }
 
     public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights) {
