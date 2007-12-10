@@ -3,6 +3,7 @@
    [
     <!ENTITY mmlevel  "org.mmbase.util.logging.log4j.Log4jLevel" >
     <!ENTITY logdir   "${catalina.home}/logs" >
+    <!ENTITY logapp   "community" >
 ]>
 <log4j:configuration
   debug="false"
@@ -10,7 +11,7 @@
   >
 
 	<appender name="logfile" class="org.apache.log4j.DailyRollingFileAppender" >
-	    <param name="File"   value="&logdir;/cmsc-webapp.log" />
+	    <param name="File"   value="&logdir;/cmsc-&logapp;.log" />
  	    <param name="DatePattern" value="'.'yyyy-MM-dd" />
 	    <param name="Append" value="true" />
 	    <layout class="org.apache.log4j.PatternLayout">
@@ -20,7 +21,7 @@
 	</appender>
 
 	<appender name="sqllogfile" class="org.apache.log4j.DailyRollingFileAppender" >
-	    <param name="File"   value="&logdir;/cmsc-live-sql.log" />
+	    <param name="File"   value="&logdir;/cmsc-&logapp;-sql.log" />
  	    <param name="DatePattern" value="'.'yyyy-MM-dd" />
 	    <param name="Append" value="true" />
 	    <layout class="org.apache.log4j.PatternLayout">
@@ -105,6 +106,12 @@
   </logger>
 
 <!-- log sql statements -->
+
+	<logger name="org.mmbase.storage.search.implementation.database.QueryAnalyzer" additivity="false">
+	  <level class="&mmlevel;" value ="info" />
+	  <appender-ref ref="sqllogfile" />
+	</logger>
+
 	<logger name="org.mmbase.storage.implementation.database" additivity="false">
 	  <level class="&mmlevel;" value ="info" />
 	  <appender-ref ref="sqllogfile" />
