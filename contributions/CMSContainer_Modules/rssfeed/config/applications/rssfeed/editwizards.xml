@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<editwizards exportsource="mmbase://127.0.0.1/reactform" timestamp="20040225000000">
+<editwizards exportsource="mmbase://127.0.0.1/rssfeed" timestamp="20071210000000">
 
 	<node number="36066" owner="admin">
 		<name>RSS feed</name>
