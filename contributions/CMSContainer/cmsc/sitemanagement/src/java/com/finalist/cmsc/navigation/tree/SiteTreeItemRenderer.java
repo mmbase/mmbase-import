@@ -69,6 +69,8 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
        element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
              "../usermanagement/pagerights.jsp?number=" + id));
 
+       renderer.addParentOptions(element, id);
+       
        return element;
     }
 
