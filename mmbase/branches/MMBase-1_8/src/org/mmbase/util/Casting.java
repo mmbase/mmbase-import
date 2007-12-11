@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.89.2.2 2007-09-21 12:53:06 michiel Exp $
+ * @version $Id: Casting.java,v 1.89.2.3 2007-12-11 14:45:38 michiel Exp $
  */
 
 import java.util.*;
@@ -24,9 +24,8 @@ import java.text.*;
 import java.io.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.NodeMap;
 import org.mmbase.bridge.util.MapNode;
@@ -292,11 +291,16 @@ public class Casting {
         } else if (o instanceof Node) {
             return new NodeMap((Node)o) {
                     public Object getValue(String fieldName) {
-                        switch(getNodeManager().getField(fieldName).getType()) {
-                        case org.mmbase.bridge.Field.TYPE_NODE:     return wrap(getNodeValue(fieldName), escaper);
-                        case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
-                        case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
-                        default: return escape(escaper, super.getStringValue(fieldName));
+                        NodeManager nm = getNodeManager();
+                        if (nm.hasField(fieldName)) {
+                            switch(nm.getField(fieldName).getType()) {
+                            case org.mmbase.bridge.Field.TYPE_NODE:     return wrap(getNodeValue(fieldName), escaper);
+                            case org.mmbase.bridge.Field.TYPE_DATETIME: return wrap(getDateValue(fieldName), escaper);
+                            case org.mmbase.bridge.Field.TYPE_XML:      return wrap(getXMLValue(fieldName), escaper);
+                            default: return escape(escaper, super.getStringValue(fieldName));
+                            }
+                        } else {
+                            return escape(escaper, super.getStringValue(fieldName));
                         }
                     }
                     public String toString() {
