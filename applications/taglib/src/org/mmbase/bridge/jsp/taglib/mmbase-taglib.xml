@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.16 2007-10-31 15:44:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.17 2007-12-11 14:42:51 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5998,6 +5998,15 @@ Of course, the default behavior of getSmartPath can still be overridden.
        Which provides the same functionality as the `escape' attribute of writes inside XSLT.
       </p>
     </info>
+    <attribute>
+      <name>version</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        If &lt;xsl:stylesheet&gt; is produced, the value of the 'version' attribute. Defaults to "1.0".
+      </info>
+      <since>MMBase-1.8.5</since>
+    </attribute>
     <extends>contextreader</extends>
     <see tag="formatter" />
     <see tag="writer" attribute="escape"/>
