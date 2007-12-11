@@ -35,12 +35,15 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         try {
             BufferedReader br = new BufferedReader(r);
             PrintWriter bw = new PrintWriter(new BufferedWriter(w));
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.trim().equals("")) {
-                    bw.println(line);
+            String line = br.readLine();
+            while (line != null) {
+                boolean nl = false;
+                if (! line.trim().equals("")) {
+                    bw.write(line);
+                    nl = true;
                 }
+                line = br.readLine();
+                if (nl && line != null) bw.write('\n');
             }
             bw.flush();
         } catch (java.io.IOException e) {
