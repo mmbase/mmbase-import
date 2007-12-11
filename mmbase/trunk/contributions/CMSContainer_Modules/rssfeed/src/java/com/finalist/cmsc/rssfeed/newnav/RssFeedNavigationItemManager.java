@@ -35,7 +35,7 @@ public class RssFeedNavigationItemManager implements NavigationItemManager {
 
 	public NavigationItem loadNavigationItem(Integer key, Node node) {
         if (node == null || !RssFeedUtil.isRssFeedType(node)) {
-            log.debug("Rss feed not found: " + key);
+            log.debug("RSS Feed not found: " + key);
             return null;
         }
         
