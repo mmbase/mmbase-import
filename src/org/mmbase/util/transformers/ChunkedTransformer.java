@@ -371,8 +371,9 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             };
         CharTransformer trans2 = new BufferedReaderTransformer() {
-                protected void transform(PrintWriter bw, String line) {
+                protected boolean transform(PrintWriter bw, String line) {
                     bw.println(line);
+                    return true;
                 }
             };
         long startTime = System.currentTimeMillis();

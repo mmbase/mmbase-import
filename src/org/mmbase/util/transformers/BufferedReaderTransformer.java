@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: BufferedReaderTransformer.java,v 1.3 2007-07-30 16:48:09 michiel Exp $
+ * @version $Id: BufferedReaderTransformer.java,v 1.4 2007-12-11 12:23:34 michiel Exp $
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
@@ -34,9 +34,9 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
 
             String line = br.readLine();
             while (line != null) {
-                transform(bw, line);
+                boolean nl = transform(bw, line);
                 line = br.readLine();
-                if (line != null) bw.write('\n');
+                if (nl && line != null) bw.write('\n');
             }
             br.close();
             bw.flush();
@@ -46,6 +46,6 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
         return w;
     }
 
-    protected abstract void transform(PrintWriter bw, String line);
+    protected abstract boolean transform(PrintWriter bw, String line);
 
 }
