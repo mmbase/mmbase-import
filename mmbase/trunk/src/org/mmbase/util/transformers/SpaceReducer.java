@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.16 2007-08-04 08:09:14 michiel Exp $
+ * @version $Id: SpaceReducer.java,v 1.17 2007-12-11 12:23:34 michiel Exp $
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
@@ -33,9 +33,12 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
 
-    protected void transform(PrintWriter bw, String line) {
+    protected boolean transform(PrintWriter bw, String line) {
         if (!line.trim().equals("")) {
             bw.write(line);
+            return true;
+        } else {
+            return false;
         }
     }
 
