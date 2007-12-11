@@ -293,7 +293,7 @@
          </gui>
          <editor>
             <positions>
-               <input>-1</input>
+               <input>10</input>
                <list>-1</list>
                <search>-1</search>
             </positions>
