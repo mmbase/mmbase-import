@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.23 2005-08-26 09:09:42 michiel Exp $
+ * @version $Id: MMFlash.java,v 1.23.2.1 2007-12-11 13:17:45 michiel Exp $
  */
 public class MMFlash extends Module {
 
@@ -46,22 +46,29 @@ public class MMFlash extends Module {
     MMBase mmb;
 
     public void init() {
+        mmb = MMBase.getMMBase();
         htmlroot = MMBaseContext.getHtmlRoot();
-        mmb=(MMBase)getModule("MMBASEROOT");
         scanp=(scanparser)getModule("SCANPARSER");
         generatortemppath=getInitParameter("generatortemppath");
-        log.debug("generatortemppath:'"+generatortemppath+"'");
+        log.debug("generatortemppath:'" + generatortemppath+"'");
         generatorpath=getInitParameter("generatorpath");
-        log.debug("generatorpath:'"+generatorpath+"'");
+        log.debug("generatorpath:'" + generatorpath + "'");
         generatorprogram=getInitParameter("generatorprogram");
         log.debug("generatorprogram:'"+generatorprogram+"'");
         subdir=getInitParameter("subdir");
-        log.debug("subdir:'"+subdir+"'");
+        log.debug("subdir:'" + subdir + "'");
 
+        if (null == generatortemppath || "".equals(generatortemppath)) {
+            generatortemppath = "" + MMBaseContext.getServletContext().getAttribute("javax.servlet.context.tempdir") + File.separator + "cache" + File.separator + "flash";
+        }
         // check if we may create a file on location of generatorTempPath
         File tempPath = new File(generatortemppath);
         if(!tempPath.isDirectory()) {
-            log.error("Generator Temp Path was not a direcory('" + generatortemppath + "'), please edit mmflash.xml, or create directory");
+            if (! tempPath.mkdirs()) {
+                log.error("Generator Temp Path was not a direcory('" + generatortemppath + "'), please edit mmflash.xml, or create directory");
+            } else {
+                log.info("Created " + tempPath);
+            }
         }
         try {
             File test = File.createTempFile("flash", "test", tempPath);
@@ -436,7 +443,7 @@ public class MMFlash extends Module {
                 }
                 String src=(String)rep.get("src");
                 if (src!=null) {
-                    // bad way to test for MMBase images! 
+                    // bad way to test for MMBase images!
                     if (src.startsWith("/img.db?")) {
                         String result=mapImage(src.substring(8),tempFiles);
                         part+=" \""+result+"\"";
@@ -704,7 +711,7 @@ public class MMFlash extends Module {
                         template.append("+");
                     }
                 }
-                
+
             }
             byte[] bytes = bul.getCachedNode(bul.getNode(imageId), template.toString()).getByteValue("handle");
             File tempFile = createTemporaryFile("image", ".jpg");
