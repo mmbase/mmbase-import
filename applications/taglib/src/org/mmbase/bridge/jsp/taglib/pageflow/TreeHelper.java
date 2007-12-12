@@ -13,9 +13,9 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import java.io.*;
 import java.util.StringTokenizer;
 import java.util.Stack;
-import java.net.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpSession;
+import java.net.URL;
 import org.mmbase.bridge.*;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.functions.*;
@@ -32,7 +32,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.21 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.13.2.4 2007-11-19 15:17:31 michiel Exp $
  */
 
 public class TreeHelper {
@@ -49,20 +49,20 @@ public class TreeHelper {
      
         Needed:
             - How to find a builder for an objectnumber? Use bridge
-
      */
     
     private Cloud cloud;
     private boolean backwardsCompatible = true;
     private static final Logger log = Logging.getLoggerInstance(TreeHelper.class);
-    private static final ResourceLoader htmlRoot = ResourceLoader.getWebRoot();    
-
+    private static ResourceLoader htmlRoot = ResourceLoader.getWebRoot();
+    
     public void setCloud(Cloud cl) {
         cloud = cl;
     }
     public void setBackwardsCompatible(boolean b) {
         backwardsCompatible = b;
     }
+
     
     /**
      * Method to find the file to 'LeafInclude' given a list of objectnumbers
@@ -70,7 +70,7 @@ public class TreeHelper {
      * @param objectlist The list of objectnumbers (comma-seperated) that is used to find the correct file to include
      * @param session The session context can contain version information (used in getVerion).
      */
-    protected String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException, IOException {
+    public String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException, IOException {
         if ("".equals(objectlist)) {
             return encodedPath(includePage);
         }
@@ -92,7 +92,7 @@ public class TreeHelper {
      * @param prefix The path that was already established by previous calls to getLeafFile, deeper in the recursion tree.
      */
     protected String getLeafFile(String prefix, String objectlist, String includePage, boolean maySmartpath, HttpSession session) throws JspTagException, IOException {
-        if (objectlist.length() == 0) {
+        if (objectlist.equals("")) {
             String nudePage = includePage;
             if (nudePage.indexOf('?') != -1) {
                 nudePage = nudePage.substring(0, nudePage.indexOf('?'));
@@ -151,7 +151,7 @@ public class TreeHelper {
             if (log.isDebugEnabled()) {
                 log.debug("getSmartPath(" + firstObject + "," + newprefix + "," + session + ") = " + smartpath);
             }
-            if (!(smartpath == null || smartpath.length() == 0)) {
+            if (!(smartpath == null || smartpath.equals(""))) {
                 newprefix = smartpath;
                 finalfile = getLeafFile(newprefix, otherObjects, includePage, true, session);
             }
@@ -180,6 +180,7 @@ public class TreeHelper {
         }
         return "";
     }
+    
     /**
      * Method to find the file to 'TreeInclude' given a list of objectnumbers
      * @param includePage The page to include (relative path, may include URL parameters)
@@ -191,22 +192,18 @@ public class TreeHelper {
         if (cloud == null) {
             throw new JspTagException("Cloud was not defined");
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Finding tree-file for " + includePage + " " + objectlist);
-        }
         
         // We have to find a specific page, so we must remove any arguments
         String nudePage;
-        if (includePage.indexOf('?') != -1) {
+        if (includePage.indexOf('?') != -1)
             nudePage = includePage.substring(0, includePage.indexOf('?'));
-        } else {
+        else
             nudePage = includePage;
-        }
         
         // Initialize the variables
         StringTokenizer st      = new StringTokenizer(objectlist, ",");
         int numberTokens        = st.countTokens();
-        Stack<String> objectPaths       = new Stack<String>(); // synchronized for nothing
+        Stack objectPaths       = new Stack();
         
         int objectNumbers[]     = new int[numberTokens];
         String pathNow = "/";
@@ -221,7 +218,7 @@ public class TreeHelper {
             int objectNo = objectNumbers[i];
             String field = getSmartPath("" + objectNo, pathNow, session);
             
-            if (field == null || field.length() == 0) {
+            if (field == null || field.equals("")) {
                 break;
             }
             
@@ -235,7 +232,7 @@ public class TreeHelper {
         
         pathNow = "";
         while (!objectPaths.empty()) {
-            String path = objectPaths.pop();
+            String path = (String)objectPaths.pop();
 
             URL pathTest = htmlRoot.getChildResourceLoader(path).getResource(nudePage);
 
@@ -245,7 +242,6 @@ public class TreeHelper {
             if (pathTest.openConnection().getDoInput()) {
                 // Make sure that the path is correctly encoded, if it contains spaces these must be
                 // changed into '%20' etc.
-                log.debug("" + pathTest + " is a file");
                 return encodedPath(concatpath(path, includePage));
             }
         }
@@ -302,24 +298,24 @@ public class TreeHelper {
         String version = getVersion(objectNumber, session);
         Function f = n.getFunction("smartpath");
         Parameters params = f.createParameters();
-        params.set("root", MMBaseContext.getHtmlRoot());
-        params.set("path", middle);
-        if (version.length() != 0) {
+        if (! version.equals("")) {
             params.set("version", version);
         }
         params.set("nodeNumber", objectNumber);
-        params.set("loader",   ResourceLoader.getWebRoot());
-        params.set("backwardsCompatible",  backwardsCompatible);
-
+        params.set("path", middle);
+        params.set("loader", htmlRoot);
+        params.set("root", MMBaseContext.getHtmlRoot());
+        params.set("backwardsCompatible",  backwardsCompatible ? Boolean.TRUE : Boolean.FALSE);
+        String result = (String) f.getFunctionValue(params);
         if (log.isDebugEnabled()) {
-            log.debug("Using " + params);
+            log.debug("Using " + params +  " -> " + result);
         }
-        return (String) f.getFunctionValue(params);
+        return result;
+        
     }
     
     /**
      * Rewrite a path that points to a file on the filesystem to an URL path.
-     * - Split the path on 'File.seperator'
      * - except for the last part (the file), escape all the parts
      * - combine the parts with a '/'
      *
@@ -336,14 +332,14 @@ public class TreeHelper {
         f = f.getParentFile();
         while (f != null) {
             String thisPart = f.getName();
-            result = org.mmbase.util.Encode.encode("ESCAPE_URL", thisPart) + "/" + result;
+            result = org.mmbase.util.Encode.encode("ESCAPE_URL", thisPart) + '/' + result;
             f = f.getParentFile();
         }
         return result;        
     }
 
     /**
-     * Concatenate two paths; possibly adding or removing File.separator characters
+     * Concatenate two paths; possibly adding or removing / characters
      * Return path1/path2
      */
     private  String concatpath(String path1, String path2) {
@@ -363,6 +359,8 @@ public class TreeHelper {
             return path1 + path2;
         }
     }
+
+
 
     public void doFinally() {
         cloud = null;

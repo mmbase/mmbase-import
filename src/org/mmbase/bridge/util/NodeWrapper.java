@@ -22,11 +22,11 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.19 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: NodeWrapper.java,v 1.15 2006-07-18 13:03:19 michiel Exp $
  * @since   MMBase-1.8
  */
 
-public abstract class NodeWrapper implements Node {
+public abstract class NodeWrapper implements Node, Comparable {
     protected final Node node;
     public NodeWrapper(Node node) {
         assert node != null;
@@ -75,16 +75,15 @@ public abstract class NodeWrapper implements Node {
         return node.getFieldValue(fieldName);
     }
     public FieldValue getFieldValue(Field field) { return node.getFieldValue(field); }
-    public Collection<String> validate() { return node.validate(); }
+    public Collection validate() { return node.validate(); }
     public void commit() { node.commit(); }
     public void cancel() { node.cancel(); }
     public boolean isNew() {  return node.isNew(); }
     public boolean isChanged(String fieldName) {  return node.isChanged(fieldName); }
     public boolean isChanged() {  return node.isChanged(); }
-    public Set<String> getChanged() {  return node.getChanged(); }
+    public Set getChanged() {  return node.getChanged(); }
     public void delete() { node.delete(); }
     public void delete(boolean deleteRelations) { node.delete(deleteRelations); }
-    @Override
     public String toString() { return node.toString(); }
     public Document getXMLValue(String fieldName) throws IllegalArgumentException {
         return node.getXMLValue(fieldName);
@@ -126,11 +125,9 @@ public abstract class NodeWrapper implements Node {
     public FieldValue getFunctionValue(String functionName, List parameters) { return node.getFunctionValue(functionName, parameters);}
 
 
-    @Override
     public int hashCode() { return node.hashCode(); }
-    @Override
     public boolean equals(Object o) { return node.equals(o); }
-    public int compareTo(Node o) { return node.compareTo(o); }
+    public int compareTo(Object o) { return node.compareTo(o); }
 
     public Node getNode() {
         return node;

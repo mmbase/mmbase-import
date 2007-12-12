@@ -70,7 +70,6 @@
     </copy>
     <copy file="${junit.jar}" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${build.dir}/mmbase.jar" todir="${tests.lib}" preservelastmodified="true" overwrite="true" />
-    <copy file="${source.dir}/applications/resources/build/mmbase-resources.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci-server.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/rmmci/build/mmbase-rmmci.jar" todir="${tests.lib}"  preservelastmodified="true" />
     <copy file="${source.dir}/applications/clustering/build/mmbase-clustering.jar" todir="${tests.lib}"  preservelastmodified="true" />
@@ -97,7 +96,6 @@
           <include name="xalan.jar" />
           <include name="servlet.jar" />
           <include name="mmbase-test.jar" />
-          <include name="mmbase-resources.jar" />
           <include name="mmbase.jar" />
         </fileset>
       </classpath>
@@ -237,7 +235,7 @@
     <javac destdir="${tests.build.dir}/classes"
            debug="true"
            optimize="false"
-           source="1.5"
+           source="1.4"
            classpathref="compile.classpath"
            deprecation="false" >
       <src path="${tests.source.dir}/bridge"/>
@@ -330,6 +328,37 @@ Build-compiler: ${build.compiler}
       <assertions><enable /></assertions>
     </java>
   </target>
+
+  <target name="run.bridge.util" depends="init" description="Bridge utility tests">
+    <!--
+    <antcall target="clean.database" />
+    -->
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
+      <arg value="org.mmbase.bridge.util.AllTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+  
+  <target name="run.simon" depends="mmbase,jar,init">
+    <antcall target="clean.database" />
+    <java
+        classname="${ui.class}"
+        fork="true"
+        classpathref="run.classpath"
+        >
+      <arg value="org.mmbase.bridge.SimonsTests" />
+      <jvmarg value="-Dmmbase.config=${tests.source.dir}/config" />
+      <jvmarg value="-Duser.dir=${tests.work.dir}" />
+      <assertions><enable /></assertions>
+    </java>
+  </target>
+
 
   <target name="run.bridge.rmmci" depends="mmbase,jar,init" description="Bridge tests (through RMMCI)">
     <antcall target="clean.database" />
@@ -465,6 +494,8 @@ Build-compiler: ${build.compiler}
     </java>
   </target>
 
+
+
   <!-- =================================================================== -->
   <!-- Run the tests -->
   <!-- =================================================================== -->
@@ -489,9 +520,6 @@ Build-compiler: ${build.compiler}
     <sleep seconds="10" />
     <echo message="========================================RELEASESTRATEGY========================================" />
     <antcall target="run.releasestrategy" />
-    <sleep seconds="10" />
-    <echo message="========================================CONVERTIMAGE========================================" />
-    <antcall target="run.convertimage" />
   </target>
 
   <target name="run.test">

@@ -12,7 +12,7 @@ package org.mmbase.module.builders;
 /**
  * @javadoc
  * @application Tools
- * @version $Id: MMEventsProbe.java,v 1.10 2007-08-02 13:26:09 michiel Exp $
+ * @version $Id: MMEventsProbe.java,v 1.7.2.2 2007-08-02 13:25:56 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class MMEventsProbe implements Runnable {
@@ -33,6 +33,7 @@ public class MMEventsProbe implements Runnable {
      * Starts the admin Thread.
      */
     public void start() {
+        /* Start up the main thread */
         if (kicker == null) {
             kicker = org.mmbase.module.core.MMBaseContext.startThread(this, "mmevents");
         }
@@ -43,11 +44,7 @@ public class MMEventsProbe implements Runnable {
      */
     public void stop() {
         // how is this ever called?
-
-        // iow, why is there no MMObjectBuilder#shutdown method (this thing is started in MMEvents,
-        // so it should also be stopped from that, isn't it?)
-
-        // http://www.mmbase.org/jira/browse/MMB-1491
+        /* Stop thread */
         kicker.interrupt();
         kicker = null;
     }

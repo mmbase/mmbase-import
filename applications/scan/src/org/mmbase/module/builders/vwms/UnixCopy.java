@@ -71,7 +71,7 @@ public class UnixCopy {
 
 	public void copy(String base,String src) {
 		int last;
-		String path;
+		String path,res;
 
 		last=src.lastIndexOf('/');
 		if (last!=-1) {

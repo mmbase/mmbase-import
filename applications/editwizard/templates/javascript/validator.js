@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.42 2007-11-27 12:24:16 michiel Exp $
+ * @version  $Id: validator.js,v 1.37.2.4 2007-03-29 13:10:31 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -85,7 +85,7 @@ addEvent = function(el, evname, func) {
             }
         }
         else {
-            el.attachEvent("on" + evname, func);
+                el.attachEvent("on" + evname, func);
         }
     } else {
         el.addEventListener(evname, func, true);
@@ -111,6 +111,7 @@ Validator.prototype.validateIEPasteEvent = function (evt) {
 
 Validator.prototype.validateEvent = function (evt) {
     evt = (evt) ? evt : ((window.event) ? window.event : "")
+
     if (evt) {
         var elem = getTargetElement(evt)
         if (elem) {
@@ -208,7 +209,7 @@ Validator.prototype.validateElement = function (el, silent) {
 
     minlength = el.getAttribute("dtminlength");
     required = el.getAttribute("dtrequired");
-    if ((!isEmpty(minlength) &&  "0" != minlength) || (!isEmpty(required) && (required == "true"))) {
+    if (!isEmpty(minlength) || (!isEmpty(required) && (required == "true"))) {
         if (ftype=="enum" || dttype=="enum") {
             if (el.options[el.selectedIndex].value == "-") {
                 err += getToolTipValue(form,'message_required',
@@ -607,7 +608,7 @@ function disableButton(button, textAttr, textDefault) {
         var usetext = getToolTipValue(button,textAttr, textDefault);
         button.title = usetext;
         button.disabled = true;
-    }
+   }
 }
 
 //********************************

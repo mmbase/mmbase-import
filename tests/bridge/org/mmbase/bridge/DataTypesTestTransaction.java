@@ -10,6 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import org.mmbase.datatypes.*;
+import java.util.*;
+import org.mmbase.util.*;
+import org.mmbase.tests.*;
+
 /**
  *
  * @author Michiel Meeuwissen

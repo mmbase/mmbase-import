@@ -1,8 +1,0 @@
-<contextdepth>
-    <startnode>
-        <builder>users</builder>
-        <where>account=='admin'</where>
-    </startnode>
-
-    <depth>700</depth>
-</contextdepth>

@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 import java.util.Map;
 import org.mmbase.security.AuthenticationData;
-import org.mmbase.security.ActionRepository;
 
 /**
  * The collection of clouds and modules within a Java Virtual Machine.
@@ -19,7 +18,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.32 2007-11-16 16:07:15 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.28 2006-02-14 22:28:06 michiel Exp $
  */
 public interface CloudContext {
 
@@ -178,11 +177,6 @@ public interface CloudContext {
      * @since MMBase-1.8
      */
     public AuthenticationData getAuthentication();
-
-    /**
-     * @since MMBase-1.9
-     */
-    public ActionRepository getActionRepository();
 
 
     /**

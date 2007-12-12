@@ -7,27 +7,26 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.lang.ref.SoftReference;
 
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * An EventBroker which administrates the listeners in a {@link java.util.concurrent.CopyOnWriteArraySet}.
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: AbstractEventBroker.java,v 1.19 2007-07-26 11:45:54 michiel Exp $
  */
 public abstract class AbstractEventBroker extends EventBroker {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractEventBroker.class);
 
-    private final Set<EventListener> listeners = new CopyOnWriteArraySet<EventListener>();
+    private final Set listeners = new CopyOnWriteArraySet();
 
-    protected Collection<EventListener> backing() {
+    protected Collection backing() {
         return listeners;
     }
 
@@ -58,5 +57,6 @@ public abstract class AbstractEventBroker extends EventBroker {
     public String toString(){
         return "Abstract Event Broker";
     }
+
 
 }

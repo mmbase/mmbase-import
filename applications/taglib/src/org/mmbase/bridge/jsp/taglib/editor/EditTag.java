@@ -11,6 +11,9 @@ package org.mmbase.bridge.jsp.taglib.editor;
 
 import javax.servlet.jsp.*;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -44,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.24 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: EditTag.java,v 1.17.2.1 2006-12-05 21:56:58 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -53,7 +56,7 @@ import org.xml.sax.InputSource;
 public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
-    private static final Map<String, EditorDefinition> edittagTypes = new HashMap<String, EditorDefinition>();      // edittagtype -> editordefinition
+    private static final Map edittagTypes = new HashMap();      // edittagtype -> editordefinition
 
     static {
         try {
@@ -71,12 +74,12 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
                     ResourceLoader taglibLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("taglib");
-                    List<URL> resources = taglibLoader.getResourceList(resource);
+                    List resources = taglibLoader.getResourceList(resource);
                     log.service("Reading edittag resources: " + resources);
-                    ListIterator<URL> i = resources.listIterator();
+                    ListIterator i = resources.listIterator();
                     while (i.hasNext()) {
                         try {
-                            URL u = i.next();
+                            URL u = (URL) i.next();
                             URLConnection con = u.openConnection();
                             if (con.getDoInput()) {
                                 log.debug("Reading edittag resource: " + u);
@@ -89,7 +92,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
                             log.error("Error connecting or resource not found: " + e);
                         }
                     }
-                    ArrayList<String> l = new ArrayList<String>(edittagTypes.keySet());
+                    ArrayList l = new ArrayList(edittagTypes.keySet());
                     Collections.sort(l);
                     log.service("Found edit-tag types " + l);
                 }
@@ -111,8 +114,11 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         DocumentReader reader  = new DocumentReader(edittagSource, EditTag.class);
         Element root = reader.getElementByPath("edittagtypes");
 
-        for (Element element: reader.getChildElements(root, "editor")) {
+        Iterator i = reader.getChildElements(root, "editor");
+        while (i.hasNext()) {
+            Element element = (Element) i.next();
             String type = element.getAttribute("type");
+
             try {
                 EditorDefinition newDef = new EditorDefinition(element);
                 Object original = edittagTypes.put(type, newDef);
@@ -129,6 +135,11 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
     }
 
     private Attribute type = Attribute.NULL;
+
+    private Query query;
+    private int nodenr;
+    private String fieldName;
+
 
     private Editor editor = null;     // should do all the work
 
@@ -177,7 +188,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         if (log.isDebugEnabled()) log.debug("doStartTag of EditTag");
 
 
-        EditorDefinition def = edittagTypes.get(getType());
+        EditorDefinition def = (EditorDefinition) edittagTypes.get(getType());
         if (def == null) {
             throw new JspTagException("'" + getType() + "' is not a known edit type. Known are " + edittagTypes.keySet());
         }
@@ -242,11 +253,11 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
 
     static class EditorDefinition {
-        private final Class<?> clazz;
-        private final Map<String, String>   params = new HashMap<String, String>(); /* String -> String */
+        private final Class clazz;
+        private final Map   params = new HashMap(); /* String -> String */
 
         public EditorDefinition(Element element) throws ClassNotFoundException {
-            Class<?> c = null;
+            Class c = null;
             org.w3c.dom.NodeList childNodes = element.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 if (childNodes.item(i) instanceof Element) {

@@ -1,12 +1,4 @@
-<%@ page import="org.mmbase.bridge.*,
-				 org.mmbase.cache.*,
-				 java.util.*,
-				 java.util.regex.*,
-				 org.mmbase.storage.search.implementation.database.BasicSqlHandler,
-				 org.mmbase.storage.search.SearchQuery"
-				 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-				 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<mm:cloud rank="administrator" jspvar="cloud">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%!
    String saveDevide(float f1, float f2){
       try{
@@ -28,41 +20,72 @@
       return name.replace(' ', '_');
    }
 %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><%@page import="org.mmbase.bridge.*,org.mmbase.cache.*,java.util.*"
+%><%@include file="../settings.jsp"
+%><mm:content expires="0">
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator" jspvar="cloud">
 <mm:import externid="rs_show">-</mm:import>
 <mm:import externid="rs_action">-</mm:import>
 <mm:import externid="rs_name">-</mm:import>
+<html xmlns="http://www.w3.org/TR/xhtml">
+<head>
+  <title>Cache Monitor</title>
+  <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
+  <style type="text/css">
+      .label{
+         background-color:    #cccccc;
+         width:               50%;
+         float:               left;
+      }
+      .data{
+         float:               left;
+      }
+      .row{
+         border-bottom:       1px solid black;
+         overflow:            auto;
+      }
+      a:visited{
+         color:               blue;
+      }
+      hr{
+         color:               #333333;
+      }
+  </style>
+</head>
+<body class="basic" >
+<!-- <%= cloud.getUser().getIdentifier()%>/<%=  cloud.getUser().getRank()%> -->
+<table summary="email test" width="93%" cellspacing="1" cellpadding="3" border="0">
 
-<mm:import externid="active" from="request" />
-<mm:import externid="clear"  from="request" />
-
-<div
-  class="component mm_c ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
-  
-  <h3>Cache Monitor</h3>
-
-  <!-- <%= cloud.getUser().getIdentifier()%>/<%=  cloud.getUser().getRank()%> -->
-  <table summary="cache manager" cellspacing="0" cellpadding="3" border="0">
-    <caption>
-      This tools hows the performance of the various MMBase caches. You can also (temporary) turn
-      on/off the cache here. For a persistant change you should change caches.xml.
-    </caption>
-
+    <mm:import externid="active" from="parameters" />
+    <mm:import externid="clear"  from="parameters" />
 
 <mm:present referid="active">
-  <mm:import externid="cache" from="request" required="true" />
+  <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="active" jspvar="active" vartype="String">
   <mm:write referid="cache" jspvar="cache" vartype="String">
-  <% CacheManager.getCache(cache).setActive(active.equals("on") ? true : false); %>
+  <% Cache.getCache(cache).setActive(active.equals("on") ? true : false); %>
   </mm:write></mm:write>
 </mm:present>
 
 <mm:present referid="clear">
-  <mm:import externid="cache" from="request" required="true" />
+  <mm:import externid="cache" from="parameters" required="true" />
   <mm:write referid="cache" jspvar="cache" vartype="String">
-  <% CacheManager.getCache(cache).clear();   %>
+  <% Cache.getCache(cache).clear();   %>
   </mm:write>
 </mm:present>
+
+<tr align="left">
+  <th class="header" colspan="6">Cache Monitor</th>
+</tr>
+<tr>
+  <td class="multidata" colspan="6">
+    <p>
+      This tools hows the performance of the various MMBase caches. You can also (temporary) turn
+      on/off the cache here. For a persistant change you should change caches.xml.
+    </p>
+  </td>
+</tr>
 
 
 <%
@@ -71,8 +94,8 @@
        //first sort the caches
 
 
-   for (Iterator i = CacheManager.getCaches().iterator(); i.hasNext(); ) {
-      Cache cache = CacheManager.getCache((String) i.next());
+   for (Iterator i = Cache.getCaches().iterator(); i.hasNext(); ) {
+      Cache cache = Cache.getCache((String) i.next());
       if(cache instanceof QueryResultCache){
          queryCaches.add(cache);
       }else{
@@ -87,25 +110,18 @@
         }
     });
 %>
-   <tr>
-     <th colspan="6">Query Caches</th>
-   </tr><tr>
-     <td colspan="6">
-       <p>Query caches are used to cache the result of different types of
-       queries. These caches have a plugin like system of for (sets of) rules that will decide if
-       a certain change in the cloud should invalidate a query from the cache.</p>
-     </td>
-   </tr>
+   <tr><td colspan="6"><h3>Query Caches</h3></td></tr>
+   <tr><td colspan="6"><p>Query caches are used to cache the result of different types of
+   queries. These caches have a plugin like system of for (sets of) rules that will decide if
+   a certain change in the cloud should invalidate a query from the cache. </p></td></tr>
 
 <%
    for(Iterator i =  queryCaches.iterator(); i.hasNext(); ){
       QueryResultCache cache = (QueryResultCache) i.next();
 %>
-   <mm:import id="cacheName" reset="true"><%= saveName(cache.getName()) %></mm:import>
-   <tr>
-     <td colspan="6"><a name="<mm:write referid="cacheName" />" /></td>
-   </tr>
-   <%@ include file="cache/cache_detail.jsp" %>
+   <mm:import id="cacheName" reset="true"><%=saveName(cache.getName())%></mm:import>
+   <tr><td colspan="6">  <a name="<mm:write referid="cacheName"/>"></td></tr>
+   <%@include file="cache/cache_detail.jsp"%>
 
 
   <%-- Handle the possible action of globally switching strategies on or off --%>
@@ -141,8 +157,8 @@
    </mm:import>
 
    <tr>
-      <td colspan="5" style="<mm:write referid="textStyle"/>">Events Analyzed : <%= cache.getReleaseStrategy().getTotalEvaluated()%>, Queries preserved : <%= cache.getReleaseStrategy().getTotalPreserved() %>, Queries flushed : <%= cache.getReleaseStrategy().getTotalEvaluated() - cache.getReleaseStrategy().getTotalPreserved()%></td>
-      <td><a href="<mm:write referid="url" escape="none"/>"><b><%= cache.getReleaseStrategy().isEnabled() ? "disable" : "enable"%></b></a> </td>
+      <td  colspan="5" style="<mm:write referid="textStyle"/>">Events Analyzed : <%= cache.getReleaseStrategy().getTotalEvaluated()%>, Queries preserved : <%= cache.getReleaseStrategy().getTotalPreserved() %>, Queries flushed : <%= cache.getReleaseStrategy().getTotalEvaluated() - cache.getReleaseStrategy().getTotalPreserved()%></td>
+      <td  ><a href="<mm:write referid="url" escape="none"/>"/><b><%= cache.getReleaseStrategy().isEnabled() ? "disable" : "enable"%></b></a> </td>
     </tr>
 
    <%-- create the toggle link for showing / hiding strategy details --%>
@@ -234,7 +250,7 @@
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + saveDevide(strategy.getTotalEvaluationTimeMillis(), strategy.getTotalEvaluated())%></div>
                      </div>
                      <div class="row">
-                        <div class="label" style="<mm:write referid="textStyle"/>">relative performance:</div>
+                        <div class="label" style="<mm:write referid="textStyle"/>">percentatge performance:</div>
                         <div class="data" style="<mm:write referid="textStyle"/>"><%="" + savePercentage(strategy.getTotalEvaluated(), strategy.getTotalPreserved())%> %</div>
                      </div>
                </td>
@@ -278,7 +294,7 @@
 %>
 
 
-<tr><td> </td></tr>
+<tr><td>&nbsp;</td></tr>
 <tr align="left">
   <th class="header">Relation Cache Property</th>
   <th class="header">Value</th>
@@ -300,7 +316,7 @@
   <td class="data"><%=mmAdmin.getInfo("RELATIONCACHEPERFORMANCE",request,response)%></td>
 </tr>
 
-<tr><td> </td></tr>
+<tr><td>&nbsp;</td></tr>
 <tr align="left">
   <th class="header">Temporary Node Cache Property</th>
   <th class="header">Value</th>
@@ -310,12 +326,15 @@
   <td class="data"><%=mmAdmin.getInfo("TEMPORARYNODECACHESIZE",request,response)%></td>
 </tr>
 
-<tr><td> </td></tr>
+<tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" align="left" /></a></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" align="left" /></td>
 <td class="data">Return to home page</td>
 </tr>
 </table>
-</div>
+
+</body>
+</html>
 </mm:cloud>
+</mm:content>

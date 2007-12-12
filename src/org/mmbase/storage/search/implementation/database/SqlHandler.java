@@ -55,7 +55,7 @@ import org.mmbase.storage.search.*;
  * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Id: SqlHandler.java,v 1.8 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: SqlHandler.java,v 1.7 2005-10-01 20:11:03 michiel Exp $
  * @since MMBase-1.7
  */
 public interface SqlHandler {
@@ -85,7 +85,7 @@ public interface SqlHandler {
      *        to be called on this handler, to generate the constraints in
      *        the query.
      */
-    public void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException;
+    public void appendQueryBodyToSql(StringBuffer sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException;
 
     /**
      * Represents Constraint object, that is not a CompositeConstraint,
@@ -101,8 +101,9 @@ public interface SqlHandler {
      * @param inComposite True when the constraint is part of
      *        a composite expression.
      */
-    void appendConstraintToSql(StringBuilder sb, Constraint constraint,
-                               SearchQuery query, boolean inverse, boolean inComposite) throws SearchQueryException;
+    void appendConstraintToSql(StringBuffer sb, Constraint constraint,
+    SearchQuery query, boolean inverse, boolean inComposite)
+    throws SearchQueryException;
 
     /**
      * Gets the level at which a feature is supported for a query
@@ -115,7 +116,8 @@ public interface SqlHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException;
+    public int getSupportLevel(int feature, SearchQuery query)
+    throws SearchQueryException;
 
     /**
      * Gets the level at which a constraint is supported for a query
@@ -128,7 +130,8 @@ public interface SqlHandler {
      * </ul>
      * Given the choice, the query handler with the highest level of support is prefered.
      */
-    public int getSupportLevel(Constraint constraint, SearchQuery query) throws SearchQueryException;
+    public int getSupportLevel(Constraint constraint, SearchQuery query)
+    throws SearchQueryException;
 
     /**
      * Maps string to value that is allowed as table or field name.

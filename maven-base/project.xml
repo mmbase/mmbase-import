@@ -36,9 +36,6 @@ See http://www.MMBase.org/license
         <branch>
             <tag>MMBase-1_7</tag>
         </branch>
-        <branch>
-            <tag>MMBase-1_8</tag>
-        </branch>
     </branches>
     <licenses>
         <license>
@@ -55,7 +52,7 @@ See http://www.MMBase.org/license
     <repository>
         <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
         <developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
-        <url>http://cvs.mmbase.org/viewcvs/</url>
+        <url>http://www.mmbase.org/viewcvs/</url>
     </repository>
     <mailingLists>
         <mailingList>
@@ -107,10 +104,9 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Ernst Bunders</name>
-            <id>ernst</id>
-            <email>ernst@dynasol.nl</email>
-            <organization>Dynasol</organization>
-            <url>http://www.dynasol.nl</url>
+            <id>3</id>
+            <email>Ernst.Bunders@vara.nl</email>
+            <organization>Vara</organization>
             <timezone>1</timezone>
         </developer>
         <developer>
@@ -127,7 +123,7 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Johannes Verelst</name>
-            <id>johannes</id>
+            <id>6</id>
             <email>jverelst@gmail.com</email>
             <timezone>1</timezone>
         </developer>
@@ -154,10 +150,9 @@ See http://www.MMBase.org/license
         </developer>
         <developer>
             <name>Michiel Meeuwissen</name>
-            <id>michiel</id>
-            <email>Michiel.Meeuwissen@dynasol.nl</email>
-            <organization>Dynasol</organization>
-            <url>http://www.dynasol.nl</url>
+            <id>9</id>
+            <email>Michiel.Meeuwissen@omroep.nl</email>
+            <organization>Publieke Omroep</organization>
             <timezone>1</timezone>
             <roles>
             	<role>Release Manager</role>
@@ -239,36 +234,82 @@ See http://www.MMBase.org/license
             </properties>
         </dependency>
         <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>1.1_01</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jai</groupId>
+            <artifactId>jai_codec</artifactId>
+            <version>1.1.2_01</version>
+            <type>jar</type>
+            <url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jai</groupId>
+            <artifactId>jai_core</artifactId>
+            <version>1.1.2_01</version>
+            <type>jar</type>
+            <url>http://java.sun.com/products/java-media/jai/index.jsp</url>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <type>jar</type>
         </dependency>
-        <!-- jsp taglibs, jstl -->
+        <!-- Source code uses org.apache.xpath.XPathAPI -->
         <dependency>
-          <groupId>jstl</groupId>
-          <artifactId>jstl</artifactId>
-          <version>1.1.2</version>
-          <properties>
-            <war.bundle>true</war.bundle>
-          </properties>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.6.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
         </dependency>
         <dependency>
-          <groupId>taglibs</groupId>
-          <artifactId>standard</artifactId>
-          <version>1.1.2</version>
-          <properties>
-            <war.bundle>true</war.bundle>
-          </properties>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.6.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>${war.bundle}</war.bundle>
+            </properties>
         </dependency>
 
         <!-- mmbase module plugin -->
         <dependency>
             <groupId>mmapps</groupId>
             <artifactId>maven-mmbase-module-plugin</artifactId>
-            <version>1.2</version>
+            <version>1.1.1</version>
             <type>plugin</type>
             <url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
+        </dependency>
+
+        <!-- tomcat deploy plugin -->
+        <dependency>
+            <groupId>codeczar-tomcat</groupId>
+            <artifactId>maven-tomcat-plugin</artifactId>
+            <version>1.1</version>
+            <type>plugin</type>
+            <url>http://www.codeczar.com/products/maven-tomcat-plugin/</url>
+        </dependency>
+        <dependency>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-findbugs-plugin</artifactId>
+            <version>0.8.4</version>
+            <type>plugin</type>
         </dependency>
     </dependencies>
     <build>
@@ -287,13 +328,6 @@ See http://www.MMBase.org/license
                 </includes>
                 <filtering>false</filtering>
             </resource>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <directory>META-INF</directory>
-                <excludes>
-                    <exclude>"**/CVS"</exclude>
-                </excludes>
-            </resource>
 <!-- This does not work the same way as the ant build does.
 	We have to change more in the build to get it working -->
             <resource>
@@ -303,6 +337,7 @@ See http://www.MMBase.org/license
                     <exclude>"**/CVS"</exclude>
                 </excludes>
             </resource>
+
         </resources>
         <!-- Unit test cases -->
         <unitTestSourceDirectory>${basedir}/tests</unitTestSourceDirectory>
@@ -318,8 +353,7 @@ See http://www.MMBase.org/license
         </unitTest>
     </build>
     <reports>
-      <report>maven-changelog-plugin</report>
-      <!--
+        <report>maven-changelog-plugin</report>
         <report>maven-changes-plugin</report>
         <report>maven-developer-activity-plugin</report>
         <report>maven-file-activity-plugin</report>
@@ -329,12 +363,15 @@ See http://www.MMBase.org/license
         <report>maven-jxr-plugin</report>
         <report>maven-license-plugin</report>
         <report>maven-linkcheck-plugin</report>
-        <report>maven-jdiff-plugin</report>
+        <!--
+    <report>maven-jdiff-plugin</report>
+    -->
         <report>maven-checkstyle-plugin</report>
         <report>maven-pmd-plugin</report>
         <report>maven-tasklist-plugin</report>
+        <!-- report>maven-clover-plugin</report -->
         <report>maven-simian-plugin</report>
-        -->
+        <report>maven-findbugs-plugin</report>
     </reports>
 </project>
 

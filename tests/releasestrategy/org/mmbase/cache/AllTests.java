@@ -10,13 +10,15 @@ See http://www.MMBase.org/license
 
 package org.mmbase.cache;
 
+import org.mmbase.tests.*;
+
 import junit.framework.*;
 
 /**
  * TestSuite that runs all the release strategy tests.
  *
  * @author Ernst Bunders
- * @version $Id: AllTests.java,v 1.4 2007-03-08 08:51:38 nklasens Exp $
+ * @version $Id: AllTests.java,v 1.3 2006-04-24 13:54:48 michiel Exp $
  */
 
 public class AllTests {

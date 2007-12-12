@@ -25,7 +25,7 @@ import org.mmbase.module.core.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.10 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: NodeBreaker.java,v 1.9 2005-10-05 10:59:39 michiel Exp $
  */
 public class NodeBreaker implements Runnable {
 
@@ -34,8 +34,8 @@ public class NodeBreaker implements Runnable {
     // objkect: ids[x] is the object number or key, expirationtimes[x] determines
     // when it is to be removed.
     // This is not brilliant coding, I know, but it is fast.
-    private ArrayList<String> ids = new ArrayList<String>();
-    private ArrayList<Long> expirationtimes = new ArrayList<Long>();
+    private ArrayList ids = new ArrayList();
+    private ArrayList expirationtimes = new ArrayList();
     // The interval at which the node breaker checks for expired relations
     private long checkInterval = 10 * 60 * 1000;
     // used to control starting and stopping the thread
@@ -100,7 +100,7 @@ public class NodeBreaker implements Runnable {
      * @param i the iindex in the list of nodes
      */
     private synchronized void remove(int i) {
-        String id=ids.remove(i);
+        String id=(String)ids.remove(i);
         expirationtimes.remove(i);
         String owner = id.substring(0, id.indexOf("_"));
         String key = id.substring(id.indexOf("_") + 1);
@@ -127,7 +127,7 @@ public class NodeBreaker implements Runnable {
             if (kicker==null) return;
             currentTime = System.currentTimeMillis();
             for (int i = expirationtimes.size()-1; i>=0; i--) {
-                Long time = expirationtimes.get(i);
+                Long time = (Long)expirationtimes.get(i);
                 if (time.longValue() < currentTime) {
                     remove(i);
                 }

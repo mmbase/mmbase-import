@@ -10,15 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.ListIterator;
-
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: RelationIterator.java,v 1.8 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: RelationIterator.java,v 1.6 2004-10-09 09:39:32 nico Exp $
  */
-public interface RelationIterator extends ListIterator<Relation> {
+public interface RelationIterator extends NodeIterator {
 
     /**
      * Returns the next element in the iterator as a Relation

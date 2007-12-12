@@ -18,15 +18,15 @@ import org.mmbase.util.logging.Logger;
 /**
  * StubToLocalMapper is a utitity class that helps a Stub to find it's Local implementation.
  * @author Kees Jongenburger
- * @version $Id: StubToLocalMapper.java,v 1.6 2007-03-31 17:14:55 nklasens Exp $
+ * @version $Id: StubToLocalMapper.java,v 1.5 2006-07-06 11:53:34 michiel Exp $
  **/
 public class StubToLocalMapper {
     static private final Logger log = Logging.getLoggerInstance(StubToLocalMapper.class);
     /**
      * private data member to keep track of mapperCode/object combinations
      **/
-    private static final Map<String, Object> hash     = new Hashtable<String, Object>();
-    private static final Map<String, Integer> refcount = new Hashtable<String, Integer>();
+    private static final Map hash     = new Hashtable();
+    private static final Map refcount = new Hashtable();
 
     /**
      * Add an object to the mapper.
@@ -95,7 +95,7 @@ public class StubToLocalMapper {
      * @return the amount of references known at this point
      **/
     private static int increaseRefCount(String mapperCode) {
-        Integer count = refcount.get(mapperCode);
+        Integer count = (Integer)refcount.get(mapperCode);
         if (count == null) {
             refcount.put(mapperCode, new Integer(1));
             return 1;
@@ -112,7 +112,7 @@ public class StubToLocalMapper {
      * @return the number of references we have for the mapper code
      **/
     private static int decreaseRefCount(String mapperCode) {
-        Integer count = refcount.get(mapperCode);
+        Integer count = (Integer)refcount.get(mapperCode);
         if (count == null) {
             log.warn("refcount entry not found for(" + mapperCode + ")");
             return 0;

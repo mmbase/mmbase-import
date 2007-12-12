@@ -34,7 +34,7 @@ public abstract class ConfigurableReaderTransformer extends ReaderTransformer im
         //log.info("Setting config to " + t);
         to = t;
     }
-    abstract public Map<String,Config> transformers();
+    abstract public Map transformers();
     abstract public String getEncoding();
 
     public String toString() {

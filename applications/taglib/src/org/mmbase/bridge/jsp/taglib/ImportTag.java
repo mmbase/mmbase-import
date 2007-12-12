@@ -12,6 +12,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
 
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -23,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.63 2007-12-05 17:06:54 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.58.2.1 2007-11-19 15:11:08 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -38,6 +39,7 @@ public class ImportTag extends ContextReferrerTag {
     private   boolean found = false;
     private   String  useId = null;
     private   Object value = null;
+
 
     /**
      * The extern id it the identifier in some external source.
@@ -76,10 +78,9 @@ public class ImportTag extends ContextReferrerTag {
 
 
     public int doStartTag() throws JspTagException {
-        value = null;
         helper.overrideWrite(false);
-        log.trace("dostarttag of import");
         findWriter(false);
+        log.trace("dostarttag of import");
 
         if (getId() == null) {
             log.trace("No id was given, using externid ");
@@ -96,18 +97,19 @@ public class ImportTag extends ContextReferrerTag {
             if (log.isDebugEnabled()) {
                 log.trace("Externid was given " + externid.getString(this));
             }
-            if (from.getString(this).length() == 0) {
+            if (from.getString(this).equals("")) {
                 found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId, ! res) != null);
             } else {
-                List<String> fromsList = from.getList(this);
+                List fromsList = from.getList(this);
                 boolean searchThis =  fromsList.contains("this") || fromsList.contains("THIS");
 
                 if (searchThis) {
                     res = true;
                 }
+                Iterator froms = fromsList.iterator();
                 ContextContainer cc = getContextProvider().getContextContainer();
-                for (String f : fromsList) {
-                    int from = ContextContainer.stringToLocation(f);
+                while (froms.hasNext() && ! found) {
+                    int from = ContextContainer.stringToLocation((String) froms.next());
                     Object result = cc.find(pageContext, from, externid.getString(this));
                     if (from == ContextContainer.LOCATION_THIS && result == null) {
                         result = cc.find(pageContext, from, useId);
@@ -129,7 +131,7 @@ public class ImportTag extends ContextReferrerTag {
                 if (fromString.equals("session") && ((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                     throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found in session, because there is no session");
                 }
-                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.length() == 0 ? "anywhere" : ("in " + fromString)));
+                throw new JspTagException("Required parameter '" + externid.getString(this) + "' not found " + (fromString.equals("") ? "anywhere" : ("in " + fromString)));
             }
             if (found) {
                 value = getObject(useId);
@@ -141,7 +143,6 @@ public class ImportTag extends ContextReferrerTag {
         if (found) {
             return SKIP_BODY;
         } else {
-            setValue(null);
             return EVAL_BODY_BUFFERED;
         }
 
@@ -154,7 +155,7 @@ public class ImportTag extends ContextReferrerTag {
     protected void setValue(Object v, boolean noImplicitList) throws JspTagException {
         v = getEscapedValue(v);
         if (log.isDebugEnabled()) {
-            log.debug("Setting " + v + " " + (v== null ? "NULL" : "" + v.getClass()));
+            log.debug("Setting " + v + " " + (v == null ? "NULL" : "" + v.getClass()));
         }
         helper.setValue(v, noImplicitList);
     }
@@ -205,12 +206,8 @@ public class ImportTag extends ContextReferrerTag {
                 }
                 boolean res = reset.getBoolean(this, false);
                 // should this be more general? Also in other contextwriters?
-                ContextProvider cp = getContextProvider();
-                ContextContainer cc = cp.getContextContainer();
-                if (log.isDebugEnabled()) {
-                    log.debug("registering in " + cp + " with container " + cc);
-                }
-                cc.register(useId, helper, !res);
+
+                getContextProvider().getContextContainer().register(useId, helper, !res);
 
             } else {
                 if (helper.getJspvar() == null) {
@@ -224,7 +221,7 @@ public class ImportTag extends ContextReferrerTag {
         useId = null;
         bodyContent = null;
         helper.doEndTag();
-        log.debug("end of importag");
+        log.debug("end of importtag");
         super.doEndTag();
         return EVAL_PAGE;
     }

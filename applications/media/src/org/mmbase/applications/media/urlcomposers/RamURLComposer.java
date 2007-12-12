@@ -35,13 +35,13 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     
     protected  Format          format;
     
-    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
+    public void init(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
         super.init(provider, source, fragment, info, cacheExpireObjects);
         format = Format.get(source.getIntValue("format"));
     }
     
     protected StringBuffer  getURLBuffer() {
-        List<String> servlets = MMBaseServlet.getServletMappings("media-" + format);
+        List servlets = MMBaseServlet.getServletMappings("media-" + format);
         String servlet;
         if (servlets == null || servlets.size() == 0) {
             log.error("No mapping found to media-" + format + " servlet. Change this in your web.xml");
@@ -49,7 +49,7 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
         } else {
             String root = MMBaseContext.getHtmlRootUrlPath();
             root = root.substring(0, root.length() - 1);
-            servlet = root  + servlets.get(0);
+            servlet = root  + (String) servlets.get(0);
         }
         
         return new StringBuffer("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&source=" + (source == null ? "" : "" + source.getNumber()));

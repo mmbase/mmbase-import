@@ -16,6 +16,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.BasicSortOrder;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.90 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: Queries.java,v 1.77.2.4 2007-06-08 12:37:24 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -42,7 +43,7 @@ abstract public class Queries {
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
      * @param search string representation of the searchdir constant
-     * @return Searchdir constant as in {@link RelationStep}
+     * @return Searchdir constant (@link RelationStep)
      * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
@@ -143,11 +144,11 @@ abstract public class Queries {
             search = ClusterBuilder.getSearchDir(searchDir);
         }
 
-        List<String> snodes   = StringSplitter.split(startNodes);
-        List<String> tables   = StringSplitter.split(nodePath);
-        List<String> f        = StringSplitter.split(fields);
-        List<String> orderVec = StringSplitter.split(orderby);
-        List<String> d        = StringSplitter.split(directions);
+        List snodes   = StringSplitter.split(startNodes);
+        List tables   = StringSplitter.split(nodePath);
+        List f        = StringSplitter.split(fields);
+        List orderVec = StringSplitter.split(orderby);
+        List d        = StringSplitter.split(directions);
         try {
             // pitty that we can't use cloud.createQuery for this.
             // but all essential methods are on ClusterBuilder
@@ -287,10 +288,10 @@ abstract public class Queries {
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         if (stringValue == null) return null;
         try {
-            return Integer.valueOf(stringValue);
+            return new Integer(stringValue);
         } catch (NumberFormatException e) {
             try {
-                return Double.valueOf(stringValue);
+                return new Double(stringValue);
             } catch (NumberFormatException e2) {
                 throw new BridgeException("Operator requires number value ('" + stringValue + "' is not)");
             }
@@ -319,25 +320,25 @@ abstract public class Queries {
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart, Cloud cloud) {
         if (operator == OPERATOR_IN) {
-            SortedSet<Object> set;
+            SortedSet set;
             if (value instanceof SortedSet) {
-                set = (SortedSet<Object>)value;
+                set = (SortedSet)value;
             } else if (value instanceof NodeList) {
-                set = new TreeSet<Object>();
+                set = new TreeSet();
                 NodeIterator i = ((NodeList)value).nodeIterator();
                 while (i.hasNext()) {
                     Node node = i.nextNode();
-                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, node.getNumber()));
+                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, new Integer(node.getNumber())));
                 }
             } else if (value instanceof Collection) {
-                set = new TreeSet<Object>();
+                set = new TreeSet();
                 Iterator i = ((Collection)value).iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
                 }
             } else {
-                set = new TreeSet<Object>();
+                set = new TreeSet();
                 if (!(value == null || value.equals(""))) {
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
                 }
@@ -413,9 +414,8 @@ abstract public class Queries {
      * @param datePart       The part of a DATETIME value that is to be checked
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
-    public static Constraint createConstraint(final Query query, final String fieldName, final int operator, final Object originalValue, final Object value2, final boolean caseSensitive, final int datePart) {
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive, int datePart) {
 
-        Object value = originalValue;
         StepField stepField = query.createStepField(fieldName);
         if (stepField == null) {
             throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
@@ -436,14 +436,14 @@ abstract public class Queries {
                 if (value instanceof String) { // it might be an alias!
                     if (cloud.hasNode((String) value)) {
                         Node node = cloud.getNode((String)value);
-                        value = Integer.valueOf(node.getNumber());
+                        value = new Integer(node.getNumber());
                     } else {
-                        value = -1; // non existing node number. Integer.parseInt((String) value);
+                        value = new Integer(-1);
                     }
                 } else if (value instanceof Collection) {  // or even more aliases!
                     Iterator i = ((Collection) value).iterator();
                     value = new ArrayList();
-                    List<Object> list = (List<Object>) value;
+                    List list = (List) value;
                     while (i.hasNext()) {
                         Object v = i.next();
                         if (v instanceof Number) {
@@ -452,9 +452,9 @@ abstract public class Queries {
                             String s = Casting.toString(v);
                             if (cloud.hasNode(s)) {
                                 Node node = cloud.getNode(s);
-                                list.add(node.getNumber());
+                                list.add(new Integer(node.getNumber()));
                             } else {
-                                list.add(-1);
+                                list.add(new Integer(-1));
                             }
 
                         }
@@ -469,22 +469,11 @@ abstract public class Queries {
                     // a bit of a hack, perhaps we need something like a 'searchCast' or so.
                     value = Casting.toString(value);
                 } else {
-                    Object castedValue = field.getDataType().cast(value, null, field);
-                    if (castedValue == null && value != null && fieldType == Field.TYPE_NODE) {
-                        // non existing node-number, like e.g. -1 are csated to null,
-                        // but that is incorrect when e..g the operator is GREATER
-                        castedValue = Casting.toInteger(value);
-                    }
-                    value = castedValue;
+                    value = field.getDataType().cast(value, null, field);
 
                 }
             }
-
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
-
-            if (log.isDebugEnabled()) {
-                log.debug(" " + originalValue + " -> " + value + " -> " + compareValue);
-            }
 
             if (operator > 0 && operator < OPERATOR_IN) {
                 if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
@@ -540,20 +529,20 @@ abstract public class Queries {
 
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
-            List<Constraint> constraints = new ArrayList<Constraint>();
-            Iterator<Constraint> i = constraint.getChilds().iterator();
+            List constraints = new ArrayList();
+            Iterator i = constraint.getChilds().iterator();
             while (i.hasNext()) {
-                Constraint cons = copyConstraint(i.next(), sourceStep, query, step);
+                Constraint cons = copyConstraint((Constraint) i.next(), sourceStep, query, step);
                 if (cons != null) constraints.add(cons);
             }
             int size = constraints.size();
             if (size == 0) return null;
-            if (size == 1) return constraints.get(0);
+            if (size == 1) return (Constraint) constraints.get(0);
             i = constraints.iterator();
             int op = constraint.getLogicalOperator();
-            Constraint newConstraint    = query.createConstraint(i.next(), op, i.next());
+            Constraint newConstraint    = query.createConstraint((Constraint) i.next(), op, (Constraint) i.next());
             while (i.hasNext()) {
-                newConstraint = query.createConstraint(newConstraint, op, i.next());
+                newConstraint = query.createConstraint(newConstraint, op, (Constraint) i.next());
             }
             query.setInverse(newConstraint, constraint.isInverse());
             return newConstraint;
@@ -592,11 +581,11 @@ abstract public class Queries {
                 case Field.TYPE_INTEGER:
                 case Field.TYPE_LONG:
                 case Field.TYPE_NODE:
-                    value = Long.valueOf(Casting.toLong(value));
+                    value = new Long(Casting.toLong(value));
                     break;
                 case Field.TYPE_FLOAT:
                 case Field.TYPE_DOUBLE:
-                    value = Double.valueOf(Casting.toDouble(value));
+                    value = new Double(Casting.toDouble(value));
                     break;
                 case Field.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));
@@ -719,7 +708,7 @@ abstract public class Queries {
      * @param complete string with leading digits
      * @return string with digits removed
      */
-    public static String removeDigits(String complete) {
+    protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
         while (Character.isDigit(complete.charAt(end))) {
             --end;
@@ -735,7 +724,7 @@ abstract public class Queries {
      * @param searchDirs add steps with these relation directions
      * @return The new steps.
      */
-    public static List<Step> addPath(Query query, String path, String searchDirs) {
+    public static List addPath(Query query, String path, String searchDirs) {
         if (path == null || path.equals("")) {
             return query.getSteps().subList(0, 0);
         }
@@ -743,7 +732,7 @@ abstract public class Queries {
             searchDirs = "";
         }
 
-        List<Step> list = query.getSteps();
+        List list = query.getSteps();
         int initialSize = list.size();
 
         StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
@@ -811,13 +800,15 @@ abstract public class Queries {
      * @param fields a comma separated string of fields
      * @return The new stepfields
      */
-    public static List<StepField> addFields(Query query, String fields) {
-        List<StepField> result = new ArrayList<StepField>();
+    public static List addFields(Query query, String fields) {
+        List result = new ArrayList();
         if (fields == null || fields.equals("")) {
             return result;
         }
-
-        for (String fieldName : StringSplitter.split(fields)) {
+        List list = StringSplitter.split(fields);
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            String fieldName = (String)i.next();
             result.add(query.addField(fieldName));
         }
         return result;
@@ -884,7 +875,7 @@ abstract public class Queries {
                     // See also org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery
                     // specified a node which is not of the type of one of the steps.
                     // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
-                    firstStep = query.getSteps().get(0);
+                    firstStep = (Step) query.getSteps().get(0);
                 }
                 if (step == null) {
                     step = firstStep;
@@ -1217,7 +1208,7 @@ abstract public class Queries {
 
         }
         if (value instanceof Node) {
-            value = ((Node)value).getNumber();
+            value = new Integer(((Node)value).getNumber());
         }
         return value;
     }

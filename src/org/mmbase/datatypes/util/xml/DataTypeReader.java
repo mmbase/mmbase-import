@@ -9,18 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.util.xml;
 
+import java.util.*;
 import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
 
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.21 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: DataTypeReader.java,v 1.20 2006-04-10 15:21:37 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -46,6 +48,15 @@ public class DataTypeReader {
         XMLEntityResolver.registerSystemID(NAMESPACE_DATATYPES_1_0 + ".xsd", XSD_DATATYPES_1_0, DataTypeReader.class);
         XMLEntityResolver.registerSystemID(NAMESPACE_ENUMERATIONQUERY_1_0 + ".xsd", XSD_ENUMERATIONQUERY_1_0, DataTypeReader.class);
     }
+
+    /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * searchquery namespace
+     */
+    static private String getAttribute(Element element, String localName) {
+        return DocumentReader.getAttribute(element, NAMESPACE_DATATYPES_1_0, localName);
+    }
+
 
     /**
      * Initialize the data types default supported by the system.

@@ -27,17 +27,16 @@ import org.mmbase.util.logging.*;
  * this is a J2EE concept, this class provides support for usage of this.
  *
  * @author Eduard Witteveen
- * @version $Id: Naming.java,v 1.6 2007-06-19 13:59:30 michiel Exp $
- * @deprecated Datasource can be configured in mmbaseroot.xml
+ * @version $Id: Naming.java,v 1.4 2005-12-24 11:35:45 michiel Exp $
  */
 public class Naming extends ProcessorModule implements JDBCInterface {
-    private static Logger log = Logging.getLoggerInstance(Naming.class);
+    private static Logger log = Logging.getLoggerInstance(Naming.class.getName());
     private static String PROPERTY_CONTEXT_NAME = "context";
     private static String PROPERTY_DATASOURCE_NAME = "datasource";
     private Object datasource = null;
 
     /** our own multi-connection implementation.. arrgg....*/
-    private class NamingMultiConnection extends MultiConnectionImplementation {
+    private class NamingMultiConnection extends MultiConnection {
 	/** constructor to set the connection which has to be retrieved */
 	NamingMultiConnection(Connection con) {
 	    super(null, con);
@@ -66,10 +65,6 @@ public class Naming extends ProcessorModule implements JDBCInterface {
 	public long getStartTimeMillis() {
 	    return 0;
 	}
-    }
-
-    public Naming(String name) { 
-        super(name);
     }
 
     /**

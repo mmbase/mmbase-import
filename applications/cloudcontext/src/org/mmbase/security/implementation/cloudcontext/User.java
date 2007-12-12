@@ -13,8 +13,6 @@ import java.util.*;
 
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.module.core.*;
-import org.mmbase.core.event.*;
-
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.util.HashCodeUtil;
@@ -28,10 +26,10 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.25 2007-07-26 12:45:57 michiel Exp $
+ * @version $Id: User.java,v 1.22.2.1 2006-10-13 15:55:44 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
-public class User extends BasicUser implements WeakNodeEventListener  {
+public class User extends BasicUser implements MMBaseObserver {
     private static final Logger log = Logging.getLoggerInstance(User.class);
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +45,11 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         if (n == null) throw new IllegalArgumentException();
         node = n;
         key = l;
-        EventManager.getInstance().addEventListener(this);
+//        Adding local observers seems like a plan, but unfortunately there is no way to unregister
+//        a user that got out of use. This results in a nasty memoryleak and, eventually,
+//        bad to almost stand-still perfromance when you craete new users...
+//
+//        Users.getBuilder().addLocalObserver(this);
     }
 
     // javadoc inherited
@@ -97,7 +99,7 @@ public class User extends BasicUser implements WeakNodeEventListener  {
     }
 
 
-    public SortedSet<Integer> getGroups() {
+    public SortedSet getGroups() {
         return Groups.getBuilder().getGroups(node.getNumber());
     }
 
@@ -111,15 +113,24 @@ public class User extends BasicUser implements WeakNodeEventListener  {
         return node;
     }
 
-    public void notify(NodeEvent ne) {
-        if ((node != null) && (node.getNumber() == ne.getNodeNumber())) {
-            if (ne.getType() == Event.TYPE_DELETE) {
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        return nodeChanged(number, ctype);
+    }
+
+    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+        return nodeChanged(number, ctype);
+    }
+
+    private boolean nodeChanged(String number, String ctype) {
+        if ((node != null) && (node.getNumber() == Integer.parseInt(number))) {
+            if (ctype.equals("d")) {
                 log.service("Node was invalidated!");
                 node = null; // invalidate
-            } else if (ne.getType() == Event.TYPE_CHANGE) {
-                node = Users.getBuilder().getNode(ne.getNodeNumber());
+            } else if (ctype.equals("c")) {
+                node = Users.getBuilder().getNode(number);
             }
         }
+        return true;
     }
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {

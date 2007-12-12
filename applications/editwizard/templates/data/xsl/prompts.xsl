@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.37 2007-11-29 14:47:19 mark Exp $
+    @version $Id: prompts.xsl,v 1.31.2.3 2007-09-14 13:09:36 gerard Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -14,7 +14,6 @@
 
   <!-- prompts for starting a editwizard -->
   <xsl:variable name="tooltip_edit_wizard">Change...</xsl:variable>
-  <xsl:variable name="please_save">Please save first</xsl:variable>
   <xsl:template name="prompt_edit_wizard">
     <xsl:choose>
       <xsl:when test="prompt">

@@ -18,7 +18,7 @@ import java.util.Date;
  * certain function (on the same node), is set into the field, if the field is empty.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.2 2007-08-03 09:50:23 michiel Exp $
+ * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.1.2.1 2007-08-03 09:49:27 michiel Exp $
  * @since MMBase-1.8.5
  */
 

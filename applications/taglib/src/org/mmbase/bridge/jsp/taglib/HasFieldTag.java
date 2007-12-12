@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NotFoundException;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -20,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.NodeManager#hasField}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasFieldTag.java,v 1.4 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: HasFieldTag.java,v 1.1.2.1 2006-12-13 15:13:38 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -37,6 +38,7 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
         name = getAttribute(n);
     }
 
+
     protected boolean getInverse() throws JspTagException {
         return inverse.getBoolean(this, false);
     }
@@ -45,7 +47,6 @@ public class HasFieldTag extends NodeReferrerTag implements Condition {
     public void setNodetype(String t) throws JspTagException {
         nodeManagerAtt = getAttribute(t);
     }
-
 
 
     public int doStartTag() throws JspTagException {

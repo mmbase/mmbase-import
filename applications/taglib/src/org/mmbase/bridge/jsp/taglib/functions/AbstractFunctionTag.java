@@ -15,13 +15,11 @@ import java.util.Iterator;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import java.util.Map;
-
-import org.mmbase.util.Entry;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.functions.Functions;
 import org.mmbase.util.logging.*;
@@ -38,7 +36,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.30 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.27.2.2 2006-11-17 13:08:10 nklasens Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -101,7 +99,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (module != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
             }
-            return  getCloudVar().getNodeManager(nodeManager.getString(this)).getFunction(functionName); 
+            return  getCloudVar().getNodeManager(nodeManager.getString(this)).getFunction(functionName);
         } else if (module != Attribute.NULL) {
             if (nodeManager != Attribute.NULL || functionSet != Attribute.NULL || functionClass != Attribute.NULL || parentNodeId != Attribute.NULL) {
                 throw new TaglibException("You can only use one of 'nodemanager', 'module', 'set', 'class' or 'node' on a function tag");
@@ -113,15 +111,15 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String set = functionSet.getString(this);
             if (set.equals(THISPAGE)) {
-                Class<? extends Object> jspClass = pageContext.getPage().getClass();
+                Class jspClass = pageContext.getPage().getClass();
                 Method method = Functions.getMethodFromClass(jspClass, functionName);
                 return FunctionFactory.getFunction(method, functionName); // or: new MethodFunction(method, functionName);
             } else {
                 CloudProvider cp = findCloudProvider(false);
                 if (cp != null) {
-                    return FunctionFactory.getFunction(cp.getCloudVar(), set, functionName); 
+                    return FunctionFactory.getFunction(cp.getCloudVar(), set, functionName);
                 } else {
-                    return FunctionFactory.getFunction(set, functionName); 
+                    return FunctionFactory.getFunction(set, functionName);
                 }
             }
         } else if (functionClass != Attribute.NULL) {
@@ -130,9 +128,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
             String className = functionClass.getString(this);
             try {
-                Class<?> clazz;
+                Class clazz;
                 if (className.indexOf(".") == -1) {
-                    Class<? extends Object> jspClass = pageContext.getPage().getClass();
+                    Class jspClass = pageContext.getPage().getClass();
                     clazz   = BeanFunction.getClass(jspClass, className);
                 } else {
                     clazz = Class.forName(className);
@@ -145,6 +143,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             }
 
         } else { // working as Node-referrer unless explicitely specified that it should not (a container must be present!)
+
             log.debug("Node-referrer?");
             if (container != Attribute.NULL || "".equals(parentNodeId.getValue(this)) || functionName == null) { // explicitit container
                 log.debug("explicitely not");
@@ -163,16 +162,15 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 log.debug("explicitely specified node");
                 functionOrNode = findNodeProvider();
             } else {
-                functionOrNode = findParentTag(FunctionContainerOrNodeProvider.class, null, false);
+                functionOrNode = (FunctionContainerOrNodeProvider) findParentTag(FunctionContainerOrNodeProvider.class, null, false);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Found functionOrNode " + functionOrNode);
             }
             if (functionOrNode != null) {
-                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use 
+                if (functionOrNode instanceof NodeProvider) { // wow, indeed, that we are going to use
                     log.debug("using node-function!");
-                    Node node = ((NodeProvider) functionOrNode).getNodeVar();
-                    return node != null ?  node.getFunction(functionName) : null;
+                    return ((NodeProvider) functionOrNode).getNodeVar().getFunction(functionName);
                 } else { // just use the functioncontainer
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
@@ -189,7 +187,7 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
         if(log.isDebugEnabled()) {
             log.debug("Getting function value. Container " + functionContainer);
         }
-        
+
         Function function;
         if ("".equals(functionName)) {  // no name given, certainly must use container.
             if (functionContainer == null) throw new JspTagException("No function name given, and no function container tag found either");
@@ -247,25 +245,29 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             params.setAutoCasting(true);
 
             FunctionContainerTag functionContainer = (FunctionContainerTag) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            if (functionContainer != null) {
-                Iterator<Entry<String, Object>> i = functionContainer.getParameters().iterator();
-                while (i.hasNext()) {
-                    Map.Entry<String, Object> entry = i.next();
-                    params.set(entry.getKey(), entry.getValue());
+            try {
+                if (functionContainer != null) {
+                    Iterator i = functionContainer.getParameters().iterator();
+                    while (i.hasNext()) {
+                        Map.Entry entry = (Map.Entry) i.next();
+                        params.set((String) entry.getKey(), entry.getValue());
+                    }
                 }
-            }
-            if (referids != Attribute.NULL) {
-                params.setAll(Referids.getReferids(referids, this));
+                if (referids != Attribute.NULL) {
+                    params.setAll(Referids.getReferids(referids, this));
+                }
+
+                fillStandardParameters(params);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
+                }
+
+                params.checkRequiredParameters();
+            } catch (Throwable e) {
+                throw new IllegalArgumentException("function " + functionName + " " + e.getMessage());
             }
 
-            fillStandardParameters(params);
-
-            if (log.isDebugEnabled()) {
-                log.debug("using parameters " + params + " on " + function.getClass() + " " + function);
-            }
-
-            params.checkRequiredParameters();
-            
             value =  function.getFunctionValue(params);
 
         }

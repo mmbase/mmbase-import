@@ -23,14 +23,13 @@
         </li>
       </mm:haspage>
       <mm:haspage page="admin">
-        <mm:link>
-          <mm:frameworkparam name="component">core</mm:frameworkparam>
-          <mm:frameworkparam name="category">about</mm:frameworkparam>
-          <li><a href="${_}">Admin pages</a></li>
-        </mm:link>
+        <li><a href="admin">Admin pages</a></li>
       </mm:haspage>
       <mm:haspage page="security">
         <li><a href="security">Security administration</a></li>
+      </mm:haspage>
+      <mm:haspage page="mpl-1.0.jsp">
+        <li><a href="mpl-1.0.jsp">License</a></li>
       </mm:haspage>
     </ul>
     <hr />

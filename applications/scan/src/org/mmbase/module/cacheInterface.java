@@ -18,8 +18,8 @@ import org.mmbase.util.LRUHashtable;
  * @javadoc
  * @rename CacheInterface
  * @move org.mmbase.cache
- * @author  $Author: nklasens $
- * @version $Id: cacheInterface.java,v 1.10 2007-06-21 15:50:21 nklasens Exp $
+ * @author  $Author: pierre $
+ * @version $Id: cacheInterface.java,v 1.9 2003-03-10 11:50:13 pierre Exp $
  */
 public interface cacheInterface {
     /**
@@ -29,7 +29,7 @@ public interface cacheInterface {
     /**
      * @deprecated-now direct access to lines seems undesirable and is implementation-dependent
      */
-    public LRUHashtable<Object, Object> lines();
+    public LRUHashtable lines();
     /**
      * @javadoc
      */

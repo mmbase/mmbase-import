@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumGetProcessorFactory.java,v 1.2 2007-03-23 13:49:38 andre Exp $
+ * @version $Id: ChecksumGetProcessorFactory.java,v 1.1.2.1 2007-03-23 13:44:56 andre Exp $
  * @since MMBase-1.8
  */
 

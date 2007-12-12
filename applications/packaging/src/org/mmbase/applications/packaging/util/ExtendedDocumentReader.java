@@ -9,10 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.packaging.util;
 
+import java.util.*;
+
 import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
+import org.w3c.dom.*;
 import org.xml.sax.*;
 
 /**
@@ -27,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ExtendedDocumentReader.java,v 1.5 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: ExtendedDocumentReader.java,v 1.3 2005-07-09 15:29:12 nklasens Exp $
  */
 public class ExtendedDocumentReader extends XMLBasicReader {
 
@@ -63,7 +66,7 @@ public class ExtendedDocumentReader extends XMLBasicReader {
         return DocumentReader.getDocumentBuilder(validating, handler, resolver);
     }
 
-    public static DocumentBuilder getDocumentBuilder(Class<ExtendedDocumentReader> refer) {
+    public static DocumentBuilder getDocumentBuilder(Class refer) {
         return DocumentReader.getDocumentBuilder(DocumentReader.validate(), null, new XMLEntityResolver(DocumentReader.validate(), refer));
     }
 }

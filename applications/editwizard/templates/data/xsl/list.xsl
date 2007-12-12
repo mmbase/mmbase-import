@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.49 2007-05-31 16:32:23 michiel Exp $
+    @version $Id: list.xsl,v 1.43.2.2 2007-05-31 16:29:50 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />

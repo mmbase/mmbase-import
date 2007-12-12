@@ -16,7 +16,7 @@ import org.mmbase.applications.xmlimporter.ObjectMerger;
 /**
  * Extended from Transaction for interactive handling of dulpicates.
  * @since MMBase-1.5
- * @version $Id: InteractiveTransaction.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: InteractiveTransaction.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public class InteractiveTransaction extends Transaction {
 
@@ -53,18 +53,18 @@ public class InteractiveTransaction extends Transaction {
     * the duplicates by consulting the user.
     * @throws TransactionHandlerException When a failure occurred.
     */
-   protected boolean handleDuplicates(TmpObject tempObj, List<TmpObject> similarObjects,
+   protected boolean handleDuplicates(TmpObject tempObj, List similarObjects,
    ObjectMerger merger) throws TransactionHandlerException {
-      Iterator<TmpObject> iter = similarObjects.iterator();
-      List<TmpObject> mergeResults = new ArrayList<TmpObject>();
+      Iterator iter = similarObjects.iterator();
+      List mergeResults = new ArrayList();
       while (iter.hasNext() ) {
-         TmpObject similarObject = iter.next();
+         TmpObject similarObject = (TmpObject)iter.next();
          mergeResults.add(caculateMerge(similarObject, tempObj, merger));
       }
 
       int choice = consult(tempObj, mergeResults);
 
-      merge(similarObjects.get(choice), tempObj, merger);
+      merge((TmpObject)similarObjects.get(choice), tempObj, merger);
       return true;
    }
 
@@ -79,7 +79,7 @@ public class InteractiveTransaction extends Transaction {
     * @return the index number of the chosen mergeResult
     * @throws TransactionHandlerException If the situation could not be handled.
     */
-   int consult(TmpObject originalObject, List<TmpObject> mergeResults)
+   int consult(TmpObject originalObject, List mergeResults)
    throws TransactionHandlerException {
 
       // Consult user.

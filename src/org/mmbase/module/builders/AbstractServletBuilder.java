@@ -30,7 +30,7 @@ import org.mmbase.security.Rank;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.52 2007-10-03 15:15:11 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.42.2.2 2007-10-03 15:19:23 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -124,9 +124,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                 }
             }
         }
-        String result = MMBaseServlet.getBasePath(association);
-        if (result != null) {
+        String result;
+        List ls = MMBaseServlet.getServletMappingsByAssociation(association);
+        if (ls.size()>0) {
+            result = (String) ls.get(0);
             usesBridgeServlet = MMBaseServlet.getServletByMapping(result) instanceof BridgeServlet;
+            // remove mask
+            int pos = result.lastIndexOf("*");
+            if (pos > 0) {
+                result = result.substring(0, pos);
+            }
+            pos = result.indexOf("*");
+            if (pos == 0) {
+                result = result.substring(pos + 1);
+            }
         } else {
             result = getDefaultPath();
         }
@@ -235,7 +246,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * Returns the fields which tell something about the 'handle' field, and can be calculated from it.
      */
 
-    abstract protected Set<String> getHandleFields();
+    abstract protected Set getHandleFields();
 
     public int insert(String owner, MMObjectNode node) {
         if (log.isDebugEnabled()) {
@@ -249,19 +260,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
     public boolean commit(MMObjectNode node) {
-        Collection<String> changed = node.getChanged();
+        Collection changed = node.getChanged();
         if (log.isDebugEnabled()) {
             log.debug("Committing node " + node.getNumber() + " memory: " + SizeOf.getByteSize(node) + " fields " + changed);
         }
 
+        Object h;
         if (changed.contains(FIELD_HANDLE)) {
             // set those fields to null, which are not changed too:
-            Collection<String> cp = new ArrayList<String>();
+            Collection cp = new ArrayList();
             cp.addAll(getHandleFields());
             cp.removeAll(changed);
-            Iterator<String> i = cp.iterator();
+            Iterator i = cp.iterator();
             while (i.hasNext()) {
-                String f = i.next();
+                String f = (String) i.next();
                 if (node.getBuilder().hasField(f)) {
                     node.setValue(f, null);
                 }
@@ -293,7 +305,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
-    final public  String getGUIIndicator(MMObjectNode node, Parameters pars) {
+    final protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
         String field = (String) pars.get("field");
         if (field == null || "".equals(field) || FIELD_HANDLE.equals(field)) {
             return getSGUIIndicator(node, pars);
@@ -322,7 +334,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     /**
      * @since MMBase-1.8
      */
-    protected StringBuilder getFileName(MMObjectNode node, StringBuilder buf) {
+    protected StringBuffer getFileName(MMObjectNode node, StringBuffer buf) {
         String fileName = hasField(FIELD_FILENAME) ? node.getStringValue(FIELD_FILENAME) : "";
         if (fileName.equals("")) {
             String fileTitle;
@@ -349,9 +361,6 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
     }
 
     /**
-     * Adds a filename to the path to a servlet, unless this does not make sense (not filename can
-     * be determined) or it was explicitely set not to, using the servlet context init parameter
-     * 'mmbase.servlet.&lt;association&gt;addfilename.
      * @since MMBase-1.8
      */
     protected boolean addFileName(MMObjectNode node, String servlet) {
@@ -385,9 +394,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * @since MMBase-1.8.1
      */
     protected String getSession(Parameters a, int nodeNumber) {
-        String session = a.getString("session");
+        String session = (String) a.get("session");
         if (session == null) {
-            Cloud cloud = a.get(Parameter.CLOUD);
+            Cloud cloud = (Cloud) a.get(Parameter.CLOUD);
             log.debug("No session given for " + cloud);
             if(cloud != null && ! cloud.getUser().getRank().equals(Rank.ANONYMOUS)) {
                 log.debug("not anonymous");
@@ -424,12 +433,12 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     {
         // you can of course even implement it anonymously.
-        addFunction(new NodeFunction<String>("servletpath",
+        addFunction(new NodeFunction("servletpath",
                                          new Parameter[] {
-                                             new Parameter<String>("session",  String.class), // For read-protection
-                                             new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-                                             new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-                                             new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
+                                             new Parameter("session",  String.class), // For read-protection
+                                             new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+                                             new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+                                             new Parameter("argument", String.class), // Parameter to use for the argument, overrides 'field'
                                              Parameter.REQUEST,
                                              Parameter.CLOUD
                                          },
@@ -438,14 +447,14 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     setDescription("Returns the path associated with this builder or node.");
                 }
 
-                protected StringBuilder getServletPath(Parameters a) {
-                    StringBuilder servlet = new StringBuilder();
+                protected StringBuffer getServletPath(Parameters a) {
+                    StringBuffer servlet = new StringBuffer();
                     // third argument, the servlet context, can use a relative path here, as an argument
                     String context             = (String) a.get("context");
 
                     if (context == null) {
                         // no path to context-root specified explitiely, try to determin:
-                        HttpServletRequest request = a.get(Parameter.REQUEST);
+                        HttpServletRequest request = (HttpServletRequest) a.get(Parameter.REQUEST);
                         if (request == null) {
                             // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
                             servlet.append(AbstractServletBuilder.this.getServletPath()); // use 'absolute' path (starting with /)
@@ -459,8 +468,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     return servlet;
                 }
 
-                public String getFunctionValue(Node node, Parameters a) {
-                    StringBuilder servlet = getServletPath(a);
+                public Object getFunctionValue(Node node, Parameters a) {
+                    StringBuffer servlet = getServletPath(a);
 
                     String session = getSession(a, node.getNumber());
                     String argument = (String) a.get("argument");
@@ -484,7 +493,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
                     log.debug("Using session " + session);
 
-                    if (usesBridgeServlet &&  session != null && ! "".equals(session)) {
+                    if (usesBridgeServlet &&  session != null) {
                         servlet.append("session=" + session + "+");
                     }
 
@@ -497,7 +506,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
                     }
                 }
 
-                public String getFunctionValue(Parameters a) {
+                public Object getFunctionValue(Parameters a) {
                     return getServletPath(a).toString();
                 }
             });
@@ -510,20 +519,20 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         /**
          * @since MMBase-1.8
          */
-        addFunction(new NodeFunction<String>("iconurl",
+        addFunction(new NodeFunction("iconurl",
                                      new Parameter[] {
                                          Parameter.REQUEST,
-                                         new Parameter<String>("iconroot", String.class, "/mmbase/style/icons/"),
-                                         new Parameter<String>("absolute", String.class, "false")
+                                         new Parameter("iconroot", String.class, "/mmbase/style/icons/"),
+                                         new Parameter("absolute", String.class, "false")
                                      },
                                      ReturnType.STRING) {
                 {
                     setDescription("Returns an URL for an icon for this blob");
                 }
-                public String getFunctionValue(Node n, Parameters parameters) {
+                public Object getFunctionValue(Node n, Parameters parameters) {
                     String mimeType = AbstractServletBuilder.this.getMimeType(getCoreNode(AbstractServletBuilder.this, n));
                     ResourceLoader webRoot = ResourceLoader.getWebRoot();
-                    HttpServletRequest request = parameters.get(Parameter.REQUEST);
+                    HttpServletRequest request = (HttpServletRequest) parameters.get(Parameter.REQUEST);
                     String absolute = parameters.getString("absolute");
                     String root;
                     if (request != null) {
@@ -566,13 +575,13 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      *
      */
 
-    protected Object executeFunction(MMObjectNode node, String function, List<?> args) {
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) {
             log.debug("executefunction of abstractservletbuilder for " + node.getNumber() + "." + function + " " + args);
         }
         if (function.equals("info")) {
-            List<Object> empty = new ArrayList<Object>();
-            Map<String,String> info = (Map<String,String>) super.executeFunction(node, function, empty);
+            List empty = new ArrayList();
+            Map info = (Map) super.executeFunction(node, function, empty);
             info.put("servletpathof", "(function) Returns the servletpath associated with a certain function");
             info.put("format", "bla bla");
             info.put("mimetype", "Returns the mimetype associated with this object");

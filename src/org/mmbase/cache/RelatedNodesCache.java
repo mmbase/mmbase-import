@@ -12,7 +12,6 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.storage.search.*;
-import org.mmbase.module.core.MMObjectNode;
 
 /**
  * Query result cache used for getRelatedNodes from MMObjectNodes. Entries are invalidated on the
@@ -20,7 +19,7 @@ import org.mmbase.module.core.MMObjectNode;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.11 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: RelatedNodesCache.java,v 1.7 2006-06-23 14:17:39 johannes Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */
@@ -50,16 +49,16 @@ public class RelatedNodesCache extends QueryResultCache {
     // Used to sync this cache with node-cache. If node not any more in node-cache, then we decide to also remove its related nodes.
     // This seems a plausible thing to do.
 
-    private Map<Integer, Set<SearchQuery>> numberToKeys = new HashMap<Integer, Set<SearchQuery>>();
+    private Map numberToKeys = new HashMap();
 
 
-    public synchronized List<MMObjectNode> put(SearchQuery query, List<MMObjectNode> queryResult) {
+    public synchronized Object put(SearchQuery query, List queryResult) {
         // test cache policy before caching
         if (!checkCachePolicy(query)) return null;
-        Integer number = (query.getSteps().get(0)).getNodes().first();
-        Set<SearchQuery> keys = numberToKeys.get(number);
+        Integer number = (Integer) ((Step) query.getSteps().get(0)).getNodes().first();
+        Set keys = (Set) numberToKeys.get(number);
         if (keys == null) {
-            keys = new HashSet<SearchQuery>();
+            keys = new HashSet();
             numberToKeys.put(number, keys);
         }
         keys.add(query);
@@ -67,10 +66,10 @@ public class RelatedNodesCache extends QueryResultCache {
     }
 
 
-    public synchronized List<MMObjectNode> remove(Object key) {
+    public synchronized Object remove(Object key) {
         SearchQuery query = (SearchQuery) key;
-        Integer number = (query.getSteps().get(0)).getNodes().first();
-        Set<SearchQuery> keys = numberToKeys.get(number);
+        Integer number = (Integer) ((Step) query.getSteps().get(0)).getNodes().first();
+        Set keys = (Set) numberToKeys.get(number);
         if (keys != null) {
             keys.remove(query);
             if (keys.size() == 0) numberToKeys.remove(number);
@@ -79,9 +78,9 @@ public class RelatedNodesCache extends QueryResultCache {
     }
 
     synchronized void removeNode(Integer number) {
-        Set<SearchQuery>  keys = numberToKeys.get(number);
+        Set keys = (Set) numberToKeys.get(number);
         if (keys != null) {
-            Iterator<SearchQuery> i = keys.iterator();
+            Iterator i = keys.iterator();
             while (i.hasNext()) {
                 super.remove(i.next());
             }

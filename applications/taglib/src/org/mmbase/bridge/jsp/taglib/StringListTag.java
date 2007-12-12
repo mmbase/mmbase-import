@@ -22,24 +22,21 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.35 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: StringListTag.java,v 1.32 2006-07-28 11:31:22 michiel Exp $
  * @since MMBase-1.7
  */
 
-public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { 
-    // need to extend NodeReferrer because of AliasListTag, no MI in java.
+public class StringListTag extends NodeReferrerTag implements ListProvider, Writer { // need to extend NodeRefferer becasue of AliasListTag, no MI in java.
 
-    protected List<String> returnList;
-    protected Iterator<String> iterator;
-    protected int      currentItemIndex = -1;
+    protected List returnList;
+    protected Iterator iterator;
+    protected int      currentItemIndex= -1;
 
-    protected Attribute  max        = Attribute.NULL;
+    protected Attribute  max = Attribute.NULL;
     protected Attribute  comparator = Attribute.NULL;
-    protected Attribute  add        = Attribute.NULL;
-    protected Attribute  retain     = Attribute.NULL;
-    protected Attribute  remove     = Attribute.NULL;
-    protected Attribute  varStatus  = Attribute.NULL;
-    protected String varStatusName  = null;
+    protected Attribute  add= Attribute.NULL;
+    protected Attribute  retain = Attribute.NULL;
+    protected Attribute  remove = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -89,14 +86,6 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     }
 
     /**
-     * @since MMBase-1.9
-     */
-    public void setVarStatus(String s) throws JspTagException {
-        varStatus = getAttribute(s);
-    }
-
-
-    /**
      * Lists do implement ContextProvider
      */
     private   ContextCollector collector;
@@ -112,7 +101,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     /**
      * Creates the actual list of strings.
      */
-    protected List<String> getList() throws JspTagException {
+    protected List getList() throws JspTagException {
         throw new JspTagException("Should use 'referid' attribute on liststrings tag");
     }
 
@@ -128,11 +117,14 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         }
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     *
+     *
+     */
     public int doStartTag() throws JspTagException{
 
         collector = new ContextCollector(getContextProvider());
-        varStatusName = (String) varStatus.getValue(this);
+
 
         helper.overrideWrite(false); // default behavior is not to write to page
 
@@ -142,9 +134,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
                 throw new JspTagException("Context variable " + getReferid() + " is not a Collection");
             }
             if (o instanceof List) {
-                returnList = (List<String>) o;
+                returnList = (List) o;
             } else {
-                returnList = new ArrayList<String>((Collection<String>) o);
+                returnList = new ArrayList((Collection) o);
             }
             truncateList();
             if (getReferid().equals(getId())) { // in such a case, don't whine
@@ -155,13 +147,13 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         }
 
         if (getId() != null) {
-            returnList = new ArrayList<String>(returnList);
+            returnList = new ArrayList(returnList);
         }
         if (add != Attribute.NULL) {
             Object addObject = getObjectConditional(add.getString(this));
             if (addObject != null) {
                 if (addObject instanceof Collection) {
-                    returnList.addAll((Collection<String>) addObject);
+                    returnList.addAll((Collection) addObject);
                 } else {
                     returnList.add(Casting.toString(addObject));
                 }
@@ -171,7 +163,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             Object retainObject = getObjectConditional(retain.getString(this));
             if (retainObject != null) {
                 if (retainObject instanceof Collection) {
-                    returnList.retainAll((Collection<String>) retainObject);
+                    returnList.retainAll((Collection) retainObject);
                 } else {
                     returnList.retainAll(Collections.singletonList(Casting.toString(retainObject)));
                 }
@@ -181,7 +173,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             Object removeObject = getObjectConditional(remove.getString(this));
             if (removeObject != null) {
                 if (removeObject instanceof Collection) {
-                    returnList.removeAll((Collection<String>) removeObject);
+                    returnList.removeAll((Collection) removeObject);
                 } else {
                     returnList.remove(Casting.toString(removeObject));
                 }
@@ -207,9 +199,6 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             getContextProvider().getContextContainer().unRegister(getId());
         }
 
-        if (varStatusName != null) {
-            getContextProvider().getContextContainer().unRegister(varStatusName);
-        }
 
         helper.doAfterBody();
         collector.doAfterBody();
@@ -265,9 +254,6 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         helper.setValue(iterator.next());
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
-        }
-        if (varStatusName != null) {
-            getContextProvider().getContextContainer().register(varStatusName, getLoopStatus());
         }
     }
 

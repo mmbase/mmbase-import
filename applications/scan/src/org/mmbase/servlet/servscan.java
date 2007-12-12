@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.46 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: servscan.java,v 1.45.2.1 2007-07-24 20:55:37 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -71,17 +71,14 @@ public class servscan extends JamesServlet {
         } catch (Exception e){
             log.error(e);
         }
-        log.info("Getting scan parser");
         parser = (scanparser)getModule("SCANPARSER");
+        log.info("Getting scan parser " + parser);
         if(parser == null) {
-            String msg = "Module with name 'scanparser' should be active";
-            log.error(msg);
-            throw new RuntimeException(msg);
+            throw new RuntimeException("Module with name 'scanparser' should be active");
         }
         sessions = (sessionsInterface)getModule("SESSION");
         if(sessions == null) {
-            String msg = "module with name 'sessions' is not active";
-            log.warn(msg);
+            log.warn("module with name 'sessions' is not active");
         }
     }
 
@@ -118,7 +115,6 @@ public class servscan extends JamesServlet {
         if (parser == null) {
             throw new ServletException("No scan parser for request " + req.getRequestURI());
         }
-
 
         incRefCount(req);
         try {
@@ -307,7 +303,7 @@ public class servscan extends JamesServlet {
     }
 
     void handlePost(scanpage sp, HttpServletResponse res) throws Exception {
-        String part;
+        String rtn, part, part2, finals, tokje, header;
         Hashtable proc_cmd = new Hashtable();
         Hashtable proc_var = new Hashtable();
         Object obj;
@@ -331,7 +327,7 @@ public class servscan extends JamesServlet {
         }
 
         // Process method=post information
-        for (Enumeration<String> t = poster.getPostParameters().keys(); t.hasMoreElements(); ) {
+        for (Enumeration t = poster.getPostParameters().keys(); t.hasMoreElements(); ) {
             obj = t.nextElement();
             part = (String)obj;
             if (part.indexOf("SESSION-") == 0) {
@@ -495,11 +491,12 @@ public class servscan extends JamesServlet {
 
     private boolean doCrcCheck(scanpage sp, HttpServletResponse res) {
         if (sp.body != null && sp.body.indexOf("<CRC>") != -1) {
-            Vector<String> p = sp.getParamsVector();
+            Vector p = sp.getParamsVector();
             String value = null;
             String checker = null;
-            for (String part : p) {
-                if (!p.lastElement().equals(part)) {
+            for (Enumeration t=  p.elements(); t.hasMoreElements();) {
+                String part = (String)t.nextElement();
+                if (!((String)p.lastElement()).equals(part)) {
                     if (value == null) {
                         value = part;
                     } else {

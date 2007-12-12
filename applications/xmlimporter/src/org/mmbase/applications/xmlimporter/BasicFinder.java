@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A basic implementation of SimilarObjectFinder.
  * @since MMBase-1.5
- * @version $Id: BasicFinder.java,v 1.5 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: BasicFinder.java,v 1.4 2005-01-25 12:45:18 pierre Exp $
  */
 public abstract class BasicFinder implements SimilarObjectFinder {
 
@@ -35,13 +35,13 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      * without the "where ".
      * @return List of (Integer) MMBase id's.
      */
-    protected static List<Integer> findPersistentObjects(
+    protected static List findPersistentObjects(
     MMObjectBuilder builder, String criterium) {
 
-        Enumeration<MMObjectNode> en = builder.search("WHERE " + criterium);
-        List<Integer> result = new ArrayList<Integer>();
+        Enumeration en = builder.search("WHERE " + criterium);
+        List result = new ArrayList();
         while (en.hasMoreElements()) {
-            MMObjectNode node = en.nextElement();
+            MMObjectNode node = (MMObjectNode) en.nextElement();
             result.add(node.getIntegerValue("number"));
         }
         return result;
@@ -54,8 +54,9 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      * Initializes this instance.
      * @param params The initialization parameters, provided as
      * name/value pairs (both String).
+     * @throws TransactionHandlerException if a failure occurred.
      */
-    public void init(HashMap<String, String> params) {
+    public void init(HashMap params) throws TransactionHandlerException {
     }
 
     /**
@@ -66,10 +67,10 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      * @param tmpObj The object to search for.
      * @throws TransactionHandlerException If a failure occurred.
      */
-    public List<TmpObject> findSimilarObject(Transaction transaction, TmpObject tmpObj)
+    public List findSimilarObject(Transaction transaction, TmpObject tmpObj)
     throws TransactionHandlerException {
-        Set<TmpObject> exactMatches = new HashSet<TmpObject>();
-        Set<TmpObject> closeMatches = new HashSet<TmpObject>();
+        Set exactMatches = new HashSet();
+        Set closeMatches = new HashSet();
 
         MMObjectNode node1 = tmpObj.getNode();
         int otype = node1.getOType();
@@ -77,9 +78,9 @@ public abstract class BasicFinder implements SimilarObjectFinder {
 
         // Search temporary cloud for matching nodes,
         // add exact matches to exactMatches, close matches to closeMatches.
-        Iterator<TmpObject> iTmpObjects = transaction.getTmpObjects().iterator();
+        Iterator iTmpObjects = transaction.getTmpObjects().iterator();
         while (iTmpObjects.hasNext()) {
-            TmpObject tmpObj2 = iTmpObjects.next();
+            TmpObject tmpObj2 = (TmpObject)iTmpObjects.next();
             if (tmpObj2 == tmpObj) {
                 // Traversal stops at this object (tmpnode1).
                 // This is important, because
@@ -97,10 +98,10 @@ public abstract class BasicFinder implements SimilarObjectFinder {
 
         // Search persistent cloud for exactly matching nodes,
         // add these to exactMatches.
-        Iterator<Integer> iPersistentObjects
+        Iterator iPersistentObjects
             = getExactPersistentObjects(tmpObj).iterator();
         while (iPersistentObjects.hasNext()) {
-            Integer mmBaseId2 = iPersistentObjects.next();
+            Integer mmBaseId2 = ((Integer) iPersistentObjects.next());
 
             // Ignore if this is the node to match to.
             if (mmBaseId2.equals(mmBaseId1)) {
@@ -121,15 +122,15 @@ public abstract class BasicFinder implements SimilarObjectFinder {
                 log.debug("Matches (exact) found for " + tmpObj + ":\n"
                 + exactMatches);
             }
-            return new ArrayList<TmpObject>(exactMatches);
+            return new ArrayList(exactMatches);
         }
 
         // When no exact matches found, search persistent cloud for
         // close matching nodes as well.
-        Iterator<Integer> iCloseObjects
+        Iterator iCloseObjects
             = getClosePersistentObjects(tmpObj).iterator();
         while (iCloseObjects.hasNext()) {
-            Integer mmBaseId2 = iCloseObjects.next();
+            Integer mmBaseId2 = ((Integer) iCloseObjects.next());
 
             // Ignore if this is the node to match to.
             if (mmBaseId2.equals(mmBaseId1)) {
@@ -150,7 +151,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
             log.debug("Matches (close) found for " + tmpObj + ":\n"
             + closeMatches);
         }
-        return new ArrayList<TmpObject>(closeMatches);
+        return new ArrayList(closeMatches);
     }
 
     /**
@@ -178,7 +179,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      *  persistent cloud that produce an exact match with the given
      *  object.
      */
-    public abstract Collection<Integer> getExactPersistentObjects(TmpObject tmpObj);
+    public abstract Collection getExactPersistentObjects(TmpObject tmpObj);
 
     /**
      * Gets MMBase id's for all objects from persistent cloud that
@@ -192,7 +193,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      *  persistent cloud that might produce a qualifying match with the
      *  given object.
      */
-    public abstract Collection<Integer> getClosePersistentObjects(TmpObject tmpObj);
+    public abstract Collection getClosePersistentObjects(TmpObject tmpObj);
 
     /**
      * Calculates and evaluates matching rate of an object with respect
@@ -205,7 +206,7 @@ public abstract class BasicFinder implements SimilarObjectFinder {
      * @param closeMatches Set of close matching objects.
      */
     private void evaluateMatch(
-    TmpObject tmpObj1, TmpObject tmpObj2, Set<TmpObject> exactMatches, Set<TmpObject> closeMatches) {
+    TmpObject tmpObj1, TmpObject tmpObj2, Set exactMatches, Set closeMatches) {
         float matchingRate = scoreNode(tmpObj1, tmpObj2);
         if (matchingRate == 1.0) {
             // Exact match.

@@ -9,14 +9,13 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.25 2007-11-29 14:47:19 mark Exp $
+  @version $Id: prompts.xsl,v 1.20.2.5 2007-11-23 10:04:50 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
 <!-- prompts for starting a editwizard -->
 <xsl:variable name="tooltip_edit_wizard">Wijzigen...</xsl:variable>
 <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
-<xsl:variable name="please_save">Eerst opslaan AUB</xsl:variable>
 <!-- prompts for datefields -->
 <xsl:variable name="date_january">januari</xsl:variable>
 <xsl:variable name="date_february">februari</xsl:variable>
@@ -117,7 +116,6 @@
 <xsl:template name="prompt_search_term" >Termen</xsl:template>
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Zoek" /></xsl:template>
 <xsl:variable name="tooltip_search" >Zoek een toe te voegen item</xsl:variable>
-<xsl:variable name="tooltip_search_all">Zoek een toe te voegen item</xsl:variable>
 <xsl:template name="prompt_search_title" >Bevat</xsl:template>
 <xsl:template name="prompt_search_owner" >Eigenaar is</xsl:template>
 <xsl:template name="prompt_search_number" >Nummer is</xsl:template>
@@ -144,6 +142,7 @@
   <xsl:call-template name="prompt_search_age" >
     <xsl:with-param name="age" select="$age" />
   </xsl:call-template>
+  <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   <xsl:value-of select="$title" disable-output-escaping="yes"  />
   <xsl:if test="$searchvalue" >
     - zoek op <xsl:value-of select="$searchvalue" />

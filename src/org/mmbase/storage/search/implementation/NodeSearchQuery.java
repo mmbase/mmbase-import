@@ -35,7 +35,7 @@ import org.mmbase.storage.search.*;
  * </ul>
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.15 2006-09-08 18:42:59 michiel Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.13 2006-02-09 12:04:19 johannes Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -44,7 +44,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     private MMObjectBuilder builder = null;
 
     /** Map, maps fields to stepfields. */
-    private Map<CoreField, BasicStepField> stepFields = new HashMap<CoreField, BasicStepField>();
+    private Map stepFields = new HashMap();
 
 
     /**
@@ -95,10 +95,10 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      *         persistent field of the associated nodetype.
      */
     public BasicStepField getField(CoreField field) {
-        BasicStepField stepField = stepFields.get(field);
+        BasicStepField stepField = (BasicStepField) stepFields.get(field);
         if (stepField == null) {
             // Not found.
-            throw new IllegalArgumentException("Not a persistent field of builder " + builder.getTableName() + ": " + field);
+            throw new IllegalArgumentException("Not a persistent field of builder " + builder.getTableName() + ": " + field + " in " + stepFields);
         }
         return stepField;
     }
@@ -132,7 +132,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
         }
     }
     // MM
-    protected void mapField(CoreField field, BasicStepField stepField) {
+    protected void mapField(CoreField field, StepField stepField) {
         stepFields.put(field, stepField);
     }
 

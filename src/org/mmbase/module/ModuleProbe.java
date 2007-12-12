@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
- * @version $Id: ModuleProbe.java,v 1.12 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: ModuleProbe.java,v 1.11 2005-11-30 15:58:04 pierre Exp $
  */
 public class ModuleProbe extends DaemonThread {
 
@@ -38,9 +38,9 @@ public class ModuleProbe extends DaemonThread {
     public void executeTask() {
         // call each module's maintenance routine
         try {
-            Iterator<Module> i = Module.getModules();
+            Iterator i = Module.getModules();
             while(i != null && i.hasNext()) {
-                Module module = i.next();
+                Module module = (Module) i.next();
                 try {
                     module.maintainance();
                 } catch (RuntimeException e) {

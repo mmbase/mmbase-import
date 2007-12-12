@@ -15,7 +15,6 @@
   <property name="build.dir" value="${source.dir}/build"/>
   <target name="init">
     <mkdir dir="build/classes"/>
-  	<mkdir dir="build/generator/classes"/>
     <available property="dummy" classname="dummy">
       <classpath id="classpath">
         <fileset dir="${build.dir}/lib">
@@ -55,25 +54,41 @@
 <!-- (Step 1 for remote) Compile the remote generator classes            -->
 <!-- =================================================================== -->
   <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
-    <javac srcdir="generator/src"
-           destdir="build/generator/classes"
+    <javac srcdir="src"
+           destdir="build/classes"
            classpathref="classpath"
            debug="yes"
-           source="1.5"
+           source="1.4"
            optimize="yes">
+      <include name="org/mmbase/bridge/remote/generator/*.java"/>
+      <include name="org/mmbase/servlet/rmi/*.java"/>
     </javac>
+  </target>
+<!-- =================================================================== -->
+<!-- check if MMCI.xml is present                                        -->
+<!-- =================================================================== -->
+  <target name="check.mmci.xml.present" description="check if MMCI.xml is present" depends="init">
+    <available property="mmci.xml.present" file="build/src/MMCI.xml"/>
   </target>
 <!-- =================================================================== -->
 <!-- (Step 2 for remote) Generate the source for the remote classes      -->
 <!-- =================================================================== -->
-  <target name="generate.remote" description="Generate the source for the remote classes" depends="init,compile.remote.generator">
+  <target name="generate.remote" description="Generate the source for the remote classes" depends="init,compile.remote.generator,check.mmci.xml.present" unless="mmci.xml.present">
     <mkdir dir="build/src/org/mmbase/bridge/remote"/>
 <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
        using the sun jaxp implementation. By forking we do not use the ant classloader -->
-    <java classname="org.mmbase.bridge.remote.generator.RMMCI" fork="true" classpathref="classpath">
-      <arg value="build/src"/>
+    <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="classpath">
+      <arg value="build/src/MMCI.xml"/>
       <classpath>
-        <pathelement location="build/generator/classes"/>
+        <pathelement location="build/classes"/>
+      </classpath>
+    </java>
+<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
+    <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="classpath" fork="true">
+      <arg value="build/src"/>
+      <arg value="build/src/MMCI.xml"/>
+      <classpath>
+        <pathelement location="build/classes"/>
       </classpath>
     </java>
   </target>
@@ -84,29 +99,30 @@
     <javac destdir="build/classes"
            classpathref="classpath"
            debug="yes"
-           source="1.5"
+           source="1.4"
            optimize="yes">
       <src path="build/src"/>
       <src path="src"/>
       <include name="org/mmbase/bridge/remote/*.java"/>
       <include name="org/mmbase/bridge/remote/rmi/*.java"/>
-      <include name="org/mmbase/bridge/remote/proxy/*.java"/>
+      <include name="org/mmbase/bridge/remote/implementation/*.java"/>
     </javac>
-    <!-- rmic base="build/classes" sourcebase="build/classes" classpathref="classpath">
+    <rmic base="build/classes" classpathref="classpath">
       <include name="org/mmbase/bridge/remote/rmi/*.class"/>
       <classpath>
         <pathelement location="build/classes"/>
       </classpath>
-    </rmic -->
-    <javac destdir="build/classes"
+    </rmic>
+  	<javac destdir="build/classes"
           classpathref="classpath"
           debug="yes"
-          source="1.5"
+          source="1.4"
           optimize="yes">
       <src path="build/src"/>
       <src path="src"/>
       <include name="org/mmbase/bridge/ContextProvider.java"/>
       <include name="org/mmbase/module/RemoteMMCI.java"/>
+      <include name="org/mmbase/bridge/remote/util/StubToLocalMapper.java"/>
     </javac>
   </target>
 <!-- =================================================================== -->
@@ -114,10 +130,8 @@
 <!-- =================================================================== -->
   <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
-    <unjar src="${build.dir}/lib/servletapi-2.4.jar" dest="build/rmmcitmp"/>
-    <!--
+    <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
     <unjar src="${xml-apis.jar}" dest="build/rmmcitmp"/>
-    -->
     <echo file="build/rmmcitmp/manifest.mf">
 Name: org/mmbase
 Vendor: MMBase Community
@@ -146,13 +160,12 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/bridge/remote/*"/>
         <include name="org/mmbase/bridge/remote/rmi/*"/>
         <include name="org/mmbase/bridge/remote/util/*"/>
-        <include name="org/mmbase/bridge/remote/proxy/*"/>
+        <include name="org/mmbase/bridge/remote/implementation/*"/>
       </fileset>
       <fileset dir="build/rmmcitmp">
         <include name="org/mmbase/bridge/*"/>                           <!-- of course -->
         <include name="org/mmbase/bridge/util/**"       />              <!-- not essential, but the idea is that you could use those with any bridge impl, so you should want them -->
         <include name="org/mmbase/storage/search/*"/>                   <!-- those interfaces are  part of bridge -->
-        <exclude name="org/mmbase/storage/search/SearchQueryHandler"/>  <!-- Has a dependency on MMObjectNode -->
         <include name="org/mmbase/datatypes/**" />                      <!-- datatype classes are bridge -->
         <include name="org/mmbase/security/UserContext.class"/>         <!-- security classes are bridge -->
         <include name="org/mmbase/security/AuthenticationData*.class"/> <!-- security classes are bridge -->
@@ -180,16 +193,14 @@ Build-compiler: ${build.compiler}
         <include name="org/mmbase/util/ChainedIterator*.class"/>              <!-- Used by LocalizedEntryListFactory -->
         <include name="org/mmbase/util/SizeMeasurable.class"/>             <!-- implemented by several class -->
         <include name="org/mmbase/util/Casting*.class"/>                   <!-- widely used -->
-        <include name="org/mmbase/util/StringBuilderWriter.class"/>        <!-- used by Casting -->
-        <include name="org/mmbase/util/StringBufferWriter.class"/>         <!-- used by Datatype Restrictions -->
-        <include name="org/mmbase/util/WrappedLocalizedString.class"/>    <!-- used by Casting -->
+        <include name="org/mmbase/util/StringBufferWriter.class"/>         <!-- used by Casting -->
         <include name="org/mmbase/util/Encode.class"/>                     <!-- general utility -->
         <include name="org/mmbase/util/transformers/**.class"/>            <!-- used by Encode -->
         <include name="org/mmbase/util/xml/**"/>
         <include name="org/mmbase/util/XMLEntityResolver*.class"/>          <!-- -->
         <include name="org/mmbase/util/XMLErrorHandler.class"/>             <!-- -->
         <include name="org/mmbase/util/DynamicDate.class"/>                <!-- used by Casting -->
-        <include name="org/mmbase/util/DateFormats*.class"/>
+        <include name="org/mmbase/util/DateFormats*.class"/>              
         <include name="org/mmbase/util/dateparser/**"/>                    <!-- used by Casting -->
         <include name="org/mmbase/util/HashCodeUtil*"/>                    <!-- used by SortedBundle, but is generic tool-->
         <include name="org/mmbase/util/PublicCloneable*"/>                    <!-- used by SortedBundle, but is generic tool-->

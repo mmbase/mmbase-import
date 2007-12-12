@@ -17,11 +17,15 @@ import java.util.Vector;
 import org.mmbase.bridge.Field;
 import org.mmbase.core.CoreField;
 import org.mmbase.storage.StorageManagerFactory;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.CompositeConstraint;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
+import org.mmbase.storage.search.FieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicSearchQuery;
 import org.mmbase.storage.search.implementation.BasicStep;
+import org.mmbase.storage.search.implementation.BasicStepField;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 
 /**
@@ -41,11 +45,11 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.32 2007-02-25 18:12:16 nklasens Exp $
+ * @version $Id: QueryConvertor.java,v 1.30 2005-10-05 10:44:00 michiel Exp $
  */
 public class QueryConvertor {
 
-    static StorageManagerFactory<?> factory = null;
+    static StorageManagerFactory factory = null;
 
     /**
      * Converts query to a SQL "where"-clause.
@@ -54,7 +58,7 @@ public class QueryConvertor {
      * @deprecated Use {@link #setConstraint setConstraint()} to parse
      *        these expressions.
      */
-    public static String altaVista2SQL(String query, StorageManagerFactory<?> smf) {
+    public static String altaVista2SQL(String query, StorageManagerFactory smf) {
         factory = smf;
         return altaVista2SQL(query);
     }
@@ -166,7 +170,7 @@ class DBQuery  extends ParseItem {
     // logger
     //private static Logger log = Logging.getLoggerInstance(DBQuery.class.getName());
 
-    public Vector<ParseItem> items = new Vector<ParseItem>();
+    public Vector items = new Vector();
 
     /**
      * Creates the query
@@ -192,12 +196,12 @@ class DBQuery  extends ParseItem {
      * @param result the stringbuffer to which to add the query
      */
     public void sqlConversion(StringBuffer result) {
-        Enumeration<ParseItem> enumeration = items.elements();
+        Enumeration enumeration = items.elements();
 
         result.append("WHERE ");
 
         while (enumeration.hasMoreElements()) {
-            enumeration.nextElement().sqlConversion(result);
+            ((ParseItem)enumeration.nextElement()).sqlConversion(result);
         }
     }
 
@@ -212,7 +216,7 @@ class DBQuery  extends ParseItem {
         BasicCompositeConstraint compositeConstraint = null;
         BasicFieldValueConstraint fieldValueConstraint = null;
 
-        Iterator<ParseItem> iItems = items.iterator();
+        Iterator iItems = items.iterator();
         DBLogicalOperator logicalOperator = null;
         while (iItems.hasNext()) {
 
@@ -261,10 +265,10 @@ class DBQuery  extends ParseItem {
             DBConditionItem condition = (DBConditionItem) iItems.next();
 
             // Find corresponding field in query.
-            StepField field = null;
-            Iterator<StepField> iFields = query.getFields().iterator();
+            BasicStepField field = null;
+            Iterator iFields = query.getFields().iterator();
             while (iFields.hasNext()) {
-                StepField field2 = iFields.next();
+                BasicStepField field2 = (BasicStepField) iFields.next();
                 String alias2 = field2.getStep().getAlias();
                 if (alias2 == null) {
                     alias2 = field2.getStep().getTableName();
@@ -279,13 +283,13 @@ class DBQuery  extends ParseItem {
 
             if (field == null) {
                 // Field not found, find step and add field.
-                Step step = null;
+                BasicStep step = null;
                 if (condition.prefix == null) {
-                    step = query.getSteps().get(0);
+                    step = (BasicStep) query.getSteps().get(0);
                 } else {
-                    Iterator<Step> iSteps = query.getSteps().iterator();
+                    Iterator iSteps = query.getSteps().iterator();
                     while (iSteps.hasNext()) {
-                        Step step2 = iSteps.next();
+                        BasicStep step2 = (BasicStep) iSteps.next();
                         if (step2.getAlias().equals(condition.prefix)) {
                             step = step2;
                             break;
@@ -299,7 +303,7 @@ class DBQuery  extends ParseItem {
                     }
                 }
 
-                CoreField coreField = ((BasicStep)step).getBuilder().getField(condition.fieldName);
+                CoreField coreField = step.getBuilder().getField(condition.fieldName);
                 if (coreField == null) {
                     // Field not found.
                     throw new IllegalStateException("Field with name '"
@@ -318,13 +322,13 @@ class DBQuery  extends ParseItem {
                 fieldValueConstraint.setCaseSensitive(false);
             } else {
                 // Numerical field.
-                Object numericalValue = Double.valueOf(condition.value.getValue());
+                Object numericalValue = new Double(condition.value.getValue());
                 fieldValueConstraint = new BasicFieldValueConstraint(field, numericalValue);
             }
 
             switch (condition.operator) {
                 case DBConditionItem.NOTEQUAL:
-                    fieldValueConstraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
+                    fieldValueConstraint.setOperator(FieldValueConstraint.NOT_EQUAL);
                     break;
 
                 case DBConditionItem.EQUAL:

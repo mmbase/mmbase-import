@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.10 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.7 2005-01-30 16:46:34 nico Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -60,11 +60,11 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
         return new Integer(node.getNumber());
     }
 
-    protected SortedSet<Integer> getAliases(List<String> names) throws JspTagException {
-        SortedSet<Integer> set = new TreeSet<Integer>();
-        Iterator<String> i = names.iterator();
+    protected SortedSet getAliases(List names) throws JspTagException {
+        SortedSet set = new TreeSet();
+        Iterator i = names.iterator();
         while (i.hasNext()) {
-            set.add(getAlias(i.next()));
+            set.add(getAlias((String) i.next()));
         }
         return set;
     }
@@ -72,11 +72,11 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
 
     public int doStartTag() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
         String elementString = element.getString(this);
         Step step;
-        if (elementString.length() == 0) {
+        if (elementString.equals("")) {
             if (query instanceof NodeQuery) {
                 step = ((NodeQuery) query).getNodeStep();
             } else {
@@ -101,7 +101,7 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
