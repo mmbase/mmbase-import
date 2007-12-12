@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.187 2007-10-14 19:08:10 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.188 2007-12-12 17:12:23 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -754,7 +754,7 @@ public class DatabaseStorageManager implements StorageManager {
     	}
     	return false;
     }
-    
+
     /**
      * Store a binary (blob) data file
      * @todo how to do this in a transaction???
@@ -1994,6 +1994,17 @@ public class DatabaseStorageManager implements StorageManager {
 
 
     /**
+     * @since MMBase-1.8.5
+     */
+    private long getMaxMaxSize(String name) {
+        long maxMax = -1;
+        for (TypeMapping tm : factory.getTypeMappings()) {
+            if (name.equals(tm.name) && tm.maxSize > maxMax) maxMax = tm.maxSize;
+        }
+        return maxMax;
+    }
+
+    /**
      * Creates a field type definition, of the format '[fieldtype] NULL' or
      * '[fieldtype] NOT NULL' (depending on whether the field is nullable).
      * The fieldtype is taken from the type mapping in the factory.
@@ -2005,13 +2016,22 @@ public class DatabaseStorageManager implements StorageManager {
     protected String getFieldTypeDefinition(CoreField field) throws StorageException {
         // create the type mapping to search for
         String typeName = Fields.getTypeDescription(field.getType());
-        int size = field.getMaxLength();
+        long size = field.getMaxLength();
         TypeMapping mapping = new TypeMapping();
         mapping.name = typeName;
         mapping.setFixedSize(size);
         // search type mapping
         List<TypeMapping> typeMappings = factory.getTypeMappings();
         int found = typeMappings.indexOf(mapping);
+        if (found == -1) {
+            long maxMax = getMaxMaxSize(typeName);
+            if (size > maxMax) {
+                mapping.setFixedSize(maxMax);
+                found = typeMappings.indexOf(mapping);
+                log.warn("Type for field " + field.getName() + ": " + typeName + " (" + size + ") undefined. Setting size to " + maxMax);
+                size = maxMax;
+            }
+        }
         if (found > -1) {
             String fieldDef = typeMappings.get(found).getType(size);
             if (field.isNotNull()) {
