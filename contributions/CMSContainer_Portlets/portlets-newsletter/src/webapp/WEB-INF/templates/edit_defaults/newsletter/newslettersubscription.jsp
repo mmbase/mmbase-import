@@ -48,7 +48,7 @@
 					<mm:listnodes type="newsletter">
 						<mm:field name="number" id="number" write="false" />
 						<mm:field name="title"  id="title" write="false" />
-						<cmsc:checkbox var="newsletters" value="${number}" selected="${newsletters}" />${title}</td></tr><tr><td>&nbsp;</td><td>
+						<cmsc:checkbox var="allowednewsletters" value="${number}" />${title}</td></tr><tr><td>&nbsp;</td><td>
 					</mm:listnodes>
 					</mm:cloud>
 
