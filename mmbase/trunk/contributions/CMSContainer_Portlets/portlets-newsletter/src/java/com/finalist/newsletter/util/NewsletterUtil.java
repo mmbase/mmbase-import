@@ -47,7 +47,7 @@ public abstract class NewsletterUtil {
       } else {
          managerName = "newsletterpublication";
       }
-      Node newsletterNode = SearchUtil.findRelatedNode(themeNode, managerName, "related");
+      Node newsletterNode = SearchUtil.findRelatedNode(themeNode, managerName, null);
       if (newsletterNode != null) {
          return (newsletterNode.getStringValue("number"));
       }

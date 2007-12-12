@@ -1,5 +1,6 @@
 package com.finalist.newsletter;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
@@ -18,7 +19,7 @@ public class NewsletterGeneratorHtml extends NewsletterGenerator {
    }
 
    @Override
-   protected MimeMultipart generateNewsletterMessage(String userName) {
+   protected Message generateNewsletterMessage(String userName) {
 
       Session session = getMailSession();
 

@@ -79,12 +79,21 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static List<String> getUserSubscribedThemes(String userName) {
       if (userName != null) {
-         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");
+         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, NEWSLETTER_THEME);
          return (themeList);
       }
       return (null);
    }
 
+   public static List<String> getUserSubscribedNewsletters(String userName) {
+      if (userName != null) {
+         List<String> newsletterList = NewsletterCommunication.getUserPreferences(userName, NEWSLETTER);
+         return (newsletterList );
+      }
+      return (null);
+   }
+
+   
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
       if (userName != null && newsletterNumber != null) {
          List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");

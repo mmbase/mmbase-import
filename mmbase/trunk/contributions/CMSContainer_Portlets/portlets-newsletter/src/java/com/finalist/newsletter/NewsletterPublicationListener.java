@@ -18,11 +18,6 @@ public class NewsletterPublicationListener implements NodeEventListener {
          String publicationNumber = String.valueOf(nodeNumber);
          Thread publisher = new NewsletterPublisher(publicationNumber);
 
-         try {
-            wait(10000);
-         } catch (InterruptedException iex) {
-
-         }
          publisher.start();
       } else {
          log.debug("The event is of type " + event.getBuilderName() + " and does not need processing");

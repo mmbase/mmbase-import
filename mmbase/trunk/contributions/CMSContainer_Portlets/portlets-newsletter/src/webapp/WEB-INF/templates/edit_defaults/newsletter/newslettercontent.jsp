@@ -5,7 +5,7 @@
 <cmsc:location var="cur" sitevar="site" />
 <c:set var="page" value="${cur.id}" />
 
-<div class="portlet-config-canvas">	
+<div class="portlet-config-canvas">
 	<script type="text/javascript">
 		function selectElement(contentelement, title) {
 			document.forms['<portlet:namespace />form'].contentelement.value = contentelement;
@@ -38,10 +38,6 @@
 		action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>">
 	
 		<table class="editcontent">
-			<tr>
-				<td><fmt:message key="edit_defaults.newsletter" /></td>
-				<td>${page} - ${cur.title}</td>
-			</tr>
 			<tr>
 				<td>
 					<input type="hidden" name="page" value="${page}" />
