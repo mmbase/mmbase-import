@@ -40,10 +40,10 @@ echo generating version, and some directories
 #headrevision="-A"
 
 #release:
-version=MMBase-1_8_5-rc1
+version=MMBase-1_8_5-Final
 cvsversion=
-revision=MMBase-1_8_5-rc1
-headrevision="-r MMBase-1_8_5-rc1"
+revision=MMBase-1_8_5-Final
+headrevision="-r MMBase-1_8_5-Final"
 
 # STABLE branch
 builddir="/home/nightly/builds/stable/${version}"
