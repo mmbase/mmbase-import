@@ -28,6 +28,7 @@
         <xsd:extension base="mmsq:Field">
           <xsd:attribute name="alias" type="xsd:string"/>
           <xsd:attribute name="keyword" type="xsd:string"/>
+          <xsd:attribute name="escape" type="xsd:string"/>
           <xsd:attribute name="store" type="xsd:string"/>
           <xsd:attribute name="password" type="xsd:string"/>
           <xsd:attribute name="boost" type="xsd:float"/>
