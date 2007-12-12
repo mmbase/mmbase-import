@@ -63,8 +63,16 @@ public class ReactionAction extends SearchAction {
    public Cloud getCloud() {
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
       Cloud cloud = cloudProvider.getCloud();
-      Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
-      return remoteCloud;
+
+      /* The DirectReactions should use the staging cloud if we are
+       *  running in single-war-file mode. 
+       */
+      try{
+    	  Cloud remoteCloud = CloudManager.getCloud(cloud, "live.server");
+          return remoteCloud;	//In case there is a live.server
+      } catch(NoClassDefFoundError e){
+    	  return cloud;			//In case there is only a staging (single) server
+      }
    }
 
 
