@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.11 2006-07-06 11:27:27 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.11.2.1 2007-12-12 16:15:40 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -51,7 +51,7 @@ public class ChangesSender implements Runnable {
     /** Time To Live for datapackets send by Multicast */
     private final int mTTL;
 
-    /** 
+    /**
      * Construct MultiCast Sender
      * @param multicastHost 'channel' of the multicast
      * @param mport port of the multicast
@@ -112,7 +112,7 @@ public class ChangesSender implements Runnable {
                     }
                     ms.send(dp);
                 } catch (IOException e) {
-                    log.error("can't send message" + dp + " to " + ia + ":" + mport);
+                    log.error("can't send message " + dp + " (" + data.length + " long) to " + ia + ":" + mport);
                     log.error(e.getMessage(), e);
                 }
                 send.count++;
