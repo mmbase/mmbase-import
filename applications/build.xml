@@ -36,6 +36,7 @@ Applications build file
     <available file="jumpers/build.xml" property="jumpers.exists"/>
   	<available file="myyahoo/build.xml" property="myyahoo.exists"/>
     <available file="notifications/build.xml" property="notifications.exists"/>
+    <available file="commandserver/build.xml" property="commandserver.exists"/>
   </target>
 
   <target name="all.not.compiling" depends="" />
@@ -123,7 +124,6 @@ Applications build file
      </ant>
   </target>
 
-
   <target name="dove" depends="mmbase">
      <ant dir="dove" target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
@@ -203,7 +203,7 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-  <target name="commandserver">
+  <target name="commandserver" if="commandserver.exists">
      <ant dir="commandserver"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
        <property name="build.dir"        value="${build.dir}" />
@@ -266,7 +266,7 @@ Applications build file
        <property name="download.dir"        value="${download.dir}" />
      </ant>
   </target>
-	
+
   <target name="resources" depends="mmbase" if="resources.exists">
     <ant dir="resources"  target="package" inheritAll="false">
       <property name="project.zip.dir"        value="${applications.build.dir}" />
