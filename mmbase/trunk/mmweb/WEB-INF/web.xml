@@ -100,6 +100,10 @@
     <extension>mmbase-module</extension>
     <mime-type>application/java-archive</mime-type>
   </mime-mapping>
+  <mime-mapping>
+    <extension>war</extension>
+    <mime-type>application/java-archive</mime-type>
+  </mime-mapping>
 
   <mime-mapping>
     <extension>xsd</extension>
