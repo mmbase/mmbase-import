@@ -26,7 +26,7 @@ public class BundleVersionContainer  {
 
     private ShareInfo shareinfo;
 
-    private HashMap<ProviderInterface, BundleInterface> bundles=new HashMap<ProviderInterface, BundleInterface>();
+    private HashMap bundles=new HashMap();
 
     public BundleVersionContainer(BundleInterface b) {
         bundles.put(b.getProvider(),b);
@@ -58,8 +58,8 @@ public class BundleVersionContainer  {
         return null;
     } 
 
-   public Iterator<BundleInterface> getBundles() {
-       return ((HashMap<ProviderInterface, BundleInterface>)bundles.clone()).values().iterator();
+   public Iterator getBundles() {
+       return ((HashMap)bundles.clone()).values().iterator();
    }
 
 
@@ -84,9 +84,9 @@ public class BundleVersionContainer  {
 
     public BundleInterface getBundleByScore() {
         BundleInterface winner = null;
-        Iterator<BundleInterface> e = bundles.values().iterator();
+        Iterator e = bundles.values().iterator();
         while (e.hasNext()) {
-            BundleInterface b = e.next();
+            BundleInterface b = (BundleInterface)e.next();
             if (winner == null) {
                 winner = b;
             } else if (b.getProvider().getBaseScore() > winner.getProvider().getBaseScore()) {

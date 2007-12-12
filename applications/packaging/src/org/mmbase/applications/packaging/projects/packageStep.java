@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 /**
  *
- * @version $Id: packageStep.java,v 1.6 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: packageStep.java,v 1.5 2005-10-02 17:10:58 michiel Exp $
  * @author     Daniel Ockeloen
  * @rename PackageStep
  */
@@ -19,7 +19,7 @@ public class packageStep {
 
     private String userfeedback;
 
-    private ArrayList<packageStep> packagesteps;
+    private ArrayList packagesteps;
 
     private int timestamp;
 
@@ -100,9 +100,9 @@ public class packageStep {
         // count all the errors of the subs
         if (packagesteps != null) {
             int total = errorcount;
-            Iterator<packageStep> e = packagesteps.iterator();
+            Iterator e = packagesteps.iterator();
             while (e.hasNext()) {
-                packageStep step = e.next();
+                packageStep step = (packageStep) e.next();
                 total += step.getErrorCount();
             }
             return total;
@@ -120,9 +120,9 @@ public class packageStep {
     public int getWarningCount() {
         if (packagesteps != null) {
             int total = warningcount;
-            Iterator<packageStep> e = packagesteps.iterator();
+            Iterator e = packagesteps.iterator();
             while (e.hasNext()) {
-                packageStep step = e.next();
+                packageStep step = (packageStep) e.next();
                 total += step.getWarningCount();
             }
             return total;
@@ -137,7 +137,7 @@ public class packageStep {
      *
      * @return    The packageSteps value
      */
-    public Iterator<packageStep> getPackageSteps() {
+    public Iterator getPackageSteps() {
         if (packagesteps != null) {
             return packagesteps.iterator();
         } else {
@@ -152,20 +152,20 @@ public class packageStep {
      * @param  logid  Description of the Parameter
      * @return        The packageSteps value
      */
-    public Iterator<packageStep> getPackageSteps(int logid) {
+    public Iterator getPackageSteps(int logid) {
         // is it me ?
         if (logid == getId()) {
             return getPackageSteps();
         }
 
         // well maybe its one of my subs ?
-        Iterator<packageStep> e = getPackageSteps();
+        Iterator e = getPackageSteps();
         if (e != null) {
             while (e.hasNext()) {
-                packageStep step = e.next();
+                packageStep step = (packageStep) e.next();
                 Object o = step.getPackageSteps(logid);
                 if (o != null) {
-                    return (Iterator<packageStep>) o;
+                    return (Iterator) o;
                 }
             }
         }
@@ -183,7 +183,7 @@ public class packageStep {
         packageStep step = new packageStep();
         step.setParent(getId());
         if (packagesteps == null) {
-            packagesteps = new ArrayList<packageStep>();
+            packagesteps = new ArrayList();
             packagesteps.add(step);
             return step;
         } else {

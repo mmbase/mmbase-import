@@ -15,15 +15,13 @@ import javax.servlet.jsp.JspException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.framework.Framework;
-import org.mmbase.util.functions.Parameters;
 
 /**
  * Lives under a cloudprovider. Can give information about the node,
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.13 2007-11-16 16:23:37 michiel Exp $
+ * @version $Id: CloudInfoTag.java,v 1.10 2006-06-23 11:39:50 michiel Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -34,7 +32,6 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
     private static final int TYPE_RANK                  = 2;
     private static final int TYPE_RANK_INT              = 3;
     private static final int TYPE_AUTHENTICATE          = 4;
-    private static final int TYPE_USERNODE              = 5;
     private static final int TYPE_MMBASEVERSION         = 100;
     private static final int TYPE_TAGLIBVERSION         = 101;
 
@@ -51,17 +48,15 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             return TYPE_NAME;
         } else if ("user".equals(t)) {
             return TYPE_USER;
-        } else if ("usernode".equals(t)) {
-            return TYPE_USERNODE;
-        } else if ("rank".equals(t)) {
+        } else if ("rank".equals(t)) { 
             return TYPE_RANK;
-        } else if ("rankint".equals(t)) {
+        } else if ("rankint".equals(t)) { 
             return TYPE_RANK_INT;
-        } else if ("authenticate".equals(t)) {
+        } else if ("authenticate".equals(t)) { 
             return TYPE_AUTHENTICATE;
-        } else if ("mmbaseversion".equals(t)) {
+        } else if ("mmbaseversion".equals(t)) { 
             return TYPE_MMBASEVERSION;
-        } else if ("taglibversion".equals(t)) {
+        } else if ("taglibversion".equals(t)) { 
             return TYPE_TAGLIBVERSION;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
@@ -72,7 +67,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
 
         Cloud cloud = getCloudVar();
 
-        Object show;
+        String show;
 
         // set node if necessary:
         switch(getType()) {
@@ -81,13 +76,6 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             break;
         case TYPE_USER:
             show = cloud.getUser().getIdentifier();
-            break;
-        case TYPE_USERNODE:
-            Framework fw = Framework.getInstance();
-            Parameters frameworkParams = fw.createParameters();
-            fillStandardParameters(frameworkParams);
-            frameworkParams.setAutoCasting(true);
-            show = fw.getUserNode(frameworkParams);
             break;
         case TYPE_RANK:
             show = cloud.getUser().getRank().toString();
@@ -108,6 +96,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             show = "";
         }
 
+        
         helper.setValue(show);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());

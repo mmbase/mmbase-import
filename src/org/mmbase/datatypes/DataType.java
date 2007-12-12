@@ -15,7 +15,13 @@ import java.io.Serializable;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
+import org.mmbase.core.util.Fields;
+import org.mmbase.core.AbstractDescriptor;
+import org.mmbase.datatypes.DataTypes;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A value in MMBase (such as the value of a field, or function parameter) is associated with a
@@ -32,10 +38,10 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.64 2007-08-28 10:06:05 michiel Exp $
+ * @version $Id: DataType.java,v 1.54 2006-07-18 12:56:55 michiel Exp $
  */
 
-public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
+public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
 
     /**
      * The XML Namespace to be used for creating datatype XML
@@ -78,12 +84,17 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     /**
      * Returned by {@link #validate} if no errors: an empty (nonmodifiable) Collection.
      */
-    public static final Collection<LocalizedString> VALID = Collections.emptyList();
+    public static final Collection VALID = Collections.EMPTY_LIST;
+
+    /**
+     * Inherit properties and processors from the passed datatype.
+     */
+    public void inherit(BasicDataType origin);
 
     /**
      * Return the DataType from which this one inherited, or <code>null</code>
      */
-    public DataType<?> getOrigin();
+    public DataType getOrigin();
 
     /**
      * Return an identifier for the basic type (i.e., 'string', 'int', 'datetime') supported by this datatype.
@@ -98,11 +109,11 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      */
     public int getBaseType();
 
-    /**
+        /**
      * Returns the type of values that this data type accepts.
      * @return the type as a Class
      */
-    public Class<C> getTypeAsClass();
+    public Class getTypeAsClass();
 
     /**
      * Checks if the passed object is of the correct class (compatible with the type of this data type),
@@ -121,7 +132,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * @param node  Sometimes a node might be needed.
      * @param field Sometimes a (or 'the') field might be needed.
      */
-    public C cast(Object value, Node node, Field field);
+    public Object cast(Object value, Node node, Field field);
 
     /**
      * Before actually 'cast' an object to the right type, it may undergo some conversion by the
@@ -134,24 +145,23 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * preCast should not change the actual type of value. It is e.g. used in the
      * Node#setStringValue, and the processor may expect a String there.
      */
-    public <D> D preCast(D value, Node node, Field field);
-    //public Object preCast(Object value, Node node, Field field);
+    public Object preCast(Object value, Node node, Field field);
 
     /**
      * Returns the default value of this data type.
      * @return the default value
      */
-    public C getDefaultValue();
+    public Object getDefaultValue();
 
     /**
      * @javadoc
      */
-    public void setDefaultValue(C def);
+    public void setDefaultValue(Object def);
 
     /**
      * @javadoc
      */
-    public DataType<C> rewrite(Object owner);
+    public DataType rewrite(Object owner);
 
     /**
      * @javadoc
@@ -163,18 +173,13 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      */
     public void finish(Object owner);
 
-    /**
-     * The maximum enforce strength of all restrictions on this datatype.
-     * See {@link Restriction#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ALWAYS}, {@link DataType#ENFORCE_ONCHANGE}, {@link DataType#ENFORCE_NEVER}.
-     */
-    public int getEnforceStrength();
 
     /**
      * @see #validate(Object, Node, Field)
      * @return The error message(s) if the value is not compatible. An empty collection if valid.
      * @param value the value to be validated
      */
-    public Collection<LocalizedString> validate(C value);
+    public Collection /*<LocalizedString>*/ validate(Object value);
 
     /**
      * Checks if the passed object obeys the restrictions defined for this type.
@@ -185,10 +190,13 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      *
      * @return The error message(s) if the value is not compatible. An empty collection if the value is valid.
      */
-    public Collection<LocalizedString> validate(C value, Node node, Field field);
+    public Collection /*<LocalizedString> */ validate(Object value, Node node, Field field);
 
     /**
-     * Returns whether this field is required (may not be <code>null</code>, or otherwise empty).
+     * Returns whether this field is required (should have content).
+     * Note that the MMBase core does not generally enforce required fields to be filled -
+     * If not provided, a default value (generally an empty string or the integer value -1)
+     * is filled in by the system.
      *
      * @return  <code>true</code> if the field is required
      */
@@ -198,7 +206,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * Returns the 'required' restriction, containing the value, errormessages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction<Boolean> getRequiredRestriction();
+    public DataType.Restriction getRequiredRestriction();
 
     /**
      * Sets whether the data type requires a value, which means that it may not remain unfilled.
@@ -222,7 +230,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * Returns the 'unique' restriction, containing the value, error messages, and fixed status of this attribute.
      * @return the restriction as a {@link DataType.Restriction}
      */
-    public DataType.Restriction<Boolean> getUniqueRestriction();
+    public DataType.Restriction getUniqueRestriction();
 
     /**
      * Sets whether the data type requires a value.
@@ -245,7 +253,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * @param field   Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      *
      */
-    public Iterator<Map.Entry<C, String>> getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
+    public Iterator getEnumerationValues(Locale locale, Cloud cloud, Node node, Field field);
 
     /**
      * Returns a (gui) value from a list of retsricted enumerated values, or
@@ -257,18 +265,18 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * @param field  Possibly the possible values depend on an actual field (this may be, and in the default implementation is, ignored)
      * @param key    the key for which to look up the (gui) value
      */
-    public String getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
+    public Object getEnumerationValue(Locale locale, Cloud cloud, Node node, Field field, Object key);
 
     /**
      * @return the LocalizedEntryListFactory which will be used to produce the result of {@link
      * #getEnumerationValues}. Never <code>null</code>. This can be used to add more possible values.
      */
-    public LocalizedEntryListFactory<C> getEnumerationFactory();
+    public LocalizedEntryListFactory getEnumerationFactory();
 
     /**
      * The enumeration for this datatype as a {@link Restriction}.
      */
-    public DataType.Restriction<LocalizedEntryListFactory<C>> getEnumerationRestriction();
+    public DataType.Restriction getEnumerationRestriction();
 
     /**
      * @javadoc
@@ -319,7 +327,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * Similar to calling clone(), but changes the data type name if one is provided.
      * @param name the new name of the copied datatype (can be <code>null</code>, in which case the name is not changed).
      */
-    public DataType<C> clone(String name);
+    public Object clone(String name);
 
 
     /**
@@ -339,7 +347,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     /**
      * A restriction controls (one aspect of) the acceptable values of a DataType. A DataType generally has several restrictions.
      */
-    public interface Restriction<D extends Serializable> extends Serializable {
+    public interface Restriction extends Serializable {
 
         /**
          * @javadoc
@@ -350,12 +358,12 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
          * A Value describing the restriction, so depending on the semantics of this restriction, it
          * can have virtually every type (as long as it is Serializable)
          */
-        public D getValue();
+        public Serializable getValue();
 
         /**
          * @javadoc
          */
-        public void setValue(D value);
+        public void setValue(Serializable value);
 
         /**
          * If the restriction does not hold, the following error description can be used. On default

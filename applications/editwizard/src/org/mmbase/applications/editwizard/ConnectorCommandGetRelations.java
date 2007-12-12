@@ -17,7 +17,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetRelations.java,v 1.7 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: ConnectorCommandGetRelations.java,v 1.6 2003-03-31 10:53:16 michiel Exp $
  */
 
 public class ConnectorCommandGetRelations extends ConnectorCommand {
@@ -28,6 +28,7 @@ public class ConnectorCommandGetRelations extends ConnectorCommand {
     }
 
     public void addObject(String objectnumber, NodeList queryrelations) throws WizardException {
+        String nr = objectnumber;
         Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
 
         if (queryrelations!=null) {

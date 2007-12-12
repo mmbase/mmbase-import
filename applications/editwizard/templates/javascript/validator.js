@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.42 2007-11-27 12:24:16 michiel Exp $
+ * @version  $Id: validator.js,v 1.37.2.5 2007-11-27 12:18:32 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -85,7 +85,7 @@ addEvent = function(el, evname, func) {
             }
         }
         else {
-            el.attachEvent("on" + evname, func);
+                el.attachEvent("on" + evname, func);
         }
     } else {
         el.addEventListener(evname, func, true);
@@ -111,6 +111,7 @@ Validator.prototype.validateIEPasteEvent = function (evt) {
 
 Validator.prototype.validateEvent = function (evt) {
     evt = (evt) ? evt : ((window.event) ? window.event : "")
+
     if (evt) {
         var elem = getTargetElement(evt)
         if (elem) {
@@ -215,11 +216,10 @@ Validator.prototype.validateElement = function (el, silent) {
                    "value is required; please select a value");
             }
 
-        }
-        else {
+        } else {
             if (isEmpty(v)) {
                 err += getToolTipValue(form,'message_required',
-                   "value is required");
+				       "value is required");
             }
         }
     }
@@ -607,7 +607,7 @@ function disableButton(button, textAttr, textDefault) {
         var usetext = getToolTipValue(button,textAttr, textDefault);
         button.title = usetext;
         button.disabled = true;
-    }
+   }
 }
 
 //********************************
@@ -661,7 +661,7 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
 }
 
 function isEmpty(value) {
-        return (value == null) || (value == "");
+    return (value == null) || (value == "");
 }
 
 function getTargetElement(evt) {

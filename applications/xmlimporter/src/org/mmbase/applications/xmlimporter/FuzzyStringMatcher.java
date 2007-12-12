@@ -14,7 +14,7 @@ package org.mmbase.applications.xmlimporter;
  * Utility class, providing methods for a fuzzy comparison between strings.
  * @author Rob van Maris (Finalist IT Group)
  * @since MMBase-1.5
- * @version $Id: FuzzyStringMatcher.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: FuzzyStringMatcher.java,v 1.3 2003-03-07 08:50:02 pierre Exp $
  */
 public class FuzzyStringMatcher {
 
@@ -88,7 +88,8 @@ public class FuzzyStringMatcher {
         char[] chars = str.toCharArray();
         boolean whiteSpace = false;
 
-        for (char ch : chars) {
+        for (int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
             if (ch == '&') {    // Ampersand
                 sb.append(ch);
             } else if (ch < 0x0030) {

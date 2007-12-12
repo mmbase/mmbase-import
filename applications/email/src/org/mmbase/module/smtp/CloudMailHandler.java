@@ -25,7 +25,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.8 2007-12-06 10:58:22 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.6 2007-11-20 11:07:48 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -39,7 +39,6 @@ public class CloudMailHandler implements MailHandler {
         public final Node box;  // mailbox object (mails are related to this node) Can be the user
                                 // node itself.
         public final Node user;
-
         MailBox(Node b, Node u) {
             box = b; user = u;
         }
@@ -140,18 +139,13 @@ public class CloudMailHandler implements MailHandler {
 
     public MessageStatus handleMessage(Message message) {
         Cloud cloud = getCloud();
-        if (cloud == null) throw new RuntimeException("Did not receive a cloud!");
-
         Map<String, String> properties = getProperties();
         NodeManager emailbuilder = cloud.getNodeManager(properties.get("emailbuilder"));
-        if (emailbuilder == null) throw new RuntimeException("No emailbuilder found " + properties);
 
         int deliverCount = 0;
         int errorCount = 0;
         for (MailBox mailbox : mailboxes) {
-            if (log.isDebugEnabled()) {
-                log.debug("Delivering to mailbox node " + mailbox.box.getNumber());
-            }
+            log.debug("Delivering to mailbox node " + mailbox.box.getNumber());
             Node email = emailbuilder.createNode();
             if (properties.containsKey("emailbuilder.typefield")) {
                  email.setIntValue(properties.get("emailbuilder.typefield"), 2); // new unread mail
@@ -274,7 +268,7 @@ public class CloudMailHandler implements MailHandler {
                         log.error("Exception while parsing attachments: " + e.getMessage(), e);
                     }
                 }
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 errorCount++;
                 log.warn(e.getMessage(), e);
                 try {
@@ -284,9 +278,7 @@ public class CloudMailHandler implements MailHandler {
                     log.error(ee);
                 }
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Creating relation with mailbox " + mailbox);
-            }
+            log.debug("Creating relation with mailbox " + mailbox);
             Relation rel = cloud.getNode(mailbox.box.getNumber()).createRelation(email, cloud.getRelationManager("related"));
             rel.commit();
             deliverCount++;
@@ -315,9 +307,6 @@ public class CloudMailHandler implements MailHandler {
                 }
             } catch (NotFoundException nfe) {
                 log.debug("No function 'forwardEmail' on user node, so will not forward");
-            } catch (RuntimeException e) {
-                log.error("During forwarding: " + e.getMessage(), e);
-                throw e;
             }
         }
         if (deliverCount > 0) {
@@ -438,8 +427,7 @@ public class CloudMailHandler implements MailHandler {
      * @return Node in the MMBase object cloud
      */
     private Node storeAttachment(Part p, Cloud cloud) throws MessagingException, TooBig {
-        int maxSize = SMTPFetcher.getMaxAttachmentSize(getProperties());
-        if (p.getSize() > maxSize) {
+        if (p.getSize() > Integer.parseInt(getProperties().get("max_attachment_size"))) {
             log.service("Size of p too big");
             throw new TooBig();
         }
@@ -525,10 +513,8 @@ public class CloudMailHandler implements MailHandler {
      */
     public MailBoxStatus addMailbox(String user, String domain) {
         Cloud cloud = getCloud();
-        if (cloud == null) throw new RuntimeException("Did not receive a cloud!");
-
         Map<String, String> properties = getProperties();
-        log.service("Checking mail box for " + user + "@" + domain + " " + properties);
+        log.service("Checking mail fox for " + user + "@" + domain + " " + properties);
 
         String usersBuilder = properties.get("usersbuilder");
         NodeManager manager = cloud.getNodeManager(usersBuilder);

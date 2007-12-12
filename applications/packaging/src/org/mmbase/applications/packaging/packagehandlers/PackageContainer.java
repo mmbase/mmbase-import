@@ -35,7 +35,7 @@ public class PackageContainer implements PackageInterface {
 
     private PackageInterface activePackage;
 
-    private HashMap<String, PackageVersionContainer> versions = new HashMap<String, PackageVersionContainer>();
+    private HashMap versions = new HashMap();
 
 
     /**
@@ -61,7 +61,7 @@ public class PackageContainer implements PackageInterface {
      * @return           Description of the Return Value
      */
     public boolean contains(String version, ProviderInterface provider) {
-        PackageVersionContainer vc = versions.get(version);
+        PackageVersionContainer vc = (PackageVersionContainer) versions.get(version);
         if (vc != null) {
             return (vc.contains(provider));
         }
@@ -98,7 +98,7 @@ public class PackageContainer implements PackageInterface {
      * @return    Description of the Return Value
      */
     public boolean addPackage(PackageInterface p) {
-        PackageVersionContainer vc = versions.get(p.getVersion());
+        PackageVersionContainer vc = (PackageVersionContainer) versions.get(p.getVersion());
         // we allready have this verion, so maybe its a different provider
         if (vc != null) {
             vc.addPackage(p);
@@ -134,7 +134,7 @@ public class PackageContainer implements PackageInterface {
      * @param  type  Description of the Parameter
      * @return       The relatedPeople value
      */
-    public List<Object> getRelatedPeople(String type) {
+    public List getRelatedPeople(String type) {
         return activePackage.getRelatedPeople(type);
     }
 
@@ -357,8 +357,8 @@ public class PackageContainer implements PackageInterface {
      *
      * @return    The versions value
      */
-    public Iterator<PackageVersionContainer> getVersions() {
-        return ((HashMap<String, PackageVersionContainer>)versions.clone()).values().iterator();
+    public Iterator getVersions() {
+        return ((HashMap)versions.clone()).values().iterator();
     }
 
 
@@ -367,12 +367,12 @@ public class PackageContainer implements PackageInterface {
      *
      * @return    The versionNumbers value
      */
-    public Iterator<String> getVersionNumbers() {
-        ArrayList<String> list = new ArrayList<String>();
+    public Iterator getVersionNumbers() {
+        ArrayList list = new ArrayList();
         // loop all versions and filter the uniq numbers
-        Iterator<PackageVersionContainer> e = getVersions();
+        Iterator e = getVersions();
         while (e.hasNext()) {
-            PackageVersionContainer pvc = e.next();
+            PackageVersionContainer pvc = (PackageVersionContainer) e.next();
             String ver = pvc.getVersion();
             list.add(ver);
         }
@@ -388,7 +388,7 @@ public class PackageContainer implements PackageInterface {
      * @return           The version value
      */
     public PackageInterface getVersion(String version, ProviderInterface provider) {
-        PackageVersionContainer pvc = versions.get(version);
+        PackageVersionContainer pvc = (PackageVersionContainer) versions.get(version);
         if (pvc != null) {
             PackageInterface p = (PackageInterface) pvc.get(provider);
             if (p != null) {
@@ -409,7 +409,7 @@ public class PackageContainer implements PackageInterface {
      * @return          The packageByScore value
      */
     public PackageInterface getPackageByScore(String version) {
-        PackageVersionContainer pvc = versions.get(version);
+        PackageVersionContainer pvc = (PackageVersionContainer) versions.get(version);
         if (pvc != null) {
             return pvc.getPackageByScore();
         }
@@ -422,7 +422,7 @@ public class PackageContainer implements PackageInterface {
      *
      * @return    The installSteps value
      */
-    public Iterator<installStep> getInstallSteps() {
+    public Iterator getInstallSteps() {
         return activePackage.getInstallSteps();
     }
 
@@ -433,7 +433,7 @@ public class PackageContainer implements PackageInterface {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Iterator<installStep> getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         return activePackage.getInstallSteps(logid);
     }
 
@@ -589,11 +589,6 @@ public class PackageContainer implements PackageInterface {
      */
     public int getProgressBarValue() {
         return activePackage.getProgressBarValue();
-    }
-
-
-    public long lastSeen() {
-        return activePackage.lastSeen();
     }
 
 }

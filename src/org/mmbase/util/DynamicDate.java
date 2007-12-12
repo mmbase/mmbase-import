@@ -197,8 +197,7 @@ public class DynamicDate extends Date {
             "now this second", "now this minute", "now this hour", "now this day", "today previous monday", "now this month", "now this year", "now this century", "now this era",
             "now - 15 year this century", "now - 20 year this century_pedantic", "today + 2 century", "toera - 1 minute",
             "this july", "previous july", "next july", "this sunday", "previous sunday", "next sunday",
-            "2009-W01-01", "2009-W53-7", "2006-123",
-            "2005-01-01 this monday"
+            "2009-W01-01", "2009-W53-7", "2006-123" 
         };
     }
 
@@ -210,14 +209,14 @@ public class DynamicDate extends Date {
         java.text.DateFormat formatter = new java.text.SimpleDateFormat("GGGG yyyy-MM-dd HH:mm:ss.SSS zzz E");
         if (argv.length == 0) {
             String[] demo = getDemo();
-            for (String element : demo) {
+            for (int i = 0; i < demo.length; i++) {
                 try {
-                    Date d1 = getInstance(element);
+                    Date d1 = getInstance(demo[i]);
                     System.out.print(formatter.format(d1) + "\t");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                System.out.println(element);
+                System.out.println(demo[i]);
 
             }
             System.out.println("This was demo, you can also call with an argument, to try it yourself");

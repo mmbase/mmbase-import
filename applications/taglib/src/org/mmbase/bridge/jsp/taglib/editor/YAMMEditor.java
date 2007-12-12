@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * yammeditor.jsp?nrs=76&fields=76_number;76_title;76_subtitle;76_intro;80_gui();
  *
  * @author Andr&eacute; van Toly
- * @version $Id: YAMMEditor.java,v 1.14 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: YAMMEditor.java,v 1.10 2006-07-06 11:36:12 michiel Exp $
  * @see EditTag
  * @see BasicEditor
  * @since MMBase-1.8
@@ -39,8 +39,8 @@ public class YAMMEditor extends Editor {
     private static final Logger log = Logging.getLoggerInstance(YAMMEditor.class);
 
     private static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<String>("url", String.class, "/mmbase/edit/yammeditor/yammeditor.jsp"),
-        new Parameter<String>("icon", String.class, "/mmbase/style/images/change.gif")
+        new Parameter("url", String.class, "/mmbase/edit/yammeditor/yammeditor.jsp"),
+        new Parameter("icon", String.class, "/mmbase/style/images/change.gif")
     };
 
 
@@ -50,12 +50,12 @@ public class YAMMEditor extends Editor {
 
 
 
-    private List<String> startList = new ArrayList<String>();       // startnodes: 346
-    private List<String> pathList  = new ArrayList<String>();       // paths: 346_news,posrel,urls
-    private List<String> nList = new ArrayList<String>();           // nodes: 346_602
-    private List<String> fList = new ArrayList<String>();           // 602_news.title
+    private List startList = new ArrayList();       // startnodes: 346
+    private List pathList  = new ArrayList();       // paths: 346_news,posrel,urls
+    private List nList = new ArrayList();           // nodes: 346_602
+    private List fList = new ArrayList();           // 602_news.title
     // Map to accommadate the fields and their startnodes
-    private Map<String, String> fld2snMap = new HashMap<String, String>();
+    private Map fld2snMap = new HashMap();
 
 
     /**
@@ -86,13 +86,13 @@ public class YAMMEditor extends Editor {
      * @param nodenrList    List with nodenumbers
      * @param fieldList     List with fieldnames
      */
-    public void registerFields(List<Query> queryList, List<String> nodenrList, List<String> fieldList) {
+    public void registerFields(List queryList, List nodenrList, List fieldList) {
         log.debug("processing fields");
         for (int i = 0; i < nodenrList.size(); i++) {
-            String fldName = fieldList.get(i);
+            String fldName = (String) fieldList.get(i);
             log.debug("processing field '" + fldName + "'");
-            Query query = queryList.get(i);
-            String nodenr = nodenrList.get(i);
+            Query query = (Query) queryList.get(i);
+            String nodenr = (String) nodenrList.get(i);
 
             processField(query, nodenr, fldName);
         }
@@ -114,15 +114,15 @@ public class YAMMEditor extends Editor {
 
         // fill paths
         String path = getPathFromQuery(query);
-        if (path.length() != 0 && !pathList.contains(path)) {
+        if (!path.equals("") && !pathList.contains(path)) {
             pathList.add(path);
             log.debug("Added path : " + path);
         }
 
-        List<String> nl = getNodesFromQuery(query, nodenr);
-        Iterator<String> e = nl.iterator();         // iterate over the startnodes
+        List nl = getNodesFromQuery(query, nodenr);
+        Iterator e = nl.iterator();         // iterate over the startnodes
         while (e.hasNext()) {
-            String nr = e.next();
+            String nr = (String)e.next();
             boolean startnode = false;
 
             /* fills fld2snMap (only used to keep track of startnodes,
@@ -164,23 +164,24 @@ public class YAMMEditor extends Editor {
 
     }
 
-    protected List<String> getNodesFromQuery(Query query, String nr) {
-        List<String> nl = new ArrayList<String>();
-        List<Step> steps = query.getSteps();
+    protected List getNodesFromQuery(Query query, String nr) {
+        List nl = new ArrayList();
+        List steps = query.getSteps();
 
         if (steps.size() == 1) {    // why ?
             nl.add(nr);
             log.debug("1. added nr to list of all the nodes in query: " + nr);
         }
 
-        Iterator<Step> si = steps.iterator();
+        Iterator si = steps.iterator();
         while (si.hasNext()) {
-            Step step = si.next();
+            Step step = (Step) si.next();
 
             // Get the nodes from this step
             //   (haalt alle nodes uit step, itereert erover en stopt ze in nl )
-            SortedSet<Integer> nodeSet = step.getNodes();
-            for (Integer n : nodeSet) {
+            SortedSet nodeSet = step.getNodes();
+            for (Iterator nsi = nodeSet.iterator(); nsi.hasNext();) {
+                Integer n = (Integer)nsi.next();
                 nr = String.valueOf(n);
 
                 if (!nl.contains(nr)) {
@@ -201,14 +202,14 @@ public class YAMMEditor extends Editor {
      * @param   ql  List with queries
      * @return      List with paths from #getPathFromQuery
      */
-    protected List<String> fillPathList(List<Query> ql) {
-        List<String> pl = new ArrayList<String>();
+    protected List fillPathList(List ql) {
+        List pl = new ArrayList();
 
-        Iterator<Query> i = ql.iterator();
+        Iterator i = ql.iterator();
         while (i.hasNext()) {
-            Query q = i.next();
+            Query q = (Query) i.next();
             String path = getPathFromQuery(q);
-            if (path.length() != 0 && !pl.contains(path)) {
+            if (!path.equals("") && !pl.contains(path)) {
                 pl.add(path);
                 log.debug("Added path '" + path + "' to pl");
             }
@@ -227,19 +228,20 @@ public class YAMMEditor extends Editor {
     *           meaning: startnode(s)_path
     */
     protected String getPathFromQuery(Query query) {
-        StringBuilder path = new StringBuilder();
+        StringBuffer path = new StringBuffer();
 
-        java.util.List<Step> steps = query.getSteps();
+        java.util.List steps = query.getSteps();
         log.debug("Nr of steps : " + steps.size());
         if (steps.size() > 1) {     // no need to look for a path when there is just 1 step
-            Iterator<Step> si = steps.iterator();
+            Iterator si = steps.iterator();
             while (si.hasNext()) {
-                Step step = si.next();
+                Step step = (Step) si.next();
 
                 String nodenrs = "";
-                SortedSet<Integer> nodeSet = step.getNodes();    // Get the (start?)nodes from this step
-                for (Integer number : nodeSet) {
-                    if (nodenrs.length() == 0) {
+                SortedSet nodeSet = step.getNodes();    // Get the (start?)nodes from this step
+                for (Iterator nsi = nodeSet.iterator(); nsi.hasNext();) {
+                    Integer number = (Integer)nsi.next();
+                    if (nodenrs.equals("")) {
                         nodenrs = String.valueOf(number);
                     } else {
                         nodenrs = nodenrs + "," + String.valueOf(number);
@@ -268,15 +270,15 @@ public class YAMMEditor extends Editor {
     * @return   A ; seperated String with the elements in the List
     *
     */
-    protected String makeList4Url(List<String> al) {
-        StringBuilder sb = new StringBuilder();
+    protected String makeList4Url(List al) {
+        StringBuffer sb = new StringBuffer();
         if (al.size() > 0) {
-            Iterator<String> e = al.iterator();
+            Iterator e = al.iterator();
             while(e.hasNext()) {
                 if (sb.length() == 0) {
-                    sb.append( e.next() );
+                    sb.append( (String) e.next() );
                 } else {
-                    sb.append(';').append( e.next() );
+                    sb.append(';').append( (String) e.next() );
                 }
             }
         }
@@ -292,7 +294,7 @@ public class YAMMEditor extends Editor {
     *
     */
     public String makeHTML(String url, String icon) {
-        StringBuilder html = new StringBuilder();
+        StringBuffer html = new StringBuffer();
 
         html.append("<div class=\"et\"><a title=\"click to edit\" href=\"");
         html.append(url);
@@ -302,7 +304,7 @@ public class YAMMEditor extends Editor {
         html.append("&amp;nodes=").append(makeList4Url(nList)); // nodes:       676_345 (startnode_nodenr)
         html.append("\" onclick=\"window.open(this.href); return false;\">");
 
-        if (icon.length() != 0) {
+        if (!icon.equals("")) {
             html.append("<img src=\"").append(icon).append("\" alt=\"edit\">");
         } else {
             html.append("edit");
@@ -322,7 +324,7 @@ public class YAMMEditor extends Editor {
      *
      */
     protected String makeRelative(String url, PageContext pageContext) {
-        StringBuilder show = new StringBuilder(url);
+        StringBuffer show = new StringBuffer(url);
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
         if (show.charAt(0) == '/') { // absolute on servletcontex
             if (show.length() > 1 && show.charAt(1) == '/') {

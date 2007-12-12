@@ -23,12 +23,12 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.59 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: FieldListTag.java,v 1.54 2006-07-17 15:38:47 johannes Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
-    private List<Field>     returnList;
-    private Iterator<Field> fieldIterator;
+    private FieldList     returnList;
+    private FieldIterator fieldIterator;
     private Field         currentField;
     private int           currentItemIndex= -1;
 
@@ -42,7 +42,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     protected Attribute  retain = Attribute.NULL;
     protected Attribute  remove = Attribute.NULL;
     private  Attribute comparator = Attribute.NULL;
-    private  Attribute varStatus = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -113,7 +112,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void setFields(String f) throws JspTagException {
         fields = getAttribute(f);
     }
-    protected List<String> getFields() throws JspTagException {
+    protected List getFields() throws JspTagException {
         return fields.getList(this);
     }
 
@@ -149,9 +148,6 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void setComparator(String c) throws JspTagException {
         comparator = getAttribute(c);
     }
-    public void setVarStatus(String s) throws JspTagException {
-        varStatus = getAttribute(s);
-    }
 
 
     /**
@@ -171,8 +167,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      * @since MMBase-1.8.1
      */
     protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = findParentTag(NodeQueryContainer.class, container.getString(this), exception);
-        if (qc == null) throw new JspTagException("No nodetype specified, no query container found");
+        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, container.getString(this), exception);
         NodeQuery query = qc.getNodeQuery();
         return query.getNodeManager();
     }
@@ -188,13 +183,13 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
             }
             Object o =  getObject(getReferid());
-            if (! (o instanceof List)) {
+            if (! (o instanceof FieldList)) {
                 throw new JspTagException("Context variable " + getReferid() + " is not a FieldList, but  " + (o == null ? "NULL" : "a " + o.getClass().getName()));
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
                 getContextProvider().getContextContainer().unRegister(getId());
             }
-            returnList = (List<Field>) o;
+            returnList = (FieldList) o;
         } else {
             NodeManager nodeManager;
 
@@ -219,8 +214,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             if (type != Attribute.NULL) {
                 returnList = nodeManager.getFields(getType());
                 if (fields != Attribute.NULL) {
-                    for (String fieldName : getFields()) {
-                        returnList.add(nodeManager.getField(fieldName));
+                    Iterator i = getFields().iterator();
+                    while (i.hasNext()) {
+                        returnList.add(nodeManager.getField((String) i.next()));
                     }
                 }
 
@@ -228,7 +224,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 returnList = nodeManager.getFields();
                 if (fields != Attribute.NULL) {
                     returnList.clear();
-                    for (String fieldName : getFields()) {
+                    Iterator i = getFields().iterator();
+                    while (i.hasNext()) {
+                        String fieldName = (String) i.next();
                         if (fieldName.endsWith("?")) {
                             fieldName = fieldName.substring(0,fieldName.length()-1);
                             if (!nodeManager.hasField(fieldName)) continue;
@@ -241,15 +239,15 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (add != Attribute.NULL) {
             Object addObject = getObject(add.getString(this));
             if (addObject instanceof Collection) {
-                returnList.addAll((Collection<Field>) addObject);
+                returnList.addAll((Collection) addObject);
             } else {
-                returnList.add((Field) addObject);
+                returnList.add(addObject);
             }
         }
         if (retain != Attribute.NULL) {
             Object retainObject = getObject(retain.getString(this));
             if (retainObject instanceof Collection) {
-                returnList.retainAll((Collection<Field>) retainObject);
+                returnList.retainAll((Collection) retainObject);
             } else {
                 returnList.retainAll(Collections.singletonList(retainObject));
             }
@@ -257,14 +255,14 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         if (remove != Attribute.NULL) {
             Object removeObject = getObject(remove.getString(this));
             if (removeObject instanceof Collection) {
-                returnList.removeAll((Collection<Field>) removeObject);
+                returnList.removeAll((Collection) removeObject);
             } else {
                 returnList.remove(removeObject);
             }
         }
 
         ListSorter.sort(returnList, (String) comparator.getValue(this), this);
-        fieldIterator = returnList.iterator();
+        fieldIterator = returnList.fieldIterator();
 
         //this is where we do the search
         currentItemIndex= -1;  // reset index
@@ -321,7 +319,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void doInitBody() throws JspTagException {
         if (fieldIterator.hasNext()){
             currentItemIndex ++;
-            currentField = fieldIterator.next();
+            currentField = fieldIterator.nextField();
             if (jspVar != null) {
                 switch (WriterHelper.stringToType(varType == null ? "field" : varType)) {
                 case WriterHelper.TYPE_FIELD:      pageContext.setAttribute(jspVar, currentField); break;

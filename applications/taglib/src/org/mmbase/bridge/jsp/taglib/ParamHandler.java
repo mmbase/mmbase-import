@@ -16,10 +16,9 @@ import javax.servlet.jsp.JspTagException;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
  * @see    org.mmbase.bridge.jsp.taglib.pageflow.UrlTag
- * @version $Id: ParamHandler.java,v 1.4 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: ParamHandler.java,v 1.2 2003-09-01 13:29:43 pierre Exp $
  */
 
 public interface ParamHandler {
     public void addParameter(String key, Object value) throws JspTagException;
-
 }

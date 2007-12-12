@@ -12,7 +12,6 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.BridgeCollections;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.*;
 import org.mmbase.module.core.*;
@@ -30,11 +29,13 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.177 2007-10-12 12:01:11 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.161.2.4 2007-10-12 11:53:08 michiel Exp $
  */
-public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
+public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable, Serializable  {
 
     private static final long serialVersionUID = 1;
+
+    private static long counter = 0;
 
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
 
@@ -44,8 +45,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     // until Integer.MIN_VALUE is reached (after which counting starts again at -2).
     private static int lastRequestId = Integer.MIN_VALUE;
 
+
+    private final long count = ++counter;
+
     // link to cloud context
-    private BasicCloudContext cloudContext = null;
+    private CloudContext cloudContext = null;
 
     // name of the cloud
     protected String name = null;
@@ -61,15 +65,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     protected String description = null;
 
     // all transactions started by this cloud object (with createTransaction)
-    protected Map<String, Transaction> transactions = new HashMap<String, Transaction>();
+    protected Map transactions = new HashMap();
 
     // node managers cache
-    protected Map<String, BasicNodeManager> nodeManagerCache = new HashMap<String, BasicNodeManager>();
+    protected Map nodeManagerCache = new HashMap();
 
+    MMBaseCop mmbaseCop = null;
 
     protected UserContext userContext = null;
 
-    private HashMap<Object, Object> properties = new HashMap<Object, Object>();
+    private HashMap properties = new HashMap();
 
     private Locale locale;
 
@@ -91,6 +96,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         locale = cloud.locale;
         name = cloudName;
         description = cloud.description;
+        mmbaseCop = cloud.mmbaseCop;
+
         userContext = cloud.userContext;
         account = cloud.account;
     }
@@ -108,7 +115,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         // get the cloudcontext and mmbase root...
         this.cloudContext = (BasicCloudContext) cloudContext;
         init();
-        userContext = BasicCloudContext.mmb.getMMBaseCop().getAuthentication().login(authenticationType, loginInfo, null);
+        userContext = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
         if (userContext == null) {
             log.debug("Login failed");
             throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
@@ -135,7 +142,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @throws BridgeException   No security could be obtained.
      * @throws SecurityException  Could not perform login
      */
-    BasicCloud(String name, UserContext user, BasicCloudContext cloudContext) {
+    BasicCloud(String name, UserContext user, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
         this.cloudContext = cloudContext;
         init();
@@ -150,9 +157,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
         this.name = name;
         description = name;
+
     }
 
     private final void init() {
+        log.debug("Initing " + this);
         MMBase mmb = BasicCloudContext.mmb;
 
         if (! mmb.getState()) {
@@ -164,8 +173,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
 
         log.debug("Doing authentication");
+        mmbaseCop = mmb.getMMBaseCop();
 
-        if (mmb.getMMBaseCop() == null) {
+        if (mmbaseCop == null) {
             throw new BridgeException("Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs ");
         }
         log.debug("Setting up cloud object");
@@ -175,6 +185,15 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         account = "U" + uniqueId();
     }
 
+    protected Authorization getAuthorization() {
+        if (mmbaseCop == null) {
+            synchronized(this) {
+
+            }
+
+        }
+        return mmbaseCop.getAuthorization();
+    }
 
     // Makes a node or Relation object based on an MMObjectNode
     BasicNode makeNode(MMObjectNode node, String nodeNumber) {
@@ -271,9 +290,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public NodeManagerList getNodeManagers() {
-        List<String> nodeManagers = new ArrayList<String>();
-        for (Object element : BasicCloudContext.mmb.getBuilders()) {
-            MMObjectBuilder bul = (MMObjectBuilder)element;
+        List nodeManagers = new ArrayList();
+        for (Iterator builders = BasicCloudContext.mmb.getBuilders().iterator(); builders.hasNext();) {
+            MMObjectBuilder bul = (MMObjectBuilder)builders.next();
             if (!bul.isVirtual() && check(Operation.READ, bul.getNumber())) {
                 nodeManagers.add(bul.getTableName());
             }
@@ -287,7 +306,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     BasicNodeManager getBasicNodeManager(MMObjectBuilder bul) throws NotFoundException {
         String nodeManagerName = bul.getTableName();
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
-        BasicNodeManager nodeManager = nodeManagerCache.get(nodeManagerName);
+        BasicNodeManager nodeManager = (BasicNodeManager)nodeManagerCache.get(nodeManagerName);
         if (nodeManager == null) {
             // not found in cache
             nodeManager = new BasicNodeManager(bul, this);
@@ -339,17 +358,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
-        Set<MMObjectNode> set = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId);
+        Set set = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId);
         if (set.size() > 0) {
-            Iterator<MMObjectNode> i = set.iterator();
-            MMObjectNode typeRel = i.next();
+            Iterator i = set.iterator();
+            MMObjectNode typeRel = (MMObjectNode) i.next();
             if (set.size() > 1 && (sourceManagerId != -1 || destinationManagerId != -1)) {
                 int quality =
                     (typeRel.getIntValue("snumber") == sourceManagerId ? 1 : 0) +
                     (typeRel.getIntValue("dnumber") == destinationManagerId ? 1 : 0);
 
                 while(i.hasNext()) {
-                    MMObjectNode candidate = i.next();
+                    MMObjectNode candidate = (MMObjectNode) i.next();
                     int candidateQuality =
                         (candidate.getIntValue("snumber") == sourceManagerId ? 1 : 0) +
                         (candidate.getIntValue("dnumber") == destinationManagerId ? 1 : 0);
@@ -380,7 +399,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public RelationManagerList getRelationManagers() {
-        List<MMObjectNode> v = BasicCloudContext.mmb.getTypeRel().getNodes();
+        List v = BasicCloudContext.mmb.getTypeRel().getNodes();
         return new BasicRelationManagerList(v, this);
     }
 
@@ -456,13 +475,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
     public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException {
         NodeManager n1 = null;
-        if (sourceManagerName != null) {
+        if (sourceManagerName != null)
             n1 = getNodeManager(sourceManagerName);
-        }
         NodeManager n2 = null;
-        if (destinationManagerName != null) {
+        if (destinationManagerName != null)
             n2 = getNodeManager(destinationManagerName);
-        }
         return getRelationManagers(n1, n2, roleName);
     }
 
@@ -476,7 +493,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             if (r == -1) {
                 throw new NotFoundException("Role '" + roleName + "' does not exist.");
             }
-            Vector<MMObjectNode> v = BasicCloudContext.mmb.getTypeRel().searchVector("rnumber==" + r);
+            Vector v = BasicCloudContext.mmb.getTypeRel().searchVector("rnumber==" + r);
             return new BasicRelationManagerList(v, this);
         } else {
             return getRelationManagers();
@@ -528,7 +545,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         if (name == null) {
             name = "Tran" + uniqueId();
         } else {
-            Transaction oldtransaction = transactions.get(name);
+            Transaction oldtransaction = (Transaction)transactions.get(name);
             if (oldtransaction != null) {
                 if (overwrite) {
                     oldtransaction.cancel();
@@ -543,7 +560,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public Transaction getTransaction(String name) {
-        Transaction tran = transactions.get(name);
+        Transaction tran = (Transaction)transactions.get(name);
         if (tran == null) {
             tran = createTransaction(name, false);
         } else {
@@ -582,7 +599,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, nodeID, operation);
+        return mmbaseCop != null && mmbaseCop.getAuthorization().check(userContext, nodeID, operation);
     }
 
     /**
@@ -591,7 +608,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     * @param nodeID the node on which to check the operation
     */
     void verify(Operation operation, int nodeID) {
-        BasicCloudContext.mmb.getMMBaseCop().getAuthorization().verify(userContext, nodeID, operation);
+        while (mmbaseCop == null) {
+            synchronized(this) {
+                if (mmbaseCop == null) {
+                    throw new org.mmbase.security.SecurityException("No MMBaseCop in " + this); // mmbase cop can be null if deserialization not yet ready.
+                }
+            }
+        }
+        mmbaseCop.getAuthorization().verify(userContext, nodeID, operation);
     }
 
     /**
@@ -603,7 +627,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        return mmbaseCop != null && mmbaseCop.getAuthorization().check(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     /**
@@ -614,7 +638,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     * @param dstNodeID the destination node for this relation
     */
     void verify(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
-        BasicCloudContext.mmb.getMMBaseCop().getAuthorization().verify(userContext, nodeID, srcNodeID, dstNodeID, operation);
+        mmbaseCop.getAuthorization().verify(userContext, nodeID, srcNodeID, dstNodeID, operation);
     }
 
     // javadoc inherited
@@ -658,9 +682,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
             if (! checked) {
                 log.warn("Query " + query + " could not be completely modified by security: Aggregated result might be wrong");
             }
-            AggregatedResultCache cache = AggregatedResultCache.getCache();
+            Cache cache = AggregatedResultCache.getCache();
 
-            List<MMObjectNode> resultList = cache.get(query);
+            List resultList = (List) cache.get(query);
             if (resultList == null) {
                 ResultBuilder resultBuilder = new ResultBuilder(BasicCloudContext.mmb, query);
                 resultList = BasicCloudContext.mmb.getSearchQueryHandler().getNodes(query, resultBuilder);
@@ -684,16 +708,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @return list of cluster nodes
      * @since MMBase-1.7
      */
-    protected List<MMObjectNode> getClusterNodes(Query query) {
+    protected List    getClusterNodes(Query query) {
 
         // start multilevel cache
-        MultilevelCache multilevelCache = MultilevelCache.getCache();
+        Cache multilevelCache = MultilevelCache.getCache();
 
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
         // check multilevel cache if needed
-        List<MMObjectNode> resultList = null;
+        List resultList = null;
         if (query.getCachePolicy().checkPolicy(query)) {
-            resultList = multilevelCache.get(query);
+            resultList = (List)multilevelCache.get(query);
         }
         // if unavailable, obtain from database
         if (resultList == null) {
@@ -719,7 +743,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {
-        Authorization auth = BasicCloudContext.mmb.getMMBaseCop().getAuthorization();
+        if (mmbaseCop == null) return false;
+        Authorization auth = mmbaseCop.getAuthorization();
         if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
             BasicQuery bquery = (BasicQuery) query;
             if (bquery.isSecure()) { // already set, and secure
@@ -746,40 +771,43 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public StringList getPossibleContexts() {
-        return new BasicStringList(BasicCloudContext.mmb.getMMBaseCop().getAuthorization().getPossibleContexts(getUser()));
+        if (mmbaseCop == null) {
+            throw new NotFoundException("MMBase not yet, or not successfully initialized (check mmbase log)");
+        }
+        return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(getUser()));
     }
 
     void   checkNodes(BasicNodeList resultNodeList, Query query) {
-        Authorization auth = BasicCloudContext.mmb.getMMBaseCop().getAuthorization();
+        Authorization auth = getAuthorization();
         resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
 
-        if (log.isTraceEnabled()) {
+        if (log.isDebugEnabled()) {
             log.trace(resultNodeList);
         }
 
         log.debug("Starting read-check");
         // resultNodeList is now a BasicNodeList; read restriction should only be applied now
-        // assumed is though, that it contain _only_ MMObjectNodes..
+        // assumed it though, that it contain _only_ MMObjectNodes..
 
         // get authorization for this call only
 
-        List<Step> steps = query.getSteps();
+        List steps = query.getSteps();
         Step nodeStep = null;
         if (query instanceof NodeQuery) {
             nodeStep = ((NodeQuery) query).getNodeStep();
         }
         log.debug("Creating iterator");
-        ListIterator<Node> li = resultNodeList.listIterator();
+        ListIterator li = resultNodeList.listIterator();
         while (li.hasNext()) {
-            Node o = li.next();
             log.debug("next");
+            Object o = li.next();
             if (log.isDebugEnabled()) {
                 log.debug(o.getClass().getName());
             }
-            Node node = o;
+            MMObjectNode node = (MMObjectNode)o;
             boolean mayRead = true;
             for (int j = 0; mayRead && (j < steps.size()); ++j) {
-                Step step = steps.get(j);
+                Step step = (Step) steps.get(j);
                 int nodenr;
                 if (step.equals(nodeStep)) {
                     nodenr = node.getIntValue("number");
@@ -788,13 +816,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                     if (pref == null) {
                         pref = step.getTableName();
                     }
-                    String fn = pref + ".number";
-                    if (node.getNodeManager().hasField(fn)) {
-                        nodenr = node.getIntValue(pref + ".number");
-                    } else {
-                        log.warn("Could not check step " + step + ". Because, the field '" + fn + "' is not found in the node " + node + " which is in the result of " + query.toSql());
-                        nodenr = -1;
-                    }
+                    nodenr = node.getIntValue(pref + ".number");
                 }
                 if (nodenr != -1) {
                     mayRead = auth.check(userContext, nodenr, Operation.READ);
@@ -821,7 +843,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
 
         boolean checked = setSecurityConstraint(query);
 
-        List<MMObjectNode> resultList = getClusterNodes(query);
+        List resultList = getClusterNodes(query);
 
         if (log.isDebugEnabled()) {
             log.debug("Creating NodeList of size " + resultList.size());
@@ -891,10 +913,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
     }
 
-    public boolean may(org.mmbase.security.Action action) {
-        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, action);
-    }
-
     // javadoc inherited
     public Query createQuery() {
         return new BasicQuery(this);
@@ -942,8 +960,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @param o the object to compare it with
      * @return compare number
      */
-    public int compareTo(Cloud o) {
-        int h1 = o.getCloudContext().hashCode();
+    public int compareTo(Object o) {
+        int h1 = ((Cloud)o).getCloudContext().hashCode();
         int h2 = cloudContext.hashCode();
 
         // mm: why not simply return h2 - h1?
@@ -964,7 +982,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
      * @param o the object to compare it with
      * @return is equal
      */
-    @Override
     public boolean equals(Object o) {
         // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
         // are treated as the 'same' cloud. This may change in future implementations
@@ -984,11 +1001,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         properties.put(key, value);
     }
 
-    public Map<Object, Object> getProperties() {
+    public Map getProperties() {
         return Collections.unmodifiableMap(properties);
     }
 
-    public Collection<Function<?>> getFunctions(String setName) {
+    public Collection getFunctions(String setName) {
         FunctionSet set = FunctionSets.getFunctionSet(setName);
         if (set == null) {
             throw new NotFoundException("Functionset with name " + setName + "does not exist.");
@@ -1010,19 +1027,19 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     public NodeList createNodeList() {
-        return new BasicNodeList(BridgeCollections.EMPTY_NODELIST, this);
+        return new BasicNodeList(Collections.EMPTY_LIST, this);
     }
 
     public RelationList createRelationList() {
-        return new BasicRelationList(BridgeCollections.EMPTY_RELATIONLIST, this);
+        return new BasicRelationList(Collections.EMPTY_LIST, this);
     }
 
     public NodeManagerList createNodeManagerList() {
-        return new BasicNodeManagerList(BridgeCollections.EMPTY_NODEMANAGERLIST, this);
+        return new BasicNodeManagerList(Collections.EMPTY_LIST, this);
     }
 
     public RelationManagerList createRelationManagerList() {
-        return new BasicRelationManagerList(BridgeCollections.EMPTY_RELATIONMANAGERLIST, this);
+        return new BasicRelationManagerList(Collections.EMPTY_LIST, this);
     }
 
     /**
@@ -1039,46 +1056,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     }
 
     /**
-     * Ignored by basic cloud. See {@link BasicTransaction#add(String)}.
-     */
-    int  add(BasicNode node) {
-        return node.getNumber();
-    }
-
-
-    /**
-     * Throws exception if node alias already exists
-     * @since MMBase-1.8.4
-     */
-    protected void checkAlias(String aliasName) {
-        Node otherNode = hasNode(aliasName) ? getNode(aliasName) : null;
-        if (otherNode != null) {
-            throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
-        }
-    }
-
-    void createAlias(BasicNode node, String aliasName) {
-        checkAlias(aliasName);
-        String owner = getUser().getOwnerField();
-        if (! node.getNode().getBuilder().createAlias(node.getNumber(), aliasName, owner)) {
-            Node otherNode = getNode(aliasName);
-            if (otherNode != null) {
-                throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
-            } else {
-                throw new BridgeException("Alias " + aliasName + " could not be created.");
-            }
-        }
-    }
-
-    /**
      * Ignored by basic cloud. See {@link BasicTransaction#remove(String)}.
      */
     void remove(String currentObjectContext) {
     }
-    void remove(MMObjectNode node) {
-        node.remove(getUser());
-    }
-
 
     protected void _readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         name = in.readUTF();
@@ -1131,18 +1112,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                     log.warn("Security implementation did not set 'authentication type' in the user object.");
                 }
                 log.service("Deserialized " + BasicCloud.this);
+                BasicCloud.this.notifyAll();
             }
         }
     }
 
-    @Override
     public String toString() {
-        String n = getClass().getName();
-        int dot = n.lastIndexOf(".");
-        if (dot > 0) {
-            n = n.substring(dot + 1);
-        }
         UserContext uc = getUser();
-        return  n + " '" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
+        return  "BasicCloud " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
     }
 }

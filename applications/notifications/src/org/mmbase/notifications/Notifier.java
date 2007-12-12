@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.notifications;
 import org.mmbase.module.*;
 import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.core.event.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -20,7 +19,6 @@ import org.mmbase.util.*;
 
 import java.util.concurrent.*;
 import java.util.*;
-import java.util.regex.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,13 +28,13 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.12 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id: Notifier.java,v 1.7 2007-11-26 15:50:38 michiel Exp $
  **/
-public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
+public class Notifier extends ReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
     private static final Logger log = Logging.getLoggerInstance(Notifier.class);
 
-    protected boolean running = false;
+    protected boolean running = true;
     DelayQueue<Notifyable> queue = new DelayQueue<Notifyable>();
 
     protected Collection<String> getRelevantBuilders() {
@@ -45,18 +43,7 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
 
     @Override
     public void reload() {
-        boolean active = determinActive();
-        if (active) {
-            loadNotifyables();
-            if (! running) {
-                startThread();
-            }
-        } else {
-            if (running) {
-                queue.clear();
-                running = false;
-            }
-        }
+        loadNotifyables();
     }
 
 
@@ -90,16 +77,14 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
             Date lastCheck  = notifyable.getDateValue("lastcheck");
             Date futureDate = new Date(new Date().getTime() + 1000 * future);
 
-            NodeIterator pi = notifyable.getRelatedNodes("object", "related", "source").nodeIterator();
+            NodeIterator pi = notifyable.getRelatedNodes("object", "related", null).nodeIterator();
             while (pi.hasNext()) {
                 Node p = pi.nextNode();
                 if (log.isTraceEnabled()) {
                     log.trace("Using " + p);
                 }
-                Function datesFunction;
-                try {
-                    datesFunction = p.getFunction("dates");
-                } catch (NotFoundException nfe) {
+                Function datesFunction = p.getFunction("dates");
+                if (datesFunction == null) {
                     log.error("No function 'dates' defined on " + p);
                     continue;
                 }
@@ -117,56 +102,10 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
 
     @Override
     public void init() {
-        super.init();
-        if (determinActive()) {
-            loadNotifyables();
-            startThread();
-        } else {
-            log.service("Notifier not active");
-        }
-    }
-
-    protected void startThread() {
-        log.service("Starting notifier thread");
+        loadNotifyables();
         Thread thread = new Thread(MMBaseContext.getThreadGroup(), this);
         thread.start();
         EventManager.getInstance().addEventListener(this);
-        running = true;
-    }
-
-    /**
-     * @todo Similar code in org.mmbase.module.lucene.Lucene, org.mmbase.sms.Sender Generalize this.
-     */
-    protected boolean determinActive() {
-
-        boolean active = true;
-
-        String setting = getInitParameter("active");
-        while (setting != null && setting.startsWith("system:")) {
-            setting = System.getProperty(setting.substring(7));
-        }
-        if (setting != null) {
-            if (setting.startsWith("host:")) {
-                Pattern host = Pattern.compile(setting.substring(5));
-                try {
-                    String hostName = java.net.InetAddress.getLocalHost().getHostName();
-                    String catalinaName = (System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName());
-                    active =
-                        host.matcher(hostName).matches() ||
-                        host.matcher(catalinaName).matches();
-                    log.debug("" + host + " matches " + hostName + " or " + catalinaName + ": " + active);
-                } catch (java.net.UnknownHostException uhe) {
-                    log.error(uhe);
-                }
-            } else if (setting.startsWith("machinename:")) {
-                Pattern machineName = Pattern.compile(setting.substring(12));
-                active = machineName.matcher(MMBase.getMMBase().getMachineName()).matches();
-                log.debug("" + machineName + " matches " + MMBase.getMMBase().getMachineName() + ": " + active);
-            } else {
-                active = "true".equals(setting);
-            }
-        }
-        return active;
     }
 
     @Override
@@ -226,19 +165,10 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
 
     {
         addFunction(new AbstractFunction/*<List>*/("list", new Parameter[] {}, ReturnType.LIST) {
-                public List getFunctionValue(Parameters arguments) {
+                public Object getFunctionValue(Parameters arguments) {
                     synchronized(Notifier.this) {
                         return new ArrayList<Notifyable>(queue);
                     }
-                }
-            });
-
-    }
-
-    {
-        addFunction(new AbstractFunction/*<Boolean>*/("running", new Parameter[] {}, ReturnType.LIST) {
-                public Boolean getFunctionValue(Parameters arguments) {
-                    return running;
                 }
             });
 

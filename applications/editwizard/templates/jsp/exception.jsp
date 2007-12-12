@@ -47,7 +47,7 @@
         Utils.storeText(sttnode, org.mmbase.util.logging.Logging.stackTrace(exception));
         docel.appendChild(sttnode);
     
-        Utils.transformNode(doc, template, ewConfig.uriResolver, out, params, null);
+        Utils.transformNode(doc, template, ewConfig.uriResolver, out, params);
    } catch (Exception e) {
         out.println("<pre>The following error occurred: " + exception + org.mmbase.util.logging.Logging.stackTrace(exception) + "</pre>");  
    }

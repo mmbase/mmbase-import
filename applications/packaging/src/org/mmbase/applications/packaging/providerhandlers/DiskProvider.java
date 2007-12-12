@@ -141,7 +141,8 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
 
         String files[] = appDir.list();
 
-        for (String filename : files) {
+        for (int i = 0; i < files.length; i++) {
+            String filename = files[i];
             if (filename.endsWith(".mmp") && filename.indexOf(".") != 0) {
 
                 // open the jar to read the input xml

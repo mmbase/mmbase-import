@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.19 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: MultiPart.java,v 1.18 2006-03-28 20:32:40 michiel Exp $
  **/
 
 public class MultiPart {
@@ -46,7 +46,7 @@ public class MultiPart {
 
             if (log.isDebugEnabled()) {
                 if (multipartRequest != null) {
-                    Iterator<String> paramNames = multipartRequest.getParameterNames();
+                    Iterator paramNames = multipartRequest.getParameterNames();
                     StringBuffer params = new StringBuffer();
                     while (paramNames.hasNext()) {
                         params.append(paramNames.next()).append(",");
@@ -65,7 +65,7 @@ public class MultiPart {
 
     static public class MMultipartRequest {
 
-        private Map<String, Object> parametersMap = new HashMap<String, Object>();
+        private Map parametersMap = new HashMap();
         private String coding = null;
 
         MMultipartRequest(HttpServletRequest req, String c) {
@@ -87,12 +87,12 @@ public class MultiPart {
                         if (oldValue == null ) {
                             parametersMap.put(fi.getFieldName(), value);
                         } else if (!(oldValue instanceof FileItem)) {
-                            List<Object> values;
+                            List values;
                             if (oldValue instanceof String) {
-                                values = new ArrayList<Object>();
+                                values = new ArrayList();
                                 values.add(oldValue);
                             } else {
-                                values = (List<Object>)oldValue;
+                                values = (List)oldValue;
                             }
                             values.add(value);
                             parametersMap.put(fi.getFieldName(), values);
@@ -208,7 +208,7 @@ public class MultiPart {
             }
         }
 
-        public Iterator<String> getParameterNames() {
+        public Iterator getParameterNames() {
             return parametersMap.keySet().iterator();
         }
     }

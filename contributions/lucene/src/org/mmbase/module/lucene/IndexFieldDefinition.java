@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.lucene;
 
 import java.util.*;
-
 import org.w3c.dom.*;
 
 import org.mmbase.bridge.*;
@@ -21,7 +20,7 @@ import org.mmbase.storage.search.*;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: IndexFieldDefinition.java,v 1.10 2007-12-12 10:38:20 pierre Exp $
+ * @version $Id: IndexFieldDefinition.java,v 1.9 2006-10-02 17:26:40 michiel Exp $
  **/
 public class IndexFieldDefinition extends FieldDefinition {
 
@@ -29,11 +28,6 @@ public class IndexFieldDefinition extends FieldDefinition {
      * If <code>true</code>, the field's value is stored as a keyword.
      */
     public boolean keyWord = false;
-
-    /**
-     * The escaper to use when including the field's value.
-     */
-    public String escaper = null;
 
     /**
      * If <code>true</code>, the field's value is stored and can be returned
@@ -81,11 +75,6 @@ public class IndexFieldDefinition extends FieldDefinition {
                       (type == Field.TYPE_LONG) || (type == Field.TYPE_INTEGER) ||
                       (type == Field.TYPE_DOUBLE) || (type == Field.TYPE_FLOAT) ||
                       (type == Field.TYPE_NODE);
-        }
-        if (QueryReader.hasAttribute(fieldElement, "escape")) {
-        	escaper = QueryReader.getAttribute(fieldElement, "escape");
-        } else if (mergeTextDefault && !keyWord) {
-        	escaper = null;
         }
         if (QueryReader.hasAttribute(fieldElement, "alias")) {
             alias = QueryReader.getAttribute(fieldElement, "alias");

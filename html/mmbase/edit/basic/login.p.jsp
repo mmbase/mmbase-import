@@ -2,7 +2,7 @@
   Reuseable generic login-page.
   Perhaps this could be placed on a more generic location like /mmbase
 --%>
-<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*" 
+<%@ page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*"
 %><%@  taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><%!
    String getPrompt(String key, Locale locale) {
@@ -33,19 +33,20 @@
       <%=getPrompt("failed_rank", locale)%>
     </p>
   </mm:compare>
+
+  <%
+  AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
+  String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getScheme()));
+  %>
   <table>
-    <%
-      AuthenticationData authentication = ContextProvider.getDefaultCloudContext().getAuthentication();
-      String[] authenticationTypes = authentication.getTypes(authentication.getDefaultMethod(request.getProtocol()));
-    %>
-    <mm:import externid="authenticate" jspvar="currentType" vartype="string" ><%=authenticationTypes[0]%></mm:import>
     <form method="post" action="<mm:write referid="referrer" />" >
+    <mm:import externid="authenticate" jspvar="currentType" vartype="string" ><%=authenticationTypes[0]%></mm:import>
     <% Parameter[] params = authentication.createParameters(currentType).getDefinition();
        for (int j = 0; j < params.length ; j++) {
          Parameter param = params[j];
          Class type = param.getTypeAsClass();
-         if (type.isAssignableFrom(String.class) && param.isRequired()) {         
-    %>       
+         if (type.isAssignableFrom(String.class) && param.isRequired()) {
+    %>
     <tr>
       <td><%=param.getLocalizedGUIName().get(locale)%> <mm:write value="<%=param.getLocalizedDescription().get(locale)%>"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
       </td>
@@ -56,10 +57,14 @@
      <%  }
         }
      %>
-     <input type="hidden" name="usernames" values="<mm:write referid="usernames" />" />
-    <tr><td /><td><input type="hidden" name="command" value="login" /><input type="submit" name="__submit" value="<%=getPrompt("login", locale)%>" /></td></tr>
-  </form>
+        <tr><td /><td>
+        <input type="hidden" name="usernames" value="<mm:write referid="usernames" />" />
+        <input type="hidden" name="authenticate" value="<mm:write referid="authenticate" />" />
+        <input type="hidden" name="command" value="login" />
+        <input type="submit" name="__submit" value="<%=getPrompt("login", locale)%>" /></td></tr>
+    </form>
     <tr>
+
       <td><%=getPrompt("authenticate", locale)%>:</td>
       <td>
         <form method="post" name="auth">
@@ -72,5 +77,6 @@
          </select>
        </form>
     </tr>
+
 </table>
 </mm:content>

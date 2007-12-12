@@ -1,8 +1,0 @@
-  <list role="related" destination="categorytypes" maxoccurs="1" minoccurs="1" hidecommand="delete-item">
-      <title xml:lang="en">Category type</title>
-      <title xml:lang="nl">Categorytype</title>
-      <item>
-          <field ftype="data" name="title" />
-      </item>
-  </list>
-

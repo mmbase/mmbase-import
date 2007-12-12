@@ -11,12 +11,12 @@ package org.mmbase.bridge.jsp.taglib.edit;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.pageflow.Url;
-import org.mmbase.bridge.Transaction;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 
 /**
@@ -26,25 +26,28 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.16 2007-11-30 12:07:05 andre Exp $
+ * @version $Id: FormTag.java,v 1.6.2.5 2007-11-28 18:00:21 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class FormTag extends TransactionTag implements Writer {
     private static final Logger log = Logging.getLoggerInstance(FormTag.class);
 
+    public static final String KEY = "org.mmbase.bridge.jsp.taglib.form";
+    public static final int SCOPE  = PageContext.REQUEST_SCOPE;
+
     public static final int MODE_HTML_FORM       = 0;
     public static final int MODE_URL             = 1;
     public static final int MODE_VALIDATE        = 2;
 
-    public static final String KEY = "org.mmbase.bridge.jsp.taglib.form";
-    public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     private Attribute mode = Attribute.NULL;
     private int m;
 
     private Attribute page = Attribute.NULL;
     private Attribute clazz = Attribute.NULL;
+
+    private Attribute referid = Attribute.NULL;
 
     private Object previous;
 
@@ -66,7 +69,7 @@ public class FormTag extends TransactionTag implements Writer {
 
     private int getMode() throws JspTagException {
         String m = mode.getString(this).toLowerCase();
-        if (m.length() == 0 || m.equals("form")) {
+        if (m.equals("") || m.equals("form")) {
             return MODE_HTML_FORM;
         } else if (m.equals("url")) {
             return MODE_URL;
@@ -84,6 +87,7 @@ public class FormTag extends TransactionTag implements Writer {
 
 
     public int doStartTag() throws JspTagException {
+
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), this);
         }
@@ -92,16 +96,14 @@ public class FormTag extends TransactionTag implements Writer {
             log.debug("Found previous form-tag " + previous);
         }
         pageContext.setAttribute(KEY, this, SCOPE);
-        m = getMode();
-        Url u = new Url(this, page.getString(this), Url.getComponent(this));
-        u.setAction();
-        String url = u.toString();
 
+        m = getMode();
         switch(m) {
         case MODE_URL:
-            helper.setValue(url);
+            helper.setValue(page.getString(this));
             break;
         case MODE_HTML_FORM:
+            String url = page.getString(this);
             String id = getId();
             String c  = clazz.getString(this);
             try {

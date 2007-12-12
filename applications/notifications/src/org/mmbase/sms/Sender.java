@@ -10,10 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.sms;
 
 import org.mmbase.bridge.*;
-import org.mmbase.core.event.EventManager;
 import org.mmbase.util.xml.UtilReader;
 import java.util.*;
-import java.util.regex.*;
 import java.util.concurrent.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,13 +24,12 @@ import org.mmbase.util.logging.Logging;
  * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.8 2007-12-10 09:58:23 michiel Exp $
+ * @version $Id: Sender.java,v 1.5 2007-11-26 15:50:38 michiel Exp $
  **/
-public abstract class Sender {
+public abstract class Sender  {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);
 
     private static Sender sender = null;
-    private static boolean listening = false;
     private static Map<String, String> config = new UtilReader("sms_sender.xml", new Runnable() { public void run() {sender = null;} }).getProperties();
 
     /**
@@ -48,60 +45,18 @@ public abstract class Sender {
     public abstract Collection<SMS> getQueue();
 
 
-
-    /**
-     * @todo Similar code in org.mmbase.module.lucene.Lucene, org.mmbase.notifications.Notifier Generalize this.
-     */
-    protected static boolean determinActive() {
-
-        boolean active = true;
-
-        String setting = config.get("active");
-        while (setting != null && setting.startsWith("system:")) {
-            setting = System.getProperty(setting.substring(7));
-        }
-        if (setting != null) {
-            if (setting.startsWith("host:")) {
-                Pattern host = Pattern.compile(setting.substring(5));
-                try {
-                    active =
-                        host.matcher(java.net.InetAddress.getLocalHost().getHostName()).matches() ||
-                        host.matcher((System.getProperty("catalina.base") + "@" + java.net.InetAddress.getLocalHost().getHostName())).matches();
-                } catch (java.net.UnknownHostException uhe) {
-                    log.error(uhe);
-                }
-            } else if (setting.startsWith("machinename:")) {
-                Pattern machineName = Pattern.compile(setting.substring(12));
-                active = machineName.matcher(org.mmbase.module.core.MMBase.getMMBase().getMachineName()).matches();
-            } else {
-                 active = "true".equals(setting);
-            }
-        }
-        return active;
-    }
-
     public static Sender getInstance() {
         if (sender == null) {
             try {
-                if (determinActive()) {
-                    Class clazz = Class.forName(config.get("class"));
-                    sender = (Sender) clazz.newInstance();
-                    EventManager.getInstance().addEventListener(SMSEventListener.getInstance());
-                    log.info("Using " + sender + " to send SMS. " + SMSEventListener.getInstance() + " is listening for remote SMSs");
-                    listening = true;
-                } else {
-                    sender = new EventSender();
-                    if (listening) EventManager.getInstance().removeEventListener(SMSEventListener.getInstance());
-                    listening = false;
-                    log.info("Using " + sender + " to send SMS");
-                }
+                Class clazz = Class.forName(config.get("class"));
+                sender = (Sender) clazz.newInstance();
+                log.info("Using " + sender + " to send SMS");
             } catch (Exception e) {
                 log.fatal(e.getMessage(), e);
             }
         }
         return sender;
     }
-
 
 
 

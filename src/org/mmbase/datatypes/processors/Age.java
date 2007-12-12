@@ -60,11 +60,12 @@ public class Age {
         }
 
         public Object process(Node node, Field field, Object value) {
+            if (value == null) return null;
             Date birthDate = node.getDateValue(birthdateField);
             Date now = new Date();
             int age = (int) Math.floor((double) (now.getTime() - birthDate.getTime()) / (1000 * 3600 * 24 * 365.25));
             log.debug("getting age for " + node + " --> " + age);
-            return Casting.toType(value.getClass(), age);
+            return Casting.toType(value.getClass(), new Integer(age));
         }
     }
 

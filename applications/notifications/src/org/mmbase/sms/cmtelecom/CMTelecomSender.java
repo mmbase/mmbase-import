@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: CMTelecomSender.java,v 1.8 2007-12-10 09:59:12 michiel Exp $
+ * @version $Id: CMTelecomSender.java,v 1.6 2007-11-26 15:50:38 michiel Exp $
  **/
 public  class CMTelecomSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(CMTelecomSender.class);
@@ -66,20 +66,16 @@ public  class CMTelecomSender extends Sender {
         w.endElement("MSG");
     }
 
-    protected void send(Appender body, String reference)  throws SAXException, IOException {
+    protected void send(Appender body)  throws SAXException, IOException {
         String u = configuration.get("url");
-        if (log.isDebugEnabled()) {
-            log.debug("Connecting to '" + u + "' " + configuration + " (ref: " + reference + ")");
-        } else {
-            log.service("Connecting to '" + u + "' (ref: " + reference + ")");
-        }
+        log.service("Connecting to '" + u + "' " + configuration);
         URL url = new URL(configuration.get("url"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setConnectTimeout(10000);
         con.setRequestMethod("POST");
         con.setDoOutput(true);
         OutputStream out = con.getOutputStream();
-        send(out, body, reference);
+        send(out, body);
 
         try {
             final InputStream in = con.getInputStream();
@@ -109,7 +105,7 @@ public  class CMTelecomSender extends Sender {
     }
 
 
-    protected void send(OutputStream out, Appender body, String reference) throws SAXException, IOException {
+    protected void send(OutputStream out, Appender body) throws SAXException, IOException {
         Writer writer = new OutputStreamWriter(out);
         XmlWriter w = new XmlWriter(writer);
         w.setSystemId("http://www.clubmessage.biz/DTD/bundles/messages.dtd");
@@ -144,7 +140,7 @@ public  class CMTelecomSender extends Sender {
         w.characters("0");
         w.endElement("TARIFF");
         w.startElement("REFERENCE");
-        w.characters(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + " " +  reference);
+        w.characters("mmbase reference " + System.currentTimeMillis());
         w.endElement("REFERENCE");
 
         if (body != null) {
@@ -158,19 +154,17 @@ public  class CMTelecomSender extends Sender {
     }
 
     protected void send(OutputStream out, final SMS sms) throws SAXException, IOException {
-        String reference = "send " + System.currentTimeMillis();
         send(out, new Appender() {
                 public void append(XmlWriter w) throws SAXException {
                     add(sms, w);
                 }
-            }, reference);
+            });
     }
 
     void trigger() throws SAXException, IOException {
         final int drain = queue.size();
         if (drain > 0) {
-            String reference = "trigger " + System.currentTimeMillis();
-            log.service("Sending " + drain + " SMS messages (ref: " + reference + ")");
+            log.service("Sending " + drain + " SMS messages");
             send(new Appender() {
                     public void append(XmlWriter w) throws SAXException {
                         for (int i = 0; i < drain; i++) {
@@ -178,19 +172,18 @@ public  class CMTelecomSender extends Sender {
                             add(sms, w);
                         }
                     }
-                }, reference);
+                });
         } else  {
-            log.debug("Nothing queued, nothing to be sent");
+            log.service("Nothing queued, nothing to be sent");
         }
     }
     public boolean send(final SMS sms) {
         try {
-            String reference = "send " + System.currentTimeMillis();
             send(new Appender() {
                     public void append(XmlWriter w) throws SAXException {
                         add(sms, w);
                     }
-                }, reference);
+                });
             return true;
         }  catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -214,7 +207,7 @@ public  class CMTelecomSender extends Sender {
         CMTelecomSender sender = new CMTelecomSender();
         if (argv.length == 0) {
             System.out.println("Use tel-number as argument");
-            sender.send(System.out, (Appender) null, "main " + System.currentTimeMillis());
+            sender.send(System.out, (Appender) null);
         } else {
             SMS sms = new BasicSMS(argv[0], 20416, "Test test " + new Date());
             sender.send(sms);

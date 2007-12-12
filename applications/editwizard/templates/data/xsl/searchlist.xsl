@@ -11,7 +11,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.27 2007-04-23 17:34:32 michiel Exp $
+    @version $Id: searchlist.xsl,v 1.23.2.2 2007-05-31 11:57:38 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />

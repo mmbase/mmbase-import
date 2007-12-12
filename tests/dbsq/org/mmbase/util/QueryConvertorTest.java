@@ -2,9 +2,8 @@ package org.mmbase.util;
 
 import junit.framework.*;
 import java.util.*;
-
-import org.mmbase.core.CoreField;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
@@ -12,7 +11,7 @@ import org.mmbase.storage.search.implementation.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.5 $
  */
 public class QueryConvertorTest extends TestCase {
 
@@ -20,8 +19,8 @@ public class QueryConvertorTest extends TestCase {
 
     private MMBase mmbase = null;
     private MMObjectBuilder images = null;
-    private CoreField imagesNumber = null;
-    private CoreField imagesTitle = null;
+    private FieldDefs imagesNumber = null;
+    private FieldDefs imagesTitle = null;
     private ClusterBuilder clusterBuilder = null;
 
     public QueryConvertorTest(java.lang.String testName) {
@@ -52,12 +51,12 @@ public class QueryConvertorTest extends TestCase {
 
     /** Test of setConstraint() method, of class org.mmbase.util.QueryConvertor. */
     public void testSetConstraint() {
-        List<String> tables = Arrays.asList(
-            new String[] {"news", "related", "images", "insrel", "news0"});
-        List<String> empty = new ArrayList<String>(0);
+        List tables = Arrays.asList(
+            new Object[] {"news", "related", "images", "insrel", "news0"});
+        List empty = new ArrayList(0);
         BasicSearchQuery query = clusterBuilder.getMultiLevelSearchQuery(
             empty, empty, null, tables, null,
-            empty, empty, RelationStep.DIRECTIONS_ALL);
+            empty, empty, ClusterBuilder.SEARCH_ALL);
 
         // Altavista format.
         altaVistaSearchQueryTests();
@@ -67,7 +66,7 @@ public class QueryConvertorTest extends TestCase {
             = (CompositeConstraint) query.getConstraint();
         assertTrue(composite.getLogicalOperator()
             == CompositeConstraint.LOGICAL_AND);
-        List<Constraint> constraints = composite.getChilds();
+        List constraints = composite.getChilds();
         assertTrue(constraints.size() == 4);
         FieldValueConstraint constraint0
             = (FieldValueConstraint) constraints.get(0);

@@ -17,17 +17,9 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.41 2007-06-18 09:49:17 michiel Exp $
+ * @version $Id: Version.java,v 1.39.2.10 2007-11-28 18:13:45 michiel Exp $
  */
 public class Version {
-
-    /**
-     * @since MMBase-1.9
-     */
-    public static String getTag() {
-        String cvsTag = "$Name: not supported by cvs2svn $";
-        return cvsTag.substring(6, cvsTag.length() - 1).trim();
-    }
 
     /**
      * Returns the 'name' part of the MMBase version. This will normally be 'MMBase'.
@@ -35,6 +27,9 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String getName() {
+        //String cvsTag = "$Name: not supported by cvs2svn $";
+        //String name = cvsTag.substring(6, cvsTag.length() - 1).trim();
+        //return name.equals("") ? "MMBase" : name;
         return "MMBase";
     }
 
@@ -52,7 +47,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getMinor() {
-        return 9;
+        return 8;
     }
 
     /**
@@ -61,7 +56,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static int getPatchLevel() {
-        return 0;
+        return 5;
     }
 
     /**
@@ -102,7 +97,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
@@ -111,7 +106,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "";
+        return "rc1";
     };
 
     /**
@@ -120,12 +115,8 @@ public class Version {
      * @since MMBase-1.6
      */
     public static String get() {
-        String tag = getTag();
-        if (tag.startsWith("MMBase")) {
-            return tag + " " + getBuildDate();
-        } else {
-            return getName() + " " + getNumber();
-        }
+        String name = getName();
+        return name + ("MMBase".equals(name) ? " " + getNumber() : "");
     }
 
 
@@ -133,7 +124,7 @@ public class Version {
      * Prints the version of this mmbase on stdout.
      * can be usefull on command line:
      * <code>java -jar mmbase.jar<code>
-     * 
+     *
      * @param args command line args
      */
     public static void main(String args[]) {

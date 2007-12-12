@@ -20,5 +20,4 @@
   <mm:link page="/mmbase/validation/validation.js.jsp">
     <script src="${_}"><!-- Help IE --></script>
   </mm:link>
-
 </jsp:root>

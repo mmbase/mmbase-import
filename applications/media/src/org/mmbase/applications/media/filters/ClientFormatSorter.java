@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * of the urlcomposer list.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatSorter.java,v 1.6 2007-07-10 09:51:35 michiel Exp $ 
+ * @version $Id: ClientFormatSorter.java,v 1.5.2.2 2007-10-02 13:32:57 michiel Exp $ 
  */
 public class ClientFormatSorter extends  PreferenceSorter {
     private static final Logger log = Logging.getLoggerInstance(ClientFormatSorter.class);
@@ -65,7 +65,7 @@ public class ClientFormatSorter extends  PreferenceSorter {
                 int i = formatList.indexOf(ri.getFormat().toString());
                 int result = i == -1 ? -10000 : -i; 
                 // the higher in this list, the better, 0 is highest.
-                log.debug("format list " + formatList + " (" + ri.getFormat() + ") --> " + result);
+                log.debug("format list " + formatList + " (" + ri + ") --> " + result);
                 return result;
 
             } else {

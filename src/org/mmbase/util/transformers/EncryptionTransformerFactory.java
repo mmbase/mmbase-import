@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Sander de Boer
  */
 
-public class EncryptionTransformerFactory implements ParameterizedTransformerFactory<CharTransformer> {
+public class EncryptionTransformerFactory implements ParameterizedTransformerFactory {
     private static final Logger log = Logging.getLoggerInstance(EncryptionTransformerFactory.class);
 
     /**
@@ -89,7 +89,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
      *  <li>key, defaults to '1234567890abcdef' (NOTE: the length of this key must match the requirements set by the algorithm</li>
      * </ul>
      */
-    public CharTransformer createTransformer(Parameters parameters) {
+    public Transformer createTransformer(Parameters parameters) {
         String direction = (String) parameters.get("direction");
         if ("encrypt".equalsIgnoreCase(direction)) {
             return new Encryption((String) parameters.get("key"), (String) parameters.get("format"), (String) parameters.get("algorithm"));
@@ -116,7 +116,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
         }
 
         public Writer transform(Reader r, Writer w) {
-            StringBuilder sb = new StringBuilder();
+            StringBuffer sb = new StringBuffer();
 
             try {
                 int i;
@@ -136,7 +136,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
 
                 w.write(output);
                 return w;
-
+                
             } catch (IllegalArgumentException h) {
                 throw new UnsupportedOperationException(h.getMessage());
             } catch (SecurityException g) {
@@ -166,7 +166,7 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
         }
 
         public Writer transform(Reader r, Writer w) {
-            StringBuilder sb = new StringBuilder();
+            StringBuffer sb = new StringBuffer();
 
             try {
                 int i;

@@ -11,7 +11,8 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 
 import java.util.*;
 
-import org.mmbase.core.event.*;
+import org.mmbase.module.core.MMBaseObserver;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.*;
 
 /**
@@ -22,70 +23,58 @@ import org.mmbase.util.logging.*;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.10 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: CacheInvalidator.java,v 1.8 2006-03-28 23:06:58 michiel Exp $
  * @since MMBase-1.7
  */
-class CacheInvalidator implements NodeEventListener, RelationEventListener {
+class CacheInvalidator implements MMBaseObserver {
 
     private static final Logger log = Logging.getLoggerInstance(CacheInvalidator.class);
 
     private static CacheInvalidator instance = new CacheInvalidator();
-    private final Timer timer = new Timer(true);
 
     // this is a singleton
     static CacheInvalidator getInstance() {
         return instance;
     }
-
+    
     private CacheInvalidator() {
     }
 
-    private List<Map<?,?>> securityCaches = new ArrayList<Map<?,?>>(); // list of all security caches that must be invalidated
-
+    private List securityCaches = new ArrayList(); // list of all security caches that must be invalidated
+  
     /**
      *  A security builder can add its cache(s)
      */
-    synchronized void addCache(Map<?,?> c) {
+    synchronized void addCache(Map c) {
         securityCaches.add(c);
     }
 
+    // javadoc inherited
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        return nodeChanged(machine, number, builder, ctype);
+    }
 
-    protected boolean invalidateScheduled = false;
 
+    // javadoc inherited
+    public boolean nodeLocalChanged(String machine, String number, String builder, String ctype) {
+        return nodeChanged(machine, number, builder, ctype);
+    }
 
     /**
      * What happens if something changes: clear the caches
-     * @inheritDoc
      */
-    public void notify(NodeEvent event) {
-        if (log.isServiceEnabled()) {
-            log.service("A security object " + event.getNodeNumber() + " (" + event.getBuilderName() + ") has changed, invalidating all security caches");
+    synchronized protected boolean nodeChanged(String machine, String number, String builder, String ctype) {
+        if (((int) (System.currentTimeMillis() / 1000) - MMBase.startTime) > 300) {
+            log.service("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
+        } else if (log.isDebugEnabled()) {
+            log.debug("A security object " + number + " (" + builder + ") has changed, invalidating all security caches");
         }
-        invalidate();
-    }
-    public void notify(RelationEvent event) {
-        if (log.isServiceEnabled()) {
-            log.service("A security relation (" + event + ") has changed, invalidating all security caches");
+        Iterator i = securityCaches.iterator();
+        while (i.hasNext()) {
+            Map c = (Map) i.next();
+            c.clear();
         }
-        invalidate();
-    }
-
-    protected void invalidate() {
-
-        if (! invalidateScheduled) {
-            invalidateScheduled = true;
-            timer.schedule(new TimerTask() {
-                    public void run() {
-                        log.service("Invalidating all security caches now.");
-                        synchronized(CacheInvalidator.this) {
-                            invalidateScheduled = false;
-                            for (Map<?,?> c : CacheInvalidator.this.securityCaches) {
-                                c.clear();
-                            }
-                        }
-                    }
-                }, 5000);
-        }
+        return true;
     }
 
 }

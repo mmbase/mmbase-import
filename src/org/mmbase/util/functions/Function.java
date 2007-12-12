@@ -22,12 +22,12 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.10 2006-09-27 20:42:21 michiel Exp $
+ * @version $Id: Function.java,v 1.6 2005-07-08 12:23:46 pierre Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
  */
-public interface Function<R> {
+public interface Function {
     /**
      * Creates an empty 'Parameters'  object for you, which you have to fill and feed back to getFunctionValue
      * @see #getFunctionValue(Parameters)
@@ -41,7 +41,7 @@ public interface Function<R> {
      *                   Implementors are encouraged to support <code>null</code> too.
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    public R getFunctionValue(Parameters parameters);
+    public Object getFunctionValue(Parameters parameters);
 
     /**
      * Executes the defined function supplying the given List of arguments.
@@ -50,12 +50,7 @@ public interface Function<R> {
      *
      * @return The function value, which can be of any type compatible to {@link #getReturnType}
      */
-    public R getFunctionValueWithList(List<?> parameters);
-
-    /**
-     * @since MMBase-1.9
-     */
-    public R getFunctionValue(Object... parameters);
+    public Object getFunctionValueWithList(List parameters);
 
     /**
      * For documentational  purposes a function object needs a description too.
@@ -76,25 +71,25 @@ public interface Function<R> {
     /**
      * @return The currently set Parameter definition array, or <code>null</code> if not set already.
      */
-    public Parameter<?>[] getParameterDefinition();
+    public Parameter[] getParameterDefinition();
 
     /**
      * A function object is of no use, as long as it lacks a definition.
      * @param params An array of Parameter objects.
      * @throws IllegalStateException if there was already set a parameter definition for this function object.
      */
-    public void setParameterDefinition(Parameter<?>[] params);
+    public void setParameterDefinition(Parameter[] params);
 
     /**
      * @return The return type of the function's result value, or <code>null</code> if unknown.
      */
-    public ReturnType<R> getReturnType();
+    public ReturnType getReturnType();
 
     /**
      * Sets the return type of the function's result value.
      * @param type A ReturnType object. For void functions that could be {@link ReturnType#VOID}.
      * @throws IllegalStateException if there was already set a return type for this function object.
      */
-    public void setReturnType(ReturnType<R> type);
+    public void setReturnType(ReturnType type);
 
 }

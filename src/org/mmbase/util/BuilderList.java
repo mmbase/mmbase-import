@@ -12,6 +12,8 @@ package org.mmbase.util;
 import java.io.*;
 import java.util.*;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -28,7 +30,7 @@ import org.w3c.dom.Document;
  * @since mmbase 1.6
  * @author Gerard van Enk
  * @author Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.11 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: BuilderList.java,v 1.8 2006-07-18 12:25:42 michiel Exp $
  */
 public class BuilderList {
     // logger not used at the moment
@@ -38,7 +40,7 @@ public class BuilderList {
      * Generates the document and writes it to the result object.
      * @param result the StreamResult object where to store the configuration'
      */
-    public void write(Document doc, StreamResult result) throws TransformerException {
+    public void write(Document doc, StreamResult result) throws IOException, TransformerException {
         TransformerFactory tfactory = TransformerFactory.newInstance();
         tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
         // This creates a transformer that does a simple identity transform,
@@ -58,11 +60,11 @@ public class BuilderList {
      * @param ipath the path to start searching. The path need be closed with a File.seperator character.
      */
     void listBuilders(ResourceLoader config, Writer writer) throws IOException {
-        Set<String> xmls = config.getResourcePaths(ResourceLoader.XML_PATTERN, false);
+        Set xmls = config.getResourcePaths(ResourceLoader.XML_PATTERN, false);
         writer.write("<buildertype name=\"" + config.getContext() + "\">\n");
-        Iterator<String> i = xmls.iterator();
+        Iterator i = xmls.iterator();
         while (i.hasNext()) {
-            String name = i.next();
+            String name = (String) i.next();
             try {
                 Document document = config.getDocument(name);
                 //only process builder config files
@@ -73,9 +75,9 @@ public class BuilderList {
             }
         }
         writer.write("</buildertype>\n");
-        Iterator<String> j =  config.getChildContexts(null,  false).iterator();
+        Iterator j =  config.getChildContexts(null,  false).iterator();
         while (j.hasNext()) {
-            String sub = j.next();
+            String sub = (String) j.next();
             if ("CVS".equals(sub)) continue;
             listBuilders(config.getChildResourceLoader(sub), writer);
         }
@@ -95,8 +97,8 @@ public class BuilderList {
             Writer s = new OutputStreamWriter(System.out, "UTF-8");
             s.write("<builders>\n");
             String[] builderDirs = args[0].split(";");
-            for (String element : builderDirs) {
-                ResourceLoader config = ResourceLoader.getConfigurationRoot().getChildResourceLoader(element);
+            for (int i = 0; i < builderDirs.length ; i++) {
+                ResourceLoader config = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderDirs[i]);
                 bulList.listBuilders(config, s);
             }
             s.write("</builders>\n");

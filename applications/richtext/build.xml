@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <project name="MMBase Richtext" default="jar" basedir=".">
   <property name="project.name"   value="richtext" />
-  <property name="java.source.version" value="1.5" />
   <import file="../buildbase-include.xml" />
   <property name="svnant"         location="svnant.jar" />
   <property name="svnjavahl"      location="svnjavahl.jar" />
   <property name="svnclient"      location="svnClientAdapter.jar" />
   <property name="javasvn"      location="javasvn.jar" />
 
-  <target name="package" depends="kupu,buildbase.package">
+  <target name="dependent.package" depends="kupu,package">
   </target>
 
   <target name="svn-task">
@@ -35,16 +34,6 @@
       </classpath>
     </taskdef>
 
-  </target>
-
-  <target name="clean" depends="buildbase.clean">
-    <mkdir dir="mmbase/kupu" />
-    <exec executable="make" dir="mmbase/kupu">
-      <arg line="clean" />
-    </exec>
-    <exec executable="make" dir="mmbase/kupu/mmbase">
-      <arg line="clean" />
-    </exec>
   </target>
 
   <target name="template.include">

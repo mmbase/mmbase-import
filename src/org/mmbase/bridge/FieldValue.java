@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.12 2007-02-16 20:04:39 michiel Exp $
+ * @version $Id: FieldValue.java,v 1.11 2005-05-02 17:23:06 michiel Exp $
  */
 public interface FieldValue {
 
@@ -44,9 +44,9 @@ public interface FieldValue {
     /**
      * Returns the Field object belonging to this value.
      *
-     * @return  the field object. Why not return Field?
+     * @return  the field object
      */
-    public Field getField();
+    public Object getField();
 
     /**
      * Returns the Node to which this value belongs.

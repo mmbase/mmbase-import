@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder
+<builder 
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
     name="blocks" maintainer="mmbase.org" version="0" extends="object">
   <searchage>31</searchage>
   <names>
@@ -18,7 +18,7 @@
   </descriptions>
 
   <fieldlist>
-    <field name="title">
+    <field>
       <descriptions>
         <description xml:lang="en">Title of this object</description>
         <description xml:lang="nl">Titel van dit object</description>
@@ -36,16 +36,18 @@
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>title</name>
         <type key="false" notnull="true" size="255" state="persistent">STRING</type>
       </db>
     </field>
-    <field name="body">
+    <field>
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
       </gui>
       <datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
+        <name>body</name>
         <type key="false" notnull="false" size="64000" state="persistent">XML</type>
       </db>
     </field>

@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.9 2007-12-06 10:58:22 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.7 2007-11-20 10:37:10 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -153,19 +153,6 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (IOException e) {
             log.warn("Cannot cleanup my reader, writer or socket: " + e);
         }
-    }
-    public static int getMaxAttachmentSize(Map<String, String> properties) {
-        // 76 length of a base 64 encoded line
-        int maxAttachmentSize = (5 * 1024 * 1024 / 76) * 76; // approx 5 Mb.
-        String maxSize = properties.get("max_attachment_size");
-        if (maxSize != null && ! "".equals(maxSize)) {
-            try {
-                maxAttachmentSize = (Integer.parseInt(maxSize) / 76) * 76;
-            } catch (Exception e) {
-                log.error(e);
-            }
-        }
-        return maxAttachmentSize;
     }
 
     /**
@@ -291,7 +278,13 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 char[] last5chars = new char[endchars.length];
                 int currentpos = 0;
                 int c;
-                long maxAttachmentSize = getMaxAttachmentSize(properties);
+                // 76 length of a base 64 encoded line
+                long maxAttachmentSize = (5 * 1024 * 1024 / 76) * 76; // approx 5 Mb.
+                try {
+                    maxAttachmentSize = (Integer.parseInt(properties.get("max_attachment_size")) / 76) * 76;
+                } catch (Exception e) {
+                    log.error(e);
+                }
 
                 StringBuilder data = new StringBuilder();
                 boolean isreading = true;
@@ -352,7 +345,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                         writer.flush();
                     }
                 } catch (Exception e) {
-                    log.error("Exception during handling data '" + result + "' (" + headers + "): " + e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                     writer.write("550 Message error " + e.getMessage() + "\r\n");
                     writer.flush();
                 }
@@ -435,9 +428,6 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (MessagingException e) {
             log.error("Cannot parse message data: [" + data + "]");
             return MailHandler.MessageStatus.ERROR;
-        } catch (RuntimeException t) {
-            log.warn("Exception in MimeMessage instantiation " + t, t);
-            throw t;
         }
         try {
             if (headers != null) {
@@ -446,9 +436,8 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 }
             }
         } catch (MessagingException e) {
-            log.error(e.getMessage(), e);
+            log.error(e);
         }
-        if (handler == null) throw new RuntimeException("No handler configured!");
         log.debug("Handling message with " + handler);
         MailHandler.MessageStatus s =  handler.handleMessage(message);
         return s;

@@ -260,11 +260,6 @@
       </listitem>
 
       <listitem>
-        <para><ulink url="backenddevelopers/components.pdf">Component Framework</ulink>
-        document describing the MMBase component framework</para>
-      </listitem>
-
-      <listitem>
         <para><ulink url="backenddevelopers/dbsq.pdf">SearchQuery
         introduction</ulink></para>
       </listitem>
@@ -464,11 +459,6 @@
         Configuration</ulink></para>
       </listitem>
 
-      <listitem>
-        <para><ulink url="informationanalysts/datatypes.pdf">Datatypes in
-        MMBase</ulink>, summary of datatypes and their specializations.</para>
-      </listitem>
-      
       <listitem>
         <para><ulink url="informationanalysts/relations.pdf">Relations in
         MMBase</ulink></para>

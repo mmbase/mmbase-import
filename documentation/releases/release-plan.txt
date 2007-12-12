@@ -1,28 +1,56 @@
 ===================================================================
-                     MMBase 1.9.0 - Release Plan
-$Id: release-plan.txt,v 1.7 2006-09-07 16:56:08 michiel Exp $
+                     MMBase 1.8.0 - Release Plan
+$Id: release-plan.txt,v 1.6 2006-04-18 15:01:56 michiel Exp $
 ===================================================================
 
-TODO for 1.9.0 release of MMBase:
+TODO for 1.8.0 release of MMBase:
 
 I Core/Project abstraction
 
+The following applications should be removed from the core and moved to a separate application:
+
+- SCAN, including the org.mmbase.module.gui.html.* classes and supporting util classes (i.e. scanpage)
+  This includes removing SCAN specific hooks from some core classes (an alternative is needed to
+  provide backward compatibility).
+  DONE
+
+- Email application: find a solution for the email module class interface that is now in the core
+  DONE
+
+- Config module and org.mmbase.config: xml parsers and color coders (perhaps a rewrite is better?)
+  DROPPED
+
 - Tools: move utility classes, modules, and builders that are still useful to a tools application
   (or in case this is too hard, tag them for inclusion in a later release)
+  SKIP
 
+- Future non-core projects should also be deployed in separate applications packages.
+   DONE?
+
+- If possible applicatuons should be configured to work with the Packaging project (if this project
+  proves stable).
+  DO
 
 II - Cleaning
 
 The following steps should be made to clean the code. Note that part of this is also done during abstraction
+
+- removing all old database support and storage classes
+  DONE
+  
+- remove all utility classes, modules, and builders that are no longer used, i.e. DateSupport or
+  Storable
+  DONE
+  
+- Mark xerces/xalan dependent code for future change (there is no solution for this dependency yet)
+  DONE
 
 - cleaning of the html-dir
   DO
 
 III Improvements
 
-The following Core functionality will be evalued and (if needed and possible) improved in 1.9.  It
-is possible that actual changes are delayed to a later release if it proves too time consuming for
-this one.
+The following Core functionality will be evalued and (if needed and possible) improved in 1.8.  It is possible that actual changes are delayed to a later release if it proves too time consuming for this one.
 
 - Multicast: select an appropriate (or pluggable) communication system, solve issues with bursts of
   change events
@@ -32,22 +60,28 @@ this one.
   modules and builders
   SKIP
 
+- Security: field-level security checks
+  SKIP
+
 IV Performance and Maintenance
 
 Performance issues should be analyzed and if possible resolved. It is possible that actual changes are delayed to a later release if it proves too time consuming for this one.
 Performance and maintenance related issues are:
 
 - Monitoring of MMBase performance issues, i.e. profiling
-  DO?
+  SKIP
+
+- Running on packaged war (xml configuration as resources)
+  DONE
 
 - serving images staticly
-  DO?
+  SKIP
 
 - related-nodes optimalisation (passing queries to parent)
-  DO?
+  SKIP
 
 - create a better build-process
-  DO.  maven?
+  SKIP
 
 V Projects
 
@@ -55,16 +89,27 @@ The following projects should be finished or brought in a stable state.
 This is dependent on input from the project manager.
 New projects that are not in a stable state will not be deployed in the 1.8 release.
 
-- Component Frame Work
-
 - Cleaning Project, fase II (see above)
+  PENDING
+- Distro project
   PENDING
 - Data types project
   DONE
   ----> DO Review code and new methods (org.mmbase.bridge.*, org.mmbase.datatypes.*)
 
+- Richtext project
+  DONE
+- Taglib II project
+  DONE
+- Packaging project (new, formerly 'Applications II')
+  SKIP
+- Cache release stategies
+  DONE
+
+
 - Editwizard 2
-  SKIP?
+   Planned for 1.8.1
+
 
 VI Other
 
@@ -73,7 +118,19 @@ VI Other
 
 - testing
    - junit tests must succeed
-
+     DONE
    - junit tests must be reviewed
-
+     DONE
    - other test areas 
+      (new features in 1.8)
+      - Taglib & EL
+      - DataTypes
+      DONE
+      - Events and Clustering
+      DONE
+      - Imaging
+      - Security
+         -test generality of e.g. basic editors. The idea is that they work with every security
+           implementation, but this is not yet finished IIRC.
+           DONE
+

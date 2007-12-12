@@ -23,14 +23,14 @@ import java.util.*;
  * can request a certain speed/channels, but it can be forced to be
  * between two values (configured in mediasourcefilter.xml).
  *
- * This ia 'chainsorter' meaning that it is a combination of severa;
+ * This ia 'chainsorter' meaning that it is a combination of several
  * other sorters, which are implemented as inner classes. This is
  * because several criteria are to be distinguished, and taking them
  * apart makes things nice and simple.
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.11 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: RealSorter.java,v 1.10.2.1 2007-10-02 13:32:57 michiel Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);
@@ -78,7 +78,7 @@ public class RealSorter extends  ChainSorter {
          * @todo
          */
         protected int getPreference(URLComposer ri) {
-            Map<String, Object> info           = ri.getInfo();
+            Map info           = ri.getInfo();
             int wantedSpeed    = -1;
 
             int preference     = 0;
@@ -104,7 +104,7 @@ public class RealSorter extends  ChainSorter {
             if (speed <= wantedSpeed) {
                 preference -= Math.abs(wantedSpeed - speed);
             } else {
-                preference -= Math.abs(wantedSpeed - speed)*5; //Still sort them, but give them a lower priority
+                preference -= Math.abs(wantedSpeed - speed) * 5; //Still sort them, but give them a lower priority
 	    }
             return preference;
         }
@@ -140,7 +140,7 @@ public class RealSorter extends  ChainSorter {
          * @javadoc
          */
         protected int getPreference(URLComposer ri) {
-            Map<String, Object> info           = ri.getInfo();
+            Map info           = ri.getInfo();
             int wantedChannels = -1;
 
             int preference     = 0;

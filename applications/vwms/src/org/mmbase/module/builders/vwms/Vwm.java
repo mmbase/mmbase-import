@@ -29,7 +29,7 @@ import org.mmbase.module.builders.*;
  * @application VWMs
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwm.java,v 1.17 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: Vwm.java,v 1.16 2004-10-08 10:57:57 pierre Exp $
  */
 
 public class Vwm implements VwmInterface, VwmProbeInterface, Runnable {
@@ -84,7 +84,7 @@ public class Vwm implements VwmInterface, VwmProbeInterface, Runnable {
     * What clients are using this VWM.
     * Each client implements the {@link VwmCallBackInterface}, and can be invoked when important changes occur.
     */
-    Vector<VwmCallBackInterface> clients = new Vector<VwmCallBackInterface>();
+    Vector clients = new Vector();
 
     /**
     * Initialize the Vwm.

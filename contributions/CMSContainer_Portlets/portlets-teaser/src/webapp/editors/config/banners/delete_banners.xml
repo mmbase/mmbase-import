@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="delete">
-	<prompt xml:lang="nl">Weet u zeker dat u deze banner wilt verwijderen ?</prompt>
-	<description xml:lang="nl">Klik hier om deze banner te verwijderen.</description>
-	<prompt xml:lang="zh">您确定删除Banner吗?</prompt>
-	<description xml:lang="zh">点击删除Banner.</description>
-</action>

@@ -18,22 +18,26 @@ import org.mmbase.bridge.StringIterator;
  * A list of Strings
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.13 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicStringList.java,v 1.11 2005-12-10 14:31:46 michiel Exp $
  */
-public class BasicStringList extends BasicList<String> implements StringList {
+public class BasicStringList extends BasicList implements StringList {
 
-    static final StringList EMPTY = org.mmbase.bridge.util.BridgeCollections.EMPTY_STRINGLIST;
+    static final StringList EMPTY = new BasicStringList();
 
     BasicStringList() {
         super();
     }
 
-    BasicStringList(Collection<String> c) {
+    BasicStringList(Collection c) {
         super(c);
     }
 
+    protected Object validate(Object o) throws ClassCastException {
+        return (String)o;
+    }
+
     public String getString(int index) {
-        return get(index);
+        return (String)get(index);
     }
 
     public StringIterator stringIterator() {
@@ -43,11 +47,11 @@ public class BasicStringList extends BasicList<String> implements StringList {
     protected class BasicStringIterator extends BasicIterator implements StringIterator {
 
         public String nextString() {
-            return next();
+            return (String)next();
         }
 
         public String previousString() {
-            return previous();
+            return (String)previous();
         }
     }
 }

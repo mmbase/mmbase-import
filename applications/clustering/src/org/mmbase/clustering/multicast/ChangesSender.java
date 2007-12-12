@@ -13,9 +13,9 @@ import org.mmbase.clustering.Statistics;
 
 import java.net.*;
 import java.io.*;
-import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.15 2007-12-12 16:17:20 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.11 2006-07-06 11:27:27 michiel Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -38,7 +38,7 @@ public class ChangesSender implements Runnable {
     private Thread kicker = null;
 
     /** Queue with messages to send to other MMBase instances */
-    private final BlockingQueue<byte[]> nodesToSend;
+    private final Queue nodesToSend;
 
     /** address to send the messages to */
     private final InetAddress ia;
@@ -51,7 +51,7 @@ public class ChangesSender implements Runnable {
     /** Time To Live for datapackets send by Multicast */
     private final int mTTL;
 
-    /**
+    /** 
      * Construct MultiCast Sender
      * @param multicastHost 'channel' of the multicast
      * @param mport port of the multicast
@@ -59,7 +59,7 @@ public class ChangesSender implements Runnable {
      * @param nodesToSend Queue of messages to send
      * @param send Statistics object in which to administer duration costs
      */
-    ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
+    ChangesSender(String multicastHost, int mport, int mTTL, Queue nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;
         this.mTTL = mTTL;
         this.nodesToSend = nodesToSend;
@@ -99,12 +99,11 @@ public class ChangesSender implements Runnable {
             log.service("Cannot stop thread, because it is null");
         }
     }
-
     public void run() {
         log.debug("Started sending");
         while(ms != null) {
             try {
-                byte[] data = nodesToSend.take();
+                byte[] data = (byte[]) nodesToSend.get();
                 long startTime = System.currentTimeMillis();
                 DatagramPacket dp = new DatagramPacket(data, data.length, ia, mport);
                 try {
@@ -113,7 +112,7 @@ public class ChangesSender implements Runnable {
                     }
                     ms.send(dp);
                 } catch (IOException e) {
-                    log.error("can't send message " + dp + " (" + data.length + " long) to " + ia + ":" + mport);
+                    log.error("can't send message" + dp + " to " + ia + ":" + mport);
                     log.error(e.getMessage(), e);
                 }
                 send.count++;

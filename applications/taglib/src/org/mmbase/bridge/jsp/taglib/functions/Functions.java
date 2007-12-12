@@ -11,10 +11,12 @@ package org.mmbase.bridge.jsp.taglib.functions;
 
 
 import org.mmbase.bridge.jsp.taglib.*;
+import java.util.Collection;
+import java.util.Iterator;
 
-import java.util.*;
 import org.mmbase.bridge.*;
-import org.mmbase.util.*;
+
+import org.mmbase.util.Casting;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -37,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.23 2007-10-25 17:26:06 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.3 2007-10-12 16:15:19 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -54,6 +56,8 @@ public class Functions {
             } else {
                 obj = new Integer(((Node) obj).getNumber());
             }
+        } else if (obj instanceof Collection) {
+            return col.containsAll((Collection) obj);
         }
         if (col.contains(obj)) return true;
         return col.contains(Casting.toString(obj));
@@ -80,13 +84,12 @@ public class Functions {
 
 
     /**
-     * Provides the 'escape' functionality of taglib. Can be used in EL (using mm:escape('p', value)) and XSLT (using taglib:escape('p', mytag))
+     * Provides the 'escape' functionality to the XSLT itself. (using taglib:escape('p', mytag))
+     *
      */
     public static String escape(String escaper, String string) {
         try {
-            javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
-            ContextTag tag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
-            CharTransformer ct = ContentTag.getCharTransformer(escaper, tag);
+            CharTransformer ct = ContentTag.getCharTransformer(escaper, null);
             return ct == null ? "" + Casting.unWrap(string) : ct.transform("" + Casting.unWrap(string));
         } catch (Exception e) {
             String mes = "Could not escape " + string + " with escape " + escaper + " : " + e.getMessage();
@@ -101,13 +104,12 @@ public class Functions {
     }
 
     /**
-     * MMBase url generation for EL
      * @since MMBase-1.8.2
      */
     public static String url(String page, javax.servlet.jsp.PageContext pageContext) {
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
-        StringBuilder show = new StringBuilder();
-        if (page.length() == 0) { // means _this_ page
+        StringBuffer show = new StringBuffer();
+        if (page.equals("")) { // means _this_ page
             String requestURI = req.getRequestURI();
             if (requestURI.endsWith("/")) {
                 page = ".";
@@ -129,12 +131,10 @@ public class Functions {
         return url(page, ContextReferrerTag.getThreadPageContext());
     }
 
-
-
     /**
      * @since MMBase-1.8.4
      */
-    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
+    public static String treefile(String page, javax.servlet.jsp.PageContext pageContext,  Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
         org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th =
             new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
         th.setCloud((Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE));
@@ -148,34 +148,5 @@ public class Functions {
     public static String treelink(String page,  Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
         return treefile(page, ContextReferrerTag.getThreadPageContext(), objectList);
     }
-
-
-
-    /**
-     * @since MMBase-1.9
-     */
-    public static LocalizedString string(LocalizedString s) {
-        javax.servlet.jsp.PageContext pageContext = ContextReferrerTag.getThreadPageContext();
-        WrappedLocalizedString result = new WrappedLocalizedString(s);
-        Locale locale = (Locale) pageContext.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
-        if (locale == null) {
-            locale = LocalizedString.getDefault();
-        }
-        result.setLocale(locale);
-        return result;
-    }
-
-    /**
-     * Checks if the supplied node has the supplied alias
-     *
-     * @param node the MMBase node to check for existing alias
-     * @param alias Name of the alias to check
-     * @return true if the alias exists for the node or false if not
-     */
-    public static boolean hasAlias(Node node, String alias) {
-         return node.getAliases().contains(alias);
-     }
-
-
 
 }

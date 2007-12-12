@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
  * Defines options for a field to index.
  *
  * @author Pierre van Rooden
- * @version $Id: FieldDefinition.java,v 1.9 2007-08-06 10:02:58 michiel Exp $
+ * @version $Id: FieldDefinition.java,v 1.6.2.1 2007-02-27 13:37:55 michiel Exp $
  * @since MMBase-1.8
  * @javadoc
  **/
@@ -24,8 +24,7 @@ public class FieldDefinition {
 
     /**
      * Name of the field
-     * This is different from stepField.getFieldName(), because the field can be virtual, in which
-     * case it does have a name, but no stepfield.
+     * XXX: How is this different from stepField.getFieldName() ?
      */
     public String fieldName = null;
 

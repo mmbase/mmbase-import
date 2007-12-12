@@ -12,7 +12,7 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.Processor;
-import org.mmbase.util.LocalizedString;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * only sense as a field of a node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConfirmPasswordDataType.java,v 1.14 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: ConfirmPasswordDataType.java,v 1.10 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
 public class ConfirmPasswordDataType extends StringDataType {
@@ -53,11 +53,7 @@ public class ConfirmPasswordDataType extends StringDataType {
         }
     }
 
-    public int getEnforceStrength() {
-        return Math.max(super.getEnforceStrength(), passwordRestriction.getEnforceStrength());
-    }
-
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = passwordRestriction.validate(errors, castValue, node, field);
         return errors;
@@ -77,8 +73,8 @@ public class ConfirmPasswordDataType extends StringDataType {
         return passwordRestriction.getField();
     }
 
-    protected StringBuilder toStringBuilder() {
-        StringBuilder buf = super.toStringBuilder();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         buf.append(" confirm(").append(passwordRestriction.getValue()).append(")");
         return buf;
     }

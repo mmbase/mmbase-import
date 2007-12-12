@@ -19,42 +19,42 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.19 2006-10-13 14:22:26 nklasens Exp $
+ * @version $Id: ReturnType.java,v 1.14 2005-07-28 17:07:55 michiel Exp $
  * @since MMBase-1.7
  */
-public class ReturnType<C> extends Parameter<C> implements java.io.Serializable {
+public class ReturnType extends Parameter implements java.io.Serializable {
 
     /**
      * The return type of a function that does not return a thing.
      */
-    public static final ReturnType<Void> VOID = new ReturnType(void.class, "Does not return anything");
+    public static final ReturnType VOID = new ReturnType(void.class, "Does not return anything");
 
     /**
      * The return type of a function that returns a String.
      */
-    public static final ReturnType<String> STRING = new ReturnType(String.class, "String");
+    public static final ReturnType STRING = new ReturnType(String.class, "String");
 
-    public static final ReturnType<CharSequence> CHARSEQUENCE = new ReturnType(CharSequence.class, "CharSequence");
+    public static final ReturnType CHARSEQUENCE = new ReturnType(CharSequence.class, "CharSequence");
 
     /**
      * The return type of a function that returns a Integer.
      */
-    public static final ReturnType<Integer> INTEGER = new ReturnType(Integer.class, "Integer");
+    public static final ReturnType INTEGER = new ReturnType(Integer.class, "Integer");
 
     /**
      * The return type of a function that returns a Long.
      */
-    public static final ReturnType<Long> LONG = new ReturnType(Long.class, "Long");
+    public static final ReturnType LONG = new ReturnType(Long.class, "Long");
 
     /**
      * The return type of a function that returns a Double.
      */
-    public static final ReturnType<Double> DOUBLE = new ReturnType(Double.class, "Double");
+    public static final ReturnType DOUBLE = new ReturnType(Double.class, "Double");
 
     /**
      * The return type of a function that returns a Boolean.
      */
-    public static final ReturnType<Boolean> BOOLEAN = new ReturnType(Boolean.class, "Boolean");
+    public static final ReturnType BOOLEAN = new ReturnType(Boolean.class, "Boolean");
 
     /**
      * The return type of a function that returns a List.
@@ -65,12 +65,12 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
     /**
      * The return type of a function that returns a NodeList.
      */
-    public static final ReturnType<org.mmbase.bridge.NodeList> NODELIST = new ReturnType<org.mmbase.bridge.NodeList>(org.mmbase.bridge.NodeList.class, "NodeList");
+    public static final ReturnType NODELIST = new ReturnType(org.mmbase.bridge.NodeList.class, "NodeList");
 
     /**
      * The return type of a function that returns a Node.
      */
-    public static final ReturnType<org.mmbase.bridge.Node> NODE = new ReturnType<org.mmbase.bridge.Node>(org.mmbase.bridge.Node.class, "Node");
+    public static final ReturnType NODE = new ReturnType(org.mmbase.bridge.Node.class, "Node");
 
     /**
      * The return type of a function that returns a Set.
@@ -102,44 +102,7 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
      */
     public static final Object VOID_VALUE = new Object();
 
-    /**
-     * @since MMBase-1.9
-     */
-    public static final ReturnType<?> getReturnType(Class<?> type) {
-        if (type.equals(void.class)) {
-            return VOID;
-        } else if (type.equals(String.class)) {
-            return STRING;
-        } else if (type.equals(CharSequence.class)) {
-            return CHARSEQUENCE;
-        } else if (type.equals(Integer.class)) {
-            return INTEGER;
-        } else if (type.equals(Long.class)) {
-            return LONG;
-        } else if (type.equals(Double.class)) {
-            return DOUBLE;
-        } else if (type.equals(Boolean.class)) {
-            return BOOLEAN;
-        } else if (type.equals(List.class)) {
-            return LIST;
-        } else if (type.equals(org.mmbase.bridge.NodeList.class)) {
-            return NODELIST;
-        } else if (type.equals(org.mmbase.bridge.Node.class)) {
-            return NODE;
-        } else if (type.equals(Set.class)) {
-            return SET;
-        } else if (type.equals(Collection.class)) {
-            return COLLECTION;
-        } else if (type.equals(Map.class)) {
-            return MAP;
-        } else if (type.equals(Void.class)) {
-            return VOID;
-        } else {
-            return new ReturnType(type, type.getName());
-        }
-    }
-
-    private Map<String, ReturnType> typeStruct = new HashMap<String, ReturnType>(); 
+    private Map typeStruct = new HashMap(); // key -> ReturnType
 
     public  ReturnType(Class type, String description) {
         super("RETURN_VALUE", type);
@@ -155,13 +118,13 @@ public class ReturnType<C> extends Parameter<C> implements java.io.Serializable 
      * types of the values seperately too.
      */
     public ReturnType addSubType(String name,  ReturnType type) {
-        return typeStruct.put(name, type);
+        return (ReturnType) typeStruct.put(name, type);
     }
 
     /**
      * @return Unmodifiable Map containing the 'subtypes' in case the type is Map. An empty Map otherwise.
      */
-    public Map<String, ReturnType> getSubTypes() {
+    public Map getSubTypes() {
         return Collections.unmodifiableMap(typeStruct);
     }
 

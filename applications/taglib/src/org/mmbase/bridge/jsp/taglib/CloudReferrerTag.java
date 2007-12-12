@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * class.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CloudReferrerTag.java,v 1.37 2007-09-28 12:03:41 andre Exp $
+ * @version $Id: CloudReferrerTag.java,v 1.29.2.3 2007-09-12 17:02:56 michiel Exp $
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -43,7 +43,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     private static CloudContext cloudContext;
 
 
-    protected Attribute cloudId = Attribute.NULL;
+    private Attribute cloudId = Attribute.NULL;
     // the id of the cloud to which we refer
     // not yet supported by CloudTag
 
@@ -65,7 +65,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     */
 
     protected CloudProvider findCloudProvider() throws JspTagException {
-        return findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this));
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
     */
     public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {
-        return findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
+        return (CloudProvider) findParentTag(CloudProvider.class, (String) cloudId.getValue(this), throwexception);
     }
 
 
@@ -118,15 +118,12 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     protected Node getNodeOrNull(String key) throws JspTagException {
         Object n = getObject(key);
-        if (n == null) {
-            return null;
-        } else if (n instanceof Node) {
+        if (n instanceof Node) {
             log.debug("found a Node in Context");
             return (Node) n;
         } else if ((n instanceof String) || (n instanceof Number)) {
-            Cloud cloud = getCloudVar();
-            if (! getCloudVar().hasNode(n.toString())) return null;
             log.debug("found a Node Number in Context");
+            if (! getCloudVar().hasNode(n.toString())) return null;
             return getCloudVar().getNode(n.toString());
         } else {
             return org.mmbase.util.Casting.toNode(n, getCloudVar());
@@ -134,7 +131,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     }
 
 
-    public void fillStandardParameters(Parameters p) throws JspTagException {
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         Cloud cloud = null;
         CloudProvider provider = findCloudProvider(false);
@@ -150,20 +147,18 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
         }
     }
 
-
     /**
      * @since MMBase-1.8
      */
     public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             Locale locale = localeTag.getLocale();
             if (locale != null) {
                 return locale;
             }
         }
-        CloudProvider cloudProvider = findCloudProvider(false);
-        return cloudProvider == null ? null : cloudProvider.getCloudVar().getLocale();
+        return  getCloudVar().getLocale();
     }
 
 }

@@ -13,7 +13,6 @@ package org.mmbase.core.event;
  * CluserManager, which has to propagate all local events int the mmbase cluster.
  * @author Ernst Bunders
  * @since 1.8
- * @version $Id: AllEventListener.java,v 1.2 2007-07-26 11:45:54 michiel Exp $
  *
  */
 public interface AllEventListener extends EventListener {

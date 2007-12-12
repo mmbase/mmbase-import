@@ -17,17 +17,17 @@ import java.util.*;
  *
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.8
- * @version $Id: ChainedIterator.java,v 1.4 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ChainedIterator.java,v 1.2 2005-11-04 23:30:01 michiel Exp $
  */
-public class ChainedIterator<E> implements Iterator<E> {
+public class ChainedIterator implements Iterator {
 
-    List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
-    Iterator<Iterator<E>> iteratorIterator = null;
-    Iterator<E> iterator = null;
+    List iterators = new ArrayList();
+    Iterator iteratorIterator = null;
+    Iterator iterator = null;
     public ChainedIterator() {
     }
 
-    public void addIterator(Iterator<E> i) {
+    public void addIterator(Iterator i) {
         if (iteratorIterator != null) throw new IllegalStateException();
         iterators.add(i);
     }
@@ -35,7 +35,7 @@ public class ChainedIterator<E> implements Iterator<E> {
 
     private void setIterator() {
        while(iteratorIterator.hasNext() && iterator == null) {
-           iterator = iteratorIterator.next();
+           iterator = (Iterator) iteratorIterator.next();
            if (! iterator.hasNext()) iterator = null;
        }
     }
@@ -49,19 +49,19 @@ public class ChainedIterator<E> implements Iterator<E> {
     public boolean hasNext() {
         start();
         return  (iterator != null && iterator.hasNext());
-
+        
     }
 
-    public E next() {
+    public Object next() {
         start();
         if (iterator == null) throw new NoSuchElementException();
-        E res = iterator.next();
+        Object res = iterator.next();
         if (! iterator.hasNext()) {
             iterator = null;
             setIterator();
         }
         return res;
-
+        
     }
     public void remove() {
         throw new UnsupportedOperationException();
@@ -71,16 +71,16 @@ public class ChainedIterator<E> implements Iterator<E> {
      * Just testing
      */
     public static void main(String argv[]) {
-        ChainedIterator<String> it = new ChainedIterator<String>();
-        List<String> o = new ArrayList<String>();
-        List<String> a = new ArrayList<String>();
+        ChainedIterator it = new ChainedIterator();
+        List o = new ArrayList();
+        List a = new ArrayList(); 
         a.add("a");
         a.add("b");
-        List<String> b = new ArrayList<String>();
-        List<String> c = new ArrayList<String>();
+        List b = new ArrayList();
+        List c = new ArrayList();
         c.add("c");
         c.add("d");
-        List<String> d = new ArrayList<String>();
+        List d = new ArrayList();
         it.addIterator(o.iterator());
         it.addIterator(a.iterator());
         it.addIterator(b.iterator());

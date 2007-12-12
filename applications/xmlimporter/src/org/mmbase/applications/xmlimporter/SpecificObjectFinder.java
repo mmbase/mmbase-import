@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Rob van Maris (Finalist IT Group)
  * @since MMBase-1.5
- * @version $Id: SpecificObjectFinder.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: SpecificObjectFinder.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
  */
 public class SpecificObjectFinder implements SimilarObjectFinder {
 
@@ -50,8 +50,9 @@ public class SpecificObjectFinder implements SimilarObjectFinder {
      * Initialize this instance. This implementation does nothing.
      * @param params The initialization parameters, provided as
      * name/value pairs (both String).
+     * @throws TransactionHandlerException if a failure occurred.
      */
-    public void init(HashMap<String, String> params) {}
+    public void init(HashMap params) throws TransactionHandlerException {}
 
     /**
      * Searches for similar object. This implementation returns a list that
@@ -60,9 +61,10 @@ public class SpecificObjectFinder implements SimilarObjectFinder {
      * @return List of the similar objects found.
      * @param transaction The transaction where the tmpObj belongs to.
      * @param tmpObj The object to search for.
+     * @throws TransactionHandlerException If a failure occurred.
      */
-    public List<TmpObject> findSimilarObject(Transaction transaction, TmpObject tmpObj) {
-        List<TmpObject> results = new ArrayList<TmpObject>();
+    public List findSimilarObject(Transaction transaction, TmpObject tmpObj) throws TransactionHandlerException {
+        List results = new ArrayList();
         if (tmpObj == tmpObj1) {
             results.add(tmpObj2);
         }

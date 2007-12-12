@@ -19,9 +19,9 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GrowTag.java,v 1.2 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: GrowTag.java,v 1.1 2003-12-24 00:31:38 michiel Exp $
  */
-public class GrowTag extends AbstractTreeReferrerListTag {
+public class GrowTag extends AbstractTreeReferrerListTag { 
 
     private static final Logger log = Logging.getLoggerInstance(GrowTag.class);
 
@@ -37,7 +37,7 @@ public class GrowTag extends AbstractTreeReferrerListTag {
     public int doStartTag() throws JspException {
         doStartTagHelper();
 
-        startDepth = tree.getPreviousDepth();
+        startDepth = tree.getPreviousDepth();        
         endDepth   = tree.getDepth();
         depth      = startDepth;
 
@@ -54,7 +54,7 @@ public class GrowTag extends AbstractTreeReferrerListTag {
         collector.doAfterBody();
         depth++;
         if (depth < endDepth) {
-            index++;
+            index++;            
             return EVAL_BODY_AGAIN;
         } else {
             return SKIP_BODY;

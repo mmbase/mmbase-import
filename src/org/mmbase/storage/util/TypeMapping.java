@@ -27,10 +27,10 @@ import java.text.MessageFormat;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.9 2007-12-12 17:11:54 michiel Exp $
+ * @version $Id: TypeMapping.java,v 1.5 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
-public class TypeMapping implements Comparable<TypeMapping> {
+public class TypeMapping implements Comparable {
 
     /**
      * The expression this type should translate to.
@@ -45,12 +45,12 @@ public class TypeMapping implements Comparable<TypeMapping> {
      * The minimum size of the MMBase type to map.
      * A value of -1 indicates no mimimum.
      */
-    public long minSize;
+    public int minSize;
     /**
      * The maximum size of the MMBase type to map.
      * A value of -1 indicates no maximum.
      */
-    public long maxSize;
+    public int maxSize;
 
     public TypeMapping() {
     }
@@ -62,20 +62,18 @@ public class TypeMapping implements Comparable<TypeMapping> {
      * that this size.
      * @param size the size to set
      */
-    public void setFixedSize(long size) {
+    public void setFixedSize(int size) {
         minSize = size;
         maxSize = size;
     }
 
     // javadoc inherited
-    public int compareTo(TypeMapping o) {
+    public int compareTo(Object o) {
         TypeMapping t = (TypeMapping) o;
         if (!name.equals(t.name)) {
             return name.compareTo(t.name);
         } else if (minSize != t.minSize) {
-            long diff = t.minSize - minSize;
-            if (diff == 0) return 0;
-            return diff < 0 ? -1 : 1;
+            return t.minSize - minSize;
         } else if (maxSize == -1) {
             if (t.maxSize == -1) {
                 return 0;
@@ -83,9 +81,7 @@ public class TypeMapping implements Comparable<TypeMapping> {
                 return -1;
             }
         } else {
-            long diff = t.maxSize - maxSize;
-            if (diff == 0) return 0;
-            return diff < 0 ? -1 : 1;
+            return t.maxSize - maxSize;
         }
     }
 
@@ -94,8 +90,8 @@ public class TypeMapping implements Comparable<TypeMapping> {
         if (o == null) return false;
         if (o instanceof TypeMapping) {
             TypeMapping tm = (TypeMapping) o;
-            // A typemapping equals another type-mapping when the one contains the other.
-            // Because of this the 'fixed' size type-mappings (created DatabaseStorageManager) are found by indexOf of the typeMappings Collection of DatabaseStorageManager.
+            // A typemapping equals another type-mapping when the one contains the other. 
+            // Because of this the 'fixed' size type-mappings (created DatabaseStorageManager) are found by indexOf of the typeMappings Collection of DatabaseStorageManager.            
             // In this typeMappings Collection there are normally only 'ranged' of sizes (as defined in th XML)
             return (name == null ? tm.name == null : name.equals(tm.name)) &&
                (
@@ -103,7 +99,7 @@ public class TypeMapping implements Comparable<TypeMapping> {
                 ||
                 ( (tm.minSize >= minSize || (minSize <= 0))    && (tm.maxSize <= maxSize || (maxSize <= 0)) )     // containing
                 )
-                ;
+                ;   
         } else {
             return false;
         }
@@ -117,8 +113,8 @@ public class TypeMapping implements Comparable<TypeMapping> {
     /**
      * Returns the mappings type.
      */
-    public String getType(long size) {
-        return MessageFormat.format(type,new Object[]{Long.valueOf(size) });
+    public String getType(int size) {
+        return MessageFormat.format(type,new Object[]{ new Integer(size) });
     }
 
     // javadoc inherited

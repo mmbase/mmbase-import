@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryConstraintTag.java,v 1.8 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: QueryConstraintTag.java,v 1.6 2005-12-27 22:17:14 michiel Exp $
  */
 public class QueryConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -94,7 +94,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
 
     public boolean getCaseSensitive() throws JspTagException {
         String cs = caseSensitive.getString(this).toUpperCase();
-        if (cs.length() == 0 || cs.equals("FALSE")) {
+        if (cs.equals("") || cs.equals("FALSE")) {
             return false;
         }  else if (cs.equals("TRUE")) {
             return true;
@@ -147,7 +147,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
         // if there is a OR or an AND tag, add
         // the constraint to that tag,
         // otherwise add it direct to the query
-        QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+        QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
         if (cons!=null) {
             cons.addChildConstraint(newConstraint);
         } else {
@@ -157,7 +157,7 @@ public class QueryConstraintTag extends CloudReferrerTag implements QueryContain
     }
 
     public int doStartTag() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
         Constraint cons = addConstraint(query);

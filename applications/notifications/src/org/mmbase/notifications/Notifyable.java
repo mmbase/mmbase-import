@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * A Notifyable is a wrapper arround an MMBase node of the type 'Notifyable'.
  * @author Michiel Meeuwissen
- * @version $Id: Notifyable.java,v 1.8 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id: Notifyable.java,v 1.5 2007-11-26 15:50:38 michiel Exp $
  **/
 public class Notifyable implements Delayed {
 
@@ -79,6 +79,7 @@ public class Notifyable implements Delayed {
             Cloud cloud = getNode().getCloud();
 
             NodeQuery query = Queries.createRelationNodesQuery(getNode(), cloud.getNodeManager("object"), "notify", null);
+            log.debug("" + query);
             Queries.addConstraint(query, Queries.createConstraint(query, "notify.status", FieldValueConstraint.EQUAL, 1));
             Constraint cons = Queries.createConstraint(query, "notify.offset", Queries.OPERATOR_BETWEEN,
                                                        prevOffset + 1, offset, false);
@@ -88,7 +89,7 @@ public class Notifyable implements Delayed {
             }
 
             Queries.addConstraint(query, cons);
-            log.debug("for offset " + offset + ":"  + query.toSql());
+
             NodeList rl = query.getNodeManager().toRelationManager().getList(query);
             return rl;
         } catch (Exception e) {
@@ -99,14 +100,14 @@ public class Notifyable implements Delayed {
 
     public void send() {
         if (log.isServiceEnabled()) {
-            log.service("Notifying " + getNode() + " at offset " + offset);
+            log.service("Notifying " + getNode());
         }
 
         NodeIterator ri = getNotifications().nodeIterator();
         while (ri.hasNext()) {
             Relation rel = ri.nextNode().toRelation();
             String className = rel.getStringValue("type");
-            int offset = rel.getIntValue("offset");
+             int offset = rel.getIntValue("offset");
             log.service("using relation " + rel + " class " + className );
 
             if (! "".equals(className)) {
@@ -129,10 +130,15 @@ public class Notifyable implements Delayed {
                 Node recipient = rel.getSource();
                 Date requestedDate = new Date(date.getTime() + rel.getIntValue("offset"));
                 log.service("Using " + not);
-                not.send(rel, requestedDate);
+                not.send(recipient, getNode(), requestedDate);
             }
         }
 
+    }
+
+
+    public String message(Node recipient) {
+        return node.getStringValue("message");
     }
 
     /**
@@ -156,12 +162,10 @@ public class Notifyable implements Delayed {
             return false;
         }
     }
-    public String getDue() {
-        return (getDelay(TimeUnit.SECONDS) / 60) + " minutes";
-    }
 
     public String toString() {
-        return "Event " + node.getFunctionValue("gui", null) + " on " + date + " (notify at " + getNotificationDate() + ", due in " + getDue();
+        return "Event " + node.getFunctionValue("gui", null) + " on " + date + " (notify at " + getNotificationDate() + ", due in " +
+            (getDelay(TimeUnit.SECONDS) / 60) + " minutes)";
     }
 
 }

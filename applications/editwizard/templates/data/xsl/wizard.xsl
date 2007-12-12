@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.179 2007-11-30 14:01:37 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.14 2007-11-01 17:29:21 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -67,15 +67,12 @@
       <xsl:text disable-output-escaping="yes">
         <![CDATA[
       <!--
-      // Mozilla does not like this.
-      // See also http://www.mmbase.org/jira/browse/MMB-1234
-      // May I please drop this nonsense?
-      var hist = window.history;
-      if (hist) {
-         hist.go(1);
-      }
-
-      window.onresize = function(e){ resizeEditTable(); }
+        // Mozilla does not like this.
+        var hist = window.history;
+        if (hist) {
+            hist.go(1);
+        }
+        window.onresize = function(e){ resizeEditTable(); }
       -->
       ]]></xsl:text>
     </script>
@@ -128,7 +125,7 @@
                 '<xsl:value-of select="$day_thu"/>','<xsl:value-of select="$day_fri"/>',
                 '<xsl:value-of select="$day_sat"/>');
     </script>
-    <script type="text/javascript" src="{$javascriptdir}datepicker.js">
+    <script language="javascript" src="{$javascriptdir}datepicker.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
   </xsl:template>
@@ -233,7 +230,7 @@
   </xsl:template>
 
   <xsl:template name="debug">
-    <xsl:if test="$debug='true'">
+    <xsl:if test="$debug=&apos;true&apos;">
       <a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}&amp;popupid={$popupid}" target="_blank">
         <xsl:call-template name="prompt_debug"/>
       </a>
@@ -378,20 +375,20 @@
     <xsl:attribute name="titlenotvalid"><xsl:value-of select="$tooltip_not_valid"/></xsl:attribute>
     <xsl:attribute name="title">
       <xsl:value-of select="/*/form[@id=current()/@form-schema]/title"/>
-      <xsl:if test="@valid='false'">
+      <xsl:if test="@valid=&apos;false&apos;">
         <xsl:value-of select="$tooltip_step_not_valid"/>
       </xsl:if>
     </xsl:attribute>
     <xsl:attribute name="class">
-      <xsl:if test="@valid='true'">valid</xsl:if>
-      <xsl:if test="@valid='false'">notvalid</xsl:if>
+      <xsl:if test="@valid=&apos;true&apos;">valid</xsl:if>
+      <xsl:if test="@valid=&apos;false&apos;">notvalid</xsl:if>
     </xsl:attribute>
   </xsl:template>
 
   <xsl:template name="previousbutton">
     <xsl:choose>
       <xsl:when test="/wizard/form[@id=/wizard/prevform]">
-        <a class="step" href="javascript:doGotoForm('{/wizard/prevform}')" title="{$tooltip_previous} '{/wizard/form[@id=/wizard/prevform]/title}'">
+        <a class="step" href="javascript:doGotoForm(&apos;{/wizard/prevform}&apos;)" title="{$tooltip_previous} &apos;{/wizard/form[@id=/wizard/prevform]/title}&apos;">
           <xsl:call-template name="prompt_previous"/>
         </a>
       </xsl:when>
@@ -405,7 +402,7 @@
   <xsl:template name="nextbutton">
     <xsl:choose>
       <xsl:when test="/wizard/form[@id=/wizard/nextform]">
-        <a class="step" href="javascript:doGotoForm('{/wizard/nextform}')" title="{$tooltip_next} '{/wizard/form[@id=/wizard/nextform]/title}'">
+        <a class="step" href="javascript:doGotoForm(&apos;{/wizard/nextform}&apos;)" title="{$tooltip_next} &apos;{/wizard/form[@id=/wizard/nextform]/title}&apos;">
           <xsl:call-template name="prompt_next"/>
         </a>
       </xsl:when>
@@ -577,10 +574,10 @@
     fieldintern is called to draw the values
   -->
   <xsl:template name="fieldintern">
-
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="prefix"/>
     </xsl:call-template>
+
 
     <xsl:choose>
       <xsl:when test="@ftype='startwizard'">
@@ -642,7 +639,6 @@
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="postfix"/>
     </xsl:call-template>
-
   </xsl:template>
 
 
@@ -682,7 +678,7 @@
 
   <xsl:template name="ftype-line">
     <xsl:choose>
-      <xsl:when test="@maywrite!='false'">
+      <xsl:when test="@maywrite!=&apos;false&apos;">
         <xsl:apply-templates select="value" mode="inputline"/>
       </xsl:when>
       <xsl:otherwise>
@@ -697,12 +693,10 @@
 
   <xsl:template name="ftype-text">
     <xsl:choose>
-      <xsl:when test="@maywrite!='false'">
+      <xsl:when test="@maywrite!=&apos;false&apos;">
         <span>
-          <textarea
-              class="input mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}"
-              name="{@fieldname}" id="{@fieldname}"  wrap="soft">
-            <xsl:if test="@ftype = 'html'">
+          <textarea name="{@fieldname}" id="{@fieldname}" class="input" wrap="soft">
+            <xsl:if test="@ftype = &apos;html&apos;">
               <xsl:attribute name="class">htmlarea</xsl:attribute>
             </xsl:if>
             <xsl:if test="not(@cols)">
@@ -729,12 +723,12 @@
 
   <xsl:template name="ftype-enum">
     <xsl:choose>
-      <xsl:when test="@maywrite!='false'">
+      <xsl:when test="@maywrite!=&apos;false&apos;">
         <select name="{@fieldname}" class="selectinput">
           <xsl:apply-templates select="@*"/>
           <xsl:choose>
-            <xsl:when test="optionlist/option[@selected='true']"/>
-            <xsl:when test="@dtrequired='true'"/>
+            <xsl:when test="optionlist/option[@selected=&apos;true&apos;]"/>
+            <xsl:when test="@dtrequired=&apos;true&apos;"/>
             <xsl:otherwise>
               <option value="">
                 <xsl:call-template name="prompt_select"/>
@@ -743,7 +737,7 @@
           </xsl:choose>
           <xsl:for-each select="optionlist/option">
             <option value="{@id}">
-              <xsl:if test="@selected='true'">
+              <xsl:if test="@selected=&apos;true&apos;">
                 <xsl:attribute name="selected">selected</xsl:attribute>
               </xsl:if>
               <xsl:choose>
@@ -785,24 +779,24 @@
 
   <xsl:template name="ftype-datetime">
     <xsl:choose>
-      <xsl:when test="@maywrite!='false'">
+      <xsl:when test="@maywrite!=&apos;false&apos;">
         <div>
           <input type="hidden" name="{@fieldname}" value="{@ftype}" id="{@fieldname}">
             <xsl:attribute name="new"><xsl:value-of select="value = '' or value = '-1'"/></xsl:attribute>
             <xsl:apply-templates select="@*"/>
           </input>
 
-          <xsl:if test="(@ftype='datetime') or (@ftype='date')">
+          <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;date&apos;)">
             <xsl:call-template name="ftype-datetime-date"/>
           </xsl:if>
 
-          <xsl:if test="@ftype='datetime'">
+          <xsl:if test="@ftype=&apos;datetime&apos;">
             <span class="time_at">
               <xsl:value-of select="$time_at"/>
             </span>
           </xsl:if>
 
-          <xsl:if test="(@ftype='datetime') or (@ftype='time') or (@ftype='duration')">
+          <xsl:if test="(@ftype=&apos;datetime&apos;) or (@ftype=&apos;time&apos;) or (@ftype=&apos;duration&apos;)">
             <xsl:call-template name="ftype-datetime-time"/>
           </xsl:if>
         </div>
@@ -913,7 +907,7 @@
   </xsl:template>
 
   <xsl:template name="date-picker">
-    <img class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , document.forms[0], 'internal_{@fieldname}',event);return false;"/>
+    <input type="image" class="calendar" src="{$mediadir}datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , this.form, 'internal_{@fieldname}',event);return false;"/>
   </xsl:template>
 
   <xsl:template name="ftype-datetime-date">
@@ -932,8 +926,7 @@
       </xsl:call-template>
     </select>
     <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-    <input
-        class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
+    <input class="date" name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="{date:getYear(string(value), string($timezone))}" size="5" maxlength="4"/>
     <xsl:call-template name="date-picker" />
   </xsl:template>
 
@@ -953,7 +946,7 @@
         <xsl:with-param name="end" select="59" />
       </xsl:call-template>
     </select>
-    <xsl:if test="@ftype='duration'">
+    <xsl:if test="@ftype=&apos;duration&apos;">
       <xsl:text disable-output-escaping="yes">&amp;nbsp;:&amp;nbsp;</xsl:text>
       <select name="internal_{@fieldname}_seconds" super="{@fieldname}">
         <xsl:call-template name="loop-options">
@@ -966,13 +959,13 @@
   </xsl:template>
 
   <xsl:template name="ftype-image">
-    <xsl:if test="@maywrite!='false'">
+    <xsl:if test="@maywrite!=&apos;false&apos;">
       <xsl:choose>
-        <xsl:when test="@dttype='binary' and not(upload)">
+        <xsl:when test="@dttype=&apos;binary&apos; and not(upload)">
           <div class="imageupload">
             <div>
               <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
-                <xsl:if test="@dtrequired='true' and @size &lt;= 0">
+                <xsl:if test="@dtrequired=&apos;true&apos; and @size &lt;= 0">
                   <xsl:attribute name="dtrequired">true</xsl:attribute>
                 </xsl:if>
               </input>
@@ -981,10 +974,10 @@
               </a>
               <br/>
               <xsl:if test="@size &gt; 0">
-                <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
-                <br/>
+                <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
+                 <br/>
                  <a
-                   href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
+                   href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
                    target="_new">
                    <xsl:call-template name="prompt_image_full" />
                  </a>
@@ -993,10 +986,10 @@
             </div>
           </div>
         </xsl:when>
-        <xsl:when test="@dttype='binary' and upload">
+        <xsl:when test="@dttype=&apos;binary&apos; and upload">
           <div class="imageupload">
             <input type="hidden" name="{@fieldname}" value="YES" dttype="binary" ftype="image" >
-              <xsl:if test="@dtrequired='true'">
+              <xsl:if test="@dtrequired=&apos;true&apos;">
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
@@ -1017,10 +1010,10 @@
         </xsl:when>
         <xsl:otherwise>
           <span>
-            <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}"/>
+            <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0" title="{field[@name=&apos;description&apos;]}"/>
             <br/>
             <a
-              href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey,')'))}"
+              href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey,&apos;)&apos;))}"
               target="_new">
               <xsl:call-template name="prompt_image_full" />
             </a>
@@ -1029,17 +1022,17 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
-    <xsl:if test="@maywrite='false'">
+    <xsl:if test="@maywrite=&apos;false&apos;">
       <span class="readonly">
-        <img src="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0"/>
+        <img src="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,cache(&apos;, $imagesize, &apos;))&apos;))}" hspace="0" vspace="0" border="0"/>
       </span>
     </xsl:if>
   </xsl:template>
 
   <xsl:template name="ftype-file">
     <xsl:choose>
-      <xsl:when test="@dttype='data' or @maywrite='false'">
-        <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}">
+      <xsl:when test="@dttype=&apos;data&apos; or @maywrite=&apos;false&apos;">
+        <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
           <xsl:call-template name="prompt_do_download"/>
         </a>
       </xsl:when>
@@ -1047,7 +1040,7 @@
         <xsl:choose>
           <xsl:when test="not(upload)">
             <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="file" >
-              <xsl:if test="@dtrequired='true' and @size &lt;= 0">
+              <xsl:if test="@dtrequired=&apos;true&apos; and @size &lt;= 0">
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
@@ -1056,7 +1049,7 @@
               <br/>
             </xsl:if>
             <xsl:if test="@size &gt; 0">
-              <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}">
+              <a target="_blank" href="{node:saxonFunction($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
                 <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                 <xsl:call-template name="prompt_do_download"/> (<xsl:value-of select="round(@size div 100) div 10"/> K)
               </a>
@@ -1065,7 +1058,7 @@
           </xsl:when>
           <xsl:otherwise>
             <input type="hidden" name="{@fieldname}" value="YES" dttype="binary" ftype="file" >
-              <xsl:if test="@dtrequired='true'">
+              <xsl:if test="@dtrequired=&apos;true&apos;">
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
@@ -1095,7 +1088,7 @@
      <xsl:for-each select="optionlist/option">
        <input type="radio" name="{../../@fieldname}" value="{@id}" id="{@id}">
          <xsl:apply-templates select="../../@*" />
-         <xsl:if test="@selected='true'">
+         <xsl:if test="@selected=&apos;true&apos;">
            <xsl:attribute name="checked">true</xsl:attribute>
          </xsl:if>
          <xsl:value-of select="."/>
@@ -1125,10 +1118,10 @@
   </xsl:template>
 
   <xsl:template name="ftype-other">
-    <xsl:if test="@maywrite!='false'">
+    <xsl:if test="@maywrite!=&apos;false&apos;">
       <xsl:apply-templates select="value" mode="inputline"/>
     </xsl:if>
-    <xsl:if test="@maywrite='false'">
+    <xsl:if test="@maywrite=&apos;false&apos;">
       <span class="readonly">
         <xsl:apply-templates select="value" mode="line"/>
       </span>
@@ -1150,9 +1143,7 @@
 
   <xsl:template match="value" mode="inputline">
     <xsl:param name="val" select="."/>
-    <input
-        class="input mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}"
-        type="text" name="{../@fieldname}" value="{$val}">
+    <input type="text" name="{../@fieldname}" value="{$val}" class="input">
       <xsl:if test="../@dtmaxlength">
         <xsl:attribute name="maxlength"><xsl:value-of select="../@dtmaxlength" /></xsl:attribute>
         <xsl:choose>
@@ -1164,19 +1155,16 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-      <!-- this produces _invalid_ HTML -->
       <xsl:apply-templates select="../@*"/>
     </input>
   </xsl:template>
 
   <xsl:template name="realposition">
     <span style="width:128">
-      <input
-          class="input mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}"
-          type="text" name="{@fieldname}" value="{value}">
+      <input type="text" name="{@fieldname}" value="{value}" class="input">
         <xsl:apply-templates select="@*"/>
       </input>
-      <input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();"/>
+      <input type="button" value="get" onClick="document.forms[&apos;form&apos;].{@fieldname}.value = document.embeddedplayer.GetPosition();"/>
     </span>
   </xsl:template>
 
@@ -1233,7 +1221,7 @@
           <xsl:with-param name="nodes" select="description"/>
         </xsl:call-template>
       </xsl:attribute>
-      <xsl:if test="@status='invalid'">
+      <xsl:if test="@status=&apos;invalid&apos;">
         <xsl:attribute name="class">notvalid</xsl:attribute>
       </xsl:if>
       <xsl:call-template name="i18n">
@@ -1243,12 +1231,12 @@
   </xsl:template>
 
   <xsl:template name="listnewbuttons">
-    <xsl:if test="command[@name='add-item']">
+    <xsl:if test="command[@name=&apos;add-item&apos;]">
       <!-- only if less then maxoccurs -->
-      <xsl:if test="not(@maxoccurs) or (@maxoccurs = '*') or count(item) &lt; @maxoccurs">
+      <xsl:if test="not(@maxoccurs) or (@maxoccurs = &apos;*&apos;) or count(item) &lt; @maxoccurs">
         <!-- create action and startwizard command are present. Open the object into the start wizard -->
-        <xsl:if test="command[@name='startwizard']">
-          <xsl:for-each select="command[@name='startwizard']">
+        <xsl:if test="command[@name=&apos;startwizard&apos;]">
+          <xsl:for-each select="command[@name=&apos;startwizard&apos;]">
             <!-- The prompts.xsl adds this as a tooltip -->
             <!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
             <xsl:choose>
@@ -1258,13 +1246,13 @@
                 </a>
               </xsl:when>
               <xsl:otherwise>
-            <xsl:if test="@inline='true'">
-              <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+            <xsl:if test="@inline=&apos;true&apos;">
+              <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);">
                 <xsl:call-template name="prompt_add_wizard"/>
               </a>
             </xsl:if>
-            <xsl:if test="not(@inline='true')">
-              <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
+            <xsl:if test="not(@inline=&apos;true&apos;)">
+              <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
                 <xsl:call-template name="prompt_add_wizard"/>
               </a>
             </xsl:if>
@@ -1274,9 +1262,9 @@
         </xsl:if>
 
         <!-- create action is present, but no startwizard command. Add the object into the wizard -->
-        <xsl:if test="command[@name='insert']">
-          <xsl:for-each select="command[@name='add-item']">
-            <a href="javascript:doAddInline('{@cmd}');">
+        <xsl:if test="command[@name=&apos;insert&apos;]">
+          <xsl:for-each select="command[@name=&apos;add-item&apos;]">
+            <a href="javascript:doAddInline(&apos;{@cmd}&apos;);">
               <xsl:call-template name="prompt_new"/>
             </a>
           </xsl:for-each>
@@ -1287,8 +1275,8 @@
 
   <xsl:template name="listsearch">
     <!-- if 'add-item' command and a search, then make a search util-box -->
-    <xsl:if test="command[@name='add-item']">
-      <xsl:for-each select="command[@name='search']">
+    <xsl:if test="command[@name=&apos;add-item&apos;]">
+      <xsl:for-each select="command[@name=&apos;search&apos;]">
         <table class="searchcontent">
           <tr>
             <xsl:if test="prompt">
@@ -1301,23 +1289,23 @@
               <xsl:call-template name="listsearch-fields"/>
             </td>
             <td>
-              <input type="text" name="searchterm_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/default}" class="search" onChange="var s = form['searchfields_{../command[@name='add-item']/@cmd}']; s[s.selectedIndex].setAttribute('default', this.value);"/>
+              <input type="text" name="searchterm_{../command[@name=&apos;add-item&apos;]/@cmd}" value="{search-filter[1]/default}" class="search" onChange="var s = form[&apos;searchfields_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;]; s[s.selectedIndex].setAttribute(&apos;default&apos;, this.value);"/>
               <!-- on change the current value is copied back to the option's default, because of that, the user's search is stored between different types of search-actions -->
             </td>
             <td>
-              <span title="{$tooltip_search}" onClick="doSearch(this,'{../command[@name='add-item']/@cmd}','{$sessionkey}');">
+              <span title="{$tooltip_search}" onClick="doSearch(this,&apos;{../command[@name=&apos;add-item&apos;]/@cmd}&apos;,&apos;{$sessionkey}&apos;);">
                 <xsl:for-each select="@*">
                   <xsl:copy/>
                 </xsl:for-each>
                 <xsl:attribute name="relationOriginNode"><xsl:value-of select="../@number" /></xsl:attribute>
                 <xsl:choose>
-                  <xsl:when test="../action[@type='add']/relation/@role">
-                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type='add']/relation/@role" /></xsl:attribute>
-                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type='add']/relation/@createdir" /></xsl:attribute>
+                  <xsl:when test="../action[@type=&apos;add&apos;]/relation/@role">
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;add&apos;]/relation/@createdir" /></xsl:attribute>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type='create']/relation/@role" /></xsl:attribute>
-                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type='create']/relation/@createdir" /></xsl:attribute>
+                    <xsl:attribute name="relationRole"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@role" /></xsl:attribute>
+                    <xsl:attribute name="relationCreateDir"><xsl:value-of select="../action[@type=&apos;create&apos;]/relation/@createdir" /></xsl:attribute>
                   </xsl:otherwise>
                 </xsl:choose>
                 <xsl:call-template name="prompt_search"/>
@@ -1331,14 +1319,14 @@
 
   <xsl:template name="listsearch-age">
     <xsl:choose>
-      <xsl:when test="$searchagetype='none'"></xsl:when>
+      <xsl:when test="$searchagetype=&apos;none&apos;"></xsl:when>
       <!-- alway make searching on age possible -->
-      <xsl:when test="$searchagetype='edit'">
+      <xsl:when test="$searchagetype=&apos;edit&apos;">
         <xsl:call-template name="prompt_age"/>
-        <input type="text" name="searchage_{../command[@name='add-item']/@cmd}" class="age" value="{@age}"/>
+        <input type="text" name="searchage_{../command[@name=&apos;add-item&apos;]/@cmd}" class="age" value="{@age}"/>
       </xsl:when>
       <xsl:otherwise>
-        <select name="searchage_{../command[@name='add-item']/@cmd}" class="age">
+        <select name="searchage_{../command[@name=&apos;add-item&apos;]/@cmd}" class="age">
           <xsl:call-template name="searchageoptions">
             <xsl:with-param name="selectedage" select="@age"/>
           </xsl:call-template>
@@ -1349,17 +1337,17 @@
 
   <xsl:template name="listsearch-fields">
     <!-- other search-possibilities are given in the xml -->
-    <select name="searchfields_{../command[@name='add-item']/@cmd}" class="searchpossibilities" onChange="form['searchterm_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('default'); form['searchtype_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('searchtype');">
-      <xsl:for-each select="search-filter">
-        <option value="{search-fields}" default="{default}" searchtype="{search-fields/@search-type}">
-          <xsl:call-template name="i18n">
-            <xsl:with-param name="nodes" select="name"/>
-          </xsl:call-template>
-        </option>
-      </xsl:for-each>
+    <select name="searchfields_{../command[@name=&apos;add-item&apos;]/@cmd}" class="searchpossibilities" onChange="form[&apos;searchterm_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;].value = this[this.selectedIndex].getAttribute(&apos;default&apos;); form[&apos;searchtype_{../command[@name=&apos;add-item&apos;]/@cmd}&apos;].value = this[this.selectedIndex].getAttribute(&apos;searchtype&apos;);">
+          <xsl:for-each select="search-filter">
+            <option value="{search-fields}" default="{default}" searchtype="{search-fields/@search-type}">
+              <xsl:call-template name="i18n">
+                <xsl:with-param name="nodes" select="name"/>
+              </xsl:call-template>
+            </option>
+          </xsl:for-each>
       <xsl:call-template name="listsearch-fields-default"/>
     </select>
-    <input type="hidden" name="searchtype_{../command[@name='add-item']/@cmd}" value="{search-filter[1]/search-fields/@searchtype}"/>
+    <input type="hidden" name="searchtype_{../command[@name=&apos;add-item&apos;]/@cmd}" value="{search-filter[1]/search-fields/@searchtype}"/>
   </xsl:template>
 
   <xsl:template name="listsearch-fields-default">
@@ -1386,7 +1374,7 @@
     <xsl:choose>
        <xsl:when test="@displaytype='none'">
         <!-- don't show a thing -->
-      </xsl:when>
+       </xsl:when>
       <xsl:when test="@displaytype='link'">
         <xsl:call-template name="item-link"/>
       </xsl:when>
@@ -1396,7 +1384,7 @@
       <xsl:when test="count(field|fieldset) &lt; 2">
         <xsl:call-template name="item-onefield"/>
       </xsl:when>
-      <xsl:when test="field[@ftype='startwizard'] and count(field[@ftype!='startwizard']|fieldset) &lt; 3">
+      <xsl:when test="field[@ftype=&apos;startwizard&apos;] and count(field[@ftype!=&apos;startwizard&apos;]|fieldset) &lt; 3">
         <xsl:call-template name="item-onefield"/>
       </xsl:when>
       <xsl:otherwise>
@@ -1486,7 +1474,7 @@
 
       <xsl:for-each select="fieldset|field">
         <!-- Don't show the startwizard field here. -->
-        <xsl:if test="not(@ftype='startwizard')">
+        <xsl:if test="not(@ftype=&apos;startwizard&apos;)">
           <tr class="fieldcanvas">
             <xsl:call-template name="itemfields-click"/>
             <xsl:apply-templates select="."/>
@@ -1497,24 +1485,24 @@
   </xsl:template>
 
   <xsl:template name="itemfields-hover">
-    <xsl:if test="field[@ftype='startwizard'] or fieldset/field[@ftype='startwizard']">
+    <xsl:if test="field[@ftype=&apos;startwizard&apos;] or fieldset/field[@ftype=&apos;startwizard&apos;]">
       <xsl:attribute name="class">itemrow</xsl:attribute>
       <xsl:attribute name="onMouseOver">objMouseOver(this);</xsl:attribute>
       <xsl:attribute name="onMouseOut">objMouseOut(this);</xsl:attribute>
-      <xsl:for-each select="field[@ftype='startwizard']">
+      <xsl:for-each select="field[@ftype=&apos;startwizard&apos;]">
         <xsl:choose>
           <xsl:when test="@wizardjsp">
             <xsl:attribute name="href">
-              <xsl:value-of select="$ew_context"/><xsl:value-of select="@wizardjsp"/>?wizard=<xsl:value-of select="@wizardname"/>&amp;did=<xsl:value-of select="../../command[@name='add-item']/@value"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
+              <xsl:value-of select="$ew_context"/><xsl:value-of select="@wizardjsp"/>?wizard=<xsl:value-of select="@wizardname"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
             </xsl:attribute>
           </xsl:when>
           <xsl:otherwise>
-        <xsl:if test="not(@inline) or @inline='true'">
+        <xsl:if test="not(@inline) or @inline=&apos;true&apos;">
           <xsl:attribute name="href">
             <xsl:text disable-output-escaping="yes">javascript:doStartWizard('</xsl:text>
             <xsl:value-of select="../../@fid"/>
             <xsl:text disable-output-escaping="yes">','</xsl:text>
-            <xsl:value-of select="../../command[@name='add-item']/@value"/>
+            <xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>
             <xsl:text disable-output-escaping="yes">','</xsl:text>
             <xsl:value-of select="@wizardname"/>
             <xsl:text disable-output-escaping="yes">','</xsl:text>
@@ -1524,9 +1512,9 @@
             <xsl:text disable-output-escaping="yes">');</xsl:text>
           </xsl:attribute>
         </xsl:if>
-        <xsl:if test="@inline='false'">
+        <xsl:if test="@inline=&apos;false&apos;">
           <xsl:attribute name="href">
-            <xsl:value-of select="$popuppage"/>&amp;fid=<xsl:value-of select="../../@fid"/>&amp;did=<xsl:value-of select="../../command[@name='add-item']/@value"/>&amp;popupid=<xsl:value-of select="@wizardname"/>_<xsl:value-of select="@objectnumber"/>&amp;wizard=<xsl:value-of select="@wizardname"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
+            <xsl:value-of select="$popuppage"/>&amp;fid=<xsl:value-of select="../../@fid"/>&amp;did=<xsl:value-of select="../../command[@name=&apos;add-item&apos;]/@value"/>&amp;popupid=<xsl:value-of select="@wizardname"/>_<xsl:value-of select="@objectnumber"/>&amp;wizard=<xsl:value-of select="@wizardname"/>&amp;objectnumber=<xsl:value-of select="@objectnumber"/>&amp;origin=<xsl:value-of select="@origin"/>
           </xsl:attribute>
           <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -1542,7 +1530,7 @@
             be clickable when the field is editable.
     -->
     <xsl:choose>
-      <xsl:when test="(../field[@ftype='startwizard'] or ../../field[@ftype='startwizard']) and @ftype='data'">
+      <xsl:when test="(../field[@ftype=&apos;startwizard&apos;] or ../../field[@ftype=&apos;startwizard&apos;]) and @ftype=&apos;data&apos;">
         <xsl:attribute name="onMouseDown">objClick(this.offsetParent);</xsl:attribute>
       </xsl:when>
       <xsl:otherwise>
@@ -1567,16 +1555,16 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->
   <xsl:template name="mediaitembuttons">
     <td>
-      <xsl:if test="@displaytype='audio'">
+      <xsl:if test="@displaytype=&apos;audio&apos;">
         <span	class="imgbutton"	title="{$tooltip_audio}">
-          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), 'url()')}">
+          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_audio"/>
           </a>
         </span>
       </xsl:if>
-      <xsl:if test="@displaytype='video'">
+      <xsl:if test="@displaytype=&apos;video&apos;">
         <span	class="imgbutton"	title="{$tooltip_video}">
-          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), 'url()')}">
+          <a target="_blank" href="{node:saxonFunction($cloud, string(field/@objectnumber), &apos;url()&apos;)}">
             <xsl:call-template name="prompt_video"/>
           </a>
         </span>
@@ -1588,39 +1576,40 @@
     <!-- The item row is the trigger for startwizard at the moment. -->
     <td>
       <xsl:for-each select="field[@ftype='startwizard']">
-        <span class="imgbutton">
         <xsl:choose>
-          <xsl:when test="starts-with(@objectnumber,'n')">
-            <a href="javascript:alert('{$please_save}')" class="inactive"><xsl:call-template name="prompt_edit_wizard"/></a>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:if test="@wizardjsp">
+          <xsl:when test="@wizardjsp">
+            <span	class="imgbutton">
               <a href="{$ew_context}{@wizardjsp}/?objectnumber={@objectnumber}&amp;origin={@origin}&amp;wizard={@wizardname}">
                 <xsl:call-template name="prompt_edit_wizard" />
               </a>
-            </xsl:if>
-            <xsl:if test="@inline='true'">
-              <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-                <xsl:call-template name="prompt_edit_wizard"/>
-              </a>
-            </xsl:if>
-            <xsl:if test="not(@inline='true')">
-              <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
-                <xsl:call-template name="prompt_edit_wizard"/>
-              </a>
-            </xsl:if>
+            </span>
+          </xsl:when>
+          <xsl:otherwise>
+        <xsl:if test="@inline='true'">
+          <span	class="imgbutton">
+            <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+              <xsl:call-template name="prompt_edit_wizard"/>
+            </a>
+          </span>
+        </xsl:if>
+        <xsl:if test="not(@inline='true')">
+          <span	class="imgbutton">
+            <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}" target="_blank">
+              <xsl:call-template name="prompt_edit_wizard"/>
+            </a>
+          </span>
+        </xsl:if>
           </xsl:otherwise>
         </xsl:choose>
-        </span>
       </xsl:for-each>
     </td>
   </xsl:template>
 
   <xsl:template name="deleteitembuttons">
     <td>
-      <xsl:if test="command[@name='delete-item']">
-        <xsl:if test="@maydelete!='false'">
-          <span class="imgbutton" title="{$tooltip_remove}" onclick="doRemove('{command[@name='delete-item']/@cmd}');">
+      <xsl:if test="command[@name=&apos;delete-item&apos;]">
+        <xsl:if test="@maydelete!=&apos;false&apos;">
+          <span class="imgbutton" title="{$tooltip_remove}" onclick="doRemove(&apos;{command[@name=&apos;delete-item&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_remove"/>
           </span>
         </xsl:if>
@@ -1636,8 +1625,8 @@
   <xsl:template name="positembuttons">
     <td>
       <xsl:choose>
-        <xsl:when test="@maywrite='true' and command[@name='move-up']">
-          <span class="imgbutton" title="{$tooltip_up}" onclick="doMoveUp('{command[@name='move-up']/@cmd}');">
+        <xsl:when test="@maywrite=&apos;true&apos; and command[@name=&apos;move-up&apos;]">
+          <span class="imgbutton" title="{$tooltip_up}" onclick="doMoveUp(&apos;{command[@name=&apos;move-up&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_up"/>
           </span>
         </xsl:when>
@@ -1648,8 +1637,8 @@
     </td>
     <td>
       <xsl:choose>
-        <xsl:when test="@maywrite='true' and command[@name='move-down']">
-          <span class="imgbutton" title="{$tooltip_down}" onclick="doMoveDown('{command[@name='move-down']/@cmd}');">
+        <xsl:when test="@maywrite=&apos;true&apos; and command[@name=&apos;move-down&apos;]">
+          <span class="imgbutton" title="{$tooltip_down}" onclick="doMoveDown(&apos;{command[@name=&apos;move-down&apos;]/@cmd}&apos;);">
             <xsl:call-template name="prompt_down"/>
           </span>
         </xsl:when>

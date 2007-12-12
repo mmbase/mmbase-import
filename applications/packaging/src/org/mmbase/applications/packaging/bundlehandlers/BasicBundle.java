@@ -60,8 +60,8 @@ public class BasicBundle implements BundleInterface {
     private String licensebody = "";
     private ProviderInterface provider;
 
-    private HashMap<String, HashMap<String, String>> neededpackages = new HashMap<String, HashMap<String, String>>();
-    private ArrayList<Object> initiators,supporters,contacts,developers,screenshots,starturls;
+    private HashMap neededpackages = new HashMap();
+    private ArrayList initiators,supporters,contacts,developers,screenshots,starturls;
     private float progressbar = 0;
     private float progressstep = 1;
     private PackageInterface pkg = null;
@@ -71,7 +71,7 @@ public class BasicBundle implements BundleInterface {
     // only can provide log info but also possible fixed, feedback, stats
     // etc etc. Each step in itself can have steps again providing for things
     // like three style logging and feedback
-    private ArrayList<installStep> installsteps;
+    private ArrayList installsteps;
 
     private long lastupdated;
 
@@ -106,15 +106,15 @@ public class BasicBundle implements BundleInterface {
         return name;
     }
 
-    public Iterator<HashMap<String, String>> getNeededPackages() {
+    public Iterator getNeededPackages() {
         return neededpackages.values().iterator();
     }
 
-    public List<Object> getScreenshots() {
+    public List getScreenshots() {
         return screenshots;
     }
 
-    public List<Object> getStarturls() {
+    public List getStarturls() {
         return starturls;
     }
     
@@ -190,7 +190,7 @@ public class BasicBundle implements BundleInterface {
 
             int pbs = 0; 
             // figure out how many packages we have for the progressbar
-            Iterator<HashMap<String, String>> d = getNeededPackages();
+            Iterator d = getNeededPackages();
             while (d.hasNext()) {
                 pbs++;
                 d.next();
@@ -199,7 +199,7 @@ public class BasicBundle implements BundleInterface {
 
             boolean changed = true; // signals something was installed
             while (changed) {
-                Iterator<HashMap<String, String>> e = getNeededPackages();
+                Iterator e = getNeededPackages();
                 changed = false;
                 while (e.hasNext()) {
                     Object o=e.next();
@@ -208,8 +208,8 @@ public class BasicBundle implements BundleInterface {
 	            } else {
     	            }
 		    */
-                    HashMap<String,String> np = (HashMap<String,String>)o;
-                    String tmp=np.get("id");
+                    HashMap np = (HashMap)o;
+                    String tmp=(String)np.get("id");
                     pkg = PackageManager.getPackage(tmp);
                     if (pkg != null) {
                         String state = pkg.getState();
@@ -262,10 +262,10 @@ public class BasicBundle implements BundleInterface {
             installStep step = getNextInstallStep();
             step.setUserFeedBack("bundle/basic uninstaller started");
 
-            Iterator<HashMap<String, String>> e = getNeededPackages();
+            Iterator e = getNeededPackages();
                 while (e.hasNext()) {
-                    HashMap<String, String> np = e.next();
-                    PackageInterface pkg = PackageManager.getPackage(np.get("id"));
+                    HashMap np = (HashMap)e.next();
+                    PackageInterface pkg = PackageManager.getPackage((String)np.get("id"));
                     if (pkg != null) {
                         String name = pkg.getName();
                         step=getNextInstallStep();
@@ -301,7 +301,7 @@ public class BasicBundle implements BundleInterface {
         // create new step
         installStep step=new installStep();
         if (installsteps==null) {
-            installsteps=new ArrayList<installStep>();
+            installsteps=new ArrayList();
             installsteps.add(step);
             return step;
         } else {
@@ -319,7 +319,7 @@ public class BasicBundle implements BundleInterface {
         }
     }
 
-    public Iterator<installStep> getInstallSteps() {
+    public Iterator getInstallSteps() {
         if (installsteps != null) {
                 return installsteps.iterator();
         } else {
@@ -327,14 +327,14 @@ public class BasicBundle implements BundleInterface {
         }
     }
 
-    public Iterator<installStep> getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         // well maybe its one of my subs ?
-        Iterator<installStep> e = getInstallSteps();
+        Iterator e = getInstallSteps();
         while (e.hasNext()) {
-            installStep step = e.next();
+            installStep step = (installStep)e.next();
             Object o = step.getInstallSteps(logid);
             if (o != null) {
-                return (Iterator<installStep>)o;
+                return (Iterator)o;
             } 
         }
         return null;
@@ -430,7 +430,7 @@ public class BasicBundle implements BundleInterface {
                         wid = wid.replace(' ','_');
                         wid = wid.replace('/','_');
 
-                        HashMap<String, String> h = new HashMap<String, String>();
+                        HashMap h = new HashMap();
                         h.put("name",name);
                         h.put("id",wid);
                         h.put("type",type);
@@ -451,6 +451,8 @@ public class BasicBundle implements BundleInterface {
                         String maintainer = null;
                         String type = null;
                         String version = null;
+                        boolean packed = false;
+            
                         // decode name
                         org.w3c.dom.Node n5 = nm.getNamedItem("name");
                         if (n5 != null) {
@@ -478,15 +480,14 @@ public class BasicBundle implements BundleInterface {
                         // decode the packed
                         n5 = nm.getNamedItem("packed");
                         if (n5 != null) {
-                            if (n5.getNodeValue().equals("true")) {
-                            }
+                            if (n5.getNodeValue().equals("true")) packed = true;
                         }
 
                         String wid = name+"@"+maintainer+"_"+type;
                         wid = wid.replace(' ','_');
                         wid = wid.replace('/','_');
 
-                        HashMap<String, String> h = new HashMap<String, String>();
+                        HashMap h = new HashMap();
                         h.put("name",name);
                         h.put("id",wid);
                         h.put("type",type);
@@ -561,7 +562,7 @@ public class BasicBundle implements BundleInterface {
        }
    }
 
-   public List<Object> getRelatedPeople(String type) {
+   public List getRelatedPeople(String type) {
       if (type.equals("initiators")) return initiators;
       if (type.equals("supporters")) return supporters;
       if (type.equals("developers")) return developers;
@@ -570,8 +571,8 @@ public class BasicBundle implements BundleInterface {
    }
 
 
-   private ArrayList<Object> decodeRelatedPeople(org.w3c.dom.Node n,String type) {
-       ArrayList<Object> list = new ArrayList<Object>();
+   private ArrayList decodeRelatedPeople(org.w3c.dom.Node n,String type) {
+       ArrayList list = new ArrayList();
        org.w3c.dom.Node n2 = n.getFirstChild();
        while (n2 != null) {
            if (n2.getNodeName().equals(type)) {
@@ -595,8 +596,8 @@ public class BasicBundle implements BundleInterface {
    }
 
 
-   private ArrayList<Object> decodeRelatedScreenshots(org.w3c.dom.Node n) {
-       ArrayList<Object> list = new ArrayList<Object>();
+   private ArrayList decodeRelatedScreenshots(org.w3c.dom.Node n) {
+       ArrayList list = new ArrayList();
        org.w3c.dom.Node n2 = n.getFirstChild();
        while (n2 != null) {
            if (n2.getNodeName().equals("screenshot")) {
@@ -662,8 +663,8 @@ public class BasicBundle implements BundleInterface {
    }
 
 
-   private ArrayList<Object> decodeRelatedStarturls(org.w3c.dom.Node n) {
-       ArrayList<Object> list = new ArrayList<Object>();
+   private ArrayList decodeRelatedStarturls(org.w3c.dom.Node n) {
+       ArrayList list = new ArrayList();
        org.w3c.dom.Node n2 = n.getFirstChild();
        while (n2 != null) {
            if (n2.getNodeName().equals("url")) {

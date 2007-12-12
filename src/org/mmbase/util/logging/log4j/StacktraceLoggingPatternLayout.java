@@ -9,9 +9,8 @@ import org.apache.log4j.spi.LoggingEvent;
  * you will see exactly which line of code (or which JSP) generated the
  * exception.
  * @author Johannes Verelst
- * @version $Id: StacktraceLoggingPatternLayout.java,v 1.4 2007-12-05 20:34:24 michiel Exp $
  */
-public class StacktraceLoggingPatternLayout extends MMPatternLayout {
+public class StacktraceLoggingPatternLayout extends PatternLayout {
 
     /**
      * Overridden from PatternLayout; use the normal pattern to format
@@ -21,10 +20,10 @@ public class StacktraceLoggingPatternLayout extends MMPatternLayout {
         String res = super.format(event);
         Exception e = new Exception();
         StackTraceElement[] ste = e.getStackTrace();
-        StringBuilder trace = new StringBuilder(res);
-        for (StackTraceElement element : ste) {
-          trace.append("\tat ").append(element.toString()).append("\n");
+        StringBuffer trace = new StringBuffer();
+        for (int i=0; i<ste.length; i++) {
+          res += "\tat " + ste[i].toString() + "\n";
         }
-        return trace.toString();
+        return res;
     }
 }
