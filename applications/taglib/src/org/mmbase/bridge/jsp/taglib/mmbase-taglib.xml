@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.17 2007-12-11 14:42:51 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.18 2007-12-12 21:29:11 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -6585,6 +6585,14 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
         What kind of escaper.
         <document file="resources/taglibcontent.xml" mode="parameterizedescapers" />
+      </info>
+    </attribute>
+    <attribute>
+      <name>inverse</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        Turns the escaper arround (so, will call the 'transformBack' methods).
       </info>
     </attribute>
     <example><![CDATA[
