@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.34.2.1 2007-11-27 13:01:55 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.34.2.2 2007-12-12 09:53:37 michiel Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
@@ -198,10 +198,14 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     }
 
     public String toString() {
-        return "RelationManager " +
-            (typeRelNode != null ? getSourceManager().getName() : "???") +
-            " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
-            (typeRelNode != null ? getDestinationManager().getName() : "???") +
-            " ( " + getNode().getNumber() + ")";
+        try {
+            return "RelationManager " +
+                (typeRelNode != null ? getSourceManager().getName() : "???") +
+                " -" + (relDefNode != null ? getForwardRole() : "???") + "-> " +
+                (typeRelNode != null ? getDestinationManager().getName() : "???") +
+                " ( " + getNode().getNumber() + ")";
+        } catch (Exception e) {
+            return e.getMessage() + " " + super.toString();
+        }
     }
 }
