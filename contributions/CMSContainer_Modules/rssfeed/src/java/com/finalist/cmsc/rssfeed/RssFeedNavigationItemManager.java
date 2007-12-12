@@ -1,4 +1,4 @@
-package com.finalist.cmsc.rssfeed.newnav;
+package com.finalist.cmsc.rssfeed;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
