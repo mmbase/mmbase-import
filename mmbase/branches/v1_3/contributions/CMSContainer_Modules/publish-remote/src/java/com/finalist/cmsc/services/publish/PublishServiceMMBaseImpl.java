@@ -74,11 +74,20 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
         if (publisher.isPublishable(node)) {
             return publisher;
         }
+        publisher = getNodePublisher(node.getCloud());
+        if (publisher.isPublishable(node)) {
+            return publisher;
+        }
+        
         throw new IllegalArgumentException("Node was not publishable " + node);
     }
 
     private Publisher getPagePublisher(Cloud cloud) {
         return new PagePublisher(cloud);
+    }
+
+    private Publisher getNodePublisher(Cloud cloud) {
+        return new NodePublisher(cloud);
     }
 
     private Publisher getContentPublisher(Cloud cloud) {
