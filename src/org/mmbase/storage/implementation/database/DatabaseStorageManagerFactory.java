@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.47 2007-06-15 08:58:25 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.48 2007-12-12 13:01:01 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -367,10 +367,13 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         if (basePath == BASE_PATH_UNSET) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
-                ServletContext sc = MMBaseContext.getServletContext();
-                basePath = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
-                if (basePath == null) {
-                    basePath = System.getProperty("user.dir") + File.separator + "data";
+                basePath = mmbase.getInitParameter("datadir");
+                if (basePath == null || basePath.equals("")) {
+                    ServletContext sc = MMBaseContext.getServletContext();
+                    basePath = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
+                    if (basePath == null) {
+                        basePath = System.getProperty("user.dir") + File.separator + "data";
+                    }
                 }
 
             } else {
