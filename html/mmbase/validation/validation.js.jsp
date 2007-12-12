@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.40 2007-11-05 17:12:00 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.41 2007-12-12 17:17:59 michiel Exp $
  */
 var validators = new Array();
 
@@ -145,7 +145,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
         }
         el.mm_minLength_set = true;
     }
-    if (el.mm_minLength != null && el.value.length < el.mm_minLength) {
+    if (el.mm_minLength != null && el.value != null && el.value.length < el.mm_minLength) {
         return false;
     }
 
@@ -158,7 +158,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
         el.mm_maxLength_set = true;
     }
 
-    if (el.mm_maxLength != null && el.value.length > el.mm_maxLength) {
+    if (el.mm_maxLength != null && el.value != null && el.value.length > el.mm_maxLength) {
         return false;
     }
 
