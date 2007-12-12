@@ -11,7 +11,7 @@
 	<div class="content">
 		<p><fmt:message key="subscription.subscribe.info" /></p><br>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<c:forEach var="newsletternumber" items="${newsletters}">
+		<c:forEach var="newsletternumber" items="${allowednewsletters}">
 		<mm:node number="${newsletternumber}" notfound="skip">
 			<tr>
 				<td colspan="2">
@@ -22,7 +22,7 @@
 				<td colspan="2"><mm:field name="description" write="true" />	</td>
 			</tr>
 			<tr>
-				<td colspan="2"><cmsc:checkbox var="newsletter" value="${newsletternumber}" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
+				<td colspan="2"><cmsc:checkbox var="newslettersubscriptions" value="${newsletternumber}" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
 			<tr>
 				<td>&nbsp;</td>
 			</tr>
