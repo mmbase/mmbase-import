@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.41.2.2 2007-12-12 13:53:32 pierre Exp $
+ * @version $Id: Utils.java,v 1.41.2.3 2007-12-12 14:00:42 pierre Exp $
  */
 
 public class Utils {
@@ -320,7 +320,7 @@ public class Utils {
             return xs;
         } catch (Exception e) {
             // generally, this means a passed (expandin) attribute doesn't exist.
-            log.debug(Logging.stackTrace(e) + ", evaluating xpath:" + xpath);
+            log.warn(e.getMessage() + ", evaluating xpath:" + xpath, e);
         }
         return defaultvalue;
     }
