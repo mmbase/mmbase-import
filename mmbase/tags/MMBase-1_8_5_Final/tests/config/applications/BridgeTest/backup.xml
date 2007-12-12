@@ -1,0 +1,10 @@
+<contextdepth>
+
+	<startnode>
+		<builder>aa</builder>
+		<where>name=='aastartnode'</where>
+	</startnode>
+
+	<depth>3</depth>
+
+</contextdepth>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="forums" maintainer="submarine.nl" version="0" extends="object">
+
+
+  <names>
+    <singular xml:lang="en">Forum</singular>
+    <plural xml:lang="en">Forums</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Forums</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="name">
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>2</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="description">
+      <gui>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="fr">Description</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="2048" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="createtime">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- base="created" ? -->
+    </field>
+
+    <field name="updatetime">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- base="lastmodified" ? -->
+    </field>
+
+    <field name="edittime">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- base="lastmodified" ? -->
+    </field>
+
+    <field name="viewcount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+      </datatype>
+    </field>
+
+    <field name="postcount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+      </datatype>
+    </field>
+
+    <field name="c_lastposter"><!-- where does the c_ stand for? -->
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="c_lastpostsubject">
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="c_lastposttime">
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="postercount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="postthreadcount">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="0" />
+      </datatype>
+    </field>
+
+    <field name="language">
+      <!-- how is a language formatted ? -->
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field name="state">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <!-- probably an enumaration? -->
+    </field>
+
+    <field name="lastpostnumber">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="lastposternumber">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+  </fieldlist>
+</builder>

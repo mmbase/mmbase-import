@@ -1,0 +1,54 @@
+/**
+
+  Editwizard cascading style sheet.
+  You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
+
+  @version  $Id: wysiwyg.css,v 1.1 2003-12-19 11:10:08 nico Exp $
+  
+*/
+
+table.wysiwyg {
+	background: buttonface;
+	border-color: buttonface;
+}
+
+DIV.wysiwyg_editbar {
+	background: buttonface;
+	border-color: buttonface;
+}
+
+A.barbutton,
+A.enabledbarbutton,
+A.disabledbarbutton {
+	border-color: buttonface;
+}
+
+A.enabledbarbutton {
+	background: buttonhighlight;
+}
+
+DIV#wysiwyg_editbar,
+A.enabledbarbutton:hover,
+A.enabledbarbutton:hover {
+	border-top-color: buttonhighlight;
+	border-left-color: buttonhighlight;
+	border-right-color: buttonshadow;
+	border-bottom-color: buttonshadow;
+}
+
+A.barbutton:active, A.enabledbarbutton {
+	border-top-color: buttonshadow;
+	border-left-color: buttonshadow;
+	border-right-color: buttonhighlight;
+	border-bottom-color: buttonhighlight;
+}
+
+DIV.separator {
+	background: buttonshadow;
+	border-right-color: buttonhighlight;
+}
+
+IFRAME.wysiwyg_textarea {
+	border-color: #FF00FF;
+	color: #000000;
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <extend>${basedir}/../app-base/project.xml</extend>
+    <artifactId>cache-oscache</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>oscache</artifactId>
+            <version>2.2</version>
+            <url>http://www.opensymphony.com/oscache/</url>
+            <properties>
+		        <eclipse.dependency>true</eclipse.dependency>
+            </properties>
+        </dependency>
+    </dependencies>    
+</project>
+
