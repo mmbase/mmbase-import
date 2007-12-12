@@ -40,10 +40,10 @@ echo generating version, and some directories
 #headrevision="-A"
 
 #release:
-version=MMBase-1_8_5-Final
+version=MMBase-1_8_5
 cvsversion=
-revision=MMBase-1_8_5-Final
-headrevision="-r MMBase-1_8_5-Final"
+revision=MMBase-1_8_5_Final
+headrevision="-r MMBase-1_8_5_Final"
 
 # STABLE branch
 builddir="/home/nightly/builds/stable/${version}"
@@ -115,15 +115,17 @@ if ( true ) ; then
     ${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     cd ${STABLE}
     ${antcommand} srcdist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
-    ${antcommand} minimalistic-war ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    ${antcommand} minimalistic.war ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
 
     echo "JAVA 15 from now on" | tee -a ${builddir}/messages.log
     export JAVA_HOME=${JAVA_HOME15}
     export JAVAC=${JAVAC15}
 
     cd ${STABLE}/applications
+    pwd >> ${builddir}/messages.log 
     ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     cd ${STABLE}/contributions
+    pwd >> ${builddir}/messages.log 
     ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     fi
 fi
