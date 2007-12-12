@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="reldef" maintainer="mmbase.org" version="0" extends="object">
+
+  <class>org.mmbase.module.corebuilders.RelDef</class>
+  <searchage>14</searchage>
+  <names>
+    <singular xml:lang="en">Relation role</singular>
+    <singular xml:lang="nl">Relatierol</singular>
+    <singular xml:lang="eo">Rilatorolo</singular>
+    <singular xml:lang="it">Ruolo di relazione</singular>
+    <plural xml:lang="en">Relation roles</plural>
+    <plural xml:lang="nl">Relatierollen</plural>
+    <plural xml:lang="eo">Rilatoroloj</plural>
+    <plural xml:lang="it">Ruoli di relazione</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="en">Assigns roles to relation object types</description>
+    <description xml:lang="nl">Kent rollen toe aan relatie object types</description>
+    <description xml:lang="eo">Atributas rolojn al rilatotipoj</description>
+    <description xml:lang="it">Definisce le relazioni</description>
+  </descriptions>
+
+  <fieldlist>
+    <field name="sname">
+      <descriptions>
+        <description xml:lang="en">Role</description>
+        <description xml:lang="nl">Rol</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Role</guiname>
+        <guiname xml:lang="nl">Rol</guiname>
+        <guiname xml:lang="eo">Rolo</guiname>
+        <guiname xml:lang="it">Fonte</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>1</list>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <required value="true" />
+        <maxLength value="32" />
+      </datatype>
+    </field>
+
+    <field name="dname">
+      <descriptions>
+        <description xml:lang="en">The role as for the destination, can only be used in combination with sname</description>
+        <description xml:lang="nl">Bestemmingsrol van deze relatie definitie, kan slechts gebruikt worden in combinatie met sname</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Target-role</guiname>
+        <guiname xml:lang="nl">Bestemmings-rol</guiname>
+        <guiname xml:lang="eo">Cel-rolo</guiname>
+        <guiname xml:lang="it">Obbiettivo</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+        </positions>
+      </editor>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="32" />
+      </datatype>
+    </field>
+
+    <field name="dir">
+      <descriptions>
+        <description xml:lang="en">Directionality of this relation definition. 1 or 2.</description>
+        <description xml:lang="nl">Richting van deze relatie definitie. 1 of 2.</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Direction</guiname>
+        <guiname xml:lang="nl">Richting</guiname>
+        <guiname xml:lang="eo">Direkto</guiname>
+        <guiname xml:lang="it">Direzione</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="dirs" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="sguiname">
+      <descriptions>
+        <description xml:lang="en">Source guiname of this relation
+          definition, will be used in editors</description>
+        <description xml:lang="nl">Bron guinaam van deze relatie
+          definitie, deze wordt gebruikt in editors</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">SourceGUIName</guiname>
+        <guiname xml:lang="nl">BronGUINaam</guiname>
+        <guiname xml:lang="eo">Fontnomo</guiname>
+        <guiname xml:lang="it">FonteGUINome</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>4</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="32" />
+      </datatype>
+    </field>
+
+    <field name="dguiname">
+      <descriptions>
+        <description xml:lang="en">Destination guiname of this relation
+          definition, will be used in editors</description>
+        <description xml:lang="nl">Bestemmings guinaam van deze relatie
+          definitie, deze wordt gebruikt in editors</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">TargetGUIName</guiname>
+        <guiname xml:lang="nl">DoelGUINaam</guiname>
+        <guiname xml:lang="eo">Celnomo</guiname>
+        <guiname xml:lang="it">ObbiettivoGUINome</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>5</list>
+        </positions>
+      </editor>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="32" />
+      </datatype>
+    </field>
+
+    <field name="builder">
+      <descriptions>
+        <description xml:lang="en">Builder which will be used by
+          relations of this relation definition</description>
+        <description xml:lang="nl">Builder welke gebruikt zal
+          worden door relaties van deze relatiedefinitie</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Relation object type</guiname>
+        <guiname xml:lang="nl">Relatie-type</guiname>
+        <guiname xml:lang="eo">Rilato-tipo</guiname>
+        <guiname xml:lang="it">Costruttore</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>2</list>
+          <search>2</search>
+        </positions>
+      </editor>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" > <!-- should actually be limited to extensions of insrel, but how? -->
+        <required value="true" />
+      </datatype>
+    </field>
+  </fieldlist>
+</builder>

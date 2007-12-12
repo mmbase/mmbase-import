@@ -1,0 +1,130 @@
+<PROCESSOR MMADMIN>
+<SECURE>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
+<BR>
+
+<IF $MOD-INFO-USER-NAME^=Nadmin>
+<TABLE width=90% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="44BDAD" WIDTH="700">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>MMBase access error</B>
+	</TD>
+</TR>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#00425A">
+	You are not allowed to access these pages, only admin can use these.
+	</TD>
+</TR>
+</TABLE>
+<ELSE>
+<TABLE width=90% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN=4>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Description</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN=4>
+			<BR>
+			<B> $MOD-MMADMIN-DESCRIPTION-$PARAM1 of $PARAM1 </B>
+			<BR>
+			<BR>
+		</TD>
+</TR>
+<TR>
+	<TD>
+		<BR>
+	</TD>
+</TR>
+<FORM ACTION="applications_result.shtml" METHOD="POST">
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN=3>
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Confirm</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A" COLSPAN=3>
+			<B> Install &nbsp;&nbsp; $PARAM1 &nbsp;&nbsp; version &nbsp;&nbsp; $MOD-MMADMIN-VERSION-$PARAM1 </B>
+		</TD>
+		<TD BGCOLOR="#00425A">
+
+				<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMADMIN">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-LOAD" VALUE="$PARAM1">
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+		</TD>
+</TR>
+</FORM>
+<TR>
+	<TD>
+		<BR>
+	</TD>
+</TR>
+
+<FORM ACTION="applications_result.shtml" METHOD="POST">
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Action</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Path</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Goal</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Confirm</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			<B>Save</B>
+		</TD>
+		<TD BGCOLOR="#00425A">
+				<INPUT NAME="PRC-VAR-PATH" VALUE="/tmp" SIZE="20">
+		</TD>
+		<TD BGCOLOR="#00425A">
+				<B>
+				<SELECT NAME="PRC-VAR-GOAL">
+					<OPTION>backup
+				</SELECT>
+				</B>
+		</TD>
+		<TD BGCOLOR="#00425A">
+				<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
+				<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMADMIN">
+				<INPUT TYPE="hidden" NAME="PRC-CMD-SAVE" VALUE="$PARAM1">
+				<B>
+				<INPUT TYPE="SUBMIT" VALUE="YES">
+				</B>
+		</TD>
+</TR>
+</FORM>
+
+</TABLE>
+</IF>
+</BODY>
+</HTML>

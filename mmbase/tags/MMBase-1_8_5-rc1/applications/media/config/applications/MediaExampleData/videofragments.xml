@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<videofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+  <node number="6020" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Noorderlicht</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+  <node number="6021" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Mijn opknipsel</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+  <node number="6022" owner="media">
+    <start>0</start>
+    <length>-1</length>
+    <body></body>
+    <stop>44596</stop>
+    <title>De introductie</title>
+    <subtitle></subtitle>
+    <intro>Een leuk programma dat Noorderlicht.</intro>
+  </node>
+
+  <node number="6023" owner="media">
+    <start>46892</start>
+    <length>-1</length>
+    <body></body>
+    <stop>879750</stop>
+    <title>Eerste item</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+
+
+  <node number="6030" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Journaal van maandag 20 uur</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+  <node number="6031"  owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>18 november</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+  <node number="6032" owner="media">
+    <start>37515</start>
+    <length>-1</length>
+    <body>asfd</body>
+    <stop>39707</stop>
+    <title>Eerste item</title>
+    <subtitle>asdf</subtitle>
+    <intro>sdfsafasfdasfd</intro>
+  </node>
+
+  <node number="6033" owner="media">
+    <start>51481</start>
+    <length>-1</length>
+    <body></body>
+    <stop>52380</stop>
+    <title>Het weer</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+  <node number="6000" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Netwerk 2003-01-13</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+  <node number="6001" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Netwerk 2003-01-12</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+
+  <node number="6002" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Omroep introductie stream</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+
+  <node number="6003" owner="media">
+    <start>-1</start>
+    <length>-1</length>
+    <body></body>
+    <stop>-1</stop>
+    <title>Leraarshow</title>
+    <subtitle></subtitle>
+    <intro></intro>
+  </node>
+
+</videofragments>

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application auto-deploy="true" version="2" name="TeleacNotifications" maintainer="mmbase.org">
+
+  <requirements>
+    <requires name="Notifications" maintainer="mmbase.org" version="1" />
+  </requirements>
+
+  <neededbuilderlist>
+    <builder version="1"  maintainer="teleacnot.nl">t_programme</builder>
+    <builder version="0" maintainer="mmbase.org">chatter</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist />
+
+  <allowedrelationlist>
+    <relation type="related" from="t_programme" to="notifyables" />
+    <relation type="notify"  from="chatter"     to="notifyables" />
+  </allowedrelationlist>
+
+  <datasourcelist />
+  <relationsourcelist/>
+  <contextsourcelist />
+  <install-notice>installed</install-notice>
+</application>

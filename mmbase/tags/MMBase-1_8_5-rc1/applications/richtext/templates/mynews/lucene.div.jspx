@@ -1,0 +1,55 @@
+<div id="search" class="block ${param.class}"
+     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+     xmlns:jsp="http://java.sun.com/JSP/Page">  
+  <jsp:directive.page session="false" />
+  <jsp:output omit-xml-declaration="true" />
+  <jsp:directive.include file="vars.jspx" />
+  <mm:content type="appliation/xhtml+xml" language="$language">
+    <mm:cloud>
+      <mm:node number="${cat}" notfound="skip">
+        <jsp:directive.include file="rich.jspx" />
+      </mm:node>
+    </mm:cloud>
+    <mm:import externid="article" />
+    <mm:import externid="dosearch" id="search"/>
+    <mm:link referids="$vars,article?" page=".">
+      <mm:param name="template" value="lucene" />
+      <form  id="searchform" method="post" action="${_}">   
+        <p>
+          <input name="dosearch" value="${search}" type="text" size="15" maxlength="256" />
+          <a href="javascript:document.forms.searchform.submit()">
+            Search!
+          </a>
+        </p>
+      </form>
+    </mm:link>
+    <mm:present referid="search">
+      <mm:url id="next" write="false" page="/mmbase/style/images/next.png" />
+      <mm:import id="pagesize">100</mm:import>
+      <mm:import id="extraconstraints">
+        content.begin:LT:<mm:time time="now"  format="yyyyMMddHHmmss" />
+        content.end:GT:<mm:time time="now"  format="yyyyMMddHHmmss" />
+      </mm:import>
+      <table>
+        <mm:functioncontainer
+            referids="search@value,extraconstraints"
+            module="lucene">
+          <mm:param name="index" value="rich_magazine" />
+          <mm:function name="searchsize" id="size" write="false"/>
+          <mm:param name="sortfields" value="REVERSE:content.begin" />
+          <mm:param name="offset" value="${pagesize * (pid -1)}" />
+          <mm:param name="max" value="$pagesize" />
+          <mm:cloud>
+            <mm:nodelistfunction name="search">
+              <tr>
+                <td><mm:index /></td>
+                <td><mm:nodeinfo type="gui" /></td>
+                <td><mm:function container="" name="url"><a class="navigate" href="${_}"><img src="${next}" alt="see" /></a></mm:function></td>
+              </tr>
+            </mm:nodelistfunction>
+          </mm:cloud>
+        </mm:functioncontainer>
+      </table>
+    </mm:present>
+  </mm:content>
+</div>
