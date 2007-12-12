@@ -36,6 +36,7 @@ Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
 General New Features:
 --------------------
 [1.8.5]
+
     * [MMB-405] - Searching in list with startnode. Cannot make new links to startnode.
     * [MMB-1450] - Missing 'gender' datatype
     * [MMB-1483] - org.mmbase.util.functions.SetFunction could be public.
@@ -54,7 +55,7 @@ General New Features:
     * [MMB-1525] - PageContext to be available as a ThreadLocal
     * [MMB-1536] - Desired feature notfound="log"
     * [MMB-1502] - DataType framework needs javascript validation library.
-
+    * [MMB-1551] - 'datadir' of storage to be configured in mmbaseroot.xml.
 
 [1.8.4]
 
@@ -252,11 +253,10 @@ Bug Fixes:
 ------------------
 
 [1.8.5]
-
- * [MMB-535] - basic bridge implementation: cannot delete node if lacking write rights
+    * [MMB-535] - basic bridge implementation: cannot delete node if lacking write rights
     * [MMB-1254] - Searchbox of editwizard's list always talks about 'Title contains'.
     * [MMB-1270] - Date-editing does not make less significant fields 0.
-    * [MMB-1296] - Password gets reset when you edit  a user in the security editors
+    * [MMB-1296] - Password gets reset when you edit a user in the security editors
     * [MMB-1307] - If field is virtual, e.g. because not present in database, it is still added to searchqueries.
     * [MMB-1357] - Loginmethod is not passed arround
     * [MMB-1404] - TreeList can give IndexOutOfBoundException
@@ -277,6 +277,7 @@ Bug Fixes:
     * [MMB-1472] - Dove, check for 'editable' fields it too simple. Cannot edit virtual/system fields now.
     * [MMB-1479] - check field existance not used for getInputStreamValue, getSize.
     * [MMB-1480] - getSize seems not to work on multilevel nodes.
+    * [MMB-1484] - SpaceReducer (the 'escaper' reducespace) produces newline.
     * [MMB-1496] - BasicSqlHandler a bit too stupid when it comes to datetime fields.
     * [MMB-1497] - javascript escapers should also escape newlines.
     * [MMB-1499] - Tag with explicit escape-value, changes escaping of current _-variable.
@@ -298,7 +299,10 @@ Bug Fixes:
     * [MMB-1538] - mm:fieldinfo type="guivalue" does not honor 'urlconvert' parameter if presenting an image.
     * [MMB-1541] - Daymarkers: getDayCountAge() always returns 0
     * [MMB-1544] - dtminlength=0 makes the field required.
-
+    * [MMB-1547] - field ftype="startwizard" throws exception when when the node is no yet saved
+    * [MMB-1548] - Unable to create nodes which typedefs owner is admin
+    * [MMB-1549] - Cannot set node from transaction in session, and get it out again.
+    * [MMB-1555] - binary fields with unspecified maxLength don't deploy on mysql.
 
 [1.8.4]
 
