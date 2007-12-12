@@ -45,8 +45,7 @@
 <c:if test="${empty offset}"><c:set var="offset" value="0"/></c:if>
 
 <c:set var="maxPage" value="${ cmsc:ceil(listSize/resultsPerPage)-1}"/>
-                    dsf
-asdf
+
 <table border="0" width="100%">
     <tr>
         <td style="width:50%;">
