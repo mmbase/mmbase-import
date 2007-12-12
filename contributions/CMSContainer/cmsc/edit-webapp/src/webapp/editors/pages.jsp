@@ -24,7 +24,7 @@
         var re = new RegExp("^[1-9][0-9]*$");
 
         if (re.test(inputValue) && inputValue <= Math.ceil(${maxPage})) {
-            var url = "?status=&offset=" + (inputValue - 1) + "&orderby=" + "${extraparams}";
+            var url = "?status=&offset=" + (inputValue - 1) + "&orderby =" + "${extraparams}";
             window.location.href = url;
         } else {
             alert("${error}");
@@ -43,8 +43,10 @@
 </c:set>
 
 <c:if test="${empty offset}"><c:set var="offset" value="0"/></c:if>
-<c:set var="maxPage" value="${ cmsc:ceil(listSize/resultsPerPage)-1}"/>
 
+<c:set var="maxPage" value="${ cmsc:ceil(listSize/resultsPerPage)-1}"/>
+                    dsf
+asdf
 <table border="0" width="100%">
     <tr>
         <td style="width:50%;">
@@ -53,12 +55,12 @@
         <td style="text-align:right;width:50%;">
             <fmt:message key="searchpages.page"/>
             <c:choose>
-                <c:when test="${maxPage>0&&maxPage<13}">
+                <c:when test="${maxPage>=0&&maxPage<13}">
                     <c:forEach var="count" begin="0" end="${maxPage}">
                         <a href="${baselink}&offset=${count}" class="page_list_nav${offset==count}">
                                 ${count+1}
                         </a>
-                        |
+                        <c:if test="count ne maxPage"> | </c:if>
                     </c:forEach>
                 </c:when>
 
@@ -92,7 +94,7 @@
                 </c:when>
 
                 <c:otherwise>
-                    The page you requested does not exist.
+                    The page you requested does not exist.  ${maxPage}
                 </c:otherwise>
 
             </c:choose>
