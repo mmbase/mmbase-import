@@ -82,8 +82,12 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
          return publisher;
       }
       publisher = getOptionalPublisher(node.getCloud(), node.getNodeManager().getName());
-      if (publisher.isPublishable(node)) {
+      if (publisher != null && publisher.isPublishable(node)) {
          return publisher;
+      }
+      publisher = getNodePublisher(node.getCloud());
+      if (publisher.isPublishable(node)) {
+    	 return publisher;
       }
       throw new IllegalArgumentException("Node was not publishable " + node);
    }
@@ -93,6 +97,9 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
       return new PagePublisher(cloud);
    }
 
+   private Publisher getNodePublisher(Cloud cloud) {
+      return new NodePublisher(cloud);
+   }
 
    private Publisher getContentPublisher(Cloud cloud) {
       return new ContentPublisher(cloud);
