@@ -19,6 +19,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 import org.mmbase.module.lucene.extraction.*;
+import org.mmbase.util.Encode;
 
 
 import org.mmbase.bridge.*;
@@ -33,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.27 2007-10-09 16:09:02 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.28 2007-12-12 10:38:20 pierre Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -119,6 +120,17 @@ public class MMBaseEntry implements IndexEntry {
             if (fieldName == null)  fieldName = fieldDefinition.fieldName;
             if (document.getField(fieldName) == null || !fieldDefinition.keyWord) {
                 String value = getFieldDataAsString(data, fieldName);
+                if (fieldDefinition.escaper != null) {
+                   org.mmbase.util.transformers.CharTransformer transformer = null;
+                   try {
+                     transformer = org.mmbase.bridge.jsp.taglib.ContentTag.getCharTransformer(fieldDefinition.escaper,null);                  
+                   } catch (javax.servlet.jsp.JspTagException jte) {
+                      // ignore if an escaper does not exist for now (otherwise log fills up)
+                   }
+                   if (transformer !=null) {
+                     value = transformer.transform(value);
+                   }
+                }
                 if (fieldDefinition.keyWord) {
                     if (log.isTraceEnabled()) {
                         log.trace("add " + fieldName + " text, keyword" + value);
