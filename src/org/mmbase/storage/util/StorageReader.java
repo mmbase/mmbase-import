@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.14 2007-09-17 17:22:30 michiel Exp $
+ * @version $Id: StorageReader.java,v 1.15 2007-12-12 16:45:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class StorageReader<SM extends StorageManager> extends DocumentReader  {
@@ -270,10 +270,10 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
                 if (typeMapping.name != null) {
                     // obtain min/max values for sizes
                     try {
-                        typeMapping.minSize = Integer.parseInt(typeMappingTag.getAttribute("min-size"));
+                        typeMapping.minSize = Long.parseLong(typeMappingTag.getAttribute("min-size"));
                     } catch (NumberFormatException nfe) {}
                     try {
-                        typeMapping.maxSize = Integer.parseInt(typeMappingTag.getAttribute("max-size"));
+                        typeMapping.maxSize = Long.parseLong(typeMappingTag.getAttribute("max-size"));
                     } catch (NumberFormatException nfe) {}
                     // get the type to convert to
                     typeMapping.type = typeMappingTag.getAttribute("type");
