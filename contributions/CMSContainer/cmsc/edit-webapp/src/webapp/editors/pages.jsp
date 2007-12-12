@@ -24,7 +24,7 @@
         var re = new RegExp("^[1-9][0-9]*$");
 
         if (re.test(inputValue) && inputValue <= Math.ceil(${maxPage})) {
-            var url = "?status=&offset=" + (inputValue - 1) + "&orderby =" + "${extraparams}";
+            var url = "?status=&offset=" + (inputValue - 1) + "&orderby="+"${extraparams}";
             window.location.href = url;
         } else {
             alert("${error}");
