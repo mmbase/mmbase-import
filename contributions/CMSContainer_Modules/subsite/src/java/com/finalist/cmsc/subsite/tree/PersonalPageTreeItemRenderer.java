@@ -36,17 +36,17 @@ public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer 
          TreeElement element = renderer.createElement(parentNode, role, name, fragment, false);
          
          if (SecurityUtil.isEditor(role)) {
-            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.personal.edit.page",
+            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.sub.edit",
                         RESOURCEBUNDLE, "../subsite/PersonalPageEdit.do?number=" + id));
             element.addOption(renderer.createTreeOption("delete.png", "site.personal.remove.page", 
                     RESOURCEBUNDLE, "../subsite/SubSiteDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("subsite_new.png", "site.personal.new.page",
-                    "cmsc-modules-subsite", "../subsite/PersonalPageCreate.do?parentpage=" + id));
+            		RESOURCEBUNDLE, "../subsite/PersonalPageCreate.do?parentpage=" + id));
          }
          
          if (SecurityUtil.isChiefEditor(role)) {
-             element.addOption(renderer.createTreeOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
-             /** Not a good idea until this is fully implemented for every scenario
+        	 /** Not a good idea until this is fully implemented for every scenario
+             * element.addOption(renderer.createTreeOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
              * element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
              * element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
              */
