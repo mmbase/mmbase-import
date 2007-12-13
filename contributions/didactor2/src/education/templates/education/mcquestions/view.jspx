@@ -4,10 +4,11 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   >
+  <jsp:output omit-xml-declaration="yes" />
   <mm:node number="${param.question}">
     <mm:field name="type" id="type" write="false"/>
   </mm:node>
-  
+
   <mm:compare referid="type" value="0">
     <mm:relatednodes type="answers">
       <b><di:translate key="education.givenanswer" />:</b>
@@ -21,4 +22,4 @@
       <mm:last inverse="true">, </mm:last>
     </mm:relatednodes>
   </mm:compare>
-</mm:node>    
+</mm:node>
