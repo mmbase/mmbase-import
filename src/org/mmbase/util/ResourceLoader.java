@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.39.2.2 2007-06-22 12:45:42 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.39.2.3 2007-12-13 17:58:57 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -338,7 +338,10 @@ public class ResourceLoader extends ClassLoader {
             if (servletContext != null) {
                 String s = servletContext.getRealPath(RESOURCE_ROOT);
                 if (s != null) {
-                    configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), true));
+                    PathURLStreamHandler h = configRoot.new FileURLStreamHandler(new File(s), true);
+                    if (! configRoot.roots.contains(h)) {
+                        configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), true));
+                    }
                 } else {
                     configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
                 }
@@ -760,7 +763,7 @@ public class ResourceLoader extends ClassLoader {
                 throw ioe;
             }
         }
-        
+
     }
 
     /**
@@ -995,7 +998,7 @@ public class ResourceLoader extends ClassLoader {
                 }
             }
         }
-        
+
         // did not find f as a file for this resource
         throw new IllegalArgumentException("File " + f + " is not a file for resource "  + name);
     }
@@ -1154,6 +1157,14 @@ public class ResourceLoader extends ClassLoader {
         }
         public String toString() {
             return fileRoot.toString();
+        }
+        public boolean equals(Object o) {
+            if (o instanceof FileURLStreamHandler) {
+                FileURLStreamHandler of = (FileURLStreamHandler) o;
+                return of.fileRoot.equals(fileRoot);
+            } else {
+                return false;
+            }
         }
 
 
@@ -1391,7 +1402,7 @@ public class ResourceLoader extends ClassLoader {
         public boolean getDoOutput() {
             getResourceNode();
             return
-                (node != null && node.mayWrite()) || 
+                (node != null && node.mayWrite()) ||
                 (ResourceLoader.resourceBuilder != null && ResourceLoader.resourceBuilder.mayCreateNode());
         }
 
