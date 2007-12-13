@@ -3,7 +3,7 @@
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-subsite</artifactId>
     <name>Sub Site module</name>
-    <shortDescription>This module allows the user to make Sub Sites.</shortDescription>
+    <shortDescription>Allow the user to make Sub Sites.</shortDescription>
     <description>
     	This module allows the user to make sub sites, which can be called just like normal pages.
     </description>

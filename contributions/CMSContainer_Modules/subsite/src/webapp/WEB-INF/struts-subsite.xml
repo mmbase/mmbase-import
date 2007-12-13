@@ -33,6 +33,14 @@
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 
+      <action path="/editors/subsite/PersonalPageCreate" type="com.finalist.cmsc.subsite.forms.PersonalPageCreate"
+         unknown="false" validate="false">
+         <forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
+         <forward name="returnurl" path="/editors/subsite/PersonalPageCreate.do" redirect="false" />
+         <forward name="cancel" path="/editors/empty.html" redirect="true" />
+         <forward name="success" path="/editors/subsite/refreshandshow.jsp" redirect="false" />
+      </action>
+      
     </action-mappings>
     <message-resources parameter="modules-subsite" key="MODULES-SUBSITE" />
 </struts-config>

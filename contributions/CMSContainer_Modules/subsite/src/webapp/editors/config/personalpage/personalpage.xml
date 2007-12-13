@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="personalpage">
+	<title xml:lang="nl">Persoonlijke Pagina</title>
+	<title xml:lang="en">Personal Page</title>
+
+   <action include="config/personalpage/create_personalpage.xml"/>
+   <action include="config/personalpage/delete_personalpage.xml"/>
+   <action include="config/personalpage/load_personalpage.xml"/>
+
+   <lists> 
+      <optionlist include="config/option_lists/languages.xml"/>
+      <optionlist include="config/option_lists/boolean.xml"/>
+   </lists>
+   
+   <steps>
+      <step form-schema="edit_personalpage"/>
+   </steps>
+   <form-schema id="edit_personalpage" extends="config/personalpage/edit_personalpage.xml"/>
+</wizard-schema>
