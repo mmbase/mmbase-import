@@ -3,12 +3,12 @@
 <form-schema id="edit_contentchannel">
 	<title xml:lang="nl">Rubriek</title>
 	<title xml:lang="en">Content channel</title>
-	<title xml:lang="zh">内容频道</title>
+	<title xml:lang="zh">Content channel内容频道</title>
 
 	<field name="name" dtmaxlength="255" dtrequired="true">
 		<prompt xml:lang="en">Name</prompt>
 		<prompt xml:lang="nl">Naam</prompt>
-		<prompt xml:lang="zh">名称</prompt>
+		<prompt xml:lang="zh">Name名称</prompt>
 	</field>
 	<field name="pathfragment" dtmaxlength="255"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
@@ -20,6 +20,6 @@
 	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
-		<prompt xml:lang="zh">描述</prompt>
+		<prompt xml:lang="zh">Description描述</prompt>
 	</field>
 </form-schema>
