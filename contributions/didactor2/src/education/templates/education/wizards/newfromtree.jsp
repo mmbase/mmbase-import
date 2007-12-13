@@ -28,15 +28,21 @@ if(depth!=1){
         <td><img src="gfx/tree_vertline-leaf.gif" border="0" align="center" valign="middle"/></td>
         <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
         <td><nobr>
-          <mm:link referid="wizardjsp" referids="_node@origin">
-            <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
-            <mm:param name="objectnumber">new</mm:param>
-            <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
-            <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
-               target="text">
-              <di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" />
-            </a>
-          </mm:link>
+          <mm:context>
+            <mm:listrelations role="posrel" type="learnblocks" max="1" orderby="pos">
+              <mm:field name="pos" id="maxpos" write="false" />
+            </mm:listrelations>
+            <mm:link referid="wizardjsp" referids="_node@origin">
+              <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
+              <mm:param name="objectnumber">new</mm:param>
+              <mm:param name="newpos">${maxpos + 1}</mm:param>
+              <mm:param name="path"><%=session.getAttribute("eduname")%> > <%= session.getAttribute("path") %> <%=lastItem %></mm:param>
+              <a href="${_}" title="${di:translate('education.new')}  ${dummyname} ${di:translate('education.aanmaken')}"
+                 target="text">
+                <di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" />
+              </a>
+            </mm:link>
+          </mm:context>
         </nobr></td>
       </tr>
     </table><!-- the sillyness doesn't stop! -->
