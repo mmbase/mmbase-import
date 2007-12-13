@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.15 2007-11-29 14:35:02 mark Exp $
+    @version $Id: wizard.xsl,v 1.160.2.16 2007-12-13 17:24:19 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -723,12 +723,13 @@
 
   <xsl:template name="ftype-enum">
     <xsl:choose>
-      <xsl:when test="@maywrite!=&apos;false&apos;">
-        <select name="{@fieldname}" class="selectinput">
+      <xsl:when test="@maywrite!='false'">
+        <select name="{@fieldname}"
+                class="selectinput mm_validate mm_f_{../@name} mm_n_{../@number} mm_nm_{../@nodemanager}">
           <xsl:apply-templates select="@*"/>
           <xsl:choose>
-            <xsl:when test="optionlist/option[@selected=&apos;true&apos;]"/>
-            <xsl:when test="@dtrequired=&apos;true&apos;"/>
+            <xsl:when test="optionlist/option[@selected='true']"/>
+            <xsl:when test="@dtrequired='true'"/>
             <xsl:otherwise>
               <option value="">
                 <xsl:call-template name="prompt_select"/>
@@ -737,7 +738,7 @@
           </xsl:choose>
           <xsl:for-each select="optionlist/option">
             <option value="{@id}">
-              <xsl:if test="@selected=&apos;true&apos;">
+              <xsl:if test="@selected='true'">
                 <xsl:attribute name="selected">selected</xsl:attribute>
               </xsl:if>
               <xsl:choose>
