@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149 2006-08-14 07:54:35 pierre Exp $
+ * @version $Id: Wizard.java,v 1.149.2.1 2007-12-13 17:22:46 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1028,7 +1028,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         fieldDataNode = Utils.selectSingleNode(dataContext, xpath);
 
                         if (fieldDataNode != null) {
-                            // create normal formfield.
+
+
                             int endFieldContextXpath = xpath.lastIndexOf("/") > -1 ? xpath.lastIndexOf('/') : 0;
                             String fieldContextXPath = xpath.substring(0, endFieldContextXpath);
                             String mayWriteXPath = "".equals(fieldContextXPath) ? "@maywrite" : fieldContextXPath + "/@maywrite";
@@ -2673,6 +2674,20 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 ftype = "datetime";
             }
         }
+
+        if ("enum".equals(ftype)) {
+
+            // create normal formfield.
+            String nodeManager = Utils.getAttribute(fieldNode, "nodemanager");
+            String xpath = "../optionlist[@name = '_" + nodeManager + "_" +   fieldName + "']";
+            NodeList optionlist = Utils.selectNodeList(fieldNode, xpath);
+            if (optionlist.getLength() > 0 && Utils.selectNodeList(fieldDef, "optionlist").getLength() == 0) {
+                Utils.appendNodeList(optionlist, fieldDef);
+                ((Element) optionlist.item(0)).removeAttribute("name");
+                ((Element) optionlist.item(0)).removeAttribute("select");
+            }
+        }
+
 
         // in the old format, 'html' could also be assigned to dttype
         // in the new format this is an ftype (the dttype is string)
