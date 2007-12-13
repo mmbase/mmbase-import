@@ -8,11 +8,11 @@
 
 <%@include file="/shared/setImports.jsp" %>
 
-<%-- 
+<%--
 	Multiple choice questions
 	type	0: only 1 answer can be selected
 		1: multiple answers can be selected
-		
+
 	layout	0: all answers beneath eachother / random order
 		1: all answers next to eachother / random order
 		2: pulldown menu (only for type 0) / random order
@@ -20,7 +20,6 @@
 		4: all answers next to eachtother / fixed order
 		5: pulldown menu (only for type 0) / fixed order
 --%>
-
 
 <mm:node number="$question">
    <% String allGivenAnswers = ""; %>
@@ -50,8 +49,9 @@
     </mm:compare>
   </mm:field>
 
-  <p/>
-  <mm:field name="text" escape="none"/>
+  <p/><%-- WTF, why don't we produce, say, HTML! --%>
+
+  <mm:field name="text" escape="tagstripper(xss)"/>
   <p/>
 
   <mm:import id="questiontype"><mm:field name="type"/></mm:import>
@@ -62,7 +62,7 @@
     <mm:import id="order">SHUFFLE</mm:import>
     <mm:relatednodes type="mcanswers" comparator="$order" id="answerlist"/>
   </mm:compare>
-	
+
   <%-- Show answers in fixed order --%>
   <mm:compare referid="questionlayout" valueset="3,4,5">
     <mm:relatednodes type="mcanswers" role="posrel" orderby="posrel.pos" id="answerlist"/>
@@ -82,7 +82,7 @@
                 </mm:compare>
               </mm:field>
               <img src="<mm:image />" width="200" border="0" /><br/>
-              <mm:field name="description" escape="none"/> 
+              <mm:field name="description" escape="tagstripper(xss)"/>
             </mm:relatednodes>
           </div>
           <mm:field name="number" id="answer_id" write="false"/>
@@ -98,7 +98,7 @@
         <mm:remove referid="answer_id"/>
       </mm:listnodes>
     </mm:compare>
-		
+
     <%-- Layout for pulldown menu --%>
     <mm:compare referid="questionlayout" valueset="2,5">
       <mm:listnodes referid="answerlist">
@@ -109,7 +109,7 @@
         <mm:remove referid="answer_id"/>
       </mm:listnodes>
     </mm:compare>
-		
+
   </mm:compare>
 
   <%-- Generate layout for checkboxes (multiple correct answers to be chosen) --%>
@@ -128,7 +128,7 @@
         <mm:remove referid="answer_id"/>
     </mm:listnodes>
   </mm:compare>
-	
+
 </mm:node>
 </mm:cloud>
 </mm:content>
