@@ -39,7 +39,7 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
             element.addOption(renderer.createTreeOption("delete.png", "site.sub.remove", 
                     RESOURCEBUNDLE, "../subsite/SubSiteDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("subsite_new.png", "site.personal.new.page",
-                    "cmsc-modules-subsite", "../subsite/PersonalPageCreate.do?parentpage=" + id));
+            		RESOURCEBUNDLE, "../subsite/PersonalPageCreate.do?parentpage=" + id));
          }
          
          if (SecurityUtil.isChiefEditor(role)) {
@@ -59,7 +59,7 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
    public void addParentOption(NavigationRenderer renderer,
          TreeElement element, String parentId) {
          element.addOption(renderer.createTreeOption("subsite_new.png", "site.sub.new",
-                "cmsc-modules-subsite", "../subsite/SubSiteCreate.do?parentpage=" + parentId));
+        		 RESOURCEBUNDLE, "../subsite/SubSiteCreate.do?parentpage=" + parentId));
    }
 
 }
