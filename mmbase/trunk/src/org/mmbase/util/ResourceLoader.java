@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.50 2007-06-22 12:46:48 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.51 2007-12-13 18:01:12 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -325,6 +325,7 @@ public class ResourceLoader extends ClassLoader {
                 log.warn("mmbase.config system property is masked by mmbase.config servlet context parameter");
             }
 
+
             if (configPath != null) {
                 if (servletContext != null) {
                     // take into account that configpath can start at webrootdir
@@ -339,7 +340,10 @@ public class ResourceLoader extends ClassLoader {
             if (servletContext != null) {
                 String s = servletContext.getRealPath(RESOURCE_ROOT);
                 if (s != null) {
-                    configRoot.roots.add(configRoot.new FileURLStreamHandler(new File(s), true));
+                    PathURLStreamHandler h = configRoot.new FileURLStreamHandler(new File(s), true);
+                    if (! configRoot.roots.contains(h)) {
+                        configRoot.roots.add(h);
+                    }
                 } else {
                     configRoot.roots.add(configRoot.new ServletResourceURLStreamHandler(RESOURCE_ROOT));
                 }
@@ -1144,6 +1148,14 @@ public class ResourceLoader extends ClassLoader {
         public String toString() {
             return fileRoot.toString();
         }
+        public boolean equals(Object o) {
+            if (o instanceof FileURLStreamHandler) {
+                FileURLStreamHandler of = (FileURLStreamHandler) o;
+                return of.fileRoot.equals(fileRoot);
+            } else {
+                return false;
+            }
+        }
 
 
     }
@@ -1855,7 +1867,7 @@ public class ResourceLoader extends ClassLoader {
             }
 
             // search connection which will be used for reading, and check if it can be used for writing
-            ListIterator<PathURLStreamHandler> i = ResourceLoader.this.roots.listIterator();            
+            ListIterator<PathURLStreamHandler> i = ResourceLoader.this.roots.listIterator();
             while (i.hasNext()) {
                 PathURLStreamHandler cf = i.next();
                 URLConnection c = cf.openConnection(name);
