@@ -11,15 +11,17 @@ package com.finalist.cmsc.subsite.tree;
 
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.*;
-import com.finalist.cmsc.subsite.util.SubSiteUtil;
+import com.finalist.cmsc.navigation.NavigationRenderer;
+import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
+import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.subsite.util.PersonalPageUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 
 
-public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
+public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer {
 
     private static final String RESOURCEBUNDLE = "cmsc-modules-subsite";
 
@@ -27,16 +29,16 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
          Node parentParentNode = NavigationUtil.getParent(parentNode);
          UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentParentNode, false);
          
-         String name = parentNode.getStringValue(SubSiteUtil.TITLE_FIELD);
+         String name = parentNode.getStringValue(PersonalPageUtil.TITLE_FIELD);
          String fragment = parentNode.getStringValue( NavigationUtil.getFragmentFieldname(parentNode) );
-
+         
          String id = String.valueOf(parentNode.getNumber());
          TreeElement element = renderer.createElement(parentNode, role, name, fragment, false);
-
+         
          if (SecurityUtil.isEditor(role)) {
-            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.sub.edit",
-                        RESOURCEBUNDLE, "../subsite/SubSiteEdit.do?number=" + id));
-            element.addOption(renderer.createTreeOption("delete.png", "site.sub.remove", 
+            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.personal.edit.page",
+                        RESOURCEBUNDLE, "../subsite/PersonalPageEdit.do?number=" + id));
+            element.addOption(renderer.createTreeOption("delete.png", "site.personal.remove.page", 
                     RESOURCEBUNDLE, "../subsite/SubSiteDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("subsite_new.png", "site.personal.new.page",
                     "cmsc-modules-subsite", "../subsite/PersonalPageCreate.do?parentpage=" + id));
@@ -56,10 +58,9 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
          return element;
       }
 
-   public void addParentOption(NavigationRenderer renderer,
-         TreeElement element, String parentId) {
-         element.addOption(renderer.createTreeOption("subsite_new.png", "site.sub.new",
-                "cmsc-modules-subsite", "../subsite/SubSiteCreate.do?parentpage=" + parentId));
-   }
+	public void addParentOption(NavigationRenderer renderer,
+			TreeElement element, String parentId) {
+		//Do not add options to parents
+	}
 
 }

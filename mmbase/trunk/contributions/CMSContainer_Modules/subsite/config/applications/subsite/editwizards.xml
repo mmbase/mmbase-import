@@ -8,4 +8,11 @@
 		<nodepath>subsite</nodepath>
 		<fields>title</fields>
 	</node>
+   <node number="36068" owner="admin">
+      <name>Personal Page</name>
+      <description>Personal Page</description>
+      <wizard>config/personalpage/personalpage</wizard>
+      <nodepath>personalpage</nodepath>
+      <fields>title</fields>
+   </node>
 </editwizards>

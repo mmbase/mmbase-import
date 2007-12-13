@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8" import="com.finalist.tree.*" %>
-<%@include file="globals.jsp"  %>
+<%@include file="globals.jsp" %>
 <%@page import="com.finalist.cmsc.navigation.*" %>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 	<mm:import externid="showsubsite" jspvar="newsubsite" />
