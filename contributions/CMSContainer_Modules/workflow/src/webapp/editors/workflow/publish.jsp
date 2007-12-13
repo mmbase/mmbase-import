@@ -8,7 +8,6 @@
 
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <html:html xhtml="true">
-<head>
 <cmscedit:head title="${resourceName}.title">
 	<script>
 	function select(wizard) {
