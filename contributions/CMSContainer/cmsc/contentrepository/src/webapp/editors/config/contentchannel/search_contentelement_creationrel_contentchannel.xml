@@ -14,7 +14,7 @@
 		<field ftype="data" name="name">
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Naam</prompt>
-			<prompt xml:lang="zh">名称</prompt>
+			<prompt xml:lang="zh">Name名称</prompt>
 		</field>
 		<field ftype="startwizard" wizardname="config/contentchannel/contentchannel" inline="true" />
 	</item>
@@ -32,7 +32,7 @@
 		<search-filter>
 			<name xml:lang="en">Name contains</name>
 			<name xml:lang="nl">Naam bevat</name>
-			<name xml:lang="zh">名称包含</name>
+			<name xml:lang="zh">Name contains名称包含</name>
 			<search-fields>[name]</search-fields>
 		</search-filter>
 	</command>
@@ -41,7 +41,7 @@
 		objectnumber="new">
 		<prompt xml:lang="en">New</prompt>
 		<prompt xml:lang="nl">Nieuw</prompt>
-		<prompt xml:lang="zh">新建</prompt>
+		<prompt xml:lang="zh">新建New</prompt>
 	</command>
 
 	<action type="create">

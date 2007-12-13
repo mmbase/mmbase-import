@@ -8,7 +8,7 @@
       <field ftype="data" name="name" >
           <prompt xml:lang="en">Name</prompt>
           <prompt xml:lang="nl">Naam</prompt>
-		  <prompt xml:lang="zh">名称</prompt>
+          <prompt xml:lang="zh">名称Name</prompt>
       </field>
    </item>
    <command name="channelselector" ></command>
