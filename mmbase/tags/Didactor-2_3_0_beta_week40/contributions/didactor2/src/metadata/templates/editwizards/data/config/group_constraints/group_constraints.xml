@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="nl">Groep Constraint Editor</title>
+  <title xml:lang="en">Group Constraint Editor</title>
+
+  <action type="create">
+    <object type="group_constraints">
+    </object>
+  </action>
+
+  <action type="load">
+    <field name="name"/>
+    <field name="description"/>
+    <field name="minvalues"/>
+    <field name="maxvalues"/>
+    <field name="handler"/>
+    <relation destinationtype="metadefinition" role="posrel" />
+  </action>
+
+  <action type="delete" />
+
+  <lists>
+   <optionlist include="config/option_list/boolean.xml" />
+   <optionlist include="config/option_list/group_constraints_type.xml" />
+  </lists>
+
+  <steps>
+    <step form-schema="step1" />
+  </steps>
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Groep constraint invoeren</title>
+    <title xml:lang="en">Edit group constraint</title>
+
+    <field name="name" dtminlength="1">
+      <prompt xml:lang="nl">Constraint naam</prompt>
+      <prompt xml:lang="en">Constraint name</prompt>
+    </field>
+
+    <field name="description" dtminlength="0" dttype="text">
+      <prompt xml:lang="nl">Constraint omschrijving</prompt>
+      <prompt xml:lang="en">Constraint description</prompt>
+    </field>
+
+    <field name="minvalues" ftype="int" dtrequired="false">
+      <prompt xml:lang="nl">Minimaal aantal waarden</prompt>
+      <prompt xml:lang="en">Minimal values</prompt>
+    </field>
+
+    <field name="maxvalues" ftype="int" dtrequired="false">
+      <prompt xml:lang="nl">Maximaal aantal waarden</prompt>
+      <prompt xml:lang="en">Maximal values</prompt>
+    </field>
+
+    <field name="handler" ftype="enum">
+      <prompt xml:lang="nl">Classname van een handler om de constraint uit te voeren _____________________________________</prompt>
+      <prompt xml:lang="en">Classname for handler that implements the constraint _____________________________________</prompt>
+      <optionlist select="group_constraints_type" />
+    </field>
+
+    <list destination="metadefinition" role="posrel" extends="config/metadefinition/metadefinition-posrel-list.xml" />
+
+    </form-schema>
+</wizard-schema>
