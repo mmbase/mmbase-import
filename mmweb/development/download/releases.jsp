@@ -9,8 +9,6 @@
   orderby="mmevents.start" directions="DOWN">
   <mm:first>
   <h4>All releases</h4>
-  <p>All releases and released packages can also be found on 
-  <a href="<mm:url page="/download/releases" />">/download/releases</a>.</p>
   <ul>
   </mm:first>
   <mm:import id="releasedate" reset="true"><mm:field name="mmevents.start"/></mm:import>
