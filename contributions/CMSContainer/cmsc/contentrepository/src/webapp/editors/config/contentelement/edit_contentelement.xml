@@ -3,22 +3,22 @@
 <form-schema id="edit_contentelement">
 	<title>Content element</title>
 	<field name="creationdate" ftype="data">
-		<prompt xml:lang="en">Creationdate</prompt>
+		<prompt xml:lang="en">Creation date</prompt>
 		<prompt xml:lang="nl">Aangemaakt</prompt>
 		<prompt xml:lang="zh">创建时间</prompt>
 	</field>
 	<field name="lastmodifieddate" ftype="data">
-		<prompt xml:lang="en">Lastmodifieddate</prompt>
+		<prompt xml:lang="en">Last modified date</prompt>
 		<prompt xml:lang="nl">Gewijzigd</prompt>
 		<prompt xml:lang="zh">最后修改时间</prompt>
 	</field>
 	<field name="publishdate">
-		<prompt xml:lang="en">Publishdate</prompt>
+		<prompt xml:lang="en">Publish date</prompt>
 		<prompt xml:lang="nl">Publicatie datum</prompt>
 		<prompt xml:lang="zh">发布时间</prompt>
 	</field>
 	<field name="expiredate">
-		<prompt xml:lang="en">Expiredate</prompt>
+		<prompt xml:lang="en">Expire date</prompt>
 		<prompt xml:lang="nl">Verloopdatum</prompt>
 		<prompt xml:lang="zh">归期时间</prompt>
 	</field>
@@ -28,12 +28,12 @@
 		<prompt xml:lang="zh">名称</prompt>
 	</field>
 	<field name="lastmodifier" ftype="data">
-		<prompt xml:lang="en">Lastmodifier</prompt>
+		<prompt xml:lang="en">Last modifier</prompt>
 		<prompt xml:lang="nl">Gewijzigd door</prompt>
 		<prompt xml:lang="zh">最后修改人</prompt>
 	</field>
 	<field name="use_expirydate" ftype="enum">
-		<prompt xml:lang="en">Use expirydate</prompt>
+		<prompt xml:lang="en">Use expiry date</prompt>
 		<prompt xml:lang="nl">Gebruik verloopdatum</prompt>
 		<prompt xml:lang="zh">使用过期</prompt>
 		<optionlist select="boolean" />
@@ -64,7 +64,7 @@
 		<prompt xml:lang="zh">注释</prompt>
 	</field>
 	<field name="notificationdate">
-		<prompt xml:lang="en">Notificationdate</prompt>
+		<prompt xml:lang="en">Notification date</prompt>
 		<prompt xml:lang="nl">Notificatie datum</prompt>
 		<prompt xml:lang="zh">通知日期</prompt>
 	</field>
