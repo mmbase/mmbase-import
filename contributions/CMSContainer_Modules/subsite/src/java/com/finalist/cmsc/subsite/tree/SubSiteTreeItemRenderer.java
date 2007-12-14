@@ -61,5 +61,9 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
          element.addOption(renderer.createTreeOption("subsite_new.png", "site.sub.new",
         		 RESOURCEBUNDLE, "../subsite/SubSiteCreate.do?parentpage=" + parentId));
    }
+   
+	public boolean showChildren(Node parentNode) {
+		return true;//Do not show PersonalPages
+	}
 
 }

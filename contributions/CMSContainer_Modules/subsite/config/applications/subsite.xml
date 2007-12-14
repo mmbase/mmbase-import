@@ -16,13 +16,6 @@
    </neededreldeflist>
 
    <allowedrelationlist>
-      <relation from="page" to="subsite" type="navrel" />
-      <relation from="subsite" to="contentchannel" type="related" />
-      <relation from="subsite" to="typedef" type="allowrel" />
-      
-      <relation from="page" to="personalpage" type="navrel" />
-      <relation from="personalpage" to="contentchannel" type="related" />
-      <relation from="personalpage" to="typedef" type="allowrel" />
    </allowedrelationlist>
 
    <datasourcelist>
