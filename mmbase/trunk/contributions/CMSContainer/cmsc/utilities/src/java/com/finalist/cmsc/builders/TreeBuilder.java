@@ -83,8 +83,8 @@ public abstract class TreeBuilder extends MMObjectBuilder {
          if (!pathFragment.equals(pathFragment.trim())) {
             objectNode.setValue(fragmentFieldname, pathFragment.trim());
          }
-         
-         TreePathCache.updateCache(getTableName(),  objectNode.getNumber(), objectNode.getStringValue(fragmentFieldname));
+         String managerOfRootNode = getRootManagerName();
+         TreePathCache.updateCache(managerOfRootNode,  objectNode.getNumber(), objectNode.getStringValue(fragmentFieldname));
       }
       
       updateEmptyNameField(objectNode);
@@ -128,7 +128,8 @@ public abstract class TreeBuilder extends MMObjectBuilder {
    
    @Override
    public void removeNode(MMObjectNode objectNode) {
-      TreePathCache.removeFromCache(getTableName(), objectNode.getNumber());
+      String managerOfRootNode = getRootManagerName();
+      TreePathCache.removeFromCache(managerOfRootNode, objectNode.getNumber());
       super.removeNode(objectNode);
    }
    
@@ -144,7 +145,7 @@ public abstract class TreeBuilder extends MMObjectBuilder {
          if (TreeUtil.PATH_FIELD.equals(field)) {
             String p = getPath(node);
             if (TreeUtil.getLevel(p) <= 1) {
-                String managerOfRootNode = TreeUtil.getRootManager(getPathManagers());
+                String managerOfRootNode = getRootManagerName();
                 if (!getTableName().equals(managerOfRootNode)) {
                     throw new IllegalArgumentException("Path is requested, but the " +
                             "node is not yet added to the tree.");
@@ -178,7 +179,9 @@ public abstract class TreeBuilder extends MMObjectBuilder {
    private String getPath(int number) {
       // reduce creating useless cloud objects, because this code is executed in the core of MMBase 
       // and clouds belong to the bridge
-      String path = TreePathCache.getPathStringFromCache(getTableName(), number);
+       
+      String managerOfRootNode = getRootManagerName();
+      String path = TreePathCache.getPathStringFromCache(managerOfRootNode, number);
       if (path == null) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getAnonymousCloud();
          Node cloudNode = cloud.getNode(String.valueOf(number));
@@ -193,7 +196,8 @@ public abstract class TreeBuilder extends MMObjectBuilder {
         switch (event.getType()) {
             case Event.TYPE_CHANGE:
                 log.debug("change " + source);
-                String path = TreePathCache.getPathStringFromCache(getTableName(), source);
+                String managerOfRootNode = getRootManagerName();
+                String path = TreePathCache.getPathStringFromCache(managerOfRootNode, source);
                 if (path != null) {
                    String fragmentFieldname = getFragmentFieldnameForBuilder(event.getBuilderName());
                    if (event.getChangedFields().contains(fragmentFieldname)) {
@@ -201,14 +205,14 @@ public abstract class TreeBuilder extends MMObjectBuilder {
                        String pathname = getNode(source).getStringValue(fragmentFieldname);
                        log.debug("Path : " + path + " for " + source + " with pathname : " + pathname);
                        if (!pathname.equals(separatedPath[separatedPath.length - 1])) {
-                          TreePathCache.updateCache(getTableName(), source, pathname);
+                          TreePathCache.updateCache(managerOfRootNode, source, pathname);
                        }
                    }
                 }
                 break;
             case Event.TYPE_DELETE:
                 log.debug("delete " + source);
-                TreePathCache.removeFromCache(getTableName(), source);
+                TreePathCache.removeFromCache(getRootManagerName(), source);
                 break;
             case Event.TYPE_NEW:
                 log.debug("new " + source);
@@ -233,7 +237,8 @@ public abstract class TreeBuilder extends MMObjectBuilder {
             int destination = event.getRelationDestinationNumber();
             MMObjectNode destnode = getNode(destination);
 
-            String path = TreePathCache.getPathStringFromCache(getTableName(), destination);
+            String managerOfRootNode = getRootManagerName();
+            String path = TreePathCache.getPathStringFromCache(managerOfRootNode, destination);
             switch (event.getType()) {
                 case Event.TYPE_DELETE:
                     log.debug("delete relation to " + destination + " " + path);
@@ -250,7 +255,7 @@ public abstract class TreeBuilder extends MMObjectBuilder {
                         String pathname = destnode.getStringValue(fragmentFieldname);
 
                         String newpath = newparentpath + TreeUtil.PATH_SEPARATOR + pathname;
-                        TreePathCache.moveCache(getTableName(), destnode.getNumber(), newpath);
+                        TreePathCache.moveCache(managerOfRootNode, destnode.getNumber(), newpath);
                         log.debug("new cut action " + destination + " " + path + " " + newpath);
                     }
                     break;
@@ -261,5 +266,10 @@ public abstract class TreeBuilder extends MMObjectBuilder {
         }
         
         super.notify(event);
+    }
+
+    private String getRootManagerName() {
+        String managerOfRootNode = TreeUtil.getRootManager(getPathManagers());
+        return managerOfRootNode;
     }
 }
