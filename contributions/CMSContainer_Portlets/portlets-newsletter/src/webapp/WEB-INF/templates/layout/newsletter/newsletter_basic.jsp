@@ -6,9 +6,11 @@
 
 <mm:content type="text/html" encoding="UTF-8">
 	<html xmlns="http://www.w3.org/1999/xhtml" lang="${site.language}" xml:lang="${site.language}">
+	
 	<cmsc:screen>
 		<head>
 		<title>${cur.title}</title>
+		      <cmscf:editresources />
 		</head>
 		<body>
 		<table width="100%" border="0" cellspacing="0" cellpadding="0">

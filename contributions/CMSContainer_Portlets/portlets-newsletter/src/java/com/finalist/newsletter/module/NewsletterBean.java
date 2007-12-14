@@ -15,13 +15,12 @@ public class NewsletterBean {
    public NewsletterBean() {
 
    }
-   
-   private void getData()
-   {
+
+   private void getData() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node newsletterNode = cloud.getNode(newsletter);
       themes = 0 + newsletterNode.countRelatedNodes("newslettertheme");
-      publications = 0 + newsletterNode.countRelatedNodes("newsletterpublication");            
+      publications = 0 + newsletterNode.countRelatedNodes("newsletterpublication");
    }
 
    public int getNewsletter() {

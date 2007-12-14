@@ -33,14 +33,14 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionPortlet.class.getName());
 
-   private static final String AVAILABLE_NEWSLETTERS = "allowednewsletters";
+   private static final String ALLOWED_NEWSLETTERS = "allowednewsletters";
 
    @Override
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
       PortletPreferences preferences = request.getPreferences();
-      String[] newsletters = preferences.getValues(AVAILABLE_NEWSLETTERS, null);
+      String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
       if (newsletters != null) {
-         request.setAttribute(AVAILABLE_NEWSLETTERS, newsletters);
+         request.setAttribute(ALLOWED_NEWSLETTERS, newsletters);
       }
       super.doEditDefaults(request, response);
    }
@@ -112,11 +112,11 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    @Override
    public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
-      String[] availableNewsletters = request.getParameterValues(AVAILABLE_NEWSLETTERS);
+      String[] availableNewsletters = request.getParameterValues(ALLOWED_NEWSLETTERS);
       PortletPreferences preferences = request.getPreferences();
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
       if (portletId != null) {
-         setPortletNodeParameter(portletId, AVAILABLE_NEWSLETTERS, availableNewsletters);
+         setPortletNodeParameter(portletId, ALLOWED_NEWSLETTERS, availableNewsletters);
       } else {
          log.debug("No portletId");
       }
