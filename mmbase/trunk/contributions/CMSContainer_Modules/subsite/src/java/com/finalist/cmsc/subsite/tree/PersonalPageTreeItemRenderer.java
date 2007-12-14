@@ -63,4 +63,8 @@ public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer 
 		//Do not add options to parents
 	}
 
+	public boolean showChildren(Node parentNode) {
+		return true;
+	}
+
 }
