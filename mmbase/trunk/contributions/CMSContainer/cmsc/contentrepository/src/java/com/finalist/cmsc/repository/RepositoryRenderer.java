@@ -183,4 +183,7 @@ public abstract class RepositoryRenderer implements TreeCellRenderer {
    protected abstract TreeElement createElement(String icon, String id, String name, String fragment, String action,
          String target);
 
+   public boolean showChildren(Object node){
+      return true; //Repository should always show its children.
+   }
 }

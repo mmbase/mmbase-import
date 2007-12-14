@@ -76,5 +76,8 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
          }
 	}
 
+   public boolean showChildren(Node parentNode) {
+      return true;
+   }
 
 }

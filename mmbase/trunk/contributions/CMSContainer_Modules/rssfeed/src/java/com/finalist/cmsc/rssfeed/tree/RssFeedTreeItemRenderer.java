@@ -59,4 +59,8 @@ public class RssFeedTreeItemRenderer implements NavigationTreeItemRenderer {
     		  RESOURCEBUNDLE, "../rssfeed/RssFeedCreate.do?parentpage=" + parentId));
    }
 
+   public boolean showChildren(Node parentNode) {
+      return false; //Do not show children, because a RSSFeed can not have kids.
+   }
+
 }

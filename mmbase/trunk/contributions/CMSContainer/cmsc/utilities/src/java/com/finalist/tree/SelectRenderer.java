@@ -75,4 +75,8 @@ public abstract class SelectRenderer implements TreeCellRenderer {
 
 
    public abstract String getIcon(Object node);
+
+   public boolean showChildren(Object node){
+      return true;//By default show its children
+   }
 }
