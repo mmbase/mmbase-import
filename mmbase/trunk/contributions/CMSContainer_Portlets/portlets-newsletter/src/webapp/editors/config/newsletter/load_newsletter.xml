@@ -21,5 +21,5 @@
 	<relation destination="portlet" role="portletrel" />
 	<relation destination="stylesheet" role="allowrel" />
 	<relation destination="stylesheet" role="stylerel" />
-	<relation destination="newslettertheme" role="related" />
+	<relation destination="newslettertheme" role="newslettertheme" />
 </action>

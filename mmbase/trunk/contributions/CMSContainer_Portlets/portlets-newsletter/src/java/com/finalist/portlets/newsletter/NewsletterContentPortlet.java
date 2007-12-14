@@ -66,7 +66,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 
       if (pageNumber != null && !StringUtil.isEmptyOrWhitespace(pageNumber)) {
          String nodeType = determineNodeType(pageNumber);
-         if (isNewsletter(nodeType) == true || isNewsletterPublication(nodeType) == true ) {
+         if (isNewsletter(nodeType) == true || isNewsletterPublication(nodeType) == true) {
 
             String themeType = determineThemeType(nodeType);
             String displayType = determineDisplayType(request);

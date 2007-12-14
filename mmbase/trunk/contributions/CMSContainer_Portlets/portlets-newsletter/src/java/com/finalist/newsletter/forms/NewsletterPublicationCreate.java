@@ -33,7 +33,7 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
       String action = getParameter(request, "action");
 
       if (StringUtil.isEmptyOrWhitespace(action)) { // Initialize the new
-         String parent = getParameter(request, "parent", true);                                                      // publication
+         String parent = getParameter(request, "parent", true); // publication
          Node publicationNode = NewsletterPublicationUtil.createPublication(parent);
          String objectnumber = String.valueOf(publicationNode.getNumber());
          log.debug("Publication created succesfully");
@@ -45,10 +45,10 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
          ret.setRedirect(true);
          return ret;
       }
-      
+
       String ewnodelastedited = getParameter(request, "ewnodelastedited");
       addToRequest(request, "showpage", ewnodelastedited);
       ActionForward ret = mapping.findForward("SUCCESS");
-      return ret;             
+      return ret;
    }
 }

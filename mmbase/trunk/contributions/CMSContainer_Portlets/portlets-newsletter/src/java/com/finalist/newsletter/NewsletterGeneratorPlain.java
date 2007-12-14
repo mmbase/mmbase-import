@@ -2,9 +2,6 @@ package com.finalist.newsletter;
 
 import javax.mail.Message;
 
-
-
-
 public class NewsletterGeneratorPlain extends NewsletterGenerator {
 
    public NewsletterGeneratorPlain(String publicationNumber) {

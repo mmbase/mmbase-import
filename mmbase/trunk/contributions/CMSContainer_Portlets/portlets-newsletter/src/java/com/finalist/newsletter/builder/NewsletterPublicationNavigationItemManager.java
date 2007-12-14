@@ -9,7 +9,6 @@ public class NewsletterPublicationNavigationItemManager extends PageNavigationIt
 
    private NavigationTreeItemRenderer treeRenderer = new NewsletterPublicationTreeItemRenderer();
 
-
    @Override
    public String getTreeManager() {
       return NewsletterUtil.NEWSLETTERPUBLICATION;
@@ -18,6 +17,6 @@ public class NewsletterPublicationNavigationItemManager extends PageNavigationIt
    @Override
    public NavigationTreeItemRenderer getTreeRenderer() {
       return treeRenderer;
-  }
+   }
 
 }

@@ -40,9 +40,10 @@ public abstract class NewsletterGenerator {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node publicationNode = cloud.getNode(publicationNumber);
 
-      String newsletterUrl = "";
-      newsletterUrl += PropertiesUtil.getProperty("host.live");
-      newsletterUrl += NavigationUtil.getPathToRootString(publicationNode, true);
+      String hostUrl = PropertiesUtil.getProperty("host.live");
+      // TODO : Check if last char is a /
+      String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
+      String newsletterUrl = "".concat(hostUrl).concat(newsletterPath);
 
       try {
          log.debug("Creating URL");

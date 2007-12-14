@@ -119,6 +119,5 @@ public abstract class NewsletterUtil {
       }
       return (secundary);
    }
-   
 
 }

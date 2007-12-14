@@ -28,10 +28,14 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
       TreeElement element = renderer.createElement(parentNode, role, name, fragment, secure);
 
       if (SecurityUtil.isEditor(role)) {
-         element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletterpublication.edit", "newsletter", "../newsletter/NewsletterEdit.do?number=" + id));
+         element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletterpublication.edit", "newsletter",
+               "../newsletter/NewsletterPublicationEdit.do?number=" + id));
 
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
-            element.addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter", "../newsletter/NewsletterDelete.do?number=" + id));
+            element.addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter",
+                  "../newsletter/NewsletterPublicationDelete.do?number=" + id));
+            element.addOption(renderer.createTreeOption("publish.png", "site.newsletterpublication.publish", "newsletter",
+                  "../newsletter/NewsletterPublicationPublish.do?number=" + id));
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {
@@ -39,17 +43,18 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          }
 
          if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-            element.addOption(renderer.createTreeOption("publish.png", "site.newsletterpublication.publish", "newsletter", "../workflow/publish.jsp?number=" + id));
+            element.addOption(renderer.createTreeOption("publish.png", "site.newsletterpublication.publish", "newsletter",
+                  "../workflow/publish.jsp?number=" + id));
          }
       }
-      element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",  "../usermanagement/pagerights.jsp?number=" + id));
+      element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
 
       return element;
    }
-   
+
    @SuppressWarnings("unused")
    public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
-	  // nothing
+      // nothing
    }
 
    public boolean showChildren(Node parentNode) {

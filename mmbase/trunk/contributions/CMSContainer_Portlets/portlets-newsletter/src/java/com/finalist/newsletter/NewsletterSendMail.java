@@ -9,7 +9,7 @@ import org.mmbase.applications.email.SendMail;
 public class NewsletterSendMail extends SendMail {
 
    public boolean send(Message message) {
-      //super.send(message);
+      // super.send(message);
       try {
          Transport.send(message);
          return (true);

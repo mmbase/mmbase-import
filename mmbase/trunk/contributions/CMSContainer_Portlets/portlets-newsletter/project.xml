@@ -17,6 +17,48 @@
 			<version>${cmsc.version}</version>
 			<type>jar</type>
 		</dependency> 
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-contentrepository</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency> 
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-community</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-contentrepository</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency> 
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets-login</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portal</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-portlets</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
+   		<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-taglib</artifactId>
+			<version>${cmsc.version}</version>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 </project>
 

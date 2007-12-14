@@ -27,6 +27,9 @@
 			<forward name="newsletterdelete" path="/editors/newsletter/newsletterdelete.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
+		<action path="/editors/newsletter/NewsletterPublicationPublish" type="com.finalist.newsletter.forms.NewsletterPublicationPublish" unknown="false" validate="false">
+			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
+		</action>
 
 
 
