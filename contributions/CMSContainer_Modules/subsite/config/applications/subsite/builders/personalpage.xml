@@ -21,6 +21,8 @@
 		<description xml:lang="en"></description>
 	</descriptions>
 	<properties></properties>
+	
 	<fieldlist>
+	<!-- Todo:veld als username/account wijst naar community-user-id. -->
 	</fieldlist>
 </builder>

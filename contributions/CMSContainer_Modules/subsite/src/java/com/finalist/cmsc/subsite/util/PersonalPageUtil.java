@@ -12,7 +12,6 @@ public class PersonalPageUtil {
    public static final String FRAGMENT_FIELD = "urlfragment";
    public static final String TITLE_FIELD = "title";
 
-
    public static NodeList getOrderedChildren(Node parentNode) {
       return SearchUtil.findRelatedOrderedNodeList(parentNode, PersonalPageUtil.PERSONALPAGE, NavigationUtil.NAVREL,
             FRAGMENT_FIELD);
