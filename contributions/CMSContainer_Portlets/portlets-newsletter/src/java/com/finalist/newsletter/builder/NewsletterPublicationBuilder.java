@@ -9,7 +9,7 @@ public class NewsletterPublicationBuilder extends NavigationBuilder {
    public NewsletterPublicationBuilder() {
       NavigationManager.registerNavigationManager(new NewsletterPublicationNavigationItemManager());
    }
-   
+
    @Override
    protected String getFragmentField() {
       return PagesUtil.FRAGMENT_FIELD;

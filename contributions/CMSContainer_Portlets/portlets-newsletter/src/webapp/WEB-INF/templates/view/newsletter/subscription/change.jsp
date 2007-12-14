@@ -29,7 +29,7 @@
 			<tr>
 				<td colspan="2"><b><fmt:message key="additionalthemes" />: ${newslettertitle}</b></td>
 			</tr>
-			<mm:relatednodes type="newslettertheme" role="related">
+			<mm:relatednodes type="newslettertheme" role="newslettertheme">
 				<mm:field name="number" write="false" jspvar="theme"/>
 				<mm:field name="title" write="false" jspvar="themeTitle"/>
 				<mm:field name="shortdescription" write="false" jspvar="themeShortDescription"/>

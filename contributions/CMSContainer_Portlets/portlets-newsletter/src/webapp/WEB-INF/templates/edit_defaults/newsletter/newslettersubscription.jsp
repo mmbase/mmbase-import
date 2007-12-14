@@ -1,6 +1,7 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 
 <cmsc:portlet-preferences />
+
 <cmsc:location var="location" />
 <c:set var="page" value="${location.id}" />
 <c:set var="newsletterid" value="${location.id}" />
@@ -41,6 +42,19 @@
 			<tr>
 				<td>
 					<input type="hidden" name="page" value="${page}" />
+					<fmt:message key="edit_defaults.view" />
+				</td>
+				<td>
+					<cmsc:select var="view">
+						<c:forEach var="v" items="${views}">
+							<cmsc:option value="${v.id}" name="${v.title}" />
+						</c:forEach>
+					</cmsc:select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="hidden" name="page" value="${page}" />
 					<fmt:message key="edit_defaults.available_newsletters" />
 				</td>
 				<td class="#">
@@ -54,7 +68,7 @@
 
 				</td>
 			</tr>
-
+			<tr>
 				<td colspan="2">
 					<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
 						<img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/> <fmt:message key="edit_defaults.save" /></a>

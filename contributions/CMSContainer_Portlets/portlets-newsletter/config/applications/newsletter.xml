@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="newsletter" maintainer="finalist.com" version="5" auto-deploy="true">
+<application name="newsletter" maintainer="finalist.com" version="6" auto-deploy="true">
 	<requirements>
 		<requires name="sitemanagement" maintainer="finalist.com" version="1" type="application" />
 		<requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
@@ -13,15 +13,16 @@
 	</neededbuilderlist>
 	<neededreldeflist>
 		 <reldef source="defaulttheme" target="defaulttheme" direction="bidirectional" guisourcename="defaulttheme" guitargetname="defaulttheme" builder="insrel" />
+		 <reldef source="newslettertheme" target="newslettertheme" direction="bidirectional" guisourcename="newslettertheme" guitargetname="newslettertheme" builder="insrel" />
 		 <reldef source="newslettercontent" target="newslettercontent" direction="bidirectional" guisourcename="newslettercontent" guitargetname="newslettercontent" builder="insrel" />		
 	</neededreldeflist>
 	<allowedrelationlist>
 		<relation from="article" to="newslettertheme" type="newslettercontent" />
 		<relation from="article" to="newsletterpublicationtheme" type="newslettercontent" />
-		<relation from="newsletter" to="newslettertheme" type="related" />
+		<relation from="newsletter" to="newslettertheme" type="newslettertheme" />
 		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
 		<relation from="newsletter" to="newsletterpublication" type="related" />
-		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="related" />
+		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="newslettertheme" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="defaulttheme" />
 		<relation from="newsletterpublicationtheme" to="newslettertheme" type="related" />
 		

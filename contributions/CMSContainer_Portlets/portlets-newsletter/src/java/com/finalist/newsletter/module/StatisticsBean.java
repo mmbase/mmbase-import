@@ -6,19 +6,16 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.NodeManager;
 
 public class StatisticsBean {
-   
+
    private int totalNewsletters = 0;
    private int totalThemes = 0;
    private int totalPublications = 0;
    private int totalSubscriptions = 0;
-      
-   public StatisticsBean()
-   {
+
+   public StatisticsBean() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       NodeManager newsletterManager = cloud.getNodeManager("newsletter");
 
-      
-      
    }
 
    public int getTotalNewsletters() {

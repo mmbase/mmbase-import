@@ -12,6 +12,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,54 +27,56 @@ public abstract class NewsletterPublicationUtil {
 
    public static Node createPublication(String newsletterNumber) {
       if (newsletterNumber == null) {
-         return(null);
+         return (null);
       }
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(newsletterNumber);
-      log.debug("Creating a new publication for newsletter " + newsletterNode.getNumber());
-
-      Node publication = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
-      if (publication != null) {
-         log.debug("Creation of publication node successfull. Now copying themes and content");
-         NavigationUtil.appendChild(newsletterNode, publication);
-         Node layoutNode = PagesUtil.getLayout(newsletterNode);
-         PagesUtil.linkPortlets(publication, layoutNode);
-         
-         RelationList relations = newsletterNode.getRelations();
-         if ( relations != null )
-         {
+      Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
+      if (publicationNode != null) {
+         RelationList relationsNodeList = newsletterNode.getRelations(null, null, "DESTINATION");
+         if (relationsNodeList != null) {
+            for (int rel = 0; rel < relationsNodeList.size(); rel++) {
+               Relation relation = relationsNodeList.getRelation(rel);
+               Node destinationNode = relation.getDestination();
+               RelationManager manager = relation.getRelationManager();
+               String role = manager.getReciprocalRole();
+               if (!role.equals("defaulttheme") && !role.equals("newslettertheme") && !role.equals("navrel")) {
+                  RelationUtil.createRelation(publicationNode, destinationNode, role);
+               }
+            }
 
          }
 
          NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme");
          if (newsletterThemeList != null) {
-            log.debug("Found " + newsletterThemeList.size() + " themes for newsletter " + newsletterNode.getNumber());
             for (int i = 0; i < newsletterThemeList.size(); i++) {
                Node oldThemeNode = newsletterThemeList.getNode(i);
                Node newThemeNode = CloneUtil.cloneNode(oldThemeNode, "newsletterpublicationtheme");
                if (newThemeNode != null) {
-                  log.debug("Theme " + oldThemeNode.getNumber() + " copied");
                   NodeList content = SearchUtil.findRelatedNodeList(oldThemeNode, null, "newslettercontent");
                   if (content != null && content.size() > 0) {
-                     log.debug("Found " + content.size() + " content items for theme " + oldThemeNode.getNumber());
                      for (int a = 0; a < content.size(); a++) {
                         Node contentNode = content.getNode(a);
                         RelationUtil.createRelation(newThemeNode, contentNode, "newslettercontent");
-                        log.debug("Copied content node " + contentNode.getNumber() + " to theme " + newThemeNode.getNumber());
                      }
                   }
                }
             }
          }
-         return (publication);
+         NavigationUtil.appendChild(newsletterNode, publicationNode);
+         Node layoutNode = PagesUtil.getLayout(newsletterNode);
+         PagesUtil.linkPortlets(publicationNode, layoutNode);
+
+         log.info("Created a new publication with number " + publicationNode.getNumber() + " for newsletter " + newsletterNumber);
+         return (publicationNode);
       }
+      log.debug("Something went wrong while trying to create a new publication for newsletter " + newsletterNumber);
       return (null);
    }
 
    // Delete a publication, only if not yet published
    public static void deletePublication(String publicationNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-
       NodeManager publicationThemeManager = cloud.getNodeManager("newsletterpublicationtheme");
       Node publicationNode = cloud.getNode(publicationNumber);
       NodeList publicationThemeList = publicationNode.getRelatedNodes(publicationThemeManager);
@@ -86,7 +89,6 @@ public abstract class NewsletterPublicationUtil {
       publicationNode.deleteRelations();
       publicationNode.delete();
       NavigationUtil.deletePage(publicationNode);
-
    }
 
    public static List<String> getAllThemesForPublication(String publicationNumber) {

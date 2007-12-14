@@ -19,8 +19,8 @@ public abstract class NewsletterSubscriptionUtil {
    public static final String NEWSLETTER_THEME = "newslettertheme";
    public static final String PREFERRED_MIMETYPE = "preferredmimetype";
 
-   public static final String MIMETYPE_HTML = "html";
-   public static final String MIMETYPE_PLAIN = "plain";
+   public static final String MIMETYPE_HTML = "text/html";
+   public static final String MIMETYPE_PLAIN = "text/plain";
    public static final String MIMETIPE_DEFAULT = MIMETYPE_HTML;
    public static final String USERNAME = "username";
 
@@ -88,12 +88,11 @@ public abstract class NewsletterSubscriptionUtil {
    public static List<String> getUserSubscribedNewsletters(String userName) {
       if (userName != null) {
          List<String> newsletterList = NewsletterCommunication.getUserPreferences(userName, NEWSLETTER);
-         return (newsletterList );
+         return (newsletterList);
       }
       return (null);
    }
 
-   
    public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
       if (userName != null && newsletterNumber != null) {
          List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");
@@ -143,7 +142,7 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static void subscribeToTheme(String userName, String theme) {
-      if (userName != null && theme  != null) {
+      if (userName != null && theme != null) {
          NewsletterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
       }
    }
@@ -155,7 +154,7 @@ public abstract class NewsletterSubscriptionUtil {
    public static void terminateUserSubscription(String userName) {
       if (userName != null) {
          NewsletterCommunication.removeNewsPrefByUser(userName);
-        log.debug("Subscriptions for user " + userName + " terminated");
+         log.debug("Subscriptions for user " + userName + " terminated");
       }
    }
 
