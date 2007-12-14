@@ -70,4 +70,7 @@ public abstract class RolesRenderer implements HTMLTreeCellRenderer {
 
    protected abstract UserRole getRole(Node channel);
 
+   public boolean showChildren(Object node) {
+      return true;
+   }
 }

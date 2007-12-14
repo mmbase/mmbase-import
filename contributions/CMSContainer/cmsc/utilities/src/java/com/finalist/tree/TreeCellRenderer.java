@@ -9,4 +9,6 @@ package com.finalist.tree;
  */
 public interface TreeCellRenderer {
    public TreeElement getElement(TreeModel model, Object node, String id);
+
+   boolean showChildren(Object node);
 }

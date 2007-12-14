@@ -22,4 +22,8 @@ public class UrlRenderer implements HTMLTreeCellRenderer {
       return new HTMLTreeElement(id, node + "(" + n.getNumber() + ")", null, null, "#");
    }
 
+   public boolean showChildren(Object node) {
+      return true;
+   }
+
 }

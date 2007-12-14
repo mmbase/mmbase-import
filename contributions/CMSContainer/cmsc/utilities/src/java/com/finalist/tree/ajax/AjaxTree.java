@@ -71,28 +71,30 @@ public class AjaxTree extends Tree {
 
    protected void renderNode(Object node, Element element) {
       AjaxTreeElement te = getCellRenderer().getElement(getModel(), node, null);
-      te.render(element, getImgBaseUrl());
-      if (getModel().isLeaf(node)) {
-         XmlUtil.createAttribute(element, "loaded", true);
-      }
-      else {
-         if (showChildren(node)) {
-            XmlUtil.createAttribute(element, "loaded", true);
-            XmlUtil.createAttribute(element, "open", true);
+      if (te != null) {
+	      te.render(element, getImgBaseUrl());
+	      if (getModel().isLeaf(node)) {
+	         XmlUtil.createAttribute(element, "loaded", true);
+	      }
+	      else {
+	         if (showChildren(node) && getCellRenderer().showChildren(node)) {
+	            XmlUtil.createAttribute(element, "loaded", true);
+	            XmlUtil.createAttribute(element, "open", true);
 
-            int count = getModel().getChildCount(node);
-            if (count > 0) {
-               for (int i = 0; i < count; i++) {
-                  Object child = getModel().getChild(node, i);
-                  Element item = XmlUtil.createChild(element, "item");
-                  renderNode(child, item);
-               }
-            }
-         }
-         else {
-            XmlUtil.createAttribute(element, "loaded", false);
-            XmlUtil.createAttribute(element, "open", false);
-         }
+	            int count = getModel().getChildCount(node);
+	            if (count > 0) {
+	               for (int i = 0; i < count; i++) {
+	                  Object child = getModel().getChild(node, i);
+	                  Element item = XmlUtil.createChild(element, "item");
+	                  renderNode(child, item);
+	               }
+	            }
+	         }
+	         else {
+	            XmlUtil.createAttribute(element, "loaded", false);
+	            XmlUtil.createAttribute(element, "open", false);
+	         }
+	      }
       }
    }
 

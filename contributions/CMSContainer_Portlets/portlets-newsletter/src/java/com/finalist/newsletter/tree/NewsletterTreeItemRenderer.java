@@ -66,5 +66,9 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                "newsletter",  "../newsletter/NewsletterCreate.do?parentnewsletter=" + parentId));
    }
 
+   public boolean showChildren(Node parentNode) {
+      return true; //Always show sub-items
+   }
+
 
 }
