@@ -11,4 +11,7 @@ public interface NavigationTreeItemRenderer {
    
    //Adds items to the site tree, as right-click options 
    void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId);
+
+	//Show child-items in the navigation tree?
+   boolean showChildren(Node parentNode);
 }

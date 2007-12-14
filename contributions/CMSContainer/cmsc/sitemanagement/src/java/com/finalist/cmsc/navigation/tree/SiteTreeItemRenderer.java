@@ -77,5 +77,9 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
 	public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
 		// has no parent
 	}
+
+	public boolean showChildren(Node parentNode) {
+		return true;
+	}
     
 }

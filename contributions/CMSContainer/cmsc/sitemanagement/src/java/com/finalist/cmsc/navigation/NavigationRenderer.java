@@ -101,4 +101,13 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
 
     protected abstract TreeElement createElement(String icon, String id, String name, String fragment, String action, String target);
 
+    public boolean showChildren(Object node) {
+    	Node parentNode = (Node) node;
+        NavigationItemManager manager = NavigationManager.getNavigationManager(parentNode);
+        
+    	if(manager != null) {
+    		return manager.getTreeRenderer().showChildren(parentNode);
+    	}
+    	return false;
+    }
 }

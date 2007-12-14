@@ -19,4 +19,8 @@ public class DefaultCellRenderer implements HTMLTreeCellRenderer {
       return new HTMLTreeElement(null, id, null, node.toString());
    }
 
+   public boolean showChildren(Object node) {
+      return true;
+   }
+
 }

@@ -52,4 +52,8 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 	  // nothing
    }
 
+   public boolean showChildren(Node parentNode) {
+      return true;
+   }
+
 }
