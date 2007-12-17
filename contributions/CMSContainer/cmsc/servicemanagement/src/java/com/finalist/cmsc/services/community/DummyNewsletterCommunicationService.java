@@ -13,6 +13,10 @@ public class DummyNewsletterCommunicationService extends NewsletterCommunication
       return null;
    }
    
+   public List<String> getUsersWithPreference(String key){
+      return null;
+   }
+   
    public List<String> getUserPreferences(String userName, String key){
       return null;
    }

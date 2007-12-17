@@ -61,6 +61,15 @@ public class NewsPrefDAOImpl extends HibernateDaoSupport implements NewsPrefDAO{
       return resultList;
    }
    
+   public List<String> getUsersWithPreference(String key){
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      criteria.add(Restrictions.eq("newsletterKey", key));
+      criteria.setProjection(Projections.property("userId"));
+      List<String> resultList = (List<String>)getHibernateTemplate().findByCriteria(criteria);
+      //String preference = resultList.get(0);
+      return resultList;
+   }
+   
    @Transactional(readOnly = false)
    public List<String> getUserPreference(String userName, String key){
       DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
