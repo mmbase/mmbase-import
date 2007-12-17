@@ -226,4 +226,13 @@ public class NewsPrefDAOImpl extends HibernateDaoSupport implements NewsPrefDAO{
       
       return result;
    }
+   
+   public List countByKey(String key){
+      DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass());
+      criteria.setProjection(Projections.rowCount());
+      criteria.add(Restrictions.eq("newsletterKey", key));
+      List result = (List)getHibernateTemplate().findByCriteria(criteria);
+      
+      return result;
+   }
 }

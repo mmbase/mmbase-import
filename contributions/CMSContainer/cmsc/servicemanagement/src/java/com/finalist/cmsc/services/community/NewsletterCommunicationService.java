@@ -26,6 +26,8 @@ public abstract class NewsletterCommunicationService extends Service{
    public abstract int countK(String key, String value);
 
    public abstract int count(String userName, String key);
+   
+   public abstract int countByKey(String key);
 
    public abstract int count(String userName, String key, String value);
    

@@ -61,4 +61,8 @@ public class NewsletterCommunication {
    public static int count(String userName, String key, String value) {
       return cService.count(userName, key, value);
    }
+   
+   public static int countByKey(String key){
+      return cService.countByKey(key);
+   }
 }

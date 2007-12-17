@@ -52,4 +52,6 @@ public interface NewsPrefDAO {
 
    public List count(String userName, String key, String value);
    
+   public List countByKey(String key);
+   
 }
