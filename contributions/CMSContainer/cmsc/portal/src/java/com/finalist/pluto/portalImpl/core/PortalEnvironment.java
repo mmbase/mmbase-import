@@ -16,6 +16,7 @@
 
 package com.finalist.pluto.portalImpl.core;
 
+import javax.portlet.PortletRequest;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +60,10 @@ public class PortalEnvironment {
       return (PortalEnvironment) request.getAttribute(REQUEST_PORTALENV);
    }
 
+   public static PortalEnvironment getPortalEnvironment(PortletRequest request) {
+       return (PortalEnvironment) request.getAttribute(REQUEST_PORTALENV);
+   }
+
 
    public HttpServletRequest getRequest() {
       return request;
@@ -90,4 +95,5 @@ public class PortalEnvironment {
       requestedPortalURL.analyzeControlInformation(control);
       portalControl = control;
    }
+
 }

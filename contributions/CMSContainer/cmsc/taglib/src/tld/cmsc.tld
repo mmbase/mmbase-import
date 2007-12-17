@@ -9,40 +9,14 @@
     <tlib-version>1.0</tlib-version>
     <short-name>cmsc</short-name>
     <uri>http://finalist.com/cmsc</uri>
-    <tag>
-        <description>Container for a Screen(Fragment) and it's Layout template</description>
-        <name>screen</name>
-        <tag-class>com.finalist.cmsc.taglib.ScreenTag</tag-class>
-        <body-content>scriptless</body-content>
-        <attribute>
-            <description>JSP variable name to put a screen in.</description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Tag to show a Screen's title</description>
-        <name>title</name>
-        <tag-class>com.finalist.cmsc.taglib.TitleTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>JSP variable name to put the title in.</description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Include the title of the site</description>
-            <name>site</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-        </attribute>
-    </tag>
+
+    <!-- ################ -->
+    <!-- Portal page render Tags -->
+    <!-- ################ -->
     <tag>
         <description>Tag to insert a portlet</description>
         <name>insert-portlet</name>
-        <tag-class>com.finalist.cmsc.taglib.InsertPortletTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.render.InsertPortletTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>JSP variable to use some day.</description>
@@ -58,15 +32,39 @@
         </attribute>
     </tag>
     <tag>
-        <description>Container for protected content</description>
-        <name>protected</name>
-        <tag-class>com.finalist.cmsc.taglib.ProtectedTag</tag-class>
+        <description>Container for a Screen(Fragment) and it's Layout template</description>
+        <name>screen</name>
+        <tag-class>com.finalist.cmsc.taglib.render.ScreenTag</tag-class>
         <body-content>scriptless</body-content>
+        <attribute>
+            <description>JSP variable name to put a screen in.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Tag to show a Screen's title</description>
+        <name>title</name>
+        <tag-class>com.finalist.cmsc.taglib.render.TitleTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>JSP variable name to put the title in.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Include the title of the site</description>
+            <name>site</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Injects content from portlets in the header of the page</description>
         <name>headercontent</name>
-        <tag-class>com.finalist.cmsc.taglib.HeaderContentTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.render.HeaderContentTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>use dublin meta ("true" or "false") (defaults to false)</description>
@@ -75,6 +73,10 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
+
+    <!-- ################ -->
+    <!-- List Tags -->
+    <!-- ################ -->
     <tag>
         <description>Lists the available pages</description>
         <name>list-pages</name>
@@ -153,6 +155,10 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
+
+    <!-- ################ -->
+    <!-- Insert resources Tags -->
+    <!-- ################ -->
     <tag>
         <description>Insert related stylesheet</description>
         <name>insert-stylesheet</name>
@@ -204,6 +210,10 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
+
+    <!-- ################ -->
+    <!-- Url Tags -->
+    <!-- ################ -->
     <tag>
         <description>Generates urls for static content (No sessionid).</description>
         <name>staticurl</name>
@@ -272,28 +282,6 @@
         </attribute>
     </tag>
     <tag>
-        <description>Tag to format a date/dates</description>
-        <name>dateformat</name>
-        <tag-class>com.finalist.cmsc.taglib.DateFormatterTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>begindate</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>enddate</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>displaytime</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <name>contenturl</name>
         <tag-class>com.finalist.cmsc.taglib.ContentUrlTag</tag-class>
         <tei-class>org.mmbase.bridge.jsp.taglib.StringWriterTEI</tei-class>
@@ -340,6 +328,31 @@
         </attribute>
     </tag>
 
+    <!-- ############## -->
+    <!-- Util Tags -->
+    <!-- ############## -->
+
+    <tag>
+        <description>Tag to format a date/dates</description>
+        <name>dateformat</name>
+        <tag-class>com.finalist.cmsc.taglib.DateFormatterTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>begindate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>enddate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>displaytime</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 
     <!-- ############## -->
     <!-- Navigation Tags -->
@@ -779,7 +792,6 @@
         </attribute>
     </tag>
 
-
     <tag>
         <description>Generate html input text tag</description>
         <name>text</name>
@@ -798,10 +810,15 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <!-- ################ -->
+    <!-- Misc Tags -->
+    <!-- ################ -->
+
     <tag>
         <description>Writes the version of the application which is implementing the container</description>
         <name>version</name>
-        <tag-class>com.finalist.cmsc.taglib.VersionTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.VersionTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>which version: application (default), cmsc or mmbase</description>
@@ -819,7 +836,7 @@
     <tag>
         <description>Dumps the data of the framework builders to a certain path on the server.</description>
         <name>dumpdefaults</name>
-        <tag-class>com.finalist.cmsc.taglib.DumpDefaultsTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.DumpDefaultsTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>the path to dump to.</description>
@@ -831,7 +848,7 @@
     <tag>
         <description>Writes a property to the output</description>
         <name>property</name>
-        <tag-class>com.finalist.cmsc.taglib.PropertyTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.PropertyTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>the key of the property.</description>
@@ -849,7 +866,7 @@
     <tag>
         <description>Saves property to the database, new properties will be created, old ones updated</description>
         <name>setproperty</name>
-        <tag-class>com.finalist.cmsc.taglib.SetPropertyTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.SetPropertyTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>the key of the property.</description>
@@ -867,7 +884,7 @@
     <tag>
         <description>Gets a list with all the properties for a certain module</description>
         <name>moduleproperties</name>
-        <tag-class>com.finalist.cmsc.taglib.ModulePropertiesTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.ModulePropertiesTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>the module</description>
@@ -883,7 +900,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Removes all html tags from a tekst</description>
+        <description>Removes all html tags from a text</description>
         <name>removehtml</name>
         <tag-class>com.finalist.cmsc.taglib.RemoveHtmlTag</tag-class>
         <body-content>scriptless</body-content>
@@ -1140,7 +1157,7 @@
     </tag>
 
     <!-- ################ -->
-    <!-- FontImage Tag -->
+    <!-- FontImage Tags -->
     <!-- ################ -->
     <tag>
         <description>Tag that puts text into an image according to the given parameters.</description>
@@ -1221,7 +1238,7 @@
     <tag>
         <description>Check if a specific feature is enabled in the CMS Container</description>
         <name>hasfeature</name>
-        <tag-class>com.finalist.cmsc.taglib.FeatureTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.FeatureTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>Name of feature.</description>
@@ -1237,7 +1254,7 @@
     <tag>
         <description>Publish a specific node</description>
         <name>publish</name>
-        <tag-class>com.finalist.cmsc.taglib.PublishTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.PublishTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>The number of the node to publish, will add all the secondary items also.</description>
@@ -1268,7 +1285,6 @@
         </attribute>
     </tag>
 
-
     <!-- ################ -->
     <!-- Localization Tags -->
     <!-- ################ -->
@@ -1278,7 +1294,7 @@
             To be used E.G. on an edit view for the editor buttons.
         </description>
         <name>editorMessage</name>
-        <tag-class>com.finalist.cmsc.taglib.EditorMessageTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.editors.EditorMessageTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>
@@ -1302,11 +1318,17 @@
     <!-- Security Tags -->
     <!-- ################ -->
     <tag>
+        <description>Container for protected content</description>
+        <name>protected</name>
+        <tag-class>com.finalist.cmsc.taglib.security.ProtectedTag</tag-class>
+        <body-content>scriptless</body-content>
+    </tag>
+    <tag>
         <description>
             Gets the rights of a user over a certain node
         </description>
         <name>rights</name>
-        <tag-class>com.finalist.cmsc.taglib.RightsTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.security.RightsTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <description>
@@ -1329,7 +1351,7 @@
     <tag>
         <description>Tag that checks if given password is oke.</description>
         <name>validate-password</name>
-        <tag-class>com.finalist.cmsc.taglib.ValidatePasswordTag</tag-class>
+        <tag-class>com.finalist.cmsc.taglib.security.ValidatePasswordTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>The password to be compared.</description>
@@ -1449,7 +1471,7 @@
     </tag>
 
     <!-- ################ -->
-    <!-- Pager Tag -->
+    <!-- Pager Tags -->
     <!-- ################ -->
     <tag>
         <name>pager</name>

@@ -493,7 +493,7 @@ public class CmscPortlet extends GenericPortlet {
 
 
    public String getUrlPath(RenderRequest request) {
-      PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
+      PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
       PortalURL currentURL = env.getRequestedPortalURL();
       return currentURL.getGlobalNavigationAsString();
    }
