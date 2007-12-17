@@ -5,7 +5,7 @@
 <thead>
     <tr>
         <th style="width: 20px;">&nbsp;</th>
-        <th style="width: 200px;">&nbsp;</th>
+        <th style="width: 80px;">&nbsp;</th>
         <th style="width: 100px;" nowrap="true">
             <a href="#" <%=onClickandStyle(pageContext, "title")%>>
                 <fmt:message key="workflow.title"/>
@@ -67,7 +67,7 @@
                 <c:set var="returnAction" value="PageWorkflowAction.do"/>
             </c:if>
 
-            <td align="left" width="40px">
+            <td align="left" width="40px" style="white-space: nowrap;">
                 <mm:field name="${type}.number" jspvar="number" write="false"/>
                 <c:if test="${type == 'contentelement'}">
                     <a href="javascript:info('${number}')">
