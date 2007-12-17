@@ -30,11 +30,13 @@ import org.mmbase.util.logging.*;
  * If for some reason you also need to do Queries next to MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JdbcIndexDefinition.java,v 1.18 2007-09-25 16:53:09 michiel Exp $
+ * @version $Id: JdbcIndexDefinition.java,v 1.19 2007-12-17 13:20:00 michiel Exp $
  **/
 public class JdbcIndexDefinition implements IndexDefinition {
 
     static private final Logger log = Logging.getLoggerInstance(JdbcIndexDefinition.class);
+
+    private static int directConnections = 0;
 
     private static final int CACHE_SIZE = 10 * 1024;
     protected static Cache/*<String, LazyMap>*/ nodeCache = new Cache(CACHE_SIZE) {
@@ -119,10 +121,18 @@ public class JdbcIndexDefinition implements IndexDefinition {
      * 'direct connection' in that case, to circumvent that problem (Indexing queries _may_ take a while).
      */
     protected Connection getDirectConnection() throws SQLException {
-        if (dataSource instanceof GenericDataSource) {
-            return ((GenericDataSource) dataSource).getDirectConnection();
-        } else {
-            return dataSource.getConnection();
+        directConnections++;
+        try {
+            if (dataSource instanceof GenericDataSource) {
+                return ((GenericDataSource) dataSource).getDirectConnection();
+            } else {
+                return dataSource.getConnection();
+            }
+        } catch (SQLException sqe) {
+            log.error("With direct connection #" + directConnections + ": " +  sqe.getMessage());
+            throw sqe;
+        } catch (Throwable t) {
+            throw new RuntimeException("direct connection #" + directConnections, t);
         }
     }
 
@@ -157,8 +167,8 @@ public class JdbcIndexDefinition implements IndexDefinition {
     protected CloseableIterator<JdbcEntry> getSqlCursor(final String sql) {
         try {
             long start = System.currentTimeMillis();
-            log.debug("About to execute " + sql);
             final Connection con = getDirectConnection();
+            log.debug("About to execute " + sql + " (" + directConnections + ")");
             final Statement statement = con.createStatement();
             final ResultSet results = statement.executeQuery(sql);
             if (log.isDebugEnabled()) {
@@ -202,6 +212,7 @@ public class JdbcIndexDefinition implements IndexDefinition {
                 }
 
                 public void close() {
+                    log.debug("Closing " + con);
                     try {
                         if (results != null) results.close();
                         if (statement != null) statement.close();

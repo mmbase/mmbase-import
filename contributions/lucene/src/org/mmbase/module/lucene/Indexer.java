@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.46 2007-10-11 06:34:20 michiel Exp $
+ * @version $Id: Indexer.java,v 1.47 2007-12-17 13:20:00 michiel Exp $
  **/
 public class Indexer {
 
@@ -396,8 +396,11 @@ public class Indexer {
                 subIndexNumber++;
                 log.debug("full index for " + indexDefinition);
                 CloseableIterator<? extends IndexEntry> j = indexDefinition.getCursor();
-                index(j, writer, indexDefinition.getId());
-                j.close();
+                try {
+                    index(j, writer, indexDefinition.getId());
+                } finally {
+                    j.close();
+                }
                 if (Thread.currentThread().isInterrupted()) {
                     log.info("Interrupted");
                     return;
@@ -470,14 +473,18 @@ public class Indexer {
                 log.warn("Found a sub definition which is null for " + entry);
                 continue;
             }
-            Iterator<? extends IndexEntry> i = subDef.getSubCursor(entry.getKey());
-            while(i.hasNext()) {
-                IndexEntry subEntry = i.next();
-                index(subEntry, document);
-                if (Thread.currentThread().isInterrupted()) {
-                    log.debug("Interrupted");
-                    return;
+            CloseableIterator<? extends IndexEntry> i = subDef.getSubCursor(entry.getKey());
+            try {
+                while(i.hasNext()) {
+                    IndexEntry subEntry = i.next();
+                    index(subEntry, document);
+                    if (Thread.currentThread().isInterrupted()) {
+                        log.debug("Interrupted");
+                        return;
+                    }
                 }
+            } finally {
+                i.close();
             }
         }
     }
