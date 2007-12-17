@@ -52,7 +52,7 @@ public class PortletModeTag extends TagSupport {
 
       PortletWindow portletWindow = portletFragment.getPortletWindow();
 
-      PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
+      PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
       PortalURL modeURL = env.getRequestedPortalURL();
 
       PortalControlParameter control = new PortalControlParameter(modeURL);
