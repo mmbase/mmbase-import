@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
  */
-package com.finalist.cmsc.taglib;
+package com.finalist.cmsc.taglib.render;
 
 import java.io.*;
 
@@ -62,7 +62,7 @@ public class InsertPortletTag extends SimpleTagSupport {
                ServletResponseImpl wrappedResponse = (ServletResponseImpl) ServletObjectAccess
                      .getStoredServletResponse(response, new PrintWriter(storedWriter));
                // let the Portlet do it's thing
-               portlet.writeToResponse(request, wrappedResponse);
+               portlet.writeToResponse(request, wrappedResponse, PortletFragment.STATIC);
                ctx.getOut().print(storedWriter.toString());
             }
             catch (IOException e) {
