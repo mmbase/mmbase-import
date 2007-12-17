@@ -13,6 +13,8 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.services.community.NewsletterCommunication;
+
 public abstract class NewsletterUtil {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterUtil.class.getName());
@@ -55,7 +57,9 @@ public abstract class NewsletterUtil {
    }
 
    public static List<String> getAllThemes(String number, String themeType) {
-      log.debug("GetAllThemes " + number);
+      if (themeType == null) {
+         themeType = THEMETYPE_NEWSLETTER;
+      }
       List<String> themes = new ArrayList<String>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(number);
@@ -73,20 +77,23 @@ public abstract class NewsletterUtil {
    }
 
    public static List<String> getArticlesForTheme(String themeNumber) {
-      List<String> articles = new ArrayList<String>();
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node themeNode = cloud.getNode(themeNumber);
-      NodeManager articleNodeManager = cloud.getNodeManager("article");
-      NodeList articleList = themeNode.getRelatedNodes(articleNodeManager);
-      if (articleList != null) {
-         for (int i = 0; i < articleList.size(); i++) {
-            Node articleNode = articleList.getNode(i);
-            String article = articleNode.getStringValue("number");
-            articles.add(article);
-            log.debug("Found article " + article + " for theme " + themeNumber);
+      if (themeNumber != null) {
+         List<String> articles = new ArrayList<String>();
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node themeNode = cloud.getNode(themeNumber);
+         NodeManager articleNodeManager = cloud.getNodeManager("article");
+         NodeList articleList = themeNode.getRelatedNodes(articleNodeManager);
+         if (articleList != null) {
+            for (int i = 0; i < articleList.size(); i++) {
+               Node articleNode = articleList.getNode(i);
+               String article = articleNode.getStringValue("number");
+               articles.add(article);
+               log.debug("Found article " + article + " for theme " + themeNumber);
+            }
          }
+         return (articles);
       }
-      return (articles);
+      return (null);
    }
 
    public static String getDefaultTheme(String number, String themeType) {
@@ -95,10 +102,8 @@ public abstract class NewsletterUtil {
       Node defaultThemeNode = SearchUtil.findRelatedNode(newsletterNode, themeType, "defaulttheme");
       if (defaultThemeNode != null) {
          String defaultTheme = defaultThemeNode.getStringValue("number");
-         log.debug("Found default theme " + defaultTheme + " - " + defaultThemeNode.getStringValue("title"));
          return (defaultTheme);
       }
-      log.debug("Default theme not found");
       return (null);
    }
 
@@ -118,6 +123,45 @@ public abstract class NewsletterUtil {
          }
       }
       return (secundary);
+   }
+
+   public static List<String> getAllNewsletters() {
+      List<String> newsletters = new ArrayList<String>();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      NodeList newsletterList = SearchUtil.findNodeList(cloud, NEWSLETTER);
+      if (newsletterList != null && newsletterList.size() > 0) {
+         for (int n = 0; n < newsletterList.size(); n++) {
+            Node newsletterNode = newsletterList.getNode(n);
+            String newsletterNumber = String.valueOf(newsletterNode.getNumber());
+            newsletters.add(newsletterNumber);
+         }
+      }
+      return (newsletters);
+   }
+
+   public static String getTitle(String newsletterNumber) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node newsletterNode = cloud.getNode(newsletterNumber);
+      String title = newsletterNode.getStringValue("title");
+      return (title);
+   }
+
+   public static int countNewsletters() {
+      return (0);
+   }
+
+   public static int countThemes(String newsletterNumber) {
+      return (0);
+   }
+
+   public static int countPublications(String newsletterNumber) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node newsletterNode = cloud.getNode(newsletterNumber);
+      NodeList publicationsList = newsletterNode.getRelatedNodes("newsletterpublication");
+      if (publicationsList != null) {
+         return (publicationsList.size());
+      }
+      return (0);
    }
 
 }

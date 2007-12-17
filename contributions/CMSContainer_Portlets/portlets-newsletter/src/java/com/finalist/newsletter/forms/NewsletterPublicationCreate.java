@@ -36,10 +36,7 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
          String parent = getParameter(request, "parent", true); // publication
          Node publicationNode = NewsletterPublicationUtil.createPublication(parent);
          String objectnumber = String.valueOf(publicationNode.getNumber());
-         log.debug("Publication created succesfully");
-
          request.getSession().removeAttribute("parent");
-
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
                + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
