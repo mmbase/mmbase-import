@@ -20,6 +20,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationDelete extends MMBaseFormlessAction {
 
@@ -42,7 +43,7 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
          if (NavigationUtil.getChildCount(newsletterPublicationNode) > 0 && !isWebMaster) {
             return mapping.findForward("newsletterpublicationdeletewarning");
          }
-         NavigationUtil.deletePage(newsletterPublicationNode);
+         NewsletterPublicationUtil.deletePublication(objectnumber);
          return mapping.findForward(SUCCESS);
       }
 

@@ -24,7 +24,7 @@
 			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationDelete" type="com.finalist.newsletter.forms.NewsletterPublicationDelete" unknown="false" validate="false">
-			<forward name="newsletterdelete" path="/editors/newsletter/newsletterdelete.jsp" redirect="false" />
+			<forward name="newsletterpublicationdelete" path="/editors/newsletter/newsletterpublicationdelete.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationPublish" type="com.finalist.newsletter.forms.NewsletterPublicationPublish" unknown="false" validate="false">

@@ -7,13 +7,19 @@
 	<!-- ========== Data Sources Definitions =================================== -->
 	<!-- ========== Form Bean Definitions =================================== -->
 	<!-- ========== Global Exceptions Definitions =================================== -->
-	<!-- ========== Global Forward Definitions =================================== -->
+
+	<global-forwards>	
+		<forward name="error" path="/editors/newsletter/module/error.jsp" />
+	</global-forwards>
+
 	<!-- ========== Action Mapping Definitions =================================== -->
 	<action-mappings>
 		<!-- ==== Site management ==== -->
-
-		<action path="/editors/newsletter/module/SubscriptionManagement" type="com.finalist.newsletter.module.SubscriptionManagement" unknown="false" validate="false">
-			<forward name="success" path="/editors/newsletter/module/subscriptionmanagement.jsp" redirect="false" />
+		<action path="/editors/newsletter/module/InitAction" type="com.finalist.newsletter.module.InitAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/overview.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/module/NewsletterAction" type="com.finalist.newsletter.module.NewsletterAction" unknown="false" validate="false">
+			<forward name="overview" path="/editors/newsletter/module/newsletteroverview.jsp" redirect="false" />
 		</action>
 
 		<!-- ==== Select page nodes ==== -->
@@ -22,5 +28,5 @@
 		<!-- ==== Security role management ==== -->
 	</action-mappings>
 
-	<message-resources parameter="cmsc-site" key="SITE" />
+	<message-resources parameter="newsletter-module"  />
 </struts-config>
