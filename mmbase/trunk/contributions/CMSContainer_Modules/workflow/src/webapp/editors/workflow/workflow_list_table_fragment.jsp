@@ -72,31 +72,31 @@
                 <c:if test="${type == 'contentelement'}">
                     <a href="javascript:info('${number}')">
                         <img src="../gfx/icons/info.png" title="<fmt:message key=" workflow.info" />"
-                        alt="<fmt:message key="workflow.info"/>"/>
+                             alt="<fmt:message key="workflow.info"/>"/>
                     </a>
                     <a href="<cmsc:contenturl number="${number}"/>" target="_blanc">
-                    <img src="../gfx/icons/preview.png"
-                         alt="<fmt:message key=" workflow.preview.title"/>"
-                    title="<fmt:message key="workflow.preview.title"/>"/>
+                        <img src="../gfx/icons/preview.png" alt="<fmt:message key=" workflow.preview.title"/>"
+                             title="<fmt:message key="workflow.preview.title"/>"/>
                     </a>
-
                     <mm:haspage page="/editors/versioning">
                         <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
                             <c:param name="nodenumber">${number}</c:param>
                         </c:url>
-                        <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img
-                                src="../gfx/icons/versioning.png"
-                                title="<fmt:message key=" workflow.icon.versioning.title" />"
-                            alt="<fmt:message key="workflow.icon.versioning.title"/>"/></a>
+                        <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')">
+                            <img src="../gfx/icons/versioning.png"
+                                 title="<fmt:message key=" workflow.icon.versioning.title" />"
+                                 alt="<fmt:message key="workflow.icon.versioning.title"/>"/>
+                        </a>
                     </mm:haspage>
                 </c:if>
                 <mm:url page="../WizardInitAction.do" jspvar="url" write="false">
                     <mm:param name="objectnumber" value="${number}"/>
                     <mm:param name="returnurl" value="workflow/${returnAction}?status=${param.status}"/>
                 </mm:url>
-                <a href="${url}"><img src="../gfx/icons/edit.png" align="top"
-                                      alt="<fmt:message key=" workflow.editelement"/>"
-                    title="<fmt:message key="workflow.editelement"/>"/></a>
+                <a href="${url}">
+                    <img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key=" workflow.editelement"/>"
+                         title="<fmt:message key="workflow.editelement"/>"/>
+                </a>
             </td>
             <td style="white-space: nowrap;">
                 <mm:field jspvar="value" write="false" name="${type}.${field}"/>
@@ -115,7 +115,7 @@
                 <mm:field name="workflowitem.remark" escape="none" jspvar="w_remar"/>
                 <a href="javascript:editRemark(${workflowNumber},'${w_remar}')">
                     <img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key=" workflow.editremark"/>"
-                    title="<fmt:message key="workflow.editremark"/>"/>
+                         title="<fmt:message key="workflow.editremark"/>"/>
                 </a>
                 <mm:field name="workflowitem.remark" escape="none"/>
             </td>
