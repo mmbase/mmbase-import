@@ -14,7 +14,7 @@ import java.util.List;
 @Transactional
 public class HibernateNewsPrefService {
 
-   private static final Log log = LogFactory.getLog(HibernateUserService.class);
+   private static final Log log = LogFactory.getLog(HibernateNewsPrefService.class);
    
    private NewsPrefDAO newsPrefDAO = null;
    
