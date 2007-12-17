@@ -54,13 +54,12 @@ public class NewsletterCronJob implements CronJob {
    }
 
    public void run() {
-      log.debug("Running NewsletterCronJob");
       long startTime = System.currentTimeMillis();
       List<Node> newslettersToPublish = getNewslettersToPublish();
       for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
          Node newsletterNode = newslettersToPublish.get(newsletterIterator);
          String newsletterNumber = newsletterNode.getStringValue("number");
-         Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber);
+         Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
          Publish.publish(publicationNode);
       }
    }

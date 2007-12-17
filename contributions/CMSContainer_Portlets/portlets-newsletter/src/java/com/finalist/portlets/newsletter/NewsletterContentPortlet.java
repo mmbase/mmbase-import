@@ -57,7 +57,6 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse res) throws PortletException, java.io.IOException {
-      log.debug("Executing the doView of the newsletter content portlet");
       PortletPreferences preferences = request.getPreferences();
       PortletSession session = request.getPortletSession(true);
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
@@ -82,21 +81,16 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             List<String> availableThemes = NewsletterUtil.getAllThemes(pageNumber, themeType);
             if (availableThemes != null && availableThemes.size() > 0) {
                if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
-                  log.debug("The user requested to view the output in normal style");
                   String userName = getUserName(session);
                   if (userName != null) {
                      additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, pageNumber);
                   }
                } else {
-                  log.debug("The user did not specify a display type and will get the default");
                   additionalThemes = availableThemes;
                }
-            } else {
-               log.debug("No available themes have been found for number " + pageNumber + " and themetype " + themeType);
             }
 
             if (additionalThemes != null && additionalThemes.size() > 0) {
-               log.debug("Processing " + additionalThemes.size() + " additional themes");
                List<String> temporaryArticleListing = new ArrayList<String>();
                temporaryArticleListing.addAll(defaultArticles);
 
@@ -112,14 +106,11 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
                         temporaryArticleListing.add(articles.get(a));
                      }
                   } else {
-                     log.debug("No articles could are available for theme " + themeNumber);
                      additionalThemes.remove(themeNumber);
                      i--;
                   }
                }
                request.setAttribute(KEY_ADDITIONAL_THEMES, additionalThemes);
-            } else {
-               log.debug("No themes are available");
             }
          } else {
             throw new RuntimeException("Newsletterportlet placed on non-newsletter node");
@@ -172,7 +163,6 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    private String determineDisplayType(RenderRequest request) {
       String displayType = (String) request.getAttribute(KEY_DISPLAYTYPE);
       if (displayType == null) {
-         log.debug("Display type is not set, default wil be used. Default is: " + DISPLAYTYPE_DEFAULT);
          displayType = DISPLAYTYPE_DEFAULT;
       }
       return displayType;
