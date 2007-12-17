@@ -1,6 +1,7 @@
 package com.finalist.cmsc.services.community;
 
 import java.util.*;
+
 import com.finalist.cmsc.services.Service;
 
 public abstract class NewsletterCommunicationService extends Service{
@@ -27,4 +28,6 @@ public abstract class NewsletterCommunicationService extends Service{
    public abstract int count(String userName, String key);
 
    public abstract int count(String userName, String key, String value);
+   
+   public abstract List<String> getUsersWithPreference(String key);
 }

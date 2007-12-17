@@ -18,6 +18,10 @@ public class NewsletterCommunication {
       return cService.getUserPreference(userName, key);
    }
    
+   public List<String> getUsersWithPreference(String key){
+      return cService.getUsersWithPreference(key);
+   }
+   
    public static List<String> getUserPreferences(String userName, String key){
       return cService.getUserPreferences(userName, key);
    }

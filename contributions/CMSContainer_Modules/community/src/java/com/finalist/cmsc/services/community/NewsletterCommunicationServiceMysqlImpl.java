@@ -44,6 +44,19 @@ public class NewsletterCommunicationServiceMysqlImpl extends NewsletterCommunica
       return (null);
    }
    
+   public List<String> getUsersWithPreference(String key) {
+      
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      
+      HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");;
+      
+      List<String> resultList = hibservice.getUsersWithPreference(key);
+      if (resultList != null && resultList.size() > 0){
+         return resultList;
+      }
+      return (null);
+   }
+   
    public String getUserPreference(String userName, String key) {
       
       aC = new ClassPathXmlApplicationContext("applicationContext.xml");

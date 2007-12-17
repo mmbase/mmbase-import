@@ -21,6 +21,8 @@ public interface NewsPrefDAO {
    public NewsPref getNewsPref(String userId);
    
    public List<String> getUsersWithPreferences(String key, String value);
+   
+   public List<String> getUsersWithPreference(String key);
 
    public List<String> getUserPreference(String userName, String key);
    

@@ -11,9 +11,10 @@ import com.finalist.cmsc.services.community.data.NewsPref;
 
 import java.util.List;
 
+@Transactional
 public class HibernateNewsPrefService {
 
-   private static final Log log = LogFactory.getLog(HibernateService.class);
+   private static final Log log = LogFactory.getLog(HibernateUserService.class);
    
    private NewsPrefDAO newsPrefDAO = null;
    
@@ -25,6 +26,15 @@ public class HibernateNewsPrefService {
    @Transactional(readOnly = false)
    public List<String> getAllNewsPrefs() {
       return newsPrefDAO.getAllNewsPrefs();
+   }
+   
+   @Transactional(readOnly = false)
+   public List<String> getUsersWithPreference(String key){
+      List<String> usersWithPreference = newsPrefDAO.getUsersWithPreference(key);
+      if (usersWithPreference != null && usersWithPreference.size() > 0) {
+         return usersWithPreference;
+      }
+      return (null);
    }
    
    @Transactional(readOnly = false)
