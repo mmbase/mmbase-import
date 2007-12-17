@@ -190,6 +190,19 @@ public class NewsletterCommunicationServiceMysqlImpl extends NewsletterCommunica
       return count;
    }
    
+   public int countByKey(String key) {
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      HibernateNewsPrefService hibservice = (HibernateNewsPrefService)aC.getBean("serviceNewsLetter");
+      List result = hibservice.countByKey(key);
+      Iterator countL = result.iterator();
+      String countS = "0";
+      while(countL.hasNext()){
+         countS = countL.next().toString();
+      }
+      int count = Integer.parseInt(countS);
+      return count;
+   }
+   
    public boolean hasPermission(String userName, String permission){
       
       boolean permissionB;

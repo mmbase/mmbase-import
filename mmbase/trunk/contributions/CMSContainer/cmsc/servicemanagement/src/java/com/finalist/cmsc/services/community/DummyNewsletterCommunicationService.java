@@ -56,4 +56,8 @@ public class DummyNewsletterCommunicationService extends NewsletterCommunication
    public int count(String userName, String key, String value) {
       return 0;
    }
+   
+   public int countByKey(String key) {
+      return 0;
+   }
 }

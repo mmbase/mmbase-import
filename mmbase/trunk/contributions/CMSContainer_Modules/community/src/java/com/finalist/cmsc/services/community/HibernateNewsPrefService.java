@@ -96,4 +96,8 @@ public class HibernateNewsPrefService {
    public List count(String userName, String key, String value) {
       return newsPrefDAO.count(userName, key, value);
    }
+   
+   public List countByKey(String key) {
+      return newsPrefDAO.countByKey(key);
+   }
 }
