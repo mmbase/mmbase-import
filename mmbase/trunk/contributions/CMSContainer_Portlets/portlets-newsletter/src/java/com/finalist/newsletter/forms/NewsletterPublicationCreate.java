@@ -30,11 +30,12 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      String action = getParameter(request, "action");
-
+      String action = request.getParameter("action");
+      boolean copyContent = Boolean.getBoolean(request.getParameter("content"));
+      
       if (StringUtil.isEmptyOrWhitespace(action)) { // Initialize the new
          String parent = getParameter(request, "parent", true); // publication
-         Node publicationNode = NewsletterPublicationUtil.createPublication(parent);
+         Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);
          String objectnumber = String.valueOf(publicationNode.getNumber());
          request.getSession().removeAttribute("parent");
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
