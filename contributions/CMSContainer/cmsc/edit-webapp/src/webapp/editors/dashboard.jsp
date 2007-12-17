@@ -5,7 +5,11 @@
 <html:html xhtml="true">
 <cmscedit:head title="dashboard.title">
    <script type="text/javascript">
-      function clearDefaultSearchText(defaultText) {
+        function info(objectNumber) {
+      openPopupWindow("info", 500, 500, "repository/showitem.jsp?objectnumber=" + objectNumber);
+   }
+
+	  function clearDefaultSearchText(defaultText) {
       	var searchField = document.forms["searchForm"]["title"];
       	if(searchField.value == defaultText) {
 	      	searchField.value = "";
@@ -54,6 +58,7 @@
 		<table>
          <thead>
             <tr>
+			   <th></th>
                <th><fmt:message key="dashboard.repository.date" /></th>
                <th><fmt:message key="dashboard.repository.element" /></th>
                <th><fmt:message key="dashboard.repository.title" /></th>
@@ -64,6 +69,17 @@
             <mm:listnodes>
               <mm:field name="number" write="false" id="number"/>
                <tr <mm:even inverse="true">class="swap"</mm:even> href="javascript:window.top.openRepositoryWithContent('<mm:write referid="number"/>');">
+			   <td>
+					<a href="javascript:info('${number}')"><img src="gfx/icons/info.png" title="<fmt:message key="dashboard.content.info" />" alt="<fmt:message key="dashboard.content.info" />"/></a>
+					<a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="gfx/icons/preview.png" alt="<fmt:message key="dashboard.content.preview.title" />" title="<fmt:message key="dashboard.content.preview.title" />" /></a>
+					<a href="javascript:window.top.openRepositoryWithContent('<mm:write referid="number"/>');"><img src="gfx/icons/edit.png" alt="<fmt:message key="dashboard.content.edit" />" title="<fmt:message key="dashboard.content.edit" />" /></a>
+					<mm:haspage page="/editors/versioning">
+					<c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
+					   <c:param name="nodenumber">${number}</c:param>
+					</c:url>
+					<a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="gfx/icons/versioning.png" title="<fmt:message key="dashboard.content.icon.versioning.title" />" alt="<fmt:message key="dashboard.content.icon.versioning.title" />"/></a>
+					</mm:haspage>
+				</td>
                   <td onMouseDown="objClick(this);"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
                   <td onMouseDown="objClick(this);"><mm:nodeinfo type="guitype"/></td>
                   <td onMouseDown="objClick(this);"><mm:field name="title"/></td>
