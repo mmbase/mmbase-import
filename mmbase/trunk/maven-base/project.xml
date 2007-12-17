@@ -272,9 +272,17 @@ See http://www.MMBase.org/license
       <version>1.8.0.7</version> <!-- btw, newest version 1.8.0.8, but not yet in maven repositories.. sigh -->
     </dependency>
 
-
-
     <!-- mmbase module plugin -->
+    <!-- TODO: The source code of this plugin, according to:
+
+    http://mmapps.sourceforge.net/maven-mmbase-module-plugin/cvs-usage.html
+    michiel@mitulo:/tmp$ cvs -z3 -d :pserver:anonymous@cvs.sourceforge.net:/cvsroot/mmapps co maven-mmbase-module-plugin
+cvs [checkout aborted]: connect to cvs.sourceforge.net(66.35.250.207):2401 failed: No route to host
+
+   Not available ?
+
+   -->
+
     <dependency>
       <groupId>mmapps</groupId>
       <artifactId>maven-mmbase-module-plugin</artifactId>
