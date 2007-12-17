@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
  */
-package com.finalist.cmsc.taglib;
+package com.finalist.cmsc.taglib.render;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
 import com.finalist.cmsc.portalImpl.headerresource.LinkHeaderResource;
 import com.finalist.cmsc.portalImpl.headerresource.MetaHeaderResource;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.cmsc.taglib.CmscTag;
 import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 
 /**

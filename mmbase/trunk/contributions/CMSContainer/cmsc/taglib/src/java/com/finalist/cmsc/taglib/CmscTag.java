@@ -22,7 +22,7 @@ public class CmscTag extends SimpleTagSupport {
    protected String getPath() {
       PageContext ctx = (PageContext) getJspContext();
       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-      PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
+      PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
       PortalURL currentURL = env.getRequestedPortalURL();
       String path = currentURL.getGlobalNavigationAsString();
       if (ServerUtil.useServerName()) {
