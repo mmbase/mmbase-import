@@ -25,14 +25,6 @@
 		<fields>title</fields>
 	</node>
 
-	<node number="33004" owner="admin">
-		<name>Mailform</name>
-		<description>Mailform </description>
-		<wizard>config/mailform/mailform</wizard>
-		<nodepath>mailform</nodepath>
-		<fields>title</fields>
-	</node>
-
 	<node number="33006" owner="admin">
 		<name>Faqcategory</name>
 		<description>Faqcategory </description>
