@@ -63,7 +63,7 @@ public class PortletActionProviderImpl implements PortletActionProvider {
     *      WindowState)
     */
    public void changePortletWindowState(WindowState state) {
-      PortalEnvironment env = (PortalEnvironment) request.getAttribute(PortalEnvironment.REQUEST_PORTALENV);
+       PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
 
       PortalURL url = env.getRequestedPortalURL();
       PortalControlParameter controlURL = new PortalControlParameter(url);
