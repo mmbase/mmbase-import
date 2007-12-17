@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.51 2007-12-13 18:01:12 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.52 2007-12-17 11:36:05 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -1529,7 +1529,7 @@ public class ResourceLoader extends ClassLoader {
                             log.debug("Adding " + newResourcePath);
                             results.add(newResourcePath);
                         } else {
-                            log.debug(newResourcePath + " does not match " + pattern);
+                            log.debug("/" + newResourcePath + " does not match " + pattern);
                         }
                     }
                 } catch (NoSuchMethodError nsme) {
