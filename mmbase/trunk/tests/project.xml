@@ -3,7 +3,7 @@
   <artifactId>mmbase-test-base</artifactId>
   <name>test</name>
   <shortDescription>MMBase Lucene test</shortDescription>
-  <currentVersion>1.9.0</currentVersion>
+  <currentVersion>0.9</currentVersion>
   <properties>
     <type>library</type>
     <status>stable</status>
