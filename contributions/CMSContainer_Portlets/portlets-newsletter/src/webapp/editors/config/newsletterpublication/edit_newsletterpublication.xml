@@ -20,5 +20,6 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
+	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/images/search_page_namedrel_images.xml" />
 </form-schema>

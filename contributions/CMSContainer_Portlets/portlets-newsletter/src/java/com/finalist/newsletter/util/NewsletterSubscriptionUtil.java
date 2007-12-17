@@ -177,4 +177,24 @@ public abstract class NewsletterSubscriptionUtil {
          }
       }
    }
+
+   public static int getNumberOfSubscribedNewsletters(String userName) {
+      int amount = 0;
+      if (userName != null) {
+         amount = NewsletterCommunication.count(userName, NEWSLETTER);
+      }
+      return (amount);
+   }
+
+   public static List<String> getAllUsersWithSubscription() {
+      List<String> users = null;
+      return (users);
+   }
+   
+   public static int countSubscriptions(String newsletterNumber) {
+      int number = NewsletterCommunication.countK(NEWSLETTER, null);
+      return (number);
+   }
+
+
 }
