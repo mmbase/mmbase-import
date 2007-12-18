@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.97 2007-10-11 06:34:20 michiel Exp $
+ * @version $Id: Lucene.java,v 1.98 2007-12-18 12:16:17 pierre Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -702,7 +702,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             for (int k = 0; k < childNodes.getLength(); k++) {
                 if (childNodes.item(k) instanceof Element) {
                     Element childElement = (Element) childNodes.item(k);
-                    if ("related".equals(childElement.getLocalName())) {
+                    if ("related".equals(childElement.getLocalName()) || "relatednodes".equals(childElement.getLocalName())) {
                         MMBaseIndexDefinition subIndex = createIndexDefinition(childElement, allIndexedFieldsSet, storeText, mergeText, elementName, analyzer);
                         queryDefinition.subQueries.add(subIndex);
                     }
