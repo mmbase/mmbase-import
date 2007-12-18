@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * notifications.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Notifier.java,v 1.12 2007-12-10 18:15:05 michiel Exp $
+ * @version $Id: Notifier.java,v 1.13 2007-12-18 09:30:18 michiel Exp $
  **/
 public class Notifier extends WatchedReloadableModule implements NodeEventListener, RelationEventListener, Runnable {
 
@@ -61,7 +61,7 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
 
 
     protected synchronized void loadNotifyables() {
-        log.info("Loading notifyables");
+        log.service("Loading notifyables");
         Date now = new Date();
         queue.clear();
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
@@ -206,7 +206,9 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
         Collection<String> relevantBuilders = getRelevantBuilders();
         // TODO, this is a bit too crude.
         if (relevantBuilders.contains(ne.getBuilderName())) {
-            log.debug("Received " + ne + "");
+            if (log.isDebugEnabled()) {
+                log.debug("Received " + ne + "");
+            }
             loadNotifyables();
 
         } else {
@@ -219,6 +221,9 @@ public class Notifier extends WatchedReloadableModule implements NodeEventListen
         // TODO, this is a bit too crude.
         Collection<String> relevantBuilders = getRelevantBuilders();
         if (relevantBuilders.contains(re.getRelationSourceType()) || relevantBuilders.contains(re.getRelationDestinationType())) {
+            if (log.isDebugEnabled()) {
+                log.debug("Received " + re);
+            }
             loadNotifyables();
         }
     }
