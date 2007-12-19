@@ -73,7 +73,6 @@ public class CloneUtil {
          throw new NullPointerException("clone node #" + localNode.getNumber() + " returned null");
       } else {
          NodeManager localNodeManager = localNode.getNodeManager();
-         NodeManager nodeManager = localNode.getCloud().getNodeManager(localNodeManager.getName());
          NodeManager childNodeManager = localNode.getCloud().getNodeManager(childNodeType);
          Node newNode = childNodeManager.createNode();
 

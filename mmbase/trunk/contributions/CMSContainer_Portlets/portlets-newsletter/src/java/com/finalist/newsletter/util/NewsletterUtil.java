@@ -13,8 +13,6 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.services.community.NewsletterCommunication;
-
 public abstract class NewsletterUtil {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterUtil.class.getName());
@@ -25,9 +23,10 @@ public abstract class NewsletterUtil {
    public static final String THEMETYPE_NEWSLETTER = "newslettertheme";
    public static final String THEMETYPE_NEWSLETTERPUBLICATION = "newsletterpublicationtheme";
 
-   public static void deleteNewsletterThemesForNewsletter(String number, String themeType) {
+   public static void deleteNewsletterThemesForNewsletter(String number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node newsletterNode = cloud.getNode(number);
+      String themeType = determineThemeType(number);
       NodeManager newsletterThemeNodeManager = cloud.getNodeManager(themeType);
       NodeList themes = newsletterNode.getRelatedNodes(newsletterThemeNodeManager);
       if (themes != null) {
@@ -56,13 +55,11 @@ public abstract class NewsletterUtil {
       return (null);
    }
 
-   public static List<String> getAllThemes(String number, String themeType) {
-      if (themeType == null) {
-         themeType = THEMETYPE_NEWSLETTER;
-      }
+   public static List<String> getAllThemes(String number) {
       List<String> themes = new ArrayList<String>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(number);
+      String themeType = determineThemeType(number);
       NodeManager themeNodeManager = cloud.getNodeManager(themeType);
       NodeList themeList = newsletterNode.getRelatedNodes(themeNodeManager);
       for (int i = 0; i < themeList.size(); i++) {
@@ -71,7 +68,7 @@ public abstract class NewsletterUtil {
          themes.add(theme);
          log.debug("Found theme " + theme + " - " + themeNode.getStringValue("title"));
       }
-      String defaultTheme = getDefaultTheme(number, themeType);
+      String defaultTheme = getDefaultTheme(number);
       themes.remove(defaultTheme);
       return (themes);
    }
@@ -96,9 +93,10 @@ public abstract class NewsletterUtil {
       return (null);
    }
 
-   public static String getDefaultTheme(String number, String themeType) {
+   public static String getDefaultTheme(String number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(number);
+      String themeType = determineThemeType(number);
       Node defaultThemeNode = SearchUtil.findRelatedNode(newsletterNode, themeType, "defaulttheme");
       if (defaultThemeNode != null) {
          String defaultTheme = defaultThemeNode.getStringValue("number");
@@ -162,6 +160,55 @@ public abstract class NewsletterUtil {
          return (publicationsList.size());
       }
       return (0);
+   }
+
+   public static String determineNodeType(String number) {
+      if (number != null) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node node = cloud.getNode(number);
+         String type = node.getNodeManager().getName();
+         return (type);
+      }
+      return (null);
+   }
+
+   public static String determineThemeType(String number) {
+      String themeType = null;      
+      if (isNewsletter(number)) {
+         themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
+      }
+      if (isNewsletterPublication(number)) {
+         themeType = NewsletterUtil.THEMETYPE_NEWSLETTERPUBLICATION;
+      }
+      return (themeType);
+   }
+
+   public static boolean isNewsletter(String number) {
+      boolean result = false;
+      String key = "" + determineNodeType(number);
+      if (key.equals("newsletter")) {
+         result = true;
+      }
+      return (result);
+   }
+
+   public static boolean isNewsletterPublication(String number) {
+      boolean result = false;
+      String key = "" + determineNodeType(number);
+      if (key.equals("newsletterpublication")) {
+         result = true;
+      }
+      return (result);
+   }
+
+   public static boolean isNewsletterOrPublication(String number) {
+      boolean result = false;
+      if (number != null) {
+         if (isNewsletter(number) == true || isNewsletterPublication(number) == true) {
+            result = true;
+         }
+      }
+      return (result);
    }
 
 }

@@ -186,15 +186,38 @@ public abstract class NewsletterSubscriptionUtil {
       return (amount);
    }
 
+   public static int getNumberOfSubscribedThemes(String userName, String newsletterNumber) {
+      int amount = 0;
+      if (userName != null && newsletterNumber != null) {
+         List<String> themesList = NewsletterUtil.getAllThemes(newsletterNumber);
+         if (themesList != null) {
+            List<String> subscribedThemes = NewsletterCommunication.getUserPreferences(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+            String defaultTheme = NewsletterUtil.getDefaultTheme(newsletterNumber);
+            if (subscribedThemes != null) {
+               if (subscribedThemes.contains(defaultTheme)) {
+                  subscribedThemes.remove(defaultTheme);
+               }
+               for (int t = 0; t < themesList.size(); t++) {
+                  String theme = themesList.get(t);
+                  if (subscribedThemes.contains(theme)) {
+                     amount++;
+                  }
+               }
+            }
+         }
+
+      }
+      return (amount);
+   }
+
    public static List<String> getAllUsersWithSubscription() {
       List<String> users = null;
       return (users);
    }
-   
+
    public static int countSubscriptions(String newsletterNumber) {
       int number = NewsletterCommunication.countK(NEWSLETTER, null);
       return (number);
    }
-
 
 }

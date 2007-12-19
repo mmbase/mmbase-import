@@ -144,7 +144,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             String newsletterNumber = NewsletterUtil.findNewsletterForTheme(themeNumber);
             if (newsletterNumber != null) {
 
-               String defaultTheme = NewsletterUtil.getDefaultTheme(newsletterNumber, NewsletterUtil.NEWSLETTER);
+               String defaultTheme = NewsletterUtil.getDefaultTheme(newsletterNumber);
                if (!subscribeToThemes.contains(defaultTheme)) {
                   subscribeToThemes.add(defaultTheme);
                   log.debug("Adding default theme to subscription list " + defaultTheme);

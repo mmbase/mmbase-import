@@ -34,14 +34,7 @@ public class NewsletterAction extends Action {
          if (action.equals("overview")) {
             List<NewsletterOverviewBean> beanList = createOverview();
             if (beanList != null) {
-               List<String> beanNames = new ArrayList<String>();
-               for (int b = 0; b < beanList.size(); b++) {
-                  String name = "newsletterOverviewBean" + String.valueOf(b);
-                  NewsletterOverviewBean bean = beanList.get(b);
-                  beanNames.add(name);
-                  request.setAttribute(name, bean);                  
-               }
-               request.setAttribute("newsletterOverviewBeans", beanNames);
+               request.setAttribute("newsletterOverviewBeans", beanList);
                actionForward = mapping.findForward("overview");
             }
          } else if (action.equals("detail")) {

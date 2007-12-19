@@ -2,6 +2,7 @@ package com.finalist.newsletter.module.bean;
 
 public class NewsletterOverviewBean {
 
+   private int number = 0;
    private String title = "";
    private int numberOfSubscriptions = 0;
    private int numberOfThemes = 0;
@@ -69,6 +70,20 @@ public class NewsletterOverviewBean {
 
    public NewsletterOverviewBean() {
 
+   }
+
+   /**
+    * @return the number
+    */
+   public int getNumber() {
+      return number;
+   }
+
+   /**
+    * @param number the number to set
+    */
+   public void setNumber(int number) {
+      this.number = number;
    }
 
 }
