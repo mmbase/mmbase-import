@@ -20,6 +20,11 @@
 		</action>
 		<action path="/editors/newsletter/module/NewsletterAction" type="com.finalist.newsletter.module.NewsletterAction" unknown="false" validate="false">
 			<forward name="overview" path="/editors/newsletter/module/newsletteroverview.jsp" redirect="false" />
+			<forward name="detail" path="/editors/newsletter/module/newsletterdetail.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false">
+			<forward name="overview" path="/editors/newsletter/module/subscriptionoverview.jsp" redirect="false" />
+			<forward name="detail" path="/editors/newsletter/module/subscriptiondetail.jsp" redirect="false" />
 		</action>
 
 		<!-- ==== Select page nodes ==== -->

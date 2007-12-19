@@ -1,15 +1,13 @@
 package com.finalist.newsletter.module;
 
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.finalist.newsletter.module.bean.GlobalOverviewBean;
 import com.finalist.newsletter.module.bean.NewsletterDetailBean;
 import com.finalist.newsletter.module.bean.NewsletterOverviewBean;
+import com.finalist.newsletter.module.bean.NewsletterSubscriberBean;
+import com.finalist.newsletter.module.bean.SubscriptionDetailBean;
 import com.finalist.newsletter.module.bean.SubscriptionOverviewBean;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
@@ -18,6 +16,7 @@ public final class BeanUtil {
 
    public static NewsletterOverviewBean createNewsletterOverviewBean(String newsletterNumber) {
       NewsletterOverviewBean bean = new NewsletterOverviewBean();
+      bean.setNumber(Integer.parseInt(newsletterNumber));
 
       String title = NewsletterUtil.getTitle(newsletterNumber);
       bean.setTitle(title);
@@ -34,42 +33,67 @@ public final class BeanUtil {
       return (bean);
    }
 
-   public static GlobalOverviewBean createGlobalOverviewBean() {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      GlobalOverviewBean bean = new GlobalOverviewBean();
+   public static SubscriptionOverviewBean createSubscriptionOverviewBean(String userName) {
+      SubscriptionOverviewBean bean = new SubscriptionOverviewBean();
+      bean.setUserName(userName);
 
-      NodeManager newsletterNodeManager = cloud.getNodeManager("newsletter");
-      int numberOfNewsletters = 5;
+      String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
+      bean.setStatus(status);
+
+      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
+      bean.setMimeType(mimeType);
+
+      int numberOfNewsletters = NewsletterSubscriptionUtil.getNumberOfSubscribedNewsletters(userName);
       bean.setNumberOfNewsletters(numberOfNewsletters);
 
-      NodeManager themeNodeManager = cloud.getNodeManager("newslettertheme");
       int numberOfThemes = 0;
       bean.setNumberOfThemes(numberOfThemes);
 
-      NodeManager publicationNodeManager = cloud.getNodeManager("newsletterpublication");
+      return (bean);
+   }
+
+   public static GlobalOverviewBean createGlobalOverviewBean() {
+      GlobalOverviewBean bean = new GlobalOverviewBean();
+
+      int numberOfNewsletters = 5;
+      bean.setNumberOfNewsletters(numberOfNewsletters);
+
+      int numberOfThemes = 0;
+      bean.setNumberOfThemes(numberOfThemes);
+
       int numberOfPublications = 0;
       bean.setNumberOfPublications(numberOfPublications);
       return (bean);
    }
 
-   public static SubscriptionOverviewBean getUserStatisticsBean(String userName) {
-      SubscriptionOverviewBean bean = new SubscriptionOverviewBean();
-      bean.setUserName(userName);
+   public static NewsletterDetailBean createNewsletterDetailBean(String newsletterNumber) {
+      NewsletterDetailBean bean = new NewsletterDetailBean();
+      bean.setNumber(Integer.parseInt(newsletterNumber));
 
-      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
-      bean.setPreferredMimeType(mimeType);
+      String title = NewsletterUtil.getTitle(String.valueOf(newsletterNumber));
+      bean.setTitle(title);
 
-      String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-      bean.setSubscriptionStatus(status);
+      List<NewsletterSubscriberBean> subscribers = new ArrayList<NewsletterSubscriberBean>();
+      List<String> subscribersList = NewsletterSubscriptionUtil.getSubscribersForNewsletter(newsletterNumber);
+      if (subscribersList != null) {
+         for (int s = 0; s < subscribersList.size(); s++) {
+            NewsletterSubscriberBean subscriberBean = new NewsletterSubscriberBean();
+            String userName = subscribersList.get(s);
+            subscriberBean.setUserName(userName);
 
-      int numberOfSubscriptions = NewsletterSubscriptionUtil.getNumberOfSubscribedNewsletters(userName);
-      bean.setNumberOfSubscriptions(numberOfSubscriptions);
+            int numberOfThemes = NewsletterSubscriptionUtil.getNumberOfSubscribedThemes(userName, newsletterNumber);
+            bean.setNumber(numberOfThemes);
+
+            subscribers.add(subscriberBean);
+         }
+      }
+      bean.setSubscribers(subscribers);
 
       return (bean);
    }
 
-   public static NewsletterDetailBean createNewsletterDetailBean(String newsletterNumber) {
-      NewsletterDetailBean bean = new NewsletterDetailBean();
+   public static SubscriptionDetailBean createSubscriptionDetailBean(String userName) {
+      SubscriptionDetailBean bean = new SubscriptionDetailBean();
       return (bean);
    }
 

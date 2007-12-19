@@ -45,8 +45,7 @@ public class NewsletterDelete extends MMBaseFormlessAction {
          }
 
          String number = newsletterNode.getStringValue("number");
-         String themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
-         NewsletterUtil.deleteNewsletterThemesForNewsletter(number, themeType);
+         NewsletterUtil.deleteNewsletterThemesForNewsletter(number);
 
          NavigationUtil.deletePage(newsletterNode);
 

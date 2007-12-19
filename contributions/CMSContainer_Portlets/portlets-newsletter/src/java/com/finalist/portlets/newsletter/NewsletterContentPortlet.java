@@ -14,12 +14,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import net.sf.mmapps.commons.util.StringUtil;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
@@ -33,7 +27,6 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    private static final String KEY_ADDITIONAL_THEMES = "additionalthemes";
    private static final String KEY_DEFAULTARTICLES = "defaultarticles";
 
-   private static Logger log = Logging.getLoggerInstance(NewsletterContentPortlet.class.getName());
    private static ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettercontent");
 
    public static final String KEY_ARTICLES = "articles";
@@ -64,13 +57,10 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       String pageNumber = preferences.getValue(PAGE, null);
 
       if (pageNumber != null && !StringUtil.isEmptyOrWhitespace(pageNumber)) {
-         String nodeType = determineNodeType(pageNumber);
-         if (isNewsletter(nodeType) == true || isNewsletterPublication(nodeType) == true) {
-
-            String themeType = determineThemeType(nodeType);
+         if (NewsletterUtil.isNewsletterOrPublication(pageNumber)) {
             String displayType = determineDisplayType(request);
 
-            String defaultTheme = NewsletterUtil.getDefaultTheme(pageNumber, themeType);
+            String defaultTheme = NewsletterUtil.getDefaultTheme(pageNumber);
             List<String> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
             if (defaultArticles != null && defaultArticles.size() > 0) {
                request.setAttribute(KEY_DEFAULTTHEME, defaultTheme);
@@ -78,7 +68,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             }
 
             List<String> additionalThemes = null;
-            List<String> availableThemes = NewsletterUtil.getAllThemes(pageNumber, themeType);
+            List<String> availableThemes = NewsletterUtil.getAllThemes(pageNumber);
             if (availableThemes != null && availableThemes.size() > 0) {
                if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
                   String userName = getUserName(session);
@@ -119,40 +109,6 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          throw new RuntimeException("The page number could not be found");
       }
       doInclude("view", template, request, res);
-   }
-
-   private String determineNodeType(String number) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node node = cloud.getNode(number);
-      String type = node.getNodeManager().getName();
-      return (type);
-   }
-
-   private String determineThemeType(String type) {
-      String themeType = null;
-      if (isNewsletter(type)) {
-         themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
-      }
-      if (isNewsletterPublication(type)) {
-         themeType = NewsletterUtil.THEMETYPE_NEWSLETTERPUBLICATION;
-      }
-      return (themeType);
-   }
-
-   private boolean isNewsletter(String key) {
-      boolean result = false;
-      if (key.equals("newsletter")) {
-         result = true;
-      }
-      return (result);
-   }
-
-   private boolean isNewsletterPublication(String key) {
-      boolean result = false;
-      if (key.equals("newsletterpublication")) {
-         result = true;
-      }
-      return (result);
    }
 
    private String getUserName(PortletSession session) {

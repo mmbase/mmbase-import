@@ -3,13 +3,10 @@ package com.finalist.newsletter.module.bean;
 public class SubscriptionOverviewBean {
 
    private String userName;
-   private String preferredMimeType;
-   private String subscriptionStatus;
-   private int numberOfSubscriptions;
-
-   public SubscriptionOverviewBean() {
-
-   }
+   private String mimeType;
+   private String status;
+   private int numberOfNewsletters;
+   private int numberOfThemes;
 
    /**
     * @return the userName
@@ -26,45 +23,63 @@ public class SubscriptionOverviewBean {
    }
 
    /**
-    * @return the preferredMimeType
+    * @return the mimeType
     */
-   public String getPreferredMimeType() {
-      return preferredMimeType;
+   public String getMimeType() {
+      return mimeType;
    }
 
    /**
-    * @param preferredMimeType the preferredMimeType to set
+    * @param mimeType the mimeType to set
     */
-   public void setPreferredMimeType(String preferredMimeType) {
-      this.preferredMimeType = preferredMimeType;
+   public void setMimeType(String mimeType) {
+      this.mimeType = mimeType;
    }
 
    /**
-    * @return the subscriptionStatus
+    * @return the status
     */
-   public String getSubscriptionStatus() {
-      return subscriptionStatus;
+   public String getStatus() {
+      return status;
    }
 
    /**
-    * @param subscriptionStatus the subscriptionStatus to set
+    * @param status the status to set
     */
-   public void setSubscriptionStatus(String subscriptionStatus) {
-      this.subscriptionStatus = subscriptionStatus;
+   public void setStatus(String status) {
+      this.status = status;
    }
 
    /**
-    * @return the numberOfSubscriptions
+    * @return the numberOfNewsletters
     */
-   public int getNumberOfSubscriptions() {
-      return numberOfSubscriptions;
+   public int getNumberOfNewsletters() {
+      return numberOfNewsletters;
    }
 
    /**
-    * @param numberOfSubscriptions the numberOfSubscriptions to set
+    * @param numberOfNewsletters the numberOfNewsletters to set
     */
-   public void setNumberOfSubscriptions(int numberOfSubscriptions) {
-      this.numberOfSubscriptions = numberOfSubscriptions;
+   public void setNumberOfNewsletters(int numberOfNewsletters) {
+      this.numberOfNewsletters = numberOfNewsletters;
+   }
+
+   /**
+    * @return the numberOfThemes
+    */
+   public int getNumberOfThemes() {
+      return numberOfThemes;
+   }
+
+   /**
+    * @param numberOfThemes the numberOfThemes to set
+    */
+   public void setNumberOfThemes(int numberOfThemes) {
+      this.numberOfThemes = numberOfThemes;
+   }
+
+   public SubscriptionOverviewBean() {
+
    }
 
 }
