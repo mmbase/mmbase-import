@@ -6,9 +6,6 @@ import java.util.*;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.context.SecurityContext;
-import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
