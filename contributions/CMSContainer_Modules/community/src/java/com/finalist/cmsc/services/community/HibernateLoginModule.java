@@ -1,12 +1,9 @@
 package com.finalist.cmsc.services.community;
 
 /* Java imports */
-import java.io.*;
 import java.util.*;
-import java.sql.*;
 
 /* Security & JAAS imports */
-import java.security.*;
 import javax.security.auth.spi.LoginModule;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.Subject;
@@ -18,7 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.finalist.cmsc.services.community.data.User;
-import com.finalist.cmsc.services.community.HibernateService;
+import com.finalist.cmsc.services.community.data.GroupUserRole;
 
 /**
  * <p>
@@ -57,7 +54,7 @@ import com.finalist.cmsc.services.community.HibernateService;
 public class HibernateLoginModule implements LoginModule {
 
    private static Log log = LogFactory.getLog(HibernateLoginModule.class);
-
+   
    // initial state
    CallbackHandler callbackHandler;
    Subject subject;
@@ -68,6 +65,7 @@ public class HibernateLoginModule implements LoginModule {
    // temporary state
    Vector tempCredentials;
    Vector tempPrincipals;
+   Vector roleUiPrincipals;
  
    // the authentication status
    boolean success;
@@ -88,6 +86,7 @@ public class HibernateLoginModule implements LoginModule {
    public HibernateLoginModule() {
       tempCredentials = new Vector();
       tempPrincipals = new Vector();
+      roleUiPrincipals = new Vector();
       success = false;
       debug = false;
    }
@@ -226,12 +225,21 @@ public class HibernateLoginModule implements LoginModule {
                while (it.hasNext())
                   System.out.println("\t\t[HibernateLoginModule] Principal: " + it.next().toString());
             }
+            
+            Iterator rP = roleUiPrincipals.iterator();
+
+            if (debug) {
+               while (rP.hasNext())
+                  System.out.println("\t\t[HibernateLoginModule] roleUiPrincipal: " + rP.next().toString());
+            }
 
             subject.getPrincipals().addAll(tempPrincipals);
-            //subject.getPublicCredentials().addAll(tempCredentials);
+            subject.getPrincipals().addAll(roleUiPrincipals);
+            subject.getPublicCredentials().addAll(tempCredentials);
 
             tempPrincipals.clear();
             tempCredentials.clear();
+            roleUiPrincipals.clear();
 
             if (callbackHandler instanceof PassiveCallbackHandler)
                ((PassiveCallbackHandler) callbackHandler).clearPassword();
@@ -246,6 +254,7 @@ public class HibernateLoginModule implements LoginModule {
       else {
          tempPrincipals.clear();
          tempCredentials.clear();
+         roleUiPrincipals.clear();
          return (true);
       }
    }
@@ -278,6 +287,7 @@ public class HibernateLoginModule implements LoginModule {
 
       tempPrincipals.clear();
       tempCredentials.clear();
+      roleUiPrincipals.clear();
 
       if (callbackHandler instanceof PassiveCallbackHandler)
          ((PassiveCallbackHandler) callbackHandler).clearPassword();
@@ -307,20 +317,21 @@ public class HibernateLoginModule implements LoginModule {
 
       tempPrincipals.clear();
       tempCredentials.clear();
+      roleUiPrincipals.clear();
 
       if (callbackHandler instanceof PassiveCallbackHandler)
          ((PassiveCallbackHandler) callbackHandler).clearPassword();
 
       // remove the principals the login module added
-      Iterator it = subject.getPrincipals(HibernatePrincipal.class).iterator();
-      while (it.hasNext()) {
-         HibernatePrincipal p = (HibernatePrincipal) it.next();
-         if (debug)
-            System.out.println("\t\t[HibernateLoginModule] removing principal " + p.toString());
-         subject.getPrincipals().remove(p);
-      }
+      //Iterator it = subject.getPrincipals(HibernatePrincipal.class).iterator();
+      //while (it.hasNext()) {
+      //   HibernatePrincipal p = (HibernatePrincipal) it.next();
+      //   if (debug)
+      //      System.out.println("\t\t[HibernateLoginModule] removing principal " + p.toString());
+      //   subject.getPrincipals().remove(p);
+      //}
 
-      // remove the credentials the login module added
+      //remove the credentials the login module added
       //it = subject.getPublicCredentials(HibernateCredential.class).iterator();
       //while (it.hasNext()) {
       //   HibernateCredential c = (HibernateCredential) it.next();
@@ -349,7 +360,7 @@ public class HibernateLoginModule implements LoginModule {
    private boolean HibernateValidate(String user, String pass) throws Exception {
 
       HibernatePrincipal p = null;
-      //HibernateCredential c = null;
+      HibernateCredential c = null;
       boolean passwordMatch = false;
 
       String dbUsername = null, dbPassword = null, dbFname = null;
@@ -358,7 +369,11 @@ public class HibernateLoginModule implements LoginModule {
       
       aC = new ClassPathXmlApplicationContext("applicationContext.xml");
       
-      HibernateService hibservice = (HibernateService)aC.getBean("service");
+      HibernateCommunityService hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
+      
+      HibernateGroupUserRoleService hibserviceGUR = (HibernateGroupUserRoleService)aC.getBean("serviceGroupUserRole");
+      
+      System.out.println("LoginModule Ingevoerde user: " + user);
       
       User users = hibservice.getUser(user);
       
@@ -368,7 +383,6 @@ public class HibernateLoginModule implements LoginModule {
       dbLname = users.getLastname();
       dbEmailAdress = users.getEmailadress();
       
-      
       if (dbPassword == null)
          throw new LoginException("User " + user + " not found");
 
@@ -377,10 +391,25 @@ public class HibernateLoginModule implements LoginModule {
 
       passwordMatch = pass.equals(dbPassword);
       if (passwordMatch) {
+         c = new HibernateCredential();
          if (debug)
             System.out.println("\t\t[HibernateLoginModule] passwords match!");
-         //this.tempCredentials.add(c);
-         this.tempPrincipals.add(new HibernatePrincipal(dbUsername + " " + dbFname + " " + dbLname + " " + dbEmailAdress));
+         this.tempPrincipals.add(new HibernatePrincipal(dbUsername + "," + dbFname + "," + dbLname + "," + dbEmailAdress));
+         c.setProperty("Username", dbUsername);
+         c.setProperty("Password", dbPassword);
+         this.tempCredentials.add(c);
+         List groupUserRoleList = hibserviceGUR.getGroupUserRoleList(user);
+         System.out.println("groupUserRoleList: " + groupUserRoleList);
+         String groupRole = null;
+         if(groupUserRoleList != null && groupUserRoleList.size() > 0){
+            ListIterator groupUserRoleIt = groupUserRoleList.listIterator();
+            while(groupUserRoleIt.hasNext()){
+               GroupUserRole groupUserRole = (GroupUserRole)groupUserRoleIt.next();
+               groupRole = "ROLE_" + groupUserRole.getGroupId() + "_" + groupUserRole.getRoleId();
+               System.out.println(groupRole + " "+ groupRole);
+               this.roleUiPrincipals.add(new HibernatePrincipal(groupRole));
+            }
+         }
       }
       else {
          if (debug)
