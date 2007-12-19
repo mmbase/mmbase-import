@@ -1,7 +1,5 @@
 <%@include file="globals.jsp" %>
 
-<fmt:setBundle basename="newsletter-module" scope="request" />
-
 <b><fmt:message key="newsletteroverview.title" /></b>
 
 <table width="50%">

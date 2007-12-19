@@ -1,8 +1,11 @@
 <%@include file="globals.jsp" %>
 
-<jsp:useBean id="globalOverviewBean" scope="request" type="com.finalist.newsletter.bean.GlobalOverviewBean" />
+<cmscedit:head title="reactions.title">
+	<fmt:message key="globalstats.title" />
+</cmscedit:head>
 
-<b><td><fmt:message key="globalstats.title" /></td></b>
+<jsp:useBean id="globalOverviewBean" scope="request" type="com.finalist.newsletter.module.bean.GlobalOverviewBean" />
+
 <table width="50%">
 	<tr>
 		<td><fmt:message key="globalstats.total.newsletters" /></td>
