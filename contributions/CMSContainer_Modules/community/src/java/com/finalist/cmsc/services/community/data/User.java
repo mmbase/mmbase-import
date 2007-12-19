@@ -1,7 +1,5 @@
 package com.finalist.cmsc.services.community.data;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 @SequenceGenerator(name = "SEQ_ID", sequenceName = "id_sequence", allocationSize=1)
-public class User implements Serializable{
+public class User{
 
    private static final long serialVersionUID = 1L;
    private Long id;
