@@ -22,3 +22,19 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+
+
+
+Name: Upgrade direct reaction to new method  
+Goal:
+Type:  manual action
+Steps:
+* See nijmegen or intramare sources
+*
+*
+*
+Exceptions/errors/other problems and what to do:
+*
+*
+*
