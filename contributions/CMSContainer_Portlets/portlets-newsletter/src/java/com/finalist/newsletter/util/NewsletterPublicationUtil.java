@@ -9,11 +9,9 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.RelationManager;
-import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
@@ -32,8 +30,10 @@ public abstract class NewsletterPublicationUtil {
          copyThemesAndContent(newsletterNode, publicationNode, copyContent);
          copyOtherRelations(newsletterNode, publicationNode);
          NavigationUtil.appendChild(newsletterNode, publicationNode);
-         Node layoutNode = PagesUtil.getLayout(newsletterNode);
-         PagesUtil.linkPortlets(publicationNode, layoutNode);
+         Node layoutNode = PagesUtil.getLayout(publicationNode);
+         if (copyContent == true) {
+            PagesUtil.linkPortlets(publicationNode, layoutNode);
+         }
          return (publicationNode);
       }
       return (null);
@@ -47,7 +47,7 @@ public abstract class NewsletterPublicationUtil {
             Node newThemeNode = CloneUtil.cloneNode(oldThemeNode, "newsletterpublicationtheme");
             if (newThemeNode != null) {
                copyThemeRelations(newsletterNode, publicationNode, newThemeNode);
-               if ( copyContent == true) {
+               if (copyContent == true) {
                   copyContent(oldThemeNode, newThemeNode);
                }
             }
@@ -87,7 +87,7 @@ public abstract class NewsletterPublicationUtil {
             Node destinationNode = relation.getDestination();
             RelationManager manager = relation.getRelationManager();
             String role = manager.getReciprocalRole();
-            if (!role.equals("defaulttheme") && !role.equals("newslettertheme") && !role.equals("navrel")) {
+            if (!role.equals("defaulttheme") && !role.equals("newslettertheme") && !role.equals("navrel") && !role.equals("portletrel")) {
                RelationUtil.createRelation(publicationNode, destinationNode, role);
             }
          }

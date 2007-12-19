@@ -1,10 +1,9 @@
 <%@include file="../demo/includes/taglibs.jsp" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<cmsc:location var="cur" sitevar="site" />
-<c:set var="page" value="${cur.id}" />
-
-<mm:content type="text/html" encoding="UTF-8">
+<mm:content type="text/plain" encoding="UTF-8">
+  <cmsc:location var="cur" sitevar="site" />
 	<html xmlns="http://www.w3.org/1999/xhtml" lang="${site.language}" xml:lang="${site.language}">
 	
 	<cmsc:screen>

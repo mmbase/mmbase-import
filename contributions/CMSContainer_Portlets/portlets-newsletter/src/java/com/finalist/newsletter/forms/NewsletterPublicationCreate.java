@@ -17,24 +17,22 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
-   private static Logger log = Logging.getLoggerInstance(NewsletterPublicationCreate.class.getName());
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       String action = request.getParameter("action");
-      boolean copyContent = Boolean.getBoolean(request.getParameter("content"));
-      
+
       if (StringUtil.isEmptyOrWhitespace(action)) { // Initialize the new
          String parent = getParameter(request, "parent", true); // publication
+         boolean copyContent = Boolean.getBoolean(getParameter(request, "copycontent", true));
+         copyContent = true; // Temp
          Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);
          String objectnumber = String.valueOf(publicationNode.getNumber());
          request.getSession().removeAttribute("parent");

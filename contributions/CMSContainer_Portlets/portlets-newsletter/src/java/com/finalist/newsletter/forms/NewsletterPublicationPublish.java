@@ -14,15 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.NewsletterPublisher;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
-
-   private static Logger log = Logging.getLoggerInstance(NewsletterPublicationPublish.class.getName());
 
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
