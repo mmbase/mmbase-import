@@ -55,14 +55,18 @@ public final class BeanUtil {
    public static GlobalOverviewBean createGlobalOverviewBean() {
       GlobalOverviewBean bean = new GlobalOverviewBean();
 
-      int numberOfNewsletters = 5;
+      int numberOfNewsletters = NewsletterUtil.countNewsletters();
       bean.setNumberOfNewsletters(numberOfNewsletters);
 
-      int numberOfThemes = 0;
+      int numberOfThemes = NewsletterUtil.countThemes();
       bean.setNumberOfThemes(numberOfThemes);
 
-      int numberOfPublications = 0;
+      int numberOfPublications = NewsletterUtil.countPublications(); 
       bean.setNumberOfPublications(numberOfPublications);
+      
+      int numberOfSubscribtions = NewsletterSubscriptionUtil.countSubscriptions();
+      bean.setNumberOfSentEmails(numberOfSubscribtions);
+      
       return (bean);
    }
 
@@ -94,7 +98,17 @@ public final class BeanUtil {
 
    public static SubscriptionDetailBean createSubscriptionDetailBean(String userName) {
       SubscriptionDetailBean bean = new SubscriptionDetailBean();
+      bean.setUserName(userName);
+
+      String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
+      bean.setStatus(status);
+
+      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
+      bean.setMimeType(mimeType);
+
+      String emailAddress = ""; // TODO: Get email address from session
+      bean.setEmailAddress(emailAddress);
+
       return (bean);
    }
-
 }

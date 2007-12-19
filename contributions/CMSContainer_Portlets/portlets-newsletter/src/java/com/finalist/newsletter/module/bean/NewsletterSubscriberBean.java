@@ -1,10 +1,13 @@
 package com.finalist.newsletter.module.bean;
 
-
 public class NewsletterSubscriberBean {
 
    private String userName;
    private int numberOfThemes;
+
+   public NewsletterSubscriberBean() {
+
+   }
 
    /**
     * @return the userName
@@ -14,7 +17,8 @@ public class NewsletterSubscriberBean {
    }
 
    /**
-    * @param userName the userName to set
+    * @param userName
+    *           the userName to set
     */
    public void setUserName(String userName) {
       this.userName = userName;
@@ -28,13 +32,11 @@ public class NewsletterSubscriberBean {
    }
 
    /**
-    * @param numberOfThemes the numberOfThemes to set
+    * @param numberOfThemes
+    *           the numberOfThemes to set
     */
    public void setNumberOfThemes(int numberOfThemes) {
       this.numberOfThemes = numberOfThemes;
    }
 
-   public NewsletterSubscriberBean() {
-
-   }
 }

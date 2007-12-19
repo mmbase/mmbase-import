@@ -33,7 +33,7 @@ public class SubscriptionAction extends Action {
             String userName  = request.getParameter("username");
             if (userName != null) {
                SubscriptionDetailBean bean = BeanUtil.createSubscriptionDetailBean(userName);
-               if (bean != null) {
+               if (bean != null) {                  
                   request.setAttribute("subscriptionDetailBean", bean);
                   actionForward = mapping.findForward("detail");
                }

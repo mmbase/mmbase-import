@@ -137,6 +137,34 @@ public abstract class NewsletterUtil {
       return (newsletters);
    }
 
+   public static List<String> getAllPublications() {
+      List<String> publications = new ArrayList<String>();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      NodeList publicationList = SearchUtil.findNodeList(cloud, "newsletterpublication");
+      if (publicationList != null && publicationList.size() > 0) {
+         for (int n = 0; n < publicationList.size(); n++) {
+            Node publicationNode = publicationList.getNode(n);
+            String publicationNumber = String.valueOf(publicationNode.getNumber());
+            publications.add(publicationNumber);
+         }
+      }
+      return (publications);
+   }
+
+   public static List<String> getAllThemes() {
+      List<String> themes = new ArrayList<String>();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      NodeList themeList = SearchUtil.findNodeList(cloud, "newslettertheme");
+      if (themeList != null && themeList.size() > 0) {
+         for (int n = 0; n < themeList.size(); n++) {
+            Node themeNode = themeList.getNode(n);
+            String themeNumber = String.valueOf(themeNode.getNumber());
+            themes.add(themeNumber);
+         }
+      }
+      return (themes);
+   }
+
    public static String getTitle(String newsletterNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(newsletterNumber);
@@ -144,12 +172,14 @@ public abstract class NewsletterUtil {
       return (title);
    }
 
-   public static int countNewsletters() {
-      return (0);
-   }
 
    public static int countThemes(String newsletterNumber) {
-      return (0);
+      int amount = 0;
+      List<String> themes = getAllThemes(newsletterNumber);
+      if (themes != null) {
+         amount = themes.size();
+      }
+      return (amount);
    }
 
    public static int countPublications(String newsletterNumber) {
@@ -173,7 +203,7 @@ public abstract class NewsletterUtil {
    }
 
    public static String determineThemeType(String number) {
-      String themeType = null;      
+      String themeType = null;
       if (isNewsletter(number)) {
          themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
       }
@@ -209,6 +239,34 @@ public abstract class NewsletterUtil {
          }
       }
       return (result);
+   }
+   
+   public static int countNewsletters() {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      NodeList newsletterList = SearchUtil.findNodeList(cloud, "newsletter");
+      if (newsletterList != null) {
+         return (0 + newsletterList.size());
+      }
+      return (0);
+   }
+
+   public static int countThemes() {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      NodeList themeList = SearchUtil.findNodeList(cloud, "newslettertheme");
+      if (themeList != null) {         
+         int newsletters = countNewsletters();
+         return (0 - newsletters + themeList.size());
+      }
+      return (0);
+   }
+
+   public static int countPublications() {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      NodeList publicationList = SearchUtil.findNodeList(cloud, "newsletterpublication");
+      if (publicationList != null) {
+         return (0 + publicationList.size());
+      }
+      return (0);
    }
 
 }
