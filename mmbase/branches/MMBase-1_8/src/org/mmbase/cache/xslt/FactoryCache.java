@@ -16,6 +16,8 @@ import javax.xml.transform.TransformerFactory;
 
 import java.io.File;
 import java.net.URL;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A cache for XSL Transformer Factories.  There is one needed for
@@ -23,9 +25,10 @@ import java.net.URL;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.7 2005-01-30 16:46:38 nico Exp $
+ * @version $Id: FactoryCache.java,v 1.7.2.1 2007-12-20 13:46:53 michiel Exp $
  */
 public class FactoryCache extends Cache {
+    private static final Logger log = Logging.getLoggerInstance(FactoryCache.class);
 
     private static int cacheSize = 50;
     private static FactoryCache cache;
@@ -62,6 +65,7 @@ public class FactoryCache extends Cache {
         return getFactory(defaultDir);
     }
 
+    boolean warnedFeature = false;
     /**
      * Make a factory for a certain URIResolver.
      */
@@ -71,9 +75,19 @@ public class FactoryCache extends Cache {
             tf = TransformerFactory.newInstance();
             tf.setURIResolver(uri);
             // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
+            try {
+                tf.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+            } catch (IllegalArgumentException iae) {
+                if (! warnedFeature) {
+                    log.warn(tf + ": " + iae.getMessage() + ". (subsequent messages logged on debug)");
+                    warnedFeature = true;
+                } else {
+                    log.debug(tf + ": " + iae.getMessage() + ".");
+                }
+            }
             put(uri, tf);
         }
-        return tf;        
+        return tf;
     }
     /**
      * Gets a Factory from the cache. This cache is 'intelligent', you
@@ -81,7 +95,7 @@ public class FactoryCache extends Cache {
      * a new Factory will be created (and put in the cache).
      * @deprecated
      */
-    
+
     public TransformerFactory getFactory(File cwd) {
         try {
             TransformerFactory tf =  (TransformerFactory) get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
