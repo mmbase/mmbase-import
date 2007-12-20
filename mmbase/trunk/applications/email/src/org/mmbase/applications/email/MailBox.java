@@ -9,16 +9,31 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.email;
+import java.util.ResourceBundle;
 
 /**
  * At the moment just a container for some constants. This may change
- * @version $Id: MailBox.java,v 1.3 2007-10-24 13:40:23 michiel Exp $
+ * @version $Id: MailBox.java,v 1.4 2007-12-20 17:32:21 michiel Exp $
  */
 public abstract class MailBox {
-    public static final int INBOX      = 0;
-    public static final int SENT       = 1;
-    public static final int DRAFTS     = 11;
-    public static final int TRASH      = 2;
-    public static final int PERSONAL   = 3;
+    public static enum Type {
+        INBOX(0),
+        SENT(1),
+        DRAFTS(11),
+        TRASH(2),
+        PERSONAL(3);
+
+        private final int db;
+        private Type (int db) {
+            this.db = db;
+        }
+        public int getKey() {
+            return db;
+        }
+        public String getName(java.util.Locale locale) {
+            return ResourceBundle.getBundle("org.mmbase.applications.email.resources.webmail", locale).getString(toString());
+        }
+    }
+
 }
 
