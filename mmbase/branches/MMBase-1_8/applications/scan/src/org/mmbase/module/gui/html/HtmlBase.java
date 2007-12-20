@@ -16,7 +16,6 @@ import java.io.*;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.builders.Jumpers;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.54.2.1 2007-07-24 20:55:37 michiel Exp $
+ * @version $Id: HtmlBase.java,v 1.54.2.2 2007-12-20 16:02:27 michiel Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -724,11 +723,17 @@ public class HtmlBase extends ProcessorModule {
             } else if (cmd.equals("BUILDERACTIVE")) {
                 return isBuilderActive(tok);
             } else if (cmd.equals("GETJUMP")) {
-                Jumpers bul=(Jumpers)mmb.getMMObject("jumpers");
-                String url=bul.getJump(tok);
-                if (url.startsWith("http://")) {
-                    return url;
-                } else {
+                try {
+                    MMObjectBuilder jumpers = mmb.getBuilder("jumpers");
+                    java.lang.reflect.Method getJumper = jumpers.getClass().getMethod("getJump", new Class[] {String.class});
+                    String url = (String) getJumper.invoke(jumpers, new Object[] { tok });
+                    if (url.startsWith("http://")) {
+                        return url;
+                    } else {
+                        return "";
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                     return "";
                 }
             } else if (cmd.equals("GETNUMBER")) {
