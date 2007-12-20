@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" extends="page" maintainer="finalist.com" name="newsletter" version="2">
+<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" extends="page" maintainer="finalist.com" name="newsletter" version="3">
 	<!--
 		
 	-->
@@ -62,7 +62,28 @@
 				<type key="false" notnull="false" state="persistent">LONG</type>
 			</db>
 		</field>
-
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Last publication number</guiname>
+				<guiname xml:lang="en">Laatste publicatie nummer</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>7</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer"></datatype>
+			<db>
+				<name>lastpublicationnumber</name>
+				<type key="false" notnull="false" state="persistent">INTEGER</type>
+			</db>
+		</field>
 		<field name="inmenu">
 			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="false" />

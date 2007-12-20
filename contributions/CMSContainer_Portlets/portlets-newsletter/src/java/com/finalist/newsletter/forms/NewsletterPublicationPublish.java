@@ -28,7 +28,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          Thread publisher = new NewsletterPublisher(number);
          publisher.start();
       }
-      ActionForward ret = mapping.findForward("SUCCESS");
+      ActionForward ret = mapping.findForward("success");
       return ret;
    }
 }

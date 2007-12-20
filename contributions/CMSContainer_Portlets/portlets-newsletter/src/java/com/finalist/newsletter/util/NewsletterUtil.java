@@ -10,12 +10,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 public abstract class NewsletterUtil {
-
-   private static Logger log = Logging.getLoggerInstance(NewsletterUtil.class.getName());
 
    public static final String NEWSLETTER = "newsletter";
    public static final String NEWSLETTERPUBLICATION = "newsletterpublication";
@@ -60,16 +56,12 @@ public abstract class NewsletterUtil {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(number);
       String themeType = determineThemeType(number);
-      NodeManager themeNodeManager = cloud.getNodeManager(themeType);
-      NodeList themeList = newsletterNode.getRelatedNodes(themeNodeManager);
+      NodeList themeList = SearchUtil.findRelatedNodeList(newsletterNode, themeType, "newslettertheme");
       for (int i = 0; i < themeList.size(); i++) {
          Node themeNode = themeList.getNode(i);
          String theme = themeNode.getStringValue("number");
          themes.add(theme);
-         log.debug("Found theme " + theme + " - " + themeNode.getStringValue("title"));
       }
-      String defaultTheme = getDefaultTheme(number);
-      themes.remove(defaultTheme);
       return (themes);
    }
 
@@ -85,7 +77,6 @@ public abstract class NewsletterUtil {
                Node articleNode = articleList.getNode(i);
                String article = articleNode.getStringValue("number");
                articles.add(article);
-               log.debug("Found article " + article + " for theme " + themeNumber);
             }
          }
          return (articles);
@@ -117,7 +108,6 @@ public abstract class NewsletterUtil {
          }
          for (int r = 0; r < removals.size(); r++) {
             secundary.remove(removals.get(r));
-            log.debug("Duplicate key removed: " + removals.get(r));
          }
       }
       return (secundary);
@@ -171,7 +161,6 @@ public abstract class NewsletterUtil {
       String title = newsletterNode.getStringValue("title");
       return (title);
    }
-
 
    public static int countThemes(String newsletterNumber) {
       int amount = 0;
@@ -240,7 +229,7 @@ public abstract class NewsletterUtil {
       }
       return (result);
    }
-   
+
    public static int countNewsletters() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeList newsletterList = SearchUtil.findNodeList(cloud, "newsletter");
@@ -253,7 +242,7 @@ public abstract class NewsletterUtil {
    public static int countThemes() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeList themeList = SearchUtil.findNodeList(cloud, "newslettertheme");
-      if (themeList != null) {         
+      if (themeList != null) {
          int newsletters = countNewsletters();
          return (0 - newsletters + themeList.size());
       }

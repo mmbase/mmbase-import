@@ -40,27 +40,20 @@ public abstract class NewsletterGenerator {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node publicationNode = cloud.getNode(publicationNumber);
 
-      String hostUrl = PropertiesUtil.getProperty("host.live");
+      String hostUrl = getLiveHostUrl();
       // TODO : Check if last char is a /
       String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
       String newsletterUrl = "".concat(hostUrl).concat(newsletterPath);
 
       try {
-         log.debug("Creating URL");
          URL url = new URL(newsletterUrl);
-         log.debug("Opening connection");
          URLConnection connection = url.openConnection();
          ((HttpURLConnection) connection).setRequestMethod("GET");
-         log.debug("Set doInput");
          connection.setDoInput(true);
-         log.debug("Set content type");
          connection.setRequestProperty("Content-Type", "text/html");
          connection.setRequestProperty("username", userName);
-         log.debug("Getting inputstream");
          InputStream input = connection.getInputStream();
-         log.debug("Creating inputstream reader");
          Reader reader = new InputStreamReader(input);
-         log.debug("Creating buffer");
          StringBuffer buffer = new StringBuffer();
 
          int c;
@@ -71,7 +64,7 @@ public abstract class NewsletterGenerator {
          reader.close();
          String inputString = buffer.toString();
          inputString = inputString.trim();
-         log.debug("Input = " + inputString);
+         inputString  = checkUrls(inputString);
          return (inputString);
       } catch (Exception e) {
          log.debug("Error");
@@ -112,8 +105,18 @@ public abstract class NewsletterGenerator {
             log.fatal("Configured dataSource '" + dataSource + "' of context '" + context + "' is not a Session ");
             return null;
          }
-         log.debug("Email session obtained");
          return session;
       }
+   }
+
+   protected String checkUrls(String input) {
+      String hostUrl = getLiveHostUrl();
+      String output = input.replaceAll("\"/", hostUrl);
+      return(output);
+   }
+
+   private String getLiveHostUrl() {
+      String hostUrl = PropertiesUtil.getProperty("host.live");      
+      return hostUrl;
    }
 }

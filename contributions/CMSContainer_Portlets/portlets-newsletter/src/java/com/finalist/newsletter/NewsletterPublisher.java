@@ -17,6 +17,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.services.community.NewsletterCommunication;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -47,14 +48,14 @@ public class NewsletterPublisher extends Thread {
       List<String> subscribers = NewsletterSubscriptionUtil.getSubscribersForNewsletter(newsletterNumber);
 
       if (subscribers != null) {
-
          createConfirmationList(subscribers);
-
          for (int subscribersIterator = 0; subscribersIterator < subscribers.size(); subscribersIterator++) {
             String userName = subscribers.get(subscribersIterator);
             sendNewsletter(publicationNode, userName);
-         }
+         }         
       }
+      NewsletterPublicationUtil.setPublicationNumber(newsletterNode, 1);
+      NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
    }
 
    private Message generateNewsletter(String userName, String publicationNumber, String mimeType) {
@@ -75,7 +76,6 @@ public class NewsletterPublisher extends Thread {
       try {
          message = setMailHeaders(publicationNode, userName, message);
          Transport.send(message);
-
          removeFromConfirmationList(userName);
       } catch (MessagingException e) {
          log.debug("An error occurred while trying to send a newsletter e-mail");

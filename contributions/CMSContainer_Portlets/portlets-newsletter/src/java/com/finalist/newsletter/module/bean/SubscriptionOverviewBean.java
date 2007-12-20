@@ -16,7 +16,8 @@ public class SubscriptionOverviewBean {
    }
 
    /**
-    * @param userName the userName to set
+    * @param userName
+    *           the userName to set
     */
    public void setUserName(String userName) {
       this.userName = userName;
@@ -30,7 +31,8 @@ public class SubscriptionOverviewBean {
    }
 
    /**
-    * @param mimeType the mimeType to set
+    * @param mimeType
+    *           the mimeType to set
     */
    public void setMimeType(String mimeType) {
       this.mimeType = mimeType;
@@ -44,7 +46,8 @@ public class SubscriptionOverviewBean {
    }
 
    /**
-    * @param status the status to set
+    * @param status
+    *           the status to set
     */
    public void setStatus(String status) {
       this.status = status;
@@ -58,7 +61,8 @@ public class SubscriptionOverviewBean {
    }
 
    /**
-    * @param numberOfNewsletters the numberOfNewsletters to set
+    * @param numberOfNewsletters
+    *           the numberOfNewsletters to set
     */
    public void setNumberOfNewsletters(int numberOfNewsletters) {
       this.numberOfNewsletters = numberOfNewsletters;
@@ -72,7 +76,8 @@ public class SubscriptionOverviewBean {
    }
 
    /**
-    * @param numberOfThemes the numberOfThemes to set
+    * @param numberOfThemes
+    *           the numberOfThemes to set
     */
    public void setNumberOfThemes(int numberOfThemes) {
       this.numberOfThemes = numberOfThemes;

@@ -20,7 +20,8 @@ public class NewsletterDetailBean {
    }
 
    /**
-    * @param number the number to set
+    * @param number
+    *           the number to set
     */
    public void setNumber(int number) {
       this.number = number;
@@ -34,7 +35,8 @@ public class NewsletterDetailBean {
    }
 
    /**
-    * @param title the title to set
+    * @param title
+    *           the title to set
     */
    public void setTitle(String title) {
       this.title = title;
@@ -48,7 +50,8 @@ public class NewsletterDetailBean {
    }
 
    /**
-    * @param subscribers the subscribers to set
+    * @param subscribers
+    *           the subscribers to set
     */
    public void setSubscribers(List<NewsletterSubscriberBean> subscribers) {
       this.subscribers = subscribers;
