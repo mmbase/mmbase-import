@@ -96,17 +96,15 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    private boolean isLoggedIn(PortletSession session) {
       String userName = getUserName(session);
       if (userName != null && userName.length() > 0) {
-         log.debug("Logged in as: " + userName);
          return (true);
       }
-      log.debug("Not logged in");
       return (false);
    }
 
    private void processChangeSubscription(ActionRequest request, ActionResponse response) {
       PortletSession session = request.getPortletSession();
       String userName = getUserName(session);
-      NewsletterSubscriptionUtil.unsubscribeFromAllThemes(userName);
+      NewsletterSubscriptionUtil.unsubscribeFromAllNewsletters(userName);
       processNewSubscription(request, response);
    }
 
@@ -117,8 +115,6 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
       if (portletId != null) {
          setPortletNodeParameter(portletId, ALLOWED_NEWSLETTERS, availableNewsletters);
-      } else {
-         log.debug("No portletId");
       }
       super.processEditDefaults(request, response);
    }
@@ -140,14 +136,12 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          for (int i = 0; i < themes.length; i++) {
             String themeNumber = themes[i];
             subscribeToThemes.add(themeNumber);
-            log.debug("Adding theme to subscription list " + themeNumber);
             String newsletterNumber = NewsletterUtil.findNewsletterForTheme(themeNumber);
             if (newsletterNumber != null) {
 
                String defaultTheme = NewsletterUtil.getDefaultTheme(newsletterNumber);
                if (!subscribeToThemes.contains(defaultTheme)) {
                   subscribeToThemes.add(defaultTheme);
-                  log.debug("Adding default theme to subscription list " + defaultTheme);
                }
                if (!subscribeToNewsletters.contains(newsletterNumber)) {
                   subscribeToNewsletters.add(newsletterNumber);

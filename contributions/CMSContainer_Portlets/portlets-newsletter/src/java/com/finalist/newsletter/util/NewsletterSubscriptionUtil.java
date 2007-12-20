@@ -127,6 +127,14 @@ public abstract class NewsletterSubscriptionUtil {
       }
    }
 
+   public static void pauseSubscription(String userName) {
+      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_INACTIVE);
+   }
+
+   public static void resumeSubscription(String userName) {
+      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_ACTIVE);
+   }
+
    private static void subscribe(String userName, List<String> objects, String prefType) {
       if (userName != null && objects != null) {
          for (int i = 0; i < objects.size(); i++) {
@@ -139,6 +147,7 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static void subscribeToNewsletters(String userName, List<String> newsletters) {
       subscribe(userName, newsletters, NEWSLETTER);
+      NewsletterCommunication.setUserPreference(userName, "subscribtiondate", String.valueOf(System.currentTimeMillis()));
    }
 
    public static void subscribeToTheme(String userName, String theme) {
@@ -158,8 +167,9 @@ public abstract class NewsletterSubscriptionUtil {
       }
    }
 
-   public static void unsubscribeFromAllThemes(String userName) {
+   public static void unsubscribeFromAllNewsletters(String userName) {
       if (userName != null) {
+         NewsletterCommunication.removeUserPreference(userName, NEWSLETTER);
          NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME);
       }
    }

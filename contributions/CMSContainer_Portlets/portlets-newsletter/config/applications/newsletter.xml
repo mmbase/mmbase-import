@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="newsletter" maintainer="finalist.com" version="6" auto-deploy="true">
+<application name="newsletter" maintainer="finalist.com" version="9" auto-deploy="true">
 	<requirements>
 		<requires name="sitemanagement" maintainer="finalist.com" version="1" type="application" />
 		<requires name="contentrepository" maintainer="finalist.com" version="2" type="application" />
 	</requirements>
 	<neededbuilderlist>
-		<builder maintainer="finalist.com" version="2">newsletter</builder>
+		<builder maintainer="finalist.com" version="3">newsletter</builder>
 		<builder maintainer="finalist.com" version="2">newslettertheme</builder>
 		<builder maintainer="finalist.com" version="2">newsletterpublication</builder>
 		<builder maintainer="finalist.com" version="2">newsletterpublicationtheme</builder>
