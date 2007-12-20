@@ -34,8 +34,8 @@ public class NewsletterOverviewBean {
     * @param numberOfSubscriptions
     *           the numberOfSubscriptions to set
     */
-   public void setNumberOfSubscriptions(int numberOfSubscriptions) {      
-      this.numberOfSubscriptions = 0 +  numberOfSubscriptions;
+   public void setNumberOfSubscriptions(int numberOfSubscriptions) {
+      this.numberOfSubscriptions = 0 + numberOfSubscriptions;
    }
 
    /**
@@ -65,7 +65,7 @@ public class NewsletterOverviewBean {
     *           the numberOfPublications to set
     */
    public void setNumberOfPublications(int numberOfPublications) {
-      this.numberOfPublications = 0 +  numberOfPublications;
+      this.numberOfPublications = 0 + numberOfPublications;
    }
 
    public NewsletterOverviewBean() {
@@ -80,7 +80,8 @@ public class NewsletterOverviewBean {
    }
 
    /**
-    * @param number the number to set
+    * @param number
+    *           the number to set
     */
    public void setNumber(int number) {
       this.number = number;

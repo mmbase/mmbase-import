@@ -10,6 +10,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 
 import com.finalist.newsletter.module.bean.NewsletterDetailBean;
 import com.finalist.newsletter.module.bean.NewsletterOverviewBean;
@@ -29,6 +31,7 @@ public class NewsletterAction extends Action {
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
       String action = request.getParameter("action");
       ActionForward actionForward = mapping.findForward("error");
+      ActionMessages errors = new ActionMessages();
 
       if (action != null) {
          if (action.equals("overview")) {
@@ -36,18 +39,31 @@ public class NewsletterAction extends Action {
             if (beanList != null) {
                request.setAttribute("newsletterOverviewBeans", beanList);
                actionForward = mapping.findForward("overview");
+            } else {
+               errors.add("error", new ActionMessage("error.no_items"));
+               actionForward = mapping.findForward("error");
             }
          } else if (action.equals("detail")) {
             String newsletterNumber = request.getParameter("number");
             if (newsletterNumber != null) {
                NewsletterDetailBean bean = BeanUtil.createNewsletterDetailBean(newsletterNumber);
                if (bean != null) {
-                  request.setAttribute("newsletterDetailBean", bean);
-                  actionForward = mapping.findForward("detail");
+                  if (bean.getSubscribers() != null && bean.getSubscribers().size() > 0) {
+                     request.setAttribute("newsletterDetailBean", bean);
+                     actionForward = mapping.findForward("detail");
+
+                  } else {
+                     errors.add("error", new ActionMessage("error.no_items"));
+                     actionForward = mapping.findForward("error");
+                  }
+               } else {
+                  errors.add("error", new ActionMessage("error.no_data"));
+                  actionForward = mapping.findForward("error");                  
                }
             }
          }
       }
+      saveErrors(request, errors);
       return (actionForward);
    }
 

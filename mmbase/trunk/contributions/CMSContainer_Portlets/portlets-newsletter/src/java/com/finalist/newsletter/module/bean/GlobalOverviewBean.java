@@ -2,18 +2,13 @@ package com.finalist.newsletter.module.bean;
 
 public class GlobalOverviewBean {
 
-   private int numberOfNewsletters;
-   private int numberOfThemes;
-   private int numberOfPublications;
-   private int numberOfSentEmails;
-   private int numberOfSubscribtions;
+   private int numberOfNewsletters = 0;
+   private int numberOfThemes = 0;
+   private int numberOfPublications = 0;
+   private int numberOfSentEmails = 0;
+   private int numberOfSubscribtions = 0;
 
    public GlobalOverviewBean() {
-      this.numberOfNewsletters = 0;
-      this.numberOfThemes = 0;
-      this.numberOfPublications = 0;
-      this.numberOfSentEmails = 0;
-      this.numberOfSubscribtions = 0;
    }
 
    /**
@@ -28,7 +23,7 @@ public class GlobalOverviewBean {
     *           the numberOfNewsletters to set
     */
    public void setNumberOfNewsletters(int numberOfNewsletters) {
-      this.numberOfNewsletters = numberOfNewsletters;
+      this.numberOfNewsletters = 0 + numberOfNewsletters;
    }
 
    /**
@@ -43,7 +38,7 @@ public class GlobalOverviewBean {
     *           the numberOfThemes to set
     */
    public void setNumberOfThemes(int numberOfThemes) {
-      this.numberOfThemes = numberOfThemes;
+      this.numberOfThemes = 0 + numberOfThemes;
    }
 
    /**
@@ -58,7 +53,7 @@ public class GlobalOverviewBean {
     *           the numberOfPublications to set
     */
    public void setNumberOfPublications(int numberOfPublications) {
-      this.numberOfPublications = numberOfPublications;
+      this.numberOfPublications = 0 + numberOfPublications;
    }
 
    /**
@@ -73,7 +68,7 @@ public class GlobalOverviewBean {
     *           the numberOfSentEmails to set
     */
    public void setNumberOfSentEmails(int numberOfSentEmails) {
-      this.numberOfSentEmails = numberOfSentEmails;
+      this.numberOfSentEmails = 0 + numberOfSentEmails;
    }
 
    /**
@@ -88,6 +83,6 @@ public class GlobalOverviewBean {
     *           the numberOfSubscribtions to set
     */
    public void setNumberOfSubscribtions(int numberOfSubscribtions) {
-      this.numberOfSubscribtions = numberOfSubscribtions;
+      this.numberOfSubscribtions = 0 + numberOfSubscribtions;
    }
 }

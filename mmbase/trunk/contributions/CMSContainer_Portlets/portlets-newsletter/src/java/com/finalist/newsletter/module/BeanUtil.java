@@ -61,12 +61,12 @@ public final class BeanUtil {
       int numberOfThemes = NewsletterUtil.countThemes();
       bean.setNumberOfThemes(numberOfThemes);
 
-      int numberOfPublications = NewsletterUtil.countPublications(); 
+      int numberOfPublications = NewsletterUtil.countPublications();
       bean.setNumberOfPublications(numberOfPublications);
-      
+
       int numberOfSubscribtions = NewsletterSubscriptionUtil.countSubscriptions();
       bean.setNumberOfSentEmails(numberOfSubscribtions);
-      
+
       return (bean);
    }
 

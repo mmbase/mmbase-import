@@ -26,6 +26,9 @@
 			<forward name="overview" path="/editors/newsletter/module/subscriptionoverview.jsp" redirect="false" />
 			<forward name="detail" path="/editors/newsletter/module/subscriptiondetail.jsp" redirect="false" />
 		</action>
+		<action path="/editors/newsletter/module/SubscriberAction" type="com.finalist.newsletter.module.SubscriberAction" unknown="false" validate="false">
+			<forward name="return" path="/editors/newsletter/module/SubscriptionAction.do?action=detail" redirect="false" />
+		</action>
 
 		<!-- ==== Select page nodes ==== -->
 
