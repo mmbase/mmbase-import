@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
+ * @version $Id: State.java,v 1.2 2007-12-21 15:59:28 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -213,7 +213,11 @@ public class State {
         if (blockName == null) {
             return r;
         } else {
-            return block.getComponent().getBlock(blockName).getRenderer(r.getType());
+            Block toBlock = block.getComponent().getBlock(blockName);
+            if (toBlock == null) {
+                throw new RuntimeException("No such block '" + blockName + "' in " + block.getComponent());
+            }
+            return toBlock.getRenderer(r.getType());
         }
     }
 
