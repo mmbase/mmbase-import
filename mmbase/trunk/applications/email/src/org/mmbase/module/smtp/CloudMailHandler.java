@@ -25,7 +25,7 @@ import org.mmbase.applications.email.SendMail;
  * This MailHandler dispatched the received Mail Message to MMBase objects. This makes it possible
  * to implement web-mail.
  *
- * @version $Id: CloudMailHandler.java,v 1.8 2007-12-06 10:58:22 michiel Exp $
+ * @version $Id: CloudMailHandler.java,v 1.9 2007-12-21 10:16:06 michiel Exp $
  */
 public class CloudMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(CloudMailHandler.class);
@@ -42,6 +42,9 @@ public class CloudMailHandler implements MailHandler {
 
         MailBox(Node b, Node u) {
             box = b; user = u;
+        }
+        public String toString() {
+            return user.getNumber() + ":" + box.getNumber();
         }
     }
 
@@ -148,10 +151,11 @@ public class CloudMailHandler implements MailHandler {
 
         int deliverCount = 0;
         int errorCount = 0;
+        if (log.isDebugEnabled()) {
+            log.debug("Delivering to mailboxes " + mailboxes);
+        }
         for (MailBox mailbox : mailboxes) {
-            if (log.isDebugEnabled()) {
-                log.debug("Delivering to mailbox node " + mailbox.box.getNumber());
-            }
+
             Node email = emailbuilder.createNode();
             if (properties.containsKey("emailbuilder.typefield")) {
                  email.setIntValue(properties.get("emailbuilder.typefield"), 2); // new unread mail
@@ -538,46 +542,27 @@ public class CloudMailHandler implements MailHandler {
             return MailBoxStatus.NO_SUCH_USER;
         }
         Node userNode = nodelist.getNode(0);
-        if (properties.containsKey("mailboxbuilder")) {
-            String where = null;
-            String mailboxbuilder = properties.get("mailboxbuilder");
-            log.debug("Finding mailbox of type " + mailboxbuilder + " for user " + userNode.getNumber());
-            NodeManager mailboxesManager = cloud.getNodeManager(mailboxbuilder);
-            NodeQuery query = Queries.createRelatedNodesQuery(userNode, mailboxesManager, null, null);
-            if (properties.containsKey("mailboxbuilder.where")) {
-                where = properties.get("mailboxbuilder.where");
-                Queries.addConstraints(query, where);
+        log.debug("User " + userNode.getNumber());
+        try {
+            Function in = userNode.getFunction("in_mailbox");
+            Parameters params = in.createParameters();
+            NoMailBox notfoundaction = NoMailBox.BOUNCE;
+            if (properties.containsKey("mailboxbuilder.notfound")) {
+                notfoundaction = NoMailBox.valueOf(properties.get("mailboxbuilder.notfound").toUpperCase());
             }
-            NodeList list = mailboxesManager.getList(query);
-
-            if (list.size() == 1) {
-                Node mailbox = list.getNode(0);
-                mailboxes.add(new MailBox(mailbox, userNode));
+            params.set("create", notfoundaction == NoMailBox.CREATE);
+            Node mailbox = org.mmbase.util.Casting.toNode(in.getFunctionValue(params), cloud);
+            if (mailbox != null) {
+                MailBox mb = new MailBox(mailbox, userNode);
+                log.debug("found mb " + mb);
+                mailboxes.add(mb);
                 return MailBoxStatus.OK;
-            } else if (list.size() == 0) {
-                NoMailBox notfoundaction = NoMailBox.BOUNCE;
-                if (properties.containsKey("mailboxbuilder.notfound")) {
-                    notfoundaction = NoMailBox.valueOf(properties.get("mailboxbuilder.notfound").toUpperCase());
-                }
-                switch(notfoundaction) {
-                case CREATE:
-
-                    try {
-                        log.service("Creting inbox for user " + userNode + " because one is missing");
-                        Node mailbox = userNode.getFunctionValue("createInbox", null).toNode();
-                        mailboxes.add(new MailBox(mailbox, userNode));
-                        return MailBoxStatus.OK;
-                    } catch (Exception nfe) {
-                        log.error(nfe);
-                        return MailBoxStatus.CANT_CREATE_INBOX;
-                    }
-                default: return MailBoxStatus.NO_INBOX;
-                }
             } else {
-                log.error("Too many mailboxes for user '" + user + "'");
-                return MailBoxStatus.TOO_MANY_INBOXES;
+                return MailBoxStatus.NO_INBOX;
             }
-        } else {
+        } catch (NotFoundException nfe) {
+            log.debug(nfe.getMessage() + " coupling to user");
+            // no such function
             mailboxes.add(new MailBox(userNode, userNode));
             return MailBoxStatus.OK;
         }
