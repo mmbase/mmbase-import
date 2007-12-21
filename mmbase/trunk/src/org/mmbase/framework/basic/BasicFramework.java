@@ -37,7 +37,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.3 2007-12-05 16:31:51 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.4 2007-12-21 16:13:45 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -45,6 +45,12 @@ public class BasicFramework extends Framework {
 
     private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
 
+    public static final String XSD = "basicframework.xsd";
+    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/basicframework";
+
+    static {
+        XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
+    }
     /**
      * A framework must be able to provide a node to the rendered blocks. This parameter could
      * indicate _which_ node.
