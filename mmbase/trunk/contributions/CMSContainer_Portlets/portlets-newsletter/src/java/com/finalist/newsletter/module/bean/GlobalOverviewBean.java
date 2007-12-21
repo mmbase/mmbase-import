@@ -19,11 +19,24 @@ public class GlobalOverviewBean {
    }
 
    /**
-    * @param numberOfNewsletters
-    *           the numberOfNewsletters to set
+    * @return the numberOfPublications
     */
-   public void setNumberOfNewsletters(int numberOfNewsletters) {
-      this.numberOfNewsletters = 0 + numberOfNewsletters;
+   public int getNumberOfPublications() {
+      return numberOfPublications;
+   }
+
+   /**
+    * @return the numberOfSentEmails
+    */
+   public int getNumberOfSentEmails() {
+      return numberOfSentEmails;
+   }
+
+   /**
+    * @return the numberOfSubscribtions
+    */
+   public int getNumberOfSubscribtions() {
+      return numberOfSubscribtions;
    }
 
    /**
@@ -34,18 +47,11 @@ public class GlobalOverviewBean {
    }
 
    /**
-    * @param numberOfThemes
-    *           the numberOfThemes to set
+    * @param numberOfNewsletters
+    *           the numberOfNewsletters to set
     */
-   public void setNumberOfThemes(int numberOfThemes) {
-      this.numberOfThemes = 0 + numberOfThemes;
-   }
-
-   /**
-    * @return the numberOfPublications
-    */
-   public int getNumberOfPublications() {
-      return numberOfPublications;
+   public void setNumberOfNewsletters(int numberOfNewsletters) {
+      this.numberOfNewsletters = 0 + numberOfNewsletters;
    }
 
    /**
@@ -57,13 +63,6 @@ public class GlobalOverviewBean {
    }
 
    /**
-    * @return the numberOfSentEmails
-    */
-   public int getNumberOfSentEmails() {
-      return numberOfSentEmails;
-   }
-
-   /**
     * @param numberOfSentEmails
     *           the numberOfSentEmails to set
     */
@@ -72,17 +71,18 @@ public class GlobalOverviewBean {
    }
 
    /**
-    * @return the numberOfSubscribtions
-    */
-   public int getNumberOfSubscribtions() {
-      return numberOfSubscribtions;
-   }
-
-   /**
     * @param numberOfSubscribtions
     *           the numberOfSubscribtions to set
     */
    public void setNumberOfSubscribtions(int numberOfSubscribtions) {
       this.numberOfSubscribtions = 0 + numberOfSubscribtions;
+   }
+
+   /**
+    * @param numberOfThemes
+    *           the numberOfThemes to set
+    */
+   public void setNumberOfThemes(int numberOfThemes) {
+      this.numberOfThemes = 0 + numberOfThemes;
    }
 }

@@ -17,6 +17,11 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
 
    protected static final String FEATURE_WORKFLOW = "workflowitem";
 
+   @SuppressWarnings("unused")
+   public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
+      // nothing
+   }
+
    public TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model) {
       UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentNode, false);
       boolean secure = parentNode.getBooleanValue(PagesUtil.SECURE_FIELD);
@@ -50,11 +55,6 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
 
       return element;
-   }
-
-   @SuppressWarnings("unused")
-   public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
-      // nothing
    }
 
    public boolean showChildren(Node parentNode) {

@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import com.finalist.cmsc.services.community.NewsletterCommunication;
 import com.finalist.newsletter.NewsletterGeneratorFactory;
 
 public abstract class NewsletterSubscriptionUtil {
 
-   private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionUtil.class.getName());
    private static final ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettersubscription");
 
    public static final String NEWSLETTER = "newsletter";
@@ -40,14 +36,14 @@ public abstract class NewsletterSubscriptionUtil {
    // public static final List AVAILABLE_MIMETYPES = new ArrayList<String>()
    // {MIMETYPE_HTML, MIMETYPE_PLAIN;;
 
-   public static List<String> compareToUserSubscribedThemes(List<String> compareWithThemes, String userName, String newsletterNumber) {
-      if (compareWithThemes == null || userName == null || newsletterNumber == null) {
+   public static List<Integer> compareToUserSubscribedThemes(List<Integer> compareWithThemes, String userName, int newsletterNumber) {
+      if (compareWithThemes == null || userName == null || newsletterNumber <= 0) {
          return (null);
       }
-      List<String> userThemes = getUserSubscribedThemes(userName, newsletterNumber);
-      List<String> themes = new ArrayList<String>();
+      List<Integer> userThemes = getUserSubscribedThemes(userName, newsletterNumber);
+      List<Integer> themes = new ArrayList<Integer>();
       for (int i = 0; i < compareWithThemes.size(); i++) {
-         String theme = compareWithThemes.get(i);
+         int theme = compareWithThemes.get(i);
          if (userThemes.contains(theme)) {
             themes.add(theme);
          }
@@ -55,10 +51,49 @@ public abstract class NewsletterSubscriptionUtil {
       return (themes);
    }
 
+   public static int countSubscriptions() {
+      int number = NewsletterCommunication.countByKey(NEWSLETTER);
+      return (number);
+   }
+
+   public static int countSubscriptions(int newsletterNumber) {
+      int number = NewsletterCommunication.countK(NEWSLETTER, String.valueOf(newsletterNumber));
+      return (number);
+   }
+
+   public static List<String> getAllUsersWithSubscription() {
+      List<String> users = null;
+      return (users);
+   }
+
+   public static int getNumberOfSubscribedNewsletters(String userName) {
+      int amount = 0;
+      if (userName != null) {
+         amount = NewsletterCommunication.count(userName, NEWSLETTER);
+      }
+      return (amount);
+   }
+
+   public static int getNumberOfSubscribedThemes(String userName, int newsletterNumber) {
+      int amount = 0;
+      if (userName != null && newsletterNumber > 0) {
+         List<Integer> themesList = NewsletterUtil.getAllThemes(newsletterNumber);
+         if (themesList != null) {
+            List<String> subscribedThemes = NewsletterCommunication.getUserPreferences(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
+            for (int t = 0; t < themesList.size(); t++) {
+               int theme = Integer.valueOf(themesList.get(t));
+               if (subscribedThemes.contains(theme)) {
+                  amount++;
+               }
+            }
+         }
+      }
+      return (amount);
+   }
+
    public static String getPreferredMimeType(String userName) {
       if (userName != null) {
          String preferredMimeType = NewsletterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE);
-         log.debug("Found preferred mimetype " + preferredMimeType + " for user " + userName);
          return (preferredMimeType);
       }
       return (null);
@@ -68,8 +103,8 @@ public abstract class NewsletterSubscriptionUtil {
       return (statusOptions);
    }
 
-   public static List<String> getSubscribersForNewsletter(String newsletterNumber) {
-      List<String> subscribers = NewsletterCommunication.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, newsletterNumber);
+   public static List<String> getSubscribersForNewsletter(int newsletterNumber) {
+      List<String> subscribers = NewsletterCommunication.getUsersWithPreferences(NewsletterUtil.NEWSLETTER, String.valueOf(newsletterNumber));
       return (subscribers);
    }
 
@@ -77,28 +112,56 @@ public abstract class NewsletterSubscriptionUtil {
       return (NewsletterCommunication.getUserPreference(userName, SUBSCRIPTION_STATUS_KEY));
    }
 
-   public static List<String> getUserSubscribedThemes(String userName) {
-      if (userName != null) {
-         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, NEWSLETTER_THEME);
-         return (themeList);
-      }
-      return (null);
-   }
-
-   public static List<String> getUserSubscribedNewsletters(String userName) {
+   public static List<Integer> getUserSubscribedNewsletters(String userName) {
       if (userName != null) {
          List<String> newsletterList = NewsletterCommunication.getUserPreferences(userName, NEWSLETTER);
-         return (newsletterList);
+         List<Integer> newsletters = new ArrayList<Integer>();
+         if (newsletterList != null) {
+            for (int i = 0; i < newsletterList.size(); i++) {
+               newsletters.add(Integer.valueOf(newsletterList.get(i)));
+            }
+         }
+         return (newsletters);
       }
       return (null);
    }
 
-   public static List<String> getUserSubscribedThemes(String userName, String newsletterNumber) {
-      if (userName != null && newsletterNumber != null) {
-         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");
-         return (themeList);
+   public static List<Integer> getUserSubscribedThemes(String userName) {
+      if (userName != null) {
+         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, NEWSLETTER_THEME);
+         List<Integer> themes = new ArrayList<Integer>();
+         if (themeList != null) {
+            for (int i = 0; i < themeList.size(); i++) {
+               themes.add(Integer.valueOf(themeList.get(i)));
+            }
+         }
+
+         return (themes);
       }
       return (null);
+   }
+
+   public static List<Integer> getUserSubscribedThemes(String userName, int newsletterNumber) {
+      if (userName != null && newsletterNumber > 0) {
+         List<String> themeList = NewsletterCommunication.getUserPreferences(userName, "newslettertheme");
+         List<Integer> themes = new ArrayList<Integer>();
+         if (themeList != null) {
+            for (int i = 0; i < themeList.size(); i++) {
+               themes.add(Integer.valueOf(themeList.get(i)));
+            }
+         }
+
+         return (themes);
+      }
+      return (null);
+   }
+
+   public static void pauseSubscription(String userName) {
+      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_INACTIVE);
+   }
+
+   public static void resumeSubscription(String userName) {
+      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_ACTIVE);
    }
 
    public static void setPreferredMimeType(String userName, String mimeType) {
@@ -108,7 +171,6 @@ public abstract class NewsletterSubscriptionUtil {
          }
          NewsletterCommunication.removeUserPreference(userName, PREFERRED_MIMETYPE);
          NewsletterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
-         log.debug("Preferred mimetype for user " + userName + " set to " + mimeType);
       }
    }
 
@@ -120,50 +182,38 @@ public abstract class NewsletterSubscriptionUtil {
          if (statusOptions.contains(status)) {
             NewsletterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
             NewsletterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
-            log.debug("Subscription status for user " + userName + " set to " + status);
             return;
          }
-         log.debug("Unknown status type: " + status);
       }
    }
 
-   public static void pauseSubscription(String userName) {
-      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_INACTIVE);
-   }
-
-   public static void resumeSubscription(String userName) {
-      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_ACTIVE);
-   }
-
-   private static void subscribe(String userName, List<String> objects, String prefType) {
+   private static void subscribe(String userName, List<Integer> objects, String prefType) {
       if (userName != null && objects != null) {
          for (int i = 0; i < objects.size(); i++) {
-            String objectNumber = objects.get(i);
-            NewsletterCommunication.setUserPreference(userName, prefType, objectNumber);
-            log.debug("Adding preference " + prefType + " - " + objectNumber + " to user " + userName);
+            int objectNumber = objects.get(i);
+            NewsletterCommunication.setUserPreference(userName, prefType, String.valueOf(objectNumber));
          }
       }
    }
 
-   public static void subscribeToNewsletters(String userName, List<String> newsletters) {
+   public static void subscribeToNewsletters(String userName, List<Integer> newsletters) {
       subscribe(userName, newsletters, NEWSLETTER);
       NewsletterCommunication.setUserPreference(userName, "subscribtiondate", String.valueOf(System.currentTimeMillis()));
    }
 
-   public static void subscribeToTheme(String userName, String theme) {
-      if (userName != null && theme != null) {
-         NewsletterCommunication.setUserPreference(userName, NEWSLETTER_THEME, theme);
+   public static void subscribeToTheme(String userName, int theme) {
+      if (userName != null && theme > 0) {
+         NewsletterCommunication.setUserPreference(userName, NEWSLETTER_THEME, String.valueOf(theme));
       }
    }
 
-   public static void subscribeToThemes(String userName, List<String> themes) {
+   public static void subscribeToThemes(String userName, List<Integer> themes) {
       subscribe(userName, themes, NEWSLETTER_THEME);
    }
 
    public static void terminateUserSubscription(String userName) {
       if (userName != null) {
          NewsletterCommunication.removeNewsPrefByUser(userName);
-         log.debug("Subscriptions for user " + userName + " terminated");
       }
    }
 
@@ -174,58 +224,19 @@ public abstract class NewsletterSubscriptionUtil {
       }
    }
 
-   public static void unsubscribeFromTheme(String userName, String theme) {
-      if (userName != null && theme != null) {
-         NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, theme);
+   public static void unsubscribeFromTheme(String userName, int theme) {
+      if (userName != null && theme > 0) {
+         NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, String.valueOf(theme));
       }
    }
 
-   public static void unsubscribeFromThemes(String userName, List<String> themes) {
+   public static void unsubscribeFromThemes(String userName, List<Integer> themes) {
       if (userName != null && themes != null) {
          for (int i = 0; i < themes.size(); i++) {
-            NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, themes.get(i));
+            int theme = themes.get(i);
+            NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME, String.valueOf(theme));
          }
       }
-   }
-
-   public static int getNumberOfSubscribedNewsletters(String userName) {
-      int amount = 0;
-      if (userName != null) {
-         amount = NewsletterCommunication.count(userName, NEWSLETTER);
-      }
-      return (amount);
-   }
-
-   public static int getNumberOfSubscribedThemes(String userName, String newsletterNumber) {
-      int amount = 0;
-      if (userName != null && newsletterNumber != null) {
-         List<String> themesList = NewsletterUtil.getAllThemes(newsletterNumber);
-         if (themesList != null) {
-            List<String> subscribedThemes = NewsletterCommunication.getUserPreferences(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
-            for (int t = 0; t < themesList.size(); t++) {
-               String theme = themesList.get(t);
-               if (subscribedThemes.contains(theme)) {
-                  amount++;
-               }
-            }
-         }
-      }
-      return (amount);
-   }
-
-   public static List<String> getAllUsersWithSubscription() {
-      List<String> users = null;
-      return (users);
-   }
-
-   public static int countSubscriptions(String newsletterNumber) {
-      int number = NewsletterCommunication.countK(NEWSLETTER, newsletterNumber);
-      return (number);
-   }
-
-   public static int countSubscriptions() {
-      int number = NewsletterCommunication.countByKey(NEWSLETTER);
-      return (number);
    }
 
 }

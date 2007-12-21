@@ -14,44 +14,6 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public final class BeanUtil {
 
-   public static NewsletterOverviewBean createNewsletterOverviewBean(String newsletterNumber) {
-      NewsletterOverviewBean bean = new NewsletterOverviewBean();
-      bean.setNumber(Integer.parseInt(newsletterNumber));
-
-      String title = NewsletterUtil.getTitle(newsletterNumber);
-      bean.setTitle(title);
-
-      int numberOfThemes = NewsletterUtil.countThemes(newsletterNumber);
-      bean.setNumberOfThemes(numberOfThemes);
-
-      int numberOfPublications = NewsletterUtil.countPublications(newsletterNumber);
-      bean.setNumberOfPublications(numberOfPublications);
-
-      int numberOfSubscribers = NewsletterSubscriptionUtil.countSubscriptions(newsletterNumber);
-      bean.setNumberOfSubscriptions(numberOfSubscribers);
-
-      return (bean);
-   }
-
-   public static SubscriptionOverviewBean createSubscriptionOverviewBean(String userName) {
-      SubscriptionOverviewBean bean = new SubscriptionOverviewBean();
-      bean.setUserName(userName);
-
-      String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-      bean.setStatus(status);
-
-      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
-      bean.setMimeType(mimeType);
-
-      int numberOfNewsletters = NewsletterSubscriptionUtil.getNumberOfSubscribedNewsletters(userName);
-      bean.setNumberOfNewsletters(numberOfNewsletters);
-
-      int numberOfThemes = 0;
-      bean.setNumberOfThemes(numberOfThemes);
-
-      return (bean);
-   }
-
    public static GlobalOverviewBean createGlobalOverviewBean() {
       GlobalOverviewBean bean = new GlobalOverviewBean();
 
@@ -70,11 +32,11 @@ public final class BeanUtil {
       return (bean);
    }
 
-   public static NewsletterDetailBean createNewsletterDetailBean(String newsletterNumber) {
+   public static NewsletterDetailBean createNewsletterDetailBean(int newsletterNumber) {
       NewsletterDetailBean bean = new NewsletterDetailBean();
-      bean.setNumber(Integer.parseInt(newsletterNumber));
+      bean.setNumber(newsletterNumber);
 
-      String title = NewsletterUtil.getTitle(String.valueOf(newsletterNumber));
+      String title = NewsletterUtil.getTitle(newsletterNumber);
       bean.setTitle(title);
 
       List<NewsletterSubscriberBean> subscribers = new ArrayList<NewsletterSubscriberBean>();
@@ -96,6 +58,25 @@ public final class BeanUtil {
       return (bean);
    }
 
+   public static NewsletterOverviewBean createNewsletterOverviewBean(int newsletterNumber) {
+      NewsletterOverviewBean bean = new NewsletterOverviewBean();
+      bean.setNumber(newsletterNumber);
+
+      String title = NewsletterUtil.getTitle(newsletterNumber);
+      bean.setTitle(title);
+
+      int numberOfThemes = NewsletterUtil.countThemes(newsletterNumber);
+      bean.setNumberOfThemes(numberOfThemes);
+
+      int numberOfPublications = NewsletterUtil.countPublications(newsletterNumber);
+      bean.setNumberOfPublications(numberOfPublications);
+
+      int numberOfSubscribers = NewsletterSubscriptionUtil.countSubscriptions(newsletterNumber);
+      bean.setNumberOfSubscriptions(numberOfSubscribers);
+
+      return (bean);
+   }
+
    public static SubscriptionDetailBean createSubscriptionDetailBean(String userName) {
       SubscriptionDetailBean bean = new SubscriptionDetailBean();
       bean.setUserName(userName);
@@ -108,6 +89,25 @@ public final class BeanUtil {
 
       String emailAddress = ""; // TODO: Get email address from session
       bean.setEmailAddress(emailAddress);
+
+      return (bean);
+   }
+
+   public static SubscriptionOverviewBean createSubscriptionOverviewBean(String userName) {
+      SubscriptionOverviewBean bean = new SubscriptionOverviewBean();
+      bean.setUserName(userName);
+
+      String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
+      bean.setStatus(status);
+
+      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
+      bean.setMimeType(mimeType);
+
+      int numberOfNewsletters = NewsletterSubscriptionUtil.getNumberOfSubscribedNewsletters(userName);
+      bean.setNumberOfNewsletters(numberOfNewsletters);
+
+      int numberOfThemes = 0;
+      bean.setNumberOfThemes(numberOfThemes);
 
       return (bean);
    }

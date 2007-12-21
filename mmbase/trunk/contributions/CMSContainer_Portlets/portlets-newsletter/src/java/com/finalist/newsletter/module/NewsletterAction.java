@@ -19,6 +19,19 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterAction extends Action {
 
+   private List<NewsletterOverviewBean> createOverview() {
+      List<NewsletterOverviewBean> beanList = new ArrayList<NewsletterOverviewBean>();
+      List<Integer> newsletters = NewsletterUtil.getAllNewsletters();
+      if (newsletters != null && newsletters.size() > 0) {
+         for (int n = 0; n < newsletters.size(); n++) {
+            int newsletterNumber = newsletters.get(n);
+            NewsletterOverviewBean bean = BeanUtil.createNewsletterOverviewBean(newsletterNumber);
+            beanList.add(bean);
+         }
+      }
+      return beanList;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -44,8 +57,8 @@ public class NewsletterAction extends Action {
                actionForward = mapping.findForward("error");
             }
          } else if (action.equals("detail")) {
-            String newsletterNumber = request.getParameter("number");
-            if (newsletterNumber != null) {
+            int newsletterNumber = Integer.parseInt(request.getParameter("number"));
+            if (newsletterNumber > 0) {
                NewsletterDetailBean bean = BeanUtil.createNewsletterDetailBean(newsletterNumber);
                if (bean != null) {
                   if (bean.getSubscribers() != null && bean.getSubscribers().size() > 0) {
@@ -58,25 +71,12 @@ public class NewsletterAction extends Action {
                   }
                } else {
                   errors.add("error", new ActionMessage("error.no_data"));
-                  actionForward = mapping.findForward("error");                  
+                  actionForward = mapping.findForward("error");
                }
             }
          }
       }
       saveErrors(request, errors);
       return (actionForward);
-   }
-
-   private List<NewsletterOverviewBean> createOverview() {
-      List<NewsletterOverviewBean> beanList = new ArrayList<NewsletterOverviewBean>();
-      List<String> newsletters = NewsletterUtil.getAllNewsletters();
-      if (newsletters != null && newsletters.size() > 0) {
-         for (int n = 0; n < newsletters.size(); n++) {
-            String newsletterNumber = newsletters.get(n);
-            NewsletterOverviewBean bean = BeanUtil.createNewsletterOverviewBean(newsletterNumber);
-            beanList.add(bean);
-         }
-      }
-      return beanList;
    }
 }
