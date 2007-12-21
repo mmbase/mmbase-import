@@ -491,9 +491,7 @@
     <function key="hasrole">
       <class>nl.didactor.util.ClassRoom</class>
     </function>
-    <function key="createInbox">
-      <class>nl.didactor.builders.PeopleEmailFunctions</class>
-    </function>
+
     <function key="forwardEmail">
       <class>nl.didactor.builders.PeopleEmailFunctions</class>
     </function>
