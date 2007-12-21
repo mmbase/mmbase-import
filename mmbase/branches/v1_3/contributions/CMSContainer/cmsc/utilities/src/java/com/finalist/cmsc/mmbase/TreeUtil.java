@@ -425,20 +425,18 @@ public class TreeUtil {
     }
 
     public static NodeList getChildren(Node parentNode, String[] treeManagers, String relationName) {
+        NodeList list = parentNode.getCloud().createNodeList();
         for (int i = 0; i < treeManagers.length; i++) {
             String manager = treeManagers[i];
             
             if (parentNode.getCloud().hasRelationManager(parentNode.getNodeManager().getName(), manager, relationName)) {
-                NodeList childerenList = parentNode.getRelatedNodes(manager, relationName, DESTINATION);
-                if (!childerenList.isEmpty()) {
-                   return childerenList;
-                }
-                if (i == treeManagers.length -1) {
-                    return childerenList;
+                NodeList childrenList = parentNode.getRelatedNodes(manager, relationName, DESTINATION);
+                if (!childrenList.isEmpty()) {
+                   list.addAll(childrenList);
                 }
             }
         }
-        return null;
+        return list;
     }
     
     public static NodeList getChildren(Node parentNode, String relationName) {
