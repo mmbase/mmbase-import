@@ -22,10 +22,7 @@
 
 <mm:import externid="idCount"/>
 
-
-<!-- wtf -->
-<mm:import externid="ids" />
-<mm:import id="list" jspvar="list" vartype="list"><mm:write referid="ids"/></mm:import>
+<mm:import  externid="ids" jspvar="list" vartype="list" />
 
 <mm:import externid="action1"/>
 <mm:import externid="action2"/>
@@ -44,13 +41,13 @@
 
     <%-- from deleted items mailbox: do a real delete --%>
     <mm:compare referid="type" value="2">
-
       <%--
       MM. Seems like a security-hole. I think you can delete any node related to a node with a 'type' field with this JSP
       --%>
       <mm:relatednodescontainer type="object">
-        <mm:constraint field="number" referid="list" operator="IN"/>
+        <mm:constraint field="number" referid="ids" operator="IN"/>
         <mm:relatednodes>
+
           <mm:deletenode deleterelations="true"/>
         </mm:relatednodes>
       </mm:relatednodescontainer>
@@ -64,23 +61,16 @@
 
       <%-- Get the name of the deleted items mailbox --%>
       <mm:node number="$user">
-        <mm:relatednodescontainer type="mailboxes">
-          <mm:constraint field="type" value="2"/>
-          <mm:relatednodes>
-            <mm:field id="mailboxname" name="number" write="false" />
-          </mm:relatednodes>
-        </mm:relatednodescontainer>
+        <mm:nodefunction id="trash" name="trash_mailbox" />
       </mm:node>
 
       <%-- from any other mailbox: do a move items to deleted items mailbox --%>
-      <mm:redirect page="/email/moveitems.jsp" referids="$referids,so?,sf?">
+      <mm:redirect page="/email/moveitems.jsp" referids="$referids,so?,sf?,trash@mailboxname,ids">
         <mm:param name="submitted" value="true"/>
         <mm:param name="action1"><di:translate key="email.move" /></mm:param>
         <mm:param name="callerpage"><mm:write referid="callerpage"/></mm:param>
         <mm:param name="mailbox"><mm:write referid="mailbox"/></mm:param>
-        <mm:param name="mailboxname"><mm:write referid="mailboxname"/></mm:param>
         <mm:param name="idCount"><mm:write referid="idCount"/></mm:param>
-        <mm:param name="ids"><mm:write referid="ids"/></mm:param>
       </mm:redirect>
     </mm:compare>
 
@@ -121,7 +111,7 @@
   <div class="contentBodywit">
 
     <%-- Show the form --%>
-    <form name="deletemailboxitemform" method="post" >
+    <form name="deletemailboxitemform" method="post" action="deleteitems.jsp">
       <di:translate key="email.deletefolderitemsyesno" />
       <br/><br/>
       <div><table class="listTable">
@@ -140,13 +130,14 @@
               <td class="listItem"><mm:field name="gui(date)" /></td>
             </tr>
           </mm:node>
-        <%} %> 
+        <%} %>
       </table></div>
       <br/><br/>
 
       <input type="hidden" name="callerpage" value="<mm:write referid="callerpage"/>"/>
       <input type="hidden" name="mailbox" value="${mailbox}" />
       <input type="hidden" name="ids" value="${ids}" />
+      <input type="hidden" name="class" value="${class}" />
       <mm:present referid="so">
         <input type="hidden" name="so" value="${so}" />
       </mm:present>
