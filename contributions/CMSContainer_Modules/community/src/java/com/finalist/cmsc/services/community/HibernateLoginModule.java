@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.finalist.cmsc.services.community.data.Group;
 import com.finalist.cmsc.services.community.data.User;
 import com.finalist.cmsc.services.community.data.GroupUserRole;
 
@@ -51,7 +52,7 @@ import com.finalist.cmsc.services.community.data.GroupUserRole;
  * @version 1.0
  */
 
-public class HibernateLoginModule implements LoginModule {
+public class HibernateLoginModule<T> implements LoginModule {
 
    private static Log log = LogFactory.getLog(HibernateLoginModule.class);
    
@@ -357,6 +358,15 @@ public class HibernateLoginModule implements LoginModule {
     * @exception Exception
     *               if the validation fails.
     */
+   public String name;
+   public void setName(String name){
+      this.name = name;
+   }
+   
+   public String getName(){
+      return name;
+   }
+   
    private boolean HibernateValidate(String user, String pass) throws Exception {
 
       HibernatePrincipal p = null;
@@ -377,6 +387,18 @@ public class HibernateLoginModule implements LoginModule {
       
       User users = hibservice.getUser(user);
       
+      /*Object clas = null;
+      
+      Class clss = getClass();
+      this.setName("mennowm");
+      Object obj  = this.getName();
+      clas = hibservice.getByParam("User", "userId", obj);
+      User testUser = (User)clas;
+      System.out.println("TestUsercompatability: " + testUser.getName() + " " + testUser.getLastname());
+      clas = hibservice.getByParam("GroupUserRole", "userId", obj);
+      GroupUserRole groups = (GroupUserRole)clas;
+      System.out.println("TestGroupUserRolecompatability: " + groups.getUserId() + " " + groups.getGroupId() + " " + groups.getRoleId());
+          */
       dbUsername = users.getUserId();
       dbPassword = users.getPassword();
       dbFname = users.getName();
@@ -409,6 +431,10 @@ public class HibernateLoginModule implements LoginModule {
                System.out.println(groupRole + " "+ groupRole);
                this.roleUiPrincipals.add(new HibernatePrincipal(groupRole));
             }
+         }
+         if(groupUserRoleList == null && groupUserRoleList.size() <= 0){
+            groupRole = "ROLE_Anonymous";
+            this.roleUiPrincipals.add(new HibernatePrincipal(groupRole));
          }
       }
       else {
