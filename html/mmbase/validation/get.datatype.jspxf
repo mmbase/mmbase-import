@@ -15,7 +15,7 @@
     Locale locale = null;
     final boolean changed = "true".equals(request.getParameter("changed"));
   </jsp:scriptlet>
-  <mm:cloud jspvar="cloud" method="asis">
+  <mm:cloud sessionname="${param.sessionname}" jspvar="cloud" method="asis">
     <jsp:scriptlet>
       locale = cloud.getLocale();
     </jsp:scriptlet>
@@ -26,9 +26,10 @@
       <mm:import externid="field"       required="true" />
       <mm:import externid="nodemanager" required="true" />
 
+      <mm:log><jsp:expression>cloud</jsp:expression></mm:log>
       <jsp:scriptlet>
         if (n != null &amp;&amp; ! "".equals(n)) {
-        node = cloud.getNode(n);
+           node = cloud.getNode(n);
         }
       </jsp:scriptlet>
       <mm:fieldlist nodetype="$nodemanager" fields="$field" jspvar="f">
