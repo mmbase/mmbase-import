@@ -229,6 +229,11 @@ public class PagesUtil {
 
    public static Node copyPage(Node sourcePage) {
       Node newPage = CloneUtil.cloneNode(sourcePage);
+      return copyPageRelations(sourcePage, newPage);
+   }
+
+
+   public static Node copyPageRelations(Node sourcePage, Node newPage) {
       CloneUtil.cloneRelations(sourcePage, newPage, LAYOUTREL, LAYOUT);
       PortletUtil.copyPortlets(sourcePage, newPage);
 
