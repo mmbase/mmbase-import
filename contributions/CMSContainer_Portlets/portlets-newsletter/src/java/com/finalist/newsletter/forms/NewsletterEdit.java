@@ -42,7 +42,7 @@ public class NewsletterEdit extends MMBaseFormlessAction {
          addToRequest(request, "showpage", ewnodelastedited);
 
          Node newsletterNode = cloud.getNode(ewnodelastedited);
-         String defaultTheme = NewsletterUtil.getDefaultTheme(ewnodelastedited);
+         int defaultTheme = NewsletterUtil.getDefaultTheme(Integer.valueOf(ewnodelastedited));
          Node defaultThemeNode = cloud.getNode(defaultTheme);
 
          defaultThemeNode.setStringValue("title", newsletterNode.getStringValue("title"));

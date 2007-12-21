@@ -10,25 +10,17 @@ public class NewsletterSubscriberBean {
    }
 
    /**
-    * @return the userName
-    */
-   public String getUserName() {
-      return userName;
-   }
-
-   /**
-    * @param userName
-    *           the userName to set
-    */
-   public void setUserName(String userName) {
-      this.userName = userName;
-   }
-
-   /**
     * @return the numberOfThemes
     */
    public int getNumberOfThemes() {
       return numberOfThemes;
+   }
+
+   /**
+    * @return the userName
+    */
+   public String getUserName() {
+      return userName;
    }
 
    /**
@@ -37,6 +29,14 @@ public class NewsletterSubscriberBean {
     */
    public void setNumberOfThemes(int numberOfThemes) {
       this.numberOfThemes = numberOfThemes;
+   }
+
+   /**
+    * @param userName
+    *           the userName to set
+    */
+   public void setUserName(String userName) {
+      this.userName = userName;
    }
 
 }

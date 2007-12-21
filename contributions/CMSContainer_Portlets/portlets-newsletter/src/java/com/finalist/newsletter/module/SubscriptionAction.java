@@ -19,6 +19,19 @@ import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class SubscriptionAction extends Action {
 
+   private List<SubscriptionOverviewBean> createOverview() {
+      List<SubscriptionOverviewBean> beanList = new ArrayList<SubscriptionOverviewBean>();
+      List<String> subscribers = NewsletterSubscriptionUtil.getAllUsersWithSubscription();
+      if (subscribers != null && subscribers.size() > 0) {
+         for (int n = 0; n < subscribers.size(); n++) {
+            String userName = subscribers.get(n);
+            SubscriptionOverviewBean bean = BeanUtil.createSubscriptionOverviewBean(userName);
+            beanList.add(bean);
+         }
+      }
+      return beanList;
+   }
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
       String action = request.getParameter("action");
@@ -51,19 +64,6 @@ public class SubscriptionAction extends Action {
       }
       saveErrors(request, errors);
       return (actionForward);
-   }
-
-   private List<SubscriptionOverviewBean> createOverview() {
-      List<SubscriptionOverviewBean> beanList = new ArrayList<SubscriptionOverviewBean>();
-      List<String> subscribers = NewsletterSubscriptionUtil.getAllUsersWithSubscription();
-      if (subscribers != null && subscribers.size() > 0) {
-         for (int n = 0; n < subscribers.size(); n++) {
-            String userName = subscribers.get(n);
-            SubscriptionOverviewBean bean = BeanUtil.createSubscriptionOverviewBean(userName);
-            beanList.add(bean);
-         }
-      }
-      return beanList;
    }
 
 }
