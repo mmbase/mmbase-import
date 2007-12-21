@@ -30,7 +30,7 @@ public class CheckboxTag extends SimpleTagSupport {
    public void doTag() throws JspException, IOException {
       PageContext ctx = (PageContext) getJspContext();
 
-      ctx.getOut().print("<input type=\"checkbox\" name=\"" + var + "\" value=\"" + value + "\" ");
+      ctx.getOut().print("<input type=\"checkbox\" class=\"checkbox\" name=\"" + var + "\" value=\"" + value + "\" ");
       if (isSelected(ctx.getRequest()) == true) {
          ctx.getOut().print("checked=\"checked\"");
       }
