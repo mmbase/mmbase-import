@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.9 2007-12-06 10:58:22 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.10 2007-12-21 10:16:06 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -75,6 +75,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
          FINISHED
      }
 
+    private int delivered = 0;
     /** The current state of this handler */
     private State state = State.IDLE;
     private MailHandler.Address fromAddress = null;
@@ -142,9 +143,14 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                     break;
                 }
             }
+            if (delivered == 0) {
+                writer.write("550: Nothing to do");
+                writer.flush();
+            }
         } catch (IOException e) {
             log.warn("Caught IOException: " + e);
         }
+
 
         try {
             reader.close();
@@ -187,7 +193,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         if (uLine.startsWith("QUIT")) {
             log.debug("Sending 221 Goodbye");
             state = State.FINISHED;
-            writer.write("221 Goodbye.\r\n");
+            writer.write("221 Goodbye. (" + delivered + ")\r\n");
             writer.flush();
             return;
         }
@@ -283,6 +289,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 writer.write("503 You should issue an RCPT TO first\r\n");
                 writer.flush();
             } else {
+                state = State.DATA;
                 // start reading all the data, until the '.'
                 log.debug("354 Enter mail, end with CRLF.CRLF");
                 writer.write("354 Enter mail, end with CRLF.CRLF\r\n");
@@ -345,7 +352,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                             writer.write("250 " + status + " We will deliver this email to the user.\r\n");
                         }
                         writer.flush();
-                        state = State.MAILFROM;
+                        delivered++;
                     } else  {
                         log.debug("550 Message not accepted.", new Exception());
                         writer.write("550 Message not accepted. " + status + ".\r\n");
@@ -357,6 +364,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                     writer.flush();
                 }
             }
+            state = State.MAILFROM;
             return;
         }
 
