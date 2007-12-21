@@ -1,0 +1,21 @@
+Migration document:
+
+Part: core
+From versie: 1.3
+To versie: 1.4
+
+
+Execute the following steps below in the given order:
+
+
+Name: Rename numberTable to lowercase 
+Goal: The cmsc uses a modified storage definition which forces lowercase table names
+Type: sql-script
+--- Start script ---
+RENAME TABLE mm_numberTable TO mm_numbertable;
+RENAME TABLE live_numberTable TO live_numbertable;
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
