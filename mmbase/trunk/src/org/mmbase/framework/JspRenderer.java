@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implmentation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.25 2007-11-16 14:56:14 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.26 2007-12-21 16:14:34 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {
@@ -71,14 +71,19 @@ public class JspRenderer extends AbstractRenderer {
 
             String url = getPath();
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
+
             for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
-            log.debug("Rendering " + url + " status " + status.code);
+            if (log.isDebugEnabled()) {
+                log.debug("Using block.parameters " +  blockParameters.toMap());
+                log.debug("Rendering " + url + " status " + status.code);
+            }
             requestDispatcher.include(request, respw);
             log.debug("Status " + status.code);
             if (status.code == 401) {
-                w.write("<div>ACCESS DENIED</div>");
+                DeniedRenderer denied = new DeniedRenderer(getType(), getBlock());
+                denied.render(blockParameters, frameworkParameters, w, state);
             } else if (status.code != 200) {
                 ErrorRenderer error = new ErrorRenderer(getType(), getBlock(), url, status.code, status.mesg);
                 error.render(blockParameters, frameworkParameters, w, state);
