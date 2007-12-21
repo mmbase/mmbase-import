@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 /**
  * At the moment just a container for some constants. This may change
- * @version $Id: MailBox.java,v 1.4 2007-12-20 17:32:21 michiel Exp $
+ * @version $Id: MailBox.java,v 1.5 2007-12-21 09:12:47 michiel Exp $
  */
 public abstract class MailBox {
     public static enum Type {
@@ -27,7 +27,7 @@ public abstract class MailBox {
         private Type (int db) {
             this.db = db;
         }
-        public int getKey() {
+        public int getValue() {
             return db;
         }
         public String getName(java.util.Locale locale) {
