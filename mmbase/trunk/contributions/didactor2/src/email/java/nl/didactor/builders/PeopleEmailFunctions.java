@@ -19,20 +19,7 @@ public class PeopleEmailFunctions {
     public void setNode(Node n) {
         node = n;
     }
-    public Node createInbox() {
-        log.info("Creating inbox for " + node);
-        NodeManager manager = node.getCloud().getNodeManager("mailboxes");
 
-        Node mailbox = manager.createNode();
-        mailbox.setStringValue("name", node.getStringValue("firstname") + " " + node.getStringValue("suffix") + " " + node.getStringValue("lastname"));
-        mailbox.setIntValue("type", MailBox.INBOX);
-        mailbox.commit();
-
-        RelationManager rm = node.getCloud().getRelationManager(node.getNodeManager(), manager, "related");
-        Relation r = rm.createRelation(node, mailbox);
-        r.commit();
-        return mailbox;
-    }
     public String forwardEmail() {
         Component c = Component.getComponent("email");
         Object value = c.getUserSetting("mayforward", "" + node.getNumber(), node.getCloud());
