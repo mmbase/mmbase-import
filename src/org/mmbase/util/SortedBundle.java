@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.24.2.1 2007-12-21 09:05:18 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.24.2.2 2007-12-21 09:13:23 michiel Exp $
  */
 public class SortedBundle {
 
@@ -293,7 +293,7 @@ public class SortedBundle {
                             Object value = constant.get(null);
                             try {
                                 // support for enums where ordinal is no good.
-                                Method keyMethod = value.getClass().getMethod("getKey", null);
+                                Method keyMethod = value.getClass().getMethod("getValue", null);
                                 value = "" + keyMethod.invoke(value, null);
                             } catch (NoSuchMethodException nsme) {
                                 log.warn("" + nsme);
