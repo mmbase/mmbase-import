@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.24 2006-07-17 07:19:15 pierre Exp $
+ * @version $Id: SortedBundle.java,v 1.24.2.1 2007-12-21 09:05:18 michiel Exp $
  */
 public class SortedBundle {
 
@@ -149,12 +149,12 @@ public class SortedBundle {
                 bundle = ResourceBundle.getBundle(baseName, locale, loader);
             }
             if (comparator == null && wrapper != null && ! Comparable.class.isAssignableFrom(wrapper)) {
-                if (wrapper.equals(Boolean.class)) { 
+                if (wrapper.equals(Boolean.class)) {
                     // happens in Java < 1.5, because Boolean is no Comparable then.
                     comparator = new Comparator() {
                             public int compare(Object o1, Object o2) {
                                 if (o1 instanceof Boolean && o2 instanceof Boolean) {
-                                    return 
+                                    return
                                         o1.equals(Boolean.FALSE) ?
                                         (o2.equals(Boolean.FALSE) ? 0 : -1) :
                                         (o2.equals(Boolean.TRUE) ?  1 : 0);
@@ -291,6 +291,22 @@ public class SortedBundle {
                     if (! map.containsKey(key)) { // super should not override this.
                         try {
                             Object value = constant.get(null);
+                            try {
+                                // support for enums where ordinal is no good.
+                                Method keyMethod = value.getClass().getMethod("getKey", null);
+                                value = "" + keyMethod.invoke(value, null);
+                            } catch (NoSuchMethodException nsme) {
+                                log.warn("" + nsme);
+                                try {
+                                    // support for enums
+                                    Method keyMethod = value.getClass().getMethod("ordinal", null);
+                                    value = "" + keyMethod.invoke(value, null);
+                                } catch (Exception e1) {
+                                    log.warn("" + e1);
+                                }
+                            } catch (Exception e2) {
+                                log.warn("" + e2);
+                            }
                             map.put(key, value);
                         } catch (IllegalAccessException ieae) {
                             log.debug("The java constant with name " + key + " is not accessible");
