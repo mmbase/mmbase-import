@@ -40,7 +40,6 @@
 		<table class="editcontent">
 			<tr>
 				<td>
-					<input type="hidden" name="page" value="${page}" />
 					<fmt:message key="edit_defaults.view" />
 				</td>
 				<td>

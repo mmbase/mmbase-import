@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" extends="page" maintainer="finalist.com" name="newsletter" version="3">
+<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" extends="page" maintainer="finalist.com" name="newsletter" version="10">
 	<!--
 		
 	-->
@@ -78,7 +78,9 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer"></datatype>
+			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+				<default value="0" />
+			</datatype>
 			<db>
 				<name>lastpublicationnumber</name>
 				<type key="false" notnull="false" state="persistent">INTEGER</type>
