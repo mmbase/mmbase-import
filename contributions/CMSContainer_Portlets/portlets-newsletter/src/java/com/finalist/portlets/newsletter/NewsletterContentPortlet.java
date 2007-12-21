@@ -15,8 +15,10 @@ import javax.portlet.RenderResponse;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
+import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -54,9 +56,14 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       PortletSession session = request.getPortletSession(true);
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
       String duplicateHandling = preferences.getValue(DUPLICATE_HANDLING_TYPE, null);
-      String pageNumber = preferences.getValue(PAGE, null);
 
-      if (pageNumber != null && !StringUtil.isEmptyOrWhitespace(pageNumber)) {
+      String currentPath = getUrlPath(request);
+      Page result = SiteManagement.getPageFromPath(currentPath);
+      
+
+      if (result != null) {
+         String pageNumber = String.valueOf(result.getId());
+
          if (NewsletterUtil.isNewsletterOrPublication(pageNumber)) {
             String displayType = determineDisplayType(request);
 

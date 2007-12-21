@@ -41,33 +41,34 @@ public abstract class NewsletterGenerator {
       Node publicationNode = cloud.getNode(publicationNumber);
 
       String hostUrl = getLiveHostUrl();
-      // TODO : Check if last char is a /
       String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
       String newsletterUrl = "".concat(hostUrl).concat(newsletterPath);
 
-      try {
-         URL url = new URL(newsletterUrl);
-         URLConnection connection = url.openConnection();
-         ((HttpURLConnection) connection).setRequestMethod("GET");
-         connection.setDoInput(true);
-         connection.setRequestProperty("Content-Type", "text/html");
-         connection.setRequestProperty("username", userName);
-         InputStream input = connection.getInputStream();
-         Reader reader = new InputStreamReader(input);
-         StringBuffer buffer = new StringBuffer();
+      if (newsletterUrl != null && newsletterUrl.startsWith("http")) {
+         try {
+            URL url = new URL(newsletterUrl);
+            URLConnection connection = url.openConnection();
+            ((HttpURLConnection) connection).setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.setRequestProperty("Content-Type", "text/html");
+            connection.setRequestProperty("username", userName);
+            InputStream input = connection.getInputStream();
+            Reader reader = new InputStreamReader(input);
+            StringBuffer buffer = new StringBuffer();
 
-         int c;
-         while ((c = reader.read()) != -1) {
-            char character = (char) c;
-            buffer.append("" + character);
+            int c;
+            while ((c = reader.read()) != -1) {
+               char character = (char) c;
+               buffer.append("" + character);
+            }
+            reader.close();
+            String inputString = buffer.toString();
+            inputString = inputString.trim();
+            inputString = checkUrls(inputString);
+            return (inputString);
+         } catch (Exception e) {
+            log.debug("Error");
          }
-         reader.close();
-         String inputString = buffer.toString();
-         inputString = inputString.trim();
-         inputString  = checkUrls(inputString);
-         return (inputString);
-      } catch (Exception e) {
-         log.debug("Error");
       }
       return (null);
    }
@@ -111,12 +112,27 @@ public abstract class NewsletterGenerator {
 
    protected String checkUrls(String input) {
       String hostUrl = getLiveHostUrl();
-      String output = input.replaceAll("\"/", hostUrl);
-      return(output);
+      String appName = getApplicationName(hostUrl);
+
+      String output = input;
+      output = output.replaceAll("\"/" + appName, "\"/");
+      output = output.replaceAll("\"/", hostUrl);
+      return (output);
+   }
+
+   private String getApplicationName(String hostUrl) {
+      String[] hostUrlParts = hostUrl.split("/");
+      String appName = hostUrlParts[hostUrlParts.length -1];
+      return (appName);
    }
 
    private String getLiveHostUrl() {
-      String hostUrl = PropertiesUtil.getProperty("host.live");      
+      String hostUrl = PropertiesUtil.getProperty("host.live");
+      if (hostUrl != null) {
+         if (!hostUrl.endsWith("/")) {
+            hostUrl += "/";
+         }
+      }
       return hostUrl;
    }
 }

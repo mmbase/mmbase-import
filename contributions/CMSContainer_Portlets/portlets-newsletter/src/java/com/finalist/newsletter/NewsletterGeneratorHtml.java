@@ -23,16 +23,18 @@ public class NewsletterGeneratorHtml extends NewsletterGenerator {
       Message message = new MimeMessage(session);
       String rawHtmlContent = getContent(userName);
 
-      // BodyPart htmlBodyPart = new MimeBodyPart();
-      // Multipart content = new MimeMultipart();
-      try {
-         // content.addBodyPart(htmlBodyPart);
-         // message.setContent(content);
-         message.setText(rawHtmlContent + "\n");
-         message.setHeader("Content-type", "text/html");
-      } catch (MessagingException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      if (rawHtmlContent != null) {
+         // BodyPart htmlBodyPart = new MimeBodyPart();
+         // Multipart content = new MimeMultipart();
+         try {
+            // content.addBodyPart(htmlBodyPart);
+            // message.setContent(content);
+            message.setText(rawHtmlContent + "\n");
+            message.setHeader("Content-type", "text/html");
+         } catch (MessagingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
       }
 
       return (message);

@@ -29,7 +29,7 @@ public abstract class NewsletterPublicationUtil {
       Node newsletterNode = cloud.getNode(newsletterNumber);
       Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
 
-      String urlFragment = String.valueOf(System.currentTimeMillis());
+      String urlFragment = String.valueOf(publicationNode.getNumber());
       publicationNode.setStringValue("urlfragment", urlFragment);
       publicationNode.commit();
 
@@ -41,7 +41,6 @@ public abstract class NewsletterPublicationUtil {
          if (copyContent == true) {
             PagesUtil.linkPortlets(publicationNode, layoutNode);
          }
-
          return (publicationNode);
       }
       return (null);
@@ -56,7 +55,7 @@ public abstract class NewsletterPublicationUtil {
 
    public static void updatePublicationTitle(Node publicationNode) {
       Node newsletterNode = SearchUtil.findRelatedNode(publicationNode, "newsletter", "related");
-      int number = 0 + newsletterNode.getIntValue("lastpublicationnumber");
+      int number = Integer.parseInt(newsletterNode.getStringValue("lastpublicationnumber"));
       String edition = ResourceBundle.getBundle("newsletter").getString("edition");
       String title = edition.concat(" " + String.valueOf(number));
       publicationNode.setStringValue("title", title);
@@ -64,13 +63,21 @@ public abstract class NewsletterPublicationUtil {
    }
 
    private static void copyThemesAndContent(Node newsletterNode, Node publicationNode, boolean copyContent) {
-      NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme");
+      copyThemesAndContent(newsletterNode, publicationNode, copyContent, "newslettertheme");
+      copyThemesAndContent(newsletterNode, publicationNode, copyContent, "defaulttheme");
+   }
+
+   private static void copyThemesAndContent(Node newsletterNode, Node publicationNode, boolean copyContent, final String relationName) {
+      NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme", relationName, "DESTINATION");
       if (newsletterThemeList != null) {
          for (int i = 0; i < newsletterThemeList.size(); i++) {
             Node oldThemeNode = newsletterThemeList.getNode(i);
             Node newThemeNode = CloneUtil.cloneNode(oldThemeNode, "newsletterpublicationtheme");
             if (newThemeNode != null) {
-               copyThemeRelations(newsletterNode, publicationNode, newThemeNode);
+               RelationUtil.createRelation(publicationNode, newThemeNode, relationName);
+
+               // copyThemeRelations(newsletterNode, publicationNode,
+               // newThemeNode);
                if (copyContent == true) {
                   copyContent(oldThemeNode, newThemeNode);
                }
@@ -104,18 +111,22 @@ public abstract class NewsletterPublicationUtil {
    }
 
    private static void copyOtherRelations(Node newsletterNode, Node publicationNode) {
-      RelationList relationsNodeList = newsletterNode.getRelations(null, null, "DESTINATION");
-      if (relationsNodeList != null) {
-         for (int rel = 0; rel < relationsNodeList.size(); rel++) {
-            Relation relation = relationsNodeList.getRelation(rel);
-            Node destinationNode = relation.getDestination();
-            RelationManager manager = relation.getRelationManager();
-            String role = manager.getReciprocalRole();
-            if (!role.equals("defaulttheme") && !role.equals("newslettertheme") && !role.equals("navrel") && !role.equals("portletrel")) {
-               RelationUtil.createRelation(publicationNode, destinationNode, role);
-            }
-         }
-      }
+      PagesUtil.copyPageRelations(newsletterNode, publicationNode);
+
+      // RelationList relationsNodeList = newsletterNode.getRelations(null,
+      // null, "DESTINATION");
+      // if (relationsNodeList != null) {
+      // for (int rel = 0; rel < relationsNodeList.size(); rel++) {
+      // Relation relation = relationsNodeList.getRelation(rel);
+      // Node destinationNode = relation.getDestination();
+      // RelationManager manager = relation.getRelationManager();
+      // String role = manager.getReciprocalRole();
+      // if (!role.equals("defaulttheme") && !role.equals("newslettertheme") &&
+      // !role.equals("navrel") && !role.equals("portletrel")) {
+      // RelationUtil.createRelation(publicationNode, destinationNode, role);
+      // }
+      // }
+      // }
    }
 
    // Delete a publication, only if not yet published
@@ -123,13 +134,14 @@ public abstract class NewsletterPublicationUtil {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node publicationNode = cloud.getNode(publicationNumber);
 
-      /*
-       * NodeList themes =
-       * publicationNode.getRelatedNodes("newsletterpublicationtheme"); if
-       * (themes != null) { for (int i = 0; i < themes.size(); i++) { Node
-       * publicationThemeNode = themes.getNode(i);
-       * publicationThemeNode.delete(true); } }
-       */
+      NodeList themes = publicationNode.getRelatedNodes("newsletterpublicationtheme");
+      if (themes != null) {
+         for (int i = themes.size() - 1; i >= 0; i--) {
+            Node publicationThemeNode = themes.getNode(i);
+            publicationThemeNode.delete(true);
+         }
+      }
+
       NavigationUtil.deletePage(publicationNode);
    }
 
