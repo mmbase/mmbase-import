@@ -30,22 +30,30 @@ public class SubscriberAction extends Action {
             }
          } else if (action.equals("terminate")) {
             if (userName != null) {
-               NewsletterSubscriptionUtil.terminateUserSubscription(userName);
+               actionForward = mapping.findForward("return" );
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
             }
          } else if (action.equals("pause")) {
             if (userName != null) {
                NewsletterSubscriptionUtil.pauseSubscription(userName);
-               actionForward = mapping.findForward("return" + "&username=" + userName);
+               actionForward = mapping.findForward("return" );
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
             }
          } else if (action.equals("resume")) {
             if (userName != null) {
                NewsletterSubscriptionUtil.resumeSubscription(userName);
-               actionForward = mapping.findForward("return" + "&username=" + userName);
+               actionForward = mapping.findForward("return" );
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
 
             }
          } else if (action.equals("update")) {
             if (userName != null) {
-               actionForward = mapping.findForward("return" + "&username=" + userName);
+               actionForward = mapping.findForward("return" );
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
             }
          } else {
             errors.add("unknown_action", new ActionMessage("error.unknown_action"));
