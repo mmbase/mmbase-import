@@ -28,51 +28,6 @@ public abstract class NewsletterGenerator {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterGenerator.class.getName());
 
-   private String publicationNumber;
-
-   public NewsletterGenerator(String publicationNumber) {
-      this.publicationNumber = publicationNumber;
-   }
-
-   protected abstract Message generateNewsletterMessage(String userName);
-
-   protected String getContent(String userName) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node publicationNode = cloud.getNode(publicationNumber);
-
-      String hostUrl = getLiveHostUrl();
-      String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
-      String newsletterUrl = "".concat(hostUrl).concat(newsletterPath);
-
-      if (newsletterUrl != null && newsletterUrl.startsWith("http")) {
-         try {
-            URL url = new URL(newsletterUrl);
-            URLConnection connection = url.openConnection();
-            ((HttpURLConnection) connection).setRequestMethod("GET");
-            connection.setDoInput(true);
-            connection.setRequestProperty("Content-Type", "text/html");
-            connection.setRequestProperty("username", userName);
-            InputStream input = connection.getInputStream();
-            Reader reader = new InputStreamReader(input);
-            StringBuffer buffer = new StringBuffer();
-
-            int c;
-            while ((c = reader.read()) != -1) {
-               char character = (char) c;
-               buffer.append("" + character);
-            }
-            reader.close();
-            String inputString = buffer.toString();
-            inputString = inputString.trim();
-            inputString = checkUrls(inputString);
-            return (inputString);
-         } catch (Exception e) {
-            log.debug("Error");
-         }
-      }
-      return (null);
-   }
-
    public static Session getMailSession() {
       Module sendmailModule = Module.getModule("sendmail");
       if (sendmailModule == null) {
@@ -110,6 +65,12 @@ public abstract class NewsletterGenerator {
       }
    }
 
+   private String publicationNumber;
+
+   public NewsletterGenerator(String publicationNumber) {
+      this.publicationNumber = publicationNumber;
+   }
+
    protected String checkUrls(String input) {
       String hostUrl = getLiveHostUrl();
       String appName = getApplicationName(hostUrl);
@@ -120,10 +81,49 @@ public abstract class NewsletterGenerator {
       return (output);
    }
 
+   protected abstract Message generateNewsletterMessage(String userName);
+
    private String getApplicationName(String hostUrl) {
       String[] hostUrlParts = hostUrl.split("/");
-      String appName = hostUrlParts[hostUrlParts.length -1];
+      String appName = hostUrlParts[hostUrlParts.length - 1];
       return (appName);
+   }
+
+   protected String getContent(String userName) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node publicationNode = cloud.getNode(publicationNumber);
+
+      String hostUrl = getLiveHostUrl();
+      String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
+      String newsletterUrl = "".concat(hostUrl).concat(newsletterPath);
+
+      if (newsletterUrl != null && newsletterUrl.startsWith("http")) {
+         try {
+            URL url = new URL(newsletterUrl);
+            URLConnection connection = url.openConnection();
+            ((HttpURLConnection) connection).setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.setRequestProperty("Content-Type", "text/html");
+            connection.setRequestProperty("username", userName);
+            InputStream input = connection.getInputStream();
+            Reader reader = new InputStreamReader(input);
+            StringBuffer buffer = new StringBuffer();
+
+            int c;
+            while ((c = reader.read()) != -1) {
+               char character = (char) c;
+               buffer.append("" + character);
+            }
+            reader.close();
+            String inputString = buffer.toString();
+            inputString = inputString.trim();
+            inputString = checkUrls(inputString);
+            return (inputString);
+         } catch (Exception e) {
+            log.debug("Error");
+         }
+      }
+      return (null);
    }
 
    private String getLiveHostUrl() {

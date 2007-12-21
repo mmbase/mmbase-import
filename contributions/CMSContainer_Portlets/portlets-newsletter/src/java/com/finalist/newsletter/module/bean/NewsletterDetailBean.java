@@ -20,11 +20,10 @@ public class NewsletterDetailBean {
    }
 
    /**
-    * @param number
-    *           the number to set
+    * @return the subscribers
     */
-   public void setNumber(int number) {
-      this.number = number;
+   public List<NewsletterSubscriberBean> getSubscribers() {
+      return subscribers;
    }
 
    /**
@@ -35,18 +34,11 @@ public class NewsletterDetailBean {
    }
 
    /**
-    * @param title
-    *           the title to set
+    * @param number
+    *           the number to set
     */
-   public void setTitle(String title) {
-      this.title = title;
-   }
-
-   /**
-    * @return the subscribers
-    */
-   public List<NewsletterSubscriberBean> getSubscribers() {
-      return subscribers;
+   public void setNumber(int number) {
+      this.number = number;
    }
 
    /**
@@ -55,6 +47,14 @@ public class NewsletterDetailBean {
     */
    public void setSubscribers(List<NewsletterSubscriberBean> subscribers) {
       this.subscribers = subscribers;
+   }
+
+   /**
+    * @param title
+    *           the title to set
+    */
+   public void setTitle(String title) {
+      this.title = title;
    }
 
 }

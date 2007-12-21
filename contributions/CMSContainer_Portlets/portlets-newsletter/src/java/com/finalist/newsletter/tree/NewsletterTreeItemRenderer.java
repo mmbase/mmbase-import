@@ -18,6 +18,11 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
    protected static final String FEATURE_PAGEWIZARD = "pagewizarddefinition";
    protected static final String FEATURE_WORKFLOW = "workflowitem";
 
+   public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
+      element.addOption(renderer.createTreeOption("newsletter_new.png", "site.newsletter.new", "newsletter",
+            "../newsletter/NewsletterCreate.do?parentnewsletter=" + parentId));
+   }
+
    public TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model) {
       UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentNode, false);
       boolean secure = parentNode.getBooleanValue(PagesUtil.SECURE_FIELD);
@@ -61,11 +66,6 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       element.addOption(renderer.createTreeOption("rights.png", "site.page.rights", "../usermanagement/pagerights.jsp?number=" + id));
 
       return element;
-   }
-
-   public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
-      element.addOption(renderer.createTreeOption("newsletter_new.png", "site.newsletter.new", "newsletter",
-            "../newsletter/NewsletterCreate.do?parentnewsletter=" + parentId));
    }
 
    public boolean showChildren(Node parentNode) {

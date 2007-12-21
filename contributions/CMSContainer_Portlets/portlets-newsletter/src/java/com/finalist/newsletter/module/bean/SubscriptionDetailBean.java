@@ -12,18 +12,17 @@ public class SubscriptionDetailBean {
    }
 
    /**
-    * @return the userName
+    * @return the emailAddress
     */
-   public String getUserName() {
-      return userName;
+   public String getEmailAddress() {
+      return emailAddress;
    }
 
    /**
-    * @param userName
-    *           the userName to set
+    * @return the mimeType
     */
-   public void setUserName(String userName) {
-      this.userName = userName;
+   public String getMimeType() {
+      return mimeType;
    }
 
    /**
@@ -34,18 +33,18 @@ public class SubscriptionDetailBean {
    }
 
    /**
-    * @param status
-    *           the status to set
+    * @return the userName
     */
-   public void setStatus(String status) {
-      this.status = status;
+   public String getUserName() {
+      return userName;
    }
 
    /**
-    * @return the mimeType
+    * @param emailAddress
+    *           the emailAddress to set
     */
-   public String getMimeType() {
-      return mimeType;
+   public void setEmailAddress(String emailAddress) {
+      this.emailAddress = emailAddress;
    }
 
    /**
@@ -57,18 +56,19 @@ public class SubscriptionDetailBean {
    }
 
    /**
-    * @return the emailAddress
+    * @param status
+    *           the status to set
     */
-   public String getEmailAddress() {
-      return emailAddress;
+   public void setStatus(String status) {
+      this.status = status;
    }
 
    /**
-    * @param emailAddress
-    *           the emailAddress to set
+    * @param userName
+    *           the userName to set
     */
-   public void setEmailAddress(String emailAddress) {
-      this.emailAddress = emailAddress;
+   public void setUserName(String userName) {
+      this.userName = userName;
    }
 
 }

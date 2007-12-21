@@ -13,8 +13,6 @@ import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
-
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
@@ -50,6 +48,20 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_HIDE);
    }
 
+   private String determineDisplayType(RenderRequest request) {
+      String displayType = (String) request.getAttribute(KEY_DISPLAYTYPE);
+      if (displayType == null) {
+         displayType = DISPLAYTYPE_DEFAULT;
+      }
+      return displayType;
+   }
+
+   @Override
+   protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
+      request.setAttribute(KEY_DUPLICATEHANDLERS, duplicateHandlers);
+      super.doEditDefaults(request, response);
+   }
+
    @Override
    protected void doView(RenderRequest request, RenderResponse res) throws PortletException, java.io.IOException {
       PortletPreferences preferences = request.getPreferences();
@@ -59,23 +71,22 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 
       String currentPath = getUrlPath(request);
       Page result = SiteManagement.getPageFromPath(currentPath);
-      
 
       if (result != null) {
-         String pageNumber = String.valueOf(result.getId());
+         int pageNumber = result.getId();
 
          if (NewsletterUtil.isNewsletterOrPublication(pageNumber)) {
             String displayType = determineDisplayType(request);
 
-            String defaultTheme = NewsletterUtil.getDefaultTheme(pageNumber);
-            List<String> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
+            int defaultTheme = NewsletterUtil.getDefaultTheme(pageNumber);
+            List<Integer> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
             if (defaultArticles != null && defaultArticles.size() > 0) {
                request.setAttribute(KEY_DEFAULTTHEME, defaultTheme);
                request.setAttribute(KEY_DEFAULTARTICLES, defaultArticles);
             }
 
-            List<String> additionalThemes = null;
-            List<String> availableThemes = NewsletterUtil.getAllThemes(pageNumber);
+            List<Integer> additionalThemes = null;
+            List<Integer> availableThemes = NewsletterUtil.getAllThemes(pageNumber);
             if (availableThemes != null && availableThemes.size() > 0) {
                if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
                   String userName = getUserName(session);
@@ -88,12 +99,12 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             }
 
             if (additionalThemes != null && additionalThemes.size() > 0) {
-               List<String> temporaryArticleListing = new ArrayList<String>();
+               List<Integer> temporaryArticleListing = new ArrayList<Integer>();
                temporaryArticleListing.addAll(defaultArticles);
 
                for (int i = 0; i < additionalThemes.size(); i++) {
-                  String themeNumber = additionalThemes.get(i);
-                  List<String> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
+                  int themeNumber = additionalThemes.get(i);
+                  List<Integer> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
                   if (duplicateHandling.equals(DUPLICATE_HANDLING_HIDE)) {
                      articles = NewsletterUtil.removeDuplicates(temporaryArticleListing, articles);
                   }
@@ -121,20 +132,6 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    private String getUserName(PortletSession session) {
       String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
       return userName;
-   }
-
-   private String determineDisplayType(RenderRequest request) {
-      String displayType = (String) request.getAttribute(KEY_DISPLAYTYPE);
-      if (displayType == null) {
-         displayType = DISPLAYTYPE_DEFAULT;
-      }
-      return displayType;
-   }
-
-   @Override
-   protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
-      request.setAttribute(KEY_DUPLICATEHANDLERS, duplicateHandlers);
-      super.doEditDefaults(request, response);
    }
 
    @Override

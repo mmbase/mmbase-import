@@ -35,27 +35,11 @@ public class NewsletterPublisher extends Thread {
       this.cloud = CloudProviderFactory.getCloudProvider().getCloud();
    }
 
-   @Override
-   public void run() {
-      startPublishing();
-   }
-
-   private void startPublishing() {
-      Node publicationNode = cloud.getNode(publicationNumber);
-      NodeList newsletterNodeList = publicationNode.getRelatedNodes(NewsletterUtil.NEWSLETTER);
-      Node newsletterNode = newsletterNodeList.getNode(0);
-      String newsletterNumber = newsletterNode.getStringValue("number");
-      List<String> subscribers = NewsletterSubscriptionUtil.getSubscribersForNewsletter(newsletterNumber);
-
-      if (subscribers != null) {
-         createConfirmationList(subscribers);
-         for (int subscribersIterator = 0; subscribersIterator < subscribers.size(); subscribersIterator++) {
-            String userName = subscribers.get(subscribersIterator);
-            sendNewsletter(publicationNode, userName);
-         }         
+   private void createConfirmationList(List<String> subscribers) {
+      for (int s = 0; s < subscribers.size(); s++) {
+         String userName = subscribers.get(s);
+         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER, publicationNumber);
       }
-      NewsletterPublicationUtil.setPublicationNumber(newsletterNode, 1);
-      NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
    }
 
    private Message generateNewsletter(String userName, String publicationNumber, String mimeType) {
@@ -67,6 +51,15 @@ public class NewsletterPublisher extends Thread {
          return (message);
       }
       return (null);
+   }
+
+   private void removeFromConfirmationList(String userName) {
+      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER, publicationNumber);
+   }
+
+   @Override
+   public void run() {
+      startPublishing();
    }
 
    private void sendNewsletter(Node publicationNode, String userName) {
@@ -96,14 +89,21 @@ public class NewsletterPublisher extends Thread {
       return (message);
    }
 
-   private void createConfirmationList(List<String> subscribers) {
-      for (int s = 0; s < subscribers.size(); s++) {
-         String userName = subscribers.get(s);
-         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER, publicationNumber);
-      }
-   }
+   private void startPublishing() {
+      Node publicationNode = cloud.getNode(publicationNumber);
+      NodeList newsletterNodeList = publicationNode.getRelatedNodes(NewsletterUtil.NEWSLETTER);
+      Node newsletterNode = newsletterNodeList.getNode(0);
+      int newsletterNumber = newsletterNode.getNumber();
+      List<String> subscribers = NewsletterSubscriptionUtil.getSubscribersForNewsletter(newsletterNumber);
 
-   private void removeFromConfirmationList(String userName) {
-      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER, publicationNumber);
+      if (subscribers != null) {
+         createConfirmationList(subscribers);
+         for (int subscribersIterator = 0; subscribersIterator < subscribers.size(); subscribersIterator++) {
+            String userName = subscribers.get(subscribersIterator);
+            sendNewsletter(publicationNode, userName);
+         }
+      }
+      NewsletterPublicationUtil.setPublicationNumber(newsletterNode, 1);
+      NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
    }
 }

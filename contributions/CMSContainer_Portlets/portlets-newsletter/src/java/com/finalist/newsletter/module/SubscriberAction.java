@@ -16,8 +16,8 @@ public class SubscriberAction extends Action {
 
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-      String action = (String) request.getParameter("action");
-      String userName = (String) request.getParameter("username");
+      String action = request.getParameter("action");
+      String userName = request.getParameter("username");
       ActionForward actionForward = mapping.findForward("error");
       ActionMessages errors = new ActionMessages();
       ActionMessages messages = new ActionMessages();
@@ -30,28 +30,28 @@ public class SubscriberAction extends Action {
             }
          } else if (action.equals("terminate")) {
             if (userName != null) {
-               actionForward = mapping.findForward("return" );
+               actionForward = mapping.findForward("return");
                String path = actionForward.getPath() + "&username=" + userName;
                actionForward.setPath(path);
             }
          } else if (action.equals("pause")) {
             if (userName != null) {
                NewsletterSubscriptionUtil.pauseSubscription(userName);
-               actionForward = mapping.findForward("return" );
+               actionForward = mapping.findForward("return");
                String path = actionForward.getPath() + "&username=" + userName;
                actionForward.setPath(path);
             }
          } else if (action.equals("resume")) {
             if (userName != null) {
                NewsletterSubscriptionUtil.resumeSubscription(userName);
-               actionForward = mapping.findForward("return" );
+               actionForward = mapping.findForward("return");
                String path = actionForward.getPath() + "&username=" + userName;
                actionForward.setPath(path);
 
             }
          } else if (action.equals("update")) {
             if (userName != null) {
-               actionForward = mapping.findForward("return" );
+               actionForward = mapping.findForward("return");
                String path = actionForward.getPath() + "&username=" + userName;
                actionForward.setPath(path);
             }
