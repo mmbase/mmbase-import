@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.41 2007-12-12 17:17:59 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.42 2007-12-21 13:45:04 michiel Exp $
  */
 var validators = new Array();
 
@@ -46,11 +46,13 @@ function MMBaseValidator(w, root) {
 
     this.setup(w);
     this.root = root;
-    this.lang;
+    this.lang          = null;
+    this.sessionName   = null;
     this.id = validators.push(this);
     this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
+
 }
 
 MMBaseValidator.prototype.setup = function(w) {
@@ -611,6 +613,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
         var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />' +
             this.getDataTypeArguments(key) +
             (this.lang != null ? "&lang=" + this.lang : "") +
+	    (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
             "&value=" + value +
             (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
             "&changed=" + this.isChanged(el);

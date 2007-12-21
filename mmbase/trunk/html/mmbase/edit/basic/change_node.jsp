@@ -20,6 +20,7 @@
     var validator = new MMBaseValidator();
     validator.logEnabled = false;
     validator.traceEnabled = false;
+    validator.sessionName = '${config.session}';
     validator.prefetchNodeManager('<%=thisNode.getNodeManager().getName()%>');
     validator.validateHook = function() {
        document.getElementById('okbutton').disabled = this.invalidElements != 0;
