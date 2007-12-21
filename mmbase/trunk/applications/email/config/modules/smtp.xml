@@ -17,13 +17,6 @@
     <property name="usersbuilder">people</property>
     <property name="usersbuilder.accountfield">username</property>
 
-    <!-- optional properties -->
-    <!-- optional mailbox builder. If it is not set, emails are
-         related directly to the user -->
-    <property name="mailboxbuilder">mailboxes</property>
-    <!-- optional extra 'where' clause to find the correct mailbox -->
-    <property name="mailboxbuilder.where">mailboxes.type=0</property>
-
     <!--
          if you use mailboxes, you need to specify what behaviour should
          be if no mailbox could be found. It can be any one of:
