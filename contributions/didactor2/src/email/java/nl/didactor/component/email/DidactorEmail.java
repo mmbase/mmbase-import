@@ -3,30 +3,61 @@ package nl.didactor.component.email;
 import nl.didactor.builders.DidactorBuilder;
 import nl.didactor.component.Component;
 import nl.didactor.component.core.*;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.util.functions.*;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.*;
+import org.mmbase.applications.email.MailBox;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import java.util.*;
 
 public class DidactorEmail extends Component {
+    private static final Logger log = Logging.getLoggerInstance(DidactorEmail.class);
+
     /**
      * Returns the version of the component
      */
     public String getVersion() {
         return "2.0";
     }
+    private static final Parameter[] MAILBOX_PARAMS = new Parameter[] { new Parameter("create", Boolean.class, Boolean.TRUE) };
 
     public void init() {
         super.init();
         MMBase mmbase = MMBase.getMMBase();
-        DidactorBuilder people = (DidactorBuilder)mmbase.getBuilder("people");
+        final DidactorBuilder people = (DidactorBuilder) mmbase.getBuilder("people");
         people.registerPostInsertComponent(this, 10);
         people.registerPreDeleteComponent(this, 10);
+        people.addFunction(new NodeFunction/*<Node>*/("in_mailbox", MAILBOX_PARAMS, ReturnType.NODE) {
+                public Node getFunctionValue(Node node, Parameters parameters) {
+                    boolean create = Boolean.TRUE.equals(parameters.get("create"));
+                    return DidactorEmail.this.getMailBox(node, MailBox.Type.INBOX, create);
+                }
+            });
+        people.addFunction(new NodeFunction/*<Node>*/("trash_mailbox", MAILBOX_PARAMS, ReturnType.NODE) {
+                public Node getFunctionValue(Node node, Parameters parameters) {
+                    boolean create = Boolean.TRUE.equals(parameters.get("create"));
+                    return DidactorEmail.this.getMailBox(node, MailBox.Type.TRASH, create);
+                }
+            });
+        people.addFunction(new NodeFunction/*<Node>*/("drafts_mailbox", MAILBOX_PARAMS, ReturnType.NODE) {
+                public Node getFunctionValue(Node node, Parameters parameters) {
+                    boolean create = Boolean.TRUE.equals(parameters.get("create"));
+                    return DidactorEmail.this.getMailBox(node, MailBox.Type.DRAFTS, create);
+                }
+            });
+        people.addFunction(new NodeFunction/*<Node>*/("sent_mailbox", MAILBOX_PARAMS, ReturnType.NODE) {
+                public Node getFunctionValue(Node node, Parameters parameters) {
+                    boolean create = Boolean.TRUE.equals(parameters.get("create"));
+                    return DidactorEmail.this.getMailBox(node, MailBox.Type.SENT, create);
+                }
+            });
     }
 
     public void install() {
@@ -60,7 +91,7 @@ public class DidactorEmail extends Component {
 
     /**
      * This method is called when a new object is added to Didactor. If the component
-     * needs to insert objects for this object, it can do so. 
+     * needs to insert objects for this object, it can do so.
      */
     public boolean postInsert(MMObjectNode node) {
         if (node.getBuilder().getTableName().equals("people")) {
@@ -75,6 +106,29 @@ public class DidactorEmail extends Component {
             return deleteUser(node);
         }
         return true;
+    }
+
+    protected Node getMailBox(Node user, MailBox.Type type, boolean create) {
+        NodeManager mailboxes = user.getCloud().getNodeManager("mailboxes");
+        NodeQuery q = Queries.createRelatedNodesQuery(user, mailboxes, "related", "destination");
+        Queries.addConstraint(q, Queries.createConstraint(q, "type", Queries.getOperator("="), Integer.valueOf(type.getKey())));
+        NodeList boxes = mailboxes.getList(q);
+        if (boxes.size() > 1 ) {
+            log.warn("Found more than one mailbox " + type + " for user " + user);
+        }
+        Node mailbox;
+        if (boxes.size() == 0) {
+            mailbox = mailboxes.createNode();
+            mailbox.setValue("type", type.getKey());
+            mailbox.setValue("name", type.getName(user.getCloud().getLocale()));
+            mailbox.commit();
+            RelationManager rm = user.getCloud().getRelationManager("related");
+            Relation r = rm.createRelation(user, mailbox);
+            r.commit();
+        } else {
+            mailbox = boxes.getNode(0);
+        }
+        return mailbox;
     }
 
     /**
@@ -144,10 +198,13 @@ public class DidactorEmail extends Component {
      * Delete the mailboxes and all emails (with related attachments) of this user.
      */
     private boolean deleteUser(MMObjectNode user) {
-        Vector mailboxes = user.getRelatedNodes("mailboxes", "related", RelationStep.DIRECTIONS_DESTINATION);
+
+        // Do not accidentely remove a user, it will cause a terrible mess.
+
+        List mailboxes = user.getRelatedNodes("mailboxes", "related", RelationStep.DIRECTIONS_DESTINATION);
 
         // Iterate the mailboxes, to remove them all
-        for (int i=0; i<mailboxes.size(); i++) {
+        for (int i = 0; i < mailboxes.size(); i++) {
             MMObjectNode mailbox = (MMObjectNode)mailboxes.get(i);
             Vector emails = mailbox.getRelatedNodes("emails", "related", RelationStep.DIRECTIONS_DESTINATION);
 
