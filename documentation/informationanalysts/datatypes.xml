@@ -7,7 +7,7 @@
   <articleinfo>
     <title>Data types in MMBase</title>
     <date>2007-08-03</date>
-    <edition>$Id: datatypes.xml,v 1.9 2007-10-26 11:49:16 michiel Exp $</edition>
+    <edition>$Id: datatypes.xml,v 1.10 2007-12-21 09:15:02 michiel Exp $</edition>
 
     <authorgroup>
       <author>
@@ -375,6 +375,11 @@ FRIDAY=friday
 SATURDAY=saturday]]>
           </programlisting>
           Which looks of course a lot nicer.
+          </para>
+          <para>
+            The javaconstants attribute can (since 1.8.6) also specify a java 1.5 'enum'. The
+            corresponding value is then the value returned by a method 'getValue' if the enum has
+            that method. Orderwise it is the value returned by 'ordinal()'.
           </para>
         </section>
         <section id="sorterclass">

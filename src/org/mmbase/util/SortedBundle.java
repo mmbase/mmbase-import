@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.28 2007-08-10 11:37:42 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.29 2007-12-21 09:14:38 michiel Exp $
  */
 public class SortedBundle {
 
@@ -274,6 +274,22 @@ public class SortedBundle {
                     if (! map.containsKey(key)) { // super should not override this.
                         try {
                             Object value = constant.get(null);
+                            try {
+                                // support for enums where ordinal is no good.
+                                Method keyMethod = value.getClass().getMethod("getValue");
+                                value = "" + keyMethod.invoke(value);
+                            } catch (NoSuchMethodException nsme) {
+                                log.warn("" + nsme);
+                                try {
+                                    // support for enums
+                                    Method keyMethod = value.getClass().getMethod("ordinal");
+                                    value = "" + keyMethod.invoke(value);
+                                } catch (Exception e1) {
+                                    log.warn("" + e1);
+                                }
+                            } catch (Exception e2) {
+                                log.warn("" + e2);
+                            }
                             map.put(key, value);
                         } catch (IllegalAccessException ieae) {
                             log.debug("The java constant with name " + key + " is not accessible");
