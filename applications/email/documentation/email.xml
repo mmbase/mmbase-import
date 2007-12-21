@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Email application</title>
     <date>2007-10-10</date>
-    <edition>$Id: email.xml,v 1.13 2007-11-20 11:17:15 michiel Exp $</edition>
+    <edition>$Id: email.xml,v 1.14 2007-12-21 10:16:51 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Daniel</firstname>
@@ -383,6 +383,11 @@ example5_body.jsp?usernumer=343 for the body
             which returns a non-empty value, then the message will also be forwarded to that
             address. This behaviour may be disable alltogether (in test environments), if the
             'sendmail' module has a init-parameter 'noforwarding' with value 'true'.
+          </para>
+          <para>
+            If the node associated with the person has a function 'in_mailbox' then the returned node
+            will be used to link the new mail objects to. If no such function, then the new mail is
+            linked directly to the person.
           </para>
         </section>
 
