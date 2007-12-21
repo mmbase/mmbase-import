@@ -56,7 +56,7 @@
         <required value="true" />
         <enumeration>
           <entry
-              javaconstants="org.mmbase.applications.email.MailBox"
+              javaconstants="org.mmbase.applications.email.MailBox$Type"
               basename="org.mmbase.applications.email.resources.webmail"
               />
         </enumeration>
