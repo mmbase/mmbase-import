@@ -26,6 +26,11 @@ ALTER TABLE mm_syncnodes CHANGE column timestamp m_timestamp int(11);
 ALTER TABLE mm_typerel CHANGE column max m_max int(11);
 ALTER TABLE mm_user CHANGE column language m_language varchar(2);
 
+ALTER TABLE mm_publishqueue CHANGE column timestamp m_timestamp datetime;
+ALTER TABLE mm_publishqueue CHANGE column action m_action varchar(32);
+ALTER TABLE mm_remotenodes CHANGE column timestamp m_timestamp datetime;
+
+
 RENAME TABLE live_numberTable TO live_numbertable;
 ALTER TABLE live_archive CHANGE column date m_date datetime;
 ALTER TABLE live_attachments CHANGE column size m_size int(11);
@@ -39,6 +44,11 @@ ALTER TABLE live_site CHANGE column language m_language varchar(2);
 ALTER TABLE live_syncnodes CHANGE column timestamp m_timestamp int(11);
 ALTER TABLE live_typerel CHANGE column max m_max int(11);
 ALTER TABLE live_user CHANGE column language m_language varchar(2);
+
+ALTER TABLE live_publishqueue CHANGE column timestamp m_timestamp datetime;
+ALTER TABLE live_publishqueue CHANGE column action m_action varchar(32);
+ALTER TABLE live_remotenodes CHANGE column timestamp m_timestamp datetime;
+
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
