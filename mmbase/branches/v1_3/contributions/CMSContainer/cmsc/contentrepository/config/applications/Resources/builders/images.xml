@@ -382,7 +382,6 @@
     <!--
         If you use this field, then you ensure that no duplicate images can be uploaded.
     -->
-    <!--
     <field>
       <descriptions>
         <description xml:lang="en">Checksum of byte array, which allows for uniqueness checking</description>
@@ -395,10 +394,9 @@
       <datatype base="checksum" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>checksum</name>
-        <type state="system" size="255" unique="true" notnull="false" key="false">STRING</type>
+        <type state="system" size="255" unique="false" notnull="false" key="false">STRING</type>
       </db>
     </field>
-    -->
 
   </fieldlist>
 

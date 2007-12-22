@@ -54,3 +54,21 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+Name: Checksum field for binary content 
+Goal: Add a checksum field to attachments and images
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_images ADD column checksum varchar(255) default NULL;
+ALTER TABLE mm_attachments ADD column checksum varchar(255) default NULL;
+
+ALTER TABLE live_images ADD column checksum varchar(255) default NULL;
+ALTER TABLE live_attachments ADD column checksum varchar(255) default NULL;
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
+
