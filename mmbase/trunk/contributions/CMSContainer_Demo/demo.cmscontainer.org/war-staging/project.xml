@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>remotepublishing</artifactId>
-			<version>1.0.13</version>
+			<version>1.0.14</version>
 			<type>mmbase-module</type>
 		</dependency>
 		<dependency>
