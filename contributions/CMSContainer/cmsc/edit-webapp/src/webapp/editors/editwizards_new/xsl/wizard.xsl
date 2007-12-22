@@ -17,6 +17,9 @@
 <!-- <xsl:include href="wizard-simple.xsl"/> -->
    <xsl:include href="wizard-workflow.xsl"/>
 
+   <!-- contains templates which can be implemented by customer projects -->
+   <xsl:include href="wizard-custom.xsl"/>
+
 <!-- PARAMETERS PASSED IN BY THE TRANSFORMER. 
      WE PASSED A MAP WITH KEY VALUE PAIRS TO THE TRANSFORMER
  -->
@@ -98,6 +101,7 @@
     <script type="text/javascript">
       var isWebmaster = "<xsl:value-of select="$WEBMASTER"/>";
     </script>
+    <xsl:call-template name="extrajavascript-custom"/>
   </xsl:template>
 
   <xsl:template name="headcontent" >
@@ -571,88 +575,97 @@
     <xsl:when test="command[@name=&apos;add-item&apos;]">
       <!-- only if less then maxoccurs -->
       <xsl:if test="not(@maxoccurs) or (@maxoccurs = &apos;*&apos;) or count(item) &lt; @maxoccurs">
-        <xsl:choose>
-        <!-- create action and startwizard command are present. Open the object into the start wizard -->
-        <xsl:when test="command[@name=&apos;startwizard&apos;]">
-          <xsl:for-each select="command[@name=&apos;startwizard&apos;]">
-            <!-- The prompts.xsl adds this as a tooltip -->
-            <!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
-            <xsl:choose>
-              <xsl:when test="@wizardjsp">
-                <td class="listnew">
-                <a href="{$ew_context}{@wizardjsp}/?objectnumber=new&amp;origin={@origin}&amp;wizard={@wizardname}"
-                 class="expand_button">
-                  <xsl:call-template name="prompt_add_wizard" />
-                </a>
-                </td>
-              </xsl:when>
-              <xsl:otherwise>
-            <xsl:if test="@inline=&apos;true&apos;">
-              <td class="listnew">
-              <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);"
-               class="expand_button">
-                <xsl:call-template name="prompt_add_wizard"/>
-              </a>
-              </td>
-            </xsl:if>
-            <xsl:if test="not(@inline=&apos;true&apos;)">
-              <td class="listnew">
-              <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
-              target="_blank" class="expand_button">
-                <xsl:call-template name="prompt_add_wizard"/>
-              </a>
-              </td>
-            </xsl:if>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="command[@name=&apos;insert&apos;]">
-          <xsl:for-each select="command[@name=&apos;add-item&apos;]">
-            <td class="listnew">
-            <a href="javascript:doAddInline(&apos;{@cmd}&apos;);" class="expand_button">
-              <xsl:call-template name="prompt_new"/>
-            </a>
-            </td>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="command[@name=&apos;pageselector&apos;]">
-             <xsl:for-each select="command[@name=&apos;pageselector&apos;]">
-               <td class="listnew">
-               <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/site/select/SelectorPage.do', 'pageselector', 'width=350,height=500,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
-                     <xsl:call-template name="prompt_search"/>
-                  </a>
-                  </td>
-             </xsl:for-each>
-         </xsl:when>
-         <xsl:when test="command[@name=&apos;contentselector&apos;]">
-             <xsl:for-each select="command[@name=&apos;contentselector&apos;]">
-               <td class="listnew">
-               <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/SearchInitAction.do?action=selectforwizard', 'contentselector', 'width=1000,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
-                     <xsl:call-template name="prompt_search"/>
-                  </a>
-                  </td>
-             </xsl:for-each>
-         </xsl:when>
-         <xsl:when test="command[@name=&apos;channelselector&apos;]">
-             <xsl:for-each select="command[@name=&apos;channelselector&apos;]">
-               <td class="listnew">
-                  <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/select/SelectorContentChannel.do', 'channelselector', 'width=350,height=500,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
-                     <xsl:call-template name="prompt_search"/>
-                  </a>
-                </td>
-             </xsl:for-each>
-         </xsl:when>
-           <xsl:otherwise>
-             <td class="listnew"></td>
-           </xsl:otherwise>
-         </xsl:choose>         
+        <xsl:apply-templates select="command" mode="listnewbuttons"/>
       </xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <td class="listnew"></td>
     </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="listnewselectors-custom">
+  	<!-- Crash CMSc 1.1 customer wizard-custom.xsl, because we use xsl:apply-templates now -->
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;add-item&apos;]" mode="listnewbuttons">
+  	<!-- add-item is used to check for a new action -->
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;search&apos;]" mode="listnewbuttons">
+  	<!-- Search is handled by the listsearch template -->
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;startwizard&apos;]" mode="listnewbuttons">
+    <!-- create action and startwizard command are present. Open the object into the start wizard -->
+    <!-- The prompts.xsl adds this as a tooltip -->
+    <!-- Moved prompt to the "prompt_add_wizard" template as a tooltip -->
+    <xsl:choose>
+      <xsl:when test="@wizardjsp">
+        <td class="listnew">
+          <a href="{$ew_context}{@wizardjsp}/?objectnumber=new&amp;origin={@origin}&amp;wizard={@wizardname}"
+             class="expand_button">
+            <xsl:call-template name="prompt_add_wizard" />
+          </a>
+        </td>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="@inline=&apos;true&apos;">
+          <td class="listnew">
+            <a href="javascript:doStartWizard(&apos;{../@fid}&apos;,&apos;{../command[@name=&apos;add-item&apos;]/@value}&apos;,&apos;{@wizardname}&apos;,&apos;{@objectnumber}&apos;,&apos;{@origin}&apos;);"
+               class="expand_button">
+              <xsl:call-template name="prompt_add_wizard"/>
+            </a>
+          </td>
+        </xsl:if>
+        <xsl:if test="not(@inline=&apos;true&apos;)">
+          <td class="listnew">
+            <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name=&apos;add-item&apos;]/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
+               target="_blank" class="expand_button">
+              <xsl:call-template name="prompt_add_wizard"/>
+            </a>
+          </td>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;insert&apos;]" mode="listnewbuttons">
+    <xsl:for-each select="../command[@name=&apos;add-item&apos;]">
+      <td class="listnew">
+        <a href="javascript:doAddInline(&apos;{@cmd}&apos;);" class="expand_button">
+          <xsl:call-template name="prompt_new"/>
+        </a>
+      </td>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;pageselector&apos;]" mode="listnewbuttons">
+    <td class="listnew">
+      <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/site/select/SelectorPage.do', 'pageselector', 'width=350,height=500,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
+        <xsl:call-template name="prompt_search"/>
+      </a>
+    </td>
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;contentselector&apos;]" mode="listnewbuttons">
+    <td class="listnew">
+      <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/SearchInitAction.do?action=selectforwizard', 'contentselector', 'width=1000,height=550,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
+        <xsl:call-template name="prompt_search"/>
+      </a>
+    </td>
+  </xsl:template>
+
+  <xsl:template match="command[@name=&apos;channelselector&apos;]" mode="listnewbuttons">
+    <td class="listnew">
+      <a href="#" onclick="select_fid='{../@fid}';select_did='{../command[@name=&apos;add-item&apos;]/@value}';window.open('../../../../editors/repository/select/SelectorContentChannel.do', 'channelselector', 'width=350,height=500,status=yes,toolbar=no,titlebar=no,scrollbars=yes,resizable=yes,menubar=no');" class="button">
+        <xsl:call-template name="prompt_search"/>
+      </a>
+    </td>
+  </xsl:template>
+  
+  <xsl:template match="command" mode="listnewbuttons">
+    <td class="listnew">xslt template missing for command <xsl:value-of select="@name"/></td>
   </xsl:template>
 
   <xsl:template name="deleteitembuttons">
