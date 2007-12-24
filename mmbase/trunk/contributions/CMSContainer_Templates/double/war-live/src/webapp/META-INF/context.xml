@@ -4,7 +4,7 @@
 <Context debug="5" reloadable="true">
 
 	<!--
-		Remove this if you want to use the default StandarManager. The standard 
+		Remove this if you want to use the default StandardManager. The standard 
 		manager try to save the the session when you restart the tomcat it may cause
 		problem as not all of your session attribute is not serializable
 	-->
@@ -61,6 +61,21 @@
 		
 		MySql error: Incorrect arguments to mysql_stmt_execute
 		MySql error: Duplicate entry '1234' for key 1 in query
+	-->
+
+	<!-- useJvmCharsetConverters=true
+		GCJ has a bug in its class libraries in that it throws an exception where no other VMs 
+		(IBM, Sun, Blackdown, BEA) do not. The other VMs return '?' for non-convertible character
+		sequences.
+
+		If you can switch to another VM this problem goes away. Otherwise, please try adding
+		"useJvmCharsetConverters=true" to your JDBC connection URL properties and see if that
+		works, as that will cause the driver to use a different code path that doesn't cause the
+		code in GCJ's class libraries with the bug to be executed.
+	
+		http://bugs.mysql.com/bug.php?id=29636
+		
+		MySql error: java.io.CharConversionException
 	-->
 
 	<Environment name="mmbase/mmbaseroot/datasource-context" value="java:comp/env" type="java.lang.String" />
