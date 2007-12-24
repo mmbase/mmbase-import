@@ -37,7 +37,6 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
 
        if (SecurityUtil.isEditor(role)) {
           element.addOption(renderer.createTreeOption("edit_defaults.png", "site.page.edit", "PageEdit.do?number=" + id));
-          element.addOption(renderer.createTreeOption("new.png", "site.page.new", "PageCreate.do?parentpage=" + id));
 
           renderer.addParentOptions(element, id);
           
@@ -70,6 +69,8 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
     }
 
 	public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
+        element.addOption(renderer.createTreeOption("new.png", "site.page.new", "PageCreate.do?parentpage=" + parentId));
+
         if (ModuleUtil.checkFeature(FEATURE_PAGEWIZARD)) {
             element.addOption(renderer.createTreeOption("wizard.png", "site.page.wizard",
                   "../pagewizard/StartPageWizardAction.do?number=" + parentId));
