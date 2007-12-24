@@ -1,8 +1,7 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-app_2_4.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
     
 	<display-name>CMS Container implementation</display-name>
@@ -192,6 +191,10 @@
         <display-name>Redirect</display-name>
         <servlet-name>CmscRedirectServlet</servlet-name>
         <servlet-class>com.finalist.cmsc.services.search.RedirectServlet</servlet-class>
+        <init-param>
+			<param-name>forwardRequest</param-name>
+			<param-value>true</param-value>
+        </init-param>
         <load-on-startup>4</load-on-startup>
     </servlet>
     
@@ -338,7 +341,9 @@
 	</mime-mapping>
 
 	<welcome-file-list>
+    	<welcome-file>index.jspx</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
+    	<welcome-file>default.jsp</welcome-file>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
