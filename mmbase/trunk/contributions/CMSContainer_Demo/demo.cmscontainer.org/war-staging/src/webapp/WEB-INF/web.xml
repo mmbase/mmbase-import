@@ -1,8 +1,7 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-app_2_4.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
 
    <display-name>CMS Container implementation</display-name>
@@ -135,33 +134,6 @@
       <url-pattern>/*</url-pattern>
    </filter-mapping>
    
-   <!-- 
-		Hibernate settings/For Community Module
-   
-	
-   <context-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>classpath:applicationContext.xml</param-value>
-   </context-param>
-   
-   <listener>
-      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-   </listener>
-
-   <filter>
-      <filter-name>hibernateFilter</filter-name>
-      <filter-class>
-         org.springframework.orm.hibernate3.support.OpenSessionInViewFilter
-      </filter-class>
-   </filter>
-   
-   <filter-mapping>
-        <filter-name>hibernateFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-   </filter-mapping>
-	
-	-->
-
     <servlet>
         <display-name>Pluto Driver</display-name>
         <servlet-name>CmscPortalServlet</servlet-name>
