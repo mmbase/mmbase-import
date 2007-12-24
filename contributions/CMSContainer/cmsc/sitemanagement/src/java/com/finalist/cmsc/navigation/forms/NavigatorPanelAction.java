@@ -24,7 +24,10 @@ public class NavigatorPanelAction extends MMBaseAction {
       String nodeId = request.getParameter("nodeId");
       Node parentNode = cloud.getNode(nodeId);
 
-      boolean secure = parentNode.getBooleanValue(PagesUtil.SECURE_FIELD);
+      boolean secure = false;
+      if(parentNode.getNodeManager().hasField(PagesUtil.SECURE_FIELD)) {
+    	  secure = parentNode.getBooleanValue(PagesUtil.SECURE_FIELD);
+      }
 
       if (ServerUtil.useServerName()) {
          String[] pathElements = NavigationUtil.getPathElementsToRoot(parentNode, true);
