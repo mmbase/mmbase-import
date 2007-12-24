@@ -40,9 +40,6 @@ public class SiteTreeItemRenderer implements NavigationTreeItemRenderer {
                          "site.site.edit", "SiteEdit.do?number=" + id));
           }
 
-          element.addOption(renderer.createTreeOption("new.png", 
-                      "site.page.new", "PageCreate.do?parentpage=" + id));
-
           renderer.addParentOptions(element, id);
 
           if (SecurityUtil.isChiefEditor(role)
