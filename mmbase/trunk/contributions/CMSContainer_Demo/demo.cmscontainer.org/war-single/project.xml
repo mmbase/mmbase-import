@@ -21,6 +21,13 @@
 		
    		<dependency>
 			<groupId>finalist</groupId>
+			<artifactId>cmsc-modules-alias</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>mmbase-module</type>
+		</dependency>   		
+		
+   		<dependency>
+			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-tasks</artifactId>
 			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
