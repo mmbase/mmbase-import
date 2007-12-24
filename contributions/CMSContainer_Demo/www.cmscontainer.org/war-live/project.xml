@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<extend>${basedir}/../maven-base/project.xml</extend>
-	<artifactId>cmsc-live</artifactId>
+	<artifactId>cmsc-www-live</artifactId>
 	<name>CMS Container.org live application</name>
 	<shortDescription>CMS Container.org live application</shortDescription>
 	<dependencies>
 		<dependency>
 			<groupId>finalist</groupId>
-			<artifactId>cmsc-webapp</artifactId>
+			<artifactId>cmsc-www-webapp</artifactId>
 			<version>${application.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
