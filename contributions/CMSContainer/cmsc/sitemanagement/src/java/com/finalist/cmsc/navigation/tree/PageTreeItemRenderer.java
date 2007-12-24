@@ -39,6 +39,8 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
           element.addOption(renderer.createTreeOption("edit_defaults.png", "site.page.edit", "PageEdit.do?number=" + id));
           element.addOption(renderer.createTreeOption("new.png", "site.page.new", "PageCreate.do?parentpage=" + id));
 
+          renderer.addParentOptions(element, id);
+          
           if (SecurityUtil.isWebmaster(role)
                 || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
              element.addOption(renderer.createTreeOption("delete.png", "site.page.remove", "PageDelete.do?number=" + id));
@@ -63,8 +65,6 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
        }
        element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
              "../usermanagement/pagerights.jsp?number=" + id));
-
-       renderer.addParentOptions(element, id);
        
        return element;
     }
