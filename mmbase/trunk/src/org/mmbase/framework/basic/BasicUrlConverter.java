@@ -30,7 +30,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.2 2007-12-26 17:07:19 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -103,7 +103,9 @@ public final class BasicUrlConverter implements UrlConverter {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
         Map<String, Object> map = new TreeMap<String, Object>();
-
+        if (log.isDebugEnabled()) {
+            log.debug("path " + path + " " + parameters + " " + frameworkParameters);
+        }
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
@@ -120,14 +122,21 @@ public final class BasicUrlConverter implements UrlConverter {
                 }
             }
             Block block = state.getBlock();
+            log.debug("current block " + block);
             Block toBlock = block.getComponent().getBlock(path);
             if (toBlock != null) {
                 path = null;
                 if (! toBlock.equals(block)) {
+                    log.debug("New block " + toBlock);
                     state.setBlock(map, toBlock);
+                } else {
+                    log.debug("staying at " + block);
                 }
+            } else {
+                log.debug("No block '" + path + "' found");
             }
         }
+        log.debug("constructing '" + path + "" + map);
         return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
     }
     public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {

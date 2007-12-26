@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.41 2007-12-05 16:31:51 michiel Exp $
+ * @version $Id: Framework.java,v 1.42 2007-12-26 17:07:19 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -97,6 +97,15 @@ public abstract class Framework {
      * @todo I don't know if this is ok.
      */
     public final static Parameter PROCESS = new Parameter("process", Boolean.class, Boolean.FALSE);
+
+    /**
+     * A framework must be able to provide a node to the rendered blocks. This parameter could
+     * indicate _which_ node.
+     * @todo Not yet suported, so basic framework cannot yet support block which require a framework
+     * provided node.
+     */
+    public static final Parameter<Node>   N         = new Parameter<Node>("n", Node.class);
+
 
     /**
      * Return the name of the framework

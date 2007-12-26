@@ -23,26 +23,27 @@ import org.mmbase.util.logging.Logging;
  * HEAD renderers can be chained, because they don't produce a well defined block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedRenderer.java,v 1.1 2007-09-14 06:54:36 michiel Exp $
+ * @version $Id: ChainedRenderer.java,v 1.2 2007-12-26 17:07:19 michiel Exp $
  * @since MMBase-1.9
  */
+
 public class ChainedRenderer extends AbstractRenderer {
     private static final Logger log = Logging.getLoggerInstance(ChainedRenderer.class);
-    
+
     protected final List<Renderer> chain = new ArrayList<Renderer>();
     protected Parameter[] parameters = Parameter.EMPTY;
-    
+
     public ChainedRenderer(String t, Block parent) {
         super(t, parent);
     }
-    
+
     public void add(Renderer render) {
         chain.add(render);
         List<Parameter> params = new ArrayList<Parameter>(Arrays.asList(parameters));
         params.addAll(Arrays.asList(render.getParameters()));
         parameters = params.toArray(Parameter.EMPTY);
     }
-    
+
     public  Parameter[] getParameters() {
         return parameters;
     }
