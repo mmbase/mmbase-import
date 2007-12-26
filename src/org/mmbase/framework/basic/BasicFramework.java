@@ -37,7 +37,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.4 2007-12-21 16:13:45 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.5 2007-12-26 17:07:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -51,13 +51,6 @@ public class BasicFramework extends Framework {
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
     }
-    /**
-     * A framework must be able to provide a node to the rendered blocks. This parameter could
-     * indicate _which_ node.
-     * @todo Not yet suported, so basic framework cannot yet support block which require a framework
-     * provided node.
-     */
-    public static final Parameter<Node>   N         = new Parameter<Node>("n", Node.class);
 
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
@@ -81,7 +74,9 @@ public class BasicFramework extends Framework {
     }
 
     public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
-        log.debug("we're calling urlConverter");
+        if (log.isDebugEnabled()) {
+            log.debug("calling urlConverter " + urlConverter);
+        }
         return urlConverter.getInternalUrl(page, params, frameworkParameters);
     }
 
@@ -119,7 +114,7 @@ public class BasicFramework extends Framework {
         if (! urlConverter.contains(buc)) {
             urlConverter.add(buc);
         }
-        log.info("Configured BasicFrameWork: " + this);
+        log.info("Configured BasicFramework: " + this);
 
     }
     public Block getRenderingBlock(Parameters frameworkParameters) {
@@ -132,7 +127,8 @@ public class BasicFramework extends Framework {
     public Block getBlock(Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
-        /*
+        log.debug("Getting block for " + frameworkParameters + " -> " + state);
+
         // BasicFramework always shows only one component
         Component component  = ComponentRepository.getInstance().getComponent(frameworkParameters.get(MMBaseUrlConverter.COMPONENT));
         boolean explicitComponent = component != null;
@@ -153,12 +149,13 @@ public class BasicFramework extends Framework {
 
             log.debug("Using " + component);
 
-            Block block;
+            Block block = null;
             String blockParam = frameworkParameters.get(MMBaseUrlConverter.BLOCK);
             if (blockParam != null) {
-                if (path != null && ! "".equals(path)) throw new IllegalArgumentException("Cannot use both 'path' argument and 'block' parameter");
                 block = component.getBlock(blockParam);
-            } else {
+            }
+            /*
+            else {
                 block = component.getBlock(path);
                 if (block == null && path != null && ! "".equals(path)) {
                     log.debug("No block '" + path + "' found");
@@ -166,22 +163,22 @@ public class BasicFramework extends Framework {
                 }
 
             }
+            */
             if (block == null && state != null) {
                 block = state.getRenderer().getBlock();
             }
 
             if (block == null) {
-                log.debug("Cannot determin a block for '" + path + "' suppose it a normal link");
+                log.debug("Cannot determin a block for '" + state + "' suppose it a normal link");
                 if (filteredMode) {
                     return null;
                 } else {
-                    throw new IllegalArgumentException("not such block '" + path + " for component " + block);
+                    // throw new IllegalArgumentException("not such block '" + + " for component " + block);
                 }
             }
             return block;
         }
-        */
-        return null;
+        //return null;
     }
 
 
@@ -203,6 +200,7 @@ public class BasicFramework extends Framework {
     protected void setBlockParametersForRender(State state, Parameters blockParameters) {
         for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
             if (entry.getValue() == null) {
+                log.debug("Using " + entry + " and parameter " + getPrefix(state) + entry.getKey());
                 blockParameters.set(entry.getKey(), state.getRequest().getParameter(getPrefix(state) + entry.getKey()));
             }
         }
@@ -227,19 +225,25 @@ public class BasicFramework extends Framework {
 
             request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
 
-            renderer = state.startBlock(frameworkParameters, renderer);
+            Renderer actualRenderer = state.startBlock(frameworkParameters, renderer);
+            if (! actualRenderer.equals(renderer)) {
+                Parameters newBlockParameters = actualRenderer.getBlock().createParameters();
+                newBlockParameters.setAllIfDefinied(blockParameters);
+                blockParameters = newBlockParameters;
+
+            }
 
             if (state.needsProcess()) {
-                Processor processor = renderer.getBlock().getProcessor();
+                Processor processor = actualRenderer.getBlock().getProcessor();
                 state.process(processor);
-                log.service("Processing " + renderer.getBlock() + " " + processor);
+                log.service("Processing " + actualRenderer.getBlock() + " " + processor);
                 setBlockParametersForProcess(state, blockParameters);
                 processor.process(blockParameters, frameworkParameters);
             }
 
-            state.render(renderer);
+            state.render(actualRenderer);
             setBlockParametersForRender(state, blockParameters);
-            renderer.render(blockParameters, frameworkParameters, w, windowState);
+            actualRenderer.render(blockParameters, frameworkParameters, w, windowState);
         } catch (FrameworkException fe) {
             Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), renderer.getUri().toString(), 500, fe);
             error.render(blockParameters, frameworkParameters, w, windowState);
