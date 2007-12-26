@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.2 2007-12-21 15:59:28 michiel Exp $
+ * @version $Id: State.java,v 1.3 2007-12-26 17:07:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -33,7 +33,7 @@ public class State {
     /**
      * A framework parameter which is required for frameworks which base them selves around this class.
      */
-    public static final Parameter<String> ACTION   = new Parameter<String>("action", String.class, "");
+    public static final Parameter<String> ACTION   = new Parameter<String>("action", String.class, null);
 
 
     private static final Logger log = Logging.getLoggerInstance(State.class);
@@ -209,11 +209,14 @@ public class State {
      */
     protected Renderer getRenderer(Renderer r) {
         String blockName = request.getParameter("__b" + getId());
+        log.debug("found block " + blockName + " at parameters");
         Block block = r.getBlock();
         if (blockName == null) {
+            log.warn("No such block " + blockName);
             return r;
         } else {
             Block toBlock = block.getComponent().getBlock(blockName);
+            log.debug("Using alternative block " + toBlock);
             if (toBlock == null) {
                 throw new RuntimeException("No such block '" + blockName + "' in " + block.getComponent());
             }
