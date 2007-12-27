@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.28 2007-12-12 10:38:20 pierre Exp $
+ * @version $Id: MMBaseEntry.java,v 1.29 2007-12-27 13:25:00 pierre Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -95,9 +95,13 @@ public class MMBaseEntry implements IndexEntry {
                 org.mmbase.bridge.Field field = i.nextField();
                 if (field.getName().indexOf(".") >= 0 ) continue;
                 if (id.equals(field.getName())) continue; // was added already
-                Node subNode = node.getNodeValue(field.getName());
-                document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
-                document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
+		try {
+	            Node subNode = node.getNodeValue(field.getName());
+        	    document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
+        	    document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
+		} catch (Exception e) {
+		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing..."); 
+		}
             }
         } else {
             document.add(new Field("builder",  node.getNodeManager().getName(),    Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
