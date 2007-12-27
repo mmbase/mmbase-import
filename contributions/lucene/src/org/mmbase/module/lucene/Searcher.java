@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.39 2007-12-27 15:47:04 pierre Exp $
+ * @version $Id: Searcher.java,v 1.40 2007-12-27 16:03:39 pierre Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -187,6 +187,9 @@ public class Searcher implements NewSearcher.Listener {
             final Hits hits;
             try {
                 hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
+            } catch (BooleanQuery.TooManyClauses tmc) {
+	        log.debug(tmc);
+                return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
             } catch (java.io.IOException ioe) {
                 log.service(ioe + " returning empty list");
                 return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
@@ -258,6 +261,9 @@ public class Searcher implements NewSearcher.Listener {
         try {
             Hits hits = getHits(value, filter, null, analyzer, extraQuery, fields);
             return hits.length();
+        } catch (BooleanQuery.TooManyClauses tmc) {
+            log.debug(tmc);
+            return 0;
         } catch (ParseException pe) {
             log.error(pe);
             return 0;
