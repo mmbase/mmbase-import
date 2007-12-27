@@ -17,6 +17,11 @@
     <ant dir="${applications.dir}/crontab" inheritAll="false" />
   </target>
 
+  <target name="taglib">
+    <echo message="${applications.dir}/taglib" />
+    <ant dir="${applications.dir}/taglib" inheritAll="false" />
+  </target>
+
 
   <target name="extrajars" >
     <echo message="extra jars" />
@@ -29,7 +34,7 @@
     </antcall>
   </target>
 
-  <target name="jar" depends="extrajars,crontab,buildbase.jar" />
+  <target name="jar" depends="extrajars,crontab,taglib,buildbase.jar" />
 
 
 </project>
