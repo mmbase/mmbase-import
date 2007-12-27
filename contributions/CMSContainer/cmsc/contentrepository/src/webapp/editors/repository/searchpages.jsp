@@ -11,7 +11,7 @@
     pageContext.setAttribute("resultsPerPage", resultsPerPage);
 %>
 
-<c:set var="listSize" value="${fn:length(nodeList)}"/>
+<c:set var="listSize" value="${resultCount}"/>
 <c:set var="offset" value="${param.offset}"/>
 
 <%@ include file="../pages.jsp" %>

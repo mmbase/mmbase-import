@@ -1378,7 +1378,7 @@ label {
 }
 
 .page_list_navfalse{
-
+   text-decoration:underline;
 }
 
 .page_list_navtrue{
