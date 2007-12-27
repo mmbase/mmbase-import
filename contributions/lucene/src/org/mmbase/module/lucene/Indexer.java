@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.47 2007-12-17 13:20:00 michiel Exp $
+ * @version $Id: Indexer.java,v 1.48 2007-12-27 09:40:23 michiel Exp $
  **/
 public class Indexer {
 
@@ -180,7 +180,7 @@ public class Indexer {
         try {
             lastIndexed.load(new FileInputStream(lucenePath + java.io.File.separator + "lastIndexed.properties"));
         } catch (IOException ioe) {
-            log.warn(ioe);
+            log.service(ioe);
         }
         return lastIndexed;
     }
@@ -408,7 +408,7 @@ public class Indexer {
             }
             writer.optimize();
             Date lastFullIndex = setLastFullIndex();
-            log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index: " + writer.docCount());
+            log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index '" + getName() + "': " + writer.docCount());
         } catch (Exception e) {
                 addError(e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
