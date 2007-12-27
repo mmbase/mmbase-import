@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.4 2007-06-08 12:37:24 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.5 2007-12-27 17:58:25 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -877,9 +877,9 @@ abstract public class Queries {
                     // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
                     firstStep = (Step) query.getSteps().get(0);
                 }
-                if (step == null) {
-                    step = firstStep;
-                }
+            }
+            if (step == null) {
+                step = firstStep;
             }
 
             try {
