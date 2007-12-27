@@ -12,7 +12,7 @@ See http://www.MMBase.org/license
   <artifactId>${pom.artifactId}</artifactId>
   <name>${pom.artifactId}</name>
   <groupId>mmbase</groupId>
-  <currentVersion>${mmbase.version}</currentVersion>
+  <currentVersion>${mmbase.version}-SNAPSHOT</currentVersion>
   <organization>
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
@@ -293,7 +293,7 @@ cvs [checkout aborted]: connect to cvs.sourceforge.net(66.35.250.207):2401 faile
   </dependencies>
   <build>
     <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
-    <defaultGoal>jar</defaultGoal>
+    <defaultGoal>jar:install</defaultGoal>
     <sourceDirectory>${basedir}/src</sourceDirectory>
     <!-- J A R  R E S O U R C E S -->
     <!-- Resources that are packaged up inside the JAR file -->
@@ -306,6 +306,10 @@ cvs [checkout aborted]: connect to cvs.sourceforge.net(66.35.250.207):2401 faile
           <include>**/*.xsd</include>
           <include>**/*.properties</include>
         </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/html/WEB-INF/classes</directory>
         <filtering>false</filtering>
       </resource>
       <resource>
