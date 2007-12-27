@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.90 2007-06-21 15:50:27 nklasens Exp $
+ * @version $Id: Queries.java,v 1.91 2007-12-27 17:55:30 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -845,9 +845,8 @@ abstract public class Queries {
 
         Step firstStep = null; // the 'default' step to which nodes are added. It is the first step which corresponds with the type of the first node.
 
-        Iterator nodes = StringSplitter.split(startNodes).iterator();
-        while (nodes.hasNext()) {
-            String nodeAlias = (String) nodes.next(); // can be a string, prefixed with the step alias.
+        for (String nodeAlias : StringSplitter.split(startNodes)) {
+                                                     // can be a string, prefixed with the step alias.
             Step step;                                // the step to which the node must be added (defaults to 'firstStep').
             String nodeNumber;                        // a node number or perhaps also a node alias.
             {
@@ -886,9 +885,10 @@ abstract public class Queries {
                     // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
                     firstStep = query.getSteps().get(0);
                 }
-                if (step == null) {
-                    step = firstStep;
-                }
+            }
+
+            if (step == null) {
+                step = firstStep;
             }
 
             try {
