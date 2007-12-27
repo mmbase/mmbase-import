@@ -30,5 +30,14 @@
   <build>
     <sourceDirectory>${basedir}/common</sourceDirectory>
     <defaultGoal>jar</defaultGoal>
+    <resources>
+      <resource>
+        <targetPath>org/mmbase/config</targetPath>
+        <directory>config</directory>
+        <excludes>
+          <exclude>"**/CVS"</exclude>
+        </excludes>
+      </resource>
+    </resources>
   </build>
 </project>
