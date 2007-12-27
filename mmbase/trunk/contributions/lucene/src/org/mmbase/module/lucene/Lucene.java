@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.98 2007-12-18 12:16:17 pierre Exp $
+ * @version $Id: Lucene.java,v 1.99 2007-12-27 09:47:52 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -218,7 +218,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * It (re)loads the index for a specific item (identified by 'identifier' parameter).
      */
     //protected Function<Void> updateIndexFunction = new AbstractFunction<Void>("updateIndex", new Parameter(IDENTIFIER, true),  CLASS) {
-    protected Function updateIndexFunction = new AbstractFunction("updateIndex", new Parameter[] {new Parameter(IDENTIFIER, true),  CLASS}, ReturnType.VOID) {
+    protected Function updateIndexFunction = new AbstractFunction("updateIndex",
+                                                                  new Parameter[] {new Parameter(IDENTIFIER, true),  CLASS},
+                                                                  ReturnType.VOID) {
             public Object getFunctionValue(Parameters arguments) {
                 if (scheduler == null) throw new RuntimeException("Read only");
                 scheduler.updateIndex(arguments.getString(IDENTIFIER), (Class) arguments.get(CLASS));
@@ -272,6 +274,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(assignmentFunction);
     }
+
+
     //protected Function<Collection<Scheduler.Assignment>> queueFunction = new AbstractFunction("queue") {
     protected Function queueFunction = new AbstractFunction("queue", Parameter.EMPTY, ReturnType.UNKNOWN) {
         public Collection<Scheduler.Assignment> getFunctionValue(Parameters arguments) {
@@ -281,6 +285,19 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(queueFunction);
     }
+
+    protected Function /*<Void>*/ waitFunction = new AbstractFunction /*<Void>*/ ("wait", Parameter.EMPTY, ReturnType.UNKNOWN) {
+            public Object getFunctionValue(Parameters arguments) {
+                scheduler.waitForReady();
+                return null;
+
+            }
+        };
+    {
+        addFunction(waitFunction);
+    }
+
+
 
     //protected Function<Boolean> readOnlyFunction = new AbstractFunction<Boolean>("readOnly"){
     protected Function /*<Boolean>*/ readOnlyFunction = new AbstractFunction /*<Boolean>*/("readOnly", Parameter.EMPTY, ReturnType.BOOLEAN){
@@ -391,7 +408,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function returns the size of a query on an index.
      */
     //protected Function<Integer> searchSizeFunction = new AbstractFunction<Integer>("searchsize", VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER ) {
-    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER}, ReturnType.INTEGER) {
+    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, FIELDS, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER}, ReturnType.INTEGER) {
         public Integer getFunctionValue(Parameters arguments) {
             String value = (String) arguments.getString(VALUE);
             String index = (String) arguments.getString(INDEX);
@@ -514,6 +531,24 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     // Force init of MMBase
                     mmbase = MMBase.getMMBase();
 
+                    // initial wait time?
+                    String time = getInitParameter("initialwaittime");
+                    if (time != null) {
+                        try {
+                            initialWaitTime = Long.parseLong(time);
+                            log.debug("Set initial wait time to " + time + " milliseconds");
+                        } catch (NumberFormatException nfe) {
+                            log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
+                        }
+                    }
+                    try {
+                        if (initialWaitTime > 0) {
+                            log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
+                            Thread.sleep(initialWaitTime);
+                        }
+                    } catch (InterruptedException ie) {
+                        //return;
+                    }
                     factory = ContentExtractor.getInstance();
 
 
@@ -562,16 +597,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         log.info("Lucene module of this MMBase will be READONLY");
                     }
 
-                    // initial wait time?
-                    String time = getInitParameter("initialwaittime");
-                    if (time != null) {
-                        try {
-                            initialWaitTime = Long.parseLong(time);
-                            log.debug("Set initial wait time to " + time + " milliseconds");
-                        } catch (NumberFormatException nfe) {
-                            log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
-                        }
-                    }
                     time = getInitParameter("waittime");
                     if (time != null) {
                         try {
@@ -609,6 +634,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         if (initialWaitTime < 0 || "true".equals(fias)) {
                             scheduler.fullIndex();
                         }
+                    } else {
+                        log.service("No scheduler started, because read-only");
                     }
                 }
             });
@@ -669,8 +696,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      */
     protected MMBaseIndexDefinition createIndexDefinition (Element queryElement, Set<String> allIndexedFieldsSet, boolean storeText, boolean mergeText, String relateFrom, Analyzer analyzer) {
         try {
-            if (Lucene.hasAttribute(queryElement,"optimize")) {
-                String optimize = Lucene.getAttribute(queryElement,"optimize");
+            if (Lucene.hasAttribute(queryElement, "optimize")) {
+                String optimize = Lucene.getAttribute(queryElement, "optimize");
                 storeText = optimize.equals("none");
                 mergeText = optimize.equals("full");
             }
@@ -935,14 +962,6 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
         public void run() {
             log.service("Start Lucene Scheduler");
-            try {
-                if (initialWaitTime > 0) {
-                    log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
-                    Thread.sleep(initialWaitTime);
-                }
-            } catch (InterruptedException ie) {
-                //return;
-            }
             while (mmbase != null && !mmbase.isShutdown()) {
                 if (log.isTraceEnabled()) {
                     log.trace("Obtain Assignment from " + indexAssignments);
@@ -964,6 +983,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 } finally {
                     assignment = null;
                 }
+
             }
         }
         public int unAssign(int id) {
@@ -1113,6 +1133,31 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         return "DELETE for " + number + " " + indexName;
                     }
                 });
+        }
+
+        class Marker {
+            boolean reached = false;
+        }
+        void waitForReady() {
+            final Marker marker = new Marker();
+            assign(new Assignment() {
+                    public void run() {
+                        marker.reached = true;
+                        marker.notify();
+                    }
+                    public String idString() {
+                        return "END_MARKER " + marker;
+                    }
+                }
+                );
+            try {
+                synchronized(marker) {
+                    while (! marker.reached) {
+                        marker.wait();
+                    }
+                }
+            } catch (InterruptedException ie) {
+            }
         }
 
         private final Assignment ALL_FULL_INDEX = new Assignment() {
