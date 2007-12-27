@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
--->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" 
-		xmlns:ant="jelly:ant" xmlns:artifact="artifact"
-        xmlns:util="jelly:util">
-	<!--
+<project xmlns:j="jelly:core"
+         xmlns:maven="jelly:maven"
+         xmlns:ant="jelly:ant"
+         xmlns:artifact="artifact"
+         xmlns:util="jelly:util">
+  <!--
 	 These goals and pre/post goals are inherited by
 	 any subproject that extends the POM in maven-base
 	-->
-	    
+
 	<!--
-	 This pregoal takes any simple html docs in the xdocs folder and turns them 
-	 into xdoc xml,	 before they are turned back into maven-style html docs.  
+	 This pregoal takes any simple html docs in the xdocs folder and turns them
+	 into xdoc xml,	 before they are turned back into maven-style html docs.
 	 Why?  html is easier to write in a WYSIWIG editor than xdoc xml
 	-->
 	<preGoal name="xdoc:jelly-transform">
 	    <attainGoal name="html2xdoc"/>
 	</preGoal>
-	
+
 	<goal name="printProject">
 		<echo>${pom.groupId}:${pom.artifactId}</echo>
 	</goal>
-	
+
 	<goal name="all:install" description="Install ALL Subprojects">
 		<attainGoal name="multiproject:install" />
 	</goal>
@@ -114,17 +109,18 @@ See http://www.MMBase.org/license
 
 
 	<preGoal name="jar:jar">
-	    <util:available file="${maven.build.dest}/org/mmbase/config">
-	    <fileScanner var="scanner">
-	    	<fileset dir="${maven.build.dest}/org/mmbase/config"/>
-	    </fileScanner>
-    	<j:forEach var="dir" items="${scanner.directories()}">
-		    <fileScanner var="filescan">
-		    	<fileset dir="${dir.path}" >
-		    		<exclude name="INDEX"/>
+    <ant:echo>Hoi</ant:echo>
+    <util:available file="${maven.build.dest}/org/mmbase/config">
+      <fileScanner var="scanner">
+        <fileset dir="${maven.build.dest}/org/mmbase/config"/>
+      </fileScanner>
+      <j:forEach var="dir" items="${scanner.directories()}">
+        <fileScanner var="filescan">
+          <fileset dir="${dir.path}" >
+            <exclude name="INDEX"/>
 		    		<include name="*"/>
-		    	</fileset>
-		    </fileScanner>
+          </fileset>
+        </fileScanner>
 <!-- ## Generate INDEX file with each filename and directory on a new line ## -->
 <echo file="${dir.path}/INDEX"><j:forEach var="file" items="${filescan.iterator()}">${file.name}
 </j:forEach><j:forEach var="filedir" items="${filescan.directories()}">${filedir.name}/
@@ -134,38 +130,49 @@ See http://www.MMBase.org/license
 	</preGoal>
 
   <goal name="jellyVars">
-      <ant:echo>POM ARTIFACT: ${pom.artifactId}</ant:echo>
-      <ant:echo>POM ID: ${pom.id}</ant:echo>
-      <ant:echo>POM NAME: ${pom.name}</ant:echo>
-      <ant:echo>POM GROUP: ${pom.groupId}</ant:echo>
-      <ant:echo>POM VERSION: ${pom.currentVersion}</ant:echo>
-      <ant:echo>POM DESCRIPTION: ${pom.shortDescription}</ant:echo>
-      <ant:echo>POM ORGANIZATION: ${pom.organization.name}</ant:echo>
-      <ant:echo>POM URL: ${pom.organization.url}</ant:echo>
-      <ant:echo></ant:echo>
-      
-      <j:forEach var="lib" items="${pom.artifacts}">
-        <j:set var="dep" value="${lib.dependency}"/>
-        <j:set var="name" value="${lib.file.name}"/>
-        <j:set var="parent" value="${lib.file.parent}"/>
-        <j:set var="artifact" value="${dep.artifact}"/>
-        <j:set var="id" value="${dep.id}"/>
-        <j:set var="group" value="${dep.artifactDirectory}"/>
-        <j:set var="version" value="${dep.version}"/>
-        <j:set var="type" value="${dep.type}"/>
-        <j:set var="depname" value="${dep.artifactId}"/>
+    <ant:echo>POM ARTIFACT: ${pom.artifactId}</ant:echo>
+    <ant:echo>POM ID: ${pom.id}</ant:echo>
+    <ant:echo>POM NAME: ${pom.name}</ant:echo>
+    <ant:echo>POM GROUP: ${pom.groupId}</ant:echo>
+    <ant:echo>POM VERSION: ${pom.currentVersion}</ant:echo>
+    <ant:echo>POM DESCRIPTION: ${pom.shortDescription}</ant:echo>
+    <ant:echo>POM ORGANIZATION: ${pom.organization.name}</ant:echo>
+    <ant:echo>POM URL: ${pom.organization.url}</ant:echo>
+    <ant:echo></ant:echo>
 
-        <ant:echo>LIB: ${lib}</ant:echo>
-        <ant:echo>DEP: ${dep}</ant:echo>
-        <ant:echo>NAME: ${name}</ant:echo>
-        <ant:echo>PARENT: ${parent}</ant:echo>
-        <ant:echo>ARTIFACT: ${artifact}</ant:echo>
-        <ant:echo>ID: ${id}</ant:echo>
-        <ant:echo>GROUP: ${group}</ant:echo>
-        <ant:echo>VERSION: ${version}</ant:echo>
-        <ant:echo>TYPE: ${type}</ant:echo>
-        <ant:echo>DEPNAME: ${depname}</ant:echo>
-        <ant:echo></ant:echo>
-      </j:forEach>
+    <j:forEach var="lib" items="${pom.artifacts}">
+      <j:set var="dep" value="${lib.dependency}"/>
+      <j:set var="name" value="${lib.file.name}"/>
+      <j:set var="parent" value="${lib.file.parent}"/>
+      <j:set var="artifact" value="${dep.artifact}"/>
+      <j:set var="id" value="${dep.id}"/>
+      <j:set var="group" value="${dep.artifactDirectory}"/>
+      <j:set var="version" value="${dep.version}"/>
+      <j:set var="type" value="${dep.type}"/>
+      <j:set var="depname" value="${dep.artifactId}"/>
+
+      <ant:echo>LIB: ${lib}</ant:echo>
+      <ant:echo>DEP: ${dep}</ant:echo>
+      <ant:echo>NAME: ${name}</ant:echo>
+      <ant:echo>PARENT: ${parent}</ant:echo>
+      <ant:echo>ARTIFACT: ${artifact}</ant:echo>
+      <ant:echo>ID: ${id}</ant:echo>
+      <ant:echo>GROUP: ${group}</ant:echo>
+      <ant:echo>VERSION: ${version}</ant:echo>
+      <ant:echo>TYPE: ${type}</ant:echo>
+      <ant:echo>DEPNAME: ${depname}</ant:echo>
+      <ant:echo></ant:echo>
+    </j:forEach>
   </goal>
+
+
+  <preGoal name="test:test">
+    <ant:echo>Testing</ant:echo>
+    <ant:echo>base dir: ${basedir}</ant:echo>
+
+    <!-- Why work automaticly, if you can also require horrible configuration. -->
+    ${systemScope.setProperty('javax.xml.transform.TransformerFactory',
+    'com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+
+  </preGoal>
 </project>
