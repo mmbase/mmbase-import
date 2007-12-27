@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.99 2007-12-27 09:47:52 michiel Exp $
+ * @version $Id: Lucene.java,v 1.100 2007-12-27 17:59:07 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -523,6 +523,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     private ContentExtractor factory;
 
     public void init() {
+        init(true);
+    }
+
+    protected void init(final boolean initialWait) {
         super.init();
 
 
@@ -531,24 +535,27 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     // Force init of MMBase
                     mmbase = MMBase.getMMBase();
 
-                    // initial wait time?
-                    String time = getInitParameter("initialwaittime");
-                    if (time != null) {
+                    if (initialWait) {
+                        // initial wait time?
+                        String time = getInitParameter("initialwaittime");
+                        if (time != null) {
+                            try {
+                                initialWaitTime = Long.parseLong(time);
+                                log.debug("Set initial wait time to " + time + " milliseconds");
+                            } catch (NumberFormatException nfe) {
+                                log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
+                            }
+                        }
                         try {
-                            initialWaitTime = Long.parseLong(time);
-                            log.debug("Set initial wait time to " + time + " milliseconds");
-                        } catch (NumberFormatException nfe) {
-                            log.warn("Invalid value '" + time + "' for property 'initialwaittime'");
+                            if (initialWaitTime > 0) {
+                                log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
+                                Thread.sleep(initialWaitTime);
+                            }
+                        } catch (InterruptedException ie) {
+                            //return;
                         }
                     }
-                    try {
-                        if (initialWaitTime > 0) {
-                            log.info("Sleeping " + (initialWaitTime / 1000) + " seconds for initialisation");
-                            Thread.sleep(initialWaitTime);
-                        }
-                    } catch (InterruptedException ie) {
-                        //return;
-                    }
+
                     factory = ContentExtractor.getInstance();
 
 
@@ -597,7 +604,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         log.info("Lucene module of this MMBase will be READONLY");
                     }
 
-                    time = getInitParameter("waittime");
+                    String time = getInitParameter("waittime");
                     if (time != null) {
                         try {
                             waitTime = Long.parseLong(time);
@@ -684,7 +691,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     public void reload() {
         shutdown();
-        init();
+        init(false);
     }
 
     public String getDescription() {
