@@ -17,6 +17,7 @@ import org.apache.lucene.document.*;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
+import org.apache.lucene.search.Filter.*;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.queryParser.*;
 
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.38 2007-10-09 16:26:40 michiel Exp $
+ * @version $Id: Searcher.java,v 1.39 2007-12-27 15:47:04 pierre Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -297,8 +298,80 @@ public class Searcher implements NewSearcher.Listener {
 
     static public Filter createFilter(String constraintsText) {
         if (constraintsText == null || "".equals(constraintsText)) return null;
-        return new CachingWrapperFilter(new QueryWrapperFilter(createQuery(constraintsText)));
+
+        if (constraintsText == null) return null;
+        constraintsText = constraintsText.trim();
+        if ("".equals(constraintsText)) return null;
+        Filter filter = null;
+        StringTokenizer constraints = new StringTokenizer(constraintsText, "\t\n\r ", false);
+        while (constraints.hasMoreTokens()) {
+            String constraint = constraints.nextToken();
+            StringTokenizer tokens = new StringTokenizer(constraint, ":", true);
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+
+            String field = tokens.nextToken();
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            tokens.nextToken(); // colon
+            if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+            String type = tokens.nextToken().toUpperCase();
+            if (type.equals(":")) {
+                type = "EQ";
+            } else {
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("The constraint '" + constraint + "' is not of the form &lt;field&gt;:[ | EQ | GT | GTE | LT | LTE | NE | IN | INC]:&lt;value&gt;[:&lt;value&gt;]");
+                tokens.nextToken(); // colon
+            }
+            String value = ""; // should use stringbuffer?
+            String value2 = "";
+            if (type.equals("IN") || type.equals("INC")) {
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("For IN and INC operators you need more values. In constraint '"  + constraint + "'");
+                value += tokens.nextToken();
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("Missing colon in '" + constraint + "'");
+                tokens.nextToken(); // colon
+                if (! tokens.hasMoreTokens()) throw new IllegalArgumentException("For IN and INC operators you need more values. In constraint '" + constraint + "'");
+                value2 += tokens.nextToken();
+            } else {
+                // eh, should there no be appended comma's or spaces or so?
+                while (tokens.hasMoreTokens()) value += tokens.nextToken();
+            }
+            Filter subFilter = null;
+            if (type.equals("EQ") || type.equals("NE")) {
+                subFilter = new TermsFilter();
+                ((TermsFilter)subFilter).addTerm(new Term(field, value));
+            } else if (type.equals("GT")|| type.equals("GTE")) {
+                subFilter = new RangeFilter(field, value, null, type.equals("GTE"), false);
+            } else if (type.equals("LT") || type.equals("LTE")) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Instantatiating rangfilter NULL->" + value);
+                }
+                subFilter = new RangeFilter(field, null,value, false, type.equals("LTE"));
+            } else if (type.equals("IN") || type.equals("INC")) {
+                subFilter = new RangeFilter(field, value, value2, type.equals("INC"), type.equals("INC"));
+            } else {
+                throw new IllegalArgumentException("Unknown operator '" + type + "'");
+            }
+            if (subFilter !=null) {
+                if (filter == null) {
+                    if (type.equals("NE")) {
+                        BooleanFilter booleanFilter = new BooleanFilter();
+                        booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST_NOT));
+                        filter = booleanFilter;
+                    } else {
+                      filter = subFilter;
+		    }
+                } else {
+                    BooleanFilter booleanFilter = new BooleanFilter();
+                    booleanFilter.add(new FilterClause(filter, BooleanClause.Occur.MUST));
+                    BooleanClause.Occur occur = type.equals("NE") ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST;
+                    // no support for 'SHOULD'.
+                    booleanFilter.add(new FilterClause(subFilter, occur));
+                    filter = booleanFilter;
+                }
+            }
+        }
+        return new CachingWrapperFilter(filter);
     }
+
+
     /**
      * Parses a constraint into a query.
      * Constraints are separated by whitespace and of the format:

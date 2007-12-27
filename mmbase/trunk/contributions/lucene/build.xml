@@ -10,7 +10,7 @@
   <property name="lucene.extrajars.loc"    value="http://www.mmbase.org/download/jars/lucene6-extrajars.tgz" />
   <property name="lucene.extrajars"            value="${project.jar.dir}" />
   <property name="lucene.extrajars.dest"       value="${download.dir}/lucene5-extrajars.tgz" />
-  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-2.2.0.jar" />
+  <property name="lucene.extrajars.expanded"   value="${lucene.extrajars}/lucene-core-2.2.0.jar,${lucene.extrajars}/lucene-queries-2.2.0.jar" />
 
   <target name="crontab">
     <echo message="${applications.dir}/crontab" />
