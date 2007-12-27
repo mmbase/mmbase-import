@@ -17,20 +17,14 @@
       <url>http://www.mmbase.org/</url>
     </dependency>
     <dependency>
-      <groupId>mmbase</groupId>
-      <artifactId>mmbase-mynews</artifactId>
-      <version>${mmbase.version}</version>
-      <url>http://www.mmbase.org/</url>
-    </dependency>
-    <dependency>
-      <groupId>mmbase</groupId>
-      <artifactId>mmbase-resources</artifactId>
-      <version>${mmbase.version}</version>
-      <url>http://www.mmbase.org/</url>
+      <groupId>lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.2.0</version>
+      <url>http://www.mmbase.org/maven/lucene/</url>
     </dependency>
     <dependency>
       <groupId>lucene</groupId>
-      <artifactId>lucene-core</artifactId>
+      <artifactId>lucene-queries</artifactId>
       <version>2.2.0</version>
       <url>http://www.mmbase.org/maven/lucene/</url>
     </dependency>
@@ -63,6 +57,19 @@
       <artifactId>tm-extractors</artifactId>
       <version>0.4</version>
       <url>http://www.mmbase.org/maven/lucene/</url>
+    </dependency>
+    <!-- needed for testing only? -->
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-mynews</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
+    </dependency>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
     </dependency>
     <dependency>
       <groupId>mmbase-test-base</groupId>
