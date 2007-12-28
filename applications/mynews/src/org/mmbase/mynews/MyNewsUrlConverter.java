@@ -22,11 +22,18 @@ import org.mmbase.util.logging.*;
 
 /**
  * The UrlConverter that can filter and create urls for the MyNews example application.
- * Links start with '/magazine/'.
+ * Links start with '/magazine/' (or another directory, which can be set with 'setDir')
+ *
+ * Links to articles have the form /magazine[/<year>[/<month>[/<day>]]]/<title of article>|<number
+ * of the node>
+ * How many of the date-parts are generated, and wether the title or the number of the articles are
+ * produced, is controlled by 'setDateDepth' and 'setUseTitle'.
+ *
+ * These properties can be set by <param> tags in framework.xml.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.10 2007-12-28 17:16:44 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.11 2007-12-28 17:33:03 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
