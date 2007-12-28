@@ -210,5 +210,24 @@
 			</db>
 		</field>
 
+		<field>
+			<gui>
+				<guiname xml:lang="us">stacktrace</guiname>
+				<guiname xml:lang="en">stacktrace</guiname>
+				<guiname xml:lang="nl">stacktrace</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>5</input>
+					<list>5</list>
+					<search>5</search>
+				</positions>
+			</editor>
+			<datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+			<db>
+				<name>stacktrace</name>
+				<type state="persistent" size="8192" notnull="false">STRING</type>
+			</db>
+		</field>
 	</fieldlist>
 </builder>

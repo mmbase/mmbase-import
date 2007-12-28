@@ -10,106 +10,106 @@ import javax.servlet.jsp.PageContext;
 
 public class TestUtils extends TestCase {
 
-    private Mockery context = new Mockery() {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
+   private Mockery context = new Mockery() {
+      {
+         setImposteriser(ClassImposteriser.INSTANCE);
+      }
+   };
 
 
-    private void initMockObject(Mockery context, final PageContext pagecontext) {
+   private void initMockObject(Mockery context, final PageContext pagecontext) {
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("status");
-                will(returnValue("status"));
-            }
-        });
-    }
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("status");
+            will(returnValue("status"));
+         }
+      });
+   }
 
-    public void testGenerateSortingOnclick() {
-        final PageContext pagecontext = context.mock(PageContext.class);
-        initMockObject(context, pagecontext);
+   public void testGenerateSortingOnclick() {
+      final PageContext pagecontext = context.mock(PageContext.class);
+      initMockObject(context, pagecontext);
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("orderby");
-                will(returnValue("title"));
-            }
-        });
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("orderby");
+            will(returnValue("title"));
+         }
+      });
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("lastvalue");
-                will(returnValue(true));
-            }
-        });
-
-
-        assertEquals("onClick=\"selectTab('status','title','true')\" class=\"sortup\"", Utils.onClickandStyle(pagecontext, "title"));
-        assertEquals("onClick=\"selectTab('status','faketitle','false')\"", Utils.onClickandStyle(pagecontext, "faketitle"));
-
-        context.assertIsSatisfied();
-
-    }
-
-    public void testGenerateSortingOnclickLastValue() {
-        final PageContext pagecontext = context.mock(PageContext.class);
-        initMockObject(context, pagecontext);
-
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("orderby");
-                will(returnValue("title"));
-            }
-        });
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("lastvalue");
+            will(returnValue(true));
+         }
+      });
 
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("lastvalue");
-                will(returnValue(false));
-            }
-        });
+      assertEquals("onClick=\"selectTab('status','title','true')\" class=\"sortup\"", Utils.onClickandStyle(pagecontext, "title"));
+      assertEquals("onClick=\"selectTab('status','faketitle','false')\"", Utils.onClickandStyle(pagecontext, "faketitle"));
 
-        assertEquals("onClick=\"selectTab('status','title','false')\" class=\"sortdown\"", Utils.onClickandStyle(pagecontext, "title"));
-    }
+      context.assertIsSatisfied();
 
-    public void testGenerateSortingOnclickDefault() {
-        final PageContext pagecontext = context.mock(PageContext.class);
-        initMockObject(context, pagecontext);
+   }
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("orderby");
-                will(returnValue("undefined"));
-            }
-        });
+   public void testGenerateSortingOnclickLastValue() {
+      final PageContext pagecontext = context.mock(PageContext.class);
+      initMockObject(context, pagecontext);
+
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("orderby");
+            will(returnValue("title"));
+         }
+      });
 
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("lastvalue");
-                will(returnValue(false));
-            }
-        });
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("lastvalue");
+            will(returnValue(false));
+         }
+      });
 
-        assertEquals("onClick=\"selectTab('status','lastmodifieddate','true')\" class=\"sortup\"", Utils.onClickandStyle(pagecontext, "undefined"));
+      assertEquals("onClick=\"selectTab('status','title','false')\" class=\"sortdown\"", Utils.onClickandStyle(pagecontext, "title"));
+   }
 
-    }
+   public void testGenerateSortingOnclickDefault() {
+      final PageContext pagecontext = context.mock(PageContext.class);
+      initMockObject(context, pagecontext);
 
-    public void testTabClass() {
-        final PageContext pagecontext = context.mock(PageContext.class);
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("orderby");
+            will(returnValue("undefined"));
+         }
+      });
 
-        context.checking(new Expectations() {
-            {
-                allowing(pagecontext).findAttribute("status");
-                will(returnValue("stat"));
-            }
-        });
 
-        assertEquals("tab_active", Utils.tabClass(pagecontext, "stat"));
-        assertEquals("tab", Utils.tabClass(pagecontext, "sttt"));
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("lastvalue");
+            will(returnValue(false));
+         }
+      });
 
-    }
+      assertEquals("onClick=\"selectTab('status','lastmodifieddate','true')\" class=\"sortup\"", Utils.onClickandStyle(pagecontext, "undefined"));
+
+   }
+
+   public void testTabClass() {
+      final PageContext pagecontext = context.mock(PageContext.class);
+
+      context.checking(new Expectations() {
+         {
+            allowing(pagecontext).findAttribute("status");
+            will(returnValue("stat"));
+         }
+      });
+
+      assertEquals("tab_active", Utils.tabClass(pagecontext, "stat"));
+      assertEquals("tab", Utils.tabClass(pagecontext, "sttt"));
+
+   }
 }

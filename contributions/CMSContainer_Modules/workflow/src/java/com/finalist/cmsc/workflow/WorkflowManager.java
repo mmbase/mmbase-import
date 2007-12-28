@@ -1,8 +1,11 @@
 package com.finalist.cmsc.workflow;
 
+import org.mmbase.bridge.Cloud;
+
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
+import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -33,6 +36,7 @@ public abstract class WorkflowManager {
    public static final String LASTMODIFIEDDATE_FIELD = "lastmodifieddate";
    public static final String CREATOR_FIELD = "creator";
    public static final String LASTMODIFIER_FIELD = "lastmodifier";
+   public static final String STACKTRACE_FIELD = "stacktrace";
 
    public final static String CREATORREL = "creatorrel";
    public final static String ASSIGNEDREL = "assignedrel";
@@ -337,11 +341,19 @@ public abstract class WorkflowManager {
 
    protected void changeWorkflow(Node wfItem, String status, String remark) {
       wfItem.setStringValue(STATUS_FIELD, status);
-      if (remark != null) {
+      if (!StringUtil.isEmpty(remark)) {
          wfItem.setStringValue(REMARK_FIELD, remark);
       }
       wfItem.commit();
    }
+
+   protected void changeWorkflowFailPublished(Node wfItem, String status, String stacktrace) {
+	      wfItem.setStringValue(STATUS_FIELD, status);
+	      if (!StringUtil.isEmpty(stacktrace)) {
+	          wfItem.setStringValue(STACKTRACE_FIELD, stacktrace);
+	       }
+	      wfItem.commit();
+	   }
 
 
    /**
@@ -365,10 +377,10 @@ public abstract class WorkflowManager {
    protected void rejectWorkflow(Node wfItem, String remark) {
       if (isStatusPublished(wfItem)) {
          if (Workflow.isAcceptedStepEnabled()) {
-            changeWorkflow(wfItem, STATUS_APPROVED, remark);
+        	 changeWorkflowFailPublished(wfItem, STATUS_APPROVED,remark);
          }
          else {
-            changeWorkflow(wfItem, STATUS_FINISHED, remark);
+        	 changeWorkflowFailPublished(wfItem, STATUS_FINISHED,remark);
          }
       }
       else {
