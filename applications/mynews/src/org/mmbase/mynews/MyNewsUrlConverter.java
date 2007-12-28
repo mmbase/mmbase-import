@@ -11,8 +11,10 @@ package org.mmbase.mynews;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.transformers.*;
+import org.mmbase.util.DynamicDate;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
 import org.mmbase.framework.*;
 import org.mmbase.framework.basic.UrlConverter;
 import org.mmbase.util.functions.*;
@@ -24,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.9 2007-12-26 17:08:02 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.10 2007-12-28 17:16:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -32,7 +34,7 @@ public class MyNewsUrlConverter implements UrlConverter {
 
     private static CharTransformer trans = new Identifier();
     private boolean useTitle = false;
-    private boolean useDate  = true;
+    private int dateDepth  = 0;
     private String  directory = "/magazine";
     private final Framework framework;
 
@@ -43,8 +45,8 @@ public class MyNewsUrlConverter implements UrlConverter {
     public void setUseTitle(boolean t) {
         useTitle = t;
     }
-    public void setUseDate(boolean d) {
-        useDate = d;
+    public void setDateDepth(int d) {
+        dateDepth = d;
     }
     public void setDir(String d) {
         directory = d;
@@ -76,13 +78,19 @@ public class MyNewsUrlConverter implements UrlConverter {
                 StringBuilder b = new StringBuilder(directory);
                 if(block.getName().equals("article")) {
                     b.append("/");
-                    if (useDate) {
+                    if (dateDepth > 0) {
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(n.getDateValue("date"));
                         b.append(cal.get(Calendar.YEAR));
                         b.append('/');
-                        b.append(cal.get(Calendar.MONTH) + 1);
-                        b.append('/');
+                        if (dateDepth > 1) {
+                            b.append(cal.get(Calendar.MONTH) + 1);
+                            b.append('/');
+                            if (dateDepth > 2) {
+                                b.append(cal.get(Calendar.DAY_OF_MONTH));
+                                b.append('/');
+                            }
+                        }
                     }
 
                     if (useTitle) {
@@ -116,24 +124,46 @@ public class MyNewsUrlConverter implements UrlConverter {
                 if (path.length == 2) {
                     return result;
                 } else {
+                    String id = path[path.length - 1];
                     String n;
                     if (useTitle) {
                         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
                         NodeManager news = cloud.getNodeManager("news");
                         NodeQuery q = news.createQuery();
-                        String like = path[2];//.replaceAll("_", "?");
+                        String like = id;//.replaceAll("_", "?");
                         Queries.addConstraint(q, Queries.createConstraint(q, "title", Queries.getOperator("LIKE"), like));
+                        if (path.length > 3) {
+                            String[] date = new String[] {path[2], "01", "01"};
+                            String offset = "1 year";
+                            if (path.length > 4) {
+                                date[1] = path[3];
+                                offset = "1 month";
+                            }
+                            if (path.length > 5) {
+                                date[2] = path[4];
+                                offset = "1 day";
+                            }
+                            String ds = date[0] + '-' + date[1] + '-' + date[2];
+                            try {
+                                Constraint start = Queries.createConstraint(q, "date", Queries.getOperator("ge"), DynamicDate.getInstance(ds));
+                                Constraint end   = Queries.createConstraint(q, "date", Queries.getOperator("le"), DynamicDate.getInstance(ds + " + " + offset));
+                                Queries.addConstraint(q, start);
+                                Queries.addConstraint(q, end);
+                            } catch (org.mmbase.util.dateparser.ParseException pe) {
+                                throw new RuntimeException(pe);
+                            }
+                        }
                         NodeList list = news.getList(q);
                         Node node;
                         if (list.size() > 0) {
                             node = list.getNode(0);
                         } else {
-                            node = cloud.getNode(path[2]);
+                            node = cloud.getNode(id);
                         }
                         n = "" + node.getNumber();
 
                     } else {
-                        n = path[2];
+                        n = id;
                     }
                     result.append("?block=article&n=" + n);
                     return result;
