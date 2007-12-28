@@ -57,7 +57,7 @@
               <tr><th><strong style="color: red;"><em>Unsatisified</em> dependencies</strong></th><td>${c.unsatisfiedDependencies}</td></tr>
             </c:if>
           </table>
-          <h3>Settings for this component</h3>
+          <h3><fmt:message key="components.settings" /></h3>
           <mm:stringlist referid="c.settings" id="s" jspvar="s" vartype="org.mmbase.framework.Setting">
             <h4>${s.name}</h4>
             <table summary="component settings" border="0" cellspacing="0" cellpadding="3">
