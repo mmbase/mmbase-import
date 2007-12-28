@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
+import org.mmbase.util.Casting;
+
 import java.util.*;
 import java.lang.reflect.*;
 import org.w3c.dom.*;
@@ -20,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.1 2007-12-05 16:31:51 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.2 2007-12-28 17:14:57 michiel Exp $
  */
 public abstract class Instantiator {
 
@@ -52,6 +54,8 @@ public abstract class Instantiator {
             break;
         }
         if (constructor == null) throw new NoSuchMethodError("No constructors found for " + args);
+        log.debug("Found constructor " + constructor);
+
         Object o = constructor.newInstance(args);
 
         NodeList params = classElement.getChildNodes();
@@ -62,8 +66,19 @@ public abstract class Instantiator {
                     Element param = (Element)node;
                     String name = param.getAttribute("name");
                     String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
-                    Method method = claz.getMethod("set" + name.substring(0, 1).toUpperCase() + name.substring(1), String.class);
-                    method.invoke(o, value);
+                    String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                    try {
+                        Method method = claz.getMethod(methodName, String.class);
+                        method.invoke(o, value);
+                    } catch (NoSuchMethodException nsme) {
+                        try {
+                            Method method = claz.getMethod(methodName, Boolean.TYPE);
+                            method.invoke(o, Casting.toBoolean(value));
+                        } catch (NoSuchMethodException nsme2) {
+                            Method method = claz.getMethod(methodName, Integer.TYPE);
+                            method.invoke(o, Casting.toInt(value));
+                        }
+                    }
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
