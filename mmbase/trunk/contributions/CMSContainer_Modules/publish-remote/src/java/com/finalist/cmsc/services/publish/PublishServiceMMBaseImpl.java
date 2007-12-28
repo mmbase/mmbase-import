@@ -131,7 +131,7 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
 
    public void publishedFailed(Node publishedNode, String systemMessage) {
       if (Workflow.isWorkflowElement(publishedNode) && Workflow.hasWorkflow(publishedNode)) {
-         Workflow.reject(publishedNode, "Publiceren is gefaald (systeem melding: " + systemMessage + ")");
+         Workflow.reject(publishedNode,systemMessage);
       }
    }
 
