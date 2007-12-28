@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.92 2007-12-28 13:32:48 michiel Exp $
+ * @version $Id: Queries.java,v 1.93 2007-12-28 18:05:03 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -667,7 +667,7 @@ abstract public class Queries {
      * @todo implement for normal query.
      * @return The new sort orders
      */
-    public static List addSortOrders(Query query, String sorted, String directions) {
+    public static List<SortOrder> addSortOrders(Query query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
         if (sorted == null) {
             return query.getSortOrders().subList(0, 0);
@@ -675,7 +675,7 @@ abstract public class Queries {
         if (directions == null) {
             directions = "";
         }
-        List list = query.getSortOrders();
+        List<SortOrder> list = query.getSortOrders();
         int initialSize = list.size();
 
         StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
