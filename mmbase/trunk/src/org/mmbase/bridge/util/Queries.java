@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.91 2007-12-27 17:55:30 michiel Exp $
+ * @version $Id: Queries.java,v 1.92 2007-12-28 13:32:48 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -324,16 +324,12 @@ abstract public class Queries {
                 set = (SortedSet<Object>)value;
             } else if (value instanceof NodeList) {
                 set = new TreeSet<Object>();
-                NodeIterator i = ((NodeList)value).nodeIterator();
-                while (i.hasNext()) {
-                    Node node = i.nextNode();
+                for (Node node : ((NodeList)value)) {
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, node.getNumber()));
                 }
             } else if (value instanceof Collection) {
                 set = new TreeSet<Object>();
-                Iterator i = ((Collection)value).iterator();
-                while (i.hasNext()) {
-                    Object o = i.next();
+                for (Object o : ((Collection)value)) {
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
                 }
             } else {
@@ -441,11 +437,10 @@ abstract public class Queries {
                         value = -1; // non existing node number. Integer.parseInt((String) value);
                     }
                 } else if (value instanceof Collection) {  // or even more aliases!
-                    Iterator i = ((Collection) value).iterator();
+                    Collection col  = (Collection) value;
                     value = new ArrayList();
-                    List<Object> list = (List<Object>) value;
-                    while (i.hasNext()) {
-                        Object v = i.next();
+                    List list = (List) value;
+                    for (Object v : col) {
                         if (v instanceof Number) {
                             list.add(v);
                         } else {
@@ -541,15 +536,14 @@ abstract public class Queries {
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
             List<Constraint> constraints = new ArrayList<Constraint>();
-            Iterator<Constraint> i = constraint.getChilds().iterator();
-            while (i.hasNext()) {
-                Constraint cons = copyConstraint(i.next(), sourceStep, query, step);
+            for (Constraint child :  constraint.getChilds()) {
+                Constraint cons = copyConstraint(child, sourceStep, query, step);
                 if (cons != null) constraints.add(cons);
             }
             int size = constraints.size();
             if (size == 0) return null;
             if (size == 1) return constraints.get(0);
-            i = constraints.iterator();
+            Iterator<Constraint> i = constraints.iterator();
             int op = constraint.getLogicalOperator();
             Constraint newConstraint    = query.createConstraint(i.next(), op, i.next());
             while (i.hasNext()) {
@@ -585,9 +579,7 @@ abstract public class Queries {
             // sigh
             SortedSet set = new TreeSet();
             int type   =  field.getType();
-            Iterator k = constraint.getValues().iterator();
-            while (k.hasNext()) {
-                Object value = k.next();
+            for (Object value : constraint.getValues()) {
                 switch(type) {
                 case Field.TYPE_INTEGER:
                 case Field.TYPE_LONG:
@@ -628,10 +620,8 @@ abstract public class Queries {
      * @since MMBase-1.7.1
 
      */
-    public static void copySortOrders(List sortOrders, Step sourceStep,  Query query, Step step) {
-        Iterator i = sortOrders.iterator();
-        while (i.hasNext()) {
-            SortOrder sortOrder = (SortOrder) i.next();
+    public static void copySortOrders(List<SortOrder> sortOrders, Step sourceStep,  Query query, Step step) {
+        for (SortOrder sortOrder : sortOrders) {
             StepField sourceField = sortOrder.getField();
             if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
             if (sortOrder instanceof DateSortOrder) {
@@ -773,9 +763,9 @@ abstract public class Queries {
                 searchDir = searchDirsTokenizer.nextToken();
             }
 
-            if (cloud.hasRole(token)) {
-                if (!pathTokenizer.hasMoreTokens()) {
-                    throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")");
+            if (cloud.hasRole(token) && pathTokenizer.hasMoreTokens()) {
+                if (cloud.hasNodeManager(token)) {
+                    throw new BridgeException("Ambigious path element '" + token + "', is both a role and a nodemanager");
                 }
                 String nodeManagerAlias = pathTokenizer.nextToken().trim();
                 String nodeManagerName = removeDigits(nodeManagerAlias);
@@ -868,9 +858,7 @@ abstract public class Queries {
                     node = query.getCloud().getNode(nodeAlias);
                 }
                 NodeManager nodeManager = node.getNodeManager();
-                Iterator i = query.getSteps().iterator();
-                while (i.hasNext()) {
-                    Step queryStep = (Step) i.next();
+                for (Step queryStep : query.getSteps()) {
                     NodeManager queryNodeManager = query.getCloud().getNodeManager(queryStep.getTableName());
                     if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) {
                         // considering inheritance. ClusterBuilder is not doing that, but I think it is a bug.
@@ -920,7 +908,7 @@ abstract public class Queries {
             NodeQuery nq = (NodeQuery) query;
             count.addAggregatedField(nq.getNodeStep(), nq.getNodeManager().getField(resultName), type);
         } else {
-            List fields = query.getFields();
+            List<StepField> fields = query.getFields();
             if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
                 throw new IllegalArgumentException("Cannot count queries with less than one field: " + query);
             }
@@ -929,9 +917,7 @@ abstract public class Queries {
                 // aha hmm. Well, we also find it ok if all fields are of one step, and 'number' is present
                 resultName = null;
                 Step step = null;
-                Iterator i = fields.iterator();
-                while (i.hasNext()) {
-                    StepField sf = (StepField) i.next();
+                for (StepField sf : fields) {
                     if (step == null) {
                         step = sf.getStep();
                     } else {
@@ -996,22 +982,18 @@ abstract public class Queries {
      * @return The Step if found, otherwise null
      * @throws ClassCastException if list does not contain only Steps
      */
-    public static Step searchStep(List steps, String stepAlias) {
+    public static Step searchStep(List<Step> steps, String stepAlias) {
         if (log.isDebugEnabled()) {
             log.debug("Searching '" + stepAlias + "' in " + steps);
         }
         // first try aliases
-        Iterator i = steps.iterator();
-        while (i.hasNext()) {
-            Step step = (Step)i.next();
+        for (Step step : steps) {
             if (stepAlias.equals(step.getAlias())) {
                 return step;
             }
         }
         // if no aliases found, try table names
-        i = steps.iterator();
-        while (i.hasNext()) {
-            Step step = (Step)i.next();
+        for (Step step : steps) {
             if (stepAlias.equals(step.getTableName())) {
                 return step;
             }
@@ -1125,15 +1107,13 @@ abstract public class Queries {
      * @since MMBase-1.8
      */
     public static NodeQuery addRelationFields(NodeQuery q, String role, String relationFields, String sortOrders) {
-        List list = StringSplitter.split(relationFields);
-        List orders = StringSplitter.split(sortOrders);
-        Iterator i = list.iterator();
-        Iterator j = orders.iterator();
-        while (i.hasNext()) {
-            String fieldName = (String)i.next();
+        List<String> list = StringSplitter.split(relationFields);
+        List<String> orders = StringSplitter.split(sortOrders);
+        Iterator<String> j = orders.iterator();
+        for (String fieldName : list) {
             StepField sf = q.addField(role + "." + fieldName);
             if (j.hasNext()) {
-                String so = (String) j.next();
+                String so = j.next();
                 q.addSortOrder(sf, getSortOrder(so));
             }
         }
@@ -1147,12 +1127,10 @@ abstract public class Queries {
      * @return The changed Query
      */
     public static Query sortUniquely(final Query q) {
-        List steps = null;
+        List<Step> steps = null;
 
         // remove the ones which are already sorted
-        Iterator i = q.getSortOrders().iterator();
-        while (i.hasNext()) {
-            SortOrder sortOrder = (SortOrder)i.next();
+        for (SortOrder sortOrder : q.getSortOrders()) {
             if (sortOrder.getField().getFieldName().equals("number")) {
                 Step step = sortOrder.getField().getStep();
                 if (steps == null) {
@@ -1166,10 +1144,7 @@ abstract public class Queries {
             steps = q.getSteps();
         }
         // add sort order on the remaining ones:
-        i = steps.iterator();
-        while (i.hasNext()) {
-            Step step = (Step)i.next();
-            assert step != null;
+        for (Step step : steps) {
             StepField sf = q.createStepField(step, "number");
             if (sf == null) {
                 throw new RuntimeException("Create stepfield for 'number' field returned null!");
@@ -1184,10 +1159,8 @@ abstract public class Queries {
      * @since MMBase-1.8
      */
     public static Query addSortedFields(Query q) {
-        List fields = q.getFields();
-        Iterator i = q.getSortOrders().iterator();
-        while (i.hasNext()) {
-            SortOrder order = (SortOrder) i.next();
+        List<StepField> fields = q.getFields();
+        for (SortOrder order : q.getSortOrders()) {
             StepField field = order.getField();
             Step s = field.getStep();
             StepField sf = q.createStepField(s, q.getCloud().getNodeManager(s.getTableName()).getField(field.getFieldName()));
@@ -1280,13 +1253,13 @@ abstract public class Queries {
      * @return -1 if node1 is smaller than node 2, 0 if both nodes are equals, and +1 is node 1 is greater than node 2.
      * @since MMBase-1.8
      */
-    public static int compare(Node node1, Node node2, List sortOrders) {
+    public static int compare(Node node1, Node node2, List<SortOrder> sortOrders) {
         if (node1 == null) return -1;
         if (node2 == null) return +1;
         int result = 0;
-        Iterator i = sortOrders.iterator();
+        Iterator<SortOrder> i = sortOrders.iterator();
         while (result == 0 && i.hasNext()) {
-            SortOrder order = (SortOrder) i.next();
+            SortOrder order = i.next();
             result = compare(node1, node2, order);
         }
         // if all fields match - return 0 as if equal
