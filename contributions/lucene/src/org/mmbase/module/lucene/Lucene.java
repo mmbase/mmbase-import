@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.100 2007-12-27 17:59:07 michiel Exp $
+ * @version $Id: Lucene.java,v 1.101 2007-12-28 09:31:22 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -1149,8 +1149,10 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             final Marker marker = new Marker();
             assign(new Assignment() {
                     public void run() {
-                        marker.reached = true;
-                        marker.notify();
+                        synchronized(marker) {
+                            marker.reached = true;
+                            marker.notifyAll();
+                        }
                     }
                     public String idString() {
                         return "END_MARKER " + marker;
