@@ -189,7 +189,7 @@ public class ProjectReportTask extends BatchOperationTask {
    }
 
    public String changeProperties(String filePath, String line) throws IOException {
-      String regEx = "\\$\\{\\w*\\.\\w*\\}";
+      String regEx = "\\$\\{(\\w*\\.\\w*)*\\}";
       Pattern pattern = Pattern.compile(regEx);
       String out = line;
       Matcher matcher = pattern.matcher(line);
@@ -211,7 +211,7 @@ public class ProjectReportTask extends BatchOperationTask {
    }
 
    public String changeProperties(String filePath, String subFilePath, String line) throws IOException {
-      String regEx = "\\$\\{\\w*\\.\\w*\\}";
+      String regEx = "\\$\\{(\\w*\\.\\w*)*\\}";
       Pattern pattern = Pattern.compile(regEx);
       String out = line;
       Matcher matcher = pattern.matcher(line);

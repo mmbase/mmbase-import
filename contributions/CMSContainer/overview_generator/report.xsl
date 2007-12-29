@@ -26,13 +26,13 @@
 				* <b><xsl:value-of select="artifactId | id"/>:</b> <xsl:value-of select="version"/><br/>
 			</xsl:for-each><br/>
 	    </p>
+	    The subproject summary for each subproject:
 	    <xsl:apply-templates select="subproject"/>
 	  </body>
 	</html>
 </xsl:template>
 <xsl:template match="subproject">
-	<p> The subproject summary for each subproject:
-	    <b><xsl:value-of select="name"/></b><br/>
+	<p> 
 	    system name:<xsl:value-of select="maven/project/artifactId"/><br/>
 	    developer(s): 
 		<xsl:for-each select="maven/project/developers/developer/name">
