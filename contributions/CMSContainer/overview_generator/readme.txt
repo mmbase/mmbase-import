@@ -1,0 +1,1 @@
+ ant report -Dconfigfile=./config.properties -Dworkingfolder=/Users/gmark/temp/ -Dreportlocation=./
