@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="report" basedir=".">
+   <path id="project.class.path">
+      <fileset dir="lib">
+         <include name="*.jar"/>
+      </fileset>
+   </path>
+   <target name="update" description="update the source code">
+      <taskdef name="update" classname="com.finalist.cmsc.tools.report.UpdataSourceCodeTask"/>
+      <update configfile="${configfile}" dest="${workingfolder}"/>
+   </target>
+   <target name="report" description="generate the report" depends="update">
+      <taskdef name="report" classname="com.finalist.cmsc.tools.report.ProjectReportTask"/>
+      <report configfile="${configfile}" dest="${workingfolder}" targetReportFileLocation="${reportlocation}"/>
+   </target>
+   <target name="install" description="update the source code">
+      <mkdir dir="build"/>
+      <javac srcdir="src" destdir="build" debug="on">
+         <classpath refid="project.class.path"/>
+      </javac>
+      <jar destfile="./lib/report.jar" basedir="build"/>
+   </target>
+
+</project>

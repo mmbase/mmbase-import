@@ -1,0 +1,1 @@
+ant -lib lib report -Dconfigfile=config.properties -Dworkingfolder=temp -Dreportlocation=.
