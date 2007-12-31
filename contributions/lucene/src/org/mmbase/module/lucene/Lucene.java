@@ -35,9 +35,9 @@ import org.mmbase.storage.StorageManagerFactory;
 
 import java.util.concurrent.*;
 
-
 import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.queryParser.ParseException;
 import org.mmbase.module.lucene.extraction.*;
 
@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.101 2007-12-28 09:31:22 michiel Exp $
+ * @version $Id: Lucene.java,v 1.102 2007-12-31 15:19:51 pierre Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -96,6 +96,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     static { EXTRACONSTRAINTS.setDescription("@see org.mmbase.module.lucene.Searcher#createQuery()"); }
 
     protected final static Parameter/*<String>*/  FILTER = new Parameter("filter", String.class);
+
+    /*
+     * Determines what to do when a search fails (i.e. due to a Lucene TooManyClauses execption).
+     * Default is throw (throw the exception).
+     * You can set it to 'ignore', which will instead cause the function to return an empty list (or search size of 0).
+     * Note that in general, it may be better to catch the exception in the page instead.
+     */
+    protected final static Parameter/*<String>*/  ONFAIL = new Parameter("onfail", String.class);
 
     /*
     protected final static Parameter EXTRACONSTRAINTSLIST = new Parameter("constraints", List.class);
@@ -345,14 +353,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function can be called through the function framework.
      */
     //protected Function<org.mmbase.bridge.NodeList> searchFunction = new AbstractFunction("search", VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER) {
-    protected Function searchFunction = new AbstractFunction("search", new Parameter[] {VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER}, ReturnType.NODELIST) {
+    protected Function searchFunction = new AbstractFunction("search", new Parameter[] {VALUE, INDEX, FIELDS, SORTFIELDS, OFFSET, MAX, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL}, ReturnType.NODELIST) {
             public org.mmbase.bridge.NodeList getFunctionValue(Parameters arguments) {
-                String value       = (String) arguments.getString(VALUE);
-                String index       = (String) arguments.getString(INDEX);
+                String value = (String) arguments.getString(VALUE);
+                String index = (String) arguments.getString(INDEX);
                 String sortFields  = (String) arguments.get(SORTFIELDS);
                 String[] sortFieldArray = sortFields == null ? null : (String []) StringSplitter.split(sortFields).toArray(new String[] {});
-                String fields      = (String) arguments.get(FIELDS);
+                String fields = (String) arguments.get(FIELDS);
                 String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : (String []) StringSplitter.split(fields).toArray(new String[] {});
+                String onFail = (String) arguments.getString(ONFAIL);
+        if (onFail != null) onFail = onFail.toLowerCase();
                 Analyzer analyzer = null;
                 String an = (String) arguments.get(ANALYZER);
                 if (an != null && ! "".equals(an)) {
@@ -390,6 +400,13 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                                      Searcher.createQuery(extraConstraints),
                                                      fieldArray,
                                                      offset, max);
+                } catch (BooleanQuery.TooManyClauses tmc) {
+                    if ("ignore".equals(onFail)) {
+                        log.debug(tmc);
+                        return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
+                    } else {
+                        throw tmc;
+                    }
                 } catch (ParseException pe) {
                     // search function is typically used in a JSP and the 'value' parameter filled by web-site users.
                     // They may not fill the log with errors!
@@ -408,14 +425,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function returns the size of a query on an index.
      */
     //protected Function<Integer> searchSizeFunction = new AbstractFunction<Integer>("searchsize", VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER ) {
-    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, FIELDS, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER}, ReturnType.INTEGER) {
+    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, FIELDS, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL}, ReturnType.INTEGER) {
         public Integer getFunctionValue(Parameters arguments) {
             String value = (String) arguments.getString(VALUE);
             String index = (String) arguments.getString(INDEX);
             String extraConstraints = (String) arguments.getString(EXTRACONSTRAINTS);
             String filter = (String) arguments.getString(FILTER);
-            String fields      = (String) arguments.get(FIELDS);
+            String fields = (String) arguments.get(FIELDS);
             String[] fieldArray = fields == null || "".equals(fields) ? getSearcher(index).allIndexedFields : (String[]) StringSplitter.split(fields).toArray(new String[] {});
+            String onFail = (String) arguments.getString(ONFAIL);
+            if (onFail != null) onFail = onFail.toLowerCase();
             Cloud cloud  =  (Cloud) arguments.get(Parameter.CLOUD);
             Analyzer analyzer = null;
             String an = (String) arguments.get(ANALYZER);
@@ -427,7 +446,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                     throw new RuntimeException(e);
                 }
             }
-            return getSearcher(index).searchSize(cloud, value,  Searcher.createFilter(filter), analyzer, Searcher.createQuery(extraConstraints), fieldArray);
+            try {
+                return getSearcher(index).searchSize(cloud, value,  Searcher.createFilter(filter), analyzer, Searcher.createQuery(extraConstraints), fieldArray);
+            } catch (BooleanQuery.TooManyClauses tmc) {
+                if ("ignore".equals(onFail)) {
+                    log.debug(tmc);
+                    return 0;
+                } else {
+                    throw tmc;
+                }
+            }
         }
     };
     {
