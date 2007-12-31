@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.34 2007-11-16 09:05:38 nklasens Exp $
+ * @version $Id: BasicTransaction.java,v 1.35 2007-12-31 13:57:27 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -41,7 +41,9 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     protected BasicCloud parentCloud; // not final because of deserialization
 
-
+    /**
+     * @since MMBase 1.9
+     */
     protected final Collection<MMObjectNode> getCoreNodes() {
         // if the parent cloud is itself a transaction,
         // do not create a new one, just use that context instead!
@@ -55,7 +57,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // same name for different users
                 // We solved this here, but this should really be handled in the Transactionmanager.
                 log.debug("using transaction " + transactionContext);
-                Collection<MMObjectNode> cn = BasicCloudContext.transactionManager.getTransaction(transactionContext);
+                Collection<MMObjectNode> cn = BasicCloudContext.transactionManager.getTransactions().get(transactionContext);
                 if (cn == null) {
                     cn = BasicCloudContext.transactionManager.createTransaction(transactionContext);
                 }
