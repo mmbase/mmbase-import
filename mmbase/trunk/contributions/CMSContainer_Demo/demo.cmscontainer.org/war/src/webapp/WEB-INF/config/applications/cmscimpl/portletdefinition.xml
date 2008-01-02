@@ -24,17 +24,6 @@
       <definition>contentchannelportlet</definition>
       <type>multiple</type>
    </node>
-   <node number="575" owner="default">
-      <title>Searchresults</title>
-      <definition>searchportlet</definition>
-      <type>multiple</type>
-   </node>
-   <node number="581" owner="default">
-      <title>ResultPageSearchForm</title>
-      <description></description>
-      <definition>jspportlet</definition>
-      <type>single</type>
-   </node>
    <node number="549" owner="default">
       <title>LeftMenuPortlet</title>
       <description>LeftMenuPortlet</description>
