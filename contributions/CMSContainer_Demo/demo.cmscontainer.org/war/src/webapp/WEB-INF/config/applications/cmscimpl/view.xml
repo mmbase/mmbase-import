@@ -4,10 +4,6 @@
 		<title>Date and title</title>
 		<resource>demo/news/simplelist.jsp</resource>
 	</node>
-	<node number="639" owner="default">
-		<title>Searchresults</title>
-		<resource>demo/search/results.jsp</resource>
-	</node>
 	<node number="659" owner="default">
 		<title>Intro text only</title>
 		<resource>demo/news/intro_only/list.jsp</resource>
@@ -27,10 +23,6 @@
 	<node number="637" owner="default">
 		<title>Titles</title>
 		<resource>demo/news/small/list.jsp</resource>
-	</node>
-	<node number="675" owner="default">
-		<title>Searchform</title>
-		<resource>demo/search/simpleform.jsp</resource>
 	</node>
 	<node number="661" owner="default">
 		<title>News overview</title>
