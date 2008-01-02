@@ -12,9 +12,6 @@
 		<title>BreadcrumbPortlet</title>
 		<description>BreadcrumbPortlet</description>
 	</node>
-	<node number="597" owner="default">
-		<title>ResultPageSearchForm</title>
-	</node>
 	<node number="87190" owner="default">
 		<title>Sitemap</title>
 	</node>
