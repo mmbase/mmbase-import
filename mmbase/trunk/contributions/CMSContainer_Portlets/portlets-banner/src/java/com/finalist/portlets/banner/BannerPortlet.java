@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.ArrayList;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -51,6 +52,11 @@ public class BannerPortlet extends ContentChannelPortlet {
 
    private static final String PARAM_REDIRECT = "redirect";
 
+   private static final List<ContentTypeFilter> contentTypeFilters = new ArrayList<ContentTypeFilter>();
+
+   public void addContentTypeFilter(ContentTypeFilter filter) {
+      contentTypeFilters.add(filter);
+   }
 
    @Override
    public void init(PortletConfig config) throws PortletException {
@@ -71,6 +77,13 @@ public class BannerPortlet extends ContentChannelPortlet {
    protected void addContentElements(RenderRequest request) {
       // get the contentelements from the channel
       super.addContentElements(request);
+
+      for (int i = 0; i < contentTypeFilters.size(); i++) {
+         ContentTypeFilter filter = contentTypeFilters.get(i);
+         List<ContentElement> elements = (List<ContentElement>) request.getAttribute(ELEMENTS);
+         filter.dofilter(request, elements);
+      }
+
       // remove all banners from the content elemens that have reached max
       // clicks (
       PortletPreferences preferences = request.getPreferences();
@@ -92,22 +105,19 @@ public class BannerPortlet extends ContentChannelPortlet {
                Node counter = findCounterNode(banner, page, position);
                if (counter != null) {
                   if (banner.getBooleanValue("use_maxclicks")
-                        && (counter.getIntValue("clicks") >= banner.getIntValue("maxclicks"))) {
+                          && (counter.getIntValue("clicks") >= banner.getIntValue("maxclicks"))) {
                      log.warn("Maximum number of clicks reached for banner: " + banner.getNumber() + ", skipping it");
                      iter.remove();
-                  }
-                  else {
+                  } else {
                      counter.setDateValue("enddate", now);
                      counter.commit();
                   }
-               }
-               else {
+               } else {
                   counter = createBannerCounter(cloud, banner, page, position);
                   counter.setDateValue("enddate", now);
                   counter.commit();
                }
-            }
-            else {
+            } else {
                log.debug("No banner found for id: " + element.getId());
             }
          }
@@ -145,15 +155,13 @@ public class BannerPortlet extends ContentChannelPortlet {
                getLogger().debug("Redirecting request for banner: " + bannerId + " to: " + redirectUrl);
                if (redirectUrl.indexOf("?") > -1) {
                   redirectUrl += "&";
-               }
-               else {
+               } else {
                   redirectUrl += "?";
                }
 
                redirectUrl += "elementId=" + bannerId + "&page=" + screenId + "&position=" + position;
                response.sendRedirect(redirectUrl);
-            }
-            else {
+            } else {
                Node url = SearchUtil.findRelatedNode(banner, "urls", "posrel");
                response.sendRedirect(url.getStringValue("url"));
             }
@@ -162,8 +170,7 @@ public class BannerPortlet extends ContentChannelPortlet {
             getLogger().error("Unable to update clicks on banner: " + bannerId, ex);
             // continue with redirect in any case
          }
-      }
-      else {
+      } else {
          log.warn("No elementId found, check banners for page: " + page + " and position: " + position);
       }
    }
@@ -190,7 +197,7 @@ public class BannerPortlet extends ContentChannelPortlet {
       // find a counter with the highest number and that's probably the one we
       // want
       NodeQuery query = SearchUtil.createRelatedNodeListQuery(node, "bannercounter", "posrel", null, null, "number",
-            "down");
+              "down");
       addConstraint(query, query.getNodeManager(), "page", page);
       addConstraint(query, query.getNodeManager(), "position", position);
       query.setMaxNumber(1);
@@ -215,8 +222,7 @@ public class BannerPortlet extends ContentChannelPortlet {
    private void addConstraint(NodeQuery query, Constraint constraint) {
       if (query.getConstraint() == null) {
          query.setConstraint(constraint);
-      }
-      else {
+      } else {
          CompositeConstraint newc = query.createConstraint(query.getConstraint(), 2, constraint);
          query.setConstraint(newc);
       }
