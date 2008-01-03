@@ -85,11 +85,11 @@
    <mm:field name="${type}.number" jspvar="number" write="false"/>
    <c:if test="${type == 'contentelement'}">
       <a href="javascript:info('${number}')">
-         <img src="../gfx/icons/info.png" title="<fmt:message key=" workflow.info" />"
+         <img src="../gfx/icons/info.png" title="<fmt:message key="workflow.info" />"
               alt="<fmt:message key="workflow.info"/>"/>
       </a>
       <a href="<cmsc:contenturl number="${number}"/>" target="_blanc">
-         <img src="../gfx/icons/preview.png" alt="<fmt:message key=" workflow.preview.title"/>"
+         <img src="../gfx/icons/preview.png" alt="<fmt:message key="workflow.preview.title"/>"
               title="<fmt:message key="workflow.preview.title"/>"/>
       </a>
       <mm:haspage page="/editors/versioning">
@@ -98,7 +98,7 @@
          </c:url>
          <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')">
             <img src="../gfx/icons/versioning.png"
-                 title="<fmt:message key=" workflow.icon.versioning.title" />"
+                 title="<fmt:message key="workflow.icon.versioning.title" />"
                  alt="<fmt:message key="workflow.icon.versioning.title"/>"/>
          </a>
       </mm:haspage>
@@ -108,7 +108,7 @@
       <mm:param name="returnurl" value="workflow/${returnAction}?status=${param.status}"/>
    </mm:url>
    <a href="${url}">
-      <img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key=" workflow.editelement"/>"
+      <img src="../gfx/icons/edit.png" align="top" alt="<fmt:message key="workflow.editelement"/>"
            title="<fmt:message key="workflow.editelement"/>"/>
    </a>
 </td>
@@ -128,7 +128,7 @@
 <td>
    <mm:field name="workflowitem.remark" escape="none" jspvar="w_remar" write="false"/>
    <a href="javascript:editRemark(${workflowNumber},'${w_remar}')">
-      <img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key=" workflow.editremark"/>"
+      <img src="../gfx/icons/edit2.png" align="top" alt="<fmt:message key="workflow.editremark"/>"
            title="<fmt:message key="workflow.editremark"/>"/>
    </a>
    <mm:field name="workflowitem.remark" escape="none"/>
