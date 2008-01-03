@@ -43,7 +43,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.13.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.14.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
