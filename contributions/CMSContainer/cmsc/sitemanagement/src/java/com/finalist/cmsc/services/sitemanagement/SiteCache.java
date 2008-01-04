@@ -20,6 +20,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.HugeNodeListIterator;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.cache.CachePolicy;
 import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEvent;
@@ -96,7 +97,10 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
    private void loadNavigationItems(Cloud cloud, String nodeType, String fragmentField, Map<Integer, String> itemUrlFragments) {
        NodeManager manager = cloud.getNodeManager(nodeType);
 
-       Query q = manager.createQuery();
+       NodeQuery q = manager.createQuery();
+       List<String> types = new ArrayList<String>();
+       types.add(manager.getName());
+       SearchUtil.addTypeConstraints(q, types);
        q.setCachePolicy(CachePolicy.NEVER);
        
        for (NodeIterator iter = new HugeNodeListIterator(q); iter.hasNext();) {
