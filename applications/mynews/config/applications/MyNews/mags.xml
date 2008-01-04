@@ -7,4 +7,8 @@
 		<title>MyNews magazine</title>
 	</node>
 
+	<node number="84951" owner="default" alias="nondefault.mags">
+		<title>MyNews magazine (non default)</title>
+	</node>
+
 </mags>
