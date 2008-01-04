@@ -2,6 +2,7 @@ package com.finalist.cmsc.subsite.builder;
 
 import com.finalist.cmsc.navigation.NavigationBuilder;
 import com.finalist.cmsc.navigation.NavigationManager;
+import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.subsite.SubSiteNavigationItemManager;
 import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
@@ -12,7 +13,7 @@ public class SubSiteBuilder extends NavigationBuilder {
     
     @Override
     protected String getNameFieldname() {
-        return SubSiteUtil.TITLE_FIELD;
+        return PagesUtil.TITLE_FIELD;
     }
 	
 	public SubSiteBuilder() {
@@ -21,7 +22,7 @@ public class SubSiteBuilder extends NavigationBuilder {
 
     @Override
     protected String getFragmentField() {
-        return SubSiteUtil.FRAGMENT_FIELD;
+        return PagesUtil.FRAGMENT_FIELD;
     }
 
     @Override
