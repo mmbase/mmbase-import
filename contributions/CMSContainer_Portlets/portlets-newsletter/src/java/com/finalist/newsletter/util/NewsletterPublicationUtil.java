@@ -93,7 +93,7 @@ public abstract class NewsletterPublicationUtil {
          }
       }
 
-      NavigationUtil.deletePage(publicationNode);
+      NavigationUtil.deleteItem(publicationNode);
    }
 
    public static List<String> getAllThemesForPublication(String publicationNumber) {

@@ -112,4 +112,8 @@ public class PageNavigationItemManager implements NavigationItemManager {
         return Page.class;
     }
 
+   public void deleteNode(Node pageNode) {
+      PagesUtil.deletePage(pageNode);
+   }
+
 }

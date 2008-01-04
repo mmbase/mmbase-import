@@ -48,7 +48,7 @@ public class NewsletterDelete extends MMBaseFormlessAction {
          ;
          NewsletterUtil.deleteNewsletterThemesForNewsletter(number);
 
-         NavigationUtil.deletePage(newsletterNode);
+         NavigationUtil.deleteItem(newsletterNode);
 
          return mapping.findForward(SUCCESS);
       }

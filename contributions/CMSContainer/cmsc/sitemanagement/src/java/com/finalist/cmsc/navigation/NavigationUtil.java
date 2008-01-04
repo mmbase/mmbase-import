@@ -413,13 +413,14 @@ public class NavigationUtil {
         SecurityUtil.addRole(cloud, pageNode, group, role, TreeUtil.convertToList(treeManagers));
     }
 
-    public static void deletePage(Node pageNode) {
+    public static void deleteItem(Node pageNode) {
         NodeList children = getOrderedChildren(pageNode);
         for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
             Node childPage = iter.next();
-            deletePage(childPage);
+            deleteItem(childPage);
         }
-        PagesUtil.deletePage(pageNode);
+        NavigationItemManager manager = NavigationManager.getNavigationManager(pageNode);
+        manager.deleteNode(pageNode);
         SecurityUtil.clearUserRoles(pageNode.getCloud(), TreeUtil.convertToList(treeManagers));
     }
 

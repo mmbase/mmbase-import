@@ -41,7 +41,7 @@ public class RssFeedDelete extends MMBaseFormlessAction {
          boolean isEditor = (role != null && SecurityUtil.isEditor(role));
 
          if (isEditor) {
-            NavigationUtil.deletePage(rssNode);
+            NavigationUtil.deleteItem(rssNode);
          }
          return mapping.findForward(SUCCESS);
       }
