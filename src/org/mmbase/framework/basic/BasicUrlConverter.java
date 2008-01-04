@@ -30,7 +30,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.2 2007-12-26 17:07:19 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.3 2008-01-04 14:05:52 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -48,12 +48,27 @@ public final class BasicUrlConverter implements UrlConverter {
      * in (X)HTML.
      */
     public static StringBuilder getUrl(String page, Map<String, Object> params, HttpServletRequest req, boolean escapeamp) {
+        if (log.isDebugEnabled()) {
+            log.debug("(static) constructing " + page + params);
+        }
         StringBuilder show = new StringBuilder();
         if (escapeamp && page != null) {
             page = page.replaceAll("&", "&amp;");
         }
         if (page == null || page.equals("")) { // means _this_ page
-            page = FrameworkFilter.getPath(req);
+            if ("".equals(page)) {
+                String requestURI = req.getRequestURI();
+                if (requestURI.endsWith("/")) {
+                    page = ".";
+                } else {
+                    page = new File(requestURI).getName();
+                }
+
+            }
+            //page = FrameworkFilter.getPath(req); No good, it will produce something which starts
+            //with /, which at least is not what mm:url wants in this case.
+
+            log.debug("page not given, -> supposing it " + page);
         }
         show.append(page);
 
@@ -122,7 +137,9 @@ public final class BasicUrlConverter implements UrlConverter {
                 }
             }
             Block block = state.getBlock();
-            log.debug("current block " + block);
+            if (log.isDebugEnabled()) {
+                log.debug("current block " + block);
+            }
             Block toBlock = block.getComponent().getBlock(path);
             if (toBlock != null) {
                 path = null;
@@ -136,7 +153,7 @@ public final class BasicUrlConverter implements UrlConverter {
                 log.debug("No block '" + path + "' found");
             }
         }
-        log.debug("constructing '" + path + "" + map);
+        log.debug("constructing '" + path + "'" + map);
         return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
     }
     public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
