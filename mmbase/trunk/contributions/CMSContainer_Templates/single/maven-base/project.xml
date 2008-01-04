@@ -259,7 +259,7 @@
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>mmcommons</artifactId>
-			<version>1.4</version>
+			<version>1.4.1</version>
 			<type>jar</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>

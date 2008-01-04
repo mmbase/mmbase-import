@@ -12,7 +12,6 @@ package com.finalist.tree.ajax;
 import com.finalist.tree.Tree;
 import com.finalist.tree.TreeInfo;
 import com.finalist.tree.TreeModel;
-import com.finalist.util.xml.TransformUtils;
 import net.sf.mmapps.commons.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,7 +42,7 @@ public class AjaxTree extends Tree {
       renderNode(rootNode, tree);
       XmlUtil.createAttribute(tree, "behavior", "classic");
 
-      out.write(TransformUtils.serializeDocument(doc).toString());
+      out.write(XmlUtil.serializeDocument(doc).toString());
    }
 
 
@@ -60,7 +59,7 @@ public class AjaxTree extends Tree {
             renderNode(child, item);
          }
       }
-      out.write(TransformUtils.serializeDocument(doc).toString());
+      out.write(XmlUtil.serializeDocument(doc).toString());
    }
 
 
