@@ -14,9 +14,9 @@ import org.mmbase.bridge.Node;
 import com.finalist.cmsc.navigation.NavigationRenderer;
 import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.subsite.util.PersonalPageUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 
@@ -29,7 +29,7 @@ public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer 
          Node parentParentNode = NavigationUtil.getParent(parentNode);
          UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentParentNode, false);
          
-         String name = parentNode.getStringValue(PersonalPageUtil.TITLE_FIELD);
+         String name = parentNode.getStringValue(PagesUtil.TITLE_FIELD);
          String fragment = parentNode.getStringValue( NavigationUtil.getFragmentFieldname(parentNode) );
          
          String id = String.valueOf(parentNode.getNumber());
@@ -37,9 +37,9 @@ public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer 
          
          if (SecurityUtil.isEditor(role)) {
             element.addOption(renderer.createTreeOption("edit_defaults.png", "site.sub.edit",
-                        RESOURCEBUNDLE, "../subsite/PersonalPageEdit.do?number=" + id));
+                  RESOURCEBUNDLE, "../subsite/PersonalPageEdit.do?number=" + id));
             element.addOption(renderer.createTreeOption("delete.png", "site.personal.remove.page", 
-                    RESOURCEBUNDLE, "../subsite/SubSiteDelete.do?number=" + id));
+                  RESOURCEBUNDLE, "../subsite/SubSiteDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("subsite_new.png", "site.personal.new.page",
             		RESOURCEBUNDLE, "../subsite/PersonalPageCreate.do?parentpage=" + id));
          }

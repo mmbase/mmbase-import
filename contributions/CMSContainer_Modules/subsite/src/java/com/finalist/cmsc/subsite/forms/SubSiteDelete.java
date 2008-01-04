@@ -41,7 +41,7 @@ public class SubSiteDelete extends MMBaseFormlessAction {
          boolean isEditor = (role != null && SecurityUtil.isEditor(role));
 
          if (isEditor) {
-            NavigationUtil.deletePage(subsiteNode);
+            NavigationUtil.deleteItem(subsiteNode);
          }
          return mapping.findForward(SUCCESS);
       }

@@ -6,14 +6,14 @@ import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
 import com.finalist.cmsc.portalImpl.PageNavigationItemManager;
 import com.finalist.cmsc.subsite.beans.om.PersonalPage;
 import com.finalist.cmsc.subsite.tree.PersonalPageTreeItemRenderer;
-import com.finalist.cmsc.subsite.util.PersonalPageUtil;
+import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
 public class PersonalPageNavigationItemManager extends PageNavigationItemManager {
 
 	private NavigationTreeItemRenderer treeRenderer = new PersonalPageTreeItemRenderer();
 
 	public String getTreeManager() {
-		return PersonalPageUtil.PERSONALPAGE;
+		return SubSiteUtil.PERSONALPAGE;
 	}
 
     public NavigationTreeItemRenderer getTreeRenderer() {

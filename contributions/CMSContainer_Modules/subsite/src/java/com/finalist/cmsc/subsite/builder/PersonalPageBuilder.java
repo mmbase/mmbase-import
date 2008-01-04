@@ -2,8 +2,8 @@ package com.finalist.cmsc.subsite.builder;
 
 import com.finalist.cmsc.navigation.NavigationBuilder;
 import com.finalist.cmsc.navigation.NavigationManager;
+import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.subsite.PersonalPageNavigationItemManager;
-import com.finalist.cmsc.subsite.util.PersonalPageUtil;
 
 /**
  * @author Freek Punt
@@ -12,7 +12,7 @@ public class PersonalPageBuilder extends NavigationBuilder {
     
     @Override
     protected String getNameFieldname() {
-        return PersonalPageUtil.TITLE_FIELD;
+        return PagesUtil.TITLE_FIELD;
     }
 	
 	public PersonalPageBuilder() {
@@ -21,7 +21,7 @@ public class PersonalPageBuilder extends NavigationBuilder {
 
     @Override
     protected String getFragmentField() {
-        return PersonalPageUtil.FRAGMENT_FIELD;
+        return PagesUtil.FRAGMENT_FIELD;
     }
 
     @Override
