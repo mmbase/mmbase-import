@@ -61,4 +61,8 @@ public class RssFeedNavigationItemManager implements NavigationItemManager {
     public Class<? extends NavigationItem> getItemClass() {
         return RssFeed.class;
     }
+
+   public void deleteNode(Node pageNode) {
+      pageNode.delete();
+   }
 }

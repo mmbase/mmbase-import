@@ -29,4 +29,6 @@ public interface NavigationItemManager {
 
 	Object getPublisher(Cloud cloud, String type);
 
+   void deleteNode(Node pageNode);
+
 }
