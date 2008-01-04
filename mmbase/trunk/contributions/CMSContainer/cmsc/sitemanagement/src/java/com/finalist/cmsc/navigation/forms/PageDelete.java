@@ -43,7 +43,7 @@ public class PageDelete extends MMBaseFormlessAction {
          if (NavigationUtil.getChildCount(pageNode) > 0 && !isWebMaster) {
             return mapping.findForward("pagedeletewarning");
          }
-         NavigationUtil.deletePage(pageNode);
+         NavigationUtil.deleteItem(pageNode);
          return mapping.findForward(SUCCESS);
       }
 

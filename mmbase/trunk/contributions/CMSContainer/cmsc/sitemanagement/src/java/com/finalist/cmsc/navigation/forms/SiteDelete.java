@@ -34,7 +34,7 @@ public class SiteDelete extends MMBaseFormlessAction {
       if (isRemoveAction(request)) {
          String objectnumber = getParameter(request, "number", true);
          Node siteNode = cloud.getNode(objectnumber);
-         NavigationUtil.deletePage(siteNode);
+         NavigationUtil.deleteItem(siteNode);
 
          return mapping.findForward(SUCCESS);
       }
