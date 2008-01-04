@@ -46,7 +46,17 @@
          <forward name="returnurl" path="/editors/subsite/PersonalPageEdit.do" redirect="false" />
          <forward name="success" path="/editors/subsite/refreshandshow.jsp" redirect="false" />
       </action>
+
+      <action path="/editors/repository/SearchInitAction" type="com.finalist.cmsc.subsite.forms.SearchInitAction"
+         name="SearchForm" scope="request" unknown="false" validate="false">
+         <forward name="searchoptions" path="/editors/repository/search.jsp" redirect="false" />
+         <forward name="dosearch" path="/editors/repository/SearchAction.do" redirect="false" />
+      </action>
+      <action path="/editors/subsite/PersonalPageAction" type="com.finalist.cmsc.subsite.forms.SearchAction"
+         name="SearchForm" scope="request" input="/editors/subsite/personalpages.jsp" unknown="false" validate="true">
+      </action>
       
     </action-mappings>
-    <message-resources parameter="modules-subsite" key="MODULES-SUBSITE" />
+
+    <message-resources parameter="cmsc-modules-subsite" key="MODULES-SUBSITE" />
 </struts-config>

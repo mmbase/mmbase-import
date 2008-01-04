@@ -15,10 +15,13 @@ import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.*;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
 public class PersonalPageCreate extends MMBaseFormlessAction {
 
@@ -39,7 +42,13 @@ public class PersonalPageCreate extends MMBaseFormlessAction {
          if ("save".equals(action)) {
             String ewnodelastedited = getParameter(request, "ewnodelastedited");
             NavigationUtil.appendChild(cloud, parentpage, ewnodelastedited);
-
+            
+            Node newPage = cloud.getNode(ewnodelastedited);
+            Node layoutNode = PagesUtil.getLayout(newPage);
+            PagesUtil.linkPortlets(newPage, layoutNode);
+            
+            SubSiteUtil.createPersonalPageContentChannel(newPage);
+            
             addToRequest(request, "showsubsite", ewnodelastedited);
             ActionForward ret = mapping.findForward(SUCCESS);
             return ret;
