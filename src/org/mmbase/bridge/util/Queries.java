@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.93 2007-12-28 18:05:03 michiel Exp $
+ * @version $Id: Queries.java,v 1.94 2008-01-04 13:44:47 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -765,7 +765,8 @@ abstract public class Queries {
 
             if (cloud.hasRole(token) && pathTokenizer.hasMoreTokens()) {
                 if (cloud.hasNodeManager(token)) {
-                    throw new BridgeException("Ambigious path element '" + token + "', is both a role and a nodemanager");
+                    // Ambigious path element '" + token + "', is both a role and a nodemanager
+                    // This is pretty common though. E.g. 'posrel'.
                 }
                 String nodeManagerAlias = pathTokenizer.nextToken().trim();
                 String nodeManagerName = removeDigits(nodeManagerAlias);
