@@ -60,4 +60,8 @@ public class AliasNavigationItemManager implements NavigationItemManager {
     public Class<? extends NavigationItem> getItemClass() {
         return Alias.class;
     }
+
+   public void deleteNode(Node pageNode) {
+      pageNode.delete();
+   }
 }

@@ -41,7 +41,7 @@ public class AliasDelete extends MMBaseFormlessAction {
          boolean isEditor = (role != null && SecurityUtil.isEditor(role));
 
          if (isEditor) {
-            NavigationUtil.deletePage(aliasNode);
+            NavigationUtil.deleteItem(aliasNode);
          }
          return mapping.findForward(SUCCESS);
       }
