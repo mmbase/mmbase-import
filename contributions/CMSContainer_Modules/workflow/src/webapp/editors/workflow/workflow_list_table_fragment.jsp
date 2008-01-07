@@ -43,9 +43,7 @@
 <tbody class="hover">
 <mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
 
-<mm:even inverse="true"><c:set var="st">class="swap"</c:set></mm:even>
-
-<tr ${st}>
+<tr <mm:even inverse="true">class="swap"</mm:even>>
 <td>
    <mm:field name="workflowitem.number" id="workflowNumber" write="false"/>
    <input type="checkbox" name="check_${workflowNumber}" value="on"/>
