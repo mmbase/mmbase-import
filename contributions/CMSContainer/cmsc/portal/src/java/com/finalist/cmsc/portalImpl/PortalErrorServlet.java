@@ -12,6 +12,7 @@ package com.finalist.cmsc.portalImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -39,11 +40,13 @@ public class PortalErrorServlet extends PortalServlet {
    public static final String ERROR_EXCEPTION = "javax.servlet.error.exception";
    public static final String ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
 
+   private static final String SIMPLE_404 = "(.*/editors/.*[.](jpg$|gif$|png$|css$|js$|ico$))|robots.txt";
+   
    protected ServletConfig config;
-
-   protected static final String[] vars = { ERROR_STATUS_CODE, ERROR_EXCEPTION_TYPE, ERROR_MESSAGE, ERROR_EXCEPTION,
-         ERROR_REQUEST_URI };
-
+   private Pattern excludePattern = Pattern.compile(SIMPLE_404);
+   
+   protected static final String[] vars = { ERROR_STATUS_CODE, ERROR_EXCEPTION_TYPE, 
+                                            ERROR_MESSAGE, ERROR_EXCEPTION, ERROR_REQUEST_URI };
 
    @Override
    public void init(ServletConfig config) {
@@ -54,9 +57,21 @@ public class PortalErrorServlet extends PortalServlet {
 
    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
       log.debug("===>PortalErrorServlet.doGet START!");
-
+      
+      // fail fast on static resources which are in the editors
+      if (request.getHeader("Referer") != null) {
+          int statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
+          if (statusCode == 404) {
+              String path = (String) request.getAttribute(ERROR_REQUEST_URI);
+              if (path != null) {
+                  if (excludePattern != null && excludePattern.matcher(path).find()) {
+                      return;              
+                  }
+              }
+          }
+      }
+      
       if (PortletContainerFactory.getPortletContainer().isInitialized()) {
-         // PortalRegistry reg = PortalRegistry.getPortalRegistry(request);
          PortalEnvironment env = new PortalEnvironment(request, response, config);
          PortalURL currentURL = env.getRequestedPortalURL();
          try {
@@ -81,7 +96,6 @@ public class PortalErrorServlet extends PortalServlet {
             }
             if (errorPageSite != null) {
                String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
-               
                
                 logError(request); 
                 HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPagePath); 
@@ -159,7 +173,7 @@ public class PortalErrorServlet extends PortalServlet {
          log.error(ticket + ":\n" + msg);
       }
    }
-
+   
    class ErrorHttpServletRequest extends HttpServletRequestWrapper {
 
       private String errorPagePath;
@@ -169,7 +183,6 @@ public class PortalErrorServlet extends PortalServlet {
          super(request);
          this.errorPagePath = errorPagePath;
       }
-
 
       @Override
       public String getServletPath() {
