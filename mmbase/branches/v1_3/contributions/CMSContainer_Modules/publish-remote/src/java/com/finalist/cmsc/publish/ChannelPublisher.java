@@ -6,6 +6,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.util.PublishUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 /**
  * @author Jeoffrey Bakker, Finalist IT Group
@@ -35,7 +36,14 @@ public class ChannelPublisher extends Publisher{
                relatedNodes.add(content.getNumber());
            }
        }
-       PublishUtil.publishOrUpdateRelations(cloud, channel.getNumber(), relatedNodes);
+      if (!relatedNodes.isEmpty()) {
+	       PublishUtil.publishOrUpdateRelations(cloud, channel.getNumber(), relatedNodes);
+	   }
+       else {
+           if (Workflow.isWorkflowElement(channel)) {
+               Workflow.complete(channel);
+            }
+       }
    }
    
     @Override
