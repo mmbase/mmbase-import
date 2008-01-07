@@ -93,12 +93,12 @@ public class NavigationItem extends NodeBean implements Comparable<NavigationIte
    }
 
 
-   public boolean isUse_expiry() {
+   public boolean isUse_expirydate() {
       return use_expiry;
    }
 
 
-   public void setUse_expiry(boolean use_expiry) {
+   public void setUse_expirydate(boolean use_expiry) {
       this.use_expiry = use_expiry;
    }
 
