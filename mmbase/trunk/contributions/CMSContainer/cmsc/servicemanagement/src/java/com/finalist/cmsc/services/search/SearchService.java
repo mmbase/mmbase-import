@@ -48,6 +48,5 @@ public abstract class SearchService extends Service {
 
    public abstract Set<Node> findDetailContentElementsForPage(Node page);
 
-
-   public abstract String getPortletWindow(int pageId, String elementNumber);
+   public abstract String getPortletWindow(int pageId, String elementNumber, String serverNames);
 }
