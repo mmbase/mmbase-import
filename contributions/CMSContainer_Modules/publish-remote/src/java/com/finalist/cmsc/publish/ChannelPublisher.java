@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.mmbase.bridge.*;
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 /**
  * @author Jeoffrey Bakker, Finalist IT Group
@@ -28,7 +29,14 @@ public class ChannelPublisher extends Publisher{
                relatedNodes.add(content.getNumber());
            }
        }
-       publishNode(channel, relatedNodes);
+       if (!relatedNodes.isEmpty()) {
+           publishNode(channel, relatedNodes);
+       }
+       else {
+           if (Workflow.isWorkflowElement(channel)) {
+               Workflow.complete(channel);
+            }
+       }
    }
 
 }
