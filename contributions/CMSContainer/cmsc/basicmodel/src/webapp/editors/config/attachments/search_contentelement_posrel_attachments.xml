@@ -47,6 +47,12 @@
 		<prompt xml:lang="nl">Zoek bijlage</prompt>
 		<prompt xml:lang="zh">查找附件</prompt>
 		<search-filter>
+			<name xml:lang="en">Title / Description</name>
+			<name xml:lang="nl">Titel / Omschrijving</name>
+			<name xml:lang="zh">标题包含 / 描述包含</name>
+			<search-fields>[title]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>
 			<name xml:lang="zh">标题包含</name>

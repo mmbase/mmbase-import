@@ -23,6 +23,11 @@
 		<prompt xml:lang="en">Search url</prompt>
 		<prompt xml:lang="nl">Zoek url</prompt>
 		<search-filter>
+			<name xml:lang="en">Name / Description</name>
+			<name xml:lang="nl">Naam / Omschrijving</name>
+			<search-fields>[name]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
 			<name xml:lang="en">Name contains</name>
 			<name xml:lang="nl">Naam bevat</name>
 			<search-fields>[name]</search-fields>
