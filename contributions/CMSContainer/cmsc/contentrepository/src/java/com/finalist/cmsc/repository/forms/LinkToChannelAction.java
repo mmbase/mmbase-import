@@ -40,7 +40,7 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
          Node objectNode = cloud.getNode(objectnumber);
 
          if (RepositoryUtil.isCreationChannel(objectNode, channelNode)) {
-            NodeList contentchannels = RepositoryUtil.getContentChannels(objectNode);
+            NodeList contentchannels = RepositoryUtil.getContentChannelsForContent(objectNode);
             if (contentchannels.size() <= 1) {
                RepositoryUtil.removeContentFromChannel(objectNode, channelNode);
                RepositoryUtil.removeCreationRelForContent(objectNode);

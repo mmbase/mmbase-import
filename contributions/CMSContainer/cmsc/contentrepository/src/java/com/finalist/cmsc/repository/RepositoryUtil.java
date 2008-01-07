@@ -540,7 +540,7 @@ public class RepositoryUtil {
 
     public static boolean isLinkedToChannel(Node content, Node channelNode) {
         boolean isLinkedToChannel = false;
-        NodeList channels = getContentChannels(content);
+        NodeList channels = getContentChannelsForContent(content);
         for (Iterator<Node> iter = channels.iterator(); iter.hasNext();) {
             Node channel = iter.next();
             if (channelNode.getNumber() == channel.getNumber()) {
@@ -559,13 +559,12 @@ public class RepositoryUtil {
        return count > 0;
     }
 
-    public static NodeList getContentChannels(Node node) {
-        if (isCollectionChannel(node)) {
-            return node.getRelatedNodes(CONTENTCHANNEL, COLLECTIONREL, DESTINATION);
-        }
-        else {
-            return node.getRelatedNodes(CONTENTCHANNEL, CONTENTREL, SOURCE);
-        }
+    public static NodeList getContentChannelsForContent(Node node) {
+        return node.getRelatedNodes(CONTENTCHANNEL, CONTENTREL, SOURCE);
+    }
+
+    public static NodeList getContentChannelsForCollection(Node node) {
+        return node.getRelatedNodes(CONTENTCHANNEL, COLLECTIONREL, DESTINATION);
     }
 
     public static boolean hasCreatedContent(Node channelNode) {
