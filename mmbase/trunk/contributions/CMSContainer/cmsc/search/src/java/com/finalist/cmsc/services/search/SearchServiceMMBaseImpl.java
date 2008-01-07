@@ -341,7 +341,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
          channels.add(channel);
       }
       else {
-         channels = RepositoryUtil.getContentChannels(content);
+         channels = RepositoryUtil.getContentChannelsForContent(content);
       }
 
       if (content != null) {
