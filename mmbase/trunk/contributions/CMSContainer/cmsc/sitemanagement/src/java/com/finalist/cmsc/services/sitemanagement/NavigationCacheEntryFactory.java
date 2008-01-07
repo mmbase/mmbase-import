@@ -49,10 +49,7 @@ public class NavigationCacheEntryFactory extends MMBaseCacheEntryFactory {
 
    @Override
    protected boolean isNodeEvent(NodeEvent event, String nodeType) {
-       for (NavigationItemManager manager : NavigationManager.getNavigationManagers()) {
-           return super.isNodeEvent(event, manager.getTreeManager());
-       }
-       return false;
+       return NavigationManager.getNavigationManager(event.getBuilderName()) != null;
    }
 
 
