@@ -190,8 +190,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
             NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycleBool,
                   archive, start, end, -1, -1, -1);
-            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-               Node node = (Node) iterator.next();
+            for (Iterator<Node> iterator = l.iterator(); iterator.hasNext();) {
+               Node node = iterator.next();
                if (node.getNumber() == content.getNumber()) {
                   return true;
                }
@@ -273,7 +273,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
 
    private PageInfo getPageInfo(Node pageQueryNode, boolean clicktopage) {
-      Page page = (Page) SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
+      Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
       if (page != null) {
          String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "."
                + PortletUtil.LAYOUTID_FIELD);
@@ -499,7 +499,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
 
    @Override
-   public String getPortletWindow(int pageId, String elementNumber) {
+   public String getPortletWindow(int pageId, String elementNumber, String serverName) {
       Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
       Node content = cloud.getNode(elementNumber);
       if (ContentElementUtil.isContentElement(content)) {
@@ -509,6 +509,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
          }
 
          if (!infos.isEmpty()) {
+            Collections.sort(infos, new PageInfoComparator(serverName));
             for (PageInfo pageInfo : infos) {
                if (pageId == pageInfo.getPageNumber()) {
                   return pageInfo.getWindowName();
