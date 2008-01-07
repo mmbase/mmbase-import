@@ -27,6 +27,7 @@ import org.mmbase.security.Rank;
 import org.mmbase.security.UserContext;
 
 import com.finalist.cmsc.beans.om.*;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.Properties;
 import com.finalist.cmsc.services.security.LoginSession;
 
@@ -72,7 +73,46 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    @Override
    public boolean isNavigation(String path) {
       log.debug("isNavigation:'" + path + "'");
-      return siteModelManager.hasNavigationItem(path);
+      if (ServerUtil.isStaging()) {
+          NavigationItem item = siteModelManager.getNavigationItem(path);
+          return showNavigation(item);
+      }
+      else {
+          // live has a faster check
+          return siteModelManager.hasNavigationItem(path);
+      }
+   }
+
+
+    private boolean showNavigation(NavigationItem item) {
+        if (item != null) {
+              if (isValidNavigation(item)) {
+                  return true;
+              }
+              else {
+                  return isUserCloud();
+              }
+          }
+          return false;
+    }
+
+    private void removeInvalidNavigationsFromList(List<? extends NavigationItem> children) {
+        if (ServerUtil.isStaging()) {
+             for (Iterator<? extends NavigationItem> iterator = children.iterator(); iterator.hasNext();) {
+                NavigationItem child = iterator.next();
+                if (!showNavigation(child)) {
+                   iterator.remove();
+                }
+             }
+         }
+    }
+    
+   private boolean isValidNavigation(NavigationItem item) {
+       if (item.isUse_expirydate()) {
+           Date now = new Date();
+           return now.after(item.getPublishdate()) && now.before(item.getExpirydate());
+       }
+       return true;
    }
 
 
@@ -109,17 +149,20 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
       return ls;
    }
 
-
    @Override
    public List<Site> getSites() {
-      return siteModelManager.getSites();
+       List<Site> sites = siteModelManager.getSites(); 
+       removeInvalidNavigationsFromList(sites);
+       return sites;
    }
 
 
    @Override
    public List<Page> getPages(Page page) {
       if (page != null) {
-         return siteModelManager.getChildren(page);
+         List<Page> children = siteModelManager.getChildren(page);
+         removeInvalidNavigationsFromList(children);
+         return children;
       }
       return new ArrayList<Page>();
    }
@@ -128,15 +171,20 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    @Override
    public List<Page> getPages(Site site) {
       if (site != null) {
-         return siteModelManager.getChildren(site);
+         List<Page> children = siteModelManager.getChildren(site);
+         removeInvalidNavigationsFromList(children);
+         return children;
       }
       return new ArrayList<Page>();
    }
 
-
    @Override
    public NavigationItem getNavigationItem(int channel) {
-      return siteModelManager.getNavigationItem(channel);
+      NavigationItem navigationItem = siteModelManager.getNavigationItem(channel);
+      if (showNavigation(navigationItem)) {
+          return navigationItem;
+      }
+      return null;
    }
 
 
@@ -174,19 +222,38 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
    @Override
    public NavigationItem getNavigationItemFromPath(String path) {
-      return siteModelManager.getNavigationItem(path);
+       NavigationItem navigationItem = siteModelManager.getNavigationItem(path);
+       if (showNavigation(navigationItem)) {
+           return navigationItem;
+       }
+       return null;
    }
 
 
    @Override
    public Site getSiteFromPath(String path) {
-      return siteModelManager.getSite(path);
+       Site navigationItem = siteModelManager.getSite(path);
+       if (showNavigation(navigationItem)) {
+           return navigationItem;
+       }
+       return null;
    }
 
 
    @Override
    public List<Page> getListFromPath(String path) {
-      return siteModelManager.getPagesForPath(path);
+      List<Page> pagesForPath = siteModelManager.getPagesForPath(path);
+      if (ServerUtil.isStaging()) {
+          for (Iterator<? extends NavigationItem> iterator = pagesForPath.iterator(); iterator.hasNext();) {
+             NavigationItem child = iterator.next();
+             if (!showNavigation(child)) {
+                pagesForPath.clear();
+                break;
+             }
+          }
+      }
+
+      return pagesForPath;
    }
 
 
@@ -253,6 +320,10 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
       }
    }
 
+   private boolean isUserCloud() {
+       Cloud cloud = CloudUtil.getCloudFromThread();
+       return cloud != null;
+   }
 
    private Cloud getUserCloud() {
       Cloud cloud = CloudUtil.getCloudFromThread();
