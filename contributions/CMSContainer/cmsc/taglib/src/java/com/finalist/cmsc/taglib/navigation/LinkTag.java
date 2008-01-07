@@ -213,7 +213,7 @@ public class LinkTag extends CmscTag {
          if (element != null) {
             int pageId = page.getId();
             if (window == null) {
-               window = Search.getPortletWindow(pageId, element);
+               window = Search.getPortletWindow(pageId, element, host);
             }
             if (window != null) {
                u.setRenderParameter(window, "elementId", new String[] { element });
