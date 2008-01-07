@@ -25,6 +25,11 @@
 		<prompt xml:lang="en">Search image</prompt>
 		<prompt xml:lang="nl">Zoek afbeelding</prompt>
 		<search-filter>
+			<name xml:lang="en">Title / Description</name>
+			<name xml:lang="nl">Titel / Omschrijving</name>
+			<search-fields>[title]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>
 			<search-fields>[title]</search-fields>
