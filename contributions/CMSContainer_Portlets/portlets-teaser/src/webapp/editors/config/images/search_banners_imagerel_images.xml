@@ -28,6 +28,12 @@
 		<prompt xml:lang="nl">Zoek afbeelding</prompt>
 		<prompt xml:lang="zh">查找图象</prompt>
 		<search-filter>
+			<name xml:lang="en">Title / Description</name>
+			<name xml:lang="nl">Titel / Omschrijving</name>
+			<name xml:lang="zh">标题包含 / 描述包含</name>
+			<search-fields>[title]|[description]</search-fields>
+		</search-filter>
+		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>
 			<name xml:lang="zh">标题</name>
