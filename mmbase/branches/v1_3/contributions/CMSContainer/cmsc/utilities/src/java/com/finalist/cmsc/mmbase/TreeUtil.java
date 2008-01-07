@@ -14,11 +14,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.EncodingUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
+import org.apache.commons.lang.RandomStringUtils;
 
 
 public class TreeUtil {
@@ -514,15 +519,31 @@ public class TreeUtil {
         return null;
     }
 
-    public static String convertToFragment(String name) {
-        String pathFragment = EncodingUtil.convertNonAscii(name);
-        pathFragment = pathFragment.replaceAll("\\s", "_");        
-        while (pathFragment.length() > 1 && pathFragment.substring(0, 1).matches("[_.-]") ) {        	
-        	pathFragment = pathFragment.substring(1, pathFragment.length());        	
-        }
-        pathFragment = pathFragment.replaceAll("[^a-zA-Z_0-9_.-]", "");
-        pathFragment = pathFragment.toLowerCase();        
-        return pathFragment;
-    }
+   
+ 	public static String convertToFragment(String name) {
+
+      //todo make a common solution for urlgragment  generation.
+      name = replaceChineseCharacter(name);
+
+      String pathFragment = EncodingUtil.convertNonAscii(name);
+      pathFragment = pathFragment.replaceAll("\\s", "_");
+      while (pathFragment.length() > 1 && pathFragment.substring(0, 1).matches("[_.-]")) {
+         pathFragment = pathFragment.substring(1, pathFragment.length());
+      }
+      pathFragment = pathFragment.replaceAll("[^a-zA-Z_0-9_.-]", "");
+      pathFragment = pathFragment.toLowerCase();
+      return pathFragment;
+   }
+
+   private static String replaceChineseCharacter(String input) {
+      Pattern pa = Pattern.compile("[\u4E00-\u9FA0]", Pattern.CANON_EQ);
+      Matcher m = pa.matcher(input);
+      if (m.find()) {
+         return RandomStringUtils.randomAlphabetic(30);
+      }
+
+      return input;
+   }
+
 
 }
