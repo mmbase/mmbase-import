@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.newsletter.generator;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -81,7 +81,7 @@ public abstract class NewsletterGenerator {
       return (output);
    }
 
-   protected abstract Message generateNewsletterMessage(String userName);
+   public abstract Message generateNewsletterMessage(String userName);
 
    private String getApplicationName(String hostUrl) {
       String[] hostUrlParts = hostUrl.split("/");

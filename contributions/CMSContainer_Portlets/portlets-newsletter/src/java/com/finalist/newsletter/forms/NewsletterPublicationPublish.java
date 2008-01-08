@@ -16,7 +16,7 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.newsletter.NewsletterPublisher;
+import com.finalist.newsletter.publisher.NewsletterPublisher;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 

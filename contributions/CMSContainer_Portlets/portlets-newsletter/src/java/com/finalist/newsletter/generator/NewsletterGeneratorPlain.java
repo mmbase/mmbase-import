@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.newsletter.generator;
 
 import javax.mail.Message;
 
@@ -10,7 +10,7 @@ public class NewsletterGeneratorPlain extends NewsletterGenerator {
    }
 
    @Override
-   protected Message generateNewsletterMessage(String userName) {
+   public Message generateNewsletterMessage(String userName) {
       // TODO Auto-generated method stub
 
       return null;

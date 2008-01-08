@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.newsletter.generator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.newsletter.publisher.NewsletterPublisher;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class NewsletterGeneratorFactory {

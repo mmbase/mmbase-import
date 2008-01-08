@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.newsletter.publisher;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.services.community.NewsletterCommunication;
+import com.finalist.newsletter.generator.NewsletterGenerator;
+import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;

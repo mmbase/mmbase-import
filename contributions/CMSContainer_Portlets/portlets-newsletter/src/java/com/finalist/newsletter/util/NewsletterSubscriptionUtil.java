@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.finalist.cmsc.services.community.NewsletterCommunication;
-import com.finalist.newsletter.NewsletterGeneratorFactory;
+import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 
 public abstract class NewsletterSubscriptionUtil {
 

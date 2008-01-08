@@ -4,6 +4,8 @@ import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.event.NodeEventListener;
 
+import com.finalist.newsletter.publisher.NewsletterPublisher;
+
 public class NewsletterPublicationListener implements NodeEventListener {
 
    public void notify(NodeEvent event) {

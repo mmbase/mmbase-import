@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.newsletter.publisher;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
