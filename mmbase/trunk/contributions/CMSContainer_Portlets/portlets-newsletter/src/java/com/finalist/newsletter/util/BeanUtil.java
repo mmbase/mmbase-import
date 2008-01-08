@@ -1,4 +1,4 @@
-package com.finalist.newsletter.module;
+package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,6 @@ import com.finalist.newsletter.module.bean.NewsletterOverviewBean;
 import com.finalist.newsletter.module.bean.NewsletterSubscriberBean;
 import com.finalist.newsletter.module.bean.SubscriptionDetailBean;
 import com.finalist.newsletter.module.bean.SubscriptionOverviewBean;
-import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
-import com.finalist.newsletter.util.NewsletterUtil;
 
 public final class BeanUtil {
 

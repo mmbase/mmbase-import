@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMessages;
 
 import com.finalist.newsletter.module.bean.SubscriptionDetailBean;
 import com.finalist.newsletter.module.bean.SubscriptionOverviewBean;
+import com.finalist.newsletter.util.BeanUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class SubscriptionAction extends Action {

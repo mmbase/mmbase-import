@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.finalist.newsletter.module.bean.GlobalOverviewBean;
+import com.finalist.newsletter.util.BeanUtil;
 
 public class InitAction extends Action {
 

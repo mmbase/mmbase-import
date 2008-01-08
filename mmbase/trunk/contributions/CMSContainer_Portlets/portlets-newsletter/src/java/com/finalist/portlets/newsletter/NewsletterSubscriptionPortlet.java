@@ -15,7 +15,7 @@ import javax.portlet.WindowState;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
-import com.finalist.newsletter.NewsletterGeneratorFactory;
+import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 

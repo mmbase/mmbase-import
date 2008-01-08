@@ -29,7 +29,7 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
       String action = request.getParameter("action");
 
       if (StringUtil.isEmptyOrWhitespace(action)) { // Initialize the new
-         String parent = getParameter(request, "parent", true); // publication
+         int parent = Integer.parseInt(getParameter(request, "parent", true));
          boolean copyContent = Boolean.valueOf(getParameter(request, "copycontent", true));
          Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);
          String objectnumber = String.valueOf(publicationNode.getNumber());

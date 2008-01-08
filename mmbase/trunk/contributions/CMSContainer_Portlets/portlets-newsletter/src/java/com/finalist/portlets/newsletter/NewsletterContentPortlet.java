@@ -105,7 +105,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
                for (int i = 0; i < additionalThemes.size(); i++) {
                   int themeNumber = additionalThemes.get(i);
                   List<Integer> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
-                  if (duplicateHandling.equals(DUPLICATE_HANDLING_HIDE)) {
+                  if (duplicateHandling != null && duplicateHandling.equals(DUPLICATE_HANDLING_HIDE)) {
                      articles = NewsletterUtil.removeDuplicates(temporaryArticleListing, articles);
                   }
                   if (articles != null && articles.size() > 0) {
@@ -114,7 +114,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
                         temporaryArticleListing.add(articles.get(a));
                      }
                   } else {
-                     additionalThemes.remove(themeNumber);
+                     additionalThemes.remove(additionalThemes.indexOf(themeNumber));
                      i--;
                   }
                }

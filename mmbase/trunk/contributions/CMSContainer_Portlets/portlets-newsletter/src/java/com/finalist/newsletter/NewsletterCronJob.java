@@ -29,42 +29,35 @@ public class NewsletterCronJob implements CronJob {
       NodeQuery query = manager.createQuery();
       NodeList newsletters = manager.getList(query);
       List<Node> newslettersToPublish = new ArrayList<Node>();
-      log.debug("Found " + newsletters.size() + " newsletter in database");
-      for (int i = 0; i < newsletters.size(); i++) {
+            for (int i = 0; i < newsletters.size(); i++) {
          Node newsletter = newsletters.getNode(i);
          if (Publish.isPublished(newsletter)) {
             long publishInterval = newsletter.getLongValue("publishinterval");
             if (publishInterval > 0) {
-               newslettersToPublish.add(newsletter);
-               log.debug("Newsletter " + newsletter.getNumber() + " is added to the list of newsletters to publish.");
-            } else {
-               log.debug("Newsletter " + newsletter.getNumber() + " requires manual publication and will not be processed.");
-            }
-         } else {
-            log.debug("Newsletter " + newsletter.getNumber() + " is not published to the Live site and will not be processed");
-         }
+               newslettersToPublish.add(newsletter);               
+            } 
+         } 
       }
       return (newslettersToPublish);
    }
 
    public void init(CronEntry arg0) {
-      log.debug("NewsletterCronJob init");
+      log.info("Initializing Newsletter CronJob");
 
    }
 
-   public void run() {
+   public void run() {      
       List<Node> newslettersToPublish = getNewslettersToPublish();
       for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
          Node newsletterNode = newslettersToPublish.get(newsletterIterator);
-         String newsletterNumber = newsletterNode.getStringValue("number");
+         int newsletterNumber = newsletterNode.getNumber();
+         log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
          Node publicationNode = NewsletterPublicationUtil.createPublication(newsletterNumber, true);
          Publish.publish(publicationNode);
       }
    }
 
    public void stop() {
-      log.debug("NewsletterCronJob stop !");
-
+      log.info("Stopping Newsletter CronJob");
    }
-
 }
