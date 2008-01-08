@@ -34,7 +34,7 @@ public class NewsletterPublicationDelete extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       if (isRemoveAction(request)) {
-         String objectnumber = getParameter(request, "number", true);
+         int objectnumber = Integer.parseInt(getParameter(request, "number", true));
          Node newsletterPublicationNode = cloud.getNode(objectnumber);
 
          UserRole role = NavigationUtil.getRole(newsletterPublicationNode.getCloud(), newsletterPublicationNode, false);

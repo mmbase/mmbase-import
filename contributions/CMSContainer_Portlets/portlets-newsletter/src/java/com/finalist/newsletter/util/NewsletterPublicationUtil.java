@@ -14,7 +14,6 @@ import org.mmbase.bridge.RelationList;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
-import com.finalist.newsletter.CloneUtil;
 
 public abstract class NewsletterPublicationUtil {
 
@@ -54,34 +53,32 @@ public abstract class NewsletterPublicationUtil {
       }
    }
 
-   public static Node createPublication(String newsletterNumber, boolean copyContent) {
-      if (newsletterNumber == null) {
-         return (null);
-      }
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node newsletterNode = cloud.getNode(newsletterNumber);
-      Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
+   public static Node createPublication(int newsletterNumber, boolean copyContent) {
+      if (newsletterNumber > 0) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterNode = cloud.getNode(newsletterNumber);
+         Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
 
-      if (publicationNode != null) {
-         String urlFragment = String.valueOf(publicationNode.getNumber());
-         publicationNode.setStringValue("urlfragment", urlFragment);
-         publicationNode.commit();
+         if (publicationNode != null) {
+            String urlFragment = String.valueOf(publicationNode.getNumber());
+            publicationNode.setStringValue("urlfragment", urlFragment);
+            publicationNode.commit();
 
-         copyThemesAndContent(newsletterNode, publicationNode, copyContent);
-         copyOtherRelations(newsletterNode, publicationNode);
-         NavigationUtil.appendChild(newsletterNode, publicationNode);
-         Node layoutNode = PagesUtil.getLayout(publicationNode);
-         if (copyContent == true) {
-            PagesUtil.linkPortlets(publicationNode, layoutNode);
+            copyThemesAndContent(newsletterNode, publicationNode, copyContent);
+            copyOtherRelations(newsletterNode, publicationNode);
+            NavigationUtil.appendChild(newsletterNode, publicationNode);
+            Node layoutNode = PagesUtil.getLayout(publicationNode);
+            if (copyContent == true) {
+               PagesUtil.linkPortlets(publicationNode, layoutNode);
+            }
+            return (publicationNode);
          }
-
-         return (publicationNode);
       }
       return (null);
    }
 
    // Delete a publication, only if not yet published
-   public static void deletePublication(String publicationNumber) {
+   public static void deletePublication(int publicationNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node publicationNode = cloud.getNode(publicationNumber);
 
@@ -96,7 +93,7 @@ public abstract class NewsletterPublicationUtil {
       NavigationUtil.deleteItem(publicationNode);
    }
 
-   public static List<String> getAllThemesForPublication(String publicationNumber) {
+   public static List<String> getAllThemesForPublication(int publicationNumber) {
       List<String> themes = new ArrayList<String>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(publicationNumber);

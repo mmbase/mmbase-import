@@ -1,4 +1,4 @@
-package com.finalist.newsletter;
+package com.finalist.newsletter.generator;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -18,7 +18,7 @@ public class NewsletterGeneratorHtml extends NewsletterGenerator {
    }
 
    @Override
-   protected Message generateNewsletterMessage(String userName) {
+   public Message generateNewsletterMessage(String userName) {
       Session session = getMailSession();
       Message message = new MimeMessage(session);
       String rawHtmlContent = getContent(userName);
