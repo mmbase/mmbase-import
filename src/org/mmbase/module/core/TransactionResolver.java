@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.29 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: TransactionResolver.java,v 1.30 2008-01-09 12:26:51 michiel Exp $
  */
 class TransactionResolver {
     private static final Logger log = Logging.getLoggerInstance(TransactionResolver.class);
@@ -28,10 +28,15 @@ class TransactionResolver {
         this.mmbase = mmbase;
     }
 
-    public boolean resolve(final Collection<MMObjectNode> nodes) {
+    /**
+     * Result a transaction. ie. resolves all 'node' fields to actual number was will be committed
+     * to the database
+     *
+     * @throws TransactionManagerException if the transactiosn could not be successfully completely resolved.
+    */
+    void resolve(final Collection<MMObjectNode> nodes) throws TransactionManagerException {
         Map<String, Integer> numbers = new HashMap<String, Integer>(); /* Temp key -> Real node number */
         Map<MMObjectNode, Collection<String>> nnodes  = new HashMap<MMObjectNode, Collection<String>>(); /* MMObjectNode --> List of changed fields */
-        boolean success = true;
 
         // Find all unique keys and store them in a map to remap them later
         // Also store the nodes with which fields uses them.
@@ -130,6 +135,8 @@ class TransactionResolver {
             }
         }
 
+        // Check now whether resolving was completely successfull
+
         for (MMObjectNode node : nodes) {
             MMObjectBuilder bul = mmbase.getMMObject(node.getName());
             for (CoreField fd : bul.getFields()) {
@@ -144,13 +151,12 @@ class TransactionResolver {
                         if (number == -1) {
                             String key = node.getStringValue(tmpField);
                             if (key != null && key.length() > 0) {
-                                success = false;
+                                throw new TransactionManagerException("For node " + node + " and field " + field + ". Found value for " + tmpField + ": " + key + ". Should be empty.");
                             }
                         }
                     }
                 }
             }
         }
-        return success;
     }
 }
