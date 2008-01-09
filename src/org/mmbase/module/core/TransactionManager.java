@@ -21,23 +21,23 @@ import org.mmbase.security.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.41 2007-11-16 09:12:49 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.42 2008-01-09 12:26:51 michiel Exp $
  */
 public class TransactionManager {
 
     private static final Logger log = Logging.getLoggerInstance(TransactionManager.class);
 
-    public static final String EXISTS_NO = "no";
-    public static final int I_EXISTS_NO = 0;
-    public static final String EXISTS_YES = "yes";
-    public static final int I_EXISTS_YES = 1;
+    static final String EXISTS_NO = "no";
+    static final int I_EXISTS_NO = 0;
+    static final String EXISTS_YES = "yes";
+    static final int I_EXISTS_YES = 1;
     public static final String EXISTS_NOLONGER = "nolonger";
-    public static final int I_EXISTS_NOLONGER = 2;
+    static final int I_EXISTS_NOLONGER = 2;
 
     private TemporaryNodeManager tmpNodeManager;
     private TransactionResolver transactionResolver;
 
-    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap<String, Collection<MMObjectNode>>(); 
+    protected Map<String, Collection<MMObjectNode>> transactions = new HashMap<String, Collection<MMObjectNode>>();
 
     public static TransactionManager instance;
 
@@ -85,7 +85,8 @@ public class TransactionManager {
     }
 
     /**
-     * Return a an unmodifable Map with all transactions
+     * Return a an unmodifable Map with all transactions. This map can be used to explore the
+     * existing transactions.
      *
      * @since MMBase-1.9
      */
@@ -189,13 +190,11 @@ public class TransactionManager {
 
         Collection<MMObjectNode> transaction = getTransaction(transactionName);
         if (transaction instanceof ArrayList) { // a bit of a trick to see if it is resolved already
-            boolean resolved = getTransactionResolver().resolve(transaction);
-            if (resolved) {
+            try {
+                getTransactionResolver().resolve(transaction);
                 transactions.put(transactionName, Collections.unmodifiableCollection(transaction)); // makes it recognizable, and also the transaction is unusable after that
-            } else {
-                log.error("Can't resolve transaction " + transactionName);
-                log.error("Nodes \n" + transaction);
-                throw new TransactionManagerException("Can't resolve transaction " + transactionName + "" + transaction);
+            } catch (TransactionManagerException te) {
+                throw new TransactionManagerException("Can't resolve transaction " + transactionName + " (it has " + transaction.size() + " nodes", te);
             }
         } else {
             log.service("Resolved already");
@@ -209,8 +208,6 @@ public class TransactionManager {
         try {
             resolve(transactionName);
             if (!performCommits(user, transaction)) {
-                log.error("Can't commit transaction " + transactionName);
-                log.error("Nodes \n" + transaction);
                 throw new TransactionManagerException("Can't commit transaction " + transactionName);
             }
 
