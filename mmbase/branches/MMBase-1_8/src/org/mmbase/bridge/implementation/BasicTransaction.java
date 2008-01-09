@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.*;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25.2.5 2007-11-20 15:24:44 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.6 2008-01-09 10:48:15 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -193,6 +194,14 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
+
+    BasicNode makeNode(MMObjectNode node, String nodeNumber) {
+        if (committed) {
+            return parentCloud.makeNode(node, nodeNumber);
+        } else {
+            return super.makeNode(node, nodeNumber);
+        }
+    }
     /**
      * If this Transaction is scheduled to be garbage collected, the transaction is canceled and cleaned up.
      * Unless it has already been committed/canceled, ofcourse, and
@@ -253,6 +262,11 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         out.writeBoolean(committed);
         out.writeObject(transactionName);
         out.writeObject(parentCloud);
+    }
+
+    public String toString() {
+        UserContext uc = getUser();
+        return  "BasicTransaction " + count +  "'" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
     }
 
 
