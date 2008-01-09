@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.6 2007-07-12 09:35:45 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.7 2008-01-09 10:47:53 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -293,7 +293,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         if (TemporaryNodeManager.UNKNOWN == result) {
             throw new BridgeException("Can't change unknown field '" + fieldName + "', of node " + getNumber() + " of nodeManager '" + getNodeManager().getName() +"'");
         } else if (TemporaryNodeManager.INVALID_VALUE == result) {
-            noderef.storeValue(fieldName, value); // commit() will throw that invalid.
+            getNode().storeValue(fieldName, value); // commit() will throw that invalid.
         }
     }
     protected Integer toNodeNumber(Object v) {
@@ -314,11 +314,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     public boolean isNull(String fieldName) {
-        return noderef.isNull(fieldName);
+        return getNode().isNull(fieldName);
     }
 
     public long getSize(String fieldName) {
-        return noderef.getSize(fieldName);
+        return getNode().getSize(fieldName);
     }
 
     /**
@@ -389,7 +389,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             } else if (builder instanceof VirtualBuilder) {
                 result = new VirtualNode((org.mmbase.module.core.VirtualNode)mmobjectNode, cloud);
             } else {
-                result = new BasicNode(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+                result = cloud.makeNode(mmobjectNode, mmobjectNode.getStringValue("number")); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
         }
         if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
@@ -461,6 +461,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         String result = getNode().getStringValue(fieldName);
         if (nodeManager.hasField(fieldName)) { // gui(..) stuff could not work.
             Field field = nodeManager.getField(fieldName);
+            log.debug("" + field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING));
             result = (String) field.getDataType().getProcessor(DataType.PROCESS_GET, Field.TYPE_STRING).process(this, field, result);
         }
         return result;
@@ -495,11 +496,14 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         }
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) { // sigh sigh sigh.
+            log.debug("not in a transaction so actually committing now");
             MMObjectNode node = getNode();
             if (isNew()) {
+                log.debug("new");
                 node.insert(cloud.getUser());
                 // cloud.createSecurityInfo(getNumber());
             } else {
+                log.debug("not new");
                 node.commit(cloud.getUser());
                 //cloud.updateSecurityInfo(getNumber());
             }
@@ -596,7 +600,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         } catch (SearchQueryException sqe) {
             log.error(sqe);
         }
-        
+
         if (cloud instanceof Transaction) {
             String oMmbaseId = "" + relation.getValue("number");
             String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
@@ -660,7 +664,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             // new nodes have no relations
             return BridgeCollections.EMPTY_RELATIONLIST;
         }
-        
+
         if ("".equals(otherNodeManager)) otherNodeManager = null;
         NodeManager otherManager = otherNodeManager == null ? cloud.getNodeManager("object") : cloud.getNodeManager(otherNodeManager);
 
@@ -797,7 +801,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
         NodeList l1 = BridgeCollections.EMPTY_NODELIST;
         NodeList l2 = BridgeCollections.EMPTY_NODELIST;
-       
+
         TypeRel typeRel = BasicCloudContext.mmb.getTypeRel();
         if (role == null) {
             int allowedOtherNumber = otherManager == null || "object".equals(otherManager.getName()) ? 0 : otherManager.getNumber();
@@ -1023,5 +1027,11 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     protected FieldValue createFunctionValue(Object result) {
         return new BasicFunctionValue(getCloud(), result);
     }
+
+    /*
+    public Object getOldValue(String fieldName) {
+        return getNode().getOldValues().get(fieldName);
+    }
+    */
 
 }
