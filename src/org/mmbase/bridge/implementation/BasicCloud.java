@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.177 2007-10-12 12:01:11 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.178 2008-01-09 10:56:36 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -81,6 +81,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache);
     }
 
+    private static long counter = 0;
+    protected final long count = ++counter;
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
      * @param cloudName name of cloud
