@@ -89,6 +89,7 @@ public class Authentication extends org.mmbase.security.Authentication {
     protected org.mmbase.security.UserContext request(org.mmbase.security.UserContext uc, HttpServletRequest req) {
         Node n = getUserNode(ContextProvider.getDefaultCloudContext().getCloud("mmbase"), uc.getIdentifier());
         req.setAttribute("user", n == null ? "0" : n.getNumber());
+        log.debug("Found user " + n.getNumber() + " " + uc);
         Object education = req.getAttribute("education");
         if (education != null) {
             Function fun = n.getFunction("class");
@@ -97,6 +98,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             Node claz = (Node) fun.getFunctionValue(params);
             req.setAttribute("class", claz);
         }
+
         return uc;
     }
     /**
@@ -139,6 +141,7 @@ public class Authentication extends org.mmbase.security.Authentication {
      * @param parameters
      *            A list of optional parameters
      */
+    @Override
     public org.mmbase.security.UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
 
         // Always allow anonymous access instantly
@@ -178,6 +181,30 @@ public class Authentication extends org.mmbase.security.Authentication {
                 return uc;
             }
         }
+        if ("reincarnate".equals(application)) {
+            checkBuilder();
+            Cloud cloud = (Cloud) loginInfo.get(Parameter.CLOUD.getName());
+            if (cloud == null) {
+                throw new org.mmbase.security.SecurityException("Cannot reincarnate to other user, if not currently logged in.");
+            }
+            String userName = (String) loginInfo.get(PARAMETER_USERNAME.getName());
+            if (userName == null) {
+                throw new org.mmbase.security.SecurityException("Cannot reincarnate to other user without specifying username.");
+            }
+            MMObjectNode user = users.getUser(userName);
+            if (user == null) {
+                throw new org.mmbase.security.SecurityException("No such user '" + userName + "'");
+            }
+            UserContext uc = new UserContext(user, "reincarnate");
+            org.mmbase.security.UserContext current = cloud.getUser();
+            if (current.getRank().getInt() <= uc.getRank().getInt()) {
+                throw new org.mmbase.security.SecurityException("Cannot reincarnate to user with higer or equal rank then yourself ('" + current+ "' -> '" + uc + "'");
+            }
+            log.info("Reincarnated " + current + " as " + uc);
+            return uc;
+
+
+        }
 
         HttpServletRequest request = null;
         HttpServletResponse response = null;
@@ -214,6 +241,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             }
         }
 
+        log.debug("Apparently not logged in yet, try to do that now");
         // Apparently not, so we ask the components if they can process the login,
         // maybe there was a post to the current page?
         for (AuthenticationComponent ac : securityComponents) {
@@ -260,7 +288,7 @@ public class Authentication extends org.mmbase.security.Authentication {
         // security component should be used first by default. It will now automatically
         // go to the first one (aselect if that one is compiled in)
         for (AuthenticationComponent ac : securityComponents) {
-            String loginPage = ac.getLoginPage(request, response);
+            String loginPage = request != null ? ac.getLoginPage(request, response) : null;
             if (log.isDebugEnabled()) {
                 log.debug("" + ac + ".getLoginPage() -> " + loginPage);
             }
@@ -290,9 +318,23 @@ public class Authentication extends org.mmbase.security.Authentication {
         return null;
     }
 
-    public boolean isValid(org.mmbase.security.UserContext usercontext) throws org.mmbase.security.SecurityException {
-        // WTF WTF
-        return true;
+    public  boolean isValid(org.mmbase.security.UserContext userContext) throws org.mmbase.security.SecurityException {
+        if (userContext instanceof UserContext) {
+            UserContext uc = (UserContext) userContext;
+            log.debug("found " + uc);
+            if (uc.getRank().equals(Rank.ADMIN)) return true;
+            if (uc.getRank().equals(Rank.ANONYMOUS)) return true;
+            checkBuilder();
+            MMObjectNode user = users.getNode(uc.getUserNumber());
+            if (user == null) {
+                log.warn("No node found for node " + uc.getUserNumber());
+                return false;
+            }
+            return user.getBooleanValue("person_status");
+        } else {
+            log.service("" + userContext + " is not valid because not of this security implementation");
+            return false;
+        }
     }
 
     protected static Node getUserNode(Cloud cloud, String id){
