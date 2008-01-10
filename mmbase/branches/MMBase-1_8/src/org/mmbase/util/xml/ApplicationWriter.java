@@ -28,7 +28,7 @@ import org.mmbase.util.*;
  * @javadoc
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.4 2006-03-28 17:49:36 daniel Exp $
+ * @version $Id: ApplicationWriter.java,v 1.4.2.1 2008-01-10 16:14:37 michiel Exp $
  */
 public class ApplicationWriter extends DocumentWriter  {
 
@@ -197,7 +197,7 @@ public class ApplicationWriter extends DocumentWriter  {
      * @throws IOException if one or more files cannot be written
      * @throws SearchQueryException if data could not be obtained from the database
      */
-    public void writeToPath(String targetPath, Logger logger) throws IOException, TransformerException, SearchQueryException {
+    public void writeToPath(String targetPath, Logger logger) throws IOException, TransformerException, SearchQueryException, org.xml.sax.SAXException {
         //writeToFile(targetPath + "/" + reader.getName() + ".xml");
 	CloudModel cm = ModelsManager.getModel(reader.getName());
 	log.info("CMW="+cm);
@@ -213,7 +213,7 @@ public class ApplicationWriter extends DocumentWriter  {
         logger.info("Writing Application file : " + targetPath + "/" + reader.getName() + ".xml");
     }
 
-    private void writeDateSources(String targetPath, Logger logger) throws IOException, SearchQueryException  {
+    private void writeDateSources(String targetPath, Logger logger) throws org.xml.sax.SAXException,  IOException, SearchQueryException  {
         List sources = reader.getContextSources();
         for (Iterator i = sources.iterator(); i.hasNext();) {
             Map bset = (Map)i.next();
@@ -225,7 +225,7 @@ public class ApplicationWriter extends DocumentWriter  {
             logger.info("save goal : " + goal);
 
             if (type.equals("depth")) {
-                XMLContextDepthReader contextReader = new XMLContextDepthReader(MMBaseContext.getConfigPath() + "/applications/" + path);
+                XMLContextDepthReader contextReader = new XMLContextDepthReader(ResourceLoader.getConfigurationRoot().getDocument("/applications/" + path));
                 ContextDepthDataWriter.writeContext(reader, contextReader, targetPath, mmbase, logger);
             } else if (type.equals("full")) {
                 FullBackupDataWriter.writeContext(reader, targetPath, mmbase, logger);
@@ -233,14 +233,14 @@ public class ApplicationWriter extends DocumentWriter  {
         }
     }
 
-    private void writeContextSources(String targetPath) {
+    private void writeContextSources(String targetPath) throws org.xml.sax.SAXException, IOException {
         List sources = reader.getContextSources();
         for (Iterator i = sources.iterator(); i.hasNext();) {
             Map bset = (Map)i.next();
             String path = (String)bset.get("path");
             String type = (String)bset.get("type");
             if (type.equals("depth")) {
-                XMLContextDepthReader contextReader = new XMLContextDepthReader( MMBaseContext.getConfigPath() + "/applications/" + path);
+                XMLContextDepthReader contextReader = new XMLContextDepthReader(ResourceLoader.getConfigurationRoot().getDocument("/applications/" + path));
                 ContextDepthDataWriter.writeContextXML(contextReader, targetPath + "/" + path);
             }
         }
@@ -262,7 +262,7 @@ public class ApplicationWriter extends DocumentWriter  {
                 logger.info("save builder : " + name);
 		CloudModelBuilder cmb = cm.getModelBuilder(name);
 		cmb.writeToFile(targetPath + "/" + reader.getName() + "/builders/" + name + ".xml");
-		
+
 		/*
                 BuilderWriter builderOut = new BuilderWriter(builder);
                 builderOut.setIncludeComments(includeComments());
