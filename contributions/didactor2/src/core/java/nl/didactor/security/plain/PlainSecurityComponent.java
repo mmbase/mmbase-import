@@ -13,6 +13,7 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.security.*;
+import org.mmbase.security.SecurityException;
 import nl.didactor.builders.PeopleBuilder;
 import nl.didactor.security.AuthenticationComponent;
 
@@ -21,7 +22,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.19 2007-11-06 16:29:50 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.20 2008-01-10 15:08:02 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -81,27 +82,42 @@ public class PlainSecurityComponent implements AuthenticationComponent {
     public UserContext processLogin(HttpServletRequest request, HttpServletResponse response, String application) {
         checkBuilder();
 
-
-
         String login    = getUserName(request);
         String password = getPassword(request);
+
 
         if (login == null || password == null) {
             log.debug("Did not find matching credentials");
             return null;
         }
 
+        log.debug("Porcessing log in");
         MMObjectNode user = users.getUser(login, password);
         if (user == null) {
-            log.debug("Found credentials, but no matching user '" + login + "'/'" + password + "' . Returning null");
-            return null;
+            log.debug("No user found for " + login);
+            user = users.getUser(login);
+            if (user == null) {
+                throw new SecurityException("No such user '" + login + "'");
+            } else {
+                throw new SecurityException("Wrong password");
+            }
+        }
+
+        if ("".equals(user.getStringValue("password"))) {
+            throw new SecurityException("User '" + login + "' has an empty password");
         }
 
         log.debug("Found matching credentials, so user is now logged in.");
         HttpSession session = request.getSession(true);
         session.setAttribute("didactor-plainlogin-userid", "" + user.getNumber());
         session.setAttribute("didactor-plainlogin-application", application);
-        return new UserContext(user, application);
+        UserContext uc = new UserContext(user, application);
+        if (! uc.getRank().equals(Rank.ADMIN)) {
+            if (! user.getBooleanValue("person_status")) {
+                throw new SecurityException("User '" + login + "' is disabled");
+            }
+        }
+        return uc;
     }
 
     public UserContext isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
