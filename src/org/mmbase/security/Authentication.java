@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.39 2007-12-06 08:07:44 michiel Exp $
+ * @version $Id: Authentication.java,v 1.40 2008-01-10 14:12:24 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -63,9 +63,9 @@ public abstract class Authentication extends Configurable implements Authenticat
      *
      *	@return <code>null</code> if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
      *
-     *	@exception SecurityException When something strang happened
+     *	@exception SecurityException When something strange happend, or authentication was unsucessfull.
      */
-    public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException;
+    public abstract UserContext login(String application, Map<String, Object> loginInfo, Object[] parameters) throws SecurityException;
 
     /**
      * {@inheritDoc}
@@ -120,7 +120,7 @@ public abstract class Authentication extends Configurable implements Authenticat
 
 
     /**
-     * 
+     *
      * @since MMBase-1.9
      */
     public static final String getMethod(int m) {
