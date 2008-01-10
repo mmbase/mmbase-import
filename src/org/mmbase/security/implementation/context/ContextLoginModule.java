@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.21 2007-04-09 19:09:51 michiel Exp $
+ * @version $Id: ContextLoginModule.java,v 1.22 2008-01-10 14:12:24 michiel Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -44,7 +44,7 @@ public abstract class ContextLoginModule {
         this.manager =manager;
     }
 
-    public abstract ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws SecurityException;
+    public abstract ContextUserContext login(Map<String, Object> userLoginInfo, Object[] userParameters) throws SecurityException;
 
     protected ContextUserContext getValidUserContext(String username, Rank rank) throws SecurityException{
         return new ContextUserContext(username, rank, validKey, manager, name);
@@ -125,19 +125,19 @@ public abstract class ContextLoginModule {
             }
             if (rank != null) {
                 if (identifyCons.length() > 0) identifyCons.append(" and ");
-                identifyCons.append("@rank='").append(rank).append("'");                
+                identifyCons.append("@rank='").append(rank).append("'");
             }
             xpath = "/contextconfig/accounts/user" + userCons + "/identify[" + identifyCons + "]";
         } else {
             xpath = "/contextconfig/accounts/user" + userCons;
         }
-        
+
         if (log.isDebugEnabled()) {
             log.debug("going to execute the query: " + xpath);
         }
-        
+
         final Element found;
-        XPath xp = XPathFactory.newInstance().newXPath();      
+        XPath xp = XPathFactory.newInstance().newXPath();
         try {
             found = (Element) xp.evaluate(xpath, document, XPathConstants.NODE);
         } catch(XPathExpressionException xe) {

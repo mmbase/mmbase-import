@@ -17,10 +17,10 @@ import java.util.Map;
  * user with the rank {@link Rank#ANONYMOUS}.
  *
  * @author Eduard Witteveen
- * @version $Id: AnonymousLogin.java,v 1.6 2005-12-10 13:10:26 michiel Exp $
+ * @version $Id: AnonymousLogin.java,v 1.7 2008-01-10 14:12:24 michiel Exp $
  */
 public class AnonymousLogin extends ContextLoginModule {
-    public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
+    public ContextUserContext login(Map<String, Object> userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
         return getValidUserContext("anonymous", Rank.ANONYMOUS);
     }
 }
