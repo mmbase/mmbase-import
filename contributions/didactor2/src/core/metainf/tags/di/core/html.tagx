@@ -19,33 +19,34 @@
               unacceptable="CRIPPLE"
               language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
+      <html  xmlns="http://www.w3.org/1999/xhtml">
+        <di:head>
+          <title><di:translate key="${component}.learnenvironmenttitle" /></title>
+          <mm:haspage page="/${component}/style/base.css">
+            <mm:link page="/${component}/style/base.css">
+              <link rel="stylesheet" type="text/css" href="${_}" />
+            </mm:link>
+          </mm:haspage>
+        </di:head>
+        <body>
+          <div class="">
+            <di:include page="/cockpit/applicationbar.jsp" />
+            <di:include page="/cockpit/providerbar.jsp" />
+            <di:include page="/cockpit/educationbar.jsp" />
 
-      <di:head>
-        <title><di:translate key="education.learnenvironmenttitle" /></title>
-        <mm:haspage page="/${component}/style/base.css">
-          <mm:link page="/${component}/style/base.css">
-            <link rel="stylesheet" type="text/css" href="${_}" />
-          </mm:link>
-        </mm:haspage>
-      </di:head>
-      <body>
-        <div class="">
-          <di:include page="/cockpit/applicationbar.jsp" />
-          <di:include page="/cockpit/providerbar.jsp" />
-          <di:include page="/cockpit/educationbar.jsp" />
-
-          <div class="rows">
-            <div class="navigationbar">
-              <div class="titlebar">
-                <di:translate key="${title_key}" />
+            <div class="rows">
+              <div class="navigationbar">
+                <div class="titlebar">
+                  <di:translate key="${title_key}" />
+                </div>
+              </div>
+              <div class="contentBody mm_c_${component}">
+                <jsp:doBody />
               </div>
             </div>
-            <div class="contentBody mm_c_${component}">
-              <jsp:doBody />
-            </div>
           </div>
-        </div>
-      </body>
+        </body>
+      </html>
     </mm:cloud>
   </mm:content>
 </jsp:root>
