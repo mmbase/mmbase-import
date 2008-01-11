@@ -124,9 +124,14 @@ public class ResponseFormPortlet extends ContentPortlet {
                      errorMessages.put(fieldIdentifier, "view.formfield.empty");
                   }
                   if (!regex.equals("")
-                        && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !value.matches(regex))) {
-                     errorMessages.put(fieldIdentifier, "view.formfield.invalid");
+                        && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value))) {
+                   errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                   }
+                  if ((type == TYPE_TEXTBOX) && sendEmail) {   //If data is used as email address, then it should be valid 
+                     if (!isEmailAddress(userEmailAddress))
+                        errorMessages.put(fieldIdentifier, "view.formfield.invalid");
+                  }
+                  
                   if (type == TYPE_CHECKBOX) {
                      textValue = (value == null) ? CHECKBOX_NO : CHECKBOX_YES;
                   }
@@ -151,9 +156,11 @@ public class ResponseFormPortlet extends ContentPortlet {
                      errorMessages.put("sendemail", "view.error.sendemail");
                   }
                   else {
-                     // if the responseform email has been sent, send also the
-                     // email to the user
-                     sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);
+                     // if the responseform email has been sent, send also the email to the user
+                     sent = sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);
+                     if (!sent) {
+                        errorMessages.put("sendemail", "view.error.sendemail");
+                     }
                   }
                }
             }
@@ -222,8 +229,9 @@ public class ResponseFormPortlet extends ContentPortlet {
    }
 
 
-   protected void sendUserEmail(Node responseform, String userEmailAddress, String responseformData,
+   protected boolean sendUserEmail(Node responseform, String userEmailAddress, String responseformData,
          Map<String, String> parameterMap) {
+      boolean sent = false;
       String userEmailSubject = responseform.getStringValue("useremailsubject");
       String userEmailSender = responseform.getStringValue("useremailsender");
       String userEmailSenderName = responseform.getStringValue("useremailsendername");
@@ -244,13 +252,14 @@ public class ResponseFormPortlet extends ContentPortlet {
          userEmailText.append(userEmailTextAfter);
       }
 
-      String emailRegex = getEmailRegex();
       if (!StringUtil.isEmptyOrWhitespace(userEmailSender) && !StringUtil.isEmptyOrWhitespace(userEmailText.toString())
             && !StringUtil.isEmptyOrWhitespace(userEmailSenderName)
-            && !StringUtil.isEmptyOrWhitespace(userEmailAddress) && userEmailAddress.matches(emailRegex)) {
+            && !StringUtil.isEmptyOrWhitespace(userEmailAddress) 
+            && isEmailAddress(userEmailAddress)) {
          try {
             EmailSender.getInstance().sendEmail(userEmailSender, userEmailSenderName, userEmailAddress,
                   userEmailSubject, userEmailText.toString());
+            sent = true;
          }
          catch (UnsupportedEncodingException e) {
             getLogger().error("error sending email", e);
@@ -259,6 +268,27 @@ public class ResponseFormPortlet extends ContentPortlet {
             getLogger().error("error sending email", e);
          }
       }
+      return sent;
+   }
+
+   private boolean isEmailAddress(String emailAddress) {
+      if (emailAddress == null) return false;
+      if (StringUtil.isEmptyOrWhitespace(emailAddress)) return false;
+      
+      String emailRegex = getEmailRegex();
+      return emailAddress.matches(emailRegex);
+   }
+   
+   private boolean isEmailAddress(List<String> emailList) {
+      if (emailList == null) return false;
+      
+      String emailRegex = getEmailRegex();
+      if (emailList.isEmpty()) return false;
+      for (String email : emailList) {
+         if (email.matches(emailRegex) == false) return false;
+      }
+      
+      return true;
    }
 
 
@@ -290,6 +320,11 @@ public class ResponseFormPortlet extends ContentPortlet {
       String emailAddressesValue = responseform.getStringValue("emailaddresses");
       String emailSubject = responseform.getStringValue("emailsubject");
       List<String> emailList = Arrays.asList(emailAddressesValue.split(";"));
+      if (!isEmailAddress(emailList)) {
+         getLogger().error("error sending email. Some of the following emailaddresses are incorrect: " + emailList.toString());
+         return false; //Could not sent email because of false email address
+      }
+
       try {
          EmailSender.getInstance().sendEmail(senderEmail, senderName, emailList, emailSubject, emailText.toString(),
                attachment);
