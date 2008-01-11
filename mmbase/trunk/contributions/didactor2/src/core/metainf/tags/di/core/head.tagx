@@ -1,0 +1,21 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    version="2.0">
+  <jsp:directive.tag
+      description="Didactor head" />
+  <head>
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+    <mm:link page="/core/js/utils.js">
+      <script src="${_}"><!-- Help IE --></script>
+    </mm:link>
+    <mm:link page="/education/js/browser_version.js">
+      <script src="${_}"><!-- Help IE --></script>
+    </mm:link>
+    <jsp:doBody />
+    <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css',includePath)}" />
+  </head>
+</jsp:root>
+
