@@ -29,21 +29,11 @@
           </mm:haspage>
         </di:head>
         <body>
-          <div class="">
-            <di:include page="/cockpit/applicationbar.jsp" />
-            <di:include page="/cockpit/providerbar.jsp" />
-            <di:include page="/cockpit/educationbar.jsp" />
-
-            <div class="rows">
-              <div class="navigationbar">
-                <div class="titlebar">
-                  <di:translate key="${title_key}" />
-                </div>
-              </div>
-              <div class="contentBody mm_c_${component}">
-                <jsp:doBody />
-              </div>
-            </div>
+          <di:include page="/cockpit/applicationbar.jsp" />
+          <di:include page="/cockpit/providerbar.jsp" />
+          <di:include page="/cockpit/educationbar.jsp" />
+          <div class="contentBody mm_c_${component}">
+            <jsp:doBody />
           </div>
         </body>
       </html>
