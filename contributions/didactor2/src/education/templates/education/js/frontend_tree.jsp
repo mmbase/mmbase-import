@@ -98,6 +98,7 @@ function invalidateCurrentFrame() {
 }
 
 function loadIconOn() {
+    console.log(document);
     document.getElementById("ajax_loader").style.display = "inline";
 }
 function loadIconOff() {
