@@ -14,6 +14,10 @@
     </mm:relatednodescontainer>
   </di:copybook>
 
+  <mm:node number="$user">
+    <mm:nodelistfunction referids="education" name="blockedLearnBlocks" id="blocked" />
+  </mm:node>
+
   <mm:import externid="the_only_node_to_show"/>
   <mm:present referid="the_only_node_to_show">
     <mm:node number="$the_only_node_to_show">
