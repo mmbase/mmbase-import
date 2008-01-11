@@ -67,7 +67,7 @@
                         <mm:import id="all_ok" reset="true">true</mm:import>
                       </mm:isgreaterthan>
                       <mm:compare value="0">
-                        No current classes. Classes are ${classes}
+                        <jsp:text>No current classes. Classes are ${classes}</jsp:text>
                       </mm:compare>
                     </mm:size>
                   </mm:relatednodescontainer>
