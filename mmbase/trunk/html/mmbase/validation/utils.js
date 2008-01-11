@@ -37,11 +37,8 @@ function addEventHandler(element, event, method, context) {
         };
         return wrappedmethod.execute;
     } catch(e) {
-        alert(_('exception ${message} while registering an event handler ' +
-                'for element ${element}, event ${event}, method ${method}',
-                {'message': e.message, 'element': element,
-                    'event': event,
-                    'method': method}));
+        alert('exception ' + e.message + ' while registering an event handler ' +
+              'for element ' + element + ', event ' + event + ', method ' + method);
     };
 };
 
