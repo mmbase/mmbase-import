@@ -18,7 +18,7 @@
 		<optionlist select="boolean"/>
 	</field>
     <field name="emailaddresses" dtrequired="true">
-		<prompt xml:lang="nl">Email addressen, gescheiden door ;</prompt>
+		<prompt xml:lang="nl">Email adressen, gescheiden door ;</prompt>
         <prompt xml:lang="en">Email addresses, separated by ;</prompt>
 		<prompt xml:lang="zh">邮件地址,以;分隔</prompt>
 	</field>
