@@ -19,28 +19,33 @@
               unacceptable="CRIPPLE"
               language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
-      <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids,reset?">
-        <mm:param name="extraheader">
-          <title><di:translate key="education.learnenvironmenttitle" /></title>
-          <mm:haspage page="/${component}/style/base.css">
-            <mm:link page="/${component}/style/base.css">
-              <link rel="stylesheet" type="text/css" href="${_}" />
-            </mm:link>
-          </mm:haspage>
-        </mm:param>
-      </mm:treeinclude>
 
-      <div class="rows">
-        <div class="navigationbar">
-          <div class="titlebar">
-            <di:translate key="${title_key}" />
+      <di:head>
+        <title><di:translate key="education.learnenvironmenttitle" /></title>
+        <mm:haspage page="/${component}/style/base.css">
+          <mm:link page="/${component}/style/base.css">
+            <link rel="stylesheet" type="text/css" href="${_}" />
+          </mm:link>
+        </mm:haspage>
+      </di:head>
+      <body>
+        <div class="">
+          <di:include page="/cockpit/applicationbar.jsp" />
+          <di:include page="/cockpit/providerbar.jsp" />
+          <di:include page="/cockpit/educationbar.jsp" />
+
+          <div class="rows">
+            <div class="navigationbar">
+              <div class="titlebar">
+                <di:translate key="${title_key}" />
+              </div>
+            </div>
+            <div class="contentBody mm_c_${component}">
+              <jsp:doBody />
+            </div>
           </div>
         </div>
-        <div class="contentBody mm_c_${component}">
-          <jsp:doBody />
-        </div>
-      </div>
-      <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
+      </body>
     </mm:cloud>
   </mm:content>
 </jsp:root>

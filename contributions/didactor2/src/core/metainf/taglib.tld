@@ -344,6 +344,14 @@
     <path>/META-INF/tags/di/core/frame.tagx</path>
   </tag-file>
   <tag-file>
+    <name>head</name>
+    <path>/META-INF/tags/di/core/head.tagx</path>
+  </tag-file>
+  <tag-file>
+    <name>include</name>
+    <path>/META-INF/tags/di/core/include.tagx</path>
+  </tag-file>
+  <tag-file>
     <name>copybook</name>
     <path>/META-INF/tags/di/core/copybook.tagx</path>
   </tag-file>
