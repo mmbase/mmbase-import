@@ -3,6 +3,7 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           >
 
   <di:html expires="0" component="education" type="text/html">
@@ -12,11 +13,11 @@
       <di:include page="/drm/testlicense.jsp" />
     </mm:hasnode>
 
-    <di:include page="bookmark.jspx" />
+    <di:include page="/education/bookmark.jspx" />
 
     <div class="rows" id="rows">
-      <di:include page="navigation.jspx" />
-      <di:include page="main.jspx" />
+      <di-t:include debug="html" page="/education/navigation.jspx" />
+      <di:include page="/education/main.jspx" />
     </div>
 
   </di:html>
