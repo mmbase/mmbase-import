@@ -2,9 +2,10 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
-  <mm:content postprocessor="none" expires="0">
-    <mm:cloud method="asis">
-      <jsp:directive.include file="/shared/setImports.jsp" />
+  <mm:content postprocessor="none">
+
+    <mm:cloud rank="didactor user">
+
       <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
         <mm:param name="extraheader">
 
@@ -12,7 +13,7 @@
                TODO TODO The following is in dutch!
 
           -->
-          <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMbase, Java en XML en maakt blended learning mogelijk" />
+          <meta name="description" content="Didactor is een open source E-learning omgeving, ontwikkeld door The Mediator Group. Deze elektronische leeromgeving is 100% webbased en gebaseerd op didactische principes. Didactor is ontwikkeld mbv MMBase, Java en XML en maakt blended learning mogelijk" />
           <meta name="keywords" content="didactor, mediator, didactiek, didactisch, webbased, platformonafhankelijk, group, elo, lms, lcms, leeromgeving, on-line, java, sun, mmbase, opleidingen, opleiding, events, e-learning, blended, learning, educatie, training, brakel, becking, hof, puntedu, leren, kennisoverdracht, open, source, standaarden, scorm, eml, cursus, bedrijfsopleiding, universiteit, digitaal, digitale, onderwijs, overheid, zorg, school, congres, bijeenkomst, event, kennis, congres, leeromgeving, didactiek, IEEE-lom, EML, scorm, vraaggestuurd, leerobjecten, netg" />
           <meta name="copyright" content="" />
           <meta name="author" content="The Mediator Group" />
@@ -23,6 +24,7 @@
       </mm:treeinclude>
 
       <div class="columns">
+
 
         <div class="columnLeft">
 
@@ -52,7 +54,9 @@
           <mm:node number="component.portfolio" notfound="skipbody">
             <mm:compare referid="user" value="0">
               <div>
-                <a href="${mm:treelink('/portfolio/listall.jsp', includePath)}"><di:translate key="core.listallportfolios" /></a>
+                <a href="${mm:treelink('/portfolio/listall.jsp', includePath)}">
+                  <di:translate key="core.listallportfolios" />
+                </a>
               </div>
             </mm:compare>
           </mm:node>
