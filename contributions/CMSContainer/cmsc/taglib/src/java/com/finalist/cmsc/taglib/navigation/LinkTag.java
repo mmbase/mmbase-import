@@ -65,9 +65,6 @@ public class LinkTag extends CmscTag {
          }
          else {
             if (!StringUtils.isBlank(portletdefinition)) {
-               if (window != null) {
-                  throw new IllegalArgumentException("portletdefinition and window can not be set both");
-               }
                String path = getPath();
                setPageAndWindowBasedOnPortletDefinition(path, portletdefinition);
             }
