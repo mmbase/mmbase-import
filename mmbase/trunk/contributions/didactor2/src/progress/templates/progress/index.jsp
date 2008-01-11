@@ -5,9 +5,9 @@
           xmlns:os="http://www.opensymphony.com/oscache"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:c="http://java.sun.com/jsp/jstl/core">
-  <di:frame
+  <di:html
       postprocessor="none"
-      type="application/xhtml+xml"
+      type="text/html"
       rank="didactor user"
       component="progress"
       title_key="progress.progresstitle">
@@ -19,15 +19,15 @@
 
     -->
 
-
-    <jsp:directive.include file="/education/tests/definitions.jsp" />
     <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
     <mm:import id="editcontextname" reset="true">docent schermen</mm:import>
     <jsp:directive.include file="/education/wizards/roles_chk.jsp" />
 
     <mm:islessthan referid="rights" referid2="RIGHTS_RW">
       <di:hasrole role="student">
-        <!-- aaah -->
+        <!--
+             aaah
+        -->
         <jsp:forward page="student.jsp"/>
       </di:hasrole>
     </mm:islessthan>
@@ -36,11 +36,13 @@
 
 
     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
-
       <mm:node number="$education">
         <b><mm:field name="name" write="true"/></b>
 
-        <!-- WTF, style in JSP -->
+        <mm:present referid="class">
+          CLASS: ${class}
+        </mm:present>
+
         <table class="font">
 
           <mm:nodelistfunction name="tests" id="tests" />
@@ -94,6 +96,7 @@
               </mm:node>
             </mm:listnodes>
           </tr>
+
           <!-- If the man is connected directly to education this man is a mega techer for this education -->
           <mm:isempty referid="class">
             <mm:node referid="education">
@@ -151,6 +154,7 @@
           <di:hasrole role="teacher,systemadministrator">
             <mm:isnotempty referid="class">
               <mm:node referid="class">
+                <p><mm:field name="name" /></p>
                 <mm:timer name="teacher_people">
                   <mm:relatednodes type="people" role="classrel" orderby="$sort" id="student">
                     <di:hasrole role="student" referid="student">
@@ -199,5 +203,5 @@
       </table>
     </mm:node>
   </mm:islessthan>
-</di:frame>
+  </di:html>
 </jsp:root>
