@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.41 2007-12-31 15:19:51 pierre Exp $
+ * @version $Id: Searcher.java,v 1.42 2008-01-14 17:32:36 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -63,7 +63,7 @@ public class Searcher implements NewSearcher.Listener {
         searchLog = Logging.getLoggerInstance("org.mmbase.lucene.SEARCH." + index.getName());
         this.allIndexedFields = allIndexedFields;
         try {
-            searcher = new IndexSearcher(index.getPath());
+            searcher = new IndexSearcher(index.getDirectory());
         } catch (IOException ioe) {
             log.error("Can't close index searcher: " + ioe.getMessage());
         }
@@ -95,7 +95,7 @@ public class Searcher implements NewSearcher.Listener {
             }
             try {
                 needsNewSearcher = false;
-                searcher = new IndexSearcher(index.getPath());
+                searcher = new IndexSearcher(index.getDirectory());
             } catch (IOException ioe) {
                 log.error("Can't close index searcher: " + ioe.getMessage());
             }
@@ -257,7 +257,7 @@ public class Searcher implements NewSearcher.Listener {
         if (value == null || "".equals(value)) {
             IndexReader reader = null;
             try {
-                reader = IndexReader.open(index.getPath());
+                reader = IndexReader.open(index.getDirectory());
                 return reader.numDocs();
             } catch (IOException ioe) {
                 log.service(ioe + " returning -1");
