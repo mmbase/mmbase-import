@@ -636,7 +636,7 @@ public class RepositoryUtil {
 
             NodeList contentchannels = SearchUtil.findRelatedNodeList(channel, CONTENTCHANNEL, COLLECTIONREL);
             if (contentchannels.isEmpty()) {
-                throw new IllegalArgumentException("contentchannels of collectionchannel is empty. should be at leat one");
+                throw new IllegalArgumentException("contentchannels or collectionchannel is empty; should be at least one.");
             }
             query = SearchUtil.createRelatedNodeListQuery(contentchannels, destinationManager,CONTENTREL);
             SearchUtil.addFeatures(query, contentchannels.getNode(0), destinationManager, CONTENTREL, null, null, orderby, direction);
