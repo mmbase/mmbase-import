@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.102 2007-12-31 15:19:51 pierre Exp $
+ * @version $Id: Lucene.java,v 1.103 2008-01-14 17:56:33 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -79,6 +79,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected final static Parameter/*<String>*/ INDEX = new Parameter("index", String.class);
     static { INDEX.setDescription("the name of the index to search in"); }
+
+    protected final static Parameter/*<Boolean>*/ COPY = new Parameter("copy", Boolean.class, Boolean.FALSE);
+    static { INDEX.setDescription("use the copy of the index (used for full index)"); }
 
     protected final static Parameter/*<Class>*/ CLASS = new Parameter("class", Class.class, IndexDefinition.class);
     static { INDEX.setDescription("the class of indices to search in (default to all classes)"); }
@@ -425,7 +428,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
      * This function returns the size of a query on an index.
      */
     //protected Function<Integer> searchSizeFunction = new AbstractFunction<Integer>("searchsize", VALUE, INDEX, FIELDS,EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER ) {
-    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, FIELDS, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL}, ReturnType.INTEGER) {
+    protected Function searchSizeFunction = new AbstractFunction("searchsize", new Parameter[] {VALUE, INDEX, COPY, FIELDS, EXTRACONSTRAINTS, FILTER, Parameter.CLOUD, ANALYZER, ONFAIL}, ReturnType.INTEGER) {
         public Integer getFunctionValue(Parameters arguments) {
             String value = (String) arguments.getString(VALUE);
             String index = (String) arguments.getString(INDEX);
@@ -447,7 +450,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 }
             }
             try {
-                return getSearcher(index).searchSize(cloud, value,  Searcher.createFilter(filter), analyzer, Searcher.createQuery(extraConstraints), fieldArray);
+                return getSearcher(index).searchSize(cloud, value,  Searcher.createFilter(filter), analyzer, Searcher.createQuery(extraConstraints), fieldArray, Boolean.TRUE.equals(arguments.get(COPY)));
             } catch (BooleanQuery.TooManyClauses tmc) {
                 if ("ignore".equals(onFail)) {
                     log.debug(tmc);
@@ -918,7 +921,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (scheduler != null) {
             switch(event.getType()) {
             case Event.TYPE_NEW:
-                scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                org.mmbase.bridge.Node node = getCloud().getNode(event.getNodeNumber());
+                if (! node.isRelation()) {
+                    scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                }
+                break;
             case Event.TYPE_CHANGE:
                 scheduler.updateIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
                 break;
@@ -935,7 +942,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (scheduler != null) {
             switch(event.getType()) {
             case Event.TYPE_NEW:
-                //scheduler.newIndex("" + event.getNodeNumber(), MMBaseIndexDefinition.class);
+                //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                break;
             case Event.TYPE_CHANGE:
             case Event.TYPE_DELETE:
                 scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
