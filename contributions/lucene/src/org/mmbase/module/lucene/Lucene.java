@@ -47,7 +47,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.103 2008-01-14 17:56:33 michiel Exp $
+ * @version $Id: Lucene.java,v 1.104 2008-01-14 18:33:35 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -514,8 +514,20 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             }
         }
     };
+    protected Function/*<Long>*/ lastFullIndexDurationFunction = new AbstractFunction/*<Date>*/("lastduration", new Parameter[] {INDEX}, ReturnType.LONG) {
+        public Long getFunctionValue(Parameters arguments) {
+            String key = (String) arguments.get(INDEX);
+            Indexer index = indexerMap.get(key);
+            if (index != null) {
+                return index.getLastFullIndexDuration();
+            } else {
+                return null;
+            }
+        }
+    };
     {
         addFunction(lastFullIndexFunction);
+        addFunction(lastFullIndexDurationFunction);
 
         //addFunction(new AbstractFunction<Indexer>("default") {
         addFunction(new AbstractFunction/*<Indexer>*/("default", Parameter.EMPTY, ReturnType.UNKNOWN){
