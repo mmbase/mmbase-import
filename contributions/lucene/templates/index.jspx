@@ -5,8 +5,8 @@
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.include file="head.jspx" />
-  <mm:content type="application/xhtml+xml" 
-	postprocessor="none"	
+  <mm:content type="application/xhtml+xml"
+	postprocessor="none"
 	unacceptable="CRIPPLE"
 	language="en" expires="0">
     <body class="basic">
@@ -50,8 +50,8 @@
             <th>full index</th>
           </tr>
           <mm:listfunction id="index" module="lucene" name="list">
-            <c:catch var="exception1">
-              <tr>
+            <tr>
+              <c:catch var="exception1">
                 <td>
                   <mm:write />
                   <mm:function module="lucene" name="default" write="false">
@@ -64,9 +64,17 @@
                 <td>
                   <mm:function module="lucene" referids="index" name="description" />
                 </td>
-                <td class="numeric">
-                  <mm:function module="lucene" referids="index" name="searchsize" />
-                </td>
+                  <td class="numeric">
+                  <mm:function module="lucene" referids="index" name="searchsize">
+                    ${_}
+                  </mm:function>
+                  <mm:functioncontainer>
+                    <mm:param name="copy" value="true" />
+                    <mm:function referids="index" module="lucene" name="searchsize">
+                      /${_}
+                    </mm:function>
+                  </mm:functioncontainer>
+                  </td>
                 <td>
                   <mm:function module="lucene" referids="index" name="last">
                     <mm:time format="yyyy-MM-dd HH:mm" />
@@ -102,10 +110,13 @@
                     </mm:link>
                   </mm:booleanfunction>
                 </td>
+                </c:catch>
               </tr>
-            </c:catch>
+
             <c:if test="${! empty exception1}">
-              <tr><td cols="1000">${exception1}</td></tr>
+              <tr>
+                <td cols="1000">${exception1}</td>
+              </tr>
             </c:if>
           </mm:listfunction>
         </table>
