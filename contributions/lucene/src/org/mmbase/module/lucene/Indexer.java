@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.48 2007-12-27 09:40:23 michiel Exp $
+ * @version $Id: Indexer.java,v 1.49 2008-01-14 17:32:15 michiel Exp $
  **/
 public class Indexer {
 
@@ -114,7 +114,7 @@ public class Indexer {
     Indexer(String path, String index, List<IndexDefinition> queries, Analyzer analyzer, boolean readOnly) {
         this.index = index;
         this.lucenePath = path;
-        this.path =  path + java.io.File.separator + index;
+        this.path =  path + File.separator + index;
         if (! readOnly) {
             try {
                 File d = new File(this.path);
@@ -122,7 +122,7 @@ public class Indexer {
                     if (d.isDirectory()) {
                         if (IndexReader.isLocked(this.path)) {
                             log.info("The directory " + this.path + " is locked! Trying to unlock.");
-                            Directory dir = FSDirectory.getDirectory(this.path);
+                            Directory dir = getDirectory();
                             IndexReader.unlock(dir);
                             log.service("Unlocked lucene index directory " + dir);
                         }
@@ -133,7 +133,7 @@ public class Indexer {
                     log.info("The directory " + this.path + " does not exist!");
                     d.mkdirs();
                 }
-            } catch (java.io.IOException ioe) {
+            } catch (IOException ioe) {
                 addError(ioe.getMessage());
                 log.warn(ioe.getMessage(), ioe);
             } catch (SecurityException  se) {
@@ -148,6 +148,13 @@ public class Indexer {
             this.analyzer = analyzer;
         }
         description = new LocalizedString(index);
+    }
+
+    protected Directory getDirectory() throws IOException {
+        return FSDirectory.getDirectory(path);
+    }
+    protected Directory getDirectoryForFullIndex() throws IOException {
+        return FSDirectory.getDirectory(lucenePath + File.separator + index + ".new");
     }
 
     public String getName() {
@@ -266,7 +273,7 @@ public class Indexer {
         int updated = 0;
         IndexWriter writer = null;
         try {
-            writer = new IndexWriter(path, analyzer, false);
+            writer = new IndexWriter(getDirectory(), analyzer, false);
             for (String mainNumber : mains) {
                 CloseableIterator<? extends IndexEntry> j = indexDefinition.getSubCursor(mainNumber);
                 if (log.isDebugEnabled()) {
@@ -389,7 +396,8 @@ public class Indexer {
         log.service("Doing full index for " + toString());
         IndexWriter writer = null;
         try {
-            writer = new IndexWriter(path, analyzer, true);
+            Directory fullIndex = getDirectoryForFullIndex();
+            writer = new IndexWriter(fullIndex, analyzer, true);
             // process all queries
             int subIndexNumber = 0;
             for (IndexDefinition indexDefinition : queries) {
@@ -407,6 +415,7 @@ public class Indexer {
                 }
             }
             writer.optimize();
+            Directory.copy(fullIndex, getDirectory(), true);
             Date lastFullIndex = setLastFullIndex();
             log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index '" + getName() + "': " + writer.docCount());
         } catch (Exception e) {
