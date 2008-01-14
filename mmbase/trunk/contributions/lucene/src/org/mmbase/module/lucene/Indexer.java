@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.49 2008-01-14 17:32:15 michiel Exp $
+ * @version $Id: Indexer.java,v 1.50 2008-01-14 18:33:35 michiel Exp $
  **/
 public class Indexer {
 
@@ -209,11 +209,17 @@ public class Indexer {
             return new Date(0);
         }
     }
-    protected Date setLastFullIndex() {
+    public long getLastFullIndexDuration() {
+        Properties lastIndexes = loadLastFullIndexTimes();
+        return Long.parseLong(lastIndexes.getProperty(index + ".duration"));
+
+    }
+    protected Date setLastFullIndex(long startTime) {
         Properties lastIndexes = loadLastFullIndexTimes();
         Date lastFullIndex = new Date();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         lastIndexes.setProperty(index, format.format(lastFullIndex.getTime()));
+        lastIndexes.setProperty(index + ".duration", "" + (System.currentTimeMillis() - startTime));
         storeLastFullIndexTimes(lastIndexes);
         return lastFullIndex;
     }
@@ -398,6 +404,7 @@ public class Indexer {
         try {
             Directory fullIndex = getDirectoryForFullIndex();
             writer = new IndexWriter(fullIndex, analyzer, true);
+            long startTime = System.currentTimeMillis();
             // process all queries
             int subIndexNumber = 0;
             for (IndexDefinition indexDefinition : queries) {
@@ -416,10 +423,10 @@ public class Indexer {
             }
             writer.optimize();
             Directory.copy(fullIndex, getDirectory(), true);
-            Date lastFullIndex = setLastFullIndex();
+            Date lastFullIndex = setLastFullIndex(startTime);
             log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index '" + getName() + "': " + writer.docCount());
         } catch (Exception e) {
-                addError(e.getMessage());
+            addError(e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
