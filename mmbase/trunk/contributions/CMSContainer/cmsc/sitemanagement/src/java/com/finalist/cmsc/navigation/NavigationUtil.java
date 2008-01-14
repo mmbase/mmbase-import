@@ -272,7 +272,7 @@ public class NavigationUtil {
     }
 
     public static NodeList getChildren(Node parentNode) {
-        return TreeUtil.getChildren(parentNode, PagesUtil.PAGE, NAVREL);
+        return TreeUtil.getChildren(parentNode, "object", NAVREL);
      }
 
     public static NodeList getChildren(Node parentNode, String nodeManager) {
