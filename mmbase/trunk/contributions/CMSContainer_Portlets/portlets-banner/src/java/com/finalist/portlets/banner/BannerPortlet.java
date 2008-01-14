@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.ArrayList;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -48,15 +47,11 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 public class BannerPortlet extends ContentChannelPortlet {
 
+
    private static final Log log = LogFactory.getLog(BannerPortlet.class);
 
-   private static final String PARAM_REDIRECT = "redirect";
-
-   private static final List<ContentTypeFilter> contentTypeFilters = new ArrayList<ContentTypeFilter>();
-
-   public void addContentTypeFilter(ContentTypeFilter filter) {
-      contentTypeFilters.add(filter);
-   }
+   protected static final String PARAM_REDIRECT = "redirect";
+   protected static final String BANNER = "banner";
 
    @Override
    public void init(PortletConfig config) throws PortletException {
@@ -77,15 +72,11 @@ public class BannerPortlet extends ContentChannelPortlet {
    protected void addContentElements(RenderRequest request) {
       // get the contentelements from the channel
       super.addContentElements(request);
+      handleBannerCounters(request);
+   }
 
-      for (int i = 0; i < contentTypeFilters.size(); i++) {
-         ContentTypeFilter filter = contentTypeFilters.get(i);
-         List<ContentElement> elements = (List<ContentElement>) request.getAttribute(ELEMENTS);
-         filter.dofilter(request, elements);
-      }
-
-      // remove all banners from the content elemens that have reached max
-      // clicks (
+   protected void handleBannerCounters(RenderRequest request) {
+      // remove all banners from the content elemens that have reached max clicks (
       PortletPreferences preferences = request.getPreferences();
       String screenId = preferences.getValue(PortalConstants.CMSC_OM_PAGE_ID, null);
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
@@ -99,26 +90,28 @@ public class BannerPortlet extends ContentChannelPortlet {
          Date now = new Date();
          for (ListIterator<ContentElement> iter = elements.listIterator(); iter.hasNext();) {
             ContentElement element = iter.next();
-            Node banner = cloud.getNode(element.getId());
-            if (banner != null) {
-               log.debug("Checking banner for maxclicks: " + banner.getNumber());
-               Node counter = findCounterNode(banner, page, position);
-               if (counter != null) {
-                  if (banner.getBooleanValue("use_maxclicks")
-                          && (counter.getIntValue("clicks") >= banner.getIntValue("maxclicks"))) {
-                     log.warn("Maximum number of clicks reached for banner: " + banner.getNumber() + ", skipping it");
-                     iter.remove();
-                  } else {
-                     counter.setDateValue("enddate", now);
-                     counter.commit();
-                  }
-               } else {
-                  counter = createBannerCounter(cloud, banner, page, position);
-                  counter.setDateValue("enddate", now);
-                  counter.commit();
-               }
-            } else {
-               log.debug("No banner found for id: " + element.getId());
+            if (BANNER.equals(element.getNodeType())) {
+                Node banner = cloud.getNode(element.getId());
+                if (banner != null) {
+                   log.debug("Checking banner for maxclicks: " + banner.getNumber());
+                   Node counter = findCounterNode(banner, page, position);
+                   if (counter != null) {
+                      if (banner.getBooleanValue("use_maxclicks")
+                              && (counter.getIntValue("clicks") >= banner.getIntValue("maxclicks"))) {
+                         log.debug("Maximum number of clicks reached for banner: " + banner.getNumber() + ", skipping it");
+                         iter.remove();
+                      } else {
+                         counter.setDateValue("enddate", now);
+                         counter.commit();
+                      }
+                   } else {
+                      counter = createBannerCounter(cloud, banner, page, position);
+                      counter.setDateValue("enddate", now);
+                      counter.commit();
+                   }
+                } else {
+                   log.debug("No banner found for id: " + element.getId());
+                }
             }
          }
       }
@@ -143,7 +136,7 @@ public class BannerPortlet extends ContentChannelPortlet {
             Node counter = findCounterNode(banner, page, position);
             if (counter == null) {
                counter = createBannerCounter(cloud, banner, page, position);
-               getLogger().error("Could not find counter for banner: " + bannerId + ", created a new one");
+               getLogger().debug("Could not find counter for banner: " + bannerId + ", created a new one");
             }
             int clicks = counter.getIntValue("clicks") + 1;
             counter.setIntValue("clicks", clicks);
@@ -196,8 +189,8 @@ public class BannerPortlet extends ContentChannelPortlet {
 
       // find a counter with the highest number and that's probably the one we
       // want
-      NodeQuery query = SearchUtil.createRelatedNodeListQuery(node, "bannercounter", "posrel", null, null, "number",
-              "down");
+      NodeQuery query = SearchUtil.createRelatedNodeListQuery(node, "bannercounter", "posrel", 
+                                                              null, null, "number", "down");
       addConstraint(query, query.getNodeManager(), "page", page);
       addConstraint(query, query.getNodeManager(), "position", position);
       query.setMaxNumber(1);
