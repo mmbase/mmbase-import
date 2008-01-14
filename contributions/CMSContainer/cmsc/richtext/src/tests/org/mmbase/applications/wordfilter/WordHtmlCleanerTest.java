@@ -18,7 +18,7 @@ public class WordHtmlCleanerTest extends TestCase {
    public void testEmptyTagsCleaner() {
       String html = "<b> </b><i> </i><u> </u> <B> </B> <U> </U> <I> </I> ";
 
-      String cleanedHtml = WordHtmlCleaner.cleanHtml(html);
+      String cleanedHtml = WordHtmlCleaner.cleanHtml(html, true);
       Pattern p = Pattern.compile("<[bBiIuU]\\s*/>");
       assertFalse("Cleaned html still has some empty tags left!" + cleanedHtml, p.matcher(cleanedHtml).find());
    }
@@ -101,7 +101,7 @@ public class WordHtmlCleanerTest extends TestCase {
 
 
    private void doTestFilter(String input, String expected) {
-      String cleanedHtml = WordHtmlCleaner.cleanHtml(input);
+      String cleanedHtml = WordHtmlCleaner.cleanHtml(input, true);
       assertEquals(expected, cleanedHtml);
    }
 }

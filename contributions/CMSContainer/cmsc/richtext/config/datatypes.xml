@@ -10,10 +10,14 @@
       	Html field with inline links to other objects
       </description>
       <setprocessor type="string">
-        <class name="com.finalist.cmsc.richtext.RichTextSetProcessor" />
+        <class name="com.finalist.cmsc.richtext.RichTextSetProcessor">
+          <param name="replaceHeaders">false</param>
+        </class>
       </setprocessor>
       <getprocessor type="string">
-        <class name="com.finalist.cmsc.richtext.RichTextGetProcessor" />
+        <class name="com.finalist.cmsc.richtext.RichTextGetProcessor" >
+           <param name="dynamicDescriptions">false</param>
+        </class>
       </getprocessor>
     </specialization>
   </datatype>
