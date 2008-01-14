@@ -55,13 +55,11 @@ public class PortletDefinition extends NodeBean implements Comparable<PortletDef
    }
 
 
-   @Override
    public String getType() {
       return type;
    }
 
 
-   @Override
    public void setType(String type) {
       this.type = type;
    }

@@ -252,13 +252,11 @@ public class EditWizards extends NodeBean {
    }
 
 
-   @Override
    public String getType() {
       return type;
    }
 
 
-   @Override
    public void setType(String type) {
       this.type = type;
    }
