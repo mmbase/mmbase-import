@@ -91,7 +91,7 @@ public class WordHtmlCleaner {
          htmlDoc += data[i];
       }
 
-      return xmlVersion + docType + "<richtext>" + cleanHtml(htmlDoc) + "</richtext>";
+      return xmlVersion + docType + "<richtext>" + cleanHtml(htmlDoc, false) + "</richtext>";
    }
 
 
@@ -100,9 +100,10 @@ public class WordHtmlCleaner {
     * 
     * @param textStr
     *           ugly html code
+ * @param replaceHeaders 
     * @return clean html code
     */
-   public static String cleanHtml(String textStr) {
+   public static String cleanHtml(String textStr, boolean replaceHeaders) {
       log.debug("old value : " + textStr);
       if (textStr != null) {
          try {
@@ -116,7 +117,10 @@ public class WordHtmlCleaner {
             xmlStr = fixBR(xmlStr);
             xmlStr = removeEmptyFonts(xmlStr);
             xmlStr = replaceParagraph(xmlStr);
-            xmlStr = replaceHeaders(xmlStr);
+            if (replaceHeaders) {
+                xmlStr = replaceHeaders(xmlStr);
+            }
+
             xmlStr = removeXmlNamespace(xmlStr);
             xmlStr = removeEmptyTags(xmlStr);
             xmlStr = fixEmptyAnchors(xmlStr);
@@ -222,8 +226,8 @@ public class WordHtmlCleaner {
    private static String replaceHeaders(String text) {
       // remove the starting header tags ( <h1> till <h7>)
       text = text.replaceAll("<\\s*[hH]{1}[1-7]{1}\\s*.*?>", "<strong>");
-      // replace all remaining </p> with a <br><br>
-      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong><br />");
+      // replace all remaining ending header tags ( </h1> till </h7>)
+      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong>>");
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
