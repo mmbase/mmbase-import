@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.42 2008-01-14 17:32:36 michiel Exp $
+ * @version $Id: Searcher.java,v 1.43 2008-01-14 17:49:48 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -74,7 +74,7 @@ public class Searcher implements NewSearcher.Listener {
         needsNewSearcher = true;
     }
 
-    protected IndexSearcher getSearcher() {
+    protected IndexSearcher getSearcher(boolean copy) {
         if (needsNewSearcher || searcher == null) {
             // for existing searches, leave existing searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
             if (searcher != null) {
@@ -95,7 +95,7 @@ public class Searcher implements NewSearcher.Listener {
             }
             try {
                 needsNewSearcher = false;
-                searcher = new IndexSearcher(index.getDirectory());
+                searcher = new IndexSearcher(copy ? index.getDirectoryForFullIndex() : index.getDirectory());
             } catch (IOException ioe) {
                 log.error("Can't close index searcher: " + ioe.getMessage());
             }
@@ -199,7 +199,7 @@ public class Searcher implements NewSearcher.Listener {
         if (value != null && !value.equals("")) {
             final Hits hits;
             try {
-                hits = getHits(value, filter, sort, analyzer, extraQuery, fields);
+                hits = getHits(value, filter, sort, analyzer, extraQuery, fields, false);
             } catch (java.io.IOException ioe) {
                 log.service(ioe + " returning empty list");
                 return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
@@ -246,18 +246,18 @@ public class Searcher implements NewSearcher.Listener {
     }
 
     public int searchSize(Cloud cloud, String value) {
-        return searchSize(cloud, value, null, new StopAnalyzer(), null, allIndexedFields);
+        return searchSize(cloud, value, null, new StopAnalyzer(), null, allIndexedFields, false);
     }
 
     public int searchSize(Cloud cloud, String value, Query extraQuery) {
-        return searchSize(cloud, value, null, new StopAnalyzer(), extraQuery, allIndexedFields);
+        return searchSize(cloud, value, null, new StopAnalyzer(), extraQuery, allIndexedFields, false);
     }
 
-    public int searchSize(Cloud cloud, String value, Filter filter, Analyzer analyzer, Query extraQuery, String[] fields) {
+    public int searchSize(Cloud cloud, String value, Filter filter, Analyzer analyzer, Query extraQuery, String[] fields, boolean copy) {
         if (value == null || "".equals(value)) {
             IndexReader reader = null;
             try {
-                reader = IndexReader.open(index.getDirectory());
+                reader = IndexReader.open(copy ? index.getDirectoryForFullIndex() : index.getDirectory());
                 return reader.numDocs();
             } catch (IOException ioe) {
                 log.service(ioe + " returning -1");
@@ -269,7 +269,7 @@ public class Searcher implements NewSearcher.Listener {
             }
         }
         try {
-            Hits hits = getHits(value, filter, null, analyzer, extraQuery, fields);
+            Hits hits = getHits(value, filter, null, analyzer, extraQuery, fields, copy);
             return hits.length();
         } catch (ParseException pe) {
             log.error(pe);
@@ -280,7 +280,7 @@ public class Searcher implements NewSearcher.Listener {
         }
     }
 
-    protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields) throws IOException, ParseException {
+    protected Hits getHits(String value, Filter filter, Sort sort, Analyzer analyzer, Query extraQuery, String[] fields, boolean copy) throws IOException, ParseException {
         if (analyzer == null) analyzer = index.getAnalyzer();
         Query query;
 
@@ -303,7 +303,7 @@ public class Searcher implements NewSearcher.Listener {
             booleanQuery.add(extraQuery, BooleanClause.Occur.MUST);
             query = booleanQuery;
         }
-        IndexSearcher searcher = getSearcher();
+        IndexSearcher searcher = getSearcher(copy);
         if (searcher == null) throw new IOException("No IndexSearcher found for " + this);
         return searcher.search(query, filter, sort);
     }
