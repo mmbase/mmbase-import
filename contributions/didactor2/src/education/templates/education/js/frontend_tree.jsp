@@ -153,7 +153,8 @@ function requestContent(href) {
                         for (i = 0; i < buttons.length; i++) {
                             var disabled = (contentEl.validator.invalidElements > 0);
                             buttons[i].disabled = disabled;
-                            // just because IE does not recognized input[disabled]
+                            // just because IE does not recognize input[disabled]
+                            // IE SUCKS
                             buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
                         }
                     };
