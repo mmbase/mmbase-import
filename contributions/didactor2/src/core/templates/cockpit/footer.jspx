@@ -1,14 +1,13 @@
-<mm:content 
+<mm:content
     type="application/xml"
     postprocessor="none"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
-  
+
   <jsp:output omit-xml-declaration="true" />
-  
+
   <div class="footer">
     <mm:cloud method="asis">
       <mm:hasrank value="anonymous" inverse="true">
@@ -30,7 +29,7 @@
           </mm:write>
         </di:settingvalue>
       </di:component>
-    </mm:cloud>          
+    </mm:cloud>
   </div>
 </mm:content>
-  
+
