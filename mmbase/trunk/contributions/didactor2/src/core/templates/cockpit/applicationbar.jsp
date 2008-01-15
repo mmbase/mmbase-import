@@ -24,6 +24,7 @@
               </mm:fieldlist>
               <input id="loginPassword" type="password" size="20" name="password" value="${sessionScope.registerPassword}" />
               <input class="formbutton" id="loginSubmit" type="submit" value="${di:translate('core.login')}" />
+              ${sessionScope["nl.didactor.security.reason"]}
             </p>
           </form>
           <!-- WTF WTF WTF WTF, all this explicit mentioning of 'components' is a bit silly -->
