@@ -22,7 +22,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/commons-mmbaselogging-1.3.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/mmcommons-1.4.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/mmcommons-1.4.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/struts/jars/struts-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
