@@ -98,7 +98,6 @@ function invalidateCurrentFrame() {
 }
 
 function loadIconOn() {
-    console.log(document);
     document.getElementById("ajax_loader").style.display = "inline";
 }
 function loadIconOff() {
@@ -145,6 +144,7 @@ function requestContent(href) {
            if (xmlhttp.readyState == 4) {
                try {
                     var contentEl = document.getElementById('contentFrame');
+                    //                    console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
                     Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
                     contentEl.validator = new MMBaseValidator();
                     contentEl.validator.validatePage(false, contentEl);
@@ -198,12 +198,15 @@ function postContent(href, form) {
     xmlhttp.open("POST", href, true);
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xmlhttp.onreadystatechange =  function()  {
+        //console.log("" + xmlhttp);
         if (xmlhttp.readyState == 4) {
+            //console.log("ready")
             if (xmlhttp.status == 200) {
                 var contentEl = document.getElementById('contentFrame');
                 Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, afterPost);
                 usedFrames[document.href_frame] = null;
                 document.href_frame = href;
+                //console.log("Found result " + contentEl);
                 usedFrames[href] = contentEl.childNodes;
             } else {
                 alert(xmlhttp.status);
@@ -224,6 +227,7 @@ function postContent(href, form) {
         content += sep + ta.name + '=' + ta.value;
         sep = '&';
     }
+    //console.log("posting " + content);
     xmlhttp.send(content);
     scrollToTop();
 }
@@ -433,6 +437,7 @@ function afterPost() {
 <mm:treefile page="/education/tree.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
     function reloadEducationTree() {
         usedFrames    = new Object();
+        //console.log("Updating '" + document.getElementById('education-tree') + " with url ${_}");
         Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'), null, closeAppropriate);
 
     }
