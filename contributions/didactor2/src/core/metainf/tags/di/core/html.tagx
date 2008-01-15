@@ -14,6 +14,7 @@
   <jsp:directive.attribute name="postprocessor" />
   <jsp:directive.attribute name="type" />
   <jsp:directive.attribute name="component" />
+  <jsp:directive.attribute name="styleClass" />
   <mm:content postprocessor="${empty postprocessor ? 'reducespace' : postprocessor}"
               type="${type}"
               unacceptable="CRIPPLE"
@@ -28,12 +29,14 @@
             </mm:link>
           </mm:haspage>
         </di:head>
-        <body>
-          <di:include page="/cockpit/applicationbar.jsp" />
-          <di:include page="/cockpit/providerbar.jsp" />
-          <di:include page="/cockpit/educationbar.jsp" />
-          <div class="contentBody mm_c_${component}">
-            <jsp:doBody />
+        <body class="${styleClass}">
+          <div class="componentBody">
+            <di:include page="/cockpit/applicationbar.jsp" />
+            <di:include page="/cockpit/providerbar.jsp" />
+            <di:include page="/cockpit/educationbar.jsp" />
+            <div class="mm_c_${component}">
+              <jsp:doBody />
+            </div>
           </div>
         </body>
       </html>
