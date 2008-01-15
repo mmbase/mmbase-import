@@ -5,13 +5,13 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
   <jsp:output omit-xml-declaration="yes" />
-  <b><di:translate key="education.givenanswer" />:</b> <mm:field name="text"/>
+  <b><di:translate key="education.givenanswer" />: </b>
+  <mm:field name="text"/>
   <br/>
   <mm:relatednodescontainer type="feedback">
     <mm:relatednodes>
       <!-- Open Question Feedback (from teacher) -->
-      <b><di:translate key="education.feedback" />:</b>
-      <jsp:text> </jsp:text>
+      <b><di:translate key="education.feedback" />: </b>
       <mm:field name="text" escape="none"/>
       <br/>
       <mm:include page="/education/tests/view_feedback.jspx" />
