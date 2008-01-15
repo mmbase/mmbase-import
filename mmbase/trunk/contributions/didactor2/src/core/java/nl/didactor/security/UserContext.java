@@ -16,7 +16,7 @@ import java.util.*;
  * the roles based on a given context.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @author Michiel Meeuwissen
- * @version $Id: UserContext.java,v 1.11 2007-11-06 16:29:34 michiel Exp $
+ * @version $Id: UserContext.java,v 1.12 2008-01-15 11:15:47 michiel Exp $
  */
 public class UserContext extends org.mmbase.security.BasicUser implements WeakNodeEventListener {
     private static final Logger log = Logging.getLoggerInstance(UserContext.class);
@@ -67,7 +67,7 @@ public class UserContext extends org.mmbase.security.BasicUser implements WeakNo
         //wrappedNode = node.getCloud().getNode(node.getNumber());
         owner = node.getStringValue("username");
         identifier = owner;
-        this.wrappedNode = node == null ? 0 : node.getNumber();
+        wrappedNode = node == null ? 0 : node.getNumber();
         roles = getRoles(node);
         Rank proposedRank = Rank.ANONYMOUS;
         for (String roleName : getRoles()) {
@@ -88,7 +88,7 @@ public class UserContext extends org.mmbase.security.BasicUser implements WeakNo
             }
         }
         if (proposedRank == Rank.ANONYMOUS) {
-            throw new org.mmbase.security.SecurityException("No role");
+            throw new org.mmbase.security.SecurityException("No role  for user '" + owner + "' (" + wrappedNode + ")");
         }
         rank = proposedRank;
         org.mmbase.core.event.EventManager.getInstance().addEventListener(this);

@@ -34,6 +34,8 @@ import nl.didactor.security.plain.*;
 public class Authentication extends org.mmbase.security.Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
+    public static String REASON_KEY = "nl.didactor.security.reason";
+
     final List<AuthenticationComponent> securityComponents = new CopyOnWriteArrayList<AuthenticationComponent>();
 
     /**
@@ -245,22 +247,30 @@ public class Authentication extends org.mmbase.security.Authentication {
         // Apparently not, so we ask the components if they can process the login,
         // maybe there was a post to the current page?
         for (AuthenticationComponent ac : securityComponents) {
-            UserContext uc = ac.processLogin(request, response, application);
-            if (log.isDebugEnabled()) {
-                log.debug("" + ac + ".processLogin() -> " + uc);
-            }
-            if (uc != null) {
-                request.getSession(true).setAttribute("didactor-logincomponent", ac.getName());
-                Integer usernumber = uc.getUserNumber();
-                Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), null, null, null,
-                                        "LOGIN", usernumber != null ? usernumber.toString() : null,
-                                        "login");
-                EventDispatcher.report(event, request, response);
-                if (! uc.getAuthenticationType().equals(application)) {
-                    return request(new UserContext(uc, application), request);
-                } else {
-                    return request(uc, request);
+            try {
+                UserContext uc = ac.processLogin(request, response, application);
+                if (log.isDebugEnabled()) {
+                    log.debug("" + ac + ".processLogin() -> " + uc);
                 }
+                if (uc != null) {
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute(REASON_KEY, null);
+                    request.getSession(true).setAttribute("didactor-logincomponent", ac.getName());
+                    Integer usernumber = uc.getUserNumber();
+                    Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), null, null, null,
+                                            "LOGIN", usernumber != null ? usernumber.toString() : null,
+                                            "login");
+                    EventDispatcher.report(event, request, response);
+                    if (! uc.getAuthenticationType().equals(application)) {
+                        return request(new UserContext(uc, application), request);
+                    } else {
+                        return request(uc, request);
+                    }
+                }
+            } catch (SecurityException se) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute(REASON_KEY, se.getMessage());
+                log.service(se.getMessage());
             }
         }
 
