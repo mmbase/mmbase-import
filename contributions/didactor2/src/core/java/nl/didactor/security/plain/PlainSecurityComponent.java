@@ -22,7 +22,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.21 2008-01-15 11:15:47 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.22 2008-01-15 11:18:35 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -90,6 +90,8 @@ public class PlainSecurityComponent implements AuthenticationComponent {
             log.debug("Did not find matching credentials");
             return null;
         }
+        login    = login.trim();
+        password = password.trim();
 
         log.debug("Processing log in");
         MMObjectNode user = users.getUser(login, password);
