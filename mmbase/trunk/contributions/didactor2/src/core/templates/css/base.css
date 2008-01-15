@@ -1,18 +1,9 @@
-/******************************************************************
- * TITLE: Didactor 2.0 stylesheet	(base.css)			          *
- * URL  : /css 													  *
- * MODIF: 2004-07-29			                                  *
- ******************************************************************/
-
 /* DESCRIPTION:
  * This is the stylesheet for Didactor 2.0.
  * All the menu-lines with navigation for the cockpit and following pages.
  * It renders the mainpage-cockpit in three columns.
  * + Other pages with a tree navigation/path on the left side and content on the right side.
 */
-
-/* ###### Body Text ###### */
-
 html {
   background-color: white;
 }
