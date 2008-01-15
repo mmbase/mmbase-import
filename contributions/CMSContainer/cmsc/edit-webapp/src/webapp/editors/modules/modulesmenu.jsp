@@ -40,6 +40,11 @@
 									<fmt:message key="modules.community" />
 									</a> </li>
 							</mm:haspage>
+                     <mm:haspage page="/editors/subsite/module-subsite.jsp">
+                        <li class="versioning"><a href="<mm:url page="../subsite/module-subsite.jsp"/>" target="rightpane">
+                           <fmt:message key="modules.subsite" />
+                           </a> </li>
+                     </mm:haspage>
 							<mm:haspage page="/editors/egemmail">
 								<li class="egem"> <a href="../egemmail/EgemSearchInitAction.do" target="rightpane">
 									<fmt:message key="modules.egemmail.export" />
