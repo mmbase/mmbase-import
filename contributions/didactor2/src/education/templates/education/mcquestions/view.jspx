@@ -10,12 +10,12 @@
 
   <mm:compare referid="type" value="0">
     <mm:relatednodes type="answers">
-      <b><di:translate key="education.givenanswer" />:</b>
+      <b class="type0"><di:translate key="education.givenanswer" />: </b>
       <mm:field name="text"/>
     </mm:relatednodes>
   </mm:compare>
   <mm:compare referid="type" value="1">
-    <b><di:translate key="education.givenanswer" />en:</b>
+    <b class="type1"><di:translate key="education.givenanswers" />: </b>
     <mm:relatednodes type="answers">
       <mm:field name="text"/>
       <mm:last inverse="true">, </mm:last>

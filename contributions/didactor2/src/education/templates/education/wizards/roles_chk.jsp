@@ -20,7 +20,7 @@
       </mm:related>
     </mm:relatedcontainer>
   </mm:node>
-  
+
   <%-- should this not be handled by mmbase security? --%>
   <mm:import id="forbidtemplate" reset="true">&amp;forbiddelete=yes</mm:import>
   <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
