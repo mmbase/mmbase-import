@@ -2,6 +2,7 @@ html, body {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
 }
+
 .article {
   /*
      IE6 Peek-a-boo bug:
@@ -15,9 +16,10 @@ div.column {
   margin-top: 0ex;
 }
 
-div.x1 {
-  position: absolute;
-  left: 0px;
+
+
+div.x1  {
+  position:absolute;
   width: 200px;
   margin-left:6px;
   /*
@@ -25,12 +27,24 @@ div.x1 {
      http://www.gigadesign.be/?p=99
      */
   display: inline;
+  height: 300px;
 
 }
 
+div.ie_sucks_horribly {
+  display: block;
+  margin: 0;
+}
+
 div.x2 {
-  padding-left: 212px;
+  /*border-left: 212px solid #679bff;*/
+  margin-left: 212px;
   padding-right: 232px;
+  z-index: 100;
+}
+div.x2 .article {
+  margin-left: 0px;
+
 }
 
 div.x3 {
@@ -111,8 +125,8 @@ p.noaccount {
   padding: 0 0 0 0;
   border: none;
   background-color: transparent;
-  float: none;
-  display: inline;
+
+
 }
 .portal a.navigate {
   margin-top: 1ex;
