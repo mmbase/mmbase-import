@@ -19,7 +19,7 @@
 				</td>					
 			</tr>
 			<tr>
-				<td colspan="2"><mm:field name="description" write="true" />	</td>
+				<td colspan="2"><mm:field name="intro" write="true" />	</td>
 			</tr>
 			<tr>
 				<td colspan="2"><cmsc:checkbox var="newslettersubscriptions" value="${newsletternumber}" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>

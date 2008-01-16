@@ -11,6 +11,7 @@
 	<field name="title" />
 	<field name="subject" />
 	<field name="description" />
+	<field name="intro" />
 	<field name="externalurl"/>
 
 	<relation destination="images" role="namedrel" />

@@ -7,10 +7,6 @@
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
-	<field name="subject" dtmaxlength="40"  dtrequired="true">
-		<prompt xml:lang="en">Subject</prompt>
-		<prompt xml:lang="nl">Onderwerp</prompt>
-	</field>
 	<field name="urlfragment" dtmaxlength="40"
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
 		<prompt xml:lang="en">Urlfragment</prompt>
@@ -19,6 +15,14 @@
 	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
+	</field>
+	<field name="subject" dtmaxlength="40"  dtrequired="true">
+		<prompt xml:lang="en">Subject</prompt>
+		<prompt xml:lang="nl">Onderwerp</prompt>
+	</field>
+	<field name="intro" dtmaxlength="1024" ftype="text" rows="3">
+		<prompt xml:lang="en">Introduction</prompt>
+		<prompt xml:lang="nl">Inleiding</prompt>
 	</field>
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/images/search_page_namedrel_images.xml" />
