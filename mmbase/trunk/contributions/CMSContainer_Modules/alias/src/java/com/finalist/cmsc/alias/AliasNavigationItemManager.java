@@ -62,6 +62,6 @@ public class AliasNavigationItemManager implements NavigationItemManager {
     }
 
    public void deleteNode(Node pageNode) {
-      pageNode.delete();
+      pageNode.delete(true);	//Also delete related items
    }
 }
