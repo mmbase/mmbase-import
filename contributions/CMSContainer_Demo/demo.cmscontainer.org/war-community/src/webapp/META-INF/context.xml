@@ -29,8 +29,8 @@
 		maxActive="10"
 		maxIdle="1" 
 		maxWait="10000" 
-		username="root" 
-		password=""
+		username="cmsc" 
+		password="cmsc"
 		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
 
@@ -41,8 +41,8 @@
 		maxActive="10"
 		maxIdle="1" 
 		maxWait="10000" 
-		username="root" 
-		password=""
+		username="cmsc" 
+		password="cmsc"
 		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://localhost:3306/jaasdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
 
