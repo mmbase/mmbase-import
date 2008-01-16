@@ -63,6 +63,6 @@ public class RssFeedNavigationItemManager implements NavigationItemManager {
     }
 
    public void deleteNode(Node pageNode) {
-      pageNode.delete();
+      pageNode.delete(true);
    }
 }
