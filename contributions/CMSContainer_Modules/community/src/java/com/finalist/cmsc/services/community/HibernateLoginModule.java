@@ -22,35 +22,16 @@ import com.finalist.cmsc.services.community.data.GroupUserRole;
 /**
  * <p>
  * HibernateLoginModule is a LoginModule that authenticates a given
- * username/password credential against a JDBC datasource.
- * <p>
- * This <code>LoginModule</code> interoperates with any conformant JDBC
- * datasource. To direct this <code>LoginModule</code> to use a specific JNDI
- * datasource, two options must be specified in the login
- * <code>Configuration</code> for this <code>LoginModule</code>.
- * 
- * <pre>
- *    url=&lt;b&gt;jdbc:mysql://localhost/jaasdb?user=root&lt;/b&gt;
- *    driverb&gt;org.gjt.mm.mysql.Driver&lt;/b&gt;
- * </pre>
+ * username/password credential against a Hibernate object.
  * 
  * <p>
  * For the purposed of this example, the format in which the user's information
- * must be stored in the database is in a table named "USER_AUTH" with the
- * following columns
- * 
- * <pre>
- *     USERID
- *     PASSWORD
- *     FIRST_NAME
- *     LAST_NAME
- *     DELETE_PERM
- *     UPDATE_PERM
- * </pre>
+ * must be stored in the database is in the data/POJO classes of Hibernate
  * 
  * @see javax.security.auth.spi.LoginModule
  * @author Paul Feuer and John Musser
- * @version 1.0
+ * @editor Menno Menninga
+ * @version 1.3
  */
 
 public class HibernateLoginModule<T> implements LoginModule {
@@ -347,7 +328,7 @@ public class HibernateLoginModule<T> implements LoginModule {
 
 
    /**
-    * Validate the given user and password against the JDBC datasource.
+    * Validate the given user and password against the Hibernate Object.
     * <p>
     * 
     * @param user

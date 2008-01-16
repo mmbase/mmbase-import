@@ -10,7 +10,9 @@ import javax.persistence.Table;
 import javax.persistence.GeneratorType;
 
 /**
- * Users Object, this is a hibernate class.
+ * ModulePref Object, this is a hibernate data/POJO class.
+ * This class is a mapped database tabel
+ * it contains the columns with getters en setters
  * 
  * @author menno menninga
  */
