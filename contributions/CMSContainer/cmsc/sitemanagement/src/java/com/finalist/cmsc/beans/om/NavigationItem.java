@@ -16,6 +16,8 @@ public class NavigationItem extends NodeBean implements Comparable<NavigationIte
    private Date expirydate;
    private boolean use_expiry;
    private String lastmodifier;
+   private boolean inmenu;
+   private boolean secure;
 
 
    public int compareTo(NavigationItem o) {
@@ -111,4 +113,20 @@ public class NavigationItem extends NodeBean implements Comparable<NavigationIte
    public void setLastmodifier(String lastmodifier) {
       this.lastmodifier = lastmodifier;
    }
+
+    public boolean isInmenu() {
+        return inmenu;
+    }
+
+    public void setInmenu(boolean inmenu) {
+        this.inmenu = inmenu;
+    }
+
+    public boolean isSecure() {
+        return secure;
+    }
+
+    public void setSecure(boolean secure) {
+        this.secure = secure;
+    }
 }
