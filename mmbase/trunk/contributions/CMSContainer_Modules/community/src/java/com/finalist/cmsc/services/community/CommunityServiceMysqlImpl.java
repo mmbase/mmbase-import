@@ -1,5 +1,26 @@
 package com.finalist.cmsc.services.community;
 
+/**
+ * CommunityServiceMysqlImpl, this is a CMSc service class.
+ * This class extends the service classes from the servicemanagement
+ * in the CMScontainer.
+ * All the request's to the community module come through here.
+ * This class will find out the class that is needed for each
+ * request and call the method in the needed class.
+ * 
+ * In this class the LoginContext will be called within the loginUser method.
+ * 
+ * <pre>
+ *    LoginContext lc = new LoginContext("jaasdb", cbh);
+ *          lc.login();
+ * </pre>
+ * 
+ * This context is made by the jaas.config file in the class path. This config file
+ * contains the required class for the login. In this case "HibernateLoginModule"
+ * in this context lc means HibernateLoginModule.
+ * 
+ * @author menno menninga
+ */
 import javax.security.auth.login.LoginContext;
 import java.util.*;
 

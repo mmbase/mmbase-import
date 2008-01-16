@@ -8,7 +8,9 @@ import javax.persistence.GeneratorType;
 import javax.persistence.Table;
 
 /**
- * GroupUserRole Object, this is a hibernate class.
+ * GroupUserRole Object, this is a hibernate data/POJO class.
+ * This class is a mapped database tabel
+ * it contains the columns with getters en setters
  * 
  * @author menno menninga
  */

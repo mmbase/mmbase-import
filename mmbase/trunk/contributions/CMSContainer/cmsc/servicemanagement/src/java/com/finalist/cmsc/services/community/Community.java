@@ -9,6 +9,15 @@ import javax.portlet.ActionResponse;
 import com.finalist.cmsc.services.ServiceManager;
 import com.finalist.cmsc.services.community.CommunityService;
 
+/**
+ * Community, this is a CMSc service class.
+ * This class is the abstract service class that wil be implemented
+ * by the "CommunityServiceMysqlImpl".
+ * In this class comes the request from a portlet or module and will be
+ * redirected to the "CommunityServiceMysqlImpl".
+ * 
+ * @author menno menninga
+ */
 public class Community {
    private final static CommunityService cService = (CommunityService) ServiceManager
          .getService(CommunityService.class);

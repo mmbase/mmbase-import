@@ -10,6 +10,13 @@ import org.hibernate.criterion.Restrictions;
 
 import com.finalist.cmsc.services.community.data.ModulePref;
 
+/**
+ * ModulePrefDAOImpl, this is a hibernate DAO/transaction class.
+ * This class is the implementation of the DAO interface
+ * it contains the methods for transactions to the database
+ * 
+ * @author menno menninga
+ */
 public class ModulePrefDAOImpl extends GenericDAO<ModulePref> implements ModulePrefDAO{
 
    

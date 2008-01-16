@@ -9,6 +9,13 @@ import javax.portlet.PortletSession;
 
 import org.springframework.context.ApplicationContext;
 
+/**
+ * This class is for now just a sort of interface because the Newsletter module
+ * is not yet updated to the new generic way of getting preferences. This class
+ * can be deleted as soon as the Newsletter module is updated.
+ * 
+ * @author menno menninga
+ */
 public class NewsletterCommunicationServiceMysqlImpl extends NewsletterCommunicationService {
 
    private static Log log = LogFactory.getLog(NewsletterCommunicationServiceMysqlImpl.class);
