@@ -129,7 +129,7 @@
 		<td style="white-space: nowrap;">
         	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" title="<fmt:message key="content.info" />" alt="<fmt:message key="content.info" />"/></a>
             <a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="content.preview.title" />" title="<fmt:message key="content.preview.title" />" /></a>
-			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.gif" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
+			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
 			<% if (role != null && SecurityUtil.isWriter(role)) { %>
 				<a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
 					target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )"> 
