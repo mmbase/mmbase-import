@@ -44,8 +44,8 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    private static List<String> duplicateHandlers = new ArrayList<String>();
 
    static {
-      duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_SHOW);
       duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_HIDE);
+      duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_SHOW);      
    }
 
    private String determineDisplayType(RenderRequest request) {
