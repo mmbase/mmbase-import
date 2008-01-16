@@ -39,7 +39,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter",
                   "../newsletter/NewsletterPublicationDelete.do?number=" + id));
-            element.addOption(renderer.createTreeOption("publish.png", "site.newsletterpublication.publish", "newsletter",
+            element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
                   "../newsletter/NewsletterPublicationPublish.do?number=" + id));
          }
 
@@ -48,7 +48,7 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          }
 
          if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
-            element.addOption(renderer.createTreeOption("publish.png", "site.newsletterpublication.publish", "newsletter",
+            element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
                   "../workflow/publish.jsp?number=" + id));
          }
       }

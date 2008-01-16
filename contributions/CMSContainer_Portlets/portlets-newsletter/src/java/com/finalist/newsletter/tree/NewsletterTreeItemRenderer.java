@@ -19,7 +19,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
    protected static final String FEATURE_WORKFLOW = "workflowitem";
 
    public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
-      element.addOption(renderer.createTreeOption("newsletter_new.png", "site.newsletter.new", "newsletter",
+      element.addOption(renderer.createTreeOption("new.png", "site.newsletter.new", "newsletter",
             "../newsletter/NewsletterCreate.do?parentnewsletter=" + parentId));
    }
 
