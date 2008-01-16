@@ -61,10 +61,16 @@
                com.finalist.cmsc.services.community.data.User
             </value>
             <value>
-               com.finalist.cmsc.services.community.data.NewsPref
+               com.finalist.cmsc.services.community.data.ModulePref
             </value>
             <value>
                com.finalist.cmsc.services.community.data.GroupUserRole
+            </value>
+            <value>
+               com.finalist.cmsc.services.community.data.Group
+            </value>
+            <value>
+               com.finalist.cmsc.services.community.data.Role
             </value>
          </list>
       </property>
@@ -82,8 +88,8 @@
       <property name="sessionFactory" ref="sessionFactory" />
    </bean>
 
-   <bean name="newsPrefDAO"
-      class="com.finalist.cmsc.services.community.dao.NewsPrefDAOImpl"
+   <bean name="modulePrefDAO"
+      class="com.finalist.cmsc.services.community.dao.ModulePrefDAOImpl"
       lazy-init="default" autowire="default" dependency-check="default">
       <property name="sessionFactory" ref="sessionFactory" />
    </bean>
@@ -93,32 +99,27 @@
       lazy-init="default" autowire="default" dependency-check="default">
       <property name="sessionFactory" ref="sessionFactory" />
    </bean>
-
-   <!-- Service  -->
-   <bean name="serviceUser"
-      class="com.finalist.cmsc.services.community.HibernateUserService"
-      lazy-init="false" autowire="default" dependency-check="default">
-      <property name="userDAO" ref="userDAO" />
+   
+   <bean name="groupDAO"
+      class="com.finalist.cmsc.services.community.dao.GroupDAOImpl"
+      lazy-init="default" autowire="default" dependency-check="default">
+      <property name="sessionFactory" ref="sessionFactory" />
    </bean>
-
-   <!-- Service  -->
-   <bean name="serviceNewsLetter"
-      class="com.finalist.cmsc.services.community.HibernateNewsPrefService"
-      lazy-init="false" autowire="default" dependency-check="default">
-      <property name="newsPrefDAO" ref="newsPrefDAO" />
+   
+   <bean name="roleDAO"
+      class="com.finalist.cmsc.services.community.dao.RoleDAOImpl"
+      lazy-init="default" autowire="default" dependency-check="default">
+      <property name="sessionFactory" ref="sessionFactory" />
    </bean>
-
+   
    <!-- Service  -->
    <bean name="serviceCommunity"
       class="com.finalist.cmsc.services.community.HibernateCommunityService"
       lazy-init="false" autowire="default" dependency-check="default">
       <property name="userDAO" ref="userDAO" />
-   </bean>
-
-   <!-- Service  -->
-   <bean name="serviceGroupUserRole"
-      class="com.finalist.cmsc.services.community.HibernateGroupUserRoleService"
-      lazy-init="false" autowire="default" dependency-check="default">
       <property name="groupUserRoleDAO" ref="groupUserRoleDAO" />
+      <property name="modulePrefDAO" ref="modulePrefDAO" />
+      <property name="groupDAO" ref="groupDAO" />
+      <property name="roleDAO" ref="roleDAO" />
    </bean>
 </beans>
