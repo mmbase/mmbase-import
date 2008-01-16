@@ -223,7 +223,7 @@
 			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>description</name>
-				<type key="false" notnull="false" size="1024" state="persistent">STRING</type>
+				<type key="false" required="false" size="1024" state="persistent">STRING</type>
 			</db>
 		</field>
 		<field>
@@ -272,7 +272,9 @@
 				<type key="false" required="true" state="persistent">BOOLEAN</type>
 			</db>
 		</field>
-		
+
+<!-- Page specific fields -->
+
 		<field>
 			<descriptions>
 				<description xml:lang="nl"></description>

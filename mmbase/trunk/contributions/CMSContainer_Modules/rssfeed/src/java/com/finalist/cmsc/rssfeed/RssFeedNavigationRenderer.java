@@ -49,28 +49,26 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
          output.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
          output.append("<rss version=\"2.0\">\n");
          output.append("<channel>");
-         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-         Node node = cloud.getNode(rssFeed.getId());
          output.append("<title>");
-         output.append(xmlEscape(node.getStringValue("title")));
+         output.append(xmlEscape(rssFeed.getTitle()));
          output.append("</title>");
          output.append("<link>");
          output.append(xmlEscape(getServerDocRoot(request)));
          output.append("</link>");
          output.append("<language>");
-         output.append(xmlEscape(node.getStringValue("language")));
+         output.append(xmlEscape(rssFeed.getLanguage()));
          output.append("</language>");
          output.append("<description>");
-         output.append(xmlEscape(node.getStringValue("description")));
+         output.append(xmlEscape(rssFeed.getDescription()));
          output.append("</description>");
          output.append("<copyright>");
-         output.append(xmlEscape(node.getStringValue("copyright")));
+         output.append(xmlEscape(rssFeed.getCopyright()));
          output.append("</copyright>");
          output.append("<managingEditor>");
-         output.append(xmlEscape(node.getStringValue("email_managing_editor")));
+         output.append(xmlEscape(rssFeed.getEmail_managing_editor()));
          output.append("</managingEditor>");
          output.append("<webMaster>");
-         output.append(xmlEscape(node.getStringValue("email_webmaster")));
+         output.append(xmlEscape(rssFeed.getEmail_webmaster()));
          output.append("</webMaster>");
          output.append("<generator>");
          output.append("CMS Container RssFeed module " + VersionUtil.getCmscVersion(servletConfig.getServletContext()));
@@ -79,6 +77,9 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
          output.append("http://blogs.law.harvard.edu/tech/rss");
          output.append("</docs>");
 
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node node = cloud.getNode(rssFeed.getId());
+         
          List<String> contentTypesList = new ArrayList<String>();
          NodeList contentTypes = node.getRelatedNodes("typedef");
          for (NodeIterator ni = contentTypes.nodeIterator(); ni.hasNext();) {
@@ -86,8 +87,8 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
          }
 
          boolean useLifecycle = true;
-         String maximum = node.getStringValue("maximum");
-         int maxNumber = (maximum != null && maximum != "") ? Integer.parseInt(maximum) : -1;
+         int maxNumber = rssFeed.getMaximum();
+         if (maxNumber <= 0) maxNumber = -1;
 
          Date lastChange = null;
          NodeList contentChannels = node.getRelatedNodes("contentchannel");
