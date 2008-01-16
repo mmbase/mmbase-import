@@ -75,7 +75,7 @@ public class ModulePref {
     * 
     * @return Returns the userId.
     */
-   @Column(name = "userId", nullable = false)
+   @Column(name = "user_id", nullable = false)
    public String getUserId() {
       return userId;
    }
