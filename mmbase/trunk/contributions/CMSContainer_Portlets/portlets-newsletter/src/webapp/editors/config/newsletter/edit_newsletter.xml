@@ -21,8 +21,8 @@
 		<prompt xml:lang="nl">Onderwerp</prompt>
 	</field>
 	<field name="intro" dtmaxlength="1024" ftype="text" rows="3">
-		<prompt xml:lang="en">Description</prompt>
-		<prompt xml:lang="nl">Omschrijving</prompt>
+		<prompt xml:lang="en">Introduction</prompt>
+		<prompt xml:lang="nl">Inleiding</prompt>
 	</field>
 	<field name="publishinterval" dtmaxlength="40">
 		<prompt xml:lang="en">Publication interval</prompt>
