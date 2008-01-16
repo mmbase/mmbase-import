@@ -14,6 +14,15 @@ import com.finalist.cmsc.services.community.data.ModulePref;
 import com.finalist.cmsc.services.community.data.User;
 import com.finalist.cmsc.services.community.data.Role;
 
+/**
+ * HibernatCommunityService, this is a Hibernate service class.
+ * This class makes use of the DAO/transaction classes.
+ * All the request's to the database come through here.
+ * This class will find out the class that is needed for each
+ * request and call the method in the needed class.
+ * 
+ * @author menno menninga
+ */
 @Transactional
 public class HibernateCommunityService {
 

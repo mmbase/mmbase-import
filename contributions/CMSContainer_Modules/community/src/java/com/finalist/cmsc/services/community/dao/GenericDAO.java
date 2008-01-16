@@ -20,6 +20,15 @@ import com.finalist.cmsc.services.community.data.Role;
 import com.finalist.cmsc.services.community.data.GroupUserRole;
 import com.finalist.cmsc.services.community.data.ModulePref;
 
+/**
+ * GenericDAO, this is a hibernate DAO/transaction class.
+ * This class is the implementation of the DAO interface
+ * it contains the methods for transactions to the database
+ * This class is a generic class. From this class you can 
+ * query the database in generic a way.
+ * 
+ * @author menno menninga
+ */
 public class GenericDAO<T> extends HibernateDaoSupport implements DAO<T> {
 
    public static class Param{

@@ -6,14 +6,19 @@ import java.util.Map;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
+/**
+ * DummyCommunityService, this is a CMSc service class.
+ * This class contains dummy methods that stand in the real uses service class.
+ * 
+ * @author menno menninga
+ */
 public class DummyCommunityService extends CommunityService {
 
    public boolean loginUser(ActionRequest request, ActionResponse response, String username, String password) {
       return false;
    }
 
-   public boolean logoutUser(/** HttpServletRequest HttpRequest, * */
-   ActionRequest request, ActionResponse response) {
+   public boolean logoutUser(ActionRequest request, ActionResponse response) {
       return false;
    }
    

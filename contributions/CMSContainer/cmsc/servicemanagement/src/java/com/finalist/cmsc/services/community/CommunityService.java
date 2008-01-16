@@ -8,6 +8,13 @@ import javax.portlet.ActionResponse;
 
 import com.finalist.cmsc.services.Service;
 
+/**
+ * CommunityService, this is a CMSc service class.
+ * This class is the abstract service class that wil be used by the
+ * community class.
+ * 
+ * @author menno menninga
+ */
 public abstract class CommunityService extends Service {
    public abstract boolean loginUser(ActionRequest request, ActionResponse response, String userText, String passText);
 
