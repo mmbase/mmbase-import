@@ -1,5 +1,8 @@
 package com.finalist.cmsc.services.community;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
@@ -20,5 +23,17 @@ public class Community {
    ActionRequest request, ActionResponse response) {
       return cService.logoutUser(/** HttpRequest, * */
       request, response);
+   }
+   
+   public Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value){
+      return cService.getPreferences(module, userId, key, value);
+   }
+   
+   public void createPreference(String module, String userId, String key, List<String> values){
+      cService.createPreference(module, userId, key, values);
+   }
+   
+   public void removePreferences(String module, String userId, String key){
+      cService.removePreferences(module, userId, key);
    }
 }
