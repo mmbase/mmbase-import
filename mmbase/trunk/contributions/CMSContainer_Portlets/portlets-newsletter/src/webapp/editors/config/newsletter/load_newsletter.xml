@@ -4,10 +4,13 @@
 	<field name="creationdate" />
 	<field name="lastmodifieddate" />
 	<field name="publishdate" />
+	<field name="intro" />
 	<field name="expiredate" />
 	<field name="lastmodifier" />
 	<field name="use_expirydate" />
 	<field name="urlfragment" />
+	<field name="inmenu" />
+	<field name="secure" />
 	<field name="title" />
 	<field name="subject" />
 	<field name="description" />
