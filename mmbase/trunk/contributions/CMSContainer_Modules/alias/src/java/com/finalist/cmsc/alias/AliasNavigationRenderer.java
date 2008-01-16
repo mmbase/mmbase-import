@@ -66,6 +66,8 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
                "Got a wrong type in the AliasNavigationRenderer (only wants Alias), was" + item.getClass());
       }
    }
+   
+   
 
 
    class AliasHttpServletRequest extends HttpServletRequestWrapper {
