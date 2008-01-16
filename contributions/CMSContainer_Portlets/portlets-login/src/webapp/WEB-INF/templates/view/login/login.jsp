@@ -55,7 +55,7 @@ LOGIN HERE
                     	<fmt:message key="view.pass" />
                 	</td>
                 	<td>
-                    	<input type="text" id="passText" name="passText" class="passText" value="${passText}" />
+                    	<input type="password" id="passText" name="passText" class="passText" value="${passText}" />
                 	</td>
             	</tr>
 				<tr>
