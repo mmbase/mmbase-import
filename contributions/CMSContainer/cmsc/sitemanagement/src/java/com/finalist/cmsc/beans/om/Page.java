@@ -17,29 +17,12 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class Page extends NavigationItem {
 
-   private boolean inmenu;
-   private boolean secure;
    private String externalurl;
 
    private Map<String, Integer> portlets = new HashMap<String, Integer>();
    private int layout;
    private List<Integer> stylesheet = new ArrayList<Integer>();
    private Map<String,List<Integer>> pageImages = new HashMap<String,List<Integer>>();
-
-
-   public boolean isInmenu() {
-      return inmenu;
-   }
-
-
-   public boolean getInmenu() {
-      return inmenu;
-   }
-
-
-   public void setInmenu(boolean inmenu) {
-      this.inmenu = inmenu;
-   }
 
 
    public int getLayout() {
@@ -103,16 +86,6 @@ public class Page extends NavigationItem {
 
    public Collection<Integer> getPortlets() {
       return portlets.values();
-   }
-
-
-   public boolean isSecure() {
-      return secure;
-   }
-
-
-   public void setSecure(boolean secure) {
-      this.secure = secure;
    }
 
 
