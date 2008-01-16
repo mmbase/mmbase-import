@@ -47,7 +47,6 @@
     <c:set var="dashboardRepositoryTitle"><fmt:message key="dashboard.repository.header"><fmt:param>${dashboardRepositorySize}</fmt:param></fmt:message></c:set>
 	<cmscedit:contentblock title="${dashboardRepositoryTitle}" titleMode="plain"
 		titleClass="content_block_pink" bodyClass="body_table">
-        <br />
 		<mm:cloudinfo type="user" id="cloudusername" write="false" />
 
       <mm:listnodescontainer type="contentelement">
