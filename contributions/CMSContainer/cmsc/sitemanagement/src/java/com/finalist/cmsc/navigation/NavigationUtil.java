@@ -13,7 +13,11 @@ import java.util.*;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.mmapps.commons.bridge.*;
+import net.sf.mmapps.commons.util.HttpUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.*;
@@ -489,5 +493,43 @@ public class NavigationUtil {
     public static List<Node> getUsersWithRights(Node channel, Role requiredRole) {
         return SecurityUtil.getUsersWithRights(channel, requiredRole, TreeUtil.convertToList(treeManagers), NAVREL);
     }
+
+    
+    /**
+     * This method will calculate the url towards a certain navigation item
+     * @param request
+     * @param response
+     * @param parentNode
+     * @return
+     */
+	public static String getNavigationItemUrl(HttpServletRequest request, HttpServletResponse response, Node parentNode) {
+
+	    boolean secure = false;
+	    if(parentNode.getNodeManager().hasField(PagesUtil.SECURE_FIELD)) {
+	  	  secure = parentNode.getBooleanValue(PagesUtil.SECURE_FIELD);
+	    }
+
+		String pathofpage;
+	      if (request != null && ServerUtil.useServerName()) {
+	         String[] pathElements = NavigationUtil.getPathElementsToRoot(parentNode, true);
+
+	         pathofpage = HttpUtil.getWebappUri(request, pathElements[0], secure);
+	         for (int i = 1; i < pathElements.length; i++) {
+	            pathofpage += pathElements[i] + "/";
+	         }
+	         if (!request.getServerName().equals(pathElements[0])) {
+	            pathofpage = HttpUtil.addSessionId(request, pathofpage);
+	         }
+	         else {
+	            pathofpage = response.encodeURL(pathofpage);
+	         }
+	      }
+	      else {
+	         String path = NavigationUtil.getPathToRootString(parentNode, true);
+	         String webappuri = HttpUtil.getWebappUri(request, secure);
+	         pathofpage = response.encodeURL(webappuri + path);
+	      }
+		return pathofpage;
+	}
 
 }

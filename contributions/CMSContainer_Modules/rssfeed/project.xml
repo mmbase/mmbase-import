@@ -14,6 +14,12 @@
 			<version>${cmscmodules.version}</version>
 			<type>jar</type>
 		</dependency>
+	   	<dependency>
+			<groupId>finalist</groupId>
+			<artifactId>cmsc-sitemanagement</artifactId>
+			<version>${cmscmodules.version}</version>
+			<type>jar</type>
+		</dependency>		
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>remotepublishing</artifactId>

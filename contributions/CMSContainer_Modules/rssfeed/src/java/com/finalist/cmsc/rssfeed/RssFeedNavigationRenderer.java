@@ -25,6 +25,7 @@ import org.mmbase.bridge.NodeQuery;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.NavigationItemRenderer;
+import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.rssfeed.beans.om.RssFeed;
@@ -232,4 +233,7 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
       return url;
    }
 
+	public String getOpenAction(String contextPath, Node parentNode, boolean secure) {
+		return NavigationUtil.getNavigationItemUrl(null, null, parentNode);
+	}
 }

@@ -94,6 +94,8 @@ public abstract class NavigationRenderer implements TreeCellRenderer {
 
     public TreeElement createElement(Node parentNode, UserRole role, String name, String fragment, boolean secure) {
         String id = String.valueOf(parentNode.getNumber());
+        NavigationItemManager manager = NavigationManager.getNavigationManager(parentNode);
+        String contextPath = request.getContextPath();
         return createElement(getIcon(parentNode, role), id, name, fragment, getOpenAction(parentNode, secure), target);
     }
     
