@@ -11,6 +11,7 @@ import javax.security.auth.callback.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -323,23 +324,23 @@ public class HibernateLoginModule<T> implements LoginModule {
       if (callbackHandler instanceof PassiveCallbackHandler)
          ((PassiveCallbackHandler) callbackHandler).clearPassword();
 
-      // remove the principals the login module added
-      //Iterator it = subject.getPrincipals(HibernatePrincipal.class).iterator();
-      //while (it.hasNext()) {
-      //   HibernatePrincipal p = (HibernatePrincipal) it.next();
-      //   if (debug)
-      //      System.out.println("\t\t[HibernateLoginModule] removing principal " + p.toString());
-      //   subject.getPrincipals().remove(p);
-      //}
+      //remove the principals the login module added
+      Iterator it = subject.getPrincipals(HibernatePrincipal.class).iterator();
+      while (it.hasNext()) {
+         HibernatePrincipal p = (HibernatePrincipal) it.next();
+         if (debug)
+            System.out.println("\t\t[HibernateLoginModule] removing principal " + p.toString());
+         subject.getPrincipals().remove(p);
+      }
 
       //remove the credentials the login module added
-      //it = subject.getPublicCredentials(HibernateCredential.class).iterator();
-      //while (it.hasNext()) {
-      //   HibernateCredential c = (HibernateCredential) it.next();
-      //   if (debug)
-      //      System.out.println("\t\t[HibernateLoginModule] removing credential " + c.toString());
-      //   subject.getPrincipals().remove(c);
-      //}
+      it = subject.getPublicCredentials(HibernateCredential.class).iterator();
+      while (it.hasNext()) {
+         HibernateCredential c = (HibernateCredential) it.next();
+         if (debug)
+            System.out.println("\t\t[HibernateLoginModule] removing credential " + c.toString());
+         subject.getPrincipals().remove(c);
+      }
 
       return (true);
    }
@@ -358,15 +359,6 @@ public class HibernateLoginModule<T> implements LoginModule {
     * @exception Exception
     *               if the validation fails.
     */
-   public String name;
-   public void setName(String name){
-      this.name = name;
-   }
-   
-   public String getName(){
-      return name;
-   }
-   
    private boolean HibernateValidate(String user, String pass) throws Exception {
 
       HibernatePrincipal p = null;
@@ -381,29 +373,24 @@ public class HibernateLoginModule<T> implements LoginModule {
       
       HibernateCommunityService hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
       
-      HibernateGroupUserRoleService hibserviceGUR = (HibernateGroupUserRoleService)aC.getBean("serviceGroupUserRole");
-      
       System.out.println("LoginModule Ingevoerde user: " + user);
       
-      User users = hibservice.getUser(user);
+      Map<String, String> preferences = new HashMap<String, String>();
+      preferences.put("userId", user);
       
-      /*Object clas = null;
-      
-      Class clss = getClass();
-      this.setName("mennowm");
-      Object obj  = this.getName();
-      clas = hibservice.getByParam("User", "userId", obj);
-      User testUser = (User)clas;
-      System.out.println("TestUsercompatability: " + testUser.getName() + " " + testUser.getLastname());
-      clas = hibservice.getByParam("GroupUserRole", "userId", obj);
-      GroupUserRole groups = (GroupUserRole)clas;
-      System.out.println("TestGroupUserRolecompatability: " + groups.getUserId() + " " + groups.getGroupId() + " " + groups.getRoleId());
-          */
-      dbUsername = users.getUserId();
-      dbPassword = users.getPassword();
-      dbFname = users.getName();
-      dbLname = users.getLastname();
-      dbEmailAdress = users.getEmailadress();
+      List<String> userObjectList = hibservice.getObject("User", preferences);
+      if(userObjectList != null && userObjectList.size() > 0){
+         ListIterator userObjectIt = userObjectList.listIterator();
+         while(userObjectIt.hasNext()){
+            User users = (User)userObjectIt.next();
+            
+            dbUsername = users.getUserId();
+            dbPassword = users.getPassword();
+            dbFname = users.getName();
+            dbLname = users.getLastname();
+            dbEmailAdress = users.getEmailadress();
+         }
+      }
       
       if (dbPassword == null)
          throw new LoginException("User " + user + " not found");
@@ -420,7 +407,7 @@ public class HibernateLoginModule<T> implements LoginModule {
          c.setProperty("Username", dbUsername);
          c.setProperty("Password", dbPassword);
          this.tempCredentials.add(c);
-         List groupUserRoleList = hibserviceGUR.getGroupUserRoleList(user);
+         List groupUserRoleList = hibservice.getObject("UserGroups", preferences);
          System.out.println("groupUserRoleList: " + groupUserRoleList);
          String groupRole = null;
          if(groupUserRoleList != null && groupUserRoleList.size() > 0){

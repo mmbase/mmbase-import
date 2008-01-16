@@ -8,8 +8,11 @@ import javax.portlet.ActionResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.portlet.PortletSession;
+import com.finalist.cmsc.services.community.HibernateCommunityService;
 
 public class CommunityServiceMysqlImpl extends CommunityService {
 
@@ -17,7 +20,10 @@ public class CommunityServiceMysqlImpl extends CommunityService {
 
    private PortletSession session;
    
-   // @Override
+   ApplicationContext aC;
+   
+   HibernateCommunityService hibservice;
+   
    public boolean loginUser(ActionRequest request, ActionResponse response, String userText, String passText) {
       
       boolean loginSuccesfull;
@@ -25,7 +31,7 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       String firstName = "";
       String lastName = "";
       String emailAdress = "";
-
+      
       try {
          PassiveCallbackHandler cbh = new PassiveCallbackHandler(userText, passText);
 
@@ -34,9 +40,10 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          lc.login();
          
          log.info("PortletSession: " + request.getPortletSession());
-         
+
          PortletSession session = request.getPortletSession();
          Iterator it = lc.getSubject().getPrincipals().iterator();
+         session.setAttribute("LoginContext", lc);
          String tempPrin = it.next().toString();
          String values[] = tempPrin.split(",");
          for(int i = 0; i < values.length; i++){
@@ -59,7 +66,7 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          }
          session.setAttribute("logout", "false", PortletSession.APPLICATION_SCOPE);
          
-         //lc.logout();
+         lc.logout();
          loginSuccesfull = true;
       }
       catch (Exception e) {
@@ -71,13 +78,15 @@ public class CommunityServiceMysqlImpl extends CommunityService {
    }
 
 
-   public boolean logoutUser(/** HttpServletRequest HttpRequest, * */
-   ActionRequest request, ActionResponse response) {
+   public boolean logoutUser(ActionRequest request, ActionResponse response) {
       boolean logoutSuccesfull;
 
       PortletSession session = request.getPortletSession();
 
+      LoginContext lc = (LoginContext)session.getAttribute("LoginContext");
+      
       try {
+         lc.logout();
          session.removeAttribute("userName", PortletSession.APPLICATION_SCOPE);
          session.removeAttribute("firstName", PortletSession.APPLICATION_SCOPE);
          session.removeAttribute("lastName", PortletSession.APPLICATION_SCOPE);
@@ -93,5 +102,23 @@ public class CommunityServiceMysqlImpl extends CommunityService {
          logoutSuccesfull = false;
       }
       return logoutSuccesfull;
+   }
+   
+   public Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
+      return hibservice.getPreferences(module, userId, key, value);
+   }
+   
+   public void createPreference(String module, String userId, String key, List<String> values){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
+      hibservice.createPreference(module, userId, key, values);
+   }
+   
+   public void removePreferences(String module, String userId, String key){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
+      hibservice.removePreferences(module, userId, key);
    }
 }

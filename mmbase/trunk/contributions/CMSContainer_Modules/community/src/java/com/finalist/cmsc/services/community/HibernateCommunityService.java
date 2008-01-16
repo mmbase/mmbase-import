@@ -2,13 +2,30 @@ package com.finalist.cmsc.services.community;
 
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+
 import com.finalist.cmsc.services.community.dao.UserDAO;
+import com.finalist.cmsc.services.community.dao.ModulePrefDAO;
+import com.finalist.cmsc.services.community.dao.GroupDAO;
+import com.finalist.cmsc.services.community.dao.GroupUserRoleDAO;
+import com.finalist.cmsc.services.community.dao.RoleDAO;
+import com.finalist.cmsc.services.community.data.GroupUserRole;
+import com.finalist.cmsc.services.community.data.Group;
+import com.finalist.cmsc.services.community.data.ModulePref;
 import com.finalist.cmsc.services.community.data.User;
+import com.finalist.cmsc.services.community.data.Role;
 
 @Transactional
 public class HibernateCommunityService {
 
    private UserDAO userDAO = null;
+   
+   private ModulePrefDAO modulePrefDAO = null;
+   
+   private GroupDAO groupDAO = null;
+   
+   private GroupUserRoleDAO groupUserRoleDAO = null;
+   
+   private RoleDAO roleDAO = null;
    
    @Transactional(readOnly = false)
    public void setUserDAO(UserDAO userDAO) {
@@ -16,22 +33,77 @@ public class HibernateCommunityService {
    }
    
    @Transactional(readOnly = false)
-   public User getUser(String userId) {
-      /*
-       * Example of method use User user = new User(); try { user = getUser(new
-       * Long(1)); } catch (Exception e) { // TODO Auto-generated //catch block
-       * e.printStackTrace(); }
-       */
-      //List users = null;
-      
-      //users = (List)userDAO.getUser(userId);
-      
-      //User user = (User)users.get(0);
-      
-      //String test = user.getUserId();
-      
-      //System.out.println("DIT IS EEN TEST WERKT HIBERNATE? ZOJA: " + test);
-      
-      return userDAO.getUser(userId);
+   public void setModulePrefDAO(ModulePrefDAO modulePrefDAO) {
+      this.modulePrefDAO = modulePrefDAO;
+   }
+   
+   @Transactional(readOnly = false)
+   public void setGroupDAO(GroupDAO groupDAO) {
+      this.groupDAO = groupDAO;
+   }
+   
+   @Transactional(readOnly = false)
+   public void setGroupUserRoleDAO(GroupUserRoleDAO groupUserRoleDAO) {
+      this.groupUserRoleDAO = groupUserRoleDAO;
+   }
+   
+   @Transactional(readOnly = false)
+   public void setRoleDAO(RoleDAO roleDAO) {
+      this.roleDAO = roleDAO;
+   }
+   
+   public Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value){
+      if (module == "Newsletter"){
+         Map<String, Map<String,List<String>>> resultList = modulePrefDAO.getPreferences(module, userId, key, value);
+         return resultList;
+      }
+      return (null);
+   }
+   
+   public List<String> getObject(String module, Map<String, String> preferences){
+      if (module == "Newsletter"){
+         List<String> resultList = modulePrefDAO.getObject(preferences);
+         return resultList;
+      }
+      if (module == "User"){
+         List<String> resultList = userDAO.getObject(preferences);
+         return resultList;
+      }
+      if (module == "Group"){
+         List<String> resultList = groupDAO.getObject(preferences);
+         return resultList;
+      }
+      if (module == "Role"){
+         List<String> resultList = roleDAO.getObject(preferences);
+         return resultList;
+      }
+      if (module == "UserGroups"){
+         List<String> resultList = groupUserRoleDAO.getObject(preferences);
+         return resultList;
+      }
+      return (null);
+   }
+   
+   public void createPreference(String module, String userId, String key, List<String> values){
+      try{
+         ListIterator it = values.listIterator();
+         while (it.hasNext()){
+            ModulePref modulePref = new ModulePref();
+            modulePref.setModuleValue(it.next().toString());
+            modulePref.setModuleKey(key); 
+            modulePref.setUserId(userId);
+            modulePref.setModule(module);
+            modulePrefDAO.insertByObject(modulePref);
+         }
+      }
+      catch(Exception e){
+         System.out.println("Can't create the preferences: " + e);
+      }
+   }
+   
+   public void removePreferences(String module, String userId, String key){
+      if (module == "Newsletter"){
+         modulePrefDAO.deleteByCriteria(module, userId, key);
+      }
    }
 }

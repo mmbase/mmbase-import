@@ -21,7 +21,7 @@ import com.finalist.cmsc.services.community.Community;
  * Fulltext login portlet
  * 
  * @author Menno Menninga
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class LoginPortlet extends CmscPortlet {
 
@@ -61,7 +61,7 @@ public class LoginPortlet extends CmscPortlet {
    private void executeLogin(ActionRequest request, ActionResponse response, String userText, String passText)
          throws PortletException, IOException {
 
-      String configFileLocation = getPortletContext().getRealPath("/WEB-INF/config/jaas.config");
+      String configFileLocation = getPortletContext().getRealPath("/WEB-INF/classes/jaas.config");
       getLogger().info(configFileLocation);
       System.setProperty("java.security.auth.login.config", configFileLocation);
       boolean loginSuccesfull = Community.loginUser(request, response, userText, passText);
