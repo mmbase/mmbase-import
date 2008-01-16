@@ -1,5 +1,5 @@
 <!-- Context configuration file for the Tomcat NatMM Intranet Web App -->
-<Context path="/" docBase="ROOT" debug="5" reloadable="true" crossContext="true">
+<Context path="" debug="5" reloadable="true" crossContext="true">
    <Resource name="mail/Session" auth="Container" type="javax.mail.Session"/>
    <ResourceParams name="mail/Session">
       <parameter>
