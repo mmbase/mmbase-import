@@ -13,8 +13,8 @@
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
 	<field name="resource" dtmaxlength="255" ftype="line">
-		<prompt xml:lang="en">Template</prompt>
-		<prompt xml:lang="nl">Template</prompt>
+		<prompt xml:lang="en">View file</prompt>
+		<prompt xml:lang="nl">View bestand</prompt>
 	</field>
 	<list include="config/typedef/search_view_allowrel_typedef.xml" />
 </form-schema>
