@@ -21,7 +21,7 @@
 </fmt:message>
 
 
-<script language="JavaScript">
+<script type="text/javascript">
 
    function gotopage(targetfield) {
 
