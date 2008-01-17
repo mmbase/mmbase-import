@@ -66,7 +66,7 @@
           <search>20</search>
         </positions>
       </editor>
-      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" >
         <default value="true" />
         <required value="true" />
       </datatype>
