@@ -65,9 +65,9 @@
 
         <jsp:scriptlet>}</jsp:scriptlet>
 
-        <!-- If the user has the rights, then always show the management link. That allows us to enable/disable components after
-             install on an empty database -->
-        <mm:treeinclude page="/education/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+        <!-- If the user has the rights, then always show the management link. That allows us to enable/disable components after install on an empty database -->
+        <mm:treeinclude page="/education/cockpit/menuitem.jsp"
+                        objectlist="$includePath" referids="$referids">
           <mm:param name="name">education</mm:param>
           <mm:param name="type">div</mm:param>
           <mm:param name="scope">provider</mm:param>
