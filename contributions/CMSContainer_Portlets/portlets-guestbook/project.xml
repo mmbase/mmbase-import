@@ -6,10 +6,10 @@
     <shortDescription>Guestbook portlet</shortDescription>
 	<dependencies>
 		<dependency>
-			<groupId>jcaptcha</groupId>
+			<groupId>com.octo.captcha</groupId>
 			<artifactId>jcaptcha-all</artifactId>			
 			<type>jar</type>
-			<version>1.0-RC3</version>
+			<version>1.0-RC6</version>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 			</properties>
