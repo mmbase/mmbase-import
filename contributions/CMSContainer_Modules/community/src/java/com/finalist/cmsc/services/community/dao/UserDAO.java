@@ -1,5 +1,7 @@
 package com.finalist.cmsc.services.community.dao;
 
+import java.util.Map;
+
 import com.finalist.cmsc.services.community.data.User;
 
 /**
@@ -11,5 +13,5 @@ import com.finalist.cmsc.services.community.data.User;
  */
 public interface UserDAO extends DAO<User>{
 
-   
+   public Map<String, Map<String, String>> getUserProperty(String userName);
 }

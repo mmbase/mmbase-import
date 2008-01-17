@@ -26,4 +26,6 @@ public abstract class CommunityService extends Service {
    public abstract void createPreference(String module, String userId, String key, List<String> values);
    
    public abstract void removePreferences(String module, String userId, String key);
+   
+   public abstract Map<String, Map<String, String>> getUserProperty(String userName);
 }

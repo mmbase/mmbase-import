@@ -1,5 +1,6 @@
 package com.finalist.cmsc.services.community;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
@@ -114,5 +115,13 @@ public class HibernateCommunityService {
       if (module == "Newsletter"){
          modulePrefDAO.deleteByCriteria(module, userId, key);
       }
+   }
+   
+   public Map<String, Map<String, String>> getUserProperty(String userName){
+      Map<String, Map<String, String>> resultList = userDAO.getUserProperty(userName);
+      if (resultList == null){
+         return resultList;
+      }
+      return (null);
    }
 }
