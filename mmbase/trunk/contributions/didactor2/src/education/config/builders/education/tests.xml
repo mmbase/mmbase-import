@@ -74,8 +74,9 @@
           <list>4</list>
         </positions>
       </editor>
-      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
+        <default value="false" />
       </datatype>
 
     </field>
@@ -94,9 +95,9 @@
           <list>5</list>
         </positions>
       </editor>
-      <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <required value="true" />
-        <!-- enumeration, or even boolean? -->
+>        <default value="false" />
       </datatype>
     </field>
     <field name="questionsperpage">
@@ -193,7 +194,7 @@
          <guiname xml:lang="en">Always online</guiname>
        </gui>
 
-       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes">
+       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
          <default value="false" />
        </datatype>
     </field>
