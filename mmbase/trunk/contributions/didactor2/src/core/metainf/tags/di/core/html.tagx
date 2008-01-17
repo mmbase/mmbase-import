@@ -8,6 +8,7 @@
       description="Didactor template, put your component in its's body. Like so, you don't need to explicitly use ugly header and footer includes yourself."
       />
   <jsp:directive.attribute name="title_key"    />
+  <jsp:directive.attribute name="title"    />
   <jsp:directive.attribute name="rank" />
   <jsp:directive.attribute name="expires" />
   <jsp:directive.attribute name="reset" />
@@ -22,19 +23,27 @@
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
       <html  xmlns="http://www.w3.org/1999/xhtml">
         <di:head>
-          <title><di:translate key="${component}.learnenvironmenttitle" /></title>
-          <mm:haspage page="/${component}/style/base.css">
-            <mm:link page="/${component}/style/base.css">
-              <link rel="stylesheet" type="text/css" href="${_}" />
-            </mm:link>
-          </mm:haspage>
+          <title>
+            <jsp:text>${title}</jsp:text>
+            <c:if test="${! empty title_key}">
+              <di:translate key="${title_key}" />
+            </c:if>
+            <mm:node referid="education"><mm:field name="name"><mm:isnotempty> -  <mm:write /></mm:isnotempty></mm:field></mm:node>
+          </title>
+          <c:if test="${! empty component}">
+            <mm:haspage page="/${component}/style/base.css">
+              <mm:link page="/${component}/style/base.css">
+                <link rel="stylesheet" type="text/css" href="${_}" />
+              </mm:link>
+            </mm:haspage>
+          </c:if>
         </di:head>
         <body class="${styleClass}">
           <div class="componentBody">
             <di:include page="/cockpit/applicationbar.jsp" />
             <di:include page="/cockpit/providerbar.jsp" />
             <di:include page="/cockpit/educationbar.jsp" />
-            <div class="mm_c_${component}">
+            <div class="di_body mm_c_${component}">
               <jsp:doBody />
             </div>
           </div>
