@@ -9,7 +9,7 @@ public class Utils {
       Boolean lastValue = (Boolean) pageContext.findAttribute("lastvalue");
       String orderby = (String) pageContext.findAttribute("orderby");
 
-      String template = "onClick=\"selectTab('%s','%s','%s')\" %s";
+      String template = "onclick=\"selectTab('%s','%s','%s')\" %s";
 
       if ("undefined".equals(orderby)) {
          return String.format(template, status, "lastmodifieddate", "true", "class=\"sortup\"").trim();
