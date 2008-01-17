@@ -2,19 +2,18 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <!--
     debug.xsl
-    
+
     @since  MMBase-1.6.4
     @author Pierre van Rooden
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: debug.xsl,v 1.7 2004-01-05 11:12:35 nico Exp $
+    @version $Id: debug.xsl,v 1.8 2008-01-17 15:12:19 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
 
   <xsl:output
     method="html"
-    version="1.0"
     encoding="utf-8"
     omit-xml-declaration="no"
     standalone="no"
@@ -29,7 +28,7 @@
   <xsl:variable name="BodyOnLoad" >init();</xsl:variable>
 
   <xsl:template name="htmltitle">Editwizard session inspector (debugging)</xsl:template>
-  
+
   <xsl:template name="style">
     <link rel="stylesheet" type="text/css" href="{$cssdir}layout/debug.css" />
   </xsl:template>
@@ -54,9 +53,9 @@
 
     <span id="Wizard_{@id}" class="debugwizard">
       <xsl:for-each select="*[@debugname]">
-        <span class="tab" id="tab{position()}" 
+        <span class="tab" id="tab{position()}"
           onclick="changeVisibility({position()});">
-          
+
           <xsl:value-of select="name()" />
           <span class="debugname">
             (<xsl:value-of select="@debugname" />)
