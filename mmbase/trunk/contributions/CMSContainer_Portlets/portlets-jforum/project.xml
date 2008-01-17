@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.octo.captcha</groupId>
             <artifactId>jcaptcha-all</artifactId>
-            <version>1.0-RC-2.0.1</version>
+            <version>1.0-RC6</version>
             <type>jar</type>
         </dependency>
         <!--jboss-->
