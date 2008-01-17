@@ -125,6 +125,12 @@ public class CommunityServiceMysqlImpl extends CommunityService {
       return logoutSuccesfull;
    }
    
+   public Map<String, Map<String, String>> getUserProperty(String userName){
+      aC = new ClassPathXmlApplicationContext("applicationContext.xml");
+      hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
+      return hibservice.getUserProperty(userName);
+   }
+   
    public Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value){
       aC = new ClassPathXmlApplicationContext("applicationContext.xml");
       hibservice = (HibernateCommunityService)aC.getBean("serviceCommunity");
