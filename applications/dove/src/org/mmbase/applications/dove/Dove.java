@@ -56,7 +56,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.88 2007-11-30 15:00:36 michiel Exp $
+ * @version $Id: Dove.java,v 1.89 2008-01-17 16:50:29 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -129,14 +129,13 @@ public class Dove extends AbstractDove {
         if (dataType instanceof BinaryDataType) {
             fel = addContentElement(FIELD, "", out);
 
-            int byteLength = 0;
+            long byteLength = 0;
             if (nm.hasField("filesize")) {
                 byteLength = node.getIntValue("filesize");
             } else if (nm.hasField("size")) {
                 byteLength = node.getIntValue("size");
             } else {
-                byte[] bytes = node.getByteValue(fname);
-                byteLength = bytes != null ? bytes.length : 0;
+                byteLength = node.isNull(fname) ? 0L : node.getSize(fname);
             }
             fel.setAttribute(ELM_SIZE, "" + byteLength);
         } else if (dataType instanceof DateTimeDataType ||
@@ -158,8 +157,13 @@ public class Dove extends AbstractDove {
             ol.setAttribute("name", "_" + node.getNodeManager().getName() + "_" + f.getName());
             while (i.hasNext()) {
                 Map.Entry<?, String> entry = i.next();
-                Element o = addContentElement("option", "" + entry.getKey(), ol);
-                o.setAttribute("id", "" + entry.getValue());
+                Object key = entry.getKey();
+                if (dataType instanceof BooleanDataType) { // These damn wizards use integer for
+                                                           // booleans. Don't ask me why. It's stupid.
+                    key =  "" + Casting.toInt(key);
+                }
+                Element o = addContentElement("option", "" + entry.getValue(), ol);
+                o.setAttribute("id", "" + key);
             }
         }
         return fel;
