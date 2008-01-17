@@ -10,15 +10,7 @@
   <title xml:lang="en">Test Editor</title>
 
   <action type="create">
-    <object type="tests">
-      <field name="showtitle">1</field>
-      <field name="maychange">0</field>
-      <field name="mayview">0</field>
-      <field name="questionsperpage">0</field>
-      <field name="feedbackpage">0</field>
-      <field name="always_online">0</field>
-      <field name="offline_date">2145928440</field>
-    </object>
+    <object type="tests" />
   </action>
 
   <action type="load">
@@ -38,50 +30,25 @@
 
   <action type="delete" />
 
-  <lists>
-    <optionlist include="config/option_list/boolean.xml" />
-    <optionlist include="config/option_list/boolean_inverse.xml" /> 
-    <optionlist include="config/tests/questionsperpage.xml" />
-    <optionlist include="config/tests/feedbackpage.xml" />
-  </lists>
-
-
   <form-schema id="step1">
     <title xml:lang="nl">Toets invoeren</title>
     <title xml:lang="en">Enter test</title>
 
     <field name="name"  />
-    <field name="showtitle" ftype="enum">
-      <optionlist select="boolean" />
-    </field>
-
+    <field name="showtitle"  />
     <field name="text" ftype="html" dtminlength="0" />
     <field name="questionamount" />
     <field name="requiredscore" />
-    <field name="maychange" ftype="enum">
-      <optionlist select="boolean_inverse" />
-    </field>
+    <field name="maychange" />
+    <field name="mayview" />
+    <field name="questionsperpage" />
+    <field name="feedbackpage" />
+    <field name="always_online" />
 
-    <field name="mayview" ftype="enum">
-      <optionlist select="boolean_inverse" />
-    </field>
-
-    <field name="questionsperpage" ftype="enum">
-      <optionlist select="questionsperpage" />
-    </field>
-
-    <field name="feedbackpage" ftype="enum">
-      <optionlist select="feedbackpage" />
-    </field>
-
-    <field name="always_online" ftype="enum">
-      <optionlist select="boolean_inverse" />
-    </field>
-    
     <field name="online_date" ftype="date" />
     <field name="offline_date" ftype="date" />
 
-        
+
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">
       <title xml:lang="nl">Bijbehorende vragen</title>
       <title xml:lang="en">Related questions</title>
@@ -163,21 +130,21 @@
       <command name="startwizard" inline="true" wizardname="config/question/fillquestions" objectnumber="new">
         <prompt>Fill in the gaps</prompt>
       </command>
-      
+
       <command name="startwizard" inline="true" wizardname="config/question/fillselectquestions" objectnumber="new">
         <prompt>Select in the gaps</prompt>
-      </command> 
+      </command>
       <command name="startwizard" inline="true" wizardname="config/question/opennumeralquestions" objectnumber="new">
         <prompt xml:lang="en">Open numeral question</prompt>
         <prompt xml:lang="nl">Niuewe open cijfer vraag</prompt>
-      </command>  
+      </command>
       <command name="startwizard" inline="true" wizardname="config/question/essayquestions" objectnumber="new">
         <prompt>Essay question</prompt>
-      </command> 
-      
+      </command>
+
     </list>
     &extra_lists;
-    
+
     <list role="related" extends="config/online/online-list.xml" />
     <list destination="feedback" role="related" extends="config/feedback/feedback-list.xml" />
   </form-schema>
