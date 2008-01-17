@@ -3,26 +3,35 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+  <!--
+      This default implementation of the education navigation gives a tree on the left-side, which
+      can be expanded/imploded.
+  -->
   <div class="navigationbar">
 
     <mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
       <script type="text/javascript" src="${_}"><!-- help IE --></script>
     </mm:link>
 
+    <!-- Open the page marked as 'lastpage'
+         (todo: does this work?)
+    -->
     <mm:listnodescontainer type="classrel">
       <mm:constraint field="snumber" value="${user}" />
       <mm:composite operator="or">
         <mm:constraint field="dnumber" value="${class}" />
         <mm:constraint field="dnumber" value="${education}" />
       </mm:composite>
-      <mm:listnodes >
+      <script type="text/javascript">
+        addEventHandler(window, "onload", function() {
+        <mm:listnodes >
         <c:if test="${ ! empty _node.lastpage}">
           <!-- is lastpage field ever filled ? -->
-          <script type="text/javascript">
             openContent("learnblocks", ${_node.lastpage});
-          </script>
         </c:if>
-      </mm:listnodes>
+        </mm:listnodes>
+        });
+      </script>
     </mm:listnodescontainer>
 
 
@@ -31,11 +40,8 @@
         <mm:field name="name"/>
       </mm:node>
     </div>
-    <mm:import id="stepNavigator">
-      <jsp:directive.include file="prev_next.jsp" />
-    </mm:import>
     <div class="stepNavigator">
-      <mm:write referid="stepNavigator" escape="none" />
+      <di:include page="prev_next.jsp" />
     </div>
   </div>
   <div class="folders">
@@ -45,20 +51,25 @@
 
     <div class="folderLesBody"
          id="education-tree">
-      <di:include page="tree.jspx" />
+      <!-- render the actual tree -->
+      <di:include page="/education/tree.jspx" />
     </div>
 
   </div>
-    <mm:import externid="frame" />
-    <mm:present referid="frame">
-      <script type="text/javascript">
-        addEventHandler(window, "onload", function() {
-        closeAll();
-        openContent('${learnobjectype}','${education}');
-        openOnly('div${learnobject}',   'img${education}');
-        });
-      </script>
-    </mm:present>
+
+  <!--
+       I don't recall where this frame-stuff is used for
+  -->
+  <mm:import externid="frame" />
+  <mm:present referid="frame">
+    <script type="text/javascript">
+      addEventHandler(window, "onload", function() {
+      closeAll();
+      openContent('${learnobjectype}','${education}');
+      openOnly('div${learnobject}',   'img${education}');
+      });
+    </script>
+  </mm:present>
 
     <mm:notpresent referid="frame">
       <script type="text/javascript">
