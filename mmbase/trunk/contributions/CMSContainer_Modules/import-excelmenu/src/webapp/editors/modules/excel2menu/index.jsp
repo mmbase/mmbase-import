@@ -4,7 +4,7 @@
 <html>
 <head>
   <title>Excel2menu</title>
-  <script language="javascript">
+  <script type="text/javascript">
     function upload() {
         var f=document.forms[0];
         f.submit();
