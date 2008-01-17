@@ -1,4 +1,4 @@
-package com.finalist.cmsc.tools.report;
+package com.finalist.cmsc.tools.generator;
 
 import java.io.File;
 
@@ -74,6 +74,4 @@ public class VCSConfig {
    public void setType(String type) {
       this.type = type;
    }
-
-   
 }
