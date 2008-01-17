@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author <a href="mailto:martinc@apache.org">Martin Cooper</a>
  * @author Sean C. Sullivan
  *
- * @version $Id: FileUpload.java,v 1.1 2008-01-17 07:48:23 mguo Exp $
+ * @version $Id: FileUpload.java,v 1.2 2008-01-17 09:17:41 mguo Exp $
  */
 public class FileUpload
     extends FileUploadBase {
@@ -58,15 +58,7 @@ public class FileUpload
     /**
      * Constructs an uninitialised instance of this class. A factory must be
      * configured, using <code>setFileItemFactory()</code>, before attempting
-     * to parse requests.
-     *
-     * @see #FileUpload(FileItemFactory)
-     */
-    public FileUpload() {
-        super();
-    }
-
-
+     * to a
     /**
      * Constructs an instance of this class which uses the supplied factory to
      * create <code>FileItem</code> instances.
@@ -77,6 +69,7 @@ public class FileUpload
         super();
         this.fileItemFactory = fileItemFactory;
     }
+
 
 
     // ----------------------------------------------------- Property accessors
