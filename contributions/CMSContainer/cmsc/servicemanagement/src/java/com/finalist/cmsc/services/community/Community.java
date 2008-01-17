@@ -45,4 +45,8 @@ public class Community {
    public void removePreferences(String module, String userId, String key){
       cService.removePreferences(module, userId, key);
    }
+   
+   public Map<String, Map<String, String>> getUserProperty(String userName){
+      return cService.getUserProperty(userName);
+   }
 }

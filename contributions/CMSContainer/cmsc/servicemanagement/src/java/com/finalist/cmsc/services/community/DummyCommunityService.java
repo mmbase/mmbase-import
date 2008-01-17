@@ -33,4 +33,8 @@ public class DummyCommunityService extends CommunityService {
    public void removePreferences(String module, String userId, String key){
       
    }
+   
+   public Map<String, Map<String, String>> getUserProperty(String userName){
+      return (null);
+   }
 }
