@@ -78,7 +78,7 @@
       <div class="<%=tabClass(pageContext,"draft")%>">
          <div class="body">
             <div>
-               <a href="#" onClick="selectTab('draft');"><fmt:message key="workflow.tab.draft"/></a>
+               <a href="#" onclick="selectTab('draft');"><fmt:message key="workflow.tab.draft"/></a>
             </div>
          </div>
       </div>
@@ -86,7 +86,7 @@
       <div class="<%=tabClass(pageContext,"finished")%>">
          <div class="body">
             <div>
-               <a href="#" onClick="selectTab('finished');"><fmt:message key="workflow.tab.finished"/></a>
+               <a href="#" onclick="selectTab('finished');"><fmt:message key="workflow.tab.finished"/></a>
             </div>
          </div>
       </div>
@@ -95,7 +95,7 @@
          <div class="<%=tabClass(pageContext,"approved")%>">
             <div class="body">
                <div>
-                  <a href="#" onClick="selectTab('approved');"><fmt:message key="workflow.tab.approved"/></a>
+                  <a href="#" onclick="selectTab('approved');"><fmt:message key="workflow.tab.approved"/></a>
                </div>
             </div>
          </div>
@@ -103,7 +103,7 @@
       <div class="<%=tabClass(pageContext,"published")%>">
          <div class="body">
             <div>
-               <a href="#" onClick="selectTab('published');"><fmt:message key="workflow.tab.published"/></a>
+               <a href="#" onclick="selectTab('published');"><fmt:message key="workflow.tab.published"/></a>
             </div>
          </div>
       </div>
@@ -178,7 +178,7 @@
 </div>
 <div class="body" id="workflow-canvas">
    <c:set var="orderby" value="${param.orderby}"/>
-   <form action='?' method="post" onSubmit="return submitValid(false);">
+   <form action='?' method="post" onsubmit="return submitValid(false);">
       <input type="hidden" name="orderby" value="${orderby}"/>
       <input type="hidden" name="status" value="${status}"/>
       <input type="hidden" name="laststatus"/>
@@ -197,7 +197,7 @@
       <c:set var="remark">
          <fmt:message key="workflow.action.reject.remark"/>
       </c:set>
-      &nbsp;&nbsp;&nbsp; <input type="checkbox" name="checkAll" onClick="checkAllElement(this, '')"/>
+      &nbsp;&nbsp;&nbsp; <input type="checkbox" name="checkAll" onclick="checkAllElement(this, '')"/>
       <input type="hidden" name="actionvalue" value=""/>
       <input type='hidden' id="remark" name="remark" value="[unchanged-item]"/>
       <br/>
