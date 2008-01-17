@@ -15,7 +15,9 @@
    <listener>
       <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
    </listener>
-
+   <listener>
+       <listener-class>net.jforum.ForumSessionListener</listener-class>
+   </listener>
 	<!-- 
 		MMBase Taglib settings
 	-->
@@ -129,7 +131,16 @@
          org.springframework.orm.hibernate3.support.OpenSessionInViewFilter
       </filter-class>
    </filter>
-   
+   	<!-- Clickstream -->
+   <filter>
+       <filter-name>clickstream-jforum</filter-name>
+       <filter-class>net.jforum.util.legacy.clickstream.ClickstreamFilter</filter-class>
+   </filter>
+   <filter-mapping>
+       <filter-name>clickstream-jforum</filter-name>
+       <url-pattern>*.page</url-pattern>
+   </filter-mapping>
+  
    <filter-mapping>
         <filter-name>hibernateFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -281,7 +292,55 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
-
+	<!-- JForum Controller -->
+    <servlet>
+        <servlet-name>jforum</servlet-name>
+        <servlet-class>net.jforum.JForum</servlet-class>
+        <init-param>
+            <param-name>development</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+    <!-- Installer -->
+    <!-- <servlet>
+     <servlet-name>install</servlet-name>
+     <servlet-class>net.jforum.InstallServlet</servlet-class>
+     <init-param>
+       <param-name>development</param-name>
+       <param-value>true</param-value>
+     </init-param>
+   </servlet> -->
+    <!-- JForum JahiaWebapps bridge-->
+    <servlet>
+        <servlet-name>jForumJahiaWebApp</servlet-name>
+        <servlet-class>org.jahia.jahiawebapps.jforum.JForumJahiaWebAppBridge</servlet-class>
+    </servlet>
+    <!-- AJAX -->
+    <servlet>
+        <servlet-name>dwr-invoker</servlet-name>
+        <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+        <init-param>
+            <param-name>configJForum</param-name>
+            <param-value>WEB-INF/dwr-jforum.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+    <!-- Mapping -->
+    <!--<servlet-mapping>
+        <servlet-name>install</servlet-name>
+        <url-pattern>/install/install.page</url-pattern>
+    </servlet-mapping> -->
+    <servlet-mapping>
+        <servlet-name>dwr-invoker</servlet-name>
+        <url-pattern>/dwr/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>jforum</servlet-name>
+        <url-pattern>*.page</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>version</servlet-name>
 		<url-pattern>/version</url-pattern>
