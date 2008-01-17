@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="viewrel" destination="view" minoccurs="1" maxoccurs="*">
-	<title xml:lang="nl">Template</title>
+	<title xml:lang="nl">View</title>
 	<title xml:lang="en">View</title>
 
 	<item>
@@ -11,14 +11,14 @@
 		</field>
 		<field ftype="data" name="resource">
 			<prompt xml:lang="en">Resource</prompt>
-			<prompt xml:lang="nl">Template</prompt>
+			<prompt xml:lang="nl">View</prompt>
 		</field>
       <field ftype="startwizard" wizardname="config/view/view" inline="true" />
 	</item>
 	
 	<command name="search" nodepath="view" age="-1" fields="title" pagelength="20" orderby="title">
 		<prompt xml:lang="en">Search view</prompt>
-		<prompt xml:lang="nl">Zoek template</prompt>
+		<prompt xml:lang="nl">Zoek view</prompt>
 		<search-filter>
 			<name xml:lang="en">Title contains</name>
 			<name xml:lang="nl">Titel bevat</name>
