@@ -4,7 +4,4 @@
 
 <fmt:setBundle basename="newsletter-module" scope="request" />
 
-
-
-
 <cmscedit:head title="Newsletter" />

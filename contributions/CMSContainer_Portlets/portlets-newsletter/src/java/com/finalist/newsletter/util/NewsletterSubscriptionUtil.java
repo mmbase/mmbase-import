@@ -239,4 +239,23 @@ public abstract class NewsletterSubscriptionUtil {
       }
    }
 
+   public static void unsubscribeFromNewsletter(String userName, int newsletterNumber) {
+
+   }
+
+   public static void unsubscribeAllFromNewsletter(int newsletterNumber) {
+      List<String> subscribers = NewsletterSubscriptionUtil.getAllSubscribers(newsletterNumber);
+      if (subscribers != null && subscribers.size() > 0) {
+         for (int s = 0; s < subscribers.size(); s++) {
+            String userName = subscribers.get(s);
+            NewsletterSubscriptionUtil.unsubscribeFromNewsletter(userName, newsletterNumber);
+         }
+      }
+   }
+
+   public static List<String> getAllSubscribers(int newsletterNumber) {
+      List<String> subscribers = null;
+      return (subscribers);
+   }
+
 }

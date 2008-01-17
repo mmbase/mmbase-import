@@ -1,8 +1,5 @@
 package com.finalist.newsletter.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,58 +10,65 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import com.finalist.newsletter.module.bean.SubscriptionDetailBean;
-import com.finalist.newsletter.module.bean.SubscriptionOverviewBean;
-import com.finalist.newsletter.util.BeanUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class SubscriptionAction extends Action {
 
-   private List<SubscriptionOverviewBean> createOverview() {
-      List<SubscriptionOverviewBean> beanList = new ArrayList<SubscriptionOverviewBean>();
-      List<String> subscribers = NewsletterSubscriptionUtil.getAllUsersWithSubscription();
-      if (subscribers != null && subscribers.size() > 0) {
-         for (int n = 0; n < subscribers.size(); n++) {
-            String userName = subscribers.get(n);
-            SubscriptionOverviewBean bean = BeanUtil.createSubscriptionOverviewBean(userName);
-            beanList.add(bean);
-         }
-      }
-      return beanList;
-   }
-
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
       String action = request.getParameter("action");
+      String userName = request.getParameter("username");
+      String[] checked = request.getParameterValues("checked");
+
       ActionForward actionForward = mapping.findForward("error");
       ActionMessages errors = new ActionMessages();
+      ActionMessages messages = new ActionMessages();
 
       if (action != null) {
-         if (action.equals("overview")) {
-            List<SubscriptionOverviewBean> beanList = createOverview();
-            if (beanList != null) {
-               request.setAttribute("subscriptionOverviewBeans", beanList);
-               actionForward = mapping.findForward("overview");
-            } else {
-               errors.add("error", new ActionMessage("error.no_items"));
-               actionForward = mapping.findForward("error");
-            }
-         } else if (action.equals("detail")) {
-            String userName = request.getParameter("username");
+         if (action.equals("unsubscribe")) {
             if (userName != null) {
-               SubscriptionDetailBean bean = BeanUtil.createSubscriptionDetailBean(userName);
-               if (bean != null) {
-                  request.setAttribute("subscriptionDetailBean", bean);
-                  actionForward = mapping.findForward("detail");
-               } else {
-                  errors.add("error", new ActionMessage("error.no_items"));
-                  actionForward = mapping.findForward("error");
+               NewsletterSubscriptionUtil.unsubscribeFromAllNewsletters(userName);
+               return (mapping.findForward("success"));
+            } else if (checked != null && checked.length > 0) {
+               for (int i = 0; i < checked.length; i++) {
+                  int newsletterNumber = Integer.parseInt(checked[i]);
+                  NewsletterSubscriptionUtil.unsubscribeAllFromNewsletter(newsletterNumber);
+                  return (mapping.findForward("success"));
                }
             }
+         } else if (action.equals("terminate")) {
+            if (userName != null) {
+               actionForward = mapping.findForward("return");
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
+            }
+         } else if (action.equals("pause")) {
+            if (userName != null) {
+               NewsletterSubscriptionUtil.pauseSubscription(userName);
+               actionForward = mapping.findForward("return");
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
+            }
+         } else if (action.equals("resume")) {
+            if (userName != null) {
+               NewsletterSubscriptionUtil.resumeSubscription(userName);
+               actionForward = mapping.findForward("return");
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
+
+            }
+         } else if (action.equals("update")) {
+            if (userName != null) {
+               actionForward = mapping.findForward("return");
+               String path = actionForward.getPath() + "&username=" + userName;
+               actionForward.setPath(path);
+            }
+         } else {
+            errors.add("unknown_action", new ActionMessage("error.unknown_action"));
          }
       }
       saveErrors(request, errors);
+      this.saveMessages(request, messages);
       return (actionForward);
    }
-
 }

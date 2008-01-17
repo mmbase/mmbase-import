@@ -29,10 +29,10 @@ public class NewsletterPublisher extends Thread {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
 
-   private String publicationNumber;
+   private int publicationNumber;
    private Cloud cloud;
 
-   public NewsletterPublisher(String publicationNumber) {
+   public NewsletterPublisher(int publicationNumber) {
       this.publicationNumber = publicationNumber;
       this.cloud = CloudProviderFactory.getCloudProvider().getCloud();
    }
@@ -40,12 +40,11 @@ public class NewsletterPublisher extends Thread {
    private void createConfirmationList(List<String> subscribers) {
       for (int s = 0; s < subscribers.size(); s++) {
          String userName = subscribers.get(s);
-         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER, publicationNumber);
+         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER, String.valueOf(publicationNumber));
       }
    }
 
-   private Message generateNewsletter(String userName, String publicationNumber, String mimeType) {
-      log.debug("Request to generate a newsletter for user " + userName + " from publication " + publicationNumber + " with mimetype " + mimeType);
+   private Message generateNewsletter(String userName, int publicationNumber, String mimeType) {
       NewsletterGeneratorFactory factory = NewsletterGeneratorFactory.getInstance();
       NewsletterGenerator generator = factory.getNewsletterGenerator(publicationNumber, mimeType);
       if (generator != null) {
@@ -56,7 +55,7 @@ public class NewsletterPublisher extends Thread {
    }
 
    private void removeFromConfirmationList(String userName) {
-      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER, publicationNumber);
+      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER, String.valueOf(publicationNumber));
    }
 
    @Override
@@ -81,9 +80,10 @@ public class NewsletterPublisher extends Thread {
    private Message setMailHeaders(Node publicationNode, String userName, Message message) throws MessagingException {
 
       message.setFrom(new InternetAddress("jasperstroomer@quicknet.nl"));
-
+      
       String userEmail = NewsletterCommunication.getUserPreference(userName, "email");
-      message.setRecipient(RecipientType.TO, new InternetAddress(userEmail));
+      InternetAddress toAddress = new InternetAddress(userEmail);
+      message.setRecipient(RecipientType.TO, toAddress);
 
       String subject = publicationNode.getStringValue("subject");
       message.setSubject(subject);

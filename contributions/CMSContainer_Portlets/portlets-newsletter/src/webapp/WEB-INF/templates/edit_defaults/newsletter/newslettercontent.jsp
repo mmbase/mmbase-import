@@ -1,7 +1,5 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 
-<cmsc:portlet-preferences />
-
 <cmsc:location var="cur" sitevar="site" />
 <c:set var="page" value="${cur.id}" />
 

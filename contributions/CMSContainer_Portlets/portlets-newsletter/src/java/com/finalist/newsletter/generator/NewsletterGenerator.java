@@ -65,9 +65,9 @@ public abstract class NewsletterGenerator {
       }
    }
 
-   private String publicationNumber;
+   private int  publicationNumber;
 
-   public NewsletterGenerator(String publicationNumber) {
+   public NewsletterGenerator(int  publicationNumber) {
       this.publicationNumber = publicationNumber;
    }
 

@@ -4,7 +4,7 @@ import javax.mail.Message;
 
 public class NewsletterGeneratorPlain extends NewsletterGenerator {
 
-   public NewsletterGeneratorPlain(String publicationNumber) {
+   public NewsletterGeneratorPlain(int publicationNumber) {
       super(publicationNumber);
       // TODO Auto-generated constructor stub
    }

@@ -1,8 +1,12 @@
 <%@include file="globals.jsp" %>
 
-<b><fmt:message key="newsletteroverview.title" /></b>
+<cmscedit:head title="reactions.title">
+	<fmt:message key="newsletteroverview.title" />
+</cmscedit:head>
 
-<table width="50%">
+<br><br>
+
+<table width="75%">
 	<tr>	
 		<th></th>
 		<th align="left"><fmt:message key="newsletteroverview.newsletter" /></tk>
@@ -11,7 +15,7 @@
 		<th align="left"><fmt:message key="newsletteroverview.numberofsubscriptions" /></tk>
 	</tr>
 	<c:forEach var="bean" items="${newsletterOverviewBeans}">
-	<c:url var="url" value="NewsletterAction.do?action=detail&number=${bean.number}" />
+	<c:url var="url" value="ReportNewsletterSubscriptions.do?number=${bean.number}" />
 	<tr>
 		<td><cmsc:checkbox var="checked" value="${bean.number}" /></td>
 		<td><a href="${url}"><jsp:getProperty name="bean" property="title" /></a></td>
@@ -22,4 +26,4 @@
 	</c:forEach>
 </table>
 
-<p><a href="SubscriberAction.do?action=unsubscribe"><fmt:message key="newsletteroverview.link.deleteallsubscriptions" /></a><p>
+<p><a href="SubscribtionAction.do?action=unsubscribe"><fmt:message key="newsletteroverview.link.deleteallsubscriptions" /></a><p>

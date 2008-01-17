@@ -1,6 +1,10 @@
 <%@include file="globals.jsp" %>
 
-<b><fmt:message key="subscriptionoverview.title" /></b>
+<cmscedit:head title="reactions.title">
+	<fmt:message key="subscriptionoverview.title" />
+</cmscedit:head>
+
+<br><br>
 
 <table width="50%">
 	<tr>

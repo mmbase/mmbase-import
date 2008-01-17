@@ -12,7 +12,7 @@ public class NewsletterGeneratorHtml extends NewsletterGenerator {
 
    static final Logger log = Logging.getLoggerInstance(NewsletterGeneratorHtml.class);
 
-   public NewsletterGeneratorHtml(String publicationNumber) {
+   public NewsletterGeneratorHtml(int publicationNumber) {
       super(publicationNumber);
       // TODO Auto-generated constructor stub
    }

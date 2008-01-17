@@ -1,6 +1,10 @@
 <%@include file="globals.jsp" %>
 
-<b><fmt:message key="subscriptiondetail.title" /></b>
+<cmscedit:head title="reactions.title">
+	<fmt:message key="subscriptiondetail.title" />
+</cmscedit:head>
+
+<br><br>
 
 <jsp:useBean id="subscriptionDetailBean" scope="request" class="com.finalist.newsletter.module.bean.SubscriptionDetailBean" />
 <c:set var="userName" value="${subscriptionDetailBean.userName}" />

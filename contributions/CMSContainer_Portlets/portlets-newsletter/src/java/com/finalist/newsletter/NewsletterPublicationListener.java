@@ -10,8 +10,7 @@ public class NewsletterPublicationListener implements NodeEventListener {
 
    public void notify(NodeEvent event) {
       if (event.getType() == Event.TYPE_NEW) {
-         int nodeNumber = event.getNodeNumber();
-         String publicationNumber = String.valueOf(nodeNumber);
+         int publicationNumber = event.getNodeNumber();
          Thread publisher = new NewsletterPublisher(publicationNumber);
          publisher.start();
       }
