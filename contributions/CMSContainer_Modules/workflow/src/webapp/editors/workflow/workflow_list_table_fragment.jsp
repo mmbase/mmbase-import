@@ -5,18 +5,16 @@
    <tr>
       <th style="width: 20px;">&nbsp;</th>
       <th style="width: 10px;">&nbsp;</th>
-      <th style="width: 80px;">&nbsp;</th>
-      <th style="width: 100px;" nowrap="true">
+      <th style="width: 73px;">&nbsp;</th>
+      <th style="width: 300px;" nowrap="true">
          <a href="#" <%=onClickandStyle(pageContext, "title")%>>
             <fmt:message key="workflow.title"/>
          </a>
       </th>
-      <th><fmt:message key="workflow.type"/></th>
-      <th><fmt:message key="workflow.number"/></th>
-      <th>
-         <a href="#" <%=onClickandStyle(pageContext, "remark")%>>
-            <fmt:message key="workflow.remark"/>
-         </a>
+      <th style="width: 68px;"><fmt:message key="workflow.type"/></th>
+      <th style="width: 68px;"><fmt:message key="workflow.number"/></th>
+      <th style="width: 50px;">
+         <a href="#" <%=onClickandStyle(pageContext, "remark")%>><fmt:message key="workflow.remark"/></a>
       </th>
       <th style="width: 140px;">
          <a href="#" <%=onClickandStyle(pageContext, "lastmodifier")%>>
@@ -64,7 +62,7 @@
    <c:set var="field" value="title"/>
    <c:set var="returnAction" value="PageWorkflowAction.do"/>
 </c:if>
-<td align="left" width="10px">
+<td align="left">
    <mm:node number="${workflowNumber}">
       <mm:field name="stacktrace" id="stacktrace" write="false"/>
    </mm:node>
@@ -79,14 +77,14 @@
       </mm:hasrank>
    </mm:haspage>
 </td>
-<td align="left" width="40px" style="white-space: nowrap;">
+<td align="left" style="white-space: nowrap;">
    <mm:field name="${type}.number" jspvar="number" write="false"/>
    <c:if test="${type == 'contentelement'}">
       <a href="javascript:info('${number}')">
          <img src="../gfx/icons/info.png" title="<fmt:message key="workflow.info" />"
               alt="<fmt:message key="workflow.info"/>"/>
       </a>
-      <a href="<cmsc:contenturl number="${number}"/>" target="_blanc">
+      <a href="<cmsc:contenturl number="${number}"/>" target="_blank">
          <img src="../gfx/icons/preview.png" alt="<fmt:message key="workflow.preview.title"/>"
               title="<fmt:message key="workflow.preview.title"/>"/>
       </a>
