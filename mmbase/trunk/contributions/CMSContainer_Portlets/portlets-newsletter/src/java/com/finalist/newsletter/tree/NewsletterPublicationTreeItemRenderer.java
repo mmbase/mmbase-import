@@ -41,6 +41,8 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
                   "../newsletter/NewsletterPublicationDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
                   "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+            element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.test", "newsletter",
+                  "../newsletter/NewsletterPublicationTest.do?number=" + id));
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {

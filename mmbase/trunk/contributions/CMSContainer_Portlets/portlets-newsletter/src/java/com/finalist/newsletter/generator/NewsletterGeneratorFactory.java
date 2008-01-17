@@ -42,7 +42,7 @@ public class NewsletterGeneratorFactory {
 
    }
 
-   public NewsletterGenerator getNewsletterGenerator(String publicationNumber, String mimeType) {
+   public NewsletterGenerator getNewsletterGenerator(int publicationNumber, String mimeType) {
       if (mimeType.equals(NewsletterSubscriptionUtil.MIMETYPE_HTML)) {
          return (new NewsletterGeneratorHtml(publicationNumber));
       } else if (mimeType.equals(NewsletterSubscriptionUtil.MIMETYPE_PLAIN)) {
