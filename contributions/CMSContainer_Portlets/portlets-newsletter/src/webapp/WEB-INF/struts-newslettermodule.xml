@@ -15,20 +15,23 @@
 	<!-- ========== Action Mapping Definitions =================================== -->
 	<action-mappings>
 		<!-- ==== Site management ==== -->
-		<action path="/editors/newsletter/module/InitAction" type="com.finalist.newsletter.module.InitAction" unknown="false" validate="false">
-			<forward name="success" path="/editors/newsletter/module/overview.jsp" redirect="false" />
+		<action path="/editors/newsletter/module/ReportOverview" type="com.finalist.newsletter.module.ReportOverview" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_overview.jsp" redirect="false" />
 		</action>
-		<action path="/editors/newsletter/module/NewsletterAction" type="com.finalist.newsletter.module.NewsletterAction" unknown="false" validate="false">
-			<forward name="overview" path="/editors/newsletter/module/newsletteroverview.jsp" redirect="false" />
-			<forward name="detail" path="/editors/newsletter/module/newsletterdetail.jsp" redirect="false" />
+		<action path="/editors/newsletter/module/ReportNewsletterList" type="com.finalist.newsletter.module.ReportNewsletterList" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_newsletter_list.jsp" redirect="false" />
 		</action>
-		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false">
-			<forward name="overview" path="/editors/newsletter/module/subscriptionoverview.jsp" redirect="false" />
-			<forward name="detail" path="/editors/newsletter/module/subscriptiondetail.jsp" redirect="false" />
+		<action path="/editors/newsletter/module/ReportNewsletterSubscriptions" type="com.finalist.newsletter.module.ReportNewsletterSubscriptions" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_newsletter_list.jsp" redirect="false" />
 		</action>
-		<action path="/editors/newsletter/module/SubscriberAction" type="com.finalist.newsletter.module.SubscriberAction" unknown="false" validate="false">
-			<forward name="return" path="/editors/newsletter/module/SubscriptionAction.do?action=detail" redirect="false" />
+		<action path="/editors/newsletter/module/ReportSubscriberList" type="com.finalist.newsletter.module.ReportSubscriberList" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false" />
 		</action>
+		<action path="/editors/newsletter/module/ReportSubscriberSubscriptions" type="com.finalist.newsletter.module.ReportSubscriberSubscriptions" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp" redirect="false" />
+		</action>
+
+		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false"></action>
 
 		<!-- ==== Select page nodes ==== -->
 

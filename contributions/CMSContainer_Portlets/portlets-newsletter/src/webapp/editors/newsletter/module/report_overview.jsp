@@ -4,6 +4,8 @@
 	<fmt:message key="globalstats.title" />
 </cmscedit:head>
 
+<br><br>
+
 <jsp:useBean id="globalOverviewBean" scope="request" type="com.finalist.newsletter.module.bean.GlobalOverviewBean" />
 
 <table width="50%">
@@ -24,3 +26,9 @@
 		<td><jsp:getProperty name="globalOverviewBean" property="numberOfSubscribtions"  /></td>
 	</tr>
 </table>
+
+<br />
+<div>
+	<p><a href="ReportNewsletterList.do"><fmt:message key="index.link.newsletteroverview" /></a></p>
+	<p><a href="ReportSubscriberList.do"><fmt:message key="index.link.subscriptionoverview" /></a></p>
+</div>

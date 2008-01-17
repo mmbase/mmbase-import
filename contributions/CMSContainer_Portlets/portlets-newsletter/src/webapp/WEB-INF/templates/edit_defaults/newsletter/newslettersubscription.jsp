@@ -1,12 +1,10 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp"%>
 
-<cmsc:portlet-preferences />
-
 <cmsc:location var="location" />
 <c:set var="page" value="${location.id}" />
 <c:set var="newsletterid" value="${location.id}" />
 
-<div class="portlet-config-canvas">	
+<div class="portlet-config-canvas">
 	<script type="text/javascript">
 		function selectElement(contentelement, title) {
 			document.forms['<portlet:namespace />form'].contentelement.value = contentelement;
