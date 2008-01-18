@@ -1,14 +1,14 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<%@ page import="com.finalist.cmsc.repository.ContentElementUtil,
+<%@page import="com.finalist.cmsc.repository.ContentElementUtil,
                  com.finalist.cmsc.repository.RepositoryUtil,
                  java.util.ArrayList"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="search.title">
-      <script src="content.js"type="text/javascript" ></script>
-      <script src="search.js"type="text/javascript" ></script>
+      <script src="content.js" type="text/javascript"></script>
+      <script src="search.js" type="text/javascript"></script>
 </cmscedit:head>
 <body>
 <mm:import id="searchinit"><c:url value='/editors/repository/SearchInitAction.do'/></mm:import>
@@ -34,7 +34,7 @@
          </mm:compare>
             <div class="body">
                <div>
-                  <a href="#" onClick="selectTab('basic');"><fmt:message key="search.simple.search" /></a>
+                  <a href="#" onclick="selectTab('basic');"><fmt:message key="search.simple.search" /></a>
                </div>
             </div>
          </div>
@@ -46,7 +46,7 @@
          </mm:compare>
             <div class="body">
                <div>
-                  <a href="#" onClick="selectTab('advanced');"><fmt:message key="search.advanced.search" /></a>
+                  <a href="#" onclick="selectTab('advanced');"><fmt:message key="search.advanced.search" /></a>
                </div>
             </div>
          </div>
