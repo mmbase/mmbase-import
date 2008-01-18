@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.415 2008-01-04 15:44:14 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.416 2008-01-18 17:10:13 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4979,6 +4979,31 @@ like the parameter list or the session (where ever it is available) --&gt;
 </mm:haspage>]]></example>
   </tag>
   <tag>
+    <name>treehaspage</name>
+    <extends>condition</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeHasPageTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+      <p>
+        Checks for the availability of a certain JSP on this server, using tree-like functionality
+      </p>
+    </info>
+    <attribute>
+      <name>page</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+    </attribute>
+    <attribute>
+      <name>objectlist</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+    </attribute>
+    <since>MMBase-1.8.6</since>
+    <see tag="treeinclude" />
+  </tag>
+  <tag>
     <name>compare</name>
     <type>util.context</type>
     <extends>condition</extends>
@@ -6226,6 +6251,21 @@ Of course, the default behavior of getSmartPath can still be overridden.
        Which provides the same functionality as the `escape' attribute of writes inside XSLT.
       </p>
     </info>
+    <attribute>
+      <name>version</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        If &lt;xsl:stylesheet&gt; is produced, the value of the 'version' attribute. Defaults to "1.0".
+      </info>
+      <since>MMBase-1.8.5</since>
+    </attribute>
+    <extends>contextreader</extends>
+    <see tag="formatter" />
+    <see tag="writer" attribute="escape"/>
+    <example>
+      <include base="examples.taglib" href="codesamples/xsltinline.jsp" />
+    </example>
     <extends>contextreader</extends>
     <see tag="formatter" />
     <see tag="writer" attribute="escape"/>
@@ -6828,7 +6868,7 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-  Turns the escaper arround (so, will call the 'transformBack' methods).
+        Turns the escaper arround (so, will call the 'transformBack' methods).
       </info>
     </attribute>
     <example><![CDATA[
@@ -8400,6 +8440,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>form</name>
     <extends>transaction</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.FormTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
       A form tag collects validation from mm:fieldinto type="check" and mm:fieldinfo
