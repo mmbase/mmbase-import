@@ -56,7 +56,7 @@ public class JForumPortletBridge extends CmscPortlet {
         Servlet instance = null;
 
         if (null != getPortletContext().getAttribute(JFORUM_KEY)) return;
-        
+
         //init
         try {
 
@@ -109,14 +109,17 @@ public class JForumPortletBridge extends CmscPortlet {
             logger.debug("Found parameter in processAction method: " + name + "," + values[0]);
         }
 
+        String postBody = "";
         //deal with file upload
         boolean isFileUpload = isMultipartContent(request);
         if (isFileUpload) {
-            handleMultipartRequest(request, response);
+            postBody = handleMultipartRequest(request, response);
         } else {
             logger.debug("It's no a file Upload.");
         }
 
+
+        request.getPortletSession().setAttribute("postBody", postBody);
         //validate procees action
         validateProcessAction(request);
 
@@ -133,6 +136,7 @@ public class JForumPortletBridge extends CmscPortlet {
      */
     public void render(RenderRequest request, RenderResponse response) {
         logger.debug("Begin render method");
+        String postBody = (String) request.getPortletSession().getAttribute("postBody");
 
         // deal with SSO
 //        updateRemoteUser(request);
@@ -192,7 +196,7 @@ public class JForumPortletBridge extends CmscPortlet {
             //call JForum service method
             if (!isSameServeltAction(request) || isFirstAction(request)) {
                 // || !userProcesseur.isNotAllowedAction()) {
-                callServletServiceMethod(request, response, defaultRequestUri, defaultModule, defaultAction);
+                callServletServiceMethod(request, response, defaultRequestUri, defaultModule, defaultAction, postBody);
             }
 
             //invalidate process Action call
@@ -289,7 +293,8 @@ public class JForumPortletBridge extends CmscPortlet {
      * @param actionRequest Description of Parameter
      * @return The FileUpload value
      */
-    private void handleMultipartRequest(ActionRequest actionRequest, ActionResponse actionResponse) {
+    private String handleMultipartRequest(ActionRequest actionRequest, ActionResponse actionResponse) {
+        String postBody = "";
         List itemsObject = new ArrayList();
         String encoding = SystemGlobals.getValue(ConfigKeys.ENCODING);
         // check if it's multipart file
@@ -310,7 +315,13 @@ public class JForumPortletBridge extends CmscPortlet {
                 FileItem item = (FileItem) iter.next();
                 if (item.isFormField()) {
                     logger.debug("Process upload, form field Name: " + item.getFieldName());
-                    actionResponse.setRenderParameter(item.getFieldName(), item.getString(encoding));
+
+                    if ("message".equals(item.getFieldName())) {
+                        postBody = item.getString(encoding);
+                        actionResponse.setRenderParameter(item.getFieldName(),"");
+                    } else {
+                        actionResponse.setRenderParameter(item.getFieldName(), item.getString(encoding));
+                    }
                 } else {
                     if (item.getSize() > 0) {
                         logger.debug("Process upload, field Name: " + item.getFieldName());
@@ -330,6 +341,8 @@ public class JForumPortletBridge extends CmscPortlet {
             //new ForumException(e);
             logger.error("File upload error due to: ", e);
         }
+
+        return postBody;
     }
 
     private final boolean isMultipartContent(ActionRequest req) {
@@ -424,12 +437,12 @@ public class JForumPortletBridge extends CmscPortlet {
      * @param defaultModule     Description of Parameter
      * @param defaultAction     Description of Parameter
      */
-    private void callServletServiceMethod(RenderRequest request, RenderResponse response, String defaultRequestUri, String defaultModule, String defaultAction) {
+    private void callServletServiceMethod(RenderRequest request, RenderResponse response, String defaultRequestUri, String defaultModule, String defaultAction, String postBody) {
         // deal with file upload
         synchFileUpload(request);
         //logRequestAttributes(request);
         // build HttpServletRequest/response object
-        HttpServletRequestWrapper reqW = new HttpServletRequestWrapper(request, defaultRequestUri, defaultModule, defaultAction, HttpServletRequestWrapper.HTTP_GET);
+        HttpServletRequestWrapper reqW = new HttpServletRequestWrapper(request, defaultRequestUri, defaultModule, defaultAction, HttpServletRequestWrapper.HTTP_GET, postBody);
         HttpServletResponseWrapper respW = new HttpServletResponseWrapper(response);
 
         // get servlet object
