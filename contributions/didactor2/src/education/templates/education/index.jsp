@@ -4,12 +4,8 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
-  <jsp:directive.page buffer="100kb" />
-  <!--
-      xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
-  -->
-
-  <di:html expires="0" component="education" type="text/html">
+  <di:html
+      expires="0" component="education" type="text/html">
 
     <!-- wtf -->
     <mm:hasnode number="component.drm">
@@ -19,6 +15,7 @@
     <di:include page="/education/bookmark.jspx" />
 
     <div class="rows" id="rows">
+
       <di:include debug="html" page="/education/navigation.jspx" />
       <di:include debug="html" page="/education/main.jspx" />
     </div>
