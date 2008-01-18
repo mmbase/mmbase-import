@@ -10,49 +10,24 @@
       be placed in a dropdown box.
 
   -->
-  <jsp:directive.page import="nl.didactor.component.Component,java.util.*" />
   <mm:cloud method="asis">
     <div class="providerMenubar">
-    <script  type="text/javascript">
 
-      function getUrl(url){
-      var i = new Image();
-      i.src = url;
-      i = null;
-      }
+      <di:include page="/cockpit/keepalive.jsp" /> <!-- not necessary when using di:html, but it has a duplicate-include-protection -->
 
-      function keepalive(){
-      getUrl("<mm:treefile page="/shared/onlineReporter.jsp" objectlist="$includePath"
-      escape="js-double-quotes" referids="$referids"
-      escapeamps="${empty param.escapeamps ?  false : param.escapeamps}" />");
-      setTimeout("keepalive();",1000 * 60 * 2); // keep alive every 2 minutes
-      }
-
-      keepalive();
-    </script>
       <mm:hasrank minvalue="didactor user">
         <mm:node referid="provider">
           <mm:functioncontainer>
             <mm:param name="bar">provider</mm:param>
-            <mm:listfunction name="components" id="c">
-              <mm:treeinclude page="/${c.name}/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
-                <mm:param name="name">${c.name}</mm:param>
-                <mm:param name="number">${c.number}</mm:param>
-                <mm:param name="type">div</mm:param>
-                <mm:param name="scope">provider</mm:param>
-              </mm:treeinclude>
+            <mm:listfunction name="components">
+              <di:menuitem component="${co}" />
             </mm:listfunction>
           </mm:functioncontainer>
         </mm:node>
-
-        <!-- If the user has the rights, then always show the management link. That allows us to enable/disable components after install on an empty database -->
-        <mm:treeinclude page="/education/cockpit/menuitem.jsp"
-                        objectlist="$includePath" referids="$referids">
-          <mm:param name="name">education</mm:param>
-          <mm:param name="type">div</mm:param>
-          <mm:param name="scope">provider</mm:param>
-        </mm:treeinclude>
       </mm:hasrank>
+
+      <!-- If the user has the rights, then always show the management link. That allows us to enable/disable components after install on an empty database -->
+      <di:menuitem component="${di:component('education')}" />
 
       <mm:hasrank value="anonymous">
         <div class="provideranonymous">
