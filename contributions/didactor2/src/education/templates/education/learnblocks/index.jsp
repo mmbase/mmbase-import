@@ -7,7 +7,7 @@
   <mm:content
       type="application/xml" postprocessor="none">
     <div class="content">
-      <mm:cloud rank="anonymous">
+      <mm:cloud rank="didactor user">
 
         <mm:import externid="learnobject" required="true"/>
 
