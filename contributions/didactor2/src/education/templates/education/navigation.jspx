@@ -10,7 +10,9 @@
   <div class="navigationbar">
 
     <mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
-      <script type="text/javascript" src="${_}"><!-- help IE --></script>
+      <script type="text/javascript" src="${_}">
+        <!-- help IE -->
+      </script>
     </mm:link>
 
     <!-- Open the page marked as 'lastpage'
@@ -41,7 +43,7 @@
       </mm:node>
     </div>
     <div class="stepNavigator">
-      <di:include page="prev_next.jsp" />
+      <di:include page="/education/prev_next.jsp" />
     </div>
   </div>
   <div class="folders">
