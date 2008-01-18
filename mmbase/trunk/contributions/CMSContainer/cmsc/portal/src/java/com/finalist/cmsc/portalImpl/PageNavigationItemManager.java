@@ -91,11 +91,6 @@ public class PageNavigationItemManager implements NavigationItemManager {
          Map<String, List<Integer>> pageImages = PagesUtil.getPageImages(pageNode);
          page.setPageImages(pageImages);
      }
-     
-     public String getOpenAction(String contextPath, Node parentNode, boolean secure) {
-         String action = String.format("/editors/site/NavigatorPanel.do?nodeId=%s",parentNode.getNumber());
-         return contextPath+action;
-     }
 
      /**
       * publishing of sites and pages is done by the publish module

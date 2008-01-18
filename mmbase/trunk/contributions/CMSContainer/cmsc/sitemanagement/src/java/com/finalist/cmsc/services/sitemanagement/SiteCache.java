@@ -359,31 +359,29 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
                }
                int destinationNumber = event.getRelationDestinationNumber();
                PageTreeNode destTreeNode = getPageTreeNode(destinationNumber);
-               if(event.getNodeEvent().hasChanged(TreeUtil.RELATION_POS_FIELD)) {
-	               int childIndex = (Integer) event.getNodeEvent().getNewValue(TreeUtil.RELATION_POS_FIELD);
-	               if (destTreeNode == null) {
-	                  // create new PageYreeNode
-	                  Node destNode = getCloud().getNode(destinationNumber);
-	                  String path = destNode.getStringValue(TreeUtil.PATH_FIELD);
-	                  List<String> names = PageTree.getPathElements(path);
-	                  PageTree tree = getTree(names.get(0));
-	                  if (tree != null) {
-	                     tree.insert(path, destinationNumber, childIndex);
-	                  }
-	               }
-	               else {
-	                  // move PageTreeNode
-	                  int sourceNumber = event.getRelationSourceNumber();
-	
-	                  PageTree destTree = getTree(destinationNumber);
-	                  PageTree sourceTree = getTree(sourceNumber);
-	                  if (sourceTree == destTree) {
-	                     destTree.move(destTreeNode, sourceNumber, childIndex);
-	                  }
-	                  else {
-	                     destTree.move(destTreeNode, sourceTree, sourceNumber, childIndex);
-	                  }
-	               }
+               int childIndex = (Integer) event.getNodeEvent().getNewValue(TreeUtil.RELATION_POS_FIELD);
+               if (destTreeNode == null) {
+                  // create new PageYreeNode
+                  Node destNode = getCloud().getNode(destinationNumber);
+                  String path = destNode.getStringValue(TreeUtil.PATH_FIELD);
+                  List<String> names = PageTree.getPathElements(path);
+                  PageTree tree = getTree(names.get(0));
+                  if (tree != null) {
+                     tree.insert(path, destinationNumber, childIndex);
+                  }
+               }
+               else {
+                  // move PageTreeNode
+                  int sourceNumber = event.getRelationSourceNumber();
+
+                  PageTree destTree = getTree(destinationNumber);
+                  PageTree sourceTree = getTree(sourceNumber);
+                  if (sourceTree == destTree) {
+                     destTree.move(destTreeNode, sourceNumber, childIndex);
+                  }
+                  else {
+                     destTree.move(destTreeNode, sourceTree, sourceNumber, childIndex);
+                  }
                }
             }
                break;
