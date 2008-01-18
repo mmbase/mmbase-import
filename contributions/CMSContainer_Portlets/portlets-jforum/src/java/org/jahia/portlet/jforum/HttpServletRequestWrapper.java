@@ -29,6 +29,7 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
     public final static int HTTP_GET = 0;
     public final static int HTTP_POST = 1;
     private static Logger logger = Logger.getLogger(HttpServletRequestWrapper.class);
+    String postBody;
 
 
     /**
@@ -39,11 +40,12 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
      * @param defaultModule     Description of Parameter
      * @param defaultAction     Description of Parameter
      */
-    public HttpServletRequestWrapper(RenderRequest request, String defaultRequestUri, String defaultModule, String defaultAction, int httpMethod) {
+    public HttpServletRequestWrapper(RenderRequest request, String defaultRequestUri, String defaultModule, String defaultAction, int httpMethod, String postBody) {
         super(request);
         this.defaultRequestUri = defaultRequestUri;
         this.defaultModule = defaultModule;
         this.defaultAction = defaultAction;
+        this.postBody = postBody;
         if (httpMethod == HTTP_POST) {
             setPostMethod();
         } else {
@@ -174,6 +176,9 @@ public class HttpServletRequestWrapper extends ServletRequestWrapper implements
      * @return The Parameter value
      */
     public String getParameter(String name) {
+        if("message".equals(name)){
+            return postBody;
+        }
         String value = super.getParameter(name);
         if (value == null && isFirstAction()) {
             logger.debug("value is null!! for param: " + name);
