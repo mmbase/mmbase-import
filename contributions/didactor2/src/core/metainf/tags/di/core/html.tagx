@@ -46,6 +46,10 @@
           </c:if>
         </di:head>
         <body class="${styleClass}">
+          <mm:hasrank minvalue="didactor user">
+            <di:include page="/shared/keepalive.jsp" />
+          </mm:hasrank>
+
           <div class="componentBody">
             <di:include page="/cockpit/applicationbar.jsp" />
             <di:include page="/cockpit/providerbar.jsp" />
