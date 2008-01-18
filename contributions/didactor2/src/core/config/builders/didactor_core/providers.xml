@@ -90,6 +90,9 @@
     <function name="smartpath">
       <class>nl.didactor.functions.SmartPath</class>
     </function>
+    <function name="components">
+      <class>nl.didactor.functions.Components</class>
+    </function>
   </functionlist>
 
 </builder>
