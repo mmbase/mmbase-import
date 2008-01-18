@@ -11,11 +11,11 @@ import java.lang.reflect.*;
  * Retrieves a 'madetests' object for a certain tests and copybook objects.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyBookMadeTest.java,v 1.1 2007-07-26 14:35:23 michiel Exp $
+ * @version $Id: CopyBookMadeTest.java,v 1.2 2008-01-18 12:22:58 michiel Exp $
  */
 public class CopyBookMadeTest {
     protected final static Logger log = Logging.getLoggerInstance(CopyBookMadeTest.class);
-    
+
     private Node node;
 
     public void setNode(Node n) {
@@ -27,7 +27,7 @@ public class CopyBookMadeTest {
     public void setTest(Node t) {
         test = t;
     }
-    
+
     private boolean clear = false;
 
     public void setClear(boolean c) {
@@ -41,12 +41,12 @@ public class CopyBookMadeTest {
         NodeQuery query = Queries.createRelatedNodesQuery(node, madeTests, "related", "destination");
         Step testStep = query.addRelationStep(cloud.getNodeManager("tests"), "related", "source").getNext();
         Queries.addConstraint(query, query.createConstraint(query.createStepField(testStep, "number"), test));
-        
+
         NodeList found = madeTests.getList(query);
 
         if (found.size() > 0) {
             if (clear) {
-                
+
                 // todo....
             } else {
                 return found.getNode(0);
@@ -54,7 +54,7 @@ public class CopyBookMadeTest {
         }
         Node madeTest = madeTests.createNode();
         madeTest.commit();
-        
+
         RelationManager rm = cloud.getRelationManager(node.getNodeManager(), madeTests, "related");
         log.info("" + node.getCloud().equals(cloud) + " " + madeTest.getCloud().equals(cloud) + " " + node.getCloud() + " " + madeTest.getCloud() + " " + cloud + " rm:" + rm.getCloud());
         Relation rel1 = rm.createRelation(node, madeTest);
