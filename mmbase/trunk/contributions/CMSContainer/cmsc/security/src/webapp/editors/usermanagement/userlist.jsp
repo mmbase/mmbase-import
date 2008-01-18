@@ -17,7 +17,7 @@
 		</ul>
 		<div style="clear:both; height:10px;"></div>
 
-		<table style="padding-left: 30px">
+		<table style="position:relative;left:40px;">
 			<tr>
 				<td><b><fmt:message key="group.name" /></b></td>
 			</tr>
@@ -57,7 +57,7 @@
 		</ul>
 		<div style="clear:both; height:10px;"></div>
 
-		<table style="padding-left: 30px">
+		<table style="position:relative;left:40px;">
 			<tr>
 				<td><b><fmt:message key="user.account" /></b></td>
 				<td><b><fmt:message key="user.name" /></b></td>

@@ -2,6 +2,7 @@ body
 {
 	background-color: #97b7c8;
 	margin: 0px 4px 0px 7px;
+	behavior: url('../css/hover.htc');
 }
 	
 body, table, div, input
@@ -26,6 +27,7 @@ img
 	left: 295px;
 	margin-right: 2px;
 	margin-bottom: 2px;
+	width:76%;
 }
 
 #left
@@ -34,6 +36,7 @@ img
 	left: 7px;
 	float: none;
 	clear: none;
+	width:24%;
 }
 
 #footer
@@ -41,7 +44,7 @@ img
 	margin: 2px 20px 0px 0px;
 	float: left;
 	clear: both;
-	width: auto;
+	width: 100%;
 	height: 46px;
 	border-style: none none none solid;
 	border-width: 1px;
@@ -96,6 +99,7 @@ div.side_block div.header
 	height: 36px;
 	float: left;
 	clear: both;
+	width:100%;
 }
 
 /* grijs block aan zijkant bovenkant */
@@ -105,7 +109,8 @@ div.side_block_gray div.header
 	background-image: url('../gfx/background_side_block2.gif');
 	height: 36px;
 	float: left;
-	clear: both;	
+	clear: both;
+	width:100%;
 }
 
 /* groen block aan zijkant bovenkant */
@@ -115,7 +120,8 @@ div.side_block_green div.header
 	background-image: url('../gfx/background_side_block3.gif');
 	height: 36px;
 	float: left;
-	clear: both;	
+	clear: both;
+	width:100%;	
 }
 
 div.side_block div.header div.title, 
@@ -242,7 +248,7 @@ div.side_block ul.shortcuts,
 div.side_block_gray ul.shortcuts,
 div.side_block_green ul.shortcuts
 {
-   display: block;
+   	display: inline;
 	clear: left;
 	float: left;
 	list-style-position: outside;
@@ -269,6 +275,7 @@ div.side_block_green ul.shortcuts li
 	text-decoration: underline;
 	margin: 0px 2px 0px 0px;
 	white-space: nowrap;
+	font-color: #000000;
 }
 
 ul.shortcuts li.images				{	background-image: url('../gfx/icons/images.png');}
@@ -312,22 +319,28 @@ ul.shortcuts li.messageoftheday	{	background-image: url('../gfx/icons/messageoft
 ul.shortcuts li.admindashboard	{	background-image: url('../gfx/icons/admindashboard.png');}
 
 
-div.side_block div.body,
-div.side_block_gray div.body,
-div.side_block_green div.body
+div.side_block div.body
 {
 	height: auto; 
 	float: none; 
 	clear:both; 
 	padding: 10px;
+	/*display:inline;*/
+}
+div.side_block_gray div.body,
+div.side_block_green div.body{
+	height: auto; 
+	float: none; 
+	clear:both; 
+	padding: 10px;
+	display:inline;
 }
 
 
 
 
 
-
-/* contentblocks purple */
+/* contentblocks PAARS */
 div.content_block_purple
 {
 	display: block;
@@ -483,6 +496,7 @@ div.content_block_pink div.header
 	width: auto;
 	float: left;
 	clear: both;
+	width:100%;
 }
 
 /* titel in header */
@@ -1366,7 +1380,7 @@ label {
 	visibility: hidden;
 	position: absolute;
 	width: 100%;
-	text-align: center;
+	text-alignment: center;
 }
 
 .dashboard iframe {

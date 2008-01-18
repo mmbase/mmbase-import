@@ -1,4 +1,7 @@
 /* CSS Document */
+table.centerData{
+	width:100%;
+}
 table.centerData td {
    text-align: center;
 }

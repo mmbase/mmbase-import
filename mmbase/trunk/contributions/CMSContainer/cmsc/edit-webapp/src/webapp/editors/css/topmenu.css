@@ -4,7 +4,7 @@
 	background-image: url('../gfx/background_header.gif');
 	background-repeat: repeat-x;
 	height: 32px;
-	width: auto;
+	width: 100%;
 	float: left;		
 	clear: both;
 	color: #dee104;
@@ -12,7 +12,7 @@
 	border-style: none none none solid;
 	border-width: 1px;
 	border-color: #ffffff;
-   margin: 0 20px 2px 0px;
+	margin: 0 20px 2px 0px;
 }
 
 #header div.title
@@ -64,9 +64,9 @@
 	border-color: #ffffff;
 	font-size: 14px;
 	float: left;
-	width: auto;
 	height: 39px;
-   margin: 0 20px 2px 0px;
+	width:100%;
+	margin: 0 20px 2px 0px;
 }
 
 #menu ul
