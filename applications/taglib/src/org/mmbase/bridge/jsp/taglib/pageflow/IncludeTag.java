@@ -27,6 +27,7 @@ import javax.servlet.*;
 import java.util.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.transformers.Xml;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.82 2007-12-05 17:16:13 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.83 2008-01-18 14:07:25 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -257,7 +258,8 @@ public class IncludeTag extends UrlTag {
             default:
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
-                if ("".equals(result)) result = "The requested resource '" + url + "' is not available";
+                Xml xml = new Xml(Xml.ESCAPE);
+                if ("".equals(result)) result = "The requested resource '" + xml.transform(url) + "' is not available";
                 output = result;
             }
             break;
