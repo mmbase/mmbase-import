@@ -14,8 +14,8 @@
     <mm:link page="/education/js/browser_version.js">
       <script src="${_}"><!-- Help IE --></script>
     </mm:link>
-    <jsp:doBody />
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css',includePath)}" />
+    <jsp:doBody />
   </head>
 </jsp:root>
 

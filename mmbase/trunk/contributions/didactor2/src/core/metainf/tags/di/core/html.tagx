@@ -36,6 +36,13 @@
                 <link rel="stylesheet" type="text/css" href="${_}" />
               </mm:link>
             </mm:haspage>
+            <mm:node referid="education">
+              <mm:field name="intro">
+                <mm:isnotempty>
+                  <meta name="description" content="${_}" />
+                </mm:isnotempty>
+              </mm:field>
+            </mm:node>
           </c:if>
         </di:head>
         <body class="${styleClass}">
@@ -47,6 +54,7 @@
               <jsp:doBody />
             </div>
           </div>
+          <di:include page="/cockpit/footer.jspx" />
         </body>
       </html>
     </mm:cloud>
