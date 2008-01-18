@@ -30,40 +30,20 @@
 
       keepalive();
     </script>
-      <jsp:scriptlet>Map tm = new HashMap();</jsp:scriptlet>
       <mm:hasrank minvalue="didactor user">
         <mm:node referid="provider">
-          <mm:relatednodes role="settingrel" type="components">
-            <mm:field name="name" jspvar="cname" write="false" vartype="String">
-              <jsp:scriptlet>
-                Component c = Component.getComponent(cname);
-                if (c == null) System.err.println("No component '" + cname + "'");
-                if (c != null &amp;&amp; "provider".equals(c.getTemplateBar())) {
-                int a = c.getBarPosition() * 100;
-                while (tm.containsKey(new Integer(a))) {
-                a++; // make sure we have unique positions
-                }
-                tm.put(new Integer(a), c);
-                }
-              </jsp:scriptlet>
-            </mm:field>
-          </mm:relatednodes>
+          <mm:functioncontainer>
+            <mm:param name="bar">provider</mm:param>
+            <mm:listfunction name="components" id="c">
+              <mm:treeinclude page="/${c.name}/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
+                <mm:param name="name">${c.name}</mm:param>
+                <mm:param name="number">${c.number}</mm:param>
+                <mm:param name="type">div</mm:param>
+                <mm:param name="scope">provider</mm:param>
+              </mm:treeinclude>
+            </mm:listfunction>
+          </mm:functioncontainer>
         </mm:node>
-
-        <jsp:scriptlet>
-          Iterator i = tm.values().iterator();
-          while (i.hasNext()) {
-          Component c = (Component)i.next();
-        </jsp:scriptlet>
-        <mm:import id="componentname" reset="true"><jsp:expression>c.getName()</jsp:expression></mm:import>
-        <mm:treeinclude page="/$componentname/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
-          <mm:param name="name"><jsp:expression>c.getName()</jsp:expression></mm:param>
-          <mm:param name="number"><jsp:expression>c.getNumber()</jsp:expression></mm:param>
-          <mm:param name="type">div</mm:param>
-          <mm:param name="scope">provider</mm:param>
-        </mm:treeinclude>
-
-        <jsp:scriptlet>}</jsp:scriptlet>
 
         <!-- If the user has the rights, then always show the management link. That allows us to enable/disable components after install on an empty database -->
         <mm:treeinclude page="/education/cockpit/menuitem.jsp"
@@ -73,6 +53,7 @@
           <mm:param name="scope">provider</mm:param>
         </mm:treeinclude>
       </mm:hasrank>
+
       <mm:hasrank value="anonymous">
         <div class="provideranonymous">
           <mm:node referid="provider">
