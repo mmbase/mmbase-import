@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Provide some Didactor specify functionality as EL-functions too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.5 2007-10-12 16:36:39 michiel Exp $
+ * @version $Id: Functions.java,v 1.6 2008-01-18 15:27:01 michiel Exp $
  * @since Didactor-2.3
  */
 public class Functions {
@@ -34,6 +34,10 @@ public class Functions {
         Cloud cloud = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
         ContextTag pageContextTag = (ContextTag) pageContext.getAttribute(ContextTag.CONTEXTTAG_KEY);
         return comp.getSetting(setting, cloud, pageContextTag.getContextProvider().getContextContainer());
+    }
+
+    public static Component component(String component) throws JspTagException {
+        return Component.getComponent(component);
     }
 
 }
