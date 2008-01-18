@@ -8,14 +8,16 @@
   <jsp:directive.attribute name="has"      />
   <jsp:directive.attribute name="inverse"  />
   <mm:import id="has_integer" vartype="integer">${has eq 'rwd' ? 3 : has eq 'rw' ? 2 : has eq 'ro' ? 1 : 0}</mm:import>
-  <mm:node referid="user">
-    <mm:relatedcontainer path="related,roles,posrel,editcontexts">
-      <mm:constraint field="editcontexts.name" value="${role}" />
-      <mm:constraint field="posrel.pos" operator="ge" value="${has_integer}" />
-      <mm:related max="1">
-        <jsp:doBody />
-      </mm:related>
-    </mm:relatedcontainer>
-  </mm:node>
+  <mm:isnotempty referid="user">
+    <mm:node referid="user">
+      <mm:relatedcontainer path="related,roles,posrel,editcontexts">
+        <mm:constraint field="editcontexts.name" value="${role}" />
+        <mm:constraint field="posrel.pos" operator="ge" value="${has_integer}" />
+        <mm:related max="1">
+          <jsp:doBody />
+        </mm:related>
+      </mm:relatedcontainer>
+    </mm:node>
+  </mm:isnotempty>
 </jsp:root>
 

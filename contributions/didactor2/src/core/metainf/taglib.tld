@@ -363,6 +363,10 @@
     <name>may</name>
     <path>/META-INF/tags/di/core/may.tagx</path>
   </tag-file>
+  <tag-file>
+    <name>menuitem</name>
+    <path>/META-INF/tags/di/core/menuitem.tagx</path>
+  </tag-file>
 
   <function>
     <description>
@@ -379,6 +383,14 @@
     <name>setting</name>
     <function-class>nl.didactor.taglib.Functions</function-class>
     <function-signature>String setting(java.lang.String, java.lang.String)</function-signature>
+  </function>
+  <function>
+    <description>
+      Gets component by name
+    </description>
+    <name>component</name>
+    <function-class>nl.didactor.taglib.Functions</function-class>
+    <function-signature>nl.didactor.component component(java.lang.String)</function-signature>
   </function>
 
 </taglib>
