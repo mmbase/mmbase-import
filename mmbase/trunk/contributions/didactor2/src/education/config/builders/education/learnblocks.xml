@@ -22,8 +22,7 @@
   </descriptions>
 
   <properties>
-    <property name="max-nodes-from-query">99999</property>
-    <property name="smartpathfield">name</property>
+    <property name="smartpathfield">name</property> <!-- there is also a 'path' field, should it not be that? -->
   </properties>
 
   <fieldlist>

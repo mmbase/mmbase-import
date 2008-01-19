@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -29,7 +29,6 @@
   </descriptions>
 
   <properties>
-    <property name="max-nodes-from-query">99999</property>
     <property name="smartpathfield">name</property>
   </properties>
 
