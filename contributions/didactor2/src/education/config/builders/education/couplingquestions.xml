@@ -1,26 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="couplingquestions" maintainer="didactor.nl" version="2" extends="questions">
-  <status>active</status>
-  <classfile>nl.didactor.education.builders.CouplingQuestionBuilder</classfile>
-  <searchage>31</searchage>
-
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="couplingquestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.CouplingQuestionBuilder</class>
   <names>
-    <!-- singles per language as defined by ISO 639 -->
-    <singular xml:lang="nl">Koppel Vraag</singular>
+    <singular xml:lang="nl">Koppelvraag</singular>
     <singular xml:lang="en">Coupling Question</singular>
-    <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Koppel Vragen</plural>
+    <plural xml:lang="nl">Koppelvragen</plural>
     <plural xml:lang="en">Coupling Questions</plural>
   </names>
 
   <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="nl">Koppel vraag, waar de antwoorden gekoppeld moeten worden</description>
     <description xml:lang="en">Coupling questions, where answes need to be related to eachother</description>
   </descriptions>
-
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
 </builder>
