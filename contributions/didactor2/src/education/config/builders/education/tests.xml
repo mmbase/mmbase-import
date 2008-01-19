@@ -75,8 +75,8 @@
         </positions>
       </editor>
       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="true" />
         <default value="false" />
+        <required value="true" />
       </datatype>
 
     </field>
@@ -96,8 +96,8 @@
         </positions>
       </editor>
       <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="false" />
         <required value="true" />
->        <default value="false" />
       </datatype>
     </field>
     <field name="questionsperpage">
