@@ -22,7 +22,7 @@
 				<td colspan="2"><mm:field name="intro" write="true" />	</td>
 			</tr>
 			<tr>
-				<td colspan="2"><cmsc:checkbox var="newslettersubscriptions" value="${newsletternumber}" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
+				<td colspan="2"><cmsc:checkbox var="newslettersubscriptions" value="${newsletternumber}" checked="true" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
 			<tr>
 				<td>&nbsp;</td>
 			</tr>
@@ -34,7 +34,7 @@
 				<mm:field name="title" write="false" jspvar="themeTitle"/>
 				<mm:field name="shortdescription" write="false" jspvar="themeShortDescription"/>
 				<tr>				
-					<td width="25%"><cmsc:checkbox var="newslettertheme" value="${theme}">${themeTitle}</cmsc:checkbox></td> 
+					<td width="25%"><cmsc:checkbox var="newslettertheme" value="${theme}" checked="true">${themeTitle}</cmsc:checkbox></td> 
 					<td>${themeShortDescription}</td>
 				</tr>				
 			</mm:relatednodes>

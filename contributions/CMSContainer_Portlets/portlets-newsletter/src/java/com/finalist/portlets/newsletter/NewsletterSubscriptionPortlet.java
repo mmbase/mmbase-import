@@ -21,8 +21,8 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
 
-   private static final String NEWSLETTERSUBSCRIPTIONS = "newslettersubscriptions";
    private static final String HAS_SUBSCRIPTIONS = "hassubscriptions";
+   private static final String NEWSLETTERSUBSCRIPTIONS = "newslettersubscriptions";
    private static final String ACTION_SUBSCRIBE = "subscribe";
    private static final String ACTION_CHANGE = "change";
    private static final String ACTION_TERMINATE = "terminate";
@@ -48,24 +48,27 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
       if (isLoggedIn(session) == true) {
          String userName = getUserName(session);
-         List<Integer> subscriptions = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
 
-         List<String> mimeTypes = NewsletterGeneratorFactory.getMimeTypes();
-         request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, mimeTypes);
+         List<String> availableMimeTypes = NewsletterGeneratorFactory.getMimeTypes();
+         request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, availableMimeTypes);
+         List<String> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
+         request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, availableStatusOptions);
 
-         List<String> statusOptions = NewsletterSubscriptionUtil.getStatusOptions();
-         request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, statusOptions);
+         List<Integer> subscribedThemes = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
+         List<Integer> subscribedNewsletters = NewsletterSubscriptionUtil.getUserSubscribedNewsletters(userName);
 
-         if (subscriptions != null && subscriptions.size() > 0) {
+         if (subscribedNewsletters != null && subscribedNewsletters.size() > 0) {
+            request.setAttribute(NEWSLETTERSUBSCRIPTIONS, subscribedNewsletters);
+         }
+
+         if (subscribedThemes != null && subscribedThemes.size() > 0) {
+            request.setAttribute(NewsletterSubscriptionUtil.NEWSLETTER_THEME, subscribedThemes);
+         }
+
+         if ((subscribedThemes != null && subscribedThemes.size() > 0) || (subscribedNewsletters != null && subscribedNewsletters.size() > 0)) {
             request.setAttribute(HAS_SUBSCRIPTIONS, true);
-            request.setAttribute(NewsletterSubscriptionUtil.NEWSLETTER_THEME, subscriptions);
-
-            List<Integer> newsletterSubscriptions = NewsletterSubscriptionUtil.getUserSubscribedNewsletters(userName);
-            request.setAttribute(NEWSLETTERSUBSCRIPTIONS, newsletterSubscriptions);
-
             String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
             request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
-
             String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
             request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
          }
@@ -123,7 +126,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       if (newsletters != null) {
          List<Integer> newsletterList = new ArrayList<Integer>();
          for (int n = 0; n < newsletters.length; n++) {
-            newsletterList.add(Integer.valueOf(newsletters[n]));
+            newsletterList.add(Integer.parseInt(newsletters[n]));
          }
          subscribeToNewsletters.addAll(newsletterList);
       }
@@ -132,7 +135,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       if (themes != null) {
          for (int i = 0; i < themes.length; i++) {
             String theme = themes[i];
-            int themeNumber = Integer.valueOf(theme);
+            int themeNumber = Integer.parseInt(theme);
             subscribeToThemes.add(themeNumber);
             int newsletterNumber = NewsletterUtil.findNewsletterForTheme(themeNumber);
             if (newsletterNumber > 0) {

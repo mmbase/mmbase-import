@@ -28,7 +28,7 @@ public class NewsletterSubscriberBean {
     *           the numberOfThemes to set
     */
    public void setNumberOfThemes(int numberOfThemes) {
-      this.numberOfThemes = numberOfThemes;
+      this.numberOfThemes = 0 + numberOfThemes;
    }
 
    /**
@@ -36,7 +36,7 @@ public class NewsletterSubscriberBean {
     *           the userName to set
     */
    public void setUserName(String userName) {
-      this.userName = userName;
+      this.userName = "" + userName;
    }
 
 }

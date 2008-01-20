@@ -15,7 +15,7 @@
 		<th align="left"><fmt:message key="subscriptionoverview.numberofthemes" /></tk>
 	</tr>
 	<c:forEach var="bean" items="${subscriptionoverviewBeans}">
-	<c:url var="url" value="SubscriberAction.do?action=detail&name=${bean.userName}" />
+	<c:url var="url" value="ReportSubscriberSubscriptions.do?name=${bean.userName}" />
 	<tr>
 		<td><a href="${url}"><jsp:getProperty name="bean" property="userName" /></a></td>
 		<td><jsp:getProperty name="bean" property="status" /></td>

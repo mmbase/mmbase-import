@@ -19,7 +19,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
    protected static final String FEATURE_WORKFLOW = "workflowitem";
 
    public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
-      element.addOption(renderer.createTreeOption("new.png", "site.newsletter.new", "newsletter",
+      element.addOption(renderer.createTreeOption("mail.png", "site.newsletter.new", "newsletter",
             "../newsletter/NewsletterCreate.do?parentnewsletter=" + parentId));
    }
 
@@ -36,9 +36,9 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       if (SecurityUtil.isEditor(role)) {
          element.addOption(renderer.createTreeOption("edit_defaults.png", "site.newsletter.edit", "newsletter",
                "../newsletter/NewsletterEdit.do?number=" + id));
-         element.addOption(renderer.createTreeOption("new.png", "site.newsletterpublication.new.blank", "newsletter",
+         element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.new.blank", "newsletter",
                "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=false"));
-         element.addOption(renderer.createTreeOption("new.png", "site.newsletterpublication.new.withcontent", "newsletter",
+         element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.new.withcontent", "newsletter",
                "../newsletter/NewsletterPublicationCreate.do?parent=" + id + "&copycontent=true"));
 
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
