@@ -28,8 +28,8 @@
 	</tr>
 </table>
 
-<br /><a href="SubscriberAction.do?action=update&username=${userName}"><fmt:message key="subscriptiondetail.link.update" /></a>
-<br /><a href="SubscriberAction.do?action=pause&username=${userName}"><fmt:message key="subscriptiondetail.link.pause" /></a>
-<br /><a href="SubscriberAction.do?action=resume&username=${userName}"><fmt:message key="subscriptiondetail.link.resume" /></a>
-<br /><a href="SubscriberAction.do?action=unsubscribe&username=${userName}"><fmt:message key="subscriptiondetail.link.unsubscribe" /></a>
-<br /><a href="SubscriberAction.do?action=terminate&username=${userName}"><fmt:message key="subscriptiondetail.link.terminate" /></a>
+<br /><a href="SubscriptionAction.do?action=update&username=${userName}"><fmt:message key="subscriptiondetail.link.update" /></a>
+<br /><a href="SubscriptionAction.do?action=pause&username=${userName}"><fmt:message key="subscriptiondetail.link.pause" /></a>
+<br /><a href="SubscriptionAction.do?action=resume&username=${userName}"><fmt:message key="subscriptiondetail.link.resume" /></a>
+<br /><a href="SubscriptionAction.do?action=unsubscribe&username=${userName}"><fmt:message key="subscriptiondetail.link.unsubscribe" /></a>
+<br /><a href="SubscriptionAction.do?action=terminate&username=${userName}"><fmt:message key="subscriptiondetail.link.terminate" /></a>
