@@ -22,7 +22,7 @@
 			<forward name="success" path="/editors/newsletter/module/report_newsletter_list.jsp" redirect="false" />
 		</action>
 		<action path="/editors/newsletter/module/ReportNewsletterSubscriptions" type="com.finalist.newsletter.module.ReportNewsletterSubscriptions" unknown="false" validate="false">
-			<forward name="success" path="/editors/newsletter/module/report_newsletter_list.jsp" redirect="false" />
+			<forward name="success" path="/editors/newsletter/module/report_newsletter_subscriptions.jsp" redirect="false" />
 		</action>
 		<action path="/editors/newsletter/module/ReportSubscriberList" type="com.finalist.newsletter.module.ReportSubscriberList" unknown="false" validate="false">
 			<forward name="success" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false" />
@@ -31,8 +31,9 @@
 			<forward name="success" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp" redirect="false" />
 		</action>
 
-		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false"></action>
-
+		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_subscriber_overview.jsp" redirect="false" />
+		</action>
 		<!-- ==== Select page nodes ==== -->
 
 

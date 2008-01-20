@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.finalist.newsletter.module.bean.GlobalOverviewBean;
-import com.finalist.newsletter.module.bean.NewsletterDetailBean;
 import com.finalist.newsletter.module.bean.NewsletterOverviewBean;
 import com.finalist.newsletter.module.bean.NewsletterSubscriberBean;
 import com.finalist.newsletter.module.bean.SubscriptionDetailBean;
@@ -30,13 +29,7 @@ public final class BeanUtil {
       return (bean);
    }
 
-   public static NewsletterDetailBean createNewsletterDetailBean(int newsletterNumber) {
-      NewsletterDetailBean bean = new NewsletterDetailBean();
-      bean.setNumber(newsletterNumber);
-
-      String title = NewsletterUtil.getTitle(newsletterNumber);
-      bean.setTitle(title);
-
+   public static List<NewsletterSubscriberBean> getSubscriberBeans(int newsletterNumber) {
       List<NewsletterSubscriberBean> subscribers = new ArrayList<NewsletterSubscriberBean>();
       List<String> subscribersList = NewsletterSubscriptionUtil.getSubscribersForNewsletter(newsletterNumber);
       if (subscribersList != null) {
@@ -46,14 +39,12 @@ public final class BeanUtil {
             subscriberBean.setUserName(userName);
 
             int numberOfThemes = NewsletterSubscriptionUtil.getNumberOfSubscribedThemes(userName, newsletterNumber);
-            bean.setNumber(numberOfThemes);
+            subscriberBean.setNumberOfThemes(numberOfThemes);
 
             subscribers.add(subscriberBean);
          }
       }
-      bean.setSubscribers(subscribers);
-
-      return (bean);
+      return (subscribers);
    }
 
    public static NewsletterOverviewBean createNewsletterOverviewBean(int newsletterNumber) {

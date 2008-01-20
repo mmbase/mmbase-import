@@ -60,10 +60,11 @@ public class NewsletterPublisher extends Thread {
 
    @Override
    public void run() {
-      startPublishing();
+      startMassPublishing();
    }
 
-   private void sendNewsletter(Node publicationNode, String userName) {
+   
+    private void sendNewsletter(Node publicationNode, String userName) {
       String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
       Message message = generateNewsletter(userName, publicationNumber, mimeType);
 
@@ -91,7 +92,7 @@ public class NewsletterPublisher extends Thread {
       return (message);
    }
 
-   private void startPublishing() {
+   private void startMassPublishing() {
       Node publicationNode = cloud.getNode(publicationNumber);
       NodeList newsletterNodeList = publicationNode.getRelatedNodes(NewsletterUtil.NEWSLETTER);
       Node newsletterNode = newsletterNodeList.getNode(0);
@@ -108,4 +109,5 @@ public class NewsletterPublisher extends Thread {
       NewsletterPublicationUtil.setPublicationNumber(newsletterNode, 1);
       NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
    }
+   
 }
