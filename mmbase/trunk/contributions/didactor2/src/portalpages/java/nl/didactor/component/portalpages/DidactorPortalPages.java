@@ -24,7 +24,8 @@ public class DidactorPortalPages extends Component {
 
     public String getVersion() {
         return "0.1";
-    } /**
+    }
+    /**
      * Returns the name of the component
      */
     public String getName() {
@@ -53,13 +54,19 @@ public class DidactorPortalPages extends Component {
     public void init() {
         super.init();
         try{
-        initRelations();
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
+            initRelations();
+        } catch (Exception ex) {
+            log.warn(ex);
+        }
     }
 
-    public void initRelations() {
+    /**
+     * I think this method is a giant WTF, and what it tries to do already happens in a few lines
+     * in DidactorPortalPages.xml.
+
+     * WTF WTF WTF TODO TODO
+     */
+    protected void initRelations() {
         org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
         String username = "system";
         RelDef reldef = mmb.getRelDef();
@@ -71,6 +78,7 @@ public class DidactorPortalPages extends Component {
         int simplecontents = typedef.getIntValue("simplecontents");
         int portalpagescontainers = typedef.getIntValue("portalpagescontainers");
         int images = typedef.getIntValue("images");
+
 
         MMObjectBuilder portalcontainers = mmb.getBuilder("portalpagescontainers");
         try{
@@ -128,35 +136,4 @@ public class DidactorPortalPages extends Component {
 
     }
 
-    /**
-     *
-     */
-    /*
-    private boolean createClass(MMObjectNode cls) {
-        MMBase mmb = cls.getBuilder().getMMBase();
-
-        String classname = cls.getStringValue("name");
-        String username = "system";
-
-        MMObjectBuilder chatchannels = mmb.getBuilder("chatchannels");
-        InsRel insrel = mmb.getInsRel();
-        int related = mmb.getRelDef().getNumberByName("related");
-
-        MMObjectNode chatchannel = chatchannels.getNewNode(username);
-        String chatchannelName = classname.replaceAll(" ","-").toLowerCase();
-
-        chatchannel.setValue("name", chatchannelName);
-        chatchannels.insert(username, chatchannel);
-
-        MMObjectNode relation = insrel.getNewNode(username);
-
-        relation.setValue("snumber", cls.getNumber());
-        relation.setValue("dnumber", chatchannel.getNumber());
-        relation.setValue("rnumber", related);
-
-        insrel.insert(username, relation);
-
-        return true;
-    }
-   */
 }
