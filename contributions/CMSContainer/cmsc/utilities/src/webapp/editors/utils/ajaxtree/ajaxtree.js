@@ -5,7 +5,7 @@ var NAVIGATION = "CMSC-NAVIGATION";
 function getContextMenuDiv() {
    var menudiv = document.getElementById("_contextmenu");
    if (menudiv==null) {
-		 var contextMenuNode = document.createElement("DIV"); 
+		 var contextMenuNode = document.createElement("DIV");
          contextMenuNode.style.position="absolute";
          contextMenuNode.style.zIndex = 10000;
          contextMenuNode.style.display = "none";
@@ -14,7 +14,7 @@ function getContextMenuDiv() {
          contextMenuNode.id="_contextmenu";
          contextMenuNode.name="_contextmenu";
          document.body.appendChild(contextMenuNode);
-		 menudiv = document.getElementById("_contextmenu");         
+		 menudiv = document.getElementById("_contextmenu");
   }
   return menudiv;
 }
@@ -26,7 +26,7 @@ function hideContextMenu () {
     var menudiv = getContextMenuDiv();
     menudiv.style.display="none";
 }
-    
+
 var ajaxTreeConfig = {
     url                 : null,
 	resources           : 'images/',
@@ -57,13 +57,13 @@ var ajaxTreeConfig = {
 
 function markNode(firstnode,cssName) {
 	document.getElementById(firstnode.id + '-anchor').className = cssName;
-	var allchildren = firstnode.childNodes; 
-		
+	var allchildren = firstnode.childNodes;
+
 	if (allchildren) {
 		for (var i=0;i<allchildren.length;i++) {
 			markNode(allchildren[i],cssName);
 		}
-		
+
 	}
 }
 
@@ -80,30 +80,30 @@ var ajaxTreeHandler = {
 	focus     : function (oItem) { this.all[oItem.id.replace('-anchor','')].focus(); },
 	blur      : function (oItem) { this.all[oItem.id.replace('-anchor','')].blur(); },
 	isclick   : function () { alldragObject.isover = false;},
-	imouseover: function (oItem) { 
+	imouseover: function (oItem) {
 		alldragObject.insertitem = this.all[oItem.id.replace('-anchor','')];
 		return alldragObject.insertitem;
 		},
 	initcopy  : function(oItem) {
-		var copyObject = document.createElement("div");		
+		var copyObject = document.createElement("div");
 		var inner = copyTreetoString(oItem);
 		copyObject.innerHTML = inner;
 		document.body.appendChild(copyObject);
 		return copyObject;
 	},
-	makeDraggable : function (oItem){	
+	makeDraggable : function (oItem){
 		if(!oItem) return;
 		document.onmousedown = function(ev){
 		document.onmousemove = alldragObject.mouseMove(ev);
 		document.onmouseup   = alldragObject.mouseUp(ev);
 		oItem.onclick = ajaxTreeHandler.isclick;
-		alldragObject.dragObject = ajaxTreeHandler.all[oItem.id.replace('-icon','')];		
+		alldragObject.dragObject = ajaxTreeHandler.all[oItem.id.replace('-icon','')];
 		alldragObject.copyObject = ajaxTreeHandler.initcopy(ajaxTreeHandler.all[oItem.id.replace('-icon','')]);
 		return false;
 		}
 	},
-	markSubTree  : function (oItemID,cssName) { 
-		
+	markSubTree  : function (oItemID,cssName) {
+
 		var itemNode = this.all[oItemID];
 		if (itemNode!=null) {
 			markNode(itemNode,cssName);
@@ -111,7 +111,7 @@ var ajaxTreeHandler = {
 	},
 	showContextMenu : function(oItem,evt) {
 
-		//get all options of the tree node	
+		//get all options of the tree node
 		var menuoptions = this.all[oItem.id].options;
 		if (menuoptions==null || menuoptions.length==0) {
 		  return;
@@ -120,39 +120,53 @@ var ajaxTreeHandler = {
 		//create new contextmenu items
 		var htmlcontent = "<table>";
 		for (var i=0;i<menuoptions.length;i++){
-		    htmlcontent += menuoptions[i].toString(oItem.id); 
+		    htmlcontent += menuoptions[i].toString(oItem.id);
 		}
 		htmlcontent += "</table>";
 
-		//add items to context menu		
+		//add items to context menu
 		var menudiv = getContextMenuDiv();
 		menudiv.innerHTML = htmlcontent;
-		
+
 		//setting menu's location
 		menudiv.style.top=evt.clientY + 'px';
 		menudiv.style.left=evt.clientX + 'px';
 
 
 		//show context menu
-		menudiv.style.display="";  
-		
+		menudiv.style.display="";
+
 		// this must be below the display, because otherwise we will not know the dimensions of the div.
 		var leftdiv = document.getElementById("left");
-		if(leftdiv.clientWidth - menudiv.clientWidth < evt.clientX) {
-			menudiv.style.left = (leftdiv.clientWidth - menudiv.clientWidth) + 'px';
+		var sUserAgent=navigator.userAgent;
+		if(sUserAgent.indexOf("Mozilla/5.0")>-1){
+			var lwstr=""+(leftdiv.clientWidth/0.24);
+			var st;
+			if(lwstr.indexOf(".")>-1)
+				st=lwstr.substring(0,lwstr.indexOf("."))- menudiv.clientWidth;
+			else
+				st=lwstr-menudiv.clientWidth;
+			if(st < evt.clientX) {
+				menudiv.style.left = (st) + 'px';
+			}
+		}
+		else{
+			if(leftdiv.clientWidth - menudiv.clientWidth < evt.clientX) {
+				menudiv.style.left = (leftdiv.clientWidth - menudiv.clientWidth) + 'px';
+			}
 		}
 		if(document.body.clientHeight - menudiv.clientHeight < evt.clientY) {
-			menudiv.style.top = (document.body.clientHeight - menudiv.clientHeight) + 'px';
-		}
+				menudiv.style.top = (document.body.clientHeight - menudiv.clientHeight) + 'px';
+			}
 		if (menudiv.focus) {
 			menudiv.focus();
 		}
 		alphaImages();
-   
+
 		document.onclick=hideContextMenu;
-/*		//when context menu lost focus, it should be hidden       
+/*		//when context menu lost focus, it should be hidden
  		window.onfocusout=function() {
-            alert(event.srcElement.tagName); 
+            alert(event.srcElement.tagName);
             if (event.srcElement==menudiv) {
                 hideContextMenu();
                 event.cancelBubble=true;
@@ -162,7 +176,7 @@ var ajaxTreeHandler = {
        }
 */
 	},
-	
+
 	keydown   : function (oItem, e) { return this.all[oItem.id].keydown(e.keyCode); },
 	insertHTMLBeforeEnd	:	function (oElement, sHTML) {
 		if (oElement.insertAdjacentHTML != null) {
@@ -259,16 +273,16 @@ AjaxTreeAction.prototype.buildChildren = function(request) {
 				this.node.add(item, false);
 			}
 		}
-		
+
 		// remove dummy
 		if (this.node._loadingItem != null) {
 			this.node._loadingItem.remove();
 		}
-		
+
 		this.node.indent()
 		this.node.loaded = true;
 		this.node.doExpand();
-		
+
 		try {
 			alphaImages();
 		}
@@ -280,7 +294,7 @@ AjaxTreeAction.prototype.buildChildren = function(request) {
 	}
 }
 
-AjaxTreeAction.prototype.errorRequest = function(request) {	
+AjaxTreeAction.prototype.errorRequest = function(request) {
 	alert(request.responseText);
 }
 
@@ -324,7 +338,7 @@ AjaxTreeAction.prototype.createItem = function(treeXml) {
 	var target = treeXml.getAttribute("target");
 	var open = treeXml.getAttribute("open");
 	var loaded = treeXml.getAttribute("loaded");
-	var persistentId = treeXml.getAttribute("persistentId");		
+	var persistentId = treeXml.getAttribute("persistentId");
 	var fragment = treeXml.getAttribute("fragment");
 
 	var tree = new AjaxTreeItem(text, action, null, icon, openIcon, target, open, loaded, persistentId, fragment);
@@ -451,12 +465,12 @@ AjaxTreeAbstractNode.prototype.focus = function() {
 	if ((ajaxTreeHandler.selected) && (ajaxTreeHandler.selected != this)) {
 		ajaxTreeHandler.selected.deSelect();
 	}
-	
+
 	ajaxTreeHandler.selected = this;
 	if ((this.openIcon) && (ajaxTreeHandler.behavior != 'classic')) { document.getElementById(this.id + '-icon').src = this.openIcon; }
 	document.getElementById(this.id + '-anchor').className = 'selected';
 	document.getElementById(this.id + '-anchor').focus();
-	
+
 	ajaxTreeHandler.updateAddressBar(this);
 	if (ajaxTreeHandler.onSelect) { ajaxTreeHandler.onSelect(this); }
 }
@@ -485,7 +499,7 @@ AjaxTreeAbstractNode.prototype.doExpand = function() {
 			ajaxTreeLoader.expand(this);
 		}
 		ajaxTreeHandler.updateAddressBar(this);
-		
+
 	}
 }
 
@@ -633,12 +647,12 @@ AjaxTree.prototype.toString = function() {
 		sbOption[i] = this.options[i].toString(i,this.options.length);
 	}
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" + 
-		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
-			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) 
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" +
+		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" +
+			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon)
 			+ "\" onclick=\"ajaxTreeHandler.select(this);\" />";
 
-	if(hasRights(this.icon)) {			
+	if(hasRights(this.icon)) {
 		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " +
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
 			 ">" + this.text + "</a>"
@@ -646,7 +660,7 @@ AjaxTree.prototype.toString = function() {
 	else {
 		str +=	"<font style='color:#777'>"+this.text+"</font>"
 	}
-		
+
 		str += "</div>" +
 		"<div id=\"" + this.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((this.open)?'block':'none') + ";\">";
 
@@ -666,9 +680,9 @@ function copyTreetoString(oItem) {
 		}
 	}
 	var str = "<div id=\"" + oItem.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" + 
-		"<img id=\"" + oItem.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
-			((ajaxTreeHandler.behavior == 'classic' && oItem.open)?oItem.openIcon:oItem.icon) 
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false\">" +
+		"<img id=\"" + oItem.id + "-icon\" class=\"ajax-tree-icon\" src=\"" +
+			((ajaxTreeHandler.behavior == 'classic' && oItem.open)?oItem.openIcon:oItem.icon)
 			+ "\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />" +
 		"<a href=\"" + oItem.action + "\" id=\"" + oItem.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " +
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (oItem.target ? " target=\"" + oItem.target + "\"" : "") +
@@ -770,9 +784,9 @@ AjaxTreeItem.prototype.getLast = function() {
 	if(this.childNodes[this.childNodes.length - 1].open == null){
 		return false;
 	}
-	if (this.childNodes[this.childNodes.length - 1].open) { 
-		return this.childNodes[this.childNodes.length - 1].getLast(); } 
-	else { 
+	if (this.childNodes[this.childNodes.length - 1].open) {
+		return this.childNodes[this.childNodes.length - 1].getLast(); }
+	else {
 		return this.childNodes[this.childNodes.length - 1]; }
 }
 
@@ -790,9 +804,9 @@ AjaxTreeItem.prototype.getPreviousSibling = function(b) {
 	}
 	if (i == 0) { return this.parentNode; }
 	else {
-		if ((this.parentNode.childNodes[--i].open) || (b && this.parentNode.childNodes[i].folder)) { 
+		if ((this.parentNode.childNodes[--i].open) || (b && this.parentNode.childNodes[i].folder)) {
 			return this.parentNode.childNodes[i].getLast();
-		} else { 
+		} else {
 			return this.parentNode.childNodes[i];
 		}
 	}
@@ -828,7 +842,7 @@ AjaxTreeItem.prototype.copyItemtoString = function (nItem, nItemCount) {
 	var i = 0;
 	while (foo.parentNode) {
 		foo = foo.parentNode;
-		indent = "<img id=\"" + this.id + "-indent-" + i + "\" src=\"" + 
+		indent = "<img id=\"" + this.id + "-indent-" + i + "\" src=\"" +
 				((foo._last)?ajaxTreeConfig.blankIcon():ajaxTreeConfig.iIcon()) + "\" />" + indent;
 		i++;
 	}
@@ -859,12 +873,12 @@ AjaxTreeItem.prototype.copyItemtoString = function (nItem, nItemCount) {
 	}
 
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
-				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\" >" + 
+				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\" >" +
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
-		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
-			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) + 
+		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" +
+			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) +
 			"\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />" +
-		"<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " + 
+		"<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this);\" " +
 			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
 		">" + label + "</a>" + "</div>" +
 		"<div id=\"" + this.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((this.open)?'block':'none') + ";\">";
@@ -885,7 +899,7 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 	var i = 0;
 	while (foo.parentNode) {
 		foo = foo.parentNode;
-		indent = "<img id=\"" + this.id + "-indent-" + i + "\" src=\"" + 
+		indent = "<img id=\"" + this.id + "-indent-" + i + "\" src=\"" +
 				((foo._last)?ajaxTreeConfig.blankIcon():ajaxTreeConfig.iIcon()) + "\" />" + indent;
 		i++;
 	}
@@ -914,24 +928,24 @@ AjaxTreeItem.prototype.toString = function (nItem, nItemCount) {
 	} else {
 		if (this.parentNode._last) { treeIcon = ajaxTreeConfig.lIcon(); } else { treeIcon = ajaxTreeConfig.tIcon(); }
 	}
-	
+
 	var str = "<div id=\"" + this.id + "\" ondblclick=\"ajaxTreeHandler.toggle(this);\" class=\"ajax-tree-item\" style.position = 'absolute';" +
 				"onkeydown=\"return ajaxTreeHandler.keydown(this, event)\"  oncontextmenu=\"ajaxTreeHandler.showContextMenu(this,event);return false;\">" +
 		indent +
 		"<img id=\"" + this.id + "-plus\" src=\"" + treeIcon + "\" onclick=\"ajaxTreeHandler.toggle(this);\" />" +
-		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" + 
-			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) + 
+		"<img id=\"" + this.id + "-icon\" class=\"ajax-tree-icon\" src=\"" +
+			((ajaxTreeHandler.behavior == 'classic' && this.open)?this.openIcon:this.icon) +
 			"\" onclick=\"ajaxTreeHandler.isclick(this);ajaxTreeHandler.select(this);\" onmousedown=\"ajaxTreeHandler.makeDraggable(this);\" />";
-			
-	if(hasRights(this.icon)) {			
-		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " + 
-			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") + 
+
+	if(hasRights(this.icon)) {
+		str += "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onfocus=\"ajaxTreeHandler.focus(this);\" onmouseover=\"ajaxTreeHandler.imouseover(this); return true;\" " +
+			"onblur=\"ajaxTreeHandler.blur(this);\"" + (this.target ? " target=\"" + this.target + "\"" : "") +
 			">" + this.text + "</a>"
 	}
 	else {
 		str +=	"<font style='color:#777'>"+this.text+"</font>"
 	}
-			
+
 	str += "</div>" +
 		"<div id=\"" + this.id + "-cont\" class=\"ajax-tree-container\" style=\"display: " + ((this.open)?'block':'none') + ";\">";
 	var sb = [];
@@ -959,8 +973,8 @@ function methodpaste(actionstr){
 		//alert("paste")
 		eval(actionstr);
 	}
-	
-	
+
+
 }
 function methodcut(actionstr){
 	if (actionstr.indexOf('cut') == 0) {
@@ -972,7 +986,7 @@ function methodWrapper(oItemId,actionstr){
 	var needToBeMarked = false;
 	if (actionstr.indexOf('cut') == 0) {
 		methodcut(actionstr);
-		needToBeMarked = true;	
+		needToBeMarked = true;
 	}
 	if (needToBeMarked) {
     	var oldItemID = readCookie(NAVIGATION, 'copiedItemID', '');
@@ -982,7 +996,7 @@ function methodWrapper(oItemId,actionstr){
 	    writeCookie(NAVIGATION, 'copiedItemID', oItemId);
 		ajaxTreeHandler.markSubTree(oItemId,'marked');
 	}
-	
+
 }
 AjaxTreeOption.prototype.toString = function (oItem) {
 	var foo = this.parentNode;
@@ -994,15 +1008,15 @@ AjaxTreeOption.prototype.toString = function (oItem) {
 		}
 		else if(stroptions.indexOf('paste') == 0){
 			alldragObject.pasteoption = stroptions;
-		}	
+		}
 		actionStr = "methodWrapper('"+ oItem + "'," + stroptions + ")";
 	}
 	else {
 		actionStr = "window.parent."+this.target+".location = '"+this.action+"'";
 	}
 	var label = this.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	var str = 	
-      "<tr class=item onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\" onclick=\""+actionStr+"\">"+ 
+	var str =
+      "<tr class=item onmouseover=\"this.className='item_hover'\" onmouseout=\"this.className='item'\" onclick=\""+actionStr+"\">"+
       "<td class=icon >"+
       "<img src='" + this.icon +"'/>"+
       "</td>"+
@@ -1026,7 +1040,7 @@ var alldragObject = {
 	pastenode  : function () {var mousaction = new mouseAction(); mousaction.pastenode()}
 }
 function mouseAction(){
-	
+
 }
 
 mouseAction.prototype.mouseCoords = function (ev){
@@ -1042,19 +1056,19 @@ mouseAction.prototype.mouseCoords = function (ev){
 
 mouseAction.prototype.mouseDown = function (ev,dragObject){
 	ev = ev || window.event;
-	
+
 	if(dragObject != null){
-		
+
 		var itemoption = dragObject.options;
 		if (itemoption == null || itemoption.length == 0) {
 		  return;
-		}	
-		itemoption.toString(dragObject.id);	
+		}
+		itemoption.toString(dragObject.id);
 		if(alldragObject.isover == true){
 			methodcut(alldragObject.cutoption);
-			alldragObject.cutoption = null;			
+			alldragObject.cutoption = null;
 		}
-		
+
 	}
 }
 
@@ -1080,9 +1094,9 @@ mouseAction.prototype.mouseUp = function (ev){
 	if (!ev) {
 		var dropTarget = event.srcElement.id;
 		if (dropTarget.indexOf(ajaxTreeHandler.idPrefix) >= 0 && dropTarget.indexOf('-anchor') > 0) {
-			alldragObject.insertitem = ajaxTreeHandler.all[dropTarget.replace('-anchor','')];	
+			alldragObject.insertitem = ajaxTreeHandler.all[dropTarget.replace('-anchor','')];
 		}
-	} 
+	}
 
 	alldragObject.dragObject = null;
 	alldragObject.iMouseDown = false;
@@ -1102,7 +1116,7 @@ mouseAction.prototype.pastenode = function (){
 	}
 	itemoption.toString(alldragObject.insertitem.id);
 	if(alldragObject.isover == true){
-		methodpaste(alldragObject.pasteoption);	
+		methodpaste(alldragObject.pasteoption);
 		alldragObject.pasteoption = null;
 		alldragObject.isover = false;
 	}
