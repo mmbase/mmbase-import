@@ -13,7 +13,7 @@
     <div class="">
       <di:include page="/cockpit/applicationbar.jsp" />
       <di:include page="/cockpit/providerbar.jsp"  />
-      <diinclude page="/cockpit/educationbar.jsp" />
+      <di:include page="/cockpit/educationbar.jsp" />
     </div>
   </mm:cloud>
 </jsp:root>
