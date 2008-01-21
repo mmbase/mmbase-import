@@ -21,11 +21,12 @@ import java.util.StringTokenizer;
  * MayTag: retrieve a security privilege for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class MayTag extends CloudReferrerTag {
+public class MayTag extends CloudReferrerTag implements Condition {
     private static final Logger log = Logging.getLoggerInstance(MayTag.class);
     private Attribute component = Attribute.NULL;
     private Attribute  action   = Attribute.NULL;
     private Attribute referids =  Attribute.NULL;
+    private Attribute inverse =  Attribute.NULL;
 
     /**
      * Set the value for the 'component' argument of the May tag
@@ -44,11 +45,12 @@ public class MayTag extends CloudReferrerTag {
     }
 
     /**
-     * Set the value for the 'arguments' argument of the May tag, Comma seperated.
-     * @param arguments Optional arguments
      */
     public void setReferids(String arguments) throws JspTagException {
         this.referids = getAttribute(arguments);
+    }
+    public void setInverse(String i) throws JspTagException {
+        this.inverse = getAttribute(i);
     }
 
     /**
@@ -81,22 +83,13 @@ public class MayTag extends CloudReferrerTag {
             String key = (String) entry.getKey();
             params.set(key, entry.getValue());
         }
-        try {
-            value = comp.may(getCloudVar(), a, params);
-        } catch (IllegalArgumentException e) {
-            throw new JspTagException(e.getMessage());
-        }
+        log.debug("Checking " + a + " with " + params);
+        value = comp.may(getCloudVar(), a, params);
 
-        if (value[0]) {
+        if (value[0] != inverse.getBoolean(this, false)) {
             return EVAL_BODY;
         } else {
-            try {
-                pageContext.getOut().print( "<h1>Permission denied!</h1>");
-                return SKIP_BODY;
-            } catch (java.io.IOException e) {
-                throw new TaglibException(e.getMessage(), e);
-            }
-
+            return SKIP_BODY;
         }
     }
 
