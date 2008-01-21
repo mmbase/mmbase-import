@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<%@page import="com.finalist.util.http.BulkUploadUtil,com.finalist.cmsc.upload.service.OODocUploadUtil"%>
+<%@page import="com.finalist.util.http.BulkUploadUtil,com.finalist.cmsc.openoffice.service.OODocUploadUtil"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
@@ -67,7 +67,7 @@
             <fmt:message key="uploading.message.wait"/><br />
         </div>
 <%
-    // retrieve list op node id's from either the recent upload
+    // retrieve list op node id's from either the recent openoffice
     // or from the request url to enable a return url
     // TODO move this to a struts action there are some issue with HttpUpload
     // in combination with struts which have to be investigated first

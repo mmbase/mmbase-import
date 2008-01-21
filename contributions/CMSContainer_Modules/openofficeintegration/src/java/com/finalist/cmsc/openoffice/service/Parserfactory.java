@@ -1,8 +1,7 @@
-package com.finalist.cmsc.upload.service;
+package com.finalist.cmsc.openoffice.service;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Attr;
@@ -10,7 +9,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 
 public class Parserfactory {

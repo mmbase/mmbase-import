@@ -1,9 +1,8 @@
 package com.finalist.cmsc.openoffice;
 
-import com.finalist.cmsc.upload.service.OdtFileTranster;
+import com.finalist.cmsc.openoffice.service.OdtFileTranster;
 import junit.framework.TestCase;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
