@@ -30,8 +30,8 @@
 									<fmt:message key="modules.versioning" />
 									</a> </li>
 							</mm:haspage>
-							<mm:haspage page="/editors/newsletter/index.jsp">
-								<li class="versioning"><a href="<mm:url page="../newsletter/index.jsp"/>" target="rightpane">
+							<mm:haspage page="/editors/newsletter/module/report_overview.jsp">
+								<li class="newsletter"><a href="<mm:url page="../newsletter/module/ReportOverview.do" />" target="rightpane">
 									<fmt:message key="modules.newsletter" />
 									</a> </li>
 							</mm:haspage>
