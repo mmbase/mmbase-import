@@ -13,7 +13,7 @@
   <mm:cloud method="asis">
     <div class="providerMenubar">
 
-      <di:include page="/cockpit/keepalive.jsp" /> <!-- not necessary when using di:html, but it has a duplicate-include-protection -->
+      <di:include page="/shared/keepalive.jsp" /> <!-- not necessary when using di:html, but it has a duplicate-include-protection -->
 
       <mm:hasrank minvalue="didactor user">
         <mm:node referid="provider">
