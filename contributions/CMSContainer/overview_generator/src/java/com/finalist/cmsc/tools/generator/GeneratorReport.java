@@ -302,7 +302,13 @@ public class GeneratorReport extends BatchOperation {
 	}
 	
 	public static void main(String[] args) {
-		GeneratorReport gr = new GeneratorReport();
+
+      if(args.length<1){
+          System.out.println("Need Path of config file");
+          System.out.println("usage: GeneratorReport configfile [workingfolder] [reportfile]");
+      }
+       
+      GeneratorReport gr = new GeneratorReport();
 		gr.setConfigfile(args[0]);
 		gr.setDest(args[1]);
 		gr.setTargetReportFileLocation(args[2]);
