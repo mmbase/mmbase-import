@@ -13,7 +13,7 @@
 
       <jsp:directive.include file="/education/tests/definitions.jsp" />
 
-      <di:may component="education" action="isSelfOrTeacherOf" arguments="userNo">
+      <di:may component="education" action="viewAnswers" arguments="userNo">
         <mm:node referid="madetestNo">
           <mm:relatednodes role="related" orderby="related.number" type="givenanswers" directions="up" id="answer">
             <p>

@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.9 2008-01-21 14:45:32 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.10 2008-01-21 16:13:03 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -62,13 +62,12 @@ public class DidactorEducation extends Component {
     public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
         boolean mayvalue[]= new boolean[] {false, false};
         try {
-            if (operation.equals( "isSelfOrTeacherOf") || operation.equals( "isTeacherOf")) {
+            if (operation.equals("viewAnswers") || operation.equals("rate")) {
+                Object user         = context.get( "user");
+                Object educationobj = context.get( "education");
+                Object classobj     = context.get( "class");
 
-                Object user = context.get( "user");
-                Object educationobj= context.get( "education");
-                Object classobj= context.get( "class");
-
-                MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode(  ((Integer)user).intValue());
+                MMObjectNode usernode = MMBase.getMMBase().getBuilder("people").getNode(((Integer)user).intValue());
                 if (usernode == null) {
                     throw new JspTagException("User with number '" + user + "' not found");
                 }
@@ -88,17 +87,18 @@ public class DidactorEducation extends Component {
                 int subjectno = 0;
 
                 if ((arguments.length > 0) && (arguments[0] != null)) {
-                    subjectno= castIdentifier( context.get( arguments[0]));
+                    subjectno = castIdentifier(context.get( arguments[0]));
                 } else {
                     throw new JspTagException("1 argument required: subject person ID");
                 }
                 //System.out.println( subjectno);
                 //System.out.println( usernode.getNumber());
 
-                boolean isTeacherOf= ClassRoom.isClassMember(usernode, subjectno, classno, educationno, "teacher", cloud)
-                || ClassRoom.isWorkgroupMember(usernode, subjectno, classno, educationno, "teacher", cloud);
+                boolean isTeacherOf=
+                    ClassRoom.isClassMember(usernode, subjectno, classno, educationno, "teacher", cloud)
+                    || ClassRoom.isWorkgroupMember(usernode, subjectno, classno, educationno, "teacher", cloud);
 
-                if (operation.equals( "isTeacherOf")) {
+                if (operation.equals("rate")) {
                     mayvalue[0]= isTeacherOf;
                 } else {
                     mayvalue[0]= (subjectno == usernode.getNumber()) || isTeacherOf;
