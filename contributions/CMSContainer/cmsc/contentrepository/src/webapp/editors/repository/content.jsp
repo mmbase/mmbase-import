@@ -10,15 +10,15 @@
 </cmscedit:head>
 <body>
 	<script type="text/javascript">
-		<c:if test="${not empty param.message}">      
+		<c:if test="${not empty param.message}">
 			addLoadEvent(alert('${param.message}'));
 		</c:if>
-		<c:if test="${not empty param.refreshchannel}">      
+		<c:if test="${not empty param.refreshchannel}">
 			addLoadEvent(refreshChannels);
 		</c:if>
 		addLoadEvent(alphaImages);
 	</script>
-	
+
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 	  <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
       <mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write referid="parentchannel"/>&direction=down</mm:import>
@@ -33,7 +33,7 @@
             </div>
          </div>
       </div>
-      
+
 
     <div class="editor">
       <div class="body">
@@ -87,7 +87,15 @@
 					 <fmt:message key="content.reorder" />
 				  </a>
 			   </li>
-				<% } %>
+             <li class="reorder">
+                        <a href="<mm:url page="/editors/upload/InitUpload.do">
+                                <mm:param name="parent" value="$parentchannel" />
+                             </mm:url>">
+                       <fmt:message key="content.reorder" />
+                        </a>
+                     </li>
+
+            <% } %>
 			</ul>
 			<% } %>
 	</div>
@@ -132,7 +140,7 @@
 			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
 			<% if (role != null && SecurityUtil.isWriter(role)) { %>
 				<a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
-					target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )"> 
+					target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )">
 	                   <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />" /></a>
 
 				<a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');" title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="content.unlink" />" alt="<fmt:message key="content.unlink" />"/></a>
@@ -150,20 +158,20 @@
 	         <mm:first inverse="true">
 	            <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
 	            <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />" alt="<fmt:message key="content.move.up" />"/></a>
-	         </mm:first> 
+	         </mm:first>
 	      <% } %>
  	  	   <cmsc:hasfeature name="savedformmodule">
 			<c:set var="typeval">
-      			<mm:nodeinfo type="type" />          	
-      		</c:set> 
-      		<c:if test="${typeval == 'responseform'}">         
+      			<mm:nodeinfo type="type" />
+      		</c:set>
+      		<c:if test="${typeval == 'responseform'}">
 	       		<mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
 	            	<mm:param name="nodenumber"><mm:field name="number" /></mm:param>
 	            	<mm:param name="initreturnurl" value="${returnurl}" />
-	       		</mm:url>                   
-	       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
+	       		</mm:url>
+	       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>
 	       	</c:if>
-	 	</cmsc:hasfeature>          	
+	 	</cmsc:hasfeature>
       </td>
       <td onMouseDown="objClick(this);">
 		   <mm:nodeinfo type="guitype"/>
@@ -199,7 +207,7 @@
 						 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
 						 <c:set var="channelIconMessage"><fmt:message key="role.${rights}" /></c:set>
 						 <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
-						 
+
 						 <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
                  	<a href="${channelUrl}">${channelName}</a>
                </td>
