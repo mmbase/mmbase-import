@@ -1,6 +1,7 @@
 <di:html
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    component="links"
     title_key="links.title">
   <mm:node referid="education">
     <h1><mm:field name="name" /> - <di:translate key="links.title" /></h1>
