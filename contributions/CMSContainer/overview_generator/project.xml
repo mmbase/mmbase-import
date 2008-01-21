@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 <project>
     <artifactId>cmsc-overview_generator</artifactId>
     <name>CMS Container overview generator</name>
+    <currentVersion>0.1</currentVersion>
     <shortDescription>CMS Container overview generator</shortDescription>
+
     <build>
         <sourceDirectory>
             src/java
@@ -21,30 +23,45 @@ See http://www.MMBase.org/license
             <artifactId>commons-logging</artifactId>
             <version>1.1</version>
             <type>jar</type>
+            <properties>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
         </dependency>
         <dependency>
             <groupId>sshtools</groupId>
             <artifactId>j2ssh-core</artifactId>
             <version>0.2.2</version>
             <type>jar</type>
+            <properties>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
         </dependency>
         <dependency>
             <groupId>jcvsii</groupId>
             <artifactId>jcvsii</artifactId>
             <version>5.3.2</version>
             <type>jar</type>
+            <properties>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.11</version>
             <type>jar</type>
+            <properties>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>svnkit</groupId>
             <artifactId>svnkit</artifactId>
             <version>1.1.4</version>
             <type>jar</type>
+            <properties>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
         </dependency>
     </dependencies>
 </project>
