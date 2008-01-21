@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @see {@link Action}.
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.6 2008-01-21 15:25:28 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.7 2008-01-21 17:28:15 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
@@ -33,7 +33,11 @@ public abstract class ActionRepository extends Configurable {
 
     public abstract void add(Action a);
 
-    public abstract Action get(String nameSpace, String name);
+    public abstract Map<String, Action> get(String nameSpace);
 
-    public abstract Collection<Action> getActions();
+    public Action get(String nameSpace, String name) {
+        return get(nameSpace).get(name);
+    }
+
+    public abstract Collection<Map<String, Action>> getActions();
 }

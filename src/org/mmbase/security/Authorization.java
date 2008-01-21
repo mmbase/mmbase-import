@@ -12,6 +12,7 @@ package org.mmbase.security;
 import java.util.Set;
 import java.util.HashSet;
 
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Constraint;
 
@@ -21,7 +22,7 @@ import org.mmbase.storage.search.Constraint;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.28 2007-07-25 07:17:40 michiel Exp $
+ * @version $Id: Authorization.java,v 1.29 2008-01-21 17:28:15 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
 
@@ -137,14 +138,14 @@ public abstract class Authorization extends Configurable {
      * in the MMBase cloud.
      * @since MMBase-1.9
      */
-    public boolean check(UserContext user, Action ac) {
-        return ac.getDefault().check(user, ac);
+    public boolean check(UserContext user, Action ac, Parameters parameters) {
+        return ac.getDefault().check(user, ac, parameters);
     }
     /**
      * @since MMBase-1.9
      */
-    public final void verify(UserContext user, Action ac) {
-        if (!check(user, ac)) {
+    public final void verify(UserContext user, Action ac, Parameters parameters) {
+        if (!check(user, ac, parameters)) {
             throw new SecurityException("Action '" + ac + " was NOT permitted to " + user.getIdentifier());
         }
     }
@@ -245,7 +246,7 @@ public abstract class Authorization extends Configurable {
      */
     public static final QueryCheck COMPLETE_CHECK = new QueryCheck(true,  null);
 
-   
+
 
     /**
      * Defines the result of a security check on a query. Such a result has two members: A

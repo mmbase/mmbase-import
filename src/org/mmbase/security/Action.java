@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.LocalizedString;
 
 /**
@@ -17,7 +18,7 @@ import org.mmbase.util.LocalizedString;
  * component XML's).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Action.java,v 1.5 2008-01-21 15:25:28 michiel Exp $
+ * @version $Id: Action.java,v 1.6 2008-01-21 17:28:15 michiel Exp $
  * @since MMBase-1.9
  */
 public class Action implements java.io.Serializable {
@@ -63,5 +64,8 @@ public class Action implements java.io.Serializable {
 
     public String toString() {
         return nameSpace + ":" + name + ":" + defaultChecker;
+    }
+    public Parameters createParameters() {
+        return new Parameters();
     }
 }
