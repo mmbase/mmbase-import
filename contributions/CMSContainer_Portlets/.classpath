@@ -30,7 +30,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/jcaptcha/jars/jcaptcha-all-1.0-RC3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jcaptcha/jars/jcaptcha-all-1.0-RC6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
