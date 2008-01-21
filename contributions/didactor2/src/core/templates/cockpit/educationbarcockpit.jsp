@@ -1,5 +1,5 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %><mm:cloud method="asis">
 <div class="educationMenubarCockpit" style="white-space: nowrap">
   <mm:isgreaterthan referid="user" value="0">
@@ -7,7 +7,7 @@
 
       <mm:node number="$education" notfound="skip">
         <mm:relatednodes role="settingrel" type="components">
-          <mm:treeinclude page="/${_node.name}/cockpit/menuitem.jsp" objectlist="$includePath" 
+          <mm:treeinclude page="/${_node.name}/cockpit/menuitem.jsp" objectlist="$includePath"
                           referids="$referids,_node@number">
             <mm:param name="name"><mm:field name="name" /></mm:param>
             <mm:param name="type">div</mm:param>
