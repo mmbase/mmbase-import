@@ -2,13 +2,6 @@ package com.finalist.cmsc.tools.generator;
 
 import java.io.File;
 
-/**
- * Created by IntelliJ IDEA.
- * User: gmark
- * Date: Nov 12, 2007
- * Time: 2:54:02 PM
- * To change this template use File | Settings | File Templates.
- */
 public class VCSConfig {
    private String url;
    private String username;
