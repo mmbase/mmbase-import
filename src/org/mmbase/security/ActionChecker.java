@@ -9,18 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.bridge.Node;
+import org.mmbase.util.functions.Parameters;
 /**
  * A piece of 'action check' functionality. Provided by actions themselves, but security
  * implementations can perhaps also use this interface to administer their implementation of {@link
  * Authorization#check(UserContext, Action)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ActionChecker.java,v 1.3 2007-12-06 08:08:35 michiel Exp $
+ * @version $Id: ActionChecker.java,v 1.4 2008-01-21 17:28:15 michiel Exp $
  * @since MMBase-1.9
  */
 public interface ActionChecker extends java.io.Serializable {
 
-    boolean check(UserContext user, Action ac);
+    boolean check(UserContext user, Action ac, Parameters parameters);
 
     /**
      * This basic implementation of ActionChecker checks the action only based on rank. A minimal
@@ -32,7 +34,7 @@ public interface ActionChecker extends java.io.Serializable {
         public Rank(org.mmbase.security.Rank r) {
             rank = r;
         }
-        public boolean check(UserContext user, Action ac) {
+        public boolean check(UserContext user, Action ac, Parameters parameters) {
             return user.getRank().getInt() >= rank.getInt();
         }
         public String toString() {
