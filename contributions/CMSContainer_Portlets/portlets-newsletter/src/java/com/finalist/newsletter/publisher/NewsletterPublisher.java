@@ -1,5 +1,6 @@
 package com.finalist.newsletter.publisher;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.mail.Message;
@@ -16,6 +17,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.services.community.NewsletterCommunication;
 import com.finalist.newsletter.generator.NewsletterGenerator;
 import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
@@ -63,8 +65,7 @@ public class NewsletterPublisher extends Thread {
       startMassPublishing();
    }
 
-   
-    private void sendNewsletter(Node publicationNode, String userName) {
+   private void sendNewsletter(Node publicationNode, String userName) {
       String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
       Message message = generateNewsletter(userName, publicationNumber, mimeType);
 
@@ -75,18 +76,76 @@ public class NewsletterPublisher extends Thread {
       } catch (MessagingException e) {
          log.debug("An error occurred while trying to send a newsletter e-mail");
          log.debug(e.getMessage());
+      } catch (UnsupportedEncodingException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
       }
    }
 
-   private Message setMailHeaders(Node publicationNode, String userName, Message message) throws MessagingException {
+   private Message setMailHeaders(Node publicationNode, String userName, Message message) throws MessagingException, UnsupportedEncodingException {
 
-      message.setFrom(new InternetAddress("jasperstroomer@quicknet.nl"));
-      
+      String emailFrom = null;
+      String nameFrom = null;
+      String emailReplyTo = null;
+      String nameReplyTo = null;
+      /*
+       * Node newsletterNode = SearchUtil.findRelatedNode(publicationNode,
+       * "newsletter", "related"); if (newsletterNode != null) { emailFrom =
+       * newsletterNode.getStringValue("emailfrom"); nameFrom =
+       * newsletterNode.getStringValue("namefrom"); emailReplyTo =
+       * newsletterNode.getStringValue("emailreplyto"); nameReplyTo =
+       * newsletterNode.getStringValue("namereplyto"); }
+       */
+      if (emailFrom == null || emailFrom.length() == 0) {
+         emailFrom = PropertiesUtil.getProperty("newsletter.from.mail");
+         if (emailFrom == null || emailFrom.length() == 0) {
+            emailFrom = PropertiesUtil.getProperty("mail.system.email");
+         }
+      }
+
+      if (nameFrom == null || nameFrom.length() == 0) {
+         nameFrom = PropertiesUtil.getProperty("newsletter.from.name");
+      }
+
+      if (emailReplyTo == null || emailReplyTo.length() == 0) {
+         emailReplyTo = PropertiesUtil.getProperty("newsletter.replyto.mail");
+      }
+
+      if (nameReplyTo == null || nameReplyTo.length() == 0) {
+         nameReplyTo = PropertiesUtil.getProperty("newsletter.replyto.name");
+      }
+
+      if (emailFrom != null && emailFrom.length() > 0) {
+         InternetAddress fromAddress = new InternetAddress(emailFrom);
+         if (nameFrom != null && nameFrom.length() > 0) {
+            fromAddress.setPersonal(nameFrom);
+         }
+         message.setFrom(fromAddress);
+      } else {
+         return (null);
+      }
+
+      if (emailReplyTo != null && emailReplyTo.length() > 0) {
+         InternetAddress replyToAddress = new InternetAddress(emailReplyTo);
+         if (nameReplyTo != null && nameReplyTo.length() > 0) {
+            replyToAddress.setPersonal(nameReplyTo);
+         }
+         InternetAddress[] addresses= new InternetAddress[1];
+         addresses[0] = replyToAddress;
+         message.setReplyTo(addresses);
+      } else {
+         return (null);
+      }
+
       String userEmail = NewsletterCommunication.getUserPreference(userName, "email");
-      InternetAddress toAddress = new InternetAddress(userEmail);
-      message.setRecipient(RecipientType.TO, toAddress);
+      if (userEmail != null && userEmail.length() > 0) {
+         InternetAddress toAddress = new InternetAddress(userEmail);
+         message.setRecipient(RecipientType.TO, toAddress);
+      } else {
+         return (null);
+      }
 
-      String subject = publicationNode.getStringValue("subject");
+      String subject = "" + publicationNode.getStringValue("subject");
       message.setSubject(subject);
 
       return (message);
@@ -109,5 +168,5 @@ public class NewsletterPublisher extends Thread {
       NewsletterPublicationUtil.setPublicationNumber(newsletterNode, 1);
       NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
    }
-   
+
 }
