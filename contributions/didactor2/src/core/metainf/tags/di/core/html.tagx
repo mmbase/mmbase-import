@@ -37,7 +37,7 @@
               </mm:link>
             </mm:haspage>
             <mm:node referid="education">
-              <mm:field name="intro">
+              <mm:field name="intro" escape="tagstripper,text/html/attribute">
                 <mm:isnotempty>
                   <meta name="description" content="${_}" />
                 </mm:isnotempty>
