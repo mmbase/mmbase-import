@@ -23,13 +23,14 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MayTag.java,v 1.2 2007-07-27 08:14:32 michiel Exp $
+ * @version $Id: MayTag.java,v 1.3 2008-01-21 15:25:45 michiel Exp $
  */
 
 public class MayTag extends CloudReferrerTag implements Condition {
 
-    protected Attribute inverse = Attribute.NULL;
-    protected Attribute action = Attribute.NULL;
+    protected Attribute inverse   = Attribute.NULL;
+    protected Attribute action    = Attribute.NULL;
+    protected Attribute namespace = Attribute.NULL;
 
     public void setInverse(String b) throws JspTagException {
         inverse = getAttribute(b);
@@ -37,12 +38,18 @@ public class MayTag extends CloudReferrerTag implements Condition {
     public void setAction(String a) throws JspTagException {
         action = getAttribute(a);
     }
+
+    public void setNamespace(String a) throws JspTagException {
+        namespace = getAttribute(a);
+    }
     protected boolean getInverse() throws JspTagException {
         return inverse.getBoolean(this, false);
     }
 
     public int doStartTag() throws JspTagException {
-        Action a = getCloudContext().getActionRepository().get(action.getString(this));
+        String ns = namespace.getString(this);
+        if ("".equals(ns)) ns = null;
+        Action a = getCloudContext().getActionRepository().get(ns, action.getString(this));
         if (a == null) throw new JspTagException("No such action '" + action.getString(this) + "'");
         if ((getCloudVar().may(a)) != getInverse()) {
             return EVAL_BODY;
