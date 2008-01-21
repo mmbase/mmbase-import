@@ -466,6 +466,13 @@ a img
   width: 190px;
 }
 
+#form input,
+#form textarea
+{
+  width: 190px;
+}
+
+
 #form select
 {
   width: 192px;
