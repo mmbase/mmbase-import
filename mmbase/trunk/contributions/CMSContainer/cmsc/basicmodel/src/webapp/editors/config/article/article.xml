@@ -3,6 +3,7 @@
 <wizard-schema id="article">
 	<title xml:lang="nl">Artikel</title>
 	<title xml:lang="en">Article</title>
+   <title xml:lang="zh">文章</title>
 
    <action include="config/article/create_article.xml"/>
    <action include="config/article/delete_article.xml"/>
