@@ -22,7 +22,8 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static final String SUBSCRIPTION_STATUS_KEY = "subscriptionstatus";
    public static final String SUBSCRIPTION_STATUS_ACTIVE = rb.getString("status.active");
-   public static final String SUBSCRIPTION_STATUS_INACTIVE = rb.getString("status.inactive");
+   public static final String SUBSCRIPTION_STATUS_PAUSED = rb.getString("status.paused");
+   public static final String SUBSCRIPTION_STATUS_TERMINATED = rb.getString("status.terminated");
    public static final String SUBSCRIPTION_STATUS_DEFAULT = SUBSCRIPTION_STATUS_ACTIVE;
    public static final String STATUS_OPTIONS = "statusoptions";
 
@@ -30,7 +31,7 @@ public abstract class NewsletterSubscriptionUtil {
 
    static {
       statusOptions.add(SUBSCRIPTION_STATUS_ACTIVE);
-      statusOptions.add(SUBSCRIPTION_STATUS_INACTIVE);
+      statusOptions.add(SUBSCRIPTION_STATUS_PAUSED);
    }
 
    // public static final List AVAILABLE_MIMETYPES = new ArrayList<String>()
@@ -157,7 +158,7 @@ public abstract class NewsletterSubscriptionUtil {
    }
 
    public static void pauseSubscription(String userName) {
-      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_INACTIVE);
+      setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_PAUSED);
    }
 
    public static void resumeSubscription(String userName) {
@@ -179,11 +180,9 @@ public abstract class NewsletterSubscriptionUtil {
          status = SUBSCRIPTION_STATUS_DEFAULT;
       }
       if (userName != null && status != null) {
-         if (statusOptions.contains(status)) {
-            NewsletterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
-            NewsletterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
-            return;
-         }
+         NewsletterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
+         NewsletterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
+         return;
       }
    }
 
@@ -213,13 +212,20 @@ public abstract class NewsletterSubscriptionUtil {
 
    public static void terminateUserSubscription(String userName) {
       if (userName != null) {
-         NewsletterCommunication.removeNewsPrefByUser(userName);
+         NewsletterSubscriptionUtil.unsubscribeFromAllNewsletters(userName);
+         NewsletterSubscriptionUtil.unsubscribeFromAllThemes(userName);
+         NewsletterSubscriptionUtil.setSubscriptionStatus(userName, SUBSCRIPTION_STATUS_TERMINATED);
       }
    }
 
    public static void unsubscribeFromAllNewsletters(String userName) {
       if (userName != null) {
          NewsletterCommunication.removeUserPreference(userName, NEWSLETTER);
+      }
+   }
+
+   public static void unsubscribeFromAllThemes(String userName) {
+      if (userName != null) {
          NewsletterCommunication.removeUserPreference(userName, NEWSLETTER_THEME);
       }
    }
