@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.11 2008-01-21 17:30:55 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.12 2008-01-21 18:32:19 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -60,11 +60,9 @@ public class DidactorEducation extends Component {
          return value;
     }
 
-    public static final Parameter EDUCATION = new Parameter("education", Node.class, true);
-    public static final Parameter CLASS     = new Parameter("class", Node.class, null);
     private static final Parameter SUBJECT   = new Parameter("subject", Node.class, true);
 
-    private static final Parameter[] PARAMS = new Parameter[] {EDUCATION, CLASS};
+    private static final Parameter[] PARAMS = new Parameter[] {Component.EDUCATION, Component.CLASS};
 
 
     /**
@@ -74,8 +72,8 @@ public class DidactorEducation extends Component {
     private static final Action VIEW_ANSWERS = new Action("education","viewAnswers", new ActionChecker() {
             public boolean check(UserContext user, Action ac, Parameters parameters) {
                 Node subject = (Node) parameters.get(SUBJECT);
-                Node education = (Node) parameters.get(EDUCATION);
-                Node clazz = (Node) parameters.get(CLASS);
+                Node education = (Node) parameters.get(Component.EDUCATION);
+                Node clazz = (Node) parameters.get(Component.CLASS);
                 int u = Integer.parseInt(user.getIdentifier());
                 return u == subject.getNumber() ||
                     isTeacherOf(subject.getCloud(), u, subject.getNumber(), education.getNumber(), clazz == null ? -1 : clazz.getNumber());
