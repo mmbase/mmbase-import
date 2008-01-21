@@ -1,8 +1,8 @@
-package com.finalist.cmsc.upload.forms;
+package com.finalist.cmsc.openoffice.forms;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.upload.model.OdtDocument;
-import com.finalist.cmsc.upload.service.OdtFileTranster;
+import com.finalist.cmsc.openoffice.model.OdtDocument;
+import com.finalist.cmsc.openoffice.service.OdtFileTranster;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

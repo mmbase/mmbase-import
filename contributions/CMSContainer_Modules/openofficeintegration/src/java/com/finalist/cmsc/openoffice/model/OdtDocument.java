@@ -1,4 +1,4 @@
-package com.finalist.cmsc.upload.model;
+package com.finalist.cmsc.openoffice.model;
 
 /**
  * POJO class ,used for openoffice's odt ducment;

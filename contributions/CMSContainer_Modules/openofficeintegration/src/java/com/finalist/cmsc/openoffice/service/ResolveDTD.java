@@ -1,4 +1,4 @@
-package com.finalist.cmsc.upload.service;
+package com.finalist.cmsc.openoffice.service;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
