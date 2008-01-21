@@ -10,7 +10,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
-<di:may component="education" action="isTeacherOf" arguments="studentNo">
+<di:may component="education" action="rate" arguments="studentNo">
 
 <mm:import id="correctiontext">
   <mm:node number="$madetest">
@@ -29,8 +29,8 @@
           <mm:present referid="answer" inverse="true">
             Score voor vraag <mm:write referid="questiontext" escape="none"/> niet gegeven.<br/>
             <mm:import id="incompleterating"/>
-          </mm:present>            
-          <mm:present referid="answer"> 
+          </mm:present>
+          <mm:present referid="answer">
             <mm:setfield name="score"><mm:write referid="answer"/></mm:setfield>
             <mm:remove referid="answer"/>
           </mm:present>

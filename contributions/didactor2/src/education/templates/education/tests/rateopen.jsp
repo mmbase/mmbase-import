@@ -25,8 +25,8 @@
   </div>
 </div>
 
-<div class="folders">  
-  <div class="folderHeader">   
+<div class="folders">
+  <div class="folderHeader">
     &nbsp;
   </div>
   <div class="folderBody">
@@ -43,7 +43,7 @@
   </div>
   <div class="contentBody">
 
-<di:may component="education" action="isTeacherOf" arguments="studentNo">
+<di:may component="education" action="rate" arguments="studentNo">
 
 <%-- find user's copybook --%>
 <mm:node number="$studentNo">
