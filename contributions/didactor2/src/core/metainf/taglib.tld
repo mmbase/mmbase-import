@@ -155,7 +155,7 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>arguments</name>
+      <name>referids</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -358,10 +358,6 @@
   <tag-file>
     <name>email</name>
     <path>/META-INF/tags/di/core/email.tagx</path>
-  </tag-file>
-  <tag-file>
-    <name>may</name>
-    <path>/META-INF/tags/di/core/may.tagx</path>
   </tag-file>
   <tag-file>
     <name>menuitem</name>
