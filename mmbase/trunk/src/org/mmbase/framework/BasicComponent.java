@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.38 2007-12-06 08:17:51 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.39 2008-01-21 15:31:36 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -109,7 +109,7 @@ public class BasicComponent implements Component {
             for (int i = 0; i < actionElements.getLength(); i++) {
                 try {
                     Element element = (Element) actionElements.item(i);
-                    String name = element.getAttribute("name");
+                    String actionName = element.getAttribute("name");
                     String rank = element.getAttribute("rank");
                     Object c = Instantiator.getInstanceWithSubElement(element);
                     Action a;
@@ -117,10 +117,10 @@ public class BasicComponent implements Component {
                         if (! "".equals(rank)) {
                             log.warn("Rank attribute ignored");
                         }
-                        a = new Action(name, (ActionChecker) c);
+                        a = new Action(name, actionName, (ActionChecker) c);
                     } else {
                         if ("".equals(rank)) { rank = "basic user"; }
-                        a = new Action(name, new ActionChecker.Rank(Rank.getRank(rank)));
+                        a = new Action(name, actionName, new ActionChecker.Rank(Rank.getRank(rank)));
                     }
                     a.getDescription().fillFromXml("description", element);
                     log.service("Registering action " + a);
@@ -139,17 +139,17 @@ public class BasicComponent implements Component {
             }
             for (int i = 0 ; i < blockElements.getLength(); i++) {
                 Element element = (Element) blockElements.item(i);
-                String name = element.getAttribute("name");
+                String blockName = element.getAttribute("name");
                 String mimetype = element.getAttribute("mimetype");
                 Block.Type[] classification = Block.Type.getClassification(element.getAttribute("classification"), true);
                 Block b = new Block(name, mimetype, this, classification);
                 b.getDescription().fillFromXml("description", element);
-                log.trace("Found block: " + name);
+                log.trace("Found block: " + blockName);
                 b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
                 b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
                 b.processor = getProcessor("process", element, b);
                 if (defaultBlock == null) defaultBlock = b;
-                blocks.put(name, b);
+                blocks.put(blockName, b);
             }
         }
 
