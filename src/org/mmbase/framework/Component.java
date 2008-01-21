@@ -10,13 +10,14 @@ package org.mmbase.framework;
 import java.util.*;
 import java.net.URI;
 import org.mmbase.util.LocalizedString;
+import org.mmbase.security.Action;
 
 /**
  * A component is a piece of pluggable functionality that typically has dependencies on other
  * components, and may be requested several views.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.15 2007-08-06 16:57:25 michiel Exp $
+ * @version $Id: Component.java,v 1.16 2008-01-21 17:29:10 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -34,8 +35,8 @@ public interface Component {
 
     /**
      * All (satisfied) depedencies of this Component. See als {@link
-     * #getUnsatisfiedDependencies}. 
-     * 
+     * #getUnsatisfiedDependencies}.
+     *
      */
     Collection<Component> getDependencies();
 
@@ -60,7 +61,7 @@ public interface Component {
     LocalizedString getDescription();
 
     /**
-     * An URI which may identify the configuration of this Component. 
+     * An URI which may identify the configuration of this Component.
      */
     URI getUri();
 
@@ -78,7 +79,7 @@ public interface Component {
     /**
      * Gets a specific block. If there is no such block, then <code>null</code> is returned.
      * @param name The name of the block. If this parameter is <code>null</code>, then {@link #getDefaultBlock} can
-     * be returned. 
+     * be returned.
      */
     Block getBlock(String name);
 
@@ -100,10 +101,12 @@ public interface Component {
     Collection<Setting<?>> getSettings();
 
     /**
-     * Retrieves a setting (a definition, not a value, for that, use 
+     * Retrieves a setting (a definition, not a value, for that, use
      * {@link Framework#getSettingValue(Setting, Parameters)}) with a certain name. Or
      * <code>null</code> if no such setting in this component.
      */
     Setting<?> getSetting(String name);
+
+    Map<String, Action> getActions();
 
 }
