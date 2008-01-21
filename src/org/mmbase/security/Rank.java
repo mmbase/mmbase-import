@@ -26,7 +26,7 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.17 2006-09-22 13:12:18 michiel Exp $
+ * @version $Id: Rank.java,v 1.18 2008-01-21 15:25:28 michiel Exp $
  */
 public final class Rank implements Comparable<Rank>, java.io.Serializable {
 
@@ -56,9 +56,9 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
 
 
     static {
-        registerRank(ANONYMOUS); 
-        registerRank(BASICUSER); 
-        registerRank(ADMIN); 
+        registerRank(ANONYMOUS);
+        registerRank(BASICUSER);
+        registerRank(ADMIN);
     }
 
     /**
@@ -152,7 +152,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
         }
     }
 
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -162,7 +162,7 @@ public final class Rank implements Comparable<Rank>, java.io.Serializable {
         result = HashCodeUtil.hashCode(result, description);
         return result;
     }
-    
+
     /**
      * @since MMBase-1.6.4
      */
