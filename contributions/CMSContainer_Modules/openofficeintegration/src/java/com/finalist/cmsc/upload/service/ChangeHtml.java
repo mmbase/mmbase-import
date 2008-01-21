@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,7 +35,7 @@ import org.xml.sax.SAXException;
 
 public class ChangeHtml {
 	Parserfactory pf = new Parserfactory();
-	public void change(String xmlUrl,HashMap hs) throws IOException, TransformerFactoryConfigurationError, TransformerException
+	public void change(String xmlUrl,HashMap hs, Map mapping) throws IOException, TransformerFactoryConfigurationError, TransformerException
 	{
 		 FileReader fr = new FileReader(xmlUrl);
 		 InputSource  source = new InputSource(fr); 
