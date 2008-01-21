@@ -1,11 +1,52 @@
 package com.finalist.newsletter.module.bean;
 
+import java.util.List;
+
+import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
+import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
+
 public class SubscriptionDetailBean {
 
    private String userName;
    private String status;
    private String mimeType;
    private String emailAddress;
+   private List<Integer> subscribedThemes;
+   private List<Integer> subscribedNewsletters;
+   private List<String> availableMimeTypes;
+   private List<String> availableStatusOptions;
+
+   public List<String> getAvailableMimeTypes() {
+      return availableMimeTypes;
+   }
+
+   public void setAvailableMimeTypes(List<String> availableMimeTypes) {
+      this.availableMimeTypes = availableMimeTypes;
+   }
+
+   public List<String> getAvailableStatusOptions() {
+      return availableStatusOptions;
+   }
+
+   public void setAvailableStatusOptions(List<String> availableStatusOptions) {
+      this.availableStatusOptions = availableStatusOptions;
+   }
+
+   public List<Integer> getSubscribedThemes() {
+      return subscribedThemes;
+   }
+
+   public void setSubscribedThemes(List<Integer> subscribedThemes) {
+      this.subscribedThemes = subscribedThemes;
+   }
+
+   public List<Integer> getSubscribedNewsletters() {
+      return subscribedNewsletters;
+   }
+
+   public void setSubscribedNewsletters(List<Integer> subscribedNewsletters) {
+      this.subscribedNewsletters = subscribedNewsletters;
+   }
 
    public SubscriptionDetailBean() {
 
