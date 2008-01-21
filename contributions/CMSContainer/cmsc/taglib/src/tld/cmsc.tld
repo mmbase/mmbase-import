@@ -790,6 +790,12 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>checked by default</description>
+            <name>checked</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>
