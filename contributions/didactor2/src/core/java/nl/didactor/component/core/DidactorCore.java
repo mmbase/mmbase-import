@@ -4,13 +4,23 @@
 package nl.didactor.component.core;
 import nl.didactor.component.Component;
 import nl.didactor.builders.*;
-import org.mmbase.bridge.Cloud;
+import org.mmbase.security.Action;
+import org.mmbase.security.ActionChecker;
+import org.mmbase.security.UserContext;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.storage.search.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMBase;
-import java.util.Map;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import java.util.*;
 
 public class DidactorCore extends Component {
+    private static Logger log = Logging.getLoggerInstance(DidactorCore.class);
     /**
      * Returns the version of the component
      */
@@ -33,6 +43,88 @@ public class DidactorCore extends Component {
         return new Component[0];
     }
 
+
+    public static final Parameter EDITCONTEXT   = new Parameter("editcontext", String.class, true);
+    private static final Parameter[] PARAMS = new Parameter[] {EDITCONTEXT, Parameter.CLOUD};
+
+
+    protected static boolean check(int hasInteger, Cloud cloud, UserContext user, String editContext) {
+        if (user.getRank() == org.mmbase.security.Rank.ADMIN) return true;
+        int userNumber = ((nl.didactor.security.UserContext)user).getUserNumber();
+        if (! cloud.hasNode(userNumber)) return false;
+        Node u = cloud.getNode(userNumber);
+        NodeManager roles = cloud.getNodeManager("roles");
+        NodeQuery q =  Queries.createRelatedNodesQuery(u, roles, "related", "destination");
+        NodeManager editcontext = cloud.getNodeManager("editcontexts");
+        RelationStep rs = q.addRelationStep(editcontext, "posrel", "destination");
+        StepField pos = q.createStepField(rs, "pos");
+        Queries.addConstraint(q, q.createConstraint(pos, hasInteger));
+        StepField name =  q.createStepField(rs.getNext(), "name");
+        Queries.addConstraint(q, q.createConstraint(name, editContext));
+        log.info(q.toSql());
+        return Queries.count(q) > 0;
+    }
+
+    private static final Action RO = new Action("core","ro", new ActionChecker() {
+            public boolean check(UserContext user, Action ac, Parameters parameters) {
+                Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                String editContext = (String) parameters.get(EDITCONTEXT);
+                return DidactorCore.check(1, cloud, user, editContext);
+            }
+        }) {
+            public Parameters createParameters() {
+                return new Parameters(PARAMS);
+            }
+            public String toString() {
+                return "RO";
+            }
+        };
+    private static final Action RW = new Action("core","rw", new ActionChecker() {
+            public boolean check(UserContext user, Action ac, Parameters parameters) {
+                Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                String editContext = (String) parameters.get(EDITCONTEXT);
+                return DidactorCore.check(2, cloud, user, editContext);
+            }
+        }) {
+            public Parameters createParameters() {
+                return new Parameters(PARAMS);
+            }
+            public String toString() {
+                return "RW";
+            }
+        };
+    private static final Action RWD = new Action("core","rwd", new ActionChecker() {
+            public boolean check(UserContext user, Action ac, Parameters parameters) {
+                Cloud cloud = (Cloud) parameters.get(Parameter.CLOUD);
+                String editContext = (String) parameters.get(EDITCONTEXT);
+                return DidactorCore.check(3, cloud, user, editContext);
+            }
+        }) {
+            public Parameters createParameters() {
+                return new Parameters(PARAMS);
+            }
+            public String toString() {
+                return "RWD";
+            }
+        };
+
+    private static final Map<String, Action> actions = new HashMap<String, Action>();
+
+    static {
+        actions.put(RO.getName(), RO);
+        actions.put(RW.getName(), RW);
+        actions.put(RWD.getName(), RWD);
+    }
+
+    public Map<String, Action> getActions() {
+        return Collections.unmodifiableMap(actions);
+    }
+    @Override
+    public boolean[] may(Cloud cloud, Action action, Parameters arguments) {
+        boolean mayvalue[]= new boolean[] {false, false};
+        mayvalue[0] = action.getDefault().check(cloud.getUser(), action, arguments);
+        return mayvalue;
+    }
 
     public void init() {
         super.init();
@@ -65,7 +157,7 @@ public class DidactorCore extends Component {
 
         return true;
     }
- 
+
     /**
      * When inserting a new classrel, we need to add a copybook.
      * @param classrel The new object
