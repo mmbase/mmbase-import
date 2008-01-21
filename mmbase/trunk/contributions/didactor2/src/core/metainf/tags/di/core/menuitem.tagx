@@ -8,15 +8,15 @@
   <jsp:directive.attribute name="type"        />
   <jsp:directive.attribute name="scope"       />
 
-  <c:catch var="exception">
+  <mm:treehaspage page="/${component.name}/cockpit/menuitem.jsp" objectlist="$includePath">
     <mm:treeinclude notfound="exception" page="/${component.name}/cockpit/menuitem.jsp" objectlist="$includePath" referids="$referids">
       <mm:param name="name">${component.name}</mm:param>
       <mm:param name="number">${component.number}</mm:param>
       <mm:param name="type">${empty type ? 'div' : type}</mm:param>
       <mm:param name="scope">${empty scope ? 'provider' : scope}</mm:param>
     </mm:treeinclude>
-  </c:catch>
-  <c:if test="${! empty exception}">
+  </mm:treehaspage>
+  <mm:treehaspage page="/${component.name}/cockpit/menuitem.jsp" objectlist="$includePath" inverse="true">
     <!-- Default implementation -->
     <mm:treehaspage page="${component.name}/index.jspx" objectlist="$includePath">
       <mm:treefile page="/${component.name}/"
@@ -34,6 +34,6 @@
         </c:otherwise>
       </c:choose>
     </mm:treehaspage>
-  </c:if>
+  </mm:treehaspage>
 </jsp:root>
 
