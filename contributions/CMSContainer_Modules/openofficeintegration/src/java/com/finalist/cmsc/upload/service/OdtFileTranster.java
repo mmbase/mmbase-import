@@ -24,18 +24,21 @@ public class OdtFileTranster {
 
     public static OdtDocument process(File file) {
 
-
         String middelFileLocation = WORKINGFOLDER + File.separator + file.getName() + ".xml";
 
         ChangeContentXml ccx = new ChangeContentXml();
         ChangeHtml ch = new ChangeHtml();
         OutFinishHtml ofh = new OutFinishHtml(file.getPath(), middelFileLocation);
 
+
         HashMap styleMap = ccx.getStyleMap(ccx.getContentStyle(file.getPath()));
         StringBuffer buffer = new StringBuffer();
+
+
         try {
             ofh.getFirstHtml();
-            ch.change(middelFileLocation, styleMap);
+            Map rowAndSavedImageMap = saveAllImageToCMSC(new FileInputStream(file));
+            ch.change(middelFileLocation, styleMap,rowAndSavedImageMap);
 
             BufferedReader in = new BufferedReader(new FileReader(middelFileLocation + ".html"));
             String str;
@@ -53,6 +56,7 @@ public class OdtFileTranster {
             e.printStackTrace();
             log.error(e);
         }
+
 
         OdtDocument doc = new OdtDocument();
         doc.setTitle(file.getName());
