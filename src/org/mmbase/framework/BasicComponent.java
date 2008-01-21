@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.39 2008-01-21 15:31:36 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.40 2008-01-21 17:29:10 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -267,6 +267,10 @@ public class BasicComponent implements Component {
 
     public Collection<VirtualComponent> getUnsatisfiedDependencies() {
         return Collections.unmodifiableCollection(unsatisfied);
+    }
+
+    public Map<String, Action> getActions() {
+        return ActionRepository.getInstance().get(getName());
     }
 
     public void resolve(VirtualComponent unsat, Component comp) {
