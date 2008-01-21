@@ -57,9 +57,9 @@ public class BatchOperation {
 				configs.add(config);
 			}
 		} catch (FileNotFoundException e) {
-			log.equals("config file not existed" + configfile);
+			System.out.println("config file not existed" + configfile);
 		} catch (IOException e) {
-			log.error("error when read from config file");
+			System.out.println("error when read from config file");
 		}
 		return configs;
 	}
