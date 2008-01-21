@@ -1,12 +1,12 @@
 <%--
   THIS JSP IS NEARLY DEPRECATED.
 
- 
+
   Figure out the following variables:
   - current username (into variable $username)
   - current user id (into variable $user)
   - current server name (into varabiel $servername)
-  - if 'provider' is not set: 
+  - if 'provider' is not set:
     - current provider (into variable $provider)
       - if there is more than 1 provider, look if there is an 'url' related to
          one of the providers with the $servername name.
@@ -25,7 +25,7 @@
 
 <%--
   Step 7: call the 'validateUser' (which can be overwritten for a specific implementation)
-  to make sure that this user may log in. 
+  to make sure that this user may log in.
 --%>
 <mm:import escape="trimmer" id="validatemessage"><mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
 <mm:isnotempty referid="validatemessage">
@@ -35,5 +35,5 @@
     <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
   </mm:redirect>
   <% } %>
-  
+
 </mm:isnotempty>
