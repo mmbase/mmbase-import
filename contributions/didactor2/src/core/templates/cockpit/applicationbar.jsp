@@ -31,7 +31,9 @@
           <mm:node number="component.register" notfound="skipbody">
             <p class="noaccount">
               <di:translate key="register.noaccountyet" />
+              <jsp:text> </jsp:text>
               <di:translate key="register.registeryourself" />
+              <jsp:text> </jsp:text>
               <mm:treefile page="/register/index.jsp" objectlist="$includePath" referids="$referids" write="false">
                 <a href="${_}"><di:translate key="register.here" /></a>
               </mm:treefile>

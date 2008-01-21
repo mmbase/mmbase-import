@@ -20,7 +20,7 @@
           <mm:functioncontainer>
             <mm:param name="bar">provider</mm:param>
             <mm:listfunction name="components">
-              <di:menuitem component="${co}" />
+              <di:menuitem component="${_}" />
             </mm:listfunction>
           </mm:functioncontainer>
         </mm:node>
