@@ -74,10 +74,11 @@ var __htmlareas = [];
 HTMLArea.agt       = navigator.userAgent.toLowerCase();
 HTMLArea.is_ie	   = ((HTMLArea.agt.indexOf("msie") != -1) && (HTMLArea.agt.indexOf("opera") == -1));
 HTMLArea.is_opera  = (HTMLArea.agt.indexOf("opera") != -1);
+HTMLArea.is_safari = (HTMLArea.agt.indexOf("safari") != -1);
 HTMLArea.is_mac	   = (HTMLArea.agt.indexOf("mac") != -1);
 HTMLArea.is_mac_ie = (HTMLArea.is_ie && HTMLArea.is_mac);
 HTMLArea.is_win_ie = (HTMLArea.is_ie && !HTMLArea.is_mac);
-HTMLArea.is_gecko  = (navigator.product == "Gecko");
+HTMLArea.is_gecko  = ((navigator.product == "Gecko") && !HTMLArea.is_safari); // Safari lies!
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
