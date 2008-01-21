@@ -13,7 +13,7 @@ import java.util.*;
 import nl.didactor.component.workspace.DidactorWorkspace;
 
 /**
- * This class implements the Component interface, to make sure that  
+ * This class implements the Component interface, to make sure that
  * all needed relations and values are available to the component.
  * @author Sasa Vender s.vender@levi9.com
  *
@@ -26,8 +26,8 @@ public class DidactorVirtualClassroom extends Component {
     public String getVersion() {
         return "0.1";
     } /**
-     * Returns the name of the component
-     */
+       * Returns the name of the component
+       */
     public String getName() {
         return "virtualclassroom";
     }
@@ -43,47 +43,28 @@ public class DidactorVirtualClassroom extends Component {
     }
 
     /**
-     * Permission framework: indicate whether or not a given operation may be done, with the
-     * given arguments. The return value is a list of 2 booleans; the first boolean indicates
-     * whether or not the operation is allowed, the second boolean indicates whether or not
-     * this result may be cached.
-     */
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
-        return new boolean[]{true, true};
-    }
-
-	/**
-	 * Of course, no matter what setting somebody wants to get,
-	 * we say that it's  unknown since there isn't any settings
-	 * in this chat.
-	 */
-    public String getSetting(String setting, Cloud cloud, Map context, String[] arguments) {
-        throw new IllegalArgumentException("Unknown setting '" + setting + "'");
-    }
-
-    /**
      * This method is called when a new object is added to Didactor. If the component
-     * needs to insert objects for this object, it can do so. 
+     * needs to insert objects for this object, it can do so.
      */
     public boolean notifyCreate(MMObjectNode node) {
     	/*
-        if (node.getBuilder().getTableName().equals("classes"))
-            return createClass(node);
-		*/
+          if (node.getBuilder().getTableName().equals("classes"))
+          return createClass(node);
+        */
         return true;
     }
-    
+
     /**
      * Initialize component.
-     */      
+     */
     public void init() {
         super.init();
         initRelations();
     }
-    
+
     /**
      * Initialize relations that component needs.
-     */      
+     */
     public void initRelations() {
         MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
         String username = "system";
@@ -93,29 +74,29 @@ public class DidactorVirtualClassroom extends Component {
         TypeDef typedef = mmb.getTypeDef();
         int related = reldef.getNumberByName("related");
         int posrel = reldef.getNumberByName("posrel");
-        int educations = typedef.getIntValue("educations");        
+        int educations = typedef.getIntValue("educations");
         int virtualclassroomsessions = typedef.getIntValue("virtualclassroomsessions");
-        int videotapes = typedef.getIntValue("videotapes");       
+        int videotapes = typedef.getIntValue("videotapes");
         int attachments = typedef.getIntValue("attachments");
         int editcontexts = typedef.getIntValue("editcontexts");
-	    
+
         //System.out.println(">>>>>>"+educations+"/"+virtualclassroomsessions+"/"+videotapes+"/"+attachments);
-          
+
         MMObjectBuilder editcontextsbuilder = mmb.getBuilder("editcontexts");
         try{
             NodeSearchQuery nsQuery = new NodeSearchQuery(editcontextsbuilder);
             StepField nameField = nsQuery.getField(editcontextsbuilder.getField("name"));
             BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(nameField, "virtualclassroom");
             nsQuery.setConstraint(constraint);
-        	List editcontextList = editcontextsbuilder.getNodes(nsQuery);
+            List editcontextList = editcontextsbuilder.getNodes(nsQuery);
             if(editcontextList.size()<1){
-            	
+
             	//create entry for virtualclassroom in editcontext
                 MMObjectNode editcontextsnode = editcontextsbuilder.getNewNode(admin);
                 editcontextsnode.setValue("name", "virtualclassroom");
-                editcontextsnode.setValue("otype", editcontexts);                
+                editcontextsnode.setValue("otype", editcontexts);
                 editcontextsbuilder.insert(admin, editcontextsnode);
-                
+
                 //find number of virtualclassroom editcontext
                 NodeSearchQuery eQuery = new NodeSearchQuery(editcontextsbuilder);
                 StepField eNameField = eQuery.getField(editcontextsbuilder.getField("name"));
@@ -124,8 +105,8 @@ public class DidactorVirtualClassroom extends Component {
                 editcontextList = editcontextsbuilder.getNodes(eQuery);
                 if (editcontextList.size()>0){
                     editcontextsnode  = (MMObjectNode) editcontextList.get(0);
-            	    int virtualclassroomNb = editcontextsnode.getNumber();                
-                
+            	    int virtualclassroomNb = editcontextsnode.getNumber();
+
                     //find number of systemadministrator role
                     MMObjectBuilder rolesbuilder = mmb.getBuilder("roles");
                     NodeSearchQuery rQuery = new NodeSearchQuery(rolesbuilder);
@@ -136,44 +117,44 @@ public class DidactorVirtualClassroom extends Component {
                     if (roleList.size()>0){
             	        MMObjectNode systAdmin  = (MMObjectNode) roleList.get(0);
             	        int systAdminNb = systAdmin.getNumber();
-            	
+
                         //crete relation from systemadministrator role to virtualclassrom editcontext
                         MMObjectBuilder posrelbuilder = mmb.getBuilder("posrel");
-                        MMObjectNode relation = posrelbuilder.getNewNode(username);               
+                        MMObjectNode relation = posrelbuilder.getNewNode(username);
                         relation.setValue("snumber", virtualclassroomNb);
                         relation.setValue("dnumber", systAdminNb);
                         relation.setValue("rnumber", posrel);
                         relation.setValue("pos", 3);
                         posrelbuilder.insert(username, relation);
-                    }    
+                    }
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        }      
-        
+        }
+
         if(!typerel.contains(educations,virtualclassroomsessions,related)){
-            MMObjectNode relation = typerel.getNewNode(username);               
+            MMObjectNode relation = typerel.getNewNode(username);
             relation.setValue("snumber", educations);
             relation.setValue("dnumber", virtualclassroomsessions);
             relation.setValue("rnumber", related);
             typerel.insert(username, relation);
-        }  	      	                             
-               
+        }
+
         if(!typerel.contains(virtualclassroomsessions,videotapes,related)){
-            MMObjectNode relation = typerel.getNewNode(username);               
+            MMObjectNode relation = typerel.getNewNode(username);
             relation.setValue("snumber", virtualclassroomsessions);
             relation.setValue("dnumber", videotapes);
             relation.setValue("rnumber", related);
             typerel.insert(username, relation);
-        } 
-        
+        }
+
         if(!typerel.contains(virtualclassroomsessions,attachments,related)){
-            MMObjectNode relation = typerel.getNewNode(username);               
+            MMObjectNode relation = typerel.getNewNode(username);
             relation.setValue("snumber", virtualclassroomsessions);
             relation.setValue("dnumber", attachments);
             relation.setValue("rnumber", related);
             typerel.insert(username, relation);
-        }         		    		    	      
-    }      
+        }
+    }
 }

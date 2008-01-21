@@ -3,7 +3,7 @@ package nl.didactor.component.proactivemail;
 /**
  * DidactorProActiveMail class, initialization of component ProActiveMail.
  * Do instantiating of quartz and triggers used by this component
- * 
+ *
  * @author Goran Kostadinov     (Levi9 Balkan Global Sourcing)
  *
  * @version $Id$
@@ -37,16 +37,19 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.util.logging.*;
 
+/**
+ * @javadoc
+ */
 public class DidactorProActiveMail extends Component{
 
-   private static Logger log = Logging.getLoggerInstance(DidactorProActiveMail.class);
-   private static Scheduler scheduler = null;
-   private static String groupName = "DidactorGroup";
-   
+    private static final Logger log = Logging.getLoggerInstance(DidactorProActiveMail.class);
+    private static Scheduler scheduler = null;
+    private static String groupName = "DidactorGroup";
+
     /**
      * Returns the version of the component
      */
-   
+
     public String getVersion() {
         return "1.0";
     }
@@ -57,16 +60,16 @@ public class DidactorProActiveMail extends Component{
     public String getName() {
         return "proactivemail";
     }
-    
+
     public static String getGroupName () {
         return groupName;
     }
 
     public void init() {
         super.init();
-        
+
         Component.getComponent("email").registerInterested(this);
-        
+
         initRelations();
         restartJobs();
         nl.didactor.events.EventListener reporting = new nl.didactor.proactivemail.util.EventManager();
@@ -82,10 +85,6 @@ public class DidactorProActiveMail extends Component{
         components[0] = new DidactorCore();
         components[1] = new DidactorEmail();
         return components;
-    }
-
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
-        return new boolean[]{true, true};
     }
 
     public String getValue(String setting, Cloud cloud, Map context, String[] arguments) {
@@ -129,32 +128,32 @@ public class DidactorProActiveMail extends Component{
         }
         initScheduler();
     }
-    
-    
+
+
     /**
      * Initialize quartz and crons
-     */      
+     */
     private static void initScheduler() {
         if ( scheduler == null ) return;
-        
+
         MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
-        
+
         try {
             boolean refreshActive = false;
             String[] refreshGroup = scheduler.getJobNames("refreshgroup");
-            for (int i = 0; i < refreshGroup.length; i++) 
+            for (int i = 0; i < refreshGroup.length; i++)
                 if ( refreshGroup[i].compareTo("refreshjob")==0 ) {
                     refreshActive = true;
                 }
             if ( !refreshActive ) {
                 JobDetail jobDetail = new JobDetail("refreshjob",
-                        "refreshgroup",
-                        nl.didactor.component.proactivemail.cron.ProActiveMailRefreshJob.class);
+                                                    "refreshgroup",
+                                                    nl.didactor.component.proactivemail.cron.ProActiveMailRefreshJob.class);
                 CronTrigger trigger = new CronTrigger("refreshjob", null, "0 0/1 * * * ?"); // refresh any minutes
                 scheduler.scheduleJob(jobDetail, trigger);
             }
             // read all specific schedulers we should make trigger for it
-            
+
             MMObjectBuilder cronsbuilder = mmb.getBuilder("proactivemailscheduler");
             NodeSearchQuery nsQuery = new NodeSearchQuery(cronsbuilder);
             StepField nameField = nsQuery.getField(cronsbuilder.getField("name"));
@@ -163,20 +162,20 @@ public class DidactorProActiveMail extends Component{
             List cronsList = cronsbuilder.getNodes(nsQuery);
             for (int i = 0; i < cronsList.size(); i++) {
                 // initialize all of them
-                
+
                 MMObjectNode cronsnode  = (MMObjectNode) cronsList.get(i);
                 Integer cronNumber = cronsnode.getIntegerValue("number");
                 String cronName = cronsnode.getStringValue("name");
                 String cronPattern = cronsnode.getStringValue("cronpattern");
                 Integer cronActive = cronsnode.getIntegerValue("active");
-                if ( cronActive.intValue() > 0 && cronName != null && 
+                if ( cronActive.intValue() > 0 && cronName != null &&
                      cronName.length() > 0 && cronPattern.length() > 0 ) {
                     log.info("Initialize active scheduler '"+cronName+"'.");
                     try {
                         JobDetail jobDetail = new JobDetail(cronNumber.toString()+"_"+cronName,
-                                groupName,
-                                nl.didactor.component.proactivemail.cron.ProActiveMailJob.class);
-                        
+                                                            groupName,
+                                                            nl.didactor.component.proactivemail.cron.ProActiveMailJob.class);
+
                         CronTrigger trigger = new CronTrigger(cronName, null, cronPattern);
                         scheduler.scheduleJob(jobDetail, trigger);
                     } catch (Exception ex1) {
@@ -187,12 +186,12 @@ public class DidactorProActiveMail extends Component{
         } catch (Exception ex) {
             log.error("Can't initialize proactivemailscheduler crons.\r\n     "+ex.toString());
         }
-        
+
     }
-    
+
     /**
      * Initialize relations that component needs.
-     */      
+     */
     public void initRelations() {
         MMBase mmb = (MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
         String username = "system";
@@ -201,9 +200,9 @@ public class DidactorProActiveMail extends Component{
         TypeDef typedef = mmb.getTypeDef();
         int posrel = reldef.getNumberByName("posrel");
         int editcontexts = typedef.getIntValue("editcontexts");
-        
+
         MMObjectBuilder editcontextsbuilder = mmb.getBuilder("editcontexts");
-        
+
         try{
             NodeSearchQuery nsQuery = new NodeSearchQuery(editcontextsbuilder);
             StepField nameField = nsQuery.getField(editcontextsbuilder.getField("name"));
@@ -211,13 +210,13 @@ public class DidactorProActiveMail extends Component{
             nsQuery.setConstraint(constraint);
             List editcontextList = editcontextsbuilder.getNodes(nsQuery);
             if(editcontextList.size()<1){
-                
+
                 //create entry for proactivemail in editcontext
                 MMObjectNode editcontextsnode = editcontextsbuilder.getNewNode(admin);
                 editcontextsnode.setValue("name", "proactivemail");
-                editcontextsnode.setValue("otype", editcontexts);                
+                editcontextsnode.setValue("otype", editcontexts);
                 editcontextsbuilder.insert(admin, editcontextsnode);
-                
+
                 //find number of proactivemail editcontext
                 NodeSearchQuery eQuery = new NodeSearchQuery(editcontextsbuilder);
                 StepField eNameField = eQuery.getField(editcontextsbuilder.getField("name"));
@@ -226,8 +225,8 @@ public class DidactorProActiveMail extends Component{
                 editcontextList = editcontextsbuilder.getNodes(eQuery);
                 if (editcontextList.size()>0){
                     editcontextsnode  = (MMObjectNode) editcontextList.get(0);
-                    int proactivemailNb = editcontextsnode.getNumber();                
-                
+                    int proactivemailNb = editcontextsnode.getNumber();
+
                     //find number of systemadministrator role
                     MMObjectBuilder rolesbuilder = mmb.getBuilder("roles");
                     NodeSearchQuery rQuery = new NodeSearchQuery(rolesbuilder);
@@ -238,24 +237,24 @@ public class DidactorProActiveMail extends Component{
                     if (roleList.size()>0){
                         MMObjectNode systAdmin  = (MMObjectNode) roleList.get(0);
                         int systAdminNb = systAdmin.getNumber();
-                
+
                         //crete relation from systemadministrator role to proactivemail editcontext
                         MMObjectBuilder posrelbuilder = mmb.getBuilder("posrel");
-                        MMObjectNode relation = posrelbuilder.getNewNode(username);               
+                        MMObjectNode relation = posrelbuilder.getNewNode(username);
                         relation.setValue("snumber", proactivemailNb);
                         relation.setValue("dnumber", systAdminNb);
                         relation.setValue("rnumber", posrel);
                         relation.setValue("pos", 3);
                         posrelbuilder.insert(username, relation);
-                    }    
+                    }
                 }
             }
-            
-            
-            
+
+
+
         } catch (Exception ex) {
             log.error("Can't initialize editcontext table with new value 'proactivemail'.");
         }
-    }      
-    
+    }
+
 }
