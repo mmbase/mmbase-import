@@ -3,6 +3,7 @@ package com.finalist.newsletter.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 import com.finalist.newsletter.module.bean.GlobalOverviewBean;
 import com.finalist.newsletter.module.bean.NewsletterOverviewBean;
 import com.finalist.newsletter.module.bean.NewsletterSubscriberBean;
@@ -70,16 +71,36 @@ public final class BeanUtil {
       SubscriptionDetailBean bean = new SubscriptionDetailBean();
       bean.setUserName(userName);
 
-      String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-      bean.setStatus(status);
+      List<String> availableMimeTypes = NewsletterGeneratorFactory.getMimeTypes();
+      bean.setAvailableMimeTypes(availableMimeTypes);
+      List<String> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
+      bean.setAvailableStatusOptions(availableStatusOptions);
 
-      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
-      bean.setMimeType(mimeType);
+      List<Integer> subscribedThemes = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
+      List<Integer> subscribedNewsletters = NewsletterSubscriptionUtil.getUserSubscribedNewsletters(userName);
 
-      String emailAddress = ""; // TODO: Get email address from session
-      bean.setEmailAddress(emailAddress);
+      if (subscribedNewsletters != null && subscribedNewsletters.size() > 0) {
+         bean.setSubscribedNewsletters(subscribedNewsletters);
+      }
 
-      return (bean);
+      if (subscribedThemes != null && subscribedThemes.size() > 0) {
+         bean.setSubscribedThemes(subscribedThemes);
+      }
+
+      if ((subscribedThemes != null && subscribedThemes.size() > 0) || (subscribedNewsletters != null && subscribedNewsletters.size() > 0)) {
+         String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
+         bean.setStatus(status);
+
+         String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
+         bean.setMimeType(mimeType);
+
+         String emailAddress = ""; // TODO: Get email address from session
+         bean.setEmailAddress(emailAddress);
+
+         return (bean);
+      }
+      return (null);
+
    }
 
    public static SubscriptionOverviewBean createSubscriptionOverviewBean(String userName) {

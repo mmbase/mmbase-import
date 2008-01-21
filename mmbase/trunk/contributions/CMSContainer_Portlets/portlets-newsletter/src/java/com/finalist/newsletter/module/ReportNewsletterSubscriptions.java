@@ -30,7 +30,7 @@ public class ReportNewsletterSubscriptions extends Action {
             request.setAttribute("subscriberOverviewBeans", subscribers);
             return (mapping.findForward("success"));
          } else {
-            errors.add("error", new ActionMessage("error.no_data"));
+            errors.add("error", new ActionMessage("error.no_items"));
          }
       }
       saveErrors(request, errors);

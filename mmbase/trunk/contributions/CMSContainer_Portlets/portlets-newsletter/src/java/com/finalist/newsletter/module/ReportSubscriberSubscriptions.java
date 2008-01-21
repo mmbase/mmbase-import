@@ -1,5 +1,7 @@
 package com.finalist.newsletter.module;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +14,7 @@ import org.apache.struts.action.ActionMessages;
 
 import com.finalist.newsletter.module.bean.SubscriptionDetailBean;
 import com.finalist.newsletter.util.BeanUtil;
+import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 
 public class ReportSubscriberSubscriptions extends Action {
 
@@ -23,6 +26,24 @@ public class ReportSubscriberSubscriptions extends Action {
       if (userName != null) {
          SubscriptionDetailBean bean = BeanUtil.createSubscriptionDetailBean(userName);
          if (bean != null) {
+            List<Integer> subscribedThemes = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
+            List<Integer> subscribedNewsletters = NewsletterSubscriptionUtil.getUserSubscribedNewsletters(userName);
+
+            if (subscribedNewsletters != null && subscribedNewsletters.size() > 0) {
+               request.setAttribute("newslettersubscriptions", subscribedNewsletters);
+            }
+
+            if (subscribedThemes != null && subscribedThemes.size() > 0) {
+               request.setAttribute("themesubscriptions", subscribedThemes);
+            }
+
+            if ((subscribedThemes != null && subscribedThemes.size() > 0) || (subscribedNewsletters != null && subscribedNewsletters.size() > 0)) {
+               String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
+               request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
+               String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
+               request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
+            }
+
             request.setAttribute("subscriptionDetailBean", bean);
             return (mapping.findForward("success"));
          } else {
