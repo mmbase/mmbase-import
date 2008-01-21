@@ -6,6 +6,9 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import java.util.Map;
 
 /**
@@ -13,6 +16,8 @@ import java.util.Map;
  */
 
 public class DidactorPortalPages extends Component {
+    private static final Logger log = Logging.getLoggerInstance(DidactorPortalPages.class);
+
     /**
      * Returns the version of the component
      */
