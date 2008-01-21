@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.8 2007-07-20 10:18:43 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.9 2008-01-21 14:45:32 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -58,6 +58,7 @@ public class DidactorEducation extends Component {
     }
 
     // javadoc inherited
+    @Override
     public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
         boolean mayvalue[]= new boolean[] {false, false};
         try {
