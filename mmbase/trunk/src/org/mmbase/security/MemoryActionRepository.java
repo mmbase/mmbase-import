@@ -18,33 +18,13 @@ import org.mmbase.util.logging.Logging;
  * this repository on startup.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MemoryActionRepository.java,v 1.6 2008-01-21 15:25:28 michiel Exp $
+ * @version $Id: MemoryActionRepository.java,v 1.7 2008-01-21 17:28:15 michiel Exp $
  * @since MMBase-1.9
  */
 public class MemoryActionRepository extends ActionRepository {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
-    private static class Key  {
-        private final String nameSpace;
-        private final String name;
-        Key(String ns, String n) {
-            nameSpace = ns;
-            name = n;
-        }
-        public int hashCode() {
-            return name.hashCode();
-        }
-        public boolean equals(Object o) {
-            if (o instanceof Key) {
-                Key k = (Key) o;
-                return k.name.equals(name) && (k.nameSpace == null ? nameSpace == null : k.nameSpace.equals(nameSpace));
-            } else {
-                return false;
-            }
-        }
-    }
-
-    private final Map<Key, Action> store = new HashMap<Key, Action>();
+    private final Map<String, Map<String, Action>> store = new HashMap<String, Map<String, Action>>();
 
     public MemoryActionRepository() {
     }
@@ -54,13 +34,27 @@ public class MemoryActionRepository extends ActionRepository {
 
     public void add(Action a) {
         log.info("Adding " + a + " to " + this);
-        store.put(new Key(a.getNameSpace(), a.getName()), a);
+        Map<String, Action> map = store.get(a.getNameSpace());
+        if (map == null) {
+            map = new HashMap<String, Action>();
+            store.put(a.getNameSpace(), map);
+        }
+        map.put(a.getName(), a);
+    }
+    public Map<String, Action> get(String nameSpace) {
+        Map<String, Action> map = store.get(nameSpace);
+        if (map == null) {
+            return Collections.emptyMap();
+        } else {
+            return Collections.unmodifiableMap(map);
+        }
     }
 
     public Action get(String nameSpace, String name) {
-        return store.get(new Key(nameSpace, name));
+        return get(nameSpace).get(name);
     }
-    public Collection<Action> getActions() {
+
+    public Collection<Map<String, Action>> getActions() {
         return store.values();
     }
 
