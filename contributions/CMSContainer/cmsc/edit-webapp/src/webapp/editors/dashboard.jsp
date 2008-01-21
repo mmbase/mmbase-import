@@ -57,9 +57,9 @@
 		<table>
          <thead>
             <tr>
-			   <th></th>
-               <th><fmt:message key="dashboard.repository.date" /></th>
-               <th><fmt:message key="dashboard.repository.element" /></th>
+               <th style="width: 75px;"></th>
+               <th style="width: 150px;"><fmt:message key="dashboard.repository.date" /></th>
+               <th style="width: 68px;"><fmt:message key="dashboard.repository.element" /></th>
                <th><fmt:message key="dashboard.repository.title" /></th>
                <th><fmt:message key="dashboard.repository.number" /></th>
             </tr>
