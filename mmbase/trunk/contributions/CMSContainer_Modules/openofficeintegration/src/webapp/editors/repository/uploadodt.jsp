@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<%@page import="com.finalist.util.http.BulkUploadUtil,com.finalist.cmsc.upload.service.OODocUploadUtil"%>
+<%@page import="com.finalist.util.http.BulkUploadUtil,com.finalist.cmsc.openoffice.service.OODocUploadUtil"%>
 
 
 <mm:content type="text/html" encoding="UTF-8" expires="0">

@@ -1,6 +1,6 @@
-package com.finalist.cmsc.upload.service;
+package com.finalist.cmsc.openoffice.service;
 
-import com.finalist.cmsc.upload.model.OdtDocument;
+import com.finalist.cmsc.openoffice.model.OdtDocument;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.apache.commons.logging.Log;

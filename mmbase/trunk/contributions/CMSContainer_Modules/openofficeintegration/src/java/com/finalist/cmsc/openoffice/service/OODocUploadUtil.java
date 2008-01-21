@@ -1,4 +1,4 @@
-package com.finalist.cmsc.upload.service;
+package com.finalist.cmsc.openoffice.service;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -23,14 +23,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
 
-import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.cmsc.upload.model.OdtDocument;
+import com.finalist.cmsc.openoffice.model.OdtDocument;
 
 /**
- * upload one odt document or more ,persist
+ * openoffice one odt document or more ,persist
  *
  * @author
  */
@@ -85,7 +82,7 @@ public class OODocUploadUtil {
     }
 
     /**
-     * upload odt doc and put it in cache
+     * openoffice odt doc and put it in cache
      *
      * @param request
      */
@@ -94,7 +91,7 @@ public class OODocUploadUtil {
         try {
             uploadFiles(request, MAXSIZE);
         } catch (FileUploadException e) {
-            log.error("upload file error :" + e.getMessage());
+            log.error("openoffice file error :" + e.getMessage());
         }
         String realPath = "";
         if (request.getAttribute("dir") != null)
@@ -128,13 +125,13 @@ public class OODocUploadUtil {
             RuntimeException {
         File directory = new File(dir);
         if (!directory.exists() && !directory.mkdirs()) {
-            log.warn("   mkdir error while upload odt document!");
+            log.warn("   mkdir error while openoffice odt document!");
             return;
         }
         File file = new File(directory.getCanonicalPath() + File.separator
                 + binary.getOriginalFileName());
         if (!file.createNewFile()) {
-            log.warn("   create empty file error while upload odt document!");
+            log.warn("   create empty file error while openoffice odt document!");
         }
         FileOutputStream out = new FileOutputStream(file);
         copyStream(binary.getInputStream(), out);
@@ -212,7 +209,7 @@ public class OODocUploadUtil {
             throws FileUploadException {
         // Create a factory for disk-based file items
         FileItemFactory factory = new DiskFileItemFactory();
-        // Create a new file upload handler
+        // Create a new file openoffice handler
         ServletFileUpload upload = new ServletFileUpload(factory);
         upload.setSizeMax(maxZize);
         // Parse the request

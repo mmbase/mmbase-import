@@ -1,14 +1,11 @@
 
-package com.finalist.cmsc.upload.service;
+package com.finalist.cmsc.openoffice.service;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,7 +15,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
