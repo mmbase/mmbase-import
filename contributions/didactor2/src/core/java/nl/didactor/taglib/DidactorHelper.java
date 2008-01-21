@@ -13,7 +13,7 @@ import org.mmbase.util.logging.Logging;
  * Provide some Didactor specify functionality as EL-functions too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DidactorHelper.java,v 1.1 2008-01-21 17:31:53 michiel Exp $
+ * @version $Id: DidactorHelper.java,v 1.2 2008-01-21 18:33:08 michiel Exp $
  * @since Didactor-2.3
  */
 public class DidactorHelper {
@@ -22,8 +22,8 @@ public class DidactorHelper {
 
     public static void fillStandardParameters(ContextReferrerTag tag, Parameters params) {
         ServletRequest request = tag.getPageContext().getRequest();
-        params.setIfDefined("education", request.getAttribute("education"));
-        params.setIfDefined("class", request.getAttribute("education"));
+        params.setIfDefined(Component.EDUCATION, request.getAttribute("education"));
+        params.setIfDefined(Component.CLASS, request.getAttribute("education"));
     }
 
 }
