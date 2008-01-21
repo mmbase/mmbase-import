@@ -7,11 +7,13 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.security.Action;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 import javax.xml.parsers.*;
@@ -26,15 +28,13 @@ import java.util.*;
 public abstract class Component {
     private static final Logger log = Logging.getLoggerInstance(Component.class);
 
-    private static Map<String, Component> components = new HashMap<String, Component>();
+    private static final Map<String, Component> components = new HashMap<String, Component>();
 
-    private List<Component> interestedComponents = new ArrayList<Component>();
+    private final List<Component> interestedComponents = new ArrayList<Component>();
     private MMObjectNode node;
 
-    /** Save the settings for this component */
-    private Map<String, Setting> settings = new HashMap<String, Setting>();
-
-    private Map<String, String> scopes = new HashMap<String, String>();
+    private final Map<String, Setting> settings = new HashMap<String, Setting>();
+    private final Map<String, String>  scopes   = new HashMap<String, String>();
 
     /** The string indicating the path for templates of this component */
     private String templatepath = null;
@@ -241,13 +241,17 @@ public abstract class Component {
         return true;
     }
 
+    public Map<String, Action> getActions() {
+        return Collections.emptyMap();
+    }
+
     /**
      * Permission framework: indicate whether or not a given operation may be done, with the
      * given arguments. The return value is a list of 2 booleans; the first boolean indicates
      * whether or not the operation is allowed, the second boolean indicates whether or not
      * this result may be cached.
     */
-    public boolean[] may (String operation, Cloud cloud, Map context, String[] arguments) {
+    public boolean[] may(Cloud cloud, Action action, Parameters arguments) {
         return new boolean[]{true, true};
     }
 
