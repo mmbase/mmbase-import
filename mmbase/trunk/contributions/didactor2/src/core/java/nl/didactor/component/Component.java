@@ -14,6 +14,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.functions.Parameter;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 import javax.xml.parsers.*;
@@ -44,6 +45,9 @@ public abstract class Component {
 
     /** Location of the component in the bar. Default to 100, which is somewhere at the end. */
     private int barposition = 100;
+
+    public static final Parameter EDUCATION = new Parameter("education", Node.class, true);
+    public static final Parameter CLASS     = new Parameter("class", Node.class, null);
 
     /**
      * Register a component in the registry.
