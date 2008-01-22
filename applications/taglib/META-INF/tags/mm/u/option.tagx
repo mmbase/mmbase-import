@@ -7,7 +7,7 @@
   <!--
       Like HTML option tag, but it is handyer to deal with the selected attribute.
       @author Michiel Meeuwissen
-      @since MMBase-1.9
+      @since MMBase-1.8.5
   -->
   <jsp:directive.tag
       display-name="HTML option tag"

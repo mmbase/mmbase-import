@@ -4,6 +4,8 @@
 %>
 <jsp:directive.attribute name="query"   required="true" />
 <jsp:directive.attribute name="mode"   />
+<jsp:directive.attribute name="max" type="java.lang.Integer"  />
+<jsp:directive.attribute name="throwexception" type="java.lang.Boolean"  />
 <%
 Connection con = null;
 Statement stmt = null;
@@ -11,6 +13,7 @@ try {
 DataSource dataSource = (DataSource) MMBase.getMMBase().getStorageManagerFactory().getAttribute(Attributes.DATA_SOURCE);
 con = dataSource.getConnection();
 stmt = con.createStatement();
+query = query.replace("$PREFIX", MMBase.getMMBase().getBaseName());
 ResultSet rs = stmt.executeQuery(org.mmbase.util.transformers.Xml.XMLUnescape(query));
 %>
 <c:if test="${empty mode or mode eq 'table'}">
@@ -26,37 +29,41 @@ ResultSet rs = stmt.executeQuery(org.mmbase.util.transformers.Xml.XMLUnescape(qu
   </tr>
   </c:if>
   <%
+  int seq = 0;
   while(true) {
    boolean valid = rs.next();
+   seq ++;
+   if (max != null && seq > max) break;
    if (! valid) break;
   %>
-<c:if test="${empty mode or mode eq 'table'}">	
+<c:if test="${empty mode or mode eq 'table'}">
   <tr>
     <%
     for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
     %>
     <td>
-      <%= rs.getString(i) %>      
+      <%= rs.getString(i) %>
     </td>
     <%} %>
   </tr>
   </c:if>
   <c:if test="${mode eq 'nodes'}">
 	<%
-	Map data = new HashMap();	
+	Map data = new HashMap();
          for	(int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
 	   data.put(rs.getMetaData().getColumnName(i), rs.getString(i));
 	 }
-	 request.setAttribute("_node", data);
+	 jspContext.setAttribute("help_node", data);
     %>
-    <mm:node referid="_node">
-  <jsp:doBody />	
+    <mm:node referid="help_node">
+      <jsp:doBody />
   </mm:node>
   </c:if>
   <%}
   } catch (Exception e) {
-    out.println("<tr><td colspan='100'>ERROR:" + e.getMessage() + "</td></tr>");
-    out.println("<tr><td colspan='100'><pre>" + org.mmbase.util.logging.Logging.stackTrace(e) + "</pre></td></tr>");
+     if (throwexception != null && throwexception) throw e;
+      out.println("<tr><td colspan='100'>ERROR:" + e.getMessage() + "</td></tr>");
+      out.println("<tr><td colspan='100'><pre>" + org.mmbase.util.logging.Logging.stackTrace(e) +  "</pre></td></tr>");
   } finally {
   try {
   if (stmt != null) {
