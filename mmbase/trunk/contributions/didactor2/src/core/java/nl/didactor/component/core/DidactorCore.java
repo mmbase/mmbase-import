@@ -58,7 +58,7 @@ public class DidactorCore extends Component {
         NodeManager editcontext = cloud.getNodeManager("editcontexts");
         RelationStep rs = q.addRelationStep(editcontext, "posrel", "destination");
         StepField pos = q.createStepField(rs, "pos");
-        Queries.addConstraint(q, q.createConstraint(pos, hasInteger));
+        Queries.addConstraint(q, q.createConstraint(pos, FieldCompareConstraint.GREATER_EQUAL, (Integer) hasInteger));
         StepField name =  q.createStepField(rs.getNext(), "name");
         Queries.addConstraint(q, q.createConstraint(name, editContext));
         log.info(q.toSql());
