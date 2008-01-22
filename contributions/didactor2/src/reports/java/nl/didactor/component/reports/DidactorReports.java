@@ -5,6 +5,10 @@ import nl.didactor.component.core.DidactorCore;
 import nl.didactor.events.*;
 import nl.didactor.reports.util.EventManager;
 
+
+/**
+ * @javadoc
+ */
 public class DidactorReports extends Component {
     /**
      * Returns the version of the component
@@ -15,8 +19,8 @@ public class DidactorReports extends Component {
 
     public void init() {
         super.init();
-        EventListener reporting = new EventManager();
-        EventDispatcher.register(reporting);
+        org.mmbase.core.event.EventListener reporting = new EventManager();
+        org.mmbase.core.event.EventManager.getInstance().addEventListener(reporting);
     }
 
     /**

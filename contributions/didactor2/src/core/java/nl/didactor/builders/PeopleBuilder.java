@@ -1,7 +1,6 @@
 package nl.didactor.builders;
 import nl.didactor.component.Component;
 import nl.didactor.events.Event;
-import nl.didactor.events.EventDispatcher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -37,23 +36,22 @@ public class PeopleBuilder extends DidactorBuilder {
             StepField usernameField = query.getField(getField("username"));
             query.setConstraint(new BasicFieldValueConstraint(usernameField, username));
             SearchQueryHandler handler = MMBase.getMMBase().getSearchQueryHandler();
-            log.info("Using query " + query + " --> " +
-                     handler.createSqlString(query));
+            if (log.isDebugEnabled()) {
+                log.debug("Using query " + query + " --> " + handler.createSqlString(query));
+            }
 
             //StepField passwordField = query.getField(getField("password"));
             //query.setConstraint(new BasicFieldValueConstraint(passwordField, "{md5}" + encoder.encode(password)));
 
             List nodelist = getNodes(query);
             if (nodelist.size() == 0) {
-                log.service("No users with the name '" + username + "'");
+                log.service("No users with the name '" + username + "'", new Exception());
                 return null;
                 // fail silently
             } else if (nodelist.size() > 1) {
                 log.error("Too many users with username '" + username + "': " + nodelist.size());
-                for ( int i=0;i <nodelist.size() ;i++) {
-                    MMObjectNode n = (MMObjectNode)nodelist.get(0);
-                    log.error(n.getStringValue("lastname") + ""+ n.getStringValue("username"));
-                }
+                MMObjectNode n = (MMObjectNode)nodelist.get(0);
+                log.error(n.getStringValue("lastname") + ""+ n.getStringValue("username"));
                 return null;
             } else {
                 log.debug("1 user found: " + username + " " + password);
@@ -67,7 +65,7 @@ public class PeopleBuilder extends DidactorBuilder {
                 return node;
             }
         } catch (SearchQueryException e) {
-            log.error(e.toString());
+            log.error(e.toString(), e);
             return null;
         }
     }
@@ -163,6 +161,8 @@ public class PeopleBuilder extends DidactorBuilder {
             }
         }
 
+        // Oh no!
+
         // No fielddefs, so it is definately a virtual field. Is it a component setting?
         if (field.indexOf("-") > 0) {
             if (log.isDebugEnabled()) {
@@ -198,8 +198,8 @@ public class PeopleBuilder extends DidactorBuilder {
         }
         int number = super.insert(owner, node);
         Event event = new Event((String) node.getValues().get("username"), null, null, null, null,
-                                "peopleaccountcreated", (new Integer(number)).toString(), "accountcreated");
-        EventDispatcher.report(event, null, null);
+                                "peopleaccountcreated", "" + number, "accountcreated");
+        org.mmbase.core.event.EventManager.getInstance().propagateEvent(event);
         log.info("insert people node");
         return number;
     }
