@@ -16,10 +16,22 @@
     </mm:link>
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css',includePath)}" />
 
+    <mm:haspage page="/mmbase/style/css/mmxf.css">
+      <mm:link page="/mmbase/style/css/mmxf.css">
+        <link rel="stylesheet" type="text/css" href="${_}" />
+      </mm:link>
+    </mm:haspage>
+
     <mm:treefile page="/css/print.css"  objectlist="$includePath" write="false">
       <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
       <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
     </mm:treefile>
+    <!-- WTF: javascript for printing?. People have that in their browser -->
+    <script type="text/javascript">
+      function printThis() {
+         window.print();
+      }
+    </script>
     <jsp:doBody />
   </head>
 </jsp:root>
