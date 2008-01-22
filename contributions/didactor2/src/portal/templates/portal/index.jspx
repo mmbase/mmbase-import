@@ -3,10 +3,9 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
-
           >
   <di:html
-      type="text/html"
+      type="application/xhtml+xml"
       rank="anonymous"
       component="portal"
       styleClass="portal">
@@ -20,10 +19,12 @@
             <c:when test="${c eq 'ignore'}">
             </c:when>
             <c:when test="${empty c}">
-              <mm:treeinclude debug="html" page="/portal/column.div.jspx" objectlist="$includePath" referids="$referids,col,referids,includePath" />
+              <mm:treeinclude debug="xml" page="/portal/column.div.jspx"
+                              objectlist="$includePath" referids="$referids,col" />
             </c:when>
             <c:otherwise>
-              <mm:treeinclude debug="html" page="/portal/${c}.div.jspx"  objectlist="$includePath" referids="$referids,col,referids,includePath" />
+              <mm:treeinclude debug="xml" page="/portal/${c}.div.jspx"
+                              objectlist="$includePath" referids="$referids,col" />
             </c:otherwise>
           </c:choose>
         </div>
