@@ -10,20 +10,18 @@ import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.servlet.jsp.tagext.*;
-import javax.servlet.jsp.*;
 
 /**
  * @javadoc
- * @version $Id: ClassRoom.java,v 1.6 2007-08-03 18:31:28 michiel Exp $
+ * @version $Id: ClassRoom.java,v 1.7 2008-01-22 08:51:59 michiel Exp $
  */
 public class ClassRoom extends FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(ClassRoom.class);
 
 
     {
-        
-        addFunction(new NodeFunction("hasrole", 
+
+        addFunction(new NodeFunction("hasrole",
                                     new Parameter[] {
                                         Parameter.NODE,
                                         new Parameter("role", String.class, true),
@@ -42,11 +40,11 @@ public class ClassRoom extends FunctionProvider {
 
 
     public final static int ALL_CLASSES = -1;
-    
+
     /**
      * Returns a List of people (Nodes) with a given role
      * related to the class, sorted by name
-     * 
+     *
      * This does not included people related via work-groups?
      *
      * @param klass the class's Node
@@ -65,14 +63,14 @@ public class ClassRoom extends FunctionProvider {
                 null,
                 true
         ).nodeIterator();
-        
+
         while (people.hasNext()) {
             list.add(people.nextNode().getNodeValue("people.number"));
         }
         log.info("Found " + list + " for " + klass.getNumber() + " " + role);
         return list;
     }
-    
+
     /**
      * Same as getPeople, but only returns teachers
      * @param klass
@@ -81,31 +79,31 @@ public class ClassRoom extends FunctionProvider {
     public static List<Node> getTeachers(Node klass) {
         return getPeople(klass, "teacher");
     }
-    
+
     /**
      * Same as getPeople, but only returns students NOTE: persons without a role will be included!
      * @param klass
      * @return List of student Nodes
      */
-    
+
     public static List<Node> getStudents(Node klass) {
         return getPeople(klass, "student");
     }
     public static List<Node> getCoaches(Node klass) {
         return getPeople(klass, "coach");
     }
-    
+
     public static Date getStartDate(Node klass) {
         Node event = klass.getRelatedNodes("mmevents").getNode(0);
         return new Date(event.getIntValue("start") * 1000L);
     }
-    
+
     public static Date getEndDate(Node klass) {
         Node event = klass.getRelatedNodes("mmevents").getNode(0);
         return new Date(event.getIntValue("stop") * 1000L);
     }
-    
-    
+
+
     public static Node getClassRel(Node klass, Node student) {
         NodeList rels = klass.getCloud().getList(
                 klass.getStringValue("number"),
@@ -122,31 +120,31 @@ public class ClassRoom extends FunctionProvider {
         }
         return null;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     /**
      * Return the roles of the user based on the given context
      */
     public static Collection<String> getRoles(MMObjectNode personnode, int educationno, Cloud cloud) {
         Set<String> roles = new HashSet<String>();
         List<MMObjectNode> directRoles = personnode.getRelatedNodes("roles");
-        
+
         for (MMObjectNode role : directRoles) {
             roles.add(role.getStringValue("name"));
         }
-        
+
         //        Retrieve all the relations between the user and the education or all education
-        
+
         if (educationno != 0) {
             NodeList rolerel = nl.didactor.util.GetRelation.getRelations(
-                    personnode.getNumber(), 
+                    personnode.getNumber(),
                     educationno,
-                    "rolerel", 
+                    "rolerel",
                     cloud);
-            
+
             if (rolerel.size()> 2) {
                 log.error("There is more than 1 relation from user '" + personnode.getNumber() + "' to education '" + educationno + "'");
             }
@@ -162,7 +160,7 @@ public class ClassRoom extends FunctionProvider {
         }
         return roles;
     }
-    
+
     /**
      * Return whether or not this user has the given role.
      * This means that the user can have the role in one (or more) of the
@@ -170,28 +168,25 @@ public class ClassRoom extends FunctionProvider {
      * <ul>
      *  <li>A 'role' object is related directly to him</li>
      *  <li>There is a 'rolerel' between him and the education from the context</li>
-     * </ul> 
+     * </ul>
      */
     public static boolean hasRole(MMObjectNode personnode, String req_rolename, int educationno, Cloud cloud) {
         return getRoles(personnode, educationno, cloud).contains(req_rolename);
     }
-    
-    public static List getWorkgroupMembers(MMObjectNode usernode, int classno, int educationno, String rolename,
-            Cloud cloud)
-        throws JspTagException
-    {             
+
+    public static List<Integer> getWorkgroupMembers(MMObjectNode usernode, int classno, int educationno, String rolename, Cloud cloud) {
         List<Integer> members= new ArrayList<Integer>();
         List<MMObjectNode> workgroups = usernode.getRelatedNodes("workgroups");
         for (MMObjectNode workgroup : workgroups) {
             // The right class is the class corresponding to the education
             int rightclass=0;
-            
+
             List<MMObjectNode> classes= workgroup.getRelatedNodes("classes");
             // Well-Formedness: size == 1
             for (int k=0; k<classes.size(); k++) {
                 MMObjectNode classdef= (MMObjectNode) classes.get(k);
                 int classno1= classdef.getNumber();
-                
+
                 /* obtain education -> should be equal
                  Vector educations= classdef.getRelatedNodes("educations");
                  // Well-Formedness: size == 1
@@ -219,17 +214,16 @@ public class ClassRoom extends FunctionProvider {
         }
         return members;
     }
-    
+
     public static List<Integer> getClassMembers(MMObjectNode usernode, int classno, int educationno, String rolename,
-                                                Cloud cloud)
-        throws JspTagException {
+                                                Cloud cloud) {
 //        /System.out.println( usernode.getNumber());
-        
+
         List<Integer> members= new ArrayList<Integer>();
         List<MMObjectNode> classes= usernode.getRelatedNodes("classes");
         for (MMObjectNode classdef : classes) {
             int classno1= classdef.getNumber();
-            
+
             /* obtain education -> should be equal
              Vector educations= classdef.getRelatedNodes("educations");
              // Well-Formedness: size == 1
@@ -255,25 +249,25 @@ public class ClassRoom extends FunctionProvider {
         }
         return members;
     }
-    
+
 //    Is the user the workgroupmember of the subject?
     public static boolean isWorkgroupMember(MMObjectNode usernode, int subjectpersonnode, int classno, int educationno, String rolename,
-                                            Cloud cloud) throws JspTagException {
+                                            Cloud cloud)  {
         MMObjectNode subjectnode = MMBase.getMMBase().getBuilder("people").getNode( subjectpersonnode);
         if (subjectnode == null) {
-            throw new JspTagException( "Person with number '" + subjectpersonnode+ "' not found");
+            throw new RuntimeException( "Person with number '" + subjectpersonnode+ "' not found");
         }
         return getWorkgroupMembers(subjectnode, classno, educationno, rolename, cloud).contains(usernode.getNumber());
     }
-    
+
 //    Is the user a classmember of the subject?
     public static boolean isClassMember(MMObjectNode usernode, int subjectpersonnode, int classno, int educationno, String rolename,
-                                        Cloud cloud) throws JspTagException {
+                                        Cloud cloud) {
         MMObjectNode subjectnode = MMBase.getMMBase().getBuilder("people").getNode( subjectpersonnode);
         if (subjectnode == null) {
-            throw new JspTagException( "Person with number '" + subjectpersonnode+ "' not found");
+            throw new RuntimeException( "Person with number '" + subjectpersonnode+ "' not found");
         }
         return getClassMembers(subjectnode, classno, educationno, rolename, cloud).contains(usernode.getNumber());
     }
-    
+
 }
