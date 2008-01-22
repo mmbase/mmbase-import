@@ -10,6 +10,8 @@ import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.File;
 import java.util.List;
 
 public class OODocUploadAction extends OpenOfficeIntegrationBaseAction {
@@ -23,7 +25,7 @@ public class OODocUploadAction extends OpenOfficeIntegrationBaseAction {
         String dir = servlet.getServletContext().getRealPath("/") + OODocUploadUtil.TEMP_PATH;
 
         OODocUploadUtil docUpload = OODocUploadUtil.getInstance();
-        docUpload.upload(request, dir);
+        boolean isOdtDoc =  docUpload.upload(request, dir);
 
         /**channel number**/
         String channel = docUpload.getChannel();
@@ -34,8 +36,9 @@ public class OODocUploadAction extends OpenOfficeIntegrationBaseAction {
         //save channel number at client
         addToRequest(request, "parent", channel);
 
-        List<OdtDocument> odts = docUpload.getOdtDocuments(dir);
+        List<OdtDocument> odts = docUpload.getOdtDocuments(dir+ File.separator + channel);
         request.setAttribute("binaries", odts);
+        request.setAttribute("odtDoc", isOdtDoc);
         String forwardPath = mapping.findForward(SUCCESS).getPath()+"?parent"+channel;
         
         return new ActionForward(forwardPath);
