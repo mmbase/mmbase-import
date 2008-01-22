@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.178 2008-01-09 10:56:36 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.179 2008-01-22 16:41:26 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -893,8 +893,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         }
     }
 
-    public boolean may(org.mmbase.security.Action action) {
-        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, action);
+    public boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters) {
+        return BasicCloudContext.mmb.getMMBaseCop().getAuthorization().check(userContext, action, parameters);
     }
 
     // javadoc inherited
