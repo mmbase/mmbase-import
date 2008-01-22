@@ -8,6 +8,7 @@
   <jsp:directive.page buffer="none" />
   <mm:content
       type="text/html"
+      postprocessor="none"
       unacceptable="Not Acceptable. You need to use a better browser (this one does not support xhtml). Try e.g. Firefox, Opera or Safari. _NOT_ MS Internet Explorer."
       >
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -19,6 +20,7 @@
           <p>
 
             <mm:node number="${_node.number}">
+              <mm:log>Deleting mail with number <mm:field name="number" /></mm:log>
               <mm:field name="number" />
               <mm:deletenode deleterelations="true" />
             </mm:node>
