@@ -22,9 +22,10 @@ public class OdtFileTranster {
 
     public static String WORKINGFOLDER;
 
-    public static OdtDocument process(File file) {
+    public static OdtDocument process(File file, String requestContext) {
 
         String middelFileLocation = WORKINGFOLDER + File.separator + file.getName() + ".xml";
+
 
         ChangeContentXml ccx = new ChangeContentXml();
         ChangeHtml ch = new ChangeHtml();
@@ -36,9 +37,14 @@ public class OdtFileTranster {
 
 
         try {
+            File workingfolder = new File(WORKINGFOLDER);
+            if (!workingfolder.exists()) {
+                workingfolder.mkdir();
+            }
+
             ofh.getFirstHtml();
-            Map rowAndSavedImageMap = saveAllImageToCMSC(new FileInputStream(file));
-            ch.change(middelFileLocation, styleMap,rowAndSavedImageMap);
+            Map rowAndSavedImageMap = saveAllImageToCMSC(new FileInputStream(file), requestContext);
+            ch.change(middelFileLocation, styleMap, rowAndSavedImageMap);
 
             BufferedReader in = new BufferedReader(new FileReader(middelFileLocation + ".html"));
             String str;
@@ -64,7 +70,7 @@ public class OdtFileTranster {
         return doc;
     }
 
-    public static Map saveAllImageToCMSC(InputStream fis) throws IOException {
+    public static Map saveAllImageToCMSC(InputStream fis, String requestContext) throws IOException {
 
         Map<String, String> rawImgeToSavedImgeMaping = new HashMap();
 
@@ -74,7 +80,7 @@ public class OdtFileTranster {
             String entryName = ze.getName();
             if (entryName.startsWith("Pictures/")) {
                 String numbersOfSavedImage = saveAImage(zis, entryName);
-                rawImgeToSavedImgeMaping.put(entryName, numbersOfSavedImage);
+                rawImgeToSavedImgeMaping.put(entryName, requestContext + numbersOfSavedImage);
             }
             zis.closeEntry();
         }

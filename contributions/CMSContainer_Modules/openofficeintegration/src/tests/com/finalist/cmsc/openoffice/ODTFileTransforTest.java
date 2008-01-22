@@ -12,7 +12,7 @@ public class ODTFileTransforTest extends TestCase {
     public void testSaveAllImageToCMSC() {
         try {
             InputStream fis = this.getClass().getResourceAsStream("test.odt");
-            Map map = OdtFileTranster.saveAllImageToCMSC(fis);
+            Map map = OdtFileTranster.saveAllImageToCMSC(fis,"");
             assertEquals(1, map.size());
         } catch (IOException e) {
             e.printStackTrace();

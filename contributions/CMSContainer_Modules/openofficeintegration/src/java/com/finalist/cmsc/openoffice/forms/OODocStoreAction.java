@@ -3,6 +3,7 @@ package com.finalist.cmsc.openoffice.forms;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.openoffice.model.OdtDocument;
 import com.finalist.cmsc.openoffice.service.OdtFileTranster;
+import com.finalist.cmsc.openoffice.service.OODocUploadUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,14 +25,26 @@ public class OODocStoreAction extends OpenOfficeIntegrationBaseAction {
 
         /*retrieve channel number*/
         String channelId = getChannelId(request);
-        String odtStoreLocation = getOdtFileStoreLocation(getBaseStoreLocation(),channelId);
+        
+        if(StringUtils.isEmpty(channelId) && request.getParameter("root") != null) 
+        {
+        	channelId = OODocUploadUtil.SINGLE_FILE_PATH;
+        	
+        }
+
+        	String odtStoreLocation = getOdtFileStoreLocation(getBaseStoreLocation(),channelId);
 
         if (StringUtils.isEmpty(channelId)) {
             channelId = RepositoryUtil.getRoot(cloud);
         }
+        if(request.getParameter("root") != null) 
+        {
+        	channelId = request.getParameter("root"); 
+        	
+        }
+        int nodenumber = store(cloud, odtStoreLocation, channelId,"");
 
-        int nodenumber = store(cloud, odtStoreLocation, channelId);
-
+        String target = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + channelId + "&direction=down";
         if (-1 != nodenumber) {
             //there is only one document exist. 
             return new ActionForward(mapping.findForward("edit").getPath() + "?objectnumber=" + nodenumber);
@@ -44,7 +57,7 @@ public class OODocStoreAction extends OpenOfficeIntegrationBaseAction {
      * storage the documents of odt
      */
     @SuppressWarnings("unchecked")
-    public int store(Cloud cloud, String odtStoreLocation, String channelId) {
+    public int store(Cloud cloud, String odtStoreLocation, String channelId,String requestContext) {
 
         OdtFileTranster.WORKINGFOLDER = getBaseStoreLocation()+ File.separator + "work";
 
@@ -56,7 +69,7 @@ public class OODocStoreAction extends OpenOfficeIntegrationBaseAction {
 
         File[] files = getAllOdtFiles(odtStoreLocation);
         for (File file : files) {
-            OdtDocument doc = OdtFileTranster.process(file);
+            OdtDocument doc = OdtFileTranster.process(file,requestContext);
 
             Node node = manager.createNode();
             node.setValue("title", doc.getTitle());
