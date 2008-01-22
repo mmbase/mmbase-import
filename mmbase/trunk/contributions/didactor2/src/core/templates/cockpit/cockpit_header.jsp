@@ -6,7 +6,9 @@
   <mm:import externid="extrabody" />
   <mm:cloud method="asis">
     <![CDATA[<html xmlns="http://www.w3.org/1999/xhtml">]]><!-- UGLY: opened, but not closed in this file -->
-    <di:head />
+    <di:head>
+      <mm:write referid="extraheader" escape="none" />
+    </di:head>
     <![CDATA[<body class="componentbody"]]><!-- UGLY: opened, but not closed in this file -->
     <mm:write referid="extrabody" escape="none" />
     <![CDATA[>]]>
