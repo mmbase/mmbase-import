@@ -15,7 +15,7 @@ import nl.didactor.component.Component;
  * GetValueTag: retrieve a value for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  */
-public class GetValueTag extends CloudReferrerTag { 
+public class GetValueTag extends CloudReferrerTag implements Writer { 
     private static final Logger log = Logging.getLoggerInstance(GetValueTag.class);
     private String component;
     private String name;
@@ -66,18 +66,23 @@ public class GetValueTag extends CloudReferrerTag {
             return SKIP_BODY;
         }
 
-        String value = null;
-        try {
-            value = comp.getValue(name, getCloudVar(), getContextProvider().getContextContainer(), arguments);
-        } catch (IllegalArgumentException e) {
-            throw new JspTagException(e.getMessage());
+        String value = comp.getValue(name, getCloudVar(), getContextProvider().getContextContainer(), arguments);
+        helper.setValue(value);
+        if (getId() != null) {
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
-    
-        try {
-            pageContext.getOut().print(value);
-        } catch (Exception e) {
-            log.error(e);
-        }
-        return SKIP_BODY;
+        return EVAL_BODY_BUFFERED;    
     }
+    public int doAfterBody() throws JspException {
+        return helper.doAfterBody();
+    }
+
+    /**
+     *
+     **/
+    public int doEndTag() throws JspTagException {
+        helper.doEndTag();
+        return super.doEndTag();
+    }
+
 }
