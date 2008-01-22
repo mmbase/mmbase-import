@@ -16,9 +16,6 @@ import nl.didactor.component.Component;
 import nl.didactor.component.core.DidactorCore;
 import nl.didactor.component.email.DidactorEmail;
 import nl.didactor.component.proactivemail.cron.ProActiveMailJob;
-import nl.didactor.events.EventDispatcher;
-import nl.didactor.events.EventListener;
-import nl.didactor.mail.ExtendedJMSendMail;
 import nl.didactor.proactivemail.util.EventManager;
 
 import org.mmbase.bridge.Cloud;
@@ -72,8 +69,8 @@ public class DidactorProActiveMail extends Component{
 
         initRelations();
         restartJobs();
-        nl.didactor.events.EventListener reporting = new nl.didactor.proactivemail.util.EventManager();
-        nl.didactor.events.EventDispatcher.register(reporting);
+        org.mmbase.core.event.EventListener reporting = new nl.didactor.proactivemail.util.EventManager();
+        org.mmbase.core.event.EventManager.getInstance().addEventListener(reporting);
     }
 
     /**
@@ -87,8 +84,9 @@ public class DidactorProActiveMail extends Component{
         return components;
     }
 
+    @Override
     public String getValue(String setting, Cloud cloud, Map context, String[] arguments) {
-        if ("showlo".equals(setting)) {
+        if ("showlo".equals(setting)) { // is this actually used somewhere?
             return "2";
         }
         return "";
