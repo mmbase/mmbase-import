@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.224 2008-01-09 10:56:36 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.225 2008-01-22 16:47:22 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -285,8 +285,6 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
             log.debug("Storing value");
             getNode().setValue(fieldName, value); // commit() will throw that invalid.
         }
-        log.debug("Set " + fieldName + " to " + value + " in " + noderef.sequence + " -> " + noderef.getChanged());
-
     }
     @Override
     protected Integer toNodeNumber(Object v) {
