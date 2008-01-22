@@ -15,6 +15,11 @@
       <script src="${_}"><!-- Help IE --></script>
     </mm:link>
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css',includePath)}" />
+
+    <mm:treefile page="/css/print.css"  objectlist="$includePath" write="false">
+      <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
+      <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
+    </mm:treefile>
     <jsp:doBody />
   </head>
 </jsp:root>
