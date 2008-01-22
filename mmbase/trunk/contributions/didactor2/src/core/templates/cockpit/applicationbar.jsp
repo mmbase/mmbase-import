@@ -72,9 +72,10 @@
 
         <div class="menuItemApplicationMenubar">
           <mm:hasnode number="component.portfolio">
-            <mm:treefile page="/portfolio/index.jsp?edit=true" objectlist="$includePath" referids="$referids" write="false"/>
-            <a title="${di:translate('core.configuration')}"
-               href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
+            <mm:treefile page="/portfolio/index.jsp?edit=true" objectlist="$includePath" referids="$referids" write="false">
+              <a title="${di:translate('core.configuration')}"
+                 href="${_}" class="menubar"><di:translate key="core.configuration" /></a>
+            </mm:treefile>
           </mm:hasnode>
           <mm:hasnode number="component.portfolio" inverse="true">
             <mm:treefile page="/admin/index.jsp"
