@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.12 2008-01-21 18:32:19 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.13 2008-01-22 08:53:03 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -127,7 +127,7 @@ public class DidactorEducation extends Component {
         return mayvalue;
     }
 
-    // javadoc inherited
+    @Override
     public String getValue(String setting, Cloud cloud, Map context, String[] arguments) {
         if ("showlo".equals(setting)) {
             String lo = arguments[0];
