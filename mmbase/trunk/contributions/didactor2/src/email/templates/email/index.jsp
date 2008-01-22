@@ -5,7 +5,7 @@
 <di:html
     type="text/html"
     component="email"
-    title="${di:translate('email.email')}">
+    title_key="email.email">
   <!--
       This template shows the contents of a mailbox using the <di:table> tag.
       A link is created for every email to the 'email.jsp' page, where the user
