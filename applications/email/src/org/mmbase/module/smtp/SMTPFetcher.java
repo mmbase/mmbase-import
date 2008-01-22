@@ -42,7 +42,7 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.10 2007-12-21 10:16:06 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.11 2008-01-22 09:51:39 michiel Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
@@ -426,7 +426,7 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
 
     /**
      * Handle the data from the DATA command. This method does all the work: it creates
-     * objects in mailboxes.
+     * a MimeMessage, and dispatches that to the MailHandler(s).
      */
     private MailHandler.MessageStatus handleData(String data, Map<String, String> headers) {
         if (log.isTraceEnabled()) {
@@ -446,6 +446,13 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
         } catch (RuntimeException t) {
             log.warn("Exception in MimeMessage instantiation " + t, t);
             throw t;
+        }
+        for (MailHandler.Address recipient : recipients) {
+            try {
+                message.addRecipients(Message.RecipientType.TO, recipient.toString());
+            } catch (MessagingException e) {
+                log.error(e.getMessage(), e);
+            }
         }
         try {
             if (headers != null) {
