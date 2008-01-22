@@ -17,12 +17,6 @@ public class AddSingleAction extends MMBaseFormlessAction {
 	@Override
 	public ActionForward execute(ActionMapping mapping,
 			HttpServletRequest request, Cloud cloud) throws Exception {
-
-		String dir = servlet.getServletContext().getRealPath("/")+OODocUploadUtil.TEMP_PATH;
-		
-		OODocUploadUtil docUpload = OODocUploadUtil.getInstance(); 
-		docUpload.upload(request,dir);
-		
 		return mapping.findForward(SUCCESS);
 	}
 

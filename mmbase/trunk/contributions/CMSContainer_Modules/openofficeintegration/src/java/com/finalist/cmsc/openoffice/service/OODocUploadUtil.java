@@ -2,7 +2,9 @@ package com.finalist.cmsc.openoffice.service;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,8 +39,9 @@ public class OODocUploadUtil {
     /* a temp directory used for saving files uploaded */
     public static final String TEMP_PATH = "tempDir";
 
+    public static final String SINGLE_FILE_PATH = "singlePath";
     // set max size allowed
-    private static final int MAXSIZE = 4 * 1024 * 1024;
+    private static final int MAXSIZE = 16 * 1024 * 1024;
 
     private static final String OPENOFFICE_ODT_MIME_TYPES[] = new String[]{
             "application/vnd.oasis.opendocument.text",
@@ -57,16 +60,13 @@ public class OODocUploadUtil {
     private static final String CHANNELBAK_KEY = "channelbak";
 
     public static final String NODE_NUMBER = "node.number";
-    private static OODocUploadUtil docUploadUtil;
+    //private static OODocUploadUtil docUploadUtil;
 
     private OODocUploadUtil() {
     }
 
     public static OODocUploadUtil getInstance() {
-        if (docUploadUtil == null)
-            docUploadUtil = new OODocUploadUtil();
-
-        return docUploadUtil;
+        return new OODocUploadUtil();
     }
 
     public BinaryData getBinaryData() {
@@ -86,7 +86,7 @@ public class OODocUploadUtil {
      *
      * @param request
      */
-    public void upload(HttpServletRequest request, String dir)
+    public boolean upload(HttpServletRequest request, String dir)
             throws IOException {
         try {
             uploadFiles(request, MAXSIZE);
@@ -95,21 +95,33 @@ public class OODocUploadUtil {
         }
         String realPath = "";
         if (request.getAttribute("dir") != null)
-            if (request.getAttribute("dir") instanceof String)
                 realPath = (String) request.getAttribute("dir");
         if (StringUtils.isBlank(realPath))
             realPath = dir;
 
+        realPath += File.separator + getChannelId();
+		if (realPath.endsWith("null"))
+			realPath = realPath.substring(0, realPath.length() - 5);
 
+		if (request.getAttribute("root") != null) {
+			if (!realPath.endsWith(TEMP_PATH))
+				realPath = realPath.substring(0, realPath.indexOf(TEMP_PATH)
+						+ TEMP_PATH.length());
+			realPath += File.separator + SINGLE_FILE_PATH;
+		}
+	
         if (binary != null) {
             if (log.isDebugEnabled()) {
                 log.debug("originalFileName: " + binary.getOriginalFileName());
                 log.debug("contentType: " + binary.getContentType());
             }
-
-            realPath += File.separator + getChannelId();
+     
+        
+			if (!isOdtFile(binary))
+				return false;
             persistOdtDoc(binary, realPath);
         }
+    	return true;
     }
 
     private String getChannelId() {
@@ -168,7 +180,7 @@ public class OODocUploadUtil {
         String[] files = new String[]{};
         File directory = new File(dir);
         if (directory.exists() && directory.isDirectory()) {
-            files = directory.list();
+            files = directory.list(new OdtFilter());
         }
         return files;
 
@@ -195,15 +207,18 @@ public class OODocUploadUtil {
         return docs;
     }
 
-    private static boolean isOdtFile(BinaryData binary) {
+	private static boolean isOdtFile(BinaryData binary) {
 
-        for (String element : OPENOFFICE_ODT_MIME_TYPES) {
-            if (element.equalsIgnoreCase(binary.getContentType())) {
-                return true;
-            }
-        }
-        return false;
-    }
+		for (String element : OPENOFFICE_ODT_MIME_TYPES) {
+			if (element.equalsIgnoreCase(binary.getContentType())) {
+				return true;
+			}
+		}
+		if (binary.getOriginalFilePath() != null
+				&& binary.getOriginalFilePath().toLowerCase().endsWith("odt"))
+			return true;
+		return false;
+	}
 
     private void uploadFiles(HttpServletRequest request, int maxZize)
             throws FileUploadException {
@@ -261,6 +276,25 @@ public class OODocUploadUtil {
                 }
             }
         }
+    }
+    public class OdtFilter  implements FilenameFilter
+    {
+
+
+
+      public boolean isFile(String file)
+      {
+        if (file.toLowerCase().endsWith(".odt")){
+          return true;
+        }else{
+          return false;
+        }
+      }
+      public boolean accept(File dir,String fname){
+        return (isFile(fname));
+
+      }
+
     }
 
 }
