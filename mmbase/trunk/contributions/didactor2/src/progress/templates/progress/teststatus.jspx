@@ -15,6 +15,9 @@
         goodanswers
         badanswers
 
+   TODO: using parameters for a static jsp in this way is error prone and not very intuitively.
+         should use dynamtic include or tag-files to formalize parameters and return values,
+
 -->
 <mm:node
     xmlns:jsp="http://java.sun.com/JSP/Page"
