@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.20 2008-01-18 17:08:48 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.21 2008-01-22 11:08:38 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8335,5 +8335,20 @@ The 0 is just counter, which starts at 0 on every page.
 ]]></pre>
     </example>
     <since>MMBase-1.8.5</since>
+  </tag-file>
+  <tag-file>
+    <type>util</type>
+    <name>jdbc</name>
+    <path>/META-INF/tags/mm/u/jdbc.tag</path>
+    <info>
+      A tag to directly excecute SQL on the mmbase database. This is mainly used for hacking around some limitation of mmbase.
+    </info>
+    <example><pre><![CDATA[
+       <mm:jdbc max="2" throwexception="true" mode="nodes" query="select e.number from $PREFIX_emails e left join $PREFIX_insrel i on e.number = i.dnumber left join  $PREFIX_mailboxes b  on i.snumber = b.number where b.number is null">
+         <mm:deletenode />
+       </mm:jdbc>
+]]></pre>
+    </example>
+    <since>MMBase-1.8.6</since>
   </tag-file>
 </taglib>
