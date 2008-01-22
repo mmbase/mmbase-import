@@ -16,6 +16,15 @@
   <jsp:directive.attribute name="type" />
   <jsp:directive.attribute name="component" />
   <jsp:directive.attribute name="styleClass" />
+  <jsp:directive.attribute name="css" />
+  <!--
+       using doctype (strict mode) and returning text/xhml (in stead of application/xhtml+xml
+       to please IE, which is a nasty, lousy browser
+  -->
+
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <mm:content postprocessor="${empty postprocessor ? 'reducespace' : postprocessor}"
               type="${type}"
               unacceptable="CRIPPLE"
@@ -36,6 +45,19 @@
                 <link rel="stylesheet" type="text/css" href="${_}" />
               </mm:link>
             </mm:haspage>
+            <mm:haspage page="/${component}/style/print.css">
+              <mm:link page="/${component}/style/print.css">
+                <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
+                <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
+              </mm:link>
+            </mm:haspage>
+            <c:if test="${! empty css}">
+              <mm:treehaspage page="${css}" objectlist="${includePath}">
+                <mm:treefile write="false" page="${css}" objectlist="${includePath}">
+                  <link rel="stylesheet" type="text/css" href="${_}" />
+                </mm:treefile>
+              </mm:treehaspage>
+            </c:if>
             <mm:node referid="education">
               <mm:field name="intro" escape="tagstripper,text/html/attribute">
                 <mm:isnotempty>
