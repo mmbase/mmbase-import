@@ -79,7 +79,7 @@
           </di:copybook>
 
           <mm:node number="$education">
-            <mm:nodelistfunction name="tests">
+            <mm:nodelistfunction name="tests" id="testNo">
               <jsp:directive.include file="teststatus.jspx" />
               <mm:compare referid="teststatus" value="incomplete" inverse="true">
                 <mm:compare referid="teststatus" value="toberated">
