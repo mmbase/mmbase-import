@@ -26,7 +26,6 @@
       <mm:import externid="field"       required="true" />
       <mm:import externid="nodemanager" required="true" />
 
-      <mm:log><jsp:expression>cloud</jsp:expression></mm:log>
       <jsp:scriptlet>
         if (n != null &amp;&amp; ! "".equals(n)) {
            node = cloud.getNode(n);
