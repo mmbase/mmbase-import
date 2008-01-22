@@ -7,7 +7,7 @@
   <jsp:directive.attribute name="action"     />
   <jsp:directive.attribute name="editcontext"      />
   <jsp:directive.attribute name="inverse"  />
-  <di:may component="core" referids="editcontext" action="${action}" inverse="${inverse}">
+  <di:may component="core" referids="editcontext" action="${empty action ? 'rw' : action}" inverse="${inverse}">
     <jsp:doBody />
   </di:may>
 </jsp:root>
