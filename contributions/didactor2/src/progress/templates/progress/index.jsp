@@ -5,6 +5,7 @@
           xmlns:os="http://www.opensymphony.com/oscache"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <jsp:directive.page buffer="2000kb" />
   <di:html
       postprocessor="none"
       type="text/html"
@@ -37,11 +38,7 @@
 
     <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
       <mm:node number="$education">
-        <b><mm:field name="name" write="true"/></b>
-
-        <mm:present referid="class">
-          CLASS: ${class}
-        </mm:present>
+        <b title="${class}"><mm:field name="name" /></b>
 
         <table class="font">
 
