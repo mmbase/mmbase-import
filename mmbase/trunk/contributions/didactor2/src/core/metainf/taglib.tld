@@ -369,7 +369,7 @@
     <path>/META-INF/tags/di/core/menuitem.tagx</path>
   </tag-file>
   <tag-file>
-    <name>menuitem</name>
+    <name>has</name>
     <path>/META-INF/tags/di/core/has.tagx</path>
   </tag-file>
 
