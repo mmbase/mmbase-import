@@ -3,6 +3,10 @@ html, body {
   padding: 0 0 0 0;
 }
 
+.educationMenubar {
+  display: none;
+}
+
 .article {
   /*
      IE6 Peek-a-boo bug:
