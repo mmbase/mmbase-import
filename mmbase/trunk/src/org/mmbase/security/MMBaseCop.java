@@ -20,13 +20,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.25 2007-07-26 22:04:23 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.26 2008-01-22 16:49:42 michiel Exp $
  */
 public class MMBaseCop extends SecurityManager  {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
-    /** 
-     * The configuration used by our system 
+    /**
+     * The configuration used by our system
      */
     private MMBaseCopConfig config;
 
@@ -51,8 +51,10 @@ public class MMBaseCop extends SecurityManager  {
      * @since MMBase-1.9
      */
     protected void copyActions(ActionRepository source, ActionRepository destination) {
-        for (Action a : source.getActions()) {
-            destination.add(a);
+        for (java.util.Map<String, Action> map : source.getActions()) {
+            for (Action a : map.values()) {
+                destination.add(a);
+            }
         }
     }
 
