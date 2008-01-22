@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.38 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: Parameters.java,v 1.39 2008-01-22 16:43:41 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */
@@ -195,7 +195,7 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         return buf.toString();
     }
 
-    public Class<?>[] toClassArray() { 
+    public Class<?>[] toClassArray() {
         Class<?>[] array = new Class[toIndex - fromIndex];
         checkDef();
         for (int i = fromIndex; i < toIndex; i++) {
@@ -396,6 +396,15 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
         }
         return this;
     }
+    /**
+     * @since MMBase-1.9
+     */
+    public Parameters setAllIfDefinied(Parameters params) {
+        for (Parameter param : params.getDefinition()) {
+            setIfDefined(param, params.get(param));
+        }
+        return this;
+    }
 
     public Parameters subList(int fromIndex, int toIndex) {
         return new Parameters(this, fromIndex, toIndex);
@@ -498,19 +507,19 @@ public class Parameters extends AbstractList<Object> implements java.io.Serializ
                     public Object getValue() {
                         return Parameters.this.backing.get(a.getName());
                     }
-                    
+
                     // see Map.Entry
                     public Object setValue(Object v) {
                         return Parameters.this.backing.put(a.getName(), v);
                     }
-                    
+
                     public int hashCode() {
                         Object value = getValue();
                         return a.getName().hashCode() ^ (value == null ? 0 : value.hashCode());
                     }
                     public boolean equals(Object o) {
                         if (o instanceof Map.Entry) {
-                            Map.Entry<String,Object> entry = (Map.Entry<String,Object>) o;                            
+                            Map.Entry<String,Object> entry = (Map.Entry<String,Object>) o;
                             Object value = getValue();
                             return
                                 a.getName().equals(entry.getKey()) &&
