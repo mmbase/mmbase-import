@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.63 2007-10-12 12:01:11 michiel Exp $
+ * @version $Id: Cloud.java,v 1.64 2008-01-22 16:44:47 michiel Exp $
  */
 public interface Cloud {
 
@@ -154,7 +154,7 @@ public interface Cloud {
     /**
      * @since MMBase-1.9
      */
-    public boolean may(org.mmbase.security.Action action);
+    public boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
