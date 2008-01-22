@@ -119,9 +119,9 @@ public class Authentication extends org.mmbase.security.Authentication {
                         if (uc == null) {
                             log.warn("Logging out a user who is not logged in! This cannot be reported!");
                         } else {
-                            Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(),
+                            Event event = new Event(uc.getIdentifier(), request,
                                                     null, null, null, "LOGOUT", null, "logout");
-                            EventDispatcher.report(event, request, response);
+                            org.mmbase.core.event.EventManager.getInstance().propagateEvent(event);
                         }
                         ac.logout(request, response);
                     }
@@ -257,10 +257,10 @@ public class Authentication extends org.mmbase.security.Authentication {
                     session.setAttribute(REASON_KEY, null);
                     request.getSession(true).setAttribute("didactor-logincomponent", ac.getName());
                     Integer usernumber = uc.getUserNumber();
-                    Event event = new Event(uc.getIdentifier(), request.getSession(true).getId(), null, null, null,
+                    Event event = new Event(uc.getIdentifier(), request, null, null, null,
                                             "LOGIN", usernumber != null ? usernumber.toString() : null,
                                             "login");
-                    EventDispatcher.report(event, request, response);
+                    org.mmbase.core.event.EventManager.getInstance().propagateEvent(event);
                     if (! uc.getAuthenticationType().equals(application)) {
                         return request(new UserContext(uc, application), request);
                     } else {

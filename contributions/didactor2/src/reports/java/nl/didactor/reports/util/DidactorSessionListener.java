@@ -30,11 +30,11 @@ import nl.didactor.reports.data.EventType;
 
 /**
  * @author p.becic
+ * @javadoc It is driving me mad. It is not at all obivous wat is happening here.
  */
 public class DidactorSessionListener implements HttpSessionBindingListener {
-    private String username;
-
-    private long loginTime;
+    private final String username;
+    private final long loginTime;
 
     public DidactorSessionListener(String username) {
         this.username = username;
@@ -46,7 +46,7 @@ public class DidactorSessionListener implements HttpSessionBindingListener {
      */
     public void valueBound(HttpSessionBindingEvent event) {
         // add this object to the application context
-        List activeUsersList = (ArrayList) event.getSession()
+        List activeUsersList = (List) event.getSession()
                 .getServletContext().getAttribute("active_users");
         if (activeUsersList == null) {
             activeUsersList = new ArrayList();
