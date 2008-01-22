@@ -49,12 +49,7 @@ public class GetSettingTag extends CloudReferrerTag implements Writer {
             return SKIP_BODY;
         }
 
-        Object value = null;
-        try {
-            value = comp.getSetting(setting, getCloudVar(), getContextProvider().getContextContainer());
-        } catch (IllegalArgumentException e) {
-            throw new TaglibException(e.getMessage(), e);
-        }
+        Object value = comp.getSetting(setting, getCloudVar(), getContextProvider().getContextContainer());
 
         helper.setValue(value);
         if (getId() != null) {
