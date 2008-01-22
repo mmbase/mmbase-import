@@ -44,7 +44,7 @@
                       }
                       tm.put(new Integer(a), c);
                       }
-                    </jsp:scriptlet>%>
+                    </jsp:scriptlet>
                   </mm:field>
                 </mm:node>
               </mm:related>
