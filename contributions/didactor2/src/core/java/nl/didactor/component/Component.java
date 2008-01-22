@@ -275,6 +275,11 @@ public abstract class Component {
         return node.getNumber();
     }
 
+    /**
+     * 
+     * @javadoc I'd say it may be somewhat necessary here. I don't for example really understand the
+     * difference between this and {@link #getSetting}.
+     */
     public String getValue(String variablename, Cloud cloud, Map context, String[] arguments) {
         return "";
     }
