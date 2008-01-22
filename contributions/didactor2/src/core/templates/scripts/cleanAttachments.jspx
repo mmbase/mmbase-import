@@ -19,13 +19,20 @@
         <p>
           <em>You may have to run this page several times, until nothing happens. Because the query can be killed of by MMBase when it takes to long.</em>
         </p>
-        <mm:jdbc  throwexception="true" mode="nodes" query="select e.number from $PREFIX_emails e left join $PREFIX_insrel i on e.number = i.dnumber left join  $PREFIX_mailboxes b  on i.snumber = b.number where b.number is null">
+
+        <!-- hackery, to find all unrelated attachments -->
+        <mm:jdbc  throwexception="true" mode="nodes"
+                  query="select a2.number from $PREFIX_attachments a2
+                         left join $PREFIX_insrel i2 on (i2.snumber = a2.number)
+                         where a2.number in (select a.number from $PREFIX_attachments a left join $PREFIX_insrel i on i.dnumber = a.number  where i.number is NULL)
+                         and i2.number is NULL;">
+
           <p>
 
             <mm:node number="${_node.number}">
-              <mm:log>Deleting mail with number <mm:field name="number" /></mm:log>
+              <mm:log>Deleting attachment with number <mm:field name="number" /></mm:log>
               <mm:field name="number" />
-              <mm:deletenode deleterelations="true" />
+              <mm:deletenode />
             </mm:node>
           </p>
         </mm:jdbc>.

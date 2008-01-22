@@ -69,6 +69,9 @@
         <p>
           <a href="cleanMail.jspx">Remove all mail not in mailboxes</a>
         </p>
+        <p>
+          <a href="cleanAttachments.jspx">Remove all attachments not related to anything</a>
+        </p>
       </body>
     </html>
   </mm:content>
