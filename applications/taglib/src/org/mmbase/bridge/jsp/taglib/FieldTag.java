@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.67.2.1 2006-11-29 09:20:59 johannes Exp $
+ * @version $Id: FieldTag.java,v 1.67.2.2 2008-01-22 11:03:02 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -185,12 +185,6 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     public int doStartTag() throws JspTagException {
         Node node = getNode();
         fieldName = (String) name.getValue(this);
-        if ("number".equals(fieldName)) {
-            if (findNodeProvider() instanceof org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag) {
-                // WHY can't it simply return the number it _will_ get?
-                throw new JspTagException("It does not make sense to ask 'number' field on uncommited node");
-            }
-        }
         boolean findValue = true;
         boolean hasField = node != null && fieldName != null && node.getNodeManager().hasField(fieldName);
         if (! hasField) {
