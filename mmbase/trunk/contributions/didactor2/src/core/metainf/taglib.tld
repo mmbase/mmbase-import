@@ -81,6 +81,21 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>write</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>vartype</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
   </tag>
   <tag>
     <name>getsetting</name>
