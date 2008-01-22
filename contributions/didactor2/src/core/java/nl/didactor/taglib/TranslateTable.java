@@ -1,5 +1,7 @@
 package nl.didactor.taglib;
-import org.mmbase.util.*;
+import org.mmbase.util.ResourceLoader;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.ReaderInputStream;
 
 import java.util.*;
 import java.io.*;
@@ -11,7 +13,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class implements a translation table. This table contains
  * translations for a namespace with different locales.
- * It reads the files in the translation path, and parses them. Based on the 
+ * It reads the files in the translation path, and parses them. Based on the
  * filenames, the namespace and locale are interpreted. For example:
  * <ul>
  *  <li> core.properties, contains the base translations for the 'core' namespace.
@@ -22,8 +24,8 @@ import org.mmbase.util.logging.Logging;
  * be queried instead, going to the root.
  * <p>
  * The translationtable will walk the current directory and
- * read all files found in it. 
- * @version $Id: TranslateTable.java,v 1.18 2007-07-26 14:32:01 michiel Exp $
+ * read all files found in it.
+ * @version $Id: TranslateTable.java,v 1.19 2008-01-22 08:49:36 michiel Exp $
  */
 public class TranslateTable {
     private static final Logger log = Logging.getLoggerInstance(TranslateTable.class);
@@ -41,22 +43,22 @@ public class TranslateTable {
     private final Locale translationLocale;
 
     /**
-     * Inner class that watches the translation files and 
+     * Inner class that watches the translation files and
      * reloads them into the translation table in case they are
-     * changed 
+     * changed
      */
-    static class TranslationFileWatcher extends ResourceWatcher { 
-        public TranslationFileWatcher(ResourceLoader rl) { 
-            super(rl); 
-        } 
-        
+    static class TranslationFileWatcher extends ResourceWatcher {
+        public TranslationFileWatcher(ResourceLoader rl) {
+            super(rl);
+        }
+
         /**
          * Change event. Read the file and process it.
          */
-        public void onChange(String resource) { 
+        public void onChange(String resource) {
             readResource(resourceLoader, resource);
-        } 
-    } 
+        }
+    }
 
     /**
      * Initialize the entire Translation Table. This may only be done
@@ -110,19 +112,19 @@ public class TranslateTable {
         }
 
         try {
-            
+
             // we want to profit from Properties#load (all kind of handy features),
-            // but we also want the property files to be in unicode. 
+            // but we also want the property files to be in unicode.
             // Following trick with Transforming readers and so on, arranges that.
             Properties props = new Properties();
-            InputStream in = new ReaderInputStream(new org.mmbase.util.transformers.TransformingReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"), 
-                                                                                                       new org.mmbase.util.transformers.UnicodeEscaper()), "ISO-8859-1"); 
+            InputStream in = new ReaderInputStream(new org.mmbase.util.transformers.TransformingReader(new InputStreamReader(loader.getResourceAsStream(resource), "UTF-8"),
+                                                                                                       new org.mmbase.util.transformers.UnicodeEscaper()), "ISO-8859-1");
             props.load(in);
 
             for (Map.Entry entry : props.entrySet()) {
                 String key = (String) entry.getKey();
                 String value = (String) entry.getValue();
-                
+
                 String fkey = namespace;
                 if (!"".equals(locale)) {
                     fkey += "." + locale;
@@ -147,7 +149,7 @@ public class TranslateTable {
      * Sync the entire translation tables to disk. This is done by iterating
      * over the (sorted) set of translation keys, and parsing them into component,
      * locale and messagekey. The file for this component+locale is emptied, the new
-     * keys are saved to that file. During this process the file is unsubscribed from 
+     * keys are saved to that file. During this process the file is unsubscribed from
      * the filewatcher, to make sure that there are no re-reads of the translation table
      * when we are writing it to disk.
      */
@@ -210,18 +212,18 @@ public class TranslateTable {
             watcher.add(fn);
         }
     }
-    
+
     /**
      * Public constructor, it initializes the internal data structures.
      */
     public TranslateTable(Locale translationLocale) {
         this.translationLocale = translationLocale == null ? org.mmbase.module.core.MMBase.getMMBase().getLocale() : translationLocale;
     }
-   
 
 
 
-    public static Locale degrade(Locale locale, Locale originalLocale) {
+
+    protected  static Locale degrade(Locale locale, Locale originalLocale) {
         String language = locale.getLanguage();
         String country  = locale.getCountry();
         String variant  = locale.getVariant();
@@ -257,12 +259,12 @@ public class TranslateTable {
         StringBuilder loc = new StringBuilder(locale.getLanguage());
         String country = locale.getCountry();
         if (! "".equals(country)) {
-            loc.append('_'); 
+            loc.append('_');
             loc.append(country);
         }
         String variant = locale.getVariant();
         if (variant != null && ! "".equals(variant)) {
-            loc.append('_'); 
+            loc.append('_');
             loc.append(variant);
         }
         return loc.toString();
@@ -272,8 +274,8 @@ public class TranslateTable {
        Default ResourceBundle#getBundle
        # baseName + "_" + language1 + "_" + country1 + "_" + variant1
        # baseName + "_" + language1 + "_" + country1
-       # baseName + "_" + language1 
-       
+       # baseName + "_" + language1
+
        Didactor:
 
        #0 baseName + "_" + language1 + "_" + country1 + "_" + variant1_variant2
@@ -281,9 +283,9 @@ public class TranslateTable {
        #2 baseName + "_" + language1 + "_" + country1
        #3 baseName + "_" + language1 + "_" + variant1_variant2
        #4 baseName + "_" + language1 + "_" + variant1
-       #5 baseName + "_" + language1 
-       #6 baseName + "_" + language1 
-       
+       #5 baseName + "_" + language1
+       #6 baseName + "_" + language1
+
      * Fetch a translation from the translation tables.
      */
     public String translate(String tkey) {
@@ -293,6 +295,9 @@ public class TranslateTable {
         Locale locale = translationLocale;
         StringTokenizer st = new StringTokenizer(tkey, ".");
 
+        if (! st.hasMoreTokens()) {
+            return "???[" + tkey + "]";
+        }
         String namespace = st.nextToken();
         if (!st.hasMoreTokens()) {
             log.error("Cannot translate key with no namespace: '" + tkey + "'");
@@ -309,7 +314,9 @@ public class TranslateTable {
             if (translation != null) {
                 return translation;
             } else {
+                Locale prev = locale;
                 locale = degrade(locale, translationLocale);
+                log.debug("degraded " + prev + " to " + locale + " because '" + gkey + "' not found");
             }
             if (locale == null) {
                 TranslateTable def = getDefault();
