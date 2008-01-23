@@ -14,6 +14,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.security.Action;
+import org.mmbase.util.functions.Parameters;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -23,7 +24,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MayTag.java,v 1.3 2008-01-21 15:25:45 michiel Exp $
+ * @version $Id: MayTag.java,v 1.4 2008-01-23 09:28:18 michiel Exp $
  */
 
 public class MayTag extends CloudReferrerTag implements Condition {
@@ -42,6 +43,9 @@ public class MayTag extends CloudReferrerTag implements Condition {
     public void setNamespace(String a) throws JspTagException {
         namespace = getAttribute(a);
     }
+    public void setComponent(String a) throws JspTagException {
+        namespace = getAttribute(a);
+    }
     protected boolean getInverse() throws JspTagException {
         return inverse.getBoolean(this, false);
     }
@@ -50,8 +54,10 @@ public class MayTag extends CloudReferrerTag implements Condition {
         String ns = namespace.getString(this);
         if ("".equals(ns)) ns = null;
         Action a = getCloudContext().getActionRepository().get(ns, action.getString(this));
+        Parameters params = a.createParameters();
+        fillStandardParameters(params);
         if (a == null) throw new JspTagException("No such action '" + action.getString(this) + "'");
-        if ((getCloudVar().may(a)) != getInverse()) {
+        if ((getCloudVar().may(a, params)) != getInverse()) {
             return EVAL_BODY;
         } else {
             return SKIP_BODY;
