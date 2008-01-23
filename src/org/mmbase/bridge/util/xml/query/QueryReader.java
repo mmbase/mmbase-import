@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: QueryReader.java,v 1.8.2.2 2007-08-06 10:02:15 michiel Exp $
+ * @version $Id: QueryReader.java,v 1.8.2.3 2008-01-23 15:36:42 pierre Exp $
  * @since MMBase-1.8
  **/
 public class QueryReader {
@@ -61,11 +61,19 @@ public class QueryReader {
         }
     }
 
+    /* Expands a fieldname in a multilevel query with the element nodemanager step if no step is given. 
+     */
+    protected static String getFullFieldName(QueryDefinition queryDefinition, String fieldName) {
+        if (queryDefinition.isMultiLevel && fieldName.indexOf('.') == -1) {
+            fieldName = queryDefinition.elementManager.getName() + "." + fieldName;
+        }
+        return fieldName;
+    }
 
     protected static void addField(Element fieldElement, QueryDefinition queryDefinition, QueryConfigurer configurer) {
         if (hasAttribute(fieldElement,"name")) {
             FieldDefinition fieldDefinition = configurer.getFieldDefinition();
-            fieldDefinition.fieldName = fieldElement.getAttribute("name");
+            fieldDefinition.fieldName = getFullFieldName(queryDefinition,fieldElement.getAttribute("name"));
             try {
                 fieldDefinition.stepField = queryDefinition.query.createStepField(fieldDefinition.fieldName);
             } catch (IllegalArgumentException iae) {
@@ -91,7 +99,7 @@ public class QueryReader {
         if (!hasAttribute(constraintElement,"field")) {
             throw new IllegalArgumentException("A constraint tag must have a 'field' attribute");
         }
-        String fieldName = getAttribute(constraintElement,"field");
+        String fieldName = getFullFieldName(queryDefinition,getAttribute(constraintElement,"field"));
         Object value = null;
         if (hasAttribute(constraintElement,"value")) {
             if (hasAttribute(constraintElement,"field2")) {
@@ -99,7 +107,7 @@ public class QueryReader {
             }
             value = getAttribute(constraintElement,"value");
         } else if (hasAttribute(constraintElement,"field2")) {
-            value = queryDefinition.query.createStepField(getAttribute(constraintElement,"field2"));
+            value = queryDefinition.query.createStepField(getFullFieldName(queryDefinition,getAttribute(constraintElement,"field2")));
         }
         int operator = FieldCompareConstraint.EQUAL;
         if (hasAttribute(constraintElement,"operator")) {
@@ -173,7 +181,7 @@ public class QueryReader {
             fieldName = getAttribute(constraintElement,"element") + ".number";
             stepField = queryDefinition.query.createStepField(fieldName);
         } else if (hasAttribute(constraintElement,"field")) {
-            fieldName = getAttribute(constraintElement,"field");
+            fieldName = getFullFieldName(queryDefinition,getAttribute(constraintElement,"field"));
             stepField = queryDefinition.query.createStepField(fieldName);
         } else {
             if (queryDefinition.elementStep != null) {
@@ -340,7 +348,7 @@ public class QueryReader {
         if (!hasAttribute(sortOrderElement,"field")) {
             throw new IllegalArgumentException("A sortorder tag must have a 'field' attribute");
         }
-        StepField stepField = queryDefinition.query.createStepField(getAttribute(sortOrderElement,"field"));
+        StepField stepField = queryDefinition.query.createStepField(getFullFieldName(queryDefinition,getAttribute(sortOrderElement,"field")));
         int order = SortOrder.ORDER_ASCENDING;
         if (hasAttribute(sortOrderElement,"direction")) {
             order = Queries.getSortOrder(getAttribute(sortOrderElement,"direction"));
@@ -382,6 +390,7 @@ public class QueryReader {
             if (hasAttribute(queryElement,"type")) {
                 path = getAttribute(queryElement,"type");
                 element = path;
+                searchDirs = getAttribute(queryElement,"searchdirs");
             } else if (hasAttribute(queryElement,"name")) {
                 path = getAttribute(queryElement,"name");
                 element = path;
@@ -395,18 +404,18 @@ public class QueryReader {
                     element = (String)builders.get(builders.size()-1);
                 }
             }
+
             if (relateFrom != null) {
                 path = relateFrom + "," + path;
             }
-
-
             QueryDefinition queryDefinition = configurer.getQueryDefinition();
             queryDefinition.isMultiLevel = !path.equals(element);
+
 
             if (element != null) {
                 queryDefinition.elementManager = cloud.getNodeManager(element);
             }
-            if (queryDefinition.isMultiLevel) {
+            if (!path.equals(element)) /* (queryDefinition.isMultiLevel) */ {
                 queryDefinition.query = cloud.createQuery();
                 Queries.addPath(queryDefinition.query, path, searchDirs);
             } else {
