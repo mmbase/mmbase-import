@@ -19,6 +19,7 @@
 
         <div class="learnenvironment">
           <mm:node number="$learnobject">
+            <di:include page="/education/learnblocks/subnavigation.jspx" />
             <di:include page="/education/learnblocks/node.jspx" />
           </mm:node>
 
