@@ -37,7 +37,9 @@
             <c:if test="${! empty title_key}">
               <di:translate key="${title_key}" />
             </c:if>
-            <mm:node referid="education"><mm:field name="name"><mm:isnotempty> -  <mm:write /></mm:isnotempty></mm:field></mm:node>
+            <c:if test="${! empty education}">
+              <mm:node referid="education"><mm:field name="name"><mm:isnotempty> -  <mm:write /></mm:isnotempty></mm:field></mm:node>
+            </c:if>
           </title>
           <c:if test="${! empty component}">
             <mm:haspage page="/${component}/style/base.css">
@@ -58,13 +60,15 @@
                 </mm:treefile>
               </mm:treehaspage>
             </c:if>
-            <mm:node referid="education">
-              <mm:field name="intro" escape="tagstripper,text/html/attribute">
-                <mm:isnotempty>
-                  <meta name="description" content="${_}" />
-                </mm:isnotempty>
-              </mm:field>
-            </mm:node>
+            <c:if test="${! empty education}">
+              <mm:node referid="education">
+                <mm:field name="intro" escape="tagstripper,text/html/attribute">
+                  <mm:isnotempty>
+                    <meta name="description" content="${_}" />
+                  </mm:isnotempty>
+                </mm:field>
+              </mm:node>
+            </c:if>
           </c:if>
         </di:head>
         <body class="${styleClass}">
