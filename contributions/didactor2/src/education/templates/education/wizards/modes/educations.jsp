@@ -99,7 +99,7 @@
                            <a href="metaedit.jsp?number=${educationId}" target="text"><img id="img_${educationId}" src="<%= imageName %>" border="0" title="<%= sAltText %>" alt="<%= sAltText %>" /></a>
                          </mm:node>
                          <mm:node number="component.drm" notfound="skip">
-                           <a target="text" href="<mm:write referid="wizardjsp"/>&amp;wizard=educationslicense&amp;objectnumber=${educationId}" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">&copy;</a>
+                           <a target="text" href="<mm:write referid="wizardjsp"/>&amp;wizard=educationslicense&amp;objectnumber=${educationId}" title="Bewerk licentie" style="font-size: 1em; text-decoration: none">©</a>
                          </mm:node>
                          <mm:node number="component.versioning" notfound="skip">
                            <a href="versioning.jsp?nodeid=${educationId}" target="text"><img src="gfx/versions.gif" border="0" /></a>
