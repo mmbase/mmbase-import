@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.44 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: CompareTag.java,v 1.45 2008-01-24 12:13:39 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -79,13 +79,13 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         } else {
             return o;
         }
-        
+
     }
 
 
     public int doStartTag() throws JspTagException {
         Object compare1;
-        
+
         // find compare1
         if (getReferid() == null) {
             compare1 =  findWriter().getWriterValue();
@@ -94,7 +94,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             compare1 = getObject(getReferid());
         }
         if (compare1 instanceof Boolean) {
-            compare1 = compare1.toString();
+            compare1 = Casting.toInteger(compare1);
         } else if (compare1 instanceof Date) {
             compare1 = Casting.toInteger(compare1);
         } else if (compare1 instanceof List) {
@@ -137,14 +137,14 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             } else {
                 compareToSet.add(getCompare2());
             }
-            
+
             Iterator<Object> i = compareToSet.iterator();
-            
-            
+
+
             if (compare1 instanceof Number) {
-                compare1 = new BigDecimal(compare1.toString()); 
+                compare1 = new BigDecimal(compare1.toString());
                 while (i.hasNext()) {
-                    Object compare2 = i.next();         
+                    Object compare2 = i.next();
                     if (compare2 instanceof Date) {
                         compare2 = Casting.toInteger(compare2);
                     }
@@ -160,22 +160,27 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                     } else if (compare2 instanceof Node) {
                         compare2 = new BigDecimal(((Node)compare2).getNumber());
                     }
-                    
+
                     if (doCompare((Comparable<Comparable>)compare1, (Comparable)compare2)) {
-                        result = true; 
+                        result = true;
                         break;
-                        
+
                     }
-                    
+
                 }
-            } else { 
+            } else {
                 while (i.hasNext()) {
-                    Object compare2 = i.next();         
-                    if (compare2 instanceof Date) {
+                    Object compare2 = i.next();
+                    if (compare2 instanceof Date || compare2 instanceof Boolean) {
                         compare2 = Casting.toInteger(compare2);
                     }
+                    if ("true".equals(compare2)) {
+                        compare2 = new Integer(1);
+                    } else if ("false".equals(compare2)) {
+                        compare2 = new Integer(0);
+                    }
                     if (compare2 instanceof Number) {
-                        compare2 = new BigDecimal(compare2.toString()); 
+                        compare2 = new BigDecimal(compare2.toString());
                         Number compare1n;
                         if ("".equals(compare1)) { // do something reasonable in IsEmpty
                             compare1n = new BigDecimal("0");
@@ -197,7 +202,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             }
         }
         if (result != getInverse() ) {
-            return EVAL_BODY; 
+            return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
