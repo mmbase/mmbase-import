@@ -5,6 +5,7 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <di:html
+      styleClass="education"
       title_key="education.learnenvironmenttitle"
       expires="0" component="education" type="text/html">
 
