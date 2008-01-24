@@ -16,6 +16,7 @@ import java.util.Iterator;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NotFoundException;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.27.2.2 2006-11-17 13:08:10 nklasens Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.27.2.3 2008-01-24 12:06:54 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -175,7 +176,12 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                     return ((FunctionContainerTag) functionOrNode).getFunction(functionName);
                 }
             } else {
-                return null;
+                Node node = getNodeFromPageContext();
+                if (node == null) {
+                    return null;
+                } else {
+                    return node.getFunction(functionName);
+                }
             }
         }
 
