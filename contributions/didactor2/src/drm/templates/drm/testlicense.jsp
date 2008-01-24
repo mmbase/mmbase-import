@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace" expires="0">
 <mm:cloud method="delegate" jspvar="cloud">
-  <mm:isnotempty referid="education">
+  <mm:present referid="education">
     <mm:node referid="education" jspvar="node">
       <mm:relatednodes type="licensetexts" max="1">
         <%
@@ -14,6 +14,6 @@
         %>
     </mm:relatednodes>
     </mm:node>
-  </mm:isnotempty>
+  </mm:present>
 </mm:cloud>
 </mm:content>
