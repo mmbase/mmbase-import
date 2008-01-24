@@ -1009,3 +1009,31 @@ textarea.invalid {
 .mm_c_links {
   margin-left: 3ex;
 }
+
+
+
+body.editwizards a {
+  font-size: 11px;
+}
+body.editwizards .menu_font{
+  font-size: 11px;
+}
+body.editwizards .folderBodyTree {
+  width: 20%;
+  height: 90%;
+  overflow: scroll;
+}
+body.editwizards .contentBody {
+
+  top: 0em;
+  left: 0em;
+  right: 0em;
+  bottom: 0em;
+  height: 100%;
+  padding: 0em;
+}
+body.editwizards .componentBody {
+}
+body.editwizards .titlebar a {
+  margin-left: 1ex;
+}
