@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.13 2008-01-22 08:53:03 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.14 2008-01-24 15:48:41 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -71,6 +71,7 @@ public class DidactorEducation extends Component {
      */
     private static final Action VIEW_ANSWERS = new Action("education","viewAnswers", new ActionChecker() {
             public boolean check(UserContext user, Action ac, Parameters parameters) {
+                if (user.getRank() == org.mmbase.security.Rank.ADMIN) return true;
                 Node subject = (Node) parameters.get(SUBJECT);
                 Node education = (Node) parameters.get(Component.EDUCATION);
                 Node clazz = (Node) parameters.get(Component.CLASS);
@@ -92,6 +93,7 @@ public class DidactorEducation extends Component {
      */
     private static final Action RATE         = new Action("education", "rate", new ActionChecker() {
             public boolean check(UserContext user, Action ac, Parameters parameters) {
+                if (user.getRank() == org.mmbase.security.Rank.ADMIN) return true;
                 Node subject = (Node) parameters.get(SUBJECT);
                 Node education = (Node) parameters.get(EDUCATION);
                 Node clazz = (Node) parameters.get(CLASS);
