@@ -114,7 +114,7 @@
         </mm:node>
 
         <mm:notpresent referid="showcmshelp"><!-- WTF -->
-          <mm:isnotempty referid="education">
+          <mm:present referid="education">
             <mm:node number="$education">
               <mm:relatednodescontainer path="settingrel,components">
                 <mm:constraint field="components.name" value="cmshelp"/>
@@ -123,11 +123,11 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:node>
-          </mm:isnotempty>
+          </mm:present>
         </mm:notpresent>
 
         <mm:notpresent referid="showfaq"> <!-- WTF -->
-          <mm:isnotempty referid="education">
+          <mm:present referid="education">
             <mm:node number="$education">
               <mm:relatednodescontainer path="settingrel,components">
                 <mm:constraint field="components.name" value="faq"/>
@@ -136,7 +136,8 @@
                 </mm:relatednodes>
               </mm:relatednodescontainer>
             </mm:node>
-          </mm:isnotempty>
+          </mm:present>
+
         </mm:notpresent>
 
         <mm:present referid="showcmshelp" >
