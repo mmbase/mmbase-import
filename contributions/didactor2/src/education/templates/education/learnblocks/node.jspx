@@ -6,30 +6,37 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     >
   <jsp:output omit-xml-declaration="yes" />
-  <mm:nodeinfo type="type">
-    <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx">
-      <mm:treeinclude page="/education/pages/${_}/index.jspx"
-                      objectlist="$includePath"
-                      referids="$referids,_node@learnobject" />
-    </mm:treehaspage>
-    <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx" inverse="true">
-      <mm:treeinclude page="/education/pages/content.jsp"
-                      objectlist="$includePath"
-                      referids="$referids,_node@learnobject" />
-      <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath"
-                      referids="$referids,_node@node_id">
-        <mm:param name="path_segment">${pageContext.request.contextPath}/education/</mm:param>
-      </mm:treeinclude>
-    </mm:treehaspage>
-  </mm:nodeinfo>
+  <div class="learnblock" id="learnblock_${_node}">
+    <a name="learnblock_${_node}"><jsp:text> </jsp:text></a>
+    <mm:nodeinfo type="type">
+      <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx">
+        <mm:treeinclude page="/education/pages/${_}/index.jspx"
+                        objectlist="$includePath"
+                        referids="$referids,_node@learnobject" />
+      </mm:treehaspage>
+      <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx" inverse="true">
+        <mm:treeinclude page="/education/pages/content.jsp"
+                        objectlist="$includePath"
+                        referids="$referids,_node@learnobject" />
+        <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath"
+                        referids="$referids,_node@node_id">
+          <mm:param name="path_segment">${pageContext.request.contextPath}/education/</mm:param>
+        </mm:treeinclude>
+      </mm:treehaspage>
+    </mm:nodeinfo>
 
-  <mm:function name="path" write="false">
-    <c:if test="${fn:length(_) ge di:setting('education', 'max_depth')}">
-      <div class="learnblock">
-        <mm:relatednodes type="learnblocks" searchdir="destination">
-          <di:include page="/education/learnblocks/node.jspx" />
-        </mm:relatednodes>
-      </div>
-    </c:if>
-  </mm:function>
+    <mm:function name="path" write="false">
+      <!--
+          If we reach a certain 'depth' in the tree, then we will simply
+          recursively show the rest of the branch
+      -->
+      <c:if test="${fn:length(_) ge di:setting('education', 'max_depth')}">
+        <div class="sublearnblocks" id="sublearnblocks_${_node}">
+          <mm:relatednodes type="learnblocks" searchdir="destination">
+            <di:include page="/education/learnblocks/node.jspx" />
+          </mm:relatednodes>
+        </div>
+      </c:if>
+    </mm:function>
+  </div>
 </mm:node>
