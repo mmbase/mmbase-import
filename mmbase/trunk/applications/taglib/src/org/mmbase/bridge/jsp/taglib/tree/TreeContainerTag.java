@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.10 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: TreeContainerTag.java,v 1.11 2008-01-24 12:10:47 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -63,7 +63,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
      * Retrieves the starting query from environment.
      * Static because also used by TreeTag itself.
      */
-    static NodeQuery  getStartQuery(ContextReferrerTag thisTag, Attribute containerAttribute, Attribute nodeAttribute) throws JspTagException {
+    static NodeQuery  getStartQuery(NodeReferrerTag thisTag, Attribute containerAttribute, Attribute nodeAttribute) throws JspTagException {
         NodeQuery query = null;
         String container = containerAttribute.getString(thisTag);
         String node      = nodeAttribute.getString(thisTag);
@@ -82,11 +82,11 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         }
         if (query == null) { // try to work as node-referrer
             log.debug("working as node-referrer");
-            NodeProvider np =  thisTag.findParentTag(NodeProvider.class, "".equals(node) ? null : node, ! "".equals(node));
-            if (np == null) {
+            Node n = thisTag.getNode();
+            if (n == null) {
                 throw new TaglibException("No NodeQueryContainer nor a NodeProvider found in tree-tag");
             } else {
-                query = Queries.createNodeQuery(np.getNodeVar());
+                query = Queries.createNodeQuery(n);
             }
         }
         return query;
