@@ -17,9 +17,15 @@
     <di:include page="/education/bookmark.jspx" />
 
     <div class="rows" id="rows">
-
-      <di:include debug="html" page="/education/navigation.jspx" />
-      <di:include debug="html" page="/education/main.jspx" />
+      <c:choose>
+        <c:when test="${empty education}">
+          NO EDUCATION YET
+        </c:when>
+        <c:otherwise>
+          <di:include debug="html" page="/education/navigation.jspx" />
+          <di:include debug="html" page="/education/main.jspx" />
+        </c:otherwise>
+      </c:choose>
     </div>
 
   </di:html>
