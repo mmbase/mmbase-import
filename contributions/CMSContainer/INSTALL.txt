@@ -36,7 +36,7 @@ on linux: $HOME/build.properties
 
 Add the below line to the file 
 
-maven.repo.remote=http://www.mmbase.org/maven/,http://mmapps.sourceforge.net/distributions,http://mirrors.ibiblio.org/pub/mirrors/maven,http://maven-plugins.sourceforge.net/maven,http://www.codeczar.com/maven
+maven.repo.remote=http://www.cmscontainer.org/files/maven,http://www.mmbase.org/maven/,http://mmapps.sourceforge.net/distributions,http://mirrors.ibiblio.org/pub/mirrors/maven,http://maven-plugins.sourceforge.net/maven,http://www.codeczar.com/maven
 
 note that it is http://mirrors.ibiblio.org which replaces the maven default http://www.ibiblio.org/maven/
 At the moment, downloads with maven1 fail on http://www.ibiblio.org/maven/ with a response code 301
