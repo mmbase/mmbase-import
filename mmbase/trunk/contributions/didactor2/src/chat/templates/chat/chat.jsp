@@ -1,8 +1,8 @@
 <%--
   This template shows the chat
 --%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" 
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %>
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate">
@@ -40,7 +40,7 @@
   <!-- hierin wordt de werkelijke chat-sessie opgezet -->
   <div class="contentBodywit">
       <mm:remove referid="chaturl"/>
-      <mm:import id="chaturl">flashchat.swf?port=${chat.internal.port}&host=<%= request.getServerName() %>&user=<mm:write referid="username"/>&enterchannel=<mm:write referid="class"/>&sessionkey=123&class=<mm:write referid="class"/>&provider=<mm:write referid="provider"/>&education=<mm:write referid="education"/></mm:import>
+      <mm:import id="chaturl">flashchat.swf?port=5557&host=<%= request.getServerName() %>&user=<mm:cloudinfo type="user" />&enterchannel=<mm:write referid="class"/>&sessionkey=123&class=<mm:write referid="class"/>&provider=<mm:write referid="provider"/>&education=<mm:write referid="education"/></mm:import>
 
       <map name="chat">
       </map>
@@ -50,7 +50,7 @@
                 id="chat_eo" width="730" height="480" align="">
 
 <param name="movie" value="<mm:write referid="chaturl"/>">
-<param name="quality" value="high"> 
+<param name="quality" value="high">
 <param name="bgcolor" value="#FFFFFF">
 <embed src="<mm:write referid="chaturl"/>" quality="high" bgcolor="#FFFFFF"
 swLiveConnect="FALSE" WIDTH="730" HEIGHT="480" NAME="chat_eo" ALIGN=""
