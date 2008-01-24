@@ -114,25 +114,29 @@
         </mm:node>
 
         <mm:notpresent referid="showcmshelp"><!-- WTF -->
-          <mm:node number="$education">
-            <mm:relatednodescontainer path="settingrel,components">
-              <mm:constraint field="components.name" value="cmshelp"/>
-              <mm:relatednodes>
-                <mm:import id="showcmshelp" />
-              </mm:relatednodes>
-            </mm:relatednodescontainer>
-          </mm:node>
+          <mm:isnotempty referid="education">
+            <mm:node number="$education">
+              <mm:relatednodescontainer path="settingrel,components">
+                <mm:constraint field="components.name" value="cmshelp"/>
+                <mm:relatednodes>
+                  <mm:import id="showcmshelp" />
+                </mm:relatednodes>
+              </mm:relatednodescontainer>
+            </mm:node>
+          </mm:isnotempty>
         </mm:notpresent>
 
         <mm:notpresent referid="showfaq"> <!-- WTF -->
-          <mm:node number="$education">
-            <mm:relatednodescontainer path="settingrel,components">
-              <mm:constraint field="components.name" value="faq"/>
-              <mm:relatednodes>
-                <mm:import id="showfaq" />
-              </mm:relatednodes>
-            </mm:relatednodescontainer>
-          </mm:node>
+          <mm:isnotempty referid="education">
+            <mm:node number="$education">
+              <mm:relatednodescontainer path="settingrel,components">
+                <mm:constraint field="components.name" value="faq"/>
+                <mm:relatednodes>
+                  <mm:import id="showfaq" />
+                </mm:relatednodes>
+              </mm:relatednodescontainer>
+            </mm:node>
+          </mm:isnotempty>
         </mm:notpresent>
 
         <mm:present referid="showcmshelp" >
