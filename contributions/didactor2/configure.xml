@@ -124,6 +124,9 @@
              token="$${mmbaseroot.database}"
              value="${mmbaseroot.database}"/>
     <replace file="${build.config.dir}/modules/mmbaseroot.xml"
+             token="$${mmbaseroot.datadir}"
+             value="${mmbaseroot.datadir}"/>
+    <replace file="${build.config.dir}/modules/mmbaseroot.xml"
              token="$${mmbaseroot.basename}"
              value="${mmbaseroot.basename}"/>
     <replace file="${build.config.dir}/modules/mmbaseroot.xml"
