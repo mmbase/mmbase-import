@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.8.5 - Release Notes
+                     MMBase 1.8.6 - Release Notes
 ===================================================================
 
 ============
@@ -7,17 +7,17 @@ INTRODUCTION:
 ============
 
 This document describes the changes that have been made in the final
-release of MMBase 1.8.5, relative to the previous release of MMBase (1.7.x).
+release of MMBase 1.8.6, relative to the previous release of MMBase (1.7.x).
 
 Bug reports should be entered at the bug reporting system for MMBase
 at:
 
 <http://www.mmbase.org/jira>
 
-Very many issues were fixed between 1.8.4 and 1.8.5.
+1.8.6 is a bug fix release with a few minor new features.
 
 
-Note: The 1.8.5 version of MMBase is the first distro of MMBase which is partly compiled with
+Note: The 1.8.5 version of MMBase was the first distro of MMBase which is partly compiled with
       java 1.5. These are the following shipped applications:
       lucene, email, crontab, mmbob
       which are taken from CVS HEAD, and are no more maintained in the 1.8 branch of MMBase itself
@@ -30,7 +30,7 @@ Note: The 1.8.5 version of MMBase is the first distro of MMBase which is partly 
 NEW FEATURES:
 ============
 
-Since MMBase 1.8.3 we use JIRA as our bug-tracking system.
+Since MMBase 1.8.3 we use JIRA as our bug-tracking system. See http://www.mmbase.org/jira.
 
 --------------------
 General New Features:
