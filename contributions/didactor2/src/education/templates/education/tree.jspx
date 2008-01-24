@@ -6,7 +6,18 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:content type="application/xml">
+  <mm:content type="application/xhtml+xml">
+    <!--
+         This JSP outputs learnenvironment menu as a tree.
+
+         TODO:
+         -This JSP is still too big, messy, unclear
+
+         -Javascript is still somewhat mixed into html and jsp, addEventHandler should
+          be used to clean up the code, and to make the behaviour better customizable
+
+    -->
+
     <di:copybook>
       <mm:relatednodescontainer path="madetests,tests"  element="tests">
         <mm:constraint field="madetests.score" operator="ge" value="0" />
@@ -33,7 +44,9 @@
     <!-- TODO some learnblocks/learnobjects may not be visible because the are not ready for elearning (start en stop mmevents) -->
     <!-- TODO pre and postassessment are showed in the tree -->
 
-    <div>
+    <div
+        xmlns="http://www.w3.org/1999/xhtml"
+        >
       <!--
           <a href="javascript:reloadEducationTree()">Reload</a>
       -->
@@ -56,7 +69,8 @@
           <mm:sortorder field="posrel.pos" direction="up"/>
           <mm:import id="showsubtree" reset="true">true</mm:import>
           <mm:tree type="learnobjects"
-                   role="posrel" searchdir="destination" orderby="posrel.pos" directions="up" maxdepth="15">
+                   role="posrel" searchdir="destination" orderby="posrel.pos" directions="up"
+                   maxdepth="${di:setting('education', 'max_depth') + 1}">
             <c:if test="${(empty path) or mm:contains(path, _node.number)}">
               <mm:nodeinfo type="type" id="nodetype" write="false" />
               <mm:depth id="currentdepth">
@@ -127,14 +141,14 @@
                 <mm:field id="previousnumber" name="number" write="false" />
 
                 <!-- determine if we may show this learnobject and its children -->
-                <mm:import id="mayshow"><di:getvalue component="education" name="showlo" arguments="${previousnumber}" /></mm:import>
-
-                <!-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth -->
-                <mm:compare referid="mayshow" value="0">
-                  <mm:import id="showsubtree" reset="true">false</mm:import>
-                  <mm:import id="ignoredepth" reset="true"><mm:write referid="currentdepth" /></mm:import>
-                  <!-- Ignored subtree at depth <mm:write referid="currentdepth" /> -->
-                </mm:compare>
+                <di:getvalue component="education" name="showlo" arguments="${previousnumber}">
+                  <!-- if 'showlo' is 0, then we may not show the subtree, so we ignore everything with a depth HIGHER than the current depth -->
+                  <mm:compare value="0">
+                    <mm:import id="showsubtree" reset="true">false</mm:import>
+                    <mm:import id="ignoredepth" reset="true"><mm:write referid="currentdepth" /></mm:import>
+                    <!-- Ignored subtree at depth <mm:write referid="currentdepth" /> -->
+                  </mm:compare>
+                </di:getvalue>
 
                 <mm:compare referid="showsubtree" value="true">
 
@@ -170,13 +184,17 @@
                           </mm:nodeinfo>
                         </mm:notpresent>
 
-                        <mm:node number="component.pop" notfound="skip">
+                        <!--
+                             TODO: I don't think it should be necessary to litter the code all over
+                             the place with functionality specific to some component
+                        -->
+                        <mm:hasnode number="component.pop">
                           <mm:relatednodes type="providers" constraints="providers.number=$provider">
                             <mm:list nodes="$user" path="people,related,pop">
                               <mm:first><jsp:directive.include file="popcheck.jsp" /></mm:first>
                             </mm:list>
                           </mm:relatednodes>
-                        </mm:node>
+                        </mm:hasnode>
                       </div>
                     </mm:compare>
                   </mm:compare>
