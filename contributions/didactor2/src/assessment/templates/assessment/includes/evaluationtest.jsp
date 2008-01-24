@@ -1,6 +1,8 @@
 <%@include file="/education/tests/definitions.jsp" %>
 <mm:node number="$user">
-  <%@include file="/education/tests/find_copybook.jsp"%>
+  <di:copybook>
+    <mm:node id="copybookNo" />
+  </di:copybook>
 </mm:node>
 <mm:field name="number" jspvar="this_test" vartype="String" write="false">
   <!-- get madetest -->
@@ -24,7 +26,7 @@
     <mm:createrelation role="related" source="copybookNo" destination="madetest"/>
     <mm:remove referid="this_test"/>
   </mm:notpresent>
-      
+
   <!-- rate answers -->
   <mm:compare referid="step" value="save">
     <mm:relatednodes type="questions" path="posrel,questions" orderby="posrel.pos">
