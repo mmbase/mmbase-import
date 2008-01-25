@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.20 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.21 2008-01-25 14:02:33 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -102,7 +102,8 @@ public class Authenticate extends Authentication {
 
 
     // javadoc inherited
-    public UserContext login(String s, Map map, Object aobj[]) throws SecurityException  {
+    @Override
+    public UserContext login(String s, Map<String, Object> map, Object aobj[]) throws SecurityException  {
         if (log.isTraceEnabled()) {
             log.trace("login-module: '" + s + "'");
         }
@@ -195,7 +196,7 @@ public class Authenticate extends Authentication {
         if (user.node == null) {
             log.debug("No node associated to user object, --> user object is invalid");
             return false;
-        } 
+        }
         if (! user.isValidNode()) {
             log.debug("Node associated to user object, is invalid");
             return false;
