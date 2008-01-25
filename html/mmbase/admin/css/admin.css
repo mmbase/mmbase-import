@@ -219,3 +219,5 @@ th, td
 
 th.view, td.view { text-align: right; }
 th.center, td.center { text-align: center; }
+
+div#aboutthisredbox { display: none; }

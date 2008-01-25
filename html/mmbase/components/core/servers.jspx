@@ -52,10 +52,17 @@
           </tr>
         </mm:listnodes>
       </table>
+      
+      <div id="aboutthisredbox">
+        You are seeing this text which is only meant to test the MMBase framework.
+        This means rendering stuff with the Component Framework for the above servers block 
+        in the head of a document works: a stylesheet is correctly included.
+      </div>
+      
     </mm:notpresent>
     <mm:present referid="server">
       <table summary="server actions">
-        <caption>Administrate Server: <mm:write referid="server" /></caption>
+        <caption>Information about this server: <mm:write referid="server" /></caption>
         <tr>
           <td>
             <p>
