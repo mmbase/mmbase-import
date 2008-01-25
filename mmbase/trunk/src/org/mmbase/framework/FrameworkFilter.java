@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.19 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.20 2008-01-25 10:13:01 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -173,23 +173,27 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (params.containsParameter(Parameter.RESPONSE)) {
                 params.set(Parameter.RESPONSE, res);
             }
-            String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params).toString();
+            try {
+                String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params).toString();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
-            }
+                if (log.isDebugEnabled()) {
+                    log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
+                }
 
-            if (forwardUrl != null && !forwardUrl.equals("")) {
-                res.setHeader("X-MMBase-forward", forwardUrl);
-                /*
-                 * RequestDispatcher: If the path begins with a "/" it is interpreted
-                 * as relative to the current context root.
-                 */
-                RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
-                rd.forward(request, response);
-            } else {
-                if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
-                chain.doFilter(request, response);
+                if (forwardUrl != null && !forwardUrl.equals("")) {
+                    res.setHeader("X-MMBase-forward", forwardUrl);
+                    /*
+                     * RequestDispatcher: If the path begins with a "/" it is interpreted
+                     * as relative to the current context root.
+                     */
+                    RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
+                    rd.forward(request, response);
+                } else {
+                    if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
+                    chain.doFilter(request, response);
+                }
+            } catch (FrameworkException fe) {
+                throw new ServletException(fe);
             }
         } else {
             if (log.isDebugEnabled()) log.debug("Request not an instance of HttpServletRequest, therefore no url forwarding");
