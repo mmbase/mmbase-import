@@ -31,8 +31,8 @@ See http://www.MMBase.org/license
 
     <dependency>
       <groupId>javamail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4</version>
+      <artifactId>mailapi</artifactId>
+      <version>1.4.1</version>
       <url>http://java.sun.com/products/javamail/</url>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
@@ -43,9 +43,6 @@ See http://www.MMBase.org/license
       <artifactId>activation</artifactId>
       <version>1.0.2</version>
       <url>http://java.sun.com/products/javabeans/jaf/</url>
-      <properties>
-        <scope>compile</scope>
-      </properties>
     </dependency>
   </dependencies>
   <build>    
