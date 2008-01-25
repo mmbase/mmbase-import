@@ -38,7 +38,7 @@ Configure tomcat and the database:
 
 - Create an empty database
  
-Step 4:
+Step 3:
 - Run the first-time-cmsc.bat (or .sh) in scripts directory.
   NOTE: following runs should use cmsc.bat to clean previous build files.
 - And start your tomcat.
