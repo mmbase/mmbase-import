@@ -5,7 +5,6 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="rolerel" maintainer="mmbase.org" version="0" extends="insrel">
 
-  <class>RoleRel</class>
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">Role</singular>
