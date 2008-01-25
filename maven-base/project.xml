@@ -12,7 +12,7 @@ See http://www.MMBase.org/license
   <artifactId>${pom.artifactId}</artifactId>
   <name>${pom.artifactId}</name>
   <groupId>mmbase</groupId>
-  <currentVersion>${mmbase.version}-SNAPSHOT</currentVersion>
+  <currentVersion>${mmbase.version}</currentVersion>
   <organization>
     <name>MMBase.org</name>
     <url>http://www.mmbase.org</url>
@@ -47,9 +47,9 @@ See http://www.MMBase.org/license
     </license>
   </licenses>
   <description>MMBase is a Web Content Management System with strong multi media features. MMBase has a large installed base in The Netherlands, and is used by major Dutch broadcasters, publishers, educational institutes, national and local governments. MMBase is written in Java, it is Open Source Software (MPL) and all standards used are as 'open' as possible. The system can be used with all major operating systems, webservers and databases.</description>
-  <url>http://maven.mmbase.net/mmbase</url>
+  <url>http://www.mmbase.org</url>
   <issueTrackingUrl>http://www.mmbase.org/bug</issueTrackingUrl>
-  <siteAddress>maven.mmbase.net</siteAddress>
+  <siteAddress>http://www.mmbase.org</siteAddress>
   <siteDirectory>/home/maven/site/mmbase</siteDirectory>
   <distributionDirectory>/home/maven/site/mmapps/jars/</distributionDirectory>
   <repository>
@@ -221,11 +221,6 @@ See http://www.MMBase.org/license
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>jspapi</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
-    </dependency>
-    <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.8</version>
@@ -249,6 +244,12 @@ See http://www.MMBase.org/license
       <version>3.8.1</version>
       <type>jar</type>
     </dependency>
+
+    <dependency>
+      <groupId>jspapi</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.0</version>
+    </dependency>
     <!-- jsp taglibs, jstl -->
     <dependency>
       <groupId>jstl</groupId>
@@ -271,17 +272,6 @@ See http://www.MMBase.org/license
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version> <!-- btw, newest version 1.8.0.8, but not yet in maven repositories.. sigh -->
     </dependency>
-
-    <!-- mmbase module plugin -->
-    <!-- TODO: The source code of this plugin, according to:
-
-    http://mmapps.sourceforge.net/maven-mmbase-module-plugin/cvs-usage.html
-    michiel@mitulo:/tmp$ cvs -z3 -d :pserver:anonymous@cvs.sourceforge.net:/cvsroot/mmapps co maven-mmbase-module-plugin
-cvs [checkout aborted]: connect to cvs.sourceforge.net(66.35.250.207):2401 failed: No route to host
-
-   Not available ?
-
-   -->
 
     <dependency>
       <groupId>mmapps</groupId>
