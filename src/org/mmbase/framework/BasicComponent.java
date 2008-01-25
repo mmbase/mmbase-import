@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.40 2008-01-21 17:29:10 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.41 2008-01-25 09:53:17 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -142,7 +142,7 @@ public class BasicComponent implements Component {
                 String blockName = element.getAttribute("name");
                 String mimetype = element.getAttribute("mimetype");
                 Block.Type[] classification = Block.Type.getClassification(element.getAttribute("classification"), true);
-                Block b = new Block(name, mimetype, this, classification);
+                Block b = new Block(blockName, mimetype, this, classification);
                 b.getDescription().fillFromXml("description", element);
                 log.trace("Found block: " + blockName);
                 b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
