@@ -35,6 +35,7 @@
 
 
 
+
   <target name="create.dirs">
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/classes" />
@@ -59,6 +60,8 @@
            <!--
                 flatten yes? having builders in a sensible sub-dir would make life a bit better
                 bearable ...
+                Btw, putting the builders under config/applications is deprecated.
+                Put them under config/builders directly, in a nice sub-dir.
            -->
            <fileset dir="${build.webapp.dir}/WEB-INF/config/applications">
              <include name="**/builders/*.xml"/>
@@ -198,6 +201,7 @@
             <include name="builders/**" />
             <include name="components/**" />
             <include name="translations/**" />
+            <include name="datatypes.xml" />
           </fileset>
         </copy>
       </then>
@@ -402,8 +406,11 @@
     <if>
       <available file="src/${component}/config" type="dir" />
       <then>
-        <copy todir="${build.webapp.dir}/WEB-INF/config" preservelastmodified="true">
-          <fileset dir="src/${component}/config">
+        <copy todir="${build.webapp.dir}/WEB-INF/config"
+              preservelastmodified="true">
+          <fileset
+              defaultexcludes="${defaultexcludes}"
+              dir="src/${component}/config">
             <include name="**"/>
           </fileset>
         </copy>
