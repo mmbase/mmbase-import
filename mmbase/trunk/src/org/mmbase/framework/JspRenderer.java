@@ -20,10 +20,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A Renderer implmentation based on a jsp.
+ * A Renderer implementation based on a jsp.
  *
  * @author Michiel Meeuwissen
- * @version $Id: JspRenderer.java,v 1.26 2007-12-21 16:14:34 michiel Exp $
+ * @version $Id: JspRenderer.java,v 1.27 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class JspRenderer extends AbstractRenderer {

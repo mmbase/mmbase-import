@@ -15,8 +15,11 @@ import org.mmbase.util.functions.Parameters;
  * A Processor handles interaction of a {@link Block}. It is like a {@link Renderer}, but it renders
  * nothing, it only can change the state of the block, and hence influence the renderers.
  *
+ * The other difference is that there be several {@link Block}s in a request, which are all
+ * rendered, but at most one of them has its Processor executed.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: Processor.java,v 1.9 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: Processor.java,v 1.10 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Processor {
@@ -40,7 +43,7 @@ public interface Processor {
     void process(Parameters blockParameters, Parameters frameworkParameters) throws FrameworkException;
 
     /**
-     * An URI which may identify the implementation of this Renderer. 
+     * An URI which may identify the implementation of this Renderer.
      */
 
     java.net.URI getUri();

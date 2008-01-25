@@ -15,20 +15,35 @@ import org.mmbase.util.functions.*;
 /**
  * A Renderer renders a certain aspect of a {@link Block}. Currently every block has two renderers,
  * which are identified by the renderer 'type' (see {@link #getType }). Every block also has a
- * {@link Processor}, which is similar to a Renderer, but a processor never generates contents, only
+ * {@link Processor}, which is similar to a Renderer, but a processor never generates content, only
  * handles interaction.
  *
  * A Renderer is stateless.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Renderer.java,v 1.18 2007-08-06 16:57:45 michiel Exp $
+ * @version $Id: Renderer.java,v 1.19 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Renderer {
 
+    /**
+     * Every block can be in a certain window state, which could be considered during rendering.
+     */
 
     enum WindowState {
-        MAXIMIZED, MINIMIZED, NORMAL;
+        /**
+         * Rendering may suppose a full browser window
+         */
+        MAXIMIZED,
+        /**
+         * Rendering should suppose only a 'link' version from the component.
+         */
+        MINIMIZED,
+        /**
+         * Rendering may suppose quite a large area, but should be aware that other blocks are in a
+         * similar state.
+         */
+        NORMAL;
     }
 
     enum Type {
@@ -85,7 +100,7 @@ public interface Renderer {
 
 
     /**
-     * An URI which may identify the implementation of this Renderer. 
+     * An URI which may identify the implementation of this Renderer.
      */
 
     URI getUri();
