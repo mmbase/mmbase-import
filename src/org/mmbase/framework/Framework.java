@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.42 2007-12-26 17:07:19 michiel Exp $
+ * @version $Id: Framework.java,v 1.43 2008-01-25 10:13:01 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -235,7 +235,7 @@ public abstract class Framework {
     public abstract StringBuilder getUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters,
-                         boolean escapeAmps);
+                         boolean escapeAmps) throws FrameworkException;
 
 
     /**
@@ -254,7 +254,7 @@ public abstract class Framework {
      */
     public abstract StringBuilder getInternalUrl(String path,
                                                  Map<String, Object> params,
-                                                 Parameters frameworkParameters);
+                                                 Parameters frameworkParameters) throws FrameworkException;
 
 
 }
