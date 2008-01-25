@@ -14,8 +14,9 @@ package org.mmbase.framework;
  * such as when rendering or processing a component.
  *
  * @author Pierre van Rooden
- * @version $Id: FrameworkException.java,v 1.2 2006-12-08 16:32:16 michiel Exp $
+ * @version $Id: FrameworkException.java,v 1.3 2008-01-25 09:32:23 michiel Exp $
  * @version MMBase-1.9
+ * @todo i18n?
  */
 public class FrameworkException extends Exception {
 

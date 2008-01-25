@@ -22,11 +22,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * If rendering of a block fails, for some reason, that this renderer can be used in stead, to
+ * If rendering of a block fails, for some reason, then this renderer can be used in stead, to
  * present the error.
  *
+ * @todo Its workings are similar to /mmbase/errorpages/500.jsp, and we should consider that these two
+ * share code.
+ *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.8 2007-11-16 13:55:32 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.9 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 
