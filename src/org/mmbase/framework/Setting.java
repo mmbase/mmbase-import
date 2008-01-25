@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.4 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: Setting.java,v 1.5 2008-01-25 09:37:10 michiel Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {
@@ -63,6 +63,7 @@ public class Setting<C> {
     }
     /**
      *
+     */
     public DataType<C> getDataType() {
         return dataType;
     }
