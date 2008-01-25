@@ -20,10 +20,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * HEAD renderers can be chained, because they don't produce a well defined block.
+ * This renderer simply calles the methods of a number of other Renderes sequentially. Only
+ * {@link Renderer.Type.HEAD} renderers can be chained, because they don't have to produce a well defined
+ * block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedRenderer.java,v 1.2 2007-12-26 17:07:19 michiel Exp $
+ * @version $Id: ChainedRenderer.java,v 1.3 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 

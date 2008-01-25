@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.18 2007-11-16 18:29:12 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.19 2008-01-25 09:32:23 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -50,7 +50,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
     private Thread initThread;
 
     /**
-     * The pattern being used to determine to exlude an URL
+     * The pattern being used to determine to exclude an URL
      */
     private static Pattern excludePattern;
 

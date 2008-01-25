@@ -18,10 +18,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The overly simple renderer which is simply based on a String present in the configuration file
+ * The overly simple renderer which is simply based on a String present in the configuration
+ * file. Based on {@link PatterNodeFunctionProvider} so several parameters can be present.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.8 2007-07-30 16:36:05 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.9 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {
@@ -36,7 +37,7 @@ public class StringRenderer extends AbstractRenderer {
 
     public void setString(String s) {
         string = s;
-        requestMethods = PatternNodeFunctionProvider.getRequestMethods(string); 
+        requestMethods = PatternNodeFunctionProvider.getRequestMethods(string);
     }
 
     public  Parameter[] getParameters() {

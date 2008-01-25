@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.28 2007-11-16 11:40:08 michiel Exp $
+ * @version $Id: Block.java,v 1.29 2008-01-25 09:32:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -77,7 +77,7 @@ public class Block {
     }
 
     /**
-     * @todo
+     * @todo This method is not yet implemented.
      */
     public Type[] getClassification(String filter) {
         String[] parts = filter.split("\\s*?[,\\s]\\s*");
