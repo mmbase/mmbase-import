@@ -12,6 +12,7 @@ package org.mmbase.framework.basic;
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.framework.FrameworkException;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.functions.Parameter;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.2 2007-12-26 17:07:19 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.3 2008-01-25 10:04:01 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -62,7 +63,7 @@ public class ChainedUrlConverter implements UrlConverter {
      */
     public StringBuilder getUrl(String path,
                                 Map<String, Object> params,
-                                Parameters frameworkParameters, boolean escapeAmps) {
+                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
 
         StringBuilder p = new StringBuilder(path);
         for (UrlConverter uc : uclist) {
@@ -83,7 +84,7 @@ public class ChainedUrlConverter implements UrlConverter {
      */
     public StringBuilder getInternalUrl(String path,
                                         Map<String, Object> params,
-                                        Parameters frameworkParameters) {
+                                        Parameters frameworkParameters) throws FrameworkException {
         StringBuilder p = new StringBuilder(path);
         for (UrlConverter uc : uclist) {
             StringBuilder b = uc.getInternalUrl(p.toString(), params, frameworkParameters);
