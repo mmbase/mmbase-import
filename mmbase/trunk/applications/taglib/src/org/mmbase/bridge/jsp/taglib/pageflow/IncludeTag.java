@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.83 2008-01-18 14:07:25 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.84 2008-01-25 10:25:01 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -128,7 +128,11 @@ public class IncludeTag extends UrlTag {
 
 
     protected void doAfterBodySetValue() throws JspTagException {
-        includePage();
+        try {
+            includePage();
+        } catch (org.mmbase.framework.FrameworkException fw) {
+            throw new TaglibException(fw);
+        }
     }
     /**
      * Opens an Http Connection, retrieves the page, and returns the result.
@@ -398,7 +402,7 @@ public class IncludeTag extends UrlTag {
     /**
      * Includes another page in the current page.
      */
-    protected void includePage() throws JspTagException {
+    protected void includePage() throws JspTagException, org.mmbase.framework.FrameworkException {
         if (MAX_INCLUDE_LEVEL == -1) {
             String s =  pageContext.getServletContext().getInitParameter("mmbase.taglib.max_include_level");
             if (s != null && ! "".equals(s)) {
