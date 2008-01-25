@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <framework
-    class="org.mmbase.framework.BasicFramework"
+    class="org.mmbase.framework.basic.BasicFramework"
     xmlns="http://www.mmbase.org/xmlns/framework"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.5 2007-08-06 17:00:26 michiel Exp $
+      version: $Id: framework.xml,v 1.6 2008-01-25 10:24:13 andre Exp $
   -->
   <!--
       In this file the classes of the UrlConverters need to be listed in the order
@@ -17,7 +17,7 @@
   </description>
 
 
-  <urlconverter class="org.mmbase.framework.MMBaseUrlConverter">
+  <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
     <description xml:lang="en">
       The MMBase urlconverter handles about pretty URL's in /mmbase/.
     </description>
@@ -27,6 +27,6 @@
   <urlconverter class="org.mmbase.mynews.MyNewsUrlConverter" />
   -->
 
-  <urlconverter class="org.mmbase.framework.BasicUrlConverter" />
+  <urlconverter class="org.mmbase.framework.basic.BasicUrlConverter" />
 
 </framework>
