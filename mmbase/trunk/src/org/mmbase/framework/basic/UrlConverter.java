@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * They will be chained one after another.
 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.2 2008-01-25 10:04:01 michiel Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {
@@ -38,7 +38,7 @@ public interface UrlConverter {
     StringBuilder getUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters,
-                         boolean escapeAmps);
+                         boolean escapeAmps) throws FrameworkException;
 
 
     /**
@@ -47,7 +47,7 @@ public interface UrlConverter {
      */
     StringBuilder getInternalUrl(String path,
                                  Map<String, Object> params,
-                                 Parameters frameworkParameters);
+                                 Parameters frameworkParameters) throws FrameworkException;
 
 
 }
