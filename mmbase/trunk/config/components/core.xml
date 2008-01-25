@@ -93,8 +93,8 @@
   <block name="applications"
          classification="mmbase.admin"
          mimetype="text/html">
-    <description xml:lang="en">Shows an overview of all MMBase apps 1 applications</description>
-    <body jsp="/mmbase/admin/admin/applications.div.jsp">
+    <description xml:lang="en">Shows an overview of all MMBase apps1 applications</description>
+    <body jsp="applications.jspx">
       <param name="application" type="String" />
     </body>
   </block>
@@ -105,7 +105,7 @@
       Is the follow-up for the application installation page and shows the results of actions
       that can be taken.
     </description>
-    <body jsp="/mmbase/admin/admin/application/actions.jsp">
+    <body jsp="applications-actions.jspx">
       <param name="application" type="String" />
       <param name="app" type="String" />
       <param name="cmd" type="String" />
