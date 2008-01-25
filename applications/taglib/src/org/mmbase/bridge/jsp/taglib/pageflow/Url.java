@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.35 2007-11-16 19:38:21 andre Exp $;
+ * @version $Id: Url.java,v 1.36 2008-01-25 10:20:21 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -128,7 +128,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
      * Returns the URL as a String, always without the application context.
      */
 
-    public String get(boolean writeamp) throws JspTagException {
+    public String get(boolean writeamp) throws JspTagException, FrameworkException {
         if (legacy) {
             return getLegacy(writeamp);
         }
@@ -153,10 +153,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             log.debug("Creating internal url link to page: " + page, new Exception());
             result = framework.getInternalUrl(page, params, frameworkParameters).toString();
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Creating normal url link to page: " + page + " " + params + " fw: " + frameworkParameters);
-            }
             result = framework.getUrl(page, params, frameworkParameters, writeamp).toString();
+            if (log.isDebugEnabled()) {
+                log.debug("Created normal url link to page: " + page + " " + params + " fw: " + frameworkParameters + " -> " + result + " fw");
+            }
         }
 
         if (writeamp) {
@@ -166,7 +166,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
         return result;
     }
-
+    /**
+     *
+     */
     protected boolean useAbsoluteAttribute(StringBuilder show, String p) throws JspTagException {
 
         if ("".equals(abs) || "false".equals(abs)) {
@@ -213,8 +215,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         if (string != null) return string;
         try {
             String u = get(escapeAmps);
+            log.debug("Produced " + u);
             StringBuilder show = new StringBuilder();
             if (! useAbsoluteAttribute(show, u)) {
+                log.debug("Absolute attribute not applied on " + u);
                 if (u.length() > 0 && u.charAt(0) == '/') {
                     HttpServletRequest req =  (HttpServletRequest) tag.getPageContext().getRequest();
                     show.insert(0, req.getContextPath());
