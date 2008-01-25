@@ -1,8 +1,8 @@
 package nl.didactor.component.proactivemail.cron;
 
 /**
- * ProActiveMailRefreshJob class, purpose is to refresh crons after changes of 
- * cron configuration 
+ * ProActiveMailRefreshJob class, purpose is to refresh crons after changes of
+ * cron configuration
  * @author Goran Kostadinov     (Levi9 Balkan Global Sourcing)
  *
  * @version $Id$
@@ -16,7 +16,6 @@ import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.TypeDef;
-import org.mmbase.security.implementation.aselect.ASelectAuthentication;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
@@ -28,7 +27,7 @@ public class ProActiveMailRefreshJob implements Job {
    private static Logger log = Logging.getLoggerInstance(ProActiveMailJob.class);
    private static boolean cronsChanged = false;
    private static int count = 0;
-   
+
    /**
     * Execute methods, called from triggers
     *
@@ -42,11 +41,11 @@ public class ProActiveMailRefreshJob implements Job {
            nl.didactor.component.proactivemail.DidactorProActiveMail.restartJobs();
        }
    }
-   
+
    public static boolean isRefreshing() {
        return cronsChanged;
    }
-   
+
    public static void refresh() {
        cronsChanged = true;
        count = 0;
