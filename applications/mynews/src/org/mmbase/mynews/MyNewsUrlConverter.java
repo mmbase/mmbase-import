@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.11 2007-12-28 17:33:03 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.12 2008-01-25 10:06:07 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -114,7 +114,7 @@ public class MyNewsUrlConverter implements UrlConverter {
         }
     }
 
-    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
+    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith(directory)) {
@@ -129,8 +129,10 @@ public class MyNewsUrlConverter implements UrlConverter {
                 assert path[0].equals("");
                 assert path[1].equals(directory.substring(1));
                 if (path.length == 2) {
+                    // magazine mode.
                     return result;
                 } else {
+                    // article mode
                     String id = path[path.length - 1];
                     String n;
                     if (useTitle) {
@@ -165,11 +167,16 @@ public class MyNewsUrlConverter implements UrlConverter {
                         if (list.size() > 0) {
                             node = list.getNode(0);
                         } else {
-                            node = cloud.getNode(id);
+                            if (cloud.hasNode(id)) {
+                                // alias/nodenumbers work too
+                                node = cloud.getNode(id);
+                            } else {
+                                throw new FrameworkException("" + q.toSql() + " gave no results");
+                            }
                         }
                         n = "" + node.getNumber();
-
                     } else {
+                        // node was specified by number. Date spec can be ignored.
                         n = id;
                     }
                     result.append("?block=article&n=" + n);
