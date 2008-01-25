@@ -1,0 +1,9 @@
+HOWTO maven.
+
+Use maven 1.1.
+
+- ant jar -> maven jar, maven jar:install
+maven -Dmaven.test.skip=true jar:install
+
+- ant     -> maven
+-
