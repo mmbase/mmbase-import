@@ -5,35 +5,45 @@ package com.finalist.cmsc.services.community;
  * @author Remco Bos
  */
 
-import javax.security.auth.login.LoginContext;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.acegisecurity.Authentication;
+import org.acegisecurity.AuthenticationException;
+import org.acegisecurity.AuthenticationManager;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.portlet.PortletSession;
-import javax.servlet.ServletContext;
-
-import com.finalist.cmsc.services.community.HibernateCommunityService;
+import com.finalist.cmsc.services.Properties;
+import com.finalist.cmsc.services.community.preferences.PreferenceService;
 
 public class CommunityServiceImpl extends CommunityService {
 
     private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
+    
+	private WebApplicationContext applicationContext;
+	private AuthenticationManager authenticationManager;
+    private PreferenceService preferenceService;
+    
+    @Override
+	protected void init(ServletConfig config, Properties properties) throws Exception {
+		applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+		authenticationManager = (AuthenticationManager)applicationContext.getBean("authenticationManager");
+		preferenceService = (PreferenceService)applicationContext.getBean("preferenceService");
+	}
 
-    public boolean loginUser(ActionRequest request, ActionResponse response, String userName, String password) {
+	public boolean loginUser(ActionRequest request, ActionResponse response, String userName, String password) {
         if (userName == null) {
             userName = "";
         }
@@ -46,20 +56,12 @@ public class CommunityServiceImpl extends CommunityService {
 
         boolean loginSuccesfull = false;
         try {
-            Authentication authentication = getAuthenticationManager().authenticate(authRequest);
+            Authentication authentication = authenticationManager.authenticate(authRequest);
             loginSuccesfull = authentication.isAuthenticated();
         } catch (AuthenticationException ae) {
             log.info("Authentication attempt failed for user " + userName);
         }
         return loginSuccesfull;
-    }
-
-    private AuthenticationManager getAuthenticationManager() {
-// typically a Spring WebApplicationContext is retrieved from the HttpSession, in a portal environment it will be different. TODO FINDOUT getWewApplicationContext for portlets
-//        ServletContext servletContext = portletRequest.
-//        WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-        return null;
-
     }
 
 
@@ -69,29 +71,22 @@ public class CommunityServiceImpl extends CommunityService {
         authentication.setAuthenticated(false);
         return true;
     }
-    // Yikes!! A new Spring context is loaded every time a property is retrieved..
 
     public Map<String, Map<String, String>> getUserProperty(String userName) {
-        aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-        hibservice = (HibernateCommunityService) aC.getBean("serviceCommunity");
-        return hibservice.getUserProperty(userName);
+    	return null;
+//    	preferenceService..getUserProperty(userName);
     }
 
     public Map<String, Map<String, List<String>>> getPreferences(String module, String userId, String key, String value) {
-        aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-        hibservice = (HibernateCommunityService) aC.getBean("serviceCommunity");
-        return hibservice.getPreferences(module, userId, key, value);
+    	return null;
+//    	preferenceService.getPreferences(userName);
     }
 
     public void createPreference(String module, String userId, String key, List<String> values) {
-        aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-        hibservice = (HibernateCommunityService) aC.getBean("serviceCommunity");
-        hibservice.createPreference(module, userId, key, values);
+//    	preferenceService.createPreferences(module, userName, key, value);
     }
 
     public void removePreferences(String module, String userId, String key) {
-        aC = new ClassPathXmlApplicationContext("applicationContext.xml");
-        hibservice = (HibernateCommunityService) aC.getBean("serviceCommunity");
-        hibservice.removePreferences(module, userId, key);
+//    	preferenceService.deletePreferences(module, userId, key);
     }
 }
