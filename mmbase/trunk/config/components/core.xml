@@ -113,23 +113,22 @@
     </body>
   </block>
 
+  
   <block name="builders"
          classification="mmbase.admin"
          mimetype="text/html">
     <description xml:lang="en">Shows an overview of all builders present in this MMBase installation</description>
-    <body jsp="/mmbase/admin/admin/builders.div.jsp">
+    <body jsp="builders.jspx">
       <param name="builder" type="String" />
     </body>
   </block>
-
-
 
   <block name="builders-actions"
          mimetype="text/html">
     <description xml:lang="en">
       Folow-up for the first builders block, shows a builders fields.
     </description>
-    <body jsp="/mmbase/admin/admin/builder/actions.jsp">
+    <body jsp="builders-actions.jspx">
       <param name="builder" type="String" />
       <param name="cmd"     type="String" />
       <param name="path"    type="String" />
@@ -141,7 +140,7 @@
     <description xml:lang="en">
       Folow-up for the second builders block, shows the various attributes of a field.
     </description>
-    <body jsp="/mmbase/admin/admin/builder/field.jsp">
+    <body jsp="builders-field.jspx">
       <param name="builder" type="String" />
       <param name="field"   type="String" />
     </body>
