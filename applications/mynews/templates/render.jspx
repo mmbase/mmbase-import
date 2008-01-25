@@ -7,6 +7,7 @@
     <mm:import externid="block">magazine</mm:import>
     <head>
       <title>MyNews example</title>
+      <!--
       <mm:link page="/mmbase/admin/css/admin.css">
         <link rel="stylesheet" href="${_}" type="text/css" />
       </mm:link>
@@ -15,6 +16,7 @@
         <link rel="shortcut icon" href="${_}" type="image/x-icon" />
       </mm:link>
       <mm:component name="mynews" block="$block" render="head" />
+      -->
     </head>
     <body>
       <mm:component name="mynews" block="${block}" />

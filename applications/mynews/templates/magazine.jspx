@@ -1,7 +1,7 @@
-<div 
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+<div
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     class="mm_c mm_c_mynews mm_c_b_magazine ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
@@ -17,13 +17,14 @@
       <mm:field  escape="p" name="body" />
       <h2>News articles</h2>
       <ul>
-      <mm:relatednodes role="posrel" type="news" orderby="posrel.pos" max="10">
-        <li>
-          <mm:link page="article" referids="_node@n">
-            <a href="${_}"><mm:field name="title" /></a>
-          </mm:link>
-        </li>
-      </mm:relatednodes>
+        <mm:relatednodes role="posrel" type="news" orderby="posrel.pos">
+          <li>
+            <mm:link page="article" referids="_node@n">
+              <em><mm:field name="date"><mm:time format=":FULL" /></mm:field> - </em><a href="${_}"><mm:field name="title" /></a>
+            </mm:link>
+          </li>
+        </mm:relatednodes>
+        <mm:log>b</mm:log>
       </ul>
     </mm:node>
   </mm:cloud>

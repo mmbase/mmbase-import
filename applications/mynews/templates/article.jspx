@@ -13,6 +13,7 @@
       <h1><mm:field name="title"/></h1>
       <mm:field name="subtitle"><mm:isnotempty><h2><mm:write /></h2></mm:isnotempty></mm:field>
       <div class="intro">
+        <span class="date"><mm:field name="date"><mm:time format=":LONG" /></mm:field></span>
         <mm:field  name="intro" escape="p,links" />
       </div>
       <mm:field  escape="p,links" name="body"/>
