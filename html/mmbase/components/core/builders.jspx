@@ -1,10 +1,14 @@
-<%@ page import="org.mmbase.module.core.MMBase" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud rank="administrator" loginpage="login.jsp">
-<div 
-  class="mm_c mm_c_core mm_c_b_builders ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
-  
+<mm:cloud rank="administrator"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+          >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:import externid="application" />
+  <mm:import externid="app" />
+  <div
+      class="mm_c mm_c_core mm_c_b_builders ${requestScope.componentClassName}"
+      id="${requestScope.componentId}">
+
   <h3>Builder Overview <mm:cloudinfo type="rank" /></h3>
   <table summary="builders" border="0" cellspacing="0" cellpadding="3">
 	<caption>
@@ -35,7 +39,7 @@
 			<td><mm:field name="item4" /></td>
 			<td class="center">
 			  <mm:link page="builders-actions" referids="builder">
-				<a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.png" />" alt="view" /></a>
+				<a href="${_}"><mm:link page="/mmbase/style/images/search.png"><img src="${_}" alt="view" /></mm:link></a>
 			  </mm:link>
 			</td>
 		  </tr>
@@ -57,14 +61,15 @@
 			<td><mm:field name="item4" /></td>
 			<td class="center">
 			  <mm:link referids="builder" page="builder/actions.jsp">
-			    <a href="${_}"><img src="<mm:url page="/mmbase/style/images/search.png" />" alt="view" /></a>
+			    <a href="${_}"><img src="${mm:link('/mmbase/style/images/search.png')}" alt="view" /></a>
 			  </mm:link>
 			</td>
 		  </tr>
 		</mm:compare>
 	  </mm:field>
 	</mm:listnodes>
+	<tr><td colspan="5"> </td></tr>
   </table>
-
-</div>
+  
+  </div>
 </mm:cloud>
