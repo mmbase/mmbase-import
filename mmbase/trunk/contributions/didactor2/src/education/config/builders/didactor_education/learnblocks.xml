@@ -54,19 +54,7 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="0" />
-        <enumeration>
-          <entry value="0" xml:lang="nl" display="Tekst erboven" />
-          <entry value="0" xml:lang="en" display="Text up" />
-          <entry value="1" xml:lang="nl" display="Tekst eronder" />
-          <entry value="1" xml:lang="en" display="Text down" />
-          <entry value="2" xml:lang="nl" display="Tekst links" />
-          <entry value="2" xml:lang="en" display="Text left" />
-          <entry value="3" xml:lang="nl" display="Tekst rechts" />
-          <entry value="3" xml:lang="en" display="Text right" />
-        </enumeration>
-      </datatype>
+      <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
     <field name="imagelayout">
       <descriptions>
@@ -77,15 +65,7 @@
         <guiname xml:lang="nl">Layout afbeeldingen</guiname>
         <guiname xml:lang="en">Images layout</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="0" />
-        <enumeration>
-          <entry value="0" xml:lang="nl" display="Horizontaal" />
-          <entry value="0" xml:lang="en" display="Horizontal" />
-          <entry value="1" xml:lang="nl" display="Vertikaal" />
-          <entry value="1" xml:lang="en" display="Vertical" />
-        </enumeration>
-      </datatype>
+      <datatype base="didactor_imagelayout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
 
