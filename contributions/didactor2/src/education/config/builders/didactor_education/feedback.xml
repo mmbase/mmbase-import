@@ -70,8 +70,8 @@
         <guiname xml:lang="en">Maximal Score</guiname>
       </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
         <default value="10000" />
+        <required value="true" />
         <minInclusive value="0" />
       </datatype>
     </field>
