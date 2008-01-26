@@ -24,9 +24,8 @@
 	<relation destination="attachments" role="posrel" />
 	<relation destination="images" role="imagerel" />
 	<relation destination="urls" role="posrel" />
-	<relation destination="newslettertheme" role="newslettercontent" />
 <!-- 
-
+	<relation destination="newslettertheme" role="newslettercontent" />
  -->
 	<!-- content info relations -->
 	<relation destination="contentchannel" role="creationrel" />
