@@ -3,13 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
-
-
 <!--todo : get default page size from system properties.-->
-
 <c:set var="currentPage" value="${empty param.offset ? 1 : param.offset +1 }"/>
 <c:set var="pagessize" value="${ cmsc:ceil(listSize/resultsPerPage)}"/>
-
 
 <fmt:bundle basename="cmsc">
 <fmt:message key="pages.message" var="error"/>
@@ -21,16 +17,14 @@
 </fmt:message>
 
 
-<script type="text/javascript">
+<script language="JavaScript">
 
    function gotopage(targetfield) {
 
       var inputValue = document.getElementById(targetfield).value;
       var re = new RegExp("^[1-9][0-9]*$");
-
       if (re.test(inputValue) && inputValue <= Math.ceil(${pagessize})) {
-         var url = "?status=&offset=" + (inputValue - 1) + "&orderby=" + "${extraparams}";
-         window.location.href = url;
+	   setOffset(inputValue - 1);
       } else {
          alert("${error}");
       }
@@ -54,7 +48,7 @@
          <td style="text-align:right;width:50%;">
             <fmt:message key="searchpages.page"/>:
             <c:if test="${currentPage > 1}">
-               <a href="<%=PagingUtils.previousPage(pageContext)%>" class="page_list_navtrue">
+               <a href="javascript:setOffset('${currentPage - 2}');" class="page_list_navtrue">
                   &lt;&lt;<fmt:message key="pages.previous"/>
                </a>
             </c:if>
@@ -63,7 +57,9 @@
             <c:choose>
                <c:when test="${pagessize>0&&pagessize<14}">
                   <c:forEach var="count" begin="1" end="${pagessize}">
-                     <%=PagingUtils.generatePageUrl(pageContext)%>
+                  <a href="javascript:setOffset('${count-1}');" class="${count == currentPage ? 'page_list_navtrue':'page_list_navfalse'}">
+                  <c:out value="${count}"/>
+                   </a>
                      <c:if test="${count ne pagessize}"> | </c:if>
                   </c:forEach>
                </c:when>
@@ -71,14 +67,18 @@
                <c:when test="${pagessize>13}">
                   <c:set var="length_of_prefix" value="${currentPage <7 ? currentPage+2 : 3}"/>
                   <c:forEach var="count" begin="1" end="${length_of_prefix}">
-                     <%=PagingUtils.generatePageUrl(pageContext)%>
+                      <a href="javascript:setOffset('${count-1}');" class="${count == currentPage ? 'page_list_navtrue':'page_list_navfalse'}">
+                  <c:out value="${count}"/>
+                   </a>
                      |
                   </c:forEach>
                   ...
 
                   <c:if test="${6<currentPage&&currentPage <pagessize-5}">
                      <c:forEach var="count" begin="${currentPage-2}" end="${currentPage+2}">
-                        <%=PagingUtils.generatePageUrl(pageContext)%>
+                      <a href="javascript:setOffset('${count-1}');" class="${count == currentPage ? 'page_list_navtrue':'page_list_navfalse'}">
+                 <c:out value="${count}"/>
+                   </a>
                         |
                      </c:forEach>
                      ...
@@ -86,7 +86,9 @@
 
                   <c:set var="length_of_postfix" value="${currentPage>(pagessize-6) ? currentPage-2 : (pagessize-2)}"/>
                   <c:forEach var="count" begin="${length_of_postfix}" end="${pagessize}">
-                     <%=PagingUtils.generatePageUrl(pageContext)%>
+                              <a href="javascript:setOffset('${count-1}');" class="${count == currentPage ? 'page_list_navtrue':'page_list_navfalse'}">
+                  <c:out value="${count}"/>
+                   </a>
                      |
                   </c:forEach>
                </c:when>
@@ -101,7 +103,7 @@
                <%=RandomStringUtils.randomAlphabetic(5)%>
             </c:set>
             <c:if test="${currentPage < pagessize}">
-               <a href="<%=PagingUtils.nextPage(pageContext)%>" class="page_list_navtrue">
+               <a href="javascript:setOffset('${currentPage}');" class="page_list_navtrue">
                   <fmt:message key="pages.next"/>&gt;&gt;
                </a>
             </c:if>
