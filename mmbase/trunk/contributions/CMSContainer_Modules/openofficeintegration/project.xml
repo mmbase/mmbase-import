@@ -11,5 +11,16 @@ See http://www.MMBase.org/license
     <artifactId>cmsc-modules-openofficeintegration</artifactId>
     <name>CMS OpenOffice Integration</name>
     <shortDescription>CMS OpenOffice Integration</shortDescription>
+	<build>
+		<resources>
+	    	<resource>
+	        	<directory>src/java</directory>
+          		<includes>
+	            	<include>**/*.xsl</include>
+	            </includes>
+	        </resource>
+	     </resources>
+	</build>
+
 </project>
 

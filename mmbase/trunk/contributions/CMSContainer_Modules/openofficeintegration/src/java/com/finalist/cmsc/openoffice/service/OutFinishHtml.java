@@ -33,7 +33,6 @@ public class OutFinishHtml {
     public void getFirstHtml() throws IOException, SAXException, TransformerException {
         FileOutputStream htmlStream = new FileOutputStream(this.middleFileLocation);
 
-
         StreamSource streamSource = new StreamSource(this.getClass().getResourceAsStream("transform.xsl"));
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer(streamSource);

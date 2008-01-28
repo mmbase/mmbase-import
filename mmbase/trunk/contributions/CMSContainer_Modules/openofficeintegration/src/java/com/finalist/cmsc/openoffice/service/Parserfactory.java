@@ -2,6 +2,7 @@ package com.finalist.cmsc.openoffice.service;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Attr;
@@ -27,7 +28,7 @@ public class Parserfactory {
         return NewNode;
     }
 
-    public void process(Document doc, Node node, HashMap hs) {
+    public void process(Document doc, Node node, HashMap hs,Map mapping) {
         HashMap styleMap = new HashMap();
         String nodeName = node.getNodeName();
         if (nodeName.equals("p")) {
@@ -52,8 +53,7 @@ public class Parserfactory {
                 if (style.equals("ol")) {
                     Element ol = doc.createElement("ol");
                     NodeList childs = node.getChildNodes();
-                    for (int i = 0; i < childs.getLength(); i++)
-                    {
+                    for (int i = 0; i < childs.getLength(); i++){
                         ol.appendChild(childs.item(i).cloneNode(true));
                     }
                     node.getParentNode().replaceChild(ol, node);
@@ -74,24 +74,30 @@ public class Parserfactory {
             table.setAttributeNode(cellspacing);
             table.setAttributeNode(cellpadding);
             NodeList childs = node.getChildNodes();
-            for (int i = 0; i < childs.getLength(); i++) 
-            {
+            for (int i = 0; i < childs.getLength(); i++) {
                 table.appendChild(childs.item(i).cloneNode(true));
             }
             node.getParentNode().replaceChild(table, node);
         }
+        else if(nodeName.equals("img")){
+			String oldMapping = node.getAttributes().getNamedItem("src").getNodeValue();
+			String newMapping = mapping.get(oldMapping).toString();
+			Element image = doc.createElement("img");
+			Attr src = doc.createAttribute("src");
+			src.setValue(newMapping);
+			image.setAttributeNode(src);
+			node.getParentNode().replaceChild(image, node);
+		}
     }
 
     public HashMap changePnode(Node node, HashMap hs) {
         String classStyle = null;
         HashMap styleHs = new HashMap();
-        if (node.getAttributes().getNamedItem("class") != null) 
-        {
+        if (node.getAttributes().getNamedItem("class") != null) {
             classStyle = node.getAttributes().getNamedItem("class").getNodeValue();
         }
         String styleValue = null;
-        if (hs.get(classStyle) != null) 
-        {
+        if (hs.get(classStyle) != null) {
             styleValue = hs.get(classStyle).toString();
             styleHs = getTagFormStyle(styleValue);
         }
@@ -102,13 +108,11 @@ public class Parserfactory {
         HashMap styleHs = new HashMap();
         String classStyle = "";
         Node styleNode = node.getAttributes().getNamedItem("class");
-        if (null != styleNode) 
-        {
+        if (null != styleNode) {
             classStyle = styleNode.getNodeValue();
         }
         String styleValue = null;
-        if (hs.get(classStyle) != null) 
-        {
+        if (hs.get(classStyle) != null) {
             styleValue = hs.get(classStyle).toString();
             styleHs = getTagFormStyle(styleValue);
         }
@@ -116,8 +120,7 @@ public class Parserfactory {
     }
     public HashMap getTagFormStyle(String style) {
         HashMap tag = new HashMap();
-        if (style != null) 
-        {
+        if (style != null) {
             String bold = String.valueOf(style.charAt(0));
             String italics = String.valueOf(style.charAt(1));
             String underline = String.valueOf(style.charAt(2));
