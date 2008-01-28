@@ -44,6 +44,7 @@ public class LinkTag extends CmscTag {
    private String window;
    private String urlfragment;
    private String portletdefinition;
+   private boolean restrictToCurrentPage;
 
    /**
     * Parameters added by nested param tag
@@ -126,6 +127,19 @@ public class LinkTag extends CmscTag {
    private void setPageAndWindowBasedOnPortletDefinition(String path, String portletdefinition) {
       List<Page> pages = SiteManagement.getListFromPath(path);
       int lastIndexOfPages = pages.size() - 1;
+
+      if (restrictToCurrentPage) {
+         if(lastIndexOfPages >= 0) {
+            Page currentPage = pages.get(lastIndexOfPages);
+            String portletPosition = getPortletPositionWithDefinition(currentPage, portletdefinition);
+            if (portletPosition != null) {
+               window = portletPosition;
+               page = currentPage;
+            }
+         }
+         return;
+      }
+
       for (int i = lastIndexOfPages; i >= 0; i--) {
          Page currentPage = pages.get(i);
          String portletPosition = getPortletPositionWithDefinition(currentPage, portletdefinition);
@@ -265,6 +279,10 @@ public class LinkTag extends CmscTag {
 
    public void setPortletdefinition(String portletdefinition) {
       this.portletdefinition = portletdefinition;
+   }
+   
+   public void setRestrictToCurrentPage(boolean restrictToCurrentPage) {
+      this.restrictToCurrentPage = restrictToCurrentPage;
    }
 
 
