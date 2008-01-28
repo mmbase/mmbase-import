@@ -8,7 +8,7 @@
   String imageName = "";
   String sAltText = "";
 </jsp:scriptlet>
-<mm:content type="application/xml">
+<mm:content type="application/xml" expires="${param.expires}">
 <mm:cloud rank="basic user" jspvar="cloud">
   <jsp:directive.include file="/shared/setImports.jsp" />
   <jsp:directive.include file="../mode.include.jsp" />
