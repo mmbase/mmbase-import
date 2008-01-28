@@ -13,12 +13,10 @@ import org.mmbase.datatypes.BasicDataType;
 import org.mmbase.datatypes.DataTypeCollector;
 import org.w3c.dom.Element;
 import org.mmbase.util.logging.*;
-
 /**
- * This exception get thrown if parsing of a datatype element (temporary) fails.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DependencyException.java,v 1.1 2008-01-28 16:27:38 michiel Exp $
+ * @version $Id: DependencyException.java,v 1.1.2.1 2008-01-28 18:43:28 michiel Exp $
  * @since MMBase-1.8.6
  **/
 public class DependencyException extends Exception {

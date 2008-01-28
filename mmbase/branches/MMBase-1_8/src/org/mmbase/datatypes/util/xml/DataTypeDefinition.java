@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55.2.2 2007-10-09 07:16:21 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55.2.3 2008-01-28 18:43:28 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -123,7 +123,7 @@ public class DataTypeDefinition {
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    DataTypeDefinition configure(Element dataTypeElement, BasicDataType requestBaseDataType) {
+    DataTypeDefinition configure(Element dataTypeElement, BasicDataType requestBaseDataType) throws DependencyException {
 
         String id = DataTypeXml.getAttribute(dataTypeElement, "id");
 
@@ -149,7 +149,8 @@ public class DataTypeDefinition {
             }
 
             if (definedBaseDataType == null) {
-                log.warn("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype.");
+                log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument().getDocumentURI() + ").");
+                throw new DependencyException(dataTypeElement, requestBaseDataType, this);
             } else {
                 requestBaseDataType = definedBaseDataType;
             }
