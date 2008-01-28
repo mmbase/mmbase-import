@@ -29,14 +29,14 @@ import org.apache.commons.logging.LogFactory;
 
 public class ChangeContentXml {
 
-    Log log = LogFactory.getLog(ChangeContentXml.class);
+	Log log = LogFactory.getLog(ChangeContentXml.class);
     Properties styles = new Properties();
     InputSource inputSource;
     HashMap hs = new HashMap();
 
     public ChangeContentXml() {
 
-        InputStream in = new BufferedInputStream(this.getClass().getResourceAsStream("style.properties"));
+    	InputStream in = new BufferedInputStream(this.getClass().getResourceAsStream("style.properties"));
 
         try {
             styles.load(in);
@@ -53,7 +53,7 @@ public class ChangeContentXml {
         Set contentKey = contentStyle.keySet();
         Iterator it = contentKey.iterator();
         while (it.hasNext()) {
-            newKey = it.next().toString();
+        	newKey = it.next().toString();
             vaule = contentStyle.get(newKey).toString();
             //bold
             if (vaule.contains("font-weight=\"bold\"")) {
@@ -111,8 +111,9 @@ public class ChangeContentXml {
         String Property = null;
         InputStream in = new BufferedInputStream(new FileInputStream(filePath));
         props.load(in);
-        if (props.getProperty(key) != null)
+        if (props.getProperty(key) != null){
             Property = props.getProperty(key);
+        }
         return Property;
     }
 

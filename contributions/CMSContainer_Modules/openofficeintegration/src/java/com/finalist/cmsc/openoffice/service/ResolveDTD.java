@@ -7,14 +7,12 @@ import java.io.StringReader;
 public class ResolveDTD implements EntityResolver {
     public InputSource resolveEntity (String publicId, String systemId)
     {
-        if (systemId.endsWith(".dtd"))
-        {
+        if (systemId.endsWith(".dtd")){
             StringReader stringInput =
                 new StringReader(" ");
             return new InputSource(stringInput);
         }
-        else
-        {
+        else{
             return null;// default behavior
         }
     }

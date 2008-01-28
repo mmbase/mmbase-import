@@ -1,4 +1,4 @@
-body
+﻿body
 {
 	background-color: #97b7c8;
 	margin: 0px 4px 0px 7px;
@@ -121,7 +121,7 @@ div.side_block_green div.header
 	height: 36px;
 	float: left;
 	clear: both;
-	width:100%;	
+	width:100%;
 }
 
 div.side_block div.header div.title, 
@@ -317,6 +317,7 @@ ul.shortcuts li.clear				{	background-image: url('../gfx/icons/clear.png');}
 ul.shortcuts li.visitor				{	background-image: url('../gfx/icons/visitor.png');}
 ul.shortcuts li.messageoftheday	{	background-image: url('../gfx/icons/messageoftheday.png');}
 ul.shortcuts li.admindashboard	{	background-image: url('../gfx/icons/admindashboard.png');}
+ul.shortcuts li.openoffice				{	background-image: url('../gfx/icons/down.png');}
 
 
 div.side_block div.body
@@ -329,9 +330,9 @@ div.side_block div.body
 }
 div.side_block_gray div.body,
 div.side_block_green div.body{
-	height: auto; 
-	float: none; 
-	clear:both; 
+	height: auto;
+	float: none;
+	clear:both;
 	padding: 10px;
 	display:inline;
 }

@@ -26,8 +26,7 @@ public class OODocStoreAction extends OpenOfficeIntegrationBaseAction {
         /*retrieve channel number*/
         String channelId = getChannelId(request);
         
-        if(StringUtils.isEmpty(channelId) && request.getParameter("root") != null) 
-        {
+        if(StringUtils.isEmpty(channelId) && request.getParameter("root") != null) {
         	channelId = OODocUploadUtil.SINGLE_FILE_PATH;
         	
         }
@@ -37,12 +36,13 @@ public class OODocStoreAction extends OpenOfficeIntegrationBaseAction {
         if (StringUtils.isEmpty(channelId)) {
             channelId = RepositoryUtil.getRoot(cloud);
         }
-        if(request.getParameter("root") != null) 
-        {
-        	channelId = request.getParameter("root"); 
-        	
+        
+        if(request.getParameter("root") != null) {
+        	channelId = request.getParameter("root");        	
         }
-        int nodenumber = store(cloud, odtStoreLocation, channelId,"");
+        String requestContext = request.getScheme()+"://"+request.getServerName()+":"
+        +request.getServerPort()+request.getContextPath()+"/mmbase/images/";
+        int nodenumber = store(cloud, odtStoreLocation, channelId,requestContext);
 
         String target = mapping.findForward(SUCCESS).getPath() + "?parentchannel=" + channelId + "&direction=down";
         if (-1 != nodenumber) {
@@ -69,17 +69,17 @@ public class OODocStoreAction extends OpenOfficeIntegrationBaseAction {
 
         File[] files = getAllOdtFiles(odtStoreLocation);
         for (File file : files) {
+        	
             OdtDocument doc = OdtFileTranster.process(file,requestContext);
-
+            
             Node node = manager.createNode();
             node.setValue("title", doc.getTitle());
             node.setValue("body", doc.getBody());
-
             node.commit();
             RepositoryUtil.addContentToChannel(node, channelId);
             // RepositoryUtil.addCreationChannel(node, channel);
             // RepositoryUtil.addDeletionRelation(node, channel);
-//			addRelToWorkFlow(service, node);
+            //			addRelToWorkFlow(service, node);
             firstNodeId = node.getNumber();
         }
 
