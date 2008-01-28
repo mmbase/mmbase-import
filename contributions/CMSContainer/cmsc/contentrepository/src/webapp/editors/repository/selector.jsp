@@ -85,8 +85,8 @@
                      <li class="trashbin">
                         <a href="<mm:url page="../recyclebin/index.jsp"/>" target="content">
                            <fmt:message key="selector.recyclebin" />
+                           (<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
                         </a>
-                        (<mm:countrelations type="contentelement" searchdir="destination" role="contentrel"/>)
                      </li>
                   </c:if>
                   
