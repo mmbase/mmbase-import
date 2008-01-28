@@ -52,36 +52,16 @@
       <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
-    <field>
+    <field name="imagelayout">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">Layout afbeeldingen</description>
         <description xml:lang="en">Images layout</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Layout afbeeldingen</guiname>
         <guiname xml:lang="en">Images layout</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>2</input>
-          <!-- position in list area of the editor -->
-          <list>2</list>
-          <!-- position in search area of the editor -->
-          <search>2</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>imagelayout</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="didactor_imagelayout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
