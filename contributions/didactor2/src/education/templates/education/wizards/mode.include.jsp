@@ -14,10 +14,12 @@
   <mm:param name="loginmethod">delegate</mm:param>
 </mm:treefile>
 
-<mm:node number="component.pdf" notfound="skip">
-  <mm:relatednodes type="providers" constraints="providers.number=$provider">
-    <mm:log>Provider ${provider}</mm:log>
-    <mm:treefile write="false" escapeamps="false" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" />
-  </mm:relatednodes>
-</mm:node>
+<mm:hasnode number="component.pdf">
+  <mm:node number="component.pdf">
+    <mm:relatednodes type="providers" constraints="providers.number=$provider">
+      <mm:log>Provider ${provider}</mm:log>
+      <mm:treefile write="false" escapeamps="false" page="/pdf/pdfchooser.jsp" objectlist="$includePath" referids="$referids" />
+    </mm:relatednodes>
+  </mm:node>
+</mm:hasnode>
 
