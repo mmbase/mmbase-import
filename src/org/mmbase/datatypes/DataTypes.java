@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.26 2007-11-25 18:26:23 nklasens Exp $
+ * @version $Id: DataTypes.java,v 1.27 2008-01-28 16:31:29 michiel Exp $
  */
 
 public class DataTypes {
@@ -78,6 +78,18 @@ public class DataTypes {
 
     }
 
+
+    private static void readFailedDependencies(List<DependencyException> failed) {
+        ListIterator<DependencyException> i = failed.listIterator();
+        while(i.hasNext()) {
+            DependencyException de = i.next();
+            if (de.retry()) {
+                log.debug("Resolved " + de.getId() + " after all");
+                i.remove();
+            }
+        }
+    }
+
     /**
      * Initialize the type handlers defaultly supported by the system, plus those configured in WEB-INF/config.
      */
@@ -85,6 +97,7 @@ public class DataTypes {
         List<URL> resources = loader.getResourceList(resource);
         if (log.isDebugEnabled()) log.debug("Using " + resources);
         ListIterator<URL> i = resources.listIterator();
+        List<DependencyException> failed = new ArrayList<DependencyException>();
         while (i.hasNext()) i.next();
         while (i.hasPrevious()) {
             try {
@@ -96,11 +109,20 @@ public class DataTypes {
                     DocumentBuilder db = DocumentReader.getDocumentBuilder(true, true, new XMLErrorHandler(), new XMLEntityResolver(true, DataTypeReader.class));
                     Document doc = db.parse(dataTypesSource);
                     Element dataTypesElement = doc.getDocumentElement(); // fieldtypedefinitons or datatypes element
-                    DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector);
+                    failed.addAll(DataTypeReader.readDataTypes(dataTypesElement, dataTypeCollector));
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
+        }
+        int previousFailedSize = -1;
+        while (failed.size() > 0 && failed.size() > previousFailedSize) {
+            previousFailedSize = failed.size();
+            log.debug(failed);
+            readFailedDependencies(failed);
+        }
+        if (failed.size() > 0) {
+            log.error("Failed " + failed);
         }
         if (log.isDebugEnabled()) log.debug(dataTypeCollector.toString());
     }

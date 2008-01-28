@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
+import org.mmbase.datatypes.util.xml.DependencyException;
 import org.mmbase.util.LocalizedString;
 import org.w3c.dom.Element;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.5 2008-01-25 09:37:10 michiel Exp $
+ * @version $Id: Setting.java,v 1.6 2008-01-28 16:28:22 michiel Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {
@@ -46,7 +47,13 @@ public class Setting<C> {
         parent = component;
         Element dataTypeElement = (Element) element.getElementsByTagName("datatype").item(0);
         BasicDataType base = dataTypeCollector.getDataType(dataTypeElement.getAttribute("base"), true);
-        dataType = DataTypeReader.readDataType(dataTypeElement, base, dataTypeCollector).dataType;
+        BasicDataType dt;
+        try {
+            dt = DataTypeReader.readDataType(dataTypeElement, base, dataTypeCollector).dataType;
+        } catch (DependencyException de) {
+            dt = de.fallback();
+        }
+        dataType = dt;
     }
 
     /**
