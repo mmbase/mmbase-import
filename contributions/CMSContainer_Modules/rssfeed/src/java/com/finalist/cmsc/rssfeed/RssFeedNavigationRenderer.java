@@ -11,6 +11,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.mmapps.commons.util.HttpUtil;
 import net.sf.mmapps.commons.util.XmlUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -21,14 +22,17 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeIterator;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeQuery;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.NavigationItemRenderer;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.rssfeed.beans.om.RssFeed;
-import com.finalist.util.version.VersionUtil;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
@@ -45,73 +49,45 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
          response.setHeader("Content-Type", "application/xml+rss; charset=UTF-8");
 
-         StringBuffer output = new StringBuffer();
-         output.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-         output.append("<rss version=\"2.0\">\n");
-         output.append("<channel>");
-         output.append("<title>");
-         output.append(xmlEscape(rssFeed.getTitle()));
-         output.append("</title>");
-         output.append("<link>");
-         output.append(xmlEscape(getServerDocRoot(request)));
-         output.append("</link>");
-         output.append("<language>");
-         output.append(xmlEscape(rssFeed.getLanguage()));
-         output.append("</language>");
-         output.append("<description>");
-         output.append(xmlEscape(rssFeed.getDescription()));
-         output.append("</description>");
-         output.append("<copyright>");
-         output.append(xmlEscape(rssFeed.getCopyright()));
-         output.append("</copyright>");
-         output.append("<managingEditor>");
-         output.append(xmlEscape(rssFeed.getEmail_managing_editor()));
-         output.append("</managingEditor>");
-         output.append("<webMaster>");
-         output.append(xmlEscape(rssFeed.getEmail_webmaster()));
-         output.append("</webMaster>");
-         output.append("<generator>");
-         output.append("CMS Container RssFeed module " + VersionUtil.getCmscVersion(servletConfig.getServletContext()));
-         output.append("</generator>");
-         output.append("<docs>");
-         output.append("http://blogs.law.harvard.edu/tech/rss");
-         output.append("</docs>");
+         Document doc = XmlUtil.createDocument();
+         Element rss = XmlUtil.createRoot(doc, "rss");
+         XmlUtil.createAttribute(rss, "version", "2.0");
+         Element channel = XmlUtil.createChild(rss, "channel");
+         XmlUtil.createChildText(channel, "title", rssFeed.getTitle());
+         XmlUtil.createChildText(channel, "link", getSiteUrl(request, rssFeed));
+         XmlUtil.createChildText(channel, "language", rssFeed.getLanguage());
+         XmlUtil.createChildText(channel, "description", rssFeed.getDescription());
+         XmlUtil.createChildText(channel, "copyright", rssFeed.getCopyright());
+         XmlUtil.createChildText(channel, "managingEditor", rssFeed.getEmail_managing_editor());
+         XmlUtil.createChildText(channel, "webMaster", rssFeed.getEmail_webmaster());
+         XmlUtil.createChildText(channel, "generator", "CMS Container RssFeed");
+         XmlUtil.createChildText(channel, "docs", "http://www.rssboard.org/rss-specification");
 
-         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-         Node node = cloud.getNode(rssFeed.getId());
-         
-         List<String> contentTypesList = new ArrayList<String>();
-         NodeList contentTypes = node.getRelatedNodes("typedef");
-         for (NodeIterator ni = contentTypes.nodeIterator(); ni.hasNext();) {
-            contentTypesList.add(ni.nextNode().getStringValue("name"));
-         }
+         List<String> contentTypesList = rssFeed.getContenttypes();
+         int contentChannelNumber = rssFeed.getContentChannel(); 
 
          boolean useLifecycle = true;
          int maxNumber = rssFeed.getMaximum();
          if (maxNumber <= 0) maxNumber = -1;
 
          Date lastChange = null;
-         NodeList contentChannels = node.getRelatedNodes("contentchannel");
-         StringBuffer imageOutput = null;
          boolean first = true;
 
-         if (contentChannels.size() > 0) {
-            Node contentChannel = contentChannels.getNode(0);
+         if (contentChannelNumber > 0) {
+            Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+            Node contentChannel = cloud.getNode(contentChannelNumber);
 
             NodeQuery query = RepositoryUtil.createLinkedContentQuery(contentChannel, contentTypesList,
                   ContentElementUtil.PUBLISHDATE_FIELD, "down", useLifecycle, null, 0, maxNumber, -1, -1, -1);
             NodeList results = query.getNodeManager().getList(query);
             for (NodeIterator ni = results.nodeIterator(); ni.hasNext();) {
                Node resultNode = ni.nextNode();
-               output.append("<item>");
-               output.append("<title>");
-               output.append(xmlEscape(resultNode.getStringValue("title")));
-               output.append("</title>");
+               Element itemE = XmlUtil.createChild(channel, "item");
+               XmlUtil.createChildText(itemE, "title", resultNode.getStringValue("title"));
 
                String uniqueUrl = makeAbsolute(getContentUrl(resultNode), request);
-               output.append("<link>");
-               output.append(xmlEscape(uniqueUrl));
-               output.append("</link>");
+               XmlUtil.createChildText(itemE, "link", uniqueUrl);
+               
                String description = null;
                if (resultNode.getNodeManager().hasField("intro")) {
                   description = resultNode.getStringValue("intro");
@@ -125,61 +101,40 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
                if (description != null) {
                   description = description.replaceAll("<.*?>", "");
                }
-               output.append("<description>");
-               output.append(xmlEscape(description));
-               output.append("</description>");
-               output.append("<pubDate>");
-               output.append(formatRFC822Date.format(resultNode.getDateValue("publishdate")));
-               output.append("</pubDate>");
-               output.append("<guid>");
-               output.append(xmlEscape(uniqueUrl));
-               output.append("</guid>");
+               XmlUtil.createChildText(itemE, "description", description);
+               XmlUtil.createChildText(itemE, "pubDate", formatRFC822Date.format(resultNode.getDateValue("publishdate")));
+               XmlUtil.createChildText(itemE, "guid", uniqueUrl);
 
-               NodeList images = resultNode.getRelatedNodes("images", "imagerel", null);
-               if (first && images.size() > 0) {
-                  Node image = images.getNode(0);
-                  List<String> arguments = new ArrayList<String>();
-                  arguments.add("160x100");
-                  int iCacheNodeNumber = image.getFunctionValue("cache", arguments).toInt();
-                  String imageUrl = image.getFunctionValue("servletpath", null).toString() + iCacheNodeNumber;
+               if (first) {
+                   NodeList images = resultNode.getRelatedNodes("images", "imagerel", null);
+                   if (images.size() > 0) {
+                      Node image = images.getNode(0);
+                      List<String> arguments = new ArrayList<String>();
+                      arguments.add("160x100");
+                      int iCacheNodeNumber = image.getFunctionValue("cache", arguments).toInt();
+                      String imageUrl = image.getFunctionValue("servletpath", null).toString() + iCacheNodeNumber;
 
-                  imageOutput = new StringBuffer();
-                  imageOutput.append("<image>");
-                  imageOutput.append("<url>");
-                  imageOutput.append(xmlEscape(imageUrl));
-                  imageOutput.append("</url>");
-                  imageOutput.append("<title/>");
-                  imageOutput.append("<link>");
-                  imageOutput.append(xmlEscape(uniqueUrl));
-                  imageOutput.append("</link>");
-                  imageOutput.append("</image>");
+                      Element imageE = XmlUtil.createChild(channel, "image");
+                      XmlUtil.createChildText(imageE, "url", imageUrl);
+                      XmlUtil.createChild(imageE, "title");
+                      XmlUtil.createChildText(imageE, "link", uniqueUrl);
+                   }
                }
-
-               output.append("</item>");
+               first = false;
 
                Date change = resultNode.getDateValue("lastmodifieddate");
                if (lastChange == null || change.getTime() > lastChange.getTime()) {
                   lastChange = change;
                }
-
-               first = false;
             }
          }
 
-         if (imageOutput != null) {
-            output.append(imageOutput);
-         }
-
          if (lastChange != null) {
-            output.append("<lastBuildDate>");
-            output.append(formatRFC822Date.format(lastChange));
-            output.append("</lastBuildDate>");
+             XmlUtil.createChildText(channel, "lastBuildDate", formatRFC822Date.format(lastChange));
          }
 
-         output.append("</channel>");
-         output.append("</rss>");
          try {
-            response.getOutputStream().write(output.toString().getBytes());
+            response.getWriter().write(XmlUtil.serializeDocument(doc));
          }
          catch (IOException e) {
             log.error(e);
@@ -191,35 +146,24 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
       }
    }
 
-
-   private String xmlEscape(String uniqueUrl) {
-      if (uniqueUrl == null) {
-         return "";
-      }
-      else {
-         return XmlUtil.xmlEscape(uniqueUrl);
-      }
+   private String getSiteUrl(HttpServletRequest request, RssFeed rss) {
+       if (ServerUtil.useServerName()) {
+           return getServerDocRoot(request);
+       }
+       else {
+           String site = SiteManagement.getSite(rss);
+           return getServerDocRoot(request) + site; 
+       }
    }
-
 
    private String getServerDocRoot(HttpServletRequest request) {
-      StringBuffer s = new StringBuffer();
-      s.append(request.getScheme()).append("://").append(request.getServerName());
-
-      int serverPort = request.getServerPort();
-      if (serverPort != 80 && serverPort != 443) {
-         s.append(':').append(Integer.toString(serverPort));
-      }
-      s.append('/');
-      return s.toString();
+       return HttpUtil.getWebappUri(request);
    }
-
 
    private String getContentUrl(Node node) {
       return ResourcesUtil.getServletPathWithAssociation("content", "/content/*", node.getStringValue("number"), node
             .getStringValue("title"));
    }
-
 
    private String makeAbsolute(String url, HttpServletRequest request) {
       String webapp = getServerDocRoot(request);

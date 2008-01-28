@@ -17,8 +17,7 @@ import java.util.Iterator;
 
 import javax.servlet.jsp.PageContext;
 
-import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.beans.om.Site;
+import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
 import com.finalist.cmsc.portalImpl.headerresource.LinkHeaderResource;
 import com.finalist.cmsc.portalImpl.headerresource.MetaHeaderResource;
@@ -51,13 +50,15 @@ public class HeaderContentTag extends CmscTag {
 
       String path = getPath();
       Site site = SiteManagement.getSiteFromPath(path);
-      Page page = SiteManagement.getPageFromPath(path);
+      NavigationItem item = SiteManagement.getNavigationItemFromPath(path);
       if (site != null) {
          String siteLanguage = site.getLanguage();
 
          ArrayList<HeaderResource> headerResources = new ArrayList<HeaderResource>();
 
-         headerResources.add(new MetaHeaderResource(false, "description", page.getDescription(), siteLanguage, null));
+         if (item != null) {
+             headerResources.add(new MetaHeaderResource(false, "description", item.getDescription(), siteLanguage, null));
+         }
          headerResources.add(new MetaHeaderResource(false, "author", site.getCreator(), siteLanguage, null));
          headerResources.add(new MetaHeaderResource(false, "copyright", site.getRights(), siteLanguage, null));
          headerResources.add(new MetaHeaderResource(false, "language", siteLanguage, null, "language"));
@@ -84,10 +85,12 @@ public class HeaderContentTag extends CmscTag {
             headerResources.add(new MetaHeaderResource(true, "format", "text/html"));
             headerResources.add(new MetaHeaderResource(true, "type", "Collection"));
             headerResources.add(new MetaHeaderResource(true, "language", siteLanguage));
-            headerResources.add(new MetaHeaderResource(true, "title", page.getTitle()));
+            if (item != null) {
+                headerResources.add(new MetaHeaderResource(true, "title", item.getTitle()));
+                headerResources.add(new MetaHeaderResource(true, "description", item.getDescription()));
+            }
             headerResources.add(new MetaHeaderResource(true, "creator", site.getCreator()));
             headerResources.add(new MetaHeaderResource(true, "publisher", site.getPublisher()));
-            headerResources.add(new MetaHeaderResource(true, "description", page.getDescription()));
             headerResources.add(new MetaHeaderResource(true, "rights", site.getRights()));
             headerResources.add(new MetaHeaderResource(true, "source", site.getSource()));
          }

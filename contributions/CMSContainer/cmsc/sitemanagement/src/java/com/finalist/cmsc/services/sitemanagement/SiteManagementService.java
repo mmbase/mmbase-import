@@ -42,12 +42,16 @@ public abstract class SiteManagementService extends Service {
 
    public abstract List<Site> getSites();
 
+   
+   public List<NavigationItem> getNavigationItems(NavigationItem item) {
+       return getNavigationItems(item, NavigationItem.class);
+   }
 
-   public abstract List<Page> getPages(Page page);
-
-
-   public abstract List<Page> getPages(Site site);
-
+   public List<Page> getPages(Page page) {
+      return getNavigationItems(page, Page.class);
+   }
+   
+   public abstract <E extends NavigationItem> List<E> getNavigationItems(NavigationItem parent, Class<E> childClazz);
 
    public abstract NavigationItem getNavigationItem(int id);
 
@@ -61,15 +65,22 @@ public abstract class SiteManagementService extends Service {
    public abstract String getPath(NavigationItem item, boolean includeRoot);
 
 
-   public abstract String getPath(int pageid, boolean includeRoot);
+   public abstract String getPath(int itemId, boolean includeRoot);
 
 
    public abstract List<Stylesheet> getStylesheetForPageByPath(String page, boolean override);
 
+   public List<NavigationItem> getListFromPath(String path) {
+       return getListFromPath(path, NavigationItem.class);
+   }
 
-   public abstract List<Page> getListFromPath(String path);
+   public List<Page> getPagesFromPath(String path) {
+       return getListFromPath(path, Page.class);
+   }
+   
+   public abstract <E extends NavigationItem> List<E>  getListFromPath(String path, Class<E> clazz);
 
-
+   
    public abstract List<View> getViews(String screenId, String layoutId);
 
 
@@ -110,4 +121,5 @@ public abstract class SiteManagementService extends Service {
 
 
    public abstract void resetSiteCache();
+
 }

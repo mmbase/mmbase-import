@@ -13,6 +13,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,14 +60,16 @@ public class SiteManagement {
       return cService.getSites();
    }
 
-
-   public static List<Page> getPages(Page page) {
-      return cService.getPages(page);
+   public static <E extends NavigationItem> List<E> getNavigationItems(NavigationItem parent, Class<E> childClazz) {
+       return cService.getNavigationItems(parent, childClazz);
+   }
+   
+   public static List<NavigationItem> getNavigationItems(NavigationItem item) {
+       return cService.getNavigationItems(item);
    }
 
-
-   public static List<Page> getPages(Site site) {
-      return cService.getPages(site);
+   public static List<Page> getPages(Page page) {
+       return cService.getPages(page);
    }
 
 
@@ -95,12 +98,15 @@ public class SiteManagement {
    }
 
 
-   public static String getPath(int pageid, boolean includeRoot) {
-      return cService.getPath(pageid, includeRoot);
+   public static String getPath(int itemId, boolean includeRoot) {
+      return cService.getPath(itemId, includeRoot);
    }
 
-
-   public static List<Page> getListFromPath(String path) {
+   public static List<Page> getPagesFromPath(String path) {
+       return cService.getPagesFromPath(path);
+   }
+   
+   public static List<NavigationItem> getListFromPath(String path) {
       return cService.getListFromPath(path);
    }
 
@@ -165,8 +171,8 @@ public class SiteManagement {
    }
 
 
-   public static String getSite(NavigationItem page) {
-      return cService.getSite(page);
+   public static String getSite(NavigationItem item) {
+      return cService.getSite(item);
    }
 
 
@@ -174,22 +180,51 @@ public class SiteManagement {
       cService.resetSiteCache();
    }
 
-   /**
-    * Here for downwards compatibility
-    * 
-    * @deprecated because we now have getNavigationItem
-    */
-   public static Page getPage(int number) {
-      return (Page) getNavigationItem(number);
-   }
+   public static NavigationItem convertToNavigationItem(Object dest) {
+        NavigationItem item = null;
+        if (dest instanceof NavigationItem) {
+            item = (NavigationItem) dest;
+        }
+        else
+            if (dest instanceof Integer) {
+                item = convertToNavigationItemInteger((Integer) dest);
+            }
+            else
+                if (dest instanceof String) {
+                    item = convertToNavigationItemString((String) dest);
+                }
+                else {
+                    throw new IllegalArgumentException(
+                            "only NavigationItem, integer or string allowed: " + dest.getClass());
+                }
+        return item;
+    }
 
+    /**
+     * Set destination node number to navigate to.
+     * 
+     * @param n the node number
+     */
+    public static NavigationItem convertToNavigationItemInteger(Integer n) {
+        return SiteManagement.getNavigationItem(n.intValue());
+    }
 
-   /**
-    * Here for downwards compatibility
-    * 
-    * @deprecated because we now have getNavigationItemFromPath
-    */
-   public static Page getPageFromPath(String path) {
-      return (Page) getNavigationItemFromPath(path);
-   }
+    /**
+     * Set the destination node path to navigate to.
+     * 
+     * @param s comma, slash or space separated list of node numbers and/or aliases
+     */
+    public static NavigationItem convertToNavigationItemString(String s) {
+        NavigationItem temp = null;
+        if (!StringUtils.isBlank(s)) {
+            if (StringUtils.isNumeric(s)) {
+                temp = SiteManagement.getNavigationItem(Integer.parseInt(s));
+            }
+            else {
+                temp = SiteManagement.getNavigationItemFromPath(s);
+            }
+        }
+        return temp;
+    }
+
 }

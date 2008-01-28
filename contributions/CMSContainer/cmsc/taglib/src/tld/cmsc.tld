@@ -78,12 +78,42 @@
     <!-- List Tags -->
     <!-- ################ -->
     <tag>
+        <description>Lists the available navigation items</description>
+        <name>list-navigations</name>
+        <tag-class>com.finalist.cmsc.taglib.ListNavigationItemsTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <description>JSP variable name to put the items in.</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Navigation item to start listing from</description>
+            <name>origin</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Mode is all, menu, hidden. Default is menu</description>
+            <name>mode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Type of child navigation items</description>
+            <name>type</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Lists the available pages</description>
         <name>list-pages</name>
         <tag-class>com.finalist.cmsc.taglib.ListPagesTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
-            <description>JSP variable name to put the page in.</description>
+            <description>JSP variable name to put the pages in.</description>
             <name>var</name>
             <required>true</required>
             <rtexprvalue>false</rtexprvalue>
@@ -1544,6 +1574,10 @@
     <tag-file>
         <name>attachment</name>
         <path>/META-INF/tags/attachment.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>feeds</name>
+        <path>/META-INF/tags/feeds.tag</path>
     </tag-file>
     <function>
         <description>function to ceil a int value</description>

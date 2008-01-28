@@ -134,7 +134,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
          PortletUtil.setPagePortlet(cloud, pageId, portletId, id);
          updatePage(pageId);
 
-         siteModelManager.clearPage(pageId);
+         siteModelManager.clearItem(pageId);
       }
       catch (Exception e) {
          log.error("something went wrong while adding portlet (" + portletId + ")", e);
@@ -155,7 +155,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
          PortletUtil.setPagePortlet(cloud, pageId, newNode, layoutId);
          updatePage(pageId);
 
-         siteModelManager.clearPage(pageId);
+         siteModelManager.clearItem(pageId);
       }
       catch (Exception e) {
          log.error("something went wrong while creating portlet (" + portletName + ")", e);
@@ -172,21 +172,23 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
          PortletUtil.deletePagePortlet(getUserCloud(), page.getId(), portlet.getId(), layoutId);
          updatePage(page.getId());
 
-         siteModelManager.clearPage(page.getId());
+         siteModelManager.clearItem(page.getId());
       }
    }
 
 
    @Override
-   public boolean mayEdit(Page page) {
+   public boolean mayEdit(NavigationItem item) {
       boolean result = false;
       try {
          Cloud cloud = getUserCloud();
-         UserRole role = NavigationUtil.getRole(cloud, page.getId());
-         result = role != null && SecurityUtil.isWriter(role);
+         if (cloud != null) {
+             UserRole role = NavigationUtil.getRole(cloud, item.getId());
+             result = role != null && SecurityUtil.isWriter(role);
+         }
       }
       catch (Exception e) {
-         log.error("something went wrong checking page edit (" + page.getId() + ")");
+         log.error("something went wrong checking page edit (" + item.getId() + ")");
          if (log.isDebugEnabled()) {
             log.debug(e);
          }
@@ -200,12 +202,14 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
       boolean result = false;
       try {
          Cloud cloud = getUserCloud();
-         PortletDefinition definition = siteModelManager.getPortletDefinition(portlet.getDefinition());
-         if (definition.isSingle()) {
-            result = cloud.getUser().getRank().getInt() >= definition.getRank();
-         }
-         else {
-            result = true;
+         if (cloud != null) {
+             PortletDefinition definition = siteModelManager.getPortletDefinition(portlet.getDefinition());
+             if (definition.isSingle()) {
+                result = cloud.getUser().getRank().getInt() >= definition.getRank();
+             }
+             else {
+                result = true;
+             }
          }
       }
       catch (Exception e) {

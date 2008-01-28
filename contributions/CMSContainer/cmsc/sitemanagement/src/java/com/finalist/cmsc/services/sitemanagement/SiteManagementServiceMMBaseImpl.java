@@ -156,27 +156,14 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
        return sites;
    }
 
-
-   @Override
-   public List<Page> getPages(Page page) {
-      if (page != null) {
-         List<Page> children = siteModelManager.getChildren(page);
-         removeInvalidNavigationsFromList(children);
-         return children;
-      }
-      return new ArrayList<Page>();
-   }
-
-
-   @Override
-   public List<Page> getPages(Site site) {
-      if (site != null) {
-         List<Page> children = siteModelManager.getChildren(site);
-         removeInvalidNavigationsFromList(children);
-         return children;
-      }
-      return new ArrayList<Page>();
-   }
+   public <E extends NavigationItem> List<E> getNavigationItems(NavigationItem parent, Class<E> childClazz) {
+       if (parent != null) {
+          List<E> children = siteModelManager.getChildren(parent, childClazz);
+          removeInvalidNavigationsFromList(children);
+          return children;
+       }
+       return new ArrayList<E>();
+    }
 
    @Override
    public NavigationItem getNavigationItem(int channel) {
@@ -190,7 +177,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
    @Override
    public List<Stylesheet> getStylesheetForPageByPath(String path, boolean override) {
-      List<Page> pagesToRoot = getListFromPath(path);// get all pages to root
+      List<Page> pagesToRoot = getPagesFromPath(path);// get all pages to root
       List<Stylesheet> stylesheets = new ArrayList<Stylesheet>();
       Page page = null;
 
@@ -241,19 +228,19 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
 
    @Override
-   public List<Page> getListFromPath(String path) {
-      List<Page> pagesForPath = siteModelManager.getPagesForPath(path);
+   public <E extends NavigationItem> List<E> getListFromPath(String path, Class<E> clazz) {
+      List<E> itemsForPath = siteModelManager.getItemsForPath(path, clazz);
       if (ServerUtil.isStaging()) {
-          for (Iterator<? extends NavigationItem> iterator = pagesForPath.iterator(); iterator.hasNext();) {
-             NavigationItem child = iterator.next();
+          for (Iterator<E> iterator = itemsForPath.iterator(); iterator.hasNext();) {
+             E child = iterator.next();
              if (!showNavigation(child)) {
-                pagesForPath.clear();
+                itemsForPath.clear();
                 break;
              }
           }
       }
 
-      return pagesForPath;
+      return itemsForPath;
    }
 
 
@@ -264,13 +251,13 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
 
    @Override
-   public String getPath(int pageId, boolean includeRoot) {
-      Page page = (Page) siteModelManager.getNavigationItem(pageId);
-      if (page == null) {
+   public String getPath(int itemId, boolean includeRoot) {
+      NavigationItem item = siteModelManager.getNavigationItem(itemId);
+      if (item == null) {
          return null;
       }
       else {
-         return siteModelManager.getPath(page, includeRoot);
+         return siteModelManager.getPath(item, includeRoot);
       }
    }
 
@@ -349,7 +336,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
 
    @Override
    public List<Integer> getPageImagesForPath(String name, String path) {
-      List<Page> pagesToRoot = getListFromPath(path);// get all pages to root
+      List<Page> pagesToRoot = getPagesFromPath(path);// get all pages to root
 
       for (int count = pagesToRoot.size() - 1; count >= 0; count--) {
          Page page = pagesToRoot.get(count);

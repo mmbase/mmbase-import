@@ -1,17 +1,22 @@
 package com.finalist.cmsc.rssfeed.beans.om;
 
+import java.util.*;
+
 import com.finalist.cmsc.beans.om.NavigationItem;
 
 @SuppressWarnings("serial")
 public class RssFeed extends NavigationItem {
 
-    int maximum;
-    int max_age_in_days;
-    String link;
-    String language;
-    String copyright;
-    String email_managing_editor;
-    String email_webmaster;
+    private int maximum;
+    private int max_age_in_days;
+    private String link;
+    private String language;
+    private String copyright;
+    private String email_managing_editor;
+    private String email_webmaster;
+
+    private List<String> contenttypes = new ArrayList<String>();
+    private int contentChannel = -1;
     
     public int getMaximum() {
         return maximum;
@@ -69,4 +74,20 @@ public class RssFeed extends NavigationItem {
         this.email_webmaster = email_webmaster;
     }
     
+    public List<String> getContenttypes() {
+        return Collections.unmodifiableList(contenttypes);
+     }
+
+     public void addContenttype(String contenttypes) {
+        this.contenttypes.add(contenttypes);
+     }
+
+    public int getContentChannel() {
+        return contentChannel;
+    }
+    
+    public void setContentChannel(int contentChannel) {
+        this.contentChannel = contentChannel;
+    }
+
 }

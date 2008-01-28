@@ -21,12 +21,12 @@ import com.finalist.cmsc.services.workflow.Workflow;
 public class WorkflowSiteManagementAdminService extends SiteManagementAdminServiceMMBaseImpl {
 
    @Override
-   public boolean mayEdit(Page page) {
-      if (super.mayEdit(page)) {
+   public boolean mayEdit(NavigationItem item) {
+      if (super.mayEdit(item)) {
          Cloud cloud = getUserCloud();
-         Node pageNode = cloud.getNode(page.getId());
-         UserRole userrole = NavigationUtil.getRole(pageNode.getCloud(), pageNode, false);
-         return Workflow.mayEdit(pageNode, userrole);
+         Node itemNode = cloud.getNode(item.getId());
+         UserRole userrole = NavigationUtil.getRole(itemNode.getCloud(), itemNode, false);
+         return Workflow.mayEdit(itemNode, userrole);
       }
       return false;
    }

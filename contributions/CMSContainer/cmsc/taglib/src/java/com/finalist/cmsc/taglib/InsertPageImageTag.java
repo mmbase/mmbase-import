@@ -50,8 +50,7 @@ public class InsertPageImageTag extends CmscTag {
       PageContext ctx = (PageContext) getJspContext();
       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
-        Integer image = null;
-
+      Integer image = null;
       if (StringUtils.isNotEmpty(name)) {
             List<Integer> images = SiteManagement.getPageImagesForPage(name, getPath());
             if (images != null && !images.isEmpty()) {
@@ -89,7 +88,7 @@ public class InsertPageImageTag extends CmscTag {
 
       List<Integer> images = getCurrentPageImages();
       if ((override && images.size() < 1) || directly) { // inherit from parent.
-         images.addAll(getImagiesOfParent());
+         images.addAll(getImagesOfParent());
       }
 
       if (images.size() > 0) {
@@ -104,8 +103,8 @@ public class InsertPageImageTag extends CmscTag {
    }
 
 
-   private List<Integer> getImagiesOfParent() {
-      List<Page> pages = SiteManagement.getListFromPath(getPath());
+   private List<Integer> getImagesOfParent() {
+      List<Page> pages = SiteManagement.getPagesFromPath(getPath());
 
       if (pages.size() > 2) {
 
@@ -121,7 +120,7 @@ public class InsertPageImageTag extends CmscTag {
 
 
    private List<Integer> getCurrentPageImages() {
-      List<Page> pages = SiteManagement.getListFromPath(getPath());
+      List<Page> pages = SiteManagement.getPagesFromPath(getPath());
       return (pages.get(pages.size() - 1)).getImages();
    }
 
