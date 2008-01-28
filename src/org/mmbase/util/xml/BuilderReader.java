@@ -18,6 +18,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
+import org.mmbase.datatypes.util.xml.DependencyException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
@@ -36,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.7 2007-07-27 14:35:23 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.8 2008-01-28 18:44:18 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -160,20 +161,22 @@ public class BuilderReader extends DocumentReader {
             inheritanceResolved = true;
         } else {
             inheritanceResolved = false;
-            if (mmbase != null) {
+            if (buildername.equals(getElementAttributeValue("builder", "name"))) {
+
+            } else if (mmbase != null) {
                 parentBuilder = mmbase.getBuilder(buildername);
-                inheritanceResolved = (parentBuilder != null);
-                if (inheritanceResolved) { // fill inputPositions, searchPositions
-                    Iterator fields = parentBuilder.getFields(NodeManager.ORDER_EDIT).iterator();
-                    while (fields.hasNext()) {
-                        CoreField def = (CoreField) fields.next();
-                        inputPositions.add(new Integer(def.getEditPosition()));
-                    }
-                    fields = parentBuilder.getFields(NodeManager.ORDER_SEARCH).iterator();
-                    while (fields.hasNext()) {
-                        CoreField def = (CoreField) fields.next();
-                        searchPositions.add(new Integer(def.getSearchPosition()));
-                    }
+            }
+            inheritanceResolved = (parentBuilder != null);
+            if (inheritanceResolved) { // fill inputPositions, searchPositions
+                Iterator fields = parentBuilder.getFields(NodeManager.ORDER_EDIT).iterator();
+                while (fields.hasNext()) {
+                    CoreField def = (CoreField) fields.next();
+                    inputPositions.add(new Integer(def.getEditPosition()));
+                }
+                fields = parentBuilder.getFields(NodeManager.ORDER_SEARCH).iterator();
+                while (fields.hasNext()) {
+                    CoreField def = (CoreField) fields.next();
+                    searchPositions.add(new Integer(def.getSearchPosition()));
                 }
             }
         }
@@ -408,7 +411,7 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        
+
         for(Iterator indices = getChildElements("builder.indexlist","index"); indices.hasNext(); ) {
             Element indexElement   = (Element)indices.next();
             String indexName = indexElement.getAttribute("name");
@@ -499,6 +502,8 @@ public class BuilderReader extends DocumentReader {
 
                 log.info("Found new function " + function + " for builder " + buil.getTableName());
                 results.add(function);
+            } catch (ClassNotFoundException cnfe) {
+                log.warn("No such class "  + cnfe.getMessage());
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
@@ -704,7 +709,11 @@ public class BuilderReader extends DocumentReader {
                     requestedBaseDataType = baseDataType;
                 }
             }
-            dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            try {
+                dataType = (BasicDataType) DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            } catch (DependencyException de) {
+                dataType = de.fallback();
+            }
             if (log.isDebugEnabled()) log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
 
@@ -900,7 +909,7 @@ public class BuilderReader extends DocumentReader {
      * @return the plural names in a Hashtable, accessible by language
      */
     public Hashtable getPluralNames() {
-        Hashtable results=new Hashtable();
+        Hashtable results = new Hashtable();
         for (Iterator iter = getChildElements("builder.names","plural"); iter.hasNext(); ) {
             Element tmp = (Element)iter.next();
             String lang = getElementAttributeValue(tmp,"xml:lang");
@@ -915,7 +924,7 @@ public class BuilderReader extends DocumentReader {
      * @return the singular names in a Hashtable, accessible by language
      */
     public Hashtable getSingularNames() {
-        Hashtable results=new Hashtable();
+        Hashtable results = new Hashtable();
         for (Iterator iter = getChildElements("builder.names","singular"); iter.hasNext(); ) {
             Element tmp = (Element)iter.next();
             String lang = getElementAttributeValue(tmp,"xml:lang");
