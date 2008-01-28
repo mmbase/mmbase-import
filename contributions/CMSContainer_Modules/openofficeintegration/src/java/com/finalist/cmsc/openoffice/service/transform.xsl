@@ -48,7 +48,6 @@
             <xsl:attribute name="class">
       <xsl:value-of select="translate(@text:style-name,'.','_')"/>
     </xsl:attribute>
-            <a name="{generate-id()}"/>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
@@ -93,19 +92,15 @@
         </a>
     </xsl:template>
     <xsl:template match="text:bookmark-start|text:bookmark">
-        <a name="{@text:name}">
-            <span style="font-size: 0px">
-                <xsl:text> </xsl:text>
-            </span>
-        </a>
+        <span style="font-size: 0px">
+            <xsl:text> </xsl:text>
+        </span>
     </xsl:template>
     <xsl:template match="text:note">
         <xsl:variable name="footnote-id" select="text:note-citation"/>
-        <a href="#footnote-{$footnote-id}">
-            <sup>
-                <xsl:value-of select="$footnote-id"/>
-            </sup>
-        </a>
+        <sup>
+            <xsl:value-of select="$footnote-id"/>
+        </sup>
     </xsl:template>
     <xsl:template match="text:note-body"/>
     <xsl:template name="add-footnote-bodies">
@@ -114,10 +109,9 @@
     <xsl:template match="text:note" mode="add-footnote-bodies">
         <xsl:variable name="footnote-id" select="text:note-citation"/>
         <p>
-            <a name="footnote-{$footnote-id}">
-                <sup>
-                    <xsl:value-of select="$footnote-id"/>
-                </sup>:</a>
+            <sup>
+                <xsl:value-of select="$footnote-id"/>
+            </sup>:
         </p>
         <xsl:apply-templates select="text:note-body/*"/>
     </xsl:template>
@@ -413,12 +407,12 @@
         <!-- emit appropriate list type -->
         <xsl:choose>
             <xsl:when test="local-name($node)='list-level-style-number'">
-                <ol class="{concat($listClass,'_',$level)}">
+                <ol class="{$listClass}">
                     <xsl:apply-templates/>
                 </ol>
             </xsl:when>
             <xsl:otherwise>
-                <ul class="{concat($listClass,'_',$level)}">
+                <ul class="{$listClass}">
                     <xsl:apply-templates/>
                 </ul>
             </xsl:otherwise>
@@ -545,9 +539,7 @@
         <xsl:otherwise>1</xsl:otherwise>
       </xsl:choose>
     </xsl:attribute>
-            <a href="#{generate-id()}">
-                <xsl:value-of select="."/>
-            </a>
+            <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
 </xsl:stylesheet>

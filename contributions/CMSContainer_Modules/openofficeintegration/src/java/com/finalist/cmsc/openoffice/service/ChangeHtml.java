@@ -44,15 +44,14 @@ public class ChangeHtml {
 			  for(int i=0;i<books.getLength();i++)
 			  {
 				  Node childnode = books.item(i);
-				  getChildNode(doc,childnode,hs);
+				  getChildNode(doc,childnode,hs,mapping);
 			  }
 			  	FileOutputStream fos = new FileOutputStream(xmlUrl+".html");
 			    OutputStreamWriter outwriter = new OutputStreamWriter(fos);
 			    Source sourcea = new DOMSource(doc);			    
 			    Result result = new StreamResult(outwriter);
-			    Transformer xformer = TransformerFactory.newInstance()
-			    .newTransformer();
-			    xformer.setOutputProperty(OutputKeys.ENCODING, "gb2312");
+			    Transformer xformer = TransformerFactory.newInstance().newTransformer();
+			    xformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			    xformer.transform(sourcea, result);
 			    outwriter.close();
 			    fos.close();           
@@ -67,16 +66,16 @@ public class ChangeHtml {
 			e.printStackTrace();
 		}		
 	}
-	public void getChildNode(Document doc,Node node,HashMap hs)
+	public void getChildNode(Document doc,Node node,HashMap hs,Map mapping)
 	{
-		pf.process(doc,node, hs);
+		pf.process(doc,node, hs,mapping);
 		if(node.hasChildNodes())
 		{
 			NodeList childNodes = node.getChildNodes();
 			 for(int i=0;i<childNodes.getLength();i++)
 			  {
 				  Node childnode = childNodes.item(i);
-				  getChildNode(doc,childnode,hs);
+				  getChildNode(doc,childnode,hs,mapping);
 			  }
 		}
 	}

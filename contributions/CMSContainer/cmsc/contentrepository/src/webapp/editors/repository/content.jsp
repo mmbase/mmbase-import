@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html;charset=utf-8" %>
+﻿<%@ page language="java" contentType="text/html;charset=utf-8" %>
 <%@ include file="globals.jsp" %>
 <%@ page import="com.finalist.cmsc.repository.RepositoryUtil" %>
 <%@ page import="com.finalist.cmsc.security.*" %>
@@ -151,7 +151,7 @@
                                                                          alt="<fmt:message key="content.preview.title" />"
                                                                          title="<fmt:message key="content.preview.title" />"/></a>
     <a href="javascript:callEditWizard('<mm:field name="number" />');"
-       title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16"
+       title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.gif" width="16" height="16"
                                                        title="<fmt:message key="content.edit" />"
                                                        alt="<fmt:message key="content.edit" />"/></a>
     <% if (role != null && SecurityUtil.isWriter(role)) { %>

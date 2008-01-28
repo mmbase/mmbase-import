@@ -26,15 +26,12 @@ public class OdtFileTranster {
 
         String middelFileLocation = WORKINGFOLDER + File.separator + file.getName() + ".xml";
 
-
         ChangeContentXml ccx = new ChangeContentXml();
         ChangeHtml ch = new ChangeHtml();
         OutFinishHtml ofh = new OutFinishHtml(file.getPath(), middelFileLocation);
 
-
         HashMap styleMap = ccx.getStyleMap(ccx.getContentStyle(file.getPath()));
         StringBuffer buffer = new StringBuffer();
-
 
         try {
             File workingfolder = new File(WORKINGFOLDER);
@@ -45,11 +42,14 @@ public class OdtFileTranster {
             ofh.getFirstHtml();
             Map rowAndSavedImageMap = saveAllImageToCMSC(new FileInputStream(file), requestContext);
             ch.change(middelFileLocation, styleMap, rowAndSavedImageMap);
+            FileInputStream fileInputStream = new FileInputStream(middelFileLocation + ".html");
+            InputStreamReader inputStramReader = new InputStreamReader(fileInputStream, "utf-8");
 
-            BufferedReader in = new BufferedReader(new FileReader(middelFileLocation + ".html"));
+            BufferedReader in = new BufferedReader(inputStramReader);
             String str;
             while ((str = in.readLine()) != null) {
-                buffer.append(str);
+            	String newStr = str.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>", "");
+            	buffer.append(newStr);			  
             }
             in.close();
         } catch (IOException e) {
@@ -86,7 +86,6 @@ public class OdtFileTranster {
         }
 
         zis.close();
-
         return rawImgeToSavedImgeMaping;
     }
 
