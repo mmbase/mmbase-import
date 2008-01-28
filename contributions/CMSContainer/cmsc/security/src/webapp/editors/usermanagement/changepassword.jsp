@@ -1,6 +1,6 @@
-<%@page language="java" contentType="text/html;charset=utf-8" %>
-<%@include file="globals.jsp"  %>
-<mm:content type="text/html" encoding="UTF-8" expires="0">
+<%@page language="java" contentType="text/html;charset=utf-8"
+%><%@include file="globals.jsp"
+%><mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="changepassword.title" />
@@ -34,14 +34,14 @@
       <tr>
          <td class="fieldname" nowrap width="150"><fmt:message key="changepassword.current" /></td>
 	      <td class="fieldname">
-	         <html:password property="password" size='15' maxlength='15'/></font>
-	         <span class="notvalid"><html:errors bundle="SECURITY" property="password"/></span>
+	         <html:password property="password1" size='15' maxlength='15'/>
+	         <span class="notvalid"><html:errors bundle="SECURITY" property="password1"/></span>
 	      </td>
 	   </tr>
 	   <tr>
          <td class="fieldname" nowrap><fmt:message key="changepassword.new" /></td>
 	      <td class="fieldname">
-	         <html:password property="newpassword" size='15' maxlength='15'/></font>
+	         <html:password property="newpassword" size='15' maxlength='15'/>
 	         <span class="notvalid"><html:errors bundle="SECURITY" property="newpassword"/></span>
 	      </td>
 	   </tr>
