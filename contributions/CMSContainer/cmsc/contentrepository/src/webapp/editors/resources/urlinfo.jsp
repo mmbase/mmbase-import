@@ -69,14 +69,24 @@
 			           	<br/>
 			            <b><fmt:message key="urlinfo.related" /></b>:<br/>
 			            <ul>
-			            <mm:relatednodes type="contentelement"  orderby="contentelement.title" distinct="true">
-			            	<li>
-								<mm:field name="number" id="thenumber" write="false"/>
-			            		<a href="" onclick="modifycontent(${thenumber})">
-								<mm:field name="title"/></a><br/>
-			            		<fmt:message key="urlinfo.otype" />: <mm:nodeinfo type="guitype"/><br/>
-			            		<fmt:message key="urlinfo.number" />: ${thenumber}
-			            	</li>
+                        <% HashSet hs = new HashSet(); %>
+                        <mm:relatednodes type="contentelement" orderby="contentelement.title">
+                            <mm:field name="number" jspvar="thenumber" write="false"/>
+                            <c:set var="nodenumber">${thenumber}</c:set>
+                            <%
+                                String nodeNumber = (String) pageContext.getAttribute("nodenumber");
+                                if (!hs.contains(nodeNumber)) {
+                            %>
+                            <li>
+                                <a href="" onclick="modifycontent(${thenumber})">
+                                    <mm:field name="title"/></a><br/>
+                                <fmt:message key="urlinfo.otype"/>: <mm:nodeinfo type="guitype"/><br/>
+                                <fmt:message key="urlinfo.number"/>: ${thenumber}
+                            </li>
+                            <%
+                                    hs.add(nodeNumber);
+                                }
+                            %>
 			            </mm:relatednodes>
 			           	</ul>
 					</div>
