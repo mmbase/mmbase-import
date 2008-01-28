@@ -19,6 +19,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.core.util.Fields;
 import org.mmbase.datatypes.*;
 import org.mmbase.datatypes.util.xml.DataTypeReader;
+import org.mmbase.datatypes.util.xml.DependencyException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.storage.util.Index;
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.91 2007-12-05 16:30:54 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.92 2008-01-28 16:28:00 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -498,14 +499,17 @@ public class BuilderReader extends DocumentReader {
                             }
                         };
                 }
-                Function existing = results.get(functionName);
+
+                String key = function.getName();
+                Function existing = results.get(key);
+
                 if (existing != null) {
-                    log.info("Function " + functionName + " already defined, will combine it");
+                    log.info("Function " + key + " already defined, will combine it");
                     CombinedFunction cf;
                     if (existing instanceof CombinedFunction) {
                         cf = (CombinedFunction) existing;
                     } else {
-                        cf = new CombinedFunction(functionName);
+                        cf = new CombinedFunction(key);
                         cf.addFunction(existing);
                     }
                     cf.addFunction(function);
@@ -515,8 +519,10 @@ public class BuilderReader extends DocumentReader {
                 NodeFunction nf = NodeFunction.wrap(function);
                 if (nf != null) function = nf;
 
-                results.put(functionName, function);
+                results.put(key, function);
                 log.debug("functions are now: " + results);
+            } catch (ClassNotFoundException cnfe) {
+                log.warn(cnfe.getMessage());
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }
@@ -727,7 +733,11 @@ public class BuilderReader extends DocumentReader {
                     requestedBaseDataType = baseDataType;
                 }
             }
-            dataType = DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            try {
+                dataType = DataTypeReader.readDataType(dataTypeElement, requestedBaseDataType, collector).dataType;
+            } catch (DependencyException de) {
+                dataType = de.fallback();
+            }
             if (log.isDebugEnabled()) log.debug("Found datatype " + dataType + " for field " + fieldName);
         }
 
