@@ -13,7 +13,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
-import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
@@ -159,15 +159,9 @@ public abstract class BasicURLTag extends TagSupport {
 
    public String getLink() {
       String link = "";
-      Page pageObject;
-      try {
-         pageObject = SiteManagement.getPage(Integer.parseInt(page));
-      }
-      catch (NumberFormatException e) {
-         pageObject = SiteManagement.getPageFromPath(page);
-      }
-      if (pageObject != null) {
-         link = SiteManagement.getPath(pageObject, !ServerUtil.useServerName());
+      NavigationItem item = SiteManagement.convertToNavigationItem(page);
+      if (item != null) {
+         link = SiteManagement.getPath(item, !ServerUtil.useServerName());
       }
       else {
          link = page;

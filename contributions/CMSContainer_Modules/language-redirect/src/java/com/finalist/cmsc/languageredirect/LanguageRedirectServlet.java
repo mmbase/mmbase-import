@@ -33,6 +33,7 @@ import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.FieldValueConstraint;
 
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.*;
@@ -95,12 +96,12 @@ public class LanguageRedirectServlet extends BridgeServlet {
 
 
    private String getRedirectUrl(HttpServletRequest request, String path) {
-      Page page = SiteManagement.getPageFromPath(path);
-      String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
+      NavigationItem item = SiteManagement.getNavigationItemFromPath(path);
+      String link = SiteManagement.getPath(item, !ServerUtil.useServerName());
 
       String host = null;
       if (ServerUtil.useServerName()) {
-         host = SiteManagement.getSite(page);
+         host = SiteManagement.getSite(item);
       }
       PortalURL u = new PortalURL(host, request, link);
       return u.toString();

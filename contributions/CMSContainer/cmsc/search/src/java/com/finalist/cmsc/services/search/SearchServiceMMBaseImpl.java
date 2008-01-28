@@ -273,8 +273,9 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
 
    private PageInfo getPageInfo(Node pageQueryNode, boolean clicktopage) {
-      Page page = SiteManagement.getPage(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
-      if (page != null) {
+      NavigationItem item = SiteManagement.getNavigationItem(pageQueryNode.getIntValue(PagesUtil.PAGE + ".number"));
+      if (item != null && Page.class.isInstance(item)) {
+         Page page = Page.class.cast(item);
          String portletWindowName = pageQueryNode.getStringValue(PortletUtil.PORTLETREL + "."
                + PortletUtil.LAYOUTID_FIELD);
          String parameterName = pageQueryNode.getStringValue(PortletUtil.NODEPARAMETER + "." + PortletUtil.KEY_FIELD);
@@ -289,8 +290,11 @@ public class SearchServiceMMBaseImpl extends SearchService {
                if (portlet != null) {
                   String pageNumber = portlet.getParameterValue(PAGE);
                   if (pageNumber != null) {
-                     page = SiteManagement.getPage(Integer.valueOf(pageNumber));
-                     portletWindowName = portlet.getParameterValue(WINDOW);
+                      NavigationItem clickItem = SiteManagement.getNavigationItem(Integer.valueOf(pageNumber)); 
+                      if (clickItem != null && Page.class.isInstance(clickItem)) {
+                          page = Page.class.cast(clickItem);
+                          portletWindowName = portlet.getParameterValue(WINDOW);
+                      }
                   }
                }
             }
@@ -418,10 +422,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
       if (page != null) {
          Cloud cloud = page.getCloud();
 
-         Page pageObject = SiteManagement.getPage(page.getNumber());
-         if (pageObject == null) {
-            return result;
+         NavigationItem item = SiteManagement.getNavigationItem(page.getNumber()); 
+         if (item == null || !Page.class.isInstance(item)) {
+             return result;
          }
+         
+         Page pageObject = Page.class.cast(item);
          Collection<Integer> portlets = pageObject.getPortlets();
          for (Integer portletId : portlets) {
             Portlet portlet = SiteManagement.getPortlet(portletId);
@@ -499,7 +505,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
 
    @Override
-   public String getPortletWindow(int pageId, String elementNumber, String serverName) {
+   public String getPortletWindow(int pageId, String elementNumber) {
       Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
       Node content = cloud.getNode(elementNumber);
       if (ContentElementUtil.isContentElement(content)) {
@@ -509,7 +515,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
          }
 
          if (!infos.isEmpty()) {
-            Collections.sort(infos, new PageInfoComparator(serverName));
+            Collections.sort(infos, new PageInfoComparator());
             for (PageInfo pageInfo : infos) {
                if (pageId == pageInfo.getPageNumber()) {
                   return pageInfo.getWindowName();

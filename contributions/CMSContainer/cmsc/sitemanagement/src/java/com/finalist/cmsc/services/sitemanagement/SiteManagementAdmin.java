@@ -57,8 +57,8 @@ public class SiteManagementAdmin {
    }
 
 
-   public static boolean mayEdit(Page page) {
-      return cService.mayEdit(page);
+   public static boolean mayEdit(NavigationItem item) {
+      return cService.mayEdit(item);
    }
 
 

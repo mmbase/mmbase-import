@@ -1,5 +1,7 @@
 package com.finalist.cmsc.rssfeed;
 
+import java.util.List;
+
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
 import org.mmbase.bridge.Cloud;
@@ -39,9 +41,18 @@ public class RssFeedNavigationItemManager implements NavigationItemManager {
             return null;
         }
         
-        RssFeed rssFeed = null;
-        rssFeed = (RssFeed) MMBaseNodeMapper.copyNode(node, RssFeed.class);
+        RssFeed rssFeed = MMBaseNodeMapper.copyNode(node, RssFeed.class);
 
+        List<String> types = RssFeedUtil.getAllowedTypes(node);
+        for (String type : types) {
+            rssFeed.addContenttype(type);
+        }
+
+        Node contentChannel = RssFeedUtil.getContentChannel(node);
+        if (contentChannel != null) {
+            rssFeed.setContentChannel(contentChannel.getNumber());
+        }
+        
         return rssFeed;
 	}
 

@@ -13,6 +13,7 @@ import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
@@ -70,15 +71,15 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       String duplicateHandling = preferences.getValue(DUPLICATE_HANDLING_TYPE, null);
 
       String currentPath = getUrlPath(request);
-      Page result = SiteManagement.getPageFromPath(currentPath);
+      NavigationItem result = SiteManagement.getNavigationItemFromPath(currentPath);
 
       if (result != null) {
-         int pageNumber = result.getId();
+         int itemNumber = result.getId();
 
-         if (NewsletterUtil.isNewsletterOrPublication(pageNumber)) {
+         if (NewsletterUtil.isNewsletterOrPublication(itemNumber)) {
             String displayType = determineDisplayType(request);
 
-            int defaultTheme = NewsletterUtil.getDefaultTheme(pageNumber);
+            int defaultTheme = NewsletterUtil.getDefaultTheme(itemNumber);
             List<Integer> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
             if (defaultArticles != null && defaultArticles.size() > 0) {
                request.setAttribute(KEY_DEFAULTTHEME, defaultTheme);
@@ -86,12 +87,12 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             }
 
             List<Integer> additionalThemes = null;
-            List<Integer> availableThemes = NewsletterUtil.getAllThemes(pageNumber);
+            List<Integer> availableThemes = NewsletterUtil.getAllThemes(itemNumber);
             if (availableThemes != null && availableThemes.size() > 0) {
                if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
                   String userName = getUserName(session);
                   if (userName != null) {
-                     additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, pageNumber);
+                     additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, itemNumber);
                   }
                } else {
                   additionalThemes = availableThemes;

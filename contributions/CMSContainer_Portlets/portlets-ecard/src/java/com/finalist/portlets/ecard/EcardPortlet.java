@@ -34,7 +34,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 
-import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
@@ -203,8 +203,8 @@ public class EcardPortlet extends ContentChannelPortlet {
       String link = SiteManagement.getPath(pageid, !ServerUtil.useServerName());
       String host = null;
       if (ServerUtil.useServerName()) {
-         Page page = SiteManagement.getPage(pageid);
-         host = SiteManagement.getSite(page);
+         NavigationItem item = SiteManagement.getNavigationItem(pageid);
+         host = SiteManagement.getSite(item);
       }
       else {
          host = servletRequest.getServerName();

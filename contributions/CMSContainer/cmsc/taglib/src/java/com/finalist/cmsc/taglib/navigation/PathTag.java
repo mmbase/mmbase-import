@@ -12,29 +12,28 @@ package com.finalist.cmsc.taglib.navigation;
 import java.util.Iterator;
 import java.util.List;
 
-import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.AbstractListTag;
 
 /**
- * path of pages valid attributes for this tag are:
+ * path of items valid attributes for this tag are:
  * <ul>
  * <li>mode := <strong>menu</strong>|hidden|all</li>
  * <li>includeSite := <strong>true</strong>|false</li>
- * <li>page := 1..n</li>
+ * <li>item := 1..n</li>
  * </ul>
  * Examples: <cmsc:path var="listPath" /> <cmsc:path var="listPath" mode="all"
  * includeSite="false" page="${myPage}"/>
  */
-public class PathTag extends AbstractListTag<Page> {
+public class PathTag extends AbstractListTag<NavigationItem> {
 
-   private static final String MODE_ALL = "all";
    private static final String MODE_HIDDEN = "hidden";
    private static final String MODE_MENU = "menu";
 
    private String mode = MODE_MENU;
    private boolean includeSite = true;
-   private int page;
+   private int itemNumber;
 
 
    public boolean isIncludeSite() {
@@ -76,7 +75,7 @@ public class PathTag extends AbstractListTag<Page> {
 
 
    public int getPage() {
-      return page;
+      return itemNumber;
    }
 
 
@@ -89,36 +88,36 @@ public class PathTag extends AbstractListTag<Page> {
     *           current page
     */
    public void setPage(int page) {
-      this.page = page;
+      this.itemNumber = page;
    }
 
 
    @Override
-   protected List<Page> getList() {
+   protected List<NavigationItem> getList() {
       String path;
 
-      if (page > 0) {
-         // get path for a specific page
-         path = getPathForPage();
+      if (itemNumber > 0) {
+         // get path for a specific item
+         path = getPathForItem();
       }
       else {
-         // get path for current page
+         // get path for current item
          path = getPath();
       }
       if (path == null) {
          return null;
       }
 
-      List<Page> pages = SiteManagement.getListFromPath(path);
-      if (pages == null) {
-         return pages;
+      List<NavigationItem> items = SiteManagement.getListFromPath(path);
+      if (items == null) {
+         return items;
       }
 
       if (MODE_MENU.equalsIgnoreCase(mode)) {
          boolean hideChildren = false;
-         for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
-            Page page = iter.next();
-            if (hideChildren || !page.isInmenu()) {
+         for (Iterator<NavigationItem> iter = items.iterator(); iter.hasNext();) {
+            NavigationItem item = iter.next();
+            if (hideChildren || !item.isInmenu()) {
                iter.remove();
                hideChildren = true;
             }
@@ -126,9 +125,9 @@ public class PathTag extends AbstractListTag<Page> {
       }
       else if (MODE_HIDDEN.equalsIgnoreCase(mode)) {
          boolean showChildren = false;
-         for (Iterator<? extends Page> iter = pages.iterator(); iter.hasNext();) {
-            Page page = iter.next();
-            if (showChildren || page.isInmenu()) {
+         for (Iterator<NavigationItem> iter = items.iterator(); iter.hasNext();) {
+            NavigationItem item = iter.next();
+            if (showChildren || item.isInmenu()) {
                iter.remove();
                showChildren = true;
             }
@@ -136,20 +135,20 @@ public class PathTag extends AbstractListTag<Page> {
       }
 
       // remove the first entry if the site itself should not be shown
-      if (!includeSite && pages.size() > 0) {
-         pages.remove(0);
+      if (!includeSite && items.size() > 0) {
+         items.remove(0);
       }
 
-      return pages;
+      return items;
    }
 
 
-   private String getPathForPage() {
+   private String getPathForItem() {
       String path = null;
 
-      Page tmpPage = SiteManagement.getPage(page);
-      if (tmpPage != null) {
-         path = SiteManagement.getPath(tmpPage, true);
+      NavigationItem tmpItem = SiteManagement.getNavigationItem(itemNumber);
+      if (tmpItem != null) {
+         path = SiteManagement.getPath(tmpItem, true);
       }
 
       return path;
