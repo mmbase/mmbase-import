@@ -14,4 +14,4 @@
 <c:set var="listSize" value="${resultCount}"/>
 <c:set var="offset" value="${param.offset}"/>
 
-<%@ include file="../pages.jsp" %>
+<%@ include file="../searchpage.jsp" %>
