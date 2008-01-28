@@ -18,7 +18,7 @@ import com.finalist.cmsc.struts.MMBaseAction;
 @SuppressWarnings("serial")
 public class ChangePasswordForm extends ActionForm {
 
-   private String password;
+   private String password1;
    private String newpassword;
    private String confirmnewpassword;
 
@@ -27,8 +27,8 @@ public class ChangePasswordForm extends ActionForm {
    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
       ActionErrors errors = new ActionErrors();
 
-      if (getPassword() == null || getPassword().trim().length() == 0) {
-         errors.add("password", new ActionMessage("error.password.incorrect"));
+      if (getPassword1() == null || getPassword1().trim().length() == 0) {
+         errors.add("password1", new ActionMessage("error.password.incorrect"));
       }
       if (getNewpassword() == null || getNewpassword().trim().length() < 5 || getNewpassword().trim().length() > 15) {
          errors.add("newpassword", new ActionMessage("error.password.invalid"));
@@ -41,7 +41,7 @@ public class ChangePasswordForm extends ActionForm {
          errors.add("newpassword", new ActionMessage("error.password.nomatch"));
       }
       if (errors.size() == 0) {
-         if (getPassword().equals(getNewpassword())) {
+         if (getPassword1().equals(getNewpassword())) {
             errors.add("newpassword", new ActionMessage("error.newpassword.incorrect"));
          }
          else {
@@ -49,12 +49,12 @@ public class ChangePasswordForm extends ActionForm {
                Cloud cloud = MMBaseAction.getCloudFromSession(request);
                HashMap<String, String> user = new HashMap<String, String>();
                user.put("username", cloud.getUser().getIdentifier());
-               user.put("password", password);
+               user.put("password", password1);
                ContextProvider.getCloudContext(ContextProvider.getDefaultCloudContextName()).getCloud("mmbase",
                      "name/password", user);
             }
             catch (java.lang.SecurityException se) {
-               errors.add("password", new ActionMessage("error.password.incorrect"));
+               errors.add("password1", new ActionMessage("error.password.incorrect"));
             }
          }
 
@@ -63,13 +63,13 @@ public class ChangePasswordForm extends ActionForm {
    }
 
 
-   public String getPassword() {
-      return password;
+   public String getPassword1() {
+      return password1;
    }
 
 
-   public void setPassword(String password) {
-      this.password = password;
+   public void setPassword1(String password) {
+      this.password1 = password;
    }
 
 
