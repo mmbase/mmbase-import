@@ -1,8 +1,7 @@
-﻿body
+body
 {
 	background-color: #97b7c8;
 	margin: 0px 4px 0px 7px;
-	behavior: url('../css/hover.htc');
 }
 	
 body, table, div, input
@@ -121,7 +120,7 @@ div.side_block_green div.header
 	height: 36px;
 	float: left;
 	clear: both;
-	width:100%;
+	width:100%;	
 }
 
 div.side_block div.header div.title, 
@@ -275,7 +274,6 @@ div.side_block_green ul.shortcuts li
 	text-decoration: underline;
 	margin: 0px 2px 0px 0px;
 	white-space: nowrap;
-	font-color: #000000;
 }
 
 ul.shortcuts li.images				{	background-image: url('../gfx/icons/images.png');}
@@ -330,9 +328,9 @@ div.side_block div.body
 }
 div.side_block_gray div.body,
 div.side_block_green div.body{
-	height: auto;
-	float: none;
-	clear:both;
+	height: auto; 
+	float: none; 
+	clear:both; 
 	padding: 10px;
 	display:inline;
 }
@@ -341,7 +339,7 @@ div.side_block_green div.body{
 
 
 
-/* contentblocks PAARS */
+/* contentblocks purple */
 div.content_block_purple
 {
 	display: block;
@@ -1381,7 +1379,7 @@ label {
 	visibility: hidden;
 	position: absolute;
 	width: 100%;
-	text-alignment: center;
+	text-align: center;
 }
 
 .dashboard iframe {
