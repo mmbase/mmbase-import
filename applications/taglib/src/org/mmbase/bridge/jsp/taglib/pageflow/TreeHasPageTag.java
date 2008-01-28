@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: TreeHasPageTag.java,v 1.1.2.2 2008-01-24 16:47:44 michiel Exp $
+ * @version $Id: TreeHasPageTag.java,v 1.1.2.3 2008-01-28 13:50:20 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -68,6 +68,10 @@ public class TreeHasPageTag extends CloudReferrerTag implements Condition {
             String treePage = th.findTreeFile(page.getString(this), objectList.getString(this), pageContext.getSession());
             log.debug("Testing " + treePage);
             boolean has =  treePage != null && ! "".equals(treePage) && ResourceLoader.getWebRoot().getResource(treePage).openConnection().getDoInput();
+            if (! has) {
+                String resource = HasPageTag.getResource(pageContext, page.getString(this));
+                has = ResourceLoader.getWebRoot().getResource(resource).openConnection().getDoInput();
+            }
             if (has != getInverse()){
                 return EVAL_BODY;
             } else {
