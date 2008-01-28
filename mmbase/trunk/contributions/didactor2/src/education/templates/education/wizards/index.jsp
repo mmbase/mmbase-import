@@ -3,9 +3,7 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <mm:content postprocessor="none" expires="0">
-    <mm:log>hoi</mm:log>
     <mm:cloud rank="editor">
-      <mm:log>bla</mm:log>
       <jsp:directive.include file="/shared/setImports.jsp" />
       <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
         <mm:param name="extraheader">
