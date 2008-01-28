@@ -19,6 +19,10 @@ public class PageInfoComparator implements Comparator<PageInfo> {
    private String preferredSite;
 
 
+   public PageInfoComparator() {
+       // no preferred site
+   }
+
    public PageInfoComparator(String serverName) {
       this.preferredSite = serverName;
    }

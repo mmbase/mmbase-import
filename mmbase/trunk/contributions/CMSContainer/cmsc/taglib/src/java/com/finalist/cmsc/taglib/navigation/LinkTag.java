@@ -50,8 +50,8 @@ public class LinkTag extends CmscTag {
     * Parameters added by nested param tag
     */
    private Map<String, Object> params = new HashMap<String, Object>();
-   private Page page;
-   private Page defaultPage;
+   private NavigationItem page;
+   private NavigationItem defaultPage;
 
 
    @Override
@@ -79,23 +79,26 @@ public class LinkTag extends CmscTag {
       if (page != null) {
          String newlink = null;
 
-         String externalurl = page.getExternalurl();
+         String externalurl = null;
+         if (page instanceof Page) {
+             externalurl = ((Page) page).getExternalurl();
+         }
          if (!StringUtils.isBlank(externalurl)) {
             if (externalurl.indexOf("://") > -1) {
                newlink = externalurl;
             }
             else {
-               Page internalPage = SiteManagement.getPageFromPath(externalurl);
+               NavigationItem internalPage = SiteManagement.getNavigationItemFromPath(externalurl);
                if (internalPage != null) {
                   String link = SiteManagement.getPath(internalPage, !ServerUtil.useServerName());
-                  newlink = getPageUrl(request, link);
+                  newlink = getItemUrl(request, link);
                }
             }
          }
          else {
             String link = SiteManagement.getPath(page, !ServerUtil.useServerName());
             if (link != null) {
-               newlink = getPageUrl(request, link);
+               newlink = getItemUrl(request, link);
             }
          }
          // handle result
@@ -125,7 +128,7 @@ public class LinkTag extends CmscTag {
 
 
    private void setPageAndWindowBasedOnPortletDefinition(String path, String portletdefinition) {
-      List<Page> pages = SiteManagement.getListFromPath(path);
+      List<Page> pages = SiteManagement.getPagesFromPath(path);
       int lastIndexOfPages = pages.size() - 1;
 
       if (restrictToCurrentPage) {
@@ -181,8 +184,8 @@ public class LinkTag extends CmscTag {
    }
 
 
-   private Page getPageWithUrlFragement(String path, String urlfragment) {
-      List<Page> pages = SiteManagement.getListFromPath(path);
+   private NavigationItem getPageWithUrlFragement(String path, String urlfragment) {
+      List<Page> pages = SiteManagement.getPagesFromPath(path);
       int lastIndexOfPages = pages.size() - 1;
       for (int i = lastIndexOfPages; i >= 0; i--) {
          Page currentPage = pages.get(i);
@@ -205,7 +208,7 @@ public class LinkTag extends CmscTag {
    }
 
 
-   private String getPageUrl(HttpServletRequest request, String link) throws JspException, IOException {
+   private String getItemUrl(HttpServletRequest request, String link) throws JspException, IOException {
       String newlink = null;
       if (link != null) {
          // handle body, call any nested tags
@@ -221,20 +224,8 @@ public class LinkTag extends CmscTag {
          }
          PortalURL u = new PortalURL(host, request, link);
 
-         if (element != null) {
-            int pageId = page.getId();
-            if (window == null) {
-               window = Search.getPortletWindow(pageId, element, host);
-            }
-            if (window != null) {
-               u.setRenderParameter(window, "elementId", new String[] { element });
-            }
-         }
-
-         if (window != null) {
-            for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
-               u.setRenderParameter(window, paramEntry.getKey(), new String[] { paramEntry.getValue().toString() });
-            }
+         if (page instanceof Page) {
+             addPortletParametersToUrl(u);
          }
 
          newlink = u.toString();
@@ -246,6 +237,24 @@ public class LinkTag extends CmscTag {
       return newlink;
    }
 
+    private void addPortletParametersToUrl(PortalURL u) {
+        if (element != null) {
+            int pageId = page.getId();
+            if (window == null) {
+               window = Search.getPortletWindow(pageId, element);
+            }
+            if (window != null) {
+               u.setRenderParameter(window, "elementId", new String[] { element });
+            }
+         }
+       
+         if (window != null) {
+            for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
+               u.setRenderParameter(window, paramEntry.getKey(), new String[] { paramEntry.getValue().toString() });
+            }
+         }
+    }
+
 
    /**
     * Set destination to navigate to.
@@ -256,18 +265,7 @@ public class LinkTag extends CmscTag {
     */
    public void setDest(Object dest) {
       if (dest != null) {
-         if (dest instanceof Page) {
-            page = (Page) dest;
-         }
-         else if (dest instanceof Integer) {
-            page = getPageInteger((Integer) dest);
-         }
-         else if (dest instanceof String) {
-            page = getPageString((String) dest);
-         }
-         else {
-            throw new IllegalArgumentException("only Page, integer or string allowed: " + dest.getClass());
-         }
+         page = SiteManagement.convertToNavigationItem(dest);
       }
    }
 
@@ -293,56 +291,13 @@ public class LinkTag extends CmscTag {
 
    public void setDefaultpage(Object dest) {
       if (dest != null) {
-         if (dest instanceof Page) {
-            defaultPage = (Page) dest;
-         }
-         else if (dest instanceof Integer) {
-            defaultPage = getPageInteger((Integer) dest);
-         }
-         else if (dest instanceof String) {
-            defaultPage = getPageString((String) dest);
-         }
-         else {
-            throw new IllegalArgumentException("only Page, integer or string allowed: " + dest.getClass());
-         }
+         defaultPage = SiteManagement.convertToNavigationItem(dest);
       }
    }
 
 
    public void setElement(String element) {
       this.element = element;
-   }
-
-
-   /**
-    * Set destination node number to navigate to.
-    * 
-    * @param n
-    *           the node number
-    */
-   private Page getPageInteger(Integer n) {
-      return SiteManagement.getPage(n.intValue());
-   }
-
-
-   /**
-    * Set the destination node path to navigate to.
-    * 
-    * @param s
-    *           comma, slash or space separated list of node numbers and/or
-    *           aliases
-    */
-   private Page getPageString(String s) {
-      Page temp = null;
-      if (!StringUtils.isBlank(s)) {
-         if (StringUtils.isNumeric(s)) {
-            temp = SiteManagement.getPage(Integer.parseInt(s));
-         }
-         else {
-            temp = SiteManagement.getPageFromPath(s);
-         }
-      }
-      return temp;
    }
 
 

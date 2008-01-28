@@ -79,14 +79,14 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
 
 
    public void resetSiteCache() {
-      siteCache = new SiteCache();
+      siteCache.doSetupCache();
    }
 
 
    public boolean hasNavigationItem(String path) {
       if (path != null && path.length() > 0) {
-         Integer pageId = siteCache.getPage(path);
-         return pageId != null;
+         Integer itemId = siteCache.getPage(path);
+         return itemId != null;
       }
       return false;
    }
@@ -120,9 +120,9 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    public Site getSite(String path) {
       if (path != null && path.length() > 0) {
          try {
-            Integer pageId = siteCache.getSite(path);
-            if (pageId != null) {
-               return (Site) getCache(NAVIGATION_CACHE).get(pageId);
+            Integer itemId = siteCache.getSite(path);
+            if (itemId != null) {
+               return (Site) getCache(NAVIGATION_CACHE).get(itemId);
             }
             else {
                log.debug("Site not found for path " + path);
@@ -159,15 +159,15 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   public List<Page> getPagesForPath(String path) {
-      List<Page> pages = new ArrayList<Page>();
+   public <E extends NavigationItem> List<E> getItemsForPath(String path, Class<E> clazz) {
+      List<E> items = new ArrayList<E>();
       if (path != null && path.length() > 0) {
          try {
-            List<Integer> pageIds = siteCache.getPagesForPath(path);
-            for (Integer pageId : pageIds) {
-               Page page = (Page) getCache(NAVIGATION_CACHE).get(pageId);
-               if (page != null) {
-                  pages.add(page);
+            List<Integer> itemIds = siteCache.getItemsForPath(path);
+            for (Integer itemId : itemIds) {
+               NavigationItem item = (NavigationItem) getCache(NAVIGATION_CACHE).get(itemId);
+               if (item != null && clazz.isInstance(item)) {
+                  items.add(clazz.cast(item));
                }
             }
          }
@@ -175,19 +175,23 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
             log.info("" + e.getMessage(), e);
          }
       }
-      return pages;
+      return items;
    }
 
 
-   public List<Page> getChildren(NavigationItem findpage) {
-      List<Page> pages = new ArrayList<Page>();
-      if (findpage != null) {
+   public List<NavigationItem> getChildren(NavigationItem parent) {
+       return getChildren(parent, NavigationItem.class);
+   }
+
+   public <E extends NavigationItem> List<E> getChildren(NavigationItem parent, Class<E> childClazz) {
+      List<E> items = new ArrayList<E>();
+      if (parent != null) {
          try {
-            List<Integer> pageIds = siteCache.getChildren(findpage);
-            for (Integer pageId : pageIds) {
-               NavigationItem navigationItem = (NavigationItem) getCache(NAVIGATION_CACHE).get(pageId);
-               if (navigationItem != null && navigationItem instanceof Page) {
-                  pages.add((Page) navigationItem);
+            List<Integer> itemIds = siteCache.getChildren(parent);
+            for (Integer itemId : itemIds) {
+               NavigationItem navigationItem = (NavigationItem) getCache(NAVIGATION_CACHE).get(itemId);
+               if (navigationItem != null &&  childClazz.isInstance(navigationItem)) {
+                  items.add(childClazz.cast(navigationItem));
                }
             }
          }
@@ -195,7 +199,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
             log.info("" + e.getMessage(), e);
          }
       }
-      return pages;
+      return items;
    }
 
 
@@ -335,8 +339,8 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   private List<Integer> getDefinitions(String screenId, String layoutId) {
-      Page page = (Page) getNavigationItem(Integer.parseInt(screenId));
+   private List<Integer> getDefinitions(String pageId, String layoutId) {
+      Page page = (Page) getNavigationItem(Integer.parseInt(pageId));
       Layout layout = getLayout(page.getLayout());
       return layout.getAllowedDefinitions(layoutId);
    }
@@ -387,14 +391,14 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    }
 
 
-   public void clearPage(String pageId) {
-      clearPage(Integer.valueOf(pageId));
+   public void clearItem(String itemId) {
+      clearItem(Integer.valueOf(itemId));
    }
 
 
-   public void clearPage(int pageId) {
+   public void clearItem(int itemId) {
       try {
-         getCache(NAVIGATION_CACHE).put(pageId, null);
+         getCache(NAVIGATION_CACHE).put(itemId, null);
       }
       catch (CacheException e) {
          log.info("" + e.getMessage(), e);
@@ -409,13 +413,4 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
       return layout.getNames();
    }
 
-   /*
-    * [FP] public RssFeed getRssFeed(String path) { if (path != null &&
-    * path.length() > 0) { Integer rssFeed = siteCache.getPage(path); if
-    * (rssFeed != null) { return getRssFeed(rssFeed); } else { log.debug("Page
-    * not found for path " + path); } } return null; } public RssFeed
-    * getRssFeed(int rssFeedId) { try { return (RssFeed)
-    * getCache(NAVIGATION_CACHE).get(rssFeedId); } catch (CacheException e) {
-    * log.info("" + e.getMessage(), e); } return null; }
-    */
 }

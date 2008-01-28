@@ -30,8 +30,7 @@ import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.om.window.PortletWindow;
 import org.apache.pluto.services.information.PortalContextProvider;
 
-import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.beans.om.Portlet;
+import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
@@ -121,8 +120,8 @@ public class PortletTag extends SimpleTagSupport {
          boolean mayEditPage = true;
          String pageId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
          if (pageId != null) {
-            Page page = SiteManagement.getPage(Integer.valueOf(pageId));
-            mayEditPage = SiteManagementAdmin.mayEdit(page);
+            NavigationItem item = SiteManagement.getNavigationItem(Integer.valueOf(pageId));
+            mayEditPage = SiteManagementAdmin.mayEdit(item);
          }
          boolean mayEditPortlet = SiteManagementAdmin.mayEdit(portlet);
 

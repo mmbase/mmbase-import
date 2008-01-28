@@ -38,7 +38,7 @@ public abstract class SiteManagementAdminService extends Service {
    public abstract void deletePagePortlet(Page page, Portlet portlet, String layoutId);
 
 
-   public abstract boolean mayEdit(Page page);
+   public abstract boolean mayEdit(NavigationItem item);
 
 
    public abstract boolean mayEdit(Portlet portlet);

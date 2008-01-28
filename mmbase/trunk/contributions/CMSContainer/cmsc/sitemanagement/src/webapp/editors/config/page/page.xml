@@ -13,9 +13,11 @@
    <steps>
       <step form-schema="edit_page"/>
       <step form-schema="edit_pagefields"/>
-      <step form-schema="edit_pageadmin"/>
+<!--      <step form-schema="edit_pageadmin"/>  -->
    </steps>
    <form-schema id="edit_page" extends="config/page/edit_page.xml"/>
    <form-schema id="edit_pagefields" extends="config/page/edit_pagefields.xml"/>
+<!--
    <form-schema id="edit_pageadmin" extends="config/page/edit_pageadmin.xml"/>
+ -->
 </wizard-schema>

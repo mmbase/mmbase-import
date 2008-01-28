@@ -17,7 +17,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 
-import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
 
@@ -25,7 +25,7 @@ import com.finalist.cmsc.taglib.CmscTag;
  * Checks if a Site or Page is on the path
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class OnPathTag extends CmscTag {
    /**
@@ -33,7 +33,7 @@ public class OnPathTag extends CmscTag {
     */
    private String var;
 
-   private Object origin;
+   private NavigationItem origin;
 
 
    @Override
@@ -41,14 +41,12 @@ public class OnPathTag extends CmscTag {
       boolean onpath = false;
 
       String path = getPath();
-      List<Page> contents = SiteManagement.getListFromPath(path);
-      if (contents != null) {
-         for (int i = 0; i < contents.size(); i++) {
-            Object item = contents.get(i);
-            if (item instanceof Page && origin instanceof Page) {
-               if (((Page) item).getId() == ((Page) origin).getId()) {
-                  onpath = true;
-               }
+      List<NavigationItem> items = SiteManagement.getListFromPath(path);
+      if (items != null) {
+         for (int i = 0; i < items.size(); i++) {
+            NavigationItem item = items.get(i);
+            if (item.getId() == origin.getId()) {
+               onpath = true;
             }
          }
       }
@@ -71,7 +69,7 @@ public class OnPathTag extends CmscTag {
 
 
    public void setOrigin(Object origin) {
-      this.origin = origin;
+       this.origin = SiteManagement.convertToNavigationItem(origin);
    }
 
 

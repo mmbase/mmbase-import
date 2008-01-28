@@ -9,35 +9,21 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.sitemanagement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.HugeNodeListIterator;
-import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.cache.CachePolicy;
-import org.mmbase.core.event.Event;
-import org.mmbase.core.event.NodeEvent;
-import org.mmbase.core.event.NodeEventListener;
-import org.mmbase.core.event.RelationEvent;
-import org.mmbase.core.event.RelationEventListener;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.core.event.*;
 import org.mmbase.module.core.MMBase;
-import org.mmbase.storage.search.SortOrder;
-import org.mmbase.storage.search.StepField;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.navigation.NavigationItemManager;
-import com.finalist.cmsc.navigation.NavigationManager;
-import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTree;
 import com.finalist.cmsc.services.sitemanagement.tree.PageTreeNode;
 
@@ -53,132 +39,24 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
    public SiteCache() {
       this.cloudProvider = CloudProviderFactory.getCloudProvider();
       doSetupCache();
+      registerListeners();
    }
 
-
-   public void doSetupCache() {
-       Cloud cloud = getCloud();
+   public void registerListeners() {
        List<NavigationItemManager> navigationManagers = NavigationManager.getNavigationManagers();
-       for (NavigationItemManager nim : navigationManagers) {
-           if (nim.isRoot()) {
-               String nodeType = nim.getTreeManager();
-               String fragmentField = NavigationUtil.getFragmentFieldname(nodeType);
-               loadTrees(cloud, nodeType, fragmentField);
-           }
-       }
-
-       Map<Integer,String> itemUrlFragments = new HashMap<Integer, String>();
-       
        for (NavigationItemManager nim : navigationManagers) {
            if (!nim.isRoot()) {
                String nodeType = nim.getTreeManager();
-               String fragmentField = NavigationUtil.getFragmentFieldname(nodeType);
-               loadNavigationItems(cloud, nodeType, fragmentField, itemUrlFragments);
                MMBase.getMMBase().addNodeRelatedEventsListener(nodeType, this);
            }
        }
-       
-       loadTreeStructure(cloud, itemUrlFragments);
-   }
-   
-   @SuppressWarnings("unchecked")
-   private void loadTrees(Cloud cloud, String nodeType, String fragmentField) {
-       NodeManager sitesManager = cloud.getNodeManager(nodeType);
-       NodeList sites = sitesManager.getList(sitesManager.createQuery());
-       for (Iterator<Node> iter = sites.iterator(); iter.hasNext();) {
-          Node siteNode = iter.next();
-          int siteId = siteNode.getNumber();
-          String sitefragment = siteNode.getStringValue(fragmentField);
-          createTree(siteId, sitefragment);
-       }
    }
 
-   @SuppressWarnings("unchecked")
-   private void loadNavigationItems(Cloud cloud, String nodeType, String fragmentField, Map<Integer, String> itemUrlFragments) {
-       NodeManager manager = cloud.getNodeManager(nodeType);
-
-       NodeQuery q = manager.createQuery();
-       List<String> types = new ArrayList<String>();
-       types.add(manager.getName());
-       SearchUtil.addTypeConstraints(q, types);
-       q.setCachePolicy(CachePolicy.NEVER);
-       
-       for (NodeIterator iter = new HugeNodeListIterator(q); iter.hasNext();) {
-           Node navNode = iter.nextNode();
-           int number = navNode.getNumber();
-           String urlfragment = navNode.getStringValue(fragmentField);
-           itemUrlFragments.put(number, urlfragment);
-       }
-   }
-   
-   @SuppressWarnings("unchecked")
-   private void loadTreeStructure(Cloud cloud, Map<Integer,String> itemUrlFragments) {
-      List<Node> unfinishedNodes = new ArrayList<Node>();
-
-      NodeManager navrel = cloud.getNodeManager(NavigationUtil.NAVREL);
-
-      Query q = cloud.createQuery();
-      q.addStep(navrel);
-
-      StepField sourceField = q.addField(NavigationUtil.NAVREL + ".snumber");
-      StepField posField = q.addField(NavigationUtil.NAVREL + ".pos");
-
-      q.addSortOrder(sourceField, SortOrder.ORDER_ASCENDING);
-      q.addSortOrder(posField, SortOrder.ORDER_ASCENDING);
-      q.setCachePolicy(CachePolicy.NEVER);
-
-      for (NodeIterator iter = new HugeNodeListIterator(q); iter.hasNext();) {
-         Node navrelNode = iter.nextNode();
-
-         int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
-         int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
-         int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
-         String fragment = itemUrlFragments.get(destNumber);
-         
-         boolean parentNotFound = true;
-         for (PageTree tree : trees.values()) {
-            PageTreeNode pageTreeNode = tree.insert(sourceNumber, destNumber, fragment, childIndex);
-            if (pageTreeNode != null) {
-               parentNotFound = false;
-               break;
-            }
-         }
-         if (parentNotFound) {
-            unfinishedNodes.add(navrelNode);
-         }
-      }
-      int oldUnfinishedSize = unfinishedNodes.size() + 1;
-      while (oldUnfinishedSize > unfinishedNodes.size()) {
-         oldUnfinishedSize = unfinishedNodes.size();
-
-         for (Iterator<Node> iter = unfinishedNodes.iterator(); iter.hasNext();) {
-            Node navrelNode = iter.next();
-
-            int sourceNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".snumber");
-            int destNumber = navrelNode.getIntValue(NavigationUtil.NAVREL + ".dnumber");
-            int childIndex = navrelNode.getIntValue(NavigationUtil.NAVREL + ".pos");
-            String fragment = itemUrlFragments.get(destNumber);
-
-            for (PageTree tree : trees.values()) {
-               PageTreeNode pageTreeNode = tree.insert(sourceNumber, destNumber, fragment, childIndex);
-               if (pageTreeNode != null) {
-                  iter.remove();
-                  break;
-               }
-            }
-         }
-      }
-
-      for (Iterator<Node> iter = unfinishedNodes.iterator(); iter.hasNext();) {
-         Node navrelNode = iter.next();
-         log.warn("Page treenode not found for navrel: " + navrelNode);
-      }
-   }
-
-
-   public void createTree(int siteId, String sitefragment) {
-      PageTree siteTree = new PageTree(siteId, sitefragment);
-      trees.put(sitefragment.toLowerCase(), siteTree);
+   public void doSetupCache() {
+       Cloud cloud = getCloud();
+       SiteCacheLoader loader = new SiteCacheLoader();
+       Map<String, PageTree> newtrees = loader.loadPageTreeMap(cloud);
+       trees = newtrees;
    }
 
 
@@ -190,6 +68,11 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
    protected Cloud getCloud() {
       return cloudProvider.getAnonymousCloud();
    }
+
+   public void createTree(int siteId, String sitefragment) {
+       PageTree siteTree = new PageTree(siteId, sitefragment);
+       trees.put(sitefragment.toLowerCase(), siteTree);
+    }
 
 
    public Integer getSite(String path) {
@@ -292,7 +175,7 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
    }
 
 
-   public List<Integer> getPagesForPath(String path) {
+   public List<Integer> getItemsForPath(String path) {
       List<Integer> pageIds = new ArrayList<Integer>();
 
       List<String> names = PageTree.getPathElements(path);
@@ -304,8 +187,8 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
    }
 
 
-   public String getPath(NavigationItem page, boolean includeRoot) {
-      PageTreeNode pageTreeNode = getPageTreeNode(page);
+   public String getPath(NavigationItem item, boolean includeRoot) {
+      PageTreeNode pageTreeNode = getPageTreeNode(item);
       if (pageTreeNode != null) {
          return pageTreeNode.getPathStr(includeRoot);
       }
@@ -395,19 +278,13 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
 
 
    private boolean isChangeTreeEvent(RelationEvent event) {
-      boolean sourceIsTreeType = false;
-      boolean destinationIsTreeType = false;
-
-      for (NavigationItemManager manager : NavigationManager.getNavigationManagers()) {
-         String treeManager = manager.getTreeManager();
-         if (treeManager.equals(event.getRelationSourceType())) {
-            sourceIsTreeType = true;
-         }
-         if (treeManager.equals(event.getRelationDestinationType())) {
-            destinationIsTreeType = true;
-         }
+      int relationNumber = MMBase.getMMBase().getRelDef().getNumberByName(NavigationUtil.NAVREL);
+      if (event.getRole() == relationNumber) { 
+          boolean sourceIsTreeType = NavigationManager.getNavigationManager(event.getRelationSourceType()) != null;
+          boolean destinationIsTreeType = NavigationManager.getNavigationManager(event.getRelationDestinationType()) != null;
+          return sourceIsTreeType && destinationIsTreeType;
       }
-      return sourceIsTreeType && destinationIsTreeType;
+      return false;
    }
 
 

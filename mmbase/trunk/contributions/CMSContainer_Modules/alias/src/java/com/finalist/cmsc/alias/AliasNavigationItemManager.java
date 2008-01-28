@@ -2,8 +2,7 @@ package com.finalist.cmsc.alias;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -12,9 +11,7 @@ import com.finalist.cmsc.alias.publish.AliasPublisher;
 import com.finalist.cmsc.alias.tree.AliasTreeItemRenderer;
 import com.finalist.cmsc.alias.util.AliasUtil;
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.navigation.NavigationItemManager;
-import com.finalist.cmsc.navigation.NavigationItemRenderer;
-import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
+import com.finalist.cmsc.navigation.*;
 
 public class AliasNavigationItemManager implements NavigationItemManager {
 
@@ -40,8 +37,15 @@ public class AliasNavigationItemManager implements NavigationItemManager {
             log.debug("Alias not found: " + key);
             return null;
         }
+
+        Alias alias = MMBaseNodeMapper.copyNode(node, Alias.class);
+        NodeList relatedNodes = node.getRelatedNodes("page", "related", "destination");
+        if(relatedNodes.size() > 0) {
+            Node page = relatedNodes.getNode(0);
+            alias.setPage(page.getNumber());
+        }
         
-        return (Alias) MMBaseNodeMapper.copyNode(node, Alias.class);
+        return alias;
 	}
 
 	public Object getPublisher(Cloud cloud, String type) {

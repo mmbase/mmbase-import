@@ -12,8 +12,7 @@ package com.finalist.cmsc.taglib.navigation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
-import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.beans.om.Site;
+import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
 
@@ -54,7 +53,7 @@ public class LocationTag extends CmscTag {
       if (path == null) {
          path = getPath();
       }
-      Page result = SiteManagement.getPageFromPath(path);
+      NavigationItem result = SiteManagement.getNavigationItemFromPath(path);
 
       // handle result
       if (result == null) {
