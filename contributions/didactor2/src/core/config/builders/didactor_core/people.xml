@@ -106,11 +106,7 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <class name="nl.didactor.datatypes.UserName" />
-        <required value="true" />
-        <maxLength value="255" />
-      </datatype>
+      <datatype base="didactor_people_lastname" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="address">
@@ -179,14 +175,7 @@
         <guiname xml:lang="bg">Държава</guiname>
         <guiname xml:lang="eo">Lando</guiname>
       </gui>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="false" />
-        <pattern value="NL|BE|AW|AN|SR|BG|FR|CH|RO" />
-        <enumeration enforce="oncreate">
-          <entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
-                 basename="org.mmbase.datatypes.resources.iso3166" />
-        </enumeration>
-      </datatype>
+      <datatype base="didactor_people_country" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
 
 
@@ -236,10 +225,7 @@
         <guiname xml:lang="hi">इ-मेल</guiname>
         <guiname xml:lang="eo">Retadreso</guiname>
       </gui>
-      <datatype base="internetaddress" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <required value="false" />
-        <maxLength value="1024" />
-      </datatype>
+      <datatype base="didactor_people_email" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="verify_email">
@@ -288,19 +274,7 @@
         <guiname xml:lang="en">Age</guiname>
         <guiname xml:lang="nl">Leeftijd</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <minInclusive value="0" />
-        <setprocessor>
-          <class name="org.mmbase.datatypes.processors.Age$Setter">
-            <param name="birthdateField">dayofbirth</param>
-          </class>
-        </setprocessor>
-        <getprocessor>
-          <class name="org.mmbase.datatypes.processors.Age$Getter">
-            <param name="birthdateField">dayofbirth</param>
-          </class>
-        </getprocessor>
-      </datatype>
+      <datatype base="didactor_people_age" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="gender">

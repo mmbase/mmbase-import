@@ -4,7 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="fillquestions" maintainer="didactor.nl" version="2" extends="questions">
-  <class>nl.didactor.education.builders.OpenQuestionBuilder</class>>
+
+  <class>nl.didactor.education.builders.OpenQuestionBuilder</class>
   <names>
     <singular xml:lang="nl">Fill Vraag</singular>
     <singular xml:lang="en">Fill Question</singular>
@@ -16,7 +17,6 @@
     <description xml:lang="nl">Een open vraag, waar de gebruiker zelf een antwoord moet formuleren</description>
     <description xml:lang="en">An open question, where the user can write his own answer</description>
   </descriptions>
-
 
   <fieldlist>
 
@@ -35,6 +35,7 @@
         <maxLength value="65535" />
       </datatype>
     </field>
+
     <field name="textSecond">
       <descriptions>
         <description xml:lang="nl">Tekst van de vraag</description>
@@ -49,6 +50,7 @@
         <maxLength value="65535" />
       </datatype>
     </field>
+
     <field name="impos">
       <descriptions>
         <description xml:lang="nl">Positie afbeelding</description>
@@ -70,16 +72,14 @@
         </enumeration>
       </datatype>
     </field>
+
     <field name="flashOrText">
       <descriptions>
         <description xml:lang="nl">Kies flash of tekst</description>
         <description xml:lang="en">Choose flash file or text</description>
       </descriptions>
-      <gui>
-        <guiname xml:lang="nl">flashOrText</guiname>
-      </gui>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <defaul value="1" />
+        <default value="1" />
         <enumeration>
           <entry value="0" xml:lang="nl" display="Tekst" />
           <entry value="0" xml:lang="en" display="Text" />
@@ -88,6 +88,6 @@
         </enumeration>
       </datatype>
     </field>
+
   </fieldlist>
 </builder>
-
