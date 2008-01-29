@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html;charset=utf-8" %>
+<%@ page language="java" contentType="text/html;charset=utf-8" %>
 <%@ include file="globals.jsp" %>
 <%@ page import="com.finalist.cmsc.repository.RepositoryUtil" %>
 <%@ page import="com.finalist.cmsc.security.*" %>
