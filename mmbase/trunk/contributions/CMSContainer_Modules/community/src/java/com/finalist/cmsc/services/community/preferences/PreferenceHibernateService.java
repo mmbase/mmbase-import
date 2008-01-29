@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.preferences;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -81,14 +82,21 @@ public class PreferenceHibernateService extends HibernateService implements Pref
 	}
 
 	/** {@inheritDoc} */
-    @Transactional(readOnly = true)
-	public Map<String, String> getPreferences(String module, String userId, String key) {
+    @SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
+	public List<String> getPreferenceValues(String module, String userId, String key) {
     	Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
         Criteria criteria = getSession().createCriteria(Preference.class);
         criteria.add(Restrictions.eq("module", module));
         criteria.add(Restrictions.eq("authenticationId", authenticationId));
         criteria.add(Restrictions.eq("key", key));
-        return gePreferencesMap(criteria);
+        
+        List<String> result = new ArrayList<String>();
+        for (Iterator iter = criteria.list().iterator(); iter.hasNext();) {
+            Preference p = (Preference) iter.next();
+            result.add(p.getValue());
+        }
+        return result;
 	}
 
     @SuppressWarnings("unchecked")
