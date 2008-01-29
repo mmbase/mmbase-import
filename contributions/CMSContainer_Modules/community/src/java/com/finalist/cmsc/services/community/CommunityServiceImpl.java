@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -97,4 +98,32 @@ public class CommunityServiceImpl extends CommunityService {
     public void deletePreference(String module, String userId, String key, String value) {
     	preferenceService.deletePreference(module, userId, key, value);
     }
+
+    //TODO: replace the previous methods by methods who accept the following
+    //      properties!
+	@Override
+	public void createPreference(String module, String userId, String key,
+			List<String> values) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, Map<String, List<String>>> getPreferences(String module,
+			String userId, String key, String value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, Map<String, String>> getUserProperty(String userName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removePreferences(String module, String userId, String key) {
+		// TODO Auto-generated method stub
+		
+	}
 }
