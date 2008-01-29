@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.50 2008-01-14 18:33:35 michiel Exp $
+ * @version $Id: Indexer.java,v 1.51 2008-01-29 09:52:36 michiel Exp $
  **/
 public class Indexer {
 
@@ -211,8 +211,12 @@ public class Indexer {
     }
     public long getLastFullIndexDuration() {
         Properties lastIndexes = loadLastFullIndexTimes();
-        return Long.parseLong(lastIndexes.getProperty(index + ".duration"));
-
+        String dur = lastIndexes.getProperty(index + ".duration");
+        if (dur != null && org.mmbase.datatypes.StringDataType.LONG_PATTERN.matcher(dur).matches()) {
+            return Long.parseLong(lastIndexes.getProperty(index + ".duration"));
+        } else {
+            return -1L;
+        }
     }
     protected Date setLastFullIndex(long startTime) {
         Properties lastIndexes = loadLastFullIndexTimes();
