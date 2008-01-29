@@ -16,10 +16,6 @@
 		<name>urls</name>
 		<description>URLs to external sites</description>
 	</node>
-	<node number="73" owner="system">
-		<name>mailform</name>
-		<description></description>
-	</node>
 	<node number="16" owner="system">
 		<name>faqitem</name>
 		<description></description>
