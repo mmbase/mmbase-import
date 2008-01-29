@@ -2,7 +2,7 @@
 
 <project>
   <extend>${basedir}/../maven-base/project.xml</extend>
-  <artifactId>cmsc-modules-community2</artifactId>
+  <artifactId>cmsc-modules-community</artifactId>
   <name>Community module</name>
   <shortDescription>Remember users and roles.</shortDescription>
   <description>Remember users and roles.</description>
