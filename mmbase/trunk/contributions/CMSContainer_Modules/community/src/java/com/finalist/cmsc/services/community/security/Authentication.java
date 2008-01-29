@@ -38,8 +38,10 @@ public class Authentication implements Serializable {
     private Long id;
     
     @Column(unique = true)
-    private String userName;
+    private String userId;
+    
     private String password;
+    
     private boolean enabled;
     
     @ManyToMany
@@ -57,11 +59,11 @@ public class Authentication implements Serializable {
         this.id = id;
     }
     
-    public String getUserName() {
-        return userName;
+    public String getUserId() {
+        return userId;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
     
     public String getPassword() {
@@ -91,30 +93,37 @@ public class Authentication implements Serializable {
         authorities.remove(authority);
         authority.getAuthentications().remove(this);
     }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((userName == null) ? 0 : userName.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Authentication other = (Authentication) obj;
-        if (userName == null) {
-            if (other.userName != null)
-                return false;
-        } else if (!userName.equals(other.userName))
-            return false;
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((password == null) ? 0 : password.hashCode());
+		result = prime * result
+				+ ((userId == null) ? 0 : userId.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Authentication other = (Authentication) obj;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
+		return true;
+	}
+    
+    
 }

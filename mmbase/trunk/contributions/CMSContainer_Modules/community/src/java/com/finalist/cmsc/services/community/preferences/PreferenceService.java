@@ -9,15 +9,51 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.preferences;
 
-import java.io.Serializable;
 import java.util.Map;
 
 
+/**
+ * @author Remco Bos
+ */
 public interface PreferenceService {
 
-    Map<String, Serializable> getPreferences(String module, String userName, String key, String value);
-    
-    Map<String, Serializable> createPreferences(String module, String userName, String key, String value);
-    
+	/**
+	 * Returns all preferences by module
+	 * 
+	 * @param module Module name
+	 * @return map A map with preferences for a module, grouped by autenticationId
+	 */
+//	Map<Long, Map<String, String>> getPreferencesByModule(String module);
+	
+	/**
+	 * Returns all preferences by userId
+	 * 
+	 * @param user User id
+	 * @return map A map with preferences for a userId, grouped by module
+	 */
+//	Map<String, Map<String, String>> getPreferencesByUserId(String userId);
+	
+    /**
+     * Returns all preferences by module and user
+     * @param module
+     * @param userId
+     * @return map A map with preferences for a module and userId 
+     */
+//	Map<String, String> getPreferences(String module, String userId);
+
+	/**
+     * Returns all preferences by module, userId and key
+     * @param module
+     * @param userId
+     * @param key
+     * @return map A map with preferences for a module, userId and key 
+     */
+//	Map<String, String> getPreferences(String module, String userId, String key);
+    Map<Long, Map<String, String>> getPreferencesByModule(String module);
+    Map<String, Map<String, String>> getPreferencesByUserId(String userId);
+    Map<String, String> getPreferences(String module, String userId, String key);
+    void createPreference(String module, String userId, String key, String value);
+	void updatePreference(String module, String userId, String key, String oldValue, String newValue);
+	void deletePreference(String module, String userId, String key, String value);
     
 }
