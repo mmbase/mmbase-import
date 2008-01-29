@@ -13,7 +13,7 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
-  <context:property-placeholder location="spring-community.properties"/>
+  <context:property-placeholder location="classpath:spring-community.properties"/>
   
   <!-- Post-processors for all standard config annotations (for @Required) -->
   <context:annotation-config />
