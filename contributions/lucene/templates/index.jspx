@@ -3,12 +3,13 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <jsp:directive.page buffer="2000kb" />
   <jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
   <jsp:directive.include file="head.jspx" />
   <mm:content type="application/xhtml+xml"
-	postprocessor="none"
-	unacceptable="CRIPPLE"
-	language="en" expires="0">
+              postprocessor="none"
+              unacceptable="CRIPPLE"
+              language="en" expires="0">
     <body class="basic">
       <h1>Lucene admin page for <jsp:expression>org.mmbase.module.core.MMBase.getMMBase().getMachineName()</jsp:expression></h1>
       <mm:import externid="logout" />
@@ -50,8 +51,8 @@
             <th>full index</th>
           </tr>
           <mm:listfunction id="index" module="lucene" name="list">
-            <tr>
-              <c:catch var="exception1">
+            <c:catch var="exception1">
+              <tr>
                 <td>
                   <mm:write />
                   <mm:function module="lucene" name="default" write="false">
@@ -64,7 +65,7 @@
                 <td>
                   <mm:function module="lucene" referids="index" name="description" />
                 </td>
-                  <td class="numeric">
+                <td class="numeric">
                   <mm:function module="lucene" referids="index" name="searchsize">
                     ${_}
                   </mm:function>
@@ -74,11 +75,25 @@
                       /${_}
                     </mm:function>
                   </mm:functioncontainer>
-                  </td>
+                </td>
                 <td>
                   <mm:function module="lucene" referids="index" name="last">
                     <mm:time format="yyyy-MM-dd HH:mm" />
                   </mm:function>
+                  (
+                  <mm:function module="lucene" referids="index" name="lastduration">
+                    <c:choose>
+                      <c:when test="${_ eq -1}">
+                        Not yet run
+                      </c:when>
+                      <c:otherwise>
+                        <mm:write value="${_ / 1000}" vartype="integer">
+                          <mm:time timezone="utc" format="HH:mm:ss" />
+                        </mm:write>
+                      </c:otherwise>
+                    </c:choose>
+                  </mm:function>
+                  )
                 </td>
                 <td>
                   <mm:functioncontainer>
@@ -110,13 +125,10 @@
                     </mm:link>
                   </mm:booleanfunction>
                 </td>
-                </c:catch>
               </tr>
-
+            </c:catch>
             <c:if test="${! empty exception1}">
-              <tr>
-                <td cols="1000">${exception1}</td>
-              </tr>
+              ${exception1}<![CDATA[</td></tr>]]>
             </c:if>
           </mm:listfunction>
         </table>
