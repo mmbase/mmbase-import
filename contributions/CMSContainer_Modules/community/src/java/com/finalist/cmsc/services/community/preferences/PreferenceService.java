@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.preferences;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -51,7 +52,7 @@ public interface PreferenceService {
 //	Map<String, String> getPreferences(String module, String userId, String key);
     Map<Long, Map<String, String>> getPreferencesByModule(String module);
     Map<String, Map<String, String>> getPreferencesByUserId(String userId);
-    Map<String, String> getPreferences(String module, String userId, String key);
+    List<String> getPreferenceValues(String module, String userId, String key);
     void createPreference(String module, String userId, String key, String value);
 	void updatePreference(String module, String userId, String key, String oldValue, String newValue);
 	void deletePreference(String module, String userId, String key, String value);
