@@ -9,11 +9,9 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services;
 
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Required;
-
 
 /**
  * @author Remco Bos
@@ -40,5 +38,4 @@ public abstract class HibernateService {
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }
-
 }

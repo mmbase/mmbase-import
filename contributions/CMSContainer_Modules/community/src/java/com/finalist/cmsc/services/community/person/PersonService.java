@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.person;
 
-import java.io.Serializable;
-import java.util.Map;
-
 /**
  * This service encapsulates the management of people and groups.
  * 
@@ -19,17 +16,15 @@ import java.util.Map;
  * some other implementation such as LDAP or via NTLM. Some properties may in
  * the repository and some in another store. Individual properties may or may
  * not be mutable.
+ * 
+ * @author Remco Bos
  */
 public interface PersonService {
 
-    public Person getPerson(String userName);
+    Person getPersonByUserId(String userId);
     
-    public boolean personExists(String userName);
+    void createPerson(String firstName, String infix, String lastName, String userId);
 
-    public void setPersonProperties(String userName, Map<String, Serializable> properties);
-
-    public Person createPerson(Map<String, Serializable> properties);
-
-    public void deletePerson(String userName);
+    void deletePersonByUserId(String userId);
 
 }

@@ -35,8 +35,8 @@
 									<fmt:message key="modules.newsletter" />
 									</a> </li>
 							</mm:haspage>
-							<mm:haspage page="/editors/community/admin.jsp">
-								<li class="versioning"><a href="<mm:url page="../community/admin.jsp"/>" target="rightpane">
+							<mm:haspage page="/editors/community/index.jsp">
+								<li class="versioning"><a href="<mm:url page="../community/index.jsp"/>" target="rightpane">
 									<fmt:message key="modules.community" />
 									</a> </li>
 							</mm:haspage>

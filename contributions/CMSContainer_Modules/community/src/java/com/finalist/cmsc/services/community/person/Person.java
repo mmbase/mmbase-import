@@ -9,25 +9,14 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.person;
 
-import javax.persistence.Table;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-import java.util.Date;
-import java.util.Map;
-import java.util.Iterator;
-import java.io.Serializable;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Person (actually User) entity (loosely based on the P3P 1.0 specification, see http://www.w3.org/TR/P3P/ )
- *
- * Not implemented:
- *   HomeInfo (User's Home Contact Information)
- *   BusinessInfo (User's Business Contact Information)
- *
  * @author Remco Bos
  */
-
 @Entity
 @Table(name = "people")
 public class Person {
@@ -36,174 +25,102 @@ public class Person {
     @GeneratedValue
     private Long id;
 
-    private Long authenticationId; // his/her credentials (usually his e-mail adress and password)
+    private Long authenticationId; // his/her credentials (usually an e-mail adress and password)
 
-    /* User Name */
-    private String prefix;         // Name Prefix
-    private String given;          // Given Name (First Name)
-    private String family;         // Family Name (Last Name)
-    private String middle;         // Middle Name
-    private String suffix;         // Name Suffix
-    private String nickname;       // Nickname
-
-    /* User Details */
-    private Date bdate;            // User's Birth Date
-    private String login;          // User's Login Information
-    private String cert;           // User's Identity Certificate
-    private String gender;         // User's Gender (Male or Female)
-    private String employer;       // User's Employer
-    private String department;     // Department or Division of Organization where User is Employed
-    private String jobtitle;       // User's Job Title
-
-    /* Online information */
-    private String email;          // Email Address
-    private String uri;            // Home Page Address
+    private String firstName;
+    private String lastName;
+    private String infix; 
+    private String nickname;
+    private String email;
+    private String uri;
 
     public Long getId() {
-        return id;
-    }
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public Long getAuthenticationId() {
+		return authenticationId;
+	}
+	public void setAuthenticationId(Long authenticationId) {
+		this.authenticationId = authenticationId;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getInfix() {
+		return infix;
+	}
+	public void setInfix(String infix) {
+		this.infix = infix;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getUri() {
+		return uri;
+	}
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + ((infix == null) ? 0 : infix.hashCode());
+		result = prime * result
+				+ ((lastName == null) ? 0 : lastName.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Person other = (Person) obj;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (infix == null) {
+			if (other.infix != null)
+				return false;
+		} else if (!infix.equals(other.infix))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
+		return true;
+	}
+	
+	
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getGiven() {
-        return given;
-    }
-
-    public void setGiven(String given) {
-        this.given = given;
-    }
-
-    public String getFamily() {
-        return family;
-    }
-
-    public void setFamily(String family) {
-        this.family = family;
-    }
-
-    public String getMiddle() {
-        return middle;
-    }
-
-    public void setMiddle(String middle) {
-        this.middle = middle;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public Date getBdate() {
-        return bdate;
-    }
-
-    public void setBdate(Date bdate) {
-        this.bdate = bdate;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getCert() {
-        return cert;
-    }
-
-    public void setCert(String cert) {
-        this.cert = cert;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getEmployer() {
-        return employer;
-    }
-
-    public void setEmployer(String employer) {
-        this.employer = employer;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getJobtitle() {
-        return jobtitle;
-    }
-
-    public void setJobtitle(String jobtitle) {
-        this.jobtitle = jobtitle;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public Long getAuthenticationId() {
-        return authenticationId;
-    }
-
-    public void setAuthenticationId(Long authenticationId) {
-        this.authenticationId = authenticationId;
-    }
-
-    public void setProperties(Map<String, Serializable> properties) {
-//        for (String key : properties.keySet()) {
-//            if (key.equalsIgnoreCase("firstName")) {
-//                String firstName = (String)properties.get(key);
-//            }
-//        }
-        if (properties.get("firstName") != null) setGiven((String)properties.get("firstName"));
-    }
-    private boolean isEmpty(String stringValue) {
-        return stringValue == null || stringValue.equals("");
-    }
 }

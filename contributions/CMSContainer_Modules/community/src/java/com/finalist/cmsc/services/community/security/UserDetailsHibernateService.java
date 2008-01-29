@@ -48,14 +48,14 @@ public class UserDetailsHibernateService extends HibernateService implements Use
 
         /* Get authorities */
         Set<Authority> authorities = authentication.getAuthorities();
-        List grantedAuthorities = new ArrayList();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
         for (Authority authority : authorities) {
             grantedAuthorities.add(new GrantedAuthorityImpl(authority.getName()));
         }
         GrantedAuthority[] grantedAuthorityArray = (GrantedAuthority[]) grantedAuthorities.toArray(new GrantedAuthority[grantedAuthorities.size()]);
 
         /* Create user object */
-        User user = new User(authentication.getUserName(), authentication.getPassword(), authentication.isEnabled(), true, true, true, grantedAuthorityArray);
+        User user = new User(authentication.getUserId(), authentication.getPassword(), authentication.isEnabled(), true, true, true, grantedAuthorityArray);
         return user;
     }
 
