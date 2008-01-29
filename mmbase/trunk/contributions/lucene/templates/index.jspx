@@ -31,6 +31,7 @@
           <mm:url id="ok" write="false" page="/mmbase/style/images/ok.png" />
           <mm:url id="reload" write="false" page="/mmbase/style/images/reload.png" />
         </mm:context>
+        <mm:import id="durationformat">H'h' m'min' ss's'</mm:import>
         <table summary="Lucene indices">
           <col />
           <col />
@@ -44,7 +45,7 @@
             <th>name</th>
             <th>description</th>
             <th># of entries in index</th>
-            <th>last full index</th>
+            <th>last full index (duration)</th>
             <th>recent errors</th>
             <th>results</th>
             <th>search</th>
@@ -80,7 +81,7 @@
                   <mm:function module="lucene" referids="index" name="last">
                     <mm:time format="yyyy-MM-dd HH:mm" />
                   </mm:function>
-                  (
+                  <jsp:text> (</jsp:text>
                   <mm:function module="lucene" referids="index" name="lastduration">
                     <c:choose>
                       <c:when test="${_ eq -1}">
@@ -88,12 +89,13 @@
                       </c:when>
                       <c:otherwise>
                         <mm:write value="${_ / 1000}" vartype="integer">
-                          <mm:time timezone="utc" format="HH:mm:ss" />
+                          <c:set var="total">${empty total ? _ : _ + total}</c:set>
+                          <mm:time timezone="utc" format="${durationformat}" />
                         </mm:write>
                       </c:otherwise>
                     </c:choose>
                   </mm:function>
-                  )
+                  <jsp:text>) </jsp:text>
                 </td>
                 <td>
                   <mm:functioncontainer>
@@ -131,6 +133,17 @@
               ${exception1}<![CDATA[</td></tr>]]>
             </c:if>
           </mm:listfunction>
+          <tr>
+            <td colspan="3"><jsp:text> </jsp:text></td>
+            <td>
+              <c:if test="${! empty total}">
+                <jsp:text>total:  </jsp:text>
+                <mm:write referid="total">
+                  <mm:time timezone="utc" format="${durationformat}" />
+                </mm:write>
+              </c:if>
+            </td>
+          </tr>
         </table>
         <hr />
         <mm:import externid="fullindex" />
