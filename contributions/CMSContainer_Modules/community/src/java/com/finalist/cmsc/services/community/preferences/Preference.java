@@ -28,8 +28,9 @@ public class Preference implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
+    
     private String module;
-    private Long userId;
+    private Long authenticationId;
     private String key;
     private String value;
 
@@ -49,12 +50,12 @@ public class Preference implements Serializable {
         this.module = module;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getAuthenticationId() {
+        return authenticationId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAuthenticationId(Long authenticationId) {
+        this.authenticationId = authenticationId;
     }
 
     public String getKey() {
@@ -65,11 +66,54 @@ public class Preference implements Serializable {
         this.key = key;
     }
 
-    public String getValue() {
+	public String getValue() {
         return value;
     }
 
     public void setValue(String value) {
         this.value = value;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		result = prime * result + ((module == null) ? 0 : module.hashCode());
+		result = prime * result + ((authenticationId == null) ? 0 : authenticationId.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Preference other = (Preference) obj;
+		if (key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!key.equals(other.key))
+			return false;
+		if (module == null) {
+			if (other.module != null)
+				return false;
+		} else if (!module.equals(other.module))
+			return false;
+		if (authenticationId == null) {
+			if (other.authenticationId != null)
+				return false;
+		} else if (!authenticationId.equals(other.authenticationId))
+			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		return true;
+	}
 }

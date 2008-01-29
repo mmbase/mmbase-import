@@ -45,16 +45,18 @@ public interface AuthorityService {
 
     /**
      * Does an authority exist?
+     * 
      * @param authorityName
      * @return boolean true if the authority exists, otherwise false
      */
     boolean authorityExists(String authorityName);
 
     /**
+     * Finds the authoritdy 
      * @param authorityName
      * @return Authority with the requested name (if it exists)
      */
-    Authority findAuthorityByAuthorityName(String authorityName);
+    Authority findAuthorityByName(String authorityName);
 
 //    boolean isAdminAuthority(String authorityName);
 //    void addAuthority(String parentName, String childName);

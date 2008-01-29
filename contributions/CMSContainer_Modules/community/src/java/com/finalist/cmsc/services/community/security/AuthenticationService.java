@@ -17,90 +17,97 @@ public interface AuthenticationService {
     /**
      * Create an authentication
      *
-     * @param userName
+     * @param userId
      * @param password
      */
-    void createAuthentication(String userName, String password);
+    void createAuthentication(String userId, String password);
 
     /**
      * Update the login information for the authentication (typically called by the user)
      *
-     * @param userName
+     * @param userId
      * @param oldPassword
      * @param newPassword
      */
-    void updateAuthentication(String userName, String oldPassword, String newPassword);
+    void updateAuthentication(String userId, String oldPassword, String newPassword);
 
     /**
      * Set the login information for an authentication (typically called by an admin user)
      *
-     * @param userName
+     * @param userId
      * @param newPassword
      */
-    void updateAuthenticationPassword(String userName, String newPassword);
+    void updateAuthenticationPassword(String userId, String newPassword);
 
 
     /**
      * Delete an authentication entry
      * TODO if a authentication is deleted, what should happen with the user's content (in other systems)?
      *
-     * @param userName
+     * @param userId
      */
-    void deleteAuthentication(String userName);
+    void deleteAuthentication(String userId);
 
     /**
      * Check if the given authentication exists
      *
-     * @param userName
+     * @param userId
      * @return boolean returns true if a user exists, otherwise it returns false
      */
-    boolean authenticationExists(String userName);
+    boolean authenticationExists(String userId);
 
     /**
      * Enable or disable a authentication
      *
-     * @param userName
+     * @param userId
      * @param enabled
      */
-    void setAuthenticationEnabled(String userName, boolean enabled);
+    void setAuthenticationEnabled(String userId, boolean enabled);
 
     /**
      * Is an authentication enabled or disabled?
      *
-     * @param userName
+     * @param userId
      * @return boolean returns true if a user is enabled, otherwise it returns false
      */
-    boolean isAuthenticationEnabled(String userName);
+    boolean isAuthenticationEnabled(String userId);
 
     /**
      * Carry out an authentication attempt
      *
-     * @param userName
+     * @param userId
      * @param password
      */
-    boolean authenticate(String userName, String password);
+    boolean authenticate(String userId, String password);
 
     /**
      * Adds an authority to a user
      *
-     * @param userName
+     * @param userId
      * @param authority
      */
-    void addAuthorityToUser(String userName, String authority);
+    void addAuthorityToUser(String userId, String authority);
 
     /**
      * Removes an authority from a user
      *
-     * @param userName
+     * @param userId
      * @param authority
      */
-    void removeAuthorityFromUser(String userName, String authority);
+    void removeAuthorityFromUser(String userId, String authority);
 
     /**
-     * Finds an authentication object for this userName
+     * Finds an authentication object for this userId
      * 
-     * @param userName
+     * @param userId
      * @return authentication
      */
-    Authentication findAuthentication(String userName);
+    Authentication findAuthentication(String userId);
+
+    /**
+     * Finds an authentication id for this userId
+     * @param userId
+     * @return authenticationId
+     */ 
+	Long getAuthenticationIdForUserId(String userId);
 }

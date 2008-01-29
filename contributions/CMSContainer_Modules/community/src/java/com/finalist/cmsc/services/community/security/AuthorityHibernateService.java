@@ -24,38 +24,38 @@ import com.finalist.cmsc.services.HibernateService;
 
 
 /**
- * @author  Remco Bos
+ * @author Remco Bos
  */
 public class AuthorityHibernateService extends HibernateService implements AuthorityService {
 
     /** {@inheritDoc} */
     @Transactional
-    public void createAuthority(String parentName, String authorityName) {
+    public void createAuthority(String parentName, String name) {
         Authority authority = new Authority();
-        authority.setName(authorityName);
+        authority.setName(name);
         getSession().save(authority);
     }
 
     /** {@inheritDoc} */
     @Transactional
-    public void deleteAuthority(String authorityName) {
-        Authority authority = findAuthorityByAuthorityName(authorityName);
+    public void deleteAuthority(String name) {
+        Authority authority = findAuthorityByName(name);
         getSession().delete(authority);
     }
 
     /** {@inheritDoc} */
     @Transactional(readOnly = true)
-    public boolean authorityExists(String authorityName) {
-        Authority authority = findAuthorityByAuthorityName(authorityName);
+    public boolean authorityExists(String name) {
+        Authority authority = findAuthorityByName(name);
         return authority != null;
     }
 
     /** {@inheritDoc} */
     @Transactional(readOnly = true)
-    public Authority findAuthorityByAuthorityName(String authorityName) {
+    public Authority findAuthorityByName(String name) {
         Criteria criteria = getSession()
                 .createCriteria(Authority.class)
-                .add(Restrictions.eq("authorityName", authorityName));
+                .add(Restrictions.eq("name", name));
         return findAuthorityByCriteria(criteria);
     }
 
@@ -68,19 +68,21 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 
     /** {@inheritDoc} */
     @Transactional(readOnly = true)
-    public Set<String> getAuthorityNamesForUser(String userName) {
+    public Set<String> getAuthorityNamesForUser(String userId) {
         Criteria criteria = getSession()
                 .createCriteria(Authority.class)
                 .createCriteria("authentications")
-                .add(Restrictions.eq("userName", userName));
+                .add(Restrictions.eq("userId", userId));
         return findAuthorityNamesByCriteria(criteria);
     }
 
-    private Authority findAuthorityByCriteria(Criteria criteria) {
+    @SuppressWarnings("unchecked")
+	private Authority findAuthorityByCriteria(Criteria criteria) {
         List authorities = criteria.list();
         return authorities.size() == 1 ? (Authority) authorities.get(0) : null;
     }
 
+    @SuppressWarnings("unchecked")
     private Set<String> findAuthorityNamesByCriteria(Criteria criteria) {
         List authorityList = criteria.list();
         Set<String> result = new HashSet<String>();

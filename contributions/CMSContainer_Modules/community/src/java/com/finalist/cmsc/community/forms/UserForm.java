@@ -1,18 +1,28 @@
-package com.finalist.cmsc.community.forms;
+/*
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/package com.finalist.cmsc.community.forms;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 
 /**
  * @author Remco Bos
  */
 public class UserForm extends ActionForm {
 
-    private String action;
+	private static final long serialVersionUID = 1L;
+
+	private String action;
 
     private String email;
     private String password;
