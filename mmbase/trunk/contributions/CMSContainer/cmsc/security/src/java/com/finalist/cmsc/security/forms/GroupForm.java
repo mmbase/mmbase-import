@@ -9,14 +9,11 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.security.forms;
 
-import org.apache.struts.action.*;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.util.platform.setUser;
-
-import com.finalist.cmsc.struts.MMBaseAction;
-import com.finalist.cmsc.struts.MMBaseForm;
-
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionMapping;
+
+import com.finalist.cmsc.struts.MMBaseForm;
 
 @SuppressWarnings("serial")
 public class GroupForm extends MMBaseForm {
