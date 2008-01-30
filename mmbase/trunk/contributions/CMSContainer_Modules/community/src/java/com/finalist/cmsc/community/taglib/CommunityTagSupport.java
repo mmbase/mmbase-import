@@ -7,8 +7,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -18,9 +16,10 @@ import com.finalist.cmsc.services.community.preferences.PreferenceService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 import com.finalist.cmsc.services.community.security.AuthorityService;
 
+/**
+ * @author Wouter Heijke
+ */
 public abstract class CommunityTagSupport extends SimpleTagSupport {
-
-	private static Log log = LogFactory.getLog(CommunityTagSupport.class);
 
 	private WebApplicationContext ctx;
 	
@@ -34,9 +33,6 @@ public abstract class CommunityTagSupport extends SimpleTagSupport {
 	
 	@Override
 	public void doTag() throws JspException, IOException {
-		// WebApplicationContext context =
-		// WebApplicationContextUtils.getRequiredWebApplicationContext(((PageContext)
-		// getJspContext()).getServletContext());
 		PageContext pctx = (PageContext) getJspContext();
 		HttpServletRequest req = (HttpServletRequest) pctx.getRequest();
 		
