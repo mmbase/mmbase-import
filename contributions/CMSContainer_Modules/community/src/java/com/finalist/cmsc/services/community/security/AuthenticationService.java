@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.security;
 
+import java.util.List;
+
 /**
  * @author Remco Bos
  */
@@ -104,6 +106,14 @@ public interface AuthenticationService {
      */
     Authentication findAuthentication(String userId);
 
+    /**
+     * Finds an authentication object for this userId
+     * 
+     * @param userId
+     * @return authentication
+     */
+    List<Authentication> findAuthentications();
+    
     /**
      * Finds an authentication id for this userId
      * @param userId
