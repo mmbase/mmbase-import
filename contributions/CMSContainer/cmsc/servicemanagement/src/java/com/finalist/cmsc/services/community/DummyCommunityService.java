@@ -14,7 +14,7 @@ import javax.portlet.ActionResponse;
  */
 public class DummyCommunityService extends CommunityService {
 
-   public boolean loginUser(ActionRequest request, ActionResponse response, String username, String password) {
+   public boolean loginUser(ActionRequest request, ActionResponse response) {
       return false;
    }
 
