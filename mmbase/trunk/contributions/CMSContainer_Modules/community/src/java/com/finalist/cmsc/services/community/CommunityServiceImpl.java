@@ -24,7 +24,8 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.finalist.cmsc.services.Properties;
@@ -39,15 +40,13 @@ public class CommunityServiceImpl extends CommunityService {
 
     private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
     
-	private WebApplicationContext applicationContext;
 	private AuthenticationManager authenticationManager;
     private PreferenceService preferenceService;
     
     @Override
 	protected void init(ServletConfig config, Properties properties) throws Exception {
-		applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
-		authenticationManager = (AuthenticationManager)applicationContext.getBean("authenticationManager");
-		preferenceService = (PreferenceService)applicationContext.getBean("preferenceService");
+    	ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+    	ac.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
 	}
 
 	public boolean loginUser(ActionRequest request, ActionResponse response, String userName, String password) {
