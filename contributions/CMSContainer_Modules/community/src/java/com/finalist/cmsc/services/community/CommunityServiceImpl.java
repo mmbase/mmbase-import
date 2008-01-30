@@ -87,8 +87,8 @@ public class CommunityServiceImpl extends CommunityService {
     	return preferenceService.getPreferencesByUserId(userId);
     }
 
-    public Map<String, String> getPreferences(String module, String userId, String key) {
-    	return preferenceService.getPreferences(module, userId, key);
+    public List<String> getPreferenceValues(String module, String userId, String key) {
+    	return preferenceService.getPreferenceValues(module, userId, key);
     }
 
     public void createPreference(String module, String userId, String key, String value) {
@@ -98,32 +98,46 @@ public class CommunityServiceImpl extends CommunityService {
     public void deletePreference(String module, String userId, String key, String value) {
     	preferenceService.deletePreference(module, userId, key, value);
     }
-
+    
     //TODO: replace the previous methods by methods who accept the following
     //      properties!
+    
+    /** 
+     * @deprecated please try to use another service 
+     */
 	@Override
-	public void createPreference(String module, String userId, String key,
-			List<String> values) {
-		// TODO Auto-generated method stub
-		
+	public void createPreference(String module, String userId, String key, List<String> values) {
+		for(String value : values) {
+			preferenceService.createPreference(module, userId, key, value);
+		}
 	}
 
+    /** 
+     * @deprecated please try to use another service 
+     */
 	@Override
 	public Map<String, Map<String, List<String>>> getPreferences(String module,
 			String userId, String key, String value) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /** 
+     * @deprecated please try to use another service 
+     */
 	@Override
-	public Map<String, Map<String, String>> getUserProperty(String userName) {
-		// TODO Auto-generated method stub
+	public Map<String, Map<String, String>> getUserProperty(String userId) {
+//		return preferenceService.getPreferencesByUserId(userId);
 		return null;
 	}
 
+    /** 
+     * @deprecated please try to use another service 
+     */
 	@Override
 	public void removePreferences(String module, String userId, String key) {
-		// TODO Auto-generated method stub
-		
+		List<String> valueList = preferenceService.getPreferenceValues(module, userId, key);
+		for (String value : valueList) {
+			preferenceService.deletePreference(module, userId, key, value);
+		}
 	}
 }
