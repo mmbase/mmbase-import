@@ -33,6 +33,10 @@
             validate="true">
       <forward name="success" path="/editors/community/index.jsp" redirect="true" />
     </action>
+    <action path="/editors/community/deleteUserAction" type="com.finalist.cmsc.community.forms.DeleteUserAction"
+       unknown="false" validate="false">
+       <forward name="success" path="/editors/community/index.jsp" redirect="false" />
+    </action>
   </action-mappings>
 
   <message-resources parameter="cmsc-community" key="COMMUNITY" />
