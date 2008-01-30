@@ -53,20 +53,19 @@
 					          <table>
 					            <thead>
 					               <tr>
-					                  <th>
-					                  </th>
-					                  <th><fmt:message key="locate.typecolumn" /></th>
+					                  <th style="width: 56px;"></th>
+					                  <th style="width: 68px;"><fmt:message key="locate.typecolumn" /></th>
 					                  <th><fmt:message key="locate.titlecolumn" /></th>
-					                  <th><fmt:message key="locate.authorcolumn" /></th>
-					                  <th><fmt:message key="locate.lastmodifiedcolumn" /></th>
-					                  <th><fmt:message key="locate.numbercolumn" /></th>
+					                  <th style="width: 50px;"><fmt:message key="locate.authorcolumn" /></th>
+					                  <th style="width: 120px;"><fmt:message key="locate.lastmodifiedcolumn" /></th>
+					                  <th style="width: 60px;"><fmt:message key="locate.numbercolumn" /></th>
 					               </tr>
 					            </thead>
 					            <tbody class="hover">
 					      </mm:first>
 					
 					      <tr <mm:even inverse="true">class="swap"</mm:even>>
-					         <td nowrap width="80">
+					         <td nowrap>
 					        	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="recyclebin.info" />" title="<fmt:message key="recyclebin.info" />"/></a>
 					        	<a href="javascript:permanentDelete('<mm:field name="number" />', '<fmt:message key="recyclebin.removeconfirm" />', '${offset}');"><img src="../gfx/icons/delete.png" width="16" height="16" alt="<fmt:message key="recyclebin.remove" />" title="<fmt:message key="recyclebin.remove" />"/></a>
 							  <% if (RepositoryUtil.hasDeletionChannels(node)) { %>
@@ -77,9 +76,9 @@
 				            	  <mm:nodeinfo type="guitype"/>
 				               </td>
 				               <td><mm:field name="title"/></td>
-				               <td width="50"><mm:field name="lastmodifier" /></td>
-					         <td width="120" nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
-					         <td width="60"><mm:field name="number"/></td>
+				               <td><mm:field name="lastmodifier" /></td>
+					         <td nowrap><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
+					         <td><mm:field name="number"/></td>
 					      </tr>
 					
 					      <mm:last>
