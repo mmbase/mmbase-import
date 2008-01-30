@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.preferences;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -30,8 +31,13 @@ public class Preference implements Serializable {
     private Long id;
     
     private String module;
+    
     private Long authenticationId;
+    
+    @Column(name = "preferenceKey")
     private String key;
+    
+    @Column(name = "preferenceValue")
     private String value;
 
     public Long getId() {
