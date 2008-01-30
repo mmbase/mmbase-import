@@ -3,12 +3,19 @@
 <%@page import="com.finalist.cmsc.repository.ContentElementUtil,
                  com.finalist.cmsc.repository.RepositoryUtil,
                  java.util.ArrayList"%>
+<%@ page import="com.finalist.cmsc.security.UserRole" %>
+<%@ page import="com.finalist.cmsc.security.SecurityUtil" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="search.title">
       <script src="content.js" type="text/javascript"></script>
       <script src="search.js" type="text/javascript"></script>
+    <c:if test="${not empty requestScope.refreshChannels}">
+        <script>
+        refreshFrame('channels');
+        </script>
+    </c:if>
 </cmscedit:head>
 <body>
 <mm:import id="searchinit"><c:url value='/editors/repository/SearchInitAction.do'/></mm:import>
@@ -81,6 +88,7 @@
          <html:hidden property="offset"/>
          <html:hidden property="order"/>
          <html:hidden property="direction"/>
+         <input type="hidden" name="deleteContentRequest"/>
          <mm:present referid="returnurl"><input type="hidden" name="returnurl" value="<mm:write referid="returnurl"/>"/></mm:present>
 
          <table>
@@ -348,8 +356,9 @@
          <mm:node number="${number}">
 
 		      <mm:relatednodes role="creationrel" type="contentchannel">
-		         <mm:field name="number" id="creationnumber" write="false"/>
-		         <mm:compare referid="trashnumber" referid2="creationnumber">
+		         <mm:field name="number" id="creationnumber" write="false" jspvar="cnumber"/>
+               <c:set var="cn" value="${cnumber}"/>
+               <mm:compare referid="trashnumber" referid2="creationnumber">
 		         	 <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
 						 <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
 						 <c:set var="channelIconMessage"><fmt:message key="search.trash" /></c:set>
@@ -357,9 +366,9 @@
 		         </mm:compare>
 		         <mm:compare referid="trashnumber" referid2="creationnumber" inverse="true">
 			          <mm:field name="number" jspvar="channelNumber" write="false"/>
-			          <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
+                   <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
+                   <mm:field name="name" jspvar="channelName" write="false"/>
 
-			          <mm:field name="name" jspvar="channelName" write="false"/>
 						 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
 						 <c:set var="channelIconMessage"><fmt:message key="role.${rights}" /></c:set>
 						 <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
@@ -385,12 +394,12 @@
 		            <mm:compare referid="action" value="select">
 		            	<script>
 		            		function link<mm:field name="number"/>() {
-			            		selectElement('<mm:field name="number" />', 
-			            					'<mm:field name="title" escape="js-single-quotes"/>', 
+			            		selectElement('<mm:field name="number" />',
+			            					'<mm:field name="title" escape="js-single-quotes"/>',
 			            					'<cmsc:staticurl page="/content/" /><mm:field name="number"/>')
 			            	}
 			            </script>
-		           	
+
 		               <a href="#" onClick="link<mm:field name="number" />();">
 		                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
 		            </mm:compare>
@@ -398,7 +407,29 @@
 		               <a href="#" onClick="top.opener.selectContent('<mm:field name="number" />', '', ''); top.close();">
 		                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
 		            </mm:compare>
-		            <a href="#" onclick="showItem(<mm:field name="number" />);" ><img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" /></a>
+
+                  <c:set var="actionURL">
+                      <c:choose>
+						<c:when test="${channelName eq 'Recycle bin'}">
+							javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>' )
+						</c:when>
+						<c:otherwise>
+							javascript:deleteContent('<mm:field name='number'/>')
+						</c:otherwise>
+						</c:choose>
+                  </c:set>
+
+               <%  Integer cn = (Integer)pageContext.findAttribute("cn");
+                   Node channel = cloud.getNode(cn);
+                   UserRole role = RepositoryUtil.getRole(cloud,channel,false);
+                   if (role != null && SecurityUtil.isWriter(role)) { %>
+               <a href="${actionURL}" title="Linked">
+						<img src="../gfx/icons/delete.png" title="Linked Del" alt="Linked Del"/>
+					</a>
+               <%}%>
+               <a href="#" onclick="showItem(<mm:field name="number"/>);">
+						<img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" />
+					</a>
 		            <mm:field name="number"  write="false" id="nodenumber">
 		               <a href="<cmsc:contenturl number="${nodenumber}"/>" target="_blank"><img src="../gfx/icons/preview.png" alt="<fmt:message key="searchform.icon.preview.title" />" title="<fmt:message key="searchform.icon.preview.title" />" /></a>
 		            </mm:field>
@@ -411,14 +442,14 @@
 			            </mm:haspage>
 							<cmsc:hasfeature name="savedformmodule">
 								<c:set var="typeval">
-				          			<mm:nodeinfo type="type" />          	
-				          		</c:set> 
-				          		<c:if test="${typeval == 'responseform'}">         
+				          			<mm:nodeinfo type="type" />
+				          		</c:set>
+				          		<c:if test="${typeval == 'responseform'}">
 					          		<mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
 						            	<mm:param name="nodenumber"><mm:field name="number" /></mm:param>
                                         <mm:param name="initreturnurl" value="/editors/repository/SearchAction.do${geturl}" />
-						       		</mm:url>                   
-						       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
+						       		</mm:url>
+						       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>
 				           		</c:if>
 							</cmsc:hasfeature>
 						</mm:compare>
