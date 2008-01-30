@@ -23,8 +23,8 @@ public class Community {
          .getService(CommunityService.class);
 
 
-   public static boolean loginUser(ActionRequest request, ActionResponse response, String userText, String passText) {
-      return cService.loginUser(request, response, userText, passText);
+   public static boolean loginUser(ActionRequest request, ActionResponse response) {
+      return cService.loginUser(request, response);
    }
 
 

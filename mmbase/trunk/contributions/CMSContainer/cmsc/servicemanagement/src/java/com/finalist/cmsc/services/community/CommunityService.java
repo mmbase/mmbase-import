@@ -16,7 +16,8 @@ import com.finalist.cmsc.services.Service;
  * @author menno menninga
  */
 public abstract class CommunityService extends Service {
-   public abstract boolean loginUser(ActionRequest request, ActionResponse response, String userText, String passText);
+	
+   public abstract boolean loginUser(ActionRequest request, ActionResponse response);
 
    public abstract boolean logoutUser(ActionRequest request, ActionResponse response);
 
