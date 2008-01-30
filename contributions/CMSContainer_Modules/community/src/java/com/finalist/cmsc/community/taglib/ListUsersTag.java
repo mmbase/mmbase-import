@@ -10,6 +10,9 @@ import javax.servlet.jsp.PageContext;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
 
+/**
+ * @author Wouter Heijke
+ */
 public class ListUsersTag extends CommunityTagSupport {
 
 	private String var;
