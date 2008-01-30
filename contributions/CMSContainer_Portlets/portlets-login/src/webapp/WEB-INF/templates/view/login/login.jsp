@@ -1,5 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%--
 
 LOGIN RESULTS HERE
@@ -47,7 +46,7 @@ LOGIN HERE
 						<fmt:message key="view.user" />
 					</td>
 					<td>
-						<input type="text" id="userText" name="userText" class="userText" value="${userText}" />
+						<input type="text" id="j_username" name="userText" class="userText" value="${userText}" />
 					</td>
 				</tr>
 				<tr>
@@ -55,7 +54,7 @@ LOGIN HERE
                     	<fmt:message key="view.pass" />
                 	</td>
                 	<td>
-                    	<input type="password" id="passText" name="passText" class="passText" value="${passText}" />
+                    	<input type="password" id="j_password" name="passText" class="passText" value="${passText}" />
                 	</td>
             	</tr>
 				<tr>
