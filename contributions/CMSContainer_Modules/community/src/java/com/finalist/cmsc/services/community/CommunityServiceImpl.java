@@ -38,7 +38,11 @@ import com.finalist.cmsc.services.community.preferences.PreferenceService;
  */
 public class CommunityServiceImpl extends CommunityService {
 
-    private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
+	public static final String ACEGI_SECURITY_FORM_USERNAME_KEY = "j_username";
+	public static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "j_password";
+	public static final String ACEGI_SECURITY_LAST_USERNAME_KEY = "ACEGI_SECURITY_LAST_USERNAME";
+	
+	private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
     
 	private AuthenticationManager authenticationManager;
     private PreferenceService preferenceService;
@@ -49,7 +53,10 @@ public class CommunityServiceImpl extends CommunityService {
     	ac.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
 	}
 
-	public boolean loginUser(ActionRequest request, ActionResponse response, String userName, String password) {
+	public boolean loginUser(ActionRequest request, ActionResponse response) {
+        String userName = request.getParameter(ACEGI_SECURITY_FORM_USERNAME_KEY);
+        String password = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
+        
         if (userName == null) {
             userName = "";
         }
@@ -58,7 +65,7 @@ public class CommunityServiceImpl extends CommunityService {
         }
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
         // Place the last username attempted into PortletSession for views
-        request.getPortletSession().setAttribute("ACEGI_SECURITY_LAST_USERNAME", userName);
+        request.getPortletSession().setAttribute(ACEGI_SECURITY_LAST_USERNAME_KEY, userName);
 
         boolean loginSuccesfull = false;
         try {
