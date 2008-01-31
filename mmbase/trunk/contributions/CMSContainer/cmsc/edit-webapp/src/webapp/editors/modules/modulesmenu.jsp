@@ -35,11 +35,12 @@
 									<fmt:message key="modules.newsletter" />
 									</a> </li>
 							</mm:haspage>
-							<mm:haspage page="/editors/community/index.jsp">
-								<li class="versioning"><a href="<mm:url page="../community/index.jsp"/>" target="rightpane">
-									<fmt:message key="modules.community" />
-									</a> </li>
-							</mm:haspage>
+                     <mm:haspage page="/editors/community">
+                        <li class="users">
+                           <c:url var="communityUrl" value="/editors/community/index.jsp"/>
+                           <a href="${communityUrl}" target="rightpane"><fmt:message key="modules.community" /></a>
+                        </li>
+                     </mm:haspage>
                      <mm:haspage page="/editors/subsite/module-subsite.jsp">
                         <li class="versioning"><a href="<mm:url page="../subsite/module-subsite.jsp"/>" target="rightpane">
                            <fmt:message key="modules.subsite" />
