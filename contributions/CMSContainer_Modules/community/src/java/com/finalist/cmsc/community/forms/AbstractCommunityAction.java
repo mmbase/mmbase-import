@@ -9,6 +9,12 @@
  */
 package com.finalist.cmsc.community.forms;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.action.ActionForm;
 import org.springframework.web.struts.ActionSupport;
 import org.springframework.web.context.WebApplicationContext;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
@@ -24,6 +30,10 @@ public class AbstractCommunityAction extends ActionSupport {
 	protected static final String ACTION_ADD = "add";
 
 	protected static final String ACTION_EDIT = "edit";
+	
+	protected static final String SUCCESS = "success";
+	
+	protected static final String USERID = "userid";
 
 	protected AuthenticationService getAuthenticationService() {
 		WebApplicationContext ctx = getWebApplicationContext();
@@ -43,5 +53,16 @@ public class AbstractCommunityAction extends ActionSupport {
 	protected PreferenceService getPreferenceService() {
 		WebApplicationContext ctx = getWebApplicationContext();
 		return (PreferenceService) ctx.getBean("preferenceService");
+	}
+
+	protected void removeFromSession(HttpServletRequest request, ActionForm form) {
+		HttpSession session = request.getSession();
+		for (Enumeration<String> iter = session.getAttributeNames(); iter.hasMoreElements();) {
+			String name = iter.nextElement();
+			Object value = session.getAttribute(name);
+			if (form == value) { // same reference
+				session.removeAttribute(name);
+			}
+		}
 	}
 }
