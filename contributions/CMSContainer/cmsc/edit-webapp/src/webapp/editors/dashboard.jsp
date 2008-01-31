@@ -57,7 +57,7 @@
 		<table>
          <thead>
             <tr>
-               <th style="width: 75px;"></th>
+               <th style="width: 80px;"></th>
                <th style="width: 150px;"><fmt:message key="dashboard.repository.date" /></th>
                <th style="width: 68px;"><fmt:message key="dashboard.repository.element" /></th>
                <th><fmt:message key="dashboard.repository.title" /></th>
@@ -70,7 +70,7 @@
                <tr <mm:even inverse="true">class="swap"</mm:even> href="javascript:window.top.openRepositoryWithContent('<mm:write referid="number"/>');">
 			   <td>
 					<a href="javascript:info('${number}')"><img src="gfx/icons/info.png" title="<fmt:message key="dashboard.content.info" />" alt="<fmt:message key="dashboard.content.info" />"/></a>
-					<a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="gfx/icons/preview.png" alt="<fmt:message key="dashboard.content.preview.title" />" title="<fmt:message key="dashboard.content.preview.title" />" /></a>
+					<a href="<cmsc:contenturl number="${number}"/>" target="_blank"><img src="gfx/icons/preview.png" alt="<fmt:message key="dashboard.content.preview.title" />" title="<fmt:message key="dashboard.content.preview.title" />" /></a>
 					<a href="javascript:window.top.openRepositoryWithContent('<mm:write referid="number"/>');"><img src="gfx/icons/edit.png" alt="<fmt:message key="dashboard.content.edit" />" title="<fmt:message key="dashboard.content.edit" />" /></a>
 					<mm:haspage page="/editors/versioning">
 					<c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
