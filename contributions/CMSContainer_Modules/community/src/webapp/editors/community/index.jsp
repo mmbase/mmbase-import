@@ -44,7 +44,7 @@
          <community:listUsers var="userList" />
          <c:forEach var="auth" items="${userList}">
             <tr>
-               <td style="padding-right: 10px"><a href="UserInitAction.do?id=${auth.userId}">${auth.userId}</a></td>
+               <td style="padding-right: 10px"><a href="userAddInitAction.do?userid=${auth.userId}">${auth.userId}</a></td>
                <td>
                   <a href="javascript:info('${auth.id}')">
                      <img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/>
