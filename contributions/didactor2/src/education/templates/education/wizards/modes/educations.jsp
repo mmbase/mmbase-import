@@ -39,7 +39,7 @@
           </span>
           <br /><!-- br's are silly -->
           <div id='node_0' style='display: none'>
-            <mm:node number="$user" jspvar="node">
+            <mm:node number="$user">
               <mm:hasrank value="administrator">
                 <mm:listnodes id="educations" type="educations" />
               </mm:hasrank>
@@ -78,20 +78,25 @@
 
             <mm:import id="educationId" externid="e">${education}</mm:import>
 
-
             <mm:isgreaterthan referid="number_of_educations" value="0">
               <!-- The Education starts from here -->
               <mm:node number="${educationId}">
                 <jsp:directive.include file="whichimage.jsp" />
                 <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
+                    <td>
+                      <!-- spacer.gifs are _evil_, silly and cause noise. JSP is code _too_. -->
+                      <img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/>
+                    </td>
                     <td>
                       <a href="javascript:clickNode('education_0')">
-                        <img src="gfx/tree_pluslast.gif" border="0" align="center" valign="middle" id="img_education_0"/>
+                        <img src="gfx/tree_pluslast.gif" border="0"
+                             align="center" valign="middle" id="img_education_0"/>
                       </a>
                     </td>
-                    <td><img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/></td>
+                    <td>
+                      <img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_education_0"/>
+                    </td>
                     <td>
                       <nobr>
                         <mm:link referid="wizardjsp" referids="_node@objectnumber">
@@ -133,7 +138,7 @@
                 </table>
 
                 <!--  We have to count all learnblocks.
-                     MM:I can see that. But why?
+                     MM: I can see that. But why?
                 -->
                 <mm:relatednodescontainer role="posrel" type="learnobjects" searchdirs="destination">
                   <mm:size id="number_of_learnblocks" write="false"/>
@@ -160,40 +165,41 @@
                         </mm:treefile>
                       </tr>
                     </table>
+                  </mm:hasnode>
 
 
-                    <!-- I think it is hackery -->
-                    <mm:hasnode number="component.portal">
-                      <table border="0" cellpadding="0" cellspacing="0">
-                        <tr>
-                          <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
-                          <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
-                          <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
-                          <mm:treefile write="false" page="/portal/wizards/index.jspx"
-                                       referids="language,educationId,$referids" objectlist="$includePath">
-
-                            <td>
-                              <nobr>
-                                <a href="${_}"
-                                   title="${di:translate('portal.portal')}"
-                                   target="text"><di:translate key="portal.portal" /></a>
-                              </nobr>
-                            </td>
-                          </mm:treefile>
-                        </tr>
-                      </table>
-                    </mm:hasnode>
-
-                    <mm:relatednodes path="posrel,learnblocks" element="posrel" orderby="posrel.pos" directions="down" max="1">
-                      <mm:field name="pos" id="maxpos" write="false" />
-                    </mm:relatednodes>
-
-                    <!-- create new learnblock item -->
+                  <!-- I think it is hackery -->
+                  <mm:hasnode number="component.portal">
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
-                        <mm:isgreaterthan referid="number_of_learnblocks" value="0">
-                          <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                        <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
+                        <td><img src='gfx/new_education.gif' width="16" border='0' align='middle' /></td>
+                        <mm:treefile write="false" page="/portal/wizards/index.jspx"
+                                     referids="language,educationId,$referids" objectlist="$includePath">
+
+                          <td>
+                            <nobr>
+                              <a href="${_}"
+                                 title="${di:translate('portal.portal')}"
+                                 target="text"><di:translate key="portal.portal" /></a>
+                            </nobr>
+                          </td>
+                        </mm:treefile>
+                      </tr>
+                    </table>
+                  </mm:hasnode>
+
+                  <mm:relatednodes path="posrel,learnblocks" element="posrel" orderby="posrel.pos" directions="down" max="1">
+                    <mm:field name="pos" id="maxpos" write="false" />
+                  </mm:relatednodes>
+
+                  <!-- create new learnblock item -->
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td><img src="gfx/tree_spacer.gif" width="32px" height="16px" border="0" align="center" valign="middle"/></td>
+                      <mm:isgreaterthan referid="number_of_learnblocks" value="0">
+                        <td><img src='gfx/tree_vertline-leaf.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
                         </mm:isgreaterthan>
                         <mm:islessthan    referid="number_of_learnblocks" value="1">
                           <td><img src='gfx/tree_leaflast.gif' border='0' align='center' valign='middle' id='img_node_0_1_2'/></td>
@@ -317,7 +323,6 @@
                         </mm:treeinclude>
                       </div>
                     </mm:relatednodes>
-                  </mm:hasnode>
                 </div>
               </mm:node>
             </mm:isgreaterthan>
