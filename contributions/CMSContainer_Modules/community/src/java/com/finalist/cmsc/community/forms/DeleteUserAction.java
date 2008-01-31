@@ -17,11 +17,11 @@ public class DeleteUserAction extends AbstractCommunityAction {
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
-		String userId = request.getParameter("userid");
+		String userId = request.getParameter(USERID);
 		if (userId != null) {
 			getPersonService().deletePersonByUserId(userId);
 			getAuthenticationService().deleteAuthentication(userId);
 		}
-		return mapping.findForward("success");
+		return mapping.findForward(SUCCESS);
 	}
 }
