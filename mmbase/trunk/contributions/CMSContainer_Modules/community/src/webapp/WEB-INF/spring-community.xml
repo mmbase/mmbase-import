@@ -126,5 +126,6 @@
   <bean name="authenticationService" class="com.finalist.cmsc.services.community.security.AuthenticationHibernateService" />
   <bean name="authorityService" class="com.finalist.cmsc.services.community.security.AuthorityHibernateService" />
   <bean name="preferenceService" class="com.finalist.cmsc.services.community.preferences.PreferenceHibernateService" />
+  <bean name="personService" class="com.finalist.cmsc.services.community.person.PersonHibernateService" />
 
 </beans>
