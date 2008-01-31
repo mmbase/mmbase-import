@@ -18,6 +18,12 @@
     <description xml:lang="en">Video part does not define format thats done by rawvideos</description>
   </descriptions>
 
+  <properties>
+    <property name="wizard">config/videotape/videotapes</property>
+    <property name="orderby">title</property>
+  </properties>
+
+
   <fieldlist>
     <field name="title">
       <gui>
@@ -29,10 +35,9 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
     <field name="subtitle">
       <gui>
@@ -44,10 +49,9 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
     <field name="playtime">
       <gui>
@@ -61,20 +65,18 @@
         <guiname xml:lang="nl">Samenvatting</guiname>
         <guiname xml:lang="en">Intro</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="2048" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="2048" />
+      </datatype>
     </field>
 
     <field name="url">
       <gui>
         <guiname xml:lang="en">url</guiname>
       </gui>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="body">
@@ -82,10 +84,9 @@
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
       </gui>
-      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="4000" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="4000" />
+      </datatype>
     </field>
 
     <field name="showtitle">

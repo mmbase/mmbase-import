@@ -24,6 +24,11 @@
     <description xml:lang="nl">Bijlage, zoals een PDF bestand</description>
   </descriptions>
 
+  <properties>
+    <property name="wizard">config/attachment/attachment</property>
+    <property name="orderby">title</property>
+  </properties>
+
   <fieldlist>
     <field name="title">
       <descriptions>

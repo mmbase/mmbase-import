@@ -35,6 +35,8 @@
 
 
   <properties>
+    <property name="wizard">config/image/image</property>
+    <property name="orderby">title</property>
 
      <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
     NOTE: not all features provided by ImageMagic are implemented in the JAI converter -->
