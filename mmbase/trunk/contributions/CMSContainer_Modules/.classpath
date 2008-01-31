@@ -49,31 +49,14 @@
 	<classpathentry kind="src" path="rating/src/java"/>
 	<classpathentry kind="src" path="knownvisitor/src/java"/>
 	<classpathentry kind="src" path="knownvisitor-ntlm/src/java"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.12.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/remotepublishing-1.0.14.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/cglib/jars/cglib-2.1_3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/cglib/jars/cglib-2.1.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/dom4j/Jars/dom4j-1.6.1.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-dbcp/jars/commons-dbcp-1.2.2.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-pool/jars/commons-pool-1.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/asm/jars/asm-1.5.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/javax.transaction/jars/jta-1.0.1B.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-aop-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-beans-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-context-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-core-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-dao-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-hibernate-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-jdbc-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-orm-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-remoting-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-support-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-web-1.2.7.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/ejb-persistence/jars/ejb3-persistence-3.1beta4.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.1.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-annotations-3.1beta7.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-annotations-3.3.0.GA.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.5-20071130.jar"/>
@@ -82,5 +65,9 @@
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-rmmci-server-1.8.2-20061020.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/ejb3-persistence-3.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-struts-2.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
