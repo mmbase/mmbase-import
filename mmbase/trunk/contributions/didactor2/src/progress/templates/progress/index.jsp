@@ -48,49 +48,13 @@
 
           <tr>
             <th />
-            <mm:node number="progresstextbackground">
-              <th>
-                <mm:import id="tr_progresstitle"><di:translate key="progress.progresstitle" /></mm:import>
-                <mm:image mode="img"
-                          alt="${tr_progresstitle}"
-                          template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_progresstitle')+rotate(90)"/>
-              </th>
-              <th>
-                <mm:import id="tr_logins"><di:translate key="progress.logins" /></mm:import>
-                <mm:image mode="img"
-                          alt="${tr_logins}"
-                          template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_logins')+rotate(90)"/>
-              </th>
-              <th>
-                <mm:import id="tr_online"><di:translate key="progress.online"/></mm:import>
-                <mm:image mode="img"
-                          alt="${tr_online}"
-                          template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_online')+rotate(90)"/>
-              </th>
-              <th>
-                <mm:import id="tr_lastlogin"><di:translate key="progress.lastlogin"/></mm:import>
-                <mm:image mode="img"
-                          alt="${tr_lastlogin}"
-                          template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'$tr_lastlogin')+rotate(90)"/>
-              </th>
-            </mm:node>
+            <th><di:rotatedtext text="${di:translate('progress.progresstitle')}" /></th>
+            <th><di:rotatedtext text="${di:translate('progress.logins')}" /></th>
+            <th><di:rotatedtext text="${di:translate('progress.online')}" /></th>
+            <th><di:rotatedtext text="${di:translate('progress.lastlogin')}" /></th>
 
             <mm:listnodes referid="tests">
-              <mm:escaper id="title" type="regexps">
-                <mm:param name="mode">entire</mm:param>
-                <mm:param name="patterns">
-                  <mm:param name="\s+">_</mm:param>
-                  <mm:param name='"'>''</mm:param>
-                </mm:param>
-              </mm:escaper>
-              <mm:import id="template" reset="true">font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"<mm:field name="name" escape="title" />")+rotate(90)</mm:import>
-              <mm:node number="progresstextbackground">
-                <th>
-                  <mm:image
-                      alt="${test.name}"
-                      template="$template" mode="img" />
-                </th>
-              </mm:node>
+              <th><di:rotatedtext text="${_node.name}" /></th>
             </mm:listnodes>
           </tr>
 
