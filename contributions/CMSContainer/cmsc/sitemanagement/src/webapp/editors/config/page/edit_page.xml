@@ -4,7 +4,7 @@
 	<title xml:lang="nl">Pagina</title>
 	<title xml:lang="en">Page</title>
 
-	<field name="title" dtmaxlength="40"  dtrequired="true">
+	<field name="title" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
@@ -13,7 +13,7 @@
 		<prompt xml:lang="en">URL-fragment</prompt>
 		<prompt xml:lang="nl">URL-fragment</prompt>
 	</field>
-	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
+	<field name="description" ftype="text" rows="3">
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
