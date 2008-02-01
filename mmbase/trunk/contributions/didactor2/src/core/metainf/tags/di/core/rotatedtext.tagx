@@ -12,7 +12,6 @@
       <mm:escaper id="title" type="regexps">
         <mm:param name="mode">entire</mm:param>
         <mm:param name="patterns">
-          <mm:param name="\s+">_</mm:param>
           <mm:param name='"'>''''</mm:param>
         </mm:param>
       </mm:escaper>
