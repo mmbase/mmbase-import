@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"
+	extends="object" maintainer="finalist.com" name="rating" version="1">
+	<!--
+		
+	-->
+	<status>active</status>
+	<!--
+		<class>Tasks.Task</class>
+	-->
+	<searchage>70</searchage>
+	<names>
+		<singular xml:lang="nl">rating</singular>
+		<singular xml:lang="en">rating</singular>
+		<singular xml:lang="zh">评价</singular>
+		<plural xml:lang="nl">ratings</plural>
+		<plural xml:lang="en">ratings</plural>
+		<plural xml:lang="zh">评价</plural>
+	</names>
+	<descriptions>
+		<description xml:lang="nl"></description>
+		<description xml:lang="en"></description>
+		<description xml:lang="zh"></description>
+	</descriptions>
+	<properties></properties>
+	<fieldlist>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Gebruiker</guiname>
+				<guiname xml:lang="en">User</guiname>
+				<guiname xml:lang="zh">用户</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>user</name>
+				<type key="false" notnull="true" size="512" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Timestamp</guiname>
+				<guiname xml:lang="en">timestamp</guiname>
+				<guiname xml:lang="zh">标记数</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>2</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="created" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>timestamp</name>
+				<type key="false" notnull="false" state="system">DATETIME</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Rating</guiname>
+				<guiname xml:lang="en">Rating</guiname>
+				<guiname xml:lang="zh">评价</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>3</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<db>
+				<name>rating</name>
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+			</db>
+		</field>
+	</fieldlist>
+</builder>
