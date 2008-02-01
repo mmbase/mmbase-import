@@ -79,7 +79,9 @@ public class MayTag extends CloudReferrerTag implements Condition {
         Parameters params = a.createParameters();
         fillStandardParameters(params);
         DidactorHelper.fillStandardParameters(this, params);
-        for (Map.Entry entry : ((Collection<Map.Entry>) Referids.getReferids(referids, this).entrySet())) {
+
+        Map m = Referids.getReferids(referids, this);
+        for (Map.Entry entry : ((Collection<Map.Entry>) m.entrySet())) {
             String key = (String) entry.getKey();
             params.set(key, entry.getValue());
         }

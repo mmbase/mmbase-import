@@ -10,8 +10,11 @@ import java.util.regex.*;
 
 
 /**
- * Disables a list of values.
+ * Disables a list of values. For the rest, this is the same as a StringDataType.
+ * These disallowed names are stored in a specialized builder for that, named 'disallowedusernames'.
+ *
  * @author Michiel Meeuwissen
+ * @version $Id: UserName.java,v 1.4 2008-02-01 14:13:01 michiel Exp $
  */
 public class UserName extends StringDataType implements NodeEventListener {
     private static final Logger log = Logging.getLoggerInstance(UserName.class);
