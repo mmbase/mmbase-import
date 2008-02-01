@@ -71,6 +71,14 @@
       </datatype>
     </field>
 
+    <field name="layout" state="virtual" readonly="true">
+      <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
+    <field name="imagelayout" state="virtual" readonly="true" >
+      <datatype base="didactor_imagelayout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
   </fieldlist>
 
   <functionlist>
