@@ -27,12 +27,7 @@
     </description>
   </descriptions>
 
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
-
   <fieldlist>
-
     <field name="title">
       <descriptions>
         <description xml:lang="nl">Titel van de vraag</description>
@@ -63,6 +58,7 @@
         <maxLength value="65535" />
       </datatype>
     </field>
+
     <field name="layout">
       <descriptions>
         <description xml:lang="nl">
@@ -81,9 +77,8 @@
           <list>3</list>
         </positions>
       </editor>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <!-- enumeration ? -->
-      </datatype>
+      <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
+
   </fieldlist>
 </builder>
