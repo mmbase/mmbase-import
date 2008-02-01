@@ -101,7 +101,6 @@
       <gui>
         <guiname xml:lang="nl">ToonTitel</guiname>
         <guiname xml:lang="en">ShowTitle</guiname>
-        <guitype>string</guitype>
       </gui>
       <datatype base="boolean" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
