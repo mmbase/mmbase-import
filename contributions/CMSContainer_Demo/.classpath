@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="i19n-demo/portlet-i18n/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20071130.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar"/>
