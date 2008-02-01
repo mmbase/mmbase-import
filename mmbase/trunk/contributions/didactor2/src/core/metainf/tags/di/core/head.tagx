@@ -14,7 +14,8 @@
     <mm:link page="/education/js/browser_version.js">
       <script src="${_}"><!-- Help IE --></script>
     </mm:link>
-    <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css',includePath)}" />
+
+    <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css', includePath)}" />
 
     <mm:haspage page="/mmbase/style/css/mmxf.css">
       <mm:link page="/mmbase/style/css/mmxf.css">
