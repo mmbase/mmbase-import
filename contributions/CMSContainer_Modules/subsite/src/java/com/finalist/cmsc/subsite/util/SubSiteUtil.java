@@ -20,7 +20,6 @@ public class SubSiteUtil {
             PagesUtil.FRAGMENT_FIELD);
    }
 
-
    public static int getChildCount(Node node) {
       return TreeUtil.getChildCount(node, node.getCloud().getNodeManager(SUBSITE), NavigationUtil.NAVREL);
    }
@@ -39,7 +38,6 @@ public class SubSiteUtil {
       return createContentChannel(personalpage, personalpageChannel);
    }
 
-
    private static Node createContentChannel(Node page, Node parentChannel) {
       //create channel in the Content Repository
       Cloud cloud = page.getCloud();
@@ -49,21 +47,17 @@ public class SubSiteUtil {
       return channel;
    }
    
-      
-    
    public static Node getSubsiteChannel(Node personalpage) {
       Node subsite = NavigationUtil.getParent(personalpage);
       String fragment = subsite.getStringValue(PagesUtil.FRAGMENT_FIELD);
       Cloud cloud = personalpage.getCloud();
       Node repositoryRootChannel = getRepositoryRoot(cloud);
-      return RepositoryUtil.getChild(repositoryRootChannel , fragment);
+      return RepositoryUtil.getChild(repositoryRootChannel, fragment);
    }
-
 
    public static Node getRepositoryRoot(Cloud cloud) {
       Node repositoryRootChannel = cloud.getNode(ALIAS_SUBSITE);
       return repositoryRootChannel;
    }
-   
-   
+
 }
