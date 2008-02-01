@@ -44,6 +44,10 @@ public class SiteCreate extends MMBaseFormlessAction {
                NavigationUtil.addRole(cloud, ewnodelastedited, administrators, Role.WEBMASTER);
             }
 
+            Node newSite = cloud.getNode(ewnodelastedited);
+            Node layoutNode = PagesUtil.getLayout(newSite);
+            PagesUtil.linkPortlets(newSite, layoutNode);
+
             NavigationUtil.getNavigationInfo(cloud).expand(new Integer(ewnodelastedited));
 
             addToRequest(request, "showpage", ewnodelastedited);
