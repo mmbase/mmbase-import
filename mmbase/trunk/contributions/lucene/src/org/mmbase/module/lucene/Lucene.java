@@ -35,6 +35,7 @@ import org.mmbase.storage.StorageManagerFactory;
 
 import java.util.concurrent.*;
 
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.BooleanQuery;
@@ -47,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.104 2008-01-14 18:33:35 michiel Exp $
+ * @version $Id: Lucene.java,v 1.105 2008-02-01 11:08:21 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -466,6 +467,33 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     }
 
 
+    protected Function/*<Void>*/ clearDirectory = new AbstractFunction/*<Void>*/("clearDirectory", new Parameter[] {INDEX, COPY}, ReturnType.VOID) {
+        public Object getFunctionValue(Parameters arguments) {
+            String index = (String) arguments.getString(INDEX);
+            Indexer indexer = indexerMap.get(index);
+            boolean copy = Boolean.TRUE.equals(arguments.get(COPY));
+            try {
+                Directory dir = copy ? indexer.getDirectoryForFullIndex(): indexer.getDirectory();
+                for (String file : dir.list()) {
+                    if (file != null) {
+                        try {
+                            dir.deleteFile(file);
+                        } catch (Exception e) {
+                            log.warn(e);
+                        }
+                    }
+                }
+                if (! copy)  EventManager.getInstance().propagateEvent(new NewSearcher.Event(index));
+            } catch (java.io.IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
+            return null;
+        }
+        };
+    {
+        addFunction(clearDirectory);
+    }
+
     //protected Function<Integer> unAssignFunction = new AbstractFunction<Integer>("unassign", new Parameter("id", Integer.class, true)) {
     protected Function/*<Integer>*/ unAssignFunction = new AbstractFunction/*<Integer>*/("unassign", new Parameter[] {new Parameter("id", Integer.class, true)}, ReturnType.INTEGER) {
             public Integer getFunctionValue(Parameters arguments) {
@@ -501,6 +529,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     {
         addFunction(interruptFunction);
     }
+
+
 
     //protected Function<Date> lastFullIndexFunction = new AbstractFunction<Date>("last", INDEX) {
     protected Function/*<Date>*/ lastFullIndexFunction = new AbstractFunction/*<Date>*/("last", new Parameter[] {INDEX}, ReturnType.UNKNOWN) {
