@@ -2,7 +2,6 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
 [
   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
-  <!ENTITY extra_steps SYSTEM "extra_steps.xml">
   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
@@ -35,50 +34,14 @@
 
   <action type="delete" />
 
-  <lists>
-    <optionlist include="config/option_list/images_position.xml" />
-    <optionlist include="config/option_list/boolean.xml" />
-    <optionlist include="config/option_list/layout.xml" />
-    <optionlist include="config/option_list/imagelayout.xml" />
-  </lists>
-
-  <steps>
-    <step form-schema="step1" />
-    <step form-schema="step2" />
-    <step form-schema="step3" />
-    &extra_steps;
-  </steps>
-
   <form-schema id="step1">
     <title xml:lang="nl">Pagina invoeren</title>
     <title xml:lang="en">Enter page</title>
-    <field name="name" >
-      <prompt xml:lang="nl">Naam</prompt>
-      <prompt xml:lang="en">Name</prompt>
-    </field>
-
-    <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
-      <prompt xml:lang="en">Show title</prompt>
-      <optionlist select="boolean" />
-    </field>
- 
-    <field name="text" ftype="${wizards.pages.text.ftype}" dtminlength="0">
-      <prompt xml:lang="nl">Tekst</prompt>
-      <prompt xml:lang="en">Text</prompt>
-    </field>
-
-    <field name="layout" ftype="enum">
-      <prompt xml:lang="nl">Layout</prompt>
-      <prompt xml:lang="en">Layout</prompt>
-      <optionlist select="layout" />
-    </field>
-
-    <field name="imagelayout" ftype="enum">
-      <prompt xml:lang="nl">Layout afbeeldingen</prompt>
-      <prompt xml:lang="en">Layout images</prompt>
-      <optionlist select="imagelayout" />
-    </field>
+    <field name="name"  />
+    <field name="showtitle" />
+    <field name="text" ftype="html" dtminlength="0" />
+    <field name="layout" />
+    <field name="imagelayout" />
 
     <list role="sizerel" extends="config/image/sizedimages.xml" />
     <list role="posrel" extends="config/attachment/attachments-posrel.xml" />
