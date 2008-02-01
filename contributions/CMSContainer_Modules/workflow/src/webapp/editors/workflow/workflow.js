@@ -40,7 +40,7 @@ function checkAllBoolean(what, type) {
          e.checked = what;
 
          if (what == false) {
-            var theElement = document.getElementsById(e.name);
+            var theElement = document.getElementById(e.name);
             if (theElement != null) {
                theElement.value = null;
             }
