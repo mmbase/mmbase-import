@@ -33,10 +33,10 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.44 2008-02-01 11:08:21 michiel Exp $
+ * @version $Id: Searcher.java,v 1.45 2008-02-01 12:40:42 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
-public class Searcher implements NewSearcher.Listener {
+public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
     private static final Logger log = Logging.getLoggerInstance(Searcher.class);
 
 
@@ -55,6 +55,9 @@ public class Searcher implements NewSearcher.Listener {
     private final Timer timer = new Timer();
     private int closingSearchers = 0;
 
+    private FullIndexEvents.Status status = FullIndexEvents.Status.IDLE;
+    private int intermediateSize = -1;
+
     /**
      * @param index The index where this Search is for
      */
@@ -70,6 +73,16 @@ public class Searcher implements NewSearcher.Listener {
             log.debug("Received " + event);
             needsNewSearcher = true;
         }
+    }
+    public void notify(FullIndexEvents.Event event) {
+        if (event.getIndex().equals(index.getName())) {
+            log.debug("Received " + event);
+            status = event.getStatus();
+            intermediateSize = event.getIndexed();
+        }
+    }
+    public int getFullIndexSize() {
+        return status != FullIndexEvents.Status.IDLE ? intermediateSize : -1;
     }
 
     protected synchronized IndexSearcher getSearcher(boolean copy) throws IOException {
