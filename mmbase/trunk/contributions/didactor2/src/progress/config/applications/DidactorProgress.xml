@@ -4,7 +4,7 @@
     <requirements>
         <requires name="DidactorEducation" maintainer="didactor.nl" version="20" />
         <requires name="Resources" maintainer="didactor.nl" version="2" />
-    </requirements>  
+    </requirements>
 
     <neededbuilderlist></neededbuilderlist>
 
@@ -15,8 +15,7 @@
     </allowedrelationlist>
 
     <datasourcelist>
-        <datasource builder="images" path="DidactorProgress/images.xml" />
-        <datasource builder="components" path="DidactorProgress/components.xml" />
+      <datasource builder="components" path="DidactorProgress/components.xml" />
     </datasourcelist>
 
     <relationsourcelist />
