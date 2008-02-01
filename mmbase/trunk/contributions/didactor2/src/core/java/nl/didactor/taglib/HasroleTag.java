@@ -21,7 +21,7 @@ import nl.didactor.util.ClassRoom;
 /**
  * HasroleTag: retrieve a setting for a component
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: HasroleTag.java,v 1.8 2007-07-27 14:34:15 michiel Exp $
+ * @version $Id: HasroleTag.java,v 1.9 2008-02-01 14:13:01 michiel Exp $
  */
 public class HasroleTag extends CloudReferrerTag {
     private final static Logger log = Logging.getLoggerInstance(HasroleTag.class);
@@ -48,8 +48,6 @@ public class HasroleTag extends CloudReferrerTag {
         this.inverse = inverse;
     }
     /**
-     * Set the value for the 'inverse' argument of the Hasrole tag
-     * @param inverse whether or not we need to inverse the result
      */
 
     public void setReferid(String referid) {
@@ -97,6 +95,10 @@ public class HasroleTag extends CloudReferrerTag {
             throw new JspTagException("User with number '" + number + "' not found");
         }
         // Get Education no
+
+        /// WTF you must specifiy the _name_ of the variable there?
+        // Would simply a node number not be much more convenient?
+
        int educationno= 0;
        String educationStr = education;
        if ((educationStr == null) || "".equals( educationStr) ) {
@@ -104,7 +106,7 @@ public class HasroleTag extends CloudReferrerTag {
            educationStr= "education";
        }
        // obtain education via context
-       Object in_education= getContextProvider().getContextContainer().get(educationStr);
+       Object in_education= pageContext.getRequest().getAttribute(educationStr);
        if (in_education != null) {
            if (in_education instanceof Integer) {
                educationno= ((Integer) in_education).intValue();
@@ -123,9 +125,9 @@ public class HasroleTag extends CloudReferrerTag {
         for (String r : role.split(",")) {
             try {
                 if (ClassRoom.hasRole(usernode, r.trim(), educationno, getCloudVar())) {
-                    hasRole = true; 
+                    hasRole = true;
                     break;
-                } 
+                }
             } catch (JspTagException e) {
                 log.error("hasrole: " + e.getMessage(), e);
             }
