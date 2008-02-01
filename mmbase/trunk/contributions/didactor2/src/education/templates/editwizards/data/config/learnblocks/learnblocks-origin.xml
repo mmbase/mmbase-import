@@ -20,12 +20,6 @@
 
   <action type="delete" />
 
-  <lists>
-    <optionlist include="config/option_list/images_position.xml" />
-    <optionlist include="config/option_list/boolean.xml" />
-    <optionlist include="config/option_list/layout.xml" />
-    <optionlist include="config/option_list/imagelayout.xml" />
-  </lists>
 
   <form-schema extends="config/learnblocks/step1.xml" />
   <form-schema extends="config/learnblocks/paragraphs.xml" />
