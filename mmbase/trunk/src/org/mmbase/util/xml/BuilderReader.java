@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.92 2008-01-28 16:28:00 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.93 2008-02-01 17:19:41 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -332,6 +332,7 @@ public class BuilderReader extends DocumentReader {
                         def.setDataType(dataType); // replace datatype
                     }
                     decodeFieldDef(field, def, collector);
+                    decodeFieldAttributes(field, def);
                     def.finish();
                 } else {
                     def = decodeFieldDef(builder, collector, field);
@@ -762,6 +763,32 @@ public class BuilderReader extends DocumentReader {
         return dataType;
     }
 
+
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    private void decodeFieldAttributes(Element field, CoreField def) {
+        String fieldState = getElementAttributeValue(field, "state");
+        String fieldReadOnly = getElementAttributeValue(field, "readonly");
+        // deprecated db type tag - only use if no other data is given!
+        Element dbtype = getElementByPath(field, "field.db.type");
+        if (dbtype != null) {
+            if ("".equals(fieldState))    fieldState = getElementAttributeValue(dbtype, "state");
+            if ("".equals(fieldReadOnly)) fieldReadOnly = getElementAttributeValue(dbtype, "readonly");
+        }
+
+        // state - default peristent
+        int state = Field.STATE_PERSISTENT;
+        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
+        if (state != def.getState()) def.setState(state);
+
+
+        boolean readOnly = "true".equalsIgnoreCase(fieldReadOnly);
+        if (def.isReadOnly() != readOnly) {
+            def.setReadOnly(readOnly);
+        }
+    }
     /**
      * Construct a FieldDef object using a field Element using information
      * obtained from the builder configuration.
@@ -786,9 +813,6 @@ public class BuilderReader extends DocumentReader {
             log.warn("Specified field name twice: once in the name attribute ('" + fieldName + "') and once in the <name> tag ('" + fieldDBName + "'). Ignoring name tag.");
         }
 
-        String fieldState = getElementAttributeValue(field, "state");
-        String fieldReadOnly = getElementAttributeValue(field, "readonly");
-
         // implied by datatype
         // use db/type to override for legacy database issues
         // (mostly to prevent warnings in the log, as mmbase fixes this anyway)
@@ -810,8 +834,6 @@ public class BuilderReader extends DocumentReader {
                     log.debug("<db><type> tag for field '" + fieldName + "' is deprecated.");
                 }
                 fieldType = getElementValue(dbtype);
-                fieldState = getElementAttributeValue(dbtype, "state");
-                fieldReadOnly = getElementAttributeValue(dbtype, "readonly");
                 fieldNotNull = getElementAttributeValue(dbtype, "notnull");
                 fieldRequired = getElementAttributeValue(dbtype, "required");
                 fieldUnique = getElementAttributeValue(dbtype, "unique");
@@ -842,12 +864,12 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        // state - default peristent
-        int state = Field.STATE_PERSISTENT;
-        if (!"".equals(fieldState)) { state = Fields.getState(fieldState); }
-
-        CoreField def = Fields.createField(fieldName, type, listItemType, state, dataType);
+        CoreField def = Fields.createField(fieldName, type, listItemType,
+                                           Field.STATE_VIRTUAL,/*temp default, will set by decodeFieldAttributes*/
+                                           dataType);
         dataType = def.getDataType();
+
+        decodeFieldAttributes(field, def);
 
         def.setParent(builder);
 
@@ -859,10 +881,6 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        // set readonly property, but only if given
-        if (!"".equals(fieldReadOnly)) {
-            def.setReadOnly("true".equalsIgnoreCase(fieldReadOnly));
-        }
 
         // set required property, but only if given
         if (!"".equals(fieldRequired)) {
