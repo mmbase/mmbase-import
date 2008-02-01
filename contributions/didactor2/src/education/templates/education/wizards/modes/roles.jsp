@@ -5,6 +5,7 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:cloud rank="basic user">
+    <div>
     <jsp:directive.include file="../mode.include.jsp" />
     <mm:import externid="e">${education}</mm:import>
     <di:has editcontext="rollen" inverse="true">
@@ -14,9 +15,9 @@
       <a href="javascript:clickNode('persons_0')">
         <img src='gfx/tree_pluslast.gif' width="16" border='0' align='center' valign='middle'  id='img_persons_0' />
       </a>
-      <jsp:text>&amp;nbsp;</jsp:text>
+
       <img src='gfx/menu_root.gif' border='0' align='center' valign='middle'/>
-      <nobr>&amp;nbsp;
+      <nobr>
       <a href="javascript:clickNode('persons_0')"><di:translate key="education.personstab" /></a></nobr>
       <br />
       <div id='persons_0' style='display: none'>
@@ -38,7 +39,7 @@
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td>
                  <nobr>
-                   &amp;nbsp;
+                   <jsp:text> </jsp:text>
                    <mm:link referid="listjsp">
                      <mm:param name="wizard">config/people/people</mm:param>
                      <mm:param name="nodepath">people</mm:param>
@@ -61,7 +62,7 @@
                 <td />
                 <td>
                   <nobr>
-                    &amp;nbsp;
+                    <jsp:text> </jsp:text>
                     <mm:link referid="listjsp" referids="_node@startnodes,education">
                       <mm:param name="wizard">config/people/people_unlink</mm:param>
                       <mm:param name="nodepath">roles,people</mm:param>
@@ -95,7 +96,7 @@
                  <mm:param name="orderby">number</mm:param>
                  <mm:param name="directions">down</mm:param>
                  <nobr>
-                   &amp;nbsp;
+                   <jsp:text> </jsp:text>
                    <a href="${_}${forbidtemplate}"
                       title="${di:translate('education.classes')}"
                       target="text">
@@ -119,7 +120,7 @@
                  <mm:param name="orderby">number</mm:param>
                  <mm:param name="directions">down</mm:param>
                  <nobr>
-                   &amp;nbsp;
+                   <jsp:text> </jsp:text>
                    <a href="${_}${forbidtemplate}"
                     title="${di:translate('education.workgroups')}"  target="text">
                      <di:translate key="education.workgroups" />
@@ -137,7 +138,7 @@
              <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
              <td>
                <nobr>
-                 &amp;nbsp;
+                 <jsp:text> </jsp:text>
                  <a href="roles.jsp" title="${di:translate('education.roles')}"
                     target="text"><di:translate key="education.roles" /></a>
                </nobr>
@@ -158,7 +159,7 @@
                    <mm:param name="orderby">number</mm:param>
                    <mm:param name="directions">down</mm:param>
                    <nobr>
-                     &amp;nbsp;
+                     <jsp:text> </jsp:text>
                      <a href="${_}${forbidtemplate}"
                         target="text">
                        <mm:nodeinfo nodetype="disallowedusernames" type="plural_guinodemanager" />
@@ -177,7 +178,7 @@
                <td><img src="gfx/tree_leaflast.gif" border="0" align="middle"/></td>
 
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
-               <td><nobr>&amp;nbsp;<a href='../../report/index.jsp' target="text">Rapport</a></nobr></td>
+               <td><nobr><jsp:text> </jsp:text><a href='../../report/index.jsp' target="text">Rapport</a></nobr></td>
              </tr>
            </table>
            <!-- </di:hasrole> -->
@@ -193,7 +194,7 @@
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td>
                  <nobr>
-                   &amp;nbsp;
+                   <jsp:text> </jsp:text>
                    <a href='../../isbo/index.jsp' title="${di:translate('education.isboimport')}"
                       target="text"><di:translate key="education.isboimport" /></a>
                  </nobr>
@@ -214,7 +215,7 @@
                <td><img src="gfx/learnblock.gif" border="0" align="middle" /></td>
                <td>
                  <nobr>
-                   &amp;nbsp;
+                   <jsp:text> </jsp:text>
                    <a href='../../assessment/email_notification/index.jsp' title="${di:translate('education.wizard_people_assessment')}"
                       target="text"><di:translate key="education.wizard_people_assessment" /></a>
                  </nobr>
@@ -225,5 +226,6 @@
          </mm:hasnode>
        </div>
     </di:has>
+    </div>
   </mm:cloud>
 </jsp:root>
