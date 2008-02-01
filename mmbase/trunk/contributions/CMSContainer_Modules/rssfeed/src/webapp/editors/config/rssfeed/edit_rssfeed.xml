@@ -4,7 +4,7 @@
 	<title xml:lang="nl">RSS Feed</title>
 	<title xml:lang="en">RSS Feed</title>
 
-	<field name="title" dtmaxlength="100"  dtrequired="true">
+	<field name="title" dtrequired="true">
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
@@ -26,7 +26,7 @@
 		<prompt xml:lang="nl">Taal</prompt>
 		<optionlist select="languages"/>
 	</field>
-	<field name="description" dtmaxlength="2048" ftype="text" rows="3">
+	<field name="description" ftype="text" rows="3">
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
@@ -41,6 +41,11 @@
 	<field name="email_webmaster" dtmaxlength="100"  dtrequired="true" dtpattern="(\w+)@(\w+\.)(\w+)(\.\w+)*">
 		<prompt xml:lang="en">Email webmaster</prompt>
 		<prompt xml:lang="nl">Email webmaster</prompt>
+	</field>
+	<field name="inmenu" ftype="enum">
+		<prompt xml:lang="en">In menu</prompt>
+		<prompt xml:lang="nl">In menu</prompt>
+		<optionlist select="boolean" />
 	</field>
 	<field name="secure" ftype="enum">
       <prompt xml:lang="en">Secure</prompt>

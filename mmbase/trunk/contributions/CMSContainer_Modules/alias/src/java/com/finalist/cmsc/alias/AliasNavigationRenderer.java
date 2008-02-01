@@ -1,7 +1,13 @@
 package com.finalist.cmsc.alias;
 
+import java.io.IOException;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.http.*;
+
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.alias.beans.om.Alias;
 import com.finalist.cmsc.beans.om.NavigationItem;
@@ -13,6 +19,9 @@ import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 
 public class AliasNavigationRenderer implements NavigationItemRenderer {
 
+    /** MMbase logging system */
+   private static Logger log = Logging.getLoggerInstance(AliasNavigationRenderer.class.getName());
+    
    protected static String CONTENT_TYPE = "text/html";
 
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
@@ -40,8 +49,20 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
              registry.setScreen(oldScreen);            
          }
          else {
-            throw new IllegalArgumentException(
-                        "Trying to resolve Alias without related pages id:"+item.getId());
+             String url = alias.getUrl();
+             if (!StringUtils.isBlank(url)) {
+                 String redirect = response.encodeRedirectURL(url);
+                 try {
+                    response.sendRedirect(redirect);
+                }
+                catch (IOException e) {
+                    log.debug("" + e.getMessage(), e);
+                }
+             }
+             else {
+                throw new IllegalArgumentException(
+                            "Trying to resolve Alias without related pages id:"+item.getId());
+             }
          }
       }
       else {

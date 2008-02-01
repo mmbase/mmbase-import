@@ -17,6 +17,7 @@
    <allowedrelationlist>
       <relation from="page" to="pagealias" type="navrel" />
       <relation from="pagealias" to="page" type="related" />
+      <relation from="pagealias" to="urls" type="related" />
    </allowedrelationlist>
 
    <datasourcelist>

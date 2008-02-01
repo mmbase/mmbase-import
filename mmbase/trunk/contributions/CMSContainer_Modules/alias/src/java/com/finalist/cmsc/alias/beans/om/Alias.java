@@ -6,6 +6,7 @@ import com.finalist.cmsc.beans.om.NavigationItem;
 public class Alias extends NavigationItem {
 
     private int page;
+    private String url;
 
     public void setPage(int number) {
         this.page = number;
@@ -13,6 +14,14 @@ public class Alias extends NavigationItem {
     
     public int getPage() {
         return page;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
+    public String getUrl() {
+        return url;
     }
 
 }
