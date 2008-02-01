@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.43 2008-01-14 17:49:48 michiel Exp $
+ * @version $Id: Searcher.java,v 1.44 2008-02-01 11:08:21 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener {
@@ -62,43 +62,39 @@ public class Searcher implements NewSearcher.Listener {
         this.index = index;
         searchLog = Logging.getLoggerInstance("org.mmbase.lucene.SEARCH." + index.getName());
         this.allIndexedFields = allIndexedFields;
-        try {
-            searcher = new IndexSearcher(index.getDirectory());
-        } catch (IOException ioe) {
-            log.error("Can't close index searcher: " + ioe.getMessage());
-        }
         EventManager.getInstance().addEventListener(this);
     }
 
     public void notify(NewSearcher.Event event) {
-        needsNewSearcher = true;
+        if (event.getIndex().equals(index.getName())) {
+            log.debug("Received " + event);
+            needsNewSearcher = true;
+        }
     }
 
-    protected IndexSearcher getSearcher(boolean copy) {
-        if (needsNewSearcher || searcher == null) {
+    protected synchronized IndexSearcher getSearcher(boolean copy) throws IOException {
+        if (copy) return  new IndexSearcher(index.getDirectoryForFullIndex() );
+        if (searcher != null && needsNewSearcher) {
             // for existing searches, leave existing searcher open for 10 seconds, then close it (searches still not finished in 10 seconds, get an IO exception)
-            if (searcher != null) {
-                closingSearchers++;
-                final IndexSearcher s = searcher;
-                timer.schedule(new TimerTask() {
-                        public void run() {
-                            try {
-                                log.debug("Shutting down a searcher for " + index);
-                                s.close();
-                            } catch (IOException ioe) {
-                                log.error("Can't close index searcher: " + ioe.getMessage());
-                            } finally {
-                                closingSearchers--;
-                            }
+            closingSearchers++;
+            final IndexSearcher s = searcher;
+            searcher = null;
+            timer.schedule(new TimerTask() {
+                    public void run() {
+                        try {
+                            log.debug("Shutting down a searcher for " + index);
+                            s.close();
+                        } catch (IOException ioe) {
+                            log.error("Can't close index searcher: " + ioe.getMessage());
+                        } finally {
+                            closingSearchers--;
                         }
-                    }, 10000);
-            }
-            try {
-                needsNewSearcher = false;
-                searcher = new IndexSearcher(copy ? index.getDirectoryForFullIndex() : index.getDirectory());
-            } catch (IOException ioe) {
-                log.error("Can't close index searcher: " + ioe.getMessage());
-            }
+                    }
+                }, 10000);
+        }
+        if (searcher == null) {
+            searcher = new IndexSearcher(index.getDirectory());
+            needsNewSearcher = false;
             return searcher;
         } else {
             return searcher;
@@ -111,6 +107,7 @@ public class Searcher implements NewSearcher.Listener {
             try {
                 log.service("Shutting down searcher for " + index);
                 searcher.close();
+                searcher = null;
             } catch (IOException ioe) {
                 log.error("Can't close index searcher: " + ioe.getMessage());
             }
@@ -201,7 +198,8 @@ public class Searcher implements NewSearcher.Listener {
             try {
                 hits = getHits(value, filter, sort, analyzer, extraQuery, fields, false);
             } catch (java.io.IOException ioe) {
-                log.service(ioe + " returning empty list");
+                log.service(ioe + " returning empty list", ioe);
+                needsNewSearcher = true;
                 return org.mmbase.bridge.util.BridgeCollections.EMPTY_NODELIST;
             }
             if (log.isTraceEnabled()) {
@@ -303,9 +301,9 @@ public class Searcher implements NewSearcher.Listener {
             booleanQuery.add(extraQuery, BooleanClause.Occur.MUST);
             query = booleanQuery;
         }
-        IndexSearcher searcher = getSearcher(copy);
-        if (searcher == null) throw new IOException("No IndexSearcher found for " + this);
-        return searcher.search(query, filter, sort);
+        IndexSearcher s = getSearcher(copy);
+        if (s == null) throw new IOException("No IndexSearcher found for " + this);
+        return s.search(query, filter, sort);
     }
 
 

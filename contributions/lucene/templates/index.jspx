@@ -51,6 +51,17 @@
             <th>search</th>
             <th>full index</th>
           </tr>
+          <mm:import externid="clear" />
+          <mm:present referid="clear">
+            <mm:function module="lucene" referids="clear@index" name="clearDirectory" />
+          </mm:present>
+          <mm:import externid="clearcopy" />
+          <mm:present referid="clearcopy">
+            <mm:functioncontainer>
+              <mm:param name="copy" value="true" />
+              <mm:function module="lucene" referids="clearcopy@index" name="clearDirectory" />
+            </mm:functioncontainer>
+          </mm:present>
           <mm:listfunction id="index" module="lucene" name="list">
             <c:catch var="exception1">
               <tr>
@@ -70,11 +81,19 @@
                   <mm:function module="lucene" referids="index" name="searchsize">
                     ${_}
                   </mm:function>
+                  <mm:link>
+                    <mm:param name="clear">${index}</mm:param>
+                    (<a href="${_}">X</a>)
+                  </mm:link>
                   <mm:functioncontainer>
                     <mm:param name="copy" value="true" />
                     <mm:function referids="index" module="lucene" name="searchsize">
                       /${_}
                     </mm:function>
+                    <mm:link>
+                      <mm:param name="clearcopy">${index}</mm:param>
+                      (<a href="${_}">X</a>)
+                    </mm:link>
                   </mm:functioncontainer>
                 </td>
                 <td>

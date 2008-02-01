@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.51 2008-01-29 09:52:36 michiel Exp $
+ * @version $Id: Indexer.java,v 1.52 2008-02-01 11:08:21 michiel Exp $
  **/
 public class Indexer {
 
@@ -298,7 +298,7 @@ public class Indexer {
         } finally {
             if (writer != null) try { writer.close();} catch (IOException ioe) { log.error(ioe); }
         }
-        EventManager.getInstance().propagateEvent(NewSearcher.EVENT);
+        EventManager.getInstance().propagateEvent(new NewSearcher.Event(getName()));
         return updated;
     }
 
@@ -428,14 +428,14 @@ public class Indexer {
             writer.optimize();
             Directory.copy(fullIndex, getDirectory(), true);
             Date lastFullIndex = setLastFullIndex(startTime);
-            log.service("Full index finished at " + lastFullIndex + ". Total nr documents in index '" + getName() + "': " + writer.docCount());
+            log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
         } catch (Exception e) {
             addError(e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
         }
-        EventManager.getInstance().propagateEvent(NewSearcher.EVENT);
+        EventManager.getInstance().propagateEvent(new NewSearcher.Event(getName()));
     }
 
     /**
@@ -462,10 +462,15 @@ public class Indexer {
                 document = new Document();
                 document.add(new Field("indexId", indexId,  Field.Store.YES, Field.Index.UN_TOKENIZED));
                 indexed++;
+                if (indexed % 100 == 0) {
+                    log.service("Indexed " + indexed + " documents");
+                } else if (log.isDebugEnabled()) {
+                    log.debug("Indexed " + indexed + " documents");
+                }
             }
             index(entry, document);
             if (Thread.currentThread().isInterrupted()) {
-                log.debug("Interrupted");
+                log.info("Interrupted");
                 break;
             }
             lastIdentifier = newIdentifier;
@@ -476,7 +481,7 @@ public class Indexer {
             }
             writer.addDocument(document);
         }
-        EventManager.getInstance().propagateEvent(NewSearcher.EVENT);
+        EventManager.getInstance().propagateEvent(new NewSearcher.Event(getName()));
         return indexed;
     }
 

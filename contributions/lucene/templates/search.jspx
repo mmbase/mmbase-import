@@ -1,4 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output doctype-root-element="html"
@@ -72,9 +73,11 @@
 
         <mm:present referid="value" >
           <table>
-            <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer,filter">
-              <mm:first>
-                <tr>
+
+            <c:catch var="toomanyclauses">
+              <mm:nodelistfunction module="lucene" name="search" referids="value,index,max,offset,extraconstraints,sortfields,fields,analyzer,filter">
+                <mm:first>
+                  <tr>
                   <th>type</th>
                   <mm:fieldlist type="list">
                     <th><mm:fieldinfo type="name" /></th>
@@ -129,6 +132,8 @@
                 </td>
               </tr>
             </mm:nodelistfunction>
+            </c:catch>
+            ${toomanyclauses}
           </table>
         </mm:present>
 

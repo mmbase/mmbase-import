@@ -15,23 +15,25 @@ import org.mmbase.core.event.*;
  * All the code necessary to propagate events with the meaning 'the lucene index has changed, you must refresh your searchers'.
  * @since  MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: NewSearcher.java,v 1.3 2007-01-17 22:00:14 michiel Exp $
+ * @version $Id: NewSearcher.java,v 1.4 2008-02-01 11:08:21 michiel Exp $
  */
 
 public class NewSearcher {
 
-    /**
-     * The event itself
-     */
     public static class Event extends org.mmbase.core.event.Event {
-        private Event() {};
+
+        protected final String index;
+        /**
+         * The event itself
+         */
+        public Event(String i) {
+            index = i;
+        };
+        public String getIndex() {
+            return index;
+        }
 
     }
-    /**
-     * No further structure, so it can as well be a singleton
-     */
-    public static Event EVENT = new Event();
-
 
     /**
      * The associated listener
