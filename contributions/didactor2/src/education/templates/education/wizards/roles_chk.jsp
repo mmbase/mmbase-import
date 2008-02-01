@@ -1,4 +1,6 @@
-<%-- in: user, editcontextname --%>
+<%--
+    This is horrible
+in: user, editcontextname --%>
 <%-- out: rights, forbidtemplate (for EW) --%>
 <%-- need: definition of RIGHTS_NO --%>
 

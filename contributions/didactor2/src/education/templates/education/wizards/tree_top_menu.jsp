@@ -34,7 +34,7 @@
            Follows lots of code duplication, why not iterate over all modes or so?
            Will the sillyness ever stop.
       -->
-      <di:has  editcontext="component">
+      <di:has editcontext="component">
         <mm:link referids="e?" page=".">
           <mm:param name="mode">components</mm:param>
           <a class="${mode eq 'components' ? education_top_menu_selected : ''}"
