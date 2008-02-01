@@ -3,9 +3,6 @@
 	<node number="916" owner="default" snumber="539" dnumber="551" rtype="namedallowrel" dir="bidirectional">
 		<name>breadcrumb</name>
 	</node>
-	<node number="125011" owner="default" snumber="539" dnumber="575" rtype="namedallowrel" dir="bidirectional">
-		<name>column2_1</name>
-	</node>
 	<node number="878" owner="default" snumber="543" dnumber="545" rtype="namedallowrel" dir="bidirectional">
 		<name>column2_1,column2_2,column2_3,</name>
 	</node>
@@ -23,9 +20,6 @@
 	</node>
 	<node number="886" owner="default" snumber="539" dnumber="545" rtype="namedallowrel" dir="bidirectional">
 		<name>column1_2,column1_3</name>
-	</node>
-	<node number="884" owner="default" snumber="541" dnumber="575" rtype="namedallowrel" dir="bidirectional">
-		<name>column1_1,column1_2,column1_3</name>
 	</node>
 	<node number="932" owner="default" snumber="543" dnumber="557" rtype="namedallowrel" dir="bidirectional">
 		<name>submenu</name>
@@ -59,9 +53,6 @@
 	</node>
 	<node number="938" owner="default" snumber="543" dnumber="551" rtype="namedallowrel" dir="bidirectional">
 		<name>breadcrumb</name>
-	</node>
-	<node number="894" owner="default" snumber="541" dnumber="581" rtype="namedallowrel" dir="bidirectional">
-		<name>column2_1,column2_2,column2_3,column2_4,column2_5,column2_6</name>
 	</node>
 	<node number="173755" owner="default" snumber="173753" dnumber="549" rtype="namedallowrel" dir="bidirectional">
 		<name>column1_1</name>
