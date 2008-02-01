@@ -1,238 +1,77 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp" %>
-<%@page import="com.finalist.cmsc.repository.RepositoryUtil" %>
-<%@page import="com.finalist.cmsc.security.*" %>
-
+<%@ page import="com.finalist.cmsc.repository.ContentElementUtil,
+                 com.finalist.cmsc.repository.RepositoryUtil,
+                 java.util.ArrayList"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="content.title">
-	<script src="content.js" type="text/javascript"></script>
+<cmscedit:head title="search.title">
+      <script src="content.js" type="text/javascript"></script>
+      <script src="search.js" type="text/javascript"></script>
 </cmscedit:head>
 <body>
-	<script type="text/javascript">
-		<c:if test="${not empty param.message}">      
-			addLoadEvent(alert('${param.message}'));
-		</c:if>
-		<c:if test="${not empty param.refreshchannel}">      
-			addLoadEvent(refreshChannels);
-		</c:if>
-		addLoadEvent(alphaImages);
-	</script>
-	
-<mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
+<mm:import id="searchinit"><c:url value='/editors/repository/SearchInitAction.do'/></mm:import>
+<mm:import externid="action">search</mm:import><%-- either: search, link, of select --%>
+<mm:import externid="mode" id="mode">basic</mm:import>
+<!--
+<mm:import externid="returnurl"/>
+<mm:import externid="linktochannel"/>
+<mm:import externid="parentchannel" jspvar="parentchannel"/>
+<mm:import externid="contenttypes" jspvar="contenttypes"><%= ContentElementUtil.CONTENTELEMENT %></mm:import>
+-->
 
-<mm:import id="parentchannel" jspvar="parentchannel"><%= "Repository.subsite" %></mm:import>"/>
+<mm:import externid="pageNodes" jspvar="nodeList" vartype="List" />
+<!--
+<mm:import externid="offset" jspvar="offset" vartype="Integer">0</mm:import>
+<mm:import externid="resultCount" jspvar="resultCount" vartype="Integer">0</mm:import>
+-->
 
-<mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write referid="parentchannel"/>&direction=down</mm:import>
+<mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
 
-      <div class="tabs">
-         <!-- actieve TAB -->
-         <div class="tab_active">
-            <div class="body">
-               <div>
-                  <a name="activetab"><fmt:message key="content.title" /></a>
-               </div>
-            </div>
-         </div>
-      </div>
-      
+<b>Pages</b><br>
+<c:set var="pagesElements" value="${pagesElements}" scope="request"/>
+List of pagesElements: ${pagesElements}<br><br>
 
-    <div class="editor">
-      <div class="body">
+<!-- 
+<c:forEach var="pageNodes" items="${pageNodes}">
+  <b>${pageNodes}</b><br>
+</c:forEach>
+ -->
 
-<!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
-<c:set var="hasWorkflow" value="false"/>
-<mm:haspage page="/editors/workflow">
-	<c:set var="hasWorkflow" value="true"/>
-</mm:haspage>
+<a href="../subsite/PersonalPageCreate.do?parentpage=">aanmaken nieuwe persoonlijke pagina</a>
 
-
-<mm:node number="$parentchannel" jspvar="parentchannelnode">
-<% UserRole role = RepositoryUtil.getRole(cloud, parentchannelnode, false); %>
-   <p>
-   <fmt:message key="content.channel" >
-      <fmt:param ><mm:field name="path"/></fmt:param>
-   </fmt:message>
-   </p>
-		<% if (role != null && SecurityUtil.isWriter(role)) { %>
-			<ul class="shortcuts">
-			   <li class="new" style="text-decoration: none;"><fmt:message key="content.new" />
-				  <form action="../WizardInitAction.do" method="post" style="display:inline;text-decoration:none">
-					 <input type="hidden" name="action" value="create" />
-					 <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />" />
-					 <input type="hidden" name="returnurl" value="<%= returnurl %>" />
+<table>
+<mm:listnodes referid="pageNodes">
+<tr>
+<td>
+   <b><mm:field name="title" /></b>
+</td>
+<td>
+   <a href="../subsite/SubSiteDelete.do?number=<mm:field name="number" />">verwijderen pagina</a>
+</td>
+<td>
+   <a href="../subsite/SubSiteEdit.do?number=<mm:field name="number" />">edit page</a>
+</td>
+<td>
+edit artikelen (geeft overzicht lijst artikelen)
+</td>
+</tr>
+</mm:listnodes>
+</table>
 
 
-					 <select name="contenttype">
-						<c:forEach var="type" items="${typesList}">
-	                        <option value="${type.value}">${type.label}</option>
-						</c:forEach>
-					 </select>
-					 <input type="submit" name="submitButton" value="<fmt:message key="content.create" />" class="button" />
-				  </form>
-			   </li>
-			   <li class="link">
-				  <a href="<mm:url page="SearchInitAction.do">
-							  <mm:param name="linktochannel" value="$parentchannel" />
-							  <mm:param name="returnurl" value="${returnurl}" />
-                       <mm:param name="mode" value="advanced" />
-                       <mm:param name="action" value="link" />
-						   </mm:url>">
-					 <fmt:message key="content.existing" />
-				  </a>
-			   </li>
-				<% if (SecurityUtil.isEditor(role)) { %>
-			   <li class="reorder">
-				  <a href="<mm:url page="ReorderAction.do">
-							  <mm:param name="parent" value="$parentchannel" />
-						   </mm:url>">
-					 <fmt:message key="content.reorder" />
-				  </a>
-			   </li>
-				<% } %>
-			</ul>
-			<% } %>
-	</div>
-   <div class="ruler_green"><div><fmt:message key="content.content" /></div></div>
-	<div class="body">
-<mm:import externid="elements" from="request" required="true"/>
+   <div class="editor">
+   <br />
 
- 	<c:set var="listSize" value="${fn:length(elements)}"/>
-	<c:set var="resultsPerPage" value="50"/>
-	<c:set var="offset" value="${param.offset}"/>
-    <c:set var="extraparams" value="&parentchannel=${param.parentchannel}"/>
+   <%-- Now print if no results --%>
+   <mm:isempty referid="pageNodes">
+      <fmt:message key="searchform.searchpages.nonefound" />
+   </mm:isempty>
 
-   <%@include file="../pages.jsp" %>
-
-
-   <table>
-   <thead>
-      <tr>
-         <th></th>
-         <th><fmt:message key="content.typecolumn" /></th>
-         <th><fmt:message key="content.titlecolumn" /></th>
-         <th><fmt:message key="content.authorcolumn" /></th>
-         <th><fmt:message key="content.lastmodifiedcolumn" /></th>
-         <th><fmt:message key="content.numbercolumn" /></th>
-         <th><fmt:message key="content.creationchannelcolumn" /></th>
-         <th></th>
-      </tr>
-   </thead>
-   <tbody class="hover">
-   <mm:listnodes referid="elements" jspvar="node"  max="${resultsPerPage}" offset="${offset*resultsPerPage}">
-		<mm:field name="number" write="false" id="number" vartype="String"/>
-		<mm:field name="number" write="false" id="relnumber"/>
-
-		<mm:url page="../WizardInitAction.do" id="url" write="false" >
-		   <mm:param name="objectnumber" value="$number"/>
-		   <mm:param name="returnurl" value="$returnurl" />
-		</mm:url>
-      <tr <mm:even inverse="true">class="swap"</mm:even> href="<mm:write referid="url"/>">
-		<td style="white-space: nowrap;">
-        	<a href="javascript:info('<mm:field name="number" />')"><img src="../gfx/icons/info.png" width="16" height="16" title="<fmt:message key="content.info" />" alt="<fmt:message key="content.info" />"/></a>
-            <a href="<cmsc:contenturl number="${number}"/>" target="_blanc"><img src="../gfx/icons/preview.png" alt="<fmt:message key="content.preview.title" />" title="<fmt:message key="content.preview.title" />" /></a>
-			<a href="javascript:callEditWizard('<mm:field name="number" />');"  title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16" title="<fmt:message key="content.edit" />" alt="<fmt:message key="content.edit" />"/></a>
-			<% if (role != null && SecurityUtil.isWriter(role)) { %>
-				<a href="<c:url value='/editors/repository/select/SelectorChannel.do?role=writer' />"
-					target="selectchannel" onclick="moveContent(<mm:field name="number" />, ${parentchannel} )"> 
-	                   <img src="../gfx/icons/page_move.png" title="<fmt:message key="searchform.icon.move.title" />" /></a>
-
-				<a href="javascript:unpublish('<mm:write referid="parentchannel" />','<mm:field name="number" />');" title="<fmt:message key="content.unlink" />"><img src="../gfx/icons/delete.png" width="16" height="16" title="<fmt:message key="content.unlink" />" alt="<fmt:message key="content.unlink" />"/></a>
-			<% } %>
-         <mm:haspage page="/editors/versioning">
-            <c:url value="/editors/versioning/ShowVersions.do" var="showVersions">
-               <c:param name="nodenumber"><mm:field name="number" /></c:param>
-            </c:url>
-            <a href="#" onclick="openPopupWindow('versioning', 750, 550, '${showVersions}')"><img src="../gfx/icons/versioning.png" title="<fmt:message key="content.icon.versioning.title" />" alt="<fmt:message key="content.icon.versioning.title" />"/></a>
-         </mm:haspage>
-			<% if (role != null && SecurityUtil.isWriter(role)) { %>
-	         <mm:last inverse="true">
-	            <a href="javascript:moveDown('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/down.png" width="16" height="16" title="<fmt:message key="content.move.down" />" alt="<fmt:message key="content.move.down" />"/></a>
-	         </mm:last>
-	         <mm:first inverse="true">
-	            <mm:last><img src="../gfx/icons/spacer.png" width="16" height="16" alt=""/></mm:last>
-	            <a href="javascript:moveUp('<mm:field name="number" />','<mm:write referid="parentchannel" />')"><img src="../gfx/icons/up.png" width="16" height="16" title="<fmt:message key="content.move.up" />" alt="<fmt:message key="content.move.up" />"/></a>
-	         </mm:first> 
-	      <% } %>
- 	  	   <cmsc:hasfeature name="savedformmodule">
-			<c:set var="typeval">
-      			<mm:nodeinfo type="type" />          	
-      		</c:set> 
-      		<c:if test="${typeval == 'responseform'}">         
-	       		<mm:url page="/editors/savedform/ShowSavedForm.do" id="showSavedForms" write="false">
-	            	<mm:param name="nodenumber"><mm:field name="number" /></mm:param>
-	            	<mm:param name="initreturnurl" value="${returnurl}" />
-	       		</mm:url>                   
-	       		<a href="<mm:write referid="showSavedForms"/>"><img src="../gfx/icons/application_form_magnify.png" title="<fmt:message key="content.icon.savedform.title" />" alt="<fmt:message key="content.icon.savedform.title" />"/></a>          
-	       	</c:if>
-	 	</cmsc:hasfeature>          	
-      </td>
-      <td onMouseDown="objClick(this);">
-		   <mm:nodeinfo type="guitype"/>
-		</td>
-		<td  onMouseDown="objClick(this);">
-         <mm:field jspvar="title" write="false" name="title" />
-			<c:if test="${fn:length(title) > 50}">
-				<c:set var="title">${fn:substring(title,0,49)}...</c:set>
-			</c:if>
-			${title}
-		</td>
-		<td onMouseDown="objClick(this);" style="white-space: nowrap;">
-       	<mm:field name="lastmodifier" jspvar="lastmodifier" write="false"/>
-      	<mm:listnodes type="user" constraints="username = '${lastmodifier}'">
-      		<c:set var="lastmodifierFull"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></c:set>
-      		<c:if test="${lastmodifierFull != ''}"><c:set var="lastmodifier" value="${lastmodifierFull}"/></c:if>
-      	</mm:listnodes>
-      	${lastmodifier}
-      </td>
-        <td style="white-space: nowrap;"><mm:field name="lastmodifieddate"><cmsc:dateformat displaytime="true" /></mm:field></td>
-        <td><mm:field name="number"/></td>
-		<td width="50" onMouseDown="objClick(this);" style="white-space: nowrap;">
-			<c:choose>
-				<c:when test="${not empty createdNumbers[number]}">
-					<fmt:message key="content.yes" />
-				</c:when>
-				<c:otherwise>
-			      <mm:relatednodes role="creationrel" type="contentchannel">
-			          <mm:field name="number" jspvar="channelNumber" write="false"/>
-			          <cmsc:rights nodeNumber="${channelNumber}" var="rights"/>
-
-			          <mm:field name="name" jspvar="channelName" write="false"/>
-						 <c:set var="channelIcon" value="/editors/gfx/icons/type/contentchannel_${rights}.png"/>
-						 <c:set var="channelIconMessage"><fmt:message key="role.${rights}" /></c:set>
-						 <c:set var="channelUrl" value="Content.do?parentchannel=${channelNumber}"/>
-						 
-						 <img src="<cmsc:staticurl page="${channelIcon}"/>" align="top" alt="${channelIconMessage}" />
-                 	<a href="${channelUrl}">${channelName}</a>
-               </td>
-			      </mm:relatednodes>
-			   </c:otherwise>
-			</c:choose>
-		</td>
-        <c:if test="${hasWorkflow}">
-			<td width="10" onMouseDown="objClick(this);">
-				<c:set var="status" value="waiting"/>
-				<mm:relatednodes type="workflowitem">
-					<c:set var="status"><mm:field name="status"/></c:set>
-				</mm:relatednodes>
-				<c:if test="${status == 'waiting'}">
-					<mm:listnodes type="remotenodes" constraints="sourcenumber=${number}">
-						<c:set var="status" value="onlive"/>
-					</mm:listnodes>
-				</c:if>
-				<img src="../gfx/icons/status_${status}.png" alt="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />" />
-			</td>
-		</c:if>
-      </tr>
-   </mm:listnodes>
-      </tbody>
-   </table>
-   <%@include file="../pages.jsp" %>
-      </div>
-   </div>
-   </mm:node>
+    </div>
 </mm:cloud>
-	</body>
+
+   </body>
 </html:html>
 </mm:content>
