@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="customer">
+	<title xml:lang="nl">Klant</title>
+	<title xml:lang="en">Customer</title>
+
+   <action include="config/customer/create_customer.xml"/>
+   <action include="config/customer/delete_customer.xml"/>
+   <action include="config/customer/load_customer.xml"/>
+
+   <lists>
+      <optionlist include="config/option_lists/boolean.xml" />
+      <optionlist include="config/option_lists/Legend.xml" />
+      <optionlist include="config/option_lists/ImagePosition.xml" />
+      <optionlist include="config/option_lists/ImageCrop.xml" />
+   </lists>
+
+   <steps>
+      <step form-schema="edit_customer"/>
+      <step form-schema="edit_contentfields"/>
+      <step form-schema="edit_contentinfo"/>
+   </steps>
+   <form-schema id="edit_customer" extends="config/customer/edit_customer.xml"/>
+   <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
+   <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
+</wizard-schema>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editwizards exportsource="mmbase://127.0.0.1/emailalert" timestamp="20040225000000">
+	<node number="33802" owner="admin">
+		<name>EmailAlert</name>
+		<description>EmailAlert </description>
+		<wizard>config/emailalert/emailalert</wizard>
+		<nodepath>emailalert</nodepath>
+		<fields>title</fields>
+	</node>
+</editwizards>
+
