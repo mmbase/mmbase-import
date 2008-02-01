@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.29 2007-12-27 13:25:00 pierre Exp $
+ * @version $Id: MMBaseEntry.java,v 1.30 2008-02-01 11:08:21 michiel Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -100,7 +100,7 @@ public class MMBaseEntry implements IndexEntry {
         	    document.add(new Field("number",  "" + subNode.getNumber(), Field.Store.YES, Field.Index.UN_TOKENIZED)); // keyword
         	    document.add(new Field("owner",  subNode.getStringValue("owner"), Field.Store.YES, Field.Index.UN_TOKENIZED));
 		} catch (Exception e) {
-		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing..."); 
+		    log.warn("Failed to load " + field.getName() + "from " + node + " as a node value, continuing...");
 		}
             }
         } else {
@@ -126,13 +126,14 @@ public class MMBaseEntry implements IndexEntry {
                 String value = getFieldDataAsString(data, fieldName);
                 if (fieldDefinition.escaper != null) {
                    org.mmbase.util.transformers.CharTransformer transformer = null;
-                   try {
-                     transformer = org.mmbase.bridge.jsp.taglib.ContentTag.getCharTransformer(fieldDefinition.escaper,null);                  
-                   } catch (javax.servlet.jsp.JspTagException jte) {
-                      // ignore if an escaper does not exist for now (otherwise log fills up)
-                   }
-                   if (transformer !=null) {
-                     value = transformer.transform(value);
+                   //try {
+                       transformer = null;
+                       //org.mmbase.bridge.jsp.taglib.ContentTag.getCharTransformer(fieldDefinition.escaper, null);
+                       //} catch (javax.servlet.jsp.JspTagException jte) {
+                       // ignore if an escaper does not exist for now (otherwise log fills up)
+                       //}
+                   if (transformer != null) {
+                       value = transformer.transform(value);
                    }
                 }
                 if (fieldDefinition.keyWord) {

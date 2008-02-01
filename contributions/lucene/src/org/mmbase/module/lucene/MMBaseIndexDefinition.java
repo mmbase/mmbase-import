@@ -26,7 +26,7 @@ import org.apache.lucene.analysis.Analyzer;
  * fields can have extra attributes specific to Lucene searching.
  *
  * @author Pierre van Rooden
- * @version $Id: MMBaseIndexDefinition.java,v 1.22 2007-12-18 12:17:11 pierre Exp $
+ * @version $Id: MMBaseIndexDefinition.java,v 1.23 2008-02-01 11:08:21 michiel Exp $
  **/
 class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     static private final Logger log = Logging.getLoggerInstance(MMBaseIndexDefinition.class);
@@ -54,8 +54,13 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
     protected final List<String> identifierFields = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList("number")));
 
     private final Map<String, Float> boosts = new HashMap<String, Float>();
- 
-    private final BasicReleaseStrategy releaseStrategy = new BasicReleaseStrategy();
+
+    private final ChainedReleaseStrategy releaseStrategy = new ChainedReleaseStrategy();
+    {
+        releaseStrategy.addReleaseStrategy(new BetterStrategy());
+        releaseStrategy.addReleaseStrategy(new ConstraintsMatchingStrategy());
+    }
+
 
     MMBaseIndexDefinition() {
     }
@@ -98,9 +103,16 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
 
     public boolean inIndex(String identifier) {
         Cloud cloud = query.getCloud();
-        if (! cloud.hasNode(identifier)) return false;
+        if (! cloud.hasNode(identifier)) {
+            log.debug("No such node " + identifier + " (" + getId() + ")");
+            return false;
+        }
         Node node = cloud.getNode(identifier);
-	return releaseStrategy.evaluate(NodeEventHelper.createNodeEventInstance(node, Event.TYPE_NEW, null), query, null).shouldRelease();
+        NodeEvent pseudoEvent = new NodeEvent(null, node.getNodeManager().getName(), node.getNumber(), Collections.EMPTY_MAP,
+                                              new NodeMap(node), Event.TYPE_CHANGE);
+        boolean result =  releaseStrategy.evaluate(pseudoEvent, query, null).shouldRelease();
+        log.debug("Node " + identifier + (result ? " IS " : " IS NOT ") + "in index " + getId() + " according to " + releaseStrategy);
+        return result;
     }
     /**
      * Converts an MMBase Node Iterator to an Iterator of IndexEntry-s.
@@ -177,8 +189,8 @@ class MMBaseIndexDefinition extends QueryDefinition implements IndexDefinition {
             }
             StepField elementNumberField = q.createStepField(elementNumberFieldName);
             q.addSortOrder(elementNumberField, SortOrder.ORDER_DESCENDING); // this sort order makes it possible to filter out duplicates.
-            if (log.isDebugEnabled()) {
-                log.debug("Query for node '" + id + "': " + q.toSql());
+            if (log.isTraceEnabled()) {
+                log.trace("Query for node '" + id + "': " + q.toSql());
             }
             return new HugeNodeListIterator(q, maxNodesInQuery);
         } catch (Exception e) {
