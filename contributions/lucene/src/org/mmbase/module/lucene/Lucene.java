@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.105 2008-02-01 11:08:21 michiel Exp $
+ * @version $Id: Lucene.java,v 1.106 2008-02-01 12:40:42 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -492,6 +492,16 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         };
     {
         addFunction(clearDirectory);
+    }
+    protected Function/*<Integer>*/ fullIndexing = new AbstractFunction/*<Integer>*/("fullIndexing", new Parameter[] {INDEX, COPY}, ReturnType.BOOLEAN) {
+            public Integer  getFunctionValue(Parameters arguments) {
+                String index = (String) arguments.getString(INDEX);
+                Searcher searcher = getSearcher(index);
+                return searcher.getFullIndexSize();
+            }
+        };
+    {
+        addFunction(fullIndexing);
     }
 
     //protected Function<Integer> unAssignFunction = new AbstractFunction<Integer>("unassign", new Parameter("id", Integer.class, true)) {
@@ -1287,7 +1297,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             }
         }
         void fullIndex(final String index) {
-            if (status != BUSY_FULL_INDEX || ! assignment.equals(ALL_FULL_INDEX)) {
+            if (status != BUSY_FULL_INDEX || ! ALL_FULL_INDEX.equals(assignment)) {
                 if (! assigned(ALL_FULL_INDEX)) {
                     // only schedule a full index if no complete full index is currently busy or scheduled already.
                     Assignment a = new Assignment() {

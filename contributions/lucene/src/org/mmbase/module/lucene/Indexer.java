@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.52 2008-02-01 11:08:21 michiel Exp $
+ * @version $Id: Indexer.java,v 1.53 2008-02-01 12:40:42 michiel Exp $
  **/
 public class Indexer {
 
@@ -404,6 +404,7 @@ public class Indexer {
      */
     public void fullIndex() {
         log.service("Doing full index for " + toString());
+        EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.START, 0));
         IndexWriter writer = null;
         try {
             Directory fullIndex = getDirectoryForFullIndex();
@@ -413,7 +414,7 @@ public class Indexer {
             int subIndexNumber = 0;
             for (IndexDefinition indexDefinition : queries) {
                 subIndexNumber++;
-                log.debug("full index for " + indexDefinition);
+                log.service("full index for " + indexDefinition);
                 CloseableIterator<? extends IndexEntry> j = indexDefinition.getCursor();
                 try {
                     index(j, writer, indexDefinition.getId());
@@ -429,6 +430,7 @@ public class Indexer {
             Directory.copy(fullIndex, getDirectory(), true);
             Date lastFullIndex = setLastFullIndex(startTime);
             log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
+            EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
         } catch (Exception e) {
             addError(e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
@@ -464,6 +466,7 @@ public class Indexer {
                 indexed++;
                 if (indexed % 100 == 0) {
                     log.service("Indexed " + indexed + " documents");
+                    EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.BUSY, indexed));
                 } else if (log.isDebugEnabled()) {
                     log.debug("Indexed " + indexed + " documents");
                 }
