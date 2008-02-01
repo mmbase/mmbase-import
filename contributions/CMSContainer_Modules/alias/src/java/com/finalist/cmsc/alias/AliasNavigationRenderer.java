@@ -22,7 +22,7 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
           Alias alias = (Alias) item;
           if (alias.getPage() > 0 ) {
              NavigationItem pageItem = SiteManagement.getNavigationItem(alias.getPage());
-             String path = SiteManagement.getPath(pageItem, ServerUtil.useServerName());
+             String path = SiteManagement.getPath(pageItem, !ServerUtil.useServerName());
 
              HttpServletRequest aliasRequest = new AliasHttpServletRequest(request, path); 
              PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response, servletConfig);
