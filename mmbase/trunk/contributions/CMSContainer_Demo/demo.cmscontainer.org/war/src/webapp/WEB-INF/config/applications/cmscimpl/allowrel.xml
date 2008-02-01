@@ -3,9 +3,6 @@
 	<node number="864" owner="default" snumber="579" dnumber="647" rtype="allowrel" dir="bidirectional">
 		<allow>true</allow>
 	</node>
-	<node number="862" owner="default" snumber="575" dnumber="639" rtype="allowrel" dir="bidirectional">
-		<allow>true</allow>
-	</node>
 	<node number="178921" owner="default" snumber="661" dnumber="138" rtype="allowrel" dir="bidirectional">
 		<allow>true</allow>
 	</node>
