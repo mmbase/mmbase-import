@@ -41,11 +41,14 @@
 					<mm:field name="action" id="action" write="false"/>
 					<mm:field name="timestamp" write="false"><mm:time id="timestamp" write="false" format="dd/MM/yyyy hh:mm"/></mm:field>
 					<mm:field name="sourcenumber" id="number" write="false"/>
+					<mm:field name="publishdate"><mm:time id="publishdate" write="false" format="dd/MM/yyyy hh:mm"/></mm:field>
+					
 					<c:set var="type" value=""/>
 					<c:set var="name" value=""/>
-					<c:set var="autor" value=""/>
-					<c:set var="publishdate" value=""/>
-					<mm:node number="${number}">
+					<c:set var="author" value=""/>
+					<c:set var="nodetype" value=""/>
+					
+					<mm:node number="${number}" notfound="skip">
 						<mm:nodeinfo type="guitype" jspvar="nodetype" write="false" vartype="String"/>
 						<mm:hasfield name="lastmodifier">
 							<mm:field name="lastmodifier" id="author" write="false"/>
@@ -64,16 +67,7 @@
 								<mm:field name="key" id="name" write="false"/>
 							</mm:hasfield>
 						</c:if>
-
-						<mm:remove referid="publishdate"/>
-						<mm:hasfield name="publishdate">
-							<mm:field name="publishdate" id="publishdate" write="false"/>
-							<mm:isnotempty referid="publishdate">
-								<c:set var="publishdate"><mm:write referid="publishdate"><mm:time format="dd/MM/yyyy hh:mm"/></mm:write></c:set>
-							</mm:isnotempty>
-						</mm:hasfield>
 					</mm:node>
-					
 					
 			      <tr <mm:even inverse="true">class="swap"</mm:even>>
 						<td>${number}</td>
@@ -84,7 +78,6 @@
 						<td>${name}</td>
 						<td>${publishdate}</td>
 					</tr>
-
 				</mm:listnodes>
 				
 				</table>
@@ -93,7 +86,6 @@
 			<a href="../index.jsp"><fmt:message key="admindashboard.publish.viewqueue.back" /></a>
 			</div>
 		</div>
-		
 		
 	</mm:hasrank>
 </mm:cloud>
