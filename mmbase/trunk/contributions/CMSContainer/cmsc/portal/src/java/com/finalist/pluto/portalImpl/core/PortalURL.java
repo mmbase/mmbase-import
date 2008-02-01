@@ -406,14 +406,6 @@ public class PortalURL {
       // * control information
       String pathInfo = environment.getRequest().getServletPath();
       if (pathInfo != null) {
-
-         if (environment.getRequest().getAttribute("javax.servlet.error.request_uri") != null) {
-             pathInfo = (String) environment.getRequest().getAttribute("javax.servlet.error.request_uri");
-             if (environment.getRequest().getContextPath() != null
-                     && !environment.getRequest().getContextPath().equals("/")) {
-                pathInfo = pathInfo.substring(environment.getRequest().getContextPath().length());
-             }
-         }
          StringTokenizer tokenizer = new StringTokenizer(pathInfo, "/");
 
          int mode = 0; // 0=navigation, 1=control information

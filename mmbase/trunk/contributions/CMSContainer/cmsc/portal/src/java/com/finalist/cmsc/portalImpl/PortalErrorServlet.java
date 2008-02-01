@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.beans.om.Site;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
@@ -72,7 +73,18 @@ public class PortalErrorServlet extends PortalServlet {
       }
       
       if (PortletContainerFactory.getPortletContainer().isInitialized()) {
-         PortalEnvironment env = new PortalEnvironment(request, response, config);
+          String errorUri = (String) request.getAttribute(ERROR_REQUEST_URI); 
+          if (errorUri != null) {
+              if (request.getContextPath() != null
+                      && !request.getContextPath().equals("/")) {
+                 errorUri = errorUri.substring(request.getContextPath().length());
+              }
+          }
+          // The incoming request has a servletPath of /PortalError. The mapped url to this servlet.
+          // Pretend it is  the uri which has the error in itss
+          HttpServletRequest errorUriRequest = new ErrorHttpServletRequest(request, errorUri);
+          
+         PortalEnvironment env = new PortalEnvironment(errorUriRequest, response, config);
          PortalURL currentURL = env.getRequestedPortalURL();
          try {
             String path = extractPath(request, currentURL);
@@ -95,15 +107,17 @@ public class PortalErrorServlet extends PortalServlet {
                }
             }
             if (errorPageSite != null) {
-               String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
-               
                 logError(request); 
-                HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPagePath); 
+
+                HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode)); 
                 PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response, config);
+
                 PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
-                response.setContentType(CONTENT_TYPE); 
                 ScreenFragment oldScreen = registry.getScreen();
-                
+
+                response.setContentType(CONTENT_TYPE);
+
+                String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
                 boolean renderSucceed = doRender(errorRequest, response, errorPagePath);
                 if (!renderSucceed) {
                    defaultError(request, response, statusCode);
@@ -177,17 +191,36 @@ public class PortalErrorServlet extends PortalServlet {
    class ErrorHttpServletRequest extends HttpServletRequestWrapper {
 
       private String errorPagePath;
+      private String serverName;
 
 
-      public ErrorHttpServletRequest(HttpServletRequest request, String errorPagePath) {
+      public ErrorHttpServletRequest(HttpServletRequest request, String errorServletPath) {
+          super(request);
+          this.errorPagePath = errorServletPath;
+      }
+      
+      public ErrorHttpServletRequest(HttpServletRequest request, String errorSitePath, String errorServletPath) {
          super(request);
-         this.errorPagePath = errorPagePath;
+         if (ServerUtil.useServerName()) {
+             serverName = errorSitePath;
+             errorPagePath = errorServletPath;
+         }
+         else {
+             this.errorPagePath = errorSitePath + PATH_SP + errorServletPath;
+         }
       }
 
       @Override
       public String getServletPath() {
          return errorPagePath;
       }
-
+      
+      @Override
+      public String getServerName() {
+        if (serverName != null) {
+            return serverName;
+        }
+        return super.getServerName();
+      }
    }
 }
