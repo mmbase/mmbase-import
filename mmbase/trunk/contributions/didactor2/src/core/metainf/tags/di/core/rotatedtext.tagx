@@ -7,11 +7,23 @@
   <jsp:directive.attribute name="text"   required="true" />
   <jsp:directive.attribute name="angle"        />
   <mm:cloud>
-    <mm:node number="didactor.textbackground">
-      <mm:image mode="img"
-                alt="${text}"
-                template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,'${text}')+rotate(${empty angle ? 90 : angle})"/>
-    </mm:node>
+    <mm:log>${text}</mm:log>
+    <mm:content escaper="none">
+      <mm:escaper id="title" type="regexps">
+        <mm:param name="mode">entire</mm:param>
+        <mm:param name="patterns">
+          <mm:param name="\s+">_</mm:param>
+          <mm:param name='"'>''''</mm:param>
+        </mm:param>
+      </mm:escaper>
+      <mm:import id="e" escape="none"><mm:write value="${text}" escape="title" /></mm:import>
+
+      <mm:node number="didactor.textbackground">
+        <mm:image mode="img"
+                  alt="${mm:escape('text/html/attribute', text)}"
+                  template='font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(10,10,"${e}")+rotate(${empty angle ? 90 : angle})'/>
+      </mm:node>
+    </mm:content>
   </mm:cloud>
 </jsp:root>
 
