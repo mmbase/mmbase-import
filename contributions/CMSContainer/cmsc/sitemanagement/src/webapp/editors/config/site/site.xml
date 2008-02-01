@@ -14,11 +14,11 @@
    </lists>
    <steps> 
       <step form-schema="edit_site"/>
-      <step form-schema="edit_pagefields"/>
+      <step form-schema="edit_navigationitemfields"/>
 <!--      <step form-schema="edit_pageadmin"/> -->
    </steps>
    <form-schema id="edit_site" extends="config/site/edit_site.xml"/>
-   <form-schema id="edit_pagefields" extends="config/page/edit_pagefields.xml"/>
+   <form-schema id="edit_navigationitemfields" extends="config/navigationitem/edit_navigationitemfields.xml"/>
 <!--
    <form-schema id="edit_pageadmin" extends="config/page/edit_pageadmin.xml"/>
 -->

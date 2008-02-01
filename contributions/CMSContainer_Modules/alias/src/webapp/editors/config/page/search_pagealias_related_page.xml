@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="related" destination="page" minoccurs="1" maxoccurs="1">
+<list role="related" destination="page" minoccurs="0" maxoccurs="1">
 	<title xml:lang="nl">Page</title>
 	<title xml:lang="en">Pagina</title>
 
@@ -11,15 +11,7 @@
 		</field>
 	</item>
 
-	<command name="search" nodepath="page" age="-1" fields="title">
-		<prompt xml:lang="en">Search page</prompt>
-		<prompt xml:lang="nl">Zoek pagina</prompt> 
-		<search-filter>
-			<name xml:lang="en">Title contains</name>
-			<name xml:lang="nl">Titel bevat</name>
-			<search-fields>[title]</search-fields>
-		</search-filter>
-	</command>
+	<command name="pageselector" />
 
 	<action type="create">
 		<relation destinationtype="page" role="related"></relation>

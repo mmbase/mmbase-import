@@ -39,10 +39,16 @@ public class AliasNavigationItemManager implements NavigationItemManager {
         }
 
         Alias alias = MMBaseNodeMapper.copyNode(node, Alias.class);
-        NodeList relatedNodes = node.getRelatedNodes("page", "related", "destination");
-        if(relatedNodes.size() > 0) {
-            Node page = relatedNodes.getNode(0);
+        NodeList relatedPages = node.getRelatedNodes("page", "related", "destination");
+        if(relatedPages.size() > 0) {
+            Node page = relatedPages.getNode(0);
             alias.setPage(page.getNumber());
+        }
+
+        NodeList relatedUrls = node.getRelatedNodes("urls", "related", "destination");
+        if(relatedUrls.size() > 0) {
+            Node url = relatedUrls.getNode(0);
+            alias.setUrl(url.getStringValue("url"));
         }
         
         return alias;
