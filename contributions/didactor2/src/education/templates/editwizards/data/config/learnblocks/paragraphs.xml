@@ -4,10 +4,6 @@
   <title xml:lang="nl">Alineas invoeren</title>
   <title xml:lang="en">Enter paragraphs</title>
   <field name="name" ftype="data"/>
-  <field name="showtitle" ftype="enum">
-    <prompt xml:lang="nl">Titel laten zien</prompt>
-    <prompt xml:lang="en">Show title</prompt>
-    <optionlist select="boolean" />
-  </field>
+  <field name="showtitle" />
   <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
 </form-schema>
