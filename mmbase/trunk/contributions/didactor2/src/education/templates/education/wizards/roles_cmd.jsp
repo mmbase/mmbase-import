@@ -20,25 +20,27 @@
       <mm:compare referid="command" value="accept">
         <di:has editcontext="rollen" action="rw">
           <mm:listnodes type="editcontexts" orderby="number" id="this_editcontext">
-            <mm:listnodes type="roles" orderby="number" id="this_role">
-              <mm:import id="select" externid="select_${this_editcontext}_${this_role}">0</mm:import>
-              <mm:related path="posrel,editcontexts" constraints="editcontexts.number='$this_editcontext'">
-                <mm:node element="posrel" id="old_rel">
-                  <mm:field name="pos" write="false">
-                    <c:if test="${_ ne select}">
-                      <p>Setting relation ${_node}.pos=${_node.pos} -> ${select}</p>
-                      <mm:setfield>${select}</mm:setfield>
-                    </c:if>
-                  </mm:field>
-                </mm:node>
-              </mm:related>
-              <mm:notpresent referid="old_rel">
-                <mm:createrelation role="posrel" source="this_role" destination="this_editcontext">
-                  <p>Creating relation ${this_role} -> ${this_editcontext}</p>
-                  <mm:setfield name="pos">${select}</mm:setfield>
-                </mm:createrelation>
-              </mm:notpresent>
-            </mm:listnodes>
+            <mm:context>
+              <mm:listnodes type="roles" orderby="number" id="this_role">
+                <mm:import id="select" externid="select_${this_editcontext}_${this_role}">0</mm:import>
+                <mm:related path="posrel,editcontexts" constraints="editcontexts.number='$this_editcontext'">
+                  <mm:node element="posrel" id="old_rel">
+                    <mm:field name="pos" write="false">
+                      <c:if test="${_ ne select}">
+                        <p>Setting relation ${_node}.pos=${_node.pos} -> ${select}</p>
+                        <mm:setfield>${select}</mm:setfield>
+                      </c:if>
+                    </mm:field>
+                  </mm:node>
+                </mm:related>
+                <c:if test="${empty old_rel}">
+                  <mm:createrelation role="posrel" source="this_role" destination="this_editcontext">
+                    <p>Creating relation ${this_role} -> ${this_editcontext}</p>
+                    <mm:setfield name="pos">${select}</mm:setfield>
+                  </mm:createrelation>
+                </c:if>
+              </mm:listnodes>
+            </mm:context>
           </mm:listnodes>
         </di:has>
         <di:has editcontext="rollen" action="rw" inverse="true">

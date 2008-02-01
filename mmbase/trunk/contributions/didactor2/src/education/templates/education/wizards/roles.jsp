@@ -56,7 +56,7 @@
                         <mm:param name="command">deleterole</mm:param>
                         <td>
                           <a href="${_}"
-                             onClick="return doDelete('${di:translate('education.areyousuredelrole')}');"
+                             onClick="return confirm('${di:translate('education.areyousuredelrole')}');"
                              target="text">
                             <img src="${mm:treelink('/education/wizards/gfx/minus.gif', includePath)}"
                                  border="0"
