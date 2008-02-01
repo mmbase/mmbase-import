@@ -9,10 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+import org.mmbase.util.transformers.*;
+import org.mmbase.util.functions.*;
 
 import junit.framework.TestCase;
 
@@ -20,6 +19,7 @@ import junit.framework.TestCase;
  * Test cases for the Encoder
  *
  * @author keesj
+ * @author Michiel Meeuwissen
  */
 public class EncodeTest extends TestCase {
 
@@ -148,7 +148,34 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("ROT-13");
         documentedEncodings.add("ROT-5");
         documentedEncodings.add("UNICODEESCAPER");
-       return documentedEncodings;
+        return documentedEncodings;
     }
+
+    public void testRegexpReplacer() {
+        RegexpReplacerFactory fact = new RegexpReplacerFactory();
+        Parameters pars = fact.createParameters();
+        pars.set("mode", "ENTIRE");
+        List<Map.Entry<String, String>> patterns = new ArrayList<Map.Entry<String, String>>();
+        patterns.add(new Entry<String, String>("\\s+", " "));
+        patterns.add(new Entry<String, String>("bb", "AAA"));
+        patterns.add(new Entry<String, String>("aa", "bb"));
+        pars.set("patterns", patterns);
+        CharTransformer reg = fact.createTransformer(pars);
+        assertEquals(reg.transform("a a"), "a a");
+        assertEquals(reg.transform("a  a"), "a a");
+        assertEquals(reg.transform("a \n a"), "a a");
+        assertEquals(reg.transform("a \n\t a"), "a a");
+        assertEquals(reg.transform("a  a  a"), "a a a");
+
+        pars.set("replacefirst", "true");  reg = fact.createTransformer(pars);
+        assertEquals(reg.transform("a  a  a"), "a a  a");
+        assertEquals(reg.transform("a  aa  a"), "a aa  a");
+
+        pars.set("replacefirst", "all");  reg = fact.createTransformer(pars);
+        assertEquals(reg.transform("a  aa  a"), "a bb  a");
+
+    }
+
+
 
 }
