@@ -1,13 +1,13 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<mm:cloud jspvar="cloud" method="http">
+<mm:cloud rank="administrator">
 <mm:import id="orderby" externid="orderby">lastname</mm:import>
 <mm:import id="directions" externid="directions">up</mm:import>
 <mm:import id="offset" externid="offset">0</mm:import>
 <% int pageLength = 250; %>
 <html>
 <head>
-   <link href="style/color/wizard.css" type="text/css" rel="stylesheet"/>
-   <link href="style/layout/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="../mmbase/edit/wizard/style/color/wizard.css" type="text/css" rel="stylesheet"/>
+   <link href="../mmbase/edit/wizard/style/layout/wizard.css" type="text/css" rel="stylesheet"/>
    <title>Resultaten Noise2Didactor conversie</title>
 </head>
 <body style="overflow:auto;">
