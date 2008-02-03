@@ -41,16 +41,21 @@ See http://www.MMBase.org/license
       <url>http://jakarta.apache.org/commons/</url>
     </dependency>
 
+    <dependency>
+      <groupId>jspapi</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.0</version>
+    </dependency>
     <!-- jsp taglibs, jstl -->
-     <dependency>
-       <groupId>jstl</groupId>
+    <dependency>
+      <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
       <version>1.1.2</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
       <version>1.1.2</version>
