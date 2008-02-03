@@ -109,7 +109,6 @@
 
 
 	<preGoal name="jar:jar">
-    <ant:echo>Hoi</ant:echo>
     <util:available file="${maven.build.dest}/org/mmbase/config">
       <fileScanner var="scanner">
         <fileset dir="${maven.build.dest}/org/mmbase/config"/>
