@@ -66,8 +66,20 @@ public class NodeEventHelper {
             // err.
         }
         }
+        
+        removeBinaryValues(oldEventValues);
+        removeBinaryValues(newEventValues);
 
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
+    }
+
+    private static void removeBinaryValues(Map oldEventValues) {
+        for (Iterator iterator = oldEventValues.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
+                entry.setValue(null);
+            }
+        }
     }
 
     public static RelationEvent createRelationEventInstance(Relation node, int eventType, String machineName){
