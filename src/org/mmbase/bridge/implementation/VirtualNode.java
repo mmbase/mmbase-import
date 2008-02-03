@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * {@link #VirtualNode(org.mmbase.module.core.VirtualNode, Cloud)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualNode.java,v 1.26 2007-02-25 18:18:24 nklasens Exp $
+ * @version $Id: VirtualNode.java,v 1.27 2008-02-03 17:33:57 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.VirtualNode
  * @since MMBase-1.8
@@ -269,12 +269,12 @@ public class VirtualNode extends AbstractNode implements Node {
     }
 
 
-    public Collection  getFunctions() {
+    public Collection<Function<?>>  getFunctions() {
         return  getNode().getFunctions();
     }
 
     @Override
-    protected Function getNodeFunction(String functionName) {
+    protected Function<?> getNodeFunction(String functionName) {
         return getNode().getFunction(functionName);
     }
 

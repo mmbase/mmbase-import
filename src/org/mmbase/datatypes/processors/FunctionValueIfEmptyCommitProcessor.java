@@ -11,14 +11,13 @@ package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
-import java.util.Date;
 
 /**
  * If this commit-processor is configured on a field, then on commit of the node, the value of a
  * certain function (on the same node), is set into the field, if the field is empty.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.2 2007-08-03 09:50:23 michiel Exp $
+ * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.3 2008-02-03 17:33:57 nklasens Exp $
  * @since MMBase-1.8.5
  */
 

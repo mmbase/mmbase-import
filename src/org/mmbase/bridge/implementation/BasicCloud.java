@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.179 2008-01-22 16:41:26 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.180 2008-02-03 17:33:57 nklasens Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -1103,7 +1103,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
     protected void _writeObject(ObjectOutputStream out) throws IOException {
         out.writeUTF(name);
         out.writeObject(userContext);
-        HashMap props = new HashMap();
+        HashMap<Object, Object> props = new HashMap<Object, Object>();
         Iterator i = properties.entrySet().iterator();
         while(i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();

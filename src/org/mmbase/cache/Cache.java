@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.48 2007-08-01 06:48:20 michiel Exp $
+ * @version $Id: Cache.java,v 1.49 2008-02-03 17:33:56 nklasens Exp $
  */
 abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
@@ -59,7 +59,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
     void setImplementation(String clazz, Map<String,String> configValues) {
         try {
-            Class clas = Class.forName(clazz);
+            Class<?> clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
                 implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
                 implementation.config(configValues);
@@ -271,9 +271,9 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
             size += ((SizeMeasurable) implementation).getByteSize(sizeof);
         } else {
             // sizeof.sizeof(implementation) does not work because this.equals(implementation)
-            Iterator i = implementation.entrySet().iterator();
+            Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
             while(i.hasNext()) {
-                Map.Entry entry = (Map.Entry) i.next();
+                Map.Entry<K, V> entry = i.next();
                 size += sizeof.sizeof(entry.getKey());
                 size += sizeof.sizeof(entry.getValue());
             }
@@ -290,9 +290,9 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     public int getCheapByteSize() {
         int size = 0;
         SizeOf sizeof = new SizeOf();
-        Iterator i = implementation.entrySet().iterator();
+        Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
         while(i.hasNext()) {
-            Map.Entry entry = (Map.Entry) i.next();
+            Map.Entry<K, V> entry = i.next();
             size += sizeof.sizeof(entry.getKey());
             size += sizeof.sizeof(entry.getValue());
             sizeof.clear();
@@ -397,7 +397,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * @see CacheManager#putCache(Cache)
      */
 
-    public Cache putCache() {
+    public Cache<K,V> putCache() {
         return CacheManager.putCache(this);
     }
 

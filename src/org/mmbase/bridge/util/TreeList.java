@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.28 2007-08-02 10:09:49 michiel Exp $
+ * @version $Id: TreeList.java,v 1.29 2008-02-03 17:33:56 nklasens Exp $
  * @since   MMBase-1.7
  */
 
@@ -287,7 +287,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             nodeList.setProperty(REAL_NODES, realNodes);
         }
         assert realNodes.size() == nodeList.size() : "The size of nodeList " + nodeList.size() + " does not match realNodes " + realNodes.size() + 
-            " at queryIndex; " + queryIndex + " query " + ((Branch) branches.get(queryIndex)).getLeafQuery().toSql();
+            " at queryIndex; " + queryIndex + " query " + branches.get(queryIndex).getLeafQuery().toSql();
         assert realNodes.size() >= index : "The size of realNodes  (" +  realNodes.size() + ") is too small (index = " + index + ")";
         return realNodes.getNode(index);
     }

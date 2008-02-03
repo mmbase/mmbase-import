@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.59 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: FieldDefs.java,v 1.60 2008-02-03 17:33:57 nklasens Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -43,7 +43,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     public final static int ORDER_LIST   = NodeManager.ORDER_LIST;
     public final static int ORDER_SEARCH = NodeManager.ORDER_SEARCH;
 
-    public FieldDefs(String name, int type, int listItemType, int state, DataType dataType ) {
+    public FieldDefs(String name, int type, int listItemType, int state, DataType<? extends Object> dataType ) {
         super(name, type, listItemType, state, dataType);
     }
 

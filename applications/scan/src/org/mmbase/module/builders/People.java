@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Basic [builder]
  * @author Daniel Ockeloen
- * @version $Id: People.java,v 1.9 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: People.java,v 1.10 2008-02-03 17:33:57 nklasens Exp $
  */
 public class People extends MMObjectBuilder {
 
@@ -30,7 +30,7 @@ public class People extends MMObjectBuilder {
     /**
      * Cache for the most active people
      */
-    private Cache<String, Integer> peopleCache = new Cache(100) {
+    private Cache<String, Integer> peopleCache = new Cache<String, Integer>(100) {
         public String getName()        { return "PeopleCache"; }
         public String getDescription() { return "Cache for most active people"; }
         };
@@ -84,9 +84,9 @@ public class People extends MMObjectBuilder {
             if (i!=-1) {
                 // lets find a related people object
                 MMObjectNode node=getNode(i);
-                Enumeration e=node.getRelatedNodes("people").elements();
+                Enumeration<MMObjectNode> e=node.getRelatedNodes("people").elements();
                 if (e.hasMoreElements()) {
-                    MMObjectNode node2=(MMObjectNode)e.nextElement();
+                    MMObjectNode node2 = e.nextElement();
                     if (node2!=null) {
                         int number=node2.getNumber();
                         peopleCache.put(key,new Integer(number));

@@ -8,14 +8,10 @@ See http://www.MMBase.org/license
 
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -27,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: LeafIncludeTag.java,v 1.26 2007-07-06 11:27:54 johannes Exp $
+ * @version $Id: LeafIncludeTag.java,v 1.27 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class LeafIncludeTag extends IncludeTag {

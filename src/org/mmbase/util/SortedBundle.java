@@ -29,7 +29,7 @@ import org.mmbase.datatypes.StringDataType;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: SortedBundle.java,v 1.30 2007-12-27 12:49:49 michiel Exp $
+ * @version $Id: SortedBundle.java,v 1.31 2008-02-03 17:33:57 nklasens Exp $
  */
 public class SortedBundle {
 
@@ -209,7 +209,7 @@ public class SortedBundle {
                     log.debug("wrapper is a valueWrapper");
                     if (locale == null) {
                         Constructor<?> c = wrapper.getConstructor(Object.class, Comparable.class );
-                        key = c.newInstance(key, (Comparable<?>) value);
+                        key = c.newInstance(key, value);
                     } else {
                         Constructor<?> c = wrapper.getConstructor(Object.class, Object.class, Comparator.class );
                         Collator comp = Collator.getInstance(locale);

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * http://javafaq.nu/java-example-code-618.html
  * @author Michiel Meeuwissen
- * @version $Id: TagStripperFactory.java,v 1.11 2007-12-06 08:26:13 michiel Exp $
+ * @version $Id: TagStripperFactory.java,v 1.12 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.8.4
  */
 public class TagStripperFactory implements ParameterizedTransformerFactory<CharTransformer>  {
@@ -320,7 +320,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
 
         }
         protected void handleAttributes(Tag t, MutableAttributeSet attributes) throws IOException {
-            Enumeration en = attributes.getAttributeNames();
+            Enumeration<?> en = attributes.getAttributeNames();
             while (en.hasMoreElements()) {
                 Object attName =  en.nextElement();
                 if (addBrs && attName.equals("nl_")) continue;
@@ -483,7 +483,7 @@ public class TagStripperFactory implements ParameterizedTransformerFactory<CharT
         //        String source = "<p style=\"nanana\">allow this <b>but not this</b></p>";
 //        String source = "<p style=nanana/>";
 //        String source = "<p style=\"nanana\">text</p>";
-        String source = "<P sTyle=\"nanana\">hoi hoi\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
+//        String source = "<P sTyle=\"nanana\">hoi hoi\n<br><table WIDTH=\"45\" height=99 border='1\"' fONt=bold styLe=\"n\\\"one\">\nbla bla bla</table></p>";
         //System.out.println("Source      = "+source);
         Writer w = new OutputStreamWriter(System.out);
         transformer.transform(new InputStreamReader(System.in), w);

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.24 2007-09-07 15:53:09 michiel Exp $
+ * @version $Id: BeanFunction.java,v 1.25 2008-02-03 17:33:57 nklasens Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
@@ -143,12 +143,6 @@ public class BeanFunction extends AbstractFunction<Object> {
     */
 
     /**
-     * This class of the bean
-     */
-    private final Class  claz;
-
-
-    /**
      * The method corresponding to the function called in getFunctionValue.
      */
     private final Method method;
@@ -165,7 +159,6 @@ public class BeanFunction extends AbstractFunction<Object> {
      */
     private  BeanFunction(Class claz, String name, Producer producer) throws IllegalAccessException, InstantiationException,  InvocationTargetException {
         super(name, null, null);
-        this.claz = claz;
         this.producer = producer;
 
         Method candMethod = null;

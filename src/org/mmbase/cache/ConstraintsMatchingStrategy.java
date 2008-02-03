@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: ConstraintsMatchingStrategy.java,v 1.35 2007-04-07 17:12:53 nklasens Exp $
+ * @version $Id: ConstraintsMatchingStrategy.java,v 1.36 2008-02-03 17:33:56 nklasens Exp $
  *
  */
 public class ConstraintsMatchingStrategy extends ReleaseStrategy {
@@ -423,7 +423,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
         protected abstract int getOperator();
 
-        protected boolean valueMatches(final Class fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) {
+        protected boolean valueMatches(final Class<Object> fieldType, Object constraintValue, Object valueToCompare, final boolean isCaseSensitive) {
             if (log.isDebugEnabled()) {
                 log.debug("**method: valueMatches() fieldtype: " + fieldType);
             }
@@ -589,12 +589,12 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
             return stringToCompare.matches(sb.toString());
         }
 
-        protected Class getFieldTypeClass(StepField stepField) {
+        protected Class<Object> getFieldTypeClass(StepField stepField) {
             MMBase mmbase = MMBase.getMMBase();
             // why it this checked anyway?
             CoreField field = mmbase.getBuilder(stepField.getStep().getTableName()).getField(stepField.getFieldName());
-            DataType fieldType = field.getDataType();
-            Class fieldTypeClass = fieldType.getTypeAsClass();
+            DataType<Object> fieldType = field.getDataType();
+            Class<Object> fieldTypeClass = fieldType.getTypeAsClass();
             if( fieldTypeClass.equals(Boolean.class) ||
                 fieldTypeClass.equals(Date.class) ||
                 fieldTypeClass.equals(Integer.class) ||
@@ -618,7 +618,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
 
 
     private static class BasicFieldValueConstraintMatcher extends FieldCompareConstraintMatcher {
-        private final Class fieldTypeClass;
+        private final Class<Object> fieldTypeClass;
         protected final StepField stepField;
         protected final BasicFieldValueConstraint wrappedFieldValueConstraint;
 
@@ -703,7 +703,7 @@ public class ConstraintsMatchingStrategy extends ReleaseStrategy {
      * @since MMBase-1.8.1
      */
     private static class BasicFieldValueInConstraintMatcher extends FieldCompareConstraintMatcher {
-        private final Class fieldTypeClass;
+        private final Class<Object> fieldTypeClass;
         protected final StepField stepField;
         protected final BasicFieldValueInConstraint wrappedFieldValueInConstraint;
 

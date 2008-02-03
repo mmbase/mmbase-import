@@ -9,18 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework;
 
-import java.util.*;
-import org.w3c.dom.*;
-import java.net.URI;
-import org.mmbase.util.LocalizedString;
-import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.*;
 
 /**
  * A Virtual component is a component which is  only mentioned as a dependency of another component.
  *
  * @author Michiel Meeuwissen
- * @version $Id: VirtualComponent.java,v 1.2 2007-08-06 16:55:55 michiel Exp $
+ * @version $Id: VirtualComponent.java,v 1.3 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 public class VirtualComponent {

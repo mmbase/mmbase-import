@@ -22,14 +22,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ChecksumFactory.java,v 1.10 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ChecksumFactory.java,v 1.11 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class ChecksumFactory implements ParameterizedTransformerFactory  {
     private static final Logger log = Logging.getLoggerInstance(ChecksumFactory.class);
 
     public static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("implementation", String.class, java.util.zip.Adler32.class.getName())
+        new Parameter<String>("implementation", String.class, java.util.zip.Adler32.class.getName())
     };
 
     public Parameters createParameters() {

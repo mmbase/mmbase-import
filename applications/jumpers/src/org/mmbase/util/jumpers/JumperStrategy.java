@@ -10,18 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.jumpers;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.math.BigDecimal;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMObjectNode;
-
-import org.mmbase.bridge.*;
 
 /**
  * This is the baseclass for strategies.
@@ -47,7 +39,7 @@ import org.mmbase.bridge.*;
  * @see #calculate(MMObjectNode)
  *
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: JumperStrategy.java,v 1.4 2007-09-11 17:11:38 michiel Exp $
+ * @version $Id: JumperStrategy.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
  */
 public abstract class JumperStrategy {
 

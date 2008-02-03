@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.75 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: scanparser.java,v 1.76 2008-02-03 17:33:58 nklasens Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -40,20 +40,16 @@ public class scanparser extends ProcessorModule {
     private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName());
     private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
     private CounterInterface counter = null;
-    private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
     private static idInterface id=null;
     private static MMBase mmbase=null;
     private static TransactionHandlerInterface transactionhandler;
     private static Hashtable<String, ProcessorInterface> processors = new Hashtable<String, ProcessorInterface>();
-    private static boolean debug=false;
     private static RandomPlus rnd;
     private static int crcseed;
 
     private Hashtable<String, PageProcess> pagesprocessing=new Hashtable<String, PageProcess>();
 
-    // needs fix !
-    private static String loadmode="no-cache";
     private static String htmlroot;
     Hashtable Roots;
 

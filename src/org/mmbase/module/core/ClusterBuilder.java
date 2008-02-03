@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.92 2007-06-20 14:25:39 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.93 2008-02-03 17:33:57 nklasens Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -294,7 +294,7 @@ public class ClusterBuilder extends VirtualBuilder {
     public Map<String, CoreField> getFields(MMObjectNode node) {
         Map<String, CoreField> ret = new HashMap<String, CoreField>();
         Iterator<String> i = node.getValues().keySet().iterator();
-        DataType nodeType  = DataTypes.getDataType("node");
+        DataType<? extends Object> nodeType  = DataTypes.getDataType("node");
         while (i.hasNext()) {
             String name = i.next();
             int pos = name.indexOf(".");

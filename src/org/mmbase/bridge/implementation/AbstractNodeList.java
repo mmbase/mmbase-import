@@ -184,7 +184,6 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
      * @since MMBase-1.8.4
      */
     protected Node getNode(Cloud c, MMObjectNode coreNode) {
-        Node node;
         int n = coreNode.getNumber();
         if (n == -1) {
             String[] na  = coreNode.getStringValue("_number").split("_");

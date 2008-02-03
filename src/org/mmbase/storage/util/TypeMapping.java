@@ -27,7 +27,7 @@ import java.text.MessageFormat;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.9 2007-12-12 17:11:54 michiel Exp $
+ * @version $Id: TypeMapping.java,v 1.10 2008-02-03 17:33:57 nklasens Exp $
  * @since MMBase-1.7
  */
 public class TypeMapping implements Comparable<TypeMapping> {
@@ -69,7 +69,7 @@ public class TypeMapping implements Comparable<TypeMapping> {
 
     // javadoc inherited
     public int compareTo(TypeMapping o) {
-        TypeMapping t = (TypeMapping) o;
+        TypeMapping t = o;
         if (!name.equals(t.name)) {
             return name.compareTo(t.name);
         } else if (minSize != t.minSize) {

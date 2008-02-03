@@ -70,10 +70,10 @@ public class EncryptionTransformerFactory implements ParameterizedTransformerFac
     }
 
     protected final static Parameter[] PARAMS = {
-        new Parameter("key", String.class, "1234567890abcdef"),
-        new Parameter("format", String.class, "hex"),
-        new Parameter("algorithm", String.class, "AES"),
-        new Parameter("direction", String.class, "encrypt")
+        new Parameter<String>("key", String.class, "1234567890abcdef"),
+        new Parameter<String>("format", String.class, "hex"),
+        new Parameter<String>("algorithm", String.class, "AES"),
+        new Parameter<String>("direction", String.class, "encrypt")
     };
 
     public Parameters createParameters() {

@@ -22,7 +22,6 @@ import org.mmbase.storage.search.RelationStep;
 import org.mmbase.util.Casting;
 import org.mmbase.util.Encode;
 import org.mmbase.util.xml.UtilReader;
-import org.mmbase.util.xml.XMLWriter;
 import org.mmbase.util.logging.*;
 
 /**
@@ -56,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.89 2008-01-17 16:50:29 michiel Exp $
+ * @version $Id: Dove.java,v 1.90 2008-02-03 17:33:57 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {

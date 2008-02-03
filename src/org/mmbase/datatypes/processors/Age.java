@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
-import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
