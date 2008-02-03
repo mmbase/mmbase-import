@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * but we need a little help for easy instantiation.
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.8 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: NodeEventHelper.java,v 1.9 2008-02-03 17:03:40 nklasens Exp $
 
  */
 public class NodeEventHelper {
@@ -66,8 +66,19 @@ public class NodeEventHelper {
             // err.
         }
         }
+        
+        removeBinaryValues(oldEventValues);
+        removeBinaryValues(newEventValues);
 
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
+    }
+
+    private static void removeBinaryValues(Map<String, Object> oldEventValues) {
+        for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
+            if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
+                entry.setValue(null);
+            }
+        }
     }
 
     public static RelationEvent createRelationEventInstance(Relation node, int eventType, String machineName){
