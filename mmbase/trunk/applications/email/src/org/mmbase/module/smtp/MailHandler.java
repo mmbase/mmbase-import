@@ -11,18 +11,14 @@ See http://www.MMBase.org/license
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-import org.mmbase.bridge.*;
 import org.mmbase.util.xml.UtilReader;
 import java.util.*;
-import java.io.*;
 import javax.mail.*;
-import javax.mail.internet.*;
-import org.mmbase.applications.email.SendMail;
 
 /**
  * A MailHandler handles <em>one</em> mail. So you must create a new one for every received message
  * (You can use {@link Factory}).
- * @version $Id: MailHandler.java,v 1.11 2007-12-06 10:40:01 michiel Exp $
+ * @version $Id: MailHandler.java,v 1.12 2008-02-03 17:42:06 nklasens Exp $
  */
 public interface  MailHandler {
 
