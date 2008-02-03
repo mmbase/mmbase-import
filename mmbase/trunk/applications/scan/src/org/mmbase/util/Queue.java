@@ -18,7 +18,7 @@ import java.util.*;
  * In 1.5, this class need to be replaced with the java.util.concurrent.BlockingQueue&lt;E&gt; interface.
  *
  * @author vpro
- * @version $Id: Queue.java,v 1.1 2006-10-16 15:04:01 pierre Exp $
+ * @version $Id: Queue.java,v 1.2 2008-02-03 17:33:57 nklasens Exp $
  * @deprecated Use edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue, or some other Queue implementation.
  */
 public class Queue {
@@ -86,9 +86,6 @@ public class Queue {
     //private Object isNotFull = new Object();
 
     private int first;            // pointer to last item in queue
-    private int count;            // current # of items in queue
-    private int maxcount;        // max # of items to be allowed in queue
-
     /**
      * Constructs the queue with the default queue size set to
      * DEFAULT_QUEUE_SIZE, and the append timeout set to
@@ -136,8 +133,7 @@ public class Queue {
         queuesize = size;        // initial size of the queue
         items = new Vector(queuesize);
 
-        first = count = 0;
-        maxcount = size;        // max elements in queue
+        first = 0;
     }
 
     /**
@@ -159,8 +155,7 @@ public class Queue {
         queuesize = size;        // initial size of the queue
         items = new Vector(queuesize);
 
-        first = count = 0;
-        maxcount = size;        // max elements in queue
+        first = 0;
     }
 
     /**
@@ -298,7 +293,6 @@ public class Queue {
         }
         */
         queuesize = newsize;
-        maxcount = newsize;
     }
 
 }

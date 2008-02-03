@@ -24,7 +24,7 @@ import java.util.Locale;
    &lt;property name="memory"&gt;*&#047;10 * * * *|org.mmbase.applications.crontab.MemoryWarner||0.8;Michiel.Meeuwissen@omroep.nl&lt;/property&gt;
    </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MemoryWarner.java,v 1.4 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: MemoryWarner.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
  */
 
 public class MemoryWarner extends AbstractCronJob  {
@@ -58,7 +58,7 @@ public class MemoryWarner extends AbstractCronJob  {
                                      java.net.InetAddress.getLocalHost().getHostName());
                     message.setValue("body", "Memory use " + usePerc + " > " + limitPerc);
                     message.commit();
-                    Function mail = message.getFunction("mail");
+                    Function<?> mail = message.getFunction("mail");
                     Parameters params = mail.createParameters();
                     params.set("type", "oneshot");
                     mail.getFunctionValue(params);

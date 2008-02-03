@@ -13,16 +13,11 @@ import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.Cloud;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
  * Basic implementation of UrlConverter. Essential, should typically be
@@ -30,7 +25,7 @@ import javax.servlet.jsp.jstl.fmt.LocalizationContext;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.3 2008-01-04 14:05:52 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {

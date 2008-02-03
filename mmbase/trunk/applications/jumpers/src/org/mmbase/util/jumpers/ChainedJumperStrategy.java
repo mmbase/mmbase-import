@@ -17,12 +17,10 @@ import org.mmbase.util.logging.Logging;
 
 import org.mmbase.module.core.MMObjectNode;
 
-import org.mmbase.bridge.*;
-
 /**
 
 * @author Michiel Meeuwissen
-* @version $Id: ChainedJumperStrategy.java,v 1.4 2008-01-23 12:39:53 michiel Exp $
+* @version $Id: ChainedJumperStrategy.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
 */
 public class ChainedJumperStrategy extends JumperStrategy {
 

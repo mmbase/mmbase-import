@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.xml.query.*;
 import org.mmbase.util.xml.DocumentSerializable;
@@ -37,7 +38,7 @@ import org.mmbase.util.logging.*;
  * partially by explicit values, though this is not recommended.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LocalizedEntryListFactory.java,v 1.47 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: LocalizedEntryListFactory.java,v 1.48 2008-02-03 17:33:57 nklasens Exp $
  * @since MMBase-1.8
  */
 public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
@@ -175,7 +176,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             log.info("Adding bundle " + b + " for second time in " + b + ", because " + Logging.stackTrace());
         }
         bundles.add(b);
-        Iterator i = localized.values().iterator();
+        Iterator<LocalizedEntry> i = localized.values().iterator();
         if (!i.hasNext()) {
             // adding very first localizedlist
             Locale locale = LocalizedString.getDefault();
@@ -183,7 +184,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
             local.entries.add(b);
             local.unusedKeys.addAll(fallBack);
         } else while(i.hasNext()) {
-            LocalizedEntry local  = (LocalizedEntry) i.next();
+            LocalizedEntry local  = i.next();
             local.entries.add(b);
         }
     }
@@ -323,7 +324,7 @@ public class LocalizedEntryListFactory<C> implements Serializable, Cloneable {
                                                 }
                                                 public Object next() {
                                                     org.mmbase.bridge.Node next = nodeIterator.nextNode();
-                                                    return new Entry(next, next.getFunctionValue("gui", null));
+                                                    return new Entry<Node, FieldValue>(next, next.getFunctionValue("gui", null));
                                                 }
                                                 public void remove() {
                                                     throw new UnsupportedOperationException();

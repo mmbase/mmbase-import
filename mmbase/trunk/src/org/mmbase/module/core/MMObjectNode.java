@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.212 2007-07-23 14:00:11 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.213 2008-02-03 17:33:57 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -781,7 +781,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @javadoc
      * @since MMBase-1.8
      */
-    public Function getFunction(String functionName) {
+    public Function<?> getFunction(String functionName) {
         return parent.getFunction(this, functionName);
     }
 

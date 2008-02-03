@@ -22,7 +22,7 @@ import org.mmbase.util.functions.Parameters;
  * implementation on a existing <code>Node</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeWrapper.java,v 1.19 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: NodeWrapper.java,v 1.20 2008-02-03 17:33:56 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -120,7 +120,7 @@ public abstract class NodeWrapper implements Node {
     public boolean mayWrite() { return node.mayWrite(); }
     public boolean mayDelete() { return node.mayDelete(); }
     public boolean mayChangeContext() { return node.mayChangeContext(); }
-    public Collection getFunctions() { return node.getFunctions(); }
+    public Collection<Function<?>> getFunctions() { return node.getFunctions(); }
     public Function getFunction(String functionName) { return node.getFunction(functionName); }
     public Parameters createParameters(String functionName) { return node.createParameters(functionName); }
     public FieldValue getFunctionValue(String functionName, List parameters) { return node.getFunctionValue(functionName, parameters);}

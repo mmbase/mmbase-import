@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.Iterator;
 import java.util.List;
 
 import org.mmbase.bridge.Field;
@@ -88,8 +87,7 @@ public class PostgresqlLargeObjectStorageManager extends
 		// delete all binary fields stored as OID
 		//
 		List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-		for (Iterator<CoreField> f = builderFields.iterator(); f.hasNext();) {
-			CoreField field = f.next();
+		for (CoreField field : builderFields) {
 			if (field.inStorage() && field.getType() == Field.TYPE_BINARY
 					&& !blobFileField.contains(field)) {
 				// TODO: implement logic to differentiate between OID and BYTEA

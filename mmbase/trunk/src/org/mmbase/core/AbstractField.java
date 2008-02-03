@@ -21,14 +21,14 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.15 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.16 2008-02-03 17:33:57 nklasens Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
-    protected DataType dataType = null;
+    protected DataType<Object> dataType = null;
     protected int type = TYPE_UNKNOWN;
     protected int state = STATE_UNKNOWN;
     protected int listItemType = TYPE_UNKNOWN;
@@ -59,7 +59,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         readOnly = field.isReadOnly();
         listItemType = field.getListItemType();
         if (cloneDataForRewrite) {
-            setDataType((DataType)field.getDataType().clone());
+            setDataType((DataType<Object>)field.getDataType().clone());
         } else {
             setDataType(dataType = field.getDataType());
         }
@@ -70,7 +70,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * @param name the name of the field
      * @param dataType the data type of the field
      */
-    protected AbstractField(String name, int type, int listItemType, int state, DataType dataType) {
+    protected AbstractField(String name, int type, int listItemType, int state, DataType<Object> dataType) {
         super(name);
         this.type = type;
         this.listItemType = listItemType;
@@ -122,7 +122,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         return listItemType;
     }
 
-    public DataType getDataType() {
+    public DataType<Object> getDataType() {
         return dataType;
     }
 
@@ -131,7 +131,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * It is possible that the datatype of a field is different from the actual field type.
      * @see #getType
      */
-    public void setDataType(DataType dataType) throws IllegalArgumentException {
+    public void setDataType(DataType<Object> dataType) throws IllegalArgumentException {
         int dataTypeType = dataType.getBaseType();
         if (dataTypeType != type) {
             log.debug("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
@@ -216,7 +216,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         try {
             AbstractField clone = (AbstractField)super.clone(name);
             if (copyDataTypeForRewrite) {
-                clone.dataType = (DataType) dataType.clone();
+                clone.dataType = (DataType<Object>) dataType.clone();
             }
             return clone;
         } catch (CloneNotSupportedException cnse) {

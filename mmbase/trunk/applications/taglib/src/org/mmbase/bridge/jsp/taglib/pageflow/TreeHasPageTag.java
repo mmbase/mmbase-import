@@ -11,15 +11,8 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.*;
-import java.net.*;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.http.*;
-import javax.servlet.*;
-
-import java.util.*;
-
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +20,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: TreeHasPageTag.java,v 1.4 2008-01-28 13:52:32 michiel Exp $
+ * @version $Id: TreeHasPageTag.java,v 1.5 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.8.6
  */
 

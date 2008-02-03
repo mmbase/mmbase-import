@@ -8,19 +8,14 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import java.util.*;
 
 /**
 
  * @author Michiel Meeuwissen
- * @version $Id: EscapeTag.java,v 1.1 2007-07-30 16:38:24 michiel Exp $
+ * @version $Id: EscapeTag.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class EscapeTag extends ContextReferrerTag {

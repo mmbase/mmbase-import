@@ -48,7 +48,7 @@ commandserver	stream	tcp		nowait	nobody	/usr/bin/java java -jar /home/michiel/mm
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8.2
- * @version $Id: CommandServer.java,v 1.1 2006-09-07 12:33:47 michiel Exp $
+ * @version $Id: CommandServer.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
  */
 
 
@@ -84,7 +84,7 @@ public class CommandServer {
             }
         };
 
-    final static Executor threads = new ThreadPoolExecutor(THREADS, 10 * THREADS, 5 * 60, TimeUnit.SECONDS, new  ArrayBlockingQueue(500), factory);
+    final static Executor threads = new ThreadPoolExecutor(THREADS, 10 * THREADS, 5 * 60, TimeUnit.SECONDS, new  ArrayBlockingQueue<Runnable>(500), factory);
 
     // copy job
     public static class Copier implements Runnable {
@@ -227,7 +227,7 @@ public class CommandServer {
             String host = args.length > 1 ? args[0] : "localhost";
             int port    = args.length == 1 ? Integer.parseInt(args[0]) : Integer.parseInt(args[1]);
 
-            final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue(), factory);
+            final Executor socketThreads = new ThreadPoolExecutor(THREADS, THREADS, 5 * 60, TimeUnit.SECONDS, new  LinkedBlockingQueue<Runnable>(), factory);
             ServerSocket server = new ServerSocket();
             SocketAddress address = new InetSocketAddress(host, port);
             server.bind(address);

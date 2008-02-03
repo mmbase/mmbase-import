@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.framework.basic;
 
-import java.io.*;
 import java.util.*;
 
 import org.mmbase.framework.FrameworkException;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.3 2008-01-25 10:04:01 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {

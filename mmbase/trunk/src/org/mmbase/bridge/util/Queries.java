@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.94 2008-01-04 13:44:47 michiel Exp $
+ * @version $Id: Queries.java,v 1.95 2008-02-03 17:33:56 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -439,7 +439,7 @@ abstract public class Queries {
                 } else if (value instanceof Collection) {  // or even more aliases!
                     Collection col  = (Collection) value;
                     value = new ArrayList();
-                    List list = (List) value;
+                    List<Object> list = (List<Object>) value;
                     for (Object v : col) {
                         if (v instanceof Number) {
                             list.add(v);
@@ -577,7 +577,7 @@ abstract public class Queries {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
 
             // sigh
-            SortedSet set = new TreeSet();
+            SortedSet<Object> set = new TreeSet<Object>();
             int type   =  field.getType();
             for (Object value : constraint.getValues()) {
                 switch(type) {
@@ -936,7 +936,7 @@ abstract public class Queries {
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
             } else {
                 // simply take this one field
-                StepField sf = (StepField) fields.get(0);
+                StepField sf = fields.get(0);
                 Step step = sf.getStep();
                 resultName = sf.getFieldName();
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
@@ -1136,7 +1136,7 @@ abstract public class Queries {
                 Step step = sortOrder.getField().getStep();
                 if (steps == null) {
                     // instantiate new ArrayList only if really necessary
-                    steps = new ArrayList(q.getSteps());
+                    steps = new ArrayList<Step>(q.getSteps());
                 }
                 steps.remove(step);
             }
@@ -1230,7 +1230,7 @@ abstract public class Queries {
         } else {
             // compare the results
             try {
-                result = ((Comparable)value).compareTo(value2);
+                result = ((Comparable<Object>)value).compareTo(value2);
             } catch (ClassCastException cce) {
                 // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
                 // warn and ignore this sortorder

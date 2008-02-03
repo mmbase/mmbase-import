@@ -20,7 +20,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.21 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.22 2008-02-03 17:33:57 nklasens Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValue {
@@ -48,7 +48,7 @@ public class BasicFunctionValue extends org.mmbase.bridge.util.AbstractFieldValu
         super(null, cloud);
         Object v = value;
         if (v instanceof List) { // might be a collection of MMObjectNodes
-            List list  = (List) v;
+            List<Node> list  = (List<Node>) v;
             if (list.size() > 0) {
                 Object first = list.get(0);
                 if (first instanceof MMObjectNode || first instanceof Node) { // if List of MMObjectNodes, make NodeList

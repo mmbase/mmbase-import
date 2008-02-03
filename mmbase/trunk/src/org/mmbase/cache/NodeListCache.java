@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
-import org.mmbase.core.event.RelationEvent;
-
 /**
  * Query result cache used for getNodes from MMObjectBuilder. So it contains only simple nodes (no
  * clusternodes).
@@ -19,7 +17,7 @@ import org.mmbase.core.event.RelationEvent;
  * fields of one of the steps (the 'node step').
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListCache.java,v 1.7 2007-07-19 15:36:51 michiel Exp $
+ * @version $Id: NodeListCache.java,v 1.8 2008-02-03 17:33:56 nklasens Exp $
  * @see   org.mmbase.module.core.MMObjectBuilder#getNodes
  * @since MMBase-1.7
  */

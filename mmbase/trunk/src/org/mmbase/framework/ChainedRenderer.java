@@ -10,12 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import java.util.*;
-import javax.servlet.http.*;
-import javax.servlet.*;
 import java.io.*;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.GenericResponseWrapper;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedRenderer.java,v 1.3 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: ChainedRenderer.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 

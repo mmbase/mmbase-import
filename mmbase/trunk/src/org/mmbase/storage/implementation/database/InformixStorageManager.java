@@ -2,7 +2,6 @@ package org.mmbase.storage.implementation.database;
 
 import java.lang.reflect.Method;
 import java.sql.*;
-import java.util.List;
 import org.mmbase.module.database.JDBC;
 import org.mmbase.module.Module;
 

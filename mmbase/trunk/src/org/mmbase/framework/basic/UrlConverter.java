@@ -8,9 +8,9 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.framework.basic;
-import org.mmbase.framework.*;
-
 import java.util.*;
+
+import org.mmbase.framework.FrameworkException;
 import org.mmbase.util.functions.*;
 
 /**
@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * They will be chained one after another.
 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.2 2008-01-25 10:04:01 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.3 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {

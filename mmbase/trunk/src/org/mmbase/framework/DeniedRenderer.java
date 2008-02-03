@@ -12,12 +12,8 @@ package org.mmbase.framework;
 import java.util.*;
 
 import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.*;
 import java.io.*;
-import org.mmbase.bridge.NotFoundException;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.transformers.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DeniedRenderer.java,v 1.1 2007-12-21 16:14:34 michiel Exp $
+ * @version $Id: DeniedRenderer.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 

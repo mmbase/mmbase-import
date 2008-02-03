@@ -7,10 +7,6 @@
 package org.mmbase.core.event;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.lang.ref.SoftReference;
-
-import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -33,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: EventBroker.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: EventBroker.java,v 1.4 2008-02-03 17:33:58 nklasens Exp $
  */
 public abstract class EventBroker {
 

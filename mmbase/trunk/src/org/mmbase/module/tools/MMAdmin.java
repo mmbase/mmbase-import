@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.158 2007-10-02 12:15:14 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.159 2008-02-03 17:33:57 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -64,15 +64,15 @@ public class MMAdmin extends ProcessorModule {
      */
     private boolean kioskmode = false;
 
-    private static final Parameter PARAM_APPLICATION = new Parameter("application", String.class);
-    private static final Parameter PARAM_BUILDER = new Parameter("builder", String.class);
-    private static final Parameter PARAM_MODULE = new Parameter("module", String.class);
-    private static final Parameter PARAM_FIELD = new Parameter("field", String.class);
-    private static final Parameter PARAM_KEY = new Parameter("key", String.class);
-    private static final Parameter PARAM_CMD = new Parameter("cmd", String.class);
-    private static final Parameter PARAM_PATH = new Parameter("path", String.class);
-    private static final Parameter[] PARAMS_BUILDER = new Parameter[] { PARAM_BUILDER, PARAM_PAGEINFO};
-    private static final Parameter[] PARAMS_APPLICATION = new Parameter[] { PARAM_APPLICATION, PARAM_PAGEINFO};
+    private static final Parameter<String> PARAM_APPLICATION = new Parameter<String>("application", String.class);
+    private static final Parameter<String> PARAM_BUILDER = new Parameter<String>("builder", String.class);
+    private static final Parameter<String> PARAM_MODULE = new Parameter<String>("module", String.class);
+    private static final Parameter<String> PARAM_FIELD = new Parameter<String>("field", String.class);
+    private static final Parameter<String> PARAM_KEY = new Parameter<String>("key", String.class);
+    private static final Parameter<String> PARAM_CMD = new Parameter<String>("cmd", String.class);
+    private static final Parameter<String> PARAM_PATH = new Parameter<String>("path", String.class);
+    private static final Parameter<?>[] PARAMS_BUILDER = new Parameter<?>[] { PARAM_BUILDER, PARAM_PAGEINFO};
+    private static final Parameter<?>[] PARAMS_APPLICATION = new Parameter<?>[] { PARAM_APPLICATION, PARAM_PAGEINFO};
 
     {
         addFunction(new GetNodeListFunction("APPLICATIONS", PARAMS_PAGEINFO));
@@ -102,7 +102,7 @@ public class MMAdmin extends ProcessorModule {
         addFunction(new ReplaceFunction("MULTILEVELCACHEMISSES", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("MULTILEVELCACHEREQUESTS", PARAMS_PAGEINFO));
         addFunction(new ReplaceFunction("MULTILEVELCACHEPERFORMANCE", PARAMS_PAGEINFO));
-        addFunction(new ReplaceFunction("MULTILEVELCACHESTATE", new Parameter[] {new Parameter("state", String.class), PARAM_PAGEINFO}));
+        addFunction(new ReplaceFunction("MULTILEVELCACHESTATE", new Parameter<?>[] {new Parameter<String>("state", String.class), PARAM_PAGEINFO}));
         addFunction(new ReplaceFunction("MULTILEVELCACHESIZE", PARAMS_PAGEINFO));
 
         addFunction(new ReplaceFunction("NODECACHEHITS", PARAMS_PAGEINFO));
@@ -1112,7 +1112,7 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul = getBuilder(builder);
         CoreField def = bul.getField(fieldName);
         if (def != null) {
-            DataType dataType;
+            DataType<? extends Object> dataType;
             int type = def.getType();
             if (type == Field.TYPE_LIST) {
                 dataType = DataTypes.getDataTypeInstance(guiType, def.getListItemType());
@@ -1412,7 +1412,7 @@ public class MMAdmin extends ProcessorModule {
             int state = Fields.getState((String)vars.get("dbstate"));
 
             log.service("Adding field " + fieldName);
-            DataType dataType;
+            DataType<? extends Object> dataType;
             if (type ==  Field.TYPE_LIST) {
                 dataType = DataTypes.getListDataTypeInstance(guiType, itemListType);
             } else {
