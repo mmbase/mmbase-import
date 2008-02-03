@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.38 2007-11-09 18:29:36 michiel Exp $
+ * @version $Id: SendMail.java,v 1.39 2008-02-03 17:46:28 nklasens Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -653,11 +653,11 @@ public class SendMail extends AbstractSendMail {
         if (onlyto != null) {
             try {
                 InternetAddress[] recipients = InternetAddress.parse(onlyto);
-                for (int i = 0; i < recipients.length; i++) {
-                    if (isLocal(recipients[i])) {
-                        localRecipients.add(recipients[i]);
+                for (InternetAddress recipient : recipients) {
+                    if (isLocal(recipient)) {
+                        localRecipients.add(recipient);
                     } else {
-                        remoteRecipients.add(recipients[i]);
+                        remoteRecipients.add(recipient);
                     }
                 }
             } catch (Exception e) {
@@ -667,11 +667,11 @@ public class SendMail extends AbstractSendMail {
             String to = n.getStringValue("to");
             try {
                 InternetAddress[] recipients = InternetAddress.parse(to);
-                for (int i=0; i<recipients.length; i++) {
-                    if (isLocal(recipients[i])) {
-                        localRecipients.add(recipients[i]);
+                for (InternetAddress recipient : recipients) {
+                    if (isLocal(recipient)) {
+                        localRecipients.add(recipient);
                     } else {
-                        remoteRecipients.add(recipients[i]);
+                        remoteRecipients.add(recipient);
                     }
                 }
             } catch (Exception e) {
@@ -682,11 +682,11 @@ public class SendMail extends AbstractSendMail {
             String cc = n.getStringValue("cc");
             try {
                 InternetAddress[] recipients = InternetAddress.parse(cc);
-                for (int i = 0; i < recipients.length; i++) {
-                    if (isLocal(recipients[i])) {
-                        localRecipients.add(recipients[i]);
+                for (InternetAddress recipient : recipients) {
+                    if (isLocal(recipient)) {
+                        localRecipients.add(recipient);
                     } else {
-                        remoteRecipients.add(recipients[i]);
+                        remoteRecipients.add(recipient);
                     }
                 }
             } catch (Exception e) {
@@ -696,11 +696,11 @@ public class SendMail extends AbstractSendMail {
             if (bcc != null) {
                 try {
                     InternetAddress[] recipients = InternetAddress.parse(bcc);
-                    for (int i = 0; i < recipients.length; i++) {
-                        if (isLocal(recipients[i])) {
-                            localRecipients.add(recipients[i]);
+                    for (InternetAddress recipient : recipients) {
+                        if (isLocal(recipient)) {
+                            localRecipients.add(recipient);
                         } else {
-                            remoteRecipients.add(recipients[i]);
+                            remoteRecipients.add(recipient);
                         }
                     }
                 } catch (Exception e) {
@@ -715,7 +715,7 @@ public class SendMail extends AbstractSendMail {
         if (localRecipients.size() > 0) {
             InternetAddress[] ia = new InternetAddress[localRecipients.size()];
             for (int i=0; i<localRecipients.size(); i++) {
-                ia[i] = (InternetAddress)localRecipients.get(i);
+                ia[i] = localRecipients.get(i);
             }
             sendLocalMail(ia, n);
         }
@@ -723,7 +723,7 @@ public class SendMail extends AbstractSendMail {
         if (remoteRecipients.size() > 0) {
             InternetAddress[] ia = new InternetAddress[remoteRecipients.size()];
             for (int i=0; i<remoteRecipients.size(); i++) {
-                ia[i] = (InternetAddress)remoteRecipients.get(i);
+                ia[i] = remoteRecipients.get(i);
             }
             sendRemoteMail(ia, n);
         }
