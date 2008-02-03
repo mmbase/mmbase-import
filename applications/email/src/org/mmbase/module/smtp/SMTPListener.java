@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-import org.mmbase.bridge.LocalContext;
 import java.util.Map;
 import java.net.*;
 import java.util.concurrent.*;
@@ -20,7 +19,7 @@ import java.util.concurrent.*;
  * Listener thread, that accepts connection on port 25 (default) and
  * delegates all work to its worker threads.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPListener.java,v 1.6 2007-11-20 09:23:15 michiel Exp $
+ * @version $Id: SMTPListener.java,v 1.7 2008-02-03 17:42:06 nklasens Exp $
  */
 public class SMTPListener extends Thread {
 

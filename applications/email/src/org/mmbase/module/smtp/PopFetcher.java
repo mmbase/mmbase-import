@@ -14,18 +14,15 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.*;
 import java.util.*;
-import java.io.*;
 import org.mmbase.applications.crontab.*;
 import javax.mail.*;
 import javax.mail.search.*;
-import javax.mail.event.*;
-import javax.mail.internet.*;
 
 /**
  * A mail fetcher that does not smtp-listen but periodically pops from a server. Implemented as a cronjob
  *
  *
- * @version $Id: PopFetcher.java,v 1.3 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: PopFetcher.java,v 1.4 2008-02-03 17:42:06 nklasens Exp $
  */
 public class PopFetcher extends MailFetcher implements CronJob {
     private static final Logger log = Logging.getLoggerInstance(PopFetcher.class);

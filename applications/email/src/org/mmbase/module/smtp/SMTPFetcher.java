@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
-import org.mmbase.bridge.*;
 import java.util.*;
 import java.io.*;
 import javax.mail.*;
@@ -42,12 +41,11 @@ import javax.mail.internet.*;
  * TODO: What happens which attached mail-messages? Will those not cause a big mess?
  *
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: SMTPFetcher.java,v 1.11 2008-01-22 09:51:39 michiel Exp $
+ * @version $Id: SMTPFetcher.java,v 1.12 2008-02-03 17:42:06 nklasens Exp $
  */
 public class SMTPFetcher extends MailFetcher implements Runnable {
     private static final Logger log = Logging.getLoggerInstance(SMTPFetcher.class);
 
-    private boolean running = true;
     private final java.net.Socket socket;
     private BufferedReader reader = null;
     private BufferedWriter writer = null;
@@ -296,7 +294,6 @@ public class SMTPFetcher extends MailFetcher implements Runnable {
                 writer.flush();
                 char[] endchars = {'\r', '\n', '.', '\r', '\n'};
                 char[] last5chars = new char[endchars.length];
-                int currentpos = 0;
                 int c;
                 long maxAttachmentSize = getMaxAttachmentSize(properties);
 

@@ -12,7 +12,6 @@ package org.mmbase.applications.email;
 
 import java.util.*;
 
-import java.io.*;
 import javax.mail.MessagingException;
 import javax.mail.util.ByteArrayDataSource;
 import javax.mail.internet.*;
@@ -512,7 +511,7 @@ class MimeMessageGenerator {
             params.set("tags", "NONE");
             params.set("addbrs", false);
             params.set("escapeamps", false);
-            CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
+            CharTransformer transformer = factory.createTransformer(params);
             return transformer;
         }
 
