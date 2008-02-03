@@ -47,9 +47,9 @@ See http://www.MMBase.org/license
         </license>
     </licenses>
     <description>MMBase is a Web Content Management System with strong multi media features. MMBase has a large installed base in The Netherlands, and is used by major Dutch broadcasters, publishers, educational institutes, national and local governments. MMBase is written in Java, it is Open Source Software (MPL) and all standards used are as 'open' as possible. The system can be used with all major operating systems, webservers and databases.</description>
-    <url>http://maven.mmbase.net/mmbase</url>
+    <url>http://www.mmbase.org</url>
     <issueTrackingUrl>http://www.mmbase.org/bug</issueTrackingUrl>
-    <siteAddress>maven.mmbase.net</siteAddress>
+    <siteAddress>http://www.mmbase.org</siteAddress>
     <siteDirectory>/home/maven/site/mmbase</siteDirectory>
     <distributionDirectory>/home/maven/site/mmapps/jars/</distributionDirectory>
     <repository>
