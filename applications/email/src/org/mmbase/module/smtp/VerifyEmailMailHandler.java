@@ -12,9 +12,7 @@ package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.bridge.*;
-import java.util.*;
 import java.text.*;
-import java.io.*;
 import javax.mail.*;
 
 /**
@@ -22,7 +20,7 @@ import javax.mail.*;
  * if so, handles it. Otherwise ignores the message.
  * This Handler can be put in front of the {@link ChainedMailedHandler}.
  *
- * @version $Id: VerifyEmailMailHandler.java,v 1.5 2007-11-09 18:26:23 michiel Exp $
+ * @version $Id: VerifyEmailMailHandler.java,v 1.6 2008-02-03 17:42:06 nklasens Exp $
  */
 public class VerifyEmailMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(VerifyEmailMailHandler.class);

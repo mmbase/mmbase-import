@@ -12,9 +12,7 @@ package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.xml.UtilReader;
-import org.mmbase.module.Module;
 import java.util.*;
-import java.io.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import org.mmbase.applications.email.SendMail;
@@ -22,7 +20,7 @@ import org.mmbase.applications.email.SendMail;
 /**
  * Forwarding MailHandler. Fill {@link #forwards} to make this actually do something.
  *
- * @version $Id: Forwarder.java,v 1.2 2007-11-20 10:37:10 michiel Exp $
+ * @version $Id: Forwarder.java,v 1.3 2008-02-03 17:42:06 nklasens Exp $
  */
 public class Forwarder implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(Forwarder.class);
