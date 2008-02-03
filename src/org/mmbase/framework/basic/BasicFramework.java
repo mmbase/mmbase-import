@@ -15,7 +15,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.Instantiator;
-import org.mmbase.datatypes.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.functions.*;
@@ -23,21 +22,15 @@ import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.xml.DocumentReader;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
  * The Basic framework is based on a list of {@link UrlConverter}s. It is
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.6 2008-01-25 10:13:01 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.7 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {

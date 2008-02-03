@@ -15,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
@@ -37,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.28 2007-02-25 17:56:58 nklasens Exp $
+ * @version $Id: DateSupport.java,v 1.29 2008-02-03 17:33:57 nklasens Exp $
  */
 public class DateSupport {
 
@@ -543,35 +541,6 @@ public class DateSupport {
      * ----- private functions used by convertDateToLong --------
      */
 
-
-    /**
-     * @obsolete Do not use this method ever!!
-     */
-    private static Calendar setTimeZone(int hours, int minutes) {
-        log.warn("obsolete setTimeZone was used!!");
-
-        // get the supported ids for GMT-08:00 (Pacific Standard Time)
-        String[] ids = TimeZone.getAvailableIDs((hours * 60 + minutes) * 60 * 1000);
-
-        // if no ids were returned, something is wrong. get out.
-        if (ids.length == 0) {
-            log.error("Timezone is wrong...");
-            System.exit(0); /// XXX should be return null!
-        }
-        System.out.println("Current Time");
-
-        // create a Pacific Standard Time time zone
-        SimpleTimeZone pdt = new SimpleTimeZone((hours * 60 + minutes) * 60 * 1000, ids[0]);
-
-        // set up rules for daylight savings time
-        pdt.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
-        pdt.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
-
-        // create a GregorianCalendar with the Pacific Daylight time zone
-        // and the current date and time
-        Calendar calendar = new GregorianCalendar(pdt);
-        return calendar;
-    }
 
     /**
      * Parse a string containing a date and put it in a calendar

@@ -13,14 +13,13 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Entry;
 import javax.servlet.jsp.*;
 import java.util.*;
-import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.*;
 
 /**
  * Adds an extra parameter to the parent URL tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractParamTag.java,v 1.1 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: AbstractParamTag.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9 
  */
 

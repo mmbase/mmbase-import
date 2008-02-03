@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.framework.basic;
 import org.mmbase.framework.*;
 import java.util.*;
-import org.mmbase.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.1 2007-11-16 18:10:08 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {

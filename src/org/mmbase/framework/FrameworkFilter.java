@@ -17,7 +17,6 @@ import javax.servlet.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.*;
 
-import org.mmbase.util.*;
 import org.mmbase.util.functions.*;
 import org.mmbase.servlet.*;
 import org.mmbase.module.core.*;
@@ -36,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.20 2008-01-25 10:13:01 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.21 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -107,7 +106,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (path != null) path = path.substring(request.getContextPath().length());
         }
         if (path == null) {
-            path = (String) request.getRequestURI();
+            path = request.getRequestURI();
             if (path != null) path = path.substring(request.getContextPath().length());
         }
         // i think path is always != null now.

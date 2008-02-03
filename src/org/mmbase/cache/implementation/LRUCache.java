@@ -11,20 +11,17 @@ package org.mmbase.cache.implementation;
 
 import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A cache implementation backed by a {@link java.util.LinkedHashMap}, in access-order mode, and
  * restricted maximal size ('Least Recently Used' cache algorithm).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: LRUCache.java,v 1.1 2007-08-01 06:33:15 michiel Exp $
+ * @version $Id: LRUCache.java,v 1.2 2008-02-03 17:33:57 nklasens Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.9
  */
 public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
-
-    private static final Logger log = Logging.getLoggerInstance(LRUCache.class);
 
     public int maxSize = 100;
     private final Map<K, V> backing;
@@ -57,7 +54,7 @@ public class LRUCache<K, V> implements CacheImplementationInterface<K, V> {
         maxSize = size;
         while (size() > maxSize()) {
             try {
-                Iterator i = entrySet().iterator();
+                Iterator<Entry<K,V>> i = entrySet().iterator();
                 i.next();
                 i.remove();
             } catch (Exception e) {

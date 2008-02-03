@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.24 2007-02-11 19:21:11 nklasens Exp $
+ * @version $Id: VirtualBuilder.java,v 1.25 2008-02-03 17:33:57 nklasens Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
@@ -177,7 +177,7 @@ public class VirtualBuilder extends MMObjectBuilder {
                 String fieldName = entry.getKey();
                 Object value = entry.getValue();
                 if (value == null) value = new Object();
-                DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
+                DataType<? extends Object> fieldDataType = DataTypes.createDataType("field", value.getClass());
                 int type = Fields.classToType(value.getClass());
                 CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
                 fd.finish();

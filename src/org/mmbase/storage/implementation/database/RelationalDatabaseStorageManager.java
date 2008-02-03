@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
-import java.util.Iterator;
-
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageException;
 import org.mmbase.core.CoreField;
@@ -24,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.11 2007-12-06 08:16:03 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.12 2008-02-03 17:33:57 nklasens Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 

@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.6 2007-11-27 15:17:33 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.7 2008-02-03 17:33:58 nklasens Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -191,8 +191,8 @@ public class Jumpers extends MMObjectBuilder {
         String field = (String) args.get("field");
         if (field == null || field.equals("url")) {
             String url = node.getStringValue("url");
-            HttpServletRequest req  = (HttpServletRequest) args.get(Parameter.REQUEST);
-            HttpServletResponse res = (HttpServletResponse) args.get(Parameter.RESPONSE);
+            HttpServletRequest req  = args.get(Parameter.REQUEST);
+            HttpServletResponse res = args.get(Parameter.RESPONSE);
             String link;
             if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("ftp:")) {
                 link = url;
@@ -467,7 +467,8 @@ public class Jumpers extends MMObjectBuilder {
 
     // database.put
     private void jumperDatabaseCache_put(String number, String url) {
-
+        if (jumpercachebuilder == null) return;
+        
         String oldurl = null;
         List nodes = null;
         // if contains
@@ -509,7 +510,9 @@ public class Jumpers extends MMObjectBuilder {
 
     // database.remove
     private void jumperDatabaseCache_remove(String number) {
-       List nodes = null;
+        if (jumpercachebuilder == null) return;
+        
+        List nodes = null;
         try {
             NodeSearchQuery query = new NodeSearchQuery(jumpercachebuilder);
             StepField keyField = query.getField(jumpercachebuilder.getField("key"));
@@ -526,7 +529,6 @@ public class Jumpers extends MMObjectBuilder {
                 node.getBuilder().removeNode(node);
             }
         }
-
     }
 
     /*

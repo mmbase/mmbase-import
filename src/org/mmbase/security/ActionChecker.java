@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.Parameters;
 /**
  * A piece of 'action check' functionality. Provided by actions themselves, but security
@@ -17,7 +16,7 @@ import org.mmbase.util.functions.Parameters;
  * Authorization#check(UserContext, Action)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ActionChecker.java,v 1.4 2008-01-21 17:28:15 michiel Exp $
+ * @version $Id: ActionChecker.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface ActionChecker extends java.io.Serializable {

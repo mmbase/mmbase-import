@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
-import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
@@ -24,7 +23,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: MayTag.java,v 1.4 2008-01-23 09:28:18 michiel Exp $
+ * @version $Id: MayTag.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
  */
 
 public class MayTag extends CloudReferrerTag implements Condition {

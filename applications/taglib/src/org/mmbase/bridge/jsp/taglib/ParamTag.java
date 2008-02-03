@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.util.Entry;
 import javax.servlet.jsp.*;
 import java.util.*;
 import org.mmbase.util.StringSplitter;
@@ -20,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Adds an extra parameter to the parent URL tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ParamTag.java,v 1.17 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: ParamTag.java,v 1.18 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class ParamTag extends AbstractParamTag implements ParamHandler {

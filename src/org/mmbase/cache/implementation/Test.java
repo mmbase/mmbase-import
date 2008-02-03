@@ -11,7 +11,6 @@ package org.mmbase.cache.implementation;
 
 import org.mmbase.cache.CacheImplementationInterface;
 import java.util.*;
-import org.mmbase.util.logging.*;
 
 /**
    Some results (at 2 x (dual core)  Intel(R) Core(TM)2 CPU         T7200  @ 2.00GHz)
@@ -39,14 +38,14 @@ michiel@mitulo:~/mmbase/head$
  *
  * @author  Rico Jansen (in org.mmbase.util.LRUHashtable)
  * @author  Michiel Meeuwissen
- * @version $Id: Test.java,v 1.1 2007-08-01 06:33:15 michiel Exp $
+ * @version $Id: Test.java,v 1.2 2008-02-03 17:33:57 nklasens Exp $
  * @see    org.mmbase.cache.Cache
  * @since MMBase-1.9
  */
 public class Test {
 
     public static void main(String argv[]) throws Exception {
-        Class impl = LRUCache.class;
+        Class<?> impl = LRUCache.class;
         int treesiz = 1024;
         int opers = 1000000;
         int thrds  = 1;
@@ -71,7 +70,7 @@ public class Test {
         }
 
 
-        final CacheImplementationInterface<String, String> treap = (CacheImplementationInterface) impl.newInstance();
+        final CacheImplementationInterface<String, String> treap = (CacheImplementationInterface<String, String>) impl.newInstance();
         treap.setMaxSize(treesiz / 2);
         long ll1 = System.currentTimeMillis();
 

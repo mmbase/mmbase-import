@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @since MMBase 1.8.0
- * @version $Id: CodeSampleFactory.java,v 1.5 2007-08-04 08:09:14 michiel Exp $
+ * @version $Id: CodeSampleFactory.java,v 1.6 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class CodeSampleFactory implements ParameterizedTransformerFactory<CharTransformer> {
@@ -37,10 +37,10 @@ public class CodeSampleFactory implements ParameterizedTransformerFactory<CharTr
     private final static Logger log = Logging.getLoggerInstance(CodeSampleFactory.class);
 
     private final static Parameter[] PARAMS = new Parameter[] {
-        new Parameter("starttag", String.class, "<pre>"),
-        new Parameter("closetag", String.class, ""),
-        new Parameter("escapecode", String.class, "text/html"),   // like attr. escaper of mm:content
-        new Parameter("escaperest", String.class, ""),     // do nothing by default
+        new Parameter<String>("starttag", String.class, "<pre>"),
+        new Parameter<String>("closetag", String.class, ""),
+        new Parameter<String>("escapecode", String.class, "text/html"),   // like attr. escaper of mm:content
+        new Parameter<String>("escaperest", String.class, ""),     // do nothing by default
 
     };
 

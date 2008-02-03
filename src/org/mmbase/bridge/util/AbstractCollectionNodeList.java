@@ -22,13 +22,13 @@ public abstract class AbstractCollectionNodeList<E extends Node> extends Abstrac
     protected final NodeManager nodeManager;
     protected final List wrappedCollection;
 
-    public AbstractCollectionNodeList(Collection c, NodeManager nodeManager) {
+    public AbstractCollectionNodeList(Collection<Node> c, NodeManager nodeManager) {
         this.nodeManager = nodeManager;
         this.cloud = nodeManager.getCloud();
         this.wrappedCollection = convertedList(c, cloud);
     }
 
-    public AbstractCollectionNodeList(Collection c, Cloud cloud) {
+    public AbstractCollectionNodeList(Collection<Node> c, Cloud cloud) {
         this.nodeManager = null;
         this.cloud = cloud;
         this.wrappedCollection = convertedList(c, cloud);

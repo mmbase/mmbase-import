@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.datatypes.processors;
 
-import org.mmbase.bridge.*;
-import java.text.*;
-
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
@@ -21,7 +18,7 @@ import java.text.*;
  * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatFileSize.java,v 1.6 2007-10-03 16:15:27 michiel Exp $
+ * @version $Id: FormatFileSize.java,v 1.7 2008-02-03 17:33:57 nklasens Exp $
  * @since MMBase-1.8
  */
 

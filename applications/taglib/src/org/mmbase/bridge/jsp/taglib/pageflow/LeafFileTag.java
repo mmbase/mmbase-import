@@ -9,14 +9,10 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.26 2007-07-06 11:27:54 johannes Exp $
+ * @version $Id: LeafFileTag.java,v 1.27 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class LeafFileTag extends UrlTag {

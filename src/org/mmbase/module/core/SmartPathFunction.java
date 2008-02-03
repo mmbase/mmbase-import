@@ -25,7 +25,7 @@ import org.mmbase.util.functions.Required;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.10 2007-08-06 13:04:13 michiel Exp $
+ * @version $Id: SmartPathFunction.java,v 1.11 2008-02-03 17:33:57 nklasens Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -118,7 +118,7 @@ public class SmartPathFunction {
         String key = null;
         if (smartPathCache.isActive()) {
             key = smartKey();
-            result = (String) smartPathCache.get(key);
+            result = smartPathCache.get(key);
             if (result != null || smartPathCache.containsKey(key)) {
                 return result;
             }

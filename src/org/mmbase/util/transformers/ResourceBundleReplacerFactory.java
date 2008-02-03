@@ -24,7 +24,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ResourceBundleReplacerFactory.java,v 1.6 2007-08-04 07:45:52 michiel Exp $
+ * @version $Id: ResourceBundleReplacerFactory.java,v 1.7 2008-02-03 17:33:56 nklasens Exp $
  */
 
 public class ResourceBundleReplacerFactory implements ParameterizedTransformerFactory<CharTransformer> {
@@ -32,8 +32,8 @@ public class ResourceBundleReplacerFactory implements ParameterizedTransformerFa
 
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter("basename", String.class, true),
-        new Parameter("mode", String.class),
+        new Parameter<String>("basename", String.class, true),
+        new Parameter<String>("mode", String.class),
         Parameter.LOCALE
     };
 

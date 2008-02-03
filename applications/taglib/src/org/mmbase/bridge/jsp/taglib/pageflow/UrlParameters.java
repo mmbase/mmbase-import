@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import java.util.*;
-import org.mmbase.util.ChainedList;
-
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.util.logging.Logger;

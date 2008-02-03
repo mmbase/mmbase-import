@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumProcessorFactory.java,v 1.5 2006-04-25 23:53:41 michiel Exp $
+ * @version $Id: ChecksumProcessorFactory.java,v 1.6 2008-02-03 17:33:57 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -29,7 +29,7 @@ public class ChecksumProcessorFactory implements ParameterizedCommitProcessorFac
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter.Wrapper(ChecksumFactory.PARAMS),
-        new Parameter("field", String.class, true)
+        new Parameter<String>("field", String.class, true)
     };
 
     private static final ParameterizedTransformerFactory factory = new ChecksumFactory();

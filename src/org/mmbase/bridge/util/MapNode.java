@@ -20,7 +20,7 @@ import org.mmbase.util.functions.*;
  * MMBase Node. E.g. because then it can be accessed in MMBase taglib using mm:field tags.
 
  * @author  Michiel Meeuwissen
- * @version $Id: MapNode.java,v 1.10 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: MapNode.java,v 1.11 2008-02-03 17:33:56 nklasens Exp $
  * @since   MMBase-1.8
  */
 
@@ -237,7 +237,7 @@ public class MapNode extends AbstractNode implements Node {
         return false;
     }
 
-    public Collection  getFunctions() {
+    public Collection<Function<?>>  getFunctions() {
         return  nodeManager.getFunctions();
     }
 

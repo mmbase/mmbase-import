@@ -9,16 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import org.mmbase.core.event.NodeEvent;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import java.lang.reflect.*;
 
 /**
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.3 2007-09-11 14:14:08 michiel Exp $
+ * @version $Id: Urls.java,v 1.4 2008-02-03 17:33:58 nklasens Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Urls.class);
