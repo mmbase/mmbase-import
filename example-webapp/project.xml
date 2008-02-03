@@ -21,14 +21,38 @@ See http://www.MMBase.org/license
 				<mmbase.examples.path>mmexamples</mmbase.examples.path>
 			</properties>
 		</dependency>
+<!-- 
+   		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-bugtracker</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<mmbase.templates.bundle>true</mmbase.templates.bundle>
+				<mmbase.templates.path>mmbase/bugtracker</mmbase.templates.path>
+			</properties>
+		</dependency>
+ -->
+   		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-clustering</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<mmbase.templates.bundle>true</mmbase.templates.bundle>
+				<mmbase.templates.path>mmbase/clustering</mmbase.templates.path>
+			</properties>
+		</dependency>
    		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-resources</artifactId>
 			<version>${mmbase.version}</version>
 			<type>mmbase-module</type>
 			<properties>
+				<mmbase.templates.bundle>true</mmbase.templates.bundle>
+				<mmbase.templates.path>mmbase/resources</mmbase.templates.path>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples/resources</mmbase.examples.path>
 			</properties>
 		</dependency>
 		<dependency>
@@ -39,7 +63,7 @@ See http://www.MMBase.org/license
 			<properties>
 				<mmbase.templates.path>mmbase</mmbase.templates.path>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples/packaging</mmbase.examples.path>
 			</properties>
 		</dependency>
 		<dependency>
@@ -57,22 +81,33 @@ See http://www.MMBase.org/license
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-dove</artifactId>
 			<version>${mmbase.version}</version>
-			<type>jar</type>
+			<type>mmbase-module</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples/dove</mmbase.examples.path>
 			</properties>
 		</dependency>
 		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-taglib</artifactId>
 			<version>${mmbase.version}</version>
-			<type>jar</type>
+			<type>mmbase-module</type>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
 				<mmbase.examples.bundle>true</mmbase.examples.bundle>
-				<mmbase.examples.path>mmexamples</mmbase.examples.path>
+				<mmbase.examples.path>mmexamples/taglib</mmbase.examples.path>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-jumpers</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+				<mmbase.templates.path>mmexamples</mmbase.templates.path>
 			</properties>
 		</dependency>
 
@@ -99,6 +134,16 @@ See http://www.MMBase.org/license
 		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-codings</artifactId>
+			<version>${mmbase.version}</version>
+			<type>mmbase-module</type>
+			<properties>
+				<war.bundle>${war.bundle}</war.bundle>
+				<mmbase.templates.path>mmexamples</mmbase.templates.path>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>mmbase</groupId>
+			<artifactId>mmbase-mycompany</artifactId>
 			<version>${mmbase.version}</version>
 			<type>mmbase-module</type>
 			<properties>
