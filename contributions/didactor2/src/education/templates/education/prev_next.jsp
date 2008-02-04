@@ -11,6 +11,7 @@
              alt="${di:translate('education.previous')}" />
       </a>
       <a href="javascript:parent.previousContent();" class="path"><di:translate key="education.previous" /></a>
+      <jsp:text> </jsp:text>
       <mm:link page="/education/show.jspx">
         <a class="popup"
            href="#"
@@ -22,6 +23,7 @@
           <di:translate key="education.pop" />
         </a>
       </mm:link>
+      <jsp:text> </jsp:text>
       <a href="javascript:parent.nextContent();" class="path"><di:translate key="education.next" /></a>
       <a href="javascript:parent.nextContent();">
         <img src="${mm:treelink('/gfx/icon_arrow_next.gif', includePath)}" width="14" height="14" border="0"

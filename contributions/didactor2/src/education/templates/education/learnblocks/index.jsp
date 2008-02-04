@@ -6,8 +6,9 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <mm:content
-      type="application/xml" postprocessor="none">
-    <div class="content">
+      type="application/xhtml+xml" postprocessor="none">
+    <div xmlns="http://www.w3.org/1999/xhtml"
+        class="content">
       <mm:cloud rank="didactor user">
 
         <mm:import externid="learnobject" required="true"/>
@@ -17,20 +18,19 @@
           <mm:param name="learnobjecttype">learnblocks</mm:param>
         </mm:treeinclude>
 
-        <div class="learnenvironment">
-          <mm:node number="$learnobject">
-            <di:include page="/education/learnblocks/subnavigation.jspx" />
-            <di:include page="/education/learnblocks/node.jspx" />
-          </mm:node>
+        <mm:node number="$learnobject">
 
-          <!-- hmm: -->
-          <jsp:directive.include file="../includes/descriptionrel_link.jsp" />
+          <di:include page="/education/learnblocks/subnavigation.jspx" />
+          <div class="learnenvironment">
+
+            <di:include page="/education/learnblocks/node.jspx" />
+
+
+          </div>
 
           <di:include page="/education/prev_next.jsp" />
 
-        </div>
-
-        <mm:node number="$learnobject">
+          <!-- hmm: -->
           <jsp:directive.include file="../includes/component_link.jsp" />
         </mm:node>
       </mm:cloud>

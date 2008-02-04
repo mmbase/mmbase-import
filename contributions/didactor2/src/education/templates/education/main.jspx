@@ -4,22 +4,22 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
-    <!--
-        We are using it to show only one node in the tree
-        For cross-education references
-    -->
-
+  
   <div class="mainContent">
-    <div class="contentHeader">
-      <jsp:text> </jsp:text>
-    </div>
+
+    <di:include debug="html" page="/education/contentHeader.jspx" />
+
     <div class="contentBodywit" id="contentBodywit"> <!-- '-wit' is a very stupid name for a class -->
       <mm:import externid="the_only_node_to_show"/>
       <mm:present referid="the_only_node_to_show">
+        <!--
+            We are using this to show only one node in the tree
+            For cross-education references
+        -->
         <mm:import externid="fb_madetest" required="true" />
         <mm:import externid="return_to" required="true" />
         <mm:import externid="return_to_type" required="true" />
-
+        
         <div align="right">
           <mm:link referids="$referids,learnobjecttype,class,fb_madetest,learnobject@return_to,learnobjecttype@return_to_type" page="index.jsp">
             <input type="submit" class="formbutton"
@@ -30,9 +30,11 @@
         </div>
       </mm:present>
       <img id="ajax_loader" src="${mm:treelink('/gfx/ajax-loader.gif', includePath)}"  style="display: none;" />
-
-      <div id="contentFrame"><jsp:text>...</jsp:text></div>
-
+      
+      <div id="contentFrame">
+        <jsp:text>...</jsp:text>
+      </div>
+      
     </div>
   </div>
 </jsp:root>

@@ -6,7 +6,7 @@
     <mm:cloud>
       <mm:import externid="mode">components</mm:import>
       <mm:link page="/education/js/tree.jsp" referids="mode">
-        <script type="text/javascript" src="${_}"><!-- help IE --></script>
+        <script type="text/javascript" src="${_}"> <!-- help IE --></script>
       </mm:link>
       <mm:remove from="session" referid="path" />
       <mm:import externid="education_topmenu_course" />
