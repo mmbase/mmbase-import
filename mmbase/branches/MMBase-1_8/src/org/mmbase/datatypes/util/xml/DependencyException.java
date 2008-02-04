@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: DependencyException.java,v 1.1.2.1 2008-01-28 18:43:28 michiel Exp $
+ * @version $Id: DependencyException.java,v 1.1.2.2 2008-02-04 10:33:04 michiel Exp $
  * @since MMBase-1.8.6
  **/
 public class DependencyException extends Exception {
@@ -46,7 +46,7 @@ public class DependencyException extends Exception {
     }
 
     public String getId() {
-        return element.getOwnerDocument().getDocumentURI() + "@" +  element.getAttribute("id") + " (@base=" + element.getAttribute("base") + ")";
+        return element.getOwnerDocument() + "@" +  element.getAttribute("id") + " (@base=" + element.getAttribute("base") + ")";
     }
 
     public boolean retry() {

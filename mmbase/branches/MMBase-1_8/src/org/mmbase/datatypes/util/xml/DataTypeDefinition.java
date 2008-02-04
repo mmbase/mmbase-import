@@ -34,7 +34,7 @@ import org.mmbase.util.transformers.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.55.2.3 2008-01-28 18:43:28 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55.2.4 2008-02-04 10:33:03 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -149,7 +149,7 @@ public class DataTypeDefinition {
             }
 
             if (definedBaseDataType == null) {
-                log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument().getDocumentURI() + ").");
+                log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument() + ").");
                 throw new DependencyException(dataTypeElement, requestBaseDataType, this);
             } else {
                 requestBaseDataType = definedBaseDataType;
