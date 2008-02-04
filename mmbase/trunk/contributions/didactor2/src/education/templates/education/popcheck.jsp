@@ -2,7 +2,7 @@
 <%@page import="java.util.*" %>
 
 <mm:import id="lonumber" jspvar="lonumber" vartype="String" reset="true"><mm:write referid="learnobjectnumber"/></mm:import>
-<mm:import id="dummy" jspvar="username" vartype="String" reset="true"><mm:write referid="user"/></mm:import>
+<mm:import jspvar="username" vartype="String" reset="true"><mm:write referid="user"/></mm:import>
 
 <mm:cloud jspvar="cloud">
   <%

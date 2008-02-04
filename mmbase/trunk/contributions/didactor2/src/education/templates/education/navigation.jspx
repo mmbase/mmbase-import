@@ -11,7 +11,7 @@
 
     <mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
       <script type="text/javascript" src="${_}">
-        <!-- help IE -->
+        <jsp:text><!-- help IE --> </jsp:text>
       </script>
     </mm:link>
 
