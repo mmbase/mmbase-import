@@ -511,7 +511,7 @@ class MimeMessageGenerator {
             params.set("tags", "NONE");
             params.set("addbrs", false);
             params.set("escapeamps", false);
-            CharTransformer transformer = factory.createTransformer(params);
+            CharTransformer transformer = (CharTransformer) factory.createTransformer(params);
             return transformer;
         }
 
