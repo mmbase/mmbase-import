@@ -32,6 +32,7 @@
       -->
       <c:if test="${fn:length(_) ge di:setting('education', 'max_depth')}">
         <div class="sublearnblocks" id="sublearnblocks_${_node}">
+          <jsp:text> </jsp:text>
           <mm:relatednodes type="learnblocks" searchdir="destination">
             <di:include page="/education/learnblocks/node.jspx" />
           </mm:relatednodes>

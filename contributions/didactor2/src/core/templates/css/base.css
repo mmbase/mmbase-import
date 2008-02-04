@@ -6,6 +6,7 @@
 */
 html {
   background-color: white;
+  height: 100%;
 }
 
 body {
@@ -1011,13 +1012,28 @@ textarea.invalid {
 }
 
 
-
-body.editwizards a {
-  font-size: 11px;
+div.di_body {
+  height: 100%;
 }
+
+body.editwizards div.educations,
+body.editwizards div#mode-educations {
+  height: 100%;
+}
+
 body.editwizards .menu_font{
   font-size: 11px;
+
 }
+body.editwizards td {
+  vertical-align: top;
+  height:100%;
+}
+body.editwizards td#left_menu {
+  width:20%;
+  overflow:auto;
+}
+
 body.editwizards .folderBodyTree {
   width: 20%;
   height: 90%;
@@ -1033,6 +1049,7 @@ body.editwizards .contentBody {
   padding: 0em;
 }
 body.editwizards .componentBody {
+  height: 100%;
 }
 body.editwizards .titlebar a {
   margin-left: 1ex;
