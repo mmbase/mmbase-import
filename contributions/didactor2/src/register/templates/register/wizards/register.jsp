@@ -5,9 +5,8 @@
 %>
 <mm:content postprocessor="reducespace" expires="0">
   <mm:cloud rank="editor">
-    <jsp:directive.include file="/education/wizards/roles_defs.jsp" />
 
-    <mm:import externid="educationid" />
+    <mm:import externid="educationId" />
     <mm:import externid="person" />
     <mm:import externid="chosenclass" />
     <mm:import externid="chosenworkgroup" />
@@ -33,9 +32,7 @@
               <a href="${_}">Export</a>
             </mm:link>
           </p>
-          <mm:import id="editcontextname" reset="true">opleidingen</mm:import><!-- TODO, this is dutch -->
-          <jsp:directive.include file="/education/wizards/roles_chk.jsp" /> <!-- TODO, this is silly -->
-          <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+          <di:has editcontext="opleidingen">
             <mm:isnotempty referid="chosenclass">
               <mm:compare referid="chosenworkgroup" value="-">
                 <script>
@@ -44,7 +41,7 @@
               </mm:compare>
 
               <mm:compare referid="chosenworkgroup" value="-" inverse="true">
-                <mm:node id="n_education" number="$educationid" />
+                <mm:node id="n_education" number="$educationId" />
                 <mm:createrelation source="person" destination="chosenclass" role="classrel" />
                 <mm:createrelation source="person" destination="chosenworkgroup" role="related" />
                 <mm:listnodes type="roles" constraints="roles.name='student'">
@@ -53,7 +50,7 @@
 
                 <mm:node referid="person">
                   <mm:listrelationscontainer role="related" type="educations">
-                    <mm:constraint field="number" value="${educationid}" />
+                    <mm:constraint field="number" value="${educationId}" />
                     <mm:listrelations>
                       <mm:deletenode />
                     </mm:listrelations>
@@ -62,7 +59,7 @@
                 <di:getsetting component="register" setting="send_email">
                   <mm:compare value="true">
                     <mm:treeinclude page="/register/wizards/welcome.mail.jspx"
-                                    referids="chosenclass,chosenworkgroup,person@chosenstudent,educationid@choseneducation"
+                                    referids="chosenclass,chosenworkgroup,person@chosenstudent,educationId@choseneducation"
                                     objectlist="$includePath"
                                     />
                   </mm:compare>
@@ -84,7 +81,7 @@
                     </mm:fieldlist>
                   </mm:locale>
                   <hr />
-                  <mm:node number="$educationid">
+                  <mm:node number="$educationId">
                     <di:translate key="register.relate_to_class" /><br />
                     <table class="registerTable">
                       <tr>
@@ -95,7 +92,7 @@
                       </tr>
                       <mm:import externid="offset">0</mm:import>
                       <mm:import externid="max">5</mm:import>
-                      <mm:url write="false" id="baseurl" referids="class?,educationid?,person" />
+                      <mm:url write="false" id="baseurl" referids="class?,educationId?,person" />
                       <mm:relatednodescontainer path="classes,mmevents" element="classes">
                         <mm:sortorder field="mmevents.start" direction="down" />
                         <mm:maxnumber value="${max}" />
@@ -103,7 +100,7 @@
                         <mm:relatednodes>
                         <tr>
                           <form method="post">
-                            <input type="hidden" name="educationid" value="${educationid}" />
+                            <input type="hidden" name="educationId" value="${educationId}" />
                             <input type="hidden" name="person" value="${person}" />
                             <input type="hidden" name="chosenclass" value="${_node}" />
                             <td><nobr><mm:field name="name" /></nobr></td>
@@ -144,7 +141,7 @@
               </mm:isnotempty>
             </mm:isnotempty>
             <mm:isempty referid="person">
-              <mm:node number="$educationid">
+              <mm:node number="$educationId">
                 <di:translate key="register.chooseregistration" /><br />
                 <hr />
                 <table class="listTable">
@@ -154,29 +151,37 @@
                     </mm:fieldlist>
                     <th><di:translate key="register.delete" /></th>
                   </tr>
-                  <mm:relatednodes type="people" role="classrel" id="related" orderby="number"/> <!-- register/index.jsp used to do that -->
-                  <mm:relatednodes type="people" role="related" add="related" orderby="number">
-                    <mm:countrelations type="roles">
-                      <mm:compare value="0">
-                        <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationid,_node@person" id="url" write="false" />
-                        <tr>
-                          <mm:fieldlist nodetype="people" fields="number,${di:setting('core', 'admin_personfields')},username">
-                            <td><a href="${url}"><mm:fieldinfo type="value" /></a></td>
-                          </mm:fieldlist>
-                          <td>
-                            <mm:link referid="url">
-                              <mm:param name="delete">true</mm:param>
-                              <a href="${_}" onclick="return confirm('${di:translate('register.delete_areyousure')}');"><di:translate key="register.delete" /></a>
-                            </mm:link>
-                          </td>
-                        </tr>
-                      </mm:compare>
-                    </mm:countrelations>
-                  </mm:relatednodes>
+                  <mm:relatednodescontainer type="people" role="classrel">
+                    <mm:ageconstraint maxage="180" />
+                    <mm:sortorder field="number" />
+                    <mm:relatednodes id="related" />
+                  </mm:relatednodescontainer>
+                  <mm:relatednodescontainer type="people" role="related">
+                    <mm:ageconstraint maxage="180" />
+                    <mm:sortorder field="number" />
+                    <mm:relatednodes  add="related">
+                      <mm:countrelations type="roles">
+                        <mm:compare value="0">
+                          <mm:treefile page="/register/wizards/register.jsp" objectlist="$includePath" referids="$referids,educationId,_node@person" id="url" write="false" />
+                          <tr>
+                            <mm:fieldlist nodetype="people" fields="number,${di:setting('core', 'admin_personfields')},username">
+                              <td><a href="${url}"><mm:fieldinfo type="value" /></a></td>
+                            </mm:fieldlist>
+                            <td>
+                              <mm:link referid="url">
+                                <mm:param name="delete">true</mm:param>
+                                <a href="${_}" onclick="return confirm('${di:translate('register.delete_areyousure')}');"><di:translate key="register.delete" /></a>
+                              </mm:link>
+                            </td>
+                          </tr>
+                        </mm:compare>
+                      </mm:countrelations>
+                    </mm:relatednodes>
+                  </mm:relatednodescontainer>
                 </table>
               </mm:node>
             </mm:isempty>
-          </mm:islessthan>
+          </di:has>
         </div>
       </body>
     </html>
