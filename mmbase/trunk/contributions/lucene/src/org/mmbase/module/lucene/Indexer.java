@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.53 2008-02-01 12:40:42 michiel Exp $
+ * @version $Id: Indexer.java,v 1.54 2008-02-05 13:45:24 michiel Exp $
  **/
 public class Indexer {
 
@@ -90,12 +90,14 @@ public class Indexer {
     private final int ERRORBUFFER_MAX = 100;
     private int errorBufferSize = 0;
     private int errorBufferCursor = -1;
+    private long errorCount = 0;
     private final String[] errors = new String[ERRORBUFFER_MAX];
     protected  List<String> errorBuffer = new AbstractList() {
             public int size() { return errorBufferSize; }
             public String get(int index) { return errors[(errorBufferSize + errorBufferCursor - index) % errorBufferSize]; }
         };
     protected void addError(String string) {
+        errorCount++;
         errorBufferCursor++;
         if (errorBufferSize < ERRORBUFFER_MAX) {
             errorBufferSize++;
@@ -404,6 +406,7 @@ public class Indexer {
      */
     public void fullIndex() {
         log.service("Doing full index for " + toString());
+        long errorCountBefore = errorCount;
         EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.START, 0));
         IndexWriter writer = null;
         try {
@@ -427,10 +430,14 @@ public class Indexer {
                 }
             }
             writer.optimize();
-            Directory.copy(fullIndex, getDirectory(), true);
-            Date lastFullIndex = setLastFullIndex(startTime);
-            log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
-            EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
+            if (errorCountBefore == errorCount) {
+                Directory.copy(fullIndex, getDirectory(), true);
+                Date lastFullIndex = setLastFullIndex(startTime);
+                log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
+                EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
+            } else {
+                log.warn((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
+            }
         } catch (Exception e) {
             addError(e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
