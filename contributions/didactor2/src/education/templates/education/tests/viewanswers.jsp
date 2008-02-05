@@ -8,12 +8,12 @@
     <mm:content postprocessor="none" expires="0" language="$language">
       <mm:import externid="testNo"     required="true"  />
       <mm:import externid="madetestNo" required="true"  />
-      <mm:import externid="userNo"     required="true"  />
-      <mm:import externid="feedback"   required="false" />
+      <mm:import externid="userNo"     required="true" />
 
+      <mm:import externid="feedback"   required="false" />
       <jsp:directive.include file="/education/tests/definitions.jsp" />
 
-      <di:may component="education" action="viewAnswers" arguments="userNo">
+      <di:may component="education" action="viewAnswers" referids="userNo@subject">
         <mm:node referid="madetestNo">
           <mm:relatednodes role="related" orderby="related.number" type="givenanswers" directions="up" id="answer">
             <p>
