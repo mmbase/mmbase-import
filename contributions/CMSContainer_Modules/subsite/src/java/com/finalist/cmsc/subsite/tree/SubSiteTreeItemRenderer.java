@@ -9,17 +9,14 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.subsite.tree;
 
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationRenderer;
 import com.finalist.cmsc.navigation.NavigationTreeItemRenderer;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
-import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.subsite.util.SubSiteUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 
@@ -62,8 +59,6 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
                   RESOURCEBUNDLE, "../subsite/SubSiteDelete.do?number=" + id));
             element.addOption(renderer.createTreeOption("subsite_new.png", "site.personal.new.page",
             		RESOURCEBUNDLE, "../subsite/PersonalPageCreate.do?parentpage=" + id));
-            element.addOption(renderer.createTreeOption("personalpage_go.png", "site.personal.showpages",
-                  RESOURCEBUNDLE, "../subsite/module-subsite.jsp?subsite=" + id));
             element.addOption(renderer.createTreeOption("personalpage_go.png", "site.personal.showpages",
                   RESOURCEBUNDLE, "../subsite/SubSiteAction.do?subsite=" + id));
          }
