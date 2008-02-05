@@ -10,7 +10,7 @@
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
 
-<di:may component="education" action="rate" arguments="studentNo">
+<di:may component="education" action="rate" referids="studentNo@subject">
 
 <mm:import id="correctiontext">
   <mm:node number="$madetest">
@@ -92,6 +92,7 @@
 </html>
 </mm:present>
 
+<!-- aarch, how can there follow code after </html> ? -->
 <mm:notpresent referid="incompleterating">
   <mm:treeinclude page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>
 </mm:notpresent>
