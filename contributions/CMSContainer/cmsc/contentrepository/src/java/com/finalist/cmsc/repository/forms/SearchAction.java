@@ -34,15 +34,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SearchAction extends PagerAction {
 
-    private static final String GETURL = "geturl";
+    public static final String GETURL = "geturl";
 
-    private static final String PERSONAL = "personal";
-    private static final String AUTHOR = "author";
-    private static final String OBJECTID = "objectid";
-    private static final String PARENTCHANNEL = "parentchannel";
-    private static final String CONTENTTYPES = "contenttypes";
+    public static final String PERSONAL = "personal";
+    public static final String AUTHOR = "author";
+    public static final String OBJECTID = "objectid";
+    public static final String PARENTCHANNEL = "parentchannel";
+    public static final String CONTENTTYPES = "contenttypes";
 
-    private static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
+    public static final String REPOSITORY_SEARCH_RESULTS_PER_PAGE = "repository.search.results.per.page";
 
     /**
      * MMbase logging system
