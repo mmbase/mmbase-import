@@ -55,6 +55,13 @@ public class SubSiteUtil {
       return RepositoryUtil.getChild(repositoryRootChannel, fragment);
    }
 
+   public static Node getPersonalpageChannel(Node personalpage) {
+	  Node ppChannel = getSubsiteChannel(personalpage);
+	  String fragment = personalpage.getStringValue(PagesUtil.FRAGMENT_FIELD);
+      return RepositoryUtil.getChild(ppChannel, fragment);
+   }
+   
+   
    public static Node getRepositoryRoot(Cloud cloud) {
       Node repositoryRootChannel = cloud.getNode(ALIAS_SUBSITE);
       return repositoryRootChannel;
