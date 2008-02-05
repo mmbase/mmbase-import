@@ -7,12 +7,12 @@ import org.mmbase.util.logging.*;
 import java.util.*;
 
 /**
- * @author Michiel Meeuwissen
- * @version $Id: Functions.java,v 1.3 2007-07-26 14:41:57 michiel Exp $
+ * Several functions on mmbase nodes which are used by didactor. * @author Michiel Meeuwissen
+ * @version $Id: Functions.java,v 1.4 2008-02-05 15:05:55 michiel Exp $
  */
 public class Functions {
     protected final static Logger log = Logging.getLoggerInstance(Functions.class);
-    
+
     private Node node;
 
     public void setNode(Node n) {
@@ -24,7 +24,7 @@ public class Functions {
         List<Integer> result = new ArrayList<Integer>();
         result.add(node.getNumber());
         NodeList parents = node.getRelatedNodes("learnobjects", "posrel", "source");
-        while (parents.size() > 0) {            
+        while (parents.size() > 0) {
             assert parents.size() == 1;
             Node parent = parents.getNode(0);
             if (result.contains(parent.getNumber())) break;
@@ -45,6 +45,6 @@ public class Functions {
         Date now = new Date();
         return now.after(online) && now.before(offline);
     }
-    
+
 
 }

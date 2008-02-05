@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
- * @version $Id: DidactorEducation.java,v 1.14 2008-01-24 15:48:41 michiel Exp $
+ * @version $Id: DidactorEducation.java,v 1.15 2008-02-05 15:05:55 michiel Exp $
  */
 public class DidactorEducation extends Component {
     private static Logger log = Logging.getLoggerInstance(DidactorEducation.class);
@@ -62,7 +62,7 @@ public class DidactorEducation extends Component {
 
     private static final Parameter SUBJECT   = new Parameter("subject", Node.class, true);
 
-    private static final Parameter[] PARAMS = new Parameter[] {Component.EDUCATION, Component.CLASS};
+    private static final Parameter[] PARAMS = new Parameter[] {Component.EDUCATION, Component.CLASS, SUBJECT};
 
 
     /**
@@ -75,7 +75,7 @@ public class DidactorEducation extends Component {
                 Node subject = (Node) parameters.get(SUBJECT);
                 Node education = (Node) parameters.get(Component.EDUCATION);
                 Node clazz = (Node) parameters.get(Component.CLASS);
-                int u = Integer.parseInt(user.getIdentifier());
+                int u = ((nl.didactor.security.UserContext)user).getUserNumber();
                 return u == subject.getNumber() ||
                     isTeacherOf(subject.getCloud(), u, subject.getNumber(), education.getNumber(), clazz == null ? -1 : clazz.getNumber());
             }

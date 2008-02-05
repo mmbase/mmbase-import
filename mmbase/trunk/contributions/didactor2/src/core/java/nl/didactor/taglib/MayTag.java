@@ -86,6 +86,7 @@ public class MayTag extends CloudReferrerTag implements Condition {
             params.set(key, entry.getValue());
         }
         log.debug("Checking " + a + " with " + params);
+        params.checkRequiredParameters();
         value = comp.may(getCloudVar(), a, params);
 
         if (value[0] != inverse.getBoolean(this, false)) {
