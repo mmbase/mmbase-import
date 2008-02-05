@@ -46,8 +46,8 @@ public abstract class Component {
     /** Location of the component in the bar. Default to 100, which is somewhere at the end. */
     private int barposition = 100;
 
-    public static final Parameter EDUCATION = new Parameter("education", Node.class, true);
-    public static final Parameter CLASS     = new Parameter("class", Node.class, null);
+    public static final Parameter EDUCATION = new Parameter("education", org.mmbase.bridge.Node.class, true);
+    public static final Parameter CLASS     = new Parameter("class", org.mmbase.bridge.Node.class, null);
 
     /**
      * Register a component in the registry.
@@ -276,7 +276,7 @@ public abstract class Component {
     }
 
     /**
-     * 
+     *
      * @javadoc I'd say it may be somewhat necessary here. I don't for example really understand the
      * difference between this and {@link #getSetting}.
      */
