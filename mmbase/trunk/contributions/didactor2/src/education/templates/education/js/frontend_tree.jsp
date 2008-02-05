@@ -8,7 +8,7 @@ var ITEM_NONE   = '${mm:treefile("/gfx/icon_arrow_tab_none.gif", pageContext, in
 var ITEM_OPENED = '${mm:treefile("/gfx/icon_arrow_tab_open.gif", pageContext, includePath)}';
 var ITEM_CLOSED = '${mm:treefile("/gfx/icon_arrow_tab_closed.gif", pageContext, includePath)}';
 
-var may_open_openfuture =
+var may_open_future =
     <di:hasrole role="coach">true || //coach</di:hasrole>
     <di:hasrole role="teacher">true || // teacher</di:hasrole>
     <di:hasrole role="systemadministrator">true || //system administrator </di:hasrole>
