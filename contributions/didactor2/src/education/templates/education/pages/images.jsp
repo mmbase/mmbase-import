@@ -12,7 +12,7 @@
               </mm:field>
               <mm:field name="width">
                 <mm:isgreaterthan value="0">
-                  <mm:image mode="img" border="0" template="s(${_}${_node.height gt 0 'x' : ''}${_node.height gt 0 ? _node.height : ''})" />
+                  <mm:image mode="img" border="0" template="s(${_}${_node.height gt 0 ? 'x' : ''}${_node.height gt 0 ? _node.height : ''})" />
                 </mm:isgreaterthan>
                 <mm:islessthan value="1">
                   <mm:image mode="img"  border="0"/>
@@ -35,7 +35,7 @@
         </mm:field>
         <mm:field name="width">
           <mm:isgreaterthan value="0">
-            <mm:image mode="img" border="0" template="s(${_}${_node.height gt 0 'x' : ''}${_node.height gt 0 ? _node.height : ''})" />
+            <mm:image mode="img" border="0" template="s(${_}${_node.height gt 0 ? 'x' : ''}${_node.height gt 0 ? _node.height : ''})" />
           </mm:isgreaterthan>
           <mm:islessthan value="1">
             <mm:image mode="img" border="0"/>
