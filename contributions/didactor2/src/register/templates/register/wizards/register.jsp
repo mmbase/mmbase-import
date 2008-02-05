@@ -93,22 +93,27 @@
                         <th><di:translate key="register.workgroup" /></th>
                         <th></th>
                       </tr>
-                      <mm:related path="classes,mmevents" fields="classes.number,classes.name,mmevents.start,mmevents.stop" orderby="mmevents.start" directions="down">
+                      <mm:import externid="offset">0</mm:import>
+                      <mm:import externid="max">5</mm:import>
+                      <mm:url write="false" id="baseurl" referids="class?,educationid?,person" />
+                      <mm:relatednodescontainer path="classes,mmevents" element="classes">
+                        <mm:sortorder field="mmevents.start" direction="down" />
+                        <mm:maxnumber value="${max}" />
+                        <mm:offset value="${offset}" />
+                        <mm:relatednodes>
                         <tr>
                           <form method="post">
                             <input type="hidden" name="educationid" value="${educationid}" />
                             <input type="hidden" name="person" value="${person}" />
-                            <input type="hidden" name="chosenclass" value="${_node.classes}" />
-                            <td><nobr><mm:field name="classes.name" /></nobr></td>
-                            <td><nobr><mm:field name="mmevents.start"><mm:time format=":LONG" /></mm:field></nobr></td>
+                            <input type="hidden" name="chosenclass" value="${_node}" />
+                            <td><nobr><mm:field name="name" /></nobr></td>
+                            <td><nobr><mm:relatednodes type="mmevents"><mm:field name="start"><mm:time format=":LONG" /></mm:field></mm:relatednodes></nobr></td>
                             <td>
                               <select name="chosenworkgroup">
                                 <option value="-"><di:translate key="register.select_workgroup" /></option>
-                                <mm:node element="classes">
-                                  <mm:related path="workgroups" fields="workgroups.name,workgroups.number">
-                                    <option value="${_node.workgroups}"><mm:field name="workgroups.name" /></option>
-                                  </mm:related>
-                                </mm:node>
+                                <mm:relatednodes type="workgroups">
+                                  <option value="${_node}"><mm:field name="name" /></option>
+                                </mm:relatednodes>
                               </select>
                             </td>
                             <td>
@@ -116,7 +121,23 @@
                             </td>
                           </form>
                         </tr>
-                      </mm:related>
+                        </mm:relatednodes>
+                        <tr>
+                          <td colspan="100">
+                            <mm:previousbatches indexoffset="1">
+                              <mm:link referid="baseurl" referids="_@offset">
+                                <a href="${_}"><mm:index /></a>
+                              </mm:link>
+                            </mm:previousbatches>
+                            <mm:index offset="1"/>
+                            <mm:nextbatches indexoffset="1">
+                              <mm:link referid="baseurl" referids="_@offset">
+                                <a href="${_}"><mm:index /></a>
+                              </mm:link>
+                            </mm:nextbatches>
+                          </td>
+                        </tr>
+                      </mm:relatednodescontainer>
                     </table>
                   </mm:node>
                 </mm:node>
