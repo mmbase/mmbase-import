@@ -43,7 +43,7 @@
   </div>
   <div class="contentBody">
 
-<di:may component="education" action="rate" arguments="studentNo">
+<di:may component="education" action="rate" referids="studentNo@subject">
 
 <%-- find user's copybook --%>
 <mm:node number="$studentNo">
