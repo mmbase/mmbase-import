@@ -11,7 +11,7 @@
       <ul>
         <mm:relatednodes type="urls" role="posrel" orderby="posrel.pos">
           <li>
-            <a href="${_node.url}">
+            <a href="${mm:escape('text/html/attribute', _node.url)}">
               <mm:field name="name" write="true">
                 <mm:isempty>
                   <mm:field name="url" />
