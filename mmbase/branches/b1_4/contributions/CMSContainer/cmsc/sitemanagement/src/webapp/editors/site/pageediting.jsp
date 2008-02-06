@@ -3,6 +3,9 @@
 
 
 <html>
+	<head>
+		<title><fmt:message key="site.title" /></title>
+		<script type="text/javascript" src="portalcontrols.js.jsp"></script>
 <script type="text/javascript">
     function preview() {
         var contentLocation = this.frames["pcontent"].location.href;
@@ -39,11 +42,20 @@
 			</c:if>
 		}
 </script>
+	</head>
 
 <c:set var="str">${requestScope.toolbar}?number=${requestScope.nodeId}&pagepath=${requestScope.pathofpage}</c:set>
+<frameset rows="*" framespacing="0" border="0">
+ <%--
 <frameset rows="35,*" framespacing="0" border="0">
-    <frame frameborder="0" src="${str}" name="toolbar" scrolling="no"/>
+ 	CMSC-764, disabled this, because we do not want these tabs yet
+ 
+     <frame frameborder="0" src="${str}" name="toolbar" scrolling="no"/>
 	    <frame frameborder="0" src="${requestScope.pathofpage}" onload="reload()" name="pcontent"/>
+     
+     
+ --%>
+	    <frame frameborder="0" src="${requestScope.pathofpage}" onload="frameLoaded()" name="pcontent"/>
 </frameset>
 
 </html>

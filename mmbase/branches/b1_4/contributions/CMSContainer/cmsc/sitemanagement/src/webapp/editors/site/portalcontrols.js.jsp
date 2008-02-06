@@ -6,16 +6,16 @@ var oldChannelsCols = '0,*';
  
 function frameLoaded() {
 	if (isPortalPage()) {
-		insertHTMLBeforeEnd( getBodyElement( getDocument('content') ), getPageControls());
+		insertHTMLBeforeEnd( getBodyElement( getDocument('pcontent') ), getPageControls());
 
 		var jslocation = document.location.href;
-		jslocation = jslocation.replace('index.jsp', 'portaledit.js.jsp');
-		createJavascript( getDocument('content'), jslocation);
+		jslocation = jslocation.replace('NavigatorPanel.do', 'portaledit.js.jsp');
+		createJavascript( getDocument('pcontent'), jslocation);
 	}
 }
 
 function isPortalPage() {
-	var location = frames['content'].location.href;
+	var location = frames['pcontent'].location.href;
 	return (location.indexOf('/editors/') < 0 && location.indexOf('/mmbase/') < 0);
 }
 
