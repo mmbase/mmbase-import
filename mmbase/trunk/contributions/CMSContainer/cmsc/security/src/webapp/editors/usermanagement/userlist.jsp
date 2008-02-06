@@ -70,7 +70,7 @@
 					<td style="padding-right: 10px"><mm:field name="firstname" /> <mm:field name="prefix" /> <mm:field name="surname" /></td>
                <td>
                   <a href="javascript:info('<mm:field name="number" />')">
-                     <img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="userlist.info" />"/>
+                     <img src="../gfx/icons/info.png" width="16" height="16" title="<fmt:message key="userlist.info" />"/>
                   </a>
                </td>
 					<td><mm:maydelete>
