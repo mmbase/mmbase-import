@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.27.2.1 2007-11-19 15:43:39 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.27.2.2 2008-02-06 15:45:46 michiel Exp $
  */
 public class NodeEvent extends Event {
 
@@ -233,6 +234,38 @@ public class NodeEvent extends Event {
      */
     public final Map getNewValues(){
         return newValues;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        try {
+            Object otype = oldValues.get("otype");
+            if (otype == null) otype = newValues.get("otype");
+            if (otype != null) {
+                Cache typeCache = Cache.getCache("TypeCache");
+                if (typeCache != null) {
+                    Integer node = new Integer(nodeNumber);
+                    Integer type = new Integer("" + otype);
+                    Integer cachedType = (Integer) typeCache.get(node);
+                    if (cachedType == null) {
+                        log.debug("Putting in type cache " + node + " -> " + type);
+                        typeCache.put(node, type);
+                    } else {
+                        if (type.equals(cachedType)) {
+                            log.debug("Type already cached");
+                        } else {
+                            log.warn("Type in event not the same as in cache " + type + " != " + cachedType);
+                        }
+                    }
+                } else {
+                    log.service("No typecache?");
+                }
+
+            }
+        } catch (Exception e) {
+             log.error(e);
+        }
+
     }
 
 
