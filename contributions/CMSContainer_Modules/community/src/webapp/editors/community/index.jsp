@@ -13,7 +13,7 @@
 <cmscedit:sideblock title="view.groups" titleClass="side_block_gray">
       <ul class="shortcuts">
             <li class="usergroupnew">
-            <a href="GroupInitAction.do"><fmt:message key="view.newgroup" /></a>
+            <a href="groupInitAction.do"><fmt:message key="view.newgroup" /></a>
          </li>
       </ul>
       <div style="clear:both; height:10px;"></div>
@@ -27,9 +27,9 @@
             <tr>
                <td style="padding-right: 10px"><a href="groupInitAction.do?id=${group}">${group}</a></td>
                <td>
-                  <a href="DeleteGroupAction.do?id=${group}">
-                     <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="userlist.removegroup" />"
-                        onclick="return confirm('<fmt:message key="userlist.removegroupquestion" />')" />
+                  <a href="deleteGroupAction.do?groupid=${group}">
+                     <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="view.removegroup" />"
+                        onclick="return confirm('<fmt:message key="view.removegroupquestion" />')" />
                   </a>
                </td>
             </tr>
