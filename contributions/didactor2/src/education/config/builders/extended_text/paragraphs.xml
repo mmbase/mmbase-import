@@ -35,8 +35,8 @@
 
     <field name="showtitle">
       <gui>
-        <guiname xml:lang="nl">ToonTitel</guiname>
-        <guiname xml:lang="en">ShowTitle</guiname>
+        <guiname xml:lang="nl">Toon Titel</guiname>
+        <guiname xml:lang="en">Show Title</guiname>
       </gui>
       <editor>
         <positions>
