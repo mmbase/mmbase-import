@@ -15,21 +15,8 @@
 		</field>
 	</item>
 
-	<command name="search" nodepath="contentchannel" age="-1" fields="pathfragment,name">
-		<prompt xml:lang="en">Search contentchannel</prompt>
-		<prompt xml:lang="nl">Zoek rubriek</prompt> 
-		<search-filter>
-			<name xml:lang="en">URL-fragment contains</name>
-			<name xml:lang="nl">URL-fragment bevat</name>
-			<search-fields>[pathfragment]</search-fields>
-		</search-filter>
-		<search-filter>
-			<name xml:lang="en">Name contains</name>
-			<name xml:lang="nl">Naam bevat</name>
-			<search-fields>[name]</search-fields>
-		</search-filter>
-	</command>
-
+	<command name="channelselector" />
+	
 	<action type="create">
 		<relation destinationtype="contentchannel" role="related"></relation>
 	</action>
