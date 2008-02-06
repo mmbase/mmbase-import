@@ -26,6 +26,12 @@ Note: The 1.8.5 version of MMBase was the first distro of MMBase which is partly
       version of the documentation, or the build of HEAD for a downloadable version.
 
 
+Note: Since 1.8.6 the default clustering message format is no any more compatible with mmbase 1.7
+      implementations.
+      If you need that, set the 'mmbase17.compatible' property on the clustering module explicetly
+      back to true.
+
+
 ============
 NEW FEATURES:
 ============
