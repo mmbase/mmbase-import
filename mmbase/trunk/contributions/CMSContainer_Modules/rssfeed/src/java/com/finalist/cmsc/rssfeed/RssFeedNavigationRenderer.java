@@ -157,16 +157,7 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
    }
 
    private String getServerDocRoot(HttpServletRequest request) {
-   	  //Retrieve servername & port without WAR-file name
-      StringBuffer s = new StringBuffer();
-      s.append(request.getScheme()).append("://").append(request.getServerName());
-
-      int serverPort = request.getServerPort();
-      if (serverPort != 80 && serverPort != 443) {
-         s.append(':').append(Integer.toString(serverPort));
-      }
-      s.append('/');
-      return s.toString();
+       return HttpUtil.getWebappUri(request);
    }
 
    private String getContentUrl(Node node) {
@@ -175,7 +166,7 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
    }
 
    private String makeAbsolute(String url, HttpServletRequest request) {
-      String webapp = getServerDocRoot(request);
+      String webapp = HttpUtil.getServerDocRoot(request);
       if (url.startsWith("/")) {
          url = webapp + url.substring(1);
       }
