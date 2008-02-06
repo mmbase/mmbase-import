@@ -6,9 +6,14 @@
  */
 package org.mmbase.core.event;
 
+import java.io.*;
 import java.util.*;
 
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.cache.Cache;
+import org.mmbase.cache.CacheManager;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * This class communicates a node event. in case of a change event, it contains
@@ -17,9 +22,10 @@ import org.mmbase.util.HashCodeUtil;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.33 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.34 2008-02-06 15:50:46 michiel Exp $
  */
 public class NodeEvent extends Event {
+    private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -85,6 +91,8 @@ public class NodeEvent extends Event {
     public final  Object getNewValue(String fieldName) {
         return newValues.get(fieldName);
     }
+
+
 
     /**
      * @return Returns the builderName.
@@ -224,6 +232,37 @@ public class NodeEvent extends Event {
      */
     public final Map<String, Object> getNewValues(){
         return newValues;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        try {
+            Object otype = oldValues.get("otype");
+            if (otype == null) otype = newValues.get("otype");
+            if (otype != null) {
+                Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
+                if (typeCache != null) {
+                    Integer type = new Integer("" + otype);
+                    Integer cachedType = typeCache.get(nodeNumber);
+                    if (cachedType == null) {
+                        log.debug("Putting in type cache " + nodeNumber + " -> " + type);
+                        typeCache.put(nodeNumber, type);
+                    } else {
+                        if (type.equals(cachedType)) {
+                            log.debug("Type already cached");
+                        } else {
+                            log.warn("Type in event not the same as in cache " + type + " != " + cachedType);
+                        }
+                    }
+                } else {
+                    log.service("No typecache?");
+                }
+
+            }
+        } catch (Exception e) {
+             log.error(e);
+        }
+
     }
 
 
