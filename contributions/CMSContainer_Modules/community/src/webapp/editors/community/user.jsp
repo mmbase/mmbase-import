@@ -1,5 +1,6 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
 <%@include file="globals.jsp"%>
+<%@ taglib uri="http://finalist.com/cmsc/community" prefix="community" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
@@ -57,7 +58,6 @@
                <span class="notvalid"><html:errors bundle="SECURITY" property="passwordConfirmation" /></span>
             </td>
          </tr>
-
            
 		</table>
 		</div>
