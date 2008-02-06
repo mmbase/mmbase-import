@@ -157,7 +157,16 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
    }
 
    private String getServerDocRoot(HttpServletRequest request) {
-       return HttpUtil.getWebappUri(request);
+   	  //Retrieve servername & port without WAR-file name
+      StringBuffer s = new StringBuffer();
+      s.append(request.getScheme()).append("://").append(request.getServerName());
+
+      int serverPort = request.getServerPort();
+      if (serverPort != 80 && serverPort != 443) {
+         s.append(':').append(Integer.toString(serverPort));
+      }
+      s.append('/');
+      return s.toString();
    }
 
    private String getContentUrl(Node node) {
