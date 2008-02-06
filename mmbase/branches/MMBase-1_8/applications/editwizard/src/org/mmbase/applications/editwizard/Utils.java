@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.41.2.3 2007-12-12 14:00:42 pierre Exp $
+ * @version $Id: Utils.java,v 1.41.2.4 2008-02-06 13:13:18 michiel Exp $
  */
 
 public class Utils {
@@ -646,8 +646,7 @@ public class Utils {
         try {
             return XPathAPI.selectSingleNode(contextnode, xpath);
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-            throw new RuntimeException(Logging.stackTrace(e));
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -662,8 +661,7 @@ public class Utils {
         try {
             return XPathAPI.selectNodeList(contextnode, xpath);
         } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
-            throw new RuntimeException(Logging.stackTrace(e));
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
