@@ -22,12 +22,6 @@ public class ListGroupsTag extends CommunityTagSupport {
 
 		AuthorityService as = getAuthorityService();
 		Set<String> list = as.getAuthorityNames();
-
-		if (list.size() <= 0) {
-			as.createAuthority(null, "auth1");
-			as.createAuthority(null, "auth2");
-			as.createAuthority("auth2", "auth3");
-		}
 		
 		if (var != null) {
 			if (list != null) {
