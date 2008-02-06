@@ -4,25 +4,36 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="userlist.title">
+<cmscedit:head title="view.title">
    <script src="userlist.js" type="text/javascript"></script>
 </cmscedit:head>   
 <body>
 <mm:cloud loginpage="../login.jsp" rank="administrator" jspvar="cloud">
 <div style="float: left">
-<cmscedit:sideblock title="userlist.groups" titleClass="side_block_gray">
+<cmscedit:sideblock title="view.groups" titleClass="side_block_gray">
       <ul class="shortcuts">
             <li class="usergroupnew">
-            <a href="GroupInitAction.do"><fmt:message key="userlist.newgroup" /></a>
+            <a href="GroupInitAction.do"><fmt:message key="view.newgroup" /></a>
          </li>
       </ul>
       <div style="clear:both; height:10px;"></div>
 
       <table style="position:relative;left:40px;">
          <tr>
-            <td><b><fmt:message key="group.name" /></b></td>
+            <td><b><fmt:message key="view.group.name" /></b></td>
          </tr>
-
+         <community:listGroups var="groupList" />
+         <c:forEach var="group" items="${groupList}">
+            <tr>
+               <td style="padding-right: 10px"><a href="groupInitAction.do?id=${group}">${group}</a></td>
+               <td>
+                  <a href="DeleteGroupAction.do?id=${group}">
+                     <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="userlist.removegroup" />"
+                        onclick="return confirm('<fmt:message key="userlist.removegroupquestion" />')" />
+                  </a>
+               </td>
+            </tr>
+         </c:forEach>
       </table>
    </cmscedit:sideblock>
 </div>
@@ -50,12 +61,12 @@
                      <img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/>
                   </a>
                </td>
-               <td><maydelete>
+               <td>
                   <a href="deleteUserAction.do?userid=${auth.userId}">
                      <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="view.removeuser" />"
                         onclick="return confirm('<fmt:message key="view.removeuserquestion" />')" />
                   </a>
-               </maydelete></td>
+               </td>
             </tr>
          </c:forEach>
       </table>

@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
  * Add a Authentication and Person
@@ -36,31 +37,39 @@ public class UserAddAction extends AbstractCommunityAction {
 		if (!isCancelled(httpServletRequest)) {
 			UserForm userForm = (UserForm) actionForm;
 
+			String id = userForm.getEmail();
+
+			AuthorityService aus = getAuthorityService();
 			AuthenticationService as = getAuthenticationService();
 			PersonService ps = getPersonService();
 
 			if (userForm.getAction().equalsIgnoreCase(ACTION_ADD)) {
-				Long check1 = as.getAuthenticationIdForUserId(userForm.getEmail());
+				Long check1 = as.getAuthenticationIdForUserId(id);
 				if (check1 == null) {
 					as.createAuthentication(userForm.getEmail(), userForm.getPassword());
-					Long check2 = as.getAuthenticationIdForUserId(userForm.getEmail());
+					Long check2 = as.getAuthenticationIdForUserId(id);
 					if (check2 != null) {
-
-						ps.createPerson(userForm.getVoornaam(), userForm.getTussenVoegsels(), userForm.getAchterNaam(), userForm
-								.getEmail());
+						ps.createPerson(userForm.getVoornaam(), userForm.getTussenVoegsels(), userForm.getAchterNaam(), id);
 					} else {
 						log.info("add check2 failed");
 					}
 				} else {
-					log.info("add check1 failed");
+					log.info("add check1 failed for: " + id);
 				}
+
 			} else if (userForm.getAction().equalsIgnoreCase(ACTION_EDIT)) {
-				Long check1 = as.getAuthenticationIdForUserId(userForm.getEmail());
-				if (check1 == null) {
-					// as.updateAuthentication(userId, oldPassword, newPassword)
+				Long check1 = as.getAuthenticationIdForUserId(id);
+				if (check1 != null) {
+					String newPassword1 = userForm.getPassword();
+					String newPassword2 = userForm.getPasswordConfirmation();
+					if (newPassword1 != null && newPassword2 != null) {
+						if (newPassword1.equalsIgnoreCase(newPassword2)) {
+							as.updateAuthenticationPassword(id, newPassword1);
+						}
+					}
 
 				} else {
-					log.info("edit check1 failed");
+					log.info("edit check1 failed for: " + id);
 				}
 
 			} else {

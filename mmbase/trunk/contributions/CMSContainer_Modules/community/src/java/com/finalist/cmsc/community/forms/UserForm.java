@@ -1,12 +1,12 @@
 /*
 
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
+ This software is OSI Certified Open Source Software.
+ OSI Certified is a certification mark of the Open Source Initiative.
 
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
+ The license (Mozilla version 1.0) can be read at the MMBase site.
+ See http://www.MMBase.org/license
 
-*/package com.finalist.cmsc.community.forms;
+ */package com.finalist.cmsc.community.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,102 +24,109 @@ public class UserForm extends ActionForm {
 
 	private String action;
 
-    private String email;
-    private String password;
-    private String passwordConfirmation;
+	private String email;
 
-    private String account;
-    private String voornaam;
-    private String tussenVoegsels;
-    private String achterNaam;
-    private String bedrijf;
+	private String password;
 
-    public String getAction() {
-        return action;
-    }
+	private String passwordConfirmation;
 
-    public void setAction(String action) {
-        this.action = action;
-    }
+	private String account;
 
-    public String getAccount() {
-        return account;
-    }
+	private String voornaam;
 
-    public void setAccount(String account) {
-        this.account = account;
-    }
+	private String tussenVoegsels;
 
-    public String getVoornaam() {
-        return voornaam;
-    }
+	private String achterNaam;
 
-    public void setVoornaam(String voornaam) {
-        this.voornaam = voornaam;
-    }
+	private String bedrijf;
 
-    public String getTussenVoegsels() {
-        return tussenVoegsels;
-    }
+	public String getAction() {
+		return action;
+	}
 
-    public void setTussenVoegsels(String tussenVoegsels) {
-        this.tussenVoegsels = tussenVoegsels;
-    }
+	public void setAction(String action) {
+		this.action = action;
+	}
 
-    public String getAchterNaam() {
-        return achterNaam;
-    }
+	public String getAccount() {
+		return account;
+	}
 
-    public void setAchterNaam(String achterNaam) {
-        this.achterNaam = achterNaam;
-    }
+	public void setAccount(String account) {
+		this.account = account;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getVoornaam() {
+		return voornaam;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setVoornaam(String voornaam) {
+		this.voornaam = voornaam;
+	}
 
-    public String getBedrijf() {
-        return bedrijf;
-    }
+	public String getTussenVoegsels() {
+		return tussenVoegsels;
+	}
 
-    public void setBedrijf(String bedrijf) {
-        this.bedrijf = bedrijf;
-    }
+	public void setTussenVoegsels(String tussenVoegsels) {
+		this.tussenVoegsels = tussenVoegsels;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getAchterNaam() {
+		return achterNaam;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setAchterNaam(String achterNaam) {
+		this.achterNaam = achterNaam;
+	}
 
-    public String getPasswordConfirmation() {
-        return passwordConfirmation;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setPasswordConfirmation(String passwordConfirmation) {
-        this.passwordConfirmation = passwordConfirmation;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
-        ActionErrors actionErrors = new ActionErrors();
-        if (email.equals("")) {
-            actionErrors.add("email", new ActionMessage("email.empty"));
-        }
-        if (password.equals("")) {
-            actionErrors.add("password", new ActionMessage("password.empty"));
-        }
-        if (passwordConfirmation.equals("")) {
-            actionErrors.add("passwordConfirmation", new ActionMessage("passwordConfirmation.empty"));
-        }
-        if (!password.equals("") && !passwordConfirmation.equals("") && !password.equals(passwordConfirmation) ) {
-            actionErrors.add("password", new ActionMessage("passwords.not_equal"));
-        }
-        return actionErrors;
-    }
+	public String getBedrijf() {
+		return bedrijf;
+	}
+
+	public void setBedrijf(String bedrijf) {
+		this.bedrijf = bedrijf;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPasswordConfirmation() {
+		return passwordConfirmation;
+	}
+
+	public void setPasswordConfirmation(String passwordConfirmation) {
+		this.passwordConfirmation = passwordConfirmation;
+	}
+
+	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
+		ActionErrors actionErrors = new ActionErrors();
+		if (email.equals("")) {
+			actionErrors.add("email", new ActionMessage("email.empty"));
+		}
+		if (password.equals("")) {
+			actionErrors.add("password", new ActionMessage("password.empty"));
+		}
+		if (passwordConfirmation.equals("")) {
+			actionErrors.add("passwordConfirmation", new ActionMessage("passwordConfirmation.empty"));
+		}
+		if (!password.equals("") && !passwordConfirmation.equals("") && !password.equals(passwordConfirmation)) {
+			actionErrors.add("password", new ActionMessage("passwords.not_equal"));
+		}
+		return actionErrors;
+	}
+
 }
