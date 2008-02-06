@@ -63,7 +63,7 @@
 <!ATTLIST list destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST list hidecommand CDATA #IMPLIED >
 <!ATTLIST list orderby CDATA #IMPLIED >
-<!ATTLIST list ordertype (number | string) #IMPLIED >
+<!ATTLIST list ordertype NMTOKENS #IMPLIED > <!-- inverse? string|number?, no idea how to indicate that in dtd -->
 <!ATTLIST list role NMTOKEN #IMPLIED >
 <!ATTLIST list include CDATA #IMPLIED >
 <!ATTLIST list searchdir (source | destination | both | all | either) #IMPLIED >
