@@ -28,6 +28,7 @@
         </positions>
       </editor>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+        <default value="2" />
         <enumeration>
           <entry value="1" display="rechts (oorspronkelijk formaat)" xml:lang="nl" />
           <entry value="1" display="right (original formaat)" xml:lang="en" />
@@ -59,7 +60,8 @@
           <list>4</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer"  />
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="boolean">
+      </datatype>
     </field>
   </fieldlist>
 </builder>
