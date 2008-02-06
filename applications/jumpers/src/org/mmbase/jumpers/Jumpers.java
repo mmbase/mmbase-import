@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.8 2008-02-04 10:44:01 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.9 2008-02-06 15:40:14 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -568,10 +568,12 @@ public class Jumpers extends MMObjectBuilder {
                 }
             }
         } else {
-            MMObjectNode node = Jumpers.this.getNode(event.getNodeNumber());
-            if (node != null && strategy.contains(node)) {
-                Jumpers.this.delJumpCache("" + event.getNodeNumber(), event.isLocal());
-
+            String nodeNumber = "" + event.getNodeNumber();
+            if (event.isLocal() || jumpCache.containsKey(nodeNumber)) {
+                MMObjectNode node = Jumpers.this.getNode(nodeNumber);
+                if (node != null && strategy.contains(node)) {
+                    Jumpers.this.delJumpCache(nodeNumber, event.isLocal());
+                }
             }
         }
         super.notify(event);
