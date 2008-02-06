@@ -22,6 +22,7 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
  * @author Remco Bos
@@ -32,6 +33,8 @@ public class UserAddInitAction extends AbstractCommunityAction {
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
+
+		AuthorityService aus = getAuthorityService();
 
 		String id = request.getParameter(USERID);
 		UserForm userForm = (UserForm) actionForm;
@@ -52,6 +55,7 @@ public class UserAddInitAction extends AbstractCommunityAction {
 				} else {
 					log.info("person failed");
 				}
+
 			} else {
 				log.info("auth failed");
 			}
