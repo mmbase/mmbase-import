@@ -54,16 +54,18 @@
         <!--
             A user will see a Competence submenu only if POP component is switched ON
         -->
-        <mm:relatednodes type="providers" constraints="providers.number=$provider"> <!-- WTF -->
-          <di:has  editcontext="competentie">
-            <mm:link page="." referids="e?">
-              <mm:param name="mode">compentence</mm:param>
-              <a class="education_top_menu ${mode eq 'compentence' ? 'selected' : ''}"
-                 href="${_}">
-              <di:translate key="education.educationmenucompetence" /></a>
-            </mm:link>
-          </di:has>
-        </mm:relatednodes>
+        <mm:node number="component.pop">
+          <mm:relatednodes type="providers" constraints="providers.number=$provider"> <!-- WTF -->
+            <di:has  editcontext="competentie">
+              <mm:link page="." referids="e?">
+                <mm:param name="mode">compentence</mm:param>
+                <a class="education_top_menu ${mode eq 'compentence' ? 'selected' : ''}"
+                   href="${_}">
+                <di:translate key="education.educationmenucompetence" /></a>
+              </mm:link>
+            </di:has>
+          </mm:relatednodes>
+        </mm:node>
       </mm:hasnode>
 
       <mm:hasnode number="component.metadata" >
