@@ -5,7 +5,7 @@
   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-  <title xml:lang="nl">Pagina Editor</title>
+  <title xml:lang="nl">Paginaeditor</title>
   <title xml:lang="en">Page Editor</title>
 
   <action type="create">
@@ -28,7 +28,6 @@
         <relation destination="urls" role="posrel" />
       </object>
     </relation>
-    <relation destination="pages" role="descriptionrel " />
     &extra_loads;
   </action>
 
@@ -54,21 +53,13 @@
   <form-schema id="step2">
     <title xml:lang="nl">Alineas invoeren</title>
     <title xml:lang="en">Enter paragraphs</title>
+
     <field name="name" ftype="data"/>
-    <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
-      <prompt xml:lang="en">Show title</prompt>
-      <optionlist select="boolean" />
-    </field>
+    <field name="showtitle" />
+
     <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
   </form-schema>
 
-  <form-schema id="step3">
-    <title xml:lang="en">Descriptionrel</title>
-    <title xml:lang="nl">Descriptionrel</title>
-    <title xml:lang="fr">Descriptionrel</title>
-    <list extends="config/pages/pages-described.xml"/>
-  </form-schema>
 
   &extra_schemas;
 </wizard-schema>
