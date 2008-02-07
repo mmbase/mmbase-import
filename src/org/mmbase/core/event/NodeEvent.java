@@ -12,6 +12,7 @@ import java.util.*;
 import org.mmbase.util.HashCodeUtil;
 import org.mmbase.cache.Cache;
 import org.mmbase.cache.CacheManager;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.35 2008-02-06 16:55:11 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.36 2008-02-07 16:44:56 michiel Exp $
  */
 public class NodeEvent extends Event {
     private static final Logger log = Logging.getLoggerInstance(NodeEvent.class);
@@ -238,29 +239,26 @@ public class NodeEvent extends Event {
         in.defaultReadObject();
         log.debug("deserialized node event for " + nodeNumber);
         try {
-            Object otype = oldValues.get("otype");
-            if (otype == null) otype = newValues.get("otype");
-            if (otype != null) {
+            int otype = MMBase.getMMBase().getTypeDef().getIntValue(builderName);
+            if (otype != -1) {
                 Cache<Integer, Integer> typeCache = CacheManager.getCache("TypeCache");
                 if (typeCache != null) {
-                    Integer type = new Integer("" + otype);
                     Integer cachedType = typeCache.get(nodeNumber);
                     if (cachedType == null) {
-                        log.debug("Putting in type cache " + nodeNumber + " -> " + type);
-                        typeCache.put(nodeNumber, type);
+                        log.debug("Putting in type cache " + nodeNumber + " -> " + otype);
+                        typeCache.put(nodeNumber, otype);
                     } else {
-                        if (type.equals(cachedType)) {
+                        if (otype == cachedType.intValue()) {
                             log.debug("Type already cached");
                         } else {
-                            log.warn("Type in event not the same as in cache " + type + " != " + cachedType);
+                            log.warn("Type in event not the same as in cache " + otype + " != " + cachedType);
                         }
                     }
                 } else {
                     log.service("No typecache?");
                 }
-
             } else {
-                log.service("No otype found in " + newValues + " nor in " + oldValues + " from " + nodeNumber + " originating from " + getMachine());
+                log.service("Builder '" + builderName + "' from " + nodeNumber + " not found. Originating from " + getMachine());
             }
         } catch (Exception e) {
              log.error(e);
