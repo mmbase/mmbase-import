@@ -44,21 +44,22 @@ public class NodeEventHelper {
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
-            newEventValues = Collections.unmodifiableMap(node.getValues());
+            newEventValues = removeBinaryValues(node.getValues());
             oldEventValues = Collections.EMPTY_MAP;
             break;
         case Event.TYPE_CHANGE:
-            oldEventValues = Collections.unmodifiableMap(node.getOldValues());
+            oldEventValues = removeBinaryValues(node.getOldValues());
             newEventValues = new HashMap();
             Map values = node.getValues();
             for(Iterator i = oldEventValues.keySet().iterator(); i.hasNext(); ) {
                 Object key = i.next();
                 newEventValues.put(key, values.get(key));
             }
+            newEventValues = removeBinaryValues(newEventValues);
             break;
         case Event.TYPE_DELETE:
             newEventValues = Collections.EMPTY_MAP;
-            oldEventValues = Collections.unmodifiableMap(node.getValues());
+            oldEventValues = removeBinaryValues(node.getValues());
             break;
         default: {
             oldEventValues = Collections.EMPTY_MAP;
@@ -66,19 +67,28 @@ public class NodeEventHelper {
             // err.
         }
         }
-        
-        removeBinaryValues(oldEventValues);
-        removeBinaryValues(newEventValues);
 
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
 
-    private static void removeBinaryValues(Map oldEventValues) {
+    private static Map removeBinaryValues(Map oldEventValues) {
+        Set toremove = null;
         for (Iterator iterator = oldEventValues.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry entry = (Map.Entry) iterator.next();
             if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
-                entry.setValue(null);
+                if (toremove == null) toremove = new HashSet();
+                toremove.add(entry.getKey());
             }
+        }
+        if (toremove != null) {
+            Map newMap = new HashMap();
+            newMap.putAll(oldEventValues);
+            for (Iterator iterator = toremove.iterator(); iterator.hasNext();) {
+                newMap.remove(iterator.next());
+            }
+            return Collections.unmodifiableMap(newMap);
+        } else {
+            return oldEventValues;
         }
     }
 
@@ -101,7 +111,7 @@ public class NodeEventHelper {
         }
         if(machineName == null) machineName = MMBase.getMMBase().getMachineName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
-        
+
         int relationSourceNumber = node.getIntValue("snumber");
         int relationDestinationNumber = node.getIntValue("dnumber");
 

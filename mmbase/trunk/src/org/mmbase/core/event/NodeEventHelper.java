@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * but we need a little help for easy instantiation.
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.9 2008-02-03 17:03:40 nklasens Exp $
+ * @version $Id: NodeEventHelper.java,v 1.10 2008-02-07 16:17:46 michiel Exp $
 
  */
 public class NodeEventHelper {
@@ -45,20 +45,21 @@ public class NodeEventHelper {
         //fill the old and new values maps for the event
         switch(eventType) {
         case Event.TYPE_NEW:
-            newEventValues = Collections.unmodifiableMap(node.getValues());
+            newEventValues = removeBinaryValues(node.getValues());
             oldEventValues = Collections.emptyMap();
             break;
         case Event.TYPE_CHANGE:
-            oldEventValues = Collections.unmodifiableMap(node.getOldValues());
+            oldEventValues = removeBinaryValues(node.getOldValues());
             newEventValues = new HashMap<String, Object>();
             Map<String, Object> values = node.getValues();
             for (String key : oldEventValues.keySet()) {
                     newEventValues.put(key, values.get(key));
                 }
+            newEventValues = removeBinaryValues(newEventValues);
             break;
         case Event.TYPE_DELETE:
             newEventValues = Collections.emptyMap();
-            oldEventValues = Collections.unmodifiableMap(node.getValues());
+            oldEventValues = removeBinaryValues(node.getValues());
             break;
         default: {
             oldEventValues = Collections.emptyMap();
@@ -66,18 +67,27 @@ public class NodeEventHelper {
             // err.
         }
         }
-        
-        removeBinaryValues(oldEventValues);
-        removeBinaryValues(newEventValues);
 
         return new NodeEvent(machineName, node.getBuilder().getTableName(), node.getNumber(), oldEventValues, newEventValues, eventType);
     }
 
-    private static void removeBinaryValues(Map<String, Object> oldEventValues) {
+    private static Map<String, Object> removeBinaryValues(Map<String, Object> oldEventValues) {
+        Set<String> toremove = null;
         for (Map.Entry<String, Object> entry : oldEventValues.entrySet()) {
             if (entry.getValue() != null && (entry.getValue() instanceof byte[])) {
-                entry.setValue(null);
+                if (toremove == null) toremove = new HashSet<String>();
+                toremove.add(entry.getKey());
             }
+        }
+        if (toremove != null) {
+            Map newMap = new HashMap();
+            newMap.putAll(oldEventValues);
+            for (Iterator iterator = toremove.iterator(); iterator.hasNext();) {
+                newMap.remove(iterator.next());
+            }
+            return Collections.unmodifiableMap(newMap);
+        } else {
+            return oldEventValues;
         }
     }
 
@@ -101,7 +111,7 @@ public class NodeEventHelper {
         MMBase mmbase = MMBase.getMMBase();
         if(machineName == null) machineName = mmbase.getMachineName();
         MMObjectNode reldef = node.getNodeValue("rnumber");
-        
+
         int relationSourceNumber = node.getIntValue("snumber");
         int relationDestinationNumber = node.getIntValue("dnumber");
 
