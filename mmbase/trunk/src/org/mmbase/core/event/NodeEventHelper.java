@@ -19,7 +19,7 @@ import org.mmbase.module.corebuilders.InsRel;
  * but we need a little help for easy instantiation.
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: NodeEventHelper.java,v 1.10 2008-02-07 16:17:46 michiel Exp $
+ * @version $Id: NodeEventHelper.java,v 1.11 2008-02-07 16:22:34 michiel Exp $
 
  */
 public class NodeEventHelper {
@@ -80,10 +80,10 @@ public class NodeEventHelper {
             }
         }
         if (toremove != null) {
-            Map newMap = new HashMap();
+            Map<String, Object> newMap = new HashMap<String, Object>();
             newMap.putAll(oldEventValues);
-            for (Iterator iterator = toremove.iterator(); iterator.hasNext();) {
-                newMap.remove(iterator.next());
+            for (String k : toremove) {
+                newMap.remove(k);
             }
             return Collections.unmodifiableMap(newMap);
         } else {
