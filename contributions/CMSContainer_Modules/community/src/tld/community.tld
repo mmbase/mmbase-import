@@ -19,4 +19,16 @@
          <rtexprvalue>false</rtexprvalue>
       </attribute>
    </tag>
+   <tag>
+      <name>listGroups</name>
+      <tag-class>com.finalist.cmsc.community.taglib.ListGroupsTag</tag-class>
+      <body-content>scriptless</body-content>
+      <description>List groups</description>
+      <attribute>
+         <name>var</name>
+         <description>JSP variable name to result List of Authority names in.</description>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+      </attribute>
+   </tag>
 </taglib>
