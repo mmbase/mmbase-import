@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.27.2.3 2008-02-06 16:53:50 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.27.2.4 2008-02-07 16:41:14 michiel Exp $
  */
 public class NodeEvent extends Event {
 
@@ -240,9 +240,8 @@ public class NodeEvent extends Event {
         in.defaultReadObject();
         log.debug("deserialized node event for " + nodeNumber);
         try {
-            Object otype = oldValues.get("otype");
-            if (otype == null) otype = newValues.get("otype");
-            if (otype != null) {
+            int otype = MMBase.getMMBase().getTypeDef().getIntValue(builderName);
+            if (otype != -1) {
                 Cache typeCache = Cache.getCache("TypeCache");
                 if (typeCache != null) {
                     Integer node = new Integer(nodeNumber);
@@ -262,7 +261,7 @@ public class NodeEvent extends Event {
                     log.service("No typecache?");
                 }
             } else {
-                log.service("No otype found in " + newValues + " nor in " + oldValues + " from " + nodeNumber + " originating from " + getMachine());
+                log.service("Builder '" + builderName + "' from " + nodeNumber + " not found. Originating from " + getMachine());
             }
         } catch (Exception e) {
              log.error(e);
