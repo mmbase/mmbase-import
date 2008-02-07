@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: NodeEvent.java,v 1.27.2.4 2008-02-07 16:41:14 michiel Exp $
+ * @version $Id: NodeEvent.java,v 1.27.2.5 2008-02-07 16:45:59 michiel Exp $
  */
 public class NodeEvent extends Event {
 
@@ -245,7 +245,7 @@ public class NodeEvent extends Event {
                 Cache typeCache = Cache.getCache("TypeCache");
                 if (typeCache != null) {
                     Integer node = new Integer(nodeNumber);
-                    Integer type = new Integer("" + otype);
+                    Integer type = new Integer(otype);
                     Integer cachedType = (Integer) typeCache.get(node);
                     if (cachedType == null) {
                         log.debug("Putting in type cache " + node + " -> " + type);
