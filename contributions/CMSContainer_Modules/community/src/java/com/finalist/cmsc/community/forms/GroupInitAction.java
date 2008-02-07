@@ -52,24 +52,19 @@ public class GroupInitAction extends AbstractCommunityAction {
 
 		if (id != null) {
 			groupForm.setAction(ACTION_EDIT);
-
 			Authority auth = aus.findAuthorityByName(id);
 			if (auth != null) {
 				groupForm.setName(auth.getName());
-				Set<Authentication> members = auth.getAuthentications();
-				if (members != null) {
-					for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
-						Authentication user = iter.next();
-						String label = user.getUserId();
-						LabelValueBean bean = new LabelValueBean(label, label);
-						if (members.contains(user)) {
-							membersList.add(bean);
-						} else {
-							usersList.add(bean);
-						}
+				for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
+					Authentication user = iter.next();
+					Set<String> names = aus.getAuthorityNamesForUser(user.getUserId());
+					String label = user.getUserId();
+					LabelValueBean bean = new LabelValueBean(label, label);
+					if (names.contains(id)) {
+						membersList.add(bean);
+					} else {
+						usersList.add(bean);
 					}
-				} else {
-					log.info("no members for group: " + id);
 				}
 			} else {
 				log.error("group failed");
