@@ -25,7 +25,7 @@
          <community:listGroups var="groupList" />
          <c:forEach var="group" items="${groupList}">
             <tr>
-               <td style="padding-right: 10px"><a href="groupInitAction.do?id=${group}">${group}</a></td>
+               <td style="padding-right: 10px"><a href="groupInitAction.do?groupid=${group}">${group}</a></td>
                <td>
                   <a href="deleteGroupAction.do?groupid=${group}">
                      <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="view.removegroup" />"
