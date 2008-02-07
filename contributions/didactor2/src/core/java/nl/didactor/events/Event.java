@@ -8,14 +8,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Event extends org.mmbase.core.event.Event {
     private final String username;
-    private final HttpServletRequest request;
+    private final transient HttpServletRequest request;
     private final Integer provider;
     private final Integer education;
     private final Integer cls;
     private final String eventtype;
     private final String eventvalue;
     private final String note;
-    
+
     public Event(String username, HttpServletRequest  req, Integer provider, Integer education, Integer cls, String eventtype, String eventvalue, String note) {
         this.username = username;
         this.request = req;
