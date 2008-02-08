@@ -38,7 +38,6 @@ public class GroupAction extends AbstractCommunityAction {
 			String id = groupForm.getName();
 
 			// get all users
-			// NodeList users = SecurityUtil.getUsers(cloud);
 			AuthenticationService as = getAuthenticationService();
 			List<Authentication> users = as.findAuthentications();
 
@@ -53,7 +52,6 @@ public class GroupAction extends AbstractCommunityAction {
 			}
 			// get members and remove them from users
 			for (String memberName : groupForm.getMembers()) {
-				// Node member = cloud.getNode(memberNumber);
 				String label = memberName;
 				LabelValueBean beanMember = new LabelValueBean(label, label);
 				membersList.add(beanMember);
@@ -66,19 +64,13 @@ public class GroupAction extends AbstractCommunityAction {
 			// validate
 			ActionMessages errors = new ActionMessages();
 
-			// Node groupNode = getOrCreateNode(groupForm, cloud,
-			// SecurityUtil.GROUP);
 			if (groupForm.getAction().equalsIgnoreCase(ACTION_ADD)) {
 				if (id == null || id.length() < 3) {
 					errors.add("groupname", new ActionMessage("error.groupname.invalid"));
 					saveErrors(request, errors);
 					return actionMapping.getInputForward();
 				} else {
-					String name = id;
-					// NodeList list =
-					// MMBaseAction.getCloudFromSession(request).getNodeManager("mmbasegroups").getList(
-					// "name='" + name + "'", null, null);
-					boolean exist = aus.authorityExists(name);
+					boolean exist = aus.authorityExists(id);
 					if (exist) {
 						errors.add("groupname", new ActionMessage("error.groupname.alreadyexists"));
 						saveErrors(request, errors);
@@ -86,22 +78,27 @@ public class GroupAction extends AbstractCommunityAction {
 					}
 				}
 
-				// groupNode.setStringValue("name", groupForm.getName());
 				aus.createAuthority(null, id);
 			}
 
-			// groupNode.commit();
-			// SecurityUtil.setGroupMembers(cloud, groupNode,
-			// groupForm.getMembers());
 			if (id != null) {
+				List<Authentication> current = as.findAuthenticationsForAuthority(id);
 				for (String memberName : groupForm.getMembers()) {
-					as.addAuthorityToUser(memberName, id);
+					Authentication m = as.findAuthentication(memberName);
+					if (!current.contains(m)) {
+						as.addAuthorityToUser(memberName, id);
+					} else {
+						current.remove(m);
+					}
+				}
+				for (Iterator<Authentication> iter = current.iterator(); iter.hasNext();) {
+					Authentication user = iter.next();
+					as.removeAuthorityFromUser(user.getUserId(), id);
 				}
 			}
 		}
 		removeFromSession(request, actionForm);
 
 		return actionMapping.findForward(SUCCESS);
-
 	}
 }
