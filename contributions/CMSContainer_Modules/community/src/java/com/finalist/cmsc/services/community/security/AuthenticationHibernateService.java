@@ -89,7 +89,7 @@ public class AuthenticationHibernateService extends HibernateService implements 
 	@Transactional(readOnly = true)
 	public boolean authenticate(String userId, String password) {
 		Authentication authentication = findAuthenticationByUserId(userId);
-		return authentication.getPassword().equals(password);
+		return authentication.getPassword().equals(encodePassword(password, userId));
 	}
 
 	/** {@inheritDoc} */
@@ -136,7 +136,8 @@ public class AuthenticationHibernateService extends HibernateService implements 
 
 	private String encodePassword(String password, String salt) {
 		MessageDigestPasswordEncoder encoder = new Md5PasswordEncoder();
-		return encoder.encodePassword(password, salt);
+//		return encoder.encodePassword(password, salt);
+		return encoder.encodePassword(password, null);
 	}
 
 	@Required
