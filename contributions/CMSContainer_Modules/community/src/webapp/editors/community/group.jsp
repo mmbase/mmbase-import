@@ -25,6 +25,7 @@
 					</logic:equal> 
                <logic:notEqual name="communityGroupForm" property="action" value="add">
                   <bean:write name="communityGroupForm" property="name" />
+                  <html:hidden property="name" />
 					</logic:notEqual>
 				</td>
 			</tr>
