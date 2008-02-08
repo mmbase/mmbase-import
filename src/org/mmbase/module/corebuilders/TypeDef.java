@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.68.2.2 2007-03-08 19:23:02 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.68.2.3 2008-02-08 09:01:11 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -135,6 +135,7 @@ public class TypeDef extends MMObjectBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+        node.setValue("description", node.getStringValue("description").substring(0, getField("description").getMaxLength()));
         // try if the builder was already in TypeDef for some reason
         // this can happen when another thread was here first
         int result = getIntValue(node.getStringValue("name"));
