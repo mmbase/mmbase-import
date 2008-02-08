@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.6 2007-02-16 20:44:12 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.7 2008-02-08 13:55:57 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -52,13 +52,23 @@ public class MmxfGetString implements  Processor {
             throw new RuntimeException(pce.getMessage(), pce);
         }
     }
+
+    static protected Generator getGenerator(final Cloud cloud) {
+        return new Generator(getDocumentBuilder(), cloud) {
+            @Override
+            protected void setIdAttribute(Element object, String name) {
+                object.setIdAttribute(name, true);
+            }
+
+        };
+    }
     /**
      * Returns a 'objects' Document containing the node with the mmxf field plus all idrelated objects
      */
     public static Document getDocument(final Node node, final Field field)  {
 
         log.debug("Getting document for node " + node.getNumber());
-        Generator generator = new Generator(getDocumentBuilder(), node.getCloud());
+        Generator generator = getGenerator(node.getCloud());
         generator.setNamespaceAware(true);
         generator.add(node, field);
         org.mmbase.bridge.NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "destination");
@@ -110,7 +120,7 @@ public class MmxfGetString implements  Processor {
                 return res.toString();
             }
             case Modes.FLAT: {
-                Generator generator = new Generator(getDocumentBuilder(), node.getCloud());
+                Generator generator = getGenerator(node.getCloud());
                 generator.setNamespaceAware(true);
                 generator.add(node, field);
                 Document xml = generator.getDocument();
