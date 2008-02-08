@@ -4,12 +4,13 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <mm:cloud method="asis">
     <div class="applicationMenubar">
-      <mm:hasrank value="anonymous">
-
+      <mm:import externid="showlogin"><mm:hasrank value="anonymous">yes</mm:hasrank></mm:import>
+      <mm:compare referid="showlogin" value="yes">
         <div class="menuItemApplicationMenubar login">
-          <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"
-                       id="startpage" write="false" />
-          <form method="post" action="${startpage}">
+          <mm:import externid="referrer">
+            <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"
+                       /></mm:import>
+          <form method="post" action="${referrer}">
             <p>
               <input type="hidden" name="authenticate"  value="plain"  />
               <input type="hidden" name="command"       value="login" />
@@ -40,7 +41,7 @@
             </p>
           </mm:node>
         </div>
-      </mm:hasrank>
+      </mm:compare>
       <mm:hasrank minvalue="didactor user">
         <div class="menuItemApplicationMenubar start">
           <mm:import externid="reset" />
