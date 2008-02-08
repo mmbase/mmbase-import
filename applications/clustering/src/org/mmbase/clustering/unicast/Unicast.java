@@ -22,7 +22,7 @@ import org.mmbase.util.xml.UtilReader;
  * @javadoc
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.11 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: Unicast.java,v 1.9 2006-06-21 05:46:20 michiel Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -63,23 +63,23 @@ public class Unicast extends ClusterManager {
         start();
     }
 
-    protected synchronized void readConfiguration(Map<String,String> configuration) {
+    protected synchronized void readConfiguration(Map configuration) {
         super.readConfiguration(configuration);
 
-        String tmp = configuration.get("unicastport");
+        String tmp = (String) configuration.get("unicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
-        tmp = configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".unicastport");
+        tmp = (String) configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".unicastport");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastPort = Integer.parseInt(tmp);
             } catch (Exception e) {}
         }
 
-        tmp = configuration.get("unicasttimeout");
+        tmp = (String) configuration.get("unicasttimeout");
         if (tmp != null && !tmp.equals("")) {
             try {
                 unicastTimeout = Integer.parseInt(tmp);
@@ -112,7 +112,7 @@ public class Unicast extends ClusterManager {
             log.service("Stopped communication sender " + ucs);
             ucs = null;
         }
-        if (ucr != null) {
+        if (ucr != null) { 
             ucr.stop();
             log.service("Stopped communication receiver " + ucr);
             ucr = null;
@@ -122,9 +122,9 @@ public class Unicast extends ClusterManager {
     // javadoc inherited
     public void changedNode(NodeEvent event) {
         byte[] message = createMessage(event);
-        nodesToSend.offer(message);
+        nodesToSend.append(message);
         //Multicast receives his own message. Unicast now too.
-        nodesToSpawn.offer(message);
+        nodesToSpawn.append(message);
         if (log.isDebugEnabled()) {
             log.debug("message: " + event);
         }

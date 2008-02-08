@@ -15,7 +15,7 @@ import java.util.Random;
  * Better random function (see Knuth)
  * @application SCAN
  * @author Rico Jansen
- * @version $Id: RandomPlus.java,v 1.7 2007-03-08 08:51:37 nklasens Exp $
+ * @version $Id: RandomPlus.java,v 1.6 2004-09-30 14:07:13 pierre Exp $
  */
 public class RandomPlus extends Random {
     private int table[];
@@ -49,7 +49,7 @@ public class RandomPlus extends Random {
         int idx;
         int rtn;
 
-        idx=((Math.abs(super.nextInt()))%tablesize);
+        idx=(int)((Math.abs(super.nextInt()))%tablesize);
         rtn=table[idx];
         table[idx]=super.nextInt();
         return rtn>>>(32-bits);

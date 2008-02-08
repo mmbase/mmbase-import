@@ -12,8 +12,12 @@ package org.mmbase.applications.xmlimporter;
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.module.Module;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.TemporaryNodeManager;
+import org.mmbase.module.core.TemporaryNodeManagerInterface;
 import org.mmbase.module.core.TransactionManager;
 import org.mmbase.module.core.TransactionManagerException;
 import org.mmbase.applications.xmlimporter.SimilarObjectFinder;
@@ -31,15 +35,18 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: Transaction.java,v 1.11 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: Transaction.java,v 1.6 2005-10-06 14:14:41 michiel Exp $
  */
 public class Transaction implements Runnable {
 
     /** Logger instance. */
-    private static Logger log = Logging.getLoggerInstance(Transaction.class);
+    private static Logger log = Logging.getLoggerInstance(Transaction.class.getName());
+
+    /** The mmbase module. */
+    private static MMBase mmbase;
 
     /** The temporary node manager. */
-    private static TemporaryNodeManager tmpNodeManager;
+    private static TemporaryNodeManagerInterface tmpNodeManager;
 
     /** The transaction manager. */
     private static TransactionManager transactionManager;
@@ -57,15 +64,15 @@ public class Transaction implements Runnable {
     private String key;
 
     /** All non-anonymous object contexts in this transaction, mapped by id. */
-    private HashMap<String, TmpObject> namedObjectContexts = new HashMap<String, TmpObject>();
+    private HashMap namedObjectContexts = new HashMap();
 
     /** All object contexts in this transaction, mapped by key. */
-    private HashMap<String, TmpObject> tmpObjects = new HashMap<String, TmpObject>();
+    private HashMap tmpObjects = new HashMap();
 
     /** Ordered list of all object contexts in this transaction.
      * It reflects the order in which the objects are created
      * in the transaction. */
-    private List<TmpObject> lstTmpObjects = new LinkedList<TmpObject>();
+    private List lstTmpObjects = new LinkedList();
 
     /** User specified id. */
     private String id;
@@ -83,7 +90,7 @@ public class Transaction implements Runnable {
     private StringBuffer reportBuffer = new StringBuffer();
 
     /** Map for holding merge result objects. Key is the deleted object. */
-    private Map<TmpObject, TmpObject> mergedObjects = new HashMap<TmpObject, TmpObject>();
+    private Map mergedObjects = new HashMap();
 
 
     /** Flag, to be set when MergeExceptions occur.
@@ -154,9 +161,9 @@ public class Transaction implements Runnable {
      */
     private static synchronized TransactionManager getTransactionManager() {
         if (transactionManager == null) {
-            transactionManager = TransactionManager.getInstance();
-            tmpNodeManager = transactionManager.getTemporaryNodeManager();
-
+            mmbase=(MMBase) Module.getModule("MMBASEROOT");
+            tmpNodeManager = new TemporaryNodeManager(mmbase);
+            transactionManager = new TransactionManager(mmbase,tmpNodeManager);
         }
         return transactionManager;
     }
@@ -192,8 +199,7 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            key = id; 
-            getTransactionManager().createTransaction(id);
+            key = getTransactionManager().create(uti.user, id);
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
         }
@@ -248,8 +254,7 @@ public class Transaction implements Runnable {
         // Create new transaction.
         String key = null;
         try {
-            getTransactionManager().createTransaction(id);
-            key = id;
+            key = getTransactionManager().create(uti.user, id);
         } catch (TransactionManagerException e) {
             throw new TransactionHandlerException(e.getMessage());
         }
@@ -296,7 +301,7 @@ public class Transaction implements Runnable {
         }
 
         // Retreive transaction, adjust commitOnClose setting.
-        Transaction tr = uti.knownTransactionContexts.get(id);
+        Transaction tr = (Transaction) uti.knownTransactionContexts.get(id);
         tr.commitOnClose = commitOnClose;
         return tr;
     }
@@ -568,7 +573,7 @@ public class Transaction implements Runnable {
             "Object id does not exist: id = \"" + objectId + "\"");
         }
 
-        TmpObject tmpObj =  namedObjectContexts.get(objectId);
+        TmpObject tmpObj =  (TmpObject) namedObjectContexts.get(objectId);
 
         if (log.isDebugEnabled()) {
             log.debug("Opened object: " + tmpObj);
@@ -607,7 +612,7 @@ public class Transaction implements Runnable {
         // object already exists.
         if (namedObjectContexts.get(objectId) != null) {
             TmpObject namedObject
-            = namedObjectContexts.get(objectId);
+            = (TmpObject) namedObjectContexts.get(objectId);
             if (namedObject.getMMBaseId() == mmbaseId) {
                 // Already accessed with this id,
                 // return existing access object.
@@ -685,9 +690,9 @@ public class Transaction implements Runnable {
         namedObjectContexts.remove(tmpObject.getId());
 
         // Delete its relations as well.
-        Iterator<TmpObject> i = getRelations(tmpObject).iterator();
+        Iterator i = getRelations(tmpObject).iterator();
         while (i.hasNext()) {
-            TmpObject relation = i.next();
+            TmpObject relation = (TmpObject) i.next();
             if (stillExists(relation)) {
                 if (log.isDebugEnabled()) {
                     log.debug("About to delete relation " + relation
@@ -704,7 +709,7 @@ public class Transaction implements Runnable {
             // disposeWhenNotReferenced flag.
             Object _snumber = tmpObject.getField(TmpObject._SNUMBER);
             if (!_snumber.equals("")) {
-                TmpObject source = tmpObjects.get(_snumber);
+                TmpObject source = (TmpObject) tmpObjects.get(_snumber);
                 dropIfRequested(source);
             }
 
@@ -712,7 +717,7 @@ public class Transaction implements Runnable {
             // its disposeWhenNotReferenced flag.
             Object _dnumber = tmpObject.getField(TmpObject._DNUMBER);
             if (!_dnumber.equals("")) {
-                TmpObject destination = tmpObjects.get(_dnumber);
+                TmpObject destination = (TmpObject) tmpObjects.get(_dnumber);
                 dropIfRequested(destination);
             }
         }
@@ -739,9 +744,9 @@ public class Transaction implements Runnable {
         }
 
         // Check its relations.
-        Iterator<TmpObject> iRelations = getRelations(tmpObject).iterator();
+        Iterator iRelations = getRelations(tmpObject).iterator();
         while (iRelations.hasNext()) {
-            TmpObject relation = iRelations.next();
+            TmpObject relation = (TmpObject) iRelations.next();
             if (relation.isAccessObject()) {
                 // Relation in persistent cloud.
                 if (!deleteRelations) {
@@ -783,21 +788,25 @@ public class Transaction implements Runnable {
     public void mergeObjects(String objectType, SimilarObjectFinder finder,
     ObjectMerger merger) throws TransactionHandlerException {
 
+        MMObjectBuilder builder = mmbase.getMMObject(objectType);
+
         // Create snapshot of all objects in this transaction.
-        TmpObject[] objects = lstTmpObjects.toArray(new TmpObject[0]);
+        TmpObject[] objects = (TmpObject[])lstTmpObjects.toArray(new TmpObject[0]);
 
         // For all objects in the snapshot of this transaction.
-        for (TmpObject tempObj1 : objects) {
+        for (int i = 0; i < objects.length; i++) {
+            TmpObject tempObj1 = objects[i];
+
             // Check object still exists and is the specified type.
             if ( stillExists(tempObj1) &&
             tempObj1.getNode().getName().equals(objectType)) {
 
                 // Search for similar object.
-                List<TmpObject> similarObjects = finder.findSimilarObject(this, tempObj1);
+                List similarObjects = finder.findSimilarObject(this, tempObj1);
 
                 if (similarObjects.size() == 1) {
                     // One object found, merge the objects.
-                    TmpObject tempObj2 = similarObjects.get(0);
+                    TmpObject tempObj2 = (TmpObject) similarObjects.get(0);
                     // Merge objects (deletes one of both as well).
                     // Note the order: tempObj2 comes from the part of the
                     // transaction that is already merged or is an access object.
@@ -840,7 +849,7 @@ public class Transaction implements Runnable {
      * as desired.
      * @throws TransactionHandlerException When a failure occurred.
      */
-    protected boolean handleDuplicates(TmpObject tempObj, List<TmpObject> similarObjects,
+    protected boolean handleDuplicates(TmpObject tempObj, List similarObjects,
     ObjectMerger merger) throws TransactionHandlerException {
         // set duplicates flag
         if (consultant != null ) {
@@ -858,9 +867,9 @@ public class Transaction implements Runnable {
       appendReportBuffer("<!-- *** original object *** -->\n");
       appendReportBuffer(tempObj.toXML()+"\n");
 
-      Iterator<TmpObject> iter = similarObjects.iterator();
+      Iterator iter = similarObjects.iterator();
       while (iter.hasNext() ) {
-         TmpObject similarObject = iter.next();
+         TmpObject similarObject = (TmpObject)iter.next();
          appendReportBuffer("<!-- *** start similar object block *** -->\n\n");
          appendReportBuffer("<!-- *** mergeCandidate *** -->\n");
          appendReportBuffer(similarObject.toXML() + "\n");
@@ -901,9 +910,9 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Iterator<String> fieldNames = tempObj1.getNode().getBuilder().getFieldNames().iterator();
+        Iterator fieldNames = tempObj1.getNode().getBuilder().getFieldNames().iterator();
         while (fieldNames.hasNext()) {
-            String fieldName = fieldNames.next();
+            String fieldName = (String) fieldNames.next();
 
             // Merge field for all fields except "number" and "owner".
             if (!fieldName.equals("number") && !fieldName.equals("owner")) {
@@ -948,9 +957,9 @@ public class Transaction implements Runnable {
         }
 
         // Merge fields.
-        Iterator<String> fieldNames  = tempObj1.getNode().getBuilder().getFieldNames().iterator();
+        Iterator fieldNames  = tempObj1.getNode().getBuilder().getFieldNames().iterator();
         while (fieldNames.hasNext()) {
-            String fieldName = fieldNames.next();
+            String fieldName = (String) fieldNames.next();
 
             // Merge field for all fields except "number" and "owner".
             if (!fieldName.equals("number") && !fieldName.equals("owner")) {
@@ -971,11 +980,11 @@ public class Transaction implements Runnable {
             + "(target) and " + tempObj2.getKey());
         }
         // Remove duplicate relations from the merged object.
-        List<TmpObject> relations = getRelations(tempObj1);
+        List relations = getRelations(tempObj1);
         for (int i = 0; i < relations.size(); i++) {
 
             // All relations of tempObj1.
-            TmpObject relation1 = relations.get(i);
+            TmpObject relation1 = (TmpObject) relations.get(i);
 
             // Check if this relation still exists.
             if (!stillExists(relation1)) {
@@ -984,7 +993,7 @@ public class Transaction implements Runnable {
 
             // If it duplicates an existing relation, drop one of them.
             for (int i2 = i + 1; i2 < relations.size(); i2++) {
-                TmpObject relation2 = relations.get(i2);
+                TmpObject relation2 = (TmpObject) relations.get(i2);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Relation1: " + relation1);
@@ -1069,9 +1078,9 @@ public class Transaction implements Runnable {
             return null;
         }
         // Search through the objects in this transaction.
-        Iterator<TmpObject> i = lstTmpObjects.iterator();
+        Iterator i = lstTmpObjects.iterator();
         while (i.hasNext()) {
-            TmpObject tmpObject = i.next();
+            TmpObject tmpObject = (TmpObject) i.next();
             if (tmpObject.getMMBaseId() == mmbaseId) {
                 // Found, return it.
                 return tmpObject;
@@ -1090,17 +1099,17 @@ public class Transaction implements Runnable {
      * @return List of access objects for the found relations.
      * @exception TransactionHandlerException When a failure occurred.
      */
-    public List<TmpObject> getRelations(TmpObject tmpObject)
+    public List getRelations(TmpObject tmpObject)
     throws TransactionHandlerException {
 
-        List<TmpObject> accessObjects = new ArrayList<TmpObject>();
+        List accessObjects = new ArrayList();
 
         // If it's an access object, access all its relations in persistent cloud.
         if (tmpObject.isAccessObject()) {
-            List<MMObjectNode> relations = tmpObject.getRelationsInPersistentCloud();
-            Iterator<MMObjectNode> i = relations.iterator();
+            Vector relations = tmpObject.getRelationsInPersistentCloud();
+            Iterator i = relations.iterator();
             while (i.hasNext()) {
-                MMObjectNode relation = i.next();
+                MMObjectNode relation = (MMObjectNode) i.next();
 
                 // Get access object for relation.
                 // It may have been accessed before in this transaction, and
@@ -1114,9 +1123,9 @@ public class Transaction implements Runnable {
         // Visit all its relations in temporary cloud, add them to the list.
         // This includes the access objects that were created for all
         // relations found in the persistent cloud.
-        Iterator<TmpObject> i2 = lstTmpObjects.iterator();
+        Iterator i2 = lstTmpObjects.iterator();
         while (i2.hasNext()) {
-            TmpObject tmpObj2 = i2.next();
+            TmpObject tmpObj2 = (TmpObject) i2.next();
             if (tmpObj2.isRelation()
             && (tmpObject.isSourceOf(tmpObj2)
             || tmpObject.isDestinationOf(tmpObj2))) {
@@ -1179,7 +1188,7 @@ public class Transaction implements Runnable {
         String sourceId = tmpObj1.getNode().getStringValue(TmpObject._SNUMBER);
         if (!sourceId.equals("")) {
             // Source of tmpObj1 is temporary node.
-            TmpObject source = tmpObjects.get(sourceId);
+            TmpObject source = (TmpObject) tmpObjects.get(sourceId);
             if (!source.isSourceOf(tmpObj2)) {
                 return false;
             }
@@ -1187,7 +1196,7 @@ public class Transaction implements Runnable {
             sourceId = tmpObj2.getNode().getStringValue(TmpObject._SNUMBER);
             if (!sourceId.equals("")) {
                 // Source of tmpObj2 is temporary node.
-                TmpObject source = tmpObjects.get(sourceId);
+                TmpObject source = (TmpObject) tmpObjects.get(sourceId);
                 if (!source.isSourceOf(tmpObj1)) {
                     return false;
                 }
@@ -1205,7 +1214,7 @@ public class Transaction implements Runnable {
         = tmpObj1.getNode().getStringValue(TmpObject._DNUMBER);
         if (!destinationId.equals("")) {
             // Destination of tmpObj1 is temporary node.
-            TmpObject destination = tmpObjects.get(destinationId);
+            TmpObject destination = (TmpObject) tmpObjects.get(destinationId);
             if (!destination.isDestinationOf(tmpObj2)) {
                 return false;
             }
@@ -1213,7 +1222,7 @@ public class Transaction implements Runnable {
             destinationId = tmpObj2.getNode().getStringValue(TmpObject._DNUMBER);
             if (!destinationId.equals("")) {
                 // Destination of tmpObj2 is temporary node.
-                TmpObject destination = tmpObjects.get(destinationId);
+                TmpObject destination = (TmpObject) tmpObjects.get(destinationId);
                 if (!destination.isDestinationOf(tmpObj1)) {
                     return false;
                 }
@@ -1251,7 +1260,7 @@ public class Transaction implements Runnable {
      * Gets HashMap of all non-anonymous object contexts, mapped by their id.
      * @return the object context map.
      */
-    HashMap<String, TmpObject> getObjectContexts() {
+    HashMap getObjectContexts() {
         return namedObjectContexts;
     }
 
@@ -1259,7 +1268,7 @@ public class Transaction implements Runnable {
      * Gets (unmodifiable) list of all temporary objects in the transaction.
      * @return List of all temporary objects in the transaction.
      */
-    public List<TmpObject> getTmpObjects() {
+    public List getTmpObjects() {
         return Collections.unmodifiableList(lstTmpObjects);
     }
 
@@ -1272,7 +1281,7 @@ public class Transaction implements Runnable {
      * This can be tempObj1 itself or the object tempObj1 is merged with.
      */
     public TmpObject getMergedObject(TmpObject tempObj1) {
-        TmpObject tempObj2 = mergedObjects.get(tempObj1);
+        TmpObject tempObj2 = (TmpObject) mergedObjects.get(tempObj1);
         if (tempObj2 == null) {
             tempObj2 = tempObj1;
         }

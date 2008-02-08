@@ -18,13 +18,13 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionCacheNode.java,v 1.7 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: VersionCacheNode.java,v 1.5 2005-01-25 12:45:19 pierre Exp $
  */
 public class VersionCacheNode extends Object {
 
     private static Logger log = Logging.getLoggerInstance(VersionCacheNode.class.getName());
     private MMObjectNode versionnode;
-    private Vector<VersionCacheWhenNode> whens = new Vector<VersionCacheWhenNode>();
+    private Vector whens = new Vector();
     private MMBase mmb;
 
     public VersionCacheNode(MMBase mmb) {
@@ -36,8 +36,9 @@ public class VersionCacheNode extends Object {
         // and we should signal a new version
 
         boolean dirty = false;
-        for (VersionCacheWhenNode whennode : whens) {
-            Vector<String> types = whennode.getTypes();
+        for (Enumeration e = whens.elements(); e.hasMoreElements();) {
+            VersionCacheWhenNode whennode = (VersionCacheWhenNode)e.nextElement();
+            Vector types = whennode.getTypes();
 
             // check if im known in the types part
             if (types.contains(buildername)) {
@@ -47,14 +48,14 @@ public class VersionCacheNode extends Object {
                     dirty = true;
                 } else {
                     // so multiple prepare a multilevel !
-                    Vector<String> nodes = whennode.getNodes();
+                    Vector nodes = whennode.getNodes();
 
-                    Vector<String> fields = new Vector<String>();
+                    Vector fields = new Vector();
                     fields.addElement(buildername + ".number");
-                    Vector<String> ordervec = new Vector<String>();
-                    Vector<String> dirvec = new Vector<String>();
+                    Vector ordervec = new Vector();
+                    Vector dirvec = new Vector();
 
-                    Vector<MMObjectNode> vec = mmb.getClusterBuilder().searchMultiLevelVector(nodes,fields,"YES",types,buildername+".number=="+number,ordervec,dirvec);
+                    Vector vec = mmb.getClusterBuilder().searchMultiLevelVector(nodes,fields,"YES",types,buildername+".number=="+number,ordervec,dirvec);
                     if (log.isDebugEnabled()) log.debug("VEC=" + vec);
                     if (vec != null && vec.size() > 0) {
                         dirty = true;

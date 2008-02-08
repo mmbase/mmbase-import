@@ -1,22 +1,65 @@
 ===================================================================
-                     MMBase 1.9.0 - Upgrade Notes
+                     MMBase 1.8.0 - Upgrade Notes
 ===================================================================
 
 ============
 INTRODUCTION:
 ============
 
-This document describes the steps required to upgrade an existing (1.8)
+This document describes the steps required to upgrade an existing
 MMBase-installation. Please make sure you have a backup of all
 important files (webapp, database) before upgrading.
 
-- MMBase 1.9.0 requires java 1.5 to build. We recommend using a 1.5 JVM too.
-  (I'm not sure whether that is absolutely necessary)
+- The classfile for the typedef builder has changed from
+  org.mmbase.modules.corebuilders.ObjectTypes to org.mmbase.modules.corebuilders.TypeDef
+  This needs to be changed in the typdef.xml configuration file.
 
-- Replace all mmbase.jar's with new jars.
+- You can also simply throw aways all core-builder XML configuration files:
+  daymarks.xml, insrel.xml, mmservers.xml, oalias.xml, object.xml, reldef.xml
+  syncnodes.xml, typedef.xml, typerel.xml, versions.xml.
+
+  It is unlikely that you have changed anything in these.  Correct and up-to-date versions are in
+  mmbase.jar.  If a real need to override these exists (e.g. extra fields in object.xml, or
+  properties in mmservers), you can place your own versions in <config>/builders/core/
+
+  Similar arrangments are also made for various applications. E.g. for cloud-context security it is
+  likely that you can throw away all builder xml's, because up-to-date versions are in
+  mmbase-cloudcontextsecurity.jar.
+ 
+- 1.8 assumes that relation builders are extended from insrel (using the extends attribute in the builder tag). 
+  Code may behave erratically if your relation builder xmls are not configured to use inheritence.
+  You can adapt your builders by adding ' extends="insrel" ' to the builder tag, and removing the definitions 
+  for the fields number, otype, owner, snumber, dnumber, rnumber, and dir (which are already defined in 
+  the object and insrel builders).
+
+- The storage configuration files were originally located in the mmbase.jar.
+  To override them you had to place your version of the configuration file under classes/org/mmbase/storage/implementation/database/resources.
+  In 1.8, these files have been moved to the storage/database directory in the mmbase config directory.
+  If you override the storage configuration, you need to move your files to the new directory.
+
+- If you use the multicast feature to cast changes between mmbase servers, and upgrade from a
+  version < 1.7.2.
+  The multicast configuration is moved from mmbaseroot.xml to utils/multicast.xml!
+  Evaluate both these configuration files when you upgrade from a version < 1.7.2.
+
+- Replace mmbase.jar with the new jars.
+  - if you used editwizards, place mmbase-editwizard.jar (from
+    mmbase-editwizard.zip)
+  - if you used community, place mmbase-community.jar (from
+    mmbase-community.zip). You can remove mmcommunity-taglib.tld too
+    and place this in web.xml instead of:
+    <taglib>
+      <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
+      <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
+    </taglib>
 
 -  Replace and/or install all shipped jsps too.
-   - Important is the /mmbase directory for generic editors and admin-pages.
+   - generic editors are now shipped under /mmbase/edit/basic. You can
+     follow this new convention and remove /mmeditors.  Or you
+     copy/move the content to the original location /mmeditors/jsp
+
+   - For admin pages goes the same. They are now in /mmbase/admin
+     (used to be /mmadmin/jsp).
 
    - If you need the examples you could replace /mmexamples by the new
      content of /mmexamples
@@ -24,8 +67,26 @@ important files (webapp, database) before upgrading.
    - The editwizard jsp and xsls are shipped in /mmbase/edit/wizard
      (used to be /mmapps/editwizard). You can also download them
      seperately in mmbase-editwizard.zip now.
+
+- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead:
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/lib/mmbase-taglib.jar</taglib-location>
+  </taglib>
+  Note that the taglib is not any more present in mmbase.jar
+  itself. So if you wrote mmbase.jar here in web.xml you have to
+  change it.
+
 - copy and/or merge configuration files from WEB-INF/config.
 
 - Clean the working directory of your app-server (to recompile jsp's)
+
+- The fields parameter of the MMBase taglib list tags (related, list,
+  etc) now no longer accepts fields that do not exist. Some pages may
+  give errors now if they specified wrong fieldnames, so you are
+  advised to check your site's pages for this error.
+
+- If needed, convert the data directory where mmbase stored binary
+  data.
 
 - Check the releasenotes.txt for know issues and changes.

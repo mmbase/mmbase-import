@@ -15,13 +15,14 @@ import org.w3c.dom.NodeList;
 
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.22 2008-01-28 16:27:38 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.20 2006-04-10 15:21:37 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -49,19 +50,26 @@ public class DataTypeReader {
     }
 
     /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * searchquery namespace
+     */
+    static private String getAttribute(Element element, String localName) {
+        return DocumentReader.getAttribute(element, NAMESPACE_DATATYPES_1_0, localName);
+    }
+
+
+    /**
      * Initialize the data types default supported by the system.
      */
-    public static List<DependencyException> readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
-        return readDataTypes(dataTypesElement, collector, null);
+    public static void readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
+        readDataTypes(dataTypesElement, collector, null);
     }
 
     /**
      * Initialize the data types default supported by the system.
-     * @return a list of failures.
      */
-    public static List<DependencyException> readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
+    public static void readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
         NodeList childNodes = dataTypesElement.getChildNodes();
-        List<DependencyException> failed = new ArrayList<DependencyException>();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);
@@ -82,21 +90,17 @@ public class DataTypeReader {
                         }
                         readDataTypes(childElement, collector, dataType);
                     }
-                } catch (DependencyException de) {
-                    de.setCollector(collector);
-                    failed.add(de);
                 } catch (Exception e) {
                     log.error("Error while parsing element  '" + org.mmbase.util.xml.XMLWriter.write(childElement, true, true) + "': " + e.getMessage(), e);
                 }
             }
         }
-        return failed;
     }
 
     /**
      * Reads a datatype.
      */
-    public static DataTypeDefinition readDataType(Element typeElement, BasicDataType baseDataType, DataTypeCollector collector) throws DependencyException {
+    public static DataTypeDefinition readDataType(Element typeElement, BasicDataType baseDataType, DataTypeCollector collector) {
         DataTypeDefinition definition = collector.getDataTypeDefinition();
         definition.configure(typeElement, baseDataType);
         definition.dataType.setXml(typeElement);

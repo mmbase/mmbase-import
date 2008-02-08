@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
@@ -35,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.29 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: DateSupport.java,v 1.26 2005-10-05 10:44:00 michiel Exp $
  */
 public class DateSupport {
 
@@ -543,6 +545,52 @@ public class DateSupport {
 
 
     /**
+     * @obsolete Do not use this method ever!!
+     */
+    private static long convertStringToLongWithTimeZone(String date, int hour, int minutes) {
+        // Set timezone
+        Calendar calendar = setTimeZone(hour, minutes);
+
+        // Now convert the datestring to calendardate
+        calendar = parseDate(calendar, date);
+
+        // calculate the milliseconds since 1970
+        Date mydate = calendar.getTime();
+
+        // return this calculation
+        return mydate.getTime();
+    }
+
+    /**
+     * @obsolete Do not use this method ever!!
+     */
+    private static Calendar setTimeZone(int hours, int minutes) {
+        log.warn("obsolete setTimeZone was used!!");
+
+        // get the supported ids for GMT-08:00 (Pacific Standard Time)
+        String[] ids = TimeZone.getAvailableIDs((hours * 60 + minutes) * 60 * 1000);
+
+        // if no ids were returned, something is wrong. get out.
+        if (ids.length == 0) {
+            log.error("Timezone is wrong...");
+            System.exit(0); /// XXX should be return null!
+        }
+        System.out.println("Current Time");
+
+        // create a Pacific Standard Time time zone
+        SimpleTimeZone pdt = new SimpleTimeZone((hours * 60 + minutes) * 60 * 1000, ids[0]);
+
+        // set up rules for daylight savings time
+        pdt.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+        pdt.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+
+        // create a GregorianCalendar with the Pacific Daylight time zone
+        // and the current date and time
+        Calendar calendar = new GregorianCalendar(pdt);
+        return calendar;
+    }
+
+    /**
      * Parse a string containing a date and put it in a calendar
      * @param cal Calander object that is used for storing the parsed date
      * @param date String in the form:  hour:minute:second day/month/year
@@ -556,17 +604,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, Integer.valueOf(token).intValue());
+        cal.set(Calendar.MINUTE, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, Integer.valueOf(token).intValue());
+        cal.set(Calendar.SECOND, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(token).intValue());
+        cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, Integer.valueOf(token).intValue() - 1);
+        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, Integer.valueOf(token).intValue());
+        cal.set(Calendar.YEAR, new Integer(token).intValue());
         return (cal);
     }
 
@@ -584,17 +632,17 @@ public class DateSupport {
         cal.clear(Calendar.HOUR_OF_DAY);
 
         token = tok.nextToken();
-        cal.set(Calendar.YEAR, Integer.valueOf(token).intValue());
+        cal.set(Calendar.YEAR, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MONTH, Integer.valueOf(token).intValue() - 1);
+        cal.set(Calendar.MONTH, new Integer(token).intValue() - 1);
         token = tok.nextToken();
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(token).intValue());
+        cal.set(Calendar.DAY_OF_MONTH, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(token).intValue());
+        cal.set(Calendar.HOUR_OF_DAY, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.MINUTE, Integer.valueOf(token).intValue());
+        cal.set(Calendar.MINUTE, new Integer(token).intValue());
         token = tok.nextToken();
-        cal.set(Calendar.SECOND, Integer.valueOf(token).intValue());
+        cal.set(Calendar.SECOND, new Integer(token).intValue());
         return (cal);
     }
 

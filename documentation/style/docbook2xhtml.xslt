@@ -20,8 +20,6 @@
   -->
 
   <xsl:param name="toc.section.depth">5</xsl:param>
-  <xsl:param name="section.autolabel">1</xsl:param>
-  <xsl:param name="section.autolabel.max.depth">3</xsl:param>
 
   <!-- some chunking options: -->
   <xsl:param name="base.dir" select="'./'"/>

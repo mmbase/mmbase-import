@@ -22,7 +22,7 @@ import org.mmbase.storage.search.*;
  * its <em>successor</em>, i.e. the next handler in the chain.
  *
  * @author  Rob van Maris
- * @version $Id: ChainedSqlHandler.java,v 1.6 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: ChainedSqlHandler.java,v 1.5 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.database.SqlHandler
  */
@@ -47,30 +47,32 @@ public class ChainedSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    public void appendQueryBodyToSql(StringBuilder sb, SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
+    public void appendQueryBodyToSql(
+    StringBuffer sb, SearchQuery query, SqlHandler firstInChain)
+    throws SearchQueryException {
         successor.appendQueryBodyToSql(sb, query, firstInChain);
     }
 
     // javadoc is inherited
-    public void appendConstraintToSql(StringBuilder sb, Constraint constraint,
-                                      SearchQuery query, boolean inverse, boolean inComposite)
-        throws SearchQueryException {
+    public void appendConstraintToSql(StringBuffer sb, Constraint constraint,
+    SearchQuery query, boolean inverse, boolean inComposite)
+    throws SearchQueryException {
         successor.appendConstraintToSql(sb, constraint, query,
-                                        inverse, inComposite);
+        inverse, inComposite);
     }
-    
+
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query)
-        throws SearchQueryException {
+    throws SearchQueryException {
         return successor.getSupportLevel(feature, query);
     }
-    
+
     // javadoc is inherited
     public int getSupportLevel(Constraint constraint, SearchQuery query)
-        throws SearchQueryException {
+    throws SearchQueryException {
         return successor.getSupportLevel(constraint, query);
     }
-    
+
     // javadoc is inherited
     public String getAllowedValue(String value) {
         return successor.getAllowedValue(value);

@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.45 2008-01-24 12:13:39 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.43.2.1 2008-01-24 12:12:18 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -55,7 +55,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         referid2 = getAttribute(r);
     }
 
-    protected boolean doCompare(Comparable<Comparable> v1, Comparable v2) {
+    protected boolean doCompare(Comparable v1, Comparable v2) {
         if (log.isDebugEnabled()) {
             log.debug("comparing " + (v1 != null ? v1.getClass().getName() : "") + "'" + v1 + "' to " + (v2 != null ? v2.getClass().getName() : "")+ "'" + v2 + "'");
         }
@@ -120,7 +120,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             result = pattern.matcher("" + compare1).matches();
         } else {
             // find compare2-set.
-            Set<Object> compareToSet = new HashSet<Object>();
+            Set compareToSet = new HashSet();
             if (value != Attribute.NULL) {
                 if (valueSet != Attribute.NULL) {
                     throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
@@ -138,17 +138,21 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                 compareToSet.add(getCompare2());
             }
 
-            Iterator<Object> i = compareToSet.iterator();
+            Iterator i = compareToSet.iterator();
 
 
             if (compare1 instanceof Number) {
                 compare1 = new BigDecimal(compare1.toString());
                 while (i.hasNext()) {
                     Object compare2 = i.next();
-                    if (compare2 instanceof Date) {
+                    if (compare2 instanceof Date || compare2 instanceof Boolean) {
                         compare2 = Casting.toInteger(compare2);
                     }
-
+                    if ("true".equals(compare2)) {
+                        compare2 = new Integer(1);
+                    } else if ("false".equals(compare2)) {
+                        compare2 = new Integer(0);
+                    }
                     if (compare2 instanceof String) {
                         if ("".equals(compare2)) { // do something reasonable in IsEmpty
                             compare2 = new BigDecimal("0");
@@ -161,7 +165,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                         compare2 = new BigDecimal(((Node)compare2).getNumber());
                     }
 
-                    if (doCompare((Comparable<Comparable>)compare1, (Comparable)compare2)) {
+                    if (doCompare((Comparable)compare1, (Comparable)compare2)) {
                         result = true;
                         break;
 
@@ -171,13 +175,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             } else {
                 while (i.hasNext()) {
                     Object compare2 = i.next();
-                    if (compare2 instanceof Date || compare2 instanceof Boolean) {
+                    if (compare2 instanceof Date) {
                         compare2 = Casting.toInteger(compare2);
-                    }
-                    if ("true".equals(compare2)) {
-                        compare2 = new Integer(1);
-                    } else if ("false".equals(compare2)) {
-                        compare2 = new Integer(0);
                     }
                     if (compare2 instanceof Number) {
                         compare2 = new BigDecimal(compare2.toString());
@@ -187,13 +186,13 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                         } else {
                             compare1n = new BigDecimal((String)compare1);
                         }
-                        if (doCompare((Comparable<Comparable>)compare1n, (Comparable)compare2)) {
+                        if (doCompare((Comparable)compare1n, (Comparable)compare2)) {
                             result = true;
                             break;
                         }
                     } else { // both compare1 and compare2 are not Number, simply compare then
                         if (! (compare2 instanceof Comparable)) compare2 = Casting.toString(compare2);
-                        if (doCompare((Comparable<Comparable>)compare1, (Comparable)compare2)) {
+                        if (doCompare((Comparable)compare1, (Comparable)compare2)) {
                             result = true;
                             break;
                         }

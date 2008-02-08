@@ -1,11 +1,11 @@
-<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"   jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,org.mmbase.util.functions.Parameters,javax.servlet.jsp.JspException"
+<%@ include file="settings.jsp"%><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>"><mm:cloud method="$loginmethod"  loginpage="login.jsp" jspvar="cloud" sessionname="$loginsessionname"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*,org.mmbase.util.functions.Parameters,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.73 2007-07-07 13:32:38 michiel Exp $
+     * @version  $Id: list.jsp,v 1.64.2.7 2007-06-20 17:03:38 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -332,9 +332,7 @@ for (int i = pageOffset; i<pagecount && i - pageOffset <maxpages; i++) {
     pages.appendChild(pagenode);
 }
 
-
-java.util.Map<String, Object> params = listConfig.getAttributes();
-
+java.util.Map params = listConfig.getAttributes();
 
 
 params.put("start",      String.valueOf(start));
@@ -347,6 +345,7 @@ params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("unlinkable",  unlinkable +"");
 params.put("creatable",  creatable+"");
+params.put("cloud",  cloud);
 params.put("popupid",  popupId);
 
 if (roleStr != null) params.put("relationRole",  roleStr);
@@ -369,7 +368,7 @@ params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResou
 
 
 log.trace("Doing the transformation for " + listConfig.template);
-Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params, cloud);
+Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
 
 if (log.isDebugEnabled()) log.trace("ready: " + ewconfig.subObjects);
 

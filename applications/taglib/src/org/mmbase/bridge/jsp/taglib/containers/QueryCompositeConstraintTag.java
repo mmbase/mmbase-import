@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.10 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.6 2005-12-21 11:39:25 michiel Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -35,7 +35,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
 
     protected Attribute operator  = Attribute.NULL;
 
-    private List<Constraint> constraints;
+    private List constraints;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -49,7 +49,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         String op = operator.getString(this).toUpperCase();
         if (op.equals("OR")) {
             return CompositeConstraint.LOGICAL_OR;
-        } else if (op.equals("AND") || op.length() == 0) {
+        } else if (op.equals("AND") || op.equals("")) {
             return CompositeConstraint.LOGICAL_AND;
         } else {
             throw new JspTagException("Unknown Field Compare Operator '" + op + "'");
@@ -60,9 +60,10 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
         constraints.add(cons);
     }
 
-    private Constraint addConstraint(Query query, int op, List<Constraint> constraints) throws JspTagException {
+    private Constraint addConstraint(Query query, int op, List constraints) throws JspTagException {
         Constraint newConstraint = null;
-        for (Constraint constraint : constraints) {
+        for (Iterator i = constraints.iterator(); i.hasNext();) {
+            Constraint constraint = (Constraint) i.next();
             if (newConstraint == null) {
                 newConstraint = constraint;
             } else {
@@ -73,7 +74,7 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
             // if there is a OR or an AND tag, add
             // the constraint to that tag,
             // otherwise add it direct to the query
-            QueryCompositeConstraintTag cons = findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
+            QueryCompositeConstraintTag cons = (QueryCompositeConstraintTag) findParentTag(QueryCompositeConstraintTag.class, (String) container.getValue(this), false);
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
@@ -84,12 +85,12 @@ public class QueryCompositeConstraintTag extends CloudReferrerTag implements Que
     }
 
     public int doStartTag() throws JspTagException {
-        constraints = new ArrayList<Constraint>();
+        constraints = new ArrayList();
         return EVAL_BODY;
     }
 
     public int doAfterBody() throws JspTagException {
-        QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
+        QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
         Query query = c.getQuery();
 
         addConstraint(query, getOperator(), constraints);

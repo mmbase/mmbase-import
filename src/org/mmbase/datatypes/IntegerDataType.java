@@ -14,10 +14,10 @@ import org.mmbase.util.Casting;
  * DataType associated with {@link java.lang.Integer}, a NumberDataType, but provides getMin and getMax as int.
  *
  * @author Pierre van Rooden
- * @version $Id: IntegerDataType.java,v 1.11 2006-12-15 13:38:01 michiel Exp $
+ * @version $Id: IntegerDataType.java,v 1.10 2006-04-29 19:41:09 michiel Exp $
  * @since MMBase-1.8
  */
-public class IntegerDataType extends NumberDataType<Integer> {
+public class IntegerDataType extends NumberDataType {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     /**
@@ -25,17 +25,17 @@ public class IntegerDataType extends NumberDataType<Integer> {
      */
     public IntegerDataType(String name, boolean primitive) {
         super(name, primitive ? Integer.TYPE : Integer.class);
-        setMin(Integer.valueOf(Integer.MIN_VALUE), true);
+        setMin(new Integer(Integer.MIN_VALUE), true);
         minRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
-        setMax(Integer.valueOf(Integer.MAX_VALUE), true);
+        setMax(new Integer(Integer.MAX_VALUE), true);
         maxRestriction.setEnforceStrength(ENFORCE_ABSOLUTE);
     }
 
     protected void inheritRestrictions(BasicDataType origin) {
         super.inheritRestrictions(origin);
         if (origin instanceof BooleanDataType) {
-            setMin(Integer.valueOf(0), true);
-            setMax(Integer.valueOf(1), true);
+            setMin(new Integer(0), true);
+            setMax(new Integer(1), true);
         }
     }
 
@@ -44,7 +44,7 @@ public class IntegerDataType extends NumberDataType<Integer> {
      * @return the minimum value as an <code>int</code>, or a very very small number if there is no minimum.
      */
     public int getMin() {
-        Integer min = getMinRestriction().getValue();
+        Object min = getMinRestriction().getValue();
         return min == null ? Integer.MIN_VALUE : Casting.toInt(min);
     }
 
@@ -52,7 +52,7 @@ public class IntegerDataType extends NumberDataType<Integer> {
      * @return the maximum value as an <code>int</code>, or a very very big number if there is no maximum.
      */
     public int getMax() {
-        Integer max = getMaxRestriction().getValue();
+        Object max = getMaxRestriction().getValue();
         return max == null ? Integer.MAX_VALUE : Casting.toInt(max);
     }
 

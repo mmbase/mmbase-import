@@ -39,7 +39,7 @@ import javax.servlet.jsp.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: VerifyEmailProcessor.java,v 1.6 2008-02-03 17:45:39 nklasens Exp $
+ * @version $Id: VerifyEmailProcessor.java,v 1.5 2007-11-20 17:15:06 michiel Exp $
 
  */
 
@@ -76,6 +76,7 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     }
 
     private String emailField   = "email";
+    private String statusField  = null;
     private String emailTextBundle = "org.mmbase.datatypes.resources.verifyemailtemplate";
     private String successProcessor;
     private String url = "/mmbase/email/verify/";
@@ -85,7 +86,9 @@ public class VerifyEmailProcessor implements CommitProcessor, Processor, java.io
     public void setEmailField(String ef) {
         emailField = ef;
     }
-
+    public void setStatusField(String sf) {
+        statusField = sf;
+    }
     public void setTextBundle(String b) {
         emailTextBundle = b;
         ResourceBundle emailTemplate = ResourceBundle.getBundle(emailTextBundle);

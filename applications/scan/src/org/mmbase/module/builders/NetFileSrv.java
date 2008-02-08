@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *</ul>
  *
  * @author Daniel Ockeloen
- * @version $Id: NetFileSrv.java,v 1.14 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: NetFileSrv.java,v 1.13 2003-03-10 11:50:20 pierre Exp $
  */
 public class NetFileSrv extends MMObjectBuilder {
 
@@ -43,7 +43,7 @@ public class NetFileSrv extends MMObjectBuilder {
     /**
     * Cache of VWMS as they are related to a service.
     */
-    Hashtable<String, Object> service2bot=new Hashtable<String, Object>();
+    Hashtable service2bot=new Hashtable();
 
     /**
      * What should a GUI display for this node.

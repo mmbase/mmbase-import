@@ -21,14 +21,14 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.16 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.14 2006-07-18 12:40:39 michiel Exp $
  */
 
-abstract public class AbstractField extends AbstractDescriptor implements Field {
+abstract public class AbstractField extends AbstractDescriptor implements Field, Comparable {
 
     private static final Logger log = Logging.getLoggerInstance(AbstractField.class);
 
-    protected DataType<Object> dataType = null;
+    protected DataType dataType = null;
     protected int type = TYPE_UNKNOWN;
     protected int state = STATE_UNKNOWN;
     protected int listItemType = TYPE_UNKNOWN;
@@ -59,7 +59,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         readOnly = field.isReadOnly();
         listItemType = field.getListItemType();
         if (cloneDataForRewrite) {
-            setDataType((DataType<Object>)field.getDataType().clone());
+            setDataType((DataType)field.getDataType().clone());
         } else {
             setDataType(dataType = field.getDataType());
         }
@@ -70,7 +70,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * @param name the name of the field
      * @param dataType the data type of the field
      */
-    protected AbstractField(String name, int type, int listItemType, int state, DataType<Object> dataType) {
+    protected AbstractField(String name, int type, int listItemType, int state, DataType dataType) {
         super(name);
         this.type = type;
         this.listItemType = listItemType;
@@ -80,10 +80,15 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
 
     abstract public NodeManager getNodeManager();
 
-    public int compareTo(Field f) {
-        int compared = getName().compareTo(f.getName());
-        if (compared == 0) compared = dataType.compareTo(f.getDataType());
-        return compared;
+    public int compareTo(Object o) {
+        if (o instanceof Field) {
+            Field f = (Field) o;
+            int compared = getName().compareTo(f.getName());
+            if (compared == 0) compared = dataType.compareTo(f.getDataType());
+            return compared;
+        } else {
+            throw new ClassCastException("Object is not of type Field");
+        }
     }
 
     /**
@@ -122,7 +127,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         return listItemType;
     }
 
-    public DataType<Object> getDataType() {
+    public DataType getDataType() {
         return dataType;
     }
 
@@ -131,7 +136,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * It is possible that the datatype of a field is different from the actual field type.
      * @see #getType
      */
-    public void setDataType(DataType<Object> dataType) throws IllegalArgumentException {
+    public void setDataType(DataType dataType) throws IllegalArgumentException {
         int dataTypeType = dataType.getBaseType();
         if (dataTypeType != type) {
             log.debug("DataType (" + dataType.getBaseTypeIdentifier() + ") is different from db type (" + Fields.getTypeDescription(type) + ").");
@@ -216,7 +221,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
         try {
             AbstractField clone = (AbstractField)super.clone(name);
             if (copyDataTypeForRewrite) {
-                clone.dataType = (DataType<Object>) dataType.clone();
+                clone.dataType = (DataType) dataType.clone();
             }
             return clone;
         } catch (CloneNotSupportedException cnse) {

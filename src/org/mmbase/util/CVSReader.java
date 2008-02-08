@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @deprecated not used. maybe move to 'tools' application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: CVSReader.java,v 1.13 2007-02-25 17:56:59 nklasens Exp $
+ * @version $Id: CVSReader.java,v 1.11 2005-10-05 10:44:00 michiel Exp $
  */
 public class CVSReader {
 
@@ -41,14 +41,14 @@ public class CVSReader {
      * The header is represented by a <code>Hashtable</code> of name-values
      * where name is a column name and value the index of that column.
      */
-    protected Hashtable<String, Integer> name2pos;
+    protected Hashtable name2pos;
     /**
      * The content of the CVS file body (the records or rows).
      * Each entry in <code>rows</code> represents a line or record in the CVS body.
      * Each line is represented by a <code>Vector</code> of values. The position of those
      * values matches with teh columns from the header.
      */
-    protected Vector<Vector<String>> rows=new Vector<Vector<String>>();
+    protected Vector rows=new Vector();
 
     /**
      * Constructor for the CVS Reader.
@@ -78,12 +78,12 @@ public class CVSReader {
      * @param tok A tokenenized list of strings (lines) that make up the body text.
      * @return a <code>Vector</code> containing, for each line in the CVS body, a list of elements.
      */
-    Vector<Vector<String>> decodeBody(StringTokenizer mtok) {
-        Vector<Vector<String>> results=new Vector<Vector<String>>();
+    Vector decodeBody(StringTokenizer mtok) {
+        Vector results=new Vector();
 
         while (mtok.hasMoreTokens()) {
             String line=mtok.nextToken();
-            Vector<String> results2=new Vector<String>();
+            Vector results2=new Vector();
             StringTokenizer tok=new StringTokenizer(line,",\"\n\r",true);
             String prebar=",";
             while (tok.hasMoreTokens()) {
@@ -121,15 +121,15 @@ public class CVSReader {
      * @return a <code>Hashtable</code> containing the header values with their
      *         postition in the header
      */
-    Hashtable<String, Integer> decodeHeader(String line) {
+    Hashtable decodeHeader(String line) {
         int i=0;
-        Hashtable<String, Integer> results=new Hashtable<String, Integer>();
+        Hashtable results=new Hashtable();
         // XXX parsing on /n/r is not needed as a line cannot exist of multiple lines...
         StringTokenizer tok=new StringTokenizer(line,",\n\r");
         while (tok.hasMoreTokens()) {
             String part=tok.nextToken();
             part = Strip.DoubleQuote(part,Strip.BOTH);
-            results.put(part,i++);
+            results.put(part,new Integer(i++));
         }
         return results;
     }
@@ -166,8 +166,8 @@ public class CVSReader {
      * @return the element as a String.
      */
     public String getElement(int row,int col) {
-        Vector<String> rw=rows.elementAt(row);
-        String value = rw.elementAt(col);
+        Vector rw=(Vector)rows.elementAt(row);
+        String value=(String)rw.elementAt(col);
         return value;
     }
 
@@ -179,11 +179,11 @@ public class CVSReader {
      * @return the element as a String.
      */
     public String getElement(int row,String colname) {
-        Integer ii=name2pos.get(colname);
+        Integer ii=(Integer)name2pos.get(colname);
         if (ii!=null) {
             int i=ii.intValue();
-            Vector<String> rw=rows.elementAt(row);
-            String value = rw.elementAt(i);
+            Vector rw=(Vector)rows.elementAt(row);
+            String value=(String)rw.elementAt(i);
             return value;
         }
         return null;

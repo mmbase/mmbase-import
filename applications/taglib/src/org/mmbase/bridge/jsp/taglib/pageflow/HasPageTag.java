@@ -14,8 +14,12 @@ import org.mmbase.bridge.jsp.taglib.*;
 import java.net.*;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.http.*;
+import javax.servlet.*;
+
+import java.util.*;
+
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasPageTag.java,v 1.3 2008-01-28 13:52:32 michiel Exp $
+ * @version $Id: HasPageTag.java,v 1.1 2005-10-18 16:42:34 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -44,8 +48,13 @@ public class HasPageTag extends ContextReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
-    protected static String getResource(PageContext pageContext, String page) {
-        String resource = page;
+
+
+    public int doStartTag() throws JspTagException {
+        if (page == Attribute.NULL) {
+            throw new JspTagException("Attribute 'page' was not specified");
+        }
+        String resource = page.getString(this);
         if (! resource.startsWith("/")) {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             // Fetch the current servlet from request attribute.
@@ -58,23 +67,14 @@ public class HasPageTag extends ContextReferrerTag implements Condition {
                 log.debug("URL was relative");
                 // Using url-objects only because they know how to resolve relativity
                 URL u = new URL("http", "localhost", includingServlet);
-                URL dir = new URL(u, "."); // directory
+                URL dir = new URL(u, "."); // directory                   
                 File currentDir = new File(includingServlet + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)
                 resource = new URL(dir, resource).getFile();
             } catch (MalformedURLException mfue) {
                 log.error(mfue);
             }
-
+            
         }
-        return resource;
-    }
-
-
-    public int doStartTag() throws JspTagException {
-        if (page == Attribute.NULL) {
-            throw new JspTagException("Attribute 'page' was not specified");
-        }
-        String resource = getResource(pageContext, page.getString(this));
         try {
             if (ResourceLoader.getWebRoot().getResource(resource).openConnection().getDoInput() != getInverse()) {
                 return EVAL_BODY;
@@ -86,7 +86,7 @@ public class HasPageTag extends ContextReferrerTag implements Condition {
             return SKIP_BODY;
         }
     }
-
+    
     public int doAfterBody() throws JspTagException {
         if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
             if (bodyContent != null) {

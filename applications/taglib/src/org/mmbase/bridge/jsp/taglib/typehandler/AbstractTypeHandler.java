@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.58 2007-10-03 16:14:12 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.48.2.5 2007-10-22 14:10:01 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -71,14 +71,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if ((long) max - min < 200L) {
                 return new EnumHandler(tag, node, field) {
                         int i = min;
-                        protected Iterator<Entry<Integer, Integer>> getIterator(Node node, Field field) {
-                            return new Iterator<Entry<Integer, Integer>>() {
+                        protected Iterator getIterator(Node node, Field field) {
+                            return new Iterator() {
                                     public boolean hasNext() {
                                         return i <= max;
                                     }
-                                    public Entry<Integer, Integer> next() {
+                                    public Object next() {
                                         Integer value = new Integer(i++);
-                                        return new Entry<Integer, Integer>(value, value);
+                                        return new Entry(value, value);
                                     }
                                     public void remove() {
                                         throw new UnsupportedOperationException();
@@ -95,14 +95,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if ((double) max - min < 200.0) {
                 return new EnumHandler(tag, node, field) {
                         long i = min;
-                        protected Iterator<Entry<Long, Long>> getIterator(Node node, Field field) {
-                            return new Iterator<Entry<Long, Long>>() {
+                        protected Iterator getIterator(Node node, Field field) {
+                            return new Iterator() {
                                     public boolean hasNext() {
                                         return i <= max;
                                     }
-                                    public Entry<Long, Long> next() {
+                                    public Object next() {
                                         Long value = new Long(i++);
-                                        return new Entry<Long, Long>(value, value);
+                                        return new Entry(value, value);
                                     }
                                     public void remove() {
                                         throw new UnsupportedOperationException();
@@ -116,7 +116,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return null;
     }
 
-    protected StringBuilder addExtraAttributes(StringBuilder buf) throws JspTagException {
+    protected StringBuffer addExtraAttributes(StringBuffer buf) throws JspTagException {
         String options = tag.getOptions();
         if (options != null) {
             int i = options.indexOf("extra:");
@@ -144,11 +144,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         eh = getEnumHandler(node, field);
         if (eh != null) {
-            log.debug("using enum handler");
             return eh.htmlInput(node, field, search);
         }
         // default implementation.
-        StringBuilder show =  new StringBuilder("<input type=\"text\" class=\"small " + getClasses(node, field) + "\" size=\"80\" ");
+        StringBuffer show =  new StringBuffer("<input type=\"text\" class=\"small " + getClasses(node, field) + "\" size=\"80\" ");
         addExtraAttributes(show);
         Object value = getFieldValue(node, field, ! search);
         show.append("name=\"").append(prefix(field.getName())).append("\" ");
@@ -158,23 +157,15 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         show.append("\" />");
         return show.toString();
     }
-    /**
-     */
-
-    //public String htmlInputId(Node node, Field field) throws JspTagException {
-    //return prefix(field.getName());
-    //}
 
     /**
      * Returns the field value as specified by the client's post.
-     * @param node This parameter could be used if the client does not fully specify the field's value (possible e.g. with Date fields). The existing specification could be used then.
      */
-    protected Object getFieldValue(Node node, Field field) throws JspTagException {
+    protected Object getFieldValue(Field field) throws JspTagException {
         Object found = tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
         if (interpretEmptyAsNull(field) && "".equals(found)) found = null;
         return found;
     }
-
     protected boolean interpretEmptyAsNull(Field field) {
         return true;
     }
@@ -187,11 +178,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * Returns the field value to be used in the page.
      */
     protected Object getFieldValue(Node node, Field field, boolean useDefault) throws JspTagException {
-        Object value = getFieldValue(node, field);
+        Object value = getFieldValue(field);
         if (value == null) {
             String fieldName = field.getName();
             if (node != null) {
-                value = node.isNull(fieldName) ? null : node.getStringValue(fieldName);
+                value = node.isNull(fieldName) ? null : node.getValue(fieldName);
             } else if (useDefault) {
                 value = field.getDataType().getDefaultValue();
             }
@@ -204,8 +195,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (eh != null) {
             return eh.checkHtmlInput(node, field, errors);
         }
-        Object fieldValue = getFieldValue(node, field);
-        DataType<Object> dt = field.getDataType();
+        Object fieldValue = getFieldValue(field);
+        DataType dt = field.getDataType();
         if (fieldValue == null) {
             log.debug("Field value not found in context, using existing value ");
             fieldValue = getFieldValue(node, field, node == null);
@@ -216,7 +207,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (log.isDebugEnabled()) {
             log.debug("Value for field " + field + ": " + fieldValue);
         }
-        Collection<LocalizedString> col = dt.validate(fieldValue, node, field);
+        Collection col = dt.validate(fieldValue, node, field);
         if (col.size() == 0) {
             // do actually set the field, because some datatypes need cross-field checking
             // also in an mm:form, you can simply commit.
@@ -242,22 +233,24 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                     }
                 }
             }
-            if (errors && ! field.isReadOnly()) {
+            if (errors) {
                 return "<div id=\"" + prefixError(field.getName()) + "\" class=\"mm_check_noerror\"> </div>";
             } else {
                 return "";
             }
         } else {
             FormTag form = tag.getFormTag(false, null);
-            if (form != null &&  ! field.isReadOnly()) {
+            if (form != null) {
                 form.setValid(false);
             }
-            if (errors && ! field.isReadOnly()) {
-                StringBuilder show = new StringBuilder("<div id=\"");
+            if (errors) {
+                StringBuffer show = new StringBuffer("<div id=\"");
                 show.append(prefixError(field.getName()));
                 show.append("\" class=\"mm_check_error\">");
                 Locale locale =  tag.getLocale();
-                for (LocalizedString error : col) {
+                Iterator i = col.iterator();
+                while (i.hasNext()) {
+                    LocalizedString error = (LocalizedString) i.next();
                     show.append("<span class='" + error.getKey() + "'>");
                     Xml.XMLEscape(error.get(locale), show);
                     show.append("</span>");
@@ -304,12 +297,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return "( [" + field.getName() + "] =" + getSearchValue(string, field, getOperator(field)) + ")";
     }
 
-
-
     // unused, only finalized to enforce using {@link #getOperator(Field)}
     protected final void getOperator() {
     }
-
 
     /**
      * The operator to be used by whereHtmlInput(field, query)
@@ -332,6 +322,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return string;
         }
     }
+
 
     /**
      * @since MMBase-1.7
@@ -364,22 +355,16 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         eh = getEnumHandler(null, field);
         if (eh != null) {
-            log.debug("Using enum");
             return eh.whereHtmlInput(field, query);
         }
         String value = findString(field);
         if (value != null) {
-
             String fieldName = field.getName();
             if (query.getSteps().size() > 1) {
                 fieldName = field.getNodeManager().getName()+"."+fieldName;
             }
             int operator = getOperator(field);
-            String searchValue = getSearchValue(value, field, operator);
-            if (log.isDebugEnabled()) {
-                log.debug("Found value " + value + " -> " + searchValue + " for field " + fieldName);
-            }
-            Constraint con = Queries.createConstraint(query, fieldName, operator, searchValue);
+            Constraint con = Queries.createConstraint(query, fieldName, operator, getSearchValue(value, field, operator));
             Queries.addConstraint(query, con);
             return con;
         } else {
@@ -405,12 +390,14 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     protected String prefixID(String s) throws JspTagException {
         String prefix = tag.getPrefix();
-        return "mm_" + prefix + (prefix.length() != 0 ? "_" : "") + s;
+        if (! prefix.equals("")) prefix += "_";
+        return "mm_" + prefix + s;
     }
 
     protected String prefixError(String s) throws JspTagException {
         String prefix = tag.getPrefix();
-        return "mm_check_" + prefix + (prefix.length() != 0 ? "_" : "") + s;
+        if (! prefix.equals("")) prefix += "_";
+        return "mm_check_" + prefix + s;
     }
 
 

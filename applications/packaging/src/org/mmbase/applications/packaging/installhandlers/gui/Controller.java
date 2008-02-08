@@ -49,10 +49,10 @@ public class Controller {
 	public boolean uninstallPackage(String id,String wv,String wp) {
 		PackageInterface p=null;
 		if (wv.equals("best")) {
-			p=PackageManager.getPackage(id);
+			p=(PackageInterface)PackageManager.getPackage(id);
 		} else {
 			// ok lets decode the version and provider we want
-			p=PackageManager.getPackage(id,wv,wp);
+			p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
 		}
 		if (p!=null) {
 			UninstallManager.uninstallPackage(p);
@@ -64,10 +64,10 @@ public class Controller {
 	public boolean uninstallBundle(String id,String wv,String wb) {
 		BundleInterface b=null;
 		if (wv.equals("best")) {
-			b=BundleManager.getBundle(id);
+			b=(BundleInterface)BundleManager.getBundle(id);
 		} else {
 			// ok lets decode the version and provider we want
-			b=BundleManager.getBundle(id,wv,wb);
+			b=(BundleInterface)BundleManager.getBundle(id,wv,wb);
 		}
 		if (b!=null) {
 			UninstallManager.uninstallBundle(b);
@@ -79,10 +79,10 @@ public class Controller {
 	public boolean installPackage(String id,String wv,String wp) {
 		PackageInterface p=null;
 		if (wv.equals("best")) {
-			p=PackageManager.getPackage(id);
+			p=(PackageInterface)PackageManager.getPackage(id);
 		} else {
 			// ok lets decode the version and provider we want
-			p=PackageManager.getPackage(id,wv,wp);
+			p=(PackageInterface)PackageManager.getPackage(id,wv,wp);
 		}
 		if (p!=null) {
 			InstallManager.installPackage(p);
@@ -94,10 +94,10 @@ public class Controller {
 	public boolean installBundle(String id,String wv,String wb) {
 		BundleInterface b=null;
 		if (wv.equals("best")) {
-			b=BundleManager.getBundle(id);
+			b=(BundleInterface)BundleManager.getBundle(id);
 		} else {
 			// ok lets decode the version and provider we want
-			b=BundleManager.getBundle(id,wv,wb);
+			b=(BundleInterface)BundleManager.getBundle(id,wv,wb);
 		}
 		if (b!=null) {
 			InstallManager.installBundle(b);

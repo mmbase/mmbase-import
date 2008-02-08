@@ -1,9 +1,0 @@
-<provider>
-	<info name="MMBase" description="Dit is een test provider" />
-
-	<application name="MyNews">
-		<user name="MMBase" />
-	</application>
-
-	<userinfo user="MMBase" password="hebebs" />
-</provider>

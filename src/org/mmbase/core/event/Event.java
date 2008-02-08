@@ -1,4 +1,5 @@
 /*
+ * Created on 6-sep-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -15,7 +16,7 @@ import org.mmbase.module.core.MMBase;
  * 
  * @author  Ernst Bunders
  * @since   MMBase-1.8
- * @version $Id: Event.java,v 1.12 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: Event.java,v 1.8.2.1 2007-02-27 13:32:43 michiel Exp $
  */
 public abstract class Event implements Serializable, org.mmbase.util.PublicCloneable {
 
@@ -25,7 +26,7 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
     public static final int TYPE_CHANGE   = 1;
     public static final int TYPE_DELETE   = 2;
 
-    protected int eventType = TYPE_UNSPECIFIED;
+    protected int    eventType = TYPE_UNSPECIFIED;
     protected String machine;
 
     /**
@@ -62,7 +63,6 @@ public abstract class Event implements Serializable, org.mmbase.util.PublicClone
     public Event(String machine) {
         this(machine, TYPE_UNSPECIFIED);
     }
-
     /**
      * @since MMBase-1.8.4
      */

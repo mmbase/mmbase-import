@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: OnShrinkTag.java,v 1.3 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: OnShrinkTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
  */
 public class OnShrinkTag extends TreeReferrerTag implements DepthProvider { 
     private static final Logger log = Logging.getLoggerInstance(OnShrinkTag.class);
@@ -27,7 +27,7 @@ public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
     }
 
     public int doStartTag() throws JspTagException {
-        DepthProvider dp = findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this));
+        DepthProvider dp =  (DepthProvider) findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this));
         depth = dp.getDepth();
         return EVAL_BODY_BUFFERED;
     }
@@ -35,7 +35,7 @@ public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
 
     public int doAfterBody() throws JspException {
         TreeProvider tp =  findTreeProvider();
-        Stack<ShrinkTag.Entry> stack = tp.getShrinkStack();
+        Stack stack = tp.getShrinkStack();
         String body = bodyContent != null ? bodyContent.getString() : "";
         stack.push(new ShrinkTag.Entry(depth, body));
         if (log.isDebugEnabled()) {

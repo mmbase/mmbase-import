@@ -6,7 +6,6 @@
 <title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
-
 <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
 <mm:import externid="node_number" required="true" from="parameters"/>
@@ -14,7 +13,7 @@
 
 <mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
 
-<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
+<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode" commitonclose="false">
 
   <script type="text/javascript">
     var validator = new MMBaseValidator();
@@ -29,6 +28,7 @@
     validator.lang = '${config.lang}';
     validator.setup(window);
   </script>
+
 
 <%
    if (urlStack.size() == 0) {
@@ -96,8 +96,8 @@
 <tr>
 <td colspan="3" class="buttons">
 <p>
-<input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
-<input class="submit"  id="savebutton" type ="submit" name="save" value="save" />
+<input class="submit"   type ="submit" name="ok" id="okbutton" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="save" id="savebutton" value="save" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <mm:maydelete>
    <!-- input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" /-->

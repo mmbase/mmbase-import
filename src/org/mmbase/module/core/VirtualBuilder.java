@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.25 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: VirtualBuilder.java,v 1.22 2006-01-16 15:17:59 michiel Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
@@ -166,18 +166,18 @@ public class VirtualBuilder extends MMObjectBuilder {
      * Get text from a blob field from a database.
      * @since MMBase-1.8
      */
-    public Map<String, CoreField> getFields(MMObjectNode node) {
-        Map<String, CoreField> res = new HashMap<String, CoreField>();
+    public Map getFields(MMObjectNode node) {
+        Map res = new HashMap();
         // determine fields and field types
-        Map<String, Object> values = node.getValues();
+        Map values = node.getValues();
         synchronized(values) {
-            Iterator<Map.Entry<String, Object>> i = values.entrySet().iterator();
+            Iterator i = values.entrySet().iterator();
             while (i.hasNext()) {
-                Map.Entry<String, Object> entry = i.next();
-                String fieldName = entry.getKey();
+                Map.Entry entry = (Map.Entry) i.next();
+                String fieldName = (String) entry.getKey();
                 Object value = entry.getValue();
                 if (value == null) value = new Object();
-                DataType<? extends Object> fieldDataType = DataTypes.createDataType("field", value.getClass());
+                DataType fieldDataType = DataTypes.createDataType("field", value.getClass());
                 int type = Fields.classToType(value.getClass());
                 CoreField fd = Fields.createField(fieldName, type, Field.TYPE_UNKNOWN, Field.STATE_VIRTUAL, fieldDataType);
                 fd.finish();

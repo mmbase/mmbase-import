@@ -136,11 +136,4 @@
 
   </fieldlist>
 
-  <indexlist>
-    <index name="versionsUnique" unique="true">
-      <indexfield name="name" />
-      <indexfield name="type" />
-    </index>
-  </indexlist>
-
 </builder>

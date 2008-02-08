@@ -44,7 +44,7 @@ import org.mmbase.util.functions.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
  * @author Marcel Maatkamp, VPRO Digitaal
- * @version $Id: Jumpers.java,v 1.9 2008-02-06 15:40:14 michiel Exp $
+ * @version $Id: Jumpers.java,v 1.6 2007-11-27 15:17:33 michiel Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -467,7 +467,6 @@ public class Jumpers extends MMObjectBuilder {
 
     // database.put
     private void jumperDatabaseCache_put(String number, String url) {
-        if (jumpercachebuilder == null) return;
 
         String oldurl = null;
         List nodes = null;
@@ -510,9 +509,7 @@ public class Jumpers extends MMObjectBuilder {
 
     // database.remove
     private void jumperDatabaseCache_remove(String number) {
-        if (jumpercachebuilder == null) return;
-
-        List nodes = null;
+       List nodes = null;
         try {
             NodeSearchQuery query = new NodeSearchQuery(jumpercachebuilder);
             StepField keyField = query.getField(jumpercachebuilder.getField("key"));
@@ -529,6 +526,7 @@ public class Jumpers extends MMObjectBuilder {
                 node.getBuilder().removeNode(node);
             }
         }
+
     }
 
     /*
@@ -568,12 +566,10 @@ public class Jumpers extends MMObjectBuilder {
                 }
             }
         } else {
-            String nodeNumber = "" + event.getNodeNumber();
-            if (event.isLocal() || jumpCache.containsKey(nodeNumber)) {
-                MMObjectNode node = Jumpers.this.getNode(nodeNumber);
-                if (node != null && strategy.contains(node)) {
-                    Jumpers.this.delJumpCache(nodeNumber, event.isLocal());
-                }
+            MMObjectNode node = Jumpers.this.getNode(event.getNodeNumber());
+            if (node != null && strategy.contains(node)) {
+                Jumpers.this.delJumpCache("" + event.getNodeNumber(), event.isLocal());
+
             }
         }
         super.notify(event);

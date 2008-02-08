@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author vpro (as org.mmbase.util.URLEscape, still present in SCAN application)
  * @author Michiel Meeuwissen
- * @version $Id: UrlEscaper.java,v 1.1 2007-07-24 09:57:43 michiel Exp $
+ * @version $Id: UrlEscaper.java,v 1.1.2.1 2007-07-24 09:57:58 michiel Exp $
  */
 public class UrlEscaper extends ReaderTransformer{
 

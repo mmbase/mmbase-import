@@ -28,8 +28,6 @@
   |
   <a href="<mm:url page="urls.jsp" />" >urls</a>
   |
-  <a href="<mm:url page="components.jsp" />" >components</a>
-  |
   <a href="<mm:url page="time.jsp" />" >time</a>
   |
   <a href="<mm:url page="listdelete.jsp" />" >list &amp; delete</a>
@@ -39,8 +37,6 @@
   <a href="<mm:url page="preedit.jsp" />" >edit</a>
   |
   <a href="<mm:url page="edittag.jsp" />" >edittag</a>
-  |
-  <a href="<mm:url page="transactions.jsp" />" >transactions</a>
   |
   <a href="<mm:url page="nodemanagerinfo.jsp" />" >nodemanagerinfo</a>
   |

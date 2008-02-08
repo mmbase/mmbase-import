@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.25 2007-11-29 14:47:19 mark Exp $
+  @version $Id: prompts.xsl,v 1.20.2.6 2007-11-29 14:35:02 mark Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -117,7 +117,6 @@
 <xsl:template name="prompt_search_term" >Termen</xsl:template>
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Zoek" /></xsl:template>
 <xsl:variable name="tooltip_search" >Zoek een toe te voegen item</xsl:variable>
-<xsl:variable name="tooltip_search_all">Zoek een toe te voegen item</xsl:variable>
 <xsl:template name="prompt_search_title" >Bevat</xsl:template>
 <xsl:template name="prompt_search_owner" >Eigenaar is</xsl:template>
 <xsl:template name="prompt_search_number" >Nummer is</xsl:template>
@@ -144,6 +143,7 @@
   <xsl:call-template name="prompt_search_age" >
     <xsl:with-param name="age" select="$age" />
   </xsl:call-template>
+  <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   <xsl:value-of select="$title" disable-output-escaping="yes"  />
   <xsl:if test="$searchvalue" >
     - zoek op <xsl:value-of select="$searchvalue" />

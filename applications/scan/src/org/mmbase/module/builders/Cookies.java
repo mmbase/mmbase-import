@@ -16,17 +16,17 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Cookies.java,v 1.13 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Cookies.java,v 1.12 2005-01-25 12:45:18 pierre Exp $
  */
 public class Cookies extends MMObjectBuilder {
 
     private static Logger log = Logging.getLoggerInstance(Cookies.class.getName());
 
     // remember the 250 most used cookies
-    LRUHashtable<String, Integer> cache = new LRUHashtable<String, Integer>(250);
+    LRUHashtable cache = new LRUHashtable(250);
 
     // also remember them the other way around (should be changed)
-    LRUHashtable<Integer, String> cache2 = new LRUHashtable<Integer, String>(250);
+    LRUHashtable cache2 = new LRUHashtable(250);
 
         /**
         * replace call, when called in format MMBASE-BUILDER-users-xxxxx
@@ -53,7 +53,7 @@ public class Cookies extends MMObjectBuilder {
     public int getNumber(String key) {
 
                 // check if we have this key allready in cache
-        Integer i=cache.get(key);
+        Integer i=(Integer)cache.get(key);
         if (i!=null) {
                         // we have it in the cache so return that
             if (i.intValue()!=-1) {
@@ -151,14 +151,14 @@ public class Cookies extends MMObjectBuilder {
         // well first signal the users builder
         Users users=(Users)mmb.getMMObject("users");
         if (users!=null) {
-            String key=cache2.get(number);
+            String key=(String)cache2.get(number);
             users.flushCache(key);
         }
 
         // now signal the people builder
         People people=(People)mmb.getMMObject("people");
         if (people!=null) {
-            String key=cache2.get(number);
+            String key=(String)cache2.get(number);
             people.flushCache(key);
         }
     }

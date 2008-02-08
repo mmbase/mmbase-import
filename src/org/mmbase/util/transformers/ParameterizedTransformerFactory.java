@@ -20,15 +20,14 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ParameterizedTransformerFactory.java,v 1.7 2007-08-04 07:45:52 michiel Exp $
  */
 
-public interface ParameterizedTransformerFactory<T extends Transformer>  {
+public interface ParameterizedTransformerFactory  {
 
     /**
      * Creates a parameterized transformer.
      */
-    T createTransformer(Parameters parameters);
+    Transformer createTransformer(Parameters parameters);
 
     /**
      * Create  empty <code>Parameters</code> object for use with {@link #createTransformer(Parameters)}.

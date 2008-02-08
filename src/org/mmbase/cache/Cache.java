@@ -12,17 +12,17 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.util.*;
-import org.mmbase.cache.implementation.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.Cacheable;
 
 /**
  * A base class for all Caches. Extend this class for other caches.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.49 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: Cache.java,v 1.36.2.1 2007-01-03 09:16:27 nklasens Exp $
  */
-abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
+abstract public class Cache implements SizeMeasurable, Map {
 
     private static final Logger log = Logging.getLoggerInstance(Cache.class);
 
@@ -32,36 +32,33 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @since MMBase-1.8
      */
-    private CacheImplementationInterface<K, V> implementation;
+    private CacheImplementationInterface implementation;
 
     /**
      * The number of times an element was succesfully retrieved from this cache.
      */
-    private long hits = 0;
+    private int hits = 0;
 
     /**
      * The number of times an element could not be retrieved from this cache.
      */
-    private long misses = 0;
+    private int misses = 0;
 
     /**
      * The number of times an element was committed to this cache.
      */
-    private long puts = 0;
+    private int puts = 0;
 
     public Cache(int size) {
-        // See: http://www.mmbase.org/jira/browse/MMB-1486
-        implementation = new LRUCache<K, V>(size);
-        //implementation = new LRUHashtable<K, V>(size);
-
+        implementation = new LRUHashtable(size);
         log.service("Creating cache " + getName() + ": " + getDescription());
     }
 
-    void setImplementation(String clazz, Map<String,String> configValues) {
+    void setImplementation(String clazz, Map configValues) {
         try {
-            Class<?> clas = Class.forName(clazz);
+            Class clas = Class.forName(clazz);
             if (implementation == null || (! clas.equals(implementation.getClass()))) {
-                implementation = (CacheImplementationInterface<K,V>) clas.newInstance();
+                implementation = (CacheImplementationInterface) clas.newInstance();
                 implementation.config(configValues);
             }
         } catch (ClassNotFoundException cnfe) {
@@ -112,8 +109,8 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         return -1;
     }
 
-    public Set<Map.Entry<K,V>> entrySet() {
-        if (! active) return new HashSet<Map.Entry<K,V>>();
+    public Set entrySet() {
+        if (! active) return new HashSet();
         return implementation.entrySet();
     }
 
@@ -142,11 +139,11 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * Like 'get' of Maps but considers if the cache is active or not,  and the cache policy of the key.
      */
-    public  V get(Object key) {
+    public  Object get(Object key) {
         if (!checkCachePolicy(key)) {
             return null;
         }
-        V res = implementation.get(key);
+        Object res = implementation.get(key);
         if (res != null) {
             hits++;
         } else {
@@ -159,7 +156,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * Like 'put' of LRUHashtable but considers if the cache is active or not.
      *
      */
-    public V put(K key, V value) {
+    public Object put(Object key, Object value) {
         if (!checkCachePolicy(key)) {
             return null;
         }
@@ -171,7 +168,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * Returns the number of times an element was succesfully retrieved
      * from the table.
      */
-    public long getHits() {
+    public int getHits() {
         return hits;
     }
 
@@ -179,14 +176,14 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * Returns the number of times an element cpould not be retrieved
      * from the table.
      */
-    public long getMisses() {
+    public int getMisses() {
         return misses;
     }
 
     /**
      * Returns the number of times an element was committed to the table.
      */
-    public long getPuts() {
+    public int getPuts() {
         return puts;
     }
 
@@ -207,7 +204,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
         return implementation.containsKey(key);
     }
 
-    public int getCount(K key) {
+    public int getCount(Object key) {
         return implementation.getCount(key);
     }
 
@@ -271,9 +268,9 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
             size += ((SizeMeasurable) implementation).getByteSize(sizeof);
         } else {
             // sizeof.sizeof(implementation) does not work because this.equals(implementation)
-            Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
+            Iterator i = implementation.entrySet().iterator();
             while(i.hasNext()) {
-                Map.Entry<K, V> entry = i.next();
+                Map.Entry entry = (Map.Entry) i.next();
                 size += sizeof.sizeof(entry.getKey());
                 size += sizeof.sizeof(entry.getValue());
             }
@@ -290,9 +287,9 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     public int getCheapByteSize() {
         int size = 0;
         SizeOf sizeof = new SizeOf();
-        Iterator<Map.Entry<K, V>> i = implementation.entrySet().iterator();
+        Iterator i = implementation.entrySet().iterator();
         while(i.hasNext()) {
-            Map.Entry<K, V> entry = i.next();
+            Map.Entry entry = (Map.Entry) i.next();
             size += sizeof.sizeof(entry.getKey());
             size += sizeof.sizeof(entry.getValue());
             sizeof.clear();
@@ -335,7 +332,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
 
         if (!(o instanceof Cache))
             return false;
-        Cache<?,?> c = (Cache<?,?>) o;
+        Cache c = (Cache) o;
         if (!c.getName().equals(getName()))
             return false;;
         return implementation.equals(o);
@@ -363,7 +360,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#keySet()
      */
-    public Set<K> keySet() {
+    public Set keySet() {
         return implementation.keySet();
     }
 
@@ -371,7 +368,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#putAll(java.util.Map)
      */
-    public void putAll(Map<? extends K,? extends V> t) {
+    public void putAll(Map t) {
         implementation.putAll(t);
     }
 
@@ -379,7 +376,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#remove(java.lang.Object)
      */
-    public V remove(Object key) {
+    public Object remove(Object key) {
         return implementation.remove(key);
     }
 
@@ -387,7 +384,7 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
     /**
      * @see java.util.Map#values()
      */
-    public Collection<V> values() {
+    public Collection values() {
         return implementation.values();
     }
 
@@ -397,8 +394,77 @@ abstract public class Cache<K, V> implements SizeMeasurable, Map<K, V> {
      * @see CacheManager#putCache(Cache)
      */
 
-    public Cache<K,V> putCache() {
+    public Cache putCache() {
         return CacheManager.putCache(this);
+    }
+
+    /**
+     * @see CacheManager#getCache(String)
+     */
+    protected static Cache putCache(Cache cache) {
+        return CacheManager.putCache(cache);
+    }
+
+    /**
+     * @see CacheManager#getCache(String)
+     */
+    public static Cache getCache(String name) {
+        return CacheManager.getCache(name);
+    }
+
+    /**
+     * @see CacheManager#getCaches
+     */
+    public static Set getCaches() {
+        return CacheManager.getCaches();
+    }
+
+    /**
+     * @see CacheManager#getTotalByteSize
+     */
+    public static int getTotalByteSize() {
+        return CacheManager.getTotalByteSize();
+    }
+
+
+    public static void main(String args[]) {
+        Cache mycache = new Cache(20000000) {
+                public String getName()        { return "test cache"; }
+                public String getDescription() { return ""; }
+            };
+        Runtime rt = Runtime.getRuntime();
+        rt.gc();
+        long usedBefore = rt.totalMemory() - rt.freeMemory();
+
+        System.out.println("putting some strings in cache");
+        mycache.put("aaa", "AAA"); // 6 bytes
+        mycache.put("bbb", "BBB"); // 6 bytes
+
+        System.out.println("putting an hashmap in cache");
+        Map m = new HashMap();
+        m.put("ccc", "CCCCCC"); // 9
+        m.put("ddd", "DDD");    // 6
+        m.put("abc", "EEE");    // 6
+        mycache.put("eee", m);  // 3
+
+
+        //String[] list = new String[1000000];
+        //ArrayList list = new ArrayList();
+        // should cause 16M of char
+        for (int i = 1000000; i < 2000000; i++) {
+            mycache.put("a" + 1000000 + i, "b" + 1000000 + i);
+            //list[i - 1000000] = "a" + i + "b" + i;
+            //list.add("a" + i + "b" + i);
+            //list.add(new String( new byte[] {}).intern());
+        }
+        rt.gc();
+
+        long usedAfter = rt.totalMemory() - rt.freeMemory();
+
+        System.out.println("1M of String costs "  + (usedAfter - usedBefore) + " bytes");
+        System.out.println("Sizeof reports " + SizeOf.getByteSize(mycache));
+        System.out.println("size of cache: " + mycache.getByteSize() + " ");
+
     }
 
 }

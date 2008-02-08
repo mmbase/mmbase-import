@@ -171,7 +171,7 @@
 			if (crossMonthObj != null){crossMonthObj.visibility="hidden"}
 			if (crossYearObj !=	null){crossYearObj.visibility="hidden"}
 
-		    showElement( 'SELECT' );
+	    	showElement( 'SELECT' );
 			showElement( 'APPLET' );
 		}
 	}

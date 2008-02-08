@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../../applications/buildbase.xml" > ]
+>
+
 <project name="MMBase A-Select authentication" default="dependent.jar" basedir=".">
-  <property name="java.source.version" value="1.5" />
   <property name="project.name"   value="aselect" />
   <property name="project.package"   value="org/mmbase/security/implementation/aselect" />
 
@@ -13,7 +16,7 @@
   <property name="project.classes.dir"      location="../../applications/cloudcontext/build/classes" />
   <property name="project.classes.includes" value="**/*.class,**/*.properties,org/mmbase/config/builders/**,org/mmbase/config/applications/**" />
 
-  <import file="../../applications/buildbase-include.xml" />
+  &base;
 
   <target name="cloudcontext">
     <echo message="${applications.dir}/cloudcontext" />

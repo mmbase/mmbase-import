@@ -12,6 +12,7 @@ package org.mmbase.applications.email;
 
 import java.util.*;
 
+import java.io.*;
 import javax.mail.MessagingException;
 import javax.mail.util.ByteArrayDataSource;
 import javax.mail.internet.*;

@@ -70,7 +70,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: StringSearchConstraint.java,v 1.5 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: StringSearchConstraint.java,v 1.4 2005-04-25 14:56:57 pierre Exp $
  * @since MMBase-1.7
  */
 public interface StringSearchConstraint extends FieldConstraint {
@@ -136,7 +136,7 @@ public interface StringSearchConstraint extends FieldConstraint {
      *
      * @return The parameters, as an unmodifiable Map.
      */
-    Map<String,Object> getParameters();
+    Map getParameters();
 
     /**
      * Gets the match type.
@@ -148,7 +148,7 @@ public interface StringSearchConstraint extends FieldConstraint {
      *
      * @return The searchterms, as an unmodifiable List.
      */
-    List<String> getSearchTerms();
+    List getSearchTerms();
 
     /**
      * Returns a string representation of this StringSearchConstraint.

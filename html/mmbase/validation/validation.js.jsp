@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.42 2007-12-21 13:45:04 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.16 2007-12-21 13:43:31 michiel Exp $
  */
 var validators = new Array();
 

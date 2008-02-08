@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.64 2008-01-22 16:44:47 michiel Exp $
+ * @version $Id: Cloud.java,v 1.58.2.2 2007-10-17 08:54:31 michiel Exp $
  */
 public interface Cloud {
 
@@ -150,11 +150,6 @@ public interface Cloud {
      * @since  MMBase-1.6
      */
     public boolean mayRead(int number);
-
-    /**
-     * @since MMBase-1.9
-     */
-    public boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
@@ -575,6 +570,7 @@ public interface Cloud {
      * Retrieves a property previously set for this cloud. If this Cloud has a 'parent' cloud
      * (ie. this Cloud is a {@link Transaction}), then this will also mirror properties in this
      * parent cloud.
+     *
      * @see #setProperty(Object, Object)
      * @param key the key of the property
      * @return the property value
@@ -595,7 +591,7 @@ public interface Cloud {
      * Retrieves all properties previously set for this cloud.
      * @since MMBase-1.8
      */
-    public Map<Object, Object> getProperties();
+    public Map getProperties();
 
     /**
      * Returns all Function objects from a function set.
@@ -608,7 +604,7 @@ public interface Cloud {
      * @return a Set of {@link org.mmbase.util.functions.Function} objects.
      * @throws NotFoundException if the function set does not exist
      */
-    public Collection<Function<?>> getFunctions(String setName);
+    public Collection getFunctions(String setName);
 
     /**
      * Returns a Function object from a function set.

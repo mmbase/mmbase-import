@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.tree;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.*;
@@ -22,7 +23,7 @@ import org.mmbase.bridge.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BranchTag.java,v 1.2 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: BranchTag.java,v 1.1 2006-03-14 17:57:13 michiel Exp $
  * @todo   EXPERIMENTAL
  */
 public class BranchTag extends ContextReferrerTag implements QueryContainerReferrer {
@@ -49,7 +50,7 @@ public class BranchTag extends ContextReferrerTag implements QueryContainerRefer
 
 
     public int doStartTag() throws JspTagException {
-        GrowingTreeList tree = (findParentTag(TreeContainerTag.class, (String) container.getValue(this), true)).getTree();
+        GrowingTreeList tree = ((TreeContainerTag) findParentTag(TreeContainerTag.class, (String) container.getValue(this), true)).getTree();
         NodeManager nm = tree.getCloud().getNodeManager(nodeManager == Attribute.NULL ? "object" : nodeManager.getString(this));
         tree.grow(nm, role.getString(this), searchDir.getString(this));
         return EVAL_BODY;

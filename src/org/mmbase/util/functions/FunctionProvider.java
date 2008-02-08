@@ -19,20 +19,20 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.17 2007-11-25 18:25:49 nklasens Exp $
+ * @version $Id: FunctionProvider.java,v 1.11 2005-07-28 17:07:55 michiel Exp $
  */
 public abstract class FunctionProvider {
     private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
 
-    protected Map<String, Function<?>> functions = Collections.synchronizedMap(new HashMap<String, Function<?>>());
+    protected Map functions = Collections.synchronizedMap(new HashMap());
     /**
      * Every Function Provider provides least the 'getFunctions' function, which returns a Set of all functions which it provides.
      */
-    protected Function<Collection<Function<?>>> getFunctions = new AbstractFunction<Collection<Function<?>>>("getFunctions") {
+    protected Function getFunctions = new AbstractFunction("getFunctions", Parameter.EMPTY, ReturnType.COLLECTION) {
             {
                 setDescription("The 'getFunctions' returns the collections of al Function object which are available on this FunctionProvider");
             }
-            public Collection<Function<?>> getFunctionValue(Parameters arguments) {
+            public Object getFunctionValue(Parameters arguments) {
                 return getFunctions();
             }
         };
@@ -42,15 +42,17 @@ public abstract class FunctionProvider {
 
 
     /**
-     * The constructor of an FunctionProvider  guesses the functions using reflection.
+     * The constructor of an FunctionProvider two things. It adds the 'getFunction' function, and it
+     * guesses other function using reflection.
      * @todo Should this last thing not only be done on MMObjectBuilders?
      */
     public FunctionProvider() {
         // determine parameters through reflection
-        Map<String, Parameter<?>[]> parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap<String, Parameter<?>[]>());
+        Map parameterDefinitions =  Functions.getParameterDefinitonsByReflection(this.getClass(), new HashMap());
         try {
-            for (Map.Entry<String, Parameter<?>[]> entry : parameterDefinitions.entrySet()) {
-                Function<?> fun = newFunctionInstance(entry.getKey(), entry.getValue(), ReturnType.UNKNOWN);
+            for (Iterator i = parameterDefinitions.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Function fun = newFunctionInstance((String)entry.getKey(), (Parameter[])entry.getValue(), ReturnType.UNKNOWN);
                 fun.setDescription("Function automaticly found by reflection on public Parameter[] members");
                 addFunction(fun);
             }
@@ -59,7 +61,7 @@ public abstract class FunctionProvider {
         }
     }
 
-    protected  Function<?> newFunctionInstance(String name, Parameter<?>[] parameters, ReturnType returnType) {
+    protected  Function newFunctionInstance(String name, Parameter[] parameters, ReturnType returnType) {
         throw new UnsupportedOperationException("This class is not a fully implemented function-provider");
     }
 
@@ -67,14 +69,12 @@ public abstract class FunctionProvider {
     /**
      * Adds a function to the FunctionProvider. So, you can implement any function and add it to the
      * provider, to make it provide this function too.
-     * @return The function previously assigned with this name or <code>null</code> if no such function.
      */
-    public Function<?> addFunction(Function<?> function) {
-        Function<?> oldValue = functions.put(function.getName(), function);
+    public void addFunction(Function function) {
+        Object oldValue = functions.put(function.getName(), function);
         if (oldValue != null) {
             log.debug("Replaced " + oldValue + " by " + function);
         }
-        return oldValue;
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class FunctionProvider {
      * @return A new empty Parameters object, or <code>null</code> if no such function.
      */
     public Parameters createParameters(String functionName) {
-        Function<?> function = getFunction(functionName);
+        Function function = getFunction(functionName);
         if (function != null) {
             return function.createParameters();
         } else {
@@ -94,8 +94,8 @@ public abstract class FunctionProvider {
      * Executes a function, and returns the function value.
      * @return The function value or <code>null</code> if no such function.
      */
-    public Object getFunctionValue(String functionName, List<?> parameters) {
-        Function<?> function = getFunction(functionName);
+    public Object getFunctionValue(String functionName, List parameters) {
+        Function function = getFunction(functionName);
         if (function != null) {
             return function.getFunctionValueWithList(parameters);
         } else {
@@ -107,14 +107,14 @@ public abstract class FunctionProvider {
      * Returns the Function object with given name.
      * @return Function object or <code>null</code> if no such function is provided.
      */
-    public Function<?> getFunction(String functionName) {
-        return functions.get(functionName);
+    public Function getFunction(String functionName) {
+        return (Function)functions.get(functionName);
     }
 
     /**
      * Returns a Collection of all functions currently provided by the FunctionProvider.
      */
-    public Collection<Function<?>> getFunctions() {
+    public Collection getFunctions() {
         return Collections.unmodifiableCollection(functions.values());
     }
 

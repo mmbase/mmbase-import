@@ -16,6 +16,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.BasicSortOrder;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.95 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: Queries.java,v 1.77.2.5 2007-12-27 17:58:25 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -42,7 +43,7 @@ abstract public class Queries {
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
      * @param search string representation of the searchdir constant
-     * @return Searchdir constant as in {@link RelationStep}
+     * @return Searchdir constant (@link RelationStep)
      * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
@@ -143,11 +144,11 @@ abstract public class Queries {
             search = ClusterBuilder.getSearchDir(searchDir);
         }
 
-        List<String> snodes   = StringSplitter.split(startNodes);
-        List<String> tables   = StringSplitter.split(nodePath);
-        List<String> f        = StringSplitter.split(fields);
-        List<String> orderVec = StringSplitter.split(orderby);
-        List<String> d        = StringSplitter.split(directions);
+        List snodes   = StringSplitter.split(startNodes);
+        List tables   = StringSplitter.split(nodePath);
+        List f        = StringSplitter.split(fields);
+        List orderVec = StringSplitter.split(orderby);
+        List d        = StringSplitter.split(directions);
         try {
             // pitty that we can't use cloud.createQuery for this.
             // but all essential methods are on ClusterBuilder
@@ -287,10 +288,10 @@ abstract public class Queries {
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         if (stringValue == null) return null;
         try {
-            return Integer.valueOf(stringValue);
+            return new Integer(stringValue);
         } catch (NumberFormatException e) {
             try {
-                return Double.valueOf(stringValue);
+                return new Double(stringValue);
             } catch (NumberFormatException e2) {
                 throw new BridgeException("Operator requires number value ('" + stringValue + "' is not)");
             }
@@ -319,21 +320,25 @@ abstract public class Queries {
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart, Cloud cloud) {
         if (operator == OPERATOR_IN) {
-            SortedSet<Object> set;
+            SortedSet set;
             if (value instanceof SortedSet) {
-                set = (SortedSet<Object>)value;
+                set = (SortedSet)value;
             } else if (value instanceof NodeList) {
-                set = new TreeSet<Object>();
-                for (Node node : ((NodeList)value)) {
-                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, node.getNumber()));
+                set = new TreeSet();
+                NodeIterator i = ((NodeList)value).nodeIterator();
+                while (i.hasNext()) {
+                    Node node = i.nextNode();
+                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, new Integer(node.getNumber())));
                 }
             } else if (value instanceof Collection) {
-                set = new TreeSet<Object>();
-                for (Object o : ((Collection)value)) {
+                set = new TreeSet();
+                Iterator i = ((Collection)value).iterator();
+                while (i.hasNext()) {
+                    Object o = i.next();
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
                 }
             } else {
-                set = new TreeSet<Object>();
+                set = new TreeSet();
                 if (!(value == null || value.equals(""))) {
                     set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
                 }
@@ -409,9 +414,8 @@ abstract public class Queries {
      * @param datePart       The part of a DATETIME value that is to be checked
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
-    public static Constraint createConstraint(final Query query, final String fieldName, final int operator, final Object originalValue, final Object value2, final boolean caseSensitive, final int datePart) {
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive, int datePart) {
 
-        Object value = originalValue;
         StepField stepField = query.createStepField(fieldName);
         if (stepField == null) {
             throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
@@ -432,24 +436,25 @@ abstract public class Queries {
                 if (value instanceof String) { // it might be an alias!
                     if (cloud.hasNode((String) value)) {
                         Node node = cloud.getNode((String)value);
-                        value = Integer.valueOf(node.getNumber());
+                        value = new Integer(node.getNumber());
                     } else {
-                        value = -1; // non existing node number. Integer.parseInt((String) value);
+                        value = new Integer(-1);
                     }
                 } else if (value instanceof Collection) {  // or even more aliases!
-                    Collection col  = (Collection) value;
+                    Iterator i = ((Collection) value).iterator();
                     value = new ArrayList();
-                    List<Object> list = (List<Object>) value;
-                    for (Object v : col) {
+                    List list = (List) value;
+                    while (i.hasNext()) {
+                        Object v = i.next();
                         if (v instanceof Number) {
                             list.add(v);
                         } else {
                             String s = Casting.toString(v);
                             if (cloud.hasNode(s)) {
                                 Node node = cloud.getNode(s);
-                                list.add(node.getNumber());
+                                list.add(new Integer(node.getNumber()));
                             } else {
-                                list.add(-1);
+                                list.add(new Integer(-1));
                             }
 
                         }
@@ -464,22 +469,11 @@ abstract public class Queries {
                     // a bit of a hack, perhaps we need something like a 'searchCast' or so.
                     value = Casting.toString(value);
                 } else {
-                    Object castedValue = field.getDataType().cast(value, null, field);
-                    if (castedValue == null && value != null && fieldType == Field.TYPE_NODE) {
-                        // non existing node-number, like e.g. -1 are csated to null,
-                        // but that is incorrect when e..g the operator is GREATER
-                        castedValue = Casting.toInteger(value);
-                    }
-                    value = castedValue;
+                    value = field.getDataType().cast(value, null, field);
 
                 }
             }
-
             Object compareValue = getCompareValue(fieldType, operator, value, datePart, cloud);
-
-            if (log.isDebugEnabled()) {
-                log.debug(" " + originalValue + " -> " + value + " -> " + compareValue);
-            }
 
             if (operator > 0 && operator < OPERATOR_IN) {
                 if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
@@ -535,19 +529,20 @@ abstract public class Queries {
 
         if (c instanceof CompositeConstraint) {
             CompositeConstraint constraint = (CompositeConstraint) c;
-            List<Constraint> constraints = new ArrayList<Constraint>();
-            for (Constraint child :  constraint.getChilds()) {
-                Constraint cons = copyConstraint(child, sourceStep, query, step);
+            List constraints = new ArrayList();
+            Iterator i = constraint.getChilds().iterator();
+            while (i.hasNext()) {
+                Constraint cons = copyConstraint((Constraint) i.next(), sourceStep, query, step);
                 if (cons != null) constraints.add(cons);
             }
             int size = constraints.size();
             if (size == 0) return null;
-            if (size == 1) return constraints.get(0);
-            Iterator<Constraint> i = constraints.iterator();
+            if (size == 1) return (Constraint) constraints.get(0);
+            i = constraints.iterator();
             int op = constraint.getLogicalOperator();
-            Constraint newConstraint    = query.createConstraint(i.next(), op, i.next());
+            Constraint newConstraint    = query.createConstraint((Constraint) i.next(), op, (Constraint) i.next());
             while (i.hasNext()) {
-                newConstraint = query.createConstraint(newConstraint, op, i.next());
+                newConstraint = query.createConstraint(newConstraint, op, (Constraint) i.next());
             }
             query.setInverse(newConstraint, constraint.isInverse());
             return newConstraint;
@@ -577,18 +572,20 @@ abstract public class Queries {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
 
             // sigh
-            SortedSet<Object> set = new TreeSet<Object>();
+            SortedSet set = new TreeSet();
             int type   =  field.getType();
-            for (Object value : constraint.getValues()) {
+            Iterator k = constraint.getValues().iterator();
+            while (k.hasNext()) {
+                Object value = k.next();
                 switch(type) {
                 case Field.TYPE_INTEGER:
                 case Field.TYPE_LONG:
                 case Field.TYPE_NODE:
-                    value = Long.valueOf(Casting.toLong(value));
+                    value = new Long(Casting.toLong(value));
                     break;
                 case Field.TYPE_FLOAT:
                 case Field.TYPE_DOUBLE:
-                    value = Double.valueOf(Casting.toDouble(value));
+                    value = new Double(Casting.toDouble(value));
                     break;
                 case Field.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));
@@ -620,8 +617,10 @@ abstract public class Queries {
      * @since MMBase-1.7.1
 
      */
-    public static void copySortOrders(List<SortOrder> sortOrders, Step sourceStep,  Query query, Step step) {
-        for (SortOrder sortOrder : sortOrders) {
+    public static void copySortOrders(List sortOrders, Step sourceStep,  Query query, Step step) {
+        Iterator i = sortOrders.iterator();
+        while (i.hasNext()) {
+            SortOrder sortOrder = (SortOrder) i.next();
             StepField sourceField = sortOrder.getField();
             if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
             if (sortOrder instanceof DateSortOrder) {
@@ -667,7 +666,7 @@ abstract public class Queries {
      * @todo implement for normal query.
      * @return The new sort orders
      */
-    public static List<SortOrder> addSortOrders(Query query, String sorted, String directions) {
+    public static List addSortOrders(Query query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
         if (sorted == null) {
             return query.getSortOrders().subList(0, 0);
@@ -675,7 +674,7 @@ abstract public class Queries {
         if (directions == null) {
             directions = "";
         }
-        List<SortOrder> list = query.getSortOrders();
+        List list = query.getSortOrders();
         int initialSize = list.size();
 
         StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
@@ -709,7 +708,7 @@ abstract public class Queries {
      * @param complete string with leading digits
      * @return string with digits removed
      */
-    public static String removeDigits(String complete) {
+    protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
         while (Character.isDigit(complete.charAt(end))) {
             --end;
@@ -725,7 +724,7 @@ abstract public class Queries {
      * @param searchDirs add steps with these relation directions
      * @return The new steps.
      */
-    public static List<Step> addPath(Query query, String path, String searchDirs) {
+    public static List addPath(Query query, String path, String searchDirs) {
         if (path == null || path.equals("")) {
             return query.getSteps().subList(0, 0);
         }
@@ -733,7 +732,7 @@ abstract public class Queries {
             searchDirs = "";
         }
 
-        List<Step> list = query.getSteps();
+        List list = query.getSteps();
         int initialSize = list.size();
 
         StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
@@ -763,10 +762,9 @@ abstract public class Queries {
                 searchDir = searchDirsTokenizer.nextToken();
             }
 
-            if (cloud.hasRole(token) && pathTokenizer.hasMoreTokens()) {
-                if (cloud.hasNodeManager(token)) {
-                    // Ambigious path element '" + token + "', is both a role and a nodemanager
-                    // This is pretty common though. E.g. 'posrel'.
+            if (cloud.hasRole(token)) {
+                if (!pathTokenizer.hasMoreTokens()) {
+                    throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")");
                 }
                 String nodeManagerAlias = pathTokenizer.nextToken().trim();
                 String nodeManagerName = removeDigits(nodeManagerAlias);
@@ -802,13 +800,15 @@ abstract public class Queries {
      * @param fields a comma separated string of fields
      * @return The new stepfields
      */
-    public static List<StepField> addFields(Query query, String fields) {
-        List<StepField> result = new ArrayList<StepField>();
+    public static List addFields(Query query, String fields) {
+        List result = new ArrayList();
         if (fields == null || fields.equals("")) {
             return result;
         }
-
-        for (String fieldName : StringSplitter.split(fields)) {
+        List list = StringSplitter.split(fields);
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            String fieldName = (String)i.next();
             result.add(query.addField(fieldName));
         }
         return result;
@@ -836,8 +836,9 @@ abstract public class Queries {
 
         Step firstStep = null; // the 'default' step to which nodes are added. It is the first step which corresponds with the type of the first node.
 
-        for (String nodeAlias : StringSplitter.split(startNodes)) {
-                                                     // can be a string, prefixed with the step alias.
+        Iterator nodes = StringSplitter.split(startNodes).iterator();
+        while (nodes.hasNext()) {
+            String nodeAlias = (String) nodes.next(); // can be a string, prefixed with the step alias.
             Step step;                                // the step to which the node must be added (defaults to 'firstStep').
             String nodeNumber;                        // a node number or perhaps also a node alias.
             {
@@ -859,7 +860,9 @@ abstract public class Queries {
                     node = query.getCloud().getNode(nodeAlias);
                 }
                 NodeManager nodeManager = node.getNodeManager();
-                for (Step queryStep : query.getSteps()) {
+                Iterator i = query.getSteps().iterator();
+                while (i.hasNext()) {
+                    Step queryStep = (Step) i.next();
                     NodeManager queryNodeManager = query.getCloud().getNodeManager(queryStep.getTableName());
                     if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) {
                         // considering inheritance. ClusterBuilder is not doing that, but I think it is a bug.
@@ -872,10 +875,9 @@ abstract public class Queries {
                     // See also org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery
                     // specified a node which is not of the type of one of the steps.
                     // take as default the 'first' step (which will make the result empty, compatible with 1.6, bug #6440).
-                    firstStep = query.getSteps().get(0);
+                    firstStep = (Step) query.getSteps().get(0);
                 }
             }
-
             if (step == null) {
                 step = firstStep;
             }
@@ -909,7 +911,7 @@ abstract public class Queries {
             NodeQuery nq = (NodeQuery) query;
             count.addAggregatedField(nq.getNodeStep(), nq.getNodeManager().getField(resultName), type);
         } else {
-            List<StepField> fields = query.getFields();
+            List fields = query.getFields();
             if (fields.size() == 0) { // for non-distinct queries always the number fields would be available
                 throw new IllegalArgumentException("Cannot count queries with less than one field: " + query);
             }
@@ -918,7 +920,9 @@ abstract public class Queries {
                 // aha hmm. Well, we also find it ok if all fields are of one step, and 'number' is present
                 resultName = null;
                 Step step = null;
-                for (StepField sf : fields) {
+                Iterator i = fields.iterator();
+                while (i.hasNext()) {
+                    StepField sf = (StepField) i.next();
                     if (step == null) {
                         step = sf.getStep();
                     } else {
@@ -936,7 +940,7 @@ abstract public class Queries {
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
             } else {
                 // simply take this one field
-                StepField sf = fields.get(0);
+                StepField sf = (StepField) fields.get(0);
                 Step step = sf.getStep();
                 resultName = sf.getFieldName();
                 count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField(resultName), type);
@@ -983,18 +987,22 @@ abstract public class Queries {
      * @return The Step if found, otherwise null
      * @throws ClassCastException if list does not contain only Steps
      */
-    public static Step searchStep(List<Step> steps, String stepAlias) {
+    public static Step searchStep(List steps, String stepAlias) {
         if (log.isDebugEnabled()) {
             log.debug("Searching '" + stepAlias + "' in " + steps);
         }
         // first try aliases
-        for (Step step : steps) {
+        Iterator i = steps.iterator();
+        while (i.hasNext()) {
+            Step step = (Step)i.next();
             if (stepAlias.equals(step.getAlias())) {
                 return step;
             }
         }
         // if no aliases found, try table names
-        for (Step step : steps) {
+        i = steps.iterator();
+        while (i.hasNext()) {
+            Step step = (Step)i.next();
             if (stepAlias.equals(step.getTableName())) {
                 return step;
             }
@@ -1108,13 +1116,15 @@ abstract public class Queries {
      * @since MMBase-1.8
      */
     public static NodeQuery addRelationFields(NodeQuery q, String role, String relationFields, String sortOrders) {
-        List<String> list = StringSplitter.split(relationFields);
-        List<String> orders = StringSplitter.split(sortOrders);
-        Iterator<String> j = orders.iterator();
-        for (String fieldName : list) {
+        List list = StringSplitter.split(relationFields);
+        List orders = StringSplitter.split(sortOrders);
+        Iterator i = list.iterator();
+        Iterator j = orders.iterator();
+        while (i.hasNext()) {
+            String fieldName = (String)i.next();
             StepField sf = q.addField(role + "." + fieldName);
             if (j.hasNext()) {
-                String so = j.next();
+                String so = (String) j.next();
                 q.addSortOrder(sf, getSortOrder(so));
             }
         }
@@ -1128,15 +1138,17 @@ abstract public class Queries {
      * @return The changed Query
      */
     public static Query sortUniquely(final Query q) {
-        List<Step> steps = null;
+        List steps = null;
 
         // remove the ones which are already sorted
-        for (SortOrder sortOrder : q.getSortOrders()) {
+        Iterator i = q.getSortOrders().iterator();
+        while (i.hasNext()) {
+            SortOrder sortOrder = (SortOrder)i.next();
             if (sortOrder.getField().getFieldName().equals("number")) {
                 Step step = sortOrder.getField().getStep();
                 if (steps == null) {
                     // instantiate new ArrayList only if really necessary
-                    steps = new ArrayList<Step>(q.getSteps());
+                    steps = new ArrayList(q.getSteps());
                 }
                 steps.remove(step);
             }
@@ -1145,7 +1157,10 @@ abstract public class Queries {
             steps = q.getSteps();
         }
         // add sort order on the remaining ones:
-        for (Step step : steps) {
+        i = steps.iterator();
+        while (i.hasNext()) {
+            Step step = (Step)i.next();
+            assert step != null;
             StepField sf = q.createStepField(step, "number");
             if (sf == null) {
                 throw new RuntimeException("Create stepfield for 'number' field returned null!");
@@ -1160,8 +1175,10 @@ abstract public class Queries {
      * @since MMBase-1.8
      */
     public static Query addSortedFields(Query q) {
-        List<StepField> fields = q.getFields();
-        for (SortOrder order : q.getSortOrders()) {
+        List fields = q.getFields();
+        Iterator i = q.getSortOrders().iterator();
+        while (i.hasNext()) {
+            SortOrder order = (SortOrder) i.next();
             StepField field = order.getField();
             Step s = field.getStep();
             StepField sf = q.createStepField(s, q.getCloud().getNodeManager(s.getTableName()).getField(field.getFieldName()));
@@ -1191,7 +1208,7 @@ abstract public class Queries {
 
         }
         if (value instanceof Node) {
-            value = ((Node)value).getNumber();
+            value = new Integer(((Node)value).getNumber());
         }
         return value;
     }
@@ -1230,7 +1247,7 @@ abstract public class Queries {
         } else {
             // compare the results
             try {
-                result = ((Comparable<Object>)value).compareTo(value2);
+                result = ((Comparable)value).compareTo(value2);
             } catch (ClassCastException cce) {
                 // This should not occur, and indicates very odd values are being sorted on (i.e. byte arrays).
                 // warn and ignore this sortorder
@@ -1254,13 +1271,13 @@ abstract public class Queries {
      * @return -1 if node1 is smaller than node 2, 0 if both nodes are equals, and +1 is node 1 is greater than node 2.
      * @since MMBase-1.8
      */
-    public static int compare(Node node1, Node node2, List<SortOrder> sortOrders) {
+    public static int compare(Node node1, Node node2, List sortOrders) {
         if (node1 == null) return -1;
         if (node2 == null) return +1;
         int result = 0;
-        Iterator<SortOrder> i = sortOrders.iterator();
+        Iterator i = sortOrders.iterator();
         while (result == 0 && i.hasNext()) {
-            SortOrder order = i.next();
+            SortOrder order = (SortOrder) i.next();
             result = compare(node1, node2, order);
         }
         // if all fields match - return 0 as if equal

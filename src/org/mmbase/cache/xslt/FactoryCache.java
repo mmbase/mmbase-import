@@ -16,6 +16,8 @@ import javax.xml.transform.TransformerFactory;
 
 import java.io.File;
 import java.net.URL;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * A cache for XSL Transformer Factories.  There is one needed for
@@ -23,9 +25,10 @@ import java.net.URL;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.10 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: FactoryCache.java,v 1.7.2.1 2007-12-20 13:46:53 michiel Exp $
  */
-public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
+public class FactoryCache extends Cache {
+    private static final Logger log = Logging.getLoggerInstance(FactoryCache.class);
 
     private static int cacheSize = 50;
     private static FactoryCache cache;
@@ -37,7 +40,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
     static {
         cache = new FactoryCache(cacheSize);
-        cache.putCache();
+        putCache(cache);
     }
 
     public String getName() {
@@ -62,20 +65,26 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
         return getFactory(defaultDir);
     }
 
+    boolean warnedFeature = false;
     /**
      * Make a factory for a certain URIResolver.
      */
     public TransformerFactory getFactory(URIResolver uri) {
-        TransformerFactory tf =  get(uri);
+        TransformerFactory tf =  (TransformerFactory) get(uri);
         if (tf == null) {
             tf = TransformerFactory.newInstance();
-            try {
-                tf.setAttribute("http://saxon.sf.net/feature/version-warning", false);
-            } catch (IllegalArgumentException iae) {
-                // never mind
-            }
             tf.setURIResolver(uri);
             // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
+            try {
+                tf.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+            } catch (IllegalArgumentException iae) {
+                if (! warnedFeature) {
+                    log.warn(tf + ": " + iae.getMessage() + ". (subsequent messages logged on debug)");
+                    warnedFeature = true;
+                } else {
+                    log.debug(tf + ": " + iae.getMessage() + ".");
+                }
+            }
             put(uri, tf);
         }
         return tf;
@@ -89,7 +98,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
 
     public TransformerFactory getFactory(File cwd) {
         try {
-            TransformerFactory tf = get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
+            TransformerFactory tf =  (TransformerFactory) get(new URIResolver(new URL("file://" + cwd), true)); // quick access (true means: don't actually create an URIResolver)
             if (tf == null) {
                 // try again, but now construct URIResolver first.
                 return getFactory(new URIResolver(new URL("file://" + cwd)));
@@ -102,7 +111,7 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
     }
 
     public TransformerFactory getFactory(URL cwd) {
-        TransformerFactory tf =  get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
+        TransformerFactory tf =  (TransformerFactory) get(new URIResolver(cwd, true)); // quick access (true means: don't actually create an URIResolver)
         if (tf == null) {
             // try again, but now construct URIResolver first.
             return getFactory(new URIResolver(cwd));

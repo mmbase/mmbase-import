@@ -11,6 +11,10 @@ package org.mmbase.util.transformers;
 
 import java.util.*;
 import java.io.*;
+import java.util.regex.*;
+import org.mmbase.util.ResourceWatcher;
+import org.mmbase.util.xml.UtilReader;
+import org.mmbase.util.Entry;
 
 import org.mmbase.util.logging.*;
 
@@ -90,27 +94,27 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     protected class Status {
         int replaced = 0;
-        Set<Object> used = null;
+        Set used = null;
         {
-            if (replaceFirstAll) used = new HashSet<Object>();
+            if (replaceFirstAll) used = new HashSet();
         }
     }
     protected Status newStatus() {
         return new Status();
-
+        
     }
     /**
      * Implement this. Return true if a replacement done.
      */
     protected abstract boolean replace(String string, Writer w, Status status) throws IOException;
 
-    protected boolean replaceWord(StringBuilder word, Writer writer, Status status) throws IOException {
+    protected boolean replaceWord(StringBuffer word, Writer writer, Status status) throws IOException {
         int l = word.length();
-        StringBuilder postFix = null;
+        StringBuffer postFix = null;
         String w;
         if (l > 0) {
 
-            postFix = new StringBuilder();
+            postFix = new StringBuffer();
 
             // surrounding quotes might look like &quot; because of earlier escaping, so we take those out of consideration.
             w = word.toString();
@@ -161,7 +165,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformXmlTextWords(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuilder word = new StringBuilder();  // current word
+        StringBuffer word = new StringBuffer();  // current word
         boolean translating = true;
         try {
             log.trace("Starting  replacing");
@@ -208,7 +212,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
     public Writer transformXmlText(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuilder xmltext = new StringBuilder();  // current word
+        StringBuffer xmltext = new StringBuffer();  // current word
         boolean translating = true;
         try {
             log.trace("Starting replacing");
@@ -248,7 +252,7 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     }
     public Writer transformWords(Reader r, Writer w)  {
         Status status = newStatus();
-        StringBuilder word = new StringBuilder();  // current word
+        StringBuffer word = new StringBuffer();  // current word
         try {
             if (log.isDebugEnabled()) {
                 log.trace("Starting replacing words." + Logging.stackTrace());
@@ -349,8 +353,8 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         }
     }
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put(base() + "_XMLTEXT_WORDS",  new Config(RegexpReplacer.class, XMLTEXT_WORDS,  "Search and replaces regexps word-by-word, only in XML text() blocks."));
         h.put(base() + "_XMLTEXT",        new Config(RegexpReplacer.class, XMLTEXT,  "Search and replaces regexps, only in XML text() blocks."));
         h.put(base() + "_WORDS",          new Config(RegexpReplacer.class, WORDS,  "Search and replaces regexps word-by-word"));
@@ -360,38 +364,6 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
         return Collections.unmodifiableMap(h);
     }
 
-    public static void main(String [] argv) {
-        CharTransformer trans = new ChunkedTransformer(XMLTEXT) {
-                protected boolean replace(String string, Writer w, Status status) throws IOException {
-                    w.write(string);
-                    return false;
-                }
-                protected String base() {
-                    return "test";
-                }
-            };
-        CharTransformer trans2 = new BufferedReaderTransformer() {
-                protected boolean transform(PrintWriter bw, String line) {
-                    bw.println(line);
-                    return true;
-                }
-            };
-        long startTime = System.currentTimeMillis();
-        if (argv.length > 0) {
-            if("buf1".equals(argv[0])) {
-                trans.transform(new BufferedReader(new InputStreamReader(System.in)), new BufferedWriter(new OutputStreamWriter(System.out)));
-            } else if ("buf2".equals(argv[0])) {
-                trans2.transform(new InputStreamReader(System.in), new BufferedWriter(new OutputStreamWriter(System.out)));
-            } else {
-                System.err.println("Don't understand '" + argv[0] + "'");
-            }
-        } else {
-            trans.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
-        }
-        long duration = System.currentTimeMillis() - startTime;
-        System.err.println("Converstion took " + duration + " ms");
 
-
-    }
 
 }

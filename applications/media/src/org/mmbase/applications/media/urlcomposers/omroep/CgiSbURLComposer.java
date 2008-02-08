@@ -20,7 +20,7 @@ import java.util.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiSbURLComposer.java,v 1.5 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: CgiSbURLComposer.java,v 1.4 2006-04-12 00:01:21 michiel Exp $
  * @since MMBase-1.7
  */
 public class CgiSbURLComposer extends RamURLComposer {
@@ -32,7 +32,7 @@ public class CgiSbURLComposer extends RamURLComposer {
     protected String getBand() {
         return "smalband";
     }
-    public String getGUIIndicator(Map<String,Locale> options) {
+    public String getGUIIndicator(Map options) {
         return super.getGUIIndicator(options) + " (" + getBand() +")";
     }
 

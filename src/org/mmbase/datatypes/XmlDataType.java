@@ -14,10 +14,10 @@ package org.mmbase.datatypes;
  * empty, but of course we forsee the possibility for  restrictions on doc-type.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlDataType.java,v 1.6 2007-04-07 17:11:56 nklasens Exp $
+ * @version $Id: XmlDataType.java,v 1.5 2006-04-04 21:35:28 michiel Exp $
  * @since MMBase-1.8
  */
-public class XmlDataType extends AbstractLengthDataType<org.w3c.dom.Document> {
+public class XmlDataType extends AbstractLengthDataType {
 
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 

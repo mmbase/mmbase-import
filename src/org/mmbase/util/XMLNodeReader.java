@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
@@ -29,7 +30,7 @@ import org.xml.sax.InputSource;
  * @move org.mmbase.util.xml
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.48 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: XMLNodeReader.java,v 1.41.2.2 2007-02-03 12:59:17 nklasens Exp $
  */
 public class XMLNodeReader extends DocumentReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);
@@ -95,8 +96,8 @@ public class XMLNodeReader extends DocumentReader {
         return -1;
     }
 
-    public Vector<MMObjectNode> getNodes(MMBase mmbase) {
-        Vector<MMObjectNode> nodes = new Vector<MMObjectNode>();
+    public Vector getNodes(MMBase mmbase) {
+        Vector nodes = new Vector();
         Node n1 = document.getDocumentElement();
         while (n1 != null) {
             MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
@@ -119,13 +120,8 @@ public class XMLNodeReader extends DocumentReader {
                             }
                             n4 = nm.getNamedItem("alias");
                             if (n4 != null) {
-                                // tokenize here!
-                                String n4value = n4.getNodeValue();
-                                String[] aliases = n4value.split(",");
-                                for (String alias : aliases) {
-                                    log.info("Setting alias to " + alias);
-                                    newNode.setAlias(alias);
-                                }
+                                log.info("Setting alias to " + n4.getNodeValue());
+                                newNode.setAlias(n4.getNodeValue());
                             }
                             n4 = nm.getNamedItem("number");
                             try {
@@ -202,9 +198,9 @@ public class XMLNodeReader extends DocumentReader {
                     log.warn("error setting long-field '" + key + "' to '" + value + "' because " + e);
                     newNode.setValue(key, -1);
                 }
-            } else if (type == Field.TYPE_DATETIME) {
+            } else if (type == Field.TYPE_DATETIME) {                                            
                 newNode.setValue(key, Casting.toDate(value));
-            } else if (type == Field.TYPE_BOOLEAN) {
+            } else if (type == Field.TYPE_BOOLEAN) {                                            
                 newNode.setValue(key, Casting.toBoolean(value));
             } else if (type == Field.TYPE_BINARY) {
                 NamedNodeMap nm2 = n5.getAttributes();
@@ -221,7 +217,7 @@ public class XMLNodeReader extends DocumentReader {
                 }
             } else {
                 log.error("CoreField not found for #" + type + " was not known for field with name: '"
-                          + key + "' and with value: '" + value + "'");
+                		  + key + "' and with value: '" + value + "'");
             }
         }
     }
@@ -238,9 +234,10 @@ public class XMLNodeReader extends DocumentReader {
     }
 
     public void loadBinairyFields(MMObjectNode newNode) {
-        Set<String> fieldNames = newNode.getBuilder().getFieldNames();
+        Set fieldNames = newNode.getBuilder().getFieldNames();
         if(fieldNames!=null && fieldNames.size()>0){
-            for (String fieldName : fieldNames) {
+            for(Iterator f = fieldNames.iterator(); f.hasNext();){
+                String fieldName = (String) f.next();
                 int fieldDBType = newNode.getBuilder().getDBType(fieldName);
                 if(fieldDBType == Field.TYPE_BINARY){
                     try{

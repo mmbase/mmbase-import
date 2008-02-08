@@ -10,15 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.model;
 
+import org.mmbase.util.logging.*;
 import org.mmbase.util.*;
 import java.util.*;
 
-/**
- * @javadoc
- */
 public class ModelsManager {
 
-    private static Map<String,CloudModel> models =  new HashMap<String,CloudModel>();
+    private static Logger log = Logging.getLoggerInstance(ModelsManager.class);
+    private static HashMap models =  new HashMap();
 
     static {
         init();
@@ -26,9 +25,9 @@ public class ModelsManager {
 
     public static void init() {
         ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
-        Iterator<String> i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
+        Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
         while (i.hasNext()) {
-            String modelname = i.next();
+            String modelname = (String) i.next();
 	    addModel(modelname.substring(0,modelname.length()-4),"applications/"+modelname);
         }
     }
@@ -39,10 +38,10 @@ public class ModelsManager {
 	cm.setPath(path);
 	models.put(modelname,cm);
 	return cm;
-    }
+    } 
 
     public static CloudModel  getModel(String name) {
-	return models.get(name);
+	return (CloudModel)models.get(name);
     }
 
 }

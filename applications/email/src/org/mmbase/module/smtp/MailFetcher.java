@@ -11,6 +11,14 @@ See http://www.MMBase.org/license
 package org.mmbase.module.smtp;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.bridge.*;
+import java.util.*;
+import java.io.*;
+import org.mmbase.applications.crontab.*;
+import javax.mail.*;
+import javax.mail.search.*;
+import javax.mail.event.*;
+import javax.mail.internet.*;
 
 /**
  * The abstraction of a class that somehow fetches mail. It is not defined how these fetchers are
@@ -19,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * bootstrapped by a module {@link SMTPModule}.
  *
 
- * @version $Id: MailFetcher.java,v 1.4 2008-02-03 17:42:06 nklasens Exp $
+ * @version $Id: MailFetcher.java,v 1.3 2007-11-09 18:26:23 michiel Exp $
  */
 public abstract class MailFetcher  {
     private static final Logger log = Logging.getLoggerInstance(MailFetcher.class);

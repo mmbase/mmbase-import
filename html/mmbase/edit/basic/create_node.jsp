@@ -8,7 +8,6 @@
 <mm:context id="create_node">
 <mm:import externid="node_type" required="true" />
 
-
 <body class="basic" onLoad="document.create.elements[3].focus();">
 
   <script type="text/javascript">
@@ -53,7 +52,7 @@
         </tr>
  <tr>
 <td colspan="2" class="buttons">
-<input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="ok" id="okbutton" value="<%=m.getString("ok")%>" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 </td>
 </tr>

@@ -43,7 +43,7 @@ public class EmailExpireHandler implements Runnable {
         this.parent = parent;
         this.sleeptime = sleeptime;
         this.expiretime = expiretime;
-        MMBaseContext.startThread(this, "emailexpireprobe");
+        Thread kicker = MMBaseContext.startThread(this, "emailexpireprobe");
     }
 
     /**
