@@ -1,0 +1,35 @@
+function ReadCookie(cookieName) {
+	var theCookie=""+document.cookie;
+	var ind=theCookie.indexOf(cookieName);
+	if (ind==-1 || cookieName=="") return ""; 
+	var ind1=theCookie.indexOf(';',ind);
+	if (ind1==-1) ind1=theCookie.length; 
+	return unescape(theCookie.substring(ind+cookieName.length+1,ind1));
+}
+
+function SetCookie(cookieName,cookieValue,nDays) {
+	var today = new Date();
+	var expire = new Date();
+	if (nDays==null || nDays==0) nDays=1;
+	expire.setTime(today.getTime() + 3600000*24*nDays);
+	document.cookie = cookieName+"="+escape(cookieValue) + ";expires="+expire.toGMTString();
+}
+
+function loadSkyscraper() {
+   document.body.style.overflow = 'hidden';
+	document.getElementById('skyscraper').style.visibility = 'hidden';
+	var skyscraperIsViewed = ReadCookie("skyscraper_is_viewed");
+	//alert("skyscraperIsViewed: " + skyscraperIsViewed);
+	
+	if ( skyscraperIsViewed == null || skyscraperIsViewed == "") {
+		//alert("showing skyscraper and setting cookie");
+		document.getElementById('skyscraper').style.visibility = 'visible';
+		SetCookie("skyscraper_is_viewed","yes",365);
+	}
+}
+
+function closeSkyscraper() {
+   document.body.style.overflow = 'auto';
+	document.getElementById('skyscraper').style.display = 'none';
+	return false;
+}
