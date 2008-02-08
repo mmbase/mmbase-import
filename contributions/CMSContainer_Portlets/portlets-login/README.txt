@@ -1,2 +1,3 @@
 DESCRIPTION:
-The login portlet, needs Jaas.
+  Login portlet
+
