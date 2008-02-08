@@ -14,14 +14,6 @@
       <type>jar</type>
     </dependency>
 
-    <!-- Ageci Security -->
-    <dependency>
-      <groupId>acegisecurity</groupId>
-      <artifactId>acegi-security</artifactId>
-      <version>1.0.6</version>
-      <type>jar</type>
-    </dependency>
-
   </dependencies>
 </project>
 
