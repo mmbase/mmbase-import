@@ -69,7 +69,6 @@ public class GroupInitAction extends AbstractCommunityAction {
 			} else {
 				log.error("group failed");
 			}
-
 		} else {
 			// new
 			groupForm.setAction(ACTION_ADD);
