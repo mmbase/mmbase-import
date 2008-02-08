@@ -57,11 +57,6 @@
             <tr>
                <td style="padding-right: 10px"><a href="userAddInitAction.do?userid=${auth.userId}">${auth.userId}</a></td>
                <td>
-                  <a href="javascript:info('${auth.id}')">
-                     <img src="../gfx/icons/info.png" width="16" height="16" alt="<fmt:message key="content.info" />"/>
-                  </a>
-               </td>
-               <td>
                   <a href="deleteUserAction.do?userid=${auth.userId}">
                      <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="view.removeuser" />"
                         onclick="return confirm('<fmt:message key="view.removeuserquestion" />')" />
