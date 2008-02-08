@@ -17,6 +17,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,52 +31,61 @@ import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
  * @author Wouter Heijke
  */
 public class InsertPortletTag extends SimpleTagSupport {
-    private static Log log = LogFactory.getLog(InsertPortletTag.class);
+   private static Log log = LogFactory.getLog(InsertPortletTag.class);
 
-    private String layoutid;
+   private String layoutid;
+	private String var;
 
-
-    public String getLayoutid() {
-       return layoutid;
-    }
-
-
-    public void setLayoutid(String layoutid) {
-       this.layoutid = layoutid;
-    }
+   public String getLayoutid() {
+      return layoutid;
+   }
 
 
-    @Override
-    public void doTag() throws JspException, IOException {
-       PageContext ctx = (PageContext) getJspContext();
-       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
-       HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
+   public void setLayoutid(String layoutid) {
+      this.layoutid = layoutid;
+   }
+	public void setVar(String var) {
+		this.var = var;
+	 }	
 
-       ScreenTag container = (ScreenTag) findAncestorWithClass(this, ScreenTag.class);
-       if (container != null) {
-          PortletFragment portlet = container.getPortlet(layoutid);
-          if (portlet != null) {
-             try {
-                StringWriter storedWriter = new StringWriter();
-                // create a wrapped response which the Portlet will be rendered
-                // to
-                ServletResponseImpl wrappedResponse = (ServletResponseImpl) ServletObjectAccess
-                      .getStoredServletResponse(response, new PrintWriter(storedWriter));
-                // let the Portlet do it's thing
-                portlet.writeToResponse(request, wrappedResponse);
-                ctx.getOut().print(storedWriter.toString());
-             }
-             catch (IOException e) {
-                log.error("Error in portlet");
-                ctx.getOut().print("Error in portlet");
-             }
-          }
-          else {
-             log.warn("No (Portlet)Fragment to insert for position: " + layoutid);
-          }
-       }
-       else {
-          throw new JspException("Couldn't find screen tag");
-       }
-    }
+   @Override
+   public void doTag() throws JspException, IOException {
+      PageContext ctx = (PageContext) getJspContext();
+      HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+      HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
+
+      ScreenTag container = (ScreenTag) findAncestorWithClass(this, ScreenTag.class);
+      if (container != null) {
+         PortletFragment portlet = container.getPortlet(layoutid);
+         if (portlet != null) {
+            try {
+               StringWriter storedWriter = new StringWriter();
+               // create a wrapped response which the Portlet will be rendered
+               // to
+               ServletResponseImpl wrappedResponse = (ServletResponseImpl) ServletObjectAccess
+                     .getStoredServletResponse(response, new PrintWriter(storedWriter));
+               // let the Portlet do it's thing
+               portlet.writeToResponse(request, wrappedResponse);
+                
+                if (StringUtils.isNotEmpty(var)) {
+                    request.setAttribute(var, storedWriter.toString());
+                }
+                else {
+               		ctx.getOut().print(storedWriter.toString());
+                }
+            }
+            catch (IOException e) {
+               log.error("Error in portlet");
+               ctx.getOut().print("Error in portlet");
+            }
+         }
+         else {
+            log.warn("No (Portlet)Fragment to insert for position: " + layoutid);
+         }
+      }
+      else {
+         throw new JspException("Couldn't find screen tag");
+      }
+   }
+
 }
