@@ -3,18 +3,18 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
 	
 	<portlet>
-		<description>a login portlet, with Jaas</description>
+		<description>LoginPortlet</description>
 		<portlet-name>loginportlet</portlet-name>
-		<display-name>Login Portlet</display-name>
+		<display-name>LoginPortlet</display-name>
 		<portlet-class>com.finalist.cmsc.portlets.LoginPortlet</portlet-class>
-		<init-param>
-			<name>template.edit_defaults</name>
+        <init-param>
+            <name>template.edit_defaults</name>
+            <value>login.jsp</value>
+        </init-param>
+        <init-param>
+            <name>template.view</name>
             <value>login/login.jsp</value>
-		</init-param>
-		<init-param>
-			<name>template.help</name>
-            <value>login/Login.jsp</value>
-		</init-param>
+        </init-param>
 		<supports>
 			<mime-type>text/html</mime-type>
 			<portlet-mode>VIEW</portlet-mode>
@@ -26,9 +26,9 @@
 		<supported-locale>nl</supported-locale>
 		<resource-bundle>com.finalist.cmsc.portlets.LoginPortlet</resource-bundle>
 		<portlet-info>
-			<title>Login Portlet</title>
-			<short-title>Login</short-title>
-			<keywords>login,jaas</keywords>
+			<title>LoginPortlet</title>
+			<short-title>LoginPortlet</short-title>
+			<keywords>login</keywords>
 		</portlet-info>
 	</portlet>
 </portlet-app>
