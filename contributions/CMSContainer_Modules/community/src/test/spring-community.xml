@@ -18,16 +18,16 @@
   <!-- Post-processors for all standard config annotations (for @Required) -->
   <context:annotation-config />
 
-  <!-- DriverManagerDataSource is a local DataSource that works in any environment (for testing)
+  <!-- DriverManagerDataSource is a local DataSource that works in any environment (for testing) -->
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
       p:driverClassName="${jdbc.driverClassName}"
       p:url="${jdbc.url}"
       p:username="${jdbc.username}"
       p:password="${jdbc.password}"/>
- -->
+
   <!-- JNDI DataSource 
+  <jee:jndi-lookup id="dataSource" jndi-name="jdbc/Community"/>
   -->
-  <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/Community"/>
 
   <!-- Hibernate SessionFactory -->
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -57,6 +57,71 @@
   <!-- Instruct Spring to perform declarative transaction management automatically on annotated classes. -->
   <tx:annotation-driven />
 
+  <!-- Acegi Security -->
+
+  <!-- AuthenticationManager (our own Hibernate implementation of UserDetailsService. User Cache not yet implemented -->
+  <bean name="authenticationProvider" class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+    <property name="userDetailsService" ref="userDetailsService" />
+    <property name="passwordEncoder">
+      <bean class="org.acegisecurity.providers.encoding.PlaintextPasswordEncoder" />
+    </property>
+<!-- 
+    <property name="saltSource">
+      <bean class="org.acegisecurity.providers.dao.salt.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="username" />
+      </bean>
+    </property>
+ -->   
+  </bean>
+  <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+    <property name="providers">
+      <list>
+        <ref bean="authenticationProvider"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- AccessDecisionManager (unanimous based, allow access if ALL voters vote to grant access) -->
+  <bean id="accessDecisionManager" class="org.acegisecurity.vote.UnanimousBased">
+    <property name="decisionVoters">
+      <list>
+        <ref bean="roleVoter"/>
+        <ref bean="groupVoter"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- voters -->
+  <bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter" />
+
+  <bean id="groupVoter" class="org.acegisecurity.vote.RoleVoter">
+    <property name="rolePrefix" value="GROUP_" />
+  </bean>
+
+  <!-- filters -->
+  <bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+    <property name="filterInvocationDefinitionSource">
+      <value>
+        CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+        PATTERN_TYPE_APACHE_ANT
+        /**=httpSessionIntegrationFilter
+      </value>
+    </property>
+  </bean>
+
+  <bean id="httpSessionIntegrationFilter" class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"/>
+    
+<!--
+  <bean id="authenticationEntryPoint" class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+    <property name="realmName" value="Community Module" />
+  </bean>
+
+
+  <bean id="authenticationProcessingFilter" class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
+    <property name="authenticationManager" ref="authenticationManager"/>
+    <property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+  </bean>
+-->
 
   <!-- Services -->
   <bean name="userDetailsService" class="com.finalist.cmsc.services.community.security.UserDetailsHibernateService" /> 
@@ -64,6 +129,5 @@
   <bean name="authorityService" class="com.finalist.cmsc.services.community.security.AuthorityHibernateService" />
   <bean name="preferenceService" class="com.finalist.cmsc.services.community.preferences.PreferenceHibernateService" />
   <bean name="personService" class="com.finalist.cmsc.services.community.person.PersonHibernateService" />
-  
-  <import resource="spring-security.xml" />
+
 </beans>

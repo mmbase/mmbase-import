@@ -16,9 +16,9 @@ public class AuthenticationServiceTest extends AbstractTransactionalDataSourceSp
     }
     
     public void testCreateAuthentication() {
-        authenticationService.createAuthentication("SomeUser", "asdf");
-        Assert.isTrue(authenticationService.authenticationExists("SomeUser"));
-        Assert.isTrue(authenticationService.authenticate("SomeUser", "asdf"));
+        authenticationService.createAuthentication("admin", "admin2k");
+        Assert.isTrue(authenticationService.authenticationExists("admin"));
+        Assert.isTrue(authenticationService.authenticate("admin", "admin2k"));
     }
     public void testAuthenticationExists() {
         Assert.isTrue(!authenticationService.authenticationExists("SomeUser"));

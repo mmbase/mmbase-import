@@ -9,22 +9,24 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 import javax.servlet.ServletConfig;
 
 import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.AuthenticationManager;
+import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.acegisecurity.userdetails.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -38,10 +40,6 @@ import com.finalist.cmsc.services.community.preferences.PreferenceService;
  */
 public class CommunityServiceImpl extends CommunityService {
 
-	public static final String ACEGI_SECURITY_FORM_USERNAME_KEY = "j_username";
-	public static final String ACEGI_SECURITY_FORM_PASSWORD_KEY = "j_password";
-	public static final String ACEGI_SECURITY_LAST_USERNAME_KEY = "ACEGI_SECURITY_LAST_USERNAME";
-	
 	private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
     
 	private AuthenticationManager authenticationManager;
@@ -49,43 +47,75 @@ public class CommunityServiceImpl extends CommunityService {
     
     @Override
 	protected void init(ServletConfig config, Properties properties) throws Exception {
+    	/* Some Spring magic. Sets the AuthenticationManager and PreferenceService */
     	ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
     	ac.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
 	}
 
-	public boolean loginUser(ActionRequest request, ActionResponse response) {
-        String userName = request.getParameter(ACEGI_SECURITY_FORM_USERNAME_KEY);
-        String password = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
-        
-        if (userName == null) {
-            userName = "";
-        }
-        if (password == null) {
-            password = "";
-        }
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
-        // Place the last username attempted into PortletSession for views
-        request.getPortletSession().setAttribute(ACEGI_SECURITY_LAST_USERNAME_KEY, userName);
-
-        boolean loginSuccesfull = false;
-        try {
-            Authentication authentication = authenticationManager.authenticate(authRequest);
-            loginSuccesfull = authentication.isAuthenticated();
-        } catch (AuthenticationException ae) {
-            log.info("Authentication attempt failed for user " + userName);
-        }
-        return loginSuccesfull;
+	@Override
+	public void login(String userName, String password) {
+		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+		try {
+			Authentication authentication = authenticationManager.authenticate(authRequest);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+		} catch (AuthenticationException ae) {
+	        SecurityContextHolder.clearContext();
+	        log.info(String.format("Authentication attempt failed for user %s", userName), ae);
+		}
+	}
+	
+	@Override
+	public void logout() {
+    	SecurityContextHolder.clearContext();
     }
 
+	@Override
+	public boolean isAuthenticated() {
+    	SecurityContext context = SecurityContextHolder.getContext();
+    	Authentication authentication = context.getAuthentication();
+        return (authentication != null) && authentication.isAuthenticated();
+    }
+	
+	@Override
+	public String getAuthenticatedUser() {
+		User principal = getPrincipal();
+		return principal != null ? principal.getUsername() : null; 
+	}
+	
+	@Override
+	public List<String> getAuthorities() {
+		List<String> authorities = new ArrayList<String>();
+		User principal = getPrincipal();
+		if (principal != null) {
+			GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
+			for (int i = 0; i < grantedAuthorities.length; i++) {
+				authorities.add(grantedAuthorities[i].getAuthority());
+			}
+		}
+		return authorities;
+	}
+	
+	@Override
+	public boolean hasAuthority(String authority) {
+		User principal = getPrincipal();
+		if (principal != null) {
+			GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
+			for (int i = 0; i < grantedAuthorities.length; i++) {
+				if (grantedAuthorities[i].getAuthority().equals(authority)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    public boolean logoutUser(ActionRequest request, ActionResponse response) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        authentication.setAuthenticated(false);
-        return true;
+	private User getPrincipal() {
+    	SecurityContext context = SecurityContextHolder.getContext();
+    	Authentication authentication = context.getAuthentication();
+    	return authentication != null ? (User)authentication.getPrincipal() : null; 
     }
 
-    public Map<Long, Map<String, String>> getPreferencesByModule(String userId) {
+	public Map<Long, Map<String, String>> getPreferencesByModule(String userId) {
     	return preferenceService.getPreferencesByModule(userId);
     }
 
@@ -145,5 +175,15 @@ public class CommunityServiceImpl extends CommunityService {
 		for (String value : valueList) {
 			preferenceService.deletePreference(module, userId, key, value);
 		}
+	}
+	
+	@Required
+	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+	}
+
+	@Required
+	public void setPreferenceService(PreferenceService preferenceService) {
+		this.preferenceService = preferenceService;
 	}
 }
