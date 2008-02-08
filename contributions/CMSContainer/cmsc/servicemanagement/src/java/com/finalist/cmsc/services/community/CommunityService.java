@@ -3,9 +3,6 @@ package com.finalist.cmsc.services.community;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-
 import com.finalist.cmsc.services.Service;
 
 /**
@@ -17,10 +14,18 @@ import com.finalist.cmsc.services.Service;
  */
 public abstract class CommunityService extends Service {
 	
-   public abstract boolean loginUser(ActionRequest request, ActionResponse response);
+   public abstract void login(String userName, String password);
 
-   public abstract boolean logoutUser(ActionRequest request, ActionResponse response);
+   public abstract void logout();
 
+   public abstract boolean isAuthenticated();
+   
+   public abstract String getAuthenticatedUser();
+
+   public abstract List<String> getAuthorities();
+
+   public abstract boolean hasAuthority(String authority);
+   
    public abstract Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value);
    
    public abstract void createPreference(String module, String userId, String key, List<String> values);
@@ -28,4 +33,5 @@ public abstract class CommunityService extends Service {
    public abstract void removePreferences(String module, String userId, String key);
    
    public abstract Map<String, Map<String, String>> getUserProperty(String userName);
+
 }
