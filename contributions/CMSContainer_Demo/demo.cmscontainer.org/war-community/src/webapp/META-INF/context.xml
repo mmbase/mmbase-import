@@ -34,17 +34,17 @@
 		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://localhost:3306/cmsc?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
 
-    <Resource name="jdbc/jaasdb" auth="Container" type="javax.sql.DataSource"
+    <Resource name="jdbc/Community" auth="Container" type="javax.sql.DataSource"
 		removeAbandoned="true" 
 		removeAbandonedTimeout="60"
 		logAbandoned="true" 
 		maxActive="10"
 		maxIdle="1" 
 		maxWait="10000" 
-		username="cmsc" 
-		password="cmsc"
+		username="community" 
+		password="community"
 		driverClassName="com.mysql.jdbc.Driver" 
-		url="jdbc:mysql://localhost:3306/jaasdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
+		url="jdbc:mysql://localhost:3306/community?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useServerPrepStmts=false" />
 
 	<!-- zeroDateTimeBehavior=convertToNull 
 		Datetimes with all-zero components ('0000-00-00 ...') - These values can not be represented reliably
