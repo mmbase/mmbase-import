@@ -1,0 +1,10 @@
+<LIST MULTILEVEL NODE="$MOD-MMBASE-BUILDER-users-number^" TYPE="users,groups" PROCESSOR="MMBASE" FIELDS="users.number,users.firstname,users.lastname,users.email,groups.name" WHERE="groups.name=='BugTrackerCommitors'" MEMCACHE="NO" VERSION="2.0">
+<LIF $ITEML==0>
+	Add yourself as interested <A HREF="executes/addMyselfInterested.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+	Remove yourself as interested <A HREF="executes/removeMyselfInterested.shtml?$PARAM1"><IMG SRC="beeld/pijl.gif" BORDER="0"></A><BR>
+
+</IF>
+<LISTLOOP>
+</LISTLOOP>
+</LIST>
+&nbsp;

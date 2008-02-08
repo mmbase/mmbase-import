@@ -1,0 +1,13 @@
+/**
+
+  Editwizard cascading style sheet.
+  
+  @author Nico Klasens
+  @version  $Id: help.css,v 1.1 2006-03-29 15:08:35 pierre Exp $
+*/
+
+@import url("base.css");
+
+body {
+	overflow: auto;
+}

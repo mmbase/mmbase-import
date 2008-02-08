@@ -1,0 +1,10 @@
+This is Sarissa.
+
+See http://dev.abiss.gr/sarissa/
+
+@todo: I don't know if this is a good location, because sarissa can have more general use, then just
+       for these validation scripts.
+       Since it is an external dependency, it should probably not even have been checked in (but
+       that was must pragmatic for the moment).
+
+
