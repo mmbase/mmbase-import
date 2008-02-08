@@ -32,7 +32,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.75 2008-02-08 09:03:48 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.76 2008-02-08 10:40:20 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -135,7 +135,10 @@ public class TypeDef extends MMObjectBuilder {
         }
         // Quick fix around MMB-1590. Perhaps it should be solved more genericly, closer to the
         // storage layer.
-        node.setValue("description", node.getStringValue("description").substring(0, getField("description").getMaxLength()));
+        String desc = node.getStringValue("description");
+        if (desc.length() > getField("description").getMaxLength()) {
+            node.setValue("description", desc.substring(0, getField("description").getMaxLength()));
+        }
 
         // try if the builder was already in TypeDef for some reason
         // this can happen when another thread was here first
