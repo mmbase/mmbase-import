@@ -81,7 +81,7 @@
             <mm:isgreaterthan referid="number_of_educations" value="0">
               <!-- The Education starts from here -->
               <mm:node number="${educationId}">
-                <jsp:directive.include file="whichimage.jsp" />
+                <jsp:directive.include file="../whichimage.jsp" />
                 <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td>
@@ -225,7 +225,7 @@
                                      directions="up"
                                      searchdir="destination" type="learnobjects">
                       <mm:index id="learnblockcounter" write="false" />
-                      <jsp:directive.include file="whichimage.jsp" />
+                      <jsp:directive.include file="../whichimage.jsp" />
                       <mm:nodeinfo type="type" id="this_node_type">
                         <mm:import id="mark_error" reset="true"></mm:import>
                         <mm:compare referid="this_node_type" value="tests">
