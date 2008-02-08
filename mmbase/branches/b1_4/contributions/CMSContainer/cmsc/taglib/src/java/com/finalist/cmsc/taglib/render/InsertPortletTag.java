@@ -17,6 +17,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,17 +34,18 @@ public class InsertPortletTag extends SimpleTagSupport {
     private static Log log = LogFactory.getLog(InsertPortletTag.class);
 
     private String layoutid;
-
+	private String var;
 
     public String getLayoutid() {
        return layoutid;
     }
 
-
     public void setLayoutid(String layoutid) {
        this.layoutid = layoutid;
     }
-
+	public void setVar(String var) {
+		this.var = var;
+	 }	
 
     @Override
     public void doTag() throws JspException, IOException {
@@ -63,7 +65,13 @@ public class InsertPortletTag extends SimpleTagSupport {
                       .getStoredServletResponse(response, new PrintWriter(storedWriter));
                 // let the Portlet do it's thing
                 portlet.writeToResponse(request, wrappedResponse);
-                ctx.getOut().print(storedWriter.toString());
+                
+                if (StringUtils.isNotEmpty(var)) {
+                    request.setAttribute(var, storedWriter.toString());
+                }
+                else {
+                    ctx.getOut().print(storedWriter.toString());
+                }
              }
              catch (IOException e) {
                 log.error("Error in portlet");
