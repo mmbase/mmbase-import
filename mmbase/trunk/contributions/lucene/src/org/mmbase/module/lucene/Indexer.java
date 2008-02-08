@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.54 2008-02-05 13:45:24 michiel Exp $
+ * @version $Id: Indexer.java,v 1.55 2008-02-08 13:23:25 michiel Exp $
  **/
 public class Indexer {
 
@@ -436,7 +436,7 @@ public class Indexer {
                 log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
                 EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
             } else {
-                log.warn((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
+                addError((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
             }
         } catch (Exception e) {
             addError(e.getMessage());
