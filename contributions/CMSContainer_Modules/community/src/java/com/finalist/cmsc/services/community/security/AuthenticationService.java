@@ -105,12 +105,18 @@ public interface AuthenticationService {
      * @return authentication
      */
     Authentication findAuthentication(String userId);
+    
+    /**
+     * Finds all authentications
+     * 
+     * @param authority
+     * @return list authentications
+     */
+    List<Authentication> findAuthenticationsForAuthority(String name);
 
     /**
-     * Finds an authentication object for this userId
-     * 
-     * @param userId
-     * @return authentication
+     * Finds all authentications
+     * @return list authentications
      */
     List<Authentication> findAuthentications();
     
