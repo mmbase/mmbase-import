@@ -48,15 +48,8 @@
       <prompt xml:lang="en">Show title</prompt>
       <optionlist select="boolean" />
     </field>
-    <field name="text" ftype="html" dtminlength="0">
-      <prompt xml:lang="nl">Tekst</prompt>
-      <prompt xml:lang="en">Text</prompt>
-    </field>
-    <field name="layout" ftype="enum">
-      <prompt xml:lang="nl">Layout</prompt>
-      <prompt xml:lang="en">Layout</prompt>
-      <optionlist select="layout" />
-    </field>
+    <field name="text" ftype="html" dtminlength="0" />
+    <field name="layout" />
     <field name="type_of_score" />
 
 

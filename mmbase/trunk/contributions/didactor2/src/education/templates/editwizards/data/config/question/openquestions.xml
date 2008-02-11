@@ -17,7 +17,7 @@
     </object>
   </action>
 
-<action type="load">
+  <action type="load">
     <relation destination="openanswers" role="related"/>
 
     <relation destination="feedback" role="related" />
@@ -25,14 +25,6 @@
   </action>
 
   <action type="delete" />
-
-  <lists>
-    <optionlist include="config/option_list/boolean.xml" />
-    <optionlist name="layout">
-      <option id="0">Groot veld</option>
-      <option id="1">Klein veld</option>
-    </optionlist>
-  </lists>
 
   <form-schema id="step1">
     <title xml:lang="nl">Open vraag invoeren</title>
@@ -46,15 +38,8 @@
       <prompt xml:lang="en">Show title</prompt>
       <optionlist select="boolean" />
     </field>
-    <field name="text" ftype="html" dtminlength="0">
-      <prompt xml:lang="nl">Tekst</prompt>
-      <prompt xml:lang="en">Text</prompt>
-    </field>
-    <field name="layout" ftype="enum">
-      <prompt xml:lang="nl">Layout</prompt>
-      <prompt xml:lang="en">Layout</prompt>
-      <optionlist select="layout" />
-    </field>
+    <field name="text" ftype="html" dtminlength="0" />
+    <field name="layout" />
     <field name="type_of_score" />
 
 
