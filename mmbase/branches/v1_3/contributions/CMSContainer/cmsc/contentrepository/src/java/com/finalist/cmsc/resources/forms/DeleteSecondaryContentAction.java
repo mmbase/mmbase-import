@@ -22,7 +22,7 @@ public class DeleteSecondaryContentAction extends MMBaseAction {
 		DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
 		
 		String number = deleteForm.getObjectnumber();
-		if(MMBaseAction.ADMINISTRATOR.equals(cloud.getUser().getRank().toString())) {
+		if(MMBaseAction.SITEADMIN.equals(cloud.getUser().getRank().toString())) {
             try {
 				log.debug("deleting secondary content: "+number);
                 Node objectNode = cloud.getNode(number);
