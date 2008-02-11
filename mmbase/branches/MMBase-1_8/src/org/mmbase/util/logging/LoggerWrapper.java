@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.6.2.1 2008-02-11 16:06:32 michiel Exp $
+ * @version $Id: LoggerWrapper.java,v 1.6.2.2 2008-02-11 16:09:27 michiel Exp $
  **/
 
 public class LoggerWrapper implements Logger {
@@ -35,8 +35,8 @@ public class LoggerWrapper implements Logger {
 
     // package
     LoggerWrapper(Logger log, String name) {
-        setLogger(log);
         this.name = name;
+        setLogger(log);
         wrappers.add(this);
     }
 
@@ -49,7 +49,11 @@ public class LoggerWrapper implements Logger {
     // package
     Logger setLogger(Logger log) {
         if (log == null) {
-            log = SimpleImpl.getLoggerInstance(name);
+            if (this.log == null) {
+                log = SimpleImpl.getLoggerInstance(name);
+            } else {
+                log = this.log;
+            }
             System.err.println("Tried to instantiate logger wrapper with null!");
             log.error("Tried to instantiate logger wrapper with null!", new Exception());
         }
