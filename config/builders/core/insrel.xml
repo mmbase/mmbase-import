@@ -41,13 +41,11 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>1</list>
-          <search>1</search>
         </positions>
       </editor>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
+        <required value="false" />
       </datatype>
     </field>
 
@@ -64,17 +62,15 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>2</list>
-          <search>2</search>
         </positions>
       </editor>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
+        <required value="false" />
       </datatype>
     </field>
 
-    <field name="rnumber" state="system">
+    <field name="rnumber" state="system" readonly="true">
       <descriptions>
         <description xml:lang="en">This relation's type objectnumber</description>
         <description xml:lang="nl">Objectnummer van het relatietype van deze relatie</description>
@@ -87,9 +83,7 @@
       </gui>
       <editor>
         <positions>
-          <input>-1</input>
           <list>3</list>
-          <search>3</search>
         </positions>
       </editor>
       <datatype base="reldef" xmlns="http://www.mmbase.org/xmlns/datatypes" >
@@ -97,7 +91,7 @@
       </datatype>
     </field>
 
-    <field name="dir" state="system">
+    <field name="dir" state="system" readonly="true">
       <descriptions>
         <description xml:lang="en">
           Directionality of this relation, can be uni or bi-directional (0 or 1)
