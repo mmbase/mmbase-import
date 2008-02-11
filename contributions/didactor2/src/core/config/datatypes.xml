@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.2 2008-02-11 13:21:03 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.3 2008-02-11 13:34:58 michiel Exp $
 
   These are didactor specific datatypes.
 
@@ -96,7 +96,18 @@
     </enumeration>
   </datatype>
 
-  <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+  <datatype base="integer" id="didactor_openquestions_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+    <description>
+    </description>
+    <default value="0" />
+    <required value="true" />
+    <enumeration>
+      <entry value="0" xml:lang="nl" display="Groot veld" />
+      <entry value="1" xml:lang="nl" display="Klein veld" />
+      <entry value="0" xml:lang="en" display="Big field" />
+      <entry value="1" xml:lang="en" display="Small field" />
+    </enumeration>
+  </datatype>
 
   <datatype base="boolean" id="didactor_show">
     <default value="true" />

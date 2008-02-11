@@ -44,7 +44,7 @@
       </gui>
       <editor><positions><list>1</list></positions></editor>
       <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="true" />
+        <required value="false" />
         <maxLength value="255" enforce="never"/>
       </datatype>
     </field>
