@@ -55,8 +55,8 @@
         <description xml:lang="en">Show the title of learnobject</description>
       </descriptions>
       <gui>
-        <guiname xml:lang="nl">ToonTitel</guiname>
-        <guiname xml:lang="en">ShowTitle</guiname>
+        <guiname xml:lang="nl">Toon titel</guiname>
+        <guiname xml:lang="en">Show title</guiname>
       </gui>
       <editor>
         <positions>
@@ -65,10 +65,7 @@
           <search>20</search>
         </positions>
       </editor>
-      <datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="true" />
-        <required value="true" />
-      </datatype>
+      <datatype base="didactor_show" xmlns="http://www.mmbase.org/xmlns/datatypes"  />
     </field>
 
     <field name="layout" state="virtual" readonly="true">

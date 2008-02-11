@@ -202,35 +202,39 @@
     <field name="online_date">
       <descriptions>
         <description xml:lang="en">Online Date</description>
-        <description xml:lang="nl">Online Tijden</description>
+        <description xml:lang="nl">Online Tijd</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Online Date</guiname>
-        <guiname xml:lang="nl">Online Tijden</guiname>
+        <guiname xml:lang="nl">Online Tijd</guiname>
       </gui>
       <editor>
         <positions>
           <list>10</list>
         </positions>
        </editor>
-       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+       <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+         <default value="now + 1 hour" />
+       </datatype>
     </field>
 
     <field name="offline_date">
       <descriptions>
         <description xml:lang="en">Offline Date</description>
-         <description xml:lang="nl">Offline Tijden</description>
+         <description xml:lang="nl">Offline Tijd</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Offline Date</guiname>
-        <guiname xml:lang="nl">Offline Tijden</guiname>
+        <guiname xml:lang="nl">Offline Tijd</guiname>
       </gui>
       <editor>
         <positions>
           <list>11</list>
         </positions>
       </editor>
-      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="today + 100 year" />
+      </datatype>
     </field>
 
 
