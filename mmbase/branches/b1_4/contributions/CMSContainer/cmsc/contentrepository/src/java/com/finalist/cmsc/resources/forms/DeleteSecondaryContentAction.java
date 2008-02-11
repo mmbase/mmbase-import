@@ -23,7 +23,7 @@ public class DeleteSecondaryContentAction extends MMBaseAction {
 
    @Override
    public String getRequiredRankStr() {
-      return ADMINISTRATOR;
+      return SITEADMIN;
    }
 
 
