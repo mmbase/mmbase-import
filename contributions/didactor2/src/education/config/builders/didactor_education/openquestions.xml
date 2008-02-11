@@ -20,6 +20,21 @@
   </descriptions>
 
   <fieldlist >
+
+    <!-- @Override -->
+    <field name="layout">
+      <gui>
+        <guiname xml:lang="nl">Layout</guiname>
+        <guiname xml:lang="en">Layout</guiname>
+      </gui>
+      <editor>
+        <positions>
+          <list>3</list>
+        </positions>
+      </editor>
+      <datatype base="didactor_openquestions_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+    </field>
+
    <field name="type_of_score">
       <descriptions>
         <description xml:lang="nl">Layout van de vraag. Zie TO voor mogelijke waarden.</description>
@@ -35,7 +50,8 @@
         </positions>
       </editor>
       <datatype base="didactor_openquestions_type_of_score" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-    </field>
+   </field>
+
 
     </fieldlist>
 
