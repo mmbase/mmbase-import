@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.1 2008-01-28 14:36:23 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.2 2008-02-11 13:21:03 michiel Exp $
 
   These are didactor specific datatypes.
 
@@ -50,6 +50,9 @@
   </datatype>
 
   <datatype base="integer" id="didactor_layout">
+    <description>
+      Indicates where an image must be formatted?
+    </description>
     <default value="0" />
     <required value="true" />
     <enumeration>
@@ -65,6 +68,9 @@
   </datatype>
 
   <datatype base="integer" id="didactor_imagelayout">
+    <description>
+      Indicates how an image must be formatted?
+    </description>
     <default value="0" />
     <required value="true" />
     <enumeration>
@@ -72,6 +78,34 @@
       <entry value="0" xml:lang="en" display="Horizontal" />
       <entry value="1" xml:lang="nl" display="Vertikaal" />
       <entry value="1" xml:lang="en" display="Vertical" />
+    </enumeration>
+  </datatype>
+
+  <datatype base="integer" id="didactor_openquestions_type_of_score">
+    <description>
+    </description>
+    <default value="0" />
+    <required value="true" />
+    <enumeration>
+      <entry value="0" xml:lang="nl" display="De docent kijkt de vraag na" />
+      <entry value="1" xml:lang="nl" display="Kijk na met behulp van bijbehorende antwoorden" />
+    	<entry value="2" xml:lang="nl" display="Geen score" />
+      <entry value="0" xml:lang="en" display="A teacher checks the answer" />
+      <entry value="1" xml:lang="en" display="Checks with the help of related answers" />
+    	<entry value="2" xml:lang="en" display="No scoring" />
+    </enumeration>
+  </datatype>
+
+  <datatype base="didactor_layout" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+
+  <datatype base="boolean" id="didactor_show">
+    <default value="true" />
+    <required value="true" />
+    <enumeration>
+      <entry value="false" xml:lang="nl" display="Niet tonen" />
+      <entry value="false" xml:lang="en" display="Don't show" />
+      <entry value="true" xml:lang="nl" display="Tonen" />
+      <entry value="true" xml:lang="en" display="Show" />
     </enumeration>
   </datatype>
 
