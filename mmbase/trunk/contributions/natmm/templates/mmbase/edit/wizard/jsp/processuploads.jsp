@@ -16,7 +16,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.4 2006-08-21 21:41:35 henk Exp $
+     * @version  $Id: processuploads.jsp,v 1.5 2008-02-11 15:40:32 nklasens Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -77,6 +77,7 @@ if (! ewconfig.subObjects.empty()) {
         ArrayList alAllowedTypes = new ArrayList();
         alAllowedTypes.add("image/gif");
         alAllowedTypes.add("image/pjpeg");
+        alAllowedTypes.add("image/jpeg");
         alAllowedTypes.add("image/x-png");
         alAllowedTypes.add("image/tiff");
         for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
