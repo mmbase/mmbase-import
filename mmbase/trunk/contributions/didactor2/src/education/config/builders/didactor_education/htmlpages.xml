@@ -14,9 +14,6 @@
      <plural xml:lang="en">HTML Pages</plural>
    </names>
 
-   <properties>
-     <property name="max-nodes-from-query">99999</property>
-   </properties>
 
    <fieldlist>
      <field name="content">
