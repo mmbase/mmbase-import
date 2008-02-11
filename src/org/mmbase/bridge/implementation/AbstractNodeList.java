@@ -51,6 +51,7 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
             log.debug("Null");
             return null;
         }
+
         if (log.isDebugEnabled()) {
             log.debug("Converting " + o.getClass());
         }
@@ -91,7 +92,12 @@ public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
                 if (cloud.hasNodeManager(s)) {
                     return cloud.getNodeManager(s);
                 } else { // an alias?
-                    return cloud.getNode(s);
+                    if (cloud.hasNode(s)) {
+                        return cloud.getNode(s);
+                    } else {
+                        log.warn("No such node '" + s + "'. Converting to null");
+                        return null;
+                    }
                 }
             }
         } else if (o instanceof Map) {
