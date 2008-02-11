@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.47.2.2 2006-12-19 14:05:30 michiel Exp $
+ * @version $Id: BasicNodeList.java,v 1.47.2.3 2008-02-11 14:57:23 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
@@ -73,7 +73,12 @@ public class BasicNodeList extends BasicList implements NodeList {
                 if (cloud.hasNodeManager(s)) {
                     node = cloud.getNodeManager(s);
                 } else { // an alias?
-                    node = cloud.getNode(s);
+                    if (cloud.hasNode(s)) {
+                        node = cloud.getNode(s);
+                    } else {
+                        log.warn("No such node '" + s + "'. Converting to null");
+                        node = null;
+                    }
                 }
             }
         } else if (o instanceof MMObjectBuilder) { // a builder
@@ -108,7 +113,7 @@ public class BasicNodeList extends BasicList implements NodeList {
                 int rnumber = coreNode.getIntValue("rnumber");
                 NodeManager nm1;
                 if (cloud.hasNode(snumber)) {
-                    nm1 = castToNodeManager(cloud.getNode(snumber)); 
+                    nm1 = castToNodeManager(cloud.getNode(snumber));
                 } else {
                     log.warn("Source of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("snumber") ? "NULL" : "" + snumber));
                     nm1 = cloud.getNodeManager("object");
@@ -122,7 +127,7 @@ public class BasicNodeList extends BasicList implements NodeList {
                 }
                 Node role;
                 if (cloud.hasNode(rnumber)) {
-                    role = cloud.getNode(rnumber); 
+                    role = cloud.getNode(rnumber);
                 } else {
                     log.warn("Role of typerel " + coreNode.getNumber() + " is " + (coreNode.isNull("rnumber") ? "NULL" : "" + rnumber));
                     role = cloud.getNode(BasicCloudContext.mmb.getRelDef().getNumberByName("related"));
