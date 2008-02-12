@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.16 2007-09-17 08:52:54 michiel Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.17 2008-02-12 16:27:11 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -62,10 +62,21 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
         MMObjectBuilder eventBuilder = mmb.getBuilder(eventTable);
+        if (eventBuilder == null) {
+            eventBuilder = mmb.getBuilder("object");
+            eventTable = "object";
+        }
         for (Step step : query.getSteps()) {
             String table = step.getTableName();
+            if (table == null) {
+                // I think this cannot happen
+                log.warn("Found null in a query !" + query);
+                continue;
+            }
+            MMObjectBuilder stepBuilder = mmb.getBuilder(table);
+            if (stepBuilder == null) stepBuilder = mmb.getBuilder("object");
             if (! (table.equals(eventTable) ||
-                   eventBuilder.isExtensionOf(mmb.getBuilder(table)))) continue;
+                   eventBuilder.isExtensionOf(stepBuilder))) continue;
             Set<Integer> nodes = step.getNodes();
             if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
                 return true;
