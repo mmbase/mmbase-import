@@ -21,6 +21,7 @@ import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
+import org.mmbase.util.xml.DocumentSerializable;
 import org.mmbase.util.XMLEntityResolver;
 
 import java.util.regex.*;
@@ -28,8 +29,7 @@ import java.util.regex.*;
 import org.w3c.dom.*;
 
 import java.net.URL;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.*;
 
 import java.util.*;
 
@@ -46,10 +46,12 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.157 2007-11-30 15:00:00 michiel Exp $
+ * @version $Id: Wizard.java,v 1.158 2008-02-12 17:41:14 michiel Exp $
  *
  */
-public class Wizard implements org.mmbase.util.SizeMeasurable {
+public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logging.getLoggerInstance(Wizard.class);
     public static final String PUBLIC_ID_EDITWIZARD_1_0 = "-//MMBase//DTD editwizard 1.0//EN";
     public static final String PUBLIC_ID_EDITWIZARD_1_0_FAULT = "-//MMBase/DTD editwizard 1.0//EN";
@@ -97,7 +99,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
-    private URL wizardStylesheetFile;
+    private transient URL wizardStylesheetFile;
     private String sessionId;
     private String sessionKey = "editwizard";
     private String referrer = "";
@@ -106,12 +108,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
     /**
      * public xmldom's: the schema, the data and the originaldata is stored.
-     *
-     * @scope private
      */
-    private Document schema;
-    private Document data;
-    private Document originalData;
+    private transient Document schema;
+    private transient Document data;
+    private transient Document originalData;
 
     // not yet committed uploads are stored in these hashmaps
     private Map<String, byte[]> binaries = new HashMap<String, byte[]>();
@@ -122,7 +122,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private Map<String, Object> variables = new HashMap<String, Object>();
 
     // the constraints received from mmbase are stored + cached in this xmldom
-    private Document constraints;
+    private transient Document constraints;
 
     // Seconds.
     private long listQueryTimeOut = 60 * 60;
@@ -1406,8 +1406,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
 
-    private final Pattern NUMBER_ORDERTYPE = Pattern.compile("(?i).*\\bnumber\\b.*");
-    private final Pattern INVERSE_ORDERTYPE = Pattern.compile("(?i).*\\binverse\\b.*");
+    private final static Pattern NUMBER_ORDERTYPE = Pattern.compile("(?i).*\\bnumber\\b.*");
+    private final static Pattern INVERSE_ORDERTYPE = Pattern.compile("(?i).*\\binverse\\b.*");
 
     /**
      *       Creates a form item (each of which may consist of several single form fields)
@@ -2935,5 +2935,25 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 fileWatcher.start();
             }
         }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        schema = ((DocumentSerializable) in.readObject()).getDocument();
+        data = ((DocumentSerializable) in.readObject()).getDocument();
+        originalData = ((DocumentSerializable) in.readObject()).getDocument();
+        constraints = ((DocumentSerializable) in.readObject()).getDocument();
+        String u = in.readUTF();
+        wizardStylesheetFile = ResourceLoader.getWebRoot().getResource(u);
+        log.service("Deserialized wizard " + this);
+    }
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(new DocumentSerializable(schema));
+        out.writeObject(new DocumentSerializable(data));
+        out.writeObject(new DocumentSerializable(originalData));
+        out.writeObject(new DocumentSerializable(constraints));
+        out.writeUTF(wizardStylesheetFile.toString());
+
     }
 }
