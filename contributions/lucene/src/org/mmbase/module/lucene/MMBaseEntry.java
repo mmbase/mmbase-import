@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseEntry.java,v 1.30 2008-02-01 11:08:21 michiel Exp $
+ * @version $Id: MMBaseEntry.java,v 1.31 2008-02-12 14:49:22 pierre Exp $
  **/
 public class MMBaseEntry implements IndexEntry {
     static private final Logger log = Logging.getLoggerInstance(MMBaseEntry.class);
@@ -126,12 +126,12 @@ public class MMBaseEntry implements IndexEntry {
                 String value = getFieldDataAsString(data, fieldName);
                 if (fieldDefinition.escaper != null) {
                    org.mmbase.util.transformers.CharTransformer transformer = null;
-                   //try {
+                   try {
                        transformer = null;
-                       //org.mmbase.bridge.jsp.taglib.ContentTag.getCharTransformer(fieldDefinition.escaper, null);
-                       //} catch (javax.servlet.jsp.JspTagException jte) {
+                       org.mmbase.bridge.jsp.taglib.ContentTag.getCharTransformer(fieldDefinition.escaper, null);
+                   } catch (javax.servlet.jsp.JspTagException jte) {
                        // ignore if an escaper does not exist for now (otherwise log fills up)
-                       //}
+                   }
                    if (transformer != null) {
                        value = transformer.transform(value);
                    }
