@@ -11,6 +11,7 @@ package org.mmbase.applications.editwizard;
 
 import java.util.*;
 import java.net.*;
+import java.io.*;
 import org.mmbase.util.xml.URIResolver;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.69 2007-07-07 13:32:06 michiel Exp $
+ * @version $Id: Config.java,v 1.70 2008-02-12 17:41:14 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -114,9 +115,11 @@ public class Config implements java.io.Serializable {
     protected Map<String, Object> attributes;
 
 
+
     //   public String context; (contained in attributes now)
 
     static public class SubConfig implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
         public boolean debug = false;
         public String wizard;
         public String page;
@@ -172,6 +175,7 @@ public class Config implements java.io.Serializable {
     }
 
     static public class WizardConfig extends SubConfig {
+        private static final long serialVersionUID = 1L;
         public Wizard wiz;
         public String objectNumber;
         public String parentFid;
@@ -209,9 +213,16 @@ public class Config implements java.io.Serializable {
             return attributeMap;
         }
         */
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            out.defaultWriteObject();
+        }
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+        }
     }
 
     static public class ListConfig extends SubConfig {
+        private static final long serialVersionUID = 2L;
 
         // constants for 'search' parameter. Order of value matters (force must be bigger then yes)
         public static final int SEARCH_NO   = 0;
@@ -223,7 +234,7 @@ public class Config implements java.io.Serializable {
 
 
         public String title;
-        public URL    template;
+        public transient URL    template;
         public String fields;
         public String startNodes;
         public String nodePath;
@@ -565,6 +576,16 @@ public class Config implements java.io.Serializable {
                 parsed = true;
             }
 
+
+        }
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            out.defaultWriteObject();
+            out.writeUTF(template.toString());
+        }
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+            String u = in.readUTF();
+            template = ResourceLoader.getWebRoot().getResource(u);
         }
 
         /**

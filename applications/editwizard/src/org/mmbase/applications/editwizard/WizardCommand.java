@@ -20,9 +20,11 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.13 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: WizardCommand.java,v 1.14 2008-02-12 17:41:14 michiel Exp $
  */
-public class WizardCommand {
+public class WizardCommand implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public final static short UNKNOWN_COMMAND = -1;
     public final static short ADD_ITEM = 0;
@@ -71,7 +73,7 @@ public class WizardCommand {
     public WizardCommand(String acommand, String avalue) {
         command = acommand.toLowerCase();
         value = avalue;
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("command: " + command + " : "+value);
         }
 
