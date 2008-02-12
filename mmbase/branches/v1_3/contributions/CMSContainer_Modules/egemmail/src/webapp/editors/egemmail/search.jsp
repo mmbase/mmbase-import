@@ -65,6 +65,7 @@
                 <html:hidden property="author" />
                 <html:hidden property="page" />
                 <html:hidden property="forward" />
+                <html:hidden property="limitToLastWeek" />
 				<mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
 				    <mm:first>
 				        <egem:paging offset="${offset}" resultsPerPage="${resultsPerPage}" totalNumberOfResults="${totalNumberOfResults}" />
