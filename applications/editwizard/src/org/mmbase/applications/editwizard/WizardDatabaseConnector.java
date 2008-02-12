@@ -31,12 +31,13 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.49 2007-07-07 13:32:06 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.50 2008-02-12 17:41:14 michiel Exp $
  *
  */
-public class WizardDatabaseConnector {
+public class WizardDatabaseConnector implements java.io.Serializable {
 
-    // logging
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class);
 
     int didcounter=1;
@@ -717,7 +718,7 @@ public class WizardDatabaseConnector {
      * @since MMBase 1.8
      * @param rootNode the node whose field sub nodes should be converted
      */
-    protected void convertBooleanToInt(Node rootNode) {
+    protected static void convertBooleanToInt(Node rootNode) {
         // convert all datetime values
         NodeList nodes = Utils.selectNodeList(rootNode, ".//field[@type='boolean']");
         for (int i = 0; i < nodes.getLength(); i++) {
