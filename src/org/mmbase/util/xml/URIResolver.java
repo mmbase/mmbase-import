@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.28 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: URIResolver.java,v 1.29 2008-02-12 17:21:22 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
@@ -233,6 +233,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 baseURL = getCwd();
             } else {
                 baseURL = resolveToURL(base, null); // resolve URIResolver's prefixes like mm:, ew: in base.
+                log.debug("Resolved '" + base + "' to " + baseURL);
             }
 
             URL path = null;
@@ -274,6 +275,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 if (href.startsWith("file:")) { // don't know excactly why this is good.
                     path =  new URL(baseURL, href.substring(5));
                 } else {
+                    log.debug("" + baseURL + " " + href);
                     path =  new URL(baseURL, href);
                 }
                 try {
@@ -351,15 +353,9 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * This is a list of prefix/directory pairs which is used in the constructor of URIResolver.
      */
 
-    static public class EntryList extends ArrayList<Entry> {
+    static public class EntryList extends ArrayList<Entry> implements Serializable {
+        private static final long serialVersionUID = 1L;
         public EntryList() {
-        }
-
-        /**
-         * @throws IllegalArgumentException If you don't add an Entry.
-         */
-        public boolean add(Entry o) {
-            return super.add(o);
         }
 
         /**
@@ -395,6 +391,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 return this;
             }
         }
+
     }
 
     /**
@@ -405,7 +402,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
 
     static class Entry implements java.io.Serializable {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 2L;
         private String prefix;
         private URL    dir;
         private ClassLoader classLoader;
@@ -424,34 +421,38 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             prefixLength = prefix.length(); // avoid calculating it again.
         }
 
-        private void writeObject(java.io.ObjectOutputStream out) {
+        private void writeObject(java.io.ObjectOutputStream out) throws IOException {
             try {
                 out.writeUTF(prefix);
-                if (dir == null) {
+                if (dir != null && dir.getProtocol().equals("mm")) {
                     out.writeObject("mm");
                 } else {
                     out.writeObject(dir);
                 }
             } catch (Throwable t) {
-                log.warn(t);
+                log.warn(t.getMessage(), t);
             }
         }
-        private void readObject(java.io.ObjectInputStream in) {
+        private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
             try {
                 prefix = in.readUTF();
                 Object o = in.readObject();
-                if ("mm".equals(o)) {
+                if ("mm:".equals(prefix)) {
                     classLoader = ResourceLoader.getConfigurationRoot();
                     dir = null;
                 } else {
-                    dir = (URL) o;
-                    classLoader = null;
+                    if ("mm".equals(o)) {
+                        classLoader = ResourceLoader.getConfigurationRoot();
+                        dir = null;
+                    } else {
+                        dir = (URL) o;
+                        classLoader = null;
+                    }
                 }
-                log.info("dir " + dir + " claddLoader " + classLoader);
             } catch (Throwable t) {
-                log.warn(t);
+                log.warn(t.getMessage(), t);
             }
-            prefixLength = prefix.length(); 
+            prefixLength = prefix.length();
         }
 
         String getPrefix() {
@@ -487,7 +488,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 return dir != null && dir.equals(o);
             } else if (o instanceof Entry) {
                 Entry e = (Entry) o;
-                return dir != null ? 
+                return dir != null ?
                     dir.equals(e.dir) :
                     classLoader.equals(e.classLoader);
             } else {
@@ -511,13 +512,13 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
     public static void main(String argv[]) throws Exception {
 
-        URIResolver resolver = new URIResolver(new URL("file:///tmp/"));
+        URIResolver resolver = new URIResolver(new URL("file:///home/mmbase/head/mmbase/edit/wizard/data"));
         System.out.println("Resolving with " + resolver);
         String href, base;
 
         href = "xsl/list.xsl";  base = null;
         System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
-        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
+        href = "prompts.xsl";  base = "file:///home/mmbase/head/mmbase/edit/wizard/data/xsl/base.xsl";
         System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
 
         FileOutputStream fos = new FileOutputStream("/tmp/uriresolver.ser");
@@ -534,7 +535,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
 
         href = "xsl/list.xsl";  base = null;
         System.out.println("href: " + href + " base: " + base + " --> " + resolver2.resolveToURL(href, base));
-        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
+        href = "prompts.xsl";  base = "file:///home/mmbase/head/mmbase/edit/wizard/data/xsl/base.xsl";
         System.out.println("href: " + href + " base: " + base + " --> " + resolver2.resolveToURL(href, base));
 
 
