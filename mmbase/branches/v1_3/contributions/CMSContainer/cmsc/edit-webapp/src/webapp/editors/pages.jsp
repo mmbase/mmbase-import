@@ -2,7 +2,7 @@
    <tr>
       <td style="width:50%;">
 	     <fmt:message key="searchpages.showresults">
- 	     	<fmt:param>${offset * resultsPerPage +1}</fmt:param>
+ 	     	<fmt:param>${(listSize>0)?(offset * resultsPerPage +1):0}</fmt:param>
 	     	<fmt:param>${(listSize > (offset+1) * resultsPerPage)?((offset+1) * resultsPerPage):listSize }</fmt:param>
 	     	<fmt:param>${listSize}</fmt:param>
 	     </fmt:message>

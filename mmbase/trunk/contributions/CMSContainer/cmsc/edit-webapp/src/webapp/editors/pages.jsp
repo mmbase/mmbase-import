@@ -15,7 +15,7 @@
 <fmt:message key="pages.message" var="error"/>
 <fmt:message key="pages.go" var="go"/>
 <fmt:message key="searchpages.showresults" var="searchresult">
-   <fmt:param>${(currentPage-1) * resultsPerPage +1 }</fmt:param>
+   <fmt:param>${(listSize>0)?((currentPage-1) * resultsPerPage +1):0 }</fmt:param>
    <fmt:param>${(listSize>currentPage*resultsPerPage)?(currentPage*resultsPerPage):listSize }</fmt:param>
    <fmt:param>${listSize}</fmt:param>
 </fmt:message>
