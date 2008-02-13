@@ -4,7 +4,7 @@
  * Routines for NewFromList
  * 
  * @since    MMBase-1.9
- * @version  $Id: newfromlist.jsp,v 1.3 2008-02-13 08:42:17 andre Exp $
+ * @version  $Id: newfromlist.jsp,v 1.4 2008-02-13 13:21:09 pierre Exp $
  */
 
 function doMySearch(el) {
@@ -28,6 +28,9 @@ function doMySearch(el) {
     var relationRole = "<%=request.getParameter("relationRole")%>";
     var createDir = "<%=request.getParameter("relationCreateDir")%>";
     var objectType = "<%=request.getParameter("objecttype")%>";
+    
+    var relationStartnodes = "<%= request.getParameter("relationStartnodes") %>";
+    var relationNodepath = "<%= request.getParameter("relationNodepath") %>";
 
     var fields = "";
     var cs = searchfields.split(",");
@@ -38,7 +41,7 @@ function doMySearch(el) {
             fields += ",";
         }
         var fieldname=cs[i];
-        if (fieldname.indexOf(".")!=-1 ) fieldname = fieldname.substring(fieldname.indexOf(".")+1,fieldname.length);
+        if (fieldname.indexOf(".")!=-1 && undefined == relationNodepath) fieldname = fieldname.substring(fieldname.indexOf(".")+1,fieldname.length);
 
         if (searchtype=="like") {
             constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
@@ -53,13 +56,21 @@ function doMySearch(el) {
 
 
     // build url
-    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&nodepath="+objectType+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
+    // var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&nodepath="+objectType+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
+    var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
+    if (undefined != relationNodepath) {
+        url += "&nodepath=" + relationNodepath + "&startnodes=" + relationStartnodes;
+    } else {
+        url += "&nodepath=" + objectType;
+    }
     url += setParam("relationOriginNode", relationOriginNode);
     url += setParam("relationRole", relationRole);
     url += setParam("relationCreateDir", createDir);
     url += setParam("constraints", constraints);
     url += setParam("age", searchage+"");
-
+   
+alert(relationOriginNode);
+ 
     showPopup(url);
 }
 
