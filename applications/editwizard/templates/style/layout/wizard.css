@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.10 2006-10-12 12:06:02 pierre Exp $
+  @version  $Id: wizard.css,v 1.11 2008-02-13 13:38:05 pierre Exp $
 
 body
 table.head
@@ -57,7 +57,7 @@ tr.formcanvas {
 }
 
 table.stepscontent {
-    font-size: 11px;
+    font-size: 12px;
     padding: 2px 4px 2px 4px;
     vertical-align: top;
     text-align: left;
@@ -97,7 +97,7 @@ td.stepother {
 div.buttonscontent {
     position: absolute;
     bottom: 0px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
     padding: 0px 0px 0px 0px;
     width: 100%;
@@ -106,7 +106,7 @@ div.buttonscontent {
 }
 
 table.buttonscontent {
-    font-size: 11px;
+    font-size: 12px;
     padding: 2px 4px 2px 4px;
     vertical-align: top;
     text-align: center;
@@ -127,7 +127,7 @@ div.editform {
 }
 
 table.formcontent {
-    font-size: 11px;
+    font-size: 12px;
     padding: 2px 4px 2px 4px;
     vertical-align: top;
     text-align: left;
@@ -140,7 +140,7 @@ table.formcontent {
 tr.fieldcanvas,
 tr.fieldsetcanvas,
 tr.fieldcanvas-edit {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
     padding: 5px 10px 5px 10px;
 }
@@ -177,13 +177,13 @@ td.field {
 }
 
 tr.listcanvas {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
     padding: 15px 10px 15px 10px;
 }
 
 table.listcontent {
-    font-size: 11px;
+    font-size: 12px;
     padding: 0px;
     vertical-align: top;
     text-align: left;
@@ -195,7 +195,7 @@ table.listcontent {
 }
 
 table.listhead {
-    font-size: 11px;
+    font-size: 12px;
     padding: 0px;
     margin: 0px;
     border-width: 0px;
@@ -212,7 +212,7 @@ td.listprompt {
 }
 
 td.listnewbuttons {
-    font-size: 11px;
+    font-size: 12px;
     padding: 0px;
     vertical-align: top;
     text-align: left;
@@ -220,7 +220,7 @@ td.listnewbuttons {
 }
 
 td.listsearch {
-    font-size: 11px;
+    font-size: 12px;
     padding: 0px;
     vertical-align: top;
     text-align: left;
@@ -228,7 +228,7 @@ td.listsearch {
 }
 
 table.searchcontent {
-    font-size: 11px;
+    font-size: 12px;
     padding: 0px;
     border-width: 0px;
     border-style: solid;
@@ -239,7 +239,7 @@ table.searchcontent {
 }
 
 tr.itemcanvas {
-    font-size: 11px;
+    font-size: 12px;
     padding-left: 5px;
     border-spacing: 0px;
     border-collapse: collapse;
@@ -253,7 +253,7 @@ td.itemprefix {
 }
 
 table.itemcontent {
-    font-size: 11px;
+    font-size: 12px;
     padding: 2px 4px 2px 4px;
     vertical-align: top;
     text-align: left;
@@ -264,7 +264,7 @@ table.itemcontent {
 }
 
 td.itemfields {
-    font-size: 11px;
+    font-size: 12px;
     padding: 2px;
     vertical-align: top;
     text-align: left;
@@ -272,7 +272,7 @@ td.itemfields {
 }
 
 td.itembuttons {
-    font-size: 11px;
+    font-size: 12px;
     padding: 0px;
     vertical-align: top;
     text-align: right;
@@ -280,7 +280,7 @@ td.itembuttons {
 }
 
 table.fieldscontent {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
     border-style: solid;
     border-width: 1px;
@@ -291,7 +291,7 @@ table.fieldscontent {
 /* fieldscontent changes into itemrow when it is used to open an item */
 table.itemrow,
 table.itemrow-hover {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
     cursor: pointer;
     border-style: solid;
