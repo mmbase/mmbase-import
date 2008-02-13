@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.64.2.7 2007-06-20 17:03:38 michiel Exp $
+     * @version  $Id: list.jsp,v 1.64.2.8 2008-02-13 13:15:07 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -93,6 +93,7 @@ if (listConfig.age > -1) {
 
 
 boolean deletable = false;
+boolean linkable = false;
 boolean unlinkable = false;
 boolean creatable = false;
 String deletedescription = "";
@@ -106,6 +107,7 @@ if (listConfig.wizard != null) {
     Wizard wiz = null;
     wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, listConfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
+    linkable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='link']")!=null);
     unlinkable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='unlink']")!=null);
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
 
@@ -344,6 +346,7 @@ params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("unlinkable",  unlinkable +"");
+params.put("linkable",  linkable +"");
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);

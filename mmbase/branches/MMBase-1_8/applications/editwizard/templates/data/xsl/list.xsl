@@ -7,17 +7,20 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43.2.2 2007-05-31 16:29:50 michiel Exp $
+    @version $Id: list.xsl,v 1.43.2.3 2008-02-13 13:15:07 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
 
   <xsl:param name="deletable">false</xsl:param>
   <xsl:param name="unlinkable">false</xsl:param>
+  <xsl:param name="linkable">false</xsl:param>
   <xsl:param name="creatable">true</xsl:param>
-  <xsl:param name="relationOriginNode">-1</xsl:param>
+  <xsl:param name="relationOriginNode"><xsl:value-of select="$origin" /></xsl:param>
   <xsl:param name="relationRole"></xsl:param>
   <xsl:param name="relationCreateDir"></xsl:param>
+  <xsl:param name="relationStartnodes"></xsl:param>
+  <xsl:param name="relationNodepath"></xsl:param>
 
   <xsl:param name="deleteprompt">
     <xsl:call-template name="prompt_delete_confirmation" />
@@ -57,8 +60,8 @@
     <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <xsl:if test="$relationOriginNode != '-1'">
-      <script type="text/javascript" src="{$javascriptdir}newfromlist.jsp{$sessionid}?language={$language}&amp;country={$country}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}&amp;relationOriginNode={$relationOriginNode}&amp;relationRole={$relationRole}&amp;relationCreateDir={$relationCreateDir}&amp;objecttype={$objecttype}">
+    <xsl:if test="$linkable='true'">
+      <script type="text/javascript" src="{$javascriptdir}newfromlist.jsp{$sessionid}?language={$language}&amp;country={$country}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}&amp;relationOriginNode={$relationOriginNode}&amp;relationRole={$relationRole}&amp;relationCreateDir={$relationCreateDir}&amp;relationStartnodes={$relationStartnodes}&amp;relationNodepath={$relationNodepath}&amp;objecttype={$objecttype}">
 	<xsl:comment>help IE</xsl:comment>
       </script>
     </xsl:if>

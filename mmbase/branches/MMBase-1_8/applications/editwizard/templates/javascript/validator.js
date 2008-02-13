@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.37.2.5 2007-11-27 12:18:32 michiel Exp $
+ * @version  $Id: validator.js,v 1.37.2.6 2008-02-13 13:15:07 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -216,10 +216,11 @@ Validator.prototype.validateElement = function (el, silent) {
                    "value is required; please select a value");
             }
 
-        } else {
+        }
+        else {
             if (isEmpty(v)) {
                 err += getToolTipValue(form,'message_required',
-				       "value is required");
+                   "value is required");
             }
         }
     }
@@ -418,6 +419,9 @@ function validateDatetime(el, form, v) {
     if ((ftype == "datetime") || (ftype == "date")) {
         month = form.elements["internal_" + id + "_month"].selectedIndex;
         day = form.elements["internal_" + id + "_day"].selectedIndex+1;
+        if (isNaN(day)) {
+          day = form.elements["internal_" + id + "_day"].value;
+        } 
         year = form.elements["internal_" + id + "_year"].value;
     }
     if ((ftype == "datetime") || (ftype == "time")) {
@@ -661,7 +665,7 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
 }
 
 function isEmpty(value) {
-    return (value == null) || (value == "");
+        return (value == null) || (value == "");
 }
 
 function getTargetElement(evt) {
