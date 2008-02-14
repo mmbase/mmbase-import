@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.20.2.6 2007-11-29 14:35:02 mark Exp $
+  @version $Id: prompts.xsl,v 1.20.2.7 2008-02-14 17:19:33 nklasens Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -52,9 +52,12 @@
 <xsl:template name="prompt_file_upload">Bestand uploaden</xsl:template>
 <xsl:template name="prompt_uploaded">geuploaded</xsl:template>
 <xsl:template name="prompt_image_upload" >Upload nieuwe afbeelding</xsl:template>
+<xsl:template name="prompt_image_replace">Vervang afbeelding</xsl:template>
 <xsl:template name="prompt_do_download">Huidig bestand bekijken</xsl:template>
 <xsl:template name="prompt_do_upload">Upload nieuw bestand</xsl:template>
 <xsl:template name="prompt_no_file">Geen (nieuw) bestand.</xsl:template>
+<xsl:template name="prompt_image_full">Volledige afbeelding</xsl:template>
+
 <!-- prompts for a dropdown box -->
 <xsl:template name="prompt_select">selecteer...</xsl:template>
 <!-- up/down button prompts and tooltips -->

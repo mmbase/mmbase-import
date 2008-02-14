@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.160.2.16 2007-12-13 17:24:19 michiel Exp $
+    @version $Id: wizard.xsl,v 1.160.2.17 2008-02-14 17:19:33 nklasens Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1005,7 +1005,7 @@
             </span>
             <br/>
             <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
-              <xsl:call-template name="prompt_image_upload"/>
+              <xsl:call-template name="prompt_image_replace"/>
             </a>
           </div>
         </xsl:when>
