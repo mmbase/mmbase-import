@@ -16,9 +16,11 @@ import java.util.Stack;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeProvider.java,v 1.3 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: TreeProvider.java,v 1.4 2008-02-14 14:36:31 michiel Exp $
  */
 public interface TreeProvider extends NodeProvider, ListProvider, DepthProvider {
+
+    public static final String KEY = "org.mmbase.taglib.tree";
 
     public int getPreviousDepth();
 

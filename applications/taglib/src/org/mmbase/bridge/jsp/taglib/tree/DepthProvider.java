@@ -13,9 +13,11 @@ package org.mmbase.bridge.jsp.taglib.tree;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthProvider.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
+ * @version $Id: DepthProvider.java,v 1.3 2008-02-14 14:36:31 michiel Exp $
  */
 public interface DepthProvider {
+
+    public static final String KEY = "org.mmbase.taglib.depth";
 
     /**
      * Returns the 'size' of the current cluster node (the number of steps (minus the relation steps))
