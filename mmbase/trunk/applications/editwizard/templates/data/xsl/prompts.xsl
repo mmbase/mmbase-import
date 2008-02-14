@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.37 2007-11-29 14:47:19 mark Exp $
+    @version $Id: prompts.xsl,v 1.38 2008-02-14 17:19:40 nklasens Exp $
 
     prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
@@ -87,6 +87,7 @@
   <xsl:template name="prompt_file_upload">File Upload</xsl:template>
   <xsl:template name="prompt_uploaded">Uploaded:</xsl:template>
   <xsl:template name="prompt_image_upload">Upload new image</xsl:template>
+  <xsl:template name="prompt_image_replace">Replace new image</xsl:template>
   <xsl:template name="prompt_do_download">Download current</xsl:template>
   <xsl:template name="prompt_do_upload">Upload new</xsl:template>
   <xsl:template name="prompt_no_file">No (new) file.</xsl:template>
