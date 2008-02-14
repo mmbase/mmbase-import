@@ -18,12 +18,12 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthTag.java,v 1.4 2005-03-14 19:02:35 michiel Exp $
+ * @version $Id: DepthTag.java,v 1.4.2.1 2008-02-14 14:21:47 michiel Exp $
  */
 public class DepthTag extends TreeReferrerTag implements Writer {
 
     public int doStartTag() throws JspTagException {
-        DepthProvider dp =  (DepthProvider) findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this));
+        DepthProvider dp =  findDepthProvider();
         helper.setValue(new Integer(dp.getDepth()));
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
@@ -35,10 +35,10 @@ public class DepthTag extends TreeReferrerTag implements Writer {
         return helper.doAfterBody();
     }
 
-    public int doEndTag() throws JspTagException {       
+    public int doEndTag() throws JspTagException {
         helper.doEndTag();
         return super.doEndTag();
-    }    
+    }
 
 }
 
