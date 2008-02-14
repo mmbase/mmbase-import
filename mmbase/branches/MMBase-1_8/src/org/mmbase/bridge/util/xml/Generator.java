@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util.xml;
 
+import java.io.*;
 import org.w3c.dom.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -25,7 +26,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39.2.2 2007-02-22 15:00:59 michiel Exp $
+ * @version $Id: Generator.java,v 1.39.2.3 2008-02-14 15:35:24 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -52,7 +53,7 @@ public class Generator {
      * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
      */
     public Generator(DocumentBuilder documentBuilder, Cloud cloud) {
-        this.documentBuilder = documentBuilder;        
+        this.documentBuilder = documentBuilder;
         this.cloud = cloud;
 
     }
@@ -73,8 +74,8 @@ public class Generator {
     public  Document getDocument() {
         if (document == null) {
             DOMImplementation impl = documentBuilder.getDOMImplementation();
-            document = impl.createDocument(namespaceAware ? NAMESPACE : null, 
-                                           "objects", 
+            document = impl.createDocument(namespaceAware ? NAMESPACE : null,
+                                           "objects",
                                            impl.createDocumentType("objects", DOCUMENTTYPE_PUBLIC, DOCUMENTTYPE_SYSTEM)
                                            );
             if (cloud != null) {
@@ -111,7 +112,7 @@ public class Generator {
         } else {
             return document.createElement(name);
         }
-                
+
     }
     protected final void setAttribute(Element element, String name, String value) {
         // attributes normally have no namespace. You can assign one, but then they will always have
@@ -126,7 +127,7 @@ public class Generator {
         */
         element.setAttribute(name, value);
     }
-    
+
     protected final String getAttribute(Element element, String name) {
         // see setAttribute
         /*
@@ -292,7 +293,17 @@ public class Generator {
             if (subs != null) return subs;
         }
         return null;
-        
+
+    }
+
+    /**
+     * Just to override if you happen to use java 1.5.
+     * @since MMBase-1.8.6
+     * This method will not be added to mmbase 1.9. We use java 1.5 there, and simply call
+     * object.setIdAttribute directoy.
+     */
+    protected void setIdAttribute(Element object, String name) {
+        //object.setIdAttribute(name, true);
     }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
@@ -325,9 +336,8 @@ public class Generator {
 
         // node didnt exist, so we need to create it...
         object = createElement("object");
-
         setAttribute(object, "id", "" + node.getNumber());
-        //object.setIdAttribute("id", true);
+        setIdAttribute(object, "id");
         setAttribute(object, "type", node.getNodeManager().getName());
         // and the otype (type as number)
         setAttribute(object, "otype", node.getStringValue("otype"));
@@ -436,5 +446,18 @@ public class Generator {
             setAttribute(fieldElement, "type", "destination");
         }
         return fieldElement;
+    }
+
+    public static void main(String[] argv) throws Exception {
+        Generator gen = new Generator(org.mmbase.util.xml.DocumentReader.getDocumentBuilder());
+        Document doc = gen.getDocument();
+        Element el = doc.getDocumentElement();
+        el.setAttribute("id", "hoi");
+        el.setIdAttribute("id", true);
+        System.out.println(org.mmbase.util.xml.XMLWriter.write(doc, false));
+        Document doc2 = org.mmbase.util.xml.DocumentReader.getDocumentBuilder().parse(new ByteArrayInputStream(org.mmbase.util.xml.XMLWriter.write(doc, false).getBytes("UTF-8")));
+        Element el2 = doc2.getElementById("hoi");
+        System.out.println("found" + el2);
+        System.out.println(org.mmbase.util.xml.XMLWriter.write(el2, false));
     }
 }
