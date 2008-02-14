@@ -6,21 +6,21 @@
   - a 'component' main element with the following properties:
     - name: the name of the component. This must match the 'name'
       field of a component object in the cloud
-    - templatepath: the path in which the templates are located, 
+    - templatepath: the path in which the templates are located,
       for the emailcomponent this would be 'email'
     - templatebar: one of 'provider' or 'education'. Defines in
       which bar a link to the component is placed
-    - barposition: integer defining the location in the bar, 
+    - barposition: integer defining the location in the bar,
       small numbers are on the left, large numbers on the right
   - 'scope' elements define a scope in which the component can be
     active. The following scopes are possible:
-    - component: the main one, where you can define settings and default values. 
+    - component: the main one, where you can define settings and default values.
     - providers
     - educations
     - classes
     - people
     A scope can have a 'referid' value that will be used in a JSP
-    page to find the value for a setting. 
+    page to find the value for a setting.
     Within a scope you can refer to settings defined in another
     scope.
   - 'setting' elements that define a setting. There are 4 possible types:
@@ -30,14 +30,14 @@
     - domain, one of a list of (string) options.
     You can specify a default value
 -->
-<component 
+<component
     xmlns="http://www.mmbase.org/xmlns/didactor-component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"    
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/didactor-component http://www.mmbase.org/xmlns/didactor-component.xsd"
     name="core" templatepath="" templatebar="" barposition="10">
 
   <scope name="component" referid="component">
-    <!-- Some example settings with different types 
+    <!-- Some example settings with different types
     <setting name="integersetting" type="integer" default="0" />
     <setting name="domainsetting" type="domain" default="option1">
       <option name="option1" />
@@ -67,6 +67,7 @@
     <setting name="personorderfield" type="string" default="lastname" canbeempty="false" />
     <setting name="admin_personfields" type="string" default="firstname,suffix,lastname"  canbeempty="false" />
     <setting name="may_open_future" type="boolean" default="true" />
+    <setting name="new_learnobjects" type="string" default="learblocks,pages,flashpages,htmlpages,xmlcontent,tests" />
 
   </scope>
   <scope name="classes" referid="class">
