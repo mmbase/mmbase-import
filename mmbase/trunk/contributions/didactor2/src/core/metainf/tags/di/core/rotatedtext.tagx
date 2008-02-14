@@ -7,7 +7,6 @@
   <jsp:directive.attribute name="text"   required="true" />
   <jsp:directive.attribute name="angle"        />
   <mm:cloud>
-    <mm:log>${text}</mm:log>
     <mm:content escaper="none">
       <mm:escaper id="title" type="regexps">
         <mm:param name="mode">entire</mm:param>

@@ -8,8 +8,6 @@
   <jsp:directive.attribute name="element"    />
   <jsp:directive.attribute name="path_segment"  />
 
-  <mm:log>escape:" ${requestScope['org.mmbase.bridge.jsp.taglib.escaper']}</mm:log>
-
   <mm:node element="${element}">
     <mm:field name="url">
       <mm:compare regexp="http://.*">
