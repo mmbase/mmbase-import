@@ -16,19 +16,22 @@ import org.mmbase.util.logging.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: OnShrinkTag.java,v 1.3 2006-11-14 22:53:49 michiel Exp $
+ * @version $Id: OnShrinkTag.java,v 1.4 2008-02-14 14:36:31 michiel Exp $
  */
-public class OnShrinkTag extends TreeReferrerTag implements DepthProvider { 
+public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
     private static final Logger log = Logging.getLoggerInstance(OnShrinkTag.class);
     private int depth;
+    private Object prevDepthProvider;
 
     public int getDepth() {
         return depth;
     }
 
     public int doStartTag() throws JspTagException {
-        DepthProvider dp = findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this));
+        DepthProvider dp = findDepthProvider();
         depth = dp.getDepth();
+        prevDepthProvider = pageContext.getAttribute(DepthProvider.KEY, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(DepthProvider.KEY, new BasicDepthProvider(getDepth()), PageContext.REQUEST_SCOPE);
         return EVAL_BODY_BUFFERED;
     }
 
@@ -44,6 +47,11 @@ public class OnShrinkTag extends TreeReferrerTag implements DepthProvider {
         return super.doAfterBody();
     }
 
+    public int doEndTag() throws JspTagException  {
+        pageContext.setAttribute(DepthProvider.KEY, prevDepthProvider, PageContext.REQUEST_SCOPE);
+        prevDepthProvider = null;
+        return super.doEndTag();
+    }
 
 }
 

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.tree;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 import org.mmbase.bridge.jsp.taglib.ListProvider;
 import org.mmbase.bridge.jsp.taglib.util.*;
@@ -16,14 +17,15 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: AbstractTreeReferrerListTag.java,v 1.5 2005-12-05 17:21:17 michiel Exp $
+ * @version $Id: AbstractTreeReferrerListTag.java,v 1.6 2008-02-14 14:36:31 michiel Exp $
  */
 abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements ListProvider, DepthProvider {
 
-    protected int depth; 
+    protected int depth;
     protected int index;
     protected TreeProvider tree;
 
+    private Object prevDepthProvider;
 
     public int getIndex() {
         return index;
@@ -55,6 +57,8 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
 
 
     protected final void doStartTagHelper() throws JspTagException {
+        prevDepthProvider = pageContext.getAttribute(DepthProvider.KEY, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(DepthProvider.KEY, new BasicDepthProvider(getDepth()), PageContext.REQUEST_SCOPE);
         collector = new ContextCollector(getContextProvider());
         tree = findTreeProvider();
         index = 0;
@@ -63,6 +67,8 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
     public int doEndTag() throws JspTagException  {
         collector = null;
         tree     = null;
+        pageContext.setAttribute(DepthProvider.KEY, prevDepthProvider, PageContext.REQUEST_SCOPE);
+        prevDepthProvider = null;
         return super.doEndTag();
     }
     public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
