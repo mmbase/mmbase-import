@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.7 2008-02-08 13:55:57 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.8 2008-02-14 15:32:22 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -55,7 +55,8 @@ public class MmxfGetString implements  Processor {
 
     static protected Generator getGenerator(final Cloud cloud) {
         return new Generator(getDocumentBuilder(), cloud) {
-            @Override
+            // in 1.8 this is @Override, in 1.9, this is ignored. So this can be dropped if no 1.8
+            // compatibility needed any more.
             protected void setIdAttribute(Element object, String name) {
                 object.setIdAttribute(name, true);
             }
