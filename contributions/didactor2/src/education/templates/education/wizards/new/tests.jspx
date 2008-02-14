@@ -1,0 +1,23 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="depth">0</mm:import>
+  <mm:import externid="wizardjsp" from="request" />
+
+  <di-t:leaf styleClass="newtests" depth="${depth}">
+    <mm:import id="dummyname" jspvar="dummyName" vartype="String" reset="true"><mm:nodeinfo nodetype="tests" type="guitype"/></mm:import>
+    <mm:link referid="wizardjsp" referids="_node@origin">
+      <mm:param name="wizard">config/tests/tests-origin</mm:param>
+      <mm:param name="objectnumber">new</mm:param>
+      <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
+      <a href="${_}"
+         title="${di:translate('education.new')} ${dummyname}"
+         target="text"><di:translate key="education.new" /> ${dummyname}</a>
+    </mm:link>
+  </di-t:leaf>
+
+</jsp:root>
