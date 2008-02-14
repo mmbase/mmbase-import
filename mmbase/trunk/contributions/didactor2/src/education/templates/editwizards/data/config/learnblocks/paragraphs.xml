@@ -4,6 +4,9 @@
   <title xml:lang="nl">Alineas invoeren</title>
   <title xml:lang="en">Enter paragraphs</title>
   <field name="name" ftype="data"/>
+  <!--
+      somethings goes wrong with this.
   <field name="showtitle" />
+  -->
   <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
 </form-schema>
