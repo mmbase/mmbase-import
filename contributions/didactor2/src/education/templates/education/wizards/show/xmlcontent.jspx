@@ -1,0 +1,25 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+  <jsp:output omit-xml-declaration="yes" />
+
+    <di-t:leaf styleClass="self" depth="${depth}">
+
+      <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,templates">
+        <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
+
+        <a href="${_}"
+           target="text">
+          <mm:field name="number" />:
+          <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
+          <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
+        </a>
+      </mm:link>
+
+
+    </di-t:leaf>
+
+</jsp:root>

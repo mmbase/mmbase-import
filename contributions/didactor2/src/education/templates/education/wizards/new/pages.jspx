@@ -1,0 +1,28 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="depth">0</mm:import>
+  <mm:import externid="wizardjsp" from="request" />
+
+
+  <di-t:leaf styleClass="newpages" depth="${depth}">
+    <mm:context>
+      <mm:import id="dummyname" escape="lowercase" reset="true"><mm:nodeinfo nodetype="pages" type="guitype"/></mm:import>
+      <mm:link referid="wizardjsp" referids="_node@origin">
+        <mm:param name="wizard">config/pages/pages-origin</mm:param>
+        <mm:param name="objectnumber">new</mm:param>
+        <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
+        <a href="${_}"
+           title="${di:translate('education.new')} ${dummyname} ${di:translate('education.aanmaken')}"
+           target="text"><di:translate key="education.new" /> ${dummyname} <di:translate key="education.aanmaken" />
+        </a>
+      </mm:link>
+    </mm:context>
+  </di-t:leaf>
+
+
+</jsp:root>

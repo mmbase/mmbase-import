@@ -1,0 +1,21 @@
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+  <jsp:output omit-xml-declaration="yes" />
+  <mm:import externid="depth">0</mm:import>
+
+  <di-t:leaf styleClass="newkupu" depth="${depth}">
+    <mm:link page="/mmbase/kupu/mmbase" referids="_node@origin,referrer,templates">
+      <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
+      <mm:param name="objectnumber">new</mm:param>
+
+      <a href="${_}"
+         title="${di:translate('education.new')} ${dummyname}"
+         target="text"><di:translate key="education.new" /> richtext</a>
+    </mm:link>
+  </di-t:leaf>
+
+</jsp:root>
