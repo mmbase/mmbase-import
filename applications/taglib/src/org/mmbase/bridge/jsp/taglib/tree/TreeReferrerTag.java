@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.tree;
 
-
-
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
@@ -21,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeReferrerTag.java,v 1.2.4.1 2008-02-14 14:21:47 michiel Exp $
+ * @version $Id: TreeReferrerTag.java,v 1.2.4.2 2008-02-14 14:37:17 michiel Exp $
  */
 abstract public class TreeReferrerTag extends NodeReferrerTag {
 
