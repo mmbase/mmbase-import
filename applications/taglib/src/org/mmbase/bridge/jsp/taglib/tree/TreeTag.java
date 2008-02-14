@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib.tree;
 
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.*;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.18 2006-08-28 12:30:36 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.18.2.1 2008-02-14 14:21:47 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -64,6 +65,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     private int index;
 
     private Node nextNode;
+
+    private Object prevDepthProvider;
+    private Object prevTreeProvider;
 
     /**
      * Lists do implement ContextProvider
@@ -181,6 +185,10 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         log.debug("starttag");
         shrinkStack = new Stack();
         collector = new ContextCollector(getContextProvider());
+        prevDepthProvider = pageContext.getAttribute(DepthProvider.KEY, PageContext.REQUEST_SCOPE);
+        prevTreeProvider = pageContext.getAttribute(TreeProvider.KEY, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(DepthProvider.KEY, this, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(TreeProvider.KEY, this, PageContext.REQUEST_SCOPE);
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
@@ -322,6 +330,8 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (t != null) {
             ((TimerTag)t).haltTimer(timerHandle);
         }
+        pageContext.setAttribute(DepthProvider.KEY, prevDepthProvider, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(TreeProvider.KEY, prevTreeProvider, PageContext.REQUEST_SCOPE);
         // dereference for gc
         tree = null;
         iterator = null;
