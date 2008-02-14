@@ -44,9 +44,6 @@ public class RssFeedCreate extends MMBaseFormlessAction {
                 String ewnodelastedited = getParameter(request, "ewnodelastedited");
                 NavigationUtil.appendChild(cloud, parentpage, ewnodelastedited);
                 
-                Node newPage = cloud.getNode(ewnodelastedited);
-                Node layoutNode = PagesUtil.getLayout(newPage);
-                PagesUtil.linkPortlets(newPage, layoutNode);
                 request.getSession().removeAttribute("parentpage");
                 
                 addToRequest(request, "showpage", ewnodelastedited);
