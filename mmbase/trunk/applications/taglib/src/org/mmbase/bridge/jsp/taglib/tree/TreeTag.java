@@ -9,8 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.tree;
 
-
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
+
 import java.io.IOException;
 import java.util.Stack;
 
@@ -46,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.22 2007-03-02 21:01:15 nklasens Exp $
+ * @version $Id: TreeTag.java,v 1.23 2008-02-14 14:36:31 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -63,6 +64,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     private int index;
 
     private Node nextNode;
+
+    private Object prevDepthProvider;
+    private Object prevTreeProvider;
 
     /**
      * Lists do implement ContextProvider
@@ -180,6 +184,10 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         log.debug("starttag");
         shrinkStack = new Stack<Entry>();
         collector = new ContextCollector(getContextProvider());
+        prevDepthProvider = pageContext.getAttribute(DepthProvider.KEY, PageContext.REQUEST_SCOPE);
+        prevTreeProvider = pageContext.getAttribute(TreeProvider.KEY, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(DepthProvider.KEY, this, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(TreeProvider.KEY, this, PageContext.REQUEST_SCOPE);
 
         // serve parent timer tag:
         TimerTag t = findParentTag(TimerTag.class, null, false);
@@ -321,12 +329,16 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (t != null) {
             t.haltTimer(timerHandle);
         }
+        pageContext.setAttribute(DepthProvider.KEY, prevDepthProvider, PageContext.REQUEST_SCOPE);
+        pageContext.setAttribute(TreeProvider.KEY, prevTreeProvider, PageContext.REQUEST_SCOPE);
         // dereference for gc
         tree = null;
         iterator = null;
         shrinkStack = null;
         nextNode = null;
         collector = null;
+        prevDepthProvider = null;
+        prevTreeProvider = null;
         return super.doEndTag();
     }
 
