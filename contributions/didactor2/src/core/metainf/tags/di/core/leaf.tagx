@@ -1,0 +1,62 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    version="2.0">
+  <jsp:directive.tag
+      description="In the edit-environment horrible trees are constructed with tables in tables and spacers and what not. This helps at least keeping the jsp more or less tidy."
+      />
+  <jsp:directive.attribute name="last"   type="java.lang.Boolean"   />
+  <jsp:directive.attribute name="icon"   type="java.lang.Boolean"   />
+  <jsp:directive.attribute name="click"   type="java.lang.String"   />
+  <jsp:directive.attribute name="open"   type="java.lang.Boolean"   />
+  <jsp:directive.attribute name="depth" type="java.lang.Integer"    />
+  <jsp:directive.attribute name="styleClass" />
+
+  <table border="0" cellpadding="0" cellspacing="0" class="${styleClass}">
+    <tr>
+      <mm:link  page="/education/wizards/gfx/tree_spacer.gif">
+        <td><img src="${_}" width="${16 + 16 * depth}" height="16" border="0" align="center" /></td>
+      </mm:link>
+      <c:choose>
+        <c:when test="${empty click}">
+          <mm:link  page="/education/wizards/gfx/tree_spacer.gif">
+            <td><img src="${_}" width="16" height="16" border="0" align="center" /></td>
+          </mm:link>
+          <mm:link page="/education/wizards/gfx/tree_vertline.gif" write="false">
+            <c:if test="${depth ge 2}">
+              <c:forEach begin="0" end="${depth - 2}">
+                <td><img src="${_}" border="0" align="center" valign="middle"/></td>
+              </c:forEach>
+            </c:if>
+          </mm:link>
+          <mm:link page="/education/wizards/gfx/tree_vertline-leaf.gif">
+            <td><img src="${_}" border="0" align="center" valign="middle"/></td>
+          </mm:link>
+          <c:if test="${empty icon or icon}">
+            <mm:link page="/education/wizards/gfx/new_education.gif">
+              <td>
+                <img src="${_}" width="16" border="0" align="middle" />
+              </td>
+            </mm:link>
+          </c:if>
+        </c:when>
+        <c:otherwise>
+          <td>
+            <a href="javascript:clickNode('${click}')">
+              <img src="gfx/tree_${empty open or ! open ? 'plus' : 'min'}${last ? 'last' : ''}.gif" border="0"
+                   align="center" valign="middle" id="img_${click}"/>
+            </a>
+          </td>
+          <td>
+            <img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_${click}"/>
+          </td>
+        </c:otherwise>
+      </c:choose>
+      <td>
+        <jsp:doBody />
+      </td>
+    </tr>
+  </table>
+</jsp:root>
