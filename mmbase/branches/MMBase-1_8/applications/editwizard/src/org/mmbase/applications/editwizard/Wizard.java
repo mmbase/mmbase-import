@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149.2.2 2008-02-06 14:07:12 michiel Exp $
+ * @version $Id: Wizard.java,v 1.149.2.3 2008-02-14 17:16:11 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -107,13 +107,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private String timezone;
 
     /**
-     * public xmldom's: the schema, the data and the originaldata is stored.
-     *
-     * @scope private
+     * xmldom's: the schema, the data and the originaldata is stored.
      */
     private Document schema;
     private Document data;
     private Document originalData;
+    
+    /**
+     *  document where loaded data will be stored in when added by wizard actions
+     */
+    private Document loadedData;
 
     // not yet committed uploads are stored in these hashmaps
     private Map binaries = new HashMap();
@@ -294,7 +297,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * Returns true if the specified operation is valid for the node with the specified objectnumber.
      * The  operation is valid if the node has the given property set to true.
      * To maintain backwards compatible, if the property is not given, the default value is true.
-     * @param objectNumber teh number of teh ndoe to check
+     * @param objectNumber the number of the node to check
      * @param operation a valid operation, i.e. maywrite or maydelete
      * @throws WizardException if the object cannot be retrieved
      */
@@ -413,11 +416,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // If dataid equals null, we don't need to do anything. Wizard will not be used to show or save data;
         // just to load schema information.
         if (dataId != null) {
-            // setup original data
-            originalData = Utils.emptyDocument();
-
             if (dataId.equals("new")) {
                 log.debug("Creating new xml");
+
+                // setup original data
+                originalData = Utils.emptyDocument();
+                loadedData = Utils.emptyDocument();
 
                 // Get the definition and create a copy of the object-definition.
                 Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
@@ -435,7 +439,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Node parent = data.getDocumentElement();
 
                 // Ask the database to create that object, ultimately to get the new id.
-                Node newobject = databaseConnector.createObject(data, parent, objectdef, variables);
+                Node newobject = databaseConnector.createObject(data, parent, objectdef, variables, loadedData);
 
                 if (newobject == null) {
                     throw new WizardException("Could not create new object. Did you forget to add an 'object' subtag?");
@@ -457,6 +461,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         if (currentFormId == null) {
             currentFormId = determineNextForm("first");
         }
+
     }
 
     /**
@@ -473,6 +478,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
         // setup original data
         originalData = Utils.emptyDocument();
+        loadedData = Utils.emptyDocument();
 
 
         // store original data, so that the put routines will know what to save/change/add/delete
@@ -2113,6 +2119,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             String value = cmd.getValue();
             NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
             NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
+            if (originalNodesToUpdate == null) {
+                originalNodesToUpdate = Utils.selectNodeList(loadedData, ".//*[@number='" + value + "']");
+            }
 
             if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
                 Node updatedNode = null;
@@ -2289,7 +2298,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 log.debug("new orig: " + Utils.stringFormatted(data));
             }
 
-            Element results = databaseConnector.put(originalData, data, binaries);
+            Element results = databaseConnector.put(originalData, loadedData, data, binaries);
 
             // find the (new) objectNumber and store it.
             String oldNumber = Utils.selectSingleNodeText(data, ".//object/@number", null);
@@ -2399,7 +2408,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
 
         // Ask the database to create that object, and return it.
-        Node newRelation =  databaseConnector.createObject(data, parent, relationDefinition, variables, createOrder);
+        Node newRelation =  databaseConnector.createObject(data, parent, relationDefinition, variables, createOrder, loadedData);
 
         // reload the data, there may be sub-list-data to be reloaded.
         if (destinationId != null) {
@@ -2411,24 +2420,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                 if (loadAction != null) {
                     Collection newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
-                    // newly loaded objects must be marked as 'already-existing'.
+                    // newly loaded objects must be marked.
 
                     Iterator i = newSubRelations.iterator();
                     while (i.hasNext()) {
                         Node newSubRelation = (Node) i.next();
-                        Utils.setAttribute(newSubRelation, "already-exists", "true");
-                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
-
-                        for (int j = 0; j < newSubObjects.getLength(); j++) {
-                            Node newSubObject = newSubObjects.item(j);
-                            Utils.setAttribute(newSubObject, "already-exists", "true");
-                        }
-
-                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
-                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
-                            Node newSubSubRelation = newSubSubRelations.item(k);
-                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
-                        }
+                        loadedData.appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
                     }
                 } else {
                     log.debug("Nothing found to load");

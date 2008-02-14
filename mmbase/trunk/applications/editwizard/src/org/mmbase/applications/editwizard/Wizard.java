@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.158 2008-02-12 17:41:14 michiel Exp $
+ * @version $Id: Wizard.java,v 1.159 2008-02-14 17:16:17 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -107,11 +107,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private String timezone;
 
     /**
-     * public xmldom's: the schema, the data and the originaldata is stored.
+     * xmldom's: the schema, the data and the originaldata is stored.
      */
     private transient Document schema;
     private transient Document data;
     private transient Document originalData;
+    
+    /**
+     *  document where loaded data will be stored in when added by wizard actions
+     */
+    private Document loadedData;
 
     // not yet committed uploads are stored in these hashmaps
     private Map<String, byte[]> binaries = new HashMap<String, byte[]>();
@@ -160,6 +165,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param wizardname name of teh wizard
      * @param dataid the objectnumber
      * @param cloud the Cloud to use
+     * @throws WizardException when wizard creation failed
      */
     public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud) throws WizardException {
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
@@ -175,6 +181,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      * @param cloud the Cloud to use
+     * @throws WizardException when wizard creation failed
      */
     public Wizard(String context, URIResolver uri,
                   Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
@@ -261,7 +268,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
 
     /**
-     * Returns whether the wizard may be closed
+     * Returns whether the wizard has committed the transaction
+     * @return <code>true</code> when committed 
      */
     public boolean committed() {
         return committed;
@@ -269,6 +277,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Returns whether the wizard may be closed
+     * @return <code>true</code> when allowed to close
      */
     public boolean mayBeClosed() {
         return mayBeClosed;
@@ -276,6 +285,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Returns whether a sub wizard should be started
+     * @return <code>true</code> when start a sub wizard
      */
     public boolean startWizard() {
         return startWizard;
@@ -287,6 +297,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * To maintain backwards compatible, if the property is not given, the default value is true.
      * @param objectNumber the number of the node to check
      * @param operation a valid operation, i.e. maywrite or maydelete
+     * @return <code>true</code> when valid operation
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean checkNode(String objectNumber, String operation) throws WizardException {
@@ -322,6 +333,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Returns true if the node with the specified objectnumber can be edited
      * @param objectNumber number of the object to check
+     * @return <code>true</code> when allowed to edit
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean mayEditNode(String objectNumber) throws WizardException {
@@ -331,6 +343,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Returns true if the node with the specified objectnumber can be deleted
      * @param objectNumber number of the object to check
+     * @return <code>true</code> when allowed to delete
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean mayDeleteNode(String objectNumber) throws WizardException {
@@ -339,6 +352,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Returns the subwizard start command
+     * @return wizard command
      */
     public WizardCommand getStartWizardCommand() {
         return startWizardCmd;
@@ -360,6 +374,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Loads the wizard schema, and a work document, and fills it with initial data.
      *
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
+     * @throws WizardException when wizard loading failed
      */
     protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException {
         if (wizardConfig.wizard == null) {
@@ -399,11 +414,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         // If dataid equals null, we don't need to do anything. Wizard will not be used to show or save data;
         // just to load schema information.
         if (dataId != null) {
-            // setup original data
-            originalData = Utils.emptyDocument();
-
             if (dataId.equals("new")) {
                 log.debug("Creating new xml");
+
+                // setup original data
+                originalData = Utils.emptyDocument();
+                loadedData = Utils.emptyDocument();
 
                 // Get the definition and create a copy of the object-definition.
                 Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
@@ -421,7 +437,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 Node parent = data.getDocumentElement();
 
                 // Ask the database to create that object, ultimately to get the new id.
-                Node newobject = databaseConnector.createObject(data, parent, objectdef, variables);
+                Node newobject = databaseConnector.createObject(data, parent, objectdef, variables, loadedData);
 
                 if (newobject == null) {
                     throw new WizardException("Could not create new object. Did you forget to add an 'object' subtag?");
@@ -446,6 +462,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     }
 
     /**
+     * Load data from mmbase based on the wizard schema
+     * @throws WizardException when data loading failed
      * @since MMBase-1.7
      */
     protected void loadData() throws WizardException {
@@ -459,6 +477,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
         // setup original data
         originalData = Utils.emptyDocument();
+        loadedData = Utils.emptyDocument();
 
 
         // store original data, so that the put routines will know what to save/change/add/delete
@@ -471,6 +490,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Second, all given commands are processed sequentially.
      *
      * @param req the ServletRequest contains the name-value pairs received through the http connection
+     * @throws WizardException when request processing failed
      */
     public void processRequest(ServletRequest req) throws WizardException {
         String curform = req.getParameter("curform");
@@ -491,6 +511,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param out The writer where the output (html) should be written to.
      * @param instanceName name of the current instance
+     * @throws WizardException when building the current state of the wizard xml failed 
+     * @throws TransformerException when transforming the wizard xml failed 
      */
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         writeHtmlForm(out, instanceName, null);
@@ -506,6 +528,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param instanceName name of the current instance
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
+     * @throws WizardException when building the current state of the wizard xml failed 
+     * @throws TransformerException when transforming the wizard xml failed 
      */
     public void writeHtmlForm(Writer out, String instanceName, Map<String, Object> externParams)
         throws WizardException, TransformerException {
@@ -546,6 +570,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Internal method which is used to store the passed values. this method is called by processRequest.
+     * @param req http servlet request containing new values
+     * @throws WizardException when failed to store data in the wizard data structure 
      *
      * @see #processRequest
      */
@@ -703,6 +729,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * - previous
      * - next
      * </code>
+     * @return name of next form
      */
     public String determineNextForm(String direction) {
         String stepDirection = direction;
@@ -746,8 +773,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * This method generates the pre-html. See the full-spec method for more details.
+     * @param       instanceName    The instancename of this wizard
+     * @return xml representation of the wizard data ready to be transformed
+     * @throws WizardException thrown when something failed in generating the xml 
      *
-     * @see #createPreHtml
+     * @see #createPreHtml(Node, String, Node, String)
      */
     public Document createPreHtml(String instanceName) throws WizardException {
         Node datastart = Utils.selectSingleNode(data, "/data/*");
@@ -768,6 +798,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       formid          The id of the current form
      * @param       data            The main node of the data tree to be used
      * @param       instanceName    The instancename of this wizard
+     * @return xml representation of the wizard data ready to be transformed
+     * @throws WizardException thrown when something failed in generating the xml 
      */
     public Document createPreHtml(Node wizardSchema, String formid, Node data,
                                   String instanceName) throws WizardException {
@@ -966,6 +998,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       form    The node of the pre-html form which is to be generated
      * @param       formdef the node of the wizardschema form definition
      * @param       dataContext   Points to the datacontext node which should be used for this form.
+     * @throws WizardException when form generation failed
      */
     public void createPreHtmlForm(Node form, Node formdef, Node dataContext)
         throws WizardException {
@@ -1071,7 +1104,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * This method loads the schema using the properties of the wizard. It loads the wizard using #wizardSchemaFilename,
      * resolves the includes, and 'tags' all datanodes. (Places temp. ids in the schema).
-     *
+     * @param wizardSchemaFile Url to schema file
+     * @throws WizardException when schema loading failed
      */
     private void loadSchema(URL  wizardSchemaFile) throws WizardException {
         schema = wizardSchemaCache.getDocument(wizardSchemaFile);
@@ -1104,8 +1138,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method is a recursive one. Included files are also scanned again for includes.
      *
      * @param       node    The node from where to start searching for include and extends attributes.
+     * @return list of urls which are included
+     * @throws WizardException when included urls failed to load 
      * @returns    A list of included files.
-     *
      */
     private List<URL> resolveIncludes(Node node) throws WizardException {
         List<URL> result = new ArrayList<URL>();
@@ -1211,7 +1246,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * later, other simplifying code could be placed here, so that for more simple fdatapath's more simple commands can be used.
      * (maybe we should avoid using xpath in total for normal use of the editwizards?)
      *
-     * @param   schemanode  The schemanode from were to start searching
+     * @param   schemaNode  The schemanode from were to start searching
      * @param   recurse     Set to true if you want to let the process search in-depth through the entire tree, false if you just want it to search the first-level children
      */
     private void resolveShortcuts(Node schemaNode, boolean recurse) {
@@ -1259,7 +1294,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Resolves possible shortcut for this given single node. (@see #resolveShortcuts for more information)
      *
-     * @param   node    The node to resolve
+     * @param   singleNode    The node to resolve
      */
     private void resolveShortcut(Node singleNode) {
         // transforms <field name="firstname"/> into <field fdatapath="field[@name='firstname']" />
@@ -1410,8 +1445,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private final static Pattern INVERSE_ORDERTYPE = Pattern.compile("(?i).*\\binverse\\b.*");
 
     /**
-     *       Creates a form item (each of which may consist of several single form fields)
+     * Creates a form item (each of which may consist of several single form fields)
      *  for each given datanode.
+     * @param form data of form
+     * @param fieldlist list of fields
+     * @param datalist list of data nodes
+     * @param parentdatanode node where data starts
+     * @throws WizardException when form creation failed
      */
     private void createFormList(Node form, Node fieldlist, NodeList datalist,
                                 Node parentdatanode) throws WizardException {
@@ -1667,6 +1707,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       form        the pre-html form node
      * @param       field       the form definition field node
      * @param       dataNode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
+     * @throws WizardException when form field creation failed 
      */
     private void createFormField(Node form, Node field, Node dataNode)
         throws WizardException {
@@ -1851,6 +1892,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * This method de-encodes a html field-name (@see #calculateFormName) and returns an Array with the decoded values.
+     * @param formName name of form
      * @return     The array with id's. First id in the array is the data-id (did), which indicates what datanode is pointed to,
      *              second id is the fid (field-id) which points to the proper fieldnode in the wizarddefinition.
      */
@@ -1884,6 +1926,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param  did     The data id where the value should be stored
      * @param  fid     The wizarddefinition field id what applies to this data
      * @param  value   The (String) value what should be stored in the data.
+     * @throws WizardException when failed to store data
      */
     private void storeValue(String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -1942,6 +1985,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param  did     The data id of the node
      * @param  fieldName   The name of the field
      * @param  value   The (String) value what should be stored in the data.
+     * @throws WizardException when failed to store field data
      */
     public void storeFieldValue(String did, String fieldName, String value) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -1966,6 +2010,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param  did     The data id of the node
      * @param  fieldName   The name of the field
+     * @return value of field
+     * @throws WizardException when failed to read field 
      */
     public String retrieveFieldValue(String did, String fieldName) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -1990,6 +2036,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method processes the commands sent over http.
      *
      * @param req The ServletRequest where the commands (name/value pairs) reside.
+     * @throws WizardException when failed to process command 
      */
     private void processCommands(ServletRequest req) throws WizardException {
         log.debug("processing commands");
@@ -2037,6 +2084,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *   <li>commit</li>
      * </ul>
      * @param cmd The command to be processed
+     * @throws WizardException when failed to process command
      *
      */
     public void processCommand(WizardCommand cmd) throws WizardException {
@@ -2094,6 +2142,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             String value = cmd.getValue();
             NodeList nodesToUpdate = Utils.selectNodeList(data, ".//*[@number='" + value + "']");
             NodeList originalNodesToUpdate = Utils.selectNodeList(originalData, ".//*[@number='" + value + "']");
+            if (originalNodesToUpdate == null) {
+                originalNodesToUpdate = Utils.selectNodeList(loadedData, ".//*[@number='" + value + "']");
+            }
 
             if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
                 Node updatedNode = null;
@@ -2268,7 +2319,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 log.debug("new orig: " + Utils.stringFormatted(data));
             }
 
-            Element results = databaseConnector.put(originalData, data, binaries);
+            Element results = databaseConnector.put(originalData, loadedData, data, binaries);
 
             // find the (new) objectNumber and store it.
             String oldNumber = Utils.selectSingleNodeText(data, ".//object/@number", null);
@@ -2333,9 +2384,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param listId  the id of the proper list definition node, the list that issued the add command
      * @param subDataId  The did (dataid) of the anchor (parent) where the new node should be created
      * @param destinationId   The new destination
+     * @param isCreate is create action 
      * @param createOrder ordernr under which this item is added ()i.e. when adding more than one item to a
      *                    list using one add-item command). The first ordernr in a list is 1
      * @return The new relation.
+     * @throws WizardException when failed to add item
      */
     private Node addListItem(String listId, String subDataId, String destinationId,
                              boolean isCreate, int createOrder) throws WizardException {
@@ -2378,7 +2431,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
 
         // Ask the database to create that object, and return it.
-        Node newRelation =  databaseConnector.createObject(data, parent, relationDefinition, variables, createOrder);
+        Node newRelation =  databaseConnector.createObject(data, parent, relationDefinition, variables, createOrder, loadedData);
 
         // reload the data, there may be sub-list-data to be reloaded.
         if (destinationId != null) {
@@ -2390,24 +2443,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 if (loadAction != null) {
                     Collection<Node> newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
-                    // newly loaded objects must be marked as 'already-existing'.
+                    // newly loaded objects must be marked.
 
                     Iterator<Node> i = newSubRelations.iterator();
                     while (i.hasNext()) {
                         Node newSubRelation = i.next();
-                        Utils.setAttribute(newSubRelation, "already-exists", "true");
-                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
-
-                        for (int j = 0; j < newSubObjects.getLength(); j++) {
-                            Node newSubObject = newSubObjects.item(j);
-                            Utils.setAttribute(newSubObject, "already-exists", "true");
-                        }
-
-                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
-                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
-                            Node newSubSubRelation = newSubSubRelations.item(k);
-                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
-                        }
+                        loadedData.appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
                     }
                 } else {
                     log.debug("Nothing found to load");
@@ -2434,7 +2475,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     }
 
     /**
-     *
+     * set binary data for uploaded bytes
+     * @param       did     This is the dataid what points to in what field the binary should be stored, once commited.
+     * @param       bytes    This is a bytearray with the data to be stored.
+     * @param       name    This is the name which will be used to show what file is uploaded.
+     * @param       path    The (local) path of the file placed.
      * @param type Content-type of the byte (or null). If not null, then the fields 'mimetype',
      *             'size' and 'filename' are filled as well.
      * @since MMBase-1.7.2
@@ -2752,6 +2797,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method gets the MMBase constraints.
      *
      * @param       objecttype      The name of the object, eg. images, jumpers, urls, news
+     * @return constrainra from mmbase
      */
     public Node getConstraints(String objecttype) {
         return getConstraints(objecttype, null);
@@ -2762,6 +2808,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param       objecttype      The name of the object, eg. images, jumpers, urls, news
      * @param       fieldname       The name of the field, eg. title, body, start
+     * @return constrainra from mmbase
      */
     public Node getConstraints(String objecttype, String fieldname) {
         // check if constraints are in repository, if so, return thatone,
@@ -2936,7 +2983,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             }
         }
     }
-
+    
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         schema = ((DocumentSerializable) in.readObject()).getDocument();
@@ -2956,4 +3003,5 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         out.writeUTF(wizardStylesheetFile.toString());
 
     }
+
 }
