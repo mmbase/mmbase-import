@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.46 2006-02-13 16:16:50 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.46.2.1 2008-02-14 17:16:11 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -406,8 +406,8 @@ public class WizardDatabaseConnector {
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params) throws WizardException {
-        return createObject(data, targetParentNode, objectDef, params, 1);
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, Document loadedData) throws WizardException {
+        return createObject(data, targetParentNode, objectDef, params, 1, loadedData);
     }
 
     /**
@@ -442,7 +442,7 @@ public class WizardDatabaseConnector {
      * @return The resulting object(tree) node.
      * @throws WizardException if the object cannot be created
      */
-    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
+    public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder, Document loadedData) throws WizardException {
 
         String context = (String)params.get("context");
 
@@ -456,7 +456,7 @@ public class WizardDatabaseConnector {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
             Node firstobject = null;
             for (int i=0; i < objectdefs.getLength(); i++) {
-                firstobject = createObject(data, targetParentNode, objectdefs.item(i), params);
+                firstobject = createObject(data, targetParentNode, objectdefs.item(i), params, loadedData);
             }
             log.debug("This is an action");  // no relations to add here..
             return firstobject;
@@ -515,8 +515,10 @@ public class WizardDatabaseConnector {
                 } catch (Exception e) {
                     throw new WizardException("Could not load object (" + dnumber + "). Message: " + Logging.stackTrace(e));
                 }
+                
                 // but annotate that this one is loaded from mmbase. Not a new one
-                Utils.setAttribute(inside_object, "already-exists", "true");
+                loadedData.appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
+                
                 // grab the type
                 dtype = Utils.getAttribute(inside_object, "type", "");
             } else {
@@ -549,7 +551,7 @@ public class WizardDatabaseConnector {
                     ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
                     ((Element)inside_object).setAttribute("disposable","true");
                 } else {
-                    inside_object = createObject(data,relationNode, inside_objectdef, params);
+                    inside_object = createObject(data,relationNode, inside_objectdef, params, loadedData);
                     dnumber = Utils.getAttribute(inside_object, "number");
                     ((Element)relationNode).setAttribute("destination",dnumber);
                 }
@@ -639,11 +641,12 @@ public class WizardDatabaseConnector {
      *
      * @param     originalData            The original data object tree.
      * @param     newData                 The new and manipulated data. According to differences between the original and the new data, the transaction is constructed.
+     * @param     loadedData              The data loaded by actions on the wizard 
      * @param     binaries                 A hashmap with the uploaded binaries.
      * @return   The element containing the results of the put transaction.
      */
-    public Element put(Document originalData, Document newData, Map binaries) throws WizardException {
-        Node putcmd =getPutData(originalData, newData);
+    public Element put(Document originalData, Document loadedData, Document newData, Map binaries) throws WizardException {
+        Node putcmd =getPutData(originalData, loadedData, newData);
         return sendCommand(putcmd.getOwnerDocument().getDocumentElement(), binaries);
     }
 
@@ -738,12 +741,13 @@ public class WizardDatabaseConnector {
      * The differences between the original and the new data define the transaction.
      *
      * @param     originalData    The original data.
+     * @param     loadedData      The data loaded by actions 
      * @param     newData         The new data.
      */
-    public Node getPutData(Document originalData, Document newData) throws WizardException {
+    public Node getPutData(Document originalData, Document loadedData, Document newData) throws WizardException {
         Document workDoc = Utils.emptyDocument();
         workDoc.appendChild(workDoc.importNode(newData.getDocumentElement().cloneNode(true), true));
-
+        
         Node workRoot = workDoc.getDocumentElement();
 
         // initialize request xml
@@ -761,9 +765,13 @@ public class WizardDatabaseConnector {
         }
 
         // serialize original data. Place objects first, relations second
+        // serialize loaded data. Place objects first, relations second
         makeFlat(originalData, reqorig, ".//object", "field");
-        makeFlat(originalData, reqorig, ".//relation", "field");
+        makeFlat(loadedData, reqorig, ".//object", "field");
 
+        makeFlat(originalData, reqorig, ".//relation", "field");
+        makeFlat(loadedData, reqorig, ".//relation", "field");
+        
         // serialize new data. Place objects first, relations second
         makeFlat(workRoot, reqnew, ".//object", "field");
         makeFlat(workRoot, reqnew, ".//relation", "field");
@@ -784,10 +792,8 @@ public class WizardDatabaseConnector {
             String nodename = node.getNodeName();
 
             String did = Utils.getAttribute(node, "did", "");
-            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"' and not(@already-exists)]");
-
-//            String nodenumber = Utils.getAttribute(node, "number", "");
-//            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@number='"+nodenumber+"' and not(@already-exists)]");
+            Node orignode = Utils.selectSingleNode(reqorig, ".//*[@did='"+did+"']");
+            
             if (orignode!=null) {
                 // we found the original relation. Check to see if destination has changed.
                 if (nodename.equals("relation")) {
@@ -840,58 +846,26 @@ public class WizardDatabaseConnector {
                     }
                 }
             } else {
-                // this is a new relation or object. Remember that
-                // but, check first if the may-be-new object has a  "already-exists" attribute. If so,
-                // we don't have a new object, no no, this is a later-loaded object which is not added to the
-                // original datanode (should be better in later versions, eg. by using a repository).
-                String already_exists = Utils.getAttribute(node, "already-exists", "false");
-                if (!already_exists.equals("true")) {
-                    // go ahead. this seems to be a really new one...
-                    Utils.setAttribute(node, "status", "new");
+                // this is a new relation or object.
+                Utils.setAttribute(node, "status", "new");
 
-                        // check if fields values have been set
-                        // insert values are not sent - this allows use of virtual fields to edit
-                        // other fields
-                        NodeList fields=Utils.selectNodeList(node,"field");
-                        for (int j=0; j<fields.getLength(); j++) {
-                            // if a new field is empty, don't enter it, but use the default value
-                            // as set in the builder's setDefault() method
-                            // note that strictly speaking, this may not be correct
-                            // a better way is perhaps to first retrieve a new node and compare the values
-                            if ("".equals(Utils.getText(fields.item(j)))) {
-                                fields.item(j).getParentNode().removeChild(fields.item(j));
-                            }
-                        }
-
-                } else {
-                    // remove it from the list.
-                    node.getParentNode().removeChild(node);
+                // check if fields values have been set
+                // insert values are not sent - this allows use of virtual fields to edit
+                // other fields
+                NodeList fields=Utils.selectNodeList(node,"field");
+                for (int j=0; j<fields.getLength(); j++) {
+                    // if a new field is empty, don't enter it, but use the default value
+                    // as set in the builder's setDefault() method
+                    // note that strictly speaking, this may not be correct
+                    // a better way is perhaps to first retrieve a new node and compare the values
+                    if ("".equals(Utils.getText(fields.item(j)))) {
+                        fields.item(j).getParentNode().removeChild(fields.item(j));
+                    }
                 }
             }
         }
 
-        // remove all repository nodes
-        NodeList repnodes = Utils.selectNodeList(reqorig, ".//relation[@repository='true']|.//object[@repository='true']");
-        for (int i=0; i<repnodes.getLength(); i++) {
-            Node repnode = repnodes.item(i);
-            repnode.getParentNode().removeChild(repnode);
-        }
-
-        // find all deleted relations and objects
-        NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
-        for (int i=0; i<orignodes.getLength(); i++) {
-            Node orignode = orignodes.item(i);
-            String nodenumber = Utils.getAttribute(orignode, "number", "");
-            Node node = Utils.selectSingleNode(reqnew, ".//*[@number='"+nodenumber+"']");
-            if (node==null) {
-                // item is apparently deleted.
-                // place relation node anyway but say that it should be deleted (and make it so more explicit)
-                Node newnode = req.createElement(orignode.getNodeName());
-                Utils.copyAllAttributes(orignode, newnode);
-                Utils.setAttribute(newnode, "status", "delete");
-                reqnew.appendChild(newnode);
-            }
-        }
+        markDeletedNodes(req, reqnew, reqorig);
 
         // now, do our final calculations:
         //
@@ -939,6 +913,31 @@ public class WizardDatabaseConnector {
             }
         }
         return req.getDocumentElement();
+    }
+
+    private void markDeletedNodes(Document req, Node reqnew, Node reqorig) {
+        // remove all repository nodes
+        NodeList repnodes = Utils.selectNodeList(reqorig, ".//relation[@repository='true']|.//object[@repository='true']");
+        for (int i=0; i<repnodes.getLength(); i++) {
+            Node repnode = repnodes.item(i);
+            repnode.getParentNode().removeChild(repnode);
+        }
+
+        // find all deleted relations and objects
+        NodeList orignodes = Utils.selectNodeList(reqorig, ".//relation|.//object");
+        for (int i=0; i<orignodes.getLength(); i++) {
+            Node orignode = orignodes.item(i);
+            String nodenumber = Utils.getAttribute(orignode, "number", "");
+            Node node = Utils.selectSingleNode(reqnew, ".//*[@number='"+nodenumber+"']");
+            if (node==null) {
+                // item is apparently deleted.
+                // place relation node anyway but say that it should be deleted (and make it so more explicit)
+                Node newnode = req.createElement(orignode.getNodeName());
+                Utils.copyAllAttributes(orignode, newnode);
+                Utils.setAttribute(newnode, "status", "delete");
+                reqnew.appendChild(newnode);
+            }
+        }
     }
 
     /**
