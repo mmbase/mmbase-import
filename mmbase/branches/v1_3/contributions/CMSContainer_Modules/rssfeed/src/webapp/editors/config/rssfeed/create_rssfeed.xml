@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE action PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<action type="create">
-   <object type="rssfeed">
-	   <field name="maximum">100</field>
-	   <field name="max_age_in_days">30</field>
-	   <field name="language">nl</field>
-   </object>
-</action>
