@@ -13,7 +13,6 @@ function restoreTree() {
     }
 }
 
-
 function storeTree() {
     var xmlhttp =  new XMLHttpRequest();
     var ser = "";
@@ -59,7 +58,6 @@ function closeNode(node) {
         }
     }
 }
-
 function clickNode(node) {
     el = document.getElementById(node);
     if (el != null) {
