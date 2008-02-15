@@ -77,10 +77,11 @@
           </mm:hasrank>
 
           <div class="componentBody">
+            <mm:write request="component" value="${component}" />
             <di:include page="/cockpit/applicationbar.jsp" />
             <di:include page="/cockpit/providerbar.jsp" />
             <di:include page="/cockpit/educationbar.jsp" />
-            <div class="di_body mm_c_$">
+            <div class="di_body mm_c_${component}">
               <jsp:doBody />
             </div>
           </div>
