@@ -18,13 +18,9 @@
    <steps>
       <step form-schema="edit_event"/>
       <step form-schema="edit_contentfields"/>
-<!-- 
       <step form-schema="edit_contentinfo"/>
- -->
    </steps>
    <form-schema id="edit_event" extends="config/event/edit_event.xml"/>
    <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
-<!-- 
    <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
- -->
 </wizard-schema>

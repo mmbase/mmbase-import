@@ -15,13 +15,9 @@
    <steps>
       <step form-schema="edit_banners"/>
       <step form-schema="edit_contentfields"/>
-<!-- 
       <step form-schema="edit_contentinfo"/>
- -->
    </steps>
    <form-schema id="edit_banners" extends="config/banners/edit_banners.xml"/>
    <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
-<!-- 
    <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
- -->
 </wizard-schema>
