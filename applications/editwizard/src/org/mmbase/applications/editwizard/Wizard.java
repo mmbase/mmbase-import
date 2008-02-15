@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.159 2008-02-14 17:16:17 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.160 2008-02-15 13:24:47 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -112,7 +112,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private transient Document schema;
     private transient Document data;
     private transient Document originalData;
-    
+
     /**
      *  document where loaded data will be stored in when added by wizard actions
      */
@@ -269,7 +269,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Returns whether the wizard has committed the transaction
-     * @return <code>true</code> when committed 
+     * @return <code>true</code> when committed
      */
     public boolean committed() {
         return committed;
@@ -511,8 +511,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param out The writer where the output (html) should be written to.
      * @param instanceName name of the current instance
-     * @throws WizardException when building the current state of the wizard xml failed 
-     * @throws TransformerException when transforming the wizard xml failed 
+     * @throws WizardException when building the current state of the wizard xml failed
+     * @throws TransformerException when transforming the wizard xml failed
      */
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         writeHtmlForm(out, instanceName, null);
@@ -528,8 +528,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param instanceName name of the current instance
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
-     * @throws WizardException when building the current state of the wizard xml failed 
-     * @throws TransformerException when transforming the wizard xml failed 
+     * @throws WizardException when building the current state of the wizard xml failed
+     * @throws TransformerException when transforming the wizard xml failed
      */
     public void writeHtmlForm(Writer out, String instanceName, Map<String, Object> externParams)
         throws WizardException, TransformerException {
@@ -571,7 +571,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Internal method which is used to store the passed values. this method is called by processRequest.
      * @param req http servlet request containing new values
-     * @throws WizardException when failed to store data in the wizard data structure 
+     * @throws WizardException when failed to store data in the wizard data structure
      *
      * @see #processRequest
      */
@@ -775,7 +775,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method generates the pre-html. See the full-spec method for more details.
      * @param       instanceName    The instancename of this wizard
      * @return xml representation of the wizard data ready to be transformed
-     * @throws WizardException thrown when something failed in generating the xml 
+     * @throws WizardException thrown when something failed in generating the xml
      *
      * @see #createPreHtml(Node, String, Node, String)
      */
@@ -799,7 +799,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       data            The main node of the data tree to be used
      * @param       instanceName    The instancename of this wizard
      * @return xml representation of the wizard data ready to be transformed
-     * @throws WizardException thrown when something failed in generating the xml 
+     * @throws WizardException thrown when something failed in generating the xml
      */
     public Document createPreHtml(Node wizardSchema, String formid, Node data,
                                   String instanceName) throws WizardException {
@@ -897,81 +897,20 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 // Test if this list has a query and get the time-out related values.
                 Node query = Utils.selectSingleNode(list, "query");
-                long currentTime = new Date().getTime();
-                long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
-                                                                             "query-timeout", String.valueOf(this.listQueryTimeOut)));
-                long lastExecuted = currentTime - queryTimeOut - 1;
-
                 if (query != null) {
-                    String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
-
-                    if (!lastExecutedString.equals("never")) {
-                        lastExecuted = Long.parseLong(lastExecutedString);
-                    }
-                }
-
-                // Execute the query if it's there and only if it has timed out.
-                if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
-                    log.debug("Performing query for optionlist '" + listname +
-                              "'. Cur time " + currentTime + " last executed " + lastExecuted +
-                              " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
-
-                    Node queryresult = null;
-
-                    try {
-                        // replace {$origin} and such
-                        String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
-                        Utils.setAttribute(query, "where", newWhere);
-                        queryresult = databaseConnector.getList(query);
-                        queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
-                    } catch (Exception e) {
-                        // Bad luck, tell the user and try the next list.
-                        log.debug("Error during query, proceeding with next list: " + e.toString());
-
-                        Element option = optionlist.getOwnerDocument().createElement("option");
-                        option.setAttribute("id", "-");
-                        Utils.storeText(option, "Error: query for '" + listname + "' failed");
-                        optionlist.appendChild(option);
-
-                        continue;
-                    }
-
-                    // Remind the current time.
-                    Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
-
-                    // Remove any already existing options.
-                    NodeList olditems = Utils.selectNodeList(list, "option");
-
-                    for (int itemindex = 0; itemindex < olditems.getLength();
-                         itemindex++) {
-                        list.removeChild(olditems.item(itemindex));
-                    }
-
-                    // Loop through the queryresult and add the included objects by creating
-                    // an option element for each one. The id and content of the option
-                    // element are taken from the object by performing the xpaths on the object,
-                    // that are given by the list definition.
-                    NodeList items = Utils.selectNodeList(queryresult, "*");
-                    String idPath = Utils.getAttribute(list, "optionid", "@number");
-                    String contentPath = Utils.getAttribute(list, "optioncontent", "field");
-
-                    for (int itemindex = 0; itemindex < items.getLength();
-                         itemindex++) {
-                        Node item = items.item(itemindex);
-                        String optionId = Utils.transformAttribute(item, idPath, true);
-                        String optionContent = Utils.transformAttribute(item,
-                                                                        contentPath, true);
-                        Element option = list.getOwnerDocument().createElement("option");
-                        option.setAttribute("id", optionId);
-                        Utils.storeText(option, optionContent);
-                        list.appendChild(option);
-                    }
+                    if (!runQuery(list, query)) continue;
                 }
 
                 // Now copy the items of the list definition to the preHTML list.
                 NodeList items = Utils.selectNodeList(list, "option");
                 Utils.appendNodeList(items, optionlist);
 
+            } else {
+                // test if query occurs inline and get the time-out related values.
+                Node query = Utils.selectSingleNode(optionlist, "query");
+                if (query != null) {
+                    if (!runQuery(optionlist, query)) continue;
+                }
             }
 
             // set selected=true for option which is currently selected
@@ -990,6 +929,87 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
         // Okee, we are ready. Let's return what we've been working on so hard.
         return preHtml;
+    }
+
+    /**
+     * This method tests if a query in a nodelist needs to be run, and runs it if needed, adding the resulting options to the optionlist.
+     *
+     * @param list    the node of the optionlist in which the query is defined
+     * @param query    the node of the query definition
+     */
+    boolean runQuery(Node list, Node query) {
+        long currentTime = new Date().getTime();
+        long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
+                                                                     "query-timeout", String.valueOf(this.listQueryTimeOut)));
+        long lastExecuted = currentTime - queryTimeOut - 1;
+
+        if (query != null) {
+            String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
+
+            if (!lastExecutedString.equals("never")) {
+                lastExecuted = Long.parseLong(lastExecutedString);
+            }
+        }
+
+        // Execute the query if it's there and only if it has timed out.
+        if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
+            if (log.isDebugEnabled()) {
+              log.debug("Performing query for optionlist '" + Utils.getAttribute(list, "select") +
+                      "'. Cur time " + currentTime + " last executed " + lastExecuted +
+                      " timeout " + queryTimeOut + " > " + (currentTime - lastExecuted));
+            }
+            Node queryresult = null;
+
+            try {
+                // replace {$origin} and such
+                String newWhere = Utils.fillInParams(Utils.getAttribute(query, "where"), variables);
+                Utils.setAttribute(query, "where", newWhere);
+                queryresult = databaseConnector.getList(query);
+                queryresult = Utils.selectSingleNode(queryresult, "/getlist/query");
+            } catch (Exception e) {
+                // Bad luck, tell the user and try the next list.
+                log.debug("Error during query, proceeding with next list: " + e.toString());
+
+                Element option = list.getOwnerDocument().createElement("option");
+                option.setAttribute("id", "-");
+                Utils.storeText(option, "Error: query for '" + Utils.getAttribute(list, "select") + "' failed");
+                list.appendChild(option);
+
+                return false;
+            }
+
+            // Remind the current time.
+            Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
+
+            // Remove any already existing options.
+            NodeList olditems = Utils.selectNodeList(list, "option");
+
+            for (int itemindex = 0; itemindex < olditems.getLength();
+                 itemindex++) {
+                list.removeChild(olditems.item(itemindex));
+            }
+
+            // Loop through the queryresult and add the included objects by creating
+            // an option element for each one. The id and content of the option
+            // element are taken from the object by performing the xpaths on the object,
+            // that are given by the list definition.
+            NodeList items = Utils.selectNodeList(queryresult, "*");
+            String idPath = Utils.getAttribute(list, "optionid", "@number");
+            String contentPath = Utils.getAttribute(list, "optioncontent", "field");
+
+            for (int itemindex = 0; itemindex < items.getLength();
+                 itemindex++) {
+                Node item = items.item(itemindex);
+                String optionId = Utils.transformAttribute(item, idPath, true);
+                String optionContent = Utils.transformAttribute(item,
+                                                                contentPath, true);
+                Element option = list.getOwnerDocument().createElement("option");
+                option.setAttribute("id", optionId);
+                Utils.storeText(option, optionContent);
+                list.appendChild(option);
+            }
+        }
+        return true;
     }
 
     /**
@@ -1139,7 +1159,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param       node    The node from where to start searching for include and extends attributes.
      * @return list of urls which are included
-     * @throws WizardException when included urls failed to load 
+     * @throws WizardException when included urls failed to load
      * @returns    A list of included files.
      */
     private List<URL> resolveIncludes(Node node) throws WizardException {
@@ -1707,7 +1727,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       form        the pre-html form node
      * @param       field       the form definition field node
      * @param       dataNode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
-     * @throws WizardException when form field creation failed 
+     * @throws WizardException when form field creation failed
      */
     private void createFormField(Node form, Node field, Node dataNode)
         throws WizardException {
@@ -2011,7 +2031,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param  did     The data id of the node
      * @param  fieldName   The name of the field
      * @return value of field
-     * @throws WizardException when failed to read field 
+     * @throws WizardException when failed to read field
      */
     public String retrieveFieldValue(String did, String fieldName) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -2036,7 +2056,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method processes the commands sent over http.
      *
      * @param req The ServletRequest where the commands (name/value pairs) reside.
-     * @throws WizardException when failed to process command 
+     * @throws WizardException when failed to process command
      */
     private void processCommands(ServletRequest req) throws WizardException {
         log.debug("processing commands");
@@ -2384,7 +2404,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param listId  the id of the proper list definition node, the list that issued the add command
      * @param subDataId  The did (dataid) of the anchor (parent) where the new node should be created
      * @param destinationId   The new destination
-     * @param isCreate is create action 
+     * @param isCreate is create action
      * @param createOrder ordernr under which this item is added ()i.e. when adding more than one item to a
      *                    list using one add-item command). The first ordernr in a list is 1
      * @return The new relation.
@@ -2983,7 +3003,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             }
         }
     }
-    
+
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         schema = ((DocumentSerializable) in.readObject()).getDocument();
