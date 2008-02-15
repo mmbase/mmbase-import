@@ -89,9 +89,18 @@
 }
 /* end of portal navigation (the tabs) */
 
+/*
 .tdheader
 {
 	background-color: #000;
+	height: 55px;
+}
+*/
+.tdheader
+{
+	background-image: url(../media/repeat_found.gif);
+	background-repeat: repeat-x;
+	background-color: #330;
 	height: 55px;
 }
 
