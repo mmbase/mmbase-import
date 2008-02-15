@@ -20,13 +20,13 @@
       <step form-schema="edit_contentfields"/>      
 <!--
       <step form-schema="article_related_newslettertheme"/> 
-      <step form-schema="edit_contentinfo"/>
  -->
+      <step form-schema="edit_contentinfo"/>
    </steps>
    <form-schema id="edit_article" extends="config/article/edit_article.xml"/>
    <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
 <!--
    <form-schema id="article_related_newslettertheme" extends="config/newslettertheme/article_related_newslettertheme.xml"/> 
-   <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
  -->
+   <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
 </wizard-schema>
