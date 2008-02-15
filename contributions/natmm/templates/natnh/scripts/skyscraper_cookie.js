@@ -16,20 +16,21 @@ function SetCookie(cookieName,cookieValue,nDays) {
 }
 
 function loadSkyscraper() {
-   document.body.style.overflow = 'hidden';
-	document.getElementById('skyscraper').style.visibility = 'hidden';
+	document.getElementById('skyscraper').style.display = 'none';
 	var skyscraperIsViewed = ReadCookie("skyscraper_is_viewed");
 	//alert("skyscraperIsViewed: " + skyscraperIsViewed);
 	
 	if ( skyscraperIsViewed == null || skyscraperIsViewed == "") {
 		//alert("showing skyscraper and setting cookie");
+		document.body.style.overflow = 'hidden';
+		document.getElementById('skyscraper').style.display = 'block';
 		document.getElementById('skyscraper').style.visibility = 'visible';
 		SetCookie("skyscraper_is_viewed","yes",365);
 	}
 }
 
 function closeSkyscraper() {
-   document.body.style.overflow = 'auto';
+   document.body.style.overflow = 'scroll';
 	document.getElementById('skyscraper').style.display = 'none';
 	return false;
 }
