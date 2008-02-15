@@ -6,10 +6,6 @@
 <html:html xhtml="true">
 <cmscedit:head title="maintenance.title" />
 <body>
-<mm:cloud jspvar="cloud" loginpage="login.jsp">
-
-	<mm:haspage page="/editors/maintenance/">
-		<mm:hasrank minvalue="administrator">
 		<%-- <cmscedit:sideblock title="maintenance.title">  --%>
 		<div class="side_block">
 			<!-- bovenste balkje -->
@@ -18,14 +14,15 @@
 				<div class="header_end"></div>
 			</div>
 			<div class="body">
-			<ul class="shortcuts">
+			
+<mm:cloud jspvar="cloud" loginpage="login.jsp" rank="administrator">
+	<ul class="shortcuts">
+        <li class="advancedpublish">
+           <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
+           <a href="${threadsUrl}" target="rightpane"><fmt:message key="maintenance.threads" /></a>
+        </li>
 
-
-            <li class="advancedpublish">
-               <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
-               <a href="${threadsUrl}" target="rightpane"><fmt:message key="maintenance.threads" /></a>
-            </li>
-			<%-- <cmsc:hasfeature name="rmmci">  --%>
+		<%--  <cmsc:hasfeature name="rmmci">  --%>
 			<mm:haspage page="/editors/publish-remote">
                <li class="advancedpublish">
                   <c:url var="compareUrl" value="/editors/maintenance/compare-models.jsp"/>
@@ -58,38 +55,35 @@
 	                  <c:url var="unlinkUrl" value="/editors/maintenance/staging/unlink-remotenodes.jsp"/>
 	                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
 	               </li>
+
                <% } %>
-			<%--  </cmsc:hasfeature>  --%>
             </mm:haspage>
-<%--
-            <cmsc:hasfeature name="luceusmodule">
-				<li class="luceus">
-					<a href="" target="rightpane"><fmt:message key="maintenance.luceus" /></a>
-				</li>
-            </cmsc:hasfeature>
+		<%--  </cmsc:hasfeature> --%>
+		<cmsc:hasfeature name="workflowitem">
+           <li class="workflow">
+              <a href="staging/workflow-remove.jsp" target="rightpane"><fmt:message key="maintenance.workflow" /></a>
+           </li>
+        </cmsc:hasfeature>
+<%--  
+        <cmsc:hasfeature name="luceusmodule">
+			<li class="luceus">
+				<a href="" target="rightpane"><fmt:message key="maintenance.luceus" /></a>
+			</li>
+        </cmsc:hasfeature>
  --%>
-<%--
-            <mm:haspage page="/editors/workflow">
-               <li class="workflow">
-                  <a href="" target="rightpane"><fmt:message key="maintenance.workflow" /></a>
-               </li>
-            </mm:haspage>
- --%>
-<%--
-            <mm:haspage page="/editors/egemmail">
-               <li class="egem">
-                  <a href="" target="rightpane"><fmt:message key="maintenance.egemmail" /></a>
-               </li>
-            </mm:haspage>
- --%>
-         </ul>
+<%-- 
+        <mm:haspage page="/editors/egemmail">
+           <li class="egem">
+              <a href="" target="rightpane"><fmt:message key="maintenance.egemmail" /></a>
+           </li>
+        </mm:haspage>
+--%>
+       </ul>
+</mm:cloud>
          </div>
          	<div class="side_block_end"></div>
 		</div>
 		<%-- </cmscedit:sideblock>  --%>
-		</mm:hasrank>
-	</mm:haspage>
-</mm:cloud>
 </body>
 </html:html>
 </mm:content>
