@@ -210,7 +210,7 @@
         <servlet-class>com.finalist.cmsc.services.search.RedirectServlet</servlet-class>
         <init-param>
 			<param-name>forwardRequest</param-name>
-			<param-value>false</param-value>
+			<param-value>true</param-value>
         </init-param>
         <load-on-startup>4</load-on-startup>
     </servlet>

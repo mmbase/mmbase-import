@@ -12,20 +12,6 @@
 			<type>mmbase-module</type>
 		</dependency>
 
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-rssfeed</artifactId>
-			<version>${cmscmodules.version}</version>
-			<type>mmbase-module</type>
-		</dependency>   		
-		
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-tasks</artifactId>
-			<version>${cmscmodules.version}</version>
-			<type>mmbase-module</type>
-		</dependency>   		
-		
 		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-tasks</artifactId>
@@ -179,7 +165,7 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
-    
+
 <!-- Ageci Security dependencies (for Community Module) -->
         <dependency>
             <groupId>acegisecurity</groupId>
