@@ -7,7 +7,6 @@
     name="attachments" maintainer="www.mmbase.org" version="0" extends="object">
   <status>active</status>
   <class>org.mmbase.module.builders.Attachments</class>
-<!--  FREEK -->
 
   <searchage>31</searchage>
   <names>
@@ -106,7 +105,7 @@
         <positions>
           <input>4</input>
           <list>-1</list>
-          <search>4</search>
+          <search>4</search><!-- I think it absurd that you can search on filename but not otherwise see it -->
         </positions>
       </editor>
       <datatype base="filename" xmlns="http://www.mmbase.org/xmlns/datatypes" />
@@ -133,6 +132,7 @@
           <search>-1</search>
         </positions>
       </editor>
+      <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>size</name>
         <type state="persistent" notnull="true" key="false">INTEGER</type>
