@@ -12,55 +12,23 @@
 			<type>mmbase-module</type>
 		</dependency>
 
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-rssfeed</artifactId>
-			<version>${cmscmodules.version}</version>
-			<type>mmbase-module</type>
-		</dependency>   		
-		
-   		<dependency>
+ 		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-tasks</artifactId>
 			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>   		
-		
-		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-tasks</artifactId>
-			<version>${cmscmodules.version}</version>
-			<type>mmbase-module</type>
-		</dependency>
-<!--   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-community</artifactId>
-			<version>${cmscmodules.version}</version>
-			<type>mmbase-module</type>
-		</dependency>-->
-   		<dependency>
+  		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-versioning</artifactId>
 			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-        <dependency>
+      <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-modules-linkvalidator</artifactId>
             <version>${cmscmodules.version}</version>
             <type>mmbase-module</type>
         </dependency>
-<!--        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-modules-community</artifactId>
-            <version>${cmscmodules.version}</version>
-            <type>mmbase-module</type>
-        </dependency>
-        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-portlets-login</artifactId>
-            <version>${cmscportlets.version}</version>
-            <type>mmbase-module</type>
-        </dependency>-->
 	</dependencies>
 </project>
