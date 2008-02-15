@@ -21,11 +21,9 @@
         <mm:node number="$learnobject">
 
           <di:include page="/education/learnblocks/subnavigation.jspx" />
+
           <div class="learnenvironment">
-
             <di:include page="/education/learnblocks/node.jspx" />
-
-
           </div>
 
           <di:include page="/education/prev_next.jsp" />

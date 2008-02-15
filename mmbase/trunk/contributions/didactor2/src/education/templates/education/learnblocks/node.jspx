@@ -8,6 +8,7 @@
   <jsp:output omit-xml-declaration="yes" />
   <div class="learnblock" id="learnblock_${_node}">
     <a name="learnblock_${_node}"><jsp:text> </jsp:text></a>
+
     <mm:nodeinfo type="type">
       <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx">
         <mm:treeinclude page="/education/pages/${_}/index.jspx"
@@ -33,9 +34,13 @@
       <c:if test="${fn:length(_) ge di:setting('education', 'max_depth')}">
         <div class="sublearnblocks" id="sublearnblocks_${_node}">
           <jsp:text> </jsp:text>
-          <mm:relatednodes type="learnblocks" searchdir="destination">
-            <di:include page="/education/learnblocks/node.jspx" />
-          </mm:relatednodes>
+          <mm:relatednodescontainer role="posrel"
+                                    type="learnobjects" searchdirs="destination">
+            <mm:sortorder field="posrel.pos" />
+            <mm:relatednodes>
+              <di:include page="/education/learnblocks/node.jspx" />
+            </mm:relatednodes>
+          </mm:relatednodescontainer>
         </div>
       </c:if>
     </mm:function>
