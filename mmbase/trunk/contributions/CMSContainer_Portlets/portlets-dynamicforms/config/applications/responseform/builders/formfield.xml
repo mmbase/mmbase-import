@@ -353,5 +353,41 @@
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
       </field>
+
+	 <field>
+         <!-- Descriptions.
+               They are useful for GUI editors to provide helptexts.
+               Descriptions can be provided in various languages. -->
+         <descriptions>
+            <!-- description per language as defined by ISO 639 -->
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+			<description xml:lang="zh"></description>
+         </descriptions>
+         <!-- gui related -->
+         <gui>
+            <guiname xml:lang="nl">De default waarde</guiname>
+            <guiname xml:lang="en">Maxlength</guiname>
+			<guiname xml:lang="zh">最大值</guiname>
+         </gui>
+         <!-- editor related -->
+         <editor>
+            <positions>
+               <!-- position in the input area of the editor -->
+               <input>12</input>
+               <!-- position in the list area of the editor -->
+               <list>-1</list>
+               <!-- position in the search area of the editor -->
+               <search>-1</search>
+            </positions>
+         </editor>
+         <!-- database related -->
+         <db>
+            <!-- name of the field in the database -->
+            <name>maxlength</name>
+            <!-- MMBase datatype and demands on it -->
+            <type key="false" notnull="false" state="persistent">INTEGER</type>
+         </db>
+      </field>
 </fieldlist>
 </builder>
