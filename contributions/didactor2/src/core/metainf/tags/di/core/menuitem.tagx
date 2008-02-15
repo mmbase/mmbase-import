@@ -5,6 +5,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
   <jsp:directive.attribute name="component"   type="nl.didactor.component.Component" required="true" />
+  <jsp:directive.attribute name="active"   type="java.lang.String" />
   <jsp:directive.attribute name="type"        />
   <jsp:directive.attribute name="scope"       />
 
@@ -26,7 +27,7 @@
         <c:when test="${empty type or type eq 'div'}">
           <div class="menuSeperator"><jsp:text> </jsp:text></div>
           <div class="menuItem" id="menu_${component.name}">
-            <a href="${treefile}" class="menubar"><di:translate key="${component.name}.title" /></a>
+            <a href="${treefile}" class="menubar ${component.name eq active ? 'active' : ''}"><di:translate key="${component.name}.title" /></a>
           </div>
         </c:when>
         <c:otherwise>
