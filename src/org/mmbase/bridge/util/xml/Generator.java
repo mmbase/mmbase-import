@@ -26,7 +26,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39.2.3 2008-02-14 15:35:24 michiel Exp $
+ * @version $Id: Generator.java,v 1.39.2.4 2008-02-15 12:47:37 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -297,13 +297,24 @@ public class Generator {
     }
 
     /**
-     * Just to override if you happen to use java 1.5.
+     * setIdAttribute only DOM level 3. But this can very much increase performance.
+     *
+     * Some XSLS e.g. those of mmbase-richtext depend on this.
+     * Now for these case we have a runtime dependency.
      * @since MMBase-1.8.6
      * This method will not be added to mmbase 1.9. We use java 1.5 there, and simply call
-     * object.setIdAttribute directoy.
+     * object.setIdAttribute directly.
      */
     protected void setIdAttribute(Element object, String name) {
-        //object.setIdAttribute(name, true);
+        Class cl = object.getClass();
+        try {
+            java.lang.reflect.Method m =  cl.getMethod("setIdAttribute", new Class[] {String.class, Boolean.TYPE});
+            m.invoke(object, new Object[] {name, Boolean.TRUE});
+        } catch(NoSuchMethodException nsme) {
+            log.warn(nsme + "Try a better dom implementation. This one sucks.", nsme);
+        } catch(Exception iae) {
+            throw new RuntimeException(iae);
+        }
     }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
