@@ -341,7 +341,7 @@
                   </th>
                   <th><a href="#" class="headerlink" onclick="orderBy('otype');"><fmt:message key="locate.typecolumn" /></a></th>
                   <th><a href="#" class="headerlink" onclick="orderBy('title');" ><fmt:message key="locate.titlecolumn" /></a></th>
-                  <th><fmt:message key="locate.creationchannelcolumn" /></th>
+                  <th><fmt:message key="search.creationchannelcolumn" /></th>
                   <th><fmt:message key="locate.authorcolumn" /></th>
                   <th><fmt:message key="locate.lastmodifiedcolumn" /></th>
                   <th><fmt:message key="locate.numbercolumn" /></th>
