@@ -38,7 +38,9 @@
     </mm:node>
 
 
-    <!-- 'the_only_node_to_show' functionality seems to cause a lot of noise -->
+    <!--
+         'the_only_node_to_show' functionality seems to cause a lot of noise
+    -->
     <mm:import externid="the_only_node_to_show"/>
     <mm:present referid="the_only_node_to_show">
       <mm:node number="$the_only_node_to_show">
@@ -180,7 +182,9 @@
                 <mm:compare referid="showsubtree" value="true">
 
                   <!--
-                       have to skip the first entrance in scorm tree
+                      have to skip the first entrance in scorm tree
+                      WTF, I did not even install the scorm component.
+
                   -->
                   <mm:compare referid="block_this_first_htmlpage" value="false">
                     <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments,htmlpages">

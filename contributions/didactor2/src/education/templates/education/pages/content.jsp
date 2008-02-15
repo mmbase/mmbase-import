@@ -14,8 +14,6 @@
       </mm:treeinclude>
 
 
-
-
       <mm:import externid="fb_madetest"/>
       <mm:present referid="fb_madetest">
         <mm:node number="$fb_madetest">
@@ -87,7 +85,6 @@
             </c:otherwise>
           </c:choose>
         </table>
-
 
 
         <mm:relatednodes type="attachments" role="posrel" orderby="posrel.pos">
