@@ -18,7 +18,7 @@
 </c:choose> 
 <div class="portlet-mode-canvas portlet-mode-type-${portletInfo.currentMode.name}">
 
-${requestScope.layoutId}
+${requestScope.fragment.key}
 
 <c:forEach items="${portletInfo.visiblePortletModes}" var="modeInfo" >
 	<a href="${modeInfo.url}" title="<fmt:message key='portletmode.${modeInfo.name}' />" class="portlet-mode-type-${modeInfo.type}">
