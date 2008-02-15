@@ -138,13 +138,7 @@
   </td>
   <td><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
   <td width="25%">
-<%-- ### search etc. ### --%>
-	<form id="searchhome" method="post" action="<mm:url page="/development/search/search.jsp" />">
-	<input type="hidden" name="exclude" value="testing" />
-	<input type="text" name="keywords" size="13" />	<input type="submit" name="search" value="Search" /><br />
-	<input class="ie" type="radio" name="restrict" value="" checked="checked" />&nbsp;full site
-	<input class="ie" type="radio" name="restrict" value="mmdocs" />&nbsp;documentation
-	</form>
+    <a href="http://www.cmscontainer.org"><img class="logocmsc" src="images/cmsc-logo.gif" alt="CMSContainer" width="100" height="100" /></a>
 	<mm:time time="today" id="ttoday" write="false" />
 	<mm:list nodes="$portal" 
 		path="portals,category,posrel,event,mmevents"
