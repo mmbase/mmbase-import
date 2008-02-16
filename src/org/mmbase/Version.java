@@ -17,11 +17,13 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.41 2007-06-18 09:49:17 michiel Exp $
+ * @version $Id: Version.java,v 1.42 2008-02-16 22:13:53 nklasens Exp $
  */
 public class Version {
 
     /**
+     * Get Version Control tag
+     * @return version Control tag
      * @since MMBase-1.9
      */
     public static String getTag() {

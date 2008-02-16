@@ -19,7 +19,7 @@ import org.mmbase.security.ActionRepository;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.32 2007-11-16 16:07:15 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.33 2008-02-16 22:13:53 nklasens Exp $
  */
 public interface CloudContext {
 
@@ -76,6 +76,7 @@ public interface CloudContext {
      * @param name                The name of the cloud to be returned, always "mmbase".
      * @param user                The user object for which this cloud object must be created.
      * @return                    the requested cloud
+     * @throws NotFoundException thrown when cloud not found
      * @since MMBase-1.8
      */
     public Cloud getCloud(String name, org.mmbase.security.UserContext user) throws NotFoundException;
@@ -108,6 +109,7 @@ public interface CloudContext {
 
     /**
      * Returns the default time zone.
+     * @return the default time zone
      * @since MMBase-1.8
      */
     public java.util.TimeZone getDefaultTimeZone();
@@ -175,21 +177,28 @@ public interface CloudContext {
 
     /**
      * Acquired information about the currently configuration Authentication implementation.
+     * @return current Authentication information
      * @since MMBase-1.8
      */
     public AuthenticationData getAuthentication();
 
     /**
+     * Returns the Repository with actions
+     * @return Repository with actions
      * @since MMBase-1.9
      */
     public ActionRepository getActionRepository();
 
 
     /**
+     * Returns whether MMbase is up and running
+     * @return <code>true</code> when mmbase is running
      * @since MMBase-1.8
      */
     public boolean isUp();
+
     /**
+     * Assert whether MMbase is up and running. This will wait until it is.
      * @since MMBase-1.8
      */
     public void assertUp();

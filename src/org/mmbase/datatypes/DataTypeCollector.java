@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypeCollector.java,v 1.14 2007-05-08 15:18:25 michiel Exp $
+ * @version $Id: DataTypeCollector.java,v 1.15 2008-02-16 22:13:53 nklasens Exp $
  */
 
 public final class DataTypeCollector {
@@ -267,7 +267,7 @@ public final class DataTypeCollector {
     }
 
     /**
-     * Unlock a dataType so it can be changed or latered.
+     * Unlock a dataType so it can be changed or altered.
      * This will likely fail if the datatype is not part of this collector.
      */
     public void rewrite(DataType<?> dataType) {
@@ -275,7 +275,7 @@ public final class DataTypeCollector {
     }
 
     /**
-     * Lock a dataType so it can be changed or latered.
+     * Lock a dataType so it can be changed or altered.
      * This will likely fail if the datatype is not part of this collector.
      */
     public void finish(DataType<?> dataType) {

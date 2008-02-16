@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: AbstractField.java,v 1.16 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: AbstractField.java,v 1.17 2008-02-16 22:13:53 nklasens Exp $
  */
 
 abstract public class AbstractField extends AbstractDescriptor implements Field {
@@ -68,6 +68,9 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
     /**
      * Create a field object
      * @param name the name of the field
+     * @param type the identifier for the MMBase base type for this field
+     * @param listItemType If the type of this field is TYPE_LIST, then this is the MMBase base type for the list elements.
+     * @param state identifier (virtual, persistent, system, systemvirtual) 
      * @param dataType the data type of the field
      */
     protected AbstractField(String name, int type, int listItemType, int state, DataType<Object> dataType) {
@@ -88,7 +91,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
 
     /**
      * Whether data type equals to other data type. Only key and type are considered. DefaultValue and
-     * required propererties are only 'utilities'.
+     * required properties are only 'utilities'.
+     * @param o the reference object with which to compare.
      * @return true if o is a DataType of which key and type equal to this' key and type.
      */
     public boolean equals(Object o) {
@@ -129,6 +133,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
     /**
      * Sets the datatype of a field.
      * It is possible that the datatype of a field is different from the actual field type.
+     * @param dataType 
+     * @throws IllegalArgumentException 
      * @see #getType
      */
     public void setDataType(DataType<Object> dataType) throws IllegalArgumentException {
@@ -153,6 +159,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
 
     /**
      * Retrieve whether the field is a key and thus need be unique.
+     * @return <code>true</code> when field is unique
      */
     public boolean isUnique() {
         return dataType.isUnique();
@@ -179,6 +186,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
      * Temporary fields hold data needed by a builder to facilitate certain functionality,
      * such as holding node references in a transaction.
      * Temporary fields are never persistent and should normally be ignored.
+     * @return <code>true</code> when temporary
      * @since MMBase-1.8
      */
     public boolean isTemporary() {
@@ -190,6 +198,8 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
     }
 
     /**
+     * Returns whether a field is a read only.
+     * @return <code>true</code> when read only
      * @see org.mmbase.bridge.Field#isVirtual()
      */
     public boolean isReadOnly() {
@@ -200,6 +210,7 @@ abstract public class AbstractField extends AbstractDescriptor implements Field 
 
     /**
      * Returns a description for this field.
+     * @return a string representation of the object.
      */
     public String toString() {
         return getName() + ":" +
