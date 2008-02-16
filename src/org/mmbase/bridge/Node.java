@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Parameters;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.75 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: Node.java,v 1.76 2008-02-16 22:13:53 nklasens Exp $
  */
 public interface Node extends Comparable<Node> {
 
@@ -193,6 +193,9 @@ public interface Node extends Comparable<Node> {
 
     /**
      * Sets the value of the specified field using a <code>java.io.InputStream</code>.
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
+     * @param size       size of input stream
      * @since MMBase-1.8.
      */
     public void setInputStreamValue(String fieldName, InputStream value, long size);
@@ -242,8 +245,10 @@ public interface Node extends Comparable<Node> {
     public void setListValue(String fieldName, List value);
 
     /**
-     * Whether the value for the speficied field is <code>null</code>. This avoids acquiring the
-     * complete value if you only want to check if for emptyness.
+     * Whether the value for the specified field is <code>null</code>. This avoids acquiring the
+     * complete value if you only want to check if for emptiness.
+     * @param fieldName   the name of the field
+     * @return <code>true</code> when value is <code>null</code>
      * @since MMBase-1.8
      */
     public boolean isNull(String fieldName);
@@ -252,6 +257,8 @@ public interface Node extends Comparable<Node> {
     /**
      * Returns the 'size' (e.g. the number of bytes of a byte array) for the specified field. This
      * avoids acquiring the complete value if you only want to know how big the value of the field is.
+     * @param fieldName    the name of the field
+     * @return  the 'size'
      * @since MMBase-1.8
      */
     public long getSize(String fieldName);
@@ -282,6 +289,7 @@ public interface Node extends Comparable<Node> {
      * You can use this to get data from a field for validation purposes.
      *
      * @param fieldName name of field
+     * @return value without processing
      * @since MMBase-1.8
      */
     public Object getValueWithoutProcess(String fieldName);
@@ -400,8 +408,10 @@ public interface Node extends Comparable<Node> {
 
     /**
      * Returns the value of the specified field as a <code>java.io.InputStream</code> This is
-     * especially usefull for large byte-array fields. By this you can avoid them to be completely
+     * especially useful for large byte-array fields. By this you can avoid them to be completely
      * stored in memory.
+     * @param fieldName  the name of the field
+     * @return value of field as a input stream
      * @since MMBase-1.8
      */
     public InputStream getInputStreamValue(String fieldName);
@@ -494,25 +504,30 @@ public interface Node extends Comparable<Node> {
     public void delete();
 
     /**
-     * Whether this Node is new (not yet commited).
+     * Whether this Node is new (not yet committed).
+     * @return <code>true</code> when new
      * @since MMBase-1.8
      */
     public boolean isNew();
 
     /**
      * Whether a certain field's value was changed since the last commit.
+     * @param fieldName  the name of the field
+     * @return <code>true</code> when field's value was changed
      * @since MMBase-1.8
      */
     public boolean isChanged(String fieldName);
 
     /**
      * A Set of Strings containing the names of all changed fields.
+     * @return Set of changed fields
      * @since MMBase-1.8
      */
     public Set<String> getChanged();
 
     /**
      * Whether  field values were changed since the last commit.
+     * @return <code>true</code> when  changed
      * @since MMBase-1.8
      */
     public boolean isChanged();

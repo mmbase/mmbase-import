@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.82 2007-09-16 17:55:28 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.83 2008-02-16 22:13:53 nklasens Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -402,21 +402,21 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     /**
-     * @javadoc
+     * {@inheritDoc}
      */
     public void finish() {
         finish(new Object());
     }
 
     /**
-     * @javadoc
+     * {@inheritDoc}
      */
     public void finish(Object owner) {
         this.owner = owner;
     }
 
     /**
-     * @javadoc
+     * {@inheritDoc}
      */
     public DataType<C> rewrite(Object owner) {
         if (this.owner != null) {

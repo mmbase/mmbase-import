@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.64 2008-01-22 16:44:47 michiel Exp $
+ * @version $Id: Cloud.java,v 1.65 2008-02-16 22:13:53 nklasens Exp $
  */
 public interface Cloud {
 
@@ -152,6 +152,10 @@ public interface Cloud {
     public boolean mayRead(int number);
 
     /**
+     * Check whether an action is allowed 
+     * @param action Action to perform
+     * @param parameters parameters passed into this action
+     * @return <code>true</code> when allowed
      * @since MMBase-1.9
      */
     public boolean may(org.mmbase.security.Action action, org.mmbase.util.functions.Parameters parameters);
@@ -593,6 +597,7 @@ public interface Cloud {
 
     /**
      * Retrieves all properties previously set for this cloud.
+     * @return all properties
      * @since MMBase-1.8
      */
     public Map<Object, Object> getProperties();
@@ -617,10 +622,11 @@ public interface Cloud {
      *
      * @since MMBase-1.8
      * @param setName name of the function set
+     * @param functionName name of the function
      * @return a {@link org.mmbase.util.functions.Function} object.
      * @throws NotFoundException if the function set or the function do not exist
      */
-    public Function getFunction(String setName, String functionName);
+    public Function<?> getFunction(String setName, String functionName);
 
     /**
      * Returns a new, empty node list for this cloud
