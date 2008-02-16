@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.93 2008-02-01 17:19:41 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.94 2008-02-16 22:07:39 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -784,7 +784,14 @@ public class BuilderReader extends DocumentReader {
         if (state != def.getState()) def.setState(state);
 
 
-        boolean readOnly = "true".equalsIgnoreCase(fieldReadOnly);
+        boolean readOnly = false;
+        if ("".equals(fieldReadOnly)) {
+            readOnly = state == Field.STATE_SYSTEM || state == Field.STATE_SYSTEM_VIRTUAL;
+        }
+        else {
+            readOnly = "true".equalsIgnoreCase(fieldReadOnly);
+        }
+
         if (def.isReadOnly() != readOnly) {
             def.setReadOnly(readOnly);
         }
