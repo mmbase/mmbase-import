@@ -271,6 +271,9 @@ See http://www.MMBase.org/license
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.8.0.7</version> <!-- btw, newest version 1.8.0.8, but not yet in maven repositories.. sigh -->
+      <properties>
+        <war.bundle>${war.bundle}</war.bundle>
+      </properties>
     </dependency>
 
     <dependency>
@@ -338,7 +341,9 @@ See http://www.MMBase.org/license
         <report>maven-changes-plugin</report>
         <report>maven-developer-activity-plugin</report>
         <report>maven-file-activity-plugin</report>
+    -->
         <report>maven-javadoc-plugin</report>
+    <!--
         <report>maven-jdepend-plugin</report>
         <report>maven-junit-report-plugin</report>
         <report>maven-jxr-plugin</report>
