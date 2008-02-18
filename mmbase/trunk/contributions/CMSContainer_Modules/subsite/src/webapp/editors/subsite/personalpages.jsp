@@ -108,7 +108,6 @@
     <tr>
         <th>Icons</th>
         <th><a href="#" class="headerlink" onclick="orderBy('title');" >Title</a></th>
-        <th>Edit Elements</th>
         <th><a href="#" class="headerlink" onclick="orderBy('publishdate');" >Publish Date</th>
         <th><a href="#" class="headerlink" onclick="orderBy('creationdate');" >Creation Date</th>
     </tr>
@@ -141,9 +140,11 @@
 		   <td>
 		      <b><mm:field name="title" /></b>
 		   </td>
+		   <%--
 		   <td>
 		   <a href="../subsite/PersonalPageElements.do?personalpage=<mm:field name="number" />">Edit Articles</a>
 		   </td>
+         --%>
 		   <td>
 		      <mm:field name="publishdate"><cmsc:dateformat displaytime="true"/></mm:field>
 		   </td>
