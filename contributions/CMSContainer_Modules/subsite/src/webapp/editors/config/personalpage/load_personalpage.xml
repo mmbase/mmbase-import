@@ -12,7 +12,7 @@
    <field name="description" />
    <field name="inmenu" />
    <field name="secure" />
-   <field name="externalurl"/>
+   <field name="userid"/>
    
    <relation destination="images" role="namedrel" />
    <relation destination="layout" role="allowrel" />
