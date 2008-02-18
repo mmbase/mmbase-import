@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumGetProcessorFactory.java,v 1.4 2008-02-18 10:46:19 michiel Exp $
+ * @version $Id: ChecksumGetProcessorFactory.java,v 1.5 2008-02-18 10:51:49 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -45,7 +45,7 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
 
             public Object process(Node node, Field field, Object value) {
                 if (value == null || "".equals(value) ) {
-                    if (node.isNull(sourceField)) {
+                    if (node.isNull(sourceField) || node.getSize(sourceField) == 0) {
                         // set checksum null too.
                         // node.setValue(field.getName(), null);
                         return value;
