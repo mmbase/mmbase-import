@@ -26,7 +26,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39.2.4 2008-02-15 12:47:37 michiel Exp $
+ * @version $Id: Generator.java,v 1.39.2.5 2008-02-18 12:52:00 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -464,7 +464,7 @@ public class Generator {
         Document doc = gen.getDocument();
         Element el = doc.getDocumentElement();
         el.setAttribute("id", "hoi");
-        el.setIdAttribute("id", true);
+        gen.setIdAttribute(el, "id");
         System.out.println(org.mmbase.util.xml.XMLWriter.write(doc, false));
         Document doc2 = org.mmbase.util.xml.DocumentReader.getDocumentBuilder().parse(new ByteArrayInputStream(org.mmbase.util.xml.XMLWriter.write(doc, false).getBytes("UTF-8")));
         Element el2 = doc2.getElementById("hoi");
