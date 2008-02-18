@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.84 2008-01-25 10:25:01 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.85 2008-02-18 18:30:46 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -308,30 +308,34 @@ public class IncludeTag extends UrlTag {
         // Orion bug fix.
         req.getParameterMap();
 
-        HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
-
         try {
             ServletContext sc = pageContext.getServletContext();
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
-            RequestDispatcher requestDispatcher = sc.getRequestDispatcher(relativeUrl);
-            if (requestDispatcher == null) {
-                throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
-            }
 
-            IncludeWrapper responseWrapper;
-            String encoding = encodingAttribute.getString(this);
-            if (encoding.length() == 0) {
-                responseWrapper = new IncludeWrapper(resp);
+            if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
+                handleResponse(404, "No such resource " + relativeUrl, relativeUrl);
             } else {
-                responseWrapper = new IncludeWrapper(resp, encoding);
-            }
-            requestDispatcher.include(requestWrapper, responseWrapper);
+                HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
 
-            handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
+                RequestDispatcher requestDispatcher = sc.getRequestDispatcher(relativeUrl);
+                if (requestDispatcher == null) {
+                    throw new NotFoundException("Page \"" + relativeUrl + "\" does not exist (No request-dispatcher could be created)");
+                }
+
+                IncludeWrapper responseWrapper;
+                String encoding = encodingAttribute.getString(this);
+                if (encoding.length() == 0) {
+                    responseWrapper = new IncludeWrapper(resp);
+                } else {
+                    responseWrapper = new IncludeWrapper(resp, encoding);
+                }
+                requestDispatcher.include(requestWrapper, responseWrapper);
+                handleResponse(responseWrapper.getStatus(), responseWrapper.toString(), relativeUrl);
+            }
 
             getThreadPageContext();
         } catch (Throwable e) {
-            log.error(relativeUrl + " " +  Logging.stackTrace(e));
+            log.error(relativeUrl, e);
             throw new TaglibException(relativeUrl + " " + e.getMessage(), e);
         }
 
