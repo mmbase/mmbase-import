@@ -149,7 +149,7 @@
 		  <mm:field name="category.number" id="cat" write="false" />
 		  <%-- what is the agendapage of this category --%>
 		  <mm:list nodes="$cat" path="category,pages" max="1"><mm:field name="pages.number" write="false" id="event_page" /></mm:list>
-		  <h4>Coming soon</h4><p>
+		  <h4>Agenda</h4><p>
 		</mm:first>
 		<mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field><br />
 		<a href="<mm:url page="index.jsp" referids="portal">
