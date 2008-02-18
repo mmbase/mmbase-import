@@ -1,0 +1,23 @@
+Migration document:
+
+Part: core
+From version: 1.4
+To version: 1.5
+
+
+Execute the following steps below in the given order:
+
+
+Name: Add maxlength column to formfield
+Goal: Add maxlength column to formfield
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_formfield ADD column maxlength int(11);
+
+ALTER TABLE live_formfield ADD column maxlength int(11);
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*

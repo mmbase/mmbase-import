@@ -30,6 +30,14 @@ ALTER TABLE mm_publishqueue CHANGE column timestamp m_timestamp datetime;
 ALTER TABLE mm_publishqueue CHANGE column action m_action varchar(32);
 ALTER TABLE mm_remotenodes CHANGE column timestamp m_timestamp datetime;
 
+ALTER TABLE mm_formfieldvalue CHANGE column value m_value varchar(255);
+ALTER TABLE mm_formfieldvalue CHANGE column text m_text varchar(255);
+ALTER TABLE mm_savedform CHANGE column count m_count int(11);
+ALTER TABLE mm_savedfieldvalue CHANGE column value m_value varchar(255);
+
+ALTER TABLE mm_pagewizardportlet CHANGE column position m_position varchar(28);
+ALTER TABLE mm_pagewizardparameter CHANGE column value m_value varchar(45);
+
 
 RENAME TABLE live_numberTable TO live_numbertable;
 ALTER TABLE live_archive CHANGE column date m_date datetime;
@@ -48,6 +56,11 @@ ALTER TABLE live_user CHANGE column language m_language varchar(2);
 ALTER TABLE live_publishqueue CHANGE column timestamp m_timestamp datetime;
 ALTER TABLE live_publishqueue CHANGE column action m_action varchar(32);
 ALTER TABLE live_remotenodes CHANGE column timestamp m_timestamp datetime;
+
+ALTER TABLE live_formfieldvalue CHANGE column value m_value varchar(255);
+ALTER TABLE live_formfieldvalue CHANGE column text m_text varchar(255);
+ALTER TABLE live_savedform CHANGE column count m_count int(11);
+ALTER TABLE live_savedfieldvalue CHANGE column value m_value varchar(255);
 
 --- End script ---
 Exceptions/errors/other problems and what to do:
@@ -82,3 +95,20 @@ Good taglibs:
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc"%>
 <%@ taglib uri="http://finalist.com/cmsc-basicmodel" prefix="cmsc-bm"%> 
 With the focus on: cmsc instead of csmc!
+*
+*
+*
+
+Name: Add stacktrace column to workflowitem
+Goal: Add stacktrace column to workflowitem
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_workflowitem ADD column stacktrace text;
+
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
