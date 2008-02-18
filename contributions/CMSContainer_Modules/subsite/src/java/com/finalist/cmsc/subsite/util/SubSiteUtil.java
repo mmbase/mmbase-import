@@ -2,28 +2,23 @@ package com.finalist.cmsc.subsite.util;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.util.SearchUtil;
 
-import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 
 public class SubSiteUtil {
+   
    public static final String SUBSITE = "subsite";
    public static final String PERSONALPAGE = "personalpage";
+
    public static final String ALIAS_SUBSITE = "repository.subsite";
 
-   public static NodeList getOrderedChildren(Node parentNode) {
-      return SearchUtil.findRelatedOrderedNodeList(parentNode, SubSiteUtil.SUBSITE, NavigationUtil.NAVREL,
-            PagesUtil.FRAGMENT_FIELD);
-   }
+   public static final String USERID = "userid";
+   
+   public static final String PERSONAL_PAGE_ID = "personalPageId";
 
-   public static int getChildCount(Node node) {
-      return TreeUtil.getChildCount(node, node.getCloud().getNodeManager(SUBSITE), NavigationUtil.NAVREL);
-   }
-
+   
    public static boolean isSubSiteType(Node node) {
       return node.getNodeManager().getName().equals(SUBSITE);
    }
@@ -69,6 +64,12 @@ public class SubSiteUtil {
    public static Node getRepositoryRoot(Cloud cloud) {
       Node repositoryRootChannel = cloud.getNode(ALIAS_SUBSITE);
       return repositoryRootChannel;
+   }
+
+   public static Node createPersonalPage(Cloud cloud, String name, Node layout, String personalPageId) {
+       Node personalPage = PagesUtil.createPage(cloud, name, layout, PERSONALPAGE);
+       personalPage.setStringValue(USERID, personalPageId);
+       return personalPage;
    }
 
 }

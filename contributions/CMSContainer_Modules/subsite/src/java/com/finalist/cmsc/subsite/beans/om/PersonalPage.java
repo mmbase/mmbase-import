@@ -8,11 +8,11 @@ public class PersonalPage extends Page {
 	
 	private String userID;
 
-	public String getUserID() {
+	public String getUserid() {
 		return userID;
 	}
 
-	public void setUserID(String userID) {
+	public void setUserid(String userID) {
 		this.userID = userID;
 	}
 	
