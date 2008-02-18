@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.233 2007-11-19 09:36:17 michiel Exp $
+ * @version $Id: MMBase.java,v 1.234 2008-02-18 14:57:40 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -130,7 +130,7 @@ public class MMBase extends ProcessorModule {
      * The map that contains all loaded builders. Includes virtual builders.
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
-    private Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap<String, MMObjectBuilder>();
+    private final Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap<String, MMObjectBuilder>();
 
     private CloudModel cloudModel;
 
@@ -202,7 +202,7 @@ public class MMBase extends ProcessorModule {
     private String encoding = "ISO-8859-1";
 
     /**
-     * MMbase 'up state. Access using getState()
+     * MMBase 'up state. Access using getState()
      *
      * @since MMBase-1.6
      */
@@ -239,7 +239,7 @@ public class MMBase extends ProcessorModule {
             if (is != null) {
                 p.load(is);
             }
-            if (p.getProperty("cache.path") == null) {
+            if (p.getProperty("cache.path") == null || "".equals(p.getProperty("cache.path"))) {
                 p.setProperty("cache.path", getInitParameter("datadir") + java.io.File.separator + "oscache");
             }
 
@@ -255,7 +255,8 @@ public class MMBase extends ProcessorModule {
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
-    public synchronized void init() {
+    public void init() {
+        synchronized(MMBase.class) {
         if (mmbaseState >= STATE_STARTED_INIT) {
             log.debug("Already initialized or initializing");
             return;
@@ -447,6 +448,8 @@ public class MMBase extends ProcessorModule {
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
+        notifyAll();
+        }
     }
 
     // javadoc inherited
@@ -460,7 +463,7 @@ public class MMBase extends ProcessorModule {
         oAlias = null;
         insRel = null;
         typeRel = null;
-        if (mmobjs != null) { mmobjs.clear(); mmobjs = null;}
+        mmobjs.clear();
         cloudModel = null;
         storageManagerFactory = null;
         rootBuilder = null;
@@ -587,6 +590,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.8
      */
     public MMObjectBuilder addBuilder(String name, MMObjectBuilder bul) {
+        if (bul == null) throw new IllegalArgumentException("Builder '" + name + "' was null");
         return mmobjs.put(name, bul);
     }
 
@@ -598,7 +602,7 @@ public class MMBase extends ProcessorModule {
      */
     public MMObjectBuilder getMMObject(String name) {
         if (name == null) throw new RuntimeException("Cannot get builder with name 'NULL' in " + machineName);
-        MMObjectBuilder o = mmobjs.get(name);
+        MMObjectBuilder o = mmobjs != null ? mmobjs.get(name) : null;
         if (o == null) {
             log.trace("MMObject " + name + " could not be found"); // can happen...
         }
@@ -618,6 +622,7 @@ public class MMBase extends ProcessorModule {
                 } else {
                     mmbaseroot.startModule();
                 }
+                //MMBase.class.notifyAll();
             }
         }
         return mmbaseroot;
@@ -986,8 +991,7 @@ public class MMBase extends ProcessorModule {
             }
             return loadBuilderFromXML(builderName, path);
         } else {
-            log.error("Cannot find specified builder " + builderName);
-            throw new BuilderConfigurationException("Cannot find specified builder " + builderName);
+            throw new BuilderConfigurationException("Cannot find specified builder " + builderName + " (" + path + ")");
         }
     }
 
