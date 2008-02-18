@@ -36,7 +36,13 @@ public class PagePublisher extends Publisher {
     @Override
     public void publish(Node node) {
         Map<Node, Date> nodes = new LinkedHashMap<Node, Date>();
-        Date publishDate = node.getDateValue(PagesUtil.PUBLISHDATE_FIELD);
+        addPageNodes(node, nodes);
+        
+        publishNodes(nodes);
+    }
+
+	protected void addPageNodes(Node node, Map<Node, Date> nodes) {
+		Date publishDate = node.getDateValue(PagesUtil.PUBLISHDATE_FIELD);
 
         Long date = new Long(System.currentTimeMillis());
         Map<Node, Date> pageNodes = findPageNodes(node, publishDate);
@@ -73,11 +79,9 @@ public class PagePublisher extends Publisher {
         nodes.putAll(pageNodes);
 
         addReferredPageParameters(node, nodes, publishDate);
-        
-        publishNodes(nodes);
-    }
+	}
 
-    private void publishContentChannel(Map<Node, Date> nodes, Node valueNode, Long date) {
+	protected void publishContentChannel(Map<Node, Date> nodes, Node valueNode, Long date) {
         if (!isPublished(valueNode)) {
             addChannels(nodes, valueNode);
             
@@ -106,14 +110,14 @@ public class PagePublisher extends Publisher {
         removeNodes(removeNodes);
     }
 
-    private NodeList getContentElements(Node contentChannel, Long date) {
+    protected NodeList getContentElements(Node contentChannel, Long date) {
         NodeQuery query = RepositoryUtil.createLinkedContentQuery(contentChannel, null, null, null, false, null, -1, -1, -1, -1, -1);
         ContentElementUtil.addNotExpiredConstraint(contentChannel, query, date);
         NodeList contentNodes = query.getNodeManager().getList(query);
         return contentNodes;
     }
 
-    private void addChannels(Map<Node, Date> nodes, Node contentChannel) {
+    protected void addChannels(Map<Node, Date> nodes, Node contentChannel) {
         List<Node> path = RepositoryUtil.getPathToRoot(contentChannel);
         for (Iterator<Node> iter = path.iterator(); iter.hasNext();) {
             Node pathElement = iter.next();
@@ -123,7 +127,7 @@ public class PagePublisher extends Publisher {
         }
     }
 
-    private void addContentBlock(Map<Node, Date> nodes, Node content) {
+    protected void addContentBlock(Map<Node, Date> nodes, Node content) {
         Date contentPublishDate = content.getDateValue(ContentElementUtil.PUBLISHDATE_FIELD);
         List<Node> contentBlockNodes = findContentBlockNodes(content);
         for (Node contentNode : contentBlockNodes) {
@@ -131,7 +135,7 @@ public class PagePublisher extends Publisher {
         }
     }
 
-    private void addReferredPageParameters(Node node, Map<Node, Date> nodes, Date publishDate) {
+    protected void addReferredPageParameters(Node node, Map<Node, Date> nodes, Date publishDate) {
         NodeManager parameterManager = cloud.getNodeManager(PortletUtil.NODEPARAMETER);
         NodeManager portletManager = cloud.getNodeManager(PortletUtil.PORTLET);
         NodeManager pageManager = cloud.getNodeManager(PagesUtil.PAGE);
@@ -166,7 +170,7 @@ public class PagePublisher extends Publisher {
     }
 
     
-    private void findPageNodes(Node node, Map<Node, Date> nodes, Date publishDate) {
+    protected void findPageNodes(Node node, Map<Node, Date> nodes, Date publishDate) {
         if (nodes.containsKey(node) || TypeUtil.isSystemType(node.getNodeManager().getName())) {
             return;
         }

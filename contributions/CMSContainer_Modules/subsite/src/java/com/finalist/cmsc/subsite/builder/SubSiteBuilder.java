@@ -4,10 +4,9 @@ import com.finalist.cmsc.navigation.NavigationBuilder;
 import com.finalist.cmsc.navigation.NavigationManager;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.subsite.SubSiteNavigationItemManager;
-import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
 /**
- * @author Freek Punt
+ * @author Jacobjob
  */
 public class SubSiteBuilder extends NavigationBuilder {
     

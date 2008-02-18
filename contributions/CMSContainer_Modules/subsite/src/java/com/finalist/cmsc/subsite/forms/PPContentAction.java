@@ -17,11 +17,14 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.mmbase.bridge.BridgeException;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.remotepublishing.CloudManager;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
+import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseAction;
 import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
@@ -45,6 +48,22 @@ public class PPContentAction extends MMBaseAction {
 	     if (StringUtil.isEmpty(direction)) {
 	        direction = null;
 	     }
+	     
+	     Cloud remoteCloud = null;
+	     
+	     //Retrieve live-cloud (if exists) and continue to search Live for content Elements
+	     try {
+	        remoteCloud = CloudManager.getCloud(cloud, "live.server");	
+
+	        //Retrieve Node & live-channel
+		    int liveNumber = Publish.getLiveNumber(ppChannel);
+		    ppChannel = remoteCloud.getNode(liveNumber);
+
+		    cloud = remoteCloud; //Use the remoteCloud from now on.
+		 } catch (BridgeException e) {
+			//When the remoteCloud could not be found, use the normal cloud and we're fine.
+		 }
+	     
          NodeList elements = RepositoryUtil.getLinkedElements(ppChannel, null, orderby, direction, false, -1, -1, -1, -1, -1);
          addToRequest(request, "elements", elements);
          
