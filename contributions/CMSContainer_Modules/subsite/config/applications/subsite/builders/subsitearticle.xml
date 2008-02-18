@@ -3,16 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"
-	extends="contentelement" maintainer="finalist.com" name="subsite-article" version="1">
+	extends="contentelement" maintainer="finalist.com" name="subsitearticle" version="3">
 
 	<status>active</status>
 	<!--  <class>BaseContentElements.Article</class> -->
 	<searchage>70</searchage>
 	<names>
-		<singular xml:lang="nl">SubSite Artikel</singular>
+		<singular xml:lang="nl">Subsite Artikel</singular>
 		<singular xml:lang="en">SubSite Article</singular>
 		<singular xml:lang="zh">文章</singular>
-		<plural xml:lang="nl">SubSite Artikelen</plural>
+		<plural xml:lang="nl">Subsite Artikelen</plural>
 		<plural xml:lang="en">SubSite Articles</plural>
 		<plural xml:lang="zh">文章</plural>
 	</names>
@@ -116,11 +116,11 @@
          </editor>
          <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
             <enumeration>
-               <entry basename="com.finalist.cmsc.subsite.resources.personalpage-status" />
+               <entry basename="com.finalist.cmsc.subsite.resources.personalpagestatus" />
             </enumeration>
          </datatype>
          <db>
-            <name>subsite-status</name>
+            <name>subsitestatus</name>
             <type key="false" notnull="false" size="32" state="persistent">STRING</type>
          </db>
       </field>
