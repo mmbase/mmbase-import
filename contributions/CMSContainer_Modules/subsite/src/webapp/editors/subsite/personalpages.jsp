@@ -106,7 +106,7 @@
 <table>
 <thead>
     <tr>
-        <th>Icons</th>
+        <th></th>
         <th><a href="#" class="headerlink" onclick="orderBy('title');" ><fmt:message key="pp.title" /></a></th>
         <th><a href="#" class="headerlink" onclick="orderBy('publishdate');" ><fmt:message key="pp.publishdate" /></th>
         <th><a href="#" class="headerlink" onclick="orderBy('creationdate');" ><fmt:message key="pp.creationdate" /></th>
