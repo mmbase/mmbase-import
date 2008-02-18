@@ -137,19 +137,38 @@ public class PagesUtil {
       return createPage(cloud, name, null, layoutNode);
    }
 
+   public static Node createPage(Cloud cloud, String name, String layout, String managerName) {
+       Node layoutNode = findLayoutWithTitle(cloud, layout);
+       if (layoutNode == null) {
+          throw new IllegalArgumentException("Layout not found with title: " + layout);
+       }
+
+       return createPage(cloud, name, null, layoutNode, managerName);
+   }
 
    public static Node createPage(Cloud cloud, String name, Node layout) {
       return createPage(cloud, name, null, null, layout);
    }
 
+   public static Node createPage(Cloud cloud, String name, Node layout, String managerName) {
+       return createPage(cloud, name, null, null, layout, managerName);
+   }
 
    public static Node createPage(Cloud cloud, String name, String pathname, Node layout) {
       return createPage(cloud, name, pathname, null, layout);
    }
 
+   public static Node createPage(Cloud cloud, String name, String pathname, Node layout, String managerName) {
+       return createPage(cloud, name, pathname, null, layout, managerName);
+   }
 
    public static Node createPage(Cloud cloud, String name, String pathname, String description, Node layout) {
-      Node page = getNodeManager(cloud).createNode();
+      return createPage(cloud, name, pathname, description, layout, PAGE);
+   }
+
+   public static Node createPage(Cloud cloud, String name, String pathname,
+        String description, Node layout, String managerName) {
+      Node page = TreeUtil.getNodeManager(cloud, managerName).createNode();
       page.setStringValue(TITLE_FIELD, name);
       if (!StringUtil.isEmpty(pathname)) {
          page.setStringValue(FRAGMENT_FIELD, pathname);
@@ -163,7 +182,6 @@ public class PagesUtil {
       linkPortlets(page, layout);
       return page;
    }
-
 
    public static void addLayout(Node page, Node layoutNode) {
       if (layoutNode == null) {
