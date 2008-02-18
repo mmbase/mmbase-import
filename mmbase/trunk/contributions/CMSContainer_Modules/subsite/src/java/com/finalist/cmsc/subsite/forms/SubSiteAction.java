@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -59,7 +60,6 @@ public class SubSiteAction extends PagerAction {
 	   SearchForm searchForm = (SearchForm) form;
 	   
       String subsite = request.getParameter("subsite");
-      request.setAttribute("subsite", subsite);
       
       /* Purpose of this file
        * - retrieve List of all subsites
@@ -68,39 +68,24 @@ public class SubSiteAction extends PagerAction {
        *      -> and put it in a List 
        */
       
-      /*
-      String orderby = request.getParameter("orderby");
-      String direction = request.getParameter("direction");
-      if (StringUtil.isEmpty(orderby)) {
-         orderby = null;
-      }
-      if (StringUtil.isEmpty(direction)) {
-         direction = null;
-      }
-      */ 
-
-/*      //Retrieve list of subsites
-      Node subsiteNode = cloud.getNode(subsite);
-      if (subsiteNode != null) { 
-         Node parentNode = NavigationUtil.getParent(subsiteNode);
-         NodeList subsiteElements = NavigationUtil.getChildren(parentNode);
-         addToRequest(request, "subsiteElements", subsiteElements);
-      }*/
-      
-      
       //Retrieve list of pages of subsite
       Node subsiteNode = null;
-	  try {
+      if (StringUtils.isBlank(subsite) || !cloud.hasNode(subsite)) {
+          //If the subsiteNode does not exist or is not valid, get the first found subsite
+          NodeManager nm = cloud.getNodeManager(SubSiteUtil.SUBSITE);
+          NodeQuery subsitesQuery = nm.createQuery();
+          SearchUtil.addLimitConstraint(subsitesQuery, 0, 1);
+          SearchUtil.addSortOrder(subsitesQuery, nm, PagesUtil.TITLE_FIELD, "DOWN");
+          NodeList results = subsitesQuery.getList();
+          if (results.size() > 0) {
+              subsiteNode = (Node) results.get(0);
+          }
+      }
+      else {
 		  subsiteNode = cloud.getNode(subsite);
 	  }
-	  catch (NotFoundException e) {
-		  //If the subsiteNode does not exist or is not valid, get the first found subsite
-		  NodeManager nm = cloud.getNodeManager(SubSiteUtil.SUBSITE);
-		  NodeList results = nm.createQuery().getList();
-		  if (results.size() > 0) {
-			  subsiteNode = (Node) results.get(0);
-		  }
-	  }
+      
+      request.setAttribute("subsite", String.valueOf(subsiteNode.getNumber()));
 	  
 	  if (subsiteNode == null){ //If there are no subsites at all, return empty list
 		  searchForm.setResultCount(0);
@@ -108,20 +93,6 @@ public class SubSiteAction extends PagerAction {
 		  searchForm.setResults(results);
 		  return mapping.findForward(SUCCESS);
 	  } 
-	  
-//	  searchForm.setResultCount(results.size());
-//
-//	  searchForm.setResults(results);
-//	  return mapping.findForward(SUCCESS);
-	  
-    	  
- /*if (subsiteNode != null) {
-            NodeList elements = NavigationUtil.getChildren(subsiteNode);
-        	// NodeList elements = RepositoryUtil.getLinkedElements(subsiteNode, null, null, null, false, -1, -1, -1, -1, -1);
-            addToRequest(request, "elements", elements);
-            //addToRequest(request, "subsite", subsite);
-//            request.setAttribute("pageNodes", pageNodes);
-         }*/
 
       NodeManager nodeManager = subsiteNode.getNodeManager();
       // Order the result by:
@@ -154,13 +125,7 @@ public class SubSiteAction extends PagerAction {
       searchForm.setKeywords(resultsPerPage);
       
       String direction = null;
-      
-      //QueryStringComposer queryStringComposer = new QueryStringComposer();
-      //NodeQuery query = cloud.createNodeQuery();
-      //createLinkedElementsQuery(channel, orderby, direction, offset, maxNumber, year, month, day)
       NodeQuery query = createLinkedElementsQuery(subsiteNode, order, direction, offset*maxNumber, maxNumber, -1, -1, -1);
-      //NodeList SearchUtil.findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir)
-      //NodeQuery query = SearchUtil.createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir)
 
       // Add the title constraint:
       if (!StringUtil.isEmpty(searchForm.getTitle())) {
@@ -169,39 +134,14 @@ public class SubSiteAction extends PagerAction {
           SearchUtil.addConstraint(query, titleConstraint);
       }
 
-     
-      
-
       log.debug("QUERY: " + query);
 
       int resultCount = Queries.count(query);
       NodeList results = cloud.getList(query);
-//      System.out.println("Count = " + resultCount);
-//      System.out.println("Query = " + query);
+
       // Set everything on the request.
       searchForm.setResultCount(resultCount);
       searchForm.setResults(results);
-      //request.setAttribute("geturl", queryStringComposer.getQueryString());
-
-      
-/*      if (!StringUtil.isEmpty(subsite)) {
-         Node channel = cloud.getNode(subsite);
-         NodeList elements = RepositoryUtil.getLinkedElements(channel, null,
-               null, null, false, -1, -1, -1, -1, -1);
-         addToRequest(request, "elements", elements);
-       
-         
-         NodeList created = RepositoryUtil.getCreatedElements(channel);
-         Map<String, Node> createdNumbers = new HashMap<String, Node>();
-         for (Iterator<Node> iter = created.iterator(); iter.hasNext();) {
-            Node createdElement = iter.next();
-            createdNumbers.put(String.valueOf(createdElement.getNumber()),
-                  createdElement);
-         }
-         addToRequest(request, "createdNumbers", createdNumbers);
-      }*/
-
-//      return mapping.findForward(SUCCESS);
       return super.execute(mapping, searchForm, request, response, cloud);
    }
 
