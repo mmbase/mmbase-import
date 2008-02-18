@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.finalist.cmsc.mmbase.ResourcesUtil;
+import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.security.SecurityUtil;
@@ -222,7 +223,7 @@ public class XMLController {
          boolean fieldsAsAttribute, HashMap<Integer, Node> processedNodes, List<Integer> nodesSeenButNotProcessed) {
       NodeManager manager = node.getNodeManager();
       String managerName = manager.getName();
-      if (isTypeAllowed(managerName)) {
+      if (!TypeUtil.isSystemType(managerName)) {
          Element nodeElement = document.createElement(managerName);
          toXmlFields(node, document, nodeElement, fieldsAsAttribute);
          addExternalUrl(node, document, nodeElement, fieldsAsAttribute);
