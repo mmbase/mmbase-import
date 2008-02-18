@@ -50,13 +50,14 @@
       <action path="/editors/subsite/SubSiteAction" type="com.finalist.cmsc.subsite.forms.SubSiteAction"
          name="SearchForm" scope="request" input="/editors/subsite/personalpages.jsp" unknown="false" validate="false">
          <forward name="success" path="/editors/subsite/personalpages.jsp" redirect="false" />
-         <forward name="failed" path="/editors/subsite/refreshandshow.jsp" redirect="false" />
       </action>
       
+      <!-- Show content elements by the existing content explorer. 
       <action path="/editors/subsite/PersonalPageElements" type="com.finalist.cmsc.subsite.forms.PPContentAction"
          scope="request" unknown="false" validate="false">
          <forward name="success" path="/editors/repository/content.jsp" redirect="false" />
       </action>
+      -->
      
     </action-mappings>
 
