@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.15 2007-12-12 16:45:20 michiel Exp $
+ * @version $Id: StorageReader.java,v 1.16 2008-02-18 14:09:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class StorageReader<SM extends StorageManager> extends DocumentReader  {
@@ -289,10 +289,6 @@ public class StorageReader<SM extends StorageManager> extends DocumentReader  {
     }
 
     /**
-     * Returns all type mappings.
-     * The mappings are returned in the order that they were given in the reader.
-     * Calling code should sort this list if they want to use TypoMapping fuzzy matching.
-     * @return a List of TypeMapping objects
      * @since MMBase-1.8.5
      */
     public List<String> getStoreBinaryAsFileObjects() {
