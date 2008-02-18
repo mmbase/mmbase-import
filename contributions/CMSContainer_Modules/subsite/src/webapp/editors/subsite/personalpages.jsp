@@ -107,9 +107,9 @@
 <thead>
     <tr>
         <th>Icons</th>
-        <th><a href="#" class="headerlink" onclick="orderBy('title');" >Title</a></th>
-        <th><a href="#" class="headerlink" onclick="orderBy('publishdate');" >Publish Date</th>
-        <th><a href="#" class="headerlink" onclick="orderBy('creationdate');" >Creation Date</th>
+        <th><a href="#" class="headerlink" onclick="orderBy('title');" ><fmt:message key="pp.title" /></a></th>
+        <th><a href="#" class="headerlink" onclick="orderBy('publishdate');" ><fmt:message key="pp.publishdate" /></th>
+        <th><a href="#" class="headerlink" onclick="orderBy('creationdate');" ><fmt:message key="pp.creationdate" /></th>
     </tr>
 </thead>
 <tbody class="hover">
@@ -122,17 +122,17 @@
 		   
 		   <mm:field name="number"  write="false" id="nodenumber">
          <a href="../subsite/SubSiteEdit.do?number=${nodenumber}"
-		       title="<fmt:message key="content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16"
-		                                                       title="<fmt:message key="content.edit" />"
-		                                                       alt="<fmt:message key="content.edit" />"/></a>
+		       title="<fmt:message key="pp.content.edit" />"><img src="../gfx/icons/edit.png" width="16" height="16"
+		                                                       title="<fmt:message key="pp.content.edit" />"
+		                                                       alt="<fmt:message key="pp.content.edit" />"/></a>
 		   <a href="../subsite/SubSiteDelete.do?number=${nodenumber}"
-		       title="<fmt:message key="content.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
-		                                                       title="<fmt:message key="content.delete" />"
-		                                                       alt="<fmt:message key="content.delete" />"/></a>
+		       title="<fmt:message key="pp.content.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
+		                                                       title="<fmt:message key="pp.content.delete" />"
+		                                                       alt="<fmt:message key="pp.content.delete" />"/></a>
          <a href="<cmsc:contenturl number="${nodenumber}"/>" 
-            title="<fmt:message key="searchform.icon.preview.title" />" target="_blank"><img src="../gfx/icons/preview.png" width="16" height="16"
-                                                             title="<fmt:message key="searchform.icon.preview.title" />"
-                                                             alt="<fmt:message key="searchform.icon.preview.title" />"/></a>
+            title="<fmt:message key="pp.content.preview" />" target="_blank"><img src="../gfx/icons/preview.png" width="16" height="16"
+                                                             title="<fmt:message key="pp.content.preview" />"
+                                                             alt="<fmt:message key="pp.content.preview" />"/></a>
          
 		                                                       
 		   </mm:field>
