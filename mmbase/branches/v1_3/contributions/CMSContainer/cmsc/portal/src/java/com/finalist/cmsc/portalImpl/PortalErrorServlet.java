@@ -12,6 +12,7 @@ package com.finalist.cmsc.portalImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -38,6 +39,9 @@ public class PortalErrorServlet extends PortalServlet {
     public static final String ERROR_MESSAGE = "javax.servlet.error.message";
     public static final String ERROR_EXCEPTION = "javax.servlet.error.exception";
     public static final String ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
+
+    private static final String SIMPLE_404 = "(.*/editors/.*[.](jpg$|gif$|png$|css$|js$|ico$))|robots.txt";
+    private final Pattern excludePattern = Pattern.compile(SIMPLE_404);
     
     protected ServletConfig config;
 
@@ -57,10 +61,33 @@ public class PortalErrorServlet extends PortalServlet {
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug("===>PortalErrorServlet.doGet START!");
+        
+        // fail fast on static resources which are in the editors
+        if (request.getHeader("Referer") != null) {
+            int statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
+            if (statusCode == 404) {
+                String path = (String) request.getAttribute(ERROR_REQUEST_URI);
+                if (path != null) {
+                    if (excludePattern != null && excludePattern.matcher(path).find()) {
+                        return;              
+                    }
+                }
+            }
+        }
 
         if (PortletContainerFactory.getPortletContainer().isInitialized()) {
+            String errorUri = (String) request.getAttribute(ERROR_REQUEST_URI); 
+            if (errorUri != null) {
+                if (request.getContextPath() != null && !request.getContextPath().equals("/")) {
+                   errorUri = errorUri.substring(request.getContextPath().length());
+                }
+            }
+            // The incoming request has a servletPath of /PortalError. The mapped url to this servlet.
+            // Pretend it is  the uri which has the error in itss
+            HttpServletRequest errorUriRequest = new ErrorHttpServletRequest(request, errorUri);
+           
             // PortalRegistry reg = PortalRegistry.getPortalRegistry(request);
-            PortalEnvironment env = new PortalEnvironment(request, response, config);
+            PortalEnvironment env = new PortalEnvironment(errorUriRequest, response, config);
             PortalURL currentURL = env.getRequestedPortalURL();
             try {
                 String path = extractPath(request, currentURL);
