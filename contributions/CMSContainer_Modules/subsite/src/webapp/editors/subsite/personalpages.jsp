@@ -60,7 +60,7 @@
          <td><fmt:message key="subsite.name" />:</td>
          <td>
             <cmsc:select var="subsite">
-            <mm:listnodes type="subsite">
+            <mm:listnodes type="subsite" orderby="title">
                <mm:field name="number" id="subsitenumber" write="false" vartype="String" />
 	            <cmsc:option value="${subsitenumber}" name="${_node.title}" />
             </mm:listnodes>
@@ -77,9 +77,7 @@
 	      <td style="width:20px">
 	      </td>
          <td>
-	      <a href="../subsite/PersonalPageCreate.do?parentpage=${subsite}"><img src="../gfx/icons/new.png" width="16" height="16" title="<fmt:message key="site.personal.new.page" />"
-                                                    alt="<fmt:message key="site.personal.new.page" />"/></a> 
-         <a href="../subsite/PersonalPageCreate.do?parentpage=${subsite}"><fmt:message key="site.personal.new.page" /></a>
+			<%@include file="personalpages_newbuttons.jsp" %>          
          </td>
 	   </tr>
 	</table>
