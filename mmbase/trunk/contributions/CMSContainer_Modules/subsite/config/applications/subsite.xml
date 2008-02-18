@@ -21,6 +21,7 @@
    <datasourcelist>
       <datasource builder="editwizards" path="subsite/editwizards.xml" />
       <datasource builder="contentchannel" path="subsite/contentchannel.xml" />
+      <datasource builder="subsite-article" path="subsite/subsite-article.xml" />
    </datasourcelist>
 
    <relationsourcelist>

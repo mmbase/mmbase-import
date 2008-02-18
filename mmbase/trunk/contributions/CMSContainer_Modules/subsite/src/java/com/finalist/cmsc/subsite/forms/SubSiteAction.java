@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.subsite.forms;
 
 import java.util.Calendar;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,11 +25,11 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.FieldValueDateConstraint;
-import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
 import org.mmbase.util.logging.Logger;
@@ -39,18 +38,15 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
-import com.finalist.cmsc.repository.ContentElementUtil;
-import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.repository.forms.SearchAction;
 import com.finalist.cmsc.repository.forms.SearchForm;
-import com.finalist.cmsc.resources.forms.QueryStringComposer;
 import com.finalist.cmsc.struts.PagerAction;
 import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
 public class SubSiteAction extends PagerAction {
 
     /**
-     * MMbase logging system
+     * MMBase logging system
      */
     private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 	
@@ -59,13 +55,11 @@ public class SubSiteAction extends PagerAction {
          HttpServletRequest request, HttpServletResponse response, Cloud cloud)
          throws Exception {
 	   
-      /*System.out.println(request.getParameterNames().toString());
-      System.out.println(request.getParameterMap().toString());*/
-      
-	   // Initialize
+       // Initialize
 	   SearchForm searchForm = (SearchForm) form;
 	   
       String subsite = request.getParameter("subsite");
+      request.setAttribute("subsite", subsite);
       
       /* Purpose of this file
        * - retrieve List of all subsites
@@ -93,28 +87,48 @@ public class SubSiteAction extends PagerAction {
          addToRequest(request, "subsiteElements", subsiteElements);
       }*/
       
-      Node subsiteNode = null;
+      
       //Retrieve list of pages of subsite
-      if (!StringUtil.isEmpty(subsite)) { 
-         subsiteNode = cloud.getNode(subsite);
-         /*if (subsiteNode != null) {
+      Node subsiteNode = null;
+	  try {
+		  subsiteNode = cloud.getNode(subsite);
+	  }
+	  catch (NotFoundException e) {
+		  //If the subsiteNode does not exist or is not valid, get the first found subsite
+		  NodeManager nm = cloud.getNodeManager(SubSiteUtil.SUBSITE);
+		  NodeList results = nm.createQuery().getList();
+		  if (results.size() > 0) {
+			  subsiteNode = (Node) results.get(0);
+		  }
+	  }
+	  
+	  if (subsiteNode == null){ //If there are no subsites at all, return empty list
+		  searchForm.setResultCount(0);
+		  NodeList results = cloud.createNodeList();
+		  searchForm.setResults(results);
+		  return mapping.findForward(SUCCESS);
+	  } 
+	  
+//	  searchForm.setResultCount(results.size());
+//
+//	  searchForm.setResults(results);
+//	  return mapping.findForward(SUCCESS);
+	  
+    	  
+ /*if (subsiteNode != null) {
             NodeList elements = NavigationUtil.getChildren(subsiteNode);
         	// NodeList elements = RepositoryUtil.getLinkedElements(subsiteNode, null, null, null, false, -1, -1, -1, -1, -1);
             addToRequest(request, "elements", elements);
             //addToRequest(request, "subsite", subsite);
 //            request.setAttribute("pageNodes", pageNodes);
          }*/
-      } else {
-    	  
-    	  return mapping.findForward(CANCEL);
-      }
 
       NodeManager nodeManager = subsiteNode.getNodeManager();
       // Order the result by:
       String order = searchForm.getOrder();
 
       // set default order field
-      if (StringUtil.isEmpty(order)) {
+      if (order != null && StringUtil.isEmpty(order)) {
           if (nodeManager.hasField("title")) {
               order = "title";
           }
@@ -123,62 +137,47 @@ public class SubSiteAction extends PagerAction {
           }
       }
       
-   
+   // Set the offset (used for paging).
+      int offset = 0;
+      if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
+    	  offset = Integer.parseInt(searchForm.getOffset());
+          searchForm.setOffset(Integer.toString(offset));
+      }
+      
+      // Set the maximum result size.
+      String resultsPerPage = PropertiesUtil.getProperty(SearchAction.REPOSITORY_SEARCH_RESULTS_PER_PAGE);
+      int maxNumber = 25;
+      if (resultsPerPage != null && resultsPerPage.matches("\\d+")) {
+    	  maxNumber = Integer.parseInt(resultsPerPage);
+      }
+      
+      searchForm.setKeywords(resultsPerPage);
+      
+      String direction = null;
+      
       //QueryStringComposer queryStringComposer = new QueryStringComposer();
       //NodeQuery query = cloud.createNodeQuery();
       //createLinkedElementsQuery(channel, orderby, direction, offset, maxNumber, year, month, day)
-      NodeQuery query = createLinkedElementsQuery(subsiteNode, order, null, 0, 25, -1, -1, -1);
+      NodeQuery query = createLinkedElementsQuery(subsiteNode, order, direction, offset*maxNumber, maxNumber, -1, -1, -1);
+      //NodeList SearchUtil.findRelatedNodeList(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir)
+      //NodeQuery query = SearchUtil.createRelatedNodeListQuery(parent, managerName, role, fieldname, value, sortName, sortDirection, searchdir)
 
-      
       // Add the title constraint:
       if (!StringUtil.isEmpty(searchForm.getTitle())) {
           Field field = nodeManager.getField(PagesUtil.TITLE_FIELD);
           Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
           SearchUtil.addConstraint(query, titleConstraint);
       }
-      
-      /*
-      NodeManager nodeManager = subsiteNode.getNodeManager();
-      
-   // First add the proper step to the query.
-      Step theStep = null;
-      theStep = query.addStep(nodeManager);
-      query.setNodeStep(theStep);
-      
-      
-            
-      query.setDistinct(true);
-      
-   // Add the title constraint:
-      if (!StringUtil.isEmpty(searchForm.getTitle())) {
-    	  
-          queryStringComposer.addParameter(PagesUtil.TITLE_FIELD, searchForm.getTitle());
-          Field field = nodeManager.getField(PagesUtil.TITLE_FIELD);
-          Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
-          SearchUtil.addConstraint(query, titleConstraint);
-      }
 
-      // Set the maximum result size.
-      String resultsPerPage = PropertiesUtil.getProperty(SearchAction.REPOSITORY_SEARCH_RESULTS_PER_PAGE);
-      if (resultsPerPage == null || !resultsPerPage.matches("\\d+")) {
-          query.setMaxNumber(25);
-      }
-      else {
-          query.setMaxNumber(Integer.parseInt(resultsPerPage));
-      }
-
-      // Set the offset (used for paging).
-      if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
-          query.setOffset(query.getMaxNumber() * Integer.parseInt(searchForm.getOffset()));
-          queryStringComposer.addParameter(OFFSET, searchForm.getOffset());
-      }*/
+     
+      
 
       log.debug("QUERY: " + query);
 
       int resultCount = Queries.count(query);
       NodeList results = cloud.getList(query);
-      System.out.println("Count = " + resultCount);
-      //System.out.println("Query = " + query);
+//      System.out.println("Count = " + resultCount);
+//      System.out.println("Query = " + query);
       // Set everything on the request.
       searchForm.setResultCount(resultCount);
       searchForm.setResults(results);
@@ -203,7 +202,7 @@ public class SubSiteAction extends PagerAction {
       }*/
 
 //      return mapping.findForward(SUCCESS);
-      return super.execute(mapping, form, request, response, cloud);
+      return super.execute(mapping, searchForm, request, response, cloud);
    }
 
    public static NodeQuery createLinkedElementsQuery(Node channel, String orderby, String direction, int offset, int maxNumber, int year, int month, int day) {
