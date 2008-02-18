@@ -45,7 +45,7 @@
         </positions>
       </editor>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="false" />
+        <required value="true" />
       </datatype>
     </field>
 
@@ -66,11 +66,11 @@
         </positions>
       </editor>
       <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <required value="false" />
+        <required value="true" />
       </datatype>
     </field>
 
-    <field name="rnumber" state="system" readonly="true">
+    <field name="rnumber" state="system">
       <descriptions>
         <description xml:lang="en">This relation's type objectnumber</description>
         <description xml:lang="nl">Objectnummer van het relatietype van deze relatie</description>
@@ -91,7 +91,7 @@
       </datatype>
     </field>
 
-    <field name="dir" state="system" readonly="true">
+    <field name="dir" state="system">
       <descriptions>
         <description xml:lang="en">
           Directionality of this relation, can be uni or bi-directional (0 or 1)
