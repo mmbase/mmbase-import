@@ -31,7 +31,7 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
          
          String name = parentNode.getStringValue(PagesUtil.TITLE_FIELD);
          String fragment = parentNode.getStringValue( NavigationUtil.getFragmentFieldname(parentNode) );
-         System.out.println("Name = " + name + ", fragment = " + fragment);
+//         System.out.println("Name = " + name + ", fragment = " + fragment);
 
          String id = String.valueOf(parentNode.getNumber());
          TreeElement element = renderer.createElement(parentNode, role, name, fragment, false);

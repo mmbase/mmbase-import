@@ -28,6 +28,10 @@ public class SubSiteUtil {
       return node.getNodeManager().getName().equals(SUBSITE);
    }
    
+   public static boolean isPersonalPageType(Node node) {
+	      return node.getNodeManager().getName().equals(PERSONALPAGE);
+   }
+   
    public static Node createSubSiteContentChannel(Node subsite) {
       Node subsiteRootChannel = getRepositoryRoot(subsite.getCloud());
       return createContentChannel(subsite, subsiteRootChannel);
