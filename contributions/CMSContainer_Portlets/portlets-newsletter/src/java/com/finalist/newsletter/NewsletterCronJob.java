@@ -12,6 +12,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,14 +30,18 @@ public class NewsletterCronJob implements CronJob {
       NodeQuery query = manager.createQuery();
       NodeList newsletters = manager.getList(query);
       List<Node> newslettersToPublish = new ArrayList<Node>();
-            for (int i = 0; i < newsletters.size(); i++) {
+      for (int i = 0; i < newsletters.size(); i++) {
          Node newsletter = newsletters.getNode(i);
          if (Publish.isPublished(newsletter)) {
             long publishInterval = newsletter.getLongValue("publishinterval");
             if (publishInterval > 0) {
-               newslettersToPublish.add(newsletter);               
-            } 
-         } 
+               int newsletterNumber = newsletter.getNumber();
+               boolean isPaused = NewsletterUtil.isPaused(newsletterNumber);
+               if (isPaused == false) {
+                  newslettersToPublish.add(newsletter);
+               }
+            }
+         }
       }
       return (newslettersToPublish);
    }
@@ -46,7 +51,7 @@ public class NewsletterCronJob implements CronJob {
 
    }
 
-   public void run() {      
+   public void run() {
       List<Node> newslettersToPublish = getNewslettersToPublish();
       for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
          Node newsletterNode = newslettersToPublish.get(newsletterIterator);

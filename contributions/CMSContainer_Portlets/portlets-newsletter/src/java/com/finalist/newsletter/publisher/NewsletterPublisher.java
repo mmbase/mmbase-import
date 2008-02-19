@@ -14,6 +14,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -88,14 +89,15 @@ public class NewsletterPublisher extends Thread {
       String nameFrom = null;
       String emailReplyTo = null;
       String nameReplyTo = null;
-      /*
-       * Node newsletterNode = SearchUtil.findRelatedNode(publicationNode,
-       * "newsletter", "related"); if (newsletterNode != null) { emailFrom =
-       * newsletterNode.getStringValue("emailfrom"); nameFrom =
-       * newsletterNode.getStringValue("namefrom"); emailReplyTo =
-       * newsletterNode.getStringValue("emailreplyto"); nameReplyTo =
-       * newsletterNode.getStringValue("namereplyto"); }
-       */
+
+      Node newsletterNode = SearchUtil.findRelatedNode(publicationNode, "newsletter", "related");
+      if (newsletterNode != null) {
+         emailFrom = newsletterNode.getStringValue("from_mail");
+         nameFrom = newsletterNode.getStringValue("from_name");
+         emailReplyTo = newsletterNode.getStringValue("replyto_mail");
+         nameReplyTo = newsletterNode.getStringValue("replyto_name");
+      }
+
       if (emailFrom == null || emailFrom.length() == 0) {
          emailFrom = PropertiesUtil.getProperty("newsletter.from.mail");
          if (emailFrom == null || emailFrom.length() == 0) {
@@ -130,7 +132,7 @@ public class NewsletterPublisher extends Thread {
          if (nameReplyTo != null && nameReplyTo.length() > 0) {
             replyToAddress.setPersonal(nameReplyTo);
          }
-         InternetAddress[] addresses= new InternetAddress[1];
+         InternetAddress[] addresses = new InternetAddress[1];
          addresses[0] = replyToAddress;
          message.setReplyTo(addresses);
       } else {

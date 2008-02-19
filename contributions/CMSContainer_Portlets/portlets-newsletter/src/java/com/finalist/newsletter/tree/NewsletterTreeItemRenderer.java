@@ -9,6 +9,7 @@ import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
@@ -44,6 +45,15 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletter.remove", "newsletter",
                   "../newsletter/NewsletterDelete.do?number=" + id));
+            boolean isPaused = NewsletterUtil.isPaused(Integer.parseInt(id));
+            if (isPaused == true) {
+               element.addOption(renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
+                     "../newsletter/NewsletterResume.do?number=" + id));
+            }
+            if (isPaused == false) {
+               element.addOption(renderer.createTreeOption("pause.png", "site.newsletter.pause", "newsletter",
+                     "../newsletter/NewsletterPause.do?number=" + id));
+            }
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {
