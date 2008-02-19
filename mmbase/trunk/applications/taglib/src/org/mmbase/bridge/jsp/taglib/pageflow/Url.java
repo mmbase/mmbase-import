@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+
 import java.util.*;
+import java.util.regex.Pattern;
 import java.net.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.36 2008-01-25 10:20:21 michiel Exp $;
+ * @version $Id: Url.java,v 1.37 2008-02-19 15:42:15 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -166,6 +168,8 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
         return result;
     }
+
+    final static Pattern ABSOLUTE_URLS = Pattern.compile("(?i)[a-z]+\\:.*");
     /**
      *
      */
@@ -178,13 +182,18 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         HttpServletRequest req = (HttpServletRequest) tag.getPageContext().getRequest();
 
         if (abs.equals("true")) {
-            show.append(req.getScheme()).append("://");
-            show.append(req.getServerName());
-            int port = req.getServerPort();
-            String scheme = req.getScheme();
-            show.append((port == 80 && "http".equals(scheme)) ||
-                        (port == 443 && "https".equals(scheme))
-                        ? "" : ":" + port);
+            if (ABSOLUTE_URLS.matcher(page).matches()) {
+                show.append(page);
+                return true;
+            } else {
+                String scheme = req.getScheme();
+                show.append(scheme).append("://");
+                show.append(req.getServerName());
+                int port = req.getServerPort();
+                show.append((port == 80 && "http".equals(scheme)) ||
+                            (port == 443 && "https".equals(scheme))
+                            ? "" : ":" + port);
+            }
         } else if (abs.equals("server")) {
             //show.append("/");
         } else if (abs.equals("context")) {

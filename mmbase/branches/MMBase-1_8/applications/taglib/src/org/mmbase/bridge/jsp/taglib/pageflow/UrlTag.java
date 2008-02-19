@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.util.regex.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.79.2.5 2008-02-19 15:12:04 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.79.2.6 2008-02-19 15:39:11 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -145,6 +146,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return true;
     }
 
+    final static Pattern ABSOLUTE_URLS = Pattern.compile("(?i)[a-z]+\\:.*");
+
     /**
      * @since MMBase-1.8.1
      */
@@ -154,13 +157,18 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
 
         if (abs.equals("true")) {
-            String scheme = req.getScheme();
-            show.append(scheme).append("://");
-            show.append(req.getServerName());
-            int port = req.getServerPort();
-            show.append((port == 80 && "http".equals(scheme)) ||
-                        (port == 443 && "https".equals(scheme))
-                        ? "" : ":" + port);
+            if (ABSOLUTE_URLS.matcher(page).matches()) {
+                show.append(page);
+                return true;
+            } else {
+                String scheme = req.getScheme();
+                show.append(scheme).append("://");
+                show.append(req.getServerName());
+                int port = req.getServerPort();
+                show.append((port == 80 && "http".equals(scheme)) ||
+                            (port == 443 && "https".equals(scheme))
+                            ? "" : ":" + port);
+            }
         } else if (abs.equals("server")) {
             //show.append("/");
         } else if (abs.equals("context")) {
@@ -316,5 +324,8 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         return super.doEndTag();
     }
 
+    public static void main(String argv[]) {
+        System.out.println(ABSOLUTE_URLS.matcher(argv[0]).matches());
+    }
 
 }
