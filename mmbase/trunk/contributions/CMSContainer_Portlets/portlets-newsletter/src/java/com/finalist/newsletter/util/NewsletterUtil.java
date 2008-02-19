@@ -264,4 +264,37 @@ public abstract class NewsletterUtil {
       return (secundary);
    }
 
+   public static boolean isPaused(int number) {
+      if (number > 0) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterNode = cloud.getNode(number);
+         if (newsletterNode != null) {
+            boolean isPaused = newsletterNode.getBooleanValue("paused");
+            return (isPaused);
+         }
+      }
+      return (false);
+   }
+
+   public static void pauseNewsletter(int number) {
+      if (number > 0) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterNode = cloud.getNode(number);
+         if (newsletterNode != null) {
+            newsletterNode.setBooleanValue("paused", true);
+            newsletterNode.commit();
+         }
+      }
+   }
+
+   public static void resumeNewsletter(int number) {
+      if (number > 0) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterNode = cloud.getNode(number);
+         if (newsletterNode != null) {
+            newsletterNode.setBooleanValue("paused", false);
+            newsletterNode.commit();
+         }
+      }
+   }
 }
