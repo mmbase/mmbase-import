@@ -227,6 +227,8 @@ function postContent(href, form) {
     }
     var textareas = form.getElementsByTagName("input");
     for (i=0; i<textareas.length; i++) {
+        if (textareas[i].type == "checkbox" && !textareas[i].checked)
+            continue;    
         var ta = textareas[i];
         content += sep + ta.name + '=' + ta.value;
         sep = '&';
