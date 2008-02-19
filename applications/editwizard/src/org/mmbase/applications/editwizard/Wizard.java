@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.160 2008-02-15 13:24:47 pierre Exp $
+ * @version $Id: Wizard.java,v 1.161 2008-02-19 20:52:31 nklasens Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -419,7 +419,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 // setup original data
                 originalData = Utils.emptyDocument();
-                loadedData = Utils.emptyDocument();
+                loadedData = Utils.parseXML("<loadedData />"); 
 
                 // Get the definition and create a copy of the object-definition.
                 Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
@@ -477,7 +477,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
         // setup original data
         originalData = Utils.emptyDocument();
-        loadedData = Utils.emptyDocument();
+        loadedData = Utils.parseXML("<loadedData />");
 
 
         // store original data, so that the put routines will know what to save/change/add/delete
@@ -2468,7 +2468,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     Iterator<Node> i = newSubRelations.iterator();
                     while (i.hasNext()) {
                         Node newSubRelation = i.next();
-                        loadedData.appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
+                        loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
                     }
                 } else {
                     log.debug("Nothing found to load");

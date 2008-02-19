@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.51 2008-02-14 17:16:17 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.52 2008-02-19 20:52:31 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector implements java.io.Serializable {
@@ -527,7 +527,7 @@ public class WizardDatabaseConnector implements java.io.Serializable {
                     throw new WizardException("Could not load object (" + dnumber + "). Message: " + Logging.stackTrace(e));
                 }
                 // but annotate that this one is loaded from mmbase. Not a new one
-                loadedData.appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
+                loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
                 
                 // grab the type
                 dtype = Utils.getAttribute(inside_object, "type", "");
