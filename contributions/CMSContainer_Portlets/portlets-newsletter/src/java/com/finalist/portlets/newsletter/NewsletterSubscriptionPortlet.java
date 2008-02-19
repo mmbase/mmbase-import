@@ -51,7 +51,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
          List<String> availableMimeTypes = NewsletterGeneratorFactory.getMimeTypes();
          request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, availableMimeTypes);
-         List<String> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
+         List<Integer> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
          request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, availableStatusOptions);
 
          List<Integer> subscribedThemes = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
@@ -155,7 +155,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       NewsletterSubscriptionUtil.subscribeToThemes(userName, subscribeToThemes);
       String preferredMimeType = request.getParameter(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE);
       NewsletterSubscriptionUtil.setPreferredMimeType(userName, preferredMimeType);
-      String status = request.getParameter(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY);
+      int status = Integer.parseInt(request.getParameter(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY));
       NewsletterSubscriptionUtil.setSubscriptionStatus(userName, status);
    }
 

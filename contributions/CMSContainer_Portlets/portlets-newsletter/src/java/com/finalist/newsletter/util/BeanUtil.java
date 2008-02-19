@@ -73,7 +73,7 @@ public final class BeanUtil {
 
       List<String> availableMimeTypes = NewsletterGeneratorFactory.getMimeTypes();
       bean.setAvailableMimeTypes(availableMimeTypes);
-      List<String> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
+      List<Integer> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
       bean.setAvailableStatusOptions(availableStatusOptions);
 
       List<Integer> subscribedThemes = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);

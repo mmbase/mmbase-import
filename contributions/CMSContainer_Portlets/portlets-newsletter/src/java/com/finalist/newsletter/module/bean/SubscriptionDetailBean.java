@@ -2,9 +2,6 @@ package com.finalist.newsletter.module.bean;
 
 import java.util.List;
 
-import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
-import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
-
 public class SubscriptionDetailBean {
 
    private String userName;
@@ -14,7 +11,7 @@ public class SubscriptionDetailBean {
    private List<Integer> subscribedThemes;
    private List<Integer> subscribedNewsletters;
    private List<String> availableMimeTypes;
-   private List<String> availableStatusOptions;
+   private List<Integer> availableStatusOptions;
 
    public List<String> getAvailableMimeTypes() {
       return availableMimeTypes;
@@ -24,11 +21,11 @@ public class SubscriptionDetailBean {
       this.availableMimeTypes = availableMimeTypes;
    }
 
-   public List<String> getAvailableStatusOptions() {
+   public List<Integer> getAvailableStatusOptions() {
       return availableStatusOptions;
    }
 
-   public void setAvailableStatusOptions(List<String> availableStatusOptions) {
+   public void setAvailableStatusOptions(List<Integer> availableStatusOptions) {
       this.availableStatusOptions = availableStatusOptions;
    }
 

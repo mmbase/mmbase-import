@@ -21,13 +21,13 @@ public abstract class NewsletterSubscriptionUtil {
    public static final String USERNAME = "username";
 
    public static final String SUBSCRIPTION_STATUS_KEY = "subscriptionstatus";
-   public static final String SUBSCRIPTION_STATUS_ACTIVE = rb.getString("status.active");
-   public static final String SUBSCRIPTION_STATUS_PAUSED = rb.getString("status.paused");
-   public static final String SUBSCRIPTION_STATUS_TERMINATED = rb.getString("status.terminated");
-   public static final String SUBSCRIPTION_STATUS_DEFAULT = SUBSCRIPTION_STATUS_ACTIVE;
+   public static final int SUBSCRIPTION_STATUS_TERMINATED = 0;
+   public static final int SUBSCRIPTION_STATUS_ACTIVE = 1;
+   public static final int SUBSCRIPTION_STATUS_PAUSED = 2;   
+   public static final int SUBSCRIPTION_STATUS_DEFAULT  = SUBSCRIPTION_STATUS_ACTIVE;
    public static final String STATUS_OPTIONS = "statusoptions";
 
-   private static List<String> statusOptions = new ArrayList<String>();
+   private static List<Integer> statusOptions = new ArrayList<Integer>();
 
    static {
       statusOptions.add(SUBSCRIPTION_STATUS_ACTIVE);
@@ -100,7 +100,7 @@ public abstract class NewsletterSubscriptionUtil {
       return (null);
    }
 
-   public static List<String> getStatusOptions() {
+   public static List<Integer > getStatusOptions() {
       return (statusOptions);
    }
 
@@ -175,13 +175,13 @@ public abstract class NewsletterSubscriptionUtil {
       }
    }
 
-   public static void setSubscriptionStatus(String userName, String status) {
-      if (status == null) {
+   public static void setSubscriptionStatus(String userName, int status) {
+      if (status < 0 ) {
          status = SUBSCRIPTION_STATUS_DEFAULT;
       }
-      if (userName != null && status != null) {
+      if (userName != null && status >= 0 ) {
          NewsletterCommunication.removeUserPreference(userName, SUBSCRIPTION_STATUS_KEY);
-         NewsletterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, status);
+         NewsletterCommunication.setUserPreference(userName, SUBSCRIPTION_STATUS_KEY, String.valueOf(status));
          return;
       }
    }
