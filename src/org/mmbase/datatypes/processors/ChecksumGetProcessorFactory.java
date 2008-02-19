@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumGetProcessorFactory.java,v 1.5 2008-02-18 10:51:49 michiel Exp $
+ * @version $Id: ChecksumGetProcessorFactory.java,v 1.6 2008-02-19 20:56:35 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -53,8 +53,10 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
                         StringWriter writer = new StringWriter();
                         transformer.transform(node.getInputStreamValue(sourceField), writer);
                         value = writer.toString();
-                        node.setStringValue(field.getName(), (String) value);
-                        node.commit();
+                        if (!field.isVirtual()) {
+                            node.setStringValue(field.getName(), (String) value);
+                            node.commit();
+                        }
                         return value;
                     }
                 } else {
