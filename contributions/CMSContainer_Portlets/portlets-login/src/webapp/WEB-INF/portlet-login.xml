@@ -9,7 +9,7 @@
 		<portlet-class>com.finalist.cmsc.portlets.LoginPortlet</portlet-class>
         <init-param>
             <name>template.edit_defaults</name>
-            <value>login.jsp</value>
+            <value>login/login.jsp</value>
         </init-param>
         <init-param>
             <name>template.view</name>
