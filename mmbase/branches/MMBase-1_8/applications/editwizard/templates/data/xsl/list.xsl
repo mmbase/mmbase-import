@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43.2.3 2008-02-13 13:15:07 pierre Exp $
+    @version $Id: list.xsl,v 1.43.2.4 2008-02-19 20:16:21 andre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -30,6 +30,9 @@
   </xsl:param>
   <xsl:param name="deletedescription">
     <xsl:value-of select="$tooltip_delete" />
+  </xsl:param>
+  <xsl:param name="unlinkdescription">
+    <xsl:value-of select="$tooltip_remove" />
   </xsl:param>
 
   <xsl:param name="createprompt" />
@@ -207,12 +210,12 @@
                   <input type="hidden" name="language" value="${language}" />
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
-                    <xsl:if test="$relationOriginNode = '-1'">
+                    <xsl:if test="$linkable='false'">
                       <a href="javascript:document.forms[0].submit();">
                         <xsl:call-template name="prompt_search" />
                       </a>
                     </xsl:if>
-                    <xsl:if test="$relationOriginNode != '-1'">
+                    <xsl:if test="$linkable='true'">
                       <a href="javascript:document.forms[0].submit();">
                         <xsl:call-template name="prompt_search" />
                       </a>
@@ -386,7 +389,7 @@
           <xsl:if test="@maylink='true'">
             <a
               href="{$unlinkpage}&amp;wizard={$wizard}&amp;objectnumber={@number}&amp;relationOriginNode={$relationOriginNode}&amp;origin={$origin}"
-              title="{$deletedescription}"
+              title="{$unlinkdescription}"
               onmousedown="cancelClick=true;"
               onclick="return doUnlink('{$unlinkprompt}');">
               <xsl:call-template name="prompt_unlink" />
