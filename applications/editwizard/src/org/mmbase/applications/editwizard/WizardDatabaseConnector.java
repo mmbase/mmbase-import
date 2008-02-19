@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.46.2.1 2008-02-14 17:16:11 nklasens Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.46.2.2 2008-02-19 20:52:40 nklasens Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -517,7 +517,7 @@ public class WizardDatabaseConnector {
                 }
                 
                 // but annotate that this one is loaded from mmbase. Not a new one
-                loadedData.appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
+                loadedData.getDocumentElement().appendChild(loadedData.importNode(inside_object.cloneNode(true), true));
                 
                 // grab the type
                 dtype = Utils.getAttribute(inside_object, "type", "");
