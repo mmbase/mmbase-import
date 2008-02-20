@@ -11,6 +11,7 @@
   <description xml:lang="en">MMBase core components</description>
   <description xml:lang="nl">MMBase core componenten</description>
 
+  <!-- This bundle provides translations for the mmbase 'core' component -->
   <bundle name="org.mmbase.framework.resources.core" />
 
   <setting name="testsetting">
@@ -113,7 +114,7 @@
     </body>
   </block>
 
-  
+
   <block name="builders"
          classification="mmbase.admin"
          mimetype="text/html">
@@ -176,7 +177,7 @@
     <description xml:lang="en">This tools hows the performance of the various MMBase
     caches. You can also (temporary) turn on/off the cache here. For a persistant
     change you should change caches.xml.</description>
-    <body jsp="/mmbase/admin/tools/cache.jsp">
+    <body jsp="cache/index.jspx">
       <param name="active" type="String" />
       <param name="cache"  type="String" />
       <param name="clear"  type="String" />
@@ -286,6 +287,18 @@
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase example pages</description>
     <body jsp="/mmbase/admin/mmexamples.div.jsp">
+    </body>
+  </block>
+
+  <block name="mmbase_news"
+         classification="mmbase.about"
+         mimetype="text/html">
+    <description xml:lang="en">Shows latest news from the mmbase site</description>
+    <body>
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://www.mmbase.org/rss</param>
+        <param name="xslt">xslt/rss.xslt</param>
+      </class>
     </body>
   </block>
 
