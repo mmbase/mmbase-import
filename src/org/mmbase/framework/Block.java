@@ -16,12 +16,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A Block is a representation of a page within a component. It consists of 3 views,
- * a 'head', 'body' and 'process' view.
+ * A Block is a representation of a page within a component. It has 2 renderers,
+ * 'head' and 'body', and a  processor.
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.29 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: Block.java,v 1.30 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -62,7 +62,7 @@ public class Block {
 
 
     /**
-     * Mimetype for this block.
+     * Mimetype for this block. E.g. "text/html".
      */
     public String getMimeType() {
         return mimetype;

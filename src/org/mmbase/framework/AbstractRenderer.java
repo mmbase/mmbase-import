@@ -13,11 +13,10 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Abstract view implementation which implements getType and creates the 'essential' parameters
- * request and response.
+ * Abstract renderer implementation which implements getType and getBlock.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractRenderer.java,v 1.9 2007-11-16 16:06:30 michiel Exp $
+ * @version $Id: AbstractRenderer.java,v 1.10 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 abstract public class AbstractRenderer implements Renderer {

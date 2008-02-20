@@ -14,12 +14,12 @@ import org.mmbase.security.Action;
 
 /**
  * A component is a piece of pluggable functionality that typically has dependencies on other
- * components, and may be requested several views.
+ * components.
  *
  * A Component bundles {@link Block}s, {@link Action}s and {@link @Setting}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.17 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: Component.java,v 1.18 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -93,7 +93,8 @@ public interface Component {
 
     /**
      * The baseName of the resource bundle associated with i18n messages for this component.
-     * See {@link java.util.ResourceBundle#getBundle(String, Locale)}.
+     * See {@link java.util.ResourceBundle#getBundle(String, Locale)}. The framework should decorate
+     * the request with this like fmt:bundle before rendinger a block.
      */
     String getBundle();
 
@@ -103,12 +104,15 @@ public interface Component {
     Collection<Setting<?>> getSettings();
 
     /**
-     * Retrieves a setting (a definition, not a value, for that, use
+     * Retrieves a setting (a definition, not a value; for that, use
      * {@link Framework#getSettingValue(Setting, Parameters)}) with a certain name. Or
      * <code>null</code> if no such setting in this component.
      */
     Setting<?> getSetting(String name);
 
+    /**
+     * A component may also define extra 'actions'.
+     */
     Map<String, Action> getActions();
 
 }

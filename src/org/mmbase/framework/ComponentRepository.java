@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.27 2008-01-25 10:13:01 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.28 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -59,7 +59,7 @@ public class ComponentRepository {
     }
 
     private final Map<String, Component> rep = new HashMap<String, Component>();
-    private final List<Component> failed = new ArrayList<Component>();
+    private final List<Component> failed     = new ArrayList<Component>();
 
     private ComponentRepository() { }
 
@@ -144,12 +144,13 @@ public class ComponentRepository {
         for (String file : components) {
             try {
                 Document doc = loader.getDocument(file, true, getClass());
+                String namespace = doc.getDocumentElement().getNamespaceURI();
                 String name = doc.getDocumentElement().getAttribute("name");
                 String fileName = ResourceLoader.getName(file);
                 if (! fileName.equals(name)) {
                     log.warn("Component " + name + " is defined in resource with name " + file);
                 } else {
-                    log.service("Instantiating component '" + name + "'");
+                    log.service("Instantiating component '" + name + "' " + namespace);
                 }
                 if (rep.containsKey(name)) {
                     failed.add(getComponent(name, doc));
