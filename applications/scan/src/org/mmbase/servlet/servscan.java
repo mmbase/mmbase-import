@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.46 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: servscan.java,v 1.47 2008-02-20 11:55:33 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -41,7 +41,7 @@ public class servscan extends JamesServlet {
 
     // modules used in servscan
     private static sessionsInterface sessions=null;
-    private scanparser parser;
+    private static scanparser parser;
 
     public static final String SHTML_CONTENTTYPE = "text/html";
     public static final String DEFAULT_CHARSET = "UTF-8"; // can be overriden by parameter 'encoding' (in web.xml)
@@ -63,25 +63,23 @@ public class servscan extends JamesServlet {
     public void setMMBase(MMBase mmb) {
         super.setMMBase(mmb);
 
-        // bugfix #6648: scan.init() is not called, this will sometimes result in a crash of mmbase
-        log = Logging.getLoggerInstance(servscan.class);
-
-        try {
-            MMBaseContext.initHtmlRoot();
-        } catch (Exception e){
-            log.error(e);
-        }
-        log.info("Getting scan parser");
-        parser = (scanparser)getModule("SCANPARSER");
-        if(parser == null) {
-            String msg = "Module with name 'scanparser' should be active";
-            log.error(msg);
-            throw new RuntimeException(msg);
-        }
-        sessions = (sessionsInterface)getModule("SESSION");
-        if(sessions == null) {
-            String msg = "module with name 'sessions' is not active";
-            log.warn(msg);
+        if (log == null) { // use nullness of log to check whether these statics were inited /already.
+            // bugfix #6648: scan.init() is not called, this will sometimes result in a crash of mmbase
+            log = Logging.getLoggerInstance(servscan.class);
+            try {
+                MMBaseContext.initHtmlRoot();
+            } catch (Exception e){
+                log.error(e);
+            }
+            parser = (scanparser)getModule("SCANPARSER");
+            log.info("Getting scan parser " + parser, new Exception());
+            if(parser == null) {
+                throw new RuntimeException("Module with name 'scanparser' should be active");
+            }
+            sessions = (sessionsInterface)getModule("SESSION");
+            if(sessions == null) {
+                log.warn("module with name 'sessions' is not active");
+            }
         }
     }
 
@@ -237,8 +235,8 @@ public class servscan extends JamesServlet {
         } catch(Exception a) {
             log.debug("service(): exception on page: " + getRequestURL(req));
             a.printStackTrace();
-        } finally { 
-            decRefCount(req); 
+        } finally {
+            decRefCount(req);
         }
 
     }
