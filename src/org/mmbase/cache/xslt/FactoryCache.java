@@ -17,15 +17,20 @@ import javax.xml.transform.TransformerFactory;
 import java.io.File;
 import java.net.URL;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * A cache for XSL Transformer Factories.  There is one needed for
  * every directory, or more precisely, for every instance of
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.10 2007-04-07 17:12:54 nklasens Exp $
+ * @version $Id: FactoryCache.java,v 1.11 2008-02-20 17:14:00 michiel Exp $
  */
 public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
+
+    private static final Logger log = Logging.getLoggerInstance(FactoryCache.class);
 
     private static int cacheSize = 50;
     private static FactoryCache cache;
@@ -62,6 +67,8 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
         return getFactory(defaultDir);
     }
 
+    boolean warnedFeature = false;
+
     /**
      * Make a factory for a certain URIResolver.
      */
@@ -73,6 +80,12 @@ public class FactoryCache extends Cache<URIResolver, TransformerFactory> {
                 tf.setAttribute("http://saxon.sf.net/feature/version-warning", false);
             } catch (IllegalArgumentException iae) {
                 // never mind
+                if (! warnedFeature) {
+                    log.service(tf + ": " + iae.getMessage() + ". (subsequent messages logged on debug)");
+                    warnedFeature = true;
+                } else {
+                    log.debug(tf + ": " + iae.getMessage() + ".");
+                }
             }
             tf.setURIResolver(uri);
             // you must set the URIResolver in the tfactory, because it will not be called everytime, when you use Templates-caching.
