@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.17.2.3 2007-10-16 15:22:54 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.17.2.4 2008-02-20 11:59:21 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -87,8 +87,12 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     public HttpServletResponse getHttpServletResponse() {
         //return (HttpServletResponse) getResponse(); // shoudl work, I think, but doesn't
         HttpServletResponse response = wrappedResponse;
-        while (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
-            response = ((GenericResponseWrapper) response).wrappedResponse;
+        while (response instanceof HttpServletResponseWrapper) {
+            if (response instanceof GenericResponseWrapper) { // if this happens in an 'mm:included' page.
+                response = ((GenericResponseWrapper) response).wrappedResponse;
+            } else {
+                response = (HttpServletResponse) ((HttpServletResponseWrapper) response).getResponse();
+            }
         }
         return response;
     }
