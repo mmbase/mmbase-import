@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.47.2.4 2007-11-02 11:02:06 michiel Exp $
+ * @version $Id: JDBC.java,v 1.47.2.5 2008-02-20 10:32:46 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -236,7 +236,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         jdbcDatabase = getInitParameter("database");
         if (databaseSupportClass == null || databaseSupportClass.length() == 0) {
             databaseSupportClass = DatabaseSupportShim.class.getName();
-            log.warn("database supportclass was not known, using default: " + databaseSupportClass);
+            log.debug("database supportclass was not set, using default: " + databaseSupportClass);
         }
     }
 
