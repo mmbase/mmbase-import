@@ -9,8 +9,12 @@
     indent="yes"
     />
 
-<xsl:template match="*">
-  <xsl:copy-of select="." />
+<xsl:template match="rss">
+  <ul>
+  <xsl:for-each select="*/item">
+    <li><a href="{link}"><xsl:value-of select="title" /></a></li>
+  </xsl:for-each>
+  </ul>
 </xsl:template>
 
 
