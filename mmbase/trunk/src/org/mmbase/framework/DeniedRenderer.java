@@ -18,11 +18,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Renderer which can be used in stead if rendering of a certain block proved to be not allowed for
+ * Renderer which can be used in stead, if rendering of a certain block proved to be not allowed for
  * the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DeniedRenderer.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: DeniedRenderer.java,v 1.3 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 

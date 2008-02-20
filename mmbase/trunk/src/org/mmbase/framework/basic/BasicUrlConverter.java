@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.5 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -124,7 +124,7 @@ public final class BasicUrlConverter implements UrlConverter {
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
                 String k = entry.getKey();
-                // TODO: this is ad hoc (and incoorect if more than 9 blocks)
+                // TODO: this is ad hoc (and incorrect if more than 9 blocks)
                 if (k.startsWith("_" + state.getId())) continue; // for this block, don't add that,
                                                                  // because should be in parameters then
                 if (! map.containsKey(k)) {

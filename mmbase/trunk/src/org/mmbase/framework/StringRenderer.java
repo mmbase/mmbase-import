@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * file. Based on {@link PatterNodeFunctionProvider} so several parameters can be present.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.9 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.10 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {
@@ -40,6 +40,9 @@ public class StringRenderer extends AbstractRenderer {
         requestMethods = PatternNodeFunctionProvider.getRequestMethods(string);
     }
 
+    /**
+     * @todo should consider the string
+     */
     public  Parameter[] getParameters() {
         return new Parameter[] {Parameter.REQUEST};
     }
