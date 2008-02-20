@@ -177,6 +177,34 @@
         <title>The following parameters MAY be specified:</title>
 
         <varlistentry>
+          <term>startnodes</term>
+
+          <listitem>
+            <para>Like in &lt;mm:list /&gt; and other multilevel tags in the
+            MMBase taglibrary you may provide a startnode for a nodepath. That
+            node (multiple nodes seperated by comma's) is used a the starting
+            node for your list. Since when not providing one you will get all
+            the nodes that have such a path.</para>
+
+            <para>For example:</para>
+
+            <programlisting format="linespecific">list.jsp?wizard=wizards/news/news&amp;nodepath=mags,posrel,news&amp;fields=news.title</programlisting>
+
+            <para>Can list more news articles then:</para>
+
+            <programlisting format="linespecific">list.jsp?wizard=wizards/news/news&amp;nodepath=mags,posrel,news&amp;fields=news.title&amp;startnodes=default.mags</programlisting>
+
+            <para>Because it the latter only lists the articles in MyNews
+            Magazine and the former all news articles that are related to a
+            magazine via a posrel relation ('default.mags' is the alias for
+            the magazine node in the example MyNews Magazine
+            application).</para>
+
+            <para><programlisting format="linespecific">startnodes=235</programlisting></para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>fields</term>
 
           <listitem>
@@ -686,7 +714,7 @@
 
         <programlisting format="linespecific">list.jsp?wizard=practice/people&amp;nodepath=people&amp;fields=firstname,lastname</programlisting>
 
-        <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;startnodes=1&amp;nodepath=people,news&amp;fields=news.title,people.firstname,people.lastname</programlisting>
+        <programlisting format="linespecific">list.jsp?wizard=practice/simple&amp;startnodes=341&amp;nodepath=people,news&amp;fields=news.title,people.firstname,people.lastname</programlisting>
       </example>
     </section>
 
