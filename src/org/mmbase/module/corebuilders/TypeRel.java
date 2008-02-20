@@ -18,6 +18,7 @@ import org.mmbase.core.CoreField;
 import org.mmbase.core.event.Event;
 import org.mmbase.core.event.NodeEvent;
 import org.mmbase.core.util.Fields;
+import org.mmbase.cache.*;
 import org.mmbase.storage.search.implementation.BasicRelationStep;
 import org.mmbase.storage.search.RelationStep;
 
@@ -36,12 +37,12 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.77 2007-02-11 19:21:12 nklasens Exp $
+ * @version $Id: TypeRel.java,v 1.78 2008-02-20 17:12:28 michiel Exp $
  * @see RelDef
  * @see InsRel
  * @see org.mmbase.module.core.MMBase
  */
-public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
+public class TypeRel extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(TypeRel.class);
 
@@ -524,6 +525,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             } else {
                 //something else changed in a typerel node? reread the complete typeRelNodes Set
                 readCache();
+            }
+            // also, clear all query-caches, because result may change by this. See MMB-348
+            for (Cache qc : CacheManager.getMap().values()) {
+                if (qc instanceof QueryResultCache) {
+                    qc.clear();
+                }
             }
         }
         super.notify(event);
