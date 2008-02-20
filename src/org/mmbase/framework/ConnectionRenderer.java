@@ -12,8 +12,12 @@ package org.mmbase.framework;
 import java.util.*;
 import java.net.*;
 import java.io.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
+import javax.xml.transform.Result;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.GenericResponseWrapper;
+import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -22,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implementation based on an external connection.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.1 2008-02-20 17:45:09 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.2 2008-02-20 18:10:33 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -39,6 +43,10 @@ public class ConnectionRenderer extends AbstractRenderer {
 
     public void setUrl(String u) throws MalformedURLException {
         url = new URL(u);
+    }
+
+    public void setXslt(String x) throws MalformedURLException {
+        xsl = x;
     }
     public void setTimeOut(int t) {
         timeOut = t;
@@ -75,7 +83,11 @@ public class ConnectionRenderer extends AbstractRenderer {
                     }
                 } else {
                     /// convert using the xsl and spit out that.
+                    Source xml = new StreamSource(inputStream);
+                    URL x = ResourceLoader.getConfigurationRoot().getResource(xsl);
 
+                    Result res = new StreamResult(w);
+                    XSLTransformer.transform(xml, x, res, new HashMap<String, Object>());
                 }
 
 
@@ -88,6 +100,8 @@ public class ConnectionRenderer extends AbstractRenderer {
             throw new FrameworkException(ste.getMessage(), ste);
         } catch (IOException ioe) {
             throw new FrameworkException(ioe.getMessage(), ioe);
+        } catch (javax.xml.transform.TransformerException te) {
+            throw new FrameworkException(te.getMessage(), te);
         }
 
     }
