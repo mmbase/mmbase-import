@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.57 2007-11-02 11:33:47 michiel Exp $
+ * @version $Id: JDBC.java,v 1.58 2008-02-20 10:34:22 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -34,7 +34,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private Class  classdriver;
     private Driver driver;
     private String jdbcDriver;
-    private String jdbcURL;
     private String jdbcHost;
     private int  jdbcPort = -1;
     private int maxConnections;
@@ -167,7 +166,6 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private void getProps() {
 
         jdbcDriver = getInitParameter("driver");
-        jdbcURL    = getInitParameter("url");
         jdbcHost   = getInitParameter("host");
         jdbcName = getInitParameter("user");
         if (jdbcName == null) {
@@ -222,13 +220,13 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 maxQueries = Integer.parseInt(getInitParameter("querys")); //fall back backward compatible
             } catch (Exception e) {
                 maxQueries = 500;
-                log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQueries + ")");
+                log.warn("queries was not set or a invalid integer :" + e + "(using default " + maxQueries + ")");
             }
         }
         jdbcDatabase = getInitParameter("database");
         if (databaseSupportClass == null || databaseSupportClass.length() == 0) {
             databaseSupportClass="org.mmbase.module.database.DatabaseSupportShim";
-            log.warn("database supportclass was not known, using default: " + databaseSupportClass);
+            log.debug("database supportclass was not known, using default: " + databaseSupportClass);
         }
     }
 
@@ -269,7 +267,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
     public String makeUrl(String host, int port, String dbm) {
-        String url = jdbcURL;
+        String url = getInitParameter("url");
         // $HOST $DBM $PORT
         if (dbm == null) dbm = "mmbase";
         url = url.replaceAll("\\$DBM", dbm);
