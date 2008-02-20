@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.7 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: BasicFramework.java,v 1.8 2008-02-20 17:44:07 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -199,7 +199,7 @@ public class BasicFramework extends Framework {
         }
     }
 
-    protected void setBlockParametersForProcess(State state, Parameters blockParameters) {
+     protected void setBlockParametersForProcess(State state, Parameters blockParameters) {
         ServletRequest request = state.getRequest();
         for (Map.Entry<String, ?> entry : blockParameters.toMap().entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
