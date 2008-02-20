@@ -82,11 +82,11 @@ false
 </xsl:template>
 
 <xsl:template match="reldef">
-- 
-<i>source</i>=<b><xsl:value-of select="@source"/></b>; 
-<i>target</i>=<b><xsl:value-of select="@target"/></b>; 
-<i>direction</i>=<b><xsl:value-of select="@direction"/></b>; 
-<i>guiSourceName</i>=<b><xsl:value-of select="@guisourcename"/></b>; 
+-
+<i>source</i>=<b><xsl:value-of select="@source"/></b>;
+<i>target</i>=<b><xsl:value-of select="@target"/></b>;
+<i>direction</i>=<b><xsl:value-of select="@direction"/></b>;
+<i>guiSourceName</i>=<b><xsl:value-of select="@guisourcename"/></b>;
 <i>guiTargetName</i>=<b><xsl:value-of select="@guitargetname"/></b>
 <br/>
 </xsl:template>
@@ -103,9 +103,9 @@ false
 </xsl:template>
 
 <xsl:template match="relation">
-- 
+-
 <i>from</i>=<b><xsl:value-of select="@from"/></b>;
-<i>to</i>=<b><xsl:value-of select="@to"/></b>; 
+<i>to</i>=<b><xsl:value-of select="@to"/></b>;
 <i>type</i>=<b><xsl:value-of select="@type"/></b>
 <br/>
 </xsl:template>
