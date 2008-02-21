@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.2.2.4 2008-02-21 13:50:35 andre Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.2.2.5 2008-02-21 16:02:26 andre Exp $
      * @author   Michiel Meeuwissen
      */
 
