@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Editwizard Reference Manual</title>
 
-    <date>2002-09-02</date>
+    <date>2008-02-21</date>
 
     <edition>$Id: editwizard-reference.xml,v 1.9 2007/05/31 16:34:23 michiel
     Exp $</edition>
@@ -183,8 +183,9 @@
             <para>Like in &lt;mm:list /&gt; and other multilevel tags in the
             MMBase taglibrary you may provide a startnode for a nodepath. That
             node (multiple nodes seperated by comma's) is used a the starting
-            node for your list. Since when not providing one you will get all
-            the nodes that have such a path.</para>
+            node for your list. When you do not provide a startnode you will
+            get all the nodes of a certain type that exist in the given
+            path.</para>
 
             <para>For example:</para>
 
@@ -629,29 +630,32 @@
           <term>relationOriginNode</term>
 
           <listitem>
-            <para>If this option is given, then you can besides searching in
-            the given list, also search in the complete cloud or using a
-            multilevel search. This can be useful if the presented list has an
-            orgin. In this way you can add new entries to this list, without
-            needing a wizard. The searchbox on the list page will contain an
-            extra button which will enable you to search in the whole cloud or
-            using a multilevel search defined by 'relationStartnodes' and
-            'relationNodepath'.</para>
+            <para>The option 'relationOriginNode' defines the node you wish to
+            relate to in list.jsp. In this way you can add new entries to the
+            list, without needing a wizard.</para>
 
-            <para>You should use &lt;<link linkend="action-link">action
-            type="link"</link> /&gt; and &lt;<link
-            linkend="action-unlink">action type="unlink"</link> /&gt; in the
-            wizard you are refering to.</para>
+            <para>When your wizard url contains 'relationOriginNode' and the
+            options 'nodepath' and 'startnodes' an extra button will be
+            created next to the one already present. This button enables you
+            to search for nodes which can be added to the present list. You
+            can search in the whole cloud for a certain nodetype or depending
+            on the presence of the options 'relationStartnodes' and
+            'relationNodepath' using the stated startnode(s) and path.</para>
+
+            <para>To enable an 'unlink' button next to all the node entries in
+            list.jsp you should use &lt;<link linkend="action-unlink">action
+            type="unlink"</link> /&gt; in the wizard you are refering
+            to.</para>
 
             <programlisting format="linespecific">relationOriginNode=&lt;origin&gt;[&amp;relationRole=&lt;role&gt;][&amp;relationCreateDir=&lt;dir&gt;]</programlisting>
 
             <para>Where 'origin' it the nodenumber to which a relation must be
             created, 'role' is the role of that relation. The
-            'relationOriginNode' defaults to 'origin'.</para>
+            'relationOriginNode' defaults to the option 'origin' when it is
+            empty.</para>
 
-            <para>(See also: the &lt;<link linkend="action-link">action
-            type="link"</link> /&gt; and &lt;<link
-            linkend="action-unlink">action type="unlink"</link> /&gt;)</para>
+            <para>(See also: the &lt;<link linkend="action-unlink">action
+            type="unlink"</link> /&gt;)</para>
 
             <note>
               <para>Available from MMBase 1.8.5 and up.</para>
@@ -688,9 +692,8 @@
             nodepath. For example:</para>
 
             <para><programlisting format="linespecific">relationOriginNode=3472&amp;relationStartnodes=default.mags&amp;relationNodepath=mags,posrel,news</programlisting>(See
-            also: the &lt;<link linkend="action-link">action
-            type="link"</link> /&gt; and &lt;<link
-            linkend="action-unlink">action type="unlink"</link> /&gt;)</para>
+            also: the &lt;<link linkend="action-unlink">action
+            type="unlink"</link> /&gt;)</para>
 
             <note>
               <para>'relationStartnodes' and 'relationNodepath' are available
@@ -1154,7 +1157,7 @@
       <formalpara>
         <title>Syntax</title>
 
-        <para><programlisting>&lt;action [type="add|create|delete|load|link|unlink" /&gt;</programlisting></para>
+        <para><programlisting>&lt;action [type="add|create|delete|load|unlink" /&gt;</programlisting></para>
       </formalpara>
 
       <formalpara>
@@ -1189,8 +1192,7 @@
                 type="create"</link>, <link linkend="action-add">action
                 type="add"</link>, <link linkend="action-delete">action
                 type="delete"</link>, <link linkend="action-load">action
-                type="load"</link>, <link linkend="action-link">action
-                type="link"</link> and <link linkend="action-unlink">action
+                type="load"</link> and <link linkend="action-unlink">action
                 type="unlink"</link></para>
               </listitem>
             </varlistentry>
@@ -1777,23 +1779,6 @@
     &lt;/form-schema&gt;
 &lt;/wizard-schema&gt;
 </programlisting></para>
-      </formalpara>
-    </section>
-
-    <section id="action-link">
-      <title>action type="link"</title>
-
-      <formalpara>
-        <title>Syntax</title>
-
-        <para><programlisting>&lt;action type="link" /&gt;</programlisting></para>
-      </formalpara>
-
-      <formalpara>
-        <title>Usage</title>
-
-        <para>This tag defines that a list-page should enable a 'search in the
-        whole cloud' or 'search using a multilevel'.</para>
       </formalpara>
     </section>
 
