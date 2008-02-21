@@ -69,9 +69,9 @@ public class BannerPortlet extends ContentChannelPortlet {
 
 
    @Override
-   protected void addContentElements(RenderRequest request) {
+   protected void addContentElements(RenderRequest request, String channel) {
       // get the contentelements from the channel
-      super.addContentElements(request);
+      super.addContentElements(request, channel);
       handleBannerCounters(request);
    }
 
