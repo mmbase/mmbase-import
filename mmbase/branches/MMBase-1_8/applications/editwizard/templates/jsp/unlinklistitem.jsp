@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.2.2.3 2008-02-21 13:44:49 andre Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.2.2.4 2008-02-21 13:50:35 andre Exp $
      * @author   Michiel Meeuwissen
      */
 
@@ -27,7 +27,6 @@
     String relationCreateDir = (String) con.getAttributes().get("relationCreateDir");
     if (unlinkaction != null) {
     // Ok. let's unlink this object.
-        log.info("objectnumber: " + objectnumber + " relationOriginNode: " + relationOriginNode);
         org.mmbase.bridge.Node n      = cloud.getNode(objectnumber);
         org.mmbase.bridge.Node origin = cloud.getNode(relationOriginNode);
         log.debug("objectnumber " + n.getNumber() + " " + origin.getNumber() + " " + relationOriginNode);
