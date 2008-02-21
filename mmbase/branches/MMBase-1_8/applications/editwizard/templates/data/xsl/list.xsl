@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43.2.5 2008-02-21 13:48:11 andre Exp $
+    @version $Id: list.xsl,v 1.43.2.6 2008-02-21 14:26:35 andre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -215,7 +215,7 @@
                     <a href="javascript:document.forms[0].submit();">
                       <xsl:call-template name="prompt_search" />
                     </a>
-                    <xsl:if test="$nodepath != '' and $startnodes != '' and $relationOriginNode != ''">
+                    <xsl:if test="$relationOriginNode != ''">
                       <a href="javascript:doMySearch(this);">
                         <xsl:call-template name="prompt_search_all" />
                       </a>
