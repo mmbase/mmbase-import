@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * DummyCommunityService, this is a CMSc service class.
  * This class contains dummy methods that stand in the real uses service class.
- * 
+ *
  * @author menno menninga / Remco Bos
  */
 public class DummyCommunityService extends CommunityService {
@@ -17,7 +17,8 @@ public class DummyCommunityService extends CommunityService {
 	@Override public String getAuthenticatedUser() { return null; }
 	@Override public List<String> getAuthorities() { return null; }
 	@Override public boolean hasAuthority(String authority) { return false; }
-	
+	@Override public List<String> getPreferenceValues(String module, String userId, String key) { return null; }
+
 	@Override public Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value) { return null; }
 	@Override public void createPreference(String module, String userId, String key, List<String> values) {}
 	@Override public void removePreferences(String module, String userId, String key) {}

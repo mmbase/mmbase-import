@@ -35,16 +35,16 @@ import com.finalist.cmsc.services.community.preferences.PreferenceService;
 
 /**
  * CommunityServiceImpl, a CMSc service class.
- * 
+ *
  * @author Remco Bos
  */
 public class CommunityServiceImpl extends CommunityService {
 
 	private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
-    
+
 	private AuthenticationManager authenticationManager;
     private PreferenceService preferenceService;
-    
+
     @Override
 	protected void init(ServletConfig config, Properties properties) throws Exception {
     	/* Some Spring magic. Sets the AuthenticationManager and PreferenceService */
@@ -63,7 +63,7 @@ public class CommunityServiceImpl extends CommunityService {
 	        log.info(String.format("Authentication attempt failed for user %s", userName), ae);
 		}
 	}
-	
+
 	@Override
 	public void logout() {
     	SecurityContextHolder.clearContext();
@@ -75,13 +75,13 @@ public class CommunityServiceImpl extends CommunityService {
     	Authentication authentication = context.getAuthentication();
         return (authentication != null) && authentication.isAuthenticated();
     }
-	
+
 	@Override
 	public String getAuthenticatedUser() {
 		User principal = getPrincipal();
-		return principal != null ? principal.getUsername() : null; 
+		return principal != null ? principal.getUsername() : null;
 	}
-	
+
 	@Override
 	public List<String> getAuthorities() {
 		List<String> authorities = new ArrayList<String>();
@@ -94,7 +94,7 @@ public class CommunityServiceImpl extends CommunityService {
 		}
 		return authorities;
 	}
-	
+
 	@Override
 	public boolean hasAuthority(String authority) {
 		User principal = getPrincipal();
@@ -112,11 +112,11 @@ public class CommunityServiceImpl extends CommunityService {
 	private User getPrincipal() {
     	SecurityContext context = SecurityContextHolder.getContext();
     	Authentication authentication = context.getAuthentication();
-    	return authentication != null ? (User)authentication.getPrincipal() : null; 
+    	return authentication != null ? (User)authentication.getPrincipal() : null;
     }
 
-	public Map<Long, Map<String, String>> getPreferencesByModule(String userId) {
-    	return preferenceService.getPreferencesByModule(userId);
+	public Map<Long, Map<String, String>> getPreferencesByModule(String module) {
+    	return preferenceService.getPreferencesByModule(module);
     }
 
     public Map<String, Map<String, String>> getPreferencesByUserId(String userId) {
@@ -134,12 +134,12 @@ public class CommunityServiceImpl extends CommunityService {
     public void deletePreference(String module, String userId, String key, String value) {
     	preferenceService.deletePreference(module, userId, key, value);
     }
-    
+
     //TODO: replace the previous methods by methods who accept the following
     //      properties!
-    
-    /** 
-     * @deprecated please try to use another service 
+
+    /**
+     * @deprecated please try to use another service
      */
 	@Override
 	public void createPreference(String module, String userId, String key, List<String> values) {
@@ -148,8 +148,8 @@ public class CommunityServiceImpl extends CommunityService {
 		}
 	}
 
-    /** 
-     * @deprecated please try to use another service 
+    /**
+     * @deprecated please try to use another service
      */
 	@Override
 	public Map<String, Map<String, List<String>>> getPreferences(String module,
@@ -157,8 +157,8 @@ public class CommunityServiceImpl extends CommunityService {
 		return null;
 	}
 
-    /** 
-     * @deprecated please try to use another service 
+    /**
+     * @deprecated please try to use another service
      */
 	@Override
 	public Map<String, Map<String, String>> getUserProperty(String userId) {
@@ -166,8 +166,8 @@ public class CommunityServiceImpl extends CommunityService {
 		return null;
 	}
 
-    /** 
-     * @deprecated please try to use another service 
+    /**
+     * @deprecated please try to use another service
      */
 	@Override
 	public void removePreferences(String module, String userId, String key) {
@@ -176,7 +176,7 @@ public class CommunityServiceImpl extends CommunityService {
 			preferenceService.deletePreference(module, userId, key, value);
 		}
 	}
-	
+
 	@Required
 	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
