@@ -16,7 +16,9 @@ function SetCookie(cookieName,cookieValue,nDays) {
 }
 
 function loadSkyscraper() {
-	document.getElementById('skyscraper').style.display = 'none';
+	var skyscraperElement = document.getElementById('skyscraper');
+	if (skyscraperElement != null) document.getElementById('skyscraper').style.display = 'none';
+	
 	var skyscraperIsViewed = ReadCookie("skyscraper_is_viewed");
 	//alert("skyscraperIsViewed: " + skyscraperIsViewed);
 	
