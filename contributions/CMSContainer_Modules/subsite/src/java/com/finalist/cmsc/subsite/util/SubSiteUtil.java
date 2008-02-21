@@ -1,5 +1,7 @@
 package com.finalist.cmsc.subsite.util;
 
+import java.util.List;
+
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.Cloud;
@@ -11,6 +13,7 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
@@ -40,19 +43,35 @@ public class SubSiteUtil {
    }
 
    public static Node createPersonalPageContentChannel(Node personalpage) {
-      Node personalpageChannel = getSubsiteChannel(personalpage);
-      return createContentChannel(personalpage, personalpageChannel);
+      return createPersonalPageContentChannel(personalpage, null);
    }
 
+   public static Node createPersonalPageContentChannel(Node personalpage, List<String> childChannels) {
+      Node personalpageChannel = getSubsiteChannel(personalpage);
+      return createContentChannel(personalpage, personalpageChannel, childChannels);
+   }
+   
    private static Node createContentChannel(Node page, Node parentChannel) {
+      return createContentChannel(page, parentChannel, null);
+   }
+
+   private static Node createContentChannel(Node page, Node parentChannel, List<String> childChannelNames) {
       // create channel in the Content Repository
       Cloud cloud = page.getCloud();
       String fragment = page.getStringValue(PagesUtil.FRAGMENT_FIELD);
       Node channel = RepositoryUtil.createChannel(cloud, page.getStringValue(PagesUtil.TITLE_FIELD), fragment);
       RepositoryUtil.appendChild(parentChannel, channel);
+      
+      if (childChannelNames != null) {
+         for (String childChannelName : childChannelNames) {
+            Node childChannel = RepositoryUtil.createChannel(cloud, childChannelName);
+            RepositoryUtil.appendChild(channel, childChannel);
+         }
+      }
+      
       return channel;
-   }
-
+   } 
+   
    public static Node getSubsiteChannel(Node personalpage) {
       Node subsite = NavigationUtil.getParent(personalpage);
       String fragment = subsite.getStringValue(PagesUtil.FRAGMENT_FIELD);
