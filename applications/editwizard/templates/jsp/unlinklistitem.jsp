@@ -1,4 +1,4 @@
-.<%@ include file="settings.jsp"
+<%@ include file="settings.jsp"
 %><mm:content type="text/html" expires="0" language="<%=ewconfig.language%>">
 <mm:cloud name="mmbase" jspvar="cloud" method="asis"
 ><%@ page import="org.mmbase.bridge.*,org.mmbase.bridge.util.*"
@@ -11,7 +11,7 @@
 <%
     /**
      * @since    MMBase-1.8.4
-     * @version  $Id: unlinklistitem.jsp,v 1.2.2.2 2007-05-31 16:29:50 michiel Exp $
+     * @version  $Id: unlinklistitem.jsp,v 1.2.2.3 2008-02-21 13:44:49 andre Exp $
      * @author   Michiel Meeuwissen
      */
 
@@ -22,10 +22,12 @@
     Wizard wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, wizard, null, cloud);
     Node unlinkaction = Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='unlink']");
     String relationOriginNode = (String) con.getAttributes().get("relationOriginNode");
+    if (relationOriginNode == null) relationOriginNode = (String) con.getAttributes().get("origin");
     String relationRole = (String) con.getAttributes().get("relationRole");
     String relationCreateDir = (String) con.getAttributes().get("relationCreateDir");
     if (unlinkaction != null) {
     // Ok. let's unlink this object.
+        log.info("objectnumber: " + objectnumber + " relationOriginNode: " + relationOriginNode);
         org.mmbase.bridge.Node n      = cloud.getNode(objectnumber);
         org.mmbase.bridge.Node origin = cloud.getNode(relationOriginNode);
         log.debug("objectnumber " + n.getNumber() + " " + origin.getNumber() + " " + relationOriginNode);
