@@ -103,7 +103,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
 
       String channel = preferences.getValue(CONTENTCHANNEL, null);
       if (!StringUtil.isEmpty(channel)) {
-         addContentElements(req);
+         addContentElements(req, channel);
          super.doView(req, res);
       }
    }
@@ -113,9 +113,9 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
    protected void doEdit(RenderRequest req, RenderResponse res) throws PortletException, IOException {
       String elementId = req.getParameter(ELEMENT_ID);
       if (StringUtil.isEmpty(elementId)) {
-         addContentElements(req);
          PortletPreferences preferences = req.getPreferences();
          String channel = preferences.getValue(CONTENTCHANNEL, null);
+         addContentElements(req, channel);
          if (!StringUtil.isEmpty(channel)) {
             if (ContentRepository.mayEdit(channel)) {
                super.doEdit(req, res);
@@ -131,14 +131,12 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
    }
 
 
-   protected void addContentElements(RenderRequest req) {
+   protected void addContentElements(RenderRequest req, String channel) {
       String elementId = req.getParameter(ELEMENT_ID);
       if (StringUtil.isEmpty(elementId)) {
          PortletPreferences preferences = req.getPreferences();
          String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
          List<String> contenttypes = SiteManagement.getContentTypes(portletId);
-
-         String channel = preferences.getValue(CONTENTCHANNEL, null);
 
          int offset = 0;
          String currentOffset = req.getParameter(OFFSET);
