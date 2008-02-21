@@ -1,8 +1,9 @@
 <%
+// HORRRIBLE
     //System.err.println("Cleaning up '"+text+"'");
         //
         // remove some of the annoying html that messes up the PDFs
-        // 
+        //
         text = text.replaceAll("</?(font|style)[^>]*>","");
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
 //        text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
