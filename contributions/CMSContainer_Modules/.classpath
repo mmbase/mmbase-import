@@ -57,14 +57,14 @@
 	<classpathentry kind="var" path="MAVEN_REPO/javax.transaction/jars/jta-1.0.1B.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-annotations-3.3.0.GA.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.5-20071130.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.6-20080218.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.6-20080218.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.6-20080218.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.6-20080218.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080218.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080218.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-rmmci-server-1.8.2-20061020.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.5-20071130.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080218.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/ejb3-persistence-3.0.jar"/>
