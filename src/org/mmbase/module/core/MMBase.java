@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.234 2008-02-18 14:57:40 michiel Exp $
+ * @version $Id: MMBase.java,v 1.235 2008-02-22 11:43:39 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -256,7 +256,7 @@ public class MMBase extends ProcessorModule {
      * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
     public void init() {
-        synchronized(MMBase.class) {
+        //synchronized(MMBase.class) {
         if (mmbaseState >= STATE_STARTED_INIT) {
             log.debug("Already initialized or initializing");
             return;
@@ -448,8 +448,8 @@ public class MMBase extends ProcessorModule {
         // signal that MMBase is up and running
         mmbaseState = STATE_UP;
         log.info("MMBase is up and running");
-        notifyAll();
-        }
+        //notifyAll();
+        //}
     }
 
     // javadoc inherited
