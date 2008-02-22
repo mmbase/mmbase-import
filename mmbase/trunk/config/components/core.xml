@@ -31,15 +31,20 @@
   <block name="welcome"
          classification="mmbase.about"
          mimetype="text/html">
-    <description xml:lang="en">Shows welcome page for mmbase admin pages</description>
+    <title xml:lang="nl">Welkom</title>
+    <title xml:lang="en">Welcome</title>
+    <description xml:lang="en">Shows welcome page for MMBase admin pages</description>
+    <description xml:lang="nl">Welkompagina voor de MMBase admin pagina's</description>
     <body jsp="about.jspx" />
   </block>
 
   <block name="license"
          classification="mmbase.about"
          mimetype="text/html">
+    <title xml:lang="nl">Licentie</title>
+    <title xml:lang="en">Licence</title>
     <description xml:lang="en">Shows the MMBase licence</description>
-    <description xml:lang="nl">Laat de licentie van MMBase zien</description>
+    <description xml:lang="nl">De licentie waaronder MMBase verspreid wordt</description>
     <body jsp="mpl-1.0.jspx" />
   </block>
 
@@ -47,7 +52,10 @@
   <block name="servers"
          classification="mmbase.admin"
          mimetype="text/html">
-    <description xml:lang="en">An overview describing all MMBase servers running on this MMBase system</description>
+    <title xml:lang="nl">Servers</title>
+    <title xml:lang="en">Servers</title>
+    <description xml:lang="en">An overview describing all MMBase servers running on this system</description>
+    <description xml:lang="nl">Een overzicht van alle MMBase servers op dit systeem</description>
     <head>
       <class name="org.mmbase.framework.StringRenderer">
         <param name="string"><![CDATA[<link rel="stylesheet" href="{REQUEST.getContextPath}/mmbase/components/core/style.css" type="text/css" />]]></param>
@@ -61,25 +69,35 @@
   <block name="databases"
          classification="mmbase.admin"
          mimetype="text/html">
+    <title xml:lang="nl">Databases</title>
+    <title xml:lang="en">Databases</title>
     <description xml:lang="en">Information about the database and its connections</description>
+    <description xml:lang="nl">Informatie over de database en database connections</description>
     <body jsp="/mmbase/admin/admin/databases.div.jsp" />
   </block>
 
   <block name="databases-connections"
          mimetype="text/html">
+    <title xml:lang="nl">Database connecties</title>
+    <title xml:lang="en">Database connections</title>
     <description xml:lang="en">View of the database connections</description>
+    <description xml:lang="en">Overzicht van de database connecties</description>
     <body jsp="/mmbase/admin/admin/database/connections.jsp" />
   </block>
 
   <block name="modules"
          classification="mmbase.admin"
          mimetype="text/html">
+    <title xml:lang="nl">Modules</title>
+    <title xml:lang="en">Modules</title>
     <description xml:lang="en">Information about the installed modules</description>
     <body jsp="/mmbase/admin/admin/modules.div.jsp" />
   </block>
 
   <block name="modules-actions"
          mimetype="text/html">
+    <title xml:lang="nl">Bewerkingen op modules</title>
+    <title xml:lang="en">Actions on modules</title>
     <description xml:lang="en">View, edit or add module properties</description>
     <body jsp="/mmbase/admin/admin/module/actions.jsp">
       <param name="module"   type="String" />
@@ -94,7 +112,10 @@
   <block name="applications"
          classification="mmbase.admin"
          mimetype="text/html">
+    <title xml:lang="nl">Applicaties</title>
+    <title xml:lang="en">Applications</title>
     <description xml:lang="en">Shows an overview of all MMBase apps1 applications</description>
+    <description xml:lang="nl">Overzicht van MMBase apps1 applicaties</description>
     <body jsp="applications.jspx">
       <param name="application" type="String" />
     </body>
@@ -102,9 +123,11 @@
 
   <block name="applications-actions"
          mimetype="text/html">
+    <title xml:lang="nl">Resultaat van een applicatie actie</title>
+    <title xml:lang="en">Result of an application backup or install</title>
     <description xml:lang="en">
-      Is the follow-up for the application installation page and shows the results of actions
-      that can be taken.
+      Is the follow-up for the application installation page and shows the results of an
+      application backup or install.
     </description>
     <body jsp="applications-actions.jspx">
       <param name="application" type="String" />
@@ -118,7 +141,20 @@
   <block name="builders"
          classification="mmbase.admin"
          mimetype="text/html">
-    <description xml:lang="en">Shows an overview of all builders present in this MMBase installation</description>
+    <title xml:lang="nl">Builder-overzicht</title>
+    <title xml:lang="en">Builder overview</title>
+    <description xml:lang="en">
+      Shows an overview of all builders present in this MMBase installation.
+	  The first list contains all builders that are currently 'active' (accessible through MMBase).
+	  The second list (if available) lists all builders for which the definition is known, but which are currently inactive
+	  (and thus inaccessible).
+    </description>
+    <description xml:lang="nl">
+      Overzicht van actieve en inactieve builders in deze MMBase installatie.
+      De eerste lijst toont alle actieve builders, die toegankelijk zijn via MMBase.
+      De tweede lijst toont alle inactieve builders waarvan de definitie bekend is, maar die inactief zijn en
+      daarom ontoegankelijk.
+    </description>
     <body jsp="builders.jspx">
       <param name="builder" type="String" />
     </body>
@@ -126,8 +162,13 @@
 
   <block name="builders-actions"
          mimetype="text/html">
+    <title xml:lang="nl">Builder velden</title>
+    <title xml:lang="en">Builder fields</title>
     <description xml:lang="en">
       Folow-up for the first builders block, shows a builders fields.
+    </description>
+    <description xml:lang="nl">
+      Overzicht van de velden van de geselecteerde builder.
     </description>
     <body jsp="builders-actions.jspx">
       <param name="builder" type="String" />
@@ -138,8 +179,13 @@
 
   <block name="builders-field"
          mimetype="text/html">
+    <title xml:lang="nl">Attributen van builder velden</title>
+    <title xml:lang="en">Attributes of builder fields</title>
     <description xml:lang="en">
       Folow-up for the second builders block, shows the various attributes of a field.
+    </description>
+    <description xml:lang="nl">
+      Verschillende attributen en overige specificaties van een builder veld.
     </description>
     <body jsp="builders-field.jspx">
       <param name="builder" type="String" />
