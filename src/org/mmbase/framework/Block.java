@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.31 2008-02-22 09:06:27 michiel Exp $
+ * @version $Id: Block.java,v 1.32 2008-02-22 13:03:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -61,10 +61,13 @@ public class Block {
     public String getName() {
         return name;
     }
+
+    /**
+     * A localized title for this block.
+     */
     public LocalizedString getTitle() {
         return title;
     }
-
 
     /**
      * Mimetype for this block. E.g. "text/html".

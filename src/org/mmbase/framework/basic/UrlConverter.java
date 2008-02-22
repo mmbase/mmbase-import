@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * They will be chained one after another.
 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.3 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: UrlConverter.java,v 1.4 2008-02-22 13:03:29 michiel Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {
@@ -32,22 +32,28 @@ public interface UrlConverter {
     Parameter[] getParameterDefinition();
 
     /**
-     * See {@link Framework#getUrl(String, Map, Parameters,boolean)}.
+     * See {@link Framework#getUrl(String, Map, Parameters, boolean)}.
      * But it can also return <code>null</code> which mean, 'I don't know.'
      */
-    StringBuilder getUrl(String path,
-                         Map<String, Object> parameters,
-                         Parameters frameworkParameters,
-                         boolean escapeAmps) throws FrameworkException;
+    String getUrl(String path,
+                  Map<String, Object> parameters,
+                  Parameters frameworkParameters,
+                  boolean escapeAmps) throws FrameworkException;
+
+    String getActionUrl(String path,
+                        Map<String, Object> parameters,
+                        Parameters frameworkParameters,
+                        boolean escapeAmps) throws FrameworkException;
+
 
 
     /**
      * See {@link Framework#geInternaltUrl(String, Map, Parameters)}.
      * But it can also return <code>null</code> which mean, 'I don't know'.
      */
-    StringBuilder getInternalUrl(String path,
-                                 Map<String, Object> params,
-                                 Parameters frameworkParameters) throws FrameworkException;
+    String getInternalUrl(String path,
+                          Map<String, Object> params,
+                          Parameters frameworkParameters) throws FrameworkException;
 
 
 }
