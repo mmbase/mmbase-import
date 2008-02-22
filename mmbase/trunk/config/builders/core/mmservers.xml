@@ -59,7 +59,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="32" />
+        <maxLength value="100" />
       </datatype>
     </field>
 
