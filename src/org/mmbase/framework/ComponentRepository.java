@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.29 2008-02-22 09:36:04 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.30 2008-02-22 14:30:35 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -99,7 +99,9 @@ public class ComponentRepository {
     }
 
     public Block getBlock(String componentName, String blockName) {
-        return rep.get(componentName).getBlock(blockName);
+        Component component = getComponent(componentName);
+        if (component == null) throw new IllegalArgumentException("No component with name '" + componentName + "'");
+        return component.getBlock(blockName);
     }
 
     protected boolean resolve() {
