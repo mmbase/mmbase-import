@@ -25,16 +25,10 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.3 2007-12-26 17:07:19 michiel Exp $
+ * @version $Id: State.java,v 1.4 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
-
-    /**
-     * A framework parameter which is required for frameworks which base them selves around this class.
-     */
-    public static final Parameter<String> ACTION   = new Parameter<String>("action", String.class, null);
-
 
     private static final Logger log = Logging.getLoggerInstance(State.class);
 
@@ -63,6 +57,7 @@ public class State {
     private final ServletRequest request;
     private final State previousState;
     private Object originalLocalizationContext = null;
+    private String action = null;
 
     /**
      * Use this constructor, if you want to explicitely create a new State object. E.g. when
@@ -173,10 +168,12 @@ public class State {
         type = t;
     }
 
+    public void setAction(String a) {
+        action = a;
+    }
+
     protected boolean needsProcess() {
-        String a = frameworkParameters.get(ACTION);
-        log.debug("Action " + a);
-        return id.equals(a);
+        return id.equals(action);
     }
 
     /**

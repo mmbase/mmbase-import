@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.9 2008-02-22 13:03:29 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.10 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -67,7 +67,7 @@ public class BasicFramework extends Framework {
     }
 
 
-    public String getActionUrl(String path, Map<String, Object> parameters,
+    public String getProcessUrl(String path, Map<String, Object> parameters,
                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }

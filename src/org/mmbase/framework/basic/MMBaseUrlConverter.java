@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.3 2008-02-22 13:03:29 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.4 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -199,13 +199,13 @@ public class MMBaseUrlConverter implements UrlConverter {
     }
 
     public String getUrl(String path,
-                            Map<String, Object> parameters,
-                            Parameters frameworkParameters, boolean escapeAmps) {
+                         Map<String, Object> parameters,
+                         Parameters frameworkParameters, boolean escapeAmps) {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
     }
-    public String getActionUrl(String path,
-                            Map<String, Object> parameters,
-                            Parameters frameworkParameters, boolean escapeAmps) {
+    public String getProcessUrl(String path,
+                                Map<String, Object> parameters,
+                                Parameters frameworkParameters, boolean escapeAmps) {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
     }
     public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.6 2008-02-22 13:03:29 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.7 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -105,7 +105,7 @@ public final class BasicUrlConverter implements UrlConverter {
      * BasicFramework. Actually BasicFramework should add them itself.
      */
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] {Parameter.REQUEST, State.ACTION, Framework.PROCESS};
+        return new Parameter[] {Parameter.REQUEST};
     }
     protected String getUrl(String path,
                             Map<String, Object> parameters,
@@ -123,10 +123,14 @@ public final class BasicUrlConverter implements UrlConverter {
             map = new TreeMap<String, Object>(framework.prefix(state, map));
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+
                 String k = entry.getKey();
                 // TODO: this is ad hoc (and incorrect if more than 9 blocks)
-                if (k.startsWith("_" + state.getId())) continue; // for this block, don't add that,
-                                                                 // because should be in parameters then
+                if (k.startsWith("_" + state.getId())) {
+                    // for this block, don't add that,
+                    // because should be in parameters then
+                    continue;
+                }
                 if (! map.containsKey(k)) {
                     map.put(k, entry.getValue()[0]);
                 }
@@ -157,7 +161,7 @@ public final class BasicUrlConverter implements UrlConverter {
                             Parameters frameworkParameters, boolean escapeAmps) {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
     }
-    public String getActionUrl(String path,
+    public String getProcessUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps) {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
