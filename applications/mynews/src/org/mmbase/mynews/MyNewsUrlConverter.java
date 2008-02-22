@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.15 2008-02-22 13:03:50 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.16 2008-02-22 14:06:25 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -116,13 +116,13 @@ public class MyNewsUrlConverter implements UrlConverter {
     }
 
     public String getUrl(String path,
-                             Map<String, Object> parameters,
-                             Parameters frameworkParameters, boolean escapeAmps) {
-        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
-    }
-    public String getActionUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) {
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
+    }
+    public String getProcessUrl(String path,
+                                Map<String, Object> parameters,
+                                Parameters frameworkParameters, boolean escapeAmps) {
         return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
     }
 
