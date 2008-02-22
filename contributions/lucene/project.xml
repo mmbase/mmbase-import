@@ -17,20 +17,26 @@
       <url>http://www.mmbase.org/</url>
     </dependency>
     <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-taglib</artifactId>
+      <version>${mmbase.version}</version>
+      <url>http://www.mmbase.org/</url>
+    </dependency>
+    <dependency>
       <groupId>lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.0</version>
       <url>http://www.mmbase.org/maven/lucene/</url>
     </dependency>
     <dependency>
       <groupId>lucene</groupId>
       <artifactId>lucene-queries</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.0</version>
       <url>http://www.mmbase.org/maven/lucene/</url>
     </dependency>
     <dependency>
       <groupId>lucene</groupId>
-      <artifactId>PDFBox</artifactId>
+      <artifactId>pdfbox</artifactId>
       <version>0.7.3</version>
       <url>http://www.mmbase.org/maven/lucene/</url>
     </dependency>
