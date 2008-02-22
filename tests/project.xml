@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <extend>${basedir}/../maven-base/project.xml</extend>
   <artifactId>mmbase-test-base</artifactId>
-  <name>test</name>
-  <shortDescription>MMBase Lucene test</shortDescription>
-  <currentVersion>0.9</currentVersion>
+  <name>MMBase test</name>
+  <shortDescription>MMBase test</shortDescription>
   <properties>
     <type>library</type>
     <status>stable</status>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>mmbase</groupId>
       <artifactId>mmbase</artifactId>
-      <version>1.9.0</version>
+      <version>${mmbase.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -30,14 +30,5 @@
   <build>
     <sourceDirectory>${basedir}/common</sourceDirectory>
     <defaultGoal>jar</defaultGoal>
-    <resources>
-      <resource>
-        <targetPath>org/mmbase/config</targetPath>
-        <directory>config</directory>
-        <excludes>
-          <exclude>"**/CVS"</exclude>
-        </excludes>
-      </resource>
-    </resources>
   </build>
 </project>
