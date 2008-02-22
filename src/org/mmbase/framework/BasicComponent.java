@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.42 2008-02-22 09:06:27 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.43 2008-02-22 09:36:04 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -123,7 +123,6 @@ public class BasicComponent implements Component {
                         a = new Action(name, actionName, new ActionChecker.Rank(Rank.getRank(rank)));
                     }
                     a.getDescription().fillFromXml("description", element);
-                    a.getDescription().fillFromXml("title", element);
                     log.service("Registering action " + a);
                     ActionRepository.getInstance().add(a);
                 } catch (Exception e) {
@@ -145,6 +144,7 @@ public class BasicComponent implements Component {
                 Block.Type[] classification = Block.Type.getClassification(element.getAttribute("classification"), true);
                 Block b = new Block(blockName, mimetype, this, classification);
                 b.getDescription().fillFromXml("description", element);
+                b.getTitle().fillFromXml("title", element);
                 log.trace("Found block: " + blockName);
                 b.getRenderers().put(Renderer.Type.HEAD, getRenderer("head", element, b));
                 b.getRenderers().put(Renderer.Type.BODY, getRenderer("body", element, b));
