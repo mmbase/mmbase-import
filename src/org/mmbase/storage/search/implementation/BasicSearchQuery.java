@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.44 2007-11-06 17:01:34 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.45 2008-02-22 12:28:19 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -445,10 +445,19 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         // http://www.mmbase.org/jira/browse/MMB-1435,
         // Using fields with "ORDER_CREATE" only returns fields actually in storage, and also in the
         // right order, which is import for microsoft JDBC.
-        for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
-            if (field.inStorage()) {
-                BasicStepField stepField = addField(step, field);
-                mapField(field, stepField);
+        if (builder != null) {
+            for (CoreField field : builder.getFields(NodeManager.ORDER_CREATE)) {
+                if (field.inStorage()) {
+                    BasicStepField stepField = addField(step, field);
+                    mapField(field, stepField);
+                }
+            }
+        } else {
+            // this can e.g. happen during shut-down of mmbase
+            if (mmb.getState()) {
+                throw new RuntimeException("Step is describing non-existing builder " + step.getTableName());
+            } else {
+                log.debug("Step is describing non-existing builder " + step.getTableName());
             }
         }
         hasChangedHashcode = true;
