@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.44 2008-02-22 13:03:29 michiel Exp $
+ * @version $Id: Framework.java,v 1.45 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -92,11 +92,6 @@ public abstract class Framework {
      */
     public final static String COMPONENT_CLASS_KEY = "componentClassName";
 
-    /**
-     * The parameter that indicates that the URL must be generated for a post.
-     * @todo I don't know if this is ok.
-     */
-    public final static Parameter PROCESS = new Parameter("process", Boolean.class, Boolean.FALSE);
 
     /**
      * A framework must be able to provide a node to the rendered blocks. This parameter could
@@ -235,10 +230,10 @@ public abstract class Framework {
                                   Parameters frameworkParameters,
                                   boolean escapeAmps) throws FrameworkException;
 
-    public abstract String getActionUrl(String path,
-                                        Map<String, Object> parameters,
-                                        Parameters frameworkParameters,
-                                        boolean escapeAmps) throws FrameworkException;
+    public abstract String getProcessUrl(String path,
+                                         Map<String, Object> parameters,
+                                         Parameters frameworkParameters,
+                                         boolean escapeAmps) throws FrameworkException;
 
 
     /**

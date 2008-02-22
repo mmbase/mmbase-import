@@ -19,7 +19,7 @@ import org.mmbase.security.Action;
  * A Component bundles {@link Block}s, {@link Action}s and {@link @Setting}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.18 2008-02-20 17:44:07 michiel Exp $
+ * @version $Id: Component.java,v 1.19 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public interface Component {
@@ -44,7 +44,7 @@ public interface Component {
 
     /**
      * The unsatisfied dependencies, so this should return an empty collection. Unless the framework
-     * is still initialing, because initially dependencies can be temporary added as 'unsatisfied'
+     * is still initializing, because initially dependencies can be temporary added as 'unsatisfied'
      * because perhaps this other component is simply <em>not yet</em> loaded. The
      * ComponentRepository will call {@link #resolve(VirtualComponent, Component)} when a
      * dependency is satisfied after all.
