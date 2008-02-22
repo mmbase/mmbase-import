@@ -27,7 +27,8 @@
       <xsd:sequence>
         <xsd:element ref="class"       minOccurs="0" maxOccurs="1" />
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element ref="dependency"   minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="title"       minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="dependency"  minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="bundle"      minOccurs="0" maxOccurs="1" />
         <xsd:element ref="setting"     minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="action"      minOccurs="0" maxOccurs="unbounded" />
@@ -61,6 +62,17 @@
   </xsd:element>
 
   <xsd:element name="description">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="title">
     <xsd:complexType>
       <xsd:simpleContent>
         <xsd:extension base="xsd:string">
