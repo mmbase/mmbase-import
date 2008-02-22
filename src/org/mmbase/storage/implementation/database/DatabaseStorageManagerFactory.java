@@ -14,8 +14,10 @@ import java.util.StringTokenizer;
 
 import javax.naming.*;
 import javax.sql.DataSource;
-import javax.servlet.ServletContext;
 import java.io.*;
+import javax.servlet.ServletContext;
+import java.text.*;
+
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
@@ -39,7 +41,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.48 2007-12-12 13:01:01 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.49 2008-02-22 12:27:48 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -367,17 +369,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         if (basePath == BASE_PATH_UNSET) {
             basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
             if (basePath == null || basePath.equals("")) {
-                basePath = mmbase.getInitParameter("datadir");
-                if (basePath == null || basePath.equals("")) {
-                    ServletContext sc = MMBaseContext.getServletContext();
-                    basePath = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
-                    if (basePath == null) {
-                        basePath = System.getProperty("user.dir") + File.separator + "data";
-                    }
-                }
-
+                basePath = getDataDir();
             } else {
-                java.io.File baseFile = new java.io.File(basePath);
+                MessageFormat mf = new MessageFormat(basePath);
+                java.io.File baseFile = new java.io.File(mf.format(getDataDir()));
                 if (! baseFile.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
                     String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
@@ -388,6 +383,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             if (basePath == null) {
                 log.warn("Cannot determin a Binary File Base Path");
                 return null;
+            } else {
+                log.service("Binary file base path " + basePath);
             }
             File baseDir = new File(basePath);
             try {
