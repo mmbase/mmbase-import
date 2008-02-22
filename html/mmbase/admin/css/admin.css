@@ -153,17 +153,17 @@ img
 
 #navigation li li a
 {
-    display: block;
-    padding: 5px 0 5px 1em;
-    border-left: 1px solid #002828;
-    border-right: 1px solid #002828;
-    border-bottom: 1px solid #002828;
-    background-color: #efefef;
-    color: #002828;
-    width: 100%;
-    font-weight: normal;
-    text-transform: lowercase;
-    text-decoration: none;
+	display: block;
+	padding: 5px 0 5px 1em;
+	border-left: 1px solid #002828;
+	border-right: 1px solid #002828;
+	border-bottom: 1px solid #002828;
+	background-color: #efefef;
+	color: #002828;
+	width: 100%;
+	font-weight: normal;
+	text-transform: none;
+	text-decoration: none;
 }
 
 #navigation li li.current a { border-right: 5px solid #002828; }
@@ -181,7 +181,7 @@ h2.top
     padding-left: 6px;
     font-size: 1.8em;
     margin-top: 0px;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
     background-color: #efefef;
     border-bottom: 1px solid #002828;
     border-right: 1px solid #002828;
