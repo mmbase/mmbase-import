@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.38 2008-02-22 13:04:53 michiel Exp $;
+ * @version $Id: Url.java,v 1.39 2008-02-22 14:10:14 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -55,7 +55,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     private String cacheNoAmp = null;
     private String string = null;
     private final boolean internal;
-    private boolean action = false;
+    private boolean process = false;
 
     private boolean legacy = false;
 
@@ -110,8 +110,8 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
     }
 
-    public void setAction() {
-        action = true;
+    public void setProcess() {
+        process = true;
     }
 
     public void setLegacy() {
@@ -152,11 +152,15 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
 
         if (internal) {
-            log.debug("Creating internal url link to page: " + page, new Exception());
+            if (log.isTraceEnabled()) {
+                log.trace("Creating internal url link to page: " + page, new Exception());
+            } else {
+                log.debug("Creating internal url link to page: " + page);
+            }
             result = framework.getInternalUrl(page, params, frameworkParameters).toString();
         } else {
-            if (action) {
-                result = framework.getActionUrl(page, params, frameworkParameters, writeamp).toString();
+            if (process) {
+                result = framework.getProcessUrl(page, params, frameworkParameters, writeamp).toString();
             } else {
                 result = framework.getUrl(page, params, frameworkParameters, writeamp).toString();
             }
