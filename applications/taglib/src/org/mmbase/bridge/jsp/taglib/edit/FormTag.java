@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.16 2007-11-30 12:07:05 andre Exp $
+ * @version $Id: FormTag.java,v 1.17 2008-02-22 14:10:14 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -94,7 +94,7 @@ public class FormTag extends TransactionTag implements Writer {
         pageContext.setAttribute(KEY, this, SCOPE);
         m = getMode();
         Url u = new Url(this, page.getString(this), Url.getComponent(this));
-        u.setAction();
+        u.setProcess();
         String url = u.toString();
 
         switch(m) {
