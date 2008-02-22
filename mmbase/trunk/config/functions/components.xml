@@ -20,10 +20,17 @@
     <method>getComponent</method>
     <param name="name" type="java.lang.String" />
   </function>
+  <function name="block">
+    <type>singleton</type>
+    <class>org.mmbase.framework.ComponentRepository</class>
+    <method>getBlock</method>
+    <param name="component" type="java.lang.String" />
+    <param name="block" type="java.lang.String" />
+  </function>
   <function name="blockClassification">
     <type>singleton</type>
     <class>org.mmbase.framework.ComponentRepository</class>
     <method>getBlockClassification</method>
     <param name="id" type="java.lang.String" />
-  </function>  
+  </function>
 </functionset>
