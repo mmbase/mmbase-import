@@ -5,7 +5,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.74 2008-02-13 13:21:09 pierre Exp $
+     * @version  $Id: list.jsp,v 1.75 2008-02-22 14:00:08 nklasens Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -371,7 +371,7 @@ params.put("ew_path",  new java.net.URL(pageContext.getServletContext().getResou
 
 
 log.trace("Doing the transformation for " + listConfig.template);
-Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
+Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params, cloud);
 
 if (log.isDebugEnabled()) log.trace("ready: " + ewconfig.subObjects);
 
