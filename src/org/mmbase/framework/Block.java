@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.30 2008-02-20 17:44:07 michiel Exp $
+ * @version $Id: Block.java,v 1.31 2008-02-22 09:06:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -37,6 +37,7 @@ public class Block {
     private final String mimetype;
     private final Component parent;
     private final LocalizedString description;
+    private final LocalizedString title;
     private final Type[] classification;
 
     public Block(String name, String mimetype, Component parent, Type[] cla) {
@@ -51,6 +52,7 @@ public class Block {
             t.blocks.add(this);
         }
         this.description = new LocalizedString(name);
+        this.title       = new LocalizedString(name);
     }
 
     /**
@@ -58,6 +60,9 @@ public class Block {
      */
     public String getName() {
         return name;
+    }
+    public LocalizedString getTitle() {
+        return title;
     }
 
 
