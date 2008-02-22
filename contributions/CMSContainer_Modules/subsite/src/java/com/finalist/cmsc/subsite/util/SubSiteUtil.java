@@ -12,8 +12,6 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 
-import com.finalist.cmsc.beans.om.Page;
-import com.finalist.cmsc.mmbase.TreeUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
@@ -50,7 +48,7 @@ public class SubSiteUtil {
       Node personalpageChannel = getSubsiteChannel(personalpage);
       return createContentChannel(personalpage, personalpageChannel, childChannels);
    }
-   
+
    private static Node createContentChannel(Node page, Node parentChannel) {
       return createContentChannel(page, parentChannel, null);
    }
@@ -61,17 +59,17 @@ public class SubSiteUtil {
       String fragment = page.getStringValue(PagesUtil.FRAGMENT_FIELD);
       Node channel = RepositoryUtil.createChannel(cloud, page.getStringValue(PagesUtil.TITLE_FIELD), fragment);
       RepositoryUtil.appendChild(parentChannel, channel);
-      
+
       if (childChannelNames != null) {
          for (String childChannelName : childChannelNames) {
             Node childChannel = RepositoryUtil.createChannel(cloud, childChannelName);
             RepositoryUtil.appendChild(channel, childChannel);
          }
       }
-      
+
       return channel;
-   } 
-   
+   }
+
    public static Node getSubsiteChannel(Node personalpage) {
       Node subsite = NavigationUtil.getParent(personalpage);
       String fragment = subsite.getStringValue(PagesUtil.FRAGMENT_FIELD);
@@ -110,6 +108,8 @@ public class SubSiteUtil {
    public static Node createPersonalPage(Cloud cloud, String name, Node layout, String personalPageId) {
       Node personalPage = PagesUtil.createPage(cloud, name, layout, PERSONALPAGE);
       personalPage.setStringValue(USERID, personalPageId);
+      personalPage.commit();
+
       return personalPage;
    }
 }
