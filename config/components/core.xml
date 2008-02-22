@@ -293,6 +293,8 @@
   <block name="mmbase_news"
          classification="mmbase.about"
          mimetype="text/html">
+    <title xml:lang="nl">Nieuws</title>
+    <title xml:lang="en">Nieuws</title>
     <description xml:lang="en">Shows latest news from the mmbase site</description>
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
