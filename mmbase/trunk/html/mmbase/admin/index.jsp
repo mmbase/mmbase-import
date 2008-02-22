@@ -73,7 +73,7 @@
                               <mm:frameworkparam name="component">${b.component.name}</mm:frameworkparam>
                               <mm:frameworkparam name="block">${b.name}</mm:frameworkparam>
                               <li class="${b.name eq block and subcat.component.name eq component ? 'current' : ''}">
-                                <a title="${b.description}" href="${_}">${mm:string(b.title)}
+                                <a title="${mm:string(b.description)}" href="${_}">${mm:string(b.title)}
                                 <span class="component">(${b.component.name})</span>
                                 </a>
                               </li>
@@ -111,7 +111,7 @@
               <ul>
                 <li><a href="http://www.mmbase.org">www.mmbase.org</a></li>
                 <li><a href="http://www.mmbase.org/license">license</a></li>
-                <li><a href="http://www.mmbase.org/mmdocs">mmdocs</a></li>
+                <li><a href="http://www.mmbase.org/mmdocs">documentation</a></li>
                 <li><a href="http://www.mmbase.org/bugs">bugs</a></li>
                 <li><a href="http://www.mmbase.org/contact">contact</a></li>
               </ul>
