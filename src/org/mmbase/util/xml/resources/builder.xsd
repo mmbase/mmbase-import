@@ -119,13 +119,13 @@
 
   <xsd:element name="field">
     <xsd:complexType>
-      <xsd:sequence>
+      <xsd:all>
         <xsd:element ref="descriptions" minOccurs="0" />
         <xsd:element ref="gui"          minOccurs="0" />
         <xsd:element ref="editor"       minOccurs="0" />
         <xsd:element ref="dt:datatype"     minOccurs="0" />
         <xsd:element ref="db"     minOccurs="0" />
-      </xsd:sequence>
+      </xsd:all>
       <xsd:attribute name="name" type="xsd:string" />
       <xsd:attribute name="state">
         <xsd:simpleType>
