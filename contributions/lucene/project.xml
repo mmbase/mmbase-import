@@ -36,7 +36,7 @@
     </dependency>
     <dependency>
       <groupId>lucene</groupId>
-      <artifactId>pdfbox</artifactId>
+      <artifactId>PDFBox</artifactId>
       <version>0.7.3</version>
       <url>http://www.mmbase.org/maven/lucene/</url>
     </dependency>
