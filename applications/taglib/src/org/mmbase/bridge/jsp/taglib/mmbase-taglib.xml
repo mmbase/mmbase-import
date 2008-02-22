@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.418 2008-01-31 12:00:06 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.419 2008-02-22 10:25:35 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8482,6 +8482,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>mode</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <possiblevalue>
         <value>url</value>
         <info>An URL is made available in the body (can be write in action of a form-tag</info>
@@ -8498,6 +8499,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>page</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         to use in action attribute of produced form.
       </info>
@@ -8506,6 +8508,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>styleClass</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         If form-tag is produced, you may want to have it a class-attribute too. By the way, it always has an mm_form class.
       </info>
@@ -8528,6 +8531,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>form</name>
       <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
         If another form that the first form parent must be used, this attribute can be used.
       </info>
