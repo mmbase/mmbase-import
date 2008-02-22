@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.13 2008-01-25 10:26:05 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.14 2008-02-22 10:46:18 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -78,7 +78,8 @@ public class MyNewsUrlConverter implements UrlConverter {
             HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
 
             Block block = framework.getBlock(frameworkParameters);
-            if (block.getComponent().getName().equals("mynews")) {
+
+            if (block != null && "mynews".equals(block.getComponent().getName())) {
                 block = renderingBlock.getComponent().getBlock(path);
                 log.debug("Found mynews block " + block);
                 Node n = (Node) parameters.get(Framework.N.getName());
