@@ -294,11 +294,25 @@
          classification="mmbase.about"
          mimetype="text/html">
     <title xml:lang="nl">Nieuws</title>
-    <title xml:lang="en">Nieuws</title>
+    <title xml:lang="en">News</title>
     <description xml:lang="en">Shows latest news from the mmbase site</description>
     <body>
       <class name="org.mmbase.framework.ConnectionRenderer">
         <param name="url">http://www.mmbase.org/rss</param>
+        <param name="xslt">xslt/rss.xslt</param>
+      </class>
+    </body>
+  </block>
+
+  <block name="releasenotes"
+         classification="mmbase.about"
+         mimetype="text/html">
+    <title xml:lang="nl">Releasenotes</title>
+    <title xml:lang="en">Release notes</title>
+    <description xml:lang="en">Shows the release notes from this mmbase</description>
+    <body>
+      <class name="org.mmbase.framework.ConnectionRenderer">
+        <param name="url">http://www.mmbase.org/jira/secure/IssueNavigator.jspa?view=rss&amp;&amp;pid=10000&amp;fixfor=10119&amp;status=5&amp;status=6&amp;sorter/field=issuekey&amp;sorter/order=DESC&amp;tempMax=200&amp;reset=true&amp;decorator=none</param>
         <param name="xslt">xslt/rss.xslt</param>
       </class>
     </body>
