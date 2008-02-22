@@ -55,6 +55,12 @@
     <method>getInstance</method>
   </function>
 
+  <function name="caches">
+    <type>class</type>
+    <class>org.mmbase.cache.CacheManager</class>
+    <method>getCaches</method>
+  </function>
+
   <function name="toString">
     <type>class</type>
     <class>org.mmbase.util.Casting</class>
