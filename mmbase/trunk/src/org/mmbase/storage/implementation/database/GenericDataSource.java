@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.15 2007-06-15 08:59:00 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.16 2008-02-22 12:27:48 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -80,7 +80,7 @@ public final class GenericDataSource implements DataSource {
     public static class ConnectionProxy implements java.lang.reflect.InvocationHandler {
 
         private final MultiConnection multiCon;
-        
+
         public static Connection newInstance(MultiConnection multiConnection) {
             return (Connection) java.lang.reflect.Proxy.newProxyInstance(multiConnection.getClass().getClassLoader(),
                                                                          new Class[] {Connection.class, MultiConnection.class},
@@ -94,8 +94,8 @@ public final class GenericDataSource implements DataSource {
         public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
             Object result;
             try {
-                
-                Method multiMethod = multiCon.getClass().getMethod(m.getName(), m.getParameterTypes());                
+
+                Method multiMethod = multiCon.getClass().getMethod(m.getName(), m.getParameterTypes());
                 result = multiMethod.invoke(multiCon, args);
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
@@ -215,7 +215,7 @@ public final class GenericDataSource implements DataSource {
         }
         return newUrl;
     }
-    
+
     //untested
     public boolean isWrapperFor(Class<?> iface) {
         return iface.isAssignableFrom(JDBC.class);
