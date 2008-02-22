@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.8 2008-02-20 17:44:07 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.9 2008-02-22 13:03:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -61,12 +61,18 @@ public class BasicFramework extends Framework {
     }
 
 
-    public StringBuilder getUrl(String path, Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
+    public String getUrl(String path, Map<String, Object> parameters,
+                         Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
         return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }
 
-    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+
+    public String getActionUrl(String path, Map<String, Object> parameters,
+                               Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
+        return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+    }
+
+    public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         if (log.isDebugEnabled()) {
             log.debug("calling urlConverter " + urlConverter);
         }

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.14 2008-02-22 10:46:18 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.15 2008-02-22 13:03:50 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -64,9 +64,9 @@ public class MyNewsUrlConverter implements UrlConverter {
         return new Parameter[] {};
     }
 
-    public StringBuilder getUrl(String path,
-                                Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps) {
+    protected String getUrl(String path,
+                             Map<String, Object> parameters,
+                             Parameters frameworkParameters, boolean escapeAmps, boolean action) {
         if (log.isDebugEnabled()) {
             log.debug("" + path + parameters + frameworkParameters);
         }
@@ -107,7 +107,7 @@ public class MyNewsUrlConverter implements UrlConverter {
                         b.append(n);
                     }
                 }
-                return b;
+                return b.toString();
             } else {
                 log.debug("No mynews block found");
                 return null;
@@ -115,7 +115,18 @@ public class MyNewsUrlConverter implements UrlConverter {
         }
     }
 
-    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
+    public String getUrl(String path,
+                             Map<String, Object> parameters,
+                             Parameters frameworkParameters, boolean escapeAmps) {
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
+    }
+    public String getActionUrl(String path,
+                         Map<String, Object> parameters,
+                         Parameters frameworkParameters, boolean escapeAmps) {
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
+    }
+
+    public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) throws FrameworkException {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith(directory)) {
@@ -131,7 +142,7 @@ public class MyNewsUrlConverter implements UrlConverter {
                 assert path[1].equals(directory.substring(1));
                 if (path.length == 2) {
                     // magazine mode.
-                    return result;
+                    return result.toString();
                 } else {
                     // article mode
                     String id = path[path.length - 1];
@@ -181,7 +192,7 @@ public class MyNewsUrlConverter implements UrlConverter {
                         n = id;
                     }
                     result.append("?block=article&n=" + n);
-                    return result;
+                    return result.toString();
                 }
             } else {
                 log.debug("path length " + path.length);
