@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.5 2008-02-22 13:03:29 michiel Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.6 2008-02-22 14:05:57 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -66,7 +66,7 @@ public class ChainedUrlConverter implements UrlConverter {
 
         String p = path;
         for (UrlConverter uc : uclist) {
-            String b = uc.getUrl(p.toString(), params, frameworkParameters, escapeAmps);
+            String b = uc.getUrl(p, params, frameworkParameters, escapeAmps);
             if (b != null) {
                 return b;
             }
@@ -77,13 +77,13 @@ public class ChainedUrlConverter implements UrlConverter {
         return p;   // this seems incorrect (what if nothing is resolved by one of the uc's? then params etc. are lost)
     }
 
-    public String getActionUrl(String path,
+    public String getProcessUrl(String path,
                                 Map<String, Object> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
 
-        String p = new String(path);
+        String p = path;
         for (UrlConverter uc : uclist) {
-            String b = uc.getActionUrl(p.toString(), params, frameworkParameters, escapeAmps);
+            String b = uc.getProcessUrl(p, params, frameworkParameters, escapeAmps);
             if (b != null) {
                 return b;
             }
