@@ -11,6 +11,7 @@ package org.mmbase.storage;
 
 import java.util.*;
 import org.xml.sax.InputSource;
+import javax.servlet.ServletContext;
 
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.32 2007-09-17 17:22:30 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.33 2008-02-22 12:28:19 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -654,6 +655,19 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
      */
     public int getTimeZoneOffset(long time) {
         return TimeZone.getDefault().getOffset(time);
+    }
+
+    protected String getDataDir() {
+        String dataDir = mmbase.getInitParameter("datadir");
+        if (dataDir == null || dataDir.equals("")) {
+            ServletContext sc = MMBaseContext.getServletContext();
+            dataDir = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
+            if (dataDir == null) {
+                dataDir = System.getProperty("user.dir") + java.io.File.separator + "data";
+            }
+        }
+        log.info("MMBase data dir: " + dataDir);
+        return dataDir;
     }
 
 
