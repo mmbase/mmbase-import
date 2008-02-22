@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.2 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.3 2008-02-22 13:03:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -58,9 +58,9 @@ public class MMBaseUrlConverter implements UrlConverter {
         return new Parameter[] {CATEGORY, COMPONENT, BLOCK};
     }
 
-    public StringBuilder getUrl(String path,
-                                Map<String, Object> parameters,
-                                Parameters frameworkParameters, boolean escapeAmps) {
+    protected String getUrl(String path,
+                            Map<String, Object> parameters,
+                            Parameters frameworkParameters, boolean escapeAmps, boolean action) {
         if (log.isDebugEnabled()) {
             log.debug("path '" + path + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
         }
@@ -82,7 +82,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 log.debug("No rendering state object found, so no current component.");
                 if (category != null) {
                     log.debug("Found category " + category);
-                    return new StringBuilder(dir + category);
+                    return dir + category;
                 } else {
                     return null;
                 }
@@ -194,11 +194,21 @@ public class MMBaseUrlConverter implements UrlConverter {
 
         //path == null || subComponent ?
 
-        StringBuilder sb = BasicUrlConverter.getUrl(page, map , request, escapeAmps);
+        String sb = BasicUrlConverter.getUrl(page, map , request, escapeAmps);
         return sb;
-
     }
-    public StringBuilder getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
+
+    public String getUrl(String path,
+                            Map<String, Object> parameters,
+                            Parameters frameworkParameters, boolean escapeAmps) {
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, false);
+    }
+    public String getActionUrl(String path,
+                            Map<String, Object> parameters,
+                            Parameters frameworkParameters, boolean escapeAmps) {
+        return getUrl(path, parameters, frameworkParameters, escapeAmps, true);
+    }
+    public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith(dir)) {
@@ -226,7 +236,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=");
                 url.append(category);
 
-                if (path.length == 3) return url;
+                if (path.length == 3) return url.toString();
 
                 Component comp = ComponentRepository.getInstance().getComponent(path[3]);
                 if (comp == null) {
@@ -235,7 +245,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 }
                 url.append("&component=").append(comp.getName());
 
-                if (path.length == 4) return url;
+                if (path.length == 4) return url.toString();
 
                 Block block = comp.getBlock(path[4]);
                 if (log.isDebugEnabled()) {
@@ -250,7 +260,7 @@ public class MMBaseUrlConverter implements UrlConverter {
                 if (log.isDebugEnabled()) {
                     log.debug("internal URL " + url);
                 }
-                return url;
+                return url.toString();
             } else {
                 log.debug("path length " + path.length);
                 return null;

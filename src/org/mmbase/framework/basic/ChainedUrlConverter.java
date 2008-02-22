@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * outcome of a converter can be added to the outcome of its preceder.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: ChainedUrlConverter.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: ChainedUrlConverter.java,v 1.5 2008-02-22 13:03:29 michiel Exp $
  * @since MMBase-1.9
  */
 public class ChainedUrlConverter implements UrlConverter {
@@ -60,13 +60,30 @@ public class ChainedUrlConverter implements UrlConverter {
     /**
      * The URL to be printed in a page
      */
-    public StringBuilder getUrl(String path,
+    public String getUrl(String path,
+                         Map<String, Object> params,
+                         Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
+
+        String p = path;
+        for (UrlConverter uc : uclist) {
+            String b = uc.getUrl(p.toString(), params, frameworkParameters, escapeAmps);
+            if (b != null) {
+                return b;
+            }
+            //p = b;
+        }
+        //log.debug("ChainedUrlConverter has: " + b);
+
+        return p;   // this seems incorrect (what if nothing is resolved by one of the uc's? then params etc. are lost)
+    }
+
+    public String getActionUrl(String path,
                                 Map<String, Object> params,
                                 Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
 
-        StringBuilder p = new StringBuilder(path);
+        String p = new String(path);
         for (UrlConverter uc : uclist) {
-            StringBuilder b = uc.getUrl(p.toString(), params, frameworkParameters, escapeAmps);
+            String b = uc.getActionUrl(p.toString(), params, frameworkParameters, escapeAmps);
             if (b != null) {
                 return b;
             }
@@ -81,12 +98,12 @@ public class ChainedUrlConverter implements UrlConverter {
     /**
      * The 'technical' url
      */
-    public StringBuilder getInternalUrl(String path,
+    public String getInternalUrl(String path,
                                         Map<String, Object> params,
                                         Parameters frameworkParameters) throws FrameworkException {
-        StringBuilder p = new StringBuilder(path);
+        String p = new String(path);
         for (UrlConverter uc : uclist) {
-            StringBuilder b = uc.getInternalUrl(p.toString(), params, frameworkParameters);
+            String b = uc.getInternalUrl(p.toString(), params, frameworkParameters);
             log.debug("ChainedUrlConverter has: " + b);
             if (b != null) return b;
             //p = b;

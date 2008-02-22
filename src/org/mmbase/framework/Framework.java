@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.43 2008-01-25 10:13:01 michiel Exp $
+ * @version $Id: Framework.java,v 1.44 2008-02-22 13:03:29 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -228,14 +228,17 @@ public abstract class Framework {
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;).
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is
      *                   for some reason called directly.
-     * @param process    If following the URL must lead to a process rendering. IOW, this URL is
-     *                   for form actions.
      * @return An URL relative to the root of this web application (i.e. withouth a context path),
      */
-    public abstract StringBuilder getUrl(String path,
-                         Map<String, Object> parameters,
-                         Parameters frameworkParameters,
-                         boolean escapeAmps) throws FrameworkException;
+    public abstract String getUrl(String path,
+                                  Map<String, Object> parameters,
+                                  Parameters frameworkParameters,
+                                  boolean escapeAmps) throws FrameworkException;
+
+    public abstract String getActionUrl(String path,
+                                        Map<String, Object> parameters,
+                                        Parameters frameworkParameters,
+                                        boolean escapeAmps) throws FrameworkException;
 
 
     /**
@@ -252,9 +255,9 @@ public abstract class Framework {
      * @return A valid interal URL, or <code>null</code> if nothing framework specific could be
      *         determined (this would make it possible to 'chain' frameworks).
      */
-    public abstract StringBuilder getInternalUrl(String path,
-                                                 Map<String, Object> params,
-                                                 Parameters frameworkParameters) throws FrameworkException;
+    public abstract String getInternalUrl(String path,
+                                          Map<String, Object> params,
+                                          Parameters frameworkParameters) throws FrameworkException;
 
 
 }
