@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.13 2006-09-05 11:55:02 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.14 2008-02-23 15:54:27 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -84,6 +84,7 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         } else {
             returnCollection = Casting.toCollection(value);
         }
+        returnCollection = useCollectionMethods(returnCollection);
         if (log.isDebugEnabled()) {
             log.debug("Using " + returnCollection);
         }
