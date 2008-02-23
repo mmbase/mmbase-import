@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id: framework.xsd,v 1.5 2007-07-30 23:01:42 michiel Exp $
+  @version $Id: framework.xsd,v 1.6 2008-02-23 16:46:20 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -22,6 +22,7 @@
       <xsd:sequence>
         <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="blockType" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="urlconverter" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="class" type="xsd:string" />
@@ -57,7 +58,7 @@
     </xsd:complexType>
   </xsd:element>
 
-   
+
   <xsd:element name="description">
     <xsd:complexType>
       <xsd:simpleContent>
@@ -65,6 +66,12 @@
           <xsd:attribute ref="xml:lang" />
         </xsd:extension>
       </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="blockType">
+    <xsd:complexType>
+      <xsd:attribute name="weight" type="xsd:integer"  />
     </xsd:complexType>
   </xsd:element>
 
@@ -89,5 +96,5 @@
       </xsd:simpleContent>
     </xsd:complexType>
   </xsd:element>
-  
+
 </xsd:schema>
