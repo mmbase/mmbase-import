@@ -1,0 +1,17 @@
+.label
+{
+	background-color: #cccccc;
+	width: 50%;
+	float: left;
+}
+
+.data { float: left; }
+
+.row
+{
+	border-bottom: 1px solid black;
+	overflow: auto;
+}
+
+a:visited { color: blue; }
+hr { color: #333333; }
