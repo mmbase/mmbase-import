@@ -5,7 +5,7 @@
   <loginmodule  name="anonymous"     class="org.mmbase.security.implementation.basic.AnonymousLoginModule" rank="anonymous" />
   
   <loginmodule  name="name/password" class="org.mmbase.security.implementation.basic.FileLoginModule" rank="basic user">
-    <property   name="file">../../accounts.properties</property>
+    <property   name="file">accounts.properties</property>
   </loginmodule>
 
   <loginmodule name="class" class="org.mmbase.security.implementation.basic.ClassLoginModule">
