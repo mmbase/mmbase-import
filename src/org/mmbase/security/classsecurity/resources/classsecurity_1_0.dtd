@@ -7,6 +7,7 @@
 <!ELEMENT authenticate ( property*)  >
 <!ATTLIST authenticate  class   CDATA  #REQUIRED >
 <!ATTLIST authenticate  method  CDATA "class" >
+<!ATTLIST authenticate  requestedmethod CDATA #IMPLIED >
 
 
 <!ELEMENT property EMPTY >
