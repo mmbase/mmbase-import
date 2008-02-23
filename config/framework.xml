@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/framework
                         http://www.mmbase.org/xmlns/framework.xsd">
   <!--
-      version: $Id: framework.xml,v 1.7 2008-02-23 16:47:47 michiel Exp $
+      version: $Id: framework.xml,v 1.8 2008-02-23 16:52:45 michiel Exp $
   -->
   <!--
       In this file the classes of the UrlConverters need to be listed in the order
@@ -16,10 +16,16 @@
     Short description of this framework. This is the BasicFramework.
   </description>
 
-  <blockType name="mmbase.about" weight="0" />
-  <blockType name="mmbase.admin" weight="10" />
-  <blockType name="mmbase.tools" weight="20" />
-  <blockType name="mmbase.examples" weight="10000" />
+  <!--
+       The following defines the order or the entries in the /mmbase/admin menu.
+       /mmbase/admin shows all block classified in 'mmbase'.
+  -->
+  <blockType name="mmbase.about"      weight="0" />
+  <blockType name="mmbase.admin"      weight="10" />
+  <blockType name="mmbase.components" weight="20" />
+  <blockType name="mmbase.tools"      weight="30" />
+  <blockType name="mmbase.edit"       weight="40" />
+  <blockType name="mmbase.examples"   weight="10000" />
 
 
   <urlconverter class="org.mmbase.framework.basic.MMBaseUrlConverter">
