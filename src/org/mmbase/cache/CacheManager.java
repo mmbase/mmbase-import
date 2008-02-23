@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.22 2008-02-23 13:33:26 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.23 2008-02-23 13:37:16 michiel Exp $
  */
 public class CacheManager {
 
@@ -335,7 +335,7 @@ public class CacheManager {
 
     public static class Bean<K, V> {
         /* private final Cache<K, V> cache; // this line prevents building in Java 1.5.0_07 probably because of http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620 */
-		private final Cache cache;
+        private final Cache cache;
         public Bean(Cache<K, V> c) {
             cache = c;
         }
@@ -383,6 +383,12 @@ public class CacheManager {
                     };
                 }
             };
+        }
+        public boolean equals(Object o) {
+            return  o instanceof Bean && ((Bean) o).cache.equals(cache);
+        }
+        public int hashCode() {
+            return cache.hashCode();
         }
     }
 }
