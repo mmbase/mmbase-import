@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.10 2008-02-23 12:15:54 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.11 2008-02-23 12:44:03 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -68,7 +68,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 CharTransformer escape = new Xml(Xml.ESCAPE);
                 w.write(escape.transform(error.exception.getMessage()));
                 w.write(" ");
-                w.write(url);
+                w.write(escape.transform(url));
                 w.write("</h1>");
                 w.write("<pre>");
                 error.getErrorReport(w, request, escape);

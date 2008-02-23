@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implementation based on an external connection.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.3 2008-02-23 12:15:54 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.4 2008-02-23 12:44:03 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -101,10 +101,6 @@ public class ConnectionRenderer extends AbstractRenderer {
             } else {
                 throw new FrameworkException("" + responseCode);
             }
-            if (decorate) {
-                HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
-                decorateOutro(request, w);
-            }
         } catch (java.net.ConnectException ce) {
             throw new FrameworkException(ce.getMessage(), ce);
         } catch (java.net.SocketTimeoutException ste) {
@@ -113,6 +109,14 @@ public class ConnectionRenderer extends AbstractRenderer {
             throw new FrameworkException(ioe.getMessage(), ioe);
         } catch (javax.xml.transform.TransformerException te) {
             throw new FrameworkException(te.getMessage(), te);
+        } finally {
+            if (decorate) {
+                try {
+                    HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
+                    decorateOutro(request, w);
+                } catch (Exception e) {
+                }
+            }
         }
 
     }
