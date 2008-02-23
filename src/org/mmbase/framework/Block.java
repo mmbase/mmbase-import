@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.32 2008-02-22 13:03:29 michiel Exp $
+ * @version $Id: Block.java,v 1.33 2008-02-23 16:46:19 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -168,7 +168,7 @@ public class Block {
     /**
      * Every block can be assigned a hierarchal 'Type', which can classify it.
      */
-    public static class Type {
+    public static class Type implements Comparable<Type> {
         public static final Type ROOT = new Type("ROOT");
         /**
          * All unclassified blocks are of this type
@@ -196,6 +196,7 @@ public class Block {
                     } else {
                         proposal = t.subs.get(i);
                     }
+                    Collections.sort(t.subs);
                     t = proposal;
                 }
                 r.add(t);
@@ -205,6 +206,7 @@ public class Block {
 
         private final String name;
         private final Type parent;
+        private int weight = 100;
         final List<Type>  subs   = new ArrayList<Type>();
         final List<Block> blocks = new ArrayList<Block>();
         private Type(String n) {
@@ -226,6 +228,16 @@ public class Block {
         }
         public String getName() {
             return name;
+        }
+
+        public void setWeight(int w) {
+            weight = w;
+            if (parent != null) {
+                Collections.sort(parent.subs);
+            }
+        }
+        public int getWeight() {
+            return weight;
         }
 
         /**
@@ -251,6 +263,11 @@ public class Block {
         }
         public String toString() {
             return name + subs.toString();
+        }
+
+        public int compareTo(Type t) {
+            int s = weight - t.weight;
+            return s == 0 ? name.compareTo(t.name) : s;
         }
     }
 
