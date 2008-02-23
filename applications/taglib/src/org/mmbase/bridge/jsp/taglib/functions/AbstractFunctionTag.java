@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib.functions;
 
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -20,6 +20,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import java.util.Map;
+import org.mmbase.util.Casting;
 
 import org.mmbase.util.Entry;
 import org.mmbase.util.functions.*;
@@ -38,7 +39,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.31 2008-01-24 12:07:40 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.32 2008-02-23 15:54:27 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
@@ -89,6 +90,55 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     public void setReferids(String r) throws JspTagException {
         referids = getAttribute(r);
+    }
+
+
+
+    protected Attribute add = Attribute.NULL;
+    protected Attribute retain = Attribute.NULL;
+    protected Attribute remove= Attribute.NULL;
+    public void setAdd(String c) throws JspTagException {
+        add = getAttribute(c);
+    }
+    public void setRetain(String c) throws JspTagException {
+        retain = getAttribute(c);
+    }
+    public void setRemove(String c) throws JspTagException {
+        remove = getAttribute(c);
+    }
+
+    protected <C> Collection<C> useCollectionMethods(Collection<C> col) throws JspTagException {
+        if (add != Attribute.NULL) {
+            Object addObject = getObjectConditional(add.getString(this));
+            if (addObject != null) {
+                if (addObject instanceof Collection) {
+                    col.addAll((Collection<C>) addObject);
+                } else {
+                    col.add((C) addObject);
+                }
+            }
+        }
+        if (retain != Attribute.NULL) {
+            Object retainObject = getObjectConditional(retain.getString(this));
+            if (retainObject != null) {
+                if (retainObject instanceof Collection) {
+                    col.retainAll((Collection<C>) retainObject);
+                } else {
+                    col.retainAll(Collections.singletonList((C) retainObject));
+                }
+            }
+        }
+        if (remove != Attribute.NULL) {
+            Object removeObject = getObjectConditional(remove.getString(this));
+            if (removeObject != null) {
+                if (removeObject instanceof Collection) {
+                    col.removeAll((Collection<C>) removeObject);
+                } else {
+                    col.remove((C)removeObject);
+                }
+            }
+        }
+        return col;
     }
 
     /**

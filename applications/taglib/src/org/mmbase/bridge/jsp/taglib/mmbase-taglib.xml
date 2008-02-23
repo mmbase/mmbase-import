@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.419 2008-02-22 10:25:35 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.420 2008-02-23 15:54:27 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2817,6 +2817,24 @@ access the value of title:
     <see tag="function" />
     <see tag="functioncontainer" />
     <see tag="nodelistfunction" />
+    <attribute>
+      <name>add</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
+    </attribute>
+    <attribute>
+      <name>retain</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
+    </attribute>
+    <attribute>
+      <name>remove</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
+    </attribute>
     <example><![CDATA[
 <mm:listnodes type="mediasources" max="10">
   <mm:function name="mimetype" />:  <mm:function name="format" />
@@ -2888,6 +2906,24 @@ access the value of title:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="offset" />
+    </attribute>
+    <attribute>
+      <name>add</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
+    </attribute>
+    <attribute>
+      <name>retain</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
+    </attribute>
+    <attribute>
+      <name>remove</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.9</since>
     </attribute>
   </tag>
 
