@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.8 2008-02-23 13:46:11 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.9 2008-02-23 14:36:30 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -51,16 +51,10 @@ public final class BasicUrlConverter implements UrlConverter {
             page = page.replaceAll("&", "&amp;");
         }
         if (page == null || page.equals("")) { // means _this_ page
-            String requestURI = req.getRequestURI();
-            if (requestURI.endsWith("/")) {
-                page = ".";
-            } else {
-                page = new File(requestURI).getName();
-            }
-            //page = FrameworkFilter.getPath(req); No good, it will produce something which starts
+            page = FrameworkFilter.getPath(req); //No good, it will produce something which starts
             //with /, which at least is not what mm:url wants in this case.
 
-            log.debug("page not given, -> supposing it " + page);
+            log.debug("page not given, -> supposing it " + page + " determined");
         }
         show.append(page);
 
@@ -111,7 +105,7 @@ public final class BasicUrlConverter implements UrlConverter {
         State state = State.getState(request);
         Map<String, Object> map = new TreeMap<String, Object>();
         if (log.isDebugEnabled()) {
-            log.debug("path " + path + " " + parameters + " " + frameworkParameters);
+            log.debug("path '" + path + "' " + parameters + " " + frameworkParameters);
         }
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
@@ -122,8 +116,7 @@ public final class BasicUrlConverter implements UrlConverter {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
 
                 String k = entry.getKey();
-                // TODO: this is ad hoc (and incorrect if more than 9 blocks)
-                if (k.startsWith("_" + state.getId())) {
+                if (k.startsWith(framework.getPrefix(state))) {
                     // for this block, don't add that,
                     // because should be in parameters then
                     continue;
