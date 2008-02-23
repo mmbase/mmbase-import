@@ -57,18 +57,6 @@ See http://www.MMBase.org/license
                 <directory>config</directory>
                 <excludes>
                     <exclude>"**/CVS"</exclude>
-                    <exclude>applications/CloudSecurity/**</exclude>
-                    <exclude>applications/Codings/**</exclude>
-                    <exclude>applications/MyCompany/**</exclude>
-                    <exclude>applications/MyNews/**</exclude>
-                    <exclude>applications/MyYahoo/**</exclude>
-                    <exclude>applications/RichText/**</exclude>
-                    <exclude>applications/CloudSecurity.xml</exclude>
-                    <exclude>applications/Codings.xml</exclude>
-                    <exclude>applications/MyCompany.xml</exclude>
-                    <exclude>applications/MyNews.xml</exclude>
-                    <exclude>applications/MyYahoo.xml</exclude>
-                    <exclude>applications/RichText.xml</exclude>
                 </excludes>
             </resource>
 
