@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * share code.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ErrorRenderer.java,v 1.9 2008-01-25 09:32:23 michiel Exp $
+ * @version $Id: ErrorRenderer.java,v 1.10 2008-02-23 12:15:54 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -62,13 +62,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
                 Locale  locale = blockParameters.get(Parameter.LOCALE);
-                w.write("<div id=\"" + request.getAttribute(Framework.COMPONENT_ID_KEY) + "\"");
-                w.write(" class=\"error mm_c_");
-                w.write(getBlock().getComponent().getName());
-                w.write(" mm_c_b_");
-                w.write(getBlock().getName());
-                w.write(" " + request.getAttribute(Framework.COMPONENT_CLASS_KEY));
-                w.write("\">");
+                decorateIntro(request, w, "error");
                 w.write("<h1>" + error.status );
                 w.write(": ");
                 CharTransformer escape = new Xml(Xml.ESCAPE);
@@ -79,8 +73,7 @@ public class ErrorRenderer extends AbstractRenderer {
                 w.write("<pre>");
                 error.getErrorReport(w, request, escape);
                 w.write("</pre>");
-                w.write("</div>");
-
+                decorateOutro(request, w);
             } catch (IOException eio) {
                 throw new FrameworkException(eio.getMessage(), eio);
             }
