@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.7 2008-02-22 14:05:57 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.8 2008-02-23 13:46:11 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -51,14 +51,11 @@ public final class BasicUrlConverter implements UrlConverter {
             page = page.replaceAll("&", "&amp;");
         }
         if (page == null || page.equals("")) { // means _this_ page
-            if ("".equals(page)) {
-                String requestURI = req.getRequestURI();
-                if (requestURI.endsWith("/")) {
-                    page = ".";
-                } else {
-                    page = new File(requestURI).getName();
-                }
-
+            String requestURI = req.getRequestURI();
+            if (requestURI.endsWith("/")) {
+                page = ".";
+            } else {
+                page = new File(requestURI).getName();
             }
             //page = FrameworkFilter.getPath(req); No good, it will produce something which starts
             //with /, which at least is not what mm:url wants in this case.
