@@ -49,9 +49,9 @@
     <th colspan="8">Query Caches</th>
   </tr><tr>
     <td colspan="8">
-      <p>Query caches are used to cache the result of different types of
+      Query caches are used to cache the result of different types of
       queries. These caches have a plugin like system of for (sets of) rules that will decide if
-      a certain change in the cloud should invalidate a query from the cache.</p>
+      a certain change in the cloud should invalidate a query from the cache.
     </td>
   </tr>
  
@@ -116,6 +116,13 @@
   </mm:functioncontainer>
 
   <!-- other caches -->
+  <tr>
+    <th colspan="8">Other Caches</th>
+  </tr><tr>
+    <td colspan="8">
+      More general MMBase caches.
+    </td>
+  </tr>
   <mm:functioncontainer>
     <mm:listfunction set="caches" name="list" remove="qc" id="c">
       <mm:first>
