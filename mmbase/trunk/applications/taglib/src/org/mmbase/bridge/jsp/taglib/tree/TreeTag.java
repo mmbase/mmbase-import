@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.23 2008-02-14 14:36:31 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.24 2008-02-23 15:55:15 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -162,6 +162,16 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
     public int getNextDepth() {
         return nextDepth;
+    }
+
+    public void setAdd(String c) throws JspTagException {
+        throw new UnsupportedOperationException();
+    }
+    public void setRetain(String c) throws JspTagException {
+        throw new UnsupportedOperationException();
+    }
+    public void setRemove(String c) throws JspTagException {
+        throw new UnsupportedOperationException();
     }
 
 
