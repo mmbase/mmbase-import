@@ -71,7 +71,7 @@
         </tr>
       </mm:first>
       <tr>
-        <td> ${c.name} </td>
+        <td> ${qc.name} </td>
         <td class="center"> ${qc.hits + qc.misses} </td> 
         <td class="center"> ${qc.hits} </td>
         <td class="center"> ${qc.misses} </td>
