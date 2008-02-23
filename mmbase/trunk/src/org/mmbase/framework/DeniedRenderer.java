@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DeniedRenderer.java,v 1.3 2008-02-20 17:44:07 michiel Exp $
+ * @version $Id: DeniedRenderer.java,v 1.4 2008-02-23 12:15:54 michiel Exp $
  * @since MMBase-1.9
  */
 
@@ -45,15 +45,9 @@ public class DeniedRenderer extends AbstractRenderer {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
                 Locale  locale = blockParameters.get(Parameter.LOCALE);
-                w.write("<div id=\"" + request.getAttribute(Framework.COMPONENT_ID_KEY) + "\"");
-                w.write(" class=\"denied mm_c_");
-                w.write(getBlock().getComponent().getName());
-                w.write(" mm_c_b_");
-                w.write(getBlock().getName());
-                w.write(" " + request.getAttribute(Framework.COMPONENT_CLASS_KEY));
-                w.write("\">");
+                decorateIntro(request, w, "denied");
                 w.write("<h1>Denied</h1>");
-                w.write("</div>");
+                decorateOutro(request, w);
 
             } catch (IOException eio) {
                 throw new FrameworkException(eio.getMessage(), eio);

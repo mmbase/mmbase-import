@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * components, and may be requested several blocks.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicComponent.java,v 1.43 2008-02-22 09:36:04 michiel Exp $
+ * @version $Id: BasicComponent.java,v 1.44 2008-02-23 12:15:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicComponent implements Component {
@@ -33,13 +33,13 @@ public class BasicComponent implements Component {
     private final String name;
     private String bundle;
     private final LocalizedString description;
-    private final Map<String, Block> blocks = new HashMap<String, Block>();
+    private final Map<String, Block> blocks        = new HashMap<String, Block>();
     private final Map<String, Setting<?>> settings = new HashMap<String, Setting<?>>();
     private Block defaultBlock = null;
     private URI uri;
     private int version = -1;
 
-    protected final Collection<Component> dependencies = new HashSet<Component>();
+    protected final Collection<Component> dependencies        = new HashSet<Component>();
     protected final Collection<VirtualComponent> unsatisfied  = new HashSet<VirtualComponent>();
 
 
