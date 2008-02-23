@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.45 2008-02-22 14:05:57 michiel Exp $
+ * @version $Id: Framework.java,v 1.46 2008-02-23 16:46:20 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -66,6 +66,15 @@ public abstract class Framework {
                                     framework = (Framework) Instantiator.getInstance(el, el);
                                 } catch (NoSuchMethodError nsme) {
                                     framework = (Framework) Instantiator.getInstance(el);
+                                }
+                            }
+                            org.w3c.dom.NodeList blockTypes = fwConfiguration.getDocumentElement().getElementsByTagName("blockType");
+                            for (int i = 0; i < blockTypes.getLength(); i++) {
+                                org.w3c.dom.Element element = (org.w3c.dom.Element) blockTypes.item(i);
+                                String classification = element.getAttribute("name");
+                                int weight = Integer.parseInt(element.getAttribute("weight"));
+                                for (Block.Type t : Block.Type.getClassification(classification, true)) {
+                                    t.setWeight(weight);
                                 }
                             }
                         } catch (Exception e) {
