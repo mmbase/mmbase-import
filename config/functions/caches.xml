@@ -4,11 +4,13 @@
   <description>
     Functions related to mmbase caches
   </description>
+  
   <function name="list">
     <type>class</type>
     <class>org.mmbase.cache.CacheManager</class>
     <method>getCaches</method>
   </function>
+  
   <function name="get">
     <type>class</type>
     <class>org.mmbase.cache.CacheManager</class>
@@ -22,6 +24,12 @@
     <method>remove</method>
     <param name="cache" type="java.lang.String" />
     <param name="key" type="java.lang.Object" />
+  </function>
+  
+  <function name="map">
+    <type>class</type>
+    <class>org.mmbase.cache.CacheManager</class>
+    <method>getMap</method>
   </function>
 
 </functionset>
