@@ -221,3 +221,31 @@ th.view, td.view { text-align: right; }
 th.center, td.center { text-align: center; }
 
 div#aboutthisredbox { display: none; }
+
+.msg
+{
+    border: 1px solid #002828;
+    background-color: #d6e44b;
+    width: 75%;
+    text-align: center;
+}
+
+div.msg
+{
+    margin: 4px auto 4px auto;
+    padding: 0.7em;
+}
+
+.err
+{
+	border: 1px #900 solid;
+	background-color: #FCC;
+	width: 75%;
+	text-align: center;
+}
+
+div.err
+{
+    margin: 4px auto 4px auto;
+    padding: 0.7em;
+}
