@@ -15,16 +15,18 @@ import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
 import javax.servlet.jsp.JspTagException;
-
+import org.mmbase.util.logging.*;
 
 /**
  * A very simple tag to check if node may be changed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayWriteTag.java,v 1.10 2006-04-11 22:55:09 michiel Exp $
+ * @version $Id: MayWriteTag.java,v 1.11 2008-02-23 16:00:44 michiel Exp $
  */
 
 public class MayWriteTag extends NodeReferrerTag implements Condition {
+
+    private static final Logger log = Logging.getLoggerInstance(MayWriteTag.class);
 
     protected Attribute inverse = Attribute.NULL;
     protected Attribute number = Attribute.NULL;
@@ -51,9 +53,14 @@ public class MayWriteTag extends NodeReferrerTag implements Condition {
     }
 
     public int doStartTag() throws JspTagException {
-        if ((getNodeToCheck().mayWrite()) != getInverse()) {
-            return EVAL_BODY;
-        } else {
+        try {
+            if ((getNodeToCheck().mayWrite()) != getInverse()) {
+                return EVAL_BODY;
+            } else {
+                return SKIP_BODY;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return SKIP_BODY;
         }
     }

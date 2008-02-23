@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspException;
  * Returns the value of a certain component setting.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SettingTag.java,v 1.5 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: SettingTag.java,v 1.6 2008-02-23 16:00:44 michiel Exp $
  */
 
 public class SettingTag extends CloudReferrerTag implements Writer {
@@ -39,11 +39,14 @@ public class SettingTag extends CloudReferrerTag implements Writer {
     protected Component getComponent() throws JspTagException {
         String c = component.getString(this);
         if (c.length() == 0) {
+            return null;
+            /*
             State state = State.getState(pageContext.getRequest());
             if (! state.isRendering()) {
                 throw new JspTagException("No current component found");
             }
             return state.getBlock().getComponent();
+            */
         } else {
             return ComponentRepository.getInstance().getComponent(c);
         }
