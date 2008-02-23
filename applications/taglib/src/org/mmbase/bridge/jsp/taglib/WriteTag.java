@@ -31,13 +31,13 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.50 2007-02-10 16:49:27 nklasens Exp $ 
+ * @version $Id: WriteTag.java,v 1.51 2008-02-23 16:00:44 michiel Exp $
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
 
     public static final int DEFAULT_MAX_COOKIE_AGE = 60 * 60 * 24 * 30 * 6; // half year
-    
+
     public static final String MAX_COOKIE_AGE_KEY = "org.mmbase.taglib.max_cookie_age";
 
     //public static final String COOKIE_PATH    = "/";
@@ -126,7 +126,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("start writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
-        
+
         helper.setValue(getObject());
 
         if (getId() != null) {
@@ -162,14 +162,14 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             // remove all cookies with given name
             HttpServletRequest request   = ((HttpServletRequest)  pageContext.getRequest());
             HttpServletResponse response = ((HttpServletResponse) pageContext.getResponse());
-            
+
             if (log.isDebugEnabled()) {
                 log.debug("Writing cookie " + cookie + " / " + v);
             }
             // count present cookies of this name
             int cookiecount = 0;
             Cookie[] cookies = request.getCookies();
-            if (cookies != null) { 
+            if (cookies != null) {
                 for (Cookie c : cookies) {
                     if (c.getName().equals(cookie.toString())) {
                         cookiecount++;
@@ -182,7 +182,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
                 Cookie c = new Cookie(cookie.getString(this), cookievalue);
                 String path = request.getContextPath();
                 if (path.length() == 0) path = "/";
-                c.setPath(path);            
+                c.setPath(path);
                 c.setMaxAge(maxCookieAge);
                 response.addCookie(c);
 

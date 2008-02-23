@@ -22,7 +22,7 @@ import org.mmbase.framework.basic.State;
  * Renders a certain block of an mmbase component
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentTag.java,v 1.27 2007-11-16 20:02:19 andre Exp $
+ * @version $Id: ComponentTag.java,v 1.28 2008-02-23 16:00:44 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentTag extends CloudReferrerTag implements ParamHandler, FrameworkParamHandler, Writer {
@@ -91,11 +91,15 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
 
             Renderer renderer = block.getRenderer(type);
             Parameters params = block.createParameters();
+
             fillStandardParameters(params);
             params.setAutoCasting(true);
             params.setAll(Referids.getReferids(referids, this));
             for (Map.Entry<String, Object> entry : extraParameters) {
                 params.set(entry.getKey(), entry.getValue());
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Parameter for block " + block + " " + params + " extra: " + extraParameters);
             }
             Framework fw = Framework.getInstance();
             if (fw == null) throw new JspTagException("No MMBase Framework found");
@@ -104,6 +108,9 @@ public class ComponentTag extends CloudReferrerTag implements ParamHandler, Fram
             frameworkParams.setAutoCasting(true);
             for (Map.Entry<String, Object> entry : extraFrameworkParameters) {
                 frameworkParams.set(entry.getKey(), entry.getValue());
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("fw: " + frameworkParams);
             }
             State state = State.getState(pageContext.getRequest());
             if (state.isRendering()) { // mm:component used during rending of a component, that's fine, but use a new State.

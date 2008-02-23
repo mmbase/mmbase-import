@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Combines the parameters from the 'referids' attribute with the explicit mm:param's
  * subtags. This happens 'lazily'. So, the referids are evaluated only when used.
- * @since MMBase-1.9.
+ * @since MMBase-1.9
  */
 public class UrlParameters extends AbstractMap<String, Object> {
 

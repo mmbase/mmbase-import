@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.60 2007-07-18 07:50:48 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.61 2008-02-23 16:00:44 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap<String, Object> implements Map<String, Object> {
@@ -294,7 +294,7 @@ public abstract class ContextContainer extends AbstractMap<String, Object> imple
         try {
             return get(key, true);
         } catch (JspTagException e) {
-            log.warn("Exception when trying to get value '" + key + "': " + e);
+            log.warn("Exception when trying to get value '" + key + "': " + e, e);
         }
         return null;
     }
@@ -820,8 +820,8 @@ class MapPair extends Pair {
  * @since MMBase-1.8
  */
 class BeanPair extends Pair {
-    private Object bean;
-    private Class<? extends Object> clazz;
+    private final Object bean;
+    private final Class<? extends Object> clazz;
     BeanPair(Object c, String k, boolean w) {
         super(k, w);
         bean = c;
@@ -840,6 +840,8 @@ class BeanPair extends Pair {
                 return null;
             }
         }
+        //while (! method.isAccessible()) {
+        //}
         return method;
     }
     final boolean containsKey(String key, boolean checkParent) throws JspTagException {
@@ -853,7 +855,7 @@ class BeanPair extends Pair {
             if (method == null) return null;
             return method.invoke(bean);
         } catch (Exception iae) {
-            throw new TaglibException(iae.getMessage(), iae);
+            throw new TaglibException(iae.getClass() + " Method " + getMethod(key) + " for " + bean + ": " + iae.getMessage(), iae);
         }
     }
     final void register(String newId, Object n, boolean check, boolean checkParent) throws JspTagException {

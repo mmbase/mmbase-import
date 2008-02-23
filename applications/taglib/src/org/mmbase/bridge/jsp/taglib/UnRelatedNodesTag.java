@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * Like listnodes tag, but is is also a node-referrer, and substracts the related nodes of the referred node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnRelatedNodesTag.java,v 1.10 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: UnRelatedNodesTag.java,v 1.11 2008-02-23 16:00:44 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -69,7 +69,7 @@ public class UnRelatedNodesTag extends ListNodesTag {
         if (excludeSelf.getBoolean(this, false)) {
             result.nodeList.remove(parentNode);
         }
-        result.nodeList.removeAll(relatedNodes);       
+        result.nodeList.removeAll(relatedNodes);
 
         return setReturnValues(result.nodeList, result.needsTrim);
 
