@@ -12,6 +12,7 @@ package org.mmbase.framework;
 import java.util.*;
 import java.net.*;
 import java.io.*;
+import javax.servlet.http.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.Source;
@@ -26,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A Renderer implementation based on an external connection.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.2 2008-02-20 18:10:33 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.3 2008-02-23 12:15:54 michiel Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {
@@ -36,6 +37,7 @@ public class ConnectionRenderer extends AbstractRenderer {
     protected URL url;
     protected int timeOut = 2000;
     protected String xsl = null;
+    protected boolean decorate = true;
 
     public ConnectionRenderer(String t, Block parent) {
         super(t, parent);
@@ -51,14 +53,15 @@ public class ConnectionRenderer extends AbstractRenderer {
     public void setTimeOut(int t) {
         timeOut = t;
     }
+    public void setDecorate(boolean d) {
+        decorate = d;
+    }
 
 
     public  Parameter[] getParameters() {
         return new Parameter[] {};
     }
 
-    protected void output(InputStream inputStream, Writer w) {
-    }
 
 
     public void render(Parameters blockParameters, Parameters frameworkParameters,
@@ -66,6 +69,10 @@ public class ConnectionRenderer extends AbstractRenderer {
 
 
         try {
+            if (decorate) {
+                HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
+                decorateIntro(request, w, null);
+            }
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(timeOut);
             connection.setReadTimeout(timeOut);
@@ -93,6 +100,10 @@ public class ConnectionRenderer extends AbstractRenderer {
 
             } else {
                 throw new FrameworkException("" + responseCode);
+            }
+            if (decorate) {
+                HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
+                decorateOutro(request, w);
             }
         } catch (java.net.ConnectException ce) {
             throw new FrameworkException(ce.getMessage(), ce);
