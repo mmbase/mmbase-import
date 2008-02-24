@@ -7,9 +7,9 @@
    <mm:cloud>
      <rss version="2.0">
        <channel>
-         <title>MMBAse</title>
+         <title>MMBase</title>
          <link><mm:url page="." absolute="true" /></link>
-         <description>MMBase</description>
+         <description>MMBase news</description>
          <language>nl</language>
          <docs>http://blogs.law.harvard.edu/tech/rss</docs>
          <copyright>Copyright MMBase.org</copyright>
