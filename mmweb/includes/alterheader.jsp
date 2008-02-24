@@ -10,6 +10,13 @@
   <link rel="stylesheet" type="text/css" href="<mm:url page="$url" />" />
 </mm:related></mm:node>
 <link rel="shortcut icon" href="/media/favicon.ico" /> 
+      <link rel="alternate" 
+          type="application/rss+xml" 
+          title="RSS" 
+          href="<mm:url page="/rss" />" 
+	  />
+
+
 <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/mmbase.js" />"><!-- MSIE needs this --></script>
 <script type="text/javascript" language="javascript" src="<mm:url page="/scripts/navi.js" />"><!-- MSIE needs this --></script>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
