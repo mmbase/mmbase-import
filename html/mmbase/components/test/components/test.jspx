@@ -1,8 +1,8 @@
 <jsp:root
     version="1.2"
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
   <mm:import externid="a" >A</mm:import>
@@ -11,14 +11,14 @@
   <c:choose>
     <c:when test="${! empty requestScope['org.mmbase.framework.state'].processor}">
       <mm:log>RENDERER:  ${requestScope['org.mmbase.framework.state'].processor}</mm:log>
-  
+
       <mm:write request="a" value="${param.a}" />
       <mm:write request="b" value="${param.b}" />
       <mm:log>PROCESSING.</mm:log>
     </c:when>
     <c:otherwise>
-      <div 
-          class="test mm_c mm_c_core mm_c_b_test ${requestScope.componentClassName}"
+      <div
+          class="test mm_c mm_c_test mm_c_b_test ${requestScope.componentClassName}"
           id="${requestScope.componentId}">
         <h1>a = ${a}</h1>
         <h1>b = ${b}</h1>
@@ -34,7 +34,7 @@
             for (Object a : java.util.Collections.list(request.getAttributeNames())) {
           </jsp:scriptlet>
           <p>
-            <jsp:expression>a</jsp:expression>: 
+            <jsp:expression>a</jsp:expression>:
             <mm:escape><jsp:expression>pageContext.getRequest().getAttribute((String) a)</jsp:expression></mm:escape>
           </p>
           <jsp:scriptlet>
@@ -49,7 +49,6 @@
           </mm:link>
         </p>
         <mm:link>
-          <mm:frameworkparam name="process">true</mm:frameworkparam>
           <form method="post" action="${_}">
             <p>Form with ${_}</p>
 
@@ -66,8 +65,10 @@
           Using mm:component <em>inside</em> this component. It should work as expected.
         </p>
         <mm:component name="core" block="servers" />
+        <!--
         <p>And another time, so that you can see, that states are distinct</p>
         <mm:component name="core" block="servers" />
+        -->
       </div>
     </c:otherwise>
   </c:choose>
