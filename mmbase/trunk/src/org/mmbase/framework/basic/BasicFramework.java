@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.11 2008-02-23 14:36:30 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.12 2008-02-24 10:46:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -279,7 +279,7 @@ public class BasicFramework extends Framework {
     protected String getPrefix(final State state) {
         //return "_" + renderer.getBlock().getComponent().getName() + "_" +
         //renderer.getBlock().getName() + "_" + count + "_";
-        return "_" + state.getId() + ":";
+        return state.getId() + ":";
     }
     protected Map<String, Object> getMap(final State state, final Map<String, Object> params) {
         return new AbstractMap<String, Object>() {
