@@ -1,14 +1,14 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"          
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           version="1.2"
     >
   <mm:import externid="blockType" from="request" />
-  <h2>${blockType.name}</h2>
+  <h2>${blockType.name} (${blockType.weight})</h2>
   <ul>
     <mm:stringlist referid="blockType.subTypes">
       <mm:write request="blockType" />
       <li>
-        ${requestScope.blockType.name}        
+        ${requestScope.blockType.name} (${requestScope.blockType.weight})
         <mm:include  page="blockType.jspx" />
       </li>
     </mm:stringlist>
