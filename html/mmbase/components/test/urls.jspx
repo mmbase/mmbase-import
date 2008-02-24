@@ -1,0 +1,35 @@
+<jsp:root
+    version="1.2"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    >
+  <mm:import externid="a" >A</mm:import>
+  <mm:import externid="b" >B</mm:import>
+
+  <div
+      class="test mm_c mm_c_test mm_c_b_urls ${requestScope.componentClassName}"
+      id="${requestScope.componentId}">
+    <h1>This block needs to be showed on
+    <mm:link page="/mmbase/test/test/urls"><a href="${_}">/mmbase/test/test/urls</a></mm:link>
+    </h1>
+    <mm:link absolute="context">
+      <p>${_ eq '/mmbase/test/test/urls' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+    <mm:link absolute="context" referids="a">
+      <p>${_ eq '/mmbase/test/test/urls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+    <mm:link absolute="context" page="test">
+      <p>${_ eq '/mmbase/test/test/test' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+    <mm:link absolute="context" referids="a" page="test">
+      <p>${_ eq '/mmbase/test/test/test?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+    <mm:link absolute="context" referids="a" page="suburls">
+      <p>${_ eq '/mmbase/test/test/suburls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+    <mm:component name="test" block="suburls" />
+    <mm:component name="test" block="suburls" />
+  </div>
+</jsp:root>

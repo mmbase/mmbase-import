@@ -1,7 +1,7 @@
 <mm:content
     type="application/xml"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
@@ -52,9 +52,9 @@
           manager.propagateEvent(ev);
         </jsp:scriptlet
 >          <p>Sending <jsp:expression>ev</jsp:expression></p>
-        
+
       </mm:present>
-      
+
       <form>
         <select  name="type">
           <c:forTokens items="0:new,1:change,2:delete" var="_" delims=",">

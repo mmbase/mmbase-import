@@ -1,6 +1,6 @@
 <mm:cloud rank="administrator"
           xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" 
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="server" from="request" />
@@ -8,6 +8,7 @@
       class="mm_c mm_c_core mm_c_b_servers ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
     <h3>Server Overview</h3>
+    PATH: <jsp:expression>org.mmbase.framework.FrameworkFilter.getPath(request)</jsp:expression>
     <mm:notpresent referid="server">
       <table summary="servers" border="0" cellspacing="0" cellpadding="3">
         <caption>
@@ -27,9 +28,11 @@
             <td>
               <mm:field name="name">
                 <mm:compare value="${mmbase.machineName}">
+                  <mm:log>aaaaaaa</mm:log>
                   <mm:link referids="_@server">
                     <a href="${_}"><mm:field name="name" /></a>
                   </mm:link>
+                  <mm:log>bbbbbbbb</mm:log>
                 </mm:compare>
                 <mm:compare value="${mmbase.machineName}" inverse="true">
                   <mm:write />
@@ -52,13 +55,13 @@
           </tr>
         </mm:listnodes>
       </table>
-      
+
       <div id="aboutthisredbox">
         You are seeing this text which is only meant to test the MMBase framework.
-        This means rendering stuff with the Component Framework for the above servers block 
+        This means rendering stuff with the Component Framework for the above servers block
         in the head of a document works: a stylesheet is correctly included.
       </div>
-      
+
     </mm:notpresent>
     <mm:present referid="server">
       <table summary="server actions">
@@ -70,25 +73,25 @@
               (<jsp:expression>(Runtime.getRuntime().totalMemory()*10/1024)/10.0</jsp:expression> Kb)
             </p>
             <p>
-              JVM free memory : <jsp:expression>(Runtime.getRuntime().freeMemory()*10/1048576)/10.0</jsp:expression> Mb 
+              JVM free memory : <jsp:expression>(Runtime.getRuntime().freeMemory()*10/1048576)/10.0</jsp:expression> Mb
               (<jsp:expression>(Runtime.getRuntime().freeMemory()*10/1024)/10.0</jsp:expression> Kb)
             </p>
             <p>
               Uptime:
               <jsp:scriptlet>
                 int timeDiff =  ((int)(System.currentTimeMillis()/1000) - org.mmbase.module.core.MMBase.startTime);
-                
+
                 int days = timeDiff / (60 * 60 * 24);
                 int hours =(timeDiff / (60  * 60)) % 24;
                 int minutes = (timeDiff / 60) % 60 ;
                 int seconds = timeDiff % 60;
-                out.println("" + (days &gt; 0 ? (days +" days ") : "") + hours +":" + (minutes &lt; 10 ? "0" : "") + minutes +":" + 
+                out.println("" + (days &gt; 0 ? (days +" days ") : "") + hours +":" + (minutes &lt; 10 ? "0" : "") + minutes +":" +
                 (seconds  &lt; 10 ? "0" : "") + seconds);
               </jsp:scriptlet>
-              
+
             </p>
           </td>
-        </tr>   
+        </tr>
       </table>
       <p>
         <mm:link page="servers">
@@ -97,6 +100,6 @@
         </mm:link>
       </p>
     </mm:present>
-    
+
   </div>
 </mm:cloud>
