@@ -138,7 +138,7 @@
   </td>
   <td><img src="media/spacer.gif" alt="" border="0" width="12" height="1" /></td>
   <td width="25%">
-    <a href="http://www.cmscontainer.org"><img class="logocmsc" src="media/cmsc-logo.gif" alt="CMSContainer" width="100" height="100" /></a>
+    <a href="http://www.cmscontainer.org"><img class="logocmsc" src="<mm:url page="/media/cmsc-logo.gif" />" alt="CMSContainer" width="100" height="100" /></a>
 	<mm:time time="today" id="ttoday" write="false" />
 	<mm:list nodes="$portal" 
 		path="portals,category,posrel,event,mmevents"
