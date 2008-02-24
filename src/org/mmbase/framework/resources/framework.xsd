@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id: framework.xsd,v 1.6 2008-02-23 16:46:20 michiel Exp $
+  @version $Id: framework.xsd,v 1.7 2008-02-24 10:46:21 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -20,9 +20,9 @@
   <xsd:element name="framework">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="param" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element ref="blockType" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="param"        minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="description"  minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="blocktype"    minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="urlconverter" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="class" type="xsd:string" />
