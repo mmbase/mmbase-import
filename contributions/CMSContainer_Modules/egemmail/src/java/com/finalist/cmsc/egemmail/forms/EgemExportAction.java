@@ -30,7 +30,6 @@ public class EgemExportAction extends EgemSearchAction {
    private static final String EGEMMAIL_ADMIN_USER = "egemmail.admin.user";
    private static final String EGEMMAIL_ADMIN_PASSWORD = "egemmail.admin.password";
    // private static final String EGEMMAIL_BEHEER_URL = "egemmail.beheer.url";
-   private static final String EGEMMAIL_LIVEPATH = "egemmail.livepath";
 
    private static Logger log = Logging.getLoggerInstance(EgemExportAction.class.getName());
 
@@ -76,7 +75,7 @@ public class EgemExportAction extends EgemSearchAction {
             Map<String, Object> postParams = new HashMap<String, Object>();
 
             Node node = cloud.getNode(entry.getKey());
-            String liveUrl = getContentUrl(node);
+            String liveUrl = Publish.getRemoteContentUrl(node);
             if (liveUrl != null) {
                postParams.put("url", liveUrl);
 
@@ -154,19 +153,6 @@ public class EgemExportAction extends EgemSearchAction {
          throw new IllegalStateException("Unknown forward action: " + forward);
       }
    }
-
-
-   private String getContentUrl(Node node) {
-      if (Publish.isPublished(node) && Search.hasContentPages(node)) {
-         int remoteNumber = Publish.getLiveNumber(node);
-         String livePath = PropertiesUtil.getProperty(EGEMMAIL_LIVEPATH);
-         String appPath = "/content/" + remoteNumber;
-
-         return livePath + appPath;
-      }
-      return null;
-   }
-
 
    @SuppressWarnings("unchecked")
    protected void mergeState(EgemExportForm form, HttpServletRequest request) {

@@ -49,8 +49,20 @@ public class Publish {
    }
 
 
-   public static int getLiveNumber(Node node) {
-      return cService.getLiveNumber(node);
+   public static int getRemoteNumber(Node node) {
+      return cService.getRemoteNumber(node);
+   }
+
+   public static Node getRemoteNode(Node node) {
+       return cService.getRemoteNode(node);
+   }
+   
+   public static String getRemoteContentUrl(Node node) {
+       return cService.getRemoteContentUrl(node);
+   }
+
+   public static String getRemoteUrl(String appPath) {
+       return cService.getRemoteUrl(appPath);
    }
 
 }
