@@ -23,6 +23,28 @@
 	<properties></properties>
 	
 	<fieldlist>
-	<!-- Todo:veld als username/account wijst naar community-user-id. -->
+	<!-- Fields such as username/account pointing to community-user-id. -->
+	<field>
+         <descriptions>
+            <description xml:lang="nl">Gebruikers ID</description>
+            <description xml:lang="en">User ID</description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">Gebruikers ID</guiname>
+            <guiname xml:lang="en">UserID</guiname>
+         </gui>
+         <editor>
+            <positions>
+               <input>10</input>
+               <list>10</list>
+               <search>10</search>
+            </positions>
+         </editor>
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <db>
+            <name>userid</name>
+            <type key="false" notnull="true" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
 	</fieldlist>
 </builder>

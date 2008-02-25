@@ -9,15 +9,14 @@
  */
 package com.finalist.cmsc.services.community.security;
 
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Required;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.acegisecurity.providers.encoding.MessageDigestPasswordEncoder;
-import org.acegisecurity.providers.encoding.Md5PasswordEncoder;
-
-import java.util.List;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.finalist.cmsc.services.HibernateService;
 
@@ -89,7 +88,7 @@ public class AuthenticationHibernateService extends HibernateService implements 
 	@Transactional(readOnly = true)
 	public boolean authenticate(String userId, String password) {
 		Authentication authentication = findAuthenticationByUserId(userId);
-		return authentication.getPassword().equals(password);
+		return authentication.getPassword().equals(encodePassword(password, userId));
 	}
 
 	/** {@inheritDoc} */
@@ -135,19 +134,41 @@ public class AuthenticationHibernateService extends HibernateService implements 
 	}
 
 	private String encodePassword(String password, String salt) {
-		MessageDigestPasswordEncoder encoder = new Md5PasswordEncoder();
-		return encoder.encodePassword(password, salt);
+		// MessageDigestPasswordEncoder encoder = new Md5PasswordEncoder();
+		// // TODO Add salt to password encoder??
+		// // return encoder.encodePassword(password, salt);
+		// return encoder.encodePassword(password, null);
+		return password;
+	}
+
+	/** {@inheritDoc} */
+	@Transactional(readOnly = true)
+	public List<Authentication> findAuthentications() {
+		Criteria criteria = getSession().createCriteria(Authentication.class);
+		return findAuthenticationListByCriteria(criteria);
+	}
+
+	/** {@inheritDoc} */
+	@Transactional(readOnly = true)
+	public List<Authentication> findAuthenticationsForAuthority(String name) {
+		Criteria criteria = getSession().createCriteria(Authentication.class).createCriteria("authorities").add(
+				Restrictions.eq("name", name));
+		return findAuthenticationListByCriteria(criteria);
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Authentication> findAuthenticationListByCriteria(Criteria criteria) {
+		List<Authentication> result = new ArrayList<Authentication>();
+		List authenticationList = criteria.list();
+		for (Iterator iter = authenticationList.iterator(); iter.hasNext();) {
+			Authentication authentication = (Authentication) iter.next();
+			result.add(authentication);
+		}
+		return result;
 	}
 
 	@Required
 	public void setAuthorityService(AuthorityService authorityService) {
 		this.authorityService = authorityService;
-	}
-
-	@Transactional(readOnly = true)
-	public List<Authentication> findAuthentications() {
-		Criteria criteria = getSession().createCriteria(Authentication.class);
-		List authenticationList = criteria.list();
-		return authenticationList;
 	}
 }

@@ -15,12 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
-import org.springframework.web.struts.ActionSupport;
 import org.springframework.web.context.WebApplicationContext;
-import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.cmsc.services.community.security.AuthorityService;
+import org.springframework.web.struts.ActionSupport;
+
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
+import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
  * @author Remco Bos
@@ -30,10 +31,14 @@ public class AbstractCommunityAction extends ActionSupport {
 	protected static final String ACTION_ADD = "add";
 
 	protected static final String ACTION_EDIT = "edit";
-	
+
 	protected static final String SUCCESS = "success";
-	
-	protected static final String USERID = "userid";
+
+   protected static final String CANCEL = "cancel";
+
+   protected static final String USERID = "userid";
+
+	protected static final String GROUPID = "groupid";
 
 	protected AuthenticationService getAuthenticationService() {
 		WebApplicationContext ctx = getWebApplicationContext();
