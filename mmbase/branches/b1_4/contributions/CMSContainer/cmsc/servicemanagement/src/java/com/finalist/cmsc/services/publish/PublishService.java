@@ -34,6 +34,9 @@ public abstract class PublishService extends Service {
    public abstract void unpublish(Node node);
 
 
-   public abstract int getLiveNumber(Node node);
+   public abstract int getRemoteNumber(Node node);
+
+
+   public abstract Node getRemoteNode(Node node);
 
 }

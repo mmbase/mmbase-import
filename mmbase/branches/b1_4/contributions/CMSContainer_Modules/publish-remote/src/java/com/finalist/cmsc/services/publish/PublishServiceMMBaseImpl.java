@@ -137,8 +137,13 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
 
 
    @Override
-   public int getLiveNumber(Node node) {
-      return getPublisher(node).getLiveNumber(node);
+   public int getRemoteNumber(Node node) {
+      return getPublisher(node).getRemoteNumber(node);
+   }
+
+   @Override
+   public Node getRemoteNode(Node node) {
+      return getPublisher(node).getRemoteNode(node);
    }
 
 }
