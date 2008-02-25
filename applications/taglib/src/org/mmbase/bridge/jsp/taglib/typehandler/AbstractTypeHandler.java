@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.59 2008-02-23 16:00:44 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.60 2008-02-25 16:07:46 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -229,9 +229,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                             log.debug("Setting " + fieldName + " to " + fieldValue);
                         }
                         if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
-                            node.setValue(fieldName,  null);
+                            setValue(node, fieldName,  null);
                         } else {
-                            node.setValue(fieldName,  fieldValue);
+                            setValue(node, fieldName,  fieldValue);
                         }
                     } catch (Throwable t) {
                         // may throw exception like 'You cannot change the field"
@@ -270,6 +270,13 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         }
     }
 
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    protected void setValue(Node node, String fieldName, Object value) {
+        node.setValue(fieldName, value);
+    }
     /**
      * @see TypeHandler#useHtmlInput(Node, Field)
      */
@@ -281,9 +288,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             return false;
         }  else {
             if ("".equals(fieldValue) && interpretEmptyAsNull(field)) {
-                node.setValue(fieldName,  null);
+                setValue(node, fieldName,  null);
             } else {
-                node.setValue(fieldName,  fieldValue);
+                setValue(node, fieldName,  fieldValue);
             }
             return true;
         }
