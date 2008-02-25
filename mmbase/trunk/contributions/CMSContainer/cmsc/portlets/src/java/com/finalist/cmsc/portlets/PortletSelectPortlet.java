@@ -83,9 +83,7 @@ public class PortletSelectPortlet extends CmscPortlet {
       String layoutId = (String) req.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
 
       List<PortletDefinition> portlets = SiteManagement.getSingletonPortlets(pageId, layoutId);
-      ;
       List<PortletDefinition> portletdefinitions = SiteManagement.getPortletDefintions(pageId, layoutId);
-      ;
 
       Map<PortletDefinition, List<View>> defViews = new HashMap<PortletDefinition, List<View>>();
       for (PortletDefinition definition : portletdefinitions) {
