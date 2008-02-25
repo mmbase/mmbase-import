@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.lucene;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import org.apache.lucene.queryParser.ParseException;
@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * A wrapper around Lucene's {@link org.apache.lucene.search.IndexSearcher}. Every {@link Indexer} has its own Searcher.
  *
  * @author Pierre van Rooden
- * @version $Id: Searcher.java,v 1.46 2008-02-08 13:27:44 michiel Exp $
+ * @version $Id: Searcher.java,v 1.47 2008-02-25 10:46:35 michiel Exp $
  * @todo  Should the StopAnalyzers be replaced by index.analyzer? Something else?
  **/
 public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener {
@@ -270,6 +270,9 @@ public class Searcher implements NewSearcher.Listener, FullIndexEvents.Listener 
             try {
                 reader = IndexReader.open(copy ? index.getDirectoryForFullIndex() : index.getDirectory());
                 return reader.numDocs();
+            } catch ( FileNotFoundException nfe) {
+                log.debug(nfe + " returning -1");
+                return -1;
             } catch (IOException ioe) {
                 log.service(ioe + " returning -1");
                 return -1;
