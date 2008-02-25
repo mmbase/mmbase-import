@@ -32,6 +32,7 @@ public abstract class MMBaseAction extends Action {
    public static final String CANCEL = "cancel";
 
    public static final String ADMINISTRATOR = "administrator";
+   public static final String SITEADMIN ="siteadmin";
    public static final String BASIC_USER = "basic user";
    public static final String ANONYMOUS = "anonymous";
 
