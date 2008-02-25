@@ -14,13 +14,18 @@ import org.mmbase.remotepublishing.PublishListener;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.navigation.NavigationItemManager;
 import com.finalist.cmsc.navigation.NavigationManager;
 import com.finalist.cmsc.publish.*;
+import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.workflow.Workflow;
 
 public class PublishServiceMMBaseImpl extends PublishService implements PublishListener {
+
+   private static final String SYSTEM_LIVEPATH = "system.livepath";
+
 
    public PublishServiceMMBaseImpl() {
       PublishingQueueBuilder.addPublishListener(this);
@@ -137,8 +142,28 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
 
 
    @Override
-   public int getLiveNumber(Node node) {
-      return getPublisher(node).getLiveNumber(node);
+   public int getRemoteNumber(Node node) {
+      return getPublisher(node).getRemoteNumber(node);
    }
 
+   @Override
+   public Node getRemoteNode(Node node) {
+      return getPublisher(node).getRemoteNode(node);
+   }
+
+   @Override
+   public String getRemoteContentUrl(Node node) {
+      if (Publish.isPublished(node) && Search.hasContentPages(node)) {
+         int remoteNumber = Publish.getRemoteNumber(node);
+         String appPath = "/content/" + remoteNumber;
+         return getRemoteUrl(appPath);
+      }
+      return null;
+   }
+
+   @Override
+   public String getRemoteUrl(String appPath) {
+        String livePath = PropertiesUtil.getProperty(SYSTEM_LIVEPATH);
+        return livePath + appPath;
+    }
 }

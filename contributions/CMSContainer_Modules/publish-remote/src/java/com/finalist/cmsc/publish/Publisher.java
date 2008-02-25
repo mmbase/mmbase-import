@@ -95,13 +95,22 @@ public abstract class Publisher {
         }
     }
 
-    public int getLiveNumber(Node node) {
+    public int getRemoteNumber(Node node) {
         Map<Integer,Integer> numbers = PublishManager.getPublishedNodeNumbers(node);
         Iterator<Integer> iter = numbers.values().iterator();
         if (iter.hasNext()) {
             return iter.next();
         }
         return -1;
+    }
+
+    public Node getRemoteNode(Node node) {
+        Map<Integer,Node> numbers = PublishManager.getPublishedNodes(node);
+        Iterator<Node> iter = numbers.values().iterator();
+        if (iter.hasNext()) {
+            return iter.next();
+        }
+        return null;
     }
 
     protected boolean isPublished(Node node) {

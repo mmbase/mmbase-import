@@ -111,4 +111,29 @@ Exceptions/errors/other problems and what to do:
 *
 *
 
+Name: Renamed egemmail.livepath property to system.livepath
+Goal: 
+Type:  sql-script
+--- Start script ---
+UPDATE mm_proeprties SET key = 'system.livepath' WHERE key = 'egemmail.livepath';
+UPDATE live_proeprties SET key = 'system.livepath' WHERE key = 'egemmail.livepath';
 
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+Name: Add property system.livepath
+Goal: 
+Type:  action
+--- Start script ---
+Log into the editors
+Go to Admin -> Properties
+Add new property with name 'system.livepath' and value the url of the live application
+E.g. http://demo.cmscontainer.org/cmsc-live/ 
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
