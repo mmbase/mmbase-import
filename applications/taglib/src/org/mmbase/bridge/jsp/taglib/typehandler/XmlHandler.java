@@ -21,7 +21,7 @@ import org.mmbase.util.transformers.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.20 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.21 2008-02-25 18:14:41 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -60,7 +60,7 @@ public class XmlHandler extends StringHandler {
             buffer.append(">");
             String value;
             if (node != null) {
-                value = org.mmbase.util.Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node));
+                value = org.mmbase.util.Encode.encode("ESCAPE_XML", tag.decode(org.mmbase.util.Casting.toString(getFieldValue(node, field, false)), node));
             } else {
                 value = "";
             }

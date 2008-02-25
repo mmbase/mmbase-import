@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.66 2008-02-25 16:07:46 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.67 2008-02-25 18:14:41 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -121,6 +121,10 @@ public class StringHandler extends AbstractTypeHandler {
 
     protected void setValue(Node node, String fieldName, Object value) {
         node.setStringValue(fieldName, org.mmbase.util.Casting.toString(value));
+    }
+
+    protected Object getValue(Node node, String fieldName) {
+        return node.getStringValue(fieldName);
     }
 
     /**
