@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.56 2008-02-25 10:46:35 michiel Exp $
+ * @version $Id: Indexer.java,v 1.57 2008-02-25 14:10:01 michiel Exp $
  **/
 public class Indexer {
 
@@ -296,6 +296,8 @@ public class Indexer {
                 updated += index(j, writer, indexDefinition.getId());
                 j.close();
             }
+        } catch (FileNotFoundException fnfe) {
+            log.debug(fnfe);
         } catch (IOException ioe) {
             addError(ioe.getMessage());
             log.error(ioe);
@@ -347,6 +349,9 @@ public class Indexer {
                         }
                     }
                     docs.close();
+                } catch (FileNotFoundException fnfe) {
+                    // ignore, indices were simply not y et build.
+                    log.debug(fnfe);
                 } catch (IOException ioe) {
                     addError(ioe.getMessage());
                     log.error(ioe);
