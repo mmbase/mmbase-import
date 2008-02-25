@@ -30,7 +30,6 @@ public class EgemExportAction extends EgemSearchAction {
    private static final String EGEMMAIL_ADMIN_USER = "egemmail.admin.user";
    private static final String EGEMMAIL_ADMIN_PASSWORD = "egemmail.admin.password";
    // private static final String EGEMMAIL_BEHEER_URL = "egemmail.beheer.url";
-   private static final String EGEMMAIL_LIVEPATH = "egemmail.livepath";
 
    private static Logger log = Logging.getLoggerInstance(EgemExportAction.class.getName());
 
