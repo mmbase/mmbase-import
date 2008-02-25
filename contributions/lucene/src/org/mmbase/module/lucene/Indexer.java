@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.55 2008-02-08 13:23:25 michiel Exp $
+ * @version $Id: Indexer.java,v 1.56 2008-02-25 10:46:35 michiel Exp $
  **/
 public class Indexer {
 
@@ -188,6 +188,8 @@ public class Indexer {
         Properties lastIndexed = new Properties();
         try {
             lastIndexed.load(new FileInputStream(lucenePath + java.io.File.separator + "lastIndexed.properties"));
+        } catch (FileNotFoundException fnfe) {
+            log.debug(fnfe);
         } catch (IOException ioe) {
             log.service(ioe);
         }
@@ -409,8 +411,9 @@ public class Indexer {
         long errorCountBefore = errorCount;
         EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.START, 0));
         IndexWriter writer = null;
+        Directory fullIndex = null;
         try {
-            Directory fullIndex = getDirectoryForFullIndex();
+            fullIndex = getDirectoryForFullIndex();
             writer = new IndexWriter(fullIndex, analyzer, true);
             long startTime = System.currentTimeMillis();
             // process all queries
@@ -434,15 +437,16 @@ public class Indexer {
                 Directory.copy(fullIndex, getDirectory(), true);
                 Date lastFullIndex = setLastFullIndex(startTime);
                 log.info("Full index finished at " + lastFullIndex + ". Copied " + fullIndex + " to " + getDirectory() + " Total nr documents in index '" + getName() + "': " + writer.docCount());
-                EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
             } else {
                 addError((errorCount - errorCountBefore) + " errors during full index. Will not update the index.");
             }
+            EventManager.getInstance().propagateEvent(new FullIndexEvents.Event(getName(), FullIndexEvents.Status.IDLE, writer.docCount()));
         } catch (Exception e) {
-            addError(e.getMessage());
+            addError("" + fullIndex + ": " + e.getMessage());
             log.error("Cannot run FullIndex: " + e.getMessage(), e);
         } finally {
             if (writer != null) { try { writer.close(); } catch (IOException ioe) { log.error("Can't close index writer: " + ioe.getMessage()); } }
+
         }
         EventManager.getInstance().propagateEvent(new NewSearcher.Event(getName()));
     }
