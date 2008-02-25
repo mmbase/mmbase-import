@@ -135,7 +135,7 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
                   String value = request.getParameter(name);
                   if (!StringUtil.isEmpty(number)) {
                      if (!nodesMap.containsKey(number)) {
-                        Cloud cloud = CloudUtil.getCloudFromThread();
+                        Cloud cloud = getCloud();
                         Node node = cloud.getNode(number);
                         node.setValue(field, value);
                         nodesMap.put(number, node);
@@ -177,6 +177,12 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
          getLogger().error("Unknown action: '" + action + "'");
       }
    }
+
+
+    protected Cloud getCloud() {
+        Cloud cloud = CloudUtil.getCloudFromThread();
+        return cloud;
+    }
 
 
    @SuppressWarnings("unused")
