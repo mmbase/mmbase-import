@@ -39,4 +39,10 @@ public abstract class PublishService extends Service {
 
    public abstract Node getRemoteNode(Node node);
 
+
+   public abstract String getRemoteContentUrl(Node node);
+
+
+   public abstract String getRemoteUrl(String appPath);
+
 }
