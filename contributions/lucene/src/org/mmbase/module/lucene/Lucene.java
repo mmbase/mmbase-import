@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.106 2008-02-01 12:40:42 michiel Exp $
+ * @version $Id: Lucene.java,v 1.107 2008-02-25 12:23:43 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -469,6 +469,9 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     protected Function/*<Void>*/ clearDirectory = new AbstractFunction/*<Void>*/("clearDirectory", new Parameter[] {INDEX, COPY}, ReturnType.VOID) {
         public Object getFunctionValue(Parameters arguments) {
+            if (readOnly) {
+                throw new IllegalStateException("This lucene is readonly");
+            }
             String index = (String) arguments.getString(INDEX);
             Indexer indexer = indexerMap.get(index);
             boolean copy = Boolean.TRUE.equals(arguments.get(COPY));
@@ -477,6 +480,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 for (String file : dir.list()) {
                     if (file != null) {
                         try {
+                            log.service("Deleting " + file);
                             dir.deleteFile(file);
                         } catch (Exception e) {
                             log.warn(e);
