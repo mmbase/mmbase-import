@@ -1,0 +1,40 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content expires="0" type="application/xml">
+    <mm:import externid="id" required="true" />
+    <mm:import externid="search" />
+    <mm:import from="session" externid="${id}" id="query" />
+    <mm:import externid="offset" vartype="integer">0</mm:import>
+    <mm:listnodescontainer clone="query">
+      <c:if test="${! empty search}">
+        <mm:composite operator="OR">
+          <mm:fieldlist type="search" id="field">
+            <c:if test="${field.dataType.class.name eq 'org.mmbase.datatypes.StringDataType'}">
+              <mm:constraint field="${field.name}" operator="LIKE" value="%${search}%" casesensitive="false"/>
+            </c:if>
+          </mm:fieldlist>
+        </mm:composite>
+      </c:if>
+      <mm:maxnumber value="10" />
+      <mm:offset value="${offset}" />
+      <ul>
+        <mm:listnodes>
+          <li><mm:field name="number" />: <mm:nodeinfo type="gui" /></li>
+        </mm:listnodes>
+      </ul>
+      <mm:previousbatches>
+        <a href="${_}" onclick="return Searcher('${id}', ${_}, '${search}')"><mm:index /></a>
+        <jsp:text>, </jsp:text>
+      </mm:previousbatches>
+      <mm:index />
+      <mm:nextbatches>
+        <jsp:text>, </jsp:text>
+        <a href="${_}" onclick="return Searcher('${id}', ${_}, '${search}')"><mm:index /></a>
+      </mm:nextbatches>
+    </mm:listnodescontainer>
+  </mm:content>
+</div>
