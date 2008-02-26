@@ -1,0 +1,39 @@
+<jsp:root
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    version="2.0"
+    >
+  <jsp:directive.attribute name="repository" type="org.mmbase.bridge.NodeQuery"  required="true" />
+  <jsp:directive.attribute name="current"    type="org.mmbase.bridge.NodeQuery"  required="true" />
+  <jsp:directive.attribute name="n"          fragment="true" />
+  <jsp:directive.attribute name="relate"        fragment="true" />
+  <mm:import externid="current" from="this" />
+  <mm:import from="request" id="seq" externid="org.mmbase.relate.sequence" vartype="integer">0</mm:import>
+  <mm:write request="org.mmbase.relate.sequence" value="${seq + 1}" />
+
+  <mm:write session="org.mmbase.relate.repository.${seq}" referid="repository" />
+  <c:if test="${seq eq 0}">
+    <script type="text/javascript" src="${mm:link('/mmbase/taglib/search_and_relate.js.jsp')}"><jsp:text> </jsp:text></script>
+  </c:if>
+
+  <div class="mm_related">
+    <mm:listnodescontainer clone="current">
+      <mm:maxnumber value="10" />
+      <table>
+        <mm:listnodes>
+          <tr>
+            <td>
+              <jsp:invoke fragment="n" />
+            </td>
+          </tr>
+        </mm:listnodes>
+      </table>
+      <a href="javascript:void(0);"
+         onclick="return Searcher('org.mmbase.relate.repository.${seq}', 0, document.getElementById('org.mmbase.relate.repository.${seq}.search').value);">Search</a>
+      <input id="org.mmbase.relate.repository.${seq}.search" value="" />
+      <div id="org.mmbase.relate.repository.${seq}">
+      </div>
+    </mm:listnodescontainer>
+  </div>
+</jsp:root>

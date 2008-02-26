@@ -1,0 +1,19 @@
+body, html {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+div#title {
+  width: 100%;
+  background-color: yellow;
+}
+
+div#main {
+  position: absolute;
+  left: 0px;
+}
+div#relations {
+  right: 0px;
+  position: absolute;
+  background-color: #eee;
+}
