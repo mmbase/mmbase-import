@@ -19,6 +19,7 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
+import com.finalist.util.module.ModuleUtil;
 
 
 public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer {
@@ -51,6 +52,13 @@ public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer 
              * element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
              */
           }
+         
+         if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(SubSiteTreeItemRenderer.FEATURE_WORKFLOW)) {
+             element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
+                   "../workflow/publish.jsp?number=" + id));
+             element.addOption(renderer.createTreeOption("masspublish.png", "site.page.masspublish",
+                   "../workflow/masspublish.jsp?number=" + id));
+          }
 
          element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
                  "../usermanagement/pagerights.jsp?number=" + id));
@@ -64,7 +72,7 @@ public class PersonalPageTreeItemRenderer implements NavigationTreeItemRenderer 
 	}
 
 	public boolean showChildren(Node parentNode) {
-		return true;
+		return false;
 	}
 
 }

@@ -3,6 +3,14 @@
 <%@page import="com.finalist.cmsc.repository.ContentElementUtil,
                  com.finalist.cmsc.repository.RepositoryUtil,
                  java.util.ArrayList"%>
+<%@page import="org.mmbase.bridge.Cloud" %>
+<%@page import="org.mmbase.bridge.Node" %>
+<%@page import="org.mmbase.bridge.NodeList" %>
+<%@page import="org.mmbase.bridge.util.SearchUtil" %>
+<%@page import="org.mmbase.remotepublishing.*" %>
+<%@page import="com.finalist.cmsc.subsite.util.SubSiteUtil" %>
+<%@page import="com.finalist.cmsc.services.publish.Publish"%>
+<%@page import="org.mmbase.bridge.BridgeException"%>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
@@ -114,7 +122,7 @@
 
 <mm:list referid="results" jspvar="node" max="${resultsPerPage}">
    <mm:field name="personalpage.number" id="number">
-	   <mm:node number="${number}">
+	   <mm:node number="${number}" jspvar="ppNode">
 		   <tr <mm:even inverse="true">class="swap"</mm:even>>
 		   <td style="white-space: nowrap;">
 		   
@@ -127,12 +135,21 @@
 		       title="<fmt:message key="pp.content.delete" />"><img src="../gfx/icons/delete.png" width="16" height="16"
 		                                                       title="<fmt:message key="pp.content.delete" />"
 		                                                       alt="<fmt:message key="pp.content.delete" />"/></a>
-         <a href="<cmsc:contenturl number="${nodenumber}"/>" 
-            title="<fmt:message key="pp.content.preview" />" target="_blank"><img src="../gfx/icons/preview.png" width="16" height="16"
+<%
+	   int remoteNumber = Publish.getRemoteNumber(ppNode);
+      String appPath = "/content/" + remoteNumber;
+      if (remoteNumber == -1) { 
+    	  appPath = ""; 
+    	}
+      request.setAttribute("appPath", appPath);
+%>
+         <c:if test="${not empty appPath}">
+            <a href="<%=Publish.getRemoteUrl(appPath)%>" 
+               title="<fmt:message key="pp.content.preview" />" target="_blank"><img src="../gfx/icons/preview.png" width="16" height="16"
                                                              title="<fmt:message key="pp.content.preview" />"
                                                              alt="<fmt:message key="pp.content.preview" />"/></a>
-         
-		                                                       
+         </c:if>
+		   <% request.removeAttribute("appPath"); %>              
 		   </mm:field>
 		   </td>
 		   <td>
