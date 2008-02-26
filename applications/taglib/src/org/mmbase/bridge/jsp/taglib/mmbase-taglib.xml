@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.420 2008-02-23 15:54:27 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.421 2008-02-26 15:45:02 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5597,6 +5597,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>querycontainer</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListRelationsContainerTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.containers.QueryTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
       The query container for the listrelations tag.
