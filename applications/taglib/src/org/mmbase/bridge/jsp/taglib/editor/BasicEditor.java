@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.9 2006-07-06 11:36:12 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.9.2.1 2008-02-26 10:09:23 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -101,7 +101,7 @@ public class BasicEditor extends Editor {
             String icon = getValue("icon", cloud, nodenr, context);
             url = makeRelative(url, context);
             Writer html = context.getOut();
-            Locale locale = (Locale) context.getAttribute(LocaleTag.KEY, PageContext.PAGE_SCOPE);
+            Locale locale = (Locale) context.getAttribute(LocaleTag.KEY, LocaleTag.SCOPE);
             if (locale == null) {
                 locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
             }
@@ -112,7 +112,7 @@ public class BasicEditor extends Editor {
             if ("new".equals(parameters.getString("target"))) {
                 html.write("onclick=\"window.open(this.href); return false;\" ");
             }
-            html.write(">"); 
+            html.write(">");
             if (! "".equals(icon)) {
                 icon = makeRelative(icon, context);
                 html.write("<img src=\"");
