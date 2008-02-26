@@ -26,7 +26,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
@@ -62,8 +61,8 @@ public class SubSiteAction extends PagerAction {
       String subsite = request.getParameter("subsite");
       
       /* Purpose of this file
-       * - retrieve List of all subsites
-       * - retrieve List of pages if 
+       * - retrieve list of subsites
+       * - retrieve list of pages if 
        *      channel parameter (subsite) is given (or only 1 subsite exists) 
        *      -> and put it in a List 
        */
