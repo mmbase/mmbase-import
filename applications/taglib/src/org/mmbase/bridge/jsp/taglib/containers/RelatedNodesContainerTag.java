@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.14 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.14.2.1 2008-02-26 16:57:06 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -51,7 +51,11 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
 
     public int doStartTag() throws JspTagException {
-        if (getReferid() != null) {
+        String cloneId = clone.getString(this);
+        if (! "".equals(cloneId)) {
+            query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
+            query = (NodeQuery) query.clone();
+        } else if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
             if (nodeManager != Attribute.NULL || role != Attribute.NULL || searchDirs != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'role', 'searchdirs', 'path' or 'element' attributes together with 'referid'");
@@ -110,6 +114,9 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
         }
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
+        }
+        if (markused.getBoolean(this, false)) {
+            query.markUsed();
         }
         return EVAL_BODY;
     }
