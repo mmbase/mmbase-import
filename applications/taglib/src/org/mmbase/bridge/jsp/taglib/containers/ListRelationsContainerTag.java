@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.17 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.18 2008-02-26 15:45:02 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -34,6 +34,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
     private Attribute type       = Attribute.NULL;
     private Attribute role       = Attribute.NULL;
     private Attribute searchDir  = Attribute.NULL;
+    protected String jspVar = null;
 
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
@@ -51,7 +52,6 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
     public void setRole(String r) throws JspTagException {
         role  = getAttribute(r);
     }
-
     public void setSearchdir(String s) throws JspTagException {
         searchDir = getAttribute(s);
     }
@@ -86,18 +86,28 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
 
 
     public int doStartTag() throws JspTagException {
-        Node relatedFromNode = getNode();
-        Cloud cloud = relatedFromNode.getCloud();
-        NodeManager nm = null;
-        if (type != Attribute.NULL) {
-            nm = cloud.getNodeManager(type.getString(this));
+        if (getReferid() != null) {
+            query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+        } else {
+            Node relatedFromNode = getNode();
+            Cloud cloud = relatedFromNode.getCloud();
+            NodeManager nm = null;
+            if (type != Attribute.NULL) {
+                nm = cloud.getNodeManager(type.getString(this));
+            }
+            query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
+            relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
         }
-        query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
-        relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
 
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
             relatedQuery.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
+        if (getId() != null) { // write to context.
+            getContextProvider().getContextContainer().register(getId(), query);
+        }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, query);
         }
         return EVAL_BODY;
     }
