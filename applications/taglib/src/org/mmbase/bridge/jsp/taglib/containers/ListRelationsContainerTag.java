@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.14 2006-06-22 13:17:46 johannes Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.14.2.1 2008-02-26 15:42:41 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQueryContainer {
 
@@ -38,6 +38,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
     private Attribute type       = Attribute.NULL;
     private Attribute role       = Attribute.NULL;
     private Attribute searchDir  = Attribute.NULL;
+    protected String jspVar = null;
 
     public void setCachepolicy(String t) throws JspTagException {
         cachePolicy = getAttribute(t);
@@ -58,6 +59,13 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
 
     public void setSearchdir(String s) throws JspTagException {
         searchDir = getAttribute(s);
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void setJspvar(String jv) {
+        jspVar = jv;
     }
 
 
@@ -90,18 +98,28 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements NodeQu
 
 
     public int doStartTag() throws JspTagException {
-        Cloud cloud = getCloudVar();
-        NodeManager nm = null;
-        if (type != Attribute.NULL) {
-            nm = getCloudVar().getNodeManager(type.getString(this));
+        if (getReferid() != null) {
+            query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
+        } else {
+            Cloud cloud = getCloudVar();
+            NodeManager nm = null;
+            if (type != Attribute.NULL) {
+                nm = getCloudVar().getNodeManager(type.getString(this));
+            }
+            Node relatedFromNode = getNode();
+            query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
+            relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
         }
-        Node relatedFromNode = getNode();
-        query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
-        relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this));
-
         if (cachePolicy != Attribute.NULL) {
             query.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
             relatedQuery.setCachePolicy(CachePolicy.getPolicy(cachePolicy.getValue(this)));
+        }
+
+        if (getId() != null) { // write to context.
+            getContextProvider().getContextContainer().register(getId(), query);
+        }
+        if (jspVar != null) {
+            pageContext.setAttribute(jspVar, query);
         }
         return EVAL_BODY;
     }
