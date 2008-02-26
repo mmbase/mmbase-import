@@ -16,7 +16,7 @@
 	</item>
 
 	<command name="channelselector" />
-	
+
 	<action type="create">
 		<relation destinationtype="contentchannel" role="related"></relation>
 	</action>
