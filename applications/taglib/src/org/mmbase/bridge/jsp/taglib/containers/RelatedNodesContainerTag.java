@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.16 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.17 2008-02-26 17:06:44 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
@@ -51,7 +51,11 @@ public class RelatedNodesContainerTag extends ListNodesContainerTag {
 
 
     public int doStartTag() throws JspTagException {
-        if (getReferid() != null) {
+        String cloneId = clone.getString(this);
+        if (! "".equals(cloneId)) {
+            query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
+            query = (NodeQuery) query.clone();
+        } else if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
             if (nodeManager != Attribute.NULL || role != Attribute.NULL || searchDirs != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'role', 'searchdirs', 'path' or 'element' attributes together with 'referid'");

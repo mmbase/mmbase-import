@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.421 2008-02-26 15:45:02 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.422 2008-02-26 17:06:44 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -7072,6 +7072,32 @@ The 0 is just counter, which starts at 0 on every page.
       <see tag="list" attribute="nodes" />
       <since>MMBase-1.7.1</since>
     </attribute>
+    <attribute>
+      <name>clone</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.6</since>
+      <info>
+        This is the same as 'referid' attribute, but ensures that the query is cloned first, so the original query remains unchanged.
+        The query will implicitely be cloned, also when using 'referid', when changes are made to an already 'used' query.
+      </info>
+      <possiblevalue>
+        <value>true</value>
+      </possiblevalue>
+    </attribute>
+    <attribute>
+      <name>markused</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.6</since>
+      <info>
+        If this attribute is used (and set to 'true') then the query will be marked 'used' in the
+        doEndTag. This ensures that the query cannot be changed before cloning it.
+      </info>
+      <possiblevalue>
+        <value>true</value>
+      </possiblevalue>
+    </attribute>
     <example>
       <include base="examples.taglib" href="codesamples/query.jsp" />
     </example>
@@ -7132,6 +7158,20 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
          Id for reference by subtags and reuse.
       </info>
+    </attribute>
+    <attribute>
+      <name>clone</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.6</since>
+      <see tag="listnodescontainer" attribute="clone" />
+    </attribute>
+    <attribute>
+      <name>markused</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.6</since>
+      <see tag="listnodescontainer" attribute="markused" />
     </attribute>
     <example>
       <include base="examples.taglib" href="codesamples/query.relatednodes.jsp" />
