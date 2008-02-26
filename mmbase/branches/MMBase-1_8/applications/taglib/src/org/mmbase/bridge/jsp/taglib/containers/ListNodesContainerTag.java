@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.21 2006-07-04 12:16:09 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.21.2.1 2008-02-26 16:57:06 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -35,6 +35,8 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     protected Attribute   nodeManager = Attribute.NULL;
     protected  Attribute   element     = Attribute.NULL;
     protected  Attribute   nodes       = Attribute.NULL;
+    protected  Attribute   clone       = Attribute.NULL;
+    protected  Attribute   markused    = Attribute.NULL;
     protected String jspVar = null;
 
     /**
@@ -57,6 +59,20 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
 
     public void setElement(String e) throws JspTagException {
         element = getAttribute(e);
+    }
+
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void setClone(String c) throws JspTagException {
+        clone = getAttribute(c);
+    }
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void setMarkused(String mu) throws JspTagException {
+        markused = getAttribute(mu);
     }
 
     /**
@@ -90,7 +106,11 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
     }
 
     public int doStartTag() throws JspTagException {
-        if (getReferid() != null) {
+        String cloneId = clone.getString(this);
+        if (! "".equals(cloneId)) {
+            query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
+            query = (NodeQuery) query.clone();
+        } else if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());
             if (nodeManager != Attribute.NULL || path != Attribute.NULL || element != Attribute.NULL) {
                 throw new JspTagException("Cannot use 'nodemanager', 'path' or 'element' attributes together with 'referid'");
@@ -132,6 +152,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         }
         if (jspVar != null) {
             pageContext.setAttribute(jspVar, query);
+        }
+        if (markused.getBoolean(this, false)) {
+            query.markUsed();
         }
 
         return EVAL_BODY;
