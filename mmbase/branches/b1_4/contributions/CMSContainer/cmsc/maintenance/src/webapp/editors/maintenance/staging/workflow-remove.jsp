@@ -22,7 +22,7 @@
 		<option value="0">draft</option>
 		<option value="1">finished</option>
 		<option value="2">approved</option>
-		<option value="3">publisht</option>
+		<option value="3">published</option>
 	</select>
 	<input type="submit" value="remove"/>
 </form>
