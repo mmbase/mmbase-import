@@ -3,7 +3,9 @@
 <mm:content type="text/javascript" expires="0">
 
 function MMBaseSearcher(id, offset, search) {
-    Ext.get(id).load("${mm:link('/mmbase/taglib/page.jspx?id=')}" + id + (offset != null ? ("&offset=" + offset) : "") + (search != null ? ("&search=" + search) : ""));
+    $("#" + id).load("${mm:link('/mmbase/taglib/page.jspx?id=')}" + id + (offset != null ? ("&offset=" + offset) : "") + (search != null ? ("&search=" + search) : "") + " div");
+    //$("#" + id).load("${mm:link('/wiki/edit/a.jspx')} div");
+    //console.log($("#"+id));
     return false;
 }
 
