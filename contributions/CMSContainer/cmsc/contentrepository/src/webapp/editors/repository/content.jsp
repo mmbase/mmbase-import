@@ -25,7 +25,7 @@
         referid="parentchannel"/>&direction=down</mm:import>
 
 <div class="tabs">
-    <!-- actieve TAB -->
+    <!-- active TAB -->
     <div class="tab_active">
         <div class="body">
             <div>
@@ -39,7 +39,7 @@
 <div class="editor">
 <div class="body">
 
-<!-- we check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
+<!-- check to see if we have workflow, this is done by looking if the editors for the workflow are on the HD -->
 <c:set var="hasWorkflow" value="false"/>
 <mm:haspage page="/editors/workflow">
     <c:set var="hasWorkflow" value="true"/>
@@ -110,9 +110,10 @@
 </div>
 <div class="body">
 <mm:import externid="elements" from="request" required="true"/>
+<mm:import externid="elementCount" from="request" vartype="Integer">0</mm:import>
+<mm:import externid="resultsPerPage" from="request" vartype="Integer">25</mm:import>
 
-<c:set var="listSize" value="${fn:length(elements)}"/>
-<c:set var="resultsPerPage" value="50"/>
+<c:set var="listSize" value="${elementCount}"/>
 <c:set var="offset" value="${param.offset}"/>
 <c:set var="extraparams" value="&parentchannel=${param.parentchannel}"/>
 
@@ -133,7 +134,7 @@
     </tr>
 </thead>
 <tbody class="hover">
-<mm:listnodes referid="elements" jspvar="node" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
+<mm:listnodes referid="elements" jspvar="node">
 <mm:field name="number" write="false" id="number" vartype="String"/>
 <mm:field name="number" write="false" id="relnumber"/>
 
