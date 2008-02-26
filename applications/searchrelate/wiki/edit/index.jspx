@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    lang="en">
+  <jsp:directive.page buffer="10000kb" />
+
+  <mm:content type="application/xhtml+xml"
+              postprocessor="none"
+              language="nl" expires="0">
+    <mm:cloud rank="basic user">
+      <mm:param name="org.mmbase.xml-mode" value="wiki" />
+
+
+      <head>
+        <mm:link page="/mmbase/extjs/adapter/ext/ext-base.js">
+          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+        </mm:link>
+        <mm:link page="/mmbase/extjs/ext-all.js">
+          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+        </mm:link>
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+        <script language="javascript" src="edit.js"><jsp:text> </jsp:text></script>
+        <mm:link page="/mmbase/extjs/resources/css/ext-all.css">
+          <link rel="stylesheet" type="text/css" href="${_}" />
+        </mm:link>
+        <mm:link page="/mmbase/extjs/adapter/css/ext-base.css">
+          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
+        </mm:link>
+      </head>
+      <body>
+        <mm:import externid="objectnumber" />
+        <mm:node referid="objectnumber">
+          <div id="main">
+            <mm:form id="transaction">
+
+              <table>
+                <mm:fieldlist type="edit">
+                  <tr>
+                    <td>
+                      <mm:fieldinfo type="guiname" />
+                    </td>
+                    <td>
+                      <mm:fieldinfo type="input" />
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </table>
+              <input type="submit" name="submit" id="submit" />
+              <hr />
+              <mm:link page=".." referids="objectnumber">
+                <a href="${_}">back</a>
+              </mm:link>
+            </mm:form>
+            </div>
+            <div id="relations">
+              <mm:form id="transaction">
+              <ul>
+                <mm:listrelations role="idrel">
+                  <li id="${_node}">
+                    <table>
+                      <mm:fieldlist fields="id,class">
+                        <tr>
+                          <td><mm:fieldinfo type="guiname" /></td>
+                          <td><mm:fieldinfo type="input" /></td>
+                        </tr>
+                      </mm:fieldlist>
+                    </table>
+                    <mm:relatednode>
+                      <mm:nodeinfo type="gui" />
+                    </mm:relatednode>
+                  </li>
+                </mm:listrelations>
+              </ul>
+              </mm:form>
+            </div>
+            <div id="commit">
+              <mm:form id="transaction">
+                <mm:valid>
+                  <mm:import externid="submit" />
+                  <mm:present referid="submit">
+                    <h1>Committing</h1>
+                    <mm:commit />
+                  </mm:present>
+                </mm:valid>
+              </mm:form>
+            </div>
+            <div id="title">
+              <mm:node referid="objectnumber">
+                <mm:field name="number" />: <mm:nodeinfo type="gui" />
+              </mm:node>
+            </div>
+          </mm:node>
+        </body>
+    </mm:cloud>
+
+  </mm:content>
+</html>
