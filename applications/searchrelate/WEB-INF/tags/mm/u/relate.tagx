@@ -9,30 +9,39 @@
   <jsp:directive.attribute name="n"          fragment="true" />
   <jsp:directive.attribute name="relate"        fragment="true" />
   <mm:import externid="current" from="this" />
-  <mm:import from="request" id="seq" externid="org.mmbase.relate.sequence" vartype="integer">0</mm:import>
-  <mm:write request="org.mmbase.relate.sequence" value="${seq + 1}" />
+  <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
+  <mm:write request="mm_relate_sequence" value="${seq + 1}" />
 
-  <mm:write session="org.mmbase.relate.repository.${seq}" referid="repository" />
+  <mm:write session="mm_relate_repository_${seq}" referid="repository" />
   <c:if test="${seq eq 0}">
-    <script type="text/javascript" src="${mm:link('/mmbase/taglib/search_and_relate.js.jsp')}"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${mm:link('/mmbase/taglib/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>
   </c:if>
 
   <div class="mm_related">
     <mm:listnodescontainer clone="current">
       <mm:maxnumber value="10" />
       <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <mm:fieldlist nodetype="${current.nodeManager.name}" type="list">
+              <th><mm:fieldinfo type="guiname" /></th>
+            </mm:fieldlist>
+          </tr>
+        </thead>
         <mm:listnodes>
           <tr>
-            <td>
-              <jsp:invoke fragment="n" />
-            </td>
+            <th><mm:nodeinfo type="gui" /></th>
+            <mm:fieldlist type="list">
+              <td><mm:fieldinfo type="guivalue" /></td>
+            </mm:fieldlist>
           </tr>
         </mm:listnodes>
       </table>
       <a href="javascript:void(0);"
-         onclick="return Searcher('org.mmbase.relate.repository.${seq}', 0, document.getElementById('org.mmbase.relate.repository.${seq}.search').value);">Search</a>
-      <input id="org.mmbase.relate.repository.${seq}.search" value="" />
-      <div id="org.mmbase.relate.repository.${seq}">
+         onclick="return MMBaseSearcher('mm_relate_repository_${seq}', 0, document.getElementById('mm_relate_repository_${seq}_search').value);">Search</a>
+      <input id="mm_relate_repository_${seq}_search" value="" />
+      <div id="mm_relate_repository_${seq}">
       </div>
     </mm:listnodescontainer>
   </div>

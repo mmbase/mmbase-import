@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
       xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     lang="en">
   <jsp:directive.page buffer="10000kb" />
@@ -12,27 +13,24 @@
 
 
       <head>
-        <mm:link page="/mmbase/extjs/adapter/ext/ext-base.js">
-          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
-        </mm:link>
-        <mm:link page="/mmbase/extjs/ext-all.js">
-          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
-        </mm:link>
+        <mm:import id="jq"><mm:url page="/mmbase/jquery/" /></mm:import>
+
+        <script src="${jq}jquery-1.2.3.min.js"><jsp:text> </jsp:text></script>
+        <script src="${jq}jquery.dimensions.js"><jsp:text> </jsp:text></script>
+        <script src="${jq}ui.mouse.js"></script>
+        <script src="${jq}ui.resizable.js"></script>
+        <!--
+        <script type="text/javascript" src="${jq}ui.accordion.js"> </script>
+        -->
         <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
         <script language="javascript" src="edit.js"><jsp:text> </jsp:text></script>
-        <mm:link page="/mmbase/extjs/resources/css/ext-all.css">
-          <link rel="stylesheet" type="text/css" href="${_}" />
-        </mm:link>
-        <mm:link page="/mmbase/extjs/adapter/css/ext-base.css">
-          <script type="text/javascript" src="${_}"><jsp:text> </jsp:text></script>
-        </mm:link>
+        <link rel="stylesheet" type="text/css" href="q.css" />
       </head>
       <body>
         <mm:import externid="objectnumber" />
         <mm:node referid="objectnumber">
           <div id="main">
             <mm:form id="transaction">
-
               <table>
                 <mm:fieldlist type="edit">
                   <tr>
@@ -52,46 +50,69 @@
                 <a href="${_}">back</a>
               </mm:link>
             </mm:form>
-            </div>
-            <div id="relations">
-              <mm:form id="transaction">
+          </div>
+          <div id="relations">
+            <mm:form id="transaction">
               <ul>
-                <mm:listrelations role="idrel">
-                  <li id="${_node}">
-                    <table>
-                      <mm:fieldlist fields="id,class">
-                        <tr>
-                          <td><mm:fieldinfo type="guiname" /></td>
-                          <td><mm:fieldinfo type="input" /></td>
-                        </tr>
-                      </mm:fieldlist>
-                    </table>
-                    <mm:relatednode>
-                      <mm:nodeinfo type="gui" />
-                    </mm:relatednode>
+                <mm:context>
+                  <li>
+                    <a class="toggle">Urls</a>
+                    <div>
+                      <form>
+                        <mm:relatednodescontainer role="idrel" type="urls" id="current" />
+                        <mm:listnodescontainer type="urls" id="repository" />
+                        <mm-u:relate repository="${repository}" current="${current}">
+                          <jsp:attribute name="n">
+                            <mm:field name="number" />
+                          </jsp:attribute>
+                          <jsp:attribute name="relate">
+                            <mm:createrelation source="source" destination="destination" role="related" />
+                          </jsp:attribute>
+                        </mm-u:relate>
+                      </form>
+                    </div>
                   </li>
-                </mm:listrelations>
+                </mm:context>
+                <mm:context>
+                  <li>
+                    <a class="toggle">Images</a>
+                    <div>
+                      <mm:relatednodescontainer role="idrel" type="images" id="current" />
+                      <mm:listnodescontainer type="images" id="repository" />
+                      <mm-u:relate repository="${repository}" current="${current}">
+                        <jsp:attribute name="n">
+                          <mm:field name="number" />
+                        </jsp:attribute>
+                        <jsp:attribute name="relate">
+                          <mm:createrelation source="source" destination="destination" role="related" />
+                        </jsp:attribute>
+                      </mm-u:relate>
+                    </div>
+                  </li>
+                </mm:context>
               </ul>
-              </mm:form>
-            </div>
-            <div id="commit">
-              <mm:form id="transaction">
-                <mm:valid>
-                  <mm:import externid="submit" />
-                  <mm:present referid="submit">
-                    <h1>Committing</h1>
-                    <mm:commit />
-                  </mm:present>
-                </mm:valid>
-              </mm:form>
-            </div>
-            <div id="title">
-              <mm:node referid="objectnumber">
-                <mm:field name="number" />: <mm:nodeinfo type="gui" />
-              </mm:node>
-            </div>
-          </mm:node>
-        </body>
+            </mm:form>
+          </div>
+          <!--
+          <div id="commit">
+            <mm:form id="transaction">
+              <mm:valid>
+                <mm:import externid="submit" />
+                <mm:present referid="submit">
+                  <h1>Committing</h1>
+                  <mm:commit />
+                </mm:present>
+              </mm:valid>
+            </mm:form>
+          </div>
+          <div id="title">
+            <mm:node referid="objectnumber">
+              <mm:field name="number" />: <mm:nodeinfo type="gui" />
+            </mm:node>
+          </div>
+          -->
+        </mm:node>
+      </body>
     </mm:cloud>
 
   </mm:content>
