@@ -54,11 +54,28 @@ public class ContentAction extends MMBaseAction {
          direction = null;
       }
 
+      // Set the offset (used for paging).
+      String offsetString = request.getParameter("offset");
+      int offset = 0;
+      if (offsetString != null && offsetString.matches("\\d+")) {
+    	  offset = Integer.parseInt(offsetString);
+      }
+      
+      // Set the maximum result size.
+      String resultsPerPage = PropertiesUtil.getProperty(SearchAction.REPOSITORY_SEARCH_RESULTS_PER_PAGE);
+      int maxNumber = 25;
+      if (resultsPerPage != null && resultsPerPage.matches("\\d+")) {
+    	  maxNumber = Integer.parseInt(resultsPerPage);
+      }
+      addToRequest(request, "resultsPerPage", Integer.toString(maxNumber));
+      
       if (!StringUtil.isEmpty(parentchannel)) {
          Node channel = cloud.getNode(parentchannel);
-         NodeList elements = RepositoryUtil.getLinkedElements(channel, null, orderby, direction, false, -1, -1, -1, -1,
-               -1);
+         NodeList elements = RepositoryUtil.getLinkedElements(channel, null, orderby, direction, false, offset*maxNumber, maxNumber, -1, -1, -1);
+         int elementCount = RepositoryUtil.countLinkedContent(channel);
+
          addToRequest(request, "elements", elements);
+         addToRequest(request, "elementCount", Integer.toString(elementCount));
 
          NodeList created = RepositoryUtil.getCreatedElements(channel);
          Map<String, Node> createdNumbers = new HashMap<String, Node>();
