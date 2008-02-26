@@ -19,11 +19,13 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
+import com.finalist.util.module.ModuleUtil;
 
 
 public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
 
     private static final String RESOURCEBUNDLE = "cmsc-modules-subsite";
+    protected static final String FEATURE_WORKFLOW = "workflowitem";
 
     public TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model) {
          Node parentParentNode = NavigationUtil.getParent(parentNode);
@@ -70,6 +72,13 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
              */
           }
 
+         if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+             element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
+                   "../workflow/publish.jsp?number=" + id));
+             element.addOption(renderer.createTreeOption("masspublish.png", "site.page.masspublish",
+                   "../workflow/masspublish.jsp?number=" + id));
+          }
+         
          element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
                  "../usermanagement/pagerights.jsp?number=" + id));
          
@@ -83,7 +92,7 @@ public class SubSiteTreeItemRenderer implements NavigationTreeItemRenderer {
    }
    
 	public boolean showChildren(Node parentNode) {
-		return true;//Do not show PersonalPages
+		return false; //Do not show PersonalPages
 	}
 
 }
