@@ -56,8 +56,10 @@ public class PPContentAction extends MMBaseAction {
 	        remoteCloud = CloudManager.getCloud(cloud, "live.server");	
 
 	        //Retrieve Node & live-channel
-		    int liveNumber = Publish.getRemoteNumber(ppChannel);
-		    ppChannel = remoteCloud.getNode(liveNumber);
+		    //int liveNumber = Publish.getRemoteNumber(ppChannel);
+		    //ppChannel = remoteCloud.getNode(liveNumber);
+		    
+		    ppChannel = Publish.getRemoteNode(ppChannel);
 
 		    cloud = remoteCloud; //Use the remoteCloud from now on.
 		 } catch (BridgeException e) {
