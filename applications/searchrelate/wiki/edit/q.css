@@ -15,5 +15,22 @@ div#main {
 div#relations {
   right: 0px;
   position: absolute;
-  background-color: #eee;
+  background-color: #bbb;
+}
+
+div#relations ul  {
+  list-style-type: none;
+  padding-left: 1ex;
+  margin-top: 0px;
+}
+
+div#relations ul li {
+  margin: 0;
+}
+div#relations ul li a.toggle {
+  background-color: #ddd;
+  display: block;
+  border-bottom: 1px solid black;
+  width: 100%;
+  margin: 0;
 }

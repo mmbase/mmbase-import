@@ -1,5 +1,5 @@
 
-Ext.onReady(function(){
+$(document).ready(function(){
     var validator = new MMBaseValidator();
     validator.validateHook = function(valid) {
         document.getElementById('submit').disabled = ! valid;
@@ -7,34 +7,24 @@ Ext.onReady(function(){
     validator.prefetchNodeManager("xmlnews");
     validator.setup(window);
 
-    Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-
-    var viewport = new Ext.Viewport({
-        layout:'border',
-        items:[
-            {
-                region: 'north',
-                contentEl: 'title',
-                autoHeight: true
-            },
-            {
-                region: 'center',
-                contentEl: 'main',
-		autoScroll: true
-            },
-            {
-                region: 'east',
-		title: 'Relations',
-		split:true,
-		collapsible: true,
-                contentEl: 'relations'
-            },
-            {
-                region: 'south',
-		collapsible: true,
-                contentEl: 'commit'
-            }
-	]
+    $(window).bind("resize", function() {
+	$("div#main").width($(window).width() - $("div#relations").width());
+	$("div#main").height($(window).height());
+	$("div#relations").height($(window).height());
     });
+    var width = $(window).width();
+    $("div#relations").width(width * 1 / 3);
+    $("div#relations").height($(window).height());
+    $("div#main").width(width * 2 / 3);
+    $("div#relations").resizable({
+	handles: "w",
+	resize: function(e) {
+	    $("div#main").width($(window).width() - $("div#relations").width());
 
+	}
+    });
+    $("div#relations ul > li > div").slideUp("fast");
+    $("div#relations ul > li > a").click(function(e) {
+	$(e.target).parent().children("div").slideToggle("fast");
+    });
 });
