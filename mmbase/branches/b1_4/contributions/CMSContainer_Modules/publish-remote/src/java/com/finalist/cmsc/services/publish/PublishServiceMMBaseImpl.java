@@ -19,6 +19,7 @@ import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.navigation.NavigationItemManager;
 import com.finalist.cmsc.navigation.NavigationManager;
 import com.finalist.cmsc.publish.*;
+import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.workflow.Workflow;
 
@@ -154,7 +155,10 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
    @Override
    public String getRemoteContentUrl(Node node) {
       if (Publish.isPublished(node) && Search.hasContentPages(node)) {
-         int remoteNumber = Publish.getRemoteNumber(node);
+         if (ContentElementUtil.isContentElement(node) && !Search.hasContentPages(node)) {
+    	    return null;
+    	 }
+	     int remoteNumber = Publish.getRemoteNumber(node);
          String appPath = "/content/" + remoteNumber;
          return getRemoteUrl(appPath);
       }
