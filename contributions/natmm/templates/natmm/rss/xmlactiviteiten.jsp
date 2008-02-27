@@ -74,7 +74,7 @@ String sChildConstraints = Evenement.getEventsConstraint(lDateSearchFrom,lDateSe
                String omschrijving = thisPage.getStringValue("omschrijving");
                if(omschrijving!=null) { %><%= HtmlCleaner.filterAmps(HtmlCleaner.cleanText(omschrijving,"<",">","")).trim() %><% } 
             %></description>
-            <mm:listnodes type="evenement" constraints="<%=sChildConstraints%>" jspvar="thisEvent" orderby="begindatum"
+            <mm:listnodes type="evenement" constraints="<%=sChildConstraints%>" jspvar="thisEvent" orderby="begindatum" max="30" directions="UP"
                ><item>
                   <title><mm:field name="titel" jspvar="naam" vartype="String" write="false"
                             ><%= (naam==null ? "" : HtmlCleaner.filterAmps(naam).trim()) 
