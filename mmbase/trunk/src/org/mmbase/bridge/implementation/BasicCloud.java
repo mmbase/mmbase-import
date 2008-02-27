@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.180 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: BasicCloud.java,v 1.181 2008-02-27 11:47:54 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -1091,8 +1091,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         locale     = (Locale) in.readObject();
         log.info("Reading " + this);
         org.mmbase.util.ThreadPools.jobsExecutor.execute(new BasicCloudStarter());
-        transactions = new HashMap();
-        nodeManagerCache = new HashMap();
+        transactions = new HashMap<String, Transaction>();
+        nodeManagerCache = new HashMap<String, BasicNodeManager>();
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
