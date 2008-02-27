@@ -22,7 +22,7 @@ import javax.servlet.jsp.jstl.core.*;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.22 2006-09-27 20:48:26 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.23 2008-02-27 10:49:01 michiel Exp $
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
@@ -37,7 +37,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
     }
 
 
-    private Attribute offset = Attribute.NULL; 
+    private Attribute offset = Attribute.NULL;
 
     public void setOffset(String o) throws JspTagException {
         offset = getAttribute(o);
@@ -73,7 +73,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
             }
         }
 
-        helper.setValue(new Integer(index));
+        helper.setValue(index);
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }

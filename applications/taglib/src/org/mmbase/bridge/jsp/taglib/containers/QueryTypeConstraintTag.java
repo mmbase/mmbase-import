@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.7 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.8 2008-02-27 10:49:01 michiel Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -41,7 +41,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
         container = getAttribute(c);
     }
 
-    public void setElement(String e) throws JspTagException { 
+    public void setElement(String e) throws JspTagException {
         element = getAttribute(e);
     }
 
@@ -66,12 +66,12 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
         boolean desc = descendants.getBoolean(this, true);
         while (i.hasNext()) {
             NodeManager nm = cloud.getNodeManager(i.next());
-            set.add(new Integer(nm.getNumber()));
+            set.add(nm.getNumber());
             if (desc) {
                 NodeManagerIterator j = nm.getDescendants().nodeManagerIterator();
                 while (j.hasNext()) {
-                    set.add(new Integer(j.nextNodeManager().getNumber()));
-                }                
+                    set.add(j.nextNodeManager().getNumber());
+                }
             }
         }
         return set;

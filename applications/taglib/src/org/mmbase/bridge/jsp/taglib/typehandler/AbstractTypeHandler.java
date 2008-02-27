@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.61 2008-02-25 18:14:41 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.62 2008-02-27 10:49:01 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -77,7 +77,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                                         return i <= max;
                                     }
                                     public Entry<Integer, Integer> next() {
-                                        Integer value = new Integer(i++);
+                                        Integer value = i++;
                                         return new Entry<Integer, Integer>(value, value);
                                     }
                                     public void remove() {
@@ -101,7 +101,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
                                         return i <= max;
                                     }
                                     public Entry<Long, Long> next() {
-                                        Long value = new Long(i++);
+                                        Long value = i++;
                                         return new Entry<Long, Long>(value, value);
                                     }
                                     public void remove() {

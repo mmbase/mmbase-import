@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.9 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: DurationHandler.java,v 1.10 2008-02-27 10:49:01 michiel Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
@@ -162,10 +162,10 @@ public class DurationHandler extends AbstractTypeHandler {
     protected long getSpecifiedValue(Field field) throws JspTagException {
         try {
             String fieldName = field.getName();
-            Integer hours  = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hours")));
-            Integer minutes  = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minutes")));
-            Integer seconds   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_seconds")));
-            Integer milliSeconds   = new Integer( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_milliseconds")));
+            Integer hours  = Integer.parseInt((String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_hours")));
+            Integer minutes  = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_minutes")));
+            Integer seconds   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_seconds")));
+            Integer milliSeconds   = Integer.parseInt( (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName + "_milliseconds")));
             return  (long) milliSeconds.intValue() + 1000 * (seconds.intValue()  + 60 * (minutes.intValue() + 60 * hours.intValue()));
         } catch (java.lang.NumberFormatException e) {
             throw new JspTagException("Not a valid number (" + e.toString() + ")");
@@ -210,7 +210,7 @@ public class DurationHandler extends AbstractTypeHandler {
             return null;
         }
 
-        Long time = new Long(getSpecifiedValue(field));
+        Long time = getSpecifiedValue(field);
 
         if (query.getSteps().size() > 1) {
             fieldName = field.getNodeManager().getName()+"."+fieldName;
@@ -223,7 +223,7 @@ public class DurationHandler extends AbstractTypeHandler {
         } else if (operator.equals("equal")) {
             String options = tag.getOptions();
             if (options != null && options.indexOf("date") > -1) {
-                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, new Long(time.longValue() + 24 * 60 * 60), false);
+                con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, time + 24 * 60 * 60, false);
             } else {
                 con = Queries.createConstraint(query, fieldName, FieldCompareConstraint.EQUAL, time);
             }
