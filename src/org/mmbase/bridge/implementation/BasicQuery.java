@@ -28,7 +28,7 @@ import org.mmbase.security.Authorization;
  * {@link #BasicQuery(Cloud, BasicSearchQuery)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.70 2007-10-22 08:42:40 nklasens Exp $
+ * @version $Id: BasicQuery.java,v 1.71 2008-02-27 11:48:44 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -384,7 +384,7 @@ public class BasicQuery implements Query  {
         BasicStepField sf = new BasicStepField(step, cf);
         if (! implicitFields.remove(sf)) {// it's explicitly added now
             if (cf.inStorage()) {
-                sf = query.addField(step, cf); 
+                sf = query.addField(step, cf);
             } else {
                 log.debug("Not adding the field " + field + " because it is not in storage (this is a virtual field)");
             }
@@ -599,6 +599,7 @@ public class BasicQuery implements Query  {
     public void addNode(Step  s, int nodeNumber) {
         if (used) throw new BridgeException("Query was used already");
         BasicStep step = (BasicStep) s;
+        if (step == null) throw new IllegalArgumentException("Step may not be null");
         step.addNode(nodeNumber);
         return;
     }
