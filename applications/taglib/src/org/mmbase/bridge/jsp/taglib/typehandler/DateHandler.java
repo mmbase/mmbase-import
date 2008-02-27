@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.55 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.56 2008-02-27 10:49:01 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -420,7 +420,7 @@ public class DateHandler extends AbstractTypeHandler {
 
         Object time = getSpecifiedValue(field, getInstance()).getTime();
         if (field.getType() != Field.TYPE_DATETIME) {
-            time = new Long(Casting.toLong(time));
+            time = Casting.toLong(time);
         }
 
         // expand fieldname with nodemanager name if needed
@@ -440,7 +440,7 @@ public class DateHandler extends AbstractTypeHandler {
                 if (field.getType() == Field.TYPE_DATETIME) {
                     nextTime = new Date(((Date)time).getTime() + 24 * 60 * 60 * 1000);
                 } else {
-                    nextTime = new Long(((Long)time).longValue() + 24 * 60 * 60);
+                    nextTime = ((Long)time).longValue() + 24 * 60 * 60;
                 }
                 con = Queries.createConstraint(query, fieldName, Queries.OPERATOR_BETWEEN, time, nextTime, false);
             } else {

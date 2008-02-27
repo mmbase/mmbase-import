@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.42 2006-09-29 10:06:03 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.43 2008-02-27 10:49:01 michiel Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -93,9 +93,9 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         switch(t) {
         case TYPE_NODENUMBER:
             if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
-                show = new Integer(getNode().getNumber());
+                show = getNode().getNumber();
             } else {
-                show = new Integer(nodeManager.getNumber());
+                show = nodeManager.getNumber();
             }
             break;
         case TYPE_CONTEXT:

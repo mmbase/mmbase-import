@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.7 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.8 2008-02-27 10:49:01 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
@@ -49,7 +49,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         field = getAttribute(f);
     }
 
-    public void setElement(String e) throws JspTagException { 
+    public void setElement(String e) throws JspTagException {
         element = getAttribute(e);
     }
 
@@ -73,7 +73,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
         NodeQuery query = dayMarks.createQuery();
         StepField step = query.createStepField("daycount");
         int currentDay = (int) (System.currentTimeMillis()/(1000*60*60*24));
-        Integer day = new Integer(currentDay  - age);
+        Integer day = currentDay  - age;
         if (log.isDebugEnabled()) {
             log.debug("today : " + currentDay + " requested " + day);
         }
@@ -129,17 +129,17 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
             int maxMarker = getDayMark(maxAgeInt);
             if (maxMarker > 0) {
                 // BETWEEN constraint
-                newConstraint = query.createConstraint(stepField, new Integer(maxMarker + 1), new Integer(getDayMark(minAgeInt - 1)));
+                newConstraint = query.createConstraint(stepField, maxMarker + 1, Integer.valueOf(getDayMark(minAgeInt - 1)));
             } else {
-                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(minAgeInt - 1)));
+                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAgeInt - 1)));
             }
         } else if (maxAgeInt != -1) { // only on max
             int maxMarker = getDayMark(maxAgeInt);
             if (maxMarker > 0) {
-                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, new Integer(maxMarker + 1));
+                newConstraint = query.createConstraint(stepField, FieldCompareConstraint.GREATER_EQUAL, Integer.valueOf(maxMarker + 1));
             }
         } else if (minAgeInt > 0) {
-            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, new Integer(getDayMark(minAgeInt - 1)));
+            newConstraint = query.createConstraint(stepField, FieldCompareConstraint.LESS_EQUAL, Integer.valueOf(getDayMark(minAgeInt - 1)));
         } else {
             // both unspecified
         }

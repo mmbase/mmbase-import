@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.27 2007-02-10 16:49:27 nklasens Exp $ 
+ * @version $Id: SizeTag.java,v 1.28 2008-02-27 10:49:01 michiel Exp $
  */
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
 
@@ -40,12 +40,12 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
      * When in a list-container only, the size can be predicted by altering the query with "count()".
      * @since MMBase-1.7
      */
-    protected void nodeListContainerSize(QueryContainer c) throws JspTagException {       
+    protected void nodeListContainerSize(QueryContainer c) throws JspTagException {
         Query query = c.getQuery();
         int res = Queries.count(query) - query.getOffset();
         int max = query.getMaxNumber();
         if (max > -1 && res > max) { res = max; }
-        helper.setValue(new Integer(res));
+        helper.setValue(res);
     }
 
     /**
@@ -53,7 +53,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
      * @since MMBase-1.7
      */
     protected void listProviderSize(LoopTag list) throws JspTagException {
-        helper.setValue(new Integer(list.getLoopStatus().getCount()));
+        helper.setValue(list.getLoopStatus().getCount());
     }
 
 
@@ -64,7 +64,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
             }
             QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
             if (c instanceof TreeContainerTag) {
-                helper.setValue(new Integer(((TreeContainerTag)c).getTree().size()));
+                helper.setValue(((TreeContainerTag)c).getTree().size());
             } else {
                 nodeListContainerSize(c);
             }
@@ -73,7 +73,7 @@ public class SizeTag extends ListReferrerTag implements Writer, QueryContainerRe
         } else {
             Tag tag = findLoopOrQuery(null, true);
             if (tag instanceof TreeContainerTag) {
-                helper.setValue(new Integer(((TreeContainerTag)tag).getTree().size()));
+                helper.setValue(((TreeContainerTag)tag).getTree().size());
             } else if (tag instanceof QueryContainer) {
                 nodeListContainerSize((QueryContainer) tag);
             } else {

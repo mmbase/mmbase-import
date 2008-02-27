@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: AbstractTreeReferrerListTag.java,v 1.7 2008-02-23 15:55:15 michiel Exp $
+ * @version $Id: AbstractTreeReferrerListTag.java,v 1.8 2008-02-27 10:49:01 michiel Exp $
  */
 abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements ListProvider, DepthProvider {
 
@@ -37,7 +37,7 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
         return true;
     }
     public Object getCurrent() {
-        return new Integer(depth);
+        return depth;
     }
     public void remove() {
         // not supported

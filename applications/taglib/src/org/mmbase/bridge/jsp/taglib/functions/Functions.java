@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.23 2007-10-25 17:26:06 michiel Exp $
+ * @version $Id: Functions.java,v 1.24 2008-02-27 10:49:01 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -52,7 +52,7 @@ public class Functions {
             if (col instanceof NodeList) {
                 if (col.contains(obj)) return true;
             } else {
-                obj = new Integer(((Node) obj).getNumber());
+                obj = ((Node) obj).getNumber();
             }
         }
         if (col.contains(obj)) return true;
@@ -71,7 +71,7 @@ public class Functions {
             }
         } else {
             if (obj instanceof Node) {
-                col.remove(new Integer(((Node) obj).getNumber()));
+                col.remove(((Node) obj).getNumber());
             }
             col.remove(Casting.toString(obj));
             col.remove(obj);

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.73 2007-11-13 16:52:45 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.74 2008-02-27 10:49:01 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -36,8 +36,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private Attribute number    = Attribute.NULL;
     private Attribute element   = Attribute.NULL;
-
-    private Attribute notfound = Attribute.NULL;
+    private Attribute notfound  = Attribute.NULL;
 
     /**
      * Release all allocated resources.
@@ -45,8 +44,8 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void doFinally() {
         log.debug("releasing");
         super.doFinally();
-        number = Attribute.NULL;
-        element = Attribute.NULL;
+        number   = Attribute.NULL;
+        element  = Attribute.NULL;
         notfound = Attribute.NULL;
     }
 
@@ -62,16 +61,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     public void setNotfound(String i) throws JspTagException {
         notfound = getAttribute(i);
     }
-    /**
-     * This function cannot be added because of Orion.
-     * It will call this function even if you use an attribute without <%= %>, stupidly.
-
-     public void setNumber(int number) throws JspTagException {
-     this.number = new Integer(number).toString();
-     }
-
-    */
-
 
     /**
      * The element attribute is used to access elements of
