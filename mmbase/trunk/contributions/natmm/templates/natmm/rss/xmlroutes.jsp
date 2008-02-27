@@ -44,7 +44,7 @@ String DATA_FORMAT ="E, dd MMM yyyy, H:mm";
                   String omschrijving = thisPage.getStringValue("omschrijving");
                   if(omschrijving!=null) { %><%= HtmlCleaner.filterAmps(HtmlCleaner.cleanText(omschrijving,"<",">","")).trim() %><% } 
                %></description>
-               <mm:list path="natuurgebieden,rolerel,artikel" orderby="artikel.titel" max="30" directions="UP"
+               <mm:list path="natuurgebieden,rolerel,artikel" orderby="artikel.titel"
                   ><mm:node element="artikel"
                      ><item>
                         <title><%
