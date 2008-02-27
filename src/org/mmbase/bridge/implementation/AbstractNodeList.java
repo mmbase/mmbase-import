@@ -20,24 +20,33 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
-public abstract class AbstractNodeList<E extends Node> extends BasicList<E>{
+/**
+ * @since MMBase-1.9
+ * @version $Id: AbstractNodeList.java,v 1.9 2008-02-27 11:46:52 michiel Exp $
+ */
+public abstract class AbstractNodeList<E extends Node> extends BasicList<E> {
 
-    private static Logger log = Logging.getLoggerInstance(AbstractNodeList.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractNodeList.class);
 
-    protected Cloud cloud;
-    protected NodeManager nodeManager = null;
+    protected final Cloud cloud;
+    protected final NodeManager nodeManager;
 
     public AbstractNodeList() {
         super();
+        this.cloud = null;
+        this.nodeManager = null;
     }
 
     public AbstractNodeList(Collection c) {
         super(c);
+        this.cloud = null;
+        this.nodeManager = null;
     }
 
     AbstractNodeList(Collection c, Cloud cloud) {
         super(c);
         this.cloud = cloud;
+        this.nodeManager = null;
     }
 
     AbstractNodeList(Collection c, NodeManager nodeManager) {
