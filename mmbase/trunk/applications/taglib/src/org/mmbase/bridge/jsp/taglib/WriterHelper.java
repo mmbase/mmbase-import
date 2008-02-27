@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.95 2007-08-09 13:35:12 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.96 2008-02-27 10:49:01 michiel Exp $
  */
 
 public class WriterHelper {
@@ -361,17 +361,17 @@ public class WriterHelper {
                     break;
             case TYPE_DOUBLE:
                 if (! (v instanceof Double)) {
-                    v = new Double(Casting.toDouble(v));
+                    v = Casting.toDouble(v);
                 }
                 break;
             case TYPE_LONG:
                 if (! (v instanceof Long)) {
-                    v = new Long(Casting.toLong(v));
+                    v = Casting.toLong(v);
                 }
                 break;
             case TYPE_FLOAT:
                 if (! (v instanceof Float)) {
-                    v = new Float(Casting.toFloat(v));
+                    v = Casting.toFloat(v);
                 }
                 break;
             case TYPE_DECIMAL:

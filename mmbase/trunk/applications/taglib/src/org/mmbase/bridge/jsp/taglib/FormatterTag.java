@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.76 2007-07-18 07:50:47 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.77 2008-02-27 10:49:01 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -105,7 +105,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
     private static final int WANTS_STRING          = 2;
 
     private static final String PAGECONTEXT_COUNTER = "formatter__counter";
-    
+
     /* transformer properties */
     Properties props = new Properties();
 
@@ -433,7 +433,7 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                 }
                 // iso 8601 for date/time
                 dateFormat.applyPattern(pattern);
-                Date datum = new Date((new Long(body)).longValue() * 1000);
+                Date datum = new Date(Long.parseLong(body) * 1000);
                 helper.setValue(dateFormat.format(datum));
                 break;
             default:

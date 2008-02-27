@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.71 2008-01-22 11:03:37 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.72 2008-02-27 10:49:01 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -271,16 +271,16 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                             break;
                         case Field.TYPE_INTEGER:
                         case Field.TYPE_NODE:
-                            value = new Integer(node.getIntValue(fieldName));
+                            value = node.getIntValue(fieldName);
                             break;
                         case Field.TYPE_DOUBLE:
-                            value = new Double(node.getDoubleValue(fieldName));
+                            value = node.getDoubleValue(fieldName);
                             break;
                         case Field.TYPE_LONG:
-                            value = new Long(node.getLongValue(fieldName));
+                            value = node.getLongValue(fieldName);
                             break;
                         case Field.TYPE_FLOAT:
-                            value = new Float(node.getFloatValue(fieldName));
+                            value = node.getFloatValue(fieldName);
                             break;
                         case Field.TYPE_DATETIME:
                             value = node.getValue(fieldName);

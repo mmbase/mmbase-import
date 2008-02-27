@@ -21,20 +21,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
-class LongContainer {
-    long value;
-    LongContainer() {
-        value = 0;
-    }
-}
-
 /**
  * Times how long the executing of the body took, and logs this.
  * Child elements can also time theirselves, and appear in the 'total
  * times' overview.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TimerTag.java,v 1.10 2007-02-24 21:58:51 nklasens Exp $ 
+ * @version $Id: TimerTag.java,v 1.11 2008-02-27 10:49:01 michiel Exp $
  */
 
 public class TimerTag extends ContextReferrerTag {
@@ -43,7 +36,7 @@ public class TimerTag extends ContextReferrerTag {
 
     private List<Long> timers;
     private List<String> timerIds;
-    private Map<String, LongContainer> totalTimes;
+    private Map<String, Long> totalTimes;
 
     private Attribute name = Attribute.NULL;
 
@@ -76,9 +69,9 @@ public class TimerTag extends ContextReferrerTag {
         if (log.isDebugEnabled()) {
             log.debug("Starting timer " + name.getString(this) + ": " + id);
         }
-        timers.add(new Long(System.currentTimeMillis()));
+        timers.add(System.currentTimeMillis());
         if (totalTimes.get(id) == null) {
-            totalTimes.put(id, new LongContainer());
+            totalTimes.put(id, 0L);
         }
         timerIds.add(id);
         return timers.size() - 1;
@@ -94,7 +87,7 @@ public class TimerTag extends ContextReferrerTag {
         if (log.isDebugEnabled()) {
             log.debug("Timer " + (name != Attribute.NULL ? name.getString(this) + ":"  : "")  + id + ": " + (double)duration / 1000 + " s");
         }
-        totalTimes.get(id).value += duration;
+        totalTimes.put(id, totalTimes.get(id) + duration);
         return duration;
     }
 
@@ -105,7 +98,7 @@ public class TimerTag extends ContextReferrerTag {
         log.info("Starting timer " + name.getString(this));
         timers     = new ArrayList<Long>(1);
         timerIds   = new ArrayList<String>(1);
-        totalTimes = new HashMap<String, LongContainer>();
+        totalTimes = new HashMap<String, Long>();
         startTimer(getId(), getClass().getName());
         return EVAL_BODY_BUFFERED;
     }
@@ -116,14 +109,11 @@ public class TimerTag extends ContextReferrerTag {
 
     public int doAfterBody() throws JspTagException {
         haltTimer(0);
-        String result = "Timer " + name.getString(this) + " totals:\n";
-        Iterator<String> i = totalTimes.keySet().iterator();
-
-        while (i.hasNext()) {
-            String key = i.next();
-            result += "   " + key + ": " +  (double)(totalTimes.get(key).value) + " ms\n";
+        StringBuilder result = new StringBuilder("Timer ").append(name.getString(this)).append(" totals:\n");
+        for (Map.Entry<String, Long> entry  : totalTimes.entrySet()) {
+            result.append("   ").append(entry.getKey()).append(": ").append((double) entry.getValue()).append(" ms\n");
         }
-        log.info(result);
+        log.info(result.toString());
 
         try {
             if (bodyContent != null) {

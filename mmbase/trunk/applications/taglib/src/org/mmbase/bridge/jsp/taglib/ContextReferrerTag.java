@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.102 2007-10-25 17:20:24 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.103 2008-02-27 10:49:01 michiel Exp $
  * @see ContextTag
  */
 
@@ -399,11 +399,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     protected Integer getAttributeInteger(String i, int def) throws JspTagException {
         try {
             i = getAttributeValue(i);
-            if (i.length() == 0) return new Integer(def);
-            return new Integer(i);
+            if (i.length() == 0) return def;
+            return Integer.parseInt(i);
         } catch (NumberFormatException e) { // try first if it was a float
             try {
-                return new Integer(new java.math.BigDecimal(i).intValue());
+                return new java.math.BigDecimal(i).intValue();
             } catch (NumberFormatException e2) {
                 throw new TaglibException(i + " is not an integer value ", e2);
             }
