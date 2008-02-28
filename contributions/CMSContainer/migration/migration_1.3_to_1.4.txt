@@ -115,8 +115,8 @@ Name: Renamed egemmail.livepath property to system.livepath
 Goal: 
 Type:  sql-script
 --- Start script ---
-UPDATE mm_proeprties SET key = 'system.livepath' WHERE key = 'egemmail.livepath';
-UPDATE live_proeprties SET key = 'system.livepath' WHERE key = 'egemmail.livepath';
+UPDATE mm_properties SET m_key = 'system.livepath' WHERE m_key = 'egemmail.livepath';
+UPDATE live_properties SET m_key = 'system.livepath' WHERE m_key = 'egemmail.livepath';
 
 --- End script ---
 Exceptions/errors/other problems and what to do:
