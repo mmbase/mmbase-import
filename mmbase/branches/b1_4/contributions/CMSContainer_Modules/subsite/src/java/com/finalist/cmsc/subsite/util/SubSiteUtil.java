@@ -80,7 +80,13 @@ public class SubSiteUtil {
 
    public static Node getPersonalpageChannel(Node personalpage) {
       Node ppChannel = getSubsiteChannel(personalpage);
+
+      if (ppChannel == null) {
+         return null;
+      }
+
       String fragment = personalpage.getStringValue(PagesUtil.FRAGMENT_FIELD);
+
       return RepositoryUtil.getChild(ppChannel, fragment);
    }
 
