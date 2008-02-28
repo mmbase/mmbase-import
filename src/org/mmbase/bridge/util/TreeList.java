@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.29 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: TreeList.java,v 1.30 2008-02-28 12:23:51 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -129,7 +129,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
 
             if (count == 0) {
                 foundEnd =
-                    branch.leafConstraint == null || 
+                    branch.leafConstraint == null ||
                     Queries.count(branch.getQuery()) == 0;
             }
             size += count;
@@ -226,6 +226,8 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         }
         return branch.result;
     }
+
+
     /**
      * Executes one query as a 'leaf' query.
      * @since MMBase-1.8
@@ -286,7 +288,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             realNodes = nq.getNodeManager().getList(nq); // We trust the query cache! (the query is performed already, but on Cloud)
             nodeList.setProperty(REAL_NODES, realNodes);
         }
-        assert realNodes.size() == nodeList.size() : "The size of nodeList " + nodeList.size() + " does not match realNodes " + realNodes.size() + 
+        assert realNodes.size() == nodeList.size() : "The size of nodeList " + nodeList.size() + " does not match realNodes " + realNodes.size() +
             " at queryIndex; " + queryIndex + " query " + branches.get(queryIndex).getLeafQuery().toSql();
         assert realNodes.size() >= index : "The size of realNodes  (" +  realNodes.size() + ") is too small (index = " + index + ")";
         return realNodes.getNode(index);
@@ -376,7 +378,9 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         private int currentIterator; // number of current iterator which is iterated
         private int nextIndex;       // the next index number, so this is 0 on the beginning, and <size> just before the last next()
 
+
         private boolean encounteredLeafConstraint = false;
+        private Node current;
 
         TreeItr(int i) {
             if (i < 0 || (i > 0 && i > TreeList.this.size())) {
@@ -467,9 +471,48 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
 
         public Node nextNode() {
             nextIndex++;
-            return getNextNode();
+            current = getNextNode();
+            return current;
         }
 
+        public Node getParent() {
+            NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
+            Query q = TreeList.this.branches.get(currentDepth() -1 ).getQuery();
+            List<Step> steps = q.getSteps();
+            if (steps.size() >= 3) {
+                Step thisStep = steps.get(steps.size() - 1);
+                Step parentStep = steps.get(steps.size() - 3);
+                for (Node sibling : nl) {
+                    if (current.getNumber() == sibling.getIntValue(thisStep.getAlias() +".number")) {
+                        return getCloud().getNode(sibling.getIntValue(parentStep.getAlias() +".number"));
+                    }
+                }
+            }
+            return null;
+        }
+
+        public NodeList getSiblings() {
+            NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
+            Query q = TreeList.this.branches.get(currentDepth() -1 ).getQuery();
+            List<Step> steps = q.getSteps();
+            NodeList l = getCloud().createNodeList();
+            if (steps.size() >= 3) {
+                int start = 0;
+                int end = 0;
+                int parent = getParent().getNumber();
+                Step thisStep = steps.get(steps.size() - 1);
+                Step parentStep = steps.get(steps.size() - 3);
+                for (Node sibling : nl) {
+                    if (sibling.getIntValue(parentStep.getAlias() +".number") == parent) {
+                        l.add(getCloud().getNode(sibling.getIntValue(thisStep.getAlias() +".number")));
+                    }
+                }
+                return l;
+            } else {
+                l.add(current);
+                return l;
+            }
+        }
         /**
          * Depth of the last node fetched with next() or nextNode()
          */
@@ -653,12 +696,14 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
         String startNodes = args[0];
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
 
-        NodeManager object = cloud.getNodeManager("segments");
+        String type = args.length > 1 ? args[1] : "segments";
+        String role = args.length > 2 ? args[2] : "index";
+        NodeManager object = cloud.getNodeManager(type);
 
         NodeQuery q = cloud.createNodeQuery();
         Step step = q.addStep(object);
         q.setNodeStep(step);
-        RelationStep relationStep = q.addRelationStep(object, "index", "destination");
+        RelationStep relationStep = q.addRelationStep(object, role, "destination");
         q.setNodeStep(relationStep.getNext());
         StepField pos = q.createStepField(relationStep, "pos");
         q.addSortOrder(pos, SortOrder.ORDER_ASCENDING);
@@ -672,7 +717,7 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
     public static void doTest(java.io.Writer writer, NodeQuery q) {
         Cloud cloud = q.getCloud();
 
-        NodeManager object = cloud.getNodeManager("segments");
+        NodeManager object = q.getNodeManager();
         try {
             //String text = "%potjandosie%";
             String text = "%%";
@@ -680,21 +725,27 @@ public class TreeList extends AbstractSequentialBridgeList<Node> implements Node
             long startTime = System.currentTimeMillis();
 
             TreeList tree = new TreeList(q);
-            Constraint con2 = Queries.createConstraint(tree.getLeafQuery(), "body", Queries.getOperator("LIKE"), text);
-            //tree.setLeafConstraint(con2);
+            if (object.hasField("body")) {
+                Constraint con2 = Queries.createConstraint(tree.getLeafQuery(), "body", Queries.getOperator("LIKE"), text);
+                //tree.setLeafConstraint(con2);
+            }
+
 
             writer.write("grow1:\n");
             writer.flush();
-            RelationStep step = tree.grow(object, "index", "destination");
+            RelationStep step = tree.grow(object, "posrel", "destination");
             NodeQuery top = tree.getLeafQuery();
-            Constraint con1 = Queries.createConstraint(top, "body", Queries.getOperator("LIKE"), text);
-            //tree.setLeafConstraint(con1);
+            if (object.hasField("body")) {
+                Constraint con1 = Queries.createConstraint(top, "body", Queries.getOperator("LIKE"), text);
+                //tree.setLeafConstraint(con1);
+            }
+            assert step != null;
             StepField pos = top.createStepField(step, "pos");
             top.addSortOrder(pos, SortOrder.ORDER_ASCENDING);
 
             writer.write("top " + top.toSql() + " grow2:\n");
             writer.flush();
-            tree.grow(object, "index", "destination");
+            tree.grow(object, "posrel", "destination");
             NodeQuery leaf = tree.getLeafQuery();
             Constraint con = Queries.createConstraint(leaf, "body", Queries.getOperator("LIKE"), text);
             //tree.setLeafConstraint(con);
