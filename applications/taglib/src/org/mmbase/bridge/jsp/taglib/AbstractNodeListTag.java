@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.75 2006-08-03 17:14:59 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.75.2.1 2008-02-28 12:16:40 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -132,6 +132,10 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public void setRemove(String c) throws JspTagException {
         listHelper.setRemove(c);
     }
+    public void setVarStatus(String s) throws JspTagException {
+        listHelper.setVarStatus(s);
+    }
+
 
 
     /**
@@ -315,7 +319,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     public LoopTagStatus getLoopStatus() {
-        return listHelper.getLoopStatus();        
+        return listHelper.getLoopStatus();
     }
 
 }
