@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib.tree;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.*;
+import javax.servlet.jsp.jstl.core.*;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -48,7 +49,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.18.2.2 2008-02-14 14:37:17 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.18.2.3 2008-02-28 12:15:50 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -65,9 +66,17 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     private int index;
 
     private Node nextNode;
+    private BranchLoopStatus nextBranchStatus;
 
     private Object prevDepthProvider;
     private Object prevTreeProvider;
+
+    protected Attribute varStatus = Attribute.NULL;
+    protected String varStatusName = null;
+
+    protected Attribute varBranchStatus = Attribute.NULL;
+    protected String varBranchStatusName = null;
+
 
     /**
      * Lists do implement ContextProvider
@@ -126,6 +135,8 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
+
+
     // ContextProvider implementation
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
@@ -165,6 +176,24 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         return nextDepth;
     }
 
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = getAttribute(s);
+    }
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void setVarBranchStatus(String s) throws JspTagException {
+        varBranchStatus = getAttribute(s);
+    }
+
+
+    public TreeIterator getIterator() {
+        return iterator;
+    }
+
 
     protected void noSpecification() throws JspTagException {
         if (nodeManager != Attribute.NULL) {
@@ -189,6 +218,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         prevTreeProvider = pageContext.getAttribute(TreeProvider.KEY, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute(DepthProvider.KEY, this, PageContext.REQUEST_SCOPE);
         pageContext.setAttribute(TreeProvider.KEY, this, PageContext.REQUEST_SCOPE);
+
+        varStatusName = (String) varStatus.getValue(this);
+        varBranchStatusName = (String) varBranchStatus.getValue(this);
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
@@ -254,10 +286,22 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             Node node     = iterator.nextNode();
             setNodeVar(node);
             fillVars();
+            if (varStatusName != null) {
+                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                cc.register(varStatusName, getLoopStatus());
+            }
+            if (varBranchStatusName != null) {
+                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                cc.register(varBranchStatusName, new BranchLoopStatus(node, iterator.getSiblings()));
+            }
             depth         = iterator.currentDepth();
 
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
+                if (varBranchStatusName != null) {
+                    org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                    nextBranchStatus = new BranchLoopStatus(nextNode, iterator.getSiblings());
+                }
                 nextDepth = iterator.currentDepth();
                 log.debug("hasnext " + nextDepth);
             } else {
@@ -291,11 +335,23 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             log.debug("using next-node");
             setNodeVar(nextNode);
             fillVars();
+            if (varStatusName != null) {
+                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                cc.reregister(varStatusName, new ListProviderLoopTagStatus(this));
+            }
+            if (varBranchStatusName != null) {
+                org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                cc.reregister(varBranchStatusName, nextBranchStatus);
+            }
             previousDepth = depth;
             depth         = nextDepth;
 
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
+                if (varBranchStatusName != null) {
+                    org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
+                    nextBranchStatus = new BranchLoopStatus(nextNode, iterator.getSiblings());
+                }
                 nextDepth = iterator.currentDepth();
                 log.debug("has next " + nextDepth);
             } else {
@@ -345,6 +401,45 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
     public javax.servlet.jsp.jstl.core.LoopTagStatus getLoopStatus() {
         return new ListProviderLoopTagStatus(this);
+    }
+
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    class BranchLoopStatus implements LoopTagStatus {
+        private final Node current;
+        private final NodeList siblings;
+        public BranchLoopStatus(Node c, NodeList s) {
+            current = c;
+            siblings = s;
+        }
+        public Object getCurrent() {
+            return current;
+        }
+        public int getIndex() {
+            return siblings.indexOf(current);
+        }
+
+        public int getCount() {
+            return siblings.size();
+        }
+
+        public boolean isFirst() {
+            return getIndex() == 0;
+        }
+        public boolean isLast() {
+            return getCount() == getIndex() + 1;
+        }
+        public Integer getBegin() {
+            return null;
+        }
+        public Integer getEnd() {
+            return null;
+        }
+        public Integer getStep() {
+            return null;
+        }
     }
 
 

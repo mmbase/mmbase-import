@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.374.2.24 2008-02-26 16:57:06 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.374.2.25 2008-02-28 12:15:50 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -549,6 +549,17 @@ version: $Id: mmbase-taglib.xml,v 1.374.2.24 2008-02-26 16:57:06 michiel Exp $
         </p>
         <p>
           It is also possible to postfix the referid with '?', in which case no error will occur if the variable with this id does not exist.
+        </p>
+      </info>
+    </attribute>
+    <attribute>
+      <name>varStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <since>MMBase-1.8.6</since>
+      <info>
+        <p>
+          Like varStatus of <a href="http://java.sun.com/products/jsp/jstl/1.1/docs/tlddocs/c/forEach.html">c:forEach</a>.
         </p>
       </info>
     </attribute>
@@ -7959,6 +7970,24 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="max" />
       <since>MMBase-1.8.1</since>
+    </attribute>
+    <attribute>
+      <name>varStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="listprovider" attribute="varStatus" />
+      <since>MMBase-1.8.6</since>
+    </attribute>
+    <attribute>
+      <name>varBranchStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="listprovider" attribute="varStatus" />
+      <since>MMBase-1.8.6</since>
+      <info>
+        This provides information about the current looping status of the current branch. If e.g. you want to know if the current node
+        is the last of the 'branch', then you could use 'varBranchStatus="branch"'&gt; ... ${branch.last}.
+      </info>
     </attribute>
   </tag>
   <tag>
