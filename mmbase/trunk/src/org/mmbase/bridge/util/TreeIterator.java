@@ -10,13 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
-import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.*;
+
 
 /**
  * A specialized iterator for 'TreeLists'
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeIterator.java,v 1.3 2004-10-09 09:37:34 nico Exp $
+ * @version $Id: TreeIterator.java,v 1.4 2008-02-28 12:23:51 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.bridge.util.TreeList
  */
@@ -27,5 +28,20 @@ public interface TreeIterator extends NodeIterator {
      * @return Depth of the last node fetched
      */
     int currentDepth();
+
+
+    /**
+     * Returns the 'parent' node of the most recently returned Node. Or <code>null</code> if there
+     * is no such node.
+     * @since MMBase-1.8.6
+     */
+    Node getParent();
+
+    /**
+     * Returns all nodes with the same parent as the most recently return Node (include that node
+     * itself).
+     * @since MMBase-1.8.6
+     */
+    NodeList getSiblings();
 
 }

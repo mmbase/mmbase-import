@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.21.2.2 2007-08-02 10:10:16 michiel Exp $
+ * @version $Id: TreeList.java,v 1.21.2.3 2008-02-28 12:23:27 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -128,7 +128,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
             if (count == 0) {
                 foundEnd =
-                    branch.leafConstraint == null || 
+                    branch.leafConstraint == null ||
                     Queries.count(branch.getQuery()) == 0;
             }
             size += count;
@@ -273,6 +273,12 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         return (Node)get(i);
     }
 
+    public NodeList getSiblings(Node node, int depth) {
+        NodeList nl = getList(depth);
+
+        return nl;
+    }
+
     /**
      * Returns node 'index' of query result 'queryIndex' as a 'real' node (so not a cluster node)
      */
@@ -285,10 +291,10 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
             realNodes = nq.getNodeManager().getList(nq); // We trust the query cache! (the query is performed already, but on Cloud)
             nodeList.setProperty(REAL_NODES, realNodes);
         }
-        assert realNodes.size() == nodeList.size() : "The size of nodeList " + nodeList.size() + " does not match realNodes " + realNodes.size() + 
+        assert realNodes.size() == nodeList.size() : "The size of nodeList " + nodeList.size() + " does not match realNodes " + realNodes.size() +
             " at queryIndex; " + queryIndex + " query " + ((Branch) branches.get(queryIndex)).getLeafQuery().toSql();
         assert realNodes.size() >= index : "The size of realNodes  (" +  realNodes.size() + ") is too small (index = " + index + ")";
-        
+
         return realNodes.getNode(index);
     }
 
@@ -372,6 +378,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         private int nextIndex;       // the next index number, so this is 0 on the beginning, and <size> just before the last next()
 
         private boolean encounteredLeafConstraint = false;
+        private Node current;
 
         TreeItr(int i) {
             if (i < 0 || (i > 0 && i > TreeList.this.size())) {
@@ -462,9 +469,50 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
 
         public Node nextNode() {
             nextIndex++;
-            return getNextNode();
+            current = getNextNode();
+            return current;
         }
 
+
+
+        public Node getParent() {
+            NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
+            Query q = ((Branch) TreeList.this.branches.get(currentDepth() -1 )).getQuery();
+            List steps = q.getSteps();
+            if (steps.size() >= 3) {
+                Step thisStep = (Step) steps.get(steps.size() - 1);
+                Step parentStep = (Step) steps.get(steps.size() - 3);
+                for (NodeIterator ni = nl.nodeIterator(); ni.hasNext(); ) {
+                    Node sibling = ni.nextNode();
+                    if (current.getNumber() == sibling.getIntValue(thisStep.getAlias() +".number")) {
+                        return getCloud().getNode(sibling.getIntValue(parentStep.getAlias() +".number"));
+                    }
+                }
+            }
+            return null;
+        }
+
+        public NodeList getSiblings() {
+            NodeList nl = TreeList.this.getLeafList(currentDepth() - 1);
+            Query q = ((Branch) TreeList.this.branches.get(currentDepth() -1 )).getQuery();
+            List steps = q.getSteps();
+            NodeList l = getCloud().createNodeList();
+            if (steps.size() >= 3) {
+                int parent = getParent().getNumber();
+                Step thisStep = (Step) steps.get(steps.size() - 1);
+                Step parentStep = (Step) steps.get(steps.size() - 3);
+                for (NodeIterator ni = nl.nodeIterator(); ni.hasNext(); ) {
+                    Node sibling = ni.nextNode();
+                    if (sibling.getIntValue(parentStep.getAlias() +".number") == parent) {
+                        l.add(getCloud().getNode(sibling.getIntValue(thisStep.getAlias() +".number")));
+                    }
+                }
+                return l;
+            } else {
+                l.add(current);
+                return l;
+            }
+        }
         /**
          * Depth of the last node fetched with next() or nextNode()
          */
