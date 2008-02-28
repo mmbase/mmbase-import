@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.422 2008-02-26 17:06:44 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.423 2008-02-28 12:22:59 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8238,6 +8238,24 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <see tag="list" attribute="max" />
       <since>MMBase-1.8.1</since>
+    </attribute>
+    <attribute>
+      <name>varStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="listprovider" attribute="varStatus" />
+      <since>MMBase-1.8.6</since>
+    </attribute>
+    <attribute>
+      <name>varBranchStatus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="listprovider" attribute="varStatus" />
+      <since>MMBase-1.8.6</since>
+      <info>
+        This provides information about the current looping status of the current branch. If e.g. you want to know if the current node
+        is the last of the 'branch', then you could use 'varBranchStatus="branch"'&gt; ... ${branch.last}.
+      </info>
     </attribute>
   </tag>
   <tag>
