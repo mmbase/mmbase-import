@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.publish;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.remotepublishing.PublishListener;
 import org.mmbase.remotepublishing.PublishManager;
 import org.mmbase.remotepublishing.builders.PublishingQueueBuilder;
@@ -18,7 +20,11 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.navigation.NavigationItemManager;
 import com.finalist.cmsc.navigation.NavigationManager;
-import com.finalist.cmsc.publish.*;
+import com.finalist.cmsc.publish.ChannelPublisher;
+import com.finalist.cmsc.publish.ContentPublisher;
+import com.finalist.cmsc.publish.NodePublisher;
+import com.finalist.cmsc.publish.PagePublisher;
+import com.finalist.cmsc.publish.Publisher;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.workflow.Workflow;
@@ -79,16 +85,16 @@ public class PublishServiceMMBaseImpl extends PublishService implements PublishL
       if (publisher.isPublishable(node)) {
          return publisher;
       }
+      publisher = getOptionalPublisher(node.getCloud(), node.getNodeManager().getName());
+      if (publisher != null && publisher.isPublishable(node)) {
+         return publisher;
+      }
       publisher = getPagePublisher(node.getCloud());
       if (publisher.isPublishable(node)) {
          return publisher;
       }
       publisher = getChannelPublisher(node.getCloud());
       if (publisher.isPublishable(node)) {
-         return publisher;
-      }
-      publisher = getOptionalPublisher(node.getCloud(), node.getNodeManager().getName());
-      if (publisher != null && publisher.isPublishable(node)) {
          return publisher;
       }
       publisher = getNodePublisher(node.getCloud());
