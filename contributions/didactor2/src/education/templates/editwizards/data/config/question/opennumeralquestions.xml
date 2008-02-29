@@ -2,7 +2,6 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
 [
    <!ENTITY extra_loads SYSTEM "extra_loads.xml">
-   <!ENTITY extra_steps SYSTEM "extra_steps.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
@@ -43,10 +42,6 @@
         </optionlist>
     </lists>
 
-    <steps>
-        <step form-schema="step1" />
-        &extra_steps;
-    </steps>
 
     <form-schema id="step1">
         <title>Open numeral vraag invoeren</title>
@@ -57,28 +52,28 @@
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
-        </field> 
-        
-        <!--  INSERT DESCRIPTION --> 
+        </field>
+
+        <!--  INSERT DESCRIPTION -->
         <field name="description" rows="8" ftype="html" dtminlength="0">
             <prompt>Description</prompt>
         </field>
         <!-- END INSERT DESCRIPTION -->
-        
+
         <field name="layout" ftype="enum">
             <prompt>Layout</prompt>
             <optionlist select="layout" />
         </field>
-        
-         <!--  INSERT TEXT -->  
+
+         <!--  INSERT TEXT -->
         <field name="text" ftype="html" dtminlength="0">
             <prompt>Tekst</prompt>
-        </field>       
-        <!-- END INSERT TEXT --> 
-        
-        
-        <!--  INSERT VARIABLES -->  
-      
+        </field>
+        <!-- END INSERT TEXT -->
+
+
+        <!--  INSERT VARIABLES -->
+
          <list destination="variables" role="related" ordertype="number" orderby="number">
             <title>Variables</title>
             <item>
@@ -114,14 +109,14 @@
 
             <command name="insert" />
         </list>
-        
- <!-- END INSERT VARIABLES -->
-        
-        
-        
 
-        <!--  INSERT ANSWER -->  
-      
+ <!-- END INSERT VARIABLES -->
+
+
+
+
+        <!--  INSERT ANSWER -->
+
          <list destination="openanswers" role="related" ordertype="number" orderby="number">
             <title>Bijbehorende antwoorden (niet verplicht)</title>
             <item>
@@ -138,7 +133,7 @@
 			       </item>
 			    </list>
             </item>
-			
+
             <action type="create">
                 <relation role="related">
                     <object type="openanswers" />
@@ -161,9 +156,9 @@
 
             <command name="insert" />
         </list>
-        
+
  <!-- END INSERT ANSWER -->
- 
+
         <list role="related" extends="config/feedback/feedback-list.xml" />
     </form-schema>
 

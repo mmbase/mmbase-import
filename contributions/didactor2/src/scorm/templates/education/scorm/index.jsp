@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF8"
 %><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" 
+%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
 %>
 <%@page import="java.io.File"%>
 <%@page import="java.io.RandomAccessFile"%>
@@ -75,7 +75,7 @@ String baseUrl = request.getContextPath() + org.mmbase.servlet.MMBaseServlet.get
 %>
 <mm:log jspvar="log">
 <%
-       
+
 
 
 String fileName = null;
@@ -93,7 +93,7 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
         while(itr.hasNext()) {
             FileItem item = (FileItem) itr.next();
             log.debug("Considering .." + item);
-            
+
             if (item.isFormField()) {
                 if (item.getFieldName().equals("manager")) {
                     mtype = item.getString();
@@ -104,13 +104,13 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                 if(fieldName.equals("filename")) {
                     log.info("Creating node of type packages");
                     //------------- Uploading of new package ----------------
-                    
+
                     //Create a new node which describes this package
                     packageNode = cloud.getNodeManager("packages").createNode();
                     packageNode.setValue("uploaddate", "" + ((new Date()).getTime() / 1000));
                     packageNode.setValue("type", "SCORM");
                     packageNode.commit();
-                    
+
                     fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
 
                      try {
@@ -123,14 +123,14 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                          File savedFile = new File(newDir, fileName);
                          item.write(savedFile);
                          fileSrc = new File(directory, fileName);
-                         
+
                          uploadOK = true;
                          savedFile = null;
                      } catch(Exception e) {
                          msg = "Internal server error: " + e.toString();
                          uploadOK = false;
                      }
-                     
+
                      try {// A error during unpacking .zip
                          if(uploadOK) {
                              Unpack.unzipFileToFolder(directory + File.separator + packageNode.getNumber() + File.separator + fileName, directory + File.separator + packageNode.getNumber() + "_");
@@ -162,13 +162,13 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                              uploadOK = false;
                          }
                      }
-                     
+
 
                      // THIS IS ABSURD
 
                      //Get structure of menu and write it to our instance of player
                      try {
-                         MenuCreator menuCreator = new MenuCreator(packageNode); 
+                         MenuCreator menuCreator = new MenuCreator(packageNode);
                          String[] arrstrJSMenu = menuCreator.parse(true);
                          File fileMenuConfig = new File(directory, packageNode.getNumber() + "_player" + File.separator + "ReloadContentPreviewFiles" + File.separator + "CPOrgs.js");
                          // i'm sorry, but wtf?
@@ -179,7 +179,7 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
                              rafileMenuConfig.writeByte(10);
                          }
                          rafileMenuConfig.close();
-                         
+
                      } catch (Exception e) {
                          // wtf
                      }
@@ -194,11 +194,7 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
    }
 %>
 </mm:log>
-<%@include file="/education/wizards/roles_defs.jsp" %>
-<mm:import id="editcontextname" reset="true">filemanagement</mm:import>
-<%@include file="/education/wizards/roles_chk.jsp" %>
-
-<mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RW">
+<di:has action="rw" editcontext="mayupload">
 <% request.getSession().setAttribute("mayupload","true"); %>
 
 <html>
@@ -257,7 +253,7 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
             <tr class="listheader">
                <mm:islessthan inverse="true" referid="rights" referid2="RIGHTS_RWD">
                   <th/>
-               </mm:islessthan>	       
+               </mm:islessthan>
                <th colspan="2">#</th>
                <th><di:translate key="scorm.scormpackagelisttablename" /></th>
                <th><di:translate key="scorm.scormpackagelisttableversion" /></th>
@@ -269,7 +265,7 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
             <%
                int fileNum = 0;
             %>
-	    
+
             <mm:listnodes type="packages" orderby="uploaddate" directions="down" constraints="type LIKE 'SCORM'"><!-- wtf -->
 
                <mm:import id="imported" reset="true"><mm:field name="importdate"/></mm:import>
@@ -323,7 +319,6 @@ if (request.getSession(false) != null && "true".equals(request.getSession(false)
 
 </body>
 </html>
-
-</mm:islessthan>
+</di:has>
 </mm:cloud>
 
