@@ -38,7 +38,9 @@
         </positions>
       </editor>
       <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="1" />
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.PosrelCommitProcessor" />
+        </commitprocessor>
       </datatype>
     </field>
   </fieldlist>
