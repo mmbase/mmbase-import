@@ -32,7 +32,7 @@
          -->
          <!--create new role-->
 
-         <di:leaf icon="learnblock" depth="1" branchPath=". ">
+         <di:leaf icon="learnblock"  branchPath=". ">
            <jsp:text> </jsp:text>
            <mm:link referid="listjsp">
              <mm:param name="wizard">config/people/people</mm:param>
@@ -47,7 +47,7 @@
            </mm:link>
          </di:leaf>
          <mm:listnodes type="roles" varStatus="status">
-           <di:leaf depth="2" branchPath=". ${status.last ? '.' : ' '}">
+           <di:leaf  branchPath=". ${status.last ? '.' : ' '}">
              <jsp:text> </jsp:text>
              <mm:link referid="listjsp" referids="_node@startnodes,education">
                <mm:param name="wizard">config/people/people_unlink</mm:param>
@@ -65,7 +65,7 @@
              </mm:link>
            </di:leaf>
          </mm:listnodes>
-         <di:leaf icon="learnblock" depth="1" branchPath=". ">
+         <di:leaf icon="learnblock"  branchPath=". ">
            <mm:link referid="listjsp" referids="e@education">
              <mm:param name="wizard">config/class/classes-standalone</mm:param>
              <mm:param name="nodepath">classes</mm:param>
@@ -80,7 +80,7 @@
              </a>
            </mm:link>
          </di:leaf>
-         <di:leaf icon="learnblock" depth="1" branchPath=". ">
+         <di:leaf icon="learnblock"  branchPath=". ">
            <mm:link referid="listjsp">
              <mm:param name="wizard">config/workgroup/workgroups</mm:param>
              <mm:param name="nodepath">workgroups</mm:param>
@@ -96,12 +96,12 @@
              </nobr>
            </mm:link>
          </di:leaf>
-         <di:leaf icon="learnblock" depth="1" branchPath=". ">
+         <di:leaf icon="learnblock"  branchPath=". ">
            <jsp:text> </jsp:text>
            <a href="roles.jsp" title="${di:translate('education.roles')}"
               target="text"><di:translate key="education.roles" /></a>
          </di:leaf>
-         <di:leaf icon="learnblock" depth="1" branchPath="..">
+         <di:leaf icon="learnblock"  branchPath="..">
            <mm:link referid="listjsp">
              <mm:param name="wizard">config/disallowedusernames/disallowedusernames</mm:param>
              <mm:param name="nodepath">disallowedusernames</mm:param>
