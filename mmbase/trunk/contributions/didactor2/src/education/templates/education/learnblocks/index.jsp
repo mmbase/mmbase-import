@@ -6,7 +6,7 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <mm:content
-      type="application/xhtml+xml" postprocessor="none">
+      type="application/xml" postprocessor="none">
     <div xmlns="http://www.w3.org/1999/xhtml"
         class="content">
       <mm:cloud rank="didactor user">
@@ -22,7 +22,15 @@
 
           <di:include page="/education/learnblocks/subnavigation.jspx" />
 
-          <div class="learnenvironment">
+          <mm:relatednodes type="images" role="background">
+            <!-- f(png)+s(500)+fill(rgba(255,255,255,80))+draw(rectangle 0,0,1000,1000)+draw(rectangle 240,0,1000,1000) -->
+            <mm:import id="background">url('<mm:image  template="${di:setting('education', 'background_image_template')}" />')</mm:import>
+          </mm:relatednodes>
+          <div
+              style="background-image: ${empty background ? '' : background}"
+              class="learnenvironment">
+
+
             <di:include page="/education/learnblocks/node.jspx" />
           </div>
 
