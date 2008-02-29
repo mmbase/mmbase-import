@@ -25,6 +25,7 @@ var may_open_future =
 
 
 var currentnumber = -1;
+var currentel = -1;
 var contenttype   = new Array();
 var contentnumber = new Array();
 var openDivs      = new Object();
@@ -238,8 +239,13 @@ function postContent(href, form) {
     scrollToTop();
 }
 
-function openContent(type, number) {
-
+function openContent(type, number, el) {
+    if (currentel != null) {
+        currentel.className = "";
+    }
+    if (el != null) {
+        el.className = "active";
+    }
     if (document.getElementById('content-'+currentnumber)) {
         var el = document.getElementById('content-'+currentnumber);
         var classNames = el.className.split(" ");
@@ -254,6 +260,7 @@ function openContent(type, number) {
     if ( number > 0 ) {
         currentnumber = number;
     }
+    currentel = el;
 
     var href;
     switch ( type ) {
