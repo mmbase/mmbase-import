@@ -5,6 +5,7 @@
   <di:html
       type="text/html"
       styleClass="editwizards"
+      component="education.wizards"
       title_key="education.editwizards"
       rank="editor" expires="0">
 
