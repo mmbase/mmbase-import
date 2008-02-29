@@ -16,7 +16,7 @@ import javax.servlet.jsp.tagext.*;
 import javax.servlet.jsp.jstl.core.*;
 
 import java.io.IOException;
-import java.util.Stack;
+import java.util.*;
 
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.18.2.3 2008-02-28 12:15:50 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.18.2.4 2008-02-29 13:16:20 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -67,6 +67,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
     private Node nextNode;
     private BranchLoopStatus nextBranchStatus;
+    private List/*<BranchLoopStatus>*/ branchLoopStatus;
 
     private Object prevDepthProvider;
     private Object prevTreeProvider;
@@ -190,11 +191,6 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     }
 
 
-    public TreeIterator getIterator() {
-        return iterator;
-    }
-
-
     protected void noSpecification() throws JspTagException {
         if (nodeManager != Attribute.NULL) {
             throw new JspTagException("'type' attribute does not make sense with 'referid' attribute");
@@ -221,6 +217,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
         varStatusName = (String) varStatus.getValue(this);
         varBranchStatusName = (String) varBranchStatus.getValue(this);
+        if (varBranchStatusName != null) {
+            branchLoopStatus = new ArrayList();
+        }
 
         // serve parent timer tag:
         TagSupport t = findParentTag(TimerTag.class, null, false);
@@ -286,15 +285,18 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             Node node     = iterator.nextNode();
             setNodeVar(node);
             fillVars();
+            depth         = iterator.currentDepth();
             if (varStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
                 cc.register(varStatusName, getLoopStatus());
             }
             if (varBranchStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
-                cc.register(varBranchStatusName, new BranchLoopStatus(node, iterator.getSiblings()));
+                while (branchLoopStatus.size() < depth) branchLoopStatus.add(null);
+                branchLoopStatus.set(depth - 1, new BranchLoopStatus(node, iterator.getSiblings()));
+                cc.register(varBranchStatusName, branchLoopStatus.subList(0, depth));
             }
-            depth         = iterator.currentDepth();
+
 
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
@@ -335,16 +337,20 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             log.debug("using next-node");
             setNodeVar(nextNode);
             fillVars();
+            previousDepth = depth;
+            depth         = nextDepth;
+
             if (varStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
                 cc.reregister(varStatusName, new ListProviderLoopTagStatus(this));
             }
             if (varBranchStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
-                cc.reregister(varBranchStatusName, nextBranchStatus);
+                while (branchLoopStatus.size() < depth) branchLoopStatus.add(null);
+                branchLoopStatus.set(depth - 1, nextBranchStatus);
+                cc.reregister(varBranchStatusName, branchLoopStatus.subList(0, depth));
             }
-            previousDepth = depth;
-            depth         = nextDepth;
+
 
             if (iterator.hasNext()) {
                 nextNode  = iterator.nextNode();
@@ -393,9 +399,11 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         iterator = null;
         shrinkStack = null;
         nextNode = null;
+        nextBranchStatus = null;
         collector = null;
         prevDepthProvider = null;
         prevTreeProvider = null;
+        branchLoopStatus = null;
         return super.doEndTag();
     }
 
