@@ -12,10 +12,11 @@
   <field name="layout" />
   <field name="imagelayout" />
 
-  <list role="sizerel" extends="config/image/sizedimages.xml" />
-  <list role="posrel" extends="config/attachment/attachments-posrel.xml" />
-  <list role="posrel" extends="config/audiotape/audiotapes-posrel.xml" />
-  <list role="posrel" extends="config/videotape/videotapes-posrel.xml" />
+  <list extends="config/image/sizedimages.xml" />
+  <list extends="config/image/backgroundimage.xml" />
+  <list extends="config/attachment/attachments-posrel.xml" />
+  <list extends="config/audiotape/audiotapes-posrel.xml" />
+  <list extends="config/videotape/videotapes-posrel.xml" />
 
   <list destination="urls" role="posrel" extends="config/url/urls-posrel.xml" />
 
