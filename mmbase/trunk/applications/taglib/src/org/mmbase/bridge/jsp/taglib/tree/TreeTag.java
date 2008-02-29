@@ -14,7 +14,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.*;
 
 import java.io.IOException;
-import java.util.Stack;
+import java.util.*;
 
 import org.mmbase.bridge.util.*;
 import org.mmbase.bridge.*;
@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.25 2008-02-28 12:22:59 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.26 2008-02-29 13:19:35 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -66,6 +66,7 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
     private Node nextNode;
     private BranchLoopStatus nextBranchStatus;
+    private List<BranchLoopStatus> branchLoopStatus;
 
     private Object prevDepthProvider;
     private Object prevTreeProvider;
@@ -224,6 +225,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
 
         varStatusName = (String) varStatus.getValue(this);
         varBranchStatusName = (String) varBranchStatus.getValue(this);
+        if (varBranchStatusName != null) {
+            branchLoopStatus = new ArrayList();
+        }
 
         // serve parent timer tag:
         TimerTag t = findParentTag(TimerTag.class, null, false);
@@ -296,7 +300,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             }
             if (varBranchStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
-                cc.register(varBranchStatusName, new BranchLoopStatus(node, iterator.getSiblings()));
+                while (branchLoopStatus.size() < depth) branchLoopStatus.add(null);
+                branchLoopStatus.set(depth - 1, new BranchLoopStatus(node, iterator.getSiblings()));
+                cc.register(varBranchStatusName, branchLoopStatus.subList(0, depth));
             }
 
             if (iterator.hasNext()) {
@@ -347,7 +353,9 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             }
             if (varBranchStatusName != null) {
                 org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = getContextProvider().getContextContainer();
-                cc.reregister(varBranchStatusName, nextBranchStatus);
+                while (branchLoopStatus.size() < depth) branchLoopStatus.add(null);
+                branchLoopStatus.set(depth - 1, nextBranchStatus);
+                cc.reregister(varBranchStatusName, branchLoopStatus.subList(0, depth));
             }
             previousDepth = depth;
             depth         = nextDepth;
@@ -399,9 +407,11 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         iterator = null;
         shrinkStack = null;
         nextNode = null;
+        nextBranchStatus = null;
         collector = null;
         prevDepthProvider = null;
         prevTreeProvider = null;
+        branchLoopStatus = null;
         return super.doEndTag();
     }
 
