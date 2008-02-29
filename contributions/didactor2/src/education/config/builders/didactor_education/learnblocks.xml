@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
     name="learnblocks" maintainer="didactor.nl" version="2" extends="learnobjects">
   <class>nl.didactor.builders.DidactorBuilder</class>
-  <searchage>31</searchage>
+  <searchage>-1</searchage>
   <names>
     <singular xml:lang="nl">Leerblok</singular>
     <singular xml:lang="en">Learnblock</singular>
