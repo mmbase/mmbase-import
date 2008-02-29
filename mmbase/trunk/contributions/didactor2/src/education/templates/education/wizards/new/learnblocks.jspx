@@ -1,18 +1,16 @@
 <jsp:root version="2.0"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
-
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="wizardjsp" from="request" />
   <mm:import externid="branchPath" />
-  <mm:import  externid="b" from="request" required="true" />
+  <mm:import  externid="b" from="request" />
 
   <di:leaf styleClass="neweducation"
-             branch="${b}"
-             branchOffset="1"
-             branchPath="${branchPath} ">
+           branch="${b}"
+           branchOffset="1"
+           branchPath="${branchPath} ">
     <mm:listrelations role="posrel" type="learnblocks" max="1" orderby="pos" directions="down">
       <mm:field name="pos" id="maxpos" write="false" />
     </mm:listrelations>
@@ -30,7 +28,7 @@
             <mm:nodeinfo escape="lowercase" nodetype="learnblocks" type="guitype" />
           </mm:isempty>
         </mm:property>
-
+        <jsp:text> </jsp:text>
         <di:translate key="education.aanmaken" />
       </a>
     </mm:link>
