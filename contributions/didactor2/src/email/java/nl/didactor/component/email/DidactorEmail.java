@@ -111,7 +111,7 @@ public class DidactorEmail extends Component {
     protected Node getMailBox(Node user, MailBox.Type type, boolean create) {
         NodeManager mailboxes = user.getCloud().getNodeManager("mailboxes");
         NodeQuery q = Queries.createRelatedNodesQuery(user, mailboxes, "related", "destination");
-        Queries.addConstraint(q, Queries.createConstraint(q, "type", Queries.getOperator("="), Integer.valueOf(type.getKey())));
+        Queries.addConstraint(q, Queries.createConstraint(q, "type", Queries.getOperator("="), Integer.valueOf(type.getValue())));
         NodeList boxes = mailboxes.getList(q);
         if (boxes.size() > 1 ) {
             log.warn("Found more than one mailbox " + type + " for user " + user);
@@ -119,7 +119,7 @@ public class DidactorEmail extends Component {
         Node mailbox;
         if (boxes.size() == 0) {
             mailbox = mailboxes.createNode();
-            mailbox.setValue("type", type.getKey());
+            mailbox.setValue("type", type.getValue());
             mailbox.setValue("name", type.getName(user.getCloud().getLocale()));
             mailbox.commit();
             RelationManager rm = user.getCloud().getRelationManager("related");
