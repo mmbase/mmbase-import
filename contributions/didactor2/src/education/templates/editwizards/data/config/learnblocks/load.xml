@@ -7,6 +7,7 @@
   <relation destination="learnobjects" role="posrel" />
   <relation destination="mmevents" role="related" />
   <relation destination="images" role="sizerel" />
+  <relation destination="images" role="background" />
   <relation destination="paragraphs" role="posrel">
     <object>
       <relation destination="attachments" role="posrel" />
@@ -18,7 +19,7 @@
   <relation destination="videotapes" role="posrel" />
   <relation destination="attachments" role="posrel" />
   <relation destination="urls" role="posrel" />
-  <relation destination="feedback" role="descriptionrel" /> 
+  <relation destination="feedback" role="descriptionrel" />
   &extra_loads;
 </action>
 
