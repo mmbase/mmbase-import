@@ -7,23 +7,16 @@
    <title xml:lang="nl">Afbeeldingen</title>
    <title xml:lang="en">Images</title>
    <item displaymode="section" displaytype="image">
-      <title></title>
-      <description></description>
-      <field name="title" ftype="data">
-         <prompt xml:lang="nl">Naam</prompt>
-         <prompt xml:lang="en">Title</prompt>
-      </field>
-      <field fdatapath="field[@name='pos1']" ftype="enum">
-            <prompt xml:lang="nl">Positie</prompt>
-            <prompt xml:lang="en">Position</prompt>
-            <optionlist select="images_position"></optionlist>
-      </field>
-      <field fdatapath="field[@name='pos2']" ftype="enum">
-            <prompt xml:lang="nl">Popup</prompt>
-            <prompt xml:lang="en">Popup</prompt>
-            <optionlist select="boolean"></optionlist>
-      </field>
-      <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/image/image">
+     <title></title>
+     <description></description>
+     <field name="title" ftype="data" />
+     <field fdatapath="field[@name='pos1']" />
+     <field fdatapath="field[@name='pos2']" ftype="enum">
+       <prompt xml:lang="nl">Popup</prompt>
+       <prompt xml:lang="en">Popup</prompt>
+       <optionlist select="boolean"></optionlist>
+     </field>
+     <field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="config/image/image">
             <prompt></prompt>
       </field>
    </item>
