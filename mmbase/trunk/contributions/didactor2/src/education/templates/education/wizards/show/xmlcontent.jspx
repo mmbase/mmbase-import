@@ -19,8 +19,19 @@
 
       <a href="${_}"
          target="text">
-        <mm:hasfield name="name"><mm:field name="name" /></mm:hasfield>
-        <mm:hasfield name="title"><mm:field name="title" /></mm:hasfield>
+        <mm:import id="href">
+          <mm:hasfield name="name">
+            <mm:field name="name" />
+          </mm:hasfield>
+          <mm:hasfield name="title">
+            <mm:field name="title" />
+          </mm:hasfield>
+        </mm:import>
+        <mm:write escape="none" referid="href" write="true">
+          <mm:isempty>
+            <mm:field name="number" />
+          </mm:isempty>
+        </mm:write>
       </a>
     </mm:link>
 
