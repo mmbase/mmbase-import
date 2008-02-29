@@ -1,14 +1,13 @@
 <jsp:root version="2.0"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="wizardjsp" from="request" />
   <mm:import externid="branchPath" />
   <mm:import externid="b" from="request" />
 
-  <di-t:leaf styleClass="newtests"
+  <di:leaf styleClass="newtests"
              branchPath="${branchPath} "
              branch="${b}"
              branchOffset="1"
@@ -22,6 +21,6 @@
          title="${di:translate('education.new')} ${guitype}"
          target="text"><di:translate key="education.new" /> ${guitype}</a>
     </mm:link>
-  </di-t:leaf>
+  </di:leaf>
 
 </jsp:root>

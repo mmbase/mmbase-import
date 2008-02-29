@@ -10,7 +10,7 @@
   <mm:import  externid="branchPath" required="true" />
   <mm:import  externid="b" from="request" required="true" />
 
-  <di-t:leaf styleClass="self2"
+  <di:leaf styleClass="self2"
              branch="${b}"
              branchOffset="1"
              branchPath="${branchPath}"
@@ -42,7 +42,7 @@
     <mm:hasnode number="component.versioning">
       <a href="versioning.jsp?nodeid=${_node}" target="text"><img id="img_${_node}" src="gfx/versions.gif" border="0" /></a>
     </mm:hasnode>
-  </di-t:leaf>
+  </di:leaf>
 
   <![CDATA[<div id="${_node}" style="display:none;">]]>
   <mm:onshrink><![CDATA[</div>]]></mm:onshrink>
