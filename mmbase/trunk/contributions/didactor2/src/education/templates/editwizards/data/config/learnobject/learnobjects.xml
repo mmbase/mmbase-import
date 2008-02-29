@@ -2,7 +2,6 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
 [
   <!ENTITY extra_loads SYSTEM "extra_loads.xml">
-  <!ENTITY extra_steps SYSTEM "extra_steps.xml">
   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
@@ -14,22 +13,13 @@
       <field name="showtitle">1</field>
     </object>
   </action>
-    
+
   <action type="load">
     <relation destination="mmevents" role="related" />
     &extra_loads;
   </action>
 
   <action type="delete" />
-    
-  <lists>
-    <optionlist include="config/option_list/boolean.xml" />
-  </lists>
-
-  <steps>
-    <step form-schema="step1" />
-    &extra_steps;
-  </steps>
 
   <form-schema id="step1">
     <title xml:lang="nl">Leerobject invoeren</title>
@@ -39,12 +29,8 @@
       <prompt xml:lang="en">Name</prompt>
     </field>
 
-    <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
-      <prompt xml:lang="en">Show title</prompt>
-      <optionlist select="boolean" />
-    </field>
- 
+    <field name="showtitle" />
+
     <field name="intro" ftype="html" dtminlength="0">
       <prompt xml:lang="nl">Tekst</prompt>
       <prompt xml:lang="en">Text</prompt>

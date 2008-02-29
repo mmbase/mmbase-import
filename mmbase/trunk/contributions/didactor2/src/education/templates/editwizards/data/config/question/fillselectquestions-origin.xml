@@ -2,7 +2,6 @@
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
 [
    <!ENTITY extra_loads SYSTEM "extra_loads.xml">
-   <!ENTITY extra_steps SYSTEM "extra_steps.xml">
    <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
@@ -31,8 +30,8 @@
     </action>
 
     <action type="delete" />
-    
-     
+
+
 
     <lists>
         <optionlist include="config/option_list/boolean.xml" />
@@ -41,61 +40,57 @@
             <option id="0">Above</option>
             <option id="1">Under</option>
             <option id="2">Next</option>
-        </optionlist>      
-        <optionlist include="config/option_list/boolean_inverse.xml" /> 
+        </optionlist>
+        <optionlist include="config/option_list/boolean_inverse.xml" />
         <optionlist name="layout">
             <option id="2">Pulldown menu (geschud)</option>
             <option id="5">Pulldown menu (vaste volgorde)</option>
-        </optionlist>   
+        </optionlist>
     </lists>
 
-    <steps>
-        <step form-schema="step1" />
-        &extra_steps;
-    </steps>
 
     <form-schema id="step1">
         <title xml:lang="en">Enter fill select in the gaps question</title>
-  		<title xml:lang="nl">Invul-selectievraag invoeren</title> 
+  		<title xml:lang="nl">Invul-selectievraag invoeren</title>
         <field name="title" >
             <prompt xml:lang="en">Title</prompt>
             <prompt xml:lang="nl">Invul-selectievraag titel</prompt>
         </field>
-        
-       
-    <!--  INSERT SELECT TITLE -->  
+
+
+    <!--  INSERT SELECT TITLE -->
         <field name="showtitle" ftype="enum">
            <prompt xml:lang="nl">Titel laten zien</prompt>
            <prompt xml:lang="en">Show title</prompt>
            <optionlist select="boolean" />
         </field>
-   <!-- END INSERT SELECT TITLE --> 
-   
-    <!--  INSERT FLASH/TEXT -->  
+   <!-- END INSERT SELECT TITLE -->
+
+    <!--  INSERT FLASH/TEXT -->
         <field name="flashOrText" ftype="enum">
            <prompt xml:lang="en">Choose flash or text</prompt>
            <prompt xml:lang="nl">Kies flash of tekst </prompt>
            <optionlist select="flashOrText" />
         </field>
-   <!-- END INSERT FLASH/TEXT --> 
-        
-    <!--  INSERT TEXT -->  
+   <!-- END INSERT FLASH/TEXT -->
+
+    <!--  INSERT TEXT -->
         <field name="text" ftype="html" dtminlength="0">
             <prompt xml:lang="en">Tekst</prompt>
             <prompt xml:lang="nl">Tekst</prompt>
-        </field>       
-    <!-- END INSERT TEXT --> 
+        </field>
+    <!-- END INSERT TEXT -->
 
-     <!--  INSERT FLASH -->     
-       
+     <!--  INSERT FLASH -->
+
         <list minoccurs="0" maxoccurs="1" role="related" extends="config/attachment/attachments.xml" />
- 	
+
  	 <!-- END INSERT FLASH -->
- 	 
- 	  
-    
-    <!--  INSERT IMAGE -->     
-       
+
+
+
+    <!--  INSERT IMAGE -->
+
    <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
              <title xml:lang="nl">Related images</title>
              <title xml:lang="nl">Bijbehorende afbeeldingen</title>
@@ -106,51 +101,51 @@
                              <description></description>
                      </field>
                      <field wizardname="config/image/image" ftype="startwizard" />
-             </item>        
+             </item>
              <command name="startwizard" inline="true" wizardname="config/image/image" objectnumber="new" />
              <action type="create">
                      <relation destinationtype="images" role="posrel" >
                        <object type="images"/>
                      </relation>
-             </action>        
+             </action>
              <action type="add">
                      <relation destinationtype="images" role="posrel" />
-             </action>                                                                                                                                        
+             </action>
  	</list>
- 	
+
  	 <!-- END INSERT IMAGE -->
- 	 
- 	  <!--  INSERT IMAGE POSITION--> 
- 	 
+
+ 	  <!--  INSERT IMAGE POSITION-->
+
  	 <field name="impos" ftype="enum">
             <prompt xml:lang="en">Image position</prompt>
             <prompt xml:lang="nl">Positie afbeelding </prompt>
             <optionlist select="imagepos" />
      </field>
-     
+
      <!-- END INSERT IMAGE POSITION-->
- 	 
-       
+
+
         <field name="textFirst" ftype="line" dtminlength="0">
             <prompt xml:lang="en">The first part of the sentence </prompt>
             <prompt xml:lang="nl">Eerste deel van de zin </prompt>
         </field>
- 
-  
- 
-        
- <!--INSERT LAYOUT -->       
-        
+
+
+
+
+ <!--INSERT LAYOUT -->
+
         <field name="layout" ftype="enum">
             <prompt>Layout</prompt>
             <optionlist select="layout" />
-        </field>      
-        
-        
- <!--  END INSERT LAYOUT --> 
- 
- <!--  INSERT SELECT -->  
-      
+        </field>
+
+
+ <!--  END INSERT LAYOUT -->
+
+ <!--  INSERT SELECT -->
+
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="mcanswers">
             <title xml:lang="en">Related answers (not mandatory)</title>
             <title xml:lang="nl">Bijbehorende meerkeuzer antwoorden (niet verplicht)</title>
@@ -196,32 +191,32 @@
                 <prompt>Nieuwe Multiple Choice antwoord</prompt>
             </command>
 
-        </list>     
-        
- <!-- END INSERT SELECT -->
- 
+        </list>
 
- 
- 
- 
+ <!-- END INSERT SELECT -->
+
+
+
+
+
         <field name="textSecond" ftype="line" dtminlength="0">
             <prompt xml:lang="en">The second part of the sentence </prompt>
             <prompt xml:lang="nl">Tweede deel van de zin </prompt>
         </field>
-        
-  
- 	 
- 
-              
+
+
+
+
+
  	<!--  FEEDBACK    -->
         <list role="related" extends="config/feedback/feedback-list.xml" />
 	<!--  END FEEDBACK -->
-	
-	
-	
+
+
+
     </form-schema>
 
     &extra_schemas;
 </wizard-schema>
 
- 
+

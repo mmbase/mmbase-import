@@ -6,10 +6,12 @@
     <!--
         For comments regarding the properties in this file see:
         http://cvs.mmbase.org/viewcvs/config/modules/mmbaseroot.xml?view=markup
-        
+
     -->
     <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
-    <property name="database">${mmbaseroot.database}</property>   
+
+    <property name="database">${mmbaseroot.database}</property>
+
     <property name="basename">${mmbaseroot.basename}</property>
 
     <property name="datadir">${mmbaseroot.datadir}</property>
