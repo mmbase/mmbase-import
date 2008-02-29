@@ -5,13 +5,16 @@
           xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:import externid="wizardjsp" from="request" />
 
-  <di-t:leaf styleClass="self2" depth="${depth}" icon="false">
-    <a href="javascript:clickNode('${_node}')">
-      <img src="gfx/tree_plus.gif" border="0" align="center" valign="middle" id="img_${_node}"/>
-    </a>
-    <img src="gfx/folder_closed.gif" border="0" align="middle" id="img2_${_node}" />
+  <mm:import externid="wizardjsp" from="request" />
+  <mm:import  externid="branchPath" required="true" />
+  <mm:import  externid="b" from="request" required="true" />
+
+  <di-t:leaf styleClass="self2"
+             branch="${b}"
+             branchOffset="1"
+             branchPath="${branchPath}"
+             click="${_node}">
     <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
       <mm:param name="wizard">config/learnblocks/learnblocks</mm:param>
       <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>
@@ -41,9 +44,7 @@
     </mm:hasnode>
   </di-t:leaf>
 
-
-  <mm:include page="../newfromtree.jsp" >
-    <mm:param name="depth">${depth + 1}</mm:param>
-  </mm:include>
-
+  <![CDATA[<div id="${_node}" style="display:none;">]]>
+  <mm:onshrink><![CDATA[</div>]]></mm:onshrink>
+  <mm:include page="../newfromtree.jsp"  />
 </jsp:root>
