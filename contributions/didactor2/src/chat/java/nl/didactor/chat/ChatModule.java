@@ -10,10 +10,10 @@ import java.io.File;
 /**
  * Wrapper that allows the EO chat to be started as an MMBase module.
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
- * @version $Id: ChatModule.java,v 1.2 2007-05-01 12:31:19 michiel Exp $
+ * @version $Id: ChatModule.java,v 1.3 2008-02-29 12:49:29 michiel Exp $
  */
 public class ChatModule extends Module {
-    private Logger log = Logging.getLoggerInstance(ChatModule.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ChatModule.class);
     private Map properties; // used?
     private boolean hasstarted = false;
 
@@ -50,7 +50,7 @@ public class ChatModule extends Module {
     }
 
     /**
-     * Shutdown method. 
+     * Shutdown method.
      */
     public void shutdown() {
         log.info("Shutting down Chat module");
