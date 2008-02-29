@@ -43,9 +43,7 @@
           <list>2</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="yesno">
-        <default value="true" />
-      </datatype>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="didactor_show" />
     </field>
 
     <field name="body">
