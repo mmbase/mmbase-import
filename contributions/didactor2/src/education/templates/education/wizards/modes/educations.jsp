@@ -2,7 +2,6 @@
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
   <!--
@@ -54,7 +53,7 @@
             <mm:import id="number_of_educations" reset="true">${fn:length(educations)}</mm:import>
 
             <di:has editcontext="create_education">
-              <di-t:leaf  branchPath=". ">
+              <di:leaf  branchPath=". ">
                 <mm:link referid="wizardjsp" referids="user@origin,provider">
                   <mm:param name="wizard">config/education/educations-origin</mm:param>
                   <mm:param name="objectnumber">new</mm:param>
@@ -63,7 +62,7 @@
                      title="${di:translate('education.createneweducationdescription')}"
                      target="text"><di:translate key="education.createneweducation" /></a>
                 </mm:link>
-              </di-t:leaf>
+              </di:leaf>
             </di:has>
 
             <mm:import id="educationId" externid="e">${education}</mm:import>
@@ -71,7 +70,7 @@
             <mm:isgreaterthan referid="number_of_educations" value="0">
               <!-- The Education starts from here -->
               <mm:node number="${educationId}">
-                <di-t:leaf  click="education_0" open="true" branchPath="..">
+                <di:leaf  click="education_0" open="true" branchPath="..">
                   <mm:link referid="wizardjsp" referids="_node@objectnumber">
                     <mm:param name="wizard">config/education/educations</mm:param>
                     <mm:param name="title"><di:translate key="education.editeducation" /></mm:param>
@@ -101,25 +100,25 @@
                   <mm:hasnode number="component.versioning">
                     <a href="versioning.jsp?nodeid=${educationId}" target="text"><img src="gfx/versions.gif" border="0" /></a>
                   </mm:hasnode>
-                </di-t:leaf>
+                </di:leaf>
 
                 <div id="education_0">
                   <!-- Registration -->
                   <mm:hasnode number="component.register">
-                    <di-t:leaf  branchPath=".. ">
+                    <di:leaf  branchPath=".. ">
                       <mm:treefile write="false" page="/register/wizards/register.jsp"
                                    referids="$referids,educationId"
                                    objectlist="$includePath">
                         <a href="${_}" title="${di:translate('register.registrations')}"
                            target="text"><di:translate key="register.registrations" /></a>
                       </mm:treefile>
-                    </di-t:leaf>
+                    </di:leaf>
                   </mm:hasnode>
 
 
                   <!-- I think it is hackery -->
                   <mm:hasnode number="component.portal">
-                    <di-t:leaf  branchPath=".. ">
+                    <di:leaf  branchPath=".. ">
                       <mm:treefile write="false" page="/portal/wizards/index.jspx"
                                    referids="language,educationId,$referids" objectlist="$includePath">
                         <a href="${_}"
@@ -127,11 +126,11 @@
                            target="text"><di:translate key="portal.portal" />
                         </a>
                       </mm:treefile>
-                    </di-t:leaf>
+                    </di:leaf>
                   </mm:hasnode>
 
                   <!-- create new learnblock item -->
-                  <di-t:leaf  branchPath=".. ">
+                  <di:leaf  branchPath=".. ">
                     <mm:link referid="wizardjsp" referids="_node@origin">
                       <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
                       <mm:param name="objectnumber">new</mm:param>
@@ -139,7 +138,7 @@
                       <a href="${_}" title="${di:translate('education.createnewlearnblockdescription')}" target="text">
                       <di:translate key="education.createnewlearnblock" /></a>
                     </mm:link>
-                  </di-t:leaf>
+                  </di:leaf>
 
 
                   <!-- All learnblocks for current education -->
@@ -179,7 +178,7 @@
                       </mm:field>
                     </mm:compare>
 
-                    <di-t:leaf  click="node_0_0_${learnblockcounter}" branchPath="..${status.last ? '.' : ' '}">
+                    <di:leaf  click="node_0_0_${learnblockcounter}" branchPath="..${status.last ? '.' : ' '}">
                       <mm:import id="guitype" ><mm:nodeinfo type="guitype" escape="lowercase" /></mm:import>
                       <mm:link referid="wizardjsp" referids="_node@objectnumber">
                         <mm:param name="wizard">config/<mm:nodeinfo type="type"/>/<mm:nodeinfo type="type" /></mm:param>
@@ -208,7 +207,7 @@
                           <a href="${_}" target="text"><img src="gfx/versions.gif" border="0" /></a>
                         </mm:link>
                       </mm:hasnode>
-                    </di-t:leaf>
+                    </di:leaf>
 
                     <div id="node_0_0_${learnblockcounter}" style="display:none">
                       <mm:treeinclude
