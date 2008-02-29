@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.95 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: Queries.java,v 1.96 2008-02-29 11:00:05 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -292,6 +292,11 @@ abstract public class Queries {
             try {
                 return Double.valueOf(stringValue);
             } catch (NumberFormatException e2) {
+                if(stringValue.equalsIgnoreCase("true")) {
+                    return Integer.valueOf(1);
+                } else if(stringValue.equalsIgnoreCase("false")) {
+                return Integer.valueOf(0);
+                }
                 throw new BridgeException("Operator requires number value ('" + stringValue + "' is not)");
             }
         }

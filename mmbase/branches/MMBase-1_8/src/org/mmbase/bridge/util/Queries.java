@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.5 2007-12-27 17:58:25 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.6 2008-02-29 10:58:42 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -293,6 +293,11 @@ abstract public class Queries {
             try {
                 return new Double(stringValue);
             } catch (NumberFormatException e2) {
+                if(stringValue.equalsIgnoreCase("true")) {
+                    return new Integer(1);
+                } else if(stringValue.equalsIgnoreCase("false")) {
+                    return new Integer(0);
+                }
                 throw new BridgeException("Operator requires number value ('" + stringValue + "' is not)");
             }
         }
@@ -763,8 +768,9 @@ abstract public class Queries {
             }
 
             if (cloud.hasRole(token)) {
+
                 if (!pathTokenizer.hasMoreTokens()) {
-                    throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")");
+                    throw new BridgeException("Path cannot end with a role (path: " + path + " searchdirs:" + searchDirs + ")");
                 }
                 String nodeManagerAlias = pathTokenizer.nextToken().trim();
                 String nodeManagerName = removeDigits(nodeManagerAlias);
@@ -1023,7 +1029,9 @@ abstract public class Queries {
      */
     public static NodeQuery createNodeQuery(Node node) {
         NodeManager nm = node.getNodeManager();
-        NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can accept more steps
+        NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can accept
+                                                             // more steps
+
         Step step       = query.addStep(nm);
         query.setNodeStep(step);
         if (! node.isNew()) {
@@ -1235,7 +1243,7 @@ abstract public class Queries {
         int result;
         // compare values - if they differ, detemrine whether
         // they are bigger or smaller and return the result
-        // remaining fields are not of interest ionce a difference is found
+        // remaining fields are not of interest once a difference is found
         if (value == null) {
             if (value2 != null) {
                 return 1;
