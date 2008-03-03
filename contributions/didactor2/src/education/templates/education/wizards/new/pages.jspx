@@ -5,7 +5,7 @@
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="wizardjsp" from="request" />
   <mm:import externid="branchPath" />
-  <mm:import  externid="b" from="request" required="true" />
+  <mm:import  externid="b" from="request" />
 
   <di:leaf styleClass="neweducation"
              branch="${b}"

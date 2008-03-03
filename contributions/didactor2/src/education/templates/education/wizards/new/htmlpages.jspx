@@ -4,12 +4,14 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:import externid="depth"><mm:depth /></mm:import>
-
+  <mm:import externid="branchPath" />
+  <mm:import  externid="b" from="request" />
   <mm:import externid="wizardjsp" from="request" />
 
-  <di:leaf styleClass="newhtmlpages" depth="${depth + 1}">
-
+  <di:leaf styleClass="newhtmlpages"
+             branch="${b}"
+             branchOffset="1"
+             branchPath="${branchPath} ">
     <mm:link referid="wizardjsp" referids="_node@origin">
       <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
       <mm:param name="objectnumber">new</mm:param>
