@@ -105,7 +105,9 @@
                 <div id="education_0">
                   <!-- Registration -->
                   <mm:hasnode number="component.register">
-                    <di:leaf  branchPath=".. ">
+                    <di:leaf
+                        icon="new_education"
+                        branchPath=".. ">
                       <mm:treefile write="false" page="/register/wizards/register.jsp"
                                    referids="$referids,educationId"
                                    objectlist="$includePath">
@@ -118,7 +120,9 @@
 
                   <!-- I think it is hackery -->
                   <mm:hasnode number="component.portal">
-                    <di:leaf  branchPath=".. ">
+                    <di:leaf
+                        icon="new_education"
+                        branchPath=".. ">
                       <mm:treefile write="false" page="/portal/wizards/index.jspx"
                                    referids="language,educationId,$referids" objectlist="$includePath">
                         <a href="${_}"
@@ -130,7 +134,9 @@
                   </mm:hasnode>
 
                   <!-- create new learnblock item -->
-                  <di:leaf  branchPath=".. ">
+                  <di:leaf
+                      icon="new_education"
+                      branchPath=".. ">
                     <mm:link referid="wizardjsp" referids="_node@origin">
                       <mm:param name="wizard">config/learnblocks/learnblocks-origin</mm:param>
                       <mm:param name="objectnumber">new</mm:param>

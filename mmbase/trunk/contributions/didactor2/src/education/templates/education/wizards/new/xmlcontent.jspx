@@ -10,6 +10,7 @@
 
 
   <di:leaf styleClass="newkupu"
+           icon="new_education"
            branch="${b}"
            branchOffset="1"
            branchPath="${branchPath} ">

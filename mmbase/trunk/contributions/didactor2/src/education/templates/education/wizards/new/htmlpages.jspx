@@ -9,9 +9,10 @@
   <mm:import externid="wizardjsp" from="request" />
 
   <di:leaf styleClass="newhtmlpages"
-             branch="${b}"
-             branchOffset="1"
-             branchPath="${branchPath} ">
+           icon="new_education"
+           branch="${b}"
+           branchOffset="1"
+           branchPath="${branchPath} ">
     <mm:link referid="wizardjsp" referids="_node@origin">
       <mm:param name="wizard">config/htmlpages/htmlpages-origin</mm:param>
       <mm:param name="objectnumber">new</mm:param>
