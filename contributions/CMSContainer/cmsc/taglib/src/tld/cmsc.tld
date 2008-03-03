@@ -1370,6 +1370,12 @@
         <name>protected</name>
         <tag-class>com.finalist.cmsc.taglib.security.ProtectedTag</tag-class>
         <body-content>scriptless</body-content>
+        <attribute>
+            <description>If true, the body is processed only when nobody is logged in, thus inversing the working of this tag. Defaults to false.</description>
+            <name>inverse</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>
