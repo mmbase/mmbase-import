@@ -1366,10 +1366,16 @@
     <!-- Security Tags -->
     <!-- ################ -->
     <tag>
-        <description>Container for protected content</description>
+        <description>Container for protected content. Will process the body only if someone is authenticated.</description>
         <name>protected</name>
         <tag-class>com.finalist.cmsc.taglib.security.ProtectedTag</tag-class>
         <body-content>scriptless</body-content>
+        <attribute>
+            <description>If true, the body is processed only when nobody is logged in, thus inversing the working of this tag. Defaults to false.</description>
+            <name>inverse</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>
