@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.43.2.6 2008-02-21 14:26:35 andre Exp $
+    @version $Id: list.xsl,v 1.43.2.7 2008-03-03 10:35:34 andre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -17,7 +17,7 @@
   <!-- <xsl:param name="linkable">false</xsl:param> -->
   <xsl:variable name="linkable">false</xsl:variable>
   <xsl:param name="creatable">true</xsl:param>
-  <xsl:param name="relationOriginNode"><xsl:value-of select="$origin" /></xsl:param>
+  <xsl:param name="relationOriginNode"></xsl:param>
   <xsl:param name="relationRole"></xsl:param>
   <xsl:param name="relationCreateDir"></xsl:param>
   <xsl:param name="relationStartnodes"></xsl:param>
