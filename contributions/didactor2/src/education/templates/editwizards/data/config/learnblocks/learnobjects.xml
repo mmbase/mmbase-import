@@ -4,7 +4,8 @@
   <title xml:lang="nl">Bijbehorende leerobjecten</title>
   <title xml:lang="en">Related learnobjects</title>
 
-  <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" destination="learnobjects"
+  <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']"
+        destination="learnobjects"
         searchdir="destination">
     <item>
       <field name="name" ftype="data">
@@ -20,8 +21,8 @@
     </item>
 
     <action type="create">
-      <relation role="posrel" destinationtype="learnobjects">
-        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+      <relation role="posrel" destinationtype="learnobjects" createdir="destination" >
+        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true' and object/@searchtype='learnobjects']/field[@name='pos'])+{$pos}}</field>
       </relation>
     </action>
 
@@ -50,19 +51,14 @@
       <prompt xml:lang="en">New htmlpage</prompt>
     </command>
 
-    <command name="search" nodepath="learnobjects,learnblocks"
-             fields="learnobjects.name,learnblocks.intro" age="-1" orderby="learnobjects.number,learnblocks.number" directions="down,down" >
+    <command name="search" nodepath="learnobjects"
+             fields="name" age="-1" orderby="number" >
       <prompt xml:lang="nl">Zoeken naar leerobjecten</prompt>
       <prompt xml:lang="en">Search for learnobjects</prompt>
       <search-filter>
         <name xml:lang="nl">Titel bevat</name>
         <name xml:lang="en">Name contains</name>
-        <search-fields>learnobjects.name</search-fields>
-      </search-filter>
-      <search-filter>
-        <name xml:lang="nl">Tekst bevat</name>
-        <name xml:lang="en">Text contains</name>
-        <search-fields>learnblocks.intro</search-fields>
+        <search-fields>name</search-fields>
       </search-filter>
     </command>
   </list>
