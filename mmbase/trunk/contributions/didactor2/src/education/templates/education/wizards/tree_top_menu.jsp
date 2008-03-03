@@ -41,7 +41,7 @@
              href="${_}"><di:translate key="education.educationmenucomponents" /></a>
         </mm:link>
       </di:has>
-
+      <jsp:text> </jsp:text>
       <di:has  editcontext="rollen">
         <mm:link page="." referids="e?">
           <mm:param name="mode">roles</mm:param>
@@ -49,7 +49,7 @@
              href="${_}"><di:translate key="education.educationmenupersons" /></a>        </mm:link>
 
       </di:has>
-
+      <jsp:text> </jsp:text>
       <mm:hasnode number="component.pop">
         <!--
             A user will see a Competence submenu only if POP component is switched ON
@@ -67,7 +67,6 @@
           </mm:relatednodes>
         </mm:node>
       </mm:hasnode>
-
       <mm:hasnode number="component.metadata" >
         <di:has  editcontext="metadata">
           <mm:link page="." referids="e?">
@@ -78,7 +77,6 @@
           </mm:link>
         </di:has>
       </mm:hasnode>
-
       <di:has editcontext="contentelementen">
         <mm:link page="." referids="e?">
           <mm:param name="mode">content_metadata</mm:param>
@@ -87,7 +85,6 @@
           <di:translate key="education.educationmenucontentmetadata" /></a>
         </mm:link>
       </di:has>
-
 
       <mm:hasnode number="component.filemanagement">
         <di:has editcontext="filemanagment">
