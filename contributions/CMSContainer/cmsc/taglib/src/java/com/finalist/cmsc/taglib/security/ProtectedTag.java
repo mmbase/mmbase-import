@@ -22,6 +22,12 @@ import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
 public class ProtectedTag extends SimpleTagSupport {
 
+   /**
+    * Attribute that determines whether or not this tag actually just works the
+    * other way around.
+    */
+   private boolean inverse = false;
+
    @Override
    public void doTag() throws JspException, IOException {
       PageContext ctx = (PageContext) getJspContext();
@@ -31,9 +37,34 @@ public class ProtectedTag extends SimpleTagSupport {
       // handle body, call any nested tags
       JspFragment frag = getJspBody();
       if (frag != null) {
-         if (ls != null && ls.isAuthenticated()) {
+         // normally display only when authenticated
+         boolean processBody = !isInverse() && (ls != null) && ls.isAuthenticated();
+
+         // or display when inversed and *not* authenticated
+         processBody = (processBody || (isInverse() && (ls == null || !ls.isAuthenticated())));
+
+         if (processBody) {
             frag.invoke(null);
          }
       }
+   }
+
+   /**
+    * Returns the value of the inverse attribute. Defaults to false.
+    *
+    * @return the inverse
+    */
+   public boolean isInverse() {
+      return inverse;
+   }
+
+   /**
+    * Sets the value of the inverse attribute.
+    *
+    * @param inverse
+    *           the inverse to set
+    */
+   public void setInverse(boolean inverse) {
+      this.inverse = inverse;
    }
 }
