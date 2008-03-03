@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.78.2.5 2008-01-17 16:49:15 michiel Exp $
+ * @version $Id: Dove.java,v 1.78.2.6 2008-03-03 14:31:59 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -283,46 +283,47 @@ public class Dove extends AbstractDove {
         int searchDir=0;
         String searchDirs = relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
         if("destination".equals(searchDirs)) {
-            searchDir=1;
+            searchDir = 1;
         } else if("source".equals(searchDirs)) {
-            searchDir=2;
+            searchDir = 2;
         }
 
         // determines whether to load the object (and possible restrictions)
-        Element objectDef = getFirstElement(relation,OBJECT);
-            for (RelationIterator i = nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
-                Relation nrel=i.nextRelation();
-                if (searchDir==1) {
-                    if (thisNumber!=nrel.getIntValue("snumber")) continue;
-                }
-                if (searchDir==2) {
-                    if (thisNumber!=nrel.getIntValue("dnumber")) continue;
-                }
-                Element data=doc.createElement(RELATION);
-                if (role!=null) {
-                    data.setAttribute(ELM_ROLE, role);
-                } else {
-                    data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
-                }
-                data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
-                data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
-
-                int otherNumber;
-                if (thisNumber == nrel.getIntValue("snumber")) {
-                    otherNumber = nrel.getIntValue("dnumber");
-                } else {
-                    otherNumber = nrel.getIntValue("snumber");
-                }
-                data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
-                out.appendChild(data);
-                getDataNode(relation,data,nrel);
-                if (objectDef!=null) {
-                    Element nodeData=doc.createElement(OBJECT);
-                    nodeData.setAttribute(ELM_NUMBER, ""+otherNumber);
-                    data.appendChild(nodeData);
-                    getDataNode(objectDef, nodeData,nd.getCloud().getNode(otherNumber));
-                }
+        Element objectDef = getFirstElement(relation, OBJECT);
+        for (RelationIterator i = nd.getRelations(role, destinationType).relationIterator(); i.hasNext(); ) {
+            Relation nrel = i.nextRelation();
+            if (searchDir ==1) {
+                if (thisNumber!=nrel.getIntValue("snumber")) continue;
             }
+            if (searchDir==2) {
+                if (thisNumber!=nrel.getIntValue("dnumber")) continue;
+            }
+            Element data=doc.createElement(RELATION);
+            if (role!=null) {
+                data.setAttribute(ELM_ROLE, role);
+            } else {
+                data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
+            }
+            data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
+            data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
+
+            int otherNumber;
+            if (thisNumber == nrel.getIntValue("snumber")) {
+                otherNumber = nrel.getIntValue("dnumber");
+            } else {
+                otherNumber = nrel.getIntValue("snumber");
+            }
+            data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
+            out.appendChild(data);
+            getDataNode(relation, data, nrel);
+            if (objectDef!=null) {
+                Element nodeData = doc.createElement(OBJECT);
+                nodeData.setAttribute(ELM_NUMBER, ""+otherNumber);
+                data.appendChild(nodeData);
+                getDataNode(objectDef, nodeData,nd.getCloud().getNode(otherNumber));
+                nodeData.setAttribute(ELM_SEARCHTYPE, destinationType);
+            }
+        }
     }
 
     /**
@@ -341,34 +342,34 @@ public class Dove extends AbstractDove {
      */
     public void getRelationsNodes(Element in, Element out, Cloud cloud) {
         String alias = in.getAttribute(ELM_NUMBER);
-            org.mmbase.bridge.Node nd = cloud.getNode(alias);
-            NodeManager nm=nd.getNodeManager();
-            out.setAttribute(ELM_TYPE,nm.getName());
+        org.mmbase.bridge.Node nd = cloud.getNode(alias);
+        NodeManager nm=nd.getNodeManager();
+        out.setAttribute(ELM_TYPE,nm.getName());
 
-            Element relation=getFirstElement(in,RELATION);
-            if (relation==null) {
-                int thisNumber=nd.getNumber();
-                for (RelationIterator i=nd.getRelations().relationIterator(); i.hasNext(); ) {
-                    Relation nrel=i.nextRelation();
-                    Element data=doc.createElement(RELATION);
-                    data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
-                    data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
-                    if (thisNumber==nrel.getIntValue("snumber")) {
-                        data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("snumber"));
-                        data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("dnumber"));
-                    } else {
-                        data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("dnumber"));
-                        data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("snumber"));
-                    }
-                    out.appendChild(data);
-                    getDataNode(null,data,nrel);
+        Element relation=getFirstElement(in, RELATION);
+        if (relation==null) {
+            int thisNumber=nd.getNumber();
+            for (RelationIterator i=nd.getRelations().relationIterator(); i.hasNext(); ) {
+                Relation nrel=i.nextRelation();
+                Element data=doc.createElement(RELATION);
+                data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
+                data.setAttribute(ELM_ROLE, nrel.getRelationManager().getForwardRole());
+                if (thisNumber==nrel.getIntValue("snumber")) {
+                    data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("snumber"));
+                    data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("dnumber"));
+                } else {
+                    data.setAttribute(ELM_SOURCE, ""+nrel.getIntValue("dnumber"));
+                    data.setAttribute(ELM_DESTINATION, ""+nrel.getIntValue("snumber"));
                 }
-            } else {
-                while (relation!=null) { // select all child tags, should be 'relation'
-                    addRelationNodes(relation,out,nd);
-                    relation=getNextElement(relation,RELATION);
-               }
+                out.appendChild(data);
+                getDataNode(null, data, nrel);
             }
+        } else {
+            while (relation!=null) { // select all child tags, should be 'relation'
+                addRelationNodes(relation,out,nd);
+                relation=getNextElement(relation,RELATION);
+            }
+        }
 
     }
 
@@ -1092,7 +1093,7 @@ public class Dove extends AbstractDove {
         fillFields(alias,newnode,relationelement,values);
 
         String context = (String) values.get("_context");
-        if (context!=null) {
+        if (context != null) {
             newnode.setContext(context);
         }
         newnode.commit();
