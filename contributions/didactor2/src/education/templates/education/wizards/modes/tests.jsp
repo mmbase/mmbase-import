@@ -31,7 +31,7 @@
         </mm:listnodescontainer>
 
         <di:leaf icon="new_education"
-                 branchPath=".">
+                 branchPath=". ">
           <mm:link referid="wizardjsp">
             <mm:param name="wizard">config/tests/tests</mm:param>
             <mm:param name="objectnumber">new</mm:param>
@@ -40,12 +40,12 @@
           </mm:link>
         </di:leaf>
 
-        <mm:listnodes type="tests" orderby="tests.name">
+        <mm:listnodes type="tests" orderby="tests.name" varStatus="status">
           <mm:import id="testname" jspvar="testname" reset="true"><mm:field name="name"/></mm:import>
           <jsp:directive.include file="../whichimage.jsp" /> <!-- WTF -->
 
           <di:leaf
-              branchPath=". "
+              branchPath=".${status.last ? '.' : ' '}"
               click="${_node}">
             <mm:link referid="wizardjsp" referids="_node@objectnumber">
               <mm:param name="wizard">config/tests/tests</mm:param>
@@ -71,7 +71,7 @@
             <!-- WTF WTF -->
             <mm:remove referid="questionamount" />
             <mm:import id="mark_error" reset="true"></mm:import>
-            <mm:field name="questionamount" id="questionamount">
+            <mm:field name="questionamount" id="questionamount" write="false">
               <mm:isgreaterthan value="0">
                 <mm:countrelations type="questions">
                   <mm:islessthan value="$questionamount">
@@ -80,7 +80,7 @@
                 </mm:countrelations>
               </mm:isgreaterthan>
               <mm:remove referid="requiredscore" />
-              <mm:field name="requiredscore" id="requiredscore">
+              <mm:field name="requiredscore" id="requiredscore" write="false">
                 <mm:countrelations type="questions">
                   <mm:islessthan value="$requiredscore">
                     <mm:import id="mark_error" reset="true">Er zijn minder vragen ingevoerd dan er goed beantwoord moeten worden.</mm:import>
@@ -98,7 +98,7 @@
               <di:leaf
                   icon="edit_learnobject"
                   branchPath=". ">
-                <mm:nodeinfo type="type" id="type_of_node">
+                <mm:nodeinfo type="type" id="type_of_node" write="false">
                   <mm:compare value="mcquestions">
                     <mm:import id="mark_error" reset="true">Een multiple-choice vraag moet minstens 1 goed antwoord hebben</mm:import>
                     <mm:relatednodes type="mcanswers" constraints="mcanswers.correct > '0'" max="1">
