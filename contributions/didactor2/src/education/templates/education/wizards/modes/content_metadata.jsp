@@ -29,7 +29,8 @@
         <di:getsetting setting="metacontentobjects" component="core" vartype="list" id="types" write="false" />
         <c:forEach items="${types}" var="type">
           <mm:hasnodemanager name="${type}">
-            <di:leaf icon="learnblock" depth="1" branchPath=". ">
+            <di:leaf icon="learnblock"
+                     branchPath=". ">
               <mm:link referid="listjsp">
                 <mm:param name="wizard"><mm:property name="wizard" nodemanager="${type}" /></mm:param>
                 <mm:param name="nodepath">${type}</mm:param>
@@ -46,7 +47,8 @@
           </mm:hasnodemanager>
         </c:forEach>
 
-        <di:leaf icon="learnblock" depth="1" branchPath=". ">
+        <di:leaf icon="learnblock"
+                 branchPath="..">
           <mm:link referid="listjsp">
             <mm:param name="wizard">config/provider/providers</mm:param>
             <mm:param name="nodepath">providers</mm:param>
