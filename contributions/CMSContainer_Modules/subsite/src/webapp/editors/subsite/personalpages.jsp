@@ -67,7 +67,7 @@
 	   <tr>
          <td><fmt:message key="subsite.name" />:</td>
          <td>
-            <cmsc:select var="subsite">
+            <cmsc:select var="subsite" onchange="document.forms[0].submit();">
             <mm:listnodes type="subsite" orderby="title">
                <mm:field name="number" id="subsitenumber" write="false" vartype="String" />
 	            <cmsc:option value="${subsitenumber}" name="${_node.title}" />
