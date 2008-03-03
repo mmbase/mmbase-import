@@ -60,7 +60,7 @@ public class CommunityServiceImpl extends CommunityService {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (AuthenticationException ae) {
 	        SecurityContextHolder.clearContext();
-	        log.info(String.format("Authentication attempt failed for user %s", userName), ae);
+	        log.debug(String.format("Authentication attempt failed for user %s", userName), ae);
 		}
 	}
 
