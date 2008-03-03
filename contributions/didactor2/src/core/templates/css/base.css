@@ -1019,6 +1019,13 @@ body.editwizards div#mode-educations {
   height: 100%;
   overflow: auto;
 }
+body.editwizards div.navigationbar {
+  padding: 0 0 0 0;
+  height: 25px;
+}
+body.editwizards div.navigationbar a {
+  padding-left: 1ex;
+}
 
 body.editwizards .mainContent {
   left: 0px;
@@ -1040,6 +1047,8 @@ body.editwizards .menu_font{
 body.editwizards td {
   vertical-align: top;
   height:100%;
+}
+body.editwizards td {
 }
 body.editwizards .mainContent table.layout td#left_menu {
   width:20%;
