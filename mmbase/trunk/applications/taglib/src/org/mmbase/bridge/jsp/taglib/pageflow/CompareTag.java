@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.49 2008-03-03 16:08:24 ernst Exp $
+ * @version $Id: CompareTag.java,v 1.50 2008-03-03 16:12:47 ernst Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -158,7 +158,6 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                             //if compare1 was a boolean it will be a number by now, and we will have to change compare2 to a number too.
                             compare2 = new BigDecimal(Casting.toInteger(new Boolean((String)compare2)));
                         } else {
-                            log.info("** compare2="+compare2+", compare1="+compare1);
                             compare2 = new BigDecimal((String)compare2);
                         }
                     } else if (compare2 instanceof Number) {
