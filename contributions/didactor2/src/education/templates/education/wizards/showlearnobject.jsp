@@ -11,10 +11,10 @@
   <mm:nodeinfo id="objecttype" type="type" write="false" />
 
   <di:leaf styleClass="self"
-             branch="${b}"
-             branchOffset="1"
-             branchPath="${branchPath}">
-    SL
+           icon="edit_learnobject"
+           branch="${b}"
+           branchOffset="1"
+           branchPath="${branchPath}">
       <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
         <mm:param name="wizard">config/<mm:write referid="objecttype" />/<mm:write referid="objecttype" /></mm:param>
         <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>

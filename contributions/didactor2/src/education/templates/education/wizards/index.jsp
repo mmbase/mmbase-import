@@ -19,7 +19,7 @@
     <div class="rows" id="rows">
       <di:include debug="html" page="/education/wizards/navigation.jspx" />
       <div class="mainContent">
-        <table cellpadding="0" cellspacing="0" border="0" width="100%" height="100%">
+        <table class="layout">
           <tr>
             <td id="left_menu">
               <mm:treeinclude debug="html" page="/education/wizards/code.jsp" objectlist="$includePath" />

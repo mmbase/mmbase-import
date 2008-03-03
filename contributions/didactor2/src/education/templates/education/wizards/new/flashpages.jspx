@@ -9,9 +9,10 @@
   <mm:import  externid="b" from="request" />
 
   <di:leaf styleClass="newflashpages"
-             branch="${b}"
-             branchOffset="1"
-             branchPath="${branchPath} ">
+           icon="new_education"
+           branch="${b}"
+           branchOffset="1"
+           branchPath="${branchPath} ">
     <mm:nodeinfo id="guitype" nodetype="flashpages" type="guitype" write="false" />
 
     <mm:link referid="wizardjsp" referids="_node@origin">
