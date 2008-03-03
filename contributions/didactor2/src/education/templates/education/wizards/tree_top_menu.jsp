@@ -34,14 +34,14 @@
            Follows lots of code duplication, why not iterate over all modes or so?
            Will the sillyness ever stop.
       -->
-      <di:has editcontext="component">
+      <di:has editcontext="componenten">
         <mm:link referids="e?" page=".">
           <mm:param name="mode">components</mm:param>
           <a class="${mode eq 'components' ? education_top_menu_selected : ''}"
              href="${_}"><di:translate key="education.educationmenucomponents" /></a>
         </mm:link>
       </di:has>
-      <jsp:text> </jsp:text>
+
       <di:has  editcontext="rollen">
         <mm:link page="." referids="e?">
           <mm:param name="mode">roles</mm:param>
