@@ -1017,15 +1017,20 @@ div.di_body {
 body.editwizards div.educations,
 body.editwizards div#mode-educations {
   height: 100%;
+  overflow: auto;
 }
 
 body.editwizards .mainContent {
   left: 0px;
   width: 100%;
+  font-weight: normal;
 }
 body.editwizards .mainContent table.layout {
   height: 100%;
   width: 100%;
+}
+body.editwizards .mainContent table.layout td {
+  white-space: nowrap;
 }
 
 body.editwizards .menu_font{
@@ -1036,9 +1041,9 @@ body.editwizards td {
   vertical-align: top;
   height:100%;
 }
-body.editwizards td#left_menu {
+body.editwizards .mainContent table.layout td#left_menu {
   width:20%;
-  overflow:auto;
+  overflow: auto;
 }
 
 body.editwizards .folderBodyTree {
