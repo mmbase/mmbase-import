@@ -8,10 +8,11 @@
   <mm:import externid="b" from="request" />
 
   <di:leaf styleClass="newtests"
-             branchPath="${branchPath} "
-             branch="${b}"
-             branchOffset="1"
-             >
+           icon="new_education"
+           branchPath="${branchPath} "
+           branch="${b}"
+           branchOffset="1"
+           >
     <mm:nodeinfo id="guitype" nodetype="tests" type="guitype" write="false" />
     <mm:link referid="wizardjsp" referids="_node@origin">
       <mm:param name="wizard">config/tests/tests-origin</mm:param>

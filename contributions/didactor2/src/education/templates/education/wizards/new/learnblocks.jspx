@@ -8,6 +8,7 @@
   <mm:import  externid="b" from="request" />
 
   <di:leaf styleClass="neweducation"
+           icon="new_education"
            branch="${b}"
            branchOffset="1"
            branchPath="${branchPath} ">
