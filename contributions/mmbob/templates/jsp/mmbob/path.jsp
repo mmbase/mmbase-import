@@ -309,10 +309,16 @@
 </td>
 
 <td align="right">
+    <%--
+        this template is called from it's own dir, but also from the admin dir.
+    --%>
+    <c:if test="${fn:contains(pageContext.request.servletPath, '/admin')}">
+        <c:set var="path_prefix" value="../" />
+    </c:if>
     <mm:compare referid="posterid" value="-1" inverse="true">
-        <mm:link page="/mmbob/profile.jsp" referids="forumid,posterid">login: <a href="${_}"><mm:write referid="active_nick" /></a></mm:link>
+        <mm:link page="${path_prefix}profile.jsp"  referids="forumid,posterid">login: <a href="${_}"><mm:write referid="active_nick" /></a></mm:link>
          <mm:compare referid="logoutmodetype" value="open">
-            <mm:link page="/mmbob/logout.jsp" referids="forumid"> [<a href="${_}"><mm:write referid="mlg.Logout" /></a>] </mm:link>
+            <mm:link page="${path_prefix}logout.jsp" referids="forumid"> [<a href="${_}"><mm:write referid="mlg.Logout" /></a>] </mm:link>
          </mm:compare>
 
     </mm:compare>
