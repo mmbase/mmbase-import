@@ -916,5 +916,25 @@ public class RepositoryUtil {
        SecurityUtil.getUserRoleMap(user, treeManagers, CHILDREL, fragmentFieldnames, pagesWithRole);
         return SecurityUtil.getRole(channel, true, pagesWithRole);
     }
-
+    
+    /**
+     * Check if the role has rights on the Recyclebin
+     * @param cloud Cloud
+     * @param roleName specified roleName
+     * @return boolean
+     */    
+    public static boolean hasRecyclebinRights(Cloud cloud, String roleName) {
+        Node node = getTrashNode(cloud);
+        roleName = roleName.toLowerCase();
+        
+        UserRole role = RepositoryUtil.getRole(cloud, node, true);
+        
+        if (role != null && roleName.equals(role.getRole().getName())) {
+            return true;
+        } 
+        else {
+            return false;
+        }
+    }    
+    
 }

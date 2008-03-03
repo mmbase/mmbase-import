@@ -32,6 +32,10 @@ public class DeleteAction extends MMBaseFormlessAction {
     public ActionForward execute(ActionMapping mapping,
             HttpServletRequest request, Cloud cloud) throws Exception {
 
+        if (!RepositoryUtil.hasRecyclebinRights(cloud, "webmaster")) {
+            return redirectLogin(request);
+        }
+        
         String action = getParameter(request, "action");
         
         if ("deleteall".equals(action)) {
@@ -63,10 +67,4 @@ public class DeleteAction extends MMBaseFormlessAction {
         }
         return mapping.findForward(SUCCESS);
     }
-
-    @Override
-    public String getRequiredRankStr() {
-        return ADMINISTRATOR;
-    }
-
 }

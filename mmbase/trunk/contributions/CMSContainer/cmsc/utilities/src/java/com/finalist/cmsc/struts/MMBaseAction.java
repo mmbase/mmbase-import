@@ -114,7 +114,7 @@ public abstract class MMBaseAction extends Action {
    }
 
 
-   private ActionForward redirectLogin(HttpServletRequest req) {
+   protected ActionForward redirectLogin(HttpServletRequest req) {
       // could not create a cloud on the session
       String loginForward = "/editors/login.jsp";
       String referrer = req.getRequestURL().toString()
