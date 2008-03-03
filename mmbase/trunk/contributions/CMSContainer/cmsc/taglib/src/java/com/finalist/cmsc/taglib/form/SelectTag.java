@@ -19,6 +19,8 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class SelectTag extends SimpleTagSupport {
 
    public String var;
@@ -51,10 +53,10 @@ public class SelectTag extends SimpleTagSupport {
       
       String myOnChange = "";
       if (!StringUtil.isEmpty(onchange)){
-    	myOnChange = " " + "onchange=\"" + onchange + "\"";  
+         myOnChange = " " + "onchange=\"" + StringEscapeUtils.escapeXml(onchange) + "\"";  
       } 
       
-      ctx.getOut().print("<select name=\"" + var + "\"" + myOnChange + ">");
+      ctx.getOut().print("<select name=\"" + StringEscapeUtils.escapeXml(var) + "\"" + myOnChange + ">");
       JspFragment frag = getJspBody();
       if (frag != null) {
          frag.invoke(null);
