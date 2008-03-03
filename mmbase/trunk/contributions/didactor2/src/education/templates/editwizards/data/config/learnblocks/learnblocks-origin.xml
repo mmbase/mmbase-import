@@ -4,7 +4,7 @@
   <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
 ]>
 <wizard-schema id="empty">
-  <title xml:lang="nl">Leerblok Editor</title>
+  <title xml:lang="nl">Leerblok-Editor</title>
   <title xml:lang="en">Learnblock Editor</title>
 
   <action type="create">
