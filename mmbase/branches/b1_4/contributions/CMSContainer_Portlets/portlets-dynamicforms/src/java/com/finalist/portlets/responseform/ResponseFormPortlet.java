@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -127,9 +128,10 @@ public class ResponseFormPortlet extends ContentPortlet {
                         && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value))) {
                    errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                   }
+                  
                   if ((type == TYPE_TEXTBOX) && sendEmail) {   //If data is used as email address, then it should be valid 
-                     if (!isEmailAddress(userEmailAddress))
-                        errorMessages.put(fieldIdentifier, "view.formfield.invalid");
+                      if (!isEmailAddress(userEmailAddress))
+                         errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                   }
                   
                   if (type == TYPE_CHECKBOX) {
@@ -156,11 +158,11 @@ public class ResponseFormPortlet extends ContentPortlet {
                      errorMessages.put("sendemail", "view.error.sendemail");
                   }
                   else {
-                     // if the responseform email has been sent, send also the email to the user
-                     sent = sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);
-                     if (!sent) {
-                        errorMessages.put("sendemail", "view.error.sendemail");
-                     }
+                      // if the responseform email has been sent, send also the email to the user
+                      sent = sendUserEmail(responseForm, userEmailAddress, emailData, parameterMap);
+                      if (!sent) {
+                         errorMessages.put("sendemail", "view.error.sendemail");
+                      }
                   }
                }
             }
@@ -233,7 +235,7 @@ public class ResponseFormPortlet extends ContentPortlet {
          Map<String, String> parameterMap) {
       boolean sent = false;
       String userEmailSubject = responseform.getStringValue("useremailsubject");
-      String userEmailSender = responseform.getStringValue("useremailsender");
+      String userEmailSenderAddress = responseform.getStringValue("useremailsender");
       String userEmailSenderName = responseform.getStringValue("useremailsendername");
       String userEmailTextBefore = responseform.getStringValue("useremailbody");
       String userEmailTextAfter = responseform.getStringValue("useremailbodyafter");
@@ -252,12 +254,12 @@ public class ResponseFormPortlet extends ContentPortlet {
          userEmailText.append(userEmailTextAfter);
       }
 
-      if (!StringUtil.isEmptyOrWhitespace(userEmailSender) && !StringUtil.isEmptyOrWhitespace(userEmailText.toString())
+      if (!StringUtil.isEmptyOrWhitespace(userEmailText.toString())
             && !StringUtil.isEmptyOrWhitespace(userEmailSenderName)
-            && !StringUtil.isEmptyOrWhitespace(userEmailAddress) 
-            && isEmailAddress(userEmailAddress)) {
+            && isEmailAddress(userEmailAddress)
+            && isEmailAddress(userEmailSenderAddress)) {
          try {
-            EmailSender.getInstance().sendEmail(userEmailSender, userEmailSenderName, userEmailAddress,
+            EmailSender.getInstance().sendEmail(userEmailSenderAddress, userEmailSenderName, userEmailAddress,
                   userEmailSubject, userEmailText.toString());
             sent = true;
          }
@@ -271,26 +273,6 @@ public class ResponseFormPortlet extends ContentPortlet {
       return sent;
    }
 
-   private boolean isEmailAddress(String emailAddress) {
-      if (emailAddress == null) return false;
-      if (StringUtil.isEmptyOrWhitespace(emailAddress)) return false;
-      
-      String emailRegex = getEmailRegex();
-      return emailAddress.matches(emailRegex);
-   }
-   
-   private boolean isEmailAddress(List<String> emailList) {
-      if (emailList == null) return false;
-      
-      String emailRegex = getEmailRegex();
-      if (emailList.isEmpty()) return false;
-      for (String email : emailList) {
-         if (email.matches(emailRegex) == false) return false;
-      }
-      
-      return true;
-   }
-
 
    private boolean sendResponseFormEmail(Node responseform, String userEmailAddress, String responseformData,
          DataSource attachment) {
@@ -300,13 +282,14 @@ public class ResponseFormPortlet extends ContentPortlet {
       String emailTextBefore = responseform.getStringValue("emailbody");
       String emailTextAfter = responseform.getStringValue("emailbodyafter");
 
-      String senderEmail = userEmailAddress;
+      String senderEmailAddress = userEmailAddress;
       String senderName = userEmailAddress;
       if (StringUtil.isEmptyOrWhitespace(userEmailAddress)) {
-         senderEmail = responseform.getStringValue("useremailsender");
+         senderEmailAddress = responseform.getStringValue("useremailsender");
          senderName = responseform.getStringValue("useremailsendername");
       }
-
+      if (!isEmailAddress(senderEmailAddress)) return false; //Last check email address
+      
       emailTextBefore = emailTextBefore.trim();
       emailText.append(emailTextBefore);
       emailText.append(System.getProperty("line.separator"));
@@ -326,7 +309,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       }
 
       try {
-         EmailSender.getInstance().sendEmail(senderEmail, senderName, emailList, emailSubject, emailText.toString(),
+         EmailSender.getInstance().sendEmail(senderEmailAddress, senderName, emailList, emailSubject, emailText.toString(),
                attachment);
          sent = true;
       }
@@ -437,7 +420,27 @@ public class ResponseFormPortlet extends ContentPortlet {
 
    }
 
-
+   public boolean isEmailAddress(String emailAddress) {
+      if (emailAddress == null) return false;
+      if (StringUtil.isEmptyOrWhitespace(emailAddress)) return false;
+      
+      String emailRegex = getEmailRegex();
+      return emailAddress.matches(emailRegex);
+   }
+	   
+   public boolean isEmailAddress(List<String> emailList) {
+      if (emailList == null) return false;
+      if (emailList.isEmpty()) return false;
+            
+      String emailRegex = getEmailRegex();
+      for (String email : emailList) {
+      	 if (email == null || StringUtil.isEmptyOrWhitespace(email)) return false;
+         if (!email.matches(emailRegex)) return false;
+      }
+      
+      return true;
+   }
+   
    private long getMaxAttachmentSize() {
       long maxFileSize = DEFAULT_MAXFILESIZE;
       String maxFileSizeValue = PropertiesUtil.getProperty("email.maxattachmentsize");
@@ -454,8 +457,7 @@ public class ResponseFormPortlet extends ContentPortlet {
       return maxFileSize * MEGABYTE;
    }
 
-
-   private String getEmailRegex() {
+   protected String getEmailRegex() {
       String emailRegex = PropertiesUtil.getProperty("email.regex");
       if (!StringUtil.isEmptyOrWhitespace(emailRegex)) {
          return emailRegex;
