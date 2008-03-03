@@ -1,32 +1,38 @@
-<%@page session="true" language="java" contentType="text/html; charset=UTF-8"
-%><%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di"
-%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
-%><mm:cloud>
-  <mm:content postprocessor="reducespace" language="$language" expires="0">
+<jsp:root version="2.0"
+          xmlns:t="urn:jsptagdir:/WEB-INF/tags/mm/u"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+          >
+  <!--
+      xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
+  -->
+  <di:html
+      css="/register/css/register.css"
+      type="text/html"
+      rank="anonymous"
+      title_key="register.registration"
+      component="register">
 
-  <mm:treeinclude page="/cockpit/cockpit_intro_header.jsp" objectlist="$includePath" referids="$referids">
-    <mm:param name="extraheader">
-      <link rel="stylesheet" type="text/css" href="${mm:treefile('/register/css/register.css', pageContext,  includePath)}"  />
-      <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
-    </mm:param>
-  </mm:treeinclude>
+    <div class="columns">
+      <div class="columnLeft"><jsp:text> </jsp:text></div>
 
-  <mm:import externid="formsubmit">false</mm:import>
+      <div class="columnMiddle">
+        <h2><di:translate key="register.registration" /></h2>
 
-  <mm:compare referid="formsubmit" value="true">
-    <mm:import externid="nextform" />
-    <mm:log>Submitted, next form '<mm:write referid="nextform" />'</mm:log>
-    <mm:isempty referid="nextform">
-      <mm:treeinclude page="/register/register_done.jsp" objectlist="$includePath" referids="$referids" />
-    </mm:isempty>
-    <mm:isnotempty referid="nextform">
-      <mm:log>Next form</mm:log>
-      <mm:treeinclude page="/register/register_form.jsp" objectlist="$includePath" referids="$referids,nextform@formId" />
-    </mm:isnotempty>.
-  </mm:compare>
-  <mm:compare referid="formsubmit" value="false">
-    <mm:treeinclude page="/register/register_form.jsp" objectlist="$includePath" referids="$referids" />
-  </mm:compare>
+        <mm:import id="path">
+          <di:include page="/register/path.jsp" />
+        </mm:import>
 
-</mm:content>
-</mm:cloud>
+        <t:tabs
+            styleClass="registerTable"
+            directory="/register/"
+            objectlist="${includePath}"
+            path="${path}" />
+
+      </div>
+
+    </div>
+
+  </di:html>
+</jsp:root>

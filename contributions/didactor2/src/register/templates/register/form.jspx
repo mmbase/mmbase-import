@@ -50,7 +50,7 @@
 
         <mm:commit />
 
-        <mm:treefile id="thanks" cloud="cloud" page="/register/index.jsp"
+        <mm:treefile id="thanks"  page="/register/index.jsp"
                      objectlist="$includePath" referids="$referids,nextform?">
           <mm:param name="formsubmit">true</mm:param>
         </mm:treefile>
