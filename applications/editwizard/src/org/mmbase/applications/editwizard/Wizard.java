@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.149.2.5 2008-02-19 20:52:40 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.149.2.6 2008-03-03 10:27:27 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -112,7 +112,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private Document schema;
     private Document data;
     private Document originalData;
-    
+
     /**
      *  document where loaded data will be stored in when added by wizard actions
      */
@@ -421,7 +421,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                 // setup original data
                 originalData = Utils.emptyDocument();
-                loadedData = Utils.parseXML("<loadedData />"); 
+                loadedData = Utils.parseXML("<loadedData />");
 
                 // Get the definition and create a copy of the object-definition.
                 Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
@@ -2440,7 +2440,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     Iterator i = newSubRelations.iterator();
                     while (i.hasNext()) {
                         Node newSubRelation = (Node) i.next();
+                        Utils.setAttribute(newSubRelation, "already-exists", "true");
+                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
+                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
+                            Node newSubSubRelation = newSubSubRelations.item(k);
+                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
+                        }
+                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
+                        for (int j = 0; j < newSubObjects.getLength(); j++) {
+                            Node newSubObject = newSubObjects.item(j);
+                            Utils.setAttribute(newSubObject, "already-exists", "true");
+                            //loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubObject.cloneNode(true), true));
+                        }
+
                         loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
+
+
+
                     }
                 } else {
                     log.debug("Nothing found to load");
