@@ -63,7 +63,25 @@
          <version>${cmscportlets.version}</version>
          <type>mmbase-module</type>
       </dependency>
-		<dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-dynamicforms</artifactId>
+         <version>${cmscportlets.version}</version>
+         <type>mmbase-module</type>
+      </dependency>   
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-jforum</artifactId>
+         <version>${cmscportlets.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-google</artifactId>
+         <version>${cmscportlets.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+      <dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-directreaction</artifactId>
 			<version>${cmscmodules.version}</version>
@@ -81,6 +99,12 @@
          <version>${cmscmodules.version}</version>
          <type>mmbase-module</type>
       </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-subsite</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency> 
 
 
 <!-- CMS Container standard -->	
