@@ -3,11 +3,11 @@
 html, body.portal {
 }
 
-.date { 
+.date {
   font-style: italic;
   font-weight: normal;
 }
-.intro { 
+.intro {
   font-weight: bold;
 }
 
@@ -20,12 +20,12 @@ div.x2 {
   padding-right: 10px;
 }
 
-.applicationMenubar, .providerMenubar { 
+.applicationMenubar, .providerMenubar {
   display: none;
 }
-a.navigate { 
+a.navigate {
   display: none;
 }
-.article hr { 
+.article hr {
   visibility: visible;
 }
