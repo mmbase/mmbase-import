@@ -242,7 +242,10 @@
         <guiname xml:lang="hi">इ-मेल</guiname>
         <guiname xml:lang="eo">Retadreso</guiname>
       </gui>
+      <!--
       <datatype base="didactor_verify_email" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        -->
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
         <maxLength value="1024" />
       </datatype>
     </field>
