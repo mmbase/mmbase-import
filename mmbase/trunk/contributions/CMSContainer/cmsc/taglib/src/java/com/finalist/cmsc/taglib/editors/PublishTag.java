@@ -61,10 +61,12 @@ public class PublishTag extends NodeReferrerTag {
          }
 
          for (Node toPublishNode : toPublishNodes) {
-            List<Node> nodeErrors = Workflow.isReadyToPublish(toPublishNode, publishNumbers);
-            if (!nodeErrors.isEmpty()) {
-               errors.put(toPublishNode, nodeErrors);
-            }
+         	if (Workflow.isWorkflowType(toPublishNode.getNodeManager().getName())) { 
+ 	           List<Node> nodeErrors = Workflow.isReadyToPublish(toPublishNode, publishNumbers);
+    	        if (!nodeErrors.isEmpty()) {
+        	       errors.put(toPublishNode, nodeErrors);
+            	}
+         	}
          }
       }
       else {
