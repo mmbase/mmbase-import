@@ -98,7 +98,12 @@
          <version>${cmscmodules.version}</version>
          <type>mmbase-module</type>
       </dependency>
-
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-glossary</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
 
 <!-- CMS Container standard -->	
    		<dependency>
