@@ -37,7 +37,7 @@
         <prompt xml:lang="en">Email body after data</prompt>
 		<prompt xml:lang="zh">邮件主体在数据后</prompt>
 	</field>
-    <field name="useremailsender" dtpattern="^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$" dtrequired="true">
+    <field name="useremailsender" dtpattern="(\w+)@(\w+\.)(\w+)(\.\w+)*" dtrequired="true">
 		<prompt xml:lang="nl">Afzender email</prompt>
         <prompt xml:lang="en">Sender email</prompt>
 		<prompt xml:lang="zh">发送邮件</prompt>
