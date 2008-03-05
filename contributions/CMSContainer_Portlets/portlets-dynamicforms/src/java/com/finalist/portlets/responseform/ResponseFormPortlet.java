@@ -116,7 +116,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                   Object value = parameterMap.get(fieldIdentifier);
                   String textValue = null;
                   if (sendEmail) {
-                     userEmailAddress = "" ;//value
+                     userEmailAddress = (String)value.toString();
                   }
                   if (type == TYPE_TEXTAREA && value != null && maxlength > 0 && value.toString().length() > maxlength) {
                      errorMessages.put(fieldIdentifier, Integer.valueOf(maxlength).toString());
