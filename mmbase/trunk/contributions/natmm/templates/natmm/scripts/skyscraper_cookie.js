@@ -19,7 +19,8 @@ function loadSkyscraper() {
 	var skyscraperElement = document.getElementById('skyscraper');
 	if (skyscraperElement != null) document.getElementById('skyscraper').style.display = 'none';
 	
-	var skyscraperIsViewed = ReadCookie("skyscraper_is_viewed");
+	//var skyscraperIsViewed = ReadCookie("skyscraper_is_viewed");
+	var skyscraperIsViewed = "yes";
 	//alert("skyscraperIsViewed: " + skyscraperIsViewed);
 	
 	if ( skyscraperIsViewed == null || skyscraperIsViewed == "") {
