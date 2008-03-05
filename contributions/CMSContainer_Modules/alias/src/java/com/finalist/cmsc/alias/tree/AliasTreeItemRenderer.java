@@ -17,12 +17,14 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
+import com.finalist.util.module.ModuleUtil;
 
 
 public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
 
     private static final String RESOURCEBUNDLE = "cmsc-modules-alias";
-
+    private static final String FEATURE_WORKFLOW = "workflowitem";
+    
     public TreeElement getTreeElement(NavigationRenderer renderer, Node parentNode, TreeModel model) {
          Node parentParentNode = NavigationUtil.getParent(parentNode);
          UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentParentNode, false);
@@ -47,7 +49,12 @@ public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
              * element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
              */
           }
-
+         
+         if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
+             element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
+                   "../workflow/publish.jsp?number=" + id));
+         }
+         
          element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
                  "../usermanagement/pagerights.jsp?number=" + id));
          
