@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66.2.7 2008-02-18 18:30:04 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.8 2008-03-06 13:56:06 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -251,8 +251,10 @@ public class IncludeTag extends UrlTag {
             default:
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
-                Xml xml = new Xml(Xml.ESCAPE);
-                if ("".equals(result)) result = "The requested resource '" + xml.transform(url) + "' is not available";
+                if ("".equals(result)) {
+                    Xml xml = new Xml(Xml.ESCAPE);
+                    result = "The requested resource '" + xml.transform(url) + "' is not available";
+                }
                 page = result;
             }
             break;
@@ -300,7 +302,8 @@ public class IncludeTag extends UrlTag {
             ServletContext sc = pageContext.getServletContext();
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
             if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
-                handleResponse(404, "No such resource " + relativeUrl, relativeUrl);
+                Xml xml = new Xml(Xml.ESCAPE);
+                handleResponse(404, "No such resource" + xml.transform(relativeUrl), relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
                 if (log.isTraceEnabled()) {
@@ -375,7 +378,7 @@ public class IncludeTag extends UrlTag {
 
             Reader reader = ResourceLoader.getWebRoot().getReader(resource);
             if (reader == null) {
-                handleResponse(404, "No such resource " + resource, resource);
+                handleResponse(404, "No such resource to cite" + resource, resource);
             } else {
                 StringWriter writer = new StringWriter();
                 while (true) {

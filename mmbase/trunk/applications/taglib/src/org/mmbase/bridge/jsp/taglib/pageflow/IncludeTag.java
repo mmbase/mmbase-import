@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.85 2008-02-18 18:30:46 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.86 2008-03-06 13:57:45 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -262,8 +262,10 @@ public class IncludeTag extends UrlTag {
             default:
             case Notfound.DEFAULT:
             case Notfound.MESSAGE:
-                Xml xml = new Xml(Xml.ESCAPE);
-                if ("".equals(result)) result = "The requested resource '" + xml.transform(url) + "' is not available";
+                if ("".equals(result)) {
+                    Xml xml = new Xml(Xml.ESCAPE);
+                    result = "The requested resource '" + xml.transform(url) + "' is not available";
+                }
                 output = result;
             }
             break;
@@ -313,7 +315,8 @@ public class IncludeTag extends UrlTag {
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
 
             if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
-                handleResponse(404, "No such resource " + relativeUrl, relativeUrl);
+                Xml xml = new Xml(Xml.ESCAPE);
+                handleResponse(404, "No such resource " + xml.transform(relativeUrl), relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
 
@@ -387,7 +390,7 @@ public class IncludeTag extends UrlTag {
 
             Reader reader = ResourceLoader.getWebRoot().getReader(resource);
             if (reader == null) {
-                handleResponse(404, "No such resource " + resource, resource);
+                handleResponse(404, "No such resource to cite " + resource, resource);
             } else {
                 StringWriter writer = new StringWriter();
                 while (true) {
