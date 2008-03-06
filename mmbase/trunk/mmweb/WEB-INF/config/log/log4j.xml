@@ -7,7 +7,7 @@
 <log4j:configuration   debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/" >
 
   <appender name="logfile" class="org.apache.log4j.DailyRollingFileAppender" >
-    <param name="File" value="&logdir;mmbase_test.log" />
+    <param name="File" value="&logdir;mmbase.log" />
     <param name="DatePattern" value="'.'yyyy-MM-dd" />
     <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
@@ -20,7 +20,7 @@
   this to go to another file.
   -->     
   <appender name="pagedebug" class="org.apache.log4j.DailyRollingFileAppender" >
-    <param name="File" value="&logdir;mmbase_test-pages.log" />
+    <param name="File" value="&logdir;mmbase-pages.log" />
     <param name="DatePattern" value="'.'yyyy-MM-dd" />
     <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
@@ -30,7 +30,7 @@
 
 
   <appender name="sqllog" class="org.apache.log4j.DailyRollingFileAppender" >
-    <param name="File" value="&logdir;mmbase_test-sql.log" />
+    <param name="File" value="&logdir;mmbase-sql.log" />
     <param name="DatePattern" value="'.'yyyy-MM-dd" />
     <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">

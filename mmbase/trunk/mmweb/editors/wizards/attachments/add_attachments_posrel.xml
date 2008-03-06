@@ -4,7 +4,7 @@
 
 <list role="posrel" destination="attachments"
 
-	minoccurs="0" maxoccurs="1"
+	minoccurs="0" maxoccurs="*"
 
 	hidecommand="" >
 

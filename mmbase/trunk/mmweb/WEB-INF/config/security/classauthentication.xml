@@ -8,6 +8,7 @@
   <authenticate class="org\.apache\.jsp\.development\.bugtracker\..*">
     <property name="username" value="admin" />
   </authenticate>
+  
   <authenticate class="org\.apache\.jsp\.login\.loginpage_jsp.class">
     <property name="username" value="site" />
   </authenticate>
@@ -19,5 +20,6 @@
   <authenticate class="org\.mmbase\.applications\.principletracker\..*">
     <property name="rank" value="administrator" />
   </authenticate>
+
 
 </security>

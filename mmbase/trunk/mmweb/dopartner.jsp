@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@ page import="org.mmbase.www.*,java.net.*" session="true"%>
-<mm:cloud logon="admin" pwd="xxxxxxx" jspvar="cloud">
+<mm:cloud logon="admin" pwd="dontusesvp" jspvar="cloud">
 <%
   try {
     PartnerHandler.addProject(cloud, request);
