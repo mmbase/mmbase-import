@@ -11,12 +11,14 @@
   <mm:import externid="branchPath" required="true" />
 
   <di:leaf styleClass="self"
-             branchOffset="1"
-             branchPath="${branchPath}"
-             branch="${b}">
+           icon="kupu_icon"
+           branchOffset="1"
+           branchPath="${branchPath}"
+           branch="${b}">
     <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
       <mm:param name="templates">/editwizards/data</mm:param>
       <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
+      <mm:param name="language">${locale.language}</mm:param>
       <a href="${_}"
          target="text">
         <mm:import id="href">
