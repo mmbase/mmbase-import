@@ -12,6 +12,7 @@ package org.mmbase.util.transformers;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.12.2.2 2008-03-05 12:54:41 ernst Exp $
+ * @version $Id: SpaceReducer.java,v 1.12.2.3 2008-03-06 11:06:05 pierre Exp $
  */
 
 public class SpaceReducer extends ReaderTransformer implements CharTransformer {
@@ -37,7 +38,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
     /**
      * This is a list of tags, of who's body the empty lines should not be filtered.
      */
-    private static List<Tag> tagsToPass = new ArrayList<Tag>();
+    private static List tagsToPass = new ArrayList();
     static{
         tagsToPass.add(new Tag("pre"));
         tagsToPass.add(new Tag("textarea"));
@@ -57,10 +58,11 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
             if(currentlyOpened.hasClosed()){
                 currentlyOpened = null;
             }
-        }else{
+        } else {
             System.out.println("currently opened is null");
             //look for an opening tag
-            for (Tag tag : tagsToPass) {
+            for (Iterator i = tagsToPass.iterator(); i.hasNext(); ) {
+                Tag tag = (Tag)i.next();
                 tag.setLine(line);
                 if(tag.hasOpened()){
                     currentlyOpened = tag;
