@@ -3,5 +3,15 @@
 <action type="load">
 	<field name="name" />
 	<field name="description" />
+	<relation destination="images" role="pos2rel" />
+	<relation destination="articles" role="posrel" />
+	<relation destination="questions" role="posrel" >
+		<object>
+			<relation destination="answers" role="posrel">
+			         <object />
+		        </relation>
+		</object>
+	  </relation>
+	
 </action>
 

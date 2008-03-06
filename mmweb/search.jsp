@@ -12,48 +12,58 @@
    <option value="">full site</option>
    <option value="mmdocs" <mm:compare referid="restrict" value="mmdocs">selected="true"</mm:compare>>in documentation</option>
    <option value="mmdocs/reference/taglib/" <mm:compare referid="restrict" value="mmdocs/reference/taglib/">selected="true"</mm:compare>>in taglib documentation</option>
+   <option value="lists.mmbase.org" <mm:compare referid="restrict" value="lists.mmbase.org">selected="true"</mm:compare>>mailing lists</option>
  </select>
 </form>
 <mm:present referid="keywords">
  <mm:isnotempty referid="keywords">
 <mm:formatter>
 	<mm:xslt>
-	  <xsl:output method="html" encoding="ISO-8859-1"/>
-		<xsl:template match = "htdig" >
-			<xsl:apply-templates select="search"/>
-			<ul>
-			<xsl:apply-templates select="result"/>
-			</ul>
-		</xsl:template>
+  <xsl:output method="html" encoding="ISO-8859-1"/>
+  <xsl:template match="htdig">
+    <xsl:apply-templates select="search"/>
+    <ul>
+      <xsl:apply-templates select="result"/>
+    </ul>
+  </xsl:template>
+  <xsl:template match="result">
+    <li>
+      <div class="result">
+        <div class="score">score: <xsl:value-of select="percent"/> %</div>
+        <a href="{url}">
+          <xsl:value-of select="title"/>
+        </a>
+        <br/>
+        <xsl:value-of select="excerpt" disable-output-escaping="yes"/>
+        <br/>
+      </div>
+    </li>
+  </xsl:template>
 
-		<xsl:template match = "result" >
-			<li>
-			score: <xsl:value-of select="percent" /> % 
-			<a href="{url}"><xsl:value-of select="title" /></a><br/>
-			<xsl:value-of select="excerpt" disable-output-escaping="yes"/><br/>
-			</li>
-		</xsl:template>
+  <xsl:template match="search">
+    <div class="documentXYZ">Documents <xsl:value-of select="firstdisplayed"/> - <xsl:value-of select="lastdisplayed"/> of <xsl:value-of select="matches"/> </div>
+    <xsl:apply-templates select="pagelist"/>
+  </xsl:template>
 
-		<xsl:template match = "search" >
-			Documents <xsl:value-of select="firstdisplayed"/> - <xsl:value-of select="lastdisplayed"/> of <xsl:value-of select="matches" /> <br/>
-			<xsl:apply-templates select="pagelist"/>
-		</xsl:template>
-
-		<xsl:template match="pagelist">
-			<table>
-			<tr>
-			<xsl:apply-templates select="page"/>
-			</tr>
-			</table>
-		</xsl:template>
-		<xsl:template match="page">
-			<td>
-			  <xsl:apply-templates select="a"/>
-			</td>
-		</xsl:template>
-		<xsl:template match="a">
-			  <a href="{translate(@href,';','&amp;')}"><xsl:value-of select="."/></a>
-		</xsl:template>
+  <xsl:template match="pagelist">
+    <table>
+      <tr>
+        <xsl:for-each select="page">
+          <td>
+            <a>
+              <xsl:attribute name="href">
+                <xsl:apply-templates select="a" mode="pagelist"/>
+              </xsl:attribute>
+              <xsl:value-of select="position()"/>
+            </a>
+          </td>
+        </xsl:for-each>
+      </tr>
+    </table>
+  </xsl:template>
+  <xsl:template match="a" mode="pagelist">
+    <xsl:value-of select="translate(@href,';','&amp;')"/>
+  </xsl:template>
 	</mm:xslt>
   <jsp:getProperty name="search" property="result" />
 </mm:formatter>

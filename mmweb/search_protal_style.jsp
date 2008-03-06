@@ -4,7 +4,7 @@
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
 <td>
-<mm:include page="search.jsp"/>
+<mm:include page="search2.jsp"/>
 </td>
 <%@include file="/includes/footer.jsp" %>
 </mm:cloud>

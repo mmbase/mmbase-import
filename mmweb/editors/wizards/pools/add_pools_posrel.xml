@@ -5,41 +5,40 @@
 		orderby="field[@name='pos']"
 		ordertype="number">
 
-	<title>Link- / bronnen-set</title>
+	<title xml:lang="nl">Categorie(en)</title>
+	<title xml:lang="en">Items</title>
 	<item>
-		<title>Link- / bronnen-set</title>
+		<title></title>
 		<description></description>
-		<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
+		<field fdatapath="field[@name=&apos;pos&apos;]" ftype="line">
+			<prompt xml:lang="nl">Positie</prompt>
+			<prompt xml:lang="en">Position</prompt>
+		</field>
 		<field name="name" ftype="data">
-			<prompt>Naam</prompt>
+			<prompt xml:lang="nl">Naam</prompt>
+			<prompt xml:lang="en">Name</prompt>
 		</field>
-		<field name="description" ftype="data">
-			 <prompt>Omschrijving</prompt>
+		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="wizards/pools/pools">
+			<prompt></prompt>
 		</field>
-		<field ftype="startwizard" wizardname="wizards/pools/pools" inline="true" >
-			<prompt>Bekijk links of bronnen</prompt>
-		</field>
-		<list include="wizards/page/add_page_posrel_pools.xml" />
 	 </item>
 		
 	<action type="create">
 		<relation role="posrel">
 			<object type="pools" />
+			<field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
 		</relation>
 	</action>
 	
-	
-	<command name="search" nodepath="pools" fields="name,description" orderby="name" age="-1">
+	<command name="startwizard" inline="true" wizardname="wizards/pools/pools" objectnumber="new"/>
+	<command name="search" nodepath="pools" fields="name" orderby="name" age="-1">
     	<prompt></prompt>
 		<search-filter>
-			<name>Naam bevat</name>
+			<name xml:lang="nl">Naam bevat</name>
+			<name xml:lang="en">Name contains</name>
 			<search-fields>name</search-fields>
 		</search-filter>
-		<search-filter>
-			<name>Omschrijving bevat</name>
-			<search-fields>description</search-fields>
-		</search-filter>
 	</command>
-      
+      	
 </list>	
 

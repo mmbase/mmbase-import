@@ -26,6 +26,7 @@
      <mm:notpresent referid="templatefound"><%-- still not found? then show error-page --%>
      
       <%@include file="/includes/header.jsp"%> 
+
       <td colspan="2">
         <b><font color="#CC0000">Error:</font></b>
         <p>

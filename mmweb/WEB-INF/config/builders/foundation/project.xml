@@ -235,10 +235,10 @@
 			<!-- name of the field in the database -->
 			<name>body</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="300" notnull="false">VARCHAR</type>
+			<type state="persistent" size="64000" notnull="false">VARCHAR</type>
 		</db>
 	</field>
-	<!-- POS 5 : <field> 'subtitle'  -->
+	<!-- POS 5 : <field> 'status'  -->
 	<field>
 		<!-- gui related -->
 		<gui>
