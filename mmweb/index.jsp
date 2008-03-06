@@ -1,8 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page language="java" contentType="text/html; charset=utf-8" session="true"
-%><%-- WHY is session true! It makes no sense! Or just for this stupid 'Hello <name>'?!! 
---%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <mm:content type="text/html">
 <mm:cloud>
  <mm:import externid="template" />
