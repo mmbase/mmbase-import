@@ -18,7 +18,11 @@
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://developers.sun.com/docs/jscreator/apis/portlet/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20040521.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
