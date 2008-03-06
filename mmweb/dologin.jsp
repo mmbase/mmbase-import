@@ -4,7 +4,7 @@
 <%
   try {
     if(request.getParameter("forgotten") != null) {
-       AccountHandler.forgotten(cloud, request, response);
+       AccountHandler.forgotten(cloud, request);
        String url = "/login/mmlogin.jsp?message=" + URLEncoder.encode("An email has been sent.");
        config.getServletContext().getRequestDispatcher(url).forward(request, response);
     } else {
@@ -14,7 +14,9 @@
        response.sendRedirect(url);
     }
   } catch(Exception ex) {
-     String url = "/login/mmlogin.jsp?reason=" + URLEncoder.encode(ex.getMessage());
+     String msg = ex.getMessage();
+     msg = msg == null ? ex.getClass().getName() : msg;
+     String url = "/login/mmlogin.jsp?reason=" + URLEncoder.encode(msg);
      config.getServletContext().getRequestDispatcher(url).forward(request, response);
   }
 %>

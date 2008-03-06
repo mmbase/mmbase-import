@@ -20,6 +20,9 @@
 	<item>
 		<title></title>
 		<description></description>
+		<field name="name" ftype="data" >
+			<prompt>Linktext</prompt>
+		</field>
 		<field name="url" ftype="data" >
 			<prompt>Url</prompt>
 		</field>

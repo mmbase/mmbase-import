@@ -1,10 +1,3 @@
-/************************************************************************************
-	(c) Ger Versluis 2000 version 5.5 24 December 2001 (updated Jan 31st, 2003 by Dynamic Drive for Opera7)
-	Updated 19 July, 2003 by GV for CSS CompatMode	
-	HV Menu found on Dynamic Drive ONLY may be used on both commercial and non commerical sites	
-	For info write to menus@burmees.nl							        
-	This script featured on Dynamic Drive DHTML code library: http://www.dynamicdrive.com
-*************************************************************************************/
 	var AgntUsr=navigator.userAgent.toLowerCase();
 	var AppVer=navigator.appVersion.toLowerCase();
 	var DomYes=document.getElementById?1:0;
@@ -39,7 +32,7 @@
 	var Bod=Doc.body;
 	var Trigger=NavYes&&!Opr?Par:Bod;
 
-	MenuTextCentered=MenuTextCentered==1||MenuTextCentered=='center'?'center':MenuTextCentered==0||MenuTextCentered!='right'?'left':'right';
+	MenuTextCentered=MenuTextCentered==1||MenuTextCentered=='center'?'center':MenuTextCentered==0||MenuTextCentered!='right'?'left':'right';
 	WbMstrAlrts=["Item not defined: ","Item needs height: ","Item needs width: "];
 
 	if(Trigger.onload)Dummy=Trigger.onload;
