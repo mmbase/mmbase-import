@@ -49,7 +49,8 @@
              href="${_}"><di:translate key="education.educationmenupersons" /></a>        </mm:link>
 
       </di:has>
-      <jsp:text> </jsp:text>
+
+
       <mm:hasnode number="component.pop">
         <!--
             A user will see a Competence submenu only if POP component is switched ON
@@ -67,6 +68,7 @@
           </mm:relatednodes>
         </mm:node>
       </mm:hasnode>
+
       <mm:hasnode number="component.metadata" >
         <di:has  editcontext="metadata">
           <mm:link page="." referids="e?">
@@ -128,7 +130,9 @@
         <span class="education_top_menu ${mode eq 'educations' ? 'selected' : ''}">
           <mm:link page="." referids="e?">
             <mm:param name="mode">educations</mm:param>
-            <a href="${_}"><di:translate key="education.educationmenueducations" /></a>
+            <a href="${_}">
+              <di:translate key="education.educationmenueducations" />
+            </a>
           </mm:link>
           <c:if test="${fn:length(educations) ge 2}">
             <script>

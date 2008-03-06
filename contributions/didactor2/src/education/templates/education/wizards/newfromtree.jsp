@@ -6,15 +6,16 @@
   <jsp:output omit-xml-declaration="yes" />
 
   <mm:import externid="wizardjsp" from="request" />
-  <mm:import externid="branchPath" />
+  <mm:import externid="branchPath" required="true" />
 
   <di:getsetting setting="new_learnobjects" component="core" vartype="list" id="new_learnobjects" write="false" />
+
   <mm:stringlist referid="new_learnobjects">
 
     <mm:haspage page="/education/wizards/new/${_}.jspx">
       <mm:treeinclude page="/education/wizards/new/${_}.jspx"
                       objectlist="$includePath"
-                      referids="$referids,depth?">
+                      referids="$referids,branchPath">
       </mm:treeinclude>
     </mm:haspage>
     <mm:haspage page="/education/wizards/new/${_}.jspx" inverse="true">

@@ -184,7 +184,9 @@
                       </mm:field>
                     </mm:compare>
 
-                    <di:leaf  click="node_0_0_${learnblockcounter}" branchPath="..${status.last ? '.' : ' '}">
+                    <di:leaf
+                        click="node_0_0_${learnblockcounter}"
+                        branchPath="..${status.last ? '.' : ' '}">
                       <mm:import id="guitype" ><mm:nodeinfo type="guitype" escape="lowercase" /></mm:import>
                       <mm:link referid="wizardjsp" referids="_node@objectnumber">
                         <mm:param name="wizard">config/<mm:nodeinfo type="type"/>/<mm:nodeinfo type="type" /></mm:param>

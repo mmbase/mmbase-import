@@ -11,10 +11,10 @@
   <mm:import  externid="b" from="request" required="true" />
 
   <di:leaf styleClass="self2"
-             branch="${b}"
-             branchOffset="1"
-             branchPath="${branchPath}"
-             click="${_node}">
+           branch="${b}"
+           branchOffset="1"
+           branchPath="${branchPath}"
+           click="${_node}">
     <mm:link referid="wizardjsp" referids="_node@objectnumber,_node@origin">
       <mm:param name="wizard">config/learnblocks/learnblocks</mm:param>
       <mm:param name="path">${sessionScope.eduname}${sessionScope.path}</mm:param>

@@ -13,6 +13,7 @@
       <mm:node id="sn" number="${startnode}">
         <div id="tree_for_${_node}" >
 
+          <mm:write request="b" value="" />
           <mm:include page="newfromtree.jsp">
             <mm:param name="branchPath">${branchPath}</mm:param>
           </mm:include>
@@ -25,7 +26,6 @@
               >
             <mm:sortorder field="posrel.pos" direction="up" />
             <mm:typeconstraint name="questions" inverse="true" />
-            <mm:write request="branch" value="" />
             <mm:tree
                 varBranchStatus="status"
                 maxdepth="6">
