@@ -174,11 +174,11 @@
   </xsd:element>
   <xsd:element name="positions">
     <xsd:complexType>
-      <xsd:sequence>
+      <xsd:all>
         <xsd:element ref="input"  minOccurs="0" />
         <xsd:element ref="list"   minOccurs="0" />
         <xsd:element ref="search" minOccurs="0" />
-      </xsd:sequence>
+      </xsd:all>
     </xsd:complexType>
   </xsd:element>
   <xsd:element name="input" />
