@@ -153,8 +153,17 @@
         </if>
       </else>
     </if>
-
-    <!-- copy templates -->
+    <if>
+     <available file="providers/${provider}/templates.zip" type="dir" />
+     <then>
+        <unzip dest="${build.webapp.dir}">
+          <fileset dir="src/${component}/templates.zip">
+            <include name="*.zip" />
+            <include name="*.war" />
+          </fileset>
+        </unzip>
+     </then>
+    </if>
     <if>
      <available file="providers/${provider}/webinf" type="dir" />
      <then>
