@@ -1,78 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mcquestions" maintainer="didactor.nl" version="2" extends="questions">
-  <status>active</status>
-  <classfile>nl.didactor.education.builders.MCQuestionBuilder</classfile>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="mcquestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.MCQuestionBuilder</class>
   <searchage>31</searchage>
-
   <names>
-    <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Multiplechoice vraag</singular>
     <singular xml:lang="en">Multiple choice question</singular>
-    <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Multiplechoice vragen</plural>
     <plural xml:lang="en">Multiple choice questions</plural>
   </names>
 
   <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="nl">Een multiple choice vraag, waar de student een of meerdere antwoorden selecteert</description>
     <description xml:lang="en">A multiple choise question, where the student selects one or multiple questions</description>
   </descriptions>
 
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
 
-  <!-- Possible values for the 'layout' field defined in the super-builder:
-    0 = All answers below eachother, in random order
-    1 = All answers besides eachother, in random order
-    2 = A pulldown menu, in random order. (Type must be set to '0')
-
-    3 = All answers below eachother, in specified order
-    4 = All answers besides eachother, in specified order
-    5 = A pulldown menu, in specified order. (Type must be set to '0')
   -->
 
   <fieldlist>
-    <field>
+
+    <!-- override to give differnt enumeration -->
+    <field name="layout">
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="0" xml:lang="en" display="All answers below eachother, in random order" />
+          <entry value="1" xml:lang="en" display="All answers besides eachother, in random order" />
+          <entry value="2" xml:lang="en" display="A pulldown menu, in random order. (Type must be set to '0')" />
+          <entry value="3" xml:lang="en" display="All answers below eachother, in specified order" />
+          <entry value="4" xml:lang="en" display="All answers besides eachother, in specified order" />
+          <entry value="5" xml:lang="en" display="A pulldown menu, in specified order. (Type must be set to '0')" />
+          <entry value="0" xml:lang="nl" display="Alle antwoorden onder elkaar (geschud)" />
+          <entry value="1" xml:lang="nl" display="Alle antwoorden naast elkaar (geschud)" />
+          <entry value="2" xml:lang="nl" display="Pulldown menu (geschud)" />
+          <entry value="3" xml:lang="nl" display="Alle antwoorden onder elkaar (vaste volgorde)" />
+          <entry value="4" xml:lang="nl" display="Alle antwoorden naast elkaar (vaste volgorde)" />
+          <entry value="5" xml:lang="nl" display="Pulldown menu (vaste volgorde)" />
+        </enumeration>
+      </datatype>
+    </field>
+
+    <field name="type">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">
-          Type van de Multiple Choice vraag. 
-          0 = selecteer 1 antwoord
-          1 = selecteer meerdere antwoorden
-        </description>
-        <description xml:lang="en">
-          Type of the Multiple Choice question.
-          0 = one answers needs to be selected
-          1 = multiple answers need to be selected
-        </description>
+        <description xml:lang="nl">Type van de Multiple Choice vraag.</description>
+        <description xml:lang="en">Type of the Multiple Choice question.</description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="en">Type</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>3</input>
-          <!-- position in list area of the editor -->
-          <list>3</list>
-          <!-- position in search area of the editor -->
-          <search>3</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>type</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <enumeration>
+          <entry value="0" xml:lang="nl" display="Een van de gegeven antwoorden kan worden geselecteerd" />
+          <entry value="1" xml:lang="nl" display="Meerdere antwoorden kunnen worden geselecteerd" />
+          <entry value="2" xml:lang="nl" display="Een waarde-antwoord kan worden geselecteerd" />
+
+          <entry value="0" xml:lang="en" display="One of the answers can be selected" />
+          <entry value="1" xml:lang="en" display="Zero or more answwers can be selected" />
+          <entry value="2" xml:lang="en" display="A value answer can be selected" /> <!-- I have no idea what this is -->
+        </enumeration>
+      </datatype>
     </field>
+
   </fieldlist>
 </builder>
