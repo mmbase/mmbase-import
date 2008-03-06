@@ -61,7 +61,9 @@ public class DidactorCore extends Component {
         Queries.addConstraint(q, q.createConstraint(pos, FieldCompareConstraint.GREATER_EQUAL, (Integer) hasInteger));
         StepField name =  q.createStepField(rs.getNext(), "name");
         Queries.addConstraint(q, q.createConstraint(name, editContext));
-        log.info(q.toSql());
+        if (log.isDebugEnabled()) {
+            log.debug(q.toSql());
+        }
         return Queries.count(q) > 0;
     }
 
