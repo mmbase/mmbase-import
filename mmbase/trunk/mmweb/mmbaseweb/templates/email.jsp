@@ -6,7 +6,7 @@
 %><%@ include file="/includes/alterheader.jsp" %>
 <%@ include file="/includes/relatedpages.jsp" %>
 <div id="pagecontent">
-  <mm:import externid="page" reset="true">contact.form</mm:import>
+  <mm:import externid="page" reset="true" />
   <mm:list nodes="$page" path="pages,posrel,articles" searchdir="destination"
     orderby="posrel.pos" directions="UP">
     <mm:node element="articles"><%@ include file="/includes/article.jsp" %></mm:node>
