@@ -1,19 +1,19 @@
-.mmxf img.image-inline { 
+.mmxf img.image-inline {
   float: none !important;
 }
-.mmxf img.image-left { 
-  float: left  !important; 
+.mmxf img.image-left {
+  float: left  !important;
 }
-.mmxf img.image-right { 
+.mmxf img.image-right {
   float: right !important;
 }
-.mmxf img.image-center {  
+.mmxf img.image-center {
   margin-left: auto;
   margin-right: auto;
   display: block;
 }
 
-.mmxf div.float { 
+.mmxf div.float {
   display: block !important;
   float: left    !important;
   width: 30%;
@@ -23,56 +23,56 @@
   margin: 1ex;
   border: none;
 }
-.mmxf div.right { 
+.mmxf div.right {
   margin-right: 0px;
   float: right !important;
 }
-.mmxf div.left { 
+.mmxf div.left {
   margin-left: 0px;
   float: left !important;
-} 
+}
 
 
-.mmxf div.note { 
+.mmxf div.note {
   background-color: #ffe;
   font-style: italic;
 }
-.mmxf div.note i { 
+.mmxf div.note i {
   font-style: normal;
 }
-.mmxf div.note em { 
+.mmxf div.note em {
   font-style: normal;
 }
-.mmxf div.note.right { 
+.mmxf div.note.right {
   border-left: yellow 4px solid;
 }
-.mmxf div.note.left { 
+.mmxf div.note.left {
   border-right: yellow 4px solid;
 }
 
 
 
-.mmxf div.intermezzo { 
+.mmxf div.intermezzo {
   margin-left: 0px;
   clear: both;
   width: 98%;
   background-color: #ffc;
-} 
+}
 
-.mmxf div.quote { 
+.mmxf div.quote {
   border-color: red;
   background-color: white;
 }
 
-.mmxf div.caption { 
+.mmxf div.caption {
   border: none;
   background-color: black;
   color: white;
 }
-.mmxf div.caption a { 
+.mmxf div.caption a {
   color: #bbf;
 }
-.mmxf table { 
+.mmxf table {
   width: auto;
 }
 .mmxf .align-right {
@@ -86,35 +86,35 @@
 }
 
 
-.mmxf table.grid { 
+.mmxf table.grid {
   background-color: #eee;
   color: #000 !important;
 }
-.mmxf table.grid tr td { 
+.mmxf table.grid tr td {
   color: #000 !important;
 }
 
-.mmxf table.plain td {  
-  border: none;  
-}
-.mmxf table.grid td {  
-  border: 1px solid;
-}
-.mmxf table.listing td {  
-  border: 1px solid;
-}
-.mmxf table.data td {  
+.mmxf table.plain td {
   border: none;
 }
-.mmxf table.data tr.odd  td { 
+.mmxf table.grid td {
+  border: 1px solid;
+}
+.mmxf table.listing td {
+  border: 1px solid;
+}
+.mmxf table.data td {
+  border: none;
+}
+.mmxf table.data tr.odd  td {
   background-color: #ccc !important;
   color: #000 !important;
 }
-.mmxf table.data tr.even td { 
+.mmxf table.data tr.even td {
   background-color: #fff !important;
   color: #000 !important
 }
 
-.mmxf table.wide { 
+.mmxf table.wide {
   width: 100%;
 }
