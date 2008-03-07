@@ -6,4 +6,5 @@ OVERRIDE THIS LANGUAGES FILE IF YOU WANT MORE OR OTHER LANGUAGES IN YOUR PROJECT
 <optionlist name="languages">
    <option id="en">English (en)</option>
    <option id="nl">Dutch (nl)</option>
+   <option id="zh">Chinese (zh)</option>
 </optionlist>
