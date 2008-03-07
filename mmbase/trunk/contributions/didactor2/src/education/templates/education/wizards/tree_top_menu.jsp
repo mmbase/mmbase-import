@@ -46,15 +46,12 @@
         <mm:link page="." referids="e?">
           <mm:param name="mode">roles</mm:param>
           <a class="education_top_menu ${mode eq 'roles' ? 'selected' : ''}"
-             href="${_}"><di:translate key="education.educationmenupersons" /></a>        </mm:link>
-
+             href="${_}"><di:translate key="education.educationmenupersons" /></a>
+        </mm:link>
       </di:has>
 
 
       <mm:hasnode number="component.pop">
-        <!--
-            A user will see a Competence submenu only if POP component is switched ON
-        -->
         <mm:node number="component.pop">
           <mm:relatednodes type="providers" constraints="providers.number=$provider"> <!-- WTF -->
             <di:has  editcontext="competentie">
@@ -79,6 +76,7 @@
           </mm:link>
         </di:has>
       </mm:hasnode>
+
       <di:has editcontext="contentelementen">
         <mm:link page="." referids="e?">
           <mm:param name="mode">content_metadata</mm:param>
@@ -117,6 +115,8 @@
         </di:has>
       </mm:hasnode>
 
+      <di:include page="/education/wizards/menu_items.jspx" />
+
       <di:has editcontext="toetsen">
         <mm:link page="." referids="e?">
           <mm:param name="mode">tests</mm:param>
@@ -125,6 +125,8 @@
           <di:translate key="education.educationmenutests" /></a>
         </mm:link>
       </di:has>
+
+
 
       <di:has editcontext="opleidingen">
         <span class="education_top_menu ${mode eq 'educations' ? 'selected' : ''}">
