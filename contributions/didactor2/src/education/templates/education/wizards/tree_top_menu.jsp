@@ -115,7 +115,8 @@
         </di:has>
       </mm:hasnode>
 
-      <di:include page="/education/wizards/menu_items.jspx" />
+      <di:include debug="html"
+      page="/education/wizards/menu_items.jspx" />
 
       <di:has editcontext="toetsen">
         <mm:link page="." referids="e?">
