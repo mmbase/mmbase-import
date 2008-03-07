@@ -3,14 +3,8 @@
   <title xml:lang="nl">Bijbehorende personen</title>
   <title xml:lang="en">Related people</title>
   <item>
-    <field name="firstname" ftype="data">
-      <prompt xml:lang="nl">Voornaam</prompt>
-      <prompt xml:lang="en">Firstname</prompt>
-    </field>
-    <field fdatapath="object/field[@name='lastname']" ftype="data">
-      <prompt xml:lang="nl">Achternaam</prompt>
-      <prompt xml:lang="en">Lastname</prompt>
-    </field>
+    <field name="firstname" ftype="data" />
+    <field name="lastname" ftype="data" />
     <field fdatapath="../relation[@type='related']/object[@type='roles']" ftype="data">
       <prompt xml:lang="nl">Rol</prompt>
       <prompt xml:lang="en">Role</prompt>
