@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.12.2.3 2008-03-06 11:06:05 pierre Exp $
+ * @version $Id: SpaceReducer.java,v 1.12.2.4 2008-03-07 14:13:12 michiel Exp $
  */
 
 public class SpaceReducer extends ReaderTransformer implements CharTransformer {
@@ -71,7 +71,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         }
         return result;
     }
-    
+
     public Writer transform(Reader r, Writer w) {
         try {
             BufferedReader br = new BufferedReader(r);
@@ -98,7 +98,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         int nl    = 1;  // 'open' newlines
         // we start at 1, rather then 0, because in that way, all leading space is deleted too
 
-        StringBuilder indent = new StringBuilder();  // 'open' indentation of white-space
+        StringBuffer indent = new StringBuffer();  // 'open' indentation of white-space
         int l = 0; // number of non-white-space (letter) on the current line
 
         int lines = 0; // for debug: the total number of lines read.
@@ -135,11 +135,11 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
     public String toString() {
         return "SPACEREDUCER";
     }
-    
+
     /**
      * this is a helper class that can check if a tag was opened or closed in a line of text
      * It first removes all bodyless versions of the tag from the line, and then counts all opening and
-     * closing occurrences of the tag. 
+     * closing occurrences of the tag.
      * This will not work if an opening or closing tag is partly written on the next line, so it's not perfect.
      * <ul>
      * <li>have no body
@@ -151,9 +151,9 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
     private static class Tag{
         private boolean hasOpened = false;
         private boolean hasClosed = false;
-        private Pattern openingPattern; 
-        private Pattern closingPattern; 
-        private Pattern noBodyPattern; 
+        private Pattern openingPattern;
+        private Pattern closingPattern;
+        private Pattern noBodyPattern;
         private String name;
 
         public Tag(String name){
@@ -162,18 +162,18 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
             noBodyPattern = Pattern.compile("<[\\s]*"+name+"\\s+([a-zA-Z]+\\=\"[\\S]+\")*\\s*/\\s*>", Pattern.CASE_INSENSITIVE);
             this.name=name;
         }
-        
+
         public void setLine(String line){
             //remove the bodyless versions of the tag from this line (if they exist, which they should not)
             line = removeTagsWithoutBody(line);
-            
+
             //count the opening and closing versions of the tag
             int opening = countOccurences(openingPattern, line);
             int closing = countOccurences(closingPattern, line);
             hasOpened = opening > closing;
             hasClosed = closing > opening;
         }
-        
+
         private int countOccurences(Pattern pattern, String line) {
             Matcher m = pattern.matcher(line);
             int counter = 0;
@@ -188,7 +188,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         /**
          * remove all the occurrences of bodyless versions of the tag
          * they should not be there, but for safety
-         *  
+         *
          * @param line
          * @return
          */
@@ -204,7 +204,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         public boolean hasOpened(){
             return hasOpened;
         }
-        
+
         public boolean hasClosed(){
             return hasClosed;
         }
@@ -212,7 +212,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
             return name;
         }
     }
-    
+
     /**
      * method to test the tag class
      * TODO: this should be a unit test
@@ -228,7 +228,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         test("<pre onkeydown=\"disableRelated();\" class=\"small\" id=\"field_news_intro\"  name=\"updateNodeActions[39302909].\">hallo");
         System.out.println("FINISED");
     }
-    
+
     public static void test(String line){
         System.out.println("testing line: "+line);
         Tag tag = new Tag("pre");
