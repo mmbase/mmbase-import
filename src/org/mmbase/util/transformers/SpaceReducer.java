@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,31 +27,29 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.18 2008-03-05 12:53:59 ernst Exp $
+ * @version $Id: SpaceReducer.java,v 1.19 2008-03-07 17:31:50 ernst Exp $
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
-    /**
-     * This is a list of tags, of who's body the empty lines should not be filtered.
-     */
-    private static List<Tag> tagsToPass = new ArrayList<Tag>();
-    static{
-        tagsToPass.add(new Tag("pre"));
-        tagsToPass.add(new Tag("textarea"));
-    }
-    protected Tag currentlyOpened = null;
+    protected static final String CONTEXT_TAGSTOPASS = "tagstopass";
+    protected static final String CONTEXT_CURRENTLYOPENED = "currentlyopen";
 
-
-    protected boolean transform(PrintWriter bw, String line) {
-//        if (!line.trim().equals("")  {
-//            bw.write(line);
-//            
-//            return true;
-//        } else {
-//            return false;
-//        }
+    @Override
+    protected boolean transform(PrintWriter bw, String line, Map<String,Object> context) {
+        List<Tag> tagsToPass;
+        if(context.get(SpaceReducer.CONTEXT_TAGSTOPASS) == null){
+            tagsToPass = new ArrayList<Tag>();
+            tagsToPass.add(new Tag("pre"));
+            tagsToPass.add(new Tag("textarea"));
+            context.put(SpaceReducer.CONTEXT_TAGSTOPASS, tagsToPass);
+        }else{
+            tagsToPass = (List<Tag>)context.get(SpaceReducer.CONTEXT_TAGSTOPASS);
+        }
+        
+        Tag currentlyOpened = (Tag) context.get(SpaceReducer.CONTEXT_CURRENTLYOPENED);
+        
         boolean result = false;
         if(!line.trim().equals("") || currentlyOpened != null){
             bw.write(line);
@@ -69,12 +66,11 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
             for (Tag tag : tagsToPass) {
                 tag.setLine(line);
                 if(tag.hasOpened()){
-                    currentlyOpened = tag;
+                    context.put(SpaceReducer.CONTEXT_CURRENTLYOPENED, tag);
                 }
             }
         }
         return result;
-        
     }
 
     /**

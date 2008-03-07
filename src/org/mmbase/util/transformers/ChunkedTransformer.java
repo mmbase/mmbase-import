@@ -371,7 +371,8 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
                 }
             };
         CharTransformer trans2 = new BufferedReaderTransformer() {
-                protected boolean transform(PrintWriter bw, String line) {
+                @Override
+                protected boolean transform(PrintWriter bw, String line, Map<String,Object>context) {
                     bw.println(line);
                     return true;
                 }
