@@ -356,8 +356,7 @@
          <mm:node number="${number}">
 
 		      <mm:relatednodes role="creationrel" type="contentchannel">
-		         <mm:field name="number" id="creationnumber" write="false" jspvar="cnumber"/>
-               <c:set var="cn" value="${cnumber}"/>
+		         <c:set var="creationRelNumber"><mm:field name="number" id="creationnumber"/></c:set>
                <mm:compare referid="trashnumber" referid2="creationnumber">
 		         	 <c:set var="channelName"><fmt:message key="search.trash" /></c:set>
 						 <c:set var="channelIcon" value="/editors/gfx/icons/trashbin.png"/>
@@ -408,25 +407,18 @@
 		                   <img src="../gfx/icons/link.png" title="<fmt:message key="searchform.icon.select.title" />" /></a>
 		            </mm:compare>
 
-                  <c:set var="actionURL">
-                      <c:choose>
-						<c:when test="${channelName eq 'Recycle bin'}">
-							javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>' )
-						</c:when>
-						<c:otherwise>
-							javascript:deleteContent('<mm:field name='number'/>')
-						</c:otherwise>
-						</c:choose>
-                  </c:set>
-
-               <%  Integer cn = (Integer)pageContext.findAttribute("cn");
-                   Node channel = cloud.getNode(cn);
-                   UserRole role = RepositoryUtil.getRole(cloud,channel,false);
-                   if (role != null && SecurityUtil.isWriter(role)) { %>
-               <a href="${actionURL}" title="Linked">
-						<img src="../gfx/icons/delete.png" title="Linked Del" alt="Linked Del"/>
+				<cmsc:rights nodeNumber="${creationRelNumber}" var="rights"/>
+				<c:if test="${creationRelNumber == trashnumber && rights == 'webmaster'}">
+					<a href="javascript:deleteContent('<mm:field name='number'/>','<fmt:message key="recyclebin.removeconfirm"/>' )">
+						<img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.recyclebin" />" alt="<fmt:message key="searchform.icon.delete.recyclebin" />"/>
 					</a>
-               <%}%>
+				</c:if>
+				<c:if test="${creationRelNumber != trashnumber && (rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}">
+					<a href="javascript:deleteContent('<mm:field name='number'/>')">
+						<img src="../gfx/icons/delete.png" title="<fmt:message key="searchform.icon.delete.channel" />" alt="<fmt:message key="searchform.icon.delete.channel" />"/>
+					</a>
+				</c:if>
+				         
                <a href="#" onclick="showItem(<mm:field name="number"/>);">
 						<img src="../gfx/icons/info.png" alt="<fmt:message key="searchform.icon.info.title" />" title="<fmt:message key="searchform.icon.info.title" />" />
 					</a>
