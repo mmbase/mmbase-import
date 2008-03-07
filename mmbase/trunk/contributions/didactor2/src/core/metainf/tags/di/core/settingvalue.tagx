@@ -3,14 +3,14 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     version="2.0">
-  <jsp:directive.tag 
-      description="Obtains a setting for a given component and node. Similar to di:getsetting, btw." 
+  <jsp:directive.tag
+      description="Obtains a setting for a given component and node. Similar to di:getsetting, btw."
       import="nl.didactor.component.Component" />
 
-  <jsp:directive.attribute name="component"   /> 
-  <jsp:directive.attribute name="number"     /> 
-  <jsp:directive.attribute name="name"        required="true" /> 
-  <jsp:directive.attribute name="write"  /> 
+  <jsp:directive.attribute name="component"   />
+  <jsp:directive.attribute name="number"     />
+  <jsp:directive.attribute name="name"        required="true" />
+  <jsp:directive.attribute name="write"  />
 
   <jsp:directive.variable name-given="_" variable-class="java.lang.String"  />
   <mm:import jspvar="number" vartype="integer">${empty number ? requestScope.education : number}</mm:import>
@@ -30,10 +30,10 @@
     </mm:field>
   </mm:node>
   <mm:notpresent referid="field">
-    <c:set var="_v">No component node '"${empty component ? requestScope._component.number : component}</c:set>
+    <c:set var="_v">No component node ${empty component ? requestScope._component.number : component}</c:set>
     <mm:log>${_v}</mm:log>
   </mm:notpresent>
-  
+
 
   <!-- take care of 'writer' functionality : -->
 
