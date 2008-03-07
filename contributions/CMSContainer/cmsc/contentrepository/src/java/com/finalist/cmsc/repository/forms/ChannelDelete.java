@@ -9,20 +9,18 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.repository.forms;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.MessageResources;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.RelationManager;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.publish.Publish;
@@ -49,7 +47,10 @@ public class ChannelDelete extends MMBaseFormlessAction {
             }
         }
         else {
-            if ("delete".equals(action)) {
+            if ("cancel".equals(action)) {
+                return mapping.findForward(SUCCESS);
+            }            
+            else if ("delete".equals(action)) {
                 NodeList createdElements = RepositoryUtil.getCreatedElements(channelNode);
                 for (Iterator<Node> iter = createdElements.iterator(); iter.hasNext();) {
                     Node objectNode = iter.next();
@@ -63,7 +64,6 @@ public class ChannelDelete extends MMBaseFormlessAction {
                     Publish.unpublish(objectNode);
                     Workflow.remove(objectNode);
                 }
-                return mapping.findForward("channeldelete");
             }
             else if ("move".equals(action)) {
                 // get relations of content elements to channels other then the creationchannel
@@ -87,29 +87,32 @@ public class ChannelDelete extends MMBaseFormlessAction {
                         RepositoryUtil.removeContentFromChannel(elementNode, channelNode);
                         RepositoryUtil.removeCreationRelForContent(elementNode);
                         RepositoryUtil.addCreationChannel(elementNode, newChannelNode);
-        
-                        // unpublish and remove from workflow
-                        Publish.remove(elementNode);
-                        Publish.unpublish(elementNode);
-                        Workflow.remove(elementNode);                        
                     }
+                    else {
+                    	// remove the element
+                        RepositoryUtil.removeContentFromChannel(elementNode, channelNode);
+                        RepositoryUtil.removeCreationRelForContent(elementNode);
+                        
+                        RepositoryUtil.removeContentFromAllChannels(elementNode);
+                        RepositoryUtil.addContentToChannel(elementNode, RepositoryUtil.getTrashNode(cloud));
+                    }
+                    // unpublish and remove from workflow
+                    Publish.remove(elementNode);
+                    Publish.unpublish(elementNode);
+                    Workflow.remove(elementNode);                        
                 }
-                return mapping.findForward("channeldelete");
             }
-            else if ("cancel".equals(action)) {
-                return mapping.findForward(SUCCESS);
-            }
-            else {
-                if (Workflow.hasWorkflow(channelNode)) {
-                    Workflow.remove(channelNode);
-                }
-                Publish.remove(channelNode);
-                Publish.unpublish(channelNode);
+
+
+            if (Workflow.hasWorkflow(channelNode)) {
                 Workflow.remove(channelNode);
-                
-                channelNode.delete(true);
-                return mapping.findForward(SUCCESS);
             }
+            Publish.remove(channelNode);
+            Publish.unpublish(channelNode);
+            Workflow.remove(channelNode);
+            
+            channelNode.delete(true);
+            return mapping.findForward(SUCCESS);
         }
     }
     
