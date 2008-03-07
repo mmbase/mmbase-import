@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.8 2007-12-12 17:09:05 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.9 2008-03-07 14:41:26 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -306,7 +306,7 @@ public class DatabaseStorageManager implements StorageManager {
                         s = activeConnection.createStatement();
                         s.executeUpdate(query);
                         s.close();
-                    logQuery(query, startTime);
+                        logQuery(query, startTime);
                     }
                     scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
                     query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
@@ -765,16 +765,28 @@ public class DatabaseStorageManager implements StorageManager {
                     return;
                 }
             }
-            //log.warn("Storing " + field + " for " + node.getNumber());
-            InputStream in = node.getInputStreamValue(fieldName);
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
             long size = 0;
+            InputStream in = node.getInputStreamValue(fieldName);
+
+            log.service("Storing " + field + " for " + node.getNumber() + " in " + binaryFile);
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
             int c = in.read();
             while (c > -1) {
                 out.write(c);
                 c = in.read();
                 size ++;
             }
+
+            //log.warn("Storing " + field + " for " + node.getNumber());
+            /*
+x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(binaryFile));
+            byte[] buf = new byte[1024];
+            int b = 0;
+            while ((b = in.read(buf)) != -1) {
+                size += b;
+                out.write(buf, 0, b);
+            }
+            */
             out.close();
             in.close();
             // unload the input-stream, it is of no use any more.
@@ -926,7 +938,7 @@ public class DatabaseStorageManager implements StorageManager {
                 getActiveConnection();
                 executeUpdateCheckConnection(query, node, fields);
             } catch (SQLException se) {
-                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()), se);
+                throw new StorageException(se.getMessage() + " during creation of " + UNICODE_ESCAPER.transform(node.toString()) + " " + fieldNames + " " + fieldValues, se);
             } finally {
                 releaseActiveConnection();
             }
@@ -2896,6 +2908,9 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+
+
+
     protected static class InputStreamBlob implements Blob {
         private InputStream inputStream;
         private byte[] bytes = null;
@@ -2916,6 +2931,9 @@ public class DatabaseStorageManager implements StorageManager {
             } else {
                 return inputStream;
             }
+        }
+        public InputStream getBinaryStream(long pos, long length) {
+            return new ByteArrayInputStream(getBytes(pos, (int) length));
         }
 
         public byte[] getBytes(long pos, int length) {
@@ -2983,6 +3001,17 @@ public class DatabaseStorageManager implements StorageManager {
 
         public void truncate(long len) {
             throw new UnsupportedOperationException("");
+        }
+        public void free() {
+            bytes = null;
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ioe) {
+                    log.warn(ioe);
+                }
+                inputStream = null;
+            }
         }
     }
 }
