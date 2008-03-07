@@ -763,6 +763,10 @@ input {
   font-weight: normal;
   padding: 0em 0em 0em 0em
 }
+.settings input.mm_dt_eline {
+  width: 500px;
+}
+
 input.mm_validate.invalid {
   background-color: #fee !important;
 }
