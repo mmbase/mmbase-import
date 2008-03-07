@@ -21,16 +21,9 @@
     <relation destinationtype="educations" role="classrel"/>
     &extra_loads;
   </action>
-  
-  <action type="delete">
 
-  </action>
-  
+  <action type="delete" />
 
-  <lists>
-    <optionlist include="config/option_list/enabled.xml" />
-    <optionlist include="config/option_list/gender.xml" />
-  </lists>
 
   <form-schema id="step1">
     <title xml:lang="nl">Persoon invoeren</title>
@@ -39,9 +32,7 @@
     <field name="initials" />
     <field name="suffix" ftype="line" />
     <field name="lastname" />
-    <field name="gender" ftype="enum">
-      <optionlist select="gender" />        
-    </field>
+    <field name="gender" />
     <field name="address" />
     <field name="zipcode" />
     <field name="city" />
@@ -55,9 +46,7 @@
     <field name="password" />
     <field name="remarks" ftype="line" />
     <field name="description" rows="8" ftype="text" />
-    <field name="person_status" ftype="enum">
-      <optionlist select="enabled" />        
-    </field>
+    <field name="person_status" />
 
     <list extends="config/role/roles-list.xml" />
     <list extends="config/workgroup/workgroups-list.xml" />
