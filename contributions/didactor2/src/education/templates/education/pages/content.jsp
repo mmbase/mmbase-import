@@ -31,11 +31,7 @@
         <mm:import externid="suppresstitle"/>
 
         <mm:notpresent referid="suppresstitle">
-          <mm:field name="showtitle">
-            <mm:compare value="1">
-              <h1><mm:field name="name"/></h1>
-            </mm:compare>
-          </mm:field>
+          <di:title field="name" />
         </mm:notpresent>
 
 
