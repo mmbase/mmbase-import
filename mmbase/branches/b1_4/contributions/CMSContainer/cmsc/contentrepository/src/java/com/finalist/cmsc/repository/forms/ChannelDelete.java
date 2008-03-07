@@ -49,7 +49,10 @@ public class ChannelDelete extends MMBaseFormlessAction {
             }
         }
         else {
-            if ("delete".equals(action)) {
+            if ("cancel".equals(action)) {
+                return mapping.findForward(SUCCESS);
+            }            
+            else if ("delete".equals(action)) {
                 NodeList createdElements = RepositoryUtil.getCreatedElements(channelNode);
                 for (Iterator<Node> iter = createdElements.iterator(); iter.hasNext();) {
                     Node objectNode = iter.next();
@@ -63,7 +66,6 @@ public class ChannelDelete extends MMBaseFormlessAction {
                     Publish.unpublish(objectNode);
                     Workflow.remove(objectNode);
                 }
-                return mapping.findForward("channeldelete");
             }
             else if ("move".equals(action)) {
                 // get relations of content elements to channels other then the creationchannel
@@ -87,29 +89,32 @@ public class ChannelDelete extends MMBaseFormlessAction {
                         RepositoryUtil.removeContentFromChannel(elementNode, channelNode);
                         RepositoryUtil.removeCreationRelForContent(elementNode);
                         RepositoryUtil.addCreationChannel(elementNode, newChannelNode);
-        
-                        // unpublish and remove from workflow
-                        Publish.remove(elementNode);
-                        Publish.unpublish(elementNode);
-                        Workflow.remove(elementNode);                        
                     }
+                    else {
+                    	// remove the element
+                        RepositoryUtil.removeContentFromChannel(elementNode, channelNode);
+                        RepositoryUtil.removeCreationRelForContent(elementNode);
+                        
+                        RepositoryUtil.removeContentFromAllChannels(elementNode);
+                        RepositoryUtil.addContentToChannel(elementNode, RepositoryUtil.getTrashNode(cloud));
+                    }
+                    // unpublish and remove from workflow
+                    Publish.remove(elementNode);
+                    Publish.unpublish(elementNode);
+                    Workflow.remove(elementNode);                        
                 }
-                return mapping.findForward("channeldelete");
             }
-            else if ("cancel".equals(action)) {
-                return mapping.findForward(SUCCESS);
-            }
-            else {
-                if (Workflow.hasWorkflow(channelNode)) {
-                    Workflow.remove(channelNode);
-                }
-                Publish.remove(channelNode);
-                Publish.unpublish(channelNode);
+
+
+            if (Workflow.hasWorkflow(channelNode)) {
                 Workflow.remove(channelNode);
-                
-                channelNode.delete(true);
-                return mapping.findForward(SUCCESS);
             }
+            Publish.remove(channelNode);
+            Publish.unpublish(channelNode);
+            Workflow.remove(channelNode);
+            
+            channelNode.delete(true);
+            return mapping.findForward(SUCCESS);
         }
     }
     
