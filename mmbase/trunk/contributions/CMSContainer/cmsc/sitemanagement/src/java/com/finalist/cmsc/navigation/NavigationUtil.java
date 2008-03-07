@@ -341,18 +341,17 @@ public class NavigationUtil {
     }
 
     public static Node copyPage(Node sourcePage, Node destPage) {
-        if (!isParent(sourcePage, destPage)) {
-            Node newPage = PagesUtil.copyPage(sourcePage);
-            appendChild(destPage, newPage);
+        Node newPage = PagesUtil.copyPage(sourcePage);
+        appendChild(destPage, newPage);
 
-            NodeList children = getOrderedChildren(sourcePage);
-            for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
-                Node childPage = iter.next();
-                copyPage(childPage, newPage);
+        NodeList children = getOrderedChildren(sourcePage);
+        for (Iterator<Node> iter = children.iterator(); iter.hasNext();) {
+            Node childPage = iter.next();
+            if (!isParent(sourcePage, destPage) || !childPage.getStringValue("urlfragment").equals(destPage.getStringValue("urlfragment"))) {
+            	copyPage(childPage, newPage);
             }
-            return newPage;
         }
-        return null;
+        return newPage;
     }
 
     /**
