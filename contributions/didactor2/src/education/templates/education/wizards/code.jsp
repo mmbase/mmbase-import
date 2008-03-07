@@ -31,7 +31,7 @@
       </mm:link>
 
       <div id="mode-${mode}">
-        <mm:include debug="html" page="modes/${mode}.jsp" />
+        <di:include debug="html" page="/education/wizards/modes/${mode}.jsp" />
       </div>
 
     </mm:cloud>
