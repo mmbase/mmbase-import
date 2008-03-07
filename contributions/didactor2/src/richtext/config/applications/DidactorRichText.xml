@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorRichText" maintainer="didactor.nl" version="3" auto-deploy="true">
+<application name="DidactorRichText" maintainer="didactor.nl" version="4" auto-deploy="true">
   <requirements>
     <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
     <requires name="Resources"         maintainer="didactor.nl" version="2" />
@@ -32,6 +32,7 @@
   </allowedrelationlist>
 
   <datasourcelist>
+    <datasource builder="components" path="DidactorRichText/components.xml" />
   </datasourcelist>
 
   <relationsourcelist />
