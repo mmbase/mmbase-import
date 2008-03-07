@@ -17,12 +17,11 @@
 <mm:listnodes type="portalpagescontainers">
   <mm:first>
     <!--- WTF WTF WTF. This stuff is HORRIBLE. Taking a random node. Perhaps there is only one of this type, or so? -->
-    <mm:node>
-        <mm:field id="containernode" name="number" write="false" />
-    </mm:node>
+    <mm:node id="containernode" />
   </mm:first>
 </mm:listnodes>
 
+<mm:present referid="containernode">
 <table border="0" cellpadding="0" cellspacing="0">
   <tr>
      <td><img src="gfx/tree_spacer.gif" width="16px" height="16px" border="0" align="center" valign="middle"/></td>
@@ -176,4 +175,5 @@
 	         </mm:relatednodescontainer>
 	   </mm:listnodes>
 </div>
+</mm:present>
 </mm:cloud>
