@@ -6,25 +6,7 @@
     >
   <jsp:output omit-xml-declaration="yes" />
 
-  <mm:field name="showtitle">
-    <mm:compare value="1">
-      <h1><mm:field name="name"/></h1>
-    </mm:compare>
-  </mm:field
->
-  <mm:formatter format="xhtml">
-    <mm:field name="body" />
-    <mm:listrelations type="object" role="idrel" searchdir="destination">
-      <mm:relatednode>
-        <mm:nodeinfo type="nodemanager">
-          <mm:compare value="blocks">
-            <mm:listrelations type="object" role="idrel" searchdir="destination" >
-              <mm:relatednode />
-            </mm:listrelations>
-          </mm:compare>
-        </mm:nodeinfo>
-      </mm:relatednode>
-    </mm:listrelations>
-  </mm:formatter>
+  <di:title field="name" />
+  <di:rich field="body" />
 
 </mm:node>
