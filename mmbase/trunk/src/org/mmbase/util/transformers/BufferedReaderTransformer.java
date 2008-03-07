@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mmbase.util.logging.*;
 
@@ -17,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: BufferedReaderTransformer.java,v 1.4 2007-12-11 12:23:34 michiel Exp $
+ * @version $Id: BufferedReaderTransformer.java,v 1.5 2008-03-07 17:31:50 ernst Exp $
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
@@ -33,8 +35,9 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
             PrintWriter bw = new PrintWriter(new BufferedWriter(w));
 
             String line = br.readLine();
+            Map<String, Object> context = new HashMap<String, Object>();
             while (line != null) {
-                boolean nl = transform(bw, line);
+                boolean nl = transform(bw, line, context);
                 line = br.readLine();
                 if (nl && line != null) bw.write('\n');
             }
@@ -46,6 +49,13 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
         return w;
     }
 
-    protected abstract boolean transform(PrintWriter bw, String line);
+    /**
+     * @param bw the writer to direct the output to
+     * @param line the input
+     * @param context in this map you can store the state of of the trasformer between invocations. At the start of the docuement it's a new Map 
+     * 
+     * @return
+     */
+    protected abstract boolean transform(PrintWriter bw, String line, Map<String,Object> context);
 
 }
