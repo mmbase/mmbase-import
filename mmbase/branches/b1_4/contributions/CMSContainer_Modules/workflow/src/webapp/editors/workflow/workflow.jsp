@@ -197,7 +197,7 @@
       <c:set var="remark">
          <fmt:message key="workflow.action.reject.remark"/>
       </c:set>
-      &nbsp;&nbsp;&nbsp; <input type="checkbox" name="checkAll" onclick="checkAllElement(this, '')"/>
+      &nbsp;&nbsp;&nbsp; <input type="checkbox" name="checkAll" onclick="checkAllElement(this, '')"/> <fmt:message key="workflow.select_all"/>
       <input type="hidden" name="actionvalue" value=""/>
       <input type='hidden' id="remark" name="remark" value="[unchanged-item]"/>
       <br/>
