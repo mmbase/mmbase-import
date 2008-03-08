@@ -191,8 +191,7 @@ public class NewsletterPublisher extends Thread {
             sendNewsletter(publicationNode, userName);
          }
       }
-      NewsletterPublicationUtil.setPublicationNumber(newsletterNode, 1);
-      NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
+
    }
 
    private void renamePublication(Node publicationNode) {

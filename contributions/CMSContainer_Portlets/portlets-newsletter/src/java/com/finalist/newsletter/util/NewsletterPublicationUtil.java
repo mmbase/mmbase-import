@@ -62,6 +62,7 @@ public abstract class NewsletterPublicationUtil {
          if (publicationNode != null) {
             String urlFragment = String.valueOf(publicationNode.getNumber());
             publicationNode.setStringValue("urlfragment", urlFragment);
+            publicationNode.setStringValue("publishdate","null");
             publicationNode.commit();
 
             copyThemesAndContent(newsletterNode, publicationNode, copyContent);
@@ -104,25 +105,6 @@ public abstract class NewsletterPublicationUtil {
          themes.add(theme);
       }
       return (themes);
-   }
-
-   public static void setPublicationNumber(Node newsletterNode, int value) {
-      int number = 0 + newsletterNode.getIntValue("lastpublicationnumber");
-      number = number + value;
-      newsletterNode.setIntValue("lastpublicationnumber", number);
-      newsletterNode.commit();
-   }
-
-   public static void updatePublicationTitle(Node publicationNode) {
-      /*
-       * Node newsletterNode = SearchUtil.findRelatedNode(publicationNode,
-       * "newsletter", "related"); int number =
-       * newsletterNode.getIntValue("lastpublicationnumber"); String edition =
-       * ResourceBundle.getBundle("newsletter").getString("edition"); String
-       * title = edition.concat(" " + String.valueOf(number));
-       * publicationNode.setStringValue("title", title);
-       * publicationNode.commit();
-       */
    }
 
 }

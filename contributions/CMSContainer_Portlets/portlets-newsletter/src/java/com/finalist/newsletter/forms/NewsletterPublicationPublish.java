@@ -34,14 +34,14 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       int number = Integer.parseInt(getParameter(request, "number", true));
+      Node publicationNode = cloud.getNode(number);
 
       if (isSendAction(request)) {
-         Node newsletterPublicationNode = cloud.getNode(number);
 
-         UserRole role = NavigationUtil.getRole(newsletterPublicationNode.getCloud(), newsletterPublicationNode, false);
+         UserRole role = NavigationUtil.getRole(publicationNode.getCloud(), publicationNode, false);
          boolean isWebMaster = (role != null && SecurityUtil.isWebmaster(role));
 
-         if (NavigationUtil.getChildCount(newsletterPublicationNode) > 0 && !isWebMaster) {
+         if (NavigationUtil.getChildCount(publicationNode) > 0 && !isWebMaster) {
             return mapping.findForward("confirmationpage");
          }
          Thread publisher = new NewsletterPublisher(number);
@@ -57,7 +57,12 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
       }
 
       // neither remove or cancel, show confirmation page
-      return mapping.findForward("confirmationpage");
+
+      String publishDate = publicationNode.getStringValue("publishdate");
+      if (publishDate != null && publishDate.length() > 0 ) {
+         return mapping.findForward("confirm_resend");
+      }
+      return mapping.findForward("confirm_send");
    }
 
    private boolean isCancelAction(HttpServletRequest request) {
