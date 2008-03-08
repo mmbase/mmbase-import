@@ -1,7 +1,12 @@
 package com.finalist.newsletter.publisher;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.util.Date;
+
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -30,7 +35,8 @@ public class NewsletterPublisher extends Thread {
 
    private static final String UNSENT_NEWSLETTER = "unsent_newsletter";
 
-   private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
+   private static Logger log = Logging
+         .getLoggerInstance(NewsletterPublisher.class.getName());
 
    private int publicationNumber;
    private Cloud cloud;
@@ -43,13 +49,17 @@ public class NewsletterPublisher extends Thread {
    private void createConfirmationList(List<String> subscribers) {
       for (int s = 0; s < subscribers.size(); s++) {
          String userName = subscribers.get(s);
-         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER, String.valueOf(publicationNumber));
+         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER,
+               String.valueOf(publicationNumber));
       }
    }
 
-   private Message generateNewsletter(String userName, int publicationNumber, String mimeType) {
-      NewsletterGeneratorFactory factory = NewsletterGeneratorFactory.getInstance();
-      NewsletterGenerator generator = factory.getNewsletterGenerator(publicationNumber, mimeType);
+   private Message generateNewsletter(String userName, int publicationNumber,
+         String mimeType) {
+      NewsletterGeneratorFactory factory = NewsletterGeneratorFactory
+            .getInstance();
+      NewsletterGenerator generator = factory.getNewsletterGenerator(
+            publicationNumber, mimeType);
       if (generator != null) {
          Message message = generator.generateNewsletterMessage(userName);
          return (message);
@@ -58,7 +68,8 @@ public class NewsletterPublisher extends Thread {
    }
 
    private void removeFromConfirmationList(String userName) {
-      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER, String.valueOf(publicationNumber));
+      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER,
+            String.valueOf(publicationNumber));
    }
 
    @Override
@@ -67,15 +78,18 @@ public class NewsletterPublisher extends Thread {
    }
 
    private void sendNewsletter(Node publicationNode, String userName) {
-      String mimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
-      Message message = generateNewsletter(userName, publicationNumber, mimeType);
+      String mimeType = NewsletterSubscriptionUtil
+            .getPreferredMimeType(userName);
+      Message message = generateNewsletter(userName, publicationNumber,
+            mimeType);
 
       try {
          message = setMailHeaders(publicationNode, userName, message);
          Transport.send(message);
          removeFromConfirmationList(userName);
       } catch (MessagingException e) {
-         log.debug("An error occurred while trying to send a newsletter e-mail");
+         log
+               .debug("An error occurred while trying to send a newsletter e-mail");
          log.debug(e.getMessage());
       } catch (UnsupportedEncodingException e) {
          // TODO Auto-generated catch block
@@ -83,14 +97,17 @@ public class NewsletterPublisher extends Thread {
       }
    }
 
-   private Message setMailHeaders(Node publicationNode, String userName, Message message) throws MessagingException, UnsupportedEncodingException {
+   private Message setMailHeaders(Node publicationNode, String userName,
+         Message message) throws MessagingException,
+         UnsupportedEncodingException {
 
       String emailFrom = null;
       String nameFrom = null;
       String emailReplyTo = null;
       String nameReplyTo = null;
 
-      Node newsletterNode = SearchUtil.findRelatedNode(publicationNode, "newsletter", "related");
+      Node newsletterNode = SearchUtil.findRelatedNode(publicationNode,
+            "newsletter", "related");
       if (newsletterNode != null) {
          emailFrom = newsletterNode.getStringValue("from_mail");
          nameFrom = newsletterNode.getStringValue("from_name");
@@ -139,7 +156,8 @@ public class NewsletterPublisher extends Thread {
          return (null);
       }
 
-      String userEmail = NewsletterCommunication.getUserPreference(userName, "email");
+      String userEmail = NewsletterCommunication.getUserPreference(userName,
+            "email");
       if (userEmail != null && userEmail.length() > 0) {
          InternetAddress toAddress = new InternetAddress(userEmail);
          message.setRecipient(RecipientType.TO, toAddress);
@@ -155,14 +173,20 @@ public class NewsletterPublisher extends Thread {
 
    private void startMassPublishing() {
       Node publicationNode = cloud.getNode(publicationNumber);
-      NodeList newsletterNodeList = publicationNode.getRelatedNodes(NewsletterUtil.NEWSLETTER);
+      NodeList newsletterNodeList = publicationNode
+            .getRelatedNodes(NewsletterUtil.NEWSLETTER);
       Node newsletterNode = newsletterNodeList.getNode(0);
+
+      renamePublication(publicationNode);
+
       int newsletterNumber = newsletterNode.getNumber();
-      List<String> subscribers = NewsletterSubscriptionUtil.getSubscribersForNewsletter(newsletterNumber);
+      List<String> subscribers = NewsletterSubscriptionUtil
+            .getSubscribersForNewsletter(newsletterNumber);
 
       if (subscribers != null) {
          createConfirmationList(subscribers);
-         for (int subscribersIterator = 0; subscribersIterator < subscribers.size(); subscribersIterator++) {
+         for (int subscribersIterator = 0; subscribersIterator < subscribers
+               .size(); subscribersIterator++) {
             String userName = subscribers.get(subscribersIterator);
             sendNewsletter(publicationNode, userName);
          }
@@ -171,4 +195,22 @@ public class NewsletterPublisher extends Thread {
       NewsletterPublicationUtil.updatePublicationTitle(publicationNode);
    }
 
+   private void renamePublication(Node publicationNode) {
+      Date date = publicationNode.getDateValue("publishdate");
+      String zoneId = TimeZone.getDefault().getDisplayName();
+      TimeZone tz = TimeZone.getTimeZone(zoneId);
+
+      String locale = Locale.getDefault().getDisplayCountry();
+      Locale loc = new Locale(locale);
+
+      DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,
+            DateFormat.SHORT, loc);
+      formatter.setTimeZone(tz);
+      String currentDate = formatter.format(date);
+
+      String currentTitle = publicationNode.getStringValue("title");
+      String newTitle = currentTitle.concat(" - ").concat(currentDate);
+      publicationNode.setStringValue("title", newTitle);
+      publicationNode.commit();
+   }
 }
