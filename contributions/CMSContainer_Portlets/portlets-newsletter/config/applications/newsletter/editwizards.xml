@@ -9,7 +9,7 @@
 		<fields>title</fields>
 	</node>
 
-	<node number="31001" owner="admin">
+	<node number="32001" owner="admin">
 		<name>newsletterpublication</name>
 		<description>newsletterpublication </description>
 		<wizard>config/newsletterpublication/newsletterpublication</wizard>

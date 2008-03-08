@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <builder xmlns="http://www.mmbase.org/xmlns/builder"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"
-	extends="object" maintainer="finalist.com" name="newslettertheme" version="1">
-	<!--
-		
-	-->
+	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" 
+	extends="object" 
+	maintainer="finalist.com" 
+	name="newslettertheme" 
+	version="1">
+
 	<status>active</status>
 	<searchage>70</searchage>
 	<names>

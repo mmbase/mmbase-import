@@ -7,6 +7,10 @@
 		<prompt xml:lang="en">Title</prompt>
 		<prompt xml:lang="nl">Titel</prompt>
 	</field>
+	<field name="subject" dtmaxlength="40"  dtrequired="true">
+		<prompt xml:lang="en">Subject</prompt>
+		<prompt xml:lang="nl">Onderwerp</prompt>
+	</field>
 	<field name="urlfragment" dtmaxlength="40">
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
 		<prompt xml:lang="en">Urlfragment</prompt>
@@ -16,17 +20,35 @@
 		<prompt xml:lang="en">Description</prompt>
 		<prompt xml:lang="nl">Omschrijving</prompt>
 	</field>
-	<field name="subject" dtmaxlength="40"  dtrequired="true">
-		<prompt xml:lang="en">Subject</prompt>
-		<prompt xml:lang="nl">Onderwerp</prompt>
-	</field>
 	<field name="intro" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Introduction</prompt>
 		<prompt xml:lang="nl">Inleiding</prompt>
 	</field>
+	<field name="from_mail" dtmaxlength="40">
+		<prompt xml:lang="en">E-mail of sender</prompt>
+		<prompt xml:lang="nl">E-mail afzender</prompt>
+	</field>
+	<field name="from_name" dtmaxlength="40">
+		<prompt xml:lang="en">Name of sender</prompt>
+		<prompt xml:lang="nl">Naam afzender</prompt>
+	</field>
+
+	<field name="replyto_mail" dtmaxlength="40">
+		<prompt xml:lang="en">E-mail reply</prompt>
+		<prompt xml:lang="nl">E-mail antwoord</prompt>
+	</field>
+	<field name="replyto_name" dtmaxlength="40">
+		<prompt xml:lang="en">Name of reply</prompt>
+		<prompt xml:lang="nl">Naam antwoord</prompt>
+	</field>
 	<field name="publishinterval" dtmaxlength="40">
 		<prompt xml:lang="en">Publication interval</prompt>
 		<prompt xml:lang="nl">Publicatie interval</prompt>
+	</field>
+	<field name="paused" ftype="enum">
+		<prompt xml:lang="en">Paused</prompt>
+		<prompt xml:lang="nl">Gepauseerd</prompt>
+		<optionlist select="boolean" />
 	</field>
 	<field name="inmenu" ftype="enum">
 		<prompt xml:lang="en">In menu</prompt>
