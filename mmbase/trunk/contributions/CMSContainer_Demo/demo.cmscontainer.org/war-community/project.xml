@@ -166,7 +166,7 @@
             </properties>
         </dependency>
 
-<!-- Ageci Security dependencies (for Community Module) -->
+<!-- Acegi Security dependencies (for Community Module) -->
         <dependency>
             <groupId>acegisecurity</groupId>
             <artifactId>acegi-security</artifactId>
@@ -176,6 +176,15 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
+
+<!-- Newsletter bundle - uncomment to enable
+        <dependency>
+            <groupId>finalist</groupId>
+            <artifactId>cmsc-portlets-newsletter</artifactId>
+            <version>${cmscportlets.version}</version>
+            <type>mmbase-module</type>
+        </dependency>
+-->
 
 <!--begin dependency by JForum portlet. -->
 <!--
