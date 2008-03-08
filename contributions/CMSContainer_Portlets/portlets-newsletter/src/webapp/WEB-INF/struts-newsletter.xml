@@ -27,9 +27,13 @@
 			<forward name="newsletterdelete" path="/editors/newsletter/newsletterdelete.jsp" redirect="false" />
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
-
-
-
+		<action path="/editors/newsletter/NewsletterPause" type="com.finalist.newsletter.forms.NewsletterPause" unknown="false" validate="false">
+			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewsletterResume" type="com.finalist.newsletter.forms.NewsletterResume" unknown="false" validate="false">
+			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
+		</action>
+		
 		<!-- ==== Select page nodes ==== -->
 
 
