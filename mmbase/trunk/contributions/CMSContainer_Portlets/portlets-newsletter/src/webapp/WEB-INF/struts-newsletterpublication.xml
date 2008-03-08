@@ -28,7 +28,8 @@
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
 		<action path="/editors/newsletter/NewsletterPublicationPublish" type="com.finalist.newsletter.forms.NewsletterPublicationPublish" unknown="false" validate="false">
-			<forward name="confirmationpage" path="/editors/newsletter/confirmpublication.jsp" redirect="false" />
+			<forward name="confirm_send" path="/editors/newsletter/confirm_send.jsp" redirect="false" />
+			<forward name="confirm_resend" path="/editors/newsletter/confirm_resend.jsp" redirect="false" />
 			<forward name="success" path="/editors/newsletter/sendresults.jsp" redirect="false" />
 			<forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
 		</action>
