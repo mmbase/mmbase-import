@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" extends="page" maintainer="finalist.com" name="newsletter" version="10">
-	<!--
-		
-	-->
+<builder xmlns="http://www.mmbase.org/xmlns/builder" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" 
+	extends="page" 
+	maintainer="finalist.com" 
+	name="newsletter" 
+	version="1">
+
 	<status>active</status>
 	<class>com.finalist.newsletter.builder.NewsletterBuilder</class>
 	<searchage>70</searchage>
@@ -108,6 +112,116 @@
 			<db>
 				<name>lastpublicationnumber</name>
 				<type key="false" notnull="false" state="persistent">INTEGER</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Gepauseerd</guiname>
+				<guiname xml:lang="en">Paused</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>paused</name>
+				<type key="false" required="true" state="persistent">BOOLEAN</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Afzender e-mail</guiname>
+				<guiname xml:lang="en">Sender e-mail</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+			<db>
+				<name>from_mail</name>
+				<type key="false" notnull="false" size="100" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Antwoord naam</guiname>
+				<guiname xml:lang="en">Reply name</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+			<db>
+				<name>from_name</name>
+				<type key="false" notnull="false" size="100" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Antwoord e-mail</guiname>
+				<guiname xml:lang="en">Reply e-mail</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+			<db>
+				<name>replyto_mail</name>
+				<type key="false" notnull="false" size="100" state="persistent">STRING</type>
+			</db>
+		</field>
+		<field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Antwoord naam</guiname>
+				<guiname xml:lang="en">Reply name</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>1</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+			<db>
+				<name>replyto_name</name>
+				<type key="false" notnull="false" size="100" state="persistent">STRING</type>
 			</db>
 		</field>
 		<field name="inmenu">
