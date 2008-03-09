@@ -72,8 +72,8 @@ function countRelations(input, response) {
     <caption>List of <strong><a href="config.jsp"><mm:write referid="list" /></a></strong> node types</caption>
     <thead>
     <tr>
-      <th scope="col" class="right">sort by <strong><a href="javascript:;" onclick="sortTable('nodetypes', 0);">name</a></strong></th>
-      <th scope="col"><strong><a href="javascript:;" onclick="sortTable('nodetypes', 1);">guiname</a></strong></th>
+      <th scope="col" class="right">sort by <strong><a href="javascript:;" onclick="sortT('nodetypes', 0);">name</a></strong></th>
+      <th scope="col"><strong><a href="javascript:;" onclick="sortT('nodetypes', 1);">guiname</a></strong></th>
       <th>&nbsp;</th>
     </tr>
     </thead>
