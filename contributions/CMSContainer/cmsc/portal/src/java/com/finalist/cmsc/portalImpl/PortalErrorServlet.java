@@ -118,6 +118,8 @@ public class PortalErrorServlet extends PortalServlet {
                 response.setContentType(CONTENT_TYPE);
 
                 String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
+                setSiteLocale(request, errorPagePath);
+
                 boolean renderSucceed = doRender(errorRequest, response, errorPagePath);
                 if (!renderSucceed) {
                    defaultError(request, response, statusCode);
