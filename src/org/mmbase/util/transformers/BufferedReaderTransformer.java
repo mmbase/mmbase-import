@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: BufferedReaderTransformer.java,v 1.5 2008-03-07 17:31:50 ernst Exp $
+ * @version $Id: BufferedReaderTransformer.java,v 1.6 2008-03-10 14:32:40 ernst Exp $
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
@@ -34,10 +34,10 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
             BufferedReader br = new BufferedReader(r);
             PrintWriter bw = new PrintWriter(new BufferedWriter(w));
 
+            Status status = createNewStatus();
             String line = br.readLine();
-            Map<String, Object> context = new HashMap<String, Object>();
             while (line != null) {
-                boolean nl = transform(bw, line, context);
+                boolean nl = transform(bw, line, status);
                 line = br.readLine();
                 if (nl && line != null) bw.write('\n');
             }
@@ -56,6 +56,15 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
      * 
      * @return
      */
-    protected abstract boolean transform(PrintWriter bw, String line, Map<String,Object> context);
+    protected abstract boolean transform(PrintWriter bw, String line, Status status);
+    
+    protected abstract Status createNewStatus();
+    
+    public abstract static class Status{}
+
+    public Status createnewStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    };
 
 }
