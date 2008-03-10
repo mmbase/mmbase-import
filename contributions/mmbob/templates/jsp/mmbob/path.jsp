@@ -260,7 +260,7 @@
         <mm:param name="forumid" value="$forumid" />
         <mm:param name="postareaid" value="$postareaid" />
         </mm:url>">
-    <mm:field name="name" /></a>
+    <mm:field name="substring(name, 40, ...)" /></a>
     </mm:node> >
 
     <mm:node number="$postthreadid">
@@ -269,7 +269,7 @@
         <mm:param name="postareaid" value="$postareaid" />
         <mm:param name="postthreadid" value="$postthreadid" />
         </mm:url>">
-    <mm:field name="subject" /></a>
+    <mm:field name="substring(subject,40, ...)" /></a>
     </mm:node> >
 
     <a href="<mm:url page="profile.jsp">
@@ -294,7 +294,7 @@
         <mm:param name="forumid" value="$forumid" />
         <mm:param name="postareaid" value="$postareaid" />
         </mm:url>">
-    <mm:field name="name" /></a>
+    <mm:field name="substring(name, 40, ..)" /></a>
     </mm:node> >
     <mm:node number="$postthreadid">
     <a href="<mm:url page="thread.jsp">
@@ -302,7 +302,7 @@
         <mm:param name="postareaid" value="$postareaid" />
         <mm:param name="postthreadid" value="$postthreadid" />
         </mm:url>">
-    <mm:field name="subject" /></a>
+    <mm:field name="substring(subject, 40, ...)" /></a>
     </mm:node>
 </mm:compare>
 
