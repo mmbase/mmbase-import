@@ -8,22 +8,25 @@
   <script type="text/javascript">  
     function doForward(to) {
       var elem = document.getElementById("exportForm");
-      if(elem != null) {
+      if (elem != null) {
         elem.forward.value = to;
         elem.submit();
+        return false;
       }
+      return true;
     }
     
     function doChangePage(newPage) {
       var elem = document.getElementById('exportForm');
-      if(elem != null) {
+      if (elem != null) {
         elem.page.value = newPage;
-        doForward('search');
+        return doForward('search');
       }
+      return false;
     }
   </script>
 </cmscedit:head>
-<body onload="refreshChannels()">
+<body>
     <div class="tabs">
         <div class="tab_active">
             <div class="body">
@@ -122,7 +125,7 @@
 				            </tfoot>
 				        </table>
                         <egem:paging offset="${offset}" resultsPerPage="${resultsPerPage}" totalNumberOfResults="${totalNumberOfResults}" />				        
-				        <html:submit onclick="doForward('export');"><fmt:message key="egemmail.button.export" /></html:submit>
+				        <html:submit onclick="return doForward('export');"><fmt:message key="egemmail.button.export" /></html:submit>
 				     </mm:last>
 				 </mm:list>
             </html:form>

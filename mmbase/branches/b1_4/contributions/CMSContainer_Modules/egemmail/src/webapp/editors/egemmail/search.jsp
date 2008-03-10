@@ -4,26 +4,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="egemmail.title">
-  <script src="../repository/search.js" type="text/javascript"></script>
+  <script src="../repository/search.js"type="text/javascript"></script>
   <script type="text/javascript">  
     function doForward(to) {
       var elem = document.getElementById("exportForm");
-      if(elem != null) {
+      if (elem != null) {
         elem.forward.value = to;
         elem.submit();
+        return false;
       }
+      return true;
     }
     
     function doChangePage(newPage) {
       var elem = document.getElementById('exportForm');
-      if(elem != null) {
+      if (elem != null) {
         elem.page.value = newPage;
-        doForward('search');
+        return doForward('search');
       }
+      return false;
     }
   </script>
 </cmscedit:head>
-<body onload="refreshChannels()">
+<body>
     <div class="tabs">
         <div class="tab_active">
             <div class="body">
@@ -65,6 +68,7 @@
                 <html:hidden property="author" />
                 <html:hidden property="page" />
                 <html:hidden property="forward" />
+                <html:hidden property="limitToLastWeek" />
 				<mm:list referid="results" max="${resultsPerPage}" offset="${offset*resultsPerPage}">
 				    <mm:first>
 				        <egem:paging offset="${offset}" resultsPerPage="${resultsPerPage}" totalNumberOfResults="${totalNumberOfResults}" />
@@ -121,7 +125,7 @@
 				            </tfoot>
 				        </table>
                         <egem:paging offset="${offset}" resultsPerPage="${resultsPerPage}" totalNumberOfResults="${totalNumberOfResults}" />				        
-				        <html:submit onclick="doForward('export');"><fmt:message key="egemmail.button.export" /></html:submit>
+				        <html:submit onclick="return doForward('export');"><fmt:message key="egemmail.button.export" /></html:submit>
 				     </mm:last>
 				 </mm:list>
             </html:form>
