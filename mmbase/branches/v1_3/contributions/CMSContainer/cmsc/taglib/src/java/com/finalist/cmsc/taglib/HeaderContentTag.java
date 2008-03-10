@@ -60,7 +60,9 @@ public class HeaderContentTag  extends CmscTag {
             
             ArrayList<HeaderResource> headerResources = new ArrayList<HeaderResource>();
                       
-            headerResources.add(new MetaHeaderResource(false, "description", page.getDescription(), siteLanguage, null));
+            if (page != null) {
+                headerResources.add(new MetaHeaderResource(false, "description", page.getDescription(), siteLanguage, null));
+            }
             headerResources.add(new MetaHeaderResource(false, "author", site.getCreator(), siteLanguage, null));
             headerResources.add(new MetaHeaderResource(false, "copyright", site.getRights(), siteLanguage, null));
             headerResources.add(new MetaHeaderResource(false, "language", siteLanguage, null, "language"));
@@ -89,10 +91,12 @@ public class HeaderContentTag  extends CmscTag {
                 headerResources.add(new MetaHeaderResource(true, "format", "text/html"));
                 headerResources.add(new MetaHeaderResource(true, "type", "Collection"));
                 headerResources.add(new MetaHeaderResource(true, "language", siteLanguage));
-                headerResources.add(new MetaHeaderResource(true, "title", page.getTitle()));
+                if (page != null) {
+                    headerResources.add(new MetaHeaderResource(true, "title", page.getTitle()));
+                    headerResources.add(new MetaHeaderResource(true, "description", page.getDescription()));
+                }
                 headerResources.add(new MetaHeaderResource(true, "creator", site.getCreator()));
                 headerResources.add(new MetaHeaderResource(true, "publisher", site.getPublisher()));
-                headerResources.add(new MetaHeaderResource(true, "description", page.getDescription()));
                 headerResources.add(new MetaHeaderResource(true, "rights", site.getRights()));
                 headerResources.add(new MetaHeaderResource(true, "source", site.getSource()));
             }
