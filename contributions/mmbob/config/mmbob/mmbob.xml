@@ -6,7 +6,7 @@
     <generatedata role="smileys" file="generate/smileys.txt" tokenizer=" \n\r" />
     <generatedata role="punctuation" file="generate/punctuation.txt" tokenizer=" \n\r" />
 
-    <urls externalroot="http://forum1.acceptatie.kennisnet.nl/mmbob/" root="/mmbob/" />
+    <urls externalroot="[external url for creating links in email messages]" root="/mmbob/" />
     <preloadchangedthreads  minutes="1129600" />
     <swapoutunusedthreads  minutes="720" />
     <accountcreation type="open" />
@@ -18,15 +18,17 @@
     <guestreadmode type="open" />
     <guestwritemode type="open" />
 
+    <maxpostsize body="1000" subject="200"/>
+
     <avatars>
       <upload enable="true"/>
       <gallery enable="true"/>
     </avatars>
 
-    <email from="j.knuttel@kennisnet.nl"/>
+    <email from="[forum administrator email]"/>
 
     <!--
-        @TODO Not internationalized 
+        @TODO Not internationalized
     -->
     <emailtexts>
       <emailtext role="updatethreadchange" >$lastposter heeft net een reactie gegeven op een onderwerp : '$lastsubject', waarvan je op de hoogte gehouden wilde worden.
