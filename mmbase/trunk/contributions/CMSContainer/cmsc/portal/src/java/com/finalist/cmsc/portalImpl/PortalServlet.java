@@ -175,6 +175,21 @@ public class PortalServlet extends HttpServlet {
       log.debug("===>PortalServlet.doGet EXIT!");
    }
 
+   /**
+    * Sets the locale on the request if the site corresponding to the given path specifies one.
+    */
+   protected void setSiteLocale(HttpServletRequest request, String path) {
+      // NIJ-519: language can be defined per site, read by CmscPortlet
+      Site site = SiteManagement.getSiteFromPath(path);
+      if (site != null) {
+         String language = site.getLanguage();
+         // NIJ-519 r2: Locale accepts anything, also whitespace
+         if (!StringUtils.isBlank(language)) {
+             Locale locale = new Locale(language.trim());
+             request.setAttribute("siteLocale", locale);
+         }
+      }
+   }
 
    private boolean isActionUrl(PortalControlParameter control) {
       String id = control.getPortletWindowOfAction();
@@ -186,16 +201,8 @@ public class PortalServlet extends HttpServlet {
       try {
          String path = extractPath(request, currentURL);
          log.debug("===>getScreen:'" + path + "'");
-         // NIJ-519: language can be defined per site, read by CmscPortlet
-         Site site = SiteManagement.getSiteFromPath(path);
-         if (site != null) {
-            String language = site.getLanguage();
-            // NIJ-519 r2: Locale accepts anything, also whitespace
-            if (!StringUtils.isBlank(language)) {
-               Locale locale = new Locale(language.trim());
-               request.setAttribute("siteLocale", locale);
-            }
-         }
+
+         setSiteLocale(request, path);
 
          boolean renderSucceed = doRender(request, response, path);
          if (!renderSucceed) {

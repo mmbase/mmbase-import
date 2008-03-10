@@ -69,7 +69,7 @@ public class PortalErrorServlet extends PortalServlet {
                 String path = (String) request.getAttribute(ERROR_REQUEST_URI);
                 if (path != null) {
                     if (excludePattern != null && excludePattern.matcher(path).find()) {
-                        return;              
+                        return;
                     }
                 }
             }
@@ -83,7 +83,7 @@ public class PortalErrorServlet extends PortalServlet {
                 }
             }
             // The incoming request has a servletPath of /PortalError. The mapped url to this servlet.
-            // Pretend it is  the uri which has the error in itss
+            // Pretend it is  the uri which has the error in its
             HttpServletRequest errorUriRequest = new ErrorHttpServletRequest(request, errorUri);
            
             // PortalRegistry reg = PortalRegistry.getPortalRegistry(request);
@@ -111,6 +111,8 @@ public class PortalErrorServlet extends PortalServlet {
                 }
                 if(errorPageSite != null) {
                     String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
+                    setSiteLocale(request, errorPagePath);
+                    
                     ScreenFragment screen = getScreen(errorPagePath);
                     if (screen != null) {
                         logError(request);
@@ -122,9 +124,12 @@ public class PortalErrorServlet extends PortalServlet {
                         response.setContentType(CONTENT_TYPE);
                         ScreenFragment oldScreen = registry.getScreen();
                         registry.setScreen(screen);
+                        
                         screen.service(request, response);
                         
                         registry.setScreen(oldScreen);
+                    } else {
+                        defaultError(request, response, statusCode);
                     }
                 }
                 else {
