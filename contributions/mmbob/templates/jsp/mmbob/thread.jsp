@@ -155,7 +155,6 @@
                             </td>
 
                             <%--  show all the buttons for possible actions--%>
-                            <%--  TODO: buttons are shown double if user is poster and administrator. create a function that will decide for each actions if it should be offered.--%>
                             <td class="${gp.tdvar}" align="right">
                                 <mm:import id="toid" reset="true"><mm:field name="posterid" /></mm:import>
                                 <mm:import id="postingid" reset="true"><mm:field name="id" /></mm:import>
@@ -177,45 +176,25 @@
                                     </mm:compare>
                                 </mm:compare>
 
-                                <mm:field name="ismoderator">
-                                    <mm:compare value="true">
-                                        <mm:link page="editpost.jsp" referids="forumid,postareaid,postthreadid,postingid">
-                                            <a href="${_}"><img src="<mm:write referid="image_medit" />"  border="0" /></a>
-                                        </mm:link>
+                                <c:if test="${gp.ismoderator == 'true' || (threadstate != 'pinnedclosed' && gp.isowner == 'true')}">
+                                    <mm:link page="editpost.jsp" referids="forumid,postareaid,postthreadid,postingid">
+                                        <a href="${_}"><img src="<mm:write referid="image_medit" />"  border="0" /></a>
+                                    </mm:link>
 
-                                        <mm:link page="removepost.jsp" referids="forumid,postareaid,postthreadid,postingid">
-                                            <a href="${_}"><img src="<mm:write referid="image_mdelete" />"  border="0" /></a>
-                                        </mm:link>
-                                    </mm:compare>
-                                </mm:field>
-
-                                <mm:compare referid="threadstate" value="closed" inverse="true">
-                                    <mm:compare referid="threadstate" value="pinnedclosed" inverse="true">
-                                        <mm:field name="isowner">
-                                            <mm:compare value="true">
-                                                <mm:import id="postingid" reset="true"><mm:field name="id" /></mm:import>
-                                                <mm:link page="editpost.jsp" referids="forumid,postareaid,postthreadid,postingid">
-                                                    <a href="${_}"><img src="<mm:write referid="image_editmsg" />"  border="0" /></a>
-                                                </mm:link>
-
-                                                <mm:link page="removepost.jsp" referids="forumid,postareaid,postthreadid,postingid">
-                                                    <a href="${_}"><img src="<mm:write referid="image_mdelete" />" border="0" /></a>
-                                                </mm:link>
-                                            </mm:compare>
-                                        </mm:field>
-                                    </mm:compare>
-                                </mm:compare>
+                                    <mm:link page="removepost.jsp" referids="forumid,postareaid,postthreadid,postingid">
+                                        <a href="${_}"><img src="<mm:write referid="image_mdelete" />"  border="0" /></a>
+                                    </mm:link>
+                                </c:if>
                             </td>
                         <%--  end show all the buttons for possible actions--%>
 
                         </tr>
                         <tr>
                             <%--  show all user information--%>
-                            <td class="${gp.tdvar}" valign="top" align="left">
+                            <td class="${gp.tdvar}" valign="top" align="left" >
                                 <p>
                                     <mm:field name="guest">
                                         <mm:compare value="true"><b><mm:field name="poster" /></b></mm:compare>
-
                                         <mm:compare value="true" inverse="true">
                                             <mm:link page="profile.jsp" referids="forumid,postareaid,postthreadid">
                                                 <mm:param name="posterid" value="${gp.posterid}" />
@@ -248,7 +227,7 @@
                                         </mm:compare>
                                     </mm:field>
                                     <br /><br />
-                                    </p>
+                                    </p> user info
                                 </td>
                                 <%--  endshow all user information--%>
 
