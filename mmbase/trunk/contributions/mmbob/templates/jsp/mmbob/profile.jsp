@@ -11,6 +11,7 @@
         <mm:import externid="profile">personal</mm:import>
         <mm:import id="feedbackdefault"></mm:import>
         <mm:write session="feedback_message" referid="feedbackdefault"/>
+
         <%-- login part --%>
         <%@ include file="getposterid.jsp" %>
         <%@ include file="thememanager/loadvars.jsp" %>
@@ -48,7 +49,7 @@
                     </div>
 
                     <div class="bodypart">
-                        <mm:include page="path.jsp?type=$pathtype" referids="logoutmodetype,forumid,posterid,active_nick" />
+                        <mm:include page="path.jsp?type=${empty param.type ? pathtype : param.type}" referids="logoutmodetype,forumid,posterid,active_nick" />
 
                         <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
                             <tr>
