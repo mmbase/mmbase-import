@@ -340,7 +340,7 @@
                                                 <th>AvatarUpload</th>
                                                 <td colspan="2" align="left">
                                                     <select name="avatarsuploadenabled">
-                                                        <mm:import id="options" reset="true" vartype="List">on,off,default</mm:import>
+                                                        <mm:import id="options" reset="true" vartype="List">true,false,default</mm:import>
                                                         <mm:import id="currentvalue" reset="true"><mm:field name="avatarsuploadenabled"/></mm:import>
                                                         <mm:remove referid="option"/>
 
@@ -365,7 +365,7 @@
                                                 <th>AvatarGallery</th>
                                                 <td colspan="2" align="left">
                                                     <select name="avatarsgalleryenabled">
-                                                        <mm:import id="currentvalue" reset="true"><mm:field name="avatarsuploadenabled"/></mm:import>
+                                                        <mm:import id="currentvalue" reset="true"><mm:field name="avatarsgalleryenabled"/></mm:import>
                                                         <mm:remove referid="option"/>
 
                                                         <mm:stringlist referid="options" id="option">
