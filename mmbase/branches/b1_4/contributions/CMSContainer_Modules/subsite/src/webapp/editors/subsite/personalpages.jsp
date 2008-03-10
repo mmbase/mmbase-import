@@ -141,7 +141,6 @@
       if (remoteNumber == -1) { 
     	  appPath = ""; 
     	}
-      request.setAttribute("appPath", appPath);
 %>
          <c:if test="${not empty appPath}">
             <a href="<%=Publish.getRemoteUrl(appPath)%>" 
