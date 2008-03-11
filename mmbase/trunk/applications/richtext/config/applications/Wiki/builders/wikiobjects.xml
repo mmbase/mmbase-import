@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="wikiobjects" maintainer="mmbase.org" version="1" extends="object">
+  <searchage>31</searchage>
+  <names>
+    <singular xml:lang="nl">Wiki-Object</singular>
+    <singular xml:lang="en">Wiki-Object</singular>
+    <plural xml:lang="nl">Wiki-Objecten</plural>
+    <plural xml:lang="en">Wiki-Objects</plural>
+  </names>
+  <properties>
+    <property name="versionbuilder">wikiversions</property>
+  </properties>
+
+  <xi:include href="../richtext/content.fields.xml" /> <!-- should know how to specifiy absolute uri -->
+
+  <fieldlist>
+
+    <field name="version" state="system">
+      <gui>
+        <guiname xml:lang="nl">Versie</guiname>
+        <guiname xml:lang="en">Version</guiname>
+      </gui>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+        <default value="1" />
+        <commitprocessor>
+          <class name="org.mmbase.versioning.VersioningCommitProcessor" />
+        </commitprocessor>
+      </datatype>
+    </field>
+  </fieldlist>
+
+</builder>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<fieldlist
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
+
+  <field name="version" state="system">
+    <gui>
+      <guiname xml:lang="nl">Versie</guiname>
+      <guiname xml:lang="en">Version</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>5</list>
+      </positions>
+    </editor>
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer" />
+  </field>
+
+
+  <field name="timestamp" state="system">
+    <gui>
+      <guiname xml:lang="nl">Tijd</guiname>
+      <guiname xml:lang="en">Time</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>7</list>
+      </positions>
+    </editor>
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime" />
+  </field>
+
+  <field name="object" state="system">
+    <gui>
+      <guiname xml:lang="nl">Parent</guiname>
+      <guiname xml:lang="en">Parent</guiname>
+    </gui>
+    <editor>
+      <positions>
+        <list>8</list>
+      </positions>
+    </editor>
+    <datatype base="node" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <required value="true" />
+      <!-- todo constraint to correct type -->
+    </datatype>
+  </field>
+
+</fieldlist>
