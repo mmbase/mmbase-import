@@ -27,46 +27,37 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.19 2008-03-07 17:31:50 ernst Exp $
+ * @version $Id: SpaceReducer.java,v 1.20 2008-03-11 12:43:05 ernst Exp $
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
-    protected static final String CONTEXT_TAGSTOPASS = "tagstopass";
-    protected static final String CONTEXT_CURRENTLYOPENED = "currentlyopen";
 
     @Override
-    protected boolean transform(PrintWriter bw, String line, Map<String,Object> context) {
-        List<Tag> tagsToPass;
-        if(context.get(SpaceReducer.CONTEXT_TAGSTOPASS) == null){
-            tagsToPass = new ArrayList<Tag>();
-            tagsToPass.add(new Tag("pre"));
-            tagsToPass.add(new Tag("textarea"));
-            context.put(SpaceReducer.CONTEXT_TAGSTOPASS, tagsToPass);
-        }else{
-            tagsToPass = (List<Tag>)context.get(SpaceReducer.CONTEXT_TAGSTOPASS);
-        }
+    protected boolean transform(PrintWriter bw, String line, org.mmbase.util.transformers.BufferedReaderTransformer.Status status) {
         
-        Tag currentlyOpened = (Tag) context.get(SpaceReducer.CONTEXT_CURRENTLYOPENED);
-        
+        SpaceReducerStatus srStatus = (SpaceReducerStatus)status;
+        List<Tag> tagsToPass = srStatus.getTagsToPass();
         boolean result = false;
-        if(!line.trim().equals("") || currentlyOpened != null){
+        
+        if(!line.trim().equals("") || srStatus.getCurrentlyOpen() != null){
             bw.write(line);
             result = true;
         }
-        if(currentlyOpened != null){
+        if(srStatus.getCurrentlyOpen() != null){
             //look for a closing tag.
-            currentlyOpened.setLine(line);
-            if(currentlyOpened.hasClosed()){
-                currentlyOpened = null;
+            srStatus.getCurrentlyOpen().setLine(line);
+            if(srStatus.getCurrentlyOpen().hasClosed()){
+                srStatus.setCurrentlyOpen(null);
             }
         }else{
             //look for an opening tag
             for (Tag tag : tagsToPass) {
                 tag.setLine(line);
                 if(tag.hasOpened()){
-                    context.put(SpaceReducer.CONTEXT_CURRENTLYOPENED, tag);
+                    srStatus.setCurrentlyOpen(tag);
+                    break;
                 }
             }
         }
@@ -116,6 +107,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         return w;
     }
 
+    @Override
     public String toString() {
         return "SPACEREDUCER";
     }
@@ -194,6 +186,32 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
         public String toString() {
             return name;
+        }
+    }
+    
+    @Override
+    public Status createNewStatus(){
+        return (Status) new SpaceReducerStatus();
+    }
+    
+    public static class SpaceReducerStatus extends Status{
+        private List<Tag> tagsToPass = new ArrayList<Tag>();
+        private Tag currentlyOpen = null;
+        
+        public SpaceReducerStatus(){
+            tagsToPass.add(new Tag("pre"));
+            tagsToPass.add(new Tag("textarea"));
+        }
+        
+        public List<Tag> getTagsToPass() {
+            return tagsToPass;
+        }
+        
+        public Tag getCurrentlyOpen() {
+            return currentlyOpen;
+        }
+        public void setCurrentlyOpen(Tag currentlyOpen) {
+            this.currentlyOpen = currentlyOpen;
         }
     }
     
