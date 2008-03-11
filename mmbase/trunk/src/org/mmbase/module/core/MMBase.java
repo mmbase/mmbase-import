@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.235 2008-02-22 11:43:39 michiel Exp $
+ * @version $Id: MMBase.java,v 1.236 2008-03-11 16:48:02 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -822,7 +822,7 @@ public class MMBase extends ProcessorModule {
             String resourceName = ResourceLoader.getName(builderXml);
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
-        if (cloudModel != null) {
+            if (cloudModel != null) {
                 cloudModel.addBuilder(resourceName,"builders/" + resourceDirectory + resourceName + ".xml");
             }
         }
@@ -986,7 +986,7 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-        if (cloudModel != null) {
+            if (cloudModel != null) {
                 cloudModel.addBuilder(builderName,path+builderName+".xml");
             }
             return loadBuilderFromXML(builderName, path);
@@ -1017,7 +1017,16 @@ public class MMBase extends ProcessorModule {
             // register the loading of this builder
             loading.add(builderName);
             BuilderReader parser = getBuilderReader(ipath + builderName);
-            if (parser == null) return null;
+            if (parser == null) {
+                loading.remove(builderName);
+                return null;
+            }
+            if (! parser.getRootElement().getTagName().equals("builder")) {
+                log.service(ipath + builderName + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
+                loading.remove(builderName);
+                return null;
+            }
+
             String status = parser.getStatus();
             if (status.equals("active")) {
                 log.service("Starting builder: " + builderName);
