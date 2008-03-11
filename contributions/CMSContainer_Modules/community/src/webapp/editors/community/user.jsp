@@ -5,9 +5,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="user.edit.title">
-	<style>
-		input.select { font-height: 4px;}
-	</style>
 </cmscedit:head>
 <body style="overflow: auto">
 <cmscedit:contentblock title="view.edit.title" titleClass="content_block_pink">
