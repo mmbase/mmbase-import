@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.95 2008-03-11 14:45:02 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.96 2008-03-11 16:48:18 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -62,9 +62,9 @@ public class BuilderReader extends DocumentReader {
     /** DTD respource filename of the most recent Builder DTD */
     public static final String DTD_BUILDER = DTD_BUILDER_1_1;
 
-    public static final String XSD_BUILDER_2_0 = "builder.xsd";
+    public static final String XSD_BUILDER_2_0       = "builder.xsd";
     public static final String NAMESPACE_BUILDER_2_0 = "http://www.mmbase.org/xmlns/builder";
-    public static final String NAMESPACE_BUILDER = NAMESPACE_BUILDER_2_0;
+    public static final String NAMESPACE_BUILDER     = NAMESPACE_BUILDER_2_0;
 
     private static final Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
@@ -128,7 +128,9 @@ public class BuilderReader extends DocumentReader {
     public BuilderReader(InputSource source, MMBase mmb) {
         super(source, BuilderReader.class);
         mmbase = mmb;
-        resolveInheritance();
+        if (getRootElement().getTagName().equals("builder")) {
+            resolveInheritance();
+        }
     }
 
     /**
@@ -137,7 +139,9 @@ public class BuilderReader extends DocumentReader {
     public BuilderReader(Document doc, MMBase mmb) {
         super(doc);
         mmbase = mmb;
-        resolveInheritance();
+        if (getRootElement().getTagName().equals("builder")) {
+            resolveInheritance();
+        }
     }
 
     /**
@@ -318,7 +322,7 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        for(Element fieldList :  getChildElements("builder", "fieldlist")) {
+        for(Element fieldList : getChildElements("builder", "fieldlist")) {
             for (Element field : getChildElements(fieldList,"field")) {
                 String fieldName = getElementAttributeValue(field, "name");
                 if ("".equals(fieldName)) {
