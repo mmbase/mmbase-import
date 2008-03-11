@@ -9,7 +9,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.1 2008-03-11 16:02:09 michiel Exp $
+ * @version $Id: VersioningCommitProcessor.java,v 1.2 2008-03-11 17:55:54 michiel Exp $
  * @since
  */
 
@@ -18,6 +18,10 @@ public class VersioningCommitProcessor implements CommitProcessor {
     private static final Logger log = Logging.getLoggerInstance(VersioningCommitProcessor.class);
 
     private static final long serialVersionUID = 1L;
+
+    public static final String VERSION_FIELD   = "version";
+    public static final String OBJECT_FIELD    = "object";
+    public static final String TIMESTAMP_FIELD = "timestamp";
 
     public void commit(Node node, Field arg) {
         NodeManager wo = node.getNodeManager();
@@ -29,21 +33,28 @@ public class VersioningCommitProcessor implements CommitProcessor {
             //clone this version to the versions builder
             Cloud cloud = node.getCloud();
             Node version = wv.createNode();
-            Node orig = cloud.getNode(node.getNumber());
-            log.service("Obtained original node with " + cloud + " " + cloud.getClass() + " " + orig);
 
             //increase the version of the current node
-            int newVersionNo = orig.getIntValue("version") + 1;
-            node.setIntValue("version", newVersionNo);
+            int newVersionNo = node.getIntValue(VERSION_FIELD) + 1;
+            node.setIntValue(VERSION_FIELD, newVersionNo);
 
-            cloneNode(orig, version);
+            cloneNode(node, version);
 
-            version.setDateValue("timestamp", orig.getDateValue("lastmodified"));
-            version.setNodeValue("object", orig.getNodeValue("number"));
-            version.commit();
-
+            if (node.getNodeManager().hasField("lastmodified")) {
+                version.setDateValue(TIMESTAMP_FIELD, node.getDateValue("lastmodified"));
+            }
+            version.setNodeValue(OBJECT_FIELD, node);
+            version.setIntValue(VERSION_FIELD, newVersionNo);
+            if (! node.isNew()) {
+                // shit..., node fields don't like new nodes.
+                version.commit();
+                // could solve it by in this case using the _old values_ of the node.
+                // But there are 2 bugs, which make this work around non-feasible:
+                //  http://www.mmbase.org/jira/browse/MMB-1522.
+                //  http://www.mmbase.org/jira/browse/MMB-1621 // This would also give a way to get  the 'old values'.
+            }
         } else {
-            log.error("Nodemanager '" + versionBuilder + "' not found");
+            log.error("No versionbuilder property");
         }
 
     }
@@ -58,7 +69,6 @@ public class VersioningCommitProcessor implements CommitProcessor {
                String fieldName = field.getName();
                dest.setValueWithoutProcess(fieldName, source.getValue(fieldName));
            }
-           dest.setIntValue("version", source.getIntValue("version"));
         }
     }
 }
