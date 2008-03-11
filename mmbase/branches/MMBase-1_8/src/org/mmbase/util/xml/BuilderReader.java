@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.10 2008-02-16 22:07:46 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.11 2008-03-11 14:42:53 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -322,33 +322,37 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        for(Iterator ns = getChildElements("builder.fieldlist", "field"); ns.hasNext(); ) {
-            Element field = (Element) ns.next();
-            String fieldName = getElementAttributeValue(field, "name");
-            if ("".equals(fieldName)) {
-                fieldName = getElementValue(getElementByPath(field,"field.db.name"));
-            }
-            CoreField def = (CoreField) oldset.get(fieldName);
-            try {
-                if (def != null) {
+        for(Iterator ns1 = getChildElements("builder", "fieldlist"); ns1.hasNext(); ) {
+            Element fieldList = (Element) ns1.next();
 
-                    boolean parentInStorage = def.inStorage();
-                    def.rewrite();
-                    DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
-                    if (dataType != null) {
-                        def.setDataType(dataType); // replace datatype
-                    }
-                    decodeFieldDef(field, def, collector);
-                    decodeFieldAttributes(field, def);
-                    def.finish();
-                } else {
-                    def = decodeFieldDef(builder, collector, field);
-                    def.setStoragePosition(pos++);
-                    def.finish();
-                    results.add(def);
+            for(Iterator ns = getChildElements(fieldList, "field"); ns.hasNext(); ) {
+                Element field = (Element) ns.next();
+                String fieldName = getElementAttributeValue(field, "name");
+                if ("".equals(fieldName)) {
+                    fieldName = getElementValue(getElementByPath(field,"field.db.name"));
                 }
-            } catch (Exception e) {
-                log.error("During parsing of " + XMLWriter.write(field, true, true) + " " + e.getMessage(), e);
+                CoreField def = (CoreField) oldset.get(fieldName);
+                try {
+                    if (def != null) {
+
+                        boolean parentInStorage = def.inStorage();
+                        def.rewrite();
+                        DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
+                        if (dataType != null) {
+                            def.setDataType(dataType); // replace datatype
+                        }
+                        decodeFieldDef(field, def, collector);
+                        decodeFieldAttributes(field, def);
+                        def.finish();
+                    } else {
+                        def = decodeFieldDef(builder, collector, field);
+                        def.setStoragePosition(pos++);
+                        def.finish();
+                        results.add(def);
+                    }
+                } catch (Exception e) {
+                    log.error("During parsing of " + XMLWriter.write(field, true, true) + " " + e.getMessage(), e);
+                }
             }
         }
 

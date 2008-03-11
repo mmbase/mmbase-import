@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.94 2008-02-16 22:07:39 nklasens Exp $
+ * @version $Id: BuilderReader.java,v 1.95 2008-03-11 14:45:02 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -318,33 +318,34 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-        for (Element field : getChildElements("builder.fieldlist","field")) {
-            String fieldName = getElementAttributeValue(field, "name");
-            if ("".equals(fieldName)) {
-                fieldName = getElementValue(getElementByPath(field,"field.db.name"));
-            }
-            CoreField def = oldset.get(fieldName);
-            try {
-                if (def != null) {
-                    def.rewrite();
-                    DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
-                    if (dataType != null) {
-                        def.setDataType(dataType); // replace datatype
-                    }
-                    decodeFieldDef(field, def, collector);
-                    decodeFieldAttributes(field, def);
-                    def.finish();
-                } else {
-                    def = decodeFieldDef(builder, collector, field);
-                    def.setStoragePosition(pos++);
-                    def.finish();
-                    results.add(def);
+        for(Element fieldList :  getChildElements("builder", "fieldlist")) {
+            for (Element field : getChildElements(fieldList,"field")) {
+                String fieldName = getElementAttributeValue(field, "name");
+                if ("".equals(fieldName)) {
+                    fieldName = getElementValue(getElementByPath(field,"field.db.name"));
                 }
-            } catch (Exception e) {
-                log.error("During parsing of " + XMLWriter.write(field, true, true) + " " + e.getMessage(), e);
+                CoreField def = oldset.get(fieldName);
+                try {
+                    if (def != null) {
+                        def.rewrite();
+                        DataType dataType = decodeDataType(builder, collector, def.getName(), field, def.getType(), def.getListItemType(), false);
+                        if (dataType != null) {
+                            def.setDataType(dataType); // replace datatype
+                        }
+                        decodeFieldDef(field, def, collector);
+                        decodeFieldAttributes(field, def);
+                        def.finish();
+                    } else {
+                        def = decodeFieldDef(builder, collector, field);
+                        def.setStoragePosition(pos++);
+                        def.finish();
+                        results.add(def);
+                    }
+                } catch (Exception e) {
+                    log.error("During parsing of " + XMLWriter.write(field, true, true) + " " + e.getMessage(), e);
+                }
             }
         }
-
         return results;
     }
 
