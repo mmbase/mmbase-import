@@ -17,7 +17,8 @@
       I seem not to understand xpointer
   <xi:include href="wikiobjects.xml" xpointer="element(//builder/fieldlist[1])"  />
   -->
-  <xi:include href="../richtext/content.fields.xml" /> <!-- should know how to specifiy absolute uri -->
+
+  <xi:include href="http://www.mmbase.org/builders/richtext/content.fields.xml" />
 
   <xi:include href="versioning.fields.xml" />
 

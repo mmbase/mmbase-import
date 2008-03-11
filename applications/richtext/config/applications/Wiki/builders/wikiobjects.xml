@@ -16,7 +16,7 @@
     <property name="versionbuilder">wikiversions</property>
   </properties>
 
-  <xi:include href="../richtext/content.fields.xml" /> <!-- should know how to specifiy absolute uri -->
+  <xi:include href="http://www.mmbase.org/builders/richtext/content.fields.xml" />
 
   <fieldlist>
 
