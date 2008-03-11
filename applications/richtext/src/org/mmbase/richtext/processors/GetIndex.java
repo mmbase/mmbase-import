@@ -19,9 +19,13 @@ import java.util.*;
 
 
 /**
+ * This (get)processor can be used on a 'index' field. If the field is actually filled, it will
+ * return that value. If the field is not filled, it will use the surrounding cloud, to return the
+ * logical value. If e.g. the sibling node just 'before' this node has index '4' this one has '5'. Fields
+ * using the processor implement automatic numbering of chapters and such.
  *
  * @author Michiel Meeuwissen
- * @version $Id: GetIndex.java,v 1.5 2006-11-16 18:08:45 michiel Exp $
+ * @version $Id: GetIndex.java,v 1.6 2008-03-11 16:53:22 michiel Exp $
  * @since MMBase-1.8
  */
 
