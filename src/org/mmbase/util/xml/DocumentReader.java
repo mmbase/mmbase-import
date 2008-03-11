@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.38 2007-10-17 08:49:19 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.39 2008-03-11 11:45:28 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -183,6 +183,7 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
+            dfactory.setXIncludeAware(true);
             if (validating && xsd) {
                 try {
                     dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
