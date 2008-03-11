@@ -22,7 +22,7 @@ import junit.framework.*;
 public class AllTests {
 
     public static void main(String[] args) {
-        try { 
+        try {
             junit.textui.TestRunner.run(suite());
         } catch (Exception e) {
             System.out.println(e);
@@ -38,13 +38,14 @@ public class AllTests {
         suite.addTestSuite(EmptyNodeTest.class);
         suite.addTestSuite(EmptyNodeTestTransaction.class);
         suite.addTestSuite(EmptiedNodeTest.class);
-        suite.addTestSuite(EmptyNotNullNodeTest.class); 
+        suite.addTestSuite(EmptyNotNullNodeTest.class);
         suite.addTestSuite(EmptyNotNullNodeTestTransaction.class);
-        suite.addTestSuite(FilledNodeTest.class); 
+        suite.addTestSuite(FilledNodeTest.class);
         suite.addTestSuite(FilledNodeTestTransaction.class);
-        suite.addTestSuite(ErroneousFilledNodeTest.class); 
+        suite.addTestSuite(ErroneousFilledNodeTest.class);
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
+        suite.addTestSuite(TransactionTest.class);
         suite.addTestSuite(RelationTest.class);
         suite.addTestSuite(DataTypesTest.class);
         suite.addTestSuite(DataTypesTestTransaction.class);
