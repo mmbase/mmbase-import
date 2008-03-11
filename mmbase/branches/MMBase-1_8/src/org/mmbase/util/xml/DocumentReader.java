@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.29.2.3 2007-10-17 08:47:57 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.4 2008-03-11 11:51:35 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -166,6 +166,7 @@ public class DocumentReader  {
 
 
     private static boolean warnedJAXP12 = false;
+    private static boolean warnedXinclude = false;
     /**
      * Creates a DocumentBuilder using SAX.
      * @param validating if true, the documentbuilder will validate documents read
@@ -183,6 +184,16 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
+            Class cl = dfactory.getClass();
+            try {
+                java.lang.reflect.Method m =  cl.getMethod("setXIncludeAware", new Class[] {Boolean.TYPE});
+                m.invoke(dfactory, new Object[] {Boolean.TRUE});
+            } catch(Exception e) {
+                if (! warnedXinclude) {
+                    log.info(e + " Your current document builder factory does not support xi:include.");
+                    warnedXinclude = true;
+                }
+            }
             if (validating && xsd) {
                 try {
                     dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
