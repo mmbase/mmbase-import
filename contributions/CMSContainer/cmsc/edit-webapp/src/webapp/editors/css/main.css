@@ -433,11 +433,6 @@ div.content_block_purple div.content_block_end
 	height: 14px;
 }
 
-
-
-
-
-
 /* contentblocks PINK */
 div.content_block_pink
 {
@@ -447,7 +442,7 @@ div.content_block_pink
 	background-repeat: repeat-y;
 	background-position: right top;
 	color: #ffffff;
-	width: 100%;
+	width: auto;
 	border-style: none none none solid;
 	/*border-style: solid;*/
 	border-width: 1px;
@@ -815,7 +810,6 @@ div.editor input[type="submit"]
 	font-weight: bold;
    text-align: right;
    text-decoration: underline;
-	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1008,7 +1002,6 @@ div.page_buttons div.button:hover
 	border-width: 1px;
 	border-color: #97b7c8;
 	background-color: #f1f400;
-	cursor: hand;
 	cursor: pointer;
 }
 
