@@ -33,7 +33,7 @@
         <xsd:element ref="descriptions" minOccurs="0" />
         <xsd:element ref="properties" minOccurs="0" />
         <xsd:element ref="dt:datatypes"  minOccurs="0" />
-        <xsd:element ref="fieldlist" minOccurs="0" />
+        <xsd:element ref="fieldlist" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="indexlist" minOccurs="0" />
         <xsd:element ref="functionlist" minOccurs="0" />
       </xsd:sequence>
