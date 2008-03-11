@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.11 2008-03-11 14:42:53 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.12 2008-03-11 16:50:16 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -128,7 +128,9 @@ public class BuilderReader extends DocumentReader {
     public BuilderReader(InputSource source, MMBase mmb) {
         super(source, BuilderReader.class);
         mmbase = mmb;
-        resolveInheritance();
+        if (getRootElement().getTagName().equals("builder")) {
+            resolveInheritance();
+        }
     }
 
     /**
@@ -137,7 +139,9 @@ public class BuilderReader extends DocumentReader {
     public BuilderReader(Document doc, MMBase mmb) {
         super(doc);
         mmbase = mmb;
-        resolveInheritance();
+        if (getRootElement().getTagName().equals("builder")) {
+            resolveInheritance();
+        }
     }
 
     /**
