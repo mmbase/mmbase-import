@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.8 2007-10-08 16:10:24 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.9 2008-03-11 16:49:43 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -435,9 +435,9 @@ public class MMBase extends ProcessorModule {
         rootBuilder = null;
         mmbaseCop = null;
         clusterBuilder = null;
-        mmbaseroot = null;
         org.mmbase.util.ThreadPools.shutdown();
         org.mmbase.core.event.EventManager.getInstance().shutdown();
+        mmbaseroot = null;
     }
 
     /**
@@ -912,7 +912,7 @@ public class MMBase extends ProcessorModule {
             String resourceName = ResourceLoader.getName(builderXml);
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
-        if (cloudModel != null) {
+            if (cloudModel != null) {
                 cloudModel.addBuilder(resourceName,"builders/" + resourceDirectory + resourceName + ".xml");
             }
         }
@@ -1128,12 +1128,23 @@ public class MMBase extends ProcessorModule {
             log.debug("Builder '" + builderName + "' is already loaded");
             return builder;
         }
-
         try {
             // register the loading of this builder
             loading.add(builderName);
+
             BuilderReader parser = getBuilderReader(ipath + builderName);
-            if (parser == null) return null;
+            if (parser == null) {
+                loading.remove(builderName);
+                return null;
+            }
+
+            if (! parser.getRootElement().getTagName().equals("builder")) {
+                log.service(ipath + builderName + " does not represent a builder xml. Because the root element is not 'builder' but " + parser.getRootElement().getTagName() + ". This file is ignored.");
+                loading.remove(builderName);
+                return null;
+            }
+
+
             String status = parser.getStatus();
             if (status.equals("active")) {
                 log.service("Starting builder: " + builderName);
@@ -1148,7 +1159,8 @@ public class MMBase extends ProcessorModule {
                     } else {
                         newclass = MMObjectBuilder.class;
                     }
-                    log.error(cnfe.toString() + " (for " + parser.getClassName() + ") Falling back to " + newclass.getName());
+                    log.error(cnfe.toString() + " (for builder '" + ipath + builderName + "'" +
+                              " with class "  + parser.getClassName() + ") Falling back to " + newclass.getName());
                 }
                 builder = (MMObjectBuilder)newclass.newInstance();
 
