@@ -114,6 +114,8 @@
       <xsd:sequence>
         <xsd:element ref="field" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
+      <!-- you may want to xinclude fieldlists, xincludes may add xml:base attributes -->
+      <xsd:attribute ref="xml:base" />
     </xsd:complexType>
   </xsd:element>
 
