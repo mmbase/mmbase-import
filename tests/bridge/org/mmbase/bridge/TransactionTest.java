@@ -16,8 +16,8 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.1 2008-03-11 15:43:17 michiel Exp $
- * @since MMBase-1.9
+ * @version $Id: TransactionTest.java,v 1.2 2008-03-11 15:51:50 michiel Exp $
+ * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
 
@@ -34,7 +34,7 @@ public class TransactionTest extends BridgeTest {
         Node node = cloud.getNodeManager("news").createNode();
         node.setStringValue("title", "foo");
         node.commit();
-        newNode = newNode.getNumber();
+        newNode = node.getNumber();
     }
 
 
@@ -48,7 +48,7 @@ public class TransactionTest extends BridgeTest {
 
         node = cloud.getNode(newNode);
 
-        assertEquals(node.getStringValue("title"), "foo");
+        assertEquals("foo", node.getStringValue("title"));
     }
 
     public void testCommit() {
@@ -61,7 +61,7 @@ public class TransactionTest extends BridgeTest {
 
         node = cloud.getNode(newNode);
 
-        assertEquals(node.getStringValue("title"), "yyyyy");
+        assertEquals("yyyyy", node.getStringValue("title"));
     }
 
     public void testGetValue() {
@@ -71,11 +71,11 @@ public class TransactionTest extends BridgeTest {
         node.setStringValue("title", "zzzzz");
         node.commit(); // committing inside transaction
 
-        assertEquals(cloud.getNode(newNode).getStringValue("title"), "yyyyy"); // TODO TODO, I think
+        assertEquals("yyyyy", cloud.getNode(newNode).getStringValue("title")); // TODO TODO, I think
                                                                                // this is failing.
 
         t.commit();
-        assertEquals(cloud.getNode(newNode).getStringValue("title"), "zzzzz");
+        assertEquals("zzzzz", cloud.getNode(newNode).getStringValue("title"));
 
     }
 
