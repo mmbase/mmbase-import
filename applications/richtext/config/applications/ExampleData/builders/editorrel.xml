@@ -54,10 +54,9 @@
         <guiname xml:lang="en">Name</guiname>
       </gui>
       <editor><positions><list>1</list></positions></editor>
-      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="32" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="wizard">
@@ -70,10 +69,9 @@
         <guiname xml:lang="nl">Wizard</guiname>
         <guiname xml:lang="en">Wizard</guiname>
       </gui>
-      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
+      <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
 
     <field name="wizardjsp">
@@ -87,6 +85,7 @@
         <guiname xml:lang="en">Wizard JSP</guiname>
       </gui>
       <datatype  base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
         <enumeration enforce="never">
           <entry value="" xml:lang="nl" display="Normale editwizard" />
           <entry value="/mmbase/kupu/mmbase/" xml:lang="nl" display="Kupu rijke tekst" />
@@ -95,9 +94,6 @@
           <entry value="/mmbase/kupu/mmbase/" xml:lang="en" display="Kupu rich text" />
         </enumeration>
       </datatype>
-      <db>
-        <type state="persistent" size="255" notnull="false" key="false">STRING</type>
-      </db>
     </field>
 
     <field name="role">
