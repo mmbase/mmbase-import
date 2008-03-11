@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: BufferedReaderTransformer.java,v 1.6 2008-03-10 14:32:40 ernst Exp $
+ * @version $Id: BufferedReaderTransformer.java,v 1.7 2008-03-11 11:20:07 michiel Exp $
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
@@ -52,19 +52,15 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
     /**
      * @param bw the writer to direct the output to
      * @param line the input
-     * @param context in this map you can store the state of of the trasformer between invocations. At the start of the docuement it's a new Map 
-     * 
+     * @param status this object could hold transformation status information. Or <code>null</code>
      * @return
      */
     protected abstract boolean transform(PrintWriter bw, String line, Status status);
-    
-    protected abstract Status createNewStatus();
-    
-    public abstract static class Status{}
 
-    public Status createnewStatus() {
-        // TODO Auto-generated method stub
-        return null;
-    };
+    protected abstract Status createNewStatus();
+
+    abstract static class Status{
+    }
+
 
 }
