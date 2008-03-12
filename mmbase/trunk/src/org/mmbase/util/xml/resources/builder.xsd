@@ -116,6 +116,7 @@
       </xsd:sequence>
       <!-- you may want to xinclude fieldlists, xincludes may add xml:base attributes -->
       <xsd:attribute ref="xml:base" />
+      <xsd:attribute name="id" type="xsd:ID"/>
     </xsd:complexType>
   </xsd:element>
 
@@ -128,7 +129,7 @@
         <xsd:element ref="dt:datatype"     minOccurs="0" />
         <xsd:element ref="db"     minOccurs="0" />
       </xsd:all>
-      <xsd:attribute name="name" type="xsd:string" />
+      <xsd:attribute name="name" type="xsd:ID" />
       <xsd:attribute name="state">
         <xsd:simpleType>
           <xsd:restriction base="xsd:string">
@@ -147,6 +148,8 @@
           </xsd:restriction>
         </xsd:simpleType>
       </xsd:attribute>
+      <!-- you may want to xinclude a field, xincludes may add xml:base attributes -->
+      <xsd:attribute ref="xml:base" />
     </xsd:complexType>
   </xsd:element>
 
