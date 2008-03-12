@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.62 2007-11-20 14:22:27 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.63 2008-03-12 16:04:23 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -84,6 +84,20 @@
         <class name="org.mmbase.datatypes.processors.LastModifier" />
       </commitprocessor>
     </specialization>
+    <specialization id="ip">
+      <description xml:lang="en">
+        A ready-only field, which contains the IP address of the of the last user that changed the node to which the field belongs.
+      </description>
+      <unique value="false" />
+      <pattern enforce="never" value="\A[^\n\r]*\z" />
+      <setprocessor>
+        <class name="org.mmbase.datatypes.processors.Readonly" />
+      </setprocessor>
+      <commitprocessor>
+        <class name="org.mmbase.datatypes.processors.Ip" />
+      </commitprocessor>
+    </specialization>
+
 
     <specialization id="creator">
       <description xml:lang="en">
