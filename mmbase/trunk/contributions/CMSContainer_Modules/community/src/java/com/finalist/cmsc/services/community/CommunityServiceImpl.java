@@ -60,7 +60,7 @@ public class CommunityServiceImpl extends CommunityService {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (AuthenticationException ae) {
 	        SecurityContextHolder.clearContext();
-	        log.info(String.format("Authentication attempt failed for user %s", userName), ae);
+	        log.debug(String.format("Authentication attempt failed for user %s", userName), ae);
 		}
 	}
 
@@ -123,7 +123,8 @@ public class CommunityServiceImpl extends CommunityService {
     	return preferenceService.getPreferencesByUserId(userId);
     }
 
-    public List<String> getPreferenceValues(String module, String userId, String key) {
+    @Override
+   public List<String> getPreferenceValues(String module, String userId, String key) {
     	return preferenceService.getPreferenceValues(module, userId, key);
     }
 
