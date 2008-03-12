@@ -34,20 +34,18 @@
           <list>1</list>
         </positions>
       </editor>
-      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type key="false" notnull="true" size="255" state="persistent">STRING</type>
-      </db>
+      <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="255" />
+      </datatype>
     </field>
     <field name="body">
       <gui>
         <guiname xml:lang="nl">Tekst</guiname>
         <guiname xml:lang="en">Text</guiname>
       </gui>
-      <datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes" />
-      <db>
-        <type key="false" notnull="false" size="64000" state="persistent">XML</type>
-      </db>
+      <datatype base="mmxf" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <maxLength value="64000" />
+      </datatype>
     </field>
   </fieldlist>
 </builder>

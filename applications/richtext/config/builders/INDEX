@@ -1,2 +1,4 @@
 ./richtext/blocks.xml
 ./richtext/idrel.xml
+./versioning/versioning.fields.xml
+./versioning/version.field.xml

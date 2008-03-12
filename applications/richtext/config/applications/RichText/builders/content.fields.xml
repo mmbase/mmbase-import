@@ -1,10 +1,9 @@
 <?xml version="1.0" ?>
 <fieldlist
+    id="content_fields"
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
-                        http://www.mmbase.org/xmlns/builder.xsd"
-    >
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
   <field name="title">
     <descriptions>
       <description xml:lang="en">Title of this object</description>
