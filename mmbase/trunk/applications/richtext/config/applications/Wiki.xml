@@ -8,6 +8,7 @@
 
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">wikiobjects</builder>
+    <builder maintainer="mmbase.org" version="0">wikiobjects_versions</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
