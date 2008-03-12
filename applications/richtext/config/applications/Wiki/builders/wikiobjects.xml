@@ -12,26 +12,14 @@
     <plural xml:lang="nl">Wiki-Objecten</plural>
     <plural xml:lang="en">Wiki-Objects</plural>
   </names>
-  <properties>
-    <property name="versionbuilder">wikiversions</property>
-  </properties>
 
   <xi:include href="http://www.mmbase.org/builders/richtext/content.fields.xml" />
 
   <fieldlist>
-
-    <field name="version" state="system">
-      <gui>
-        <guiname xml:lang="nl">Versie</guiname>
-        <guiname xml:lang="en">Version</guiname>
-      </gui>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
-        <default value="1" />
-        <commitprocessor>
-          <class name="org.mmbase.versioning.VersioningCommitProcessor" />
-        </commitprocessor>
-      </datatype>
-    </field>
+    <xi:include href="http://www.mmbase.org/builders/versioning/version.field.xml">
+      <xi:fallback>
+        No versioning.
+      </xi:fallback>
+    </xi:include>
   </fieldlist>
-
 </builder>
