@@ -7,15 +7,20 @@ $(document).ready(function(){
     validator.prefetchNodeManager("xmlnews");
     validator.setup(window);
 
-    $(window).bind("resize", function() {
+    var resizer =  function() {
+	var minHeight = $("div#title").height() + $("div#commit").height();
 	$("div#main").width($(window).width() - $("div#relations").width());
-	$("div#main").height($(window).height());
-	$("div#relations").height($(window).height());
-    });
+	$("div#main").height($(window).height() - minHeight);
+	$("div#relations").height($(window).height() - minHeight);
+	$("div#relations").offset().right = 0;
+
+    }
+
+    $(window).bind("resize", resizer);
+
     var width = $(window).width();
     $("div#relations").width(width * 1 / 3);
-    $("div#relations").height($(window).height());
-    $("div#main").width(width * 2 / 3);
+    resizer();
     $("div#relations").resizable({
 	handles: "w",
 	resize: function(e) {

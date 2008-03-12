@@ -3,6 +3,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:content type="application/xhtml+xml"
               jspvar="c"
+              expires="${param.expires}"
               language="en">
   <mm:cloud>
 
@@ -12,37 +13,56 @@
         </mm:link>
       </head>
       <body>
-        <mm:edit type="wiki">
-          <mm:import externid="objectnumber" />
-          <mm:node referid="objectnumber">
-            <h1><mm:field name="title" /></h1>
-            <h2><mm:field name="subtitle" /></h2>
-            <mm:field name="intro" escape="p" />
+        <mm:import externid="objectnumber" />
+        <mm:notpresent referid="objectnumber">
+          <ul>
+            <mm:listnodes type="wikiobjects" orderby="number" directions="down">
+              <li><mm:link referids="_node@objectnumber"><a href="${_}"><mm:nodeinfo type="gui" /></a></mm:link></li>
+            </mm:listnodes>
+          </ul>
+          <mm:link page="edit/">
+            <mm:param name="objectnumber">new</mm:param>
+            <a href="${_}">new</a>
+          </mm:link>
+        </mm:notpresent>
+
+        <mm:present referid="objectnumber">
+          <mm:edit type="wiki">
 
 
-            <mm:formatter referids="thumbwidth?,popupwidth?" format="xhtml">
-              <mm:present referid="home">
-                <mm:param name="home" value="home=${home}&amp;" />
-              </mm:present>
-              <mm:field name="body" />
-              <mm:listrelations type="object" role="idrel" searchdir="destination">
-                <mm:relatednode>
-                  <mm:nodeinfo type="nodemanager">
-                    <mm:compare value="blocks">
-                      <mm:listrelations type="object" role="idrel" searchdir="destination" >
-                        <mm:relatednode />
-                      </mm:listrelations>
-                    </mm:compare>
+            <mm:node referid="objectnumber">
+              <h1><mm:field name="title" /></h1>
+              <h2><mm:field name="subtitle" /></h2>
+              <h3>v <mm:field name="version" /></h3>
+              <mm:field name="intro" escape="p" />
+
+
+              <mm:formatter referids="thumbwidth?,popupwidth?" format="xhtml">
+                <mm:present referid="home">
+                  <mm:param name="home" value="home=${home}&amp;" />
+                </mm:present>
+                <mm:field name="body" />
+                <mm:listrelations type="object" role="idrel" searchdir="destination">
+                  <mm:relatednode>
+                    <mm:nodeinfo type="nodemanager">
+                      <mm:compare value="blocks">
+                        <mm:listrelations type="object" role="idrel" searchdir="destination" >
+                          <mm:relatednode />
+                        </mm:listrelations>
+                      </mm:compare>
                   </mm:nodeinfo>
-                </mm:relatednode>
-              </mm:listrelations>
-            </mm:formatter>
+                  </mm:relatednode>
+                </mm:listrelations>
+              </mm:formatter>
 
+            </mm:node>
+          </mm:edit>
+          <hr />
+          <mm:link page=".">
+            <a href="${_}">Back</a>
+          </mm:link>
+        </mm:present>
 
-            <mm:nodeinfo type="guitype" />
-            ${requestScope['javax.servlet.jsp.jstl.fmt.locale.request']}
-          </mm:node>
-        </mm:edit>
       </body>
   </mm:cloud>
 

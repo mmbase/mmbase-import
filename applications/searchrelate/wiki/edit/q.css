@@ -3,18 +3,37 @@ body, html {
   padding: 0 0 0 0;
 }
 
-div#title {
-  width: 100%;
+h1.error {
+  color: red;
   background-color: yellow;
+  z-index: 100;
+  position: absolute;
+  top: 0;
+}
+
+div#title {
+  top: 0px;
+  height: 30px;
+  width: 100%;
+  background-color: #ffa;
+}
+div#commit {
+  position: absolute;
+  bottom: 0px;
+  height: 30px;
+  width: 100%;
+  background-color: #ffa;
 }
 
 div#main {
   position: absolute;
   left: 0px;
+  top: 30px;
 }
 div#relations {
-  right: 0px;
   position: absolute;
+  right: 0px;
+  top: 30px;
   background-color: #bbb;
 }
 
