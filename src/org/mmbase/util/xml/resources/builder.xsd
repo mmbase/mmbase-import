@@ -34,8 +34,8 @@
         <xsd:element ref="properties" minOccurs="0" />
         <xsd:element ref="dt:datatypes"  minOccurs="0" />
         <xsd:element ref="fieldlist" minOccurs="0" maxOccurs="unbounded" />
-        <xsd:element ref="indexlist" minOccurs="0" />
-        <xsd:element ref="functionlist" minOccurs="0" />
+        <xsd:element ref="indexlist" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="functionlist" minOccurs="0" maxOccurs="unbounded"  />
       </xsd:sequence>
       <xsd:attribute name="name"       type="xsd:string" use="required" />
       <xsd:attribute name="maintainer" type="xsd:string" />
@@ -267,6 +267,7 @@
       <xsd:sequence>
         <xsd:element ref="index" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
+      <xsd:attribute ref="xml:base" />
     </xsd:complexType>
   </xsd:element>
   <xsd:element name="index">
@@ -296,6 +297,7 @@
       <xsd:sequence>
         <xsd:element ref="function" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
+      <xsd:attribute ref="xml:base" />
     </xsd:complexType>
   </xsd:element>
   <xsd:element name="function">
