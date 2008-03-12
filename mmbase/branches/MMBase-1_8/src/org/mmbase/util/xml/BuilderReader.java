@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.74.2.12 2008-03-11 16:50:16 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.74.2.13 2008-03-12 15:19:28 michiel Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -422,27 +422,29 @@ public class BuilderReader extends DocumentReader {
             }
         }
 
-
-        for(Iterator indices = getChildElements("builder.indexlist","index"); indices.hasNext(); ) {
-            Element indexElement   = (Element)indices.next();
-            String indexName = indexElement.getAttribute("name");
-            if (indexName != null && !indexName.equals("")) {
-                String unique = indexElement.getAttribute("unique");
-                Index index = new Index(builder, indexName);
-                index.setUnique(unique != null && unique.equals("true"));
-                for(Iterator fields = getChildElements(indexElement,"indexfield"); fields.hasNext(); ) {
-                    Element fieldElement   = (Element)fields.next();
-                    String fieldName = fieldElement.getAttribute("name");
-                    Field field = builder.getField(fieldName);
-                    if (field == null) {
-                        log.error("field '" + fieldName +"' in index '" + indexName + "' in builder " + builder.getTableName() + " does not exist");
-                    } else {
-                        index.add(field);
-                    }
+        for(Iterator ns1 = getChildElements("builder", "indexlist"); ns1.hasNext(); ) {
+            Element indexList = (Element) ns1.next();
+            for(Iterator indices = getChildElements(indexList,"index"); indices.hasNext(); ) {
+                Element indexElement   = (Element)indices.next();
+                String indexName = indexElement.getAttribute("name");
+                if (indexName != null && !indexName.equals("")) {
+                    String unique = indexElement.getAttribute("unique");
+                    Index index = new Index(builder, indexName);
+                    index.setUnique(unique != null && unique.equals("true"));
+                    for(Iterator fields = getChildElements(indexElement,"indexfield"); fields.hasNext(); ) {
+                        Element fieldElement   = (Element)fields.next();
+                        String fieldName = fieldElement.getAttribute("name");
+                        Field field = builder.getField(fieldName);
+                        if (field == null) {
+                            log.error("field '" + fieldName +"' in index '" + indexName + "' in builder " + builder.getTableName() + " does not exist");
+                        } else {
+                            index.add(field);
+                        }
                 }
-                results.add(index);
-            } else {
-                log.error("index in builder " + builder.getTableName() + " has no name");
+                    results.add(index);
+                } else {
+                    log.error("index in builder " + builder.getTableName() + " has no name");
+                }
             }
         }
         return results;
@@ -453,70 +455,74 @@ public class BuilderReader extends DocumentReader {
      */
     public Set getFunctions(final MMObjectBuilder buil) {
         Set results = new HashSet();
-        for(Iterator ns = getChildElements("builder.functionlist","function"); ns.hasNext(); ) {
-            try {
-                Element functionElement   = (Element)ns.next();
-                final String functionName = functionElement.getAttribute("name");
-                String providerKey        = functionElement.getAttribute("key");
-                String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
+        for(Iterator ns1 = getChildElements("builder", "functionlist"); ns1.hasNext(); ) {
+            Element functionList = (Element) ns1.next();
 
-                Function function;
-                log.service("Using " + functionClass);
-                final Class claz = Class.forName(functionClass);
-                if (Function.class.isAssignableFrom(claz)) {
-                    if (!providerKey.equals("")) {
-                        log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
-                    }
-                    function = (Function) claz.newInstance();
-                } else if (FunctionProvider.class.isAssignableFrom(claz)) {
-                    if ("".equals(providerKey)) providerKey = functionName;
-                    if ("".equals(providerKey)) {
-                        log.error("FunctionProvider " + claz + " specified in " + getSystemId() + " without key or name");
-                        continue;
-                    }
-                    FunctionProvider provider = (FunctionProvider) claz.newInstance();
-                    function = provider.getFunction(providerKey);
-                    if (function == null) {
-                        log.error("Function provider " + provider + "has no function '" + providerKey + "'");
-                        continue;
-                    }
-                } else {
-                    if ("".equals(providerKey)) providerKey = functionName;
-                    if ("".equals(providerKey)) {
-                        log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
-                        continue;
-                    }
-                    function = BeanFunction.getFunction(claz, providerKey, new BeanFunction.Producer() {
-                            public Object getInstance() {
-                                try {
-                                    return BeanFunction.getInstance(claz, buil);
-                                } catch (Exception e) {
-                                    log.error(e.getMessage(), e);
-                                    return null;
+            for(Iterator ns = getChildElements(functionList,"function"); ns.hasNext(); ) {
+                try {
+                    Element functionElement   = (Element)ns.next();
+                    final String functionName = functionElement.getAttribute("name");
+                    String providerKey        = functionElement.getAttribute("key");
+                    String functionClass      = getNodeTextValue(getElementByPath(functionElement, "function.class"));
+
+                    Function function;
+                    log.service("Using " + functionClass);
+                    final Class claz = Class.forName(functionClass);
+                    if (Function.class.isAssignableFrom(claz)) {
+                        if (!providerKey.equals("")) {
+                            log.warn("Specified a key attribute for a Function " + claz + " in " + getSystemId() + ", this makes only sense for FunctionProviders.");
+                        }
+                        function = (Function) claz.newInstance();
+                    } else if (FunctionProvider.class.isAssignableFrom(claz)) {
+                        if ("".equals(providerKey)) providerKey = functionName;
+                        if ("".equals(providerKey)) {
+                            log.error("FunctionProvider " + claz + " specified in " + getSystemId() + " without key or name");
+                            continue;
+                        }
+                        FunctionProvider provider = (FunctionProvider) claz.newInstance();
+                        function = provider.getFunction(providerKey);
+                        if (function == null) {
+                            log.error("Function provider " + provider + "has no function '" + providerKey + "'");
+                            continue;
+                        }
+                    } else {
+                        if ("".equals(providerKey)) providerKey = functionName;
+                        if ("".equals(providerKey)) {
+                            log.error("Speficied class " + claz + " in " + getSystemId() + "/functionslist/function is not a Function or FunctionProvider and can not be wrapped in a BeanFunction, because neither key nor name attribute were specified.");
+                            continue;
+                        }
+                        function = BeanFunction.getFunction(claz, providerKey, new BeanFunction.Producer() {
+                                public Object getInstance() {
+                                    try {
+                                        return BeanFunction.getInstance(claz, buil);
+                                    } catch (Exception e) {
+                                        log.error(e.getMessage(), e);
+                                        return null;
+                                    }
                                 }
-                            }
-                            public String toString() {
-                                return "" + claz.getName() + "." + buil.getTableName();
-                            }
-                        });
-                }
-                if (! functionName.equals("") && ! function.getName().equals(functionName)) {
-                    log.service("Wrapping " + function.getName() + " to " + functionName);
-                    function = new WrappedFunction(function) {
-                            public String getName() {
-                                return functionName;
-                            }
-                        };
-                }
-                NodeFunction nf = NodeFunction.wrap(function);
-                if (nf != null) function = nf;
+                                public String toString() {
+                                    return "" + claz.getName() + "." + buil.getTableName();
+                                }
+                            });
+                    }
+                    if (! functionName.equals("") && ! function.getName().equals(functionName)) {
+                        log.service("Wrapping " + function.getName() + " to " + functionName);
+                        function = new WrappedFunction(function) {
+                                public String getName() {
+                                    return functionName;
+                                }
+                            };
+                    }
+                    NodeFunction nf = NodeFunction.wrap(function);
+                    if (nf != null) function = nf;
 
-                log.info("Found new function " + function + " for builder " + buil.getTableName());
-                results.add(function);
-            } catch (ClassNotFoundException cnfe) {
-                log.warn("No such class "  + cnfe.getMessage());
-            } catch (Throwable e) {
-                log.error(e.getMessage(), e);
+                    log.info("Found new function " + function + " for builder " + buil.getTableName());
+                    results.add(function);
+                } catch (ClassNotFoundException cnfe) {
+                    log.warn("No such class "  + cnfe.getMessage());
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
             }
 
         }
