@@ -30,6 +30,10 @@
     <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="creator" />
   </field>
 
+  <field name="ip" state="system">
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="ip" />
+  </field>
+
   <field name="object" state="system">
     <editor>
       <positions>
