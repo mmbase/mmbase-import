@@ -16,10 +16,6 @@
   <xi:include href="http://www.mmbase.org/builders/richtext/content.fields.xml" />
 
   <fieldlist>
-    <xi:include href="http://www.mmbase.org/builders/versioning/version.field.xml">
-      <xi:fallback>
-        No versioning.
-      </xi:fallback>
-    </xi:include>
+    <xi:include href="http://www.mmbase.org/builders/versioning/version.field.xml" />
   </fieldlist>
 </builder>

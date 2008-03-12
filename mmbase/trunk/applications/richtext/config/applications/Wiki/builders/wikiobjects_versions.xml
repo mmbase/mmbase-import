@@ -30,6 +30,7 @@
   <xi:include href="http://www.mmbase.org/builders/richtext/content.fields.xml" />
 
   <xi:include href="http://www.mmbase.org/builders/versioning/versioning.fields.xml" />
+  <xi:include href="http://www.mmbase.org/builders/versioning/versioning.indexes.xml" />
 
 
 </builder>

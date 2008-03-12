@@ -23,19 +23,14 @@
       <guiname xml:lang="nl">Tijd</guiname>
       <guiname xml:lang="en">Time</guiname>
     </gui>
-    <editor>
-      <positions>
-        <list>7</list>
-      </positions>
-    </editor>
-    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime" />
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="lastmodified" />
+  </field>
+
+  <field name="changer" state="system">
+    <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="creator" />
   </field>
 
   <field name="object" state="system">
-    <gui>
-      <guiname xml:lang="nl">Parent</guiname>
-      <guiname xml:lang="en">Parent</guiname>
-    </gui>
     <editor>
       <positions>
         <list>8</list>

@@ -2,3 +2,4 @@
 ./richtext/idrel.xml
 ./versioning/versioning.fields.xml
 ./versioning/version.field.xml
+./versioning/versioning.indexes.xml
