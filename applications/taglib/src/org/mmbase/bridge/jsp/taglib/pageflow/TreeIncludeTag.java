@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
@@ -25,34 +25,37 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.15.2.1 2007-06-07 13:52:24 michiel Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.15.2.2 2008-03-13 15:52:41 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
-    
-    private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class.getName());
+
+    private static final Logger log = Logging.getLoggerInstance(TreeIncludeTag.class) ;
     protected Attribute objectList = Attribute.NULL;
     private TreeHelper th = new TreeHelper();
-    
-    public int doStartTag() throws JspTagException {        
+
+    public int doStartTag() throws JspTagException {
         if (objectList == Attribute.NULL) {
             throw new JspTagException("Attribute 'objectlist' was not specified");
         }
+        th.setCloud(getCloudVar());
+        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
         return super.doStartTag();
     }
 
-    protected String getPage() throws JspTagException {        
+    protected String getPage() throws JspTagException {
         String orgPage = super.getPage();
         try {
             String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
             if (log.isDebugEnabled()) {
                 log.debug("Retrieving page '" + treePage + "'");
             }
-            
+
             if (treePage == null || "".equals(treePage)) {
-                throw new JspTagException("Could not find page " + orgPage);
+                //throw new JspTagException("Could not find page " + orgPage);
+                return orgPage;
             }
-            
+
             return treePage;
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
@@ -60,10 +63,6 @@ public class TreeIncludeTag extends IncludeTag {
     }
 
     public void doAfterBodySetValue() throws JspTagException {
-        // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
-        th.setCloud(getCloudVar());
-        th.setBackwardsCompatible(! "false".equals(pageContext.getServletContext().getInitParameter("mmbase.taglib.smartpath_backwards_compatible")));
-    
         // Let IncludeTag do the rest of the work
         includePage();
     }
@@ -72,7 +71,7 @@ public class TreeIncludeTag extends IncludeTag {
         th.doFinally();
         super.doFinally();
     }
-    
+
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
     }
@@ -89,7 +88,7 @@ public class TreeIncludeTag extends IncludeTag {
         return url;
     }
 
-    // override to cancel 
+    // override to cancel
     protected boolean doMakeRelative() {
     	log.debug("doMakeRelative() overridden!");
         return false;
