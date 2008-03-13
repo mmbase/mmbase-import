@@ -1,2 +1,3 @@
-xmlcontent.xml
-xmlnews.xml
+./richtext/rich.fields.xml
+./richtext/xmlcontent.xml
+./richtext/xmlnews.xml
