@@ -53,3 +53,24 @@ div#relations ul li a.toggle {
   width: 100%;
   margin: 0;
 }
+
+div#preview {
+  background-color: #eee;
+  width: 20%;
+  height: 30%;
+  z-index: 100;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+div#preview > h1 {
+  margin: 0 0 0 0;
+  font-size: 10pt;
+  border-bottom: solid black 1px;
+  background-color: blue;
+  color: white;
+}
+div#preview > a {
+  float: right;
+}
