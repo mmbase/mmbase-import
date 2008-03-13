@@ -9,6 +9,7 @@
       />
   <jsp:directive.attribute name="title_key"    />
   <jsp:directive.attribute name="title"    />
+  <jsp:directive.attribute name="title_nodeparams"  />
   <jsp:directive.attribute name="rank" />
   <jsp:directive.attribute name="expires" />
   <jsp:directive.attribute name="reset" />
@@ -33,6 +34,14 @@
       <html  xmlns="http://www.w3.org/1999/xhtml">
         <di:head>
           <title>
+            <c:forTokens items="${title_nodeparams}" delims="," var="title_nodeparam">
+              <c:if test="${! empty title_nodeparam and ! empty param[title_nodeparam]}">
+                <mm:node number="${param[title_nodeparam]}">
+                  <mm:nodeinfo type="gui" />
+                  <jsp:text> - </jsp:text>
+                </mm:node>
+              </c:if>
+            </c:forTokens>
             <jsp:text>${title}</jsp:text>
             <c:if test="${! empty title_key}">
               <di:translate key="${title_key}" />
