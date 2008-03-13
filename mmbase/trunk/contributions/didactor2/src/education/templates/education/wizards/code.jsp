@@ -10,7 +10,11 @@
       </mm:link>
       <mm:remove from="session" referid="path" />
       <mm:import externid="education_topmenu_course" />
-      <mm:link page="modes/${mode}.jsp" referids="education_topmenu_course?">
+      <mm:treefile
+          write="false"
+          objectlist="${includePath}"
+          page="/education/wizards/modes/${mode}.jsp"
+          referids="education_topmenu_course?">
         <mm:param name="expires">0</mm:param>
         <script type="text/javascript">
           function reloadMode() {
@@ -28,7 +32,7 @@
           xmlhttp.send(null);
           }
         </script>
-      </mm:link>
+      </mm:treefile>
 
       <div id="mode-${mode}">
         <di:include debug="html" page="/education/wizards/modes/${mode}.jsp" />
