@@ -1,4 +1,5 @@
 <jsp:root
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -8,20 +9,32 @@
   <jsp:directive.attribute name="type" />
   <!--
       Generates the 'see alo' back references, for the current node.
-      $Id: referred.tagx,v 1.1 2006-10-25 22:06:17 michiel Exp $
+      $Id: referred.tagx,v 1.2 2008-03-13 10:52:21 michiel Exp $
   -->
   <mm:import id="t">${empty type ? 'texts' : type}</mm:import>
-  <mm:node>
+  <fmt:bundle basename="org.mmbase.richtext.resources.messages">
     <mm:listrelationscontainer
         type="$t" role="idrel" searchdir="source">
-      <mm:constraint field="${t}.begin" operator="LESS"      value="now" />
-      <mm:constraint field="${t}.end"   operator="GREATER"   value="now" />
-      <mm:sortorder field="${t}.begin"  direction="down" />
+      <mm:hasfield nodetype="${t}" name="begin">
+        <mm:constraint field="${t}.begin" operator="LESS"      value="now" />
+        <mm:sortorder field="${t}.begin"  direction="down" />
+      </mm:hasfield>
+      <mm:hasfield nodetype="${t}" name="begin">
+        <mm:constraint field="${t}.end"   operator="GREATER"   value="now" />
+      </mm:hasfield>
       <mm:sortorder field="${t}.number" direction="down" />
       <mm:size>
         <mm:isgreaterthan value="0">
           <p class="seealso">
-            <strong>${empty see ? 'See also' : see} </strong>
+            <strong>
+              <c:choose>
+                <c:when test="${empty see}">
+                  <fmt:message key="seealso" />
+                </c:when>
+                <c:otherwise>${see}</c:otherwise>
+              </c:choose>
+              <jsp:text> </jsp:text>
+            </strong>
             <mm:listrelations>
               <mm:field name="id" id="anchor" write="false" />
 
@@ -36,12 +49,20 @@
                   <mm:nodeinfo type="type">
                     <mm:compare value="blocks"><!-- don't link to the blocks, but to the texts containing them. blocks in blocks currently not supported. -->
                       <mm:relatednodes type="texts" role="idrel" searchdir="source" id="r">
-                        <mm:function name="url"><a href="${_}#${anchor}"><mm:field name="title" /></a></mm:function>
+                        <mm:function name="url">
+                          <a href="${_}${'#'}${anchor}">
+                            <mm:nodeinfo type="gui" />
+                          </a>
+                        </mm:function>
                       </mm:relatednodes>
                     </mm:compare>
                     <mm:compare value="blocks" inverse="true">
                       <mm:node id="r" />
-                      <mm:function name="url"><a href="${_}#${anchor}"><mm:field name="title" /></a></mm:function>
+                      <mm:function name="url">
+                        <a href="${_}${'#'}${anchor}">
+                          <mm:nodeinfo type="gui" />
+                        </a>
+                      </mm:function>
                     </mm:compare>
                   </mm:nodeinfo>
                 </mm:node>
@@ -51,7 +72,7 @@
         </mm:isgreaterthan>
       </mm:size>
     </mm:listrelationscontainer>
-  </mm:node>
+  </fmt:bundle>
 </jsp:root>
 
 
