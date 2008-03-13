@@ -10,6 +10,7 @@
   <jsp:directive.attribute name="debug" type="java.lang.String" />
   <mm:treeinclude debug="${debug}"
                   page="${page}"
+                  notfound="message"
                   objectlist="$includePath" referids="$referids">
     <mm:param name="extraheader">
       <jsp:doBody />
