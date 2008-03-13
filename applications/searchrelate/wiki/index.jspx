@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+      xmlns:rich="http://www.mmbase.org/tags/mm/rich"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <mm:content type="application/xhtml+xml"
               jspvar="c"
               expires="${param.expires}"
@@ -29,31 +30,13 @@
         <mm:present referid="objectnumber">
           <mm:edit type="wiki">
 
-
             <mm:node referid="objectnumber">
               <h1><mm:field name="title" /></h1>
               <h2><mm:field name="subtitle" /></h2>
               <h3>v <mm:field name="version" /></h3>
               <mm:field name="intro" escape="p" />
 
-
-              <mm:formatter referids="thumbwidth?,popupwidth?" format="xhtml">
-                <mm:present referid="home">
-                  <mm:param name="home" value="home=${home}&amp;" />
-                </mm:present>
-                <mm:field name="body" />
-                <mm:listrelations type="object" role="idrel" searchdir="destination">
-                  <mm:relatednode>
-                    <mm:nodeinfo type="nodemanager">
-                      <mm:compare value="blocks">
-                        <mm:listrelations type="object" role="idrel" searchdir="destination" >
-                          <mm:relatednode />
-                        </mm:listrelations>
-                      </mm:compare>
-                  </mm:nodeinfo>
-                  </mm:relatednode>
-                </mm:listrelations>
-              </mm:formatter>
+              <rich:body />
 
             </mm:node>
           </mm:edit>

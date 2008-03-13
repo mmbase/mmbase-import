@@ -4,7 +4,7 @@ $(document).ready(function(){
     validator.validateHook = function(valid) {
         document.getElementById('submit').disabled = ! valid;
     }
-    validator.prefetchNodeManager("xmlnews");
+    validator.prefetchNodeManager("wikiobjects");
     validator.setup(window);
 
     var resizer =  function() {
@@ -29,7 +29,21 @@ $(document).ready(function(){
 	}
     });
     $("div#relations ul > li > div").slideUp("fast");
-    $("div#relations ul > li > a").click(function(e) {
+    $("div#relations ul > li > a.toggle").click(function(e) {
 	$(e.target).parent().children("div").slideToggle("fast");
+    });
+
+    $("div#preview").draggable({handle: ">h1"});
+    $("div#preview > a").click(function() {
+	var params = {};
+	$("form#transaction").find("input[@checked], input[@type='text'], input[@type='hidden'], input[@type='password'], option[@selected], textarea").each(function() {
+	    params[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value; });
+
+	$.post("preview.jspx", params, function(data, textStatus) {
+	    console.log(this);
+	    console.log(data.documentElement);
+	    $("div#preview > div").replaceWith(data.documentElement);
+	});
+	//$("div#preview > div").load("preview.jspx", null, function() { })
     });
 });
