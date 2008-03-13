@@ -12,13 +12,14 @@
       <body>
         <mm:import externid="objectnumber" required="true" />
 
+
         <mm:listnodescontainer type="wikiobjects_versions">
           <mm:sortorder field="version" direction="down" />
           <mm:constraint field="object" value="${objectnumber}" />
           <ul>
             <mm:listnodes>
               <li>
-                ${_node.version} <mm:nodeinfo type="gui" />
+                ${_node.version} ${_node.ip} <mm:nodeinfo type="gui" />
               </li>
             </mm:listnodes>
           </ul>
