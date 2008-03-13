@@ -18,13 +18,13 @@
 		<!-- ==== Content Repository ==== -->
 
 		<action path="/editors/egemmail/EgemSearchAction" type="com.finalist.cmsc.egemmail.forms.EgemSearchAction" 
-				name="EgemSearchForm" scope="request" input="/editors/egemmail/search.jsp" 
+				name="EgemExportForm" scope="session" input="/editors/egemmail/search.jsp" 
 				unknown="false" validate="false">
 			<forward name="search" path="/editors/egemmail/EgemExportAction.do" redirect="false" />
 		</action>
 		
 		<action path="/editors/egemmail/EgemSearchInitAction" type="com.finalist.cmsc.egemmail.forms.EgemSearchInitAction"
-                name="EgemSearchForm" scope="request" input="/editors/egemmail/search.jsp" 
+                name="EgemExportForm" scope="session" input="/editors/egemmail/search.jsp" 
                 unknown="false" validate="false">
             <forward name="success" path="/editors/egemmail/search.jsp" redirect="false" />
         </action>
