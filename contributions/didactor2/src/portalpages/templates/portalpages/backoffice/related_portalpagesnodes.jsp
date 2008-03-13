@@ -18,7 +18,7 @@
     </di:leaf>
     <div id="portal_child_${_node}" style="display:none">
       <di:leaf
-          branchPath="${branchPath} "
+          branchPath="${branchPath}"
           icon="new_education"
           >
         <mm:link referid="wizardjsp" referids="thischild@origin">
@@ -45,7 +45,7 @@
   </mm:relatednodes>
   <mm:relatednodes role="related" type="simplecontents" varStatus="status">
     <di:leaf
-        branchPath="${branchPath}.${status.last ? '.' : ' '}"
+        branchPath="${branchPath}${status.last ? '.' : ' '}"
         icon="learnblock">
       <mm:link referid="wizardjsp" referids="_node@objectnumber">
         <mm:param name="wizard">config/portalpages/simplecontents</mm:param>
