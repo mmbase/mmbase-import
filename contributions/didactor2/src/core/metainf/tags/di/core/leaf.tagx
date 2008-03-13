@@ -92,7 +92,7 @@
       <td>
         <c:if test="${! empty icon}">
           <mm:link page="/education/wizards/gfx/${icon}.gif">
-            <img src="${_}" width="16" border="0" align="middle" />
+            <img src="${_}" height="22" border="0" align="middle" />
           </mm:link>
         </c:if>
         <jsp:doBody />
