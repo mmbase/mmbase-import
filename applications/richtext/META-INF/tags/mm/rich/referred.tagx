@@ -7,14 +7,21 @@
     version="2.0">
   <jsp:directive.attribute name="see" />
   <jsp:directive.attribute name="type" />
+  <jsp:directive.attribute name="types" />
   <!--
       Generates the 'see alo' back references, for the current node.
-      $Id: referred.tagx,v 1.2 2008-03-13 10:52:21 michiel Exp $
+      $Id: referred.tagx,v 1.3 2008-03-13 14:22:00 michiel Exp $
   -->
-  <mm:import id="t">${empty type ? 'texts' : type}</mm:import>
+  <mm:import id="t">${empty type ? (empty types ? 'texts' : 'object') : type}</mm:import>
   <fmt:bundle basename="org.mmbase.richtext.resources.messages">
     <mm:listrelationscontainer
         type="$t" role="idrel" searchdir="source">
+
+      <c:if test="${! empty types}">
+        <mm:typeconstraint element="${t}" name="${types}" />
+      </c:if>
+
+      <!-- support for embargo -->
       <mm:hasfield nodetype="${t}" name="begin">
         <mm:constraint field="${t}.begin" operator="LESS"      value="now" />
         <mm:sortorder field="${t}.begin"  direction="down" />
@@ -22,6 +29,7 @@
       <mm:hasfield nodetype="${t}" name="begin">
         <mm:constraint field="${t}.end"   operator="GREATER"   value="now" />
       </mm:hasfield>
+
       <mm:sortorder field="${t}.number" direction="down" />
       <mm:size>
         <mm:isgreaterthan value="0">
@@ -48,7 +56,7 @@
                 <mm:node referid="related">
                   <mm:nodeinfo type="type">
                     <mm:compare value="blocks"><!-- don't link to the blocks, but to the texts containing them. blocks in blocks currently not supported. -->
-                      <mm:relatednodes type="texts" role="idrel" searchdir="source" id="r">
+                      <mm:relatednodes type="${t}" role="idrel" searchdir="source" id="r">
                         <mm:function name="url">
                           <a href="${_}${'#'}${anchor}">
                             <mm:nodeinfo type="gui" />
