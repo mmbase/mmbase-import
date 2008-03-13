@@ -86,7 +86,7 @@
                 </di:leaf>
 
                 <mm:treeinclude page="/portalpages/backoffice/related_portalpagesnodes.jsp" objectlist="${includePath}">
-                  <mm:param name="branchPath">..${status.last ? '.' : ' '} </mm:param>
+                  <mm:param name="branchPath">..${status.last ? '.' : ' '}</mm:param>
                 </mm:treeinclude>
 
               </div>
