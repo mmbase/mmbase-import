@@ -28,34 +28,34 @@
 
           <mm:listnodes type="portalpagescontainers" max="1" > <!-- This makes no sense whatsoever -->
 
-            <mm:relatednodescontainer type="portalpagesnodes" role="related" searchdirs="destination">
+            <mm:relatednodescontainer type="portalpagesnodes" role="related" searchdirs="source">
               <mm:constraint field="active" value="true"/>
               <mm:sortorder field="order_number" direction="up" />
               <!-- main div for all root portal pages -->
               <div class="lbLevel1">
-                ach ach
                 <mm:treecontainer
                     role="childppnn"
                     searchdirs="destination"
                     type="portalpagesnodes">
-                  <mm:sortorder field="order_number" direction="up" />
+                  <mm:sortorder  field="order_number" direction="up" />
                   <mm:constraint field="active" value="true" />
                   <mm:tree maxdepth="3">
                     <mm:nodeinfo type="type" id="nodetype" write="false" />
-
                     <div id="div" class="lbLevel">
-                      bloe bloe
-                      <mm:relatednodescontainer path="simplecontents" searchdirs="destination">
+                      <mm:relatednodescontainer path="simplecontents" searchdirs="source">
                         <mm:constraint referid="today" field="online_date"  operator="LESS" />
                         <mm:constraint referid="today" field="offline_date" operator="GREATER" />
+
                         <mm:relatednodes>
-                          <div style="padding: 0px 0px 0px  10px;">
+                          <div style="padding: 0px 0px 0px  10px;"> <!-- WTF is there style in the jsp ? -->
                             <img class="imgClosed" src=""
                                  id="img${_node}"
-                                 onclick="openClose('div${_node}','img${_node}')"
+                                 onclick="openClose('div${_node}', 'img${_node}')"
                                  style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
                             <a href="javascript:openContent('simplecontents', '${_node}' ); openOnly('div${_node}','img${_node}');"
-                               style="padding-left: 0px"><mm:field name="title"/></a>
+                               style="padding-left: 0px">
+                              <mm:field name="title"/>
+                            </a>
                           </div>
                         </mm:relatednodes>
                       </mm:relatednodescontainer>
