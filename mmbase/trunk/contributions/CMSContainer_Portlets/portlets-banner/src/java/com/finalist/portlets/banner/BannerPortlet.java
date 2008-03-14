@@ -61,8 +61,7 @@ public class BannerPortlet extends ContentChannelPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-      PortletPreferences preferences = request.getPreferences();
-      String position = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
+      String position = (String) request.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
       request.setAttribute("bannerPosition", position);
       super.doView(request, response);
    }
@@ -77,10 +76,9 @@ public class BannerPortlet extends ContentChannelPortlet {
 
    protected void handleBannerCounters(RenderRequest request) {
       // remove all banners from the content elemens that have reached max clicks (
-      PortletPreferences preferences = request.getPreferences();
-      String screenId = preferences.getValue(PortalConstants.CMSC_OM_PAGE_ID, null);
+      String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
-      String position = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
+      String position = (String) request.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
 
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
       Cloud cloud = cloudProvider.getCloud();
@@ -123,7 +121,7 @@ public class BannerPortlet extends ContentChannelPortlet {
       PortletPreferences preferences = request.getPreferences();
 
       String position = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
-      String screenId = preferences.getValue(PortalConstants.CMSC_OM_PAGE_ID, null);
+      String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
 
       CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();

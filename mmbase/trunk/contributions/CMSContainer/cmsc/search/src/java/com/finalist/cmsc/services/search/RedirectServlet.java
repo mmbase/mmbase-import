@@ -113,6 +113,10 @@ public class RedirectServlet extends BridgeServlet {
                         && elementId.equals(pageInfo.getParametervalue()) ) ) {
                     u.setRenderParameter(pageInfo.getWindowName(), "elementId", new String[] { elementId } );
                 }
+
+                for (Map.Entry<String, String> urlParam : pageInfo.getUrlParameters().entrySet()) {
+                    u.setRenderParameter(pageInfo.getWindowName(), urlParam.getKey(), new String[] { urlParam.getValue() } );
+                }
                 redirect = u.toString();
             }
         }

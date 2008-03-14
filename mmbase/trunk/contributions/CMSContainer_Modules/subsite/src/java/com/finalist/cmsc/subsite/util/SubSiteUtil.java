@@ -18,21 +18,38 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 
 public class SubSiteUtil {
 
+    /** Denotes the mmbase type for a subsite */
    public static final String SUBSITE = "subsite";
+   /** Denotes the mmbase type for a personal page */
    public static final String PERSONALPAGE = "personalpage";
+   /** Denotes the mmbase type for an article item used in the subsite */
+   public static final String SUBSITE_ARTICLE = "subsitearticle";
 
+   /** Alias for root of repository for subsite contentchannels  */
    public static final String ALIAS_SUBSITE = "repository.subsite";
 
-   public static final String USERID = "userid";
+   /** personal page userids field */
+   public static final String USERID_FIELD = "userid";
 
+   /** subsite article status field */
+   public static final String SUBSITESTATUS_FIELD = "subsitestatus";
+
+   private static final String STATUS_PUBLISHED = "published";
+   
+   /** request attribute name where personal page userid is stored */   
    public static final String PERSONAL_PAGE_ID = "personalPageId";
 
+   
    public static boolean isSubSiteType(Node node) {
       return node.getNodeManager().getName().equals(SUBSITE);
    }
 
    public static boolean isPersonalPageType(Node node) {
       return node.getNodeManager().getName().equals(PERSONALPAGE);
+   }
+
+   public static boolean isSubsiteArticle(Node node) {
+       return SUBSITE_ARTICLE.equals(node.getNodeManager().getName());
    }
 
    public static Node createSubSiteContentChannel(Node subsite) {
@@ -94,16 +111,7 @@ public class SubSiteUtil {
       if (userId == null || StringUtil.isEmpty(userId)) {
          return null;
       }
-
-      NodeManager personalPageNodeManager = cloud.getNodeManager(PERSONALPAGE);
-      NodeQuery query = personalPageNodeManager.createQuery();
-      Field userIdField = personalPageNodeManager.getField(USERID);
-      SearchUtil.addEqualConstraint(query, userIdField, userId);
-      SearchUtil.addLimitConstraint(query, 0, 1);
-
-      NodeList nodeList = personalPageNodeManager.getList(query);
-
-      return nodeList.isEmpty() ? null : (Node) nodeList.get(0);
+      return SearchUtil.findNode(cloud, PERSONALPAGE, USERID_FIELD, userId);
    }
 
    public static Node getRepositoryRoot(Cloud cloud) {
@@ -113,9 +121,18 @@ public class SubSiteUtil {
 
    public static Node createPersonalPage(Cloud cloud, String name, Node layout, String personalPageId) {
       Node personalPage = PagesUtil.createPage(cloud, name, layout, PERSONALPAGE);
-      personalPage.setStringValue(USERID, personalPageId);
+      personalPage.setStringValue(USERID_FIELD, personalPageId);
       personalPage.commit();
 
       return personalPage;
    }
+   
+   public static boolean isSubSiteArticlePublished(Node node) {
+       if (isSubsiteArticle(node)) {
+           String subsitestatus = node.getStringValue(SUBSITESTATUS_FIELD);
+           return STATUS_PUBLISHED.equals(subsitestatus);
+       }
+       return true;
+   }
+
 }
