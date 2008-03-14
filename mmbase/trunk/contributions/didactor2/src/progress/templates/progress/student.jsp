@@ -128,21 +128,23 @@
                   </mm:present>
                 </mm:node>
 
-                <mm:node referid="classrel">
-                  <tr>
-                    <td><di:translate key="progress.logins" />:</td>
-                    <td><mm:field name="logincount" /></td>
-                  </tr>
+                <mm:present referid="classrel"> <!-- can be not present if e.g. admin -->
+                  <mm:node referid="classrel">
+                    <tr>
+                      <td><di:translate key="progress.logins" />:</td>
+                      <td><mm:field name="logincount" /></td>
+                    </tr>
 
-                  <tr>
-                    <td><di:translate key="progress.online" /></td>
-                    <td>
-                      <mm:field name="onlinetime">
-                        <mm:time format="HH:mm" />
-                      </mm:field>
-                    </td>
-                  </tr>
-                </mm:node>
+                    <tr>
+                      <td><di:translate key="progress.online" /></td>
+                      <td>
+                        <mm:field name="onlinetime">
+                          <mm:time format="HH:mm" />
+                        </mm:field>
+                      </td>
+                    </tr>
+                  </mm:node>
+                </mm:present>
               </table>
               <di:ifsetting component="progress" setting="showeducationplan">
                 <p><b><di:translate key="progress.educationplan" /></b></p>
