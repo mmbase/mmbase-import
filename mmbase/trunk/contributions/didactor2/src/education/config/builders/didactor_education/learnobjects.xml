@@ -30,6 +30,7 @@
 
   <properties>
     <property name="smartpathfield">name</property>
+    <property name="show_domain">/education/</property> <!-- used by /show/index.jspx" -->
   </properties>
 
   <fieldlist>
