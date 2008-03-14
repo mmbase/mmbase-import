@@ -28,7 +28,7 @@
       </mm:present>
 
 
-      <div class="learnenvironment tests">
+      <div class="content learnenvironment tests">
         <!-- Take care: form name is used in JavaScript of the specific question jsp pages! -->
         <mm:treefile id="post" page="/education/tests/rate.jsp" objectlist="$includePath" referids="$referids,learnobject,madetest@thismadetest" write="false"/>
         <form name="questionform"
