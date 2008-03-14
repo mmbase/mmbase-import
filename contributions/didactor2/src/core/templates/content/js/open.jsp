@@ -264,7 +264,10 @@ function openContent(type, number, el) {
 
 
 
-    var href = addParameter(addParameter('<mm:url page="/content/" />', 'object=' + number), 'type=' + type);
+    var href = addParameter('<mm:url page="/content/" />', 'object=' + number);
+    if (type != null && type != '') {
+        href = addParameter(href, 'type=' + type);
+    };
     requestContent(href);
 
 
@@ -442,12 +445,14 @@ function afterPost() {
 
 function scrollToTop() {
     var fromElement =  document.getElementById("rows");
-    var scroll = fromElement.offsetTop;
-    if (document.documentElement && document.documentElement.scrollTop) {
-        document.documentElement.scrollTop = scroll;
-    }
-    if (document.body && document.body.scrollTop) {
-        document.body.scrollTop = scroll;
+    if (fromElement != null) {
+        var scroll = fromElement.offsetTop;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            document.documentElement.scrollTop = scroll;
+        }
+        if (document.body && document.body.scrollTop) {
+            document.body.scrollTop = scroll;
+        }
     }
 }
 
