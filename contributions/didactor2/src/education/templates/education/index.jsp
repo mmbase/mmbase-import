@@ -2,12 +2,14 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di-t="urn:jsptagdir:/WEB-INF/tags/di/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <di:html
       styleClass="education"
       title_key="education.learnenvironmenttitle"
-      expires="0" component="education" type="text/html">
+      expires="0"
+      component="education" type="text/html">
 
     <!-- wtf -->
     <mm:hasnode number="component.drm">
@@ -22,6 +24,11 @@
           NO EDUCATION YET
         </c:when>
         <c:otherwise>
+          <mm:link page="/content/js/open.jsp">
+            <script type="text/javascript" src="${_}">
+              <jsp:text><!-- help IE --> </jsp:text>
+            </script>
+          </mm:link>
           <di:include debug="html" page="/education/navigation.jspx" />
           <di:include debug="html" page="/education/main.jspx" />
         </c:otherwise>

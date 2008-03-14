@@ -9,12 +9,6 @@
   -->
   <div class="navigationbar">
 
-    <mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
-      <script type="text/javascript" src="${_}">
-        <jsp:text><!-- help IE --> </jsp:text>
-      </script>
-    </mm:link>
-
     <!-- Open the page marked as 'lastpage'
          (todo: does this work?)
     -->
