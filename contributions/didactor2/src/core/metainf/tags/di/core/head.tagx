@@ -29,7 +29,7 @@
     </mm:treefile>
     <!-- WTF: javascript for printing?. People have that in their browser -->
     <script type="text/javascript">
-      addEventHandler(window, "load", focusFirsForm);
+      addEventHandler(window, "load", focusFirstForm);
     </script>
     <jsp:doBody />
   </head>
