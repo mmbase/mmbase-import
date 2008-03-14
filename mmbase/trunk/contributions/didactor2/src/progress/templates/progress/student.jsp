@@ -98,7 +98,7 @@
                 <tr>
                   <td><di:translate key="progress.perccompleted" /></td>
                   <td>
-                    <mm:import id="progress" ><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids,student" /></mm:import>
+                    <mm:import id="progress" escape="trimmer"><mm:treeinclude page="/progress/getprogress.jsp" objectlist="$includePath" referids="$referids,student" /></mm:import>
                     <fmt:formatNumber value="${progress}" type="percent" />
                   </td>
                 </tr>
