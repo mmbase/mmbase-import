@@ -229,7 +229,7 @@ function postContent(href, form) {
     var textareas = form.getElementsByTagName("input");
     for (i=0; i<textareas.length; i++) {
         if (textareas[i].type == "checkbox" && !textareas[i].checked)
-            continue;    
+            continue;
         var ta = textareas[i];
         content += sep + ta.name + '=' + ta.value;
         sep = '&';
@@ -262,24 +262,9 @@ function openContent(type, number, el) {
     }
     currentel = el;
 
-    var href;
-    switch ( type ) {
-    case "educations":
-        href = addParameter('<mm:treefile page="/education/educations.jsp" objectlist="$includePath" referids="$referids" escapeamps="false"/>', 'edu='+number);
-        break;
-    case "tests":
-        href= addParameter('<mm:treefile page="/education/tests/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?,justposted?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-    case "pages":
-        href= addParameter('<mm:treefile page="/education/pages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-    case "flashpages":
-        href= addParameter('<mm:treefile page="/education/flashpages/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-    default:
-        href= addParameter('<mm:treefile page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="$referids,fb_madetest?" escapeamps="false"/>', 'learnobject='+number);
-        break;
-    }
+
+
+    var href = addParameter(addParameter('<mm:url page="/content/" />', 'object=' + number), 'type=' + type);
     requestContent(href);
 
 
