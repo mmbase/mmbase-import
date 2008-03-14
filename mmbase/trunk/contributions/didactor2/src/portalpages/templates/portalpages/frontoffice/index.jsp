@@ -54,9 +54,9 @@
                                  onclick="openClose('div${_node}', 'img${_node}')"
                                  style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
                             <mm:link referids="_node@object">
-                              <a href="${_}" onclick="openContent('simplecontents', '${_node}' ); openOnly('div${_node}','img${_node}'); return false;"
+                              <a href="${_}" onclick="openContent('', '${_node}');  return false;"
                                  style="padding-left: 0px">
-                                <mm:nodeinfo type="nodemanager" /> : <mm:field name="title"/>
+                                <mm:field name="title"/>
                               </a>
                             </mm:link>
                           </div>
