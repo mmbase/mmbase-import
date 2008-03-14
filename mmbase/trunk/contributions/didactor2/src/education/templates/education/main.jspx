@@ -4,7 +4,7 @@
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
-  
+
   <div class="mainContent">
 
     <di:include debug="html" page="/education/contentHeader.jspx" />
@@ -19,8 +19,8 @@
         <mm:import externid="fb_madetest" required="true" />
         <mm:import externid="return_to" required="true" />
         <mm:import externid="return_to_type" required="true" />
-        
-        <div align="right">
+
+        <div>
           <mm:link referids="$referids,learnobjecttype,class,fb_madetest,learnobject@return_to,learnobjecttype@return_to_type" page="index.jsp">
             <input type="submit" class="formbutton"
                    value="${di:translate('assessment.back_to_lession_button')}"
@@ -29,12 +29,15 @@
           </mm:link>
         </div>
       </mm:present>
-      <img id="ajax_loader" src="${mm:treelink('/gfx/ajax-loader.gif', includePath)}"  style="display: none;" />
-      
+      <img id="ajax_loader" alt="" src="${mm:treelink('/gfx/ajax-loader.gif', includePath)}"  style="display: none;" />
+
       <div id="contentFrame">
-        <jsp:text>...</jsp:text>
+        <mm:import externid="learnobject" />
+        <mm:present referid="learnobject">
+          <mm:include page="/content/" />
+        </mm:present>
       </div>
-      
+
     </div>
   </div>
 </jsp:root>
