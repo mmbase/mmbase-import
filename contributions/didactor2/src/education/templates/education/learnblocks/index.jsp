@@ -7,7 +7,7 @@
           >
   <mm:content
       type="application/xml" postprocessor="none">
-    <div xmlns="http://www.w3.org/1999/xhtml"
+    <div
         class="content">
       <mm:cloud rank="didactor user">
 
