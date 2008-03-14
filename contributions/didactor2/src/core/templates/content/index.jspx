@@ -10,16 +10,18 @@
 
     <mm:node referid="object">
       <mm:import externid="type"><mm:nodeinfo type="nodemanager" /></mm:import>
+
+      <mm:property nodemanager="${type}" name="show_domain" id="domain" write="false" />
       <c:choose>
         <c:when test="${type eq 'educations'}">
           <mm:treeinclude page="/education/educations.jsp" objectlist="$includePath" referids="$referids,object@edu" />
         </c:when>
         <c:otherwise>
-          <mm:treehaspage page="/education/${type}/index.jsp" objectlist="$includePath">
-            <mm:treeinclude page="/education/${type}/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?,justposted?" />
+          <mm:treehaspage page="${domain}${type}/index.jsp" objectlist="$includePath">
+            <mm:treeinclude page="${domain}${type}/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?,justposted?" />
           </mm:treehaspage>
-          <mm:treehaspage page="/education/${type}/index.jsp" objectlist="$includePath" inverse="true">
-            <mm:treeinclude page="/education/learnblocks/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?" />
+          <mm:treehaspage page="${domain}${type}/index.jsp" objectlist="$includePath" inverse="true">
+            <mm:treeinclude page="${domain}learnblocks/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?" />
           </mm:treehaspage>
         </c:otherwise>
       </c:choose>
