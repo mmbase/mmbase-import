@@ -4,10 +4,17 @@
 
 <form name="<portlet:namespace />form" 
       action="<cmsc:actionURL><cmsc:param name="action" value="login"/></cmsc:actionURL>" 
-      target="_parent" 
       method="post">
 
 <table>
+<c:if test="${!empty errormessage}">
+  <tr class="inputrow" style="color: red;" >
+  <td colspan="2">
+	<fmt:message key="${errormessage}" />
+  </td>
+  </tr>
+</c:if>
+
   <tr class="inputrow">
     <td><fmt:message key="view.username" /></td>
     <td><input type="text" name="j_username"/></td>
@@ -22,6 +29,15 @@
       <input type="submit" value="<fmt:message key="view.submit" />" />
     </td>
   </tr>
+<%-- Community module does not have all methods yet
+  <tr>
+    <td></td>
+    <td id="Submit" align="right">
+      <cmsc:renderURL var="sendPasswordUrl"><cmsc:param name="action" value="send_password"/></cmsc:renderURL>
+      <a href="${sendPasswordUrl}"><fmt:message key="view.send_password" /></a>
+    </td>
+  </tr>
+ --%>
 </table>
 
 </form>

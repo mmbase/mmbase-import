@@ -96,6 +96,7 @@
     <disallowed-field name="hosts" replacement="m_hosts"/>
     <disallowed-field name="parent" replacement="m_parent"/>
     <disallowed-field name="status" replacement="m_status"/>
+    <disallowed-field name="text" replacement="m_text"/>
     <disallowed-field name="type" replacement="m_type"/>
     <disallowed-field name="index" replacement="m_index"/>
   </disallowed-fields>

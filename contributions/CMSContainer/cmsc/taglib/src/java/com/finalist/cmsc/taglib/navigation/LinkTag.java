@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.services.search.PageInfo;
 import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.taglib.CmscTag;
@@ -240,14 +241,21 @@ public class LinkTag extends CmscTag {
     private void addPortletParametersToUrl(PortalURL u) {
         if (element != null) {
             int pageId = page.getId();
-            if (window == null) {
-               window = Search.getPortletWindow(pageId, element);
-            }
-            if (window != null) {
+            PageInfo pageInfo = Search.getPortletInformation(pageId, element);
+            if (pageInfo != null) {
+               window = pageInfo.getWindowName(); 
                u.setRenderParameter(window, "elementId", new String[] { element });
+               for (Map.Entry<String, String> urlParam : pageInfo.getUrlParameters().entrySet()) {
+                   u.setRenderParameter(pageInfo.getWindowName(), urlParam.getKey(), new String[] { urlParam.getValue() } );
+               }
+            }
+            else {
+               if (window != null) {
+                   u.setRenderParameter(window, "elementId", new String[] { element });
+               }
             }
          }
-       
+
          if (window != null) {
             for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
                u.setRenderParameter(window, paramEntry.getKey(), new String[] { paramEntry.getValue().toString() });

@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.search;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PageInfo {
     
     private int pageNumber;
@@ -21,6 +24,7 @@ public class PageInfo {
     private String layout;
     private int priority = -1;
     private boolean isSite;
+    private Map<String, String> urlParameters = new HashMap<String,String>();
 
     public PageInfo(int pageNumber, String host, String path, String windowName, String layout, 
             int priority, String parametername, String parametervalue, boolean isSite) {
@@ -105,6 +109,14 @@ public class PageInfo {
         else
             if (!parametervalue.equals(other.parametervalue)) return false;
         return true;
+    }
+
+    public void addParameterToUrl(String key, String value) {
+        urlParameters.put(key, value);
+    }
+
+    public Map<String,String> getUrlParameters() {
+        return urlParameters;
     }
 
 }
