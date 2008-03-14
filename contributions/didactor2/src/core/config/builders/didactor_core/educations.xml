@@ -22,6 +22,7 @@
 
   <properties>
     <property name="smartpathfield">path,name</property>
+    <property name="show_domain">/education/</property>
   </properties>
 
   <fieldlist>
