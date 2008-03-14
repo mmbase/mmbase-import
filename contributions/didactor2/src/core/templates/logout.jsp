@@ -13,8 +13,6 @@
   <mm:cloudinfo type="user" />
 </mm:cloud>
 
-<mm:cloud rank="didactor user">
-  <mm:cloudinfo type="user" />
-</mm:cloud>
+<mm:redirect page="/" />
 
 
