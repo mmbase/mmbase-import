@@ -1012,6 +1012,13 @@ textarea.invalid {
 }
 
 
+body.editwizards {
+  height: 100%;
+}
+
+body.editwizards div.di_body {
+  height: 100%;
+}
 
 body.editwizards div.educations,
 body.editwizards div#mode-educations {
