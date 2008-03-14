@@ -15,6 +15,10 @@
     <description xml:lang="en">Simple Content</description>
   </descriptions>
 
+  <properties>
+    <property name="show_domain">/portalpages/frontoffice/</property>
+  </properties>
+
   <fieldlist>
     <field name="title">
       <gui>
@@ -100,6 +104,11 @@
       </datatype>
     </field>
 
-
  </fieldlist>
+
+  <functionlist>
+    <function key="path">
+      <class>nl.didactor.education.Functions</class>
+    </function>
+  </functionlist>
 </builder>
