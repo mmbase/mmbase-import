@@ -1366,7 +1366,7 @@
     <!-- Security Tags -->
     <!-- ################ -->
     <tag>
-        <description>Container for protected content</description>
+        <description>Container for protected content. Will process the body only if someone is authenticated.</description>
         <name>protected</name>
         <tag-class>com.finalist.cmsc.taglib.security.ProtectedTag</tag-class>
         <body-content>scriptless</body-content>

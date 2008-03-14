@@ -129,7 +129,7 @@ public class LinkWorkflow extends RepositoryWorkflow {
    protected void publishInternal(Node wf, Node node) {
       NodeList nodes = getAllWorkflowNodes(wf);
       if (nodes.size() == 1) {
-         if (nodes.getNode(0).getNumber() != node.getNumber()) {
+         if (nodes.getNode(0).getNumber() == node.getNumber()) {
             Publish.publish(node);
          }
       }
