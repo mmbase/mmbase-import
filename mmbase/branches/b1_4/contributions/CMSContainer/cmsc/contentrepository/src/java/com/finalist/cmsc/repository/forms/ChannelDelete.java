@@ -9,20 +9,18 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.repository.forms;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.MessageResources;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.RelationManager;
 
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.publish.Publish;

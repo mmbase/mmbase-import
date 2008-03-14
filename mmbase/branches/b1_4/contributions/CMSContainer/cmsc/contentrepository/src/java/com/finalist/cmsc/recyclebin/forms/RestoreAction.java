@@ -56,11 +56,4 @@ public class RestoreAction extends MMBaseFormlessAction {
       }
       return mapping.findForward(SUCCESS);
    }
-
-
-   @Override
-   public String getRequiredRankStr() {
-      return ADMINISTRATOR;
-   }
-
 }
