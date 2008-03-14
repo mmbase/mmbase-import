@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.66.2.8 2008-03-06 13:56:06 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.66.2.9 2008-03-14 16:59:42 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -303,7 +303,7 @@ public class IncludeTag extends UrlTag {
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
             if (! ResourceLoader.getWebRoot().getResource(relativeUrl).openConnection().getDoInput()) {
                 Xml xml = new Xml(Xml.ESCAPE);
-                handleResponse(404, "No such resource" + xml.transform(relativeUrl), relativeUrl);
+                handleResponse(404, "No such resource " + xml.transform(relativeUrl), relativeUrl);
             } else {
                 HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
                 if (log.isTraceEnabled()) {
@@ -378,7 +378,7 @@ public class IncludeTag extends UrlTag {
 
             Reader reader = ResourceLoader.getWebRoot().getReader(resource);
             if (reader == null) {
-                handleResponse(404, "No such resource to cite" + resource, resource);
+                handleResponse(404, "No such resource to cite " + resource, resource);
             } else {
                 StringWriter writer = new StringWriter();
                 while (true) {
