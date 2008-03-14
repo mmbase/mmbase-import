@@ -21,26 +21,26 @@
 	  </tr>
 	  <tr>
 	  	<td>
-	  		<mm:node number="$node" notfound="skipbody">
-				<mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
-					<mm:param name="node_id"><mm:write referid="node"/></mm:param>
-					<mm:param name="path_segment">../</mm:param>
-				</mm:treeinclude>
-			</mm:node>   
+        <mm:node number="$node" notfound="skipbody">
+          <mm:treeinclude page="/education/paragraph/paragraph_anonymous.jsp" objectlist="$includePath" referids="$referids">
+            <mm:param name="node_id"><mm:write referid="node"/></mm:param>
+            <mm:param name="path_segment">../</mm:param>
+          </mm:treeinclude>
+        </mm:node>
 	  	</td>
 	  </tr>
 	  <tr>
 	    <td align="left" style="padding-top: 20px;padding-left: -10px;">
 	      <table border="0">
 	        <tr>
-		      <td width="660" valign="top" align="left">
-                <mm:field name="body" escape="none"/> 
-			  </td>
-		    </tr>
-	      </table>
-	    </td>
-	  </tr>
-    </table>   
+            <td width="660" valign="top" align="left">
+              <mm:field name="body" escape="none"/>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
   </mm:node>
 </body>
 </html>

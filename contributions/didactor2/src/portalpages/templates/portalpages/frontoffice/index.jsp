@@ -5,11 +5,12 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <mm:cloud method="asis">
-    <mm:link page="/education/js/frontend_tree.jsp" referids="$referids">
+    <mm:link page="/content/js/open.jsp">
       <script type="text/javascript" src="${_}">
-        <!-- help IE -->
+        <jsp:text><!-- help IE --> </jsp:text>
       </script>
     </mm:link>
+
     <div class="rows">
       <div class="navigationbar">
         <div class="pathbar">
@@ -41,7 +42,7 @@
                   <mm:constraint field="active" value="true" />
                   <mm:tree maxdepth="3">
                     <mm:nodeinfo type="type" id="nodetype" write="false" />
-                    <div id="div" class="lbLevel">
+                    <div id="div${_node}" class="lbLevel">
                       <mm:relatednodescontainer path="simplecontents" searchdirs="source">
                         <mm:constraint referid="today" field="online_date"  operator="LESS" />
                         <mm:constraint referid="today" field="offline_date" operator="GREATER" />
@@ -52,10 +53,12 @@
                                  id="img${_node}"
                                  onclick="openClose('div${_node}', 'img${_node}')"
                                  style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px" title="" alt="" />
-                            <a href="javascript:openContent('simplecontents', '${_node}' ); openOnly('div${_node}','img${_node}');"
-                               style="padding-left: 0px">
-                              <mm:field name="title"/>
-                            </a>
+                            <mm:link referids="_node@object">
+                              <a href="${_}" onclick="openContent('simplecontents', '${_node}' ); openOnly('div${_node}','img${_node}'); return false;"
+                                 style="padding-left: 0px">
+                                <mm:nodeinfo type="nodemanager" /> : <mm:field name="title"/>
+                              </a>
+                            </mm:link>
                           </div>
                         </mm:relatednodes>
                       </mm:relatednodescontainer>

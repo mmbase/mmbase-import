@@ -8,13 +8,6 @@
   <mm:cloud>
     <mm:import externid="listjsp"   from="request" required="true"/>
     <mm:import externid="wizardjsp" from="request" required="true"/>
-    <script type="text/javascript">
-      function clickNodePortal(node) {
-      var level = node.split('_').length;
-      //saveCookie('lastnodepagina' + level, node,1);
-      clickNode(node);
-      }
-    </script>
     <mm:import id="nodes_exist" reset="true">false</mm:import>
     <mm:listnodes type="portalpagesnodes">
       <mm:import id="nodes_exist" reset="true">true</mm:import>
