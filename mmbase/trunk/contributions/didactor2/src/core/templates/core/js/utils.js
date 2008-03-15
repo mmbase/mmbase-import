@@ -5,3 +5,23 @@ function addParameter(href, parameter) {
         return  href + '?' + parameter;
     }
 }
+
+function printThis() {
+    window.print();
+}
+
+
+function focusFirstForm() {
+    var form = document.forms[0];
+    if (form != null) {
+        for (var i=0; i < form.elements.length; i++) {
+            var elem = form.elements[i];
+            // find first editable field
+            var hidden = elem.getAttribute("type"); //.toLowerCase();
+            if (hidden != "hidden") {
+                elem.focus();
+                break;
+            }
+        }
+    }
+}
