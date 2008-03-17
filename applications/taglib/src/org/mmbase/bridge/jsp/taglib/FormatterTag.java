@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.77 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: FormatterTag.java,v 1.78 2008-03-17 16:55:14 michiel Exp $
  */
 public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
@@ -114,6 +114,8 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
 
         try {
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+
+            dfactory.setXIncludeAware(true);
             dfactory.setNamespaceAware(false);
             documentBuilder = dfactory.newDocumentBuilder();
             dfactory.setNamespaceAware(true);
@@ -351,9 +353,10 @@ public class FormatterTag extends CloudReferrerTag implements ParamHandler {
                     if (encoding == null) encoding = "UTF-8"; // it _must_ be XML.
                     javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                     DocumentBuilder db =  namespaceAware.getBoolean(this, true) ? documentBuilderNS : documentBuilder;
+                    log.debug("xinclude " + db.isXIncludeAware());
                     doc = db.parse(new java.io.ByteArrayInputStream(body.getBytes(encoding)),
-                                                pageContext.getServletContext().getResource(request.getServletPath()).toString()
-                                                );
+                                   pageContext.getServletContext().getResource(request.getServletPath()).toString()
+                                   );
                 } catch (Exception e) {
                     throw new TaglibException(e.getMessage() + "when parsing '" + body + "'", e);
                 }
