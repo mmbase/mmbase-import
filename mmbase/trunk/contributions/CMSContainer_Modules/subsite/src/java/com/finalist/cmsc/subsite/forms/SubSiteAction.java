@@ -45,53 +45,51 @@ import com.finalist.cmsc.subsite.util.SubSiteUtil;
 
 public class SubSiteAction extends PagerAction {
 
-    /**
-     * MMBase logging system
-     */
-    private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
-	
+   /**
+    * MMBase logging system
+    */
+   private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
+
    @Override
-   public ActionForward execute(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response, Cloud cloud)
-         throws Exception {
-	   
-       // Initialize
-	   SearchForm searchForm = (SearchForm) form;
-	   
+   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response, Cloud cloud) throws Exception {
+
+      // Initialize
+      SearchForm searchForm = (SearchForm) form;
+
       String subsite = request.getParameter("subsite");
-      
-      /* Purpose of this file
-       * - retrieve list of subsites
-       * - retrieve list of pages if 
-       *      channel parameter (subsite) is given (or only 1 subsite exists) 
-       *      -> and put it in a List 
+
+      /*
+       * Purpose of this file - retrieve list of subsites - retrieve list of
+       * pages if channel parameter (subsite) is given (or only 1 subsite
+       * exists) -> and put it in a List
        */
-      
-      //Retrieve list of pages of subsite
+
+      // Retrieve list of pages of subsite
       Node subsiteNode = null;
       if (StringUtils.isBlank(subsite) || !cloud.hasNode(subsite)) {
-          //If the subsiteNode does not exist or is not valid, get the first found subsite
-          NodeManager nm = cloud.getNodeManager(SubSiteUtil.SUBSITE);
-          NodeQuery subsitesQuery = nm.createQuery();
-          SearchUtil.addLimitConstraint(subsitesQuery, 0, 1);
-          SearchUtil.addSortOrder(subsitesQuery, nm, PagesUtil.TITLE_FIELD, "DOWN");
-          NodeList results = subsitesQuery.getList();
-          if (results.size() > 0) {
-              subsiteNode = (Node) results.get(0);
-          }
+         // If the subsiteNode does not exist or is not valid, get the first
+         // found subsite
+         NodeManager nm = cloud.getNodeManager(SubSiteUtil.SUBSITE);
+         NodeQuery subsitesQuery = nm.createQuery();
+         SearchUtil.addLimitConstraint(subsitesQuery, 0, 1);
+         SearchUtil.addSortOrder(subsitesQuery, nm, PagesUtil.TITLE_FIELD, "DOWN");
+         NodeList results = subsitesQuery.getList();
+         if (results.size() > 0) {
+            subsiteNode = (Node) results.get(0);
+         }
+      } else {
+         subsiteNode = cloud.getNode(subsite);
       }
-      else {
-		  subsiteNode = cloud.getNode(subsite);
-	  }
-      
+
+      if (subsiteNode == null) {
+         // If there are no subsites at all, return an empty list
+         searchForm.setResultCount(0);
+         NodeList results = cloud.createNodeList();
+         searchForm.setResults(results);
+         return mapping.findForward(SUCCESS);
+      }
+
       request.setAttribute("subsite", String.valueOf(subsiteNode.getNumber()));
-	  
-	  if (subsiteNode == null){ //If there are no subsites at all, return empty list
-		  searchForm.setResultCount(0);
-		  NodeList results = cloud.createNodeList();
-		  searchForm.setResults(results);
-		  return mapping.findForward(SUCCESS);
-	  } 
 
       NodeManager nodeManager = subsiteNode.getNodeManager();
       // Order the result by:
@@ -99,38 +97,38 @@ public class SubSiteAction extends PagerAction {
 
       // set default order field
       if (order != null && StringUtil.isEmpty(order)) {
-          if (nodeManager.hasField("title")) {
-              order = "title";
-          }
-          if (nodeManager.hasField("name")) {
-              order = "name";
-          }
+         if (nodeManager.hasField("title")) {
+            order = "title";
+         }
+         if (nodeManager.hasField("name")) {
+            order = "name";
+         }
       }
-      
-   // Set the offset (used for paging).
+
+      // Set the offset (used for paging).
       int offset = 0;
       if (searchForm.getOffset() != null && searchForm.getOffset().matches("\\d+")) {
-    	  offset = Integer.parseInt(searchForm.getOffset());
-          searchForm.setOffset(Integer.toString(offset));
+         offset = Integer.parseInt(searchForm.getOffset());
+         searchForm.setOffset(Integer.toString(offset));
       }
-      
+
       // Set the maximum result size.
       String resultsPerPage = PropertiesUtil.getProperty(SearchAction.REPOSITORY_SEARCH_RESULTS_PER_PAGE);
       int maxNumber = 25;
       if (resultsPerPage != null && resultsPerPage.matches("\\d+")) {
-    	  maxNumber = Integer.parseInt(resultsPerPage);
+         maxNumber = Integer.parseInt(resultsPerPage);
       }
-      
+
       searchForm.setKeywords(resultsPerPage);
-      
+
       String direction = null;
-      NodeQuery query = createLinkedElementsQuery(subsiteNode, order, direction, offset*maxNumber, maxNumber, -1, -1, -1);
+      NodeQuery query = createLinkedElementsQuery(subsiteNode, order, direction, offset * maxNumber, maxNumber, -1, -1, -1);
 
       // Add the title constraint:
       if (!StringUtil.isEmpty(searchForm.getTitle())) {
-          Field field = nodeManager.getField(PagesUtil.TITLE_FIELD);
-          Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
-          SearchUtil.addConstraint(query, titleConstraint);
+         Field field = nodeManager.getField(PagesUtil.TITLE_FIELD);
+         Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
+         SearchUtil.addConstraint(query, titleConstraint);
       }
 
       log.debug("QUERY: " + query);
@@ -145,37 +143,37 @@ public class SubSiteAction extends PagerAction {
    }
 
    public static NodeQuery createLinkedElementsQuery(Node channel, String orderby, String direction, int offset, int maxNumber, int year, int month, int day) {
-       String destinationManager = SubSiteUtil.PERSONALPAGE;
+      String destinationManager = SubSiteUtil.PERSONALPAGE;
 
-       NodeQuery query;
-       if (orderby == null) {
-           orderby = NavigationUtil.NAVREL + ".pos";
-        }
-       
-       query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, NavigationUtil.NAVREL);
-       SearchUtil.addFeatures(query, channel, destinationManager, NavigationUtil.NAVREL, null, null, orderby, direction);
+      NodeQuery query;
+      if (orderby == null) {
+         orderby = NavigationUtil.NAVREL + ".pos";
+      }
 
-       // Precision of now is based on minutes.
-       Calendar cal = Calendar.getInstance();
-       cal.set(Calendar.SECOND, 0);
-       cal.set(Calendar.MILLISECOND, 0);
+      query = SearchUtil.createRelatedNodeListQuery(channel, destinationManager, NavigationUtil.NAVREL);
+      SearchUtil.addFeatures(query, channel, destinationManager, NavigationUtil.NAVREL, null, null, orderby, direction);
 
-       if(year != -1 || month != -1 || day != -1) {
-         Field field = query.getCloud().getNodeManager(destinationManager).getField("publishdate"); //Does this work?
+      // Precision of now is based on minutes.
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.SECOND, 0);
+      cal.set(Calendar.MILLISECOND, 0);
+
+      if (year != -1 || month != -1 || day != -1) {
+         Field field = query.getCloud().getNodeManager(destinationManager).getField("publishdate"); // Does this work?
          StepField basicStepField = query.getStepField(field);
-          if(year != -1) {
-             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(year), FieldValueDateConstraint.YEAR));
-          }
-          if(month != -1) {
-             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(month), FieldValueDateConstraint.MONTH));
-          }
-          if(day != -1) {
-             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(day), FieldValueDateConstraint.DAY_OF_MONTH));
-          }
-       }
+         if (year != -1) {
+            SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(year), FieldValueDateConstraint.YEAR));
+         }
+         if (month != -1) {
+            SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(month), FieldValueDateConstraint.MONTH));
+         }
+         if (day != -1) {
+            SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(day), FieldValueDateConstraint.DAY_OF_MONTH));
+         }
+      }
 
-       SearchUtil.addLimitConstraint(query, offset, maxNumber);
-       return query;
+      SearchUtil.addLimitConstraint(query, offset, maxNumber);
+      return query;
    }
-   
+
 }
