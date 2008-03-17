@@ -23,7 +23,7 @@ import org.mmbase.bridge.util.Queries;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.30 2007-02-10 16:49:27 nklasens Exp $
+ * @version $Id: ListNodesTag.java,v 1.31 2008-03-17 16:18:15 michiel Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
@@ -91,22 +91,22 @@ public class ListNodesTag extends AbstractNodeListTag {
         ListNodesContainerTag c = findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
 
         NodeQuery query;
-        if (c == null || type != Attribute.NULL || path != Attribute.NULL) {           
+        if (c == null || type != Attribute.NULL || path != Attribute.NULL) {
             if (type == Attribute.NULL && path == Attribute.NULL) {
                 throw new JspTagException("Attribute 'type' or 'path' must be provided in listnodes tag (unless referid is given, or used in listnodescontainer)");
             }
             if (type != Attribute.NULL) {
                 if (path != Attribute.NULL) throw new JspTagException("Should specify either 'type' or 'path' attributes on listnodes");
                 NodeManager nodeManager = getCloudVar().getNodeManager(type.getString(this));
-                query = nodeManager.createQuery();            
+                query = nodeManager.createQuery();
             } else {
                 query = getCloudVar().createNodeQuery();
                 Queries.addPath(query, (String) path.getValue(this), (String) searchDirs.getValue(this));
-            
+
                 if (element != Attribute.NULL) {
                     String alias = element.getString(this);
                     Step nodeStep = query.getStep(alias);
-                    if (nodeStep == null) { 
+                    if (nodeStep == null) {
                         throw new JspTagException("Could not set element to '" + alias + "' (no such step)");
                     }
                     query.setNodeStep(nodeStep);
@@ -115,7 +115,7 @@ public class ListNodesTag extends AbstractNodeListTag {
                     query.setNodeStep(query.getSteps().get(0));
                 }
             }
-        } else {            
+        } else {
             query = (NodeQuery) c.getQuery();
         }
         if (constraints != Attribute.NULL) {

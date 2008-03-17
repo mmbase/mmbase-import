@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.24 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: Functions.java,v 1.25 2008-03-17 16:18:15 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -140,7 +140,12 @@ public class Functions {
         th.setCloud((Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE));
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
         String t = th.findTreeFile(page, Casting.toString(objectList), pageContext.getSession());
-        return req.getContextPath() + (t.charAt(0) == '/' ? "" : "/") + t;
+        if (t == null || "".equals(t)) {
+            // not found, avoid Exceptions, this will generaly produce a 404 in stead. Which is
+            // clear enough.
+            t = page;
+        }
+        return req.getContextPath() + ((t.length() > 1 && t.charAt(0) == '/') ? "" : "/") + t;
     }
     /**
      * @since MMBase-1.8.5

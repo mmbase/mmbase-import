@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.80 2007-07-26 20:54:32 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.81 2008-03-17 16:18:15 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -163,6 +163,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected NodesAndTrim getNodesAndTrim(Query query, int more) throws JspTagException {
         generatingQuery = query;
+        if (log.isDebugEnabled()) {
+            log.debug("Using " + query.toSql());
+        }
         NodesAndTrim result = new NodesAndTrim();
         if (listHelper.getComparator().length() == 0) {
             if (listHelper.getMax() != Attribute.NULL) {
