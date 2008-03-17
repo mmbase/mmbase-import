@@ -100,6 +100,9 @@ public class AjaxTree extends Tree {
 	         }
 	      }
       }
+      else {
+    	  element.getParentNode().removeChild(element);
+      }
    }
 
 }
