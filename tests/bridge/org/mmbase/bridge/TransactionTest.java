@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.2 2008-03-11 15:51:50 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.3 2008-03-17 09:30:31 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {
@@ -51,9 +51,27 @@ public class TransactionTest extends BridgeTest {
         assertEquals("foo", node.getStringValue("title"));
     }
 
+
+    public void testCancel2() {
+        Cloud cloud = getCloud();
+        {
+            Transaction t = cloud.getTransaction("bar2");
+            Node node = t.getNode(newNode);
+            node.setStringValue("title", "xxxxx");
+            node.commit();
+            t.cancel();
+        }
+        {
+            Transaction t = cloud.getTransaction("bar2");
+            Node node = t.getNode(newNode);
+            assertEquals("foo", node.getStringValue("title"));
+            t.cancel();
+        }
+    }
+
     public void testCommit() {
         Cloud cloud = getCloud();
-        Transaction t = cloud.getTransaction("bar2");
+        Transaction t = cloud.getTransaction("bar3");
         Node node = t.getNode(newNode);
         node.setStringValue("title", "yyyyy");
         node.commit();
@@ -66,7 +84,7 @@ public class TransactionTest extends BridgeTest {
 
     public void testGetValue() {
         Cloud cloud = getCloud();
-        Transaction t = cloud.getTransaction("bar3");
+        Transaction t = cloud.getTransaction("bar4");
         Node node = t.getNode(newNode);
         node.setStringValue("title", "zzzzz");
         node.commit(); // committing inside transaction
