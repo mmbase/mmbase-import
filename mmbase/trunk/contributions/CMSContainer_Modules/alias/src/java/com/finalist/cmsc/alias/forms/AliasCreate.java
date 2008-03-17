@@ -26,12 +26,14 @@ public class AliasCreate extends MMBaseFormlessAction {
 
       String parentpage = getParameter(request, "parentpage", true);
       String action = getParameter(request, "action");
+      boolean stacked=(request.getParameter("stacked") != null && request.getParameter("stacked").equals("true"));
 
       if (StringUtil.isEmptyOrWhitespace(action)) {
          request.getSession().setAttribute("parentpage", parentpage);
 
+         
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"
-               + "&contenttype=pagealias" + "&returnurl=" + mapping.findForward("returnurl").getPath());
+               + "&contenttype=pagealias" + "&returnurl=" + mapping.findForward("returnurl").getPath() + "?stacked="+stacked);
          ret.setRedirect(true);
          return ret;
       }
@@ -41,8 +43,12 @@ public class AliasCreate extends MMBaseFormlessAction {
             NavigationUtil.appendChild(cloud, parentpage, ewnodelastedited);
 
             addToRequest(request, "showalias", ewnodelastedited);
-            ActionForward ret = mapping.findForward(SUCCESS);
-            return ret;
+            if(!stacked) {
+	            return mapping.findForward(SUCCESS);
+            }
+            else {
+            	return new ActionForward(mapping.findForward("stacked").getPath()+"?parent="+parentpage);
+            }
          }
          request.getSession().removeAttribute("parentpage");
          ActionForward ret = mapping.findForward(CANCEL);
