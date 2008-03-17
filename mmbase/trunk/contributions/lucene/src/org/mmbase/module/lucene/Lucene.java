@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.107 2008-02-25 12:23:43 michiel Exp $
+ * @version $Id: Lucene.java,v 1.108 2008-03-17 08:58:20 andre Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -154,6 +154,8 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     private List<String> configErrors = new ArrayList<String>();
     private Date configReadTime = new Date(0);
+    /* keeps track of startnodes to not reindex them */
+    private Set startNodes = new HashSet();
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
@@ -919,6 +921,18 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                                     id.setId(indexName + "_" + (++lists));
                                     queries.add(id);
                                     log.service("Added mmbase index definition " + id);
+                                    if ("list".equals(name)) {
+                                        String snodes = childElement.getAttribute("startnodes");
+                                        String[] sn = snodes.split(",");
+                                        if (snodes != null && !"".equals(snodes)) {
+                                            log.info("Found startnodes '" + snodes + "' of list in index: " + indexName);
+                                            for (i = 0; i < sn.length; i++) {
+                                                String snr = cloud.getNodeByAlias(sn[i]).getStringValue("number");
+                                                log.debug("checking for: " + snr);
+                                                if (!startNodes.contains(snr)) startNodes.add(snr);
+                                            }
+                                        }
+                                    }
                                 } else if ("jdbc".equals(name)) {
                                     DataSource ds =  ((DatabaseStorageManagerFactory) mmbase.getStorageManagerFactory()).getDataSource();
                                     IndexDefinition id = new JdbcIndexDefinition(ds, childElement,
@@ -964,7 +978,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         if (indexName == null || indexName.equals("")) indexName = defaultIndex;
         Searcher searcher = indexName == null ? null : searcherMap.get(indexName);
         if (searcher == null) {
-            throw new IllegalArgumentException("Index with name " +indexName + " does not exist. Existing are " + searcherMap.keySet());
+            throw new IllegalArgumentException("Index with name " + indexName + " does not exist. Existing are " + searcherMap.keySet());
         }
         return searcher;
     }
@@ -972,7 +986,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     public void notify(NodeEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Received node event " + event +  Logging.stackTrace(6));
+            log.debug("Received node event: " + event +  Logging.stackTrace(6));
         }
         if (scheduler != null) {
             switch(event.getType()) {
@@ -993,18 +1007,21 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
     }
     public void notify(RelationEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Received relation event " + event);
+            log.debug("Received relation event: " + event + Logging.stackTrace(6));
         }
         if (scheduler != null) {
             switch(event.getType()) {
             case Event.TYPE_NEW:
                 //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                if (!startNodes.contains("" + event.getRelationDestinationNumber())) 
+                    scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
                 break;
             case Event.TYPE_CHANGE:
             case Event.TYPE_DELETE:
-                scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
+                if (!startNodes.contains("" + event.getRelationSourceNumber())) 
+                    scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
+                if (!startNodes.contains("" + event.getRelationDestinationNumber())) 
+                    scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
                 break;
             }
         }
