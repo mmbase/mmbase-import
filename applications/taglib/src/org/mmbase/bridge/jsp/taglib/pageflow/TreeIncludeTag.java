@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeIncludeTag.java,v 1.25 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: TreeIncludeTag.java,v 1.26 2008-03-17 16:18:15 michiel Exp $
  */
 
 public class TreeIncludeTag extends IncludeTag {
@@ -39,14 +39,25 @@ public class TreeIncludeTag extends IncludeTag {
 
     private TreeHelper th = new TreeHelper();
 
-    protected String getPage(String p) throws JspTagException {
+    protected String getPage() throws JspTagException {
+        String orgPage = super.getPage();
         try {
-            return th.findTreeFile(p, objectList.getValue(this).toString(),
-                                   pageContext.getSession());
+            String treePage = th.findTreeFile(orgPage, objectList.getString(this), pageContext.getSession());
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving page '" + treePage + "'");
+            }
+
+            if (treePage == null || "".equals(treePage)) {
+                //throw new JspTagException("Could not find page " + orgPage);
+                return orgPage;
+            }
+
+            return treePage;
         } catch (java.io.IOException ioe) {
             throw new TaglibException(ioe);
         }
     }
+
 
     protected void initTag(boolean internal) throws JspTagException {
         th.setCloud(getCloudVar());

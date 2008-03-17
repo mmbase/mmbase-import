@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.96 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.97 2008-03-17 16:18:15 michiel Exp $
  */
 
 public class WriterHelper {
@@ -147,6 +147,15 @@ public class WriterHelper {
 
     public WriterHelper(ContextReferrerTag tag) {
         thisTag = tag;
+    }
+
+    /**
+     * Reset to initial values
+     */
+    public void initTag() {
+        hasBody = false;
+        pushed = false;
+        value = null;
     }
 
     /**
@@ -446,9 +455,8 @@ public class WriterHelper {
         }
         pageContext.setAttribute("_", Casting.wrap(value, getEscaper()));
         if (log.isDebugEnabled()) {
-            log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
+            log.debug("pushed  on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
             log.debug("Escaper: " + getEscaper());
-            log.debug("_:" + pageContext.getAttribute("_"));
         }
     }
 
@@ -527,6 +535,9 @@ public class WriterHelper {
      * they say that the tag had a body.
      */
     public void haveBody() {
+        if (log.isDebugEnabled()) {
+            log.debug("has body because ", new Exception());
+        }
         hasBody = true;
     }
 

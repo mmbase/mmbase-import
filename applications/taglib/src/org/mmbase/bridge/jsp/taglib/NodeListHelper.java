@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.37 2007-06-07 12:47:55 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.38 2008-03-17 16:18:15 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -167,7 +167,7 @@ public class NodeListHelper implements ListProvider {
         remove = thisTag.getAttribute(a);
     }
     /**
-     * @since MMBase-1.9
+     * @since MMBase-1.8.6
      */
     public void setVarStatus(String s) throws JspTagException {
         varStatus = thisTag.getAttribute(s);
