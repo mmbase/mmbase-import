@@ -17,13 +17,13 @@ import java.util.Map;
  * UserContext object. So every attempt to log in will succeed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthentication.java,v 1.10 2006-11-09 14:19:37 michiel Exp $
+ * @version $Id: NoAuthentication.java,v 1.11 2008-03-17 15:37:59 michiel Exp $
  * @see UserContext
  */
 final public class NoAuthentication extends Authentication {
 
     static final String TYPE = "no authentication";
-    static final UserContext userContext = new BasicUser(TYPE); 
+    static final UserContext userContext = new BasicUser(TYPE);
     // package because NoAuthorization uses it to get the one 'possible context' (which is of course the 'getOwnerField' of the only possible user)
     // (this is assuming that NoAuthentication is used too, but if not so, that does not matter)
 
@@ -38,11 +38,16 @@ final public class NoAuthentication extends Authentication {
      * @see UserContext
      */
     public UserContext login(String application, Map loginInfo, Object[] parameters) throws SecurityException {
-        return userContext;
+        String userName = loginInfo == null ? null : (String) loginInfo.get(AuthenticationData.PARAMETER_USERNAME.getName());
+        if (userName != null) {
+            return new BasicUser(TYPE, userName);
+        } else {
+            return userContext;
+        }
     }
 
     /**
-     * Users remain valid always. 
+     * Users remain valid always.
      * @return true
      */
     public boolean isValid(UserContext usercontext) throws SecurityException {
@@ -54,14 +59,14 @@ final public class NoAuthentication extends Authentication {
      * @since MMBase-1.8
      */
     public int getDefaultMethod(String protocol) {
-        return METHOD_DELEGATE; 
+        return METHOD_DELEGATE;
     }
     public String[] getTypes(int method) {
         return new String[] {TYPE};
     }
 
     public Parameters createParameters(String application) {
-        return Parameters.VOID;
+        return new AutodefiningParameters();
     }
 
 }

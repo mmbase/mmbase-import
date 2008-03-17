@@ -23,16 +23,20 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.5 2007-11-19 15:32:15 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.6 2008-03-17 15:37:59 michiel Exp $
  */
 public class BasicUser implements UserContext {
     private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
 
     protected final String authenticationType;
-
+    private final String identifier;
 
     public BasicUser(String authenticationType) {
+        this(authenticationType, "anonymous");
+    }
+    public BasicUser(String authenticationType, String identifier) {
         this.authenticationType = authenticationType;
+        this.identifier = identifier;
     }
 
     /**
@@ -42,7 +46,7 @@ public class BasicUser implements UserContext {
      * @return A unique identifier for this user.
      */
     public String getIdentifier() {
-        return "anonymous";
+        return identifier;
     }
 
     /**
