@@ -64,6 +64,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                                                       // Meg
    private static final long MEGABYTE = 1024 * 1024; // 1 Meg
    private static final String FIELD_PREFIX = "field_";
+   // TODO: use these constants (and clean up this mess)
    private static final int TYPE_TEXTBOX = 1;
    private static final int TYPE_TEXTAREA = 2;
    private static final int TYPE_RADIO = 4;
