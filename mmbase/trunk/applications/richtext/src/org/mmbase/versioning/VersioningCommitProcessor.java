@@ -2,6 +2,8 @@ package org.mmbase.versioning;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.processors.CommitProcessor;
+
+import org.mmbase.util.Casting;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -9,7 +11,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.4 2008-03-13 10:51:50 michiel Exp $
+ * @version $Id: VersioningCommitProcessor.java,v 1.5 2008-03-17 10:08:10 michiel Exp $
  * @since
  */
 
@@ -19,8 +21,11 @@ public class VersioningCommitProcessor implements CommitProcessor {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COMMENTS_PROPERTY = "org.mmbase.versioning.comments";
+
     public static final String VERSION_FIELD   = "version";
     public static final String OBJECT_FIELD    = "object";
+    public static final String COMMENTS_FIELD  = "comments";
 
     public void commit(Node node, Field field) {
         if (node.isChanged()) {
@@ -46,14 +51,17 @@ public class VersioningCommitProcessor implements CommitProcessor {
 
             version.setNodeValue(OBJECT_FIELD, node);
             version.setIntValue(VERSION_FIELD, newVersionNo);
-            if (! node.isNew()) {
-                // shit..., node fields don't like new nodes.
-                version.commit();
-                // could solve it by in this case using the _old values_ of the node.
-                // But there are 2 bugs, which make this work around non-feasible:
+
+            version.setStringValue(COMMENTS_FIELD, Casting.toString(cloud.getProperty(COMMENTS_PROPERTY)));
+            Object validation = version.getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION);
+            version.getCloud().setProperty(Cloud.PROP_IGNOREVALIDATION, Boolean.TRUE);
+            // shit..., node fields don't like new nodes.
+            version.commit();
+            version.getCloud().setProperty(Cloud.PROP_IGNOREVALIDATION, validation);
+            // could solve it by in this case using the _old values_ of the node.
+            // But there are 2 bugs, which make this work around non-feasible:
             //  http://www.mmbase.org/jira/browse/MMB-1522.
             //  http://www.mmbase.org/jira/browse/MMB-1621 // This would also give a way to get  the 'old values'.
-            }
         } else {
             log.service("Node not changed");
         }
