@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListNodesContainerTag.java,v 1.23 2008-02-26 17:06:44 michiel Exp $
+ * @version $Id: ListNodesContainerTag.java,v 1.24 2008-03-17 16:18:15 michiel Exp $
  */
 public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryContainer {
     // nodereferrer because RelatedNodesContainer extension
@@ -109,6 +109,9 @@ public class ListNodesContainerTag extends NodeReferrerTag implements NodeQueryC
         String cloneId = clone.getString(this);
         if (! "".equals(cloneId)) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(cloneId);
+            if (query == null) {
+                throw new JspTagException("No query found with id '" + cloneId + "' in " + getContextProvider().getContextContainer());
+            }
             query = (NodeQuery) query.clone();
         } else if (getReferid() != null) {
             query = (NodeQuery) getContextProvider().getContextContainer().getObject(getReferid());

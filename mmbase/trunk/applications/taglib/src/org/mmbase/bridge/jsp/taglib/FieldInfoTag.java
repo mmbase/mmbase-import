@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.105 2007-11-19 15:09:52 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.106 2008-03-17 16:18:15 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -333,7 +333,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 node = fieldProvider.getNodeVar();
             }
             if (node == null) {
-                throw new JspTagException("Could not find surrounding NodeProvider, which is needed for type=" + type);
+                if (findNodeProvider(false) != null) {
+                    node = new org.mmbase.bridge.util.MapNode(new HashMap());
+                } else {
+                    throw new JspTagException("Could not find surrounding NodeProvider, which is needed for type=" + type);
+                }
             }
             break;
         default:
@@ -355,18 +359,23 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             if (log.isDebugEnabled()) {
                 log.debug("field " + fieldName + " --> " + node.getStringValue(field.getName()));
             }
-            Function guiFunction = node.getFunction("gui");
-            Parameters args = guiFunction.createParameters();
-            args.set(Parameter.FIELD,    field.getName());
-            if (args.containsParameter("session")) {
-                args.set("session",  sessionName);
-            }
-            fillStandardParameters(args);
+            try {
+                Function guiFunction = node.getFunction("gui");
+                Parameters args = guiFunction.createParameters();
+                args.set(Parameter.FIELD,    field.getName());
+                if (args.containsParameter("session")) {
+                    args.set("session",  sessionName);
+                }
+                fillStandardParameters(args);
 
-            show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
+                show = decode(Casting.toString(guiFunction.getFunctionValue(args)), node);
+            } catch (NotFoundException nfe) {
+                show = decode(Casting.toString(node.getStringValue(field.getName())), node);
+            }
             if (show.trim().length() == 0) {
                 show = org.mmbase.util.transformers.Xml.XMLEscape(decode(node.getStringValue(fieldName), node));
             }
+
             break;
         }
         case TYPE_CHECK:

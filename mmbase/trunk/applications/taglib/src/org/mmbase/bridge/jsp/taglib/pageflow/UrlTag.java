@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.113 2008-02-23 16:00:44 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.114 2008-03-17 16:18:15 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler, FrameworkParamHandler {
@@ -124,7 +124,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
         extraParameters = new HashMap<String, Object>();
         frameworkParameters = new HashMap<String, Object>();
         parameters = new UrlParameters(this);
-        helper.useEscaper    (false);
+        helper.useEscaper(false);
         if (referid != Attribute.NULL) {
             if (page != Attribute.NULL) {
                 throw new TaglibException("Cannot specify both 'referid' and 'page' attributes");
@@ -155,6 +155,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
 
     public int doStartTag() throws JspTagException {
+        helper.initTag();
         initTag(false);
         return EVAL_BODY_BUFFERED;
     }
@@ -230,7 +231,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
 
     protected void doAfterBodySetValue() throws JspTagException {
         if (url != null) {
-            helper.setValue(url.toString());
+            helper.setValue(url);
         }
     }
 
@@ -250,7 +251,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler, Framewor
     }
     public int doEndTag() throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.debug("endtag of url tag " + parameters + " -> " + url);
+            log.debug("endtag of url tag " + parameters + " -> " + url.get());
         }
         initDoEndTag();
         doAfterBodySetValue();

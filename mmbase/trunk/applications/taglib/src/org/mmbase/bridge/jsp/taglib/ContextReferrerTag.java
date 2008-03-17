@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.103 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.104 2008-03-17 16:18:15 michiel Exp $
  * @see ContextTag
  */
 
@@ -298,7 +298,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     }
 
     public void doFinally() {
-        helper.doFinally();
         thisPage = null;
         pageContextTag = null;
         writerid = Attribute.NULL;

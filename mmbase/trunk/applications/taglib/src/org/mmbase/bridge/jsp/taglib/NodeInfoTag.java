@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.43 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: NodeInfoTag.java,v 1.44 2008-03-17 16:18:15 michiel Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -82,7 +82,14 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
         NodeManager nodeManager = null;
         if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
-            nodeManager = getNode().getNodeManager();
+            Node node = getNode();
+            if (node == null) {
+                log.warn("Node is null");
+
+                nodeManager = getCloudVar().getNodeManager("object");
+            } else {
+                nodeManager = node.getNodeManager();
+            }
         } else {
             nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
         }
@@ -126,14 +133,18 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
                     sessionName = ct.getSessionName();
                 }
                 Node node = getNode();
-                Function guiFunction = node.getFunction("gui");
-                Parameters args = guiFunction.createParameters();
-                args.set(Parameter.FIELD, ""); // lot of gui implementations would not stand 'null' as field name value
-                if (args.containsParameter("session")) {
-                    args.set("session",  sessionName);
+                if (node == null) {
+                    show = "NULL";
+                } else {
+                    Function guiFunction = node.getFunction("gui");
+                    Parameters args = guiFunction.createParameters();
+                    args.set(Parameter.FIELD, ""); // lot of gui implementations would not stand 'null' as field name value
+                    if (args.containsParameter("session")) {
+                        args.set("session",  sessionName);
+                    }
+                    fillStandardParameters(args);
+                    show = Casting.toString(guiFunction.getFunctionValue(args));
                 }
-                fillStandardParameters(args);
-                show = Casting.toString(guiFunction.getFunctionValue(args));
             } else {
                 show = nodeManager.getGUIName();
             }
