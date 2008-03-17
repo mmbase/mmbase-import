@@ -49,7 +49,7 @@ public class NavigationHtmlRenderer extends NavigationRenderer implements HTMLTr
 
 
    @Override
-   protected HTMLTreeElement createElement(String icon, String id, String name, String fragment, String action,
+   public HTMLTreeElement createElement(String icon, String id, String name, String fragment, String action,
          String target) {
       HTMLTreeElement element;
       if (hideIcons) {
