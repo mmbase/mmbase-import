@@ -18,7 +18,6 @@
 <cmsc:rights nodeNumber="${param.parent}" var="rights"/>
 <c:set var="orderby" value="${(param.orderby == null)?'title':param.orderby}"/>
 <c:set var="orderdir" value="${(param.orderdir == null)?'up':param.orderdir}"/>
-Test: ${orderby} ${orderdir}
 <c:set var="hasRights" value="${(rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}"/>
 
 <div class="editor">
