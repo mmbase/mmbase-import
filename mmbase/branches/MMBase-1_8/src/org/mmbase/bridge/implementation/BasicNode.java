@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.210.2.7 2008-01-09 10:47:53 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.210.2.8 2008-03-17 10:03:41 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -487,8 +487,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         Collection errors = validate();
         if (errors.size() > 0) {
             String mes = "node " + getNumber() + noderef.getChanged() + ", builder '" + nodeManager.getName() + "' " + errors.toString();
-            noderef.cancel();
-            throw new IllegalArgumentException(mes);
+            if (! Casting.toBoolean(getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION))) {
+                noderef.cancel();
+                throw new IllegalArgumentException(mes);
+            }
         }
         processCommit();
         if (log.isDebugEnabled()) {
@@ -1028,10 +1030,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
         return new BasicFunctionValue(getCloud(), result);
     }
 
-    /*
+
     public Object getOldValue(String fieldName) {
         return getNode().getOldValues().get(fieldName);
     }
-    */
+
 
 }

@@ -21,13 +21,21 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.58.2.2 2007-10-17 08:54:31 michiel Exp $
+ * @version $Id: Cloud.java,v 1.58.2.3 2008-03-17 10:03:41 michiel Exp $
  */
 public interface Cloud {
 
     public static final String PROP_XMLMODE     = "org.mmbase.xml-mode";
 
     public static final String PROP_SESSIONNAME = "org.mmbase.cloud.sessionname";
+
+    /**
+     * If you set this property on the cloud to true, validation errors will not be fatal, and nodes
+     * can be saved anyways.
+     *
+     * @since MMBase-1.8.6
+     */
+    public static final String PROP_IGNOREVALIDATION  = "org.mmbase.cloud.ignore-validation";
 
     /**
      * Returns the node with the specified number from this cloud. The returned
@@ -658,5 +666,8 @@ public interface Cloud {
      * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
     public StringList getPossibleContexts();
+
+
+    //public Cloud getNonTransactionalCloud();
 
 }
