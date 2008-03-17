@@ -20,6 +20,8 @@
 	</p>
 	<form action="?">
 		<html:hidden property="number" value="${number}" />
+		<html:hidden property="stacked" value="${param.stacked}" />
+		<html:hidden property="parentpage" value="${param.parentpage}" />
 	   	<html:submit property="remove"><fmt:message key="aliasdelete.yes"/></html:submit>&nbsp;
 	   	<html:submit property="cancel"><fmt:message key="aliasdelete.no"/></html:submit>
 	</form>

@@ -31,8 +31,12 @@ public class AliasDelete extends MMBaseFormlessAction {
 
 
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
-
+	  String parentpage = getParameter(request, "parentpage", true);
+      boolean stacked=(request.getParameter("stacked") != null && request.getParameter("stacked").equals("true"));
+  
       if (isRemoveAction(request)) {
+    	 request.getSession().setAttribute("parentpage", parentpage);
+    	  
          String objectnumber = getParameter(request, "number", true);
          Node aliasNode = cloud.getNode(objectnumber);
          Node pageNode = aliasNode.getRelatedNodes("page").getNode(0);
@@ -43,15 +47,25 @@ public class AliasDelete extends MMBaseFormlessAction {
          if (isEditor) {
             NavigationUtil.deleteItem(aliasNode);
          }
-         return mapping.findForward(SUCCESS);
+         if(!stacked) {
+	            return mapping.findForward(SUCCESS);
+         }
+         else {
+         	return new ActionForward(mapping.findForward("stacked").getPath()+"?parent="+parentpage);
+         }
       }
 
       if (isCancelAction(request)) {
-         return mapping.findForward(SUCCESS);
+          if(!stacked) {
+	            return mapping.findForward(SUCCESS);
+          }
+          else {
+          	return new ActionForward(mapping.findForward("stacked").getPath()+"?parent="+parentpage);
+          }
       }
 
       // neither remove or cancel, show confirmation page
-      return mapping.findForward("delete");
+      return new ActionForward(mapping.findForward("delete").getPath()+"?stacked="+stacked);
    }
 
 

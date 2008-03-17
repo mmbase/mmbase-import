@@ -39,7 +39,7 @@ public class RightsTag extends SimpleTagSupport {
       else {
          // if it is a page
          if (PagesUtil.isPageType(node)) {
-            NavigationUtil.getRole(cloud, node, true);
+            role = NavigationUtil.getRole(cloud, node, true);
          }
          // else, try the content itself
          else {
