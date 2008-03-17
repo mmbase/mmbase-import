@@ -46,4 +46,14 @@
     </datatype>
   </field>
 
+  <field name="comments" state="system">
+    <gui>
+      <guiname xml:lang="nl">Commentaar</guiname>
+      <guiname xml:lang="en">Comments</guiname>
+    </gui>
+    <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+      <maxLength value="1024" />
+    </datatype>
+  </field>
+
 </fieldlist>
