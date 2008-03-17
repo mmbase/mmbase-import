@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.56 2007-11-16 16:06:59 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.57 2008-03-17 13:20:18 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -54,7 +54,17 @@ public class MMBaseContext {
      *
      */
     public synchronized static void init(ServletContext servletContext) {
-        if (!initialized) {
+        if (!initialized ||
+            (initialized && sx == null)) { // initialized, but with init(configPath)
+
+            if (servletContext == null) {
+                throw new IllegalArgumentException();
+            }
+
+            if (initialized) {
+                log.info("Reinitializing, this time with ServletContext");
+            }
+
             // get the java version we are running
             javaVersion = System.getProperty("java.version");
             // store the current context
@@ -100,6 +110,7 @@ public class MMBaseContext {
      */
     public synchronized static void init(String configPath, boolean initLogging) throws Exception {
         if (!initialized) {
+            log.service("Initializing with " + configPath);
             // Get the current directory using the user.dir property.
             userDir = System.getProperty("user.dir");
 
@@ -133,7 +144,7 @@ public class MMBaseContext {
      */
     public synchronized static ThreadGroup getThreadGroup() {
         if (threadGroup == null) {
-            String groupName = org.mmbase.Version.get();
+            String groupName = org.mmbase.Version.get();// + "" + new Date();
             log.service("Creating threadGroup: " + groupName);
             threadGroup = new ThreadGroup(groupName);
         }
@@ -214,8 +225,11 @@ public class MMBaseContext {
      *
      */
     public synchronized static void initHtmlRoot() throws ServletException {
-        if (!initialized || sx == null) {
-            throw new RuntimeException("The init(ServletContext) method should be called first.");
+        if (!initialized) {
+            throw new RuntimeException("The init(ServletContext) method should be called first. (Not initalized)");
+        }
+        if (sx == null) {
+            throw new RuntimeException("The init(ServletContext) method should be called first. (No servlet context was given)");
         }
         if (!htmlRootInitialized) {
             // Init htmlroot.
