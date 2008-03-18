@@ -16,7 +16,7 @@
 </mm:functioncontainer>
 <hr />
 <p>
-  Accidentely. Not only functions accepts parameters. Also, for example 'escapers' can.
+  Not only functions accepts parameters. Also, for example 'escapers' can.
 </p>
 <mm:escaper id="vervang">
   <mm:escaper type="regexps">
