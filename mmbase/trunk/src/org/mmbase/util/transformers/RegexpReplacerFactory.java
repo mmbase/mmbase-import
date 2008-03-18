@@ -64,8 +64,8 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory<Ch
         boolean replaceFirst = "true".equals(firstParam);
         boolean replaceFirstAll = "all".equals(firstParam);
         trans.configure(c.config +
-                        (replaceFirst ? RegexpReplacer.REPLACE_FIRST : 0) +
-                        (replaceFirstAll ? RegexpReplacer.REPLACE_FIRST_ALL : 0)
+                        (replaceFirst ? ChunkedTransformer.REPLACE_FIRST : 0) +
+                        (replaceFirstAll ? ChunkedTransformer.REPLACE_FIRST_ALL : 0)
                         );
         return trans;
     }
