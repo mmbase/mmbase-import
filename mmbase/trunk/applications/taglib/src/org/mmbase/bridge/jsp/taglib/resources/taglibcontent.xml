@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.55 2008-02-13 09:21:47 ernst Exp $
+  version: $Id: taglibcontent.xml,v 1.56 2008-03-18 15:15:12 pierre Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -349,6 +349,15 @@
     <info>
       Can be used to put those three dots ('...') at the end of a 'substringed' line.
     </info>
+    </param>
+  </parameterizedescaper>
+  <parameterizedescaper id="paragraph">
+    <class>org.mmbase.util.transformers.ParagraphTransformerFactory</class>
+    <info>Wraps a text in paragraph (p) tags, unless it is empty or that textstarts with a p tag (in which case it is already wrapped). Use this for fields that contain HTML, but for which you are unsure if they have parahraph tags already</info>
+    <param name="class">
+      <info>
+        A class name to give to the paragraph tag.
+      </info>
     </param>
   </parameterizedescaper>
 
