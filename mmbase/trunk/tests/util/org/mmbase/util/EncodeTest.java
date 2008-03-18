@@ -173,6 +173,7 @@ public class EncodeTest extends TestCase {
 
         pars.set("replacefirst", "all");  reg = fact.createTransformer(pars);
         assertEquals(reg.transform("a  aa  a"), "a bb  a");
+        assertEquals(reg.transform("a  aa  aa"), "a bb  aa");
 
     }
 
