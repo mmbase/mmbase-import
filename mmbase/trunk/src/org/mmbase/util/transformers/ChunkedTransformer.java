@@ -56,11 +56,11 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
 
 
     /**
-     * If this is added to the config-int, then only the first match should be used.
+     * If this is added to the config-int, then only the first match of any one pattern should be used.
      */
     public final static int REPLACE_FIRST = 100;
     /**
-     * If this is added to the config-int, then only the first match should be used.
+     * If this is added to the config-int, then only the first match of all patterns should be used.
      */
     public final static int REPLACE_FIRST_ALL = 200;
 
