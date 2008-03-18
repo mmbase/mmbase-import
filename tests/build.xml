@@ -95,7 +95,7 @@
           <include name="log4j.jar" />
           <include name="commons-fileupload.jar" />
           <include name="xalan.jar" />
-          <include name="servlet.jar" />
+          <include name="servletapi-2.4.jar" />
           <include name="mmbase-test.jar" />
           <include name="mmbase-resources.jar" />
           <include name="mmbase.jar" />
