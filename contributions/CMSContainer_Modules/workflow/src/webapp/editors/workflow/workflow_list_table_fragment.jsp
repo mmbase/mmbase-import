@@ -5,18 +5,18 @@
    <tr>
       <th style="width: 20px;">&nbsp;</th>
       <th style="width: 10px;">&nbsp;</th>
-      <th style="width: 73px;">&nbsp;</th>
+      <th style="width: 75px;">&nbsp;</th>
       <th style="width: 300px;" nowrap="true">
          <a href="#" <%=onClickandStyle(pageContext, "title")%>>
             <fmt:message key="workflow.title"/>
          </a>
       </th>
-      <th style="width: 68px;"> <a href="#" <%=onClickandStyle(pageContext, "type")%>><fmt:message key="workflow.type"/></a></th>
-      <th style="width: 68px;"><a href="#" <%=onClickandStyle(pageContext, "number")%>><fmt:message key="workflow.number"/></a></th>
+      <th style="width: 68px;"><fmt:message key="workflow.type"/></th>
+      <th style="width: 68px;"><fmt:message key="workflow.number"/></th>
       <th style="width: 50px;">
          <a href="#" <%=onClickandStyle(pageContext, "remark")%>><fmt:message key="workflow.remark"/></a>
       </th>
-      <th style="width: 140px;">
+      <th style="width: 145px;">
          <a href="#" <%=onClickandStyle(pageContext, "lastmodifier")%>>
             <fmt:message key="workflow.lastmodifier"/>
          </a>                                                                                                                       
