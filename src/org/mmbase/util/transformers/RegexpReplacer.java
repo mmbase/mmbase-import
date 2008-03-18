@@ -194,7 +194,9 @@ public class RegexpReplacer extends ChunkedTransformer {
                 m.appendTail(sb);
                 if (replaceFirstAll) status.used.add(p);
                 string = sb.toString();
-                if (replaceFirst) break;
+                if (replaceFirst ||
+                    to == ChunkedTransformer.XMLTEXT_WORDS ||
+                    to == ChunkedTransformer.WORDS) break;
             }
 
         }
