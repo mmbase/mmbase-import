@@ -69,13 +69,13 @@ public abstract class ChunkedTransformer extends ConfigurableReaderTransformer i
     protected boolean replaceFirstAll = false;
 
     public void configure(int i) {
-        if (i >= 200) {
+        if (i >= REPLACE_FIRST_ALL) {
             replaceFirstAll = true;
-            i -= 200;
+            i -= REPLACE_FIRST_ALL;
         }
-        if (i >= 100) {
+        if (i >= REPLACE_FIRST) {
             replaceFirst = true;
-            i -= 100;
+            i -= REPLACE_FIRST;
         }
         super.configure(i);
     }
