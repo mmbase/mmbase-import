@@ -38,3 +38,12 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+
+Name: Checksum field for binary content
+Goal: Add a checksum field to attachments and images
+Type:  pointer
+Steps: this might be needed for Luceus for 1.3 as well. The script is located at the migration_1.3_to_1.4 script.
+*
+*
+*
