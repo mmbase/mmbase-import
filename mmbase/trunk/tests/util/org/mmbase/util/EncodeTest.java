@@ -175,6 +175,11 @@ public class EncodeTest extends TestCase {
         assertEquals(reg.transform("a  aa  a"), "a bb  a");
         assertEquals(reg.transform("a  aa  aa"), "a bb  aa");
 
+        pars.set("mode", "WORDS");
+        pars.set("replacefirst", "all");  reg = (CharTransformer)fact.createTransformer(pars);
+        assertEquals(reg.transform("a  aa  a"), "a  bb  a");
+        assertEquals(reg.transform("a  aa  aa"), "a  bb  aa");
+
     }
 
 
