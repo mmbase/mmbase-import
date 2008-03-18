@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.39 2007-08-31 06:09:24 michiel Exp $
+# $Id: build.properties.default,v 1.40 2008-03-18 10:57:10 pierre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -61,6 +61,14 @@ hsqldb.dest=${download.dir}/${hsqldb.file}
 hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
 hsqldb.dir=${expand.dir}/${hsqldb.version}
 hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
+
+# ----- jquery -----
+jquery.version=jquery.ui-1.5b
+jquery.file=${jquery.version}.zip
+jquery.dest=${download.dir}/${jquery.file}
+jquery.loc=http://jqueryjs.googlecode.com/files/jquery.ui-1.5b.zip
+jquery.dir=${expand.dir}/${jquery.version}
+jquery.js=${jquery.dir}/jquery.js
 
 
 # ----- javaactiovation ----

@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.166 2007-07-09 10:48:43 michiel Exp $
+$Id: build.xml,v 1.167 2008-03-18 10:57:10 pierre Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -131,6 +131,7 @@ several MMBase-checkouts.
     </condition>
     <tstamp/>
     <mkdir dir="${build.dir}"/>
+
     <property name="name"      value="mmbase"/>
     <property name="builddate" value="${DSTAMP}"/>
   </target>
@@ -316,6 +317,9 @@ builddate=${builddate}
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
+    <copy todir="${webapp.dir}/mmbase/jquery">
+      <fileset dir="${jquery.dir}"/>
+    </copy>
     <!--
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
     -->
@@ -990,6 +994,13 @@ Build-compiler: ${build.compiler}
       <param name="destfile" value="${hsqldb.dest}"/>
       <param name="destdir" value="${hsqldb.dir}"/>
       <param name="expandedfile" value="${hsqldb.jar}"/>
+    </antcall>
+
+    <echo message="jquery" />
+    <antcall target="downloadzip">
+      <param name="sourcefile" value="${jquery.loc}"/>
+      <param name="destfile" value="${jquery.dest}"/>
+      <param name="destdir" value="${jquery.dir}"/>
     </antcall>
 
 
