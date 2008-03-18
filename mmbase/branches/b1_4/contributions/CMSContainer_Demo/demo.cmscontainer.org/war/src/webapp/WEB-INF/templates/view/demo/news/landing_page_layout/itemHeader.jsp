@@ -1,1 +1,1 @@
- <div class="landingpagenewscolumn">
+ <div class="landingpagenewscolumn" id="landingpagenewscolumn0${param.index + 1}">
