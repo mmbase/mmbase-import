@@ -174,19 +174,27 @@ public class RegexpReplacer extends ChunkedTransformer {
             if (replaceFirstAll && status.used.contains(p)) continue;
             Matcher m = p.matcher(string);
             String replacement = entry.getValue();
-            boolean result = m.find();
+            boolean result = false;
+            if (to == ChunkedTransformer.XMLTEXT_WORDS || to == ChunkedTransformer.WORDS) {
+                result = m.matches(); // try for a full match, as string is one word.
+            } else {
+                result = m.find();
+            }
             if (result) {
                 r = true;
                 StringBuffer sb = new StringBuffer();
                 do {
                     status.replaced++;
                     m.appendReplacement(sb, replacement);
-                    if (replaceFirst) break;
+                    if (replaceFirst || replaceFirstAll ||
+                        to == ChunkedTransformer.XMLTEXT_WORDS ||
+                        to == ChunkedTransformer.WORDS) break;
                     result = m.find();
                 } while (result);
                 m.appendTail(sb);
                 if (replaceFirstAll) status.used.add(p);
                 string = sb.toString();
+                if (replaceFirst) break;
             }
 
         }
