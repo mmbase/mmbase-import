@@ -157,8 +157,8 @@ public class EncodeTest extends TestCase {
         pars.set("mode", "ENTIRE");
         List<Map.Entry<String, String>> patterns = new ArrayList<Map.Entry<String, String>>();
         patterns.add(new Entry<String, String>("\\s+", " "));
-        patterns.add(new Entry<String, String>("bb", "AAA"));
         patterns.add(new Entry<String, String>("aa", "bb"));
+        patterns.add(new Entry<String, String>("bb", "AAA"));
         pars.set("patterns", patterns);
         CharTransformer reg = fact.createTransformer(pars);
         assertEquals(reg.transform("a a"), "a a");
