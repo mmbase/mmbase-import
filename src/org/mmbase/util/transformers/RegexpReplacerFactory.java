@@ -21,6 +21,7 @@ import org.mmbase.util.functions.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
+ * @version $Id
  */
 
 public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
@@ -62,9 +63,9 @@ public class RegexpReplacerFactory implements ParameterizedTransformerFactory {
         String firstParam = (String) parameters.get("replacefirst");
         boolean replaceFirst = "true".equals(firstParam);
         boolean replaceFirstAll = "all".equals(firstParam);
-        trans.configure(c.config + 
-                        (replaceFirst ? RegexpReplacer.REPLACE_FIRST : 0) + 
-                        (replaceFirstAll ? RegexpReplacer.REPLACE_FIRST_ALL : 0)
+        trans.configure(c.config +
+                        (replaceFirst ? ChunkedTransformer.REPLACE_FIRST : 0) +
+                        (replaceFirstAll ? ChunkedTransformer.REPLACE_FIRST_ALL : 0)
                         );
         return trans;
     }
