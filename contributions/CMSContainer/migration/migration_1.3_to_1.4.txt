@@ -84,7 +84,6 @@ Exceptions/errors/other problems and what to do:
 *
 
 
-
 Name: JSPs inside customer projects may have wrong taglib-uri
 Goal: replace old uri-s with new correct uri-s
 Wrong found taglibs e.g.:
