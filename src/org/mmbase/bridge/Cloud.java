@@ -21,7 +21,7 @@ import org.mmbase.util.functions.Function;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.66 2008-03-17 10:05:02 michiel Exp $
+ * @version $Id: Cloud.java,v 1.67 2008-03-18 10:56:40 michiel Exp $
  */
 public interface Cloud {
 
@@ -678,6 +678,6 @@ public interface Cloud {
      */
     public StringList getPossibleContexts();
 
-    public Cloud getNonTransactionalCloud();
+    //public Cloud getNonTransactionalCloud();
 
 }
