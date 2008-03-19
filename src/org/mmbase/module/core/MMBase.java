@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.9 2008-03-11 16:49:43 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.10 2008-03-19 11:43:14 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -317,9 +317,15 @@ public class MMBase extends ProcessorModule {
             host        = machineName;
         }
 
-        tmp = getInitParameter("HOST");
-        if (tmp != null && !tmp.equals("")) {
-            host = tmp;
+        String hostParam = getInitParameter("HOST");
+        if (hostParam != null && !hostParam.equals("")) {
+            // try to incorporate the 'original' host (if needed)
+            int pos = hostParam.indexOf("${LOCALHOST}");
+            if (pos != -1) {
+                hostParam =hostParam.substring(0, pos) +
+                    host + hostParam.substring(pos + 12);
+            }
+            host = hostParam;
         }
 
         String machineNameParam = getInitParameter("MACHINENAME");
