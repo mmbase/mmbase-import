@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.24 2008-02-23 14:03:23 andre Exp $
+ * @version $Id: CacheManager.java,v 1.25 2008-03-19 15:32:40 michiel Exp $
  */
 public class CacheManager {
 
@@ -177,104 +177,24 @@ public class CacheManager {
                         queryCache.getReleaseStrategy().removeAllStrategies();
                         log.debug("found a SearchQueryCache: " + cacheName);
                         //see if there are globally configured release strategies
-                        List<ReleaseStrategy> strategies = findReleaseStrategies(xmlReader, xmlReader.getElementByPath("caches"));
-                        if(strategies != null){
-                            log.debug("found " + strategies.size() + " globally configured strategies");
-                            queryCache.addReleaseStrategies(strategies);
+                        Element releaseStrategies = xmlReader.getElementByPath("caches.releaseStrategies");
+                        if (releaseStrategies != null) {
+                            queryCache.getReleaseStrategy().fillFromXml(releaseStrategies);
                         }
+                        queryCache.getReleaseStrategy().fillFromXml(cacheElement);
 
-                        //see if there are strategies configured for this cache
-                        strategies = findReleaseStrategies(xmlReader, cacheElement);
-                        if(strategies != null){
-                            log.debug("found " + strategies.size() + " strategies for cache " + cache.getName());
-                            queryCache.addReleaseStrategies(strategies);
-                        }
                         if (queryCache.getReleaseStrategy().size() == 0) {
                             log.warn("No release-strategies configured for cache " + queryCache + " (nor globally configured); falling back to basic release strategy");
                             queryCache.addReleaseStrategy(new BasicReleaseStrategy());
                         }
+                        log.service("Release strategies for " + queryCache.getName() + ": " + queryCache.getReleaseStrategy());
                     }
                 }
             }
         }
     }
 
-    /**
-     * @param reader xml document reader instance
-     * @param parentElement the parent of the releaseStrategies element
-     * @return List of ReleaseStrategy instances
-     * @since 1.8
-     */
-    private static List<ReleaseStrategy> findReleaseStrategies(DocumentReader reader, Element parentElement) {
-        List<ReleaseStrategy> result = new ArrayList<ReleaseStrategy>();
 
-        List<Element> strategyParentIterator = reader.getChildElements(parentElement, "releaseStrategies");
-        if(strategyParentIterator.size() == 0){
-            return null;
-        } else{
-            parentElement = strategyParentIterator.get(0);
-
-            //now find the strategies
-            for (Element strategy: reader.getChildElements(parentElement, "strategy")) {
-                String strategyClassName = reader.getElementValue(strategy);
-                log.debug("found strategy in configuration: "+ strategyClassName);
-                try {
-                    ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
-                    log.debug("still there after trying to get a strategy instance... Instance is " + releaseStrategy==null ? "null" : "not null");
-
-                    //check if we got something
-                    if(releaseStrategy != null){
-                        result.add(releaseStrategy);
-                        log.debug("Successfully created and added "+releaseStrategy.getName() + " instance");
-                    } else {
-                        log.error("release strategy instance is null.");
-                    }
-
-                } catch (CacheConfigurationException e1) {
-                    // here we throw a runtime exception, because there is
-                    // no way we can deal with this error.
-                    throw new RuntimeException("Cache configuration error: " + e1.toString(), e1);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * I moved this code away from <code>configure()</code> just to
-     * clean up a little, and keep the code readable
-     * XXX: Who is I?
-     * @param strategyClassName
-     * @since 1.8
-     */
-    private static ReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException {
-        log.debug("getStrategyInstance()");
-        Class strategyClass;
-        ReleaseStrategy strategy = null;
-        try {
-            strategyClass = Class.forName(strategyClassName);
-            strategy = (ReleaseStrategy) strategyClass.newInstance();
-            log.debug("created strategy instance: "+strategyClassName);
-
-        } catch (ClassCastException e){
-            log.debug(strategyClassName + " can not be cast to strategy");
-            throw new CacheConfigurationException(strategyClassName + " can not be cast to strategy");
-        } catch (ClassNotFoundException e) {
-            log.debug("exception getStrategyInstance()");
-            throw new CacheConfigurationException("Class "+strategyClassName +
-                    "was not found");
-        } catch (InstantiationException e) {
-            log.debug("exception getStrategyInstance()");
-            throw new CacheConfigurationException("A new instance of " + strategyClassName +
-                    "could not be created: " + e.toString());
-        } catch (IllegalAccessException e) {
-            log.debug("exception getStrategyInstance()");
-            throw new CacheConfigurationException("A new instance of " + strategyClassName +
-                    "could not be created: " + e.toString());
-        }
-        log.debug("exit getStrategyInstance()");
-        return strategy;
-    }
 
     /**
      * The caches can be configured with an XML file, this file can
