@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="images" maintainer="mmbase.org" version="1" extends="object">
 
   <class>org.mmbase.module.builders.Images</class>
@@ -33,7 +33,7 @@
   </descriptions>
 
 
-  
+
   <properties>
 
      <!-- convert using JAI http://java.sun.com/products/java-media/jai/index.html
@@ -48,12 +48,12 @@
     -->
     <property name="ImageConvert.ConverterRoot"></property>
 
-    <!-- 
+    <!--
          The convert 'Method' is relevant for the ImageMagickImageConverter class.  It can be
          'launcher' or 'connector'. If launcher (default), then the convert binary will be started
          in the current JVM (which may give issues with memory). If 'connector' then it will connect
          to the 'command server' which will do the launching. This is ussually a small JVM on the
-         same machine which is listening to a certain TCP port. 
+         same machine which is listening to a certain TCP port.
          See also ImageConvert.Host and ImageConvert.Port.
 
     -->
@@ -173,8 +173,8 @@
         </positions>
       </editor>
       <datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <property name="validMimeTypes" value="image/.*" />
         <maxLength value="16777215" enforce="never"/>
-        <pattern value="image/.*" />
       </datatype>
     </field>
 
