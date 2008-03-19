@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.7.2.1 2007-12-20 13:46:53 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.7.2.2 2008-03-19 15:37:23 michiel Exp $
  */
 public class FactoryCache extends Cache {
     private static final Logger log = Logging.getLoggerInstance(FactoryCache.class);
@@ -79,7 +79,7 @@ public class FactoryCache extends Cache {
                 tf.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
             } catch (IllegalArgumentException iae) {
                 if (! warnedFeature) {
-                    log.warn(tf + ": " + iae.getMessage() + ". (subsequent messages logged on debug)");
+                    log.service(tf + ": " + iae.getMessage() + ". (subsequent messages logged on debug)");
                     warnedFeature = true;
                 } else {
                     log.debug(tf + ": " + iae.getMessage() + ".");
