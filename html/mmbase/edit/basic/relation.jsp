@@ -30,7 +30,9 @@
 
 <tr>
     <td class="data">
-        <%=otherManager.getGUIName()%> (<%= role %>: <%=guirole%>)
+        <%=otherManager.getGUIName()%>
+        (<%= role %>: <%=guirole%>)
+        <span class="nmname"><%=otherManager.getName()%></span>
     </td>
     <th colspan="3"><%=m.getString("relations.relations")%></th>
     <th colspan="3"><%=m.getString("relations.related")%>
@@ -102,7 +104,7 @@
     <td class="data">
       #<mm:field id="relatednumber" name="number" />
     </td>
-    <td 
+    <td
      <%@include file="node_title.jsp" %>
      class="data" colspan="2">
       <mm:nodeinfo type="gui" /> (<mm:field name="owner" />)
