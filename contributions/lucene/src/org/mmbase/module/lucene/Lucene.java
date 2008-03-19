@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import org.mmbase.cache.CachePolicy;
+import org.mmbase.cache.*;
 import org.mmbase.module.ReloadableModule;
 
 import org.mmbase.core.event.*;
@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.108 2008-03-17 08:58:20 andre Exp $
+ * @version $Id: Lucene.java,v 1.109 2008-03-19 16:25:22 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -154,8 +154,13 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
 
     private List<String> configErrors = new ArrayList<String>();
     private Date configReadTime = new Date(0);
-    /* keeps track of startnodes to not reindex them */
-    private Set startNodes = new HashSet();
+    /**
+     * keeps track of startnodes to not reindex them
+     * @todo If a startnode changes itself you _might_ want to reindex.
+     */
+    private Set<String> startNodes = new HashSet<String>();
+
+    private ChainedReleaseStrategy defaultStrategy = new ChainedReleaseStrategy();
 
     /**
      * Returns whether an element has a certain attribute, either an unqualified attribute or an attribute that fits in the
@@ -805,6 +810,17 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             // do not cache these queries
             queryDefinition.query.setCachePolicy(CachePolicy.NEVER);
 
+            queryDefinition.getReleaseStrategy().removeAllStrategies();
+            queryDefinition.getReleaseStrategy().fillFromXml(queryElement.getOwnerDocument().getDocumentElement());
+            if (queryDefinition.getReleaseStrategy().size() == 0) {
+                Iterator i = defaultStrategy.iterator();
+                while (i.hasNext()) {
+                    ReleaseStrategy rs = (ReleaseStrategy) i.next();
+                    queryDefinition.getReleaseStrategy().addReleaseStrategy(rs);
+                }
+            }
+
+
             // MM: I think the follwing functionality should be present on MMBaseIndexDefinition itself. and not on Lucene.
             // And of course, the new event-mechanism must be used.
             if (!readOnly) {
@@ -854,13 +870,35 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
         };
 
     protected void readConfiguration(String resource) {
+
+
+        defaultStrategy.removeAllStrategies();
+        List<URL> configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
+        log.service("Reading " + configList);
+        for(URL url : configList) {
+            try {
+                if (! url.openConnection().getDoInput()) continue;
+                Document config = ResourceLoader.getDocument(url, true, Lucene.class);
+                log.service("Reading lucene strategy configuration from " + url);
+                Element root = config.getDocumentElement();
+                if (defaultStrategy.size() == 0) {
+                    defaultStrategy.fillFromXml(root);
+                }
+            } catch (Exception e) {
+                log.warn(e);
+            }
+        }
+        if (defaultStrategy.size() == 0) {
+            defaultStrategy.addReleaseStrategy(new BasicReleaseStrategy());
+        }
+        log.service("Default release strategy " + defaultStrategy);
+
         indexerMap.clear();
         searcherMap.clear();
         disableIndexes.clear();
         defaultIndex = null;
         factory.clear();
-        List<URL> configList = ResourceLoader.getConfigurationRoot().getResourceList(resource);
-        log.service("Reading " + configList);
+
         for(URL url : configList) {
             try {
                 if (! url.openConnection().getDoInput()) continue;
@@ -868,6 +906,11 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                 log.service("Reading lucene search configuration from " + url);
                 Element root = config.getDocumentElement();
                 disableIndexes.addAll(StringSplitter.split(root.getAttribute("disableIndexes")));
+
+
+                if (defaultStrategy.size() == 0) {
+                    defaultStrategy.fillFromXml(root);
+                }
 
                 NodeList extractorElements = root.getElementsByTagName("extractor");
                 for (int i = 0; i < extractorElements.getLength(); i++) {
@@ -1013,14 +1056,14 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
             switch(event.getType()) {
             case Event.TYPE_NEW:
                 //scheduler.newIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                if (!startNodes.contains("" + event.getRelationDestinationNumber())) 
+                if (!startNodes.contains("" + event.getRelationDestinationNumber()))
                     scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
                 break;
             case Event.TYPE_CHANGE:
             case Event.TYPE_DELETE:
-                if (!startNodes.contains("" + event.getRelationSourceNumber())) 
+                if (!startNodes.contains("" + event.getRelationSourceNumber()))
                     scheduler.updateIndex("" + event.getRelationSourceNumber(), MMBaseIndexDefinition.class);
-                if (!startNodes.contains("" + event.getRelationDestinationNumber())) 
+                if (!startNodes.contains("" + event.getRelationDestinationNumber()))
                     scheduler.updateIndex("" + event.getRelationDestinationNumber(), MMBaseIndexDefinition.class);
                 break;
             }
