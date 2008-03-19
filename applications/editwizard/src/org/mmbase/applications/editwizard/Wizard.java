@@ -46,7 +46,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.161 2008-02-19 20:52:31 nklasens Exp $
+ * @version $Id: Wizard.java,v 1.162 2008-03-19 13:13:56 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
@@ -419,7 +419,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 // setup original data
                 originalData = Utils.emptyDocument();
-                loadedData = Utils.parseXML("<loadedData />"); 
+                loadedData = Utils.parseXML("<loadedData />");
 
                 // Get the definition and create a copy of the object-definition.
                 Node objectdef = Utils.selectSingleNode(schema, "./wizard-schema/action[@type='create']");
@@ -552,8 +552,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         params.put("timezone", timezone);
         try {
             params.put("referrer_encoded", java.net.URLEncoder.encode(referrer, "UTF-8"));
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             log.debug("" + e.getMessage(), e);
         }
 
@@ -2913,7 +2912,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
 
         public String getName() {
-            return "nodes"; // this is rather absurd, because we also have 'Nodes', which is something entirely different.
+            return "Editwizard nodes";
         }
 
         public String getDescription() {
