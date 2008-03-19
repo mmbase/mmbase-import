@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.25 2008-03-19 16:13:49 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.26 2008-03-19 16:21:25 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<ReleaseStrategy> {
 
@@ -72,10 +72,10 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
                             log.error("release strategy instance is null.");
                         }
 
-                    } catch (CacheConfigurationException e1) {
+                    } catch (CacheConfigurationException cce) {
                         // here we throw a runtime exception, because there is
                         // no way we can deal with this error.
-                        throw new RuntimeException("Cache configuration error: " + e1.toString(), e1);
+                        throw new RuntimeException("Cache configuration error: " + cce.getMessage(), cce);
                     }
                 }
             }
@@ -87,32 +87,20 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * @since 1.8.6
      */
     private static ReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException {
-        log.debug("getStrategyInstance()");
-        Class strategyClass;
-        ReleaseStrategy strategy = null;
         try {
-            strategyClass = Class.forName(strategyClassName);
-            strategy = (ReleaseStrategy) strategyClass.newInstance();
+            Class strategyClass = Class.forName(strategyClassName);
+            ReleaseStrategy strategy = (ReleaseStrategy) strategyClass.newInstance();
             log.debug("created strategy instance: "+strategyClassName);
-
+            return strategy;
         } catch (ClassCastException e){
-            log.debug(strategyClassName + " can not be cast to strategy");
-            throw new CacheConfigurationException(strategyClassName + " can not be cast to strategy");
+            throw new CacheConfigurationException("'" + strategyClassName + "' can not be cast to strategy.", e);
         } catch (ClassNotFoundException e) {
-            log.debug("exception getStrategyInstance()");
-            throw new CacheConfigurationException("Class "+strategyClassName +
-                    "was not found");
+            throw new CacheConfigurationException("Class '" + strategyClassName + "' was not found", e);
         } catch (InstantiationException e) {
-            log.debug("exception getStrategyInstance()");
-            throw new CacheConfigurationException("A new instance of " + strategyClassName +
-                    "could not be created: " + e.toString());
+            throw new CacheConfigurationException("A new instance of '" + strategyClassName + "' could not be created: " + e.getMessage(), e);
         } catch (IllegalAccessException e) {
-            log.debug("exception getStrategyInstance()");
-            throw new CacheConfigurationException("A new instance of " + strategyClassName +
-                    "could not be created: " + e.toString());
+            throw new CacheConfigurationException("A new instance of '" + strategyClassName + "' could not be accessed: " + e.getMessage(), e);
         }
-        log.debug("exit getStrategyInstance()");
-        return strategy;
     }
 
 
