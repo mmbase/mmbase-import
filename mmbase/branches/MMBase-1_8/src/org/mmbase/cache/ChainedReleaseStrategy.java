@@ -28,7 +28,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.18.2.1 2008-03-19 15:38:04 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.18.2.2 2008-03-19 16:13:35 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
@@ -55,7 +55,10 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
                 Element childElement = (Element) childNodes.item(k);
                 if ("strategy".equals(childElement.getLocalName())) {
                     try {
-                        String strategyClassName = DocumentReader.getNodeTextValue(childElement);
+                        String strategyClassName = childElement.getAttribute("class");
+                        if ("".equals(strategyClassName)) {
+                            strategyClassName = DocumentReader.getNodeTextValue(childElement);
+                        }
                         ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
                         log.debug("still there after trying to get a strategy instance... Instance is " + releaseStrategy==null ? "null" : "not null");
                         //check if we got something
