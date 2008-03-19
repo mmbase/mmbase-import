@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.91 2008-03-03 14:34:29 michiel Exp $
+ * @version $Id: Dove.java,v 1.92 2008-03-19 12:13:31 andre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1056,7 +1056,7 @@ public class Dove extends AbstractDove {
     }
 
     /**
-     * Creates a new node.
+     * Creates a new relation.
      * @param alias the node alias in the put tree
      * @param values a Map with new node values
      * @param aliases a Map with mappings from XML aliases to node reference values
@@ -1103,7 +1103,7 @@ public class Dove extends AbstractDove {
 
 
     /**
-     * Creates a new node.
+     * Deletes a node.
      * @param alias the node alias in the put tree
      * @param originalValues a Map with the original values of the node
      * @param out the element that describes 'new' cloud.
@@ -1128,10 +1128,11 @@ public class Dove extends AbstractDove {
             err.setAttribute(ELM_TYPE, IS_SERVER);
             return false;
         }
+
      }
 
     /**
-     * Creates a new node.
+     * Deletes a relation.
      * @param alias the node alias in the put tree
      * @param originalValues a Map with the original values of the relation
      * @param out the element that describes 'new' cloud.
@@ -1156,7 +1157,52 @@ public class Dove extends AbstractDove {
      }
 
     /**
-     * Creates a new node.
+     * Changes a relation
+     * @param alias the node alias in the put tree
+     * @param values a Map with new node values
+     * @param originalValues a Map with original node values, used for validation
+     * @param aliases a Map with mappings from XML aliases to node reference values
+     * @param out the element that describes 'new' cloud.
+     *           The result of the put (an error or the resulting cloud) should be added
+     *           as childs to this element.
+     * @param cloud the cloud to work on
+     * @return true if succesful, false if an error ocurred
+     */
+    protected boolean putChangeRelation(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
+        String role = (String)values.get("_role");
+        
+        RelationManager relman = cloud.getRelationManager(role);
+        String sourcenumber=getNodeReferenceFromValue("_source",values, aliases);
+        String destinationnumber=getNodeReferenceFromValue("_destination",values, aliases);
+        
+        if (log.isDebugEnabled()) log.debug("Changing a relation between node " + sourcenumber + " and " + destinationnumber);
+
+        org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
+        // check if they are the same type
+        if (mmbaseNode.getNodeManager().getName().equals(relman.getName()) ) {
+            // create new node for response
+            Element relationElement = doc.createElement(RELATION);
+            relationElement.setAttribute(ELM_SOURCE, "" + sourcenumber);
+            relationElement.setAttribute(ELM_DESTINATION, "" + destinationnumber);
+            relationElement.setAttribute(ELM_ROLE, role);
+            if (!fillFields(alias, mmbaseNode, relationElement, values, originalValues)) {
+                out.appendChild(relationElement);
+                return false;
+            }
+            mmbaseNode.commit();
+            // add node to response
+            out.appendChild(relationElement);
+            return true;
+        } else {
+            // give error its the wrong type
+            Element err = addContentElement(ERROR, "Node not same type as in the cloud, node number : " + alias + ", cloud type=" + mmbaseNode.getNodeManager().getName()+", expected=" + relman.getName() + ")", out);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
+            return false;
+        }
+    }
+    
+    /**
+     * Changes a node.
      * @param alias the node alias in the put tree
      * @param values a Map with new node values
      * @param originalValues a Map with original node values, used for validation
@@ -1268,7 +1314,16 @@ public class Dove extends AbstractDove {
                 if (originalValues != null) {
                     if(!putDeleteRelation(alias, originalValues, newElement, cloud)) return false;;
                 } // no error ???
-            // add code for change relation ?
+            } else if (status == null || status.equals("") || status.equals("change")) {
+                // check if we have an original allready existing relation
+                Map<String,Object> originalValues = originalRelations.get(alias);
+                if (originalValues != null) {
+                    if(!putChangeRelation(alias, values, originalValues, aliases, newElement, cloud)) return false;
+                } else {
+                    Element err = addContentElement(ERROR, "Relation not found between original values, node number: " + alias, out);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
+                    return false;
+                }
             } else {
                 // give error not a org. node
                 Element err = addContentElement(ERROR, "Invalid status " + status + " for node : " + alias, out);
