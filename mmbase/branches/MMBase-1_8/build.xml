@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.147.2.5 2007-12-12 20:17:22 michiel Exp $
+$Id: build.xml,v 1.147.2.6 2008-03-19 11:37:45 pierre Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -760,6 +760,7 @@ Build-compiler: ${build.compiler}
              destdir="${mmdocs.dir}/javadoc/complete"
              author="true"
              version="true"
+             linksource="true"
              use="false"
              noindex="false"
              failonerror="true"
@@ -773,24 +774,23 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
-      <fileset dir="${source.dir}/src" defaultexcludes="yes" />
-      <fileset dir="${generated-source-src.dir}" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
-      <fileset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/dove/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/email/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/media/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/oscache-cache/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/richtext/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/xmlimporter/src" defaultexcludes="yes" />
-      <fileset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
-
+      <packageset dir="${source.dir}/src" defaultexcludes="yes" />
+      <packageset dir="${generated-source-src.dir}" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/dove/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/email/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/media/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/oscache-cache/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/richtext/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/xmlimporter/src" defaultexcludes="yes" />
       <classpath>
         <fileset dir="${release.lib.dir}">
           <include name="**/*.jar"/>

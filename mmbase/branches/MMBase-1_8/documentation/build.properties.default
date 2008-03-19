@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.8.2.2 2007-11-24 13:53:36 michiel Exp $
+# $Id: build.properties.default,v 1.8.2.3 2008-03-19 11:37:45 pierre Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -52,12 +52,10 @@ docbook-xsl.home=${download.dir}/${docbook-xsl.version}
 docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
 
 # ---- Fop is a terrible system to produce PDFs ----
-#fop.version=fop-0.20.5
 fop.version=fop-0.94
-#fop.file=${fop.version}-bin.tar.gz
 fop.file=${fop.version}-bin-jdk1.4.tar.gz
 fop.loc=http://www.mmbase.org/download/${fop.file}
-#fop.loc=http://dist.apache.easynet.nl/xmlgraphics/fop/${fop.file}
+fop.loc=http://archive.apache.org/dist/xmlgraphics/fop/binaries/${fop.file}
 fop.dest=${download.dir}/${fop.file}
 fop.exp=${expand.dir}/${fop.version}
 
