@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.9
  * @author Michiel Meeuwissen
- * @version $Id: Instantiator.java,v 1.2 2007-12-28 17:14:57 michiel Exp $
+ * @version $Id: Instantiator.java,v 1.3 2008-03-19 17:05:28 michiel Exp $
  */
 public abstract class Instantiator {
 
@@ -66,25 +66,43 @@ public abstract class Instantiator {
                     Element param = (Element)node;
                     String name = param.getAttribute("name");
                     String value = org.mmbase.util.xml.DocumentReader.getNodeTextValue(param);
-                    String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
-                    try {
-                        Method method = claz.getMethod(methodName, String.class);
-                        method.invoke(o, value);
-                    } catch (NoSuchMethodException nsme) {
-                        try {
-                            Method method = claz.getMethod(methodName, Boolean.TYPE);
-                            method.invoke(o, Casting.toBoolean(value));
-                        } catch (NoSuchMethodException nsme2) {
-                            Method method = claz.getMethod(methodName, Integer.TYPE);
-                            method.invoke(o, Casting.toInt(value));
-                        }
-                    }
+                    setProperty(name, claz, o, value);
+
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
         }
         return o;
+    }
+
+    /**
+     * Given the name of a property, a clazz, on object and a value, set the property on the
+     * object. The point of this method is that it converts the name of the property to an actual
+     * method name (set&lt;Name of the property&gt;). The methods needs to have precisely
+     * <em>one</em> parameter. The type of this parameter may be anything as long as it can be
+     * converted to from String by {@link org.mmbase.util.Casting#toType(Class, Object)}.
+     *
+     * @param value The value as a <code>String</code>
+     */
+    public static void setProperty(String name, Class claz, Object o, String value) {
+        String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+        boolean invoked = false;
+        for (Method m : claz.getMethods()) {
+            try {
+                if (m.getName().equals(methodName) && m.getParameterTypes().length == 1) {
+                    if (invoked) {
+                        log.warn("Found multiple matches for setter " + name + " on " + claz);
+                    }
+                    m.invoke(o, Casting.toType(m.getParameterTypes()[0], value));
+                    invoked = true;
+                }
+            } catch (IllegalAccessException ie) {
+                log.warn(ie);
+            } catch (InvocationTargetException ite) {
+                log.warn(ite);
+            }
+        }
     }
 
 
