@@ -1,19 +1,26 @@
-<div xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl"
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="nl"
      xmlns:rich="http://www.mmbase.org/tags/mm/rich"
      xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <jsp:output omit-xml-declaration="true" />
-  <mm:import externid="node" from="session" />
+  <mm:content expires="0" type="text/xml">
+    <jsp:output omit-xml-declaration="true" />
+    <mm:import externid="objectnumber" required="true"/>
+    <mm:cloud rank="basic user" jspvar="cloud">
+      <mm:form id="transaction" mode="validate">
+        <mm:node referid="objectnumber" commitonclose="false">
+          <mm:fieldlist type="edit">
+            <mm:fieldinfo type="useinput" />
+          </mm:fieldlist>
+          <h1><mm:field name="title" /></h1>
+          <p><jsp:expression>cloud</jsp:expression> <mm:time time="now" /></p>
+          <h2><mm:field name="subtitle" /></h2>
+          <mm:field name="intro" escape="p" />
 
-  <mm:node referid="node" commitonclose="false">
-    <mm:fieldlist type="edit" id="transaction">
-      <mm:fieldinfo type="useinput" />
-    </mm:fieldlist>
-    <h1><mm:field name="title" /></h1>
-    <h2><mm:field name="subtitle" /></h2>
-    <mm:field name="intro" escape="p" />
+          <rich:body />
 
-    <rich:body />
-
-  </mm:node>
+        </mm:node>
+      </mm:form>
+    </mm:cloud>
+  </mm:content>
 </div>

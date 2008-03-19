@@ -1,15 +1,18 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
-      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+<?xml version="1.0" ?>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     lang="en">
-  <jsp:directive.page buffer="10000kb" />
-
+  <jsp:directive.page buffer="2000kb" />
   <mm:content type="application/xhtml+xml"
               postprocessor="none"
               language="nl" expires="0">
+
     <mm:cloud rank="basic user">
+
       <mm:param name="org.mmbase.xml-mode" value="wiki" />
 
 
@@ -19,16 +22,15 @@
         <script src="${jq}jquery-1.2.3.min.js"><jsp:text> </jsp:text></script>
         <script src="${jq}jquery.dimensions.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.mouse.js"><jsp:text> </jsp:text></script>
-
         <script src="${jq}ui.resizable.js"></script>
         <script src="${jq}ui.draggable.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.draggable.ext.js"><jsp:text> </jsp:text></script>
         <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
         <script language="javascript" src="edit.js"><jsp:text> </jsp:text></script>
+        <link rel="stylesheet" type="text/css" href="${mm:link('/mmbase/taglib/page.css.jsp')}" />
         <link rel="stylesheet" type="text/css" href="q.css" />
       </head>
       <body>
-
         <mm:haspage page="/mmbase/jquery/jquery-1.2.3.min.js" inverse="true">
           <h1 class="error">You need to have jquery installed in /mmbase/jquery!</h1>
         </mm:haspage>
@@ -40,7 +42,7 @@
         </mm:compare>
 
         <div id="main">
-          <mm:form id="transaction" page=".">
+          <mm:form id="transaction" page="." commitonclose="false">
             <mm:node id="objectnumber" referid="objectnumber" commitonclose="false">
 
               <input type="hidden" name="objectnumber" value="${_node}" />
@@ -57,33 +59,29 @@
                   </tr>
                 </mm:fieldlist>
               </table>
+
               <input type="submit" name="submit" id="submit" value="submit" />
               <input type="submit" name="cancel" id="cancel" value="cancel" />
+              <input type="text" name="comments" value="Beschrijf uw verandering hier" />
               <hr />
-              <mm:link page=".." referids="_node@objectnumber">
-                <mm:param name="expires">0</mm:param>
-                <a href="${_}">back</a>
-              </mm:link>
-              <jsp:text> | </jsp:text>
               <mm:link page="../versions" referids="_node@objectnumber">
                 <mm:param name="expires">0</mm:param>
                 <a href="${_}">versions</a>
               </mm:link>
-              <mm:write session="node" referid="_node" />
             </mm:node>
           </mm:form>
         </div>
         <div id="preview">
           <h1>Preview</h1>
-          <a>reload</a>
+          <a id="reload_${objectnumber}">reload</a>
           <div>
-            <mm:include page="preview.jspx" />
+            <mm:include page="preview.jspx" referids="objectnumber" />
           </div>
         </div>
         <div id="relations">
           <mm:node referid="objectnumber" commitonclose="false">
 
-            <mm:form id="transaction">
+            <mm:form name="transaction">
               <ul>
                 <c:forTokens items="urls,images" delims="," var="type" >
                   <mm:include page="related.li.jspx" referids="type" />
@@ -93,17 +91,24 @@
           </mm:node>
           </div>
           <div id="commit">
-            <mm:form id="transaction">
+            <mm:form id="transaction" mode="validate">
               <mm:import externid="cancel" />
               <mm:present referid="cancel">
                 <mm:cancel />
-                <mm:write session="node" value="" />
                 <mm:log>Canceling transaction ${transaction}</mm:log>
-                <mm:redirect referids="objectnumber" />
+                <mm:redirect page=".." referids="objectnumber">
+                  <mm:param name="expires">0</mm:param>
+                </mm:redirect>
               </mm:present>
+              <mm:log>0</mm:log>
               <mm:valid>
+                <mm:log>a</mm:log>
                 <mm:import externid="submit" />
+                <mm:log>b</mm:log>
                 <mm:present referid="submit">
+                  <mm:log>c</mm:log>
+                  <mm:import externid="comments" />
+                  <mm:param name="org.mmbase.versioning.comments" referid="comments" />
                   <h1>Committing ${_} for ${transaction.cloudVar}</h1>
                   <mm:commit />
                 </mm:present>

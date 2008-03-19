@@ -7,9 +7,9 @@
   <mm:content expires="0" type="application/xml">
     <mm:import externid="id" required="true" />
     <mm:import externid="search" />
-    <mm:import from="session" externid="${id}" id="query" />
+    <mm:import from="session" externid="${id}" id="query" required="true" />
     <mm:import externid="offset" vartype="integer">0</mm:import>
-    <mm:listnodescontainer clone="query">
+    <mm:listnodescontainer id="b" clone="query">
       <c:if test="${! empty search}">
         <mm:composite operator="OR">
           <mm:fieldlist type="search" id="field">
@@ -21,35 +21,47 @@
       </c:if>
       <mm:maxnumber value="10" />
       <mm:offset value="${offset}" />
-      <table>
+      <table class="searchresult" summary="Search results for ${search}">
         <thead>
           <tr>
-            <th>#</th>
+            <th class="node">#</th>
+            <th class="node"> </th>
             <mm:fieldlist nodetype="${query.nodeManager.name}" type="list">
-              <th><mm:fieldinfo type="guiname" /></th>
+              <th class="fields"><mm:fieldinfo type="guiname" /></th>
             </mm:fieldlist>
           </tr>
         </thead>
         <tbody>
-          <mm:listnodes>
-            <tr>
-              <th><mm:nodeinfo type="gui" /></th>
+          <mm:listnodes varStatus="status">
+            <tr class="click ${status.index % 2 eq 0 ? 'even' : 'odd'}" id="${id}_node_${_node}">
+              <td class="node">
+                <mm:field name="number" />
+              </td>
+              <td class="node">
+                <mm:nodeinfo type="gui" />
+              </td>
               <mm:fieldlist type="list">
-                <td><mm:fieldinfo type="guivalue" /></td>
+                <td class="fields"><mm:fieldinfo type="guivalue" /></td>
               </mm:fieldlist>
             </tr>
           </mm:listnodes>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="10000">
+              <mm:previousbatches>
+                <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
+                <jsp:text>, </jsp:text>
+              </mm:previousbatches>
+              <mm:index />
+              <mm:nextbatches>
+                <jsp:text>, </jsp:text>
+                <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
+              </mm:nextbatches>
+            </td>
+          </tr>
+        </tfoot>
       </table>
-      <mm:previousbatches>
-        <a href="${_}" onclick="return Searcher('${id}', ${_}, '${search}')"><mm:index /></a>
-        <jsp:text>, </jsp:text>
-      </mm:previousbatches>
-      <mm:index />
-      <mm:nextbatches>
-        <jsp:text>, </jsp:text>
-        <a href="${_}" onclick="return Searcher('${id}', ${_}, '${search}')"><mm:index /></a>
-      </mm:nextbatches>
     </mm:listnodescontainer>
   </mm:content>
 </div>
