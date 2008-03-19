@@ -28,9 +28,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.23 2008-03-19 15:32:40 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.24 2008-03-19 16:03:00 michiel Exp $
  */
-public class ChainedReleaseStrategy extends ReleaseStrategy {
+public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<ReleaseStrategy> {
 
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
 
@@ -40,7 +40,10 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     //so the old settings can be returned when it is enabled again
     private final Map<String, Boolean> childStrategyMemory = new HashMap<String, Boolean>();
 
-    public ChainedReleaseStrategy() {
+    public ChainedReleaseStrategy(ReleaseStrategy... rs) {
+        for (ReleaseStrategy r : rs) {
+            addReleaseStrategy(r);
+        }
     }
 
 
