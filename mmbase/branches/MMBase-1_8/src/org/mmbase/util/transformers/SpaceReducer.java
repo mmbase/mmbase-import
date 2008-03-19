@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.12.2.4 2008-03-07 14:13:12 michiel Exp $
+ * @version $Id: SpaceReducer.java,v 1.12.2.5 2008-03-19 13:57:51 pierre Exp $
  */
 
 public class SpaceReducer extends ReaderTransformer implements CharTransformer {
@@ -59,7 +59,6 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
                 currentlyOpened = null;
             }
         } else {
-            System.out.println("currently opened is null");
             //look for an opening tag
             for (Iterator i = tagsToPass.iterator(); i.hasNext(); ) {
                 Tag tag = (Tag)i.next();
