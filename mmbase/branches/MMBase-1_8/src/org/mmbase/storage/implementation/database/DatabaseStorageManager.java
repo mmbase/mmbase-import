@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.9 2008-03-07 14:41:26 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.10 2008-03-19 11:52:47 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -68,6 +68,11 @@ public class DatabaseStorageManager implements StorageManager {
      * Whether the warning about blob on legacy location was given.
      */
     private static boolean legacyWarned = false;
+
+    /**
+     * Whether the warning about blobs located on disk was given.
+     */
+    private boolean blobsOnDiskWarned = false;
 
     /**
      * The cache that contains the last X types of all requested objects
@@ -736,12 +741,12 @@ public class DatabaseStorageManager implements StorageManager {
      * @return true if binary field should be stored as file, otherwise false.
      */
     private boolean checkStoreFieldAsFile(MMObjectBuilder builder) {
-    	if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
-    		return true;
-    	} else if (factory.getStoreBinaryAsFileObjects().contains(builder.getTableName())) {
-    		return true;
-    	}
-    	return false;
+        if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+            return true;
+        } else if (factory.getStoreBinaryAsFileObjects().contains(builder.getTableName())) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -802,7 +807,6 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
      * If non-existing it checks older locations.
      * @return the file to be used, or <code>null</code> if no existing readable file could be found, also no 'legacy' one.
      */
-
     protected File checkFile(File binaryFile, MMObjectNode node, CoreField field) {
         String fieldName = field.getName();
         if (!binaryFile.canRead()) {
@@ -812,16 +816,18 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
                 File legacy = getLegacyBinaryFile(node, fieldName);
                 if (legacy == null) {
                     if (field.isNotNull() && !binaryFile.getParentFile().exists()) {
-                        log.warn("The file '" + binaryFile + "' does not exist, " + desc, new Exception());
-                        log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
+                        if (!blobsOnDiskWarned || log.isDebugEnabled()) {
+                            log.warn("The file '" + binaryFile + "' does not exist, " + desc);
+                            log.info("If you upgraded from older MMBase version, it might be that the blobs were stored on a different location. Make sure your blobs are in '"
                                  + factory.getBinaryFileBasePath()
                                  + "' (perhaps use symlinks?). If you changed configuration to 'blobs-on-disk' while it was blobs-in-database. Go to admin-pages.");
-
+                            blobsOnDiskWarned = true;
+                        }
                     } else if (log.isDebugEnabled()) {
                         log.debug("The file '" + binaryFile + "' does not exist. Probably the blob field is simply 'null'");
                     }
                 } else {
-                    if (!legacyWarned) {
+                    if (!legacyWarned || log.isDebugEnabled()) {
                         log.warn("Using the legacy location '" + legacy + "' rather then '" + binaryFile + "'. You might want to convert this dir.");
                         legacyWarned = true;
                     }
