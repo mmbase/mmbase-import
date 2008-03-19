@@ -212,7 +212,7 @@
              <list>5</list>
           </positions>
         </editor>
-        <datatype base="filesize" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+        <datatype base="filesize_deprecated" xmlns="http://www.mmbase.org/xmlns/datatypes" />
      </field>
     <field name="width" state="system">
       <descriptions>
@@ -224,7 +224,9 @@
         <guiname xml:lang="nl">Breedte</guiname>
         <guiname xml:lang="eo">Larĝo</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
     <field name="height" state="system">
       <descriptions>
@@ -236,7 +238,9 @@
         <guiname xml:lang="nl">Hoogte</guiname>
         <guiname xml:lang="eo">Alto</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <minInclusive value="0" />
+      </datatype>
     </field>
     <field name="filename">
       <descriptions>

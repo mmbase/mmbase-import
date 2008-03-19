@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="icaches" maintainer="www.mmbase.org" version="0" extends="object">
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="icaches" maintainer="mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.module.builders.ImageCaches</class>
   <searchage>14</searchage>
@@ -30,15 +30,15 @@
      <description xml:lang="it">Memoria nascosta per le immagini elaborate</description>
   </descriptions>
 
-  
+
   <properties>
     <!--
       READ THIS WHEN UPGRADING FROM 1.7.3 OR LOWER
       LegacyCKey: If this property is true or missing (as in legacy icaches.xml), then icaches are also matched
-                  by the 'legacy' form (without plus-signs). This is a slight performance penalty which can be 
-                  avoided if icaches is clean (as in new installations), icached is cleaned, or if you don't mind.                  
+                  by the 'legacy' form (without plus-signs). This is a slight performance penalty which can be
+                  avoided if icaches is clean (as in new installations), icached is cleaned, or if you don't mind.
       FixLegacyCKey: If this property is true or missing, then icaches that mach the legacy form will be updated
-                     with the new CKEY format on the database as soon as they are found. This means that if you 
+                     with the new CKEY format on the database as soon as they are found. This means that if you
                      have a mix of 1.7 and 1.8 machines on 1 database, you want to set this to false!
     -->
     <property name="LegacyCKey">false</property>
