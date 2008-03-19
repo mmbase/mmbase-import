@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.24 2008-03-19 16:03:00 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.25 2008-03-19 16:13:49 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<ReleaseStrategy> {
 
@@ -58,7 +58,10 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
                 Element childElement = (Element) childNodes.item(k);
                 if ("strategy".equals(childElement.getLocalName())) {
                     try {
-                        String strategyClassName = DocumentReader.getNodeTextValue(childElement);
+                        String strategyClassName = childElement.getAttribute("class");
+                        if ("".equals(strategyClassName)) {
+                            strategyClassName = DocumentReader.getNodeTextValue(childElement);
+                        }
                         ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
                         log.debug("still there after trying to get a strategy instance... Instance is " + releaseStrategy==null ? "null" : "not null");
                         //check if we got something
