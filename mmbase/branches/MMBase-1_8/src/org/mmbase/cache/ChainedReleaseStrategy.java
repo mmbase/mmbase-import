@@ -10,9 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
+import org.mmbase.util.xml.DocumentReader;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import org.mmbase.core.event.*;
 import org.mmbase.storage.search.SearchQuery;
@@ -23,11 +24,11 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class will manage a collection of <code>ReleaseStrategy</code>
- * instances, and call them hierarchically. 
+ * instances, and call them hierarchically.
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.18 2006-06-27 07:31:46 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.18.2.1 2008-03-19 15:38:04 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy {
     private static final Logger log = Logging.getLoggerInstance(ChainedReleaseStrategy.class);
@@ -39,6 +40,73 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     private final Map childStrategyMemory = new HashMap();
 
     public ChainedReleaseStrategy() {
+    }
+
+
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public void fillFromXml(final Element element) {
+        //now find the strategies
+        NodeList childNodes = element.getChildNodes();
+        for (int k = 0; k < childNodes.getLength(); k++) {
+            if (childNodes.item(k) instanceof Element) {
+                Element childElement = (Element) childNodes.item(k);
+                if ("strategy".equals(childElement.getLocalName())) {
+                    try {
+                        String strategyClassName = DocumentReader.getNodeTextValue(childElement);
+                        ReleaseStrategy releaseStrategy = getStrategyInstance(strategyClassName);
+                        log.debug("still there after trying to get a strategy instance... Instance is " + releaseStrategy==null ? "null" : "not null");
+                        //check if we got something
+                        if(releaseStrategy != null){
+                            addReleaseStrategy(releaseStrategy);
+                            log.debug("Successfully created and added "+releaseStrategy.getName() + " instance");
+                        } else {
+                            log.error("release strategy instance is null.");
+                        }
+
+                    } catch (CacheConfigurationException e1) {
+                        // here we throw a runtime exception, because there is
+                        // no way we can deal with this error.
+                        throw new RuntimeException("Cache configuration error: " + e1.toString(), e1);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param strategyClassName
+     * @since 1.8.6
+     */
+    private static ReleaseStrategy getStrategyInstance(String strategyClassName) throws CacheConfigurationException {
+        log.debug("getStrategyInstance()");
+        Class strategyClass;
+        ReleaseStrategy strategy = null;
+        try {
+            strategyClass = Class.forName(strategyClassName);
+            strategy = (ReleaseStrategy) strategyClass.newInstance();
+            log.debug("created strategy instance: "+strategyClassName);
+
+        } catch (ClassCastException e){
+            log.debug(strategyClassName + " can not be cast to strategy");
+            throw new CacheConfigurationException(strategyClassName + " can not be cast to strategy");
+        } catch (ClassNotFoundException e) {
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("Class "+strategyClassName +
+                    "was not found");
+        } catch (InstantiationException e) {
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("A new instance of " + strategyClassName +
+                    "could not be created: " + e.toString());
+        } catch (IllegalAccessException e) {
+            log.debug("exception getStrategyInstance()");
+            throw new CacheConfigurationException("A new instance of " + strategyClassName +
+                    "could not be created: " + e.toString());
+        }
+        log.debug("exit getStrategyInstance()");
+        return strategy;
     }
 
 
@@ -90,7 +158,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy {
     }
 
     /**
-     * removes all strategies 
+     * removes all strategies
      */
     public void removeAllStrategies(){
         for (Iterator i = iterator(); i.hasNext(); ){
