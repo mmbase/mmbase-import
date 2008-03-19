@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.8 2007-11-19 15:38:39 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.9 2008-03-19 09:49:07 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -746,16 +746,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if (field != null && field.getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
             }
-            Object value = values.get(fieldName);
-            if (VALUE_SHORTED.equals(value)) {
-                // value is not loaded from the database. We have to check the database to be sure.
-                value = getValue(fieldName);
-            }
-            return value == null;
+            return values.get(fieldName) == null;
         } else {
             return true;
         }
     }
+
+
 
     /**
      * Get a value of a certain field.
@@ -785,7 +782,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 default:
                     throw new UnsupportedOperationException("Found shorted value for type " + type);
                 }
-                blobs.put(key, value);
+                if (getSize(fieldName) < blobs.getMaxEntrySize()) {
+                    blobs.put(key, value);
+                }
             }
         }
 
@@ -952,7 +951,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
 
     public InputStream getInputStreamValue(String fieldName) {
-        Object value = getValue(fieldName);
+        Object value = values.get(fieldName); // don't use getValue here, it'll introduce MMB-1628
         if (value == null) {
             checkFieldExistance(fieldName);
             log.debug("NULL on " + fieldName + " " + this, new Exception());
@@ -1307,12 +1306,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the GUI iddicator as a <code>String</code>
      */
     public String getGUIIndicator() {
-        if (parent!=null) {
-            return parent.getGUIIndicator(this);
-        } else {
-            log.error("MMObjectNode -> can't get parent");
-            return "problem";
-        }
+          if (parent!=null) {
+             return parent.getGUIIndicator(this);
+         } else {
+             log.error("MMObjectNode -> can't get parent");
+             return "problem";
+         }
+
+          //return "" + getFunctionValue("gui", null);
     }
 
     /**
