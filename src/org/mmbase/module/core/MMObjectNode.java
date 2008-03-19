@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.213 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: MMObjectNode.java,v 1.214 2008-03-19 09:53:35 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -124,6 +124,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      */
 
     private String newContext = null;
+
+    private static long seq = 0;
+    public long sequence = seq++;
 
    /**
     * Default Main constructor, creates a node that is new and not (yet) in storage.
@@ -583,13 +586,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         // process the changed value (?)
         if (parent != null) {
             if(!parent.setValue(this, fieldName, originalValue)) {
-                // setValue of parent returned false, no update needed...
+                log.debug("setValue of parent returned false, no update needed...");
                 return false;
             }
         } else {
             log.error("parent was null for node with number" + getNumber());
         }
         setUpdate(fieldName);
+        log.debug("" + sequence + getChanged());
         return true;
     }
 
@@ -632,10 +636,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         // add it to the changed vector so we know that we have to update it
         // on the next commit
         if (! initializing && state != Field.STATE_VIRTUAL) {
+            log.trace("Marking '" + fieldName + "' as changed in " + sequence);
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
-        if (state == 0) sendFieldChangeSignal(fieldName);
+        if (state == 0) {
+            sendFieldChangeSignal(fieldName);
+        }
     }
 
     /**
@@ -668,12 +675,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             if (field != null && field.getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
             }
-            Object value = values.get(fieldName);
-            if (VALUE_SHORTED.equals(value)) {
-                // value is not loaded from the database. We have to check the database to be sure.
-                value = getValue(fieldName);
-            }
-            return value == null;
+            return values.get(fieldName) == null;
         } else {
             return true;
         }
@@ -707,7 +709,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                 default:
                     throw new UnsupportedOperationException("Found shorted value for type " + type);
                 }
-                blobs.put(key, value);
+                if (getSize(fieldName) < blobs.getMaxEntrySize()) {
+                    blobs.put(key, value);
+                }
             }
         }
 
@@ -870,7 +874,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
     }
 
     public InputStream getInputStreamValue(String fieldName) {
-        Object value = getValue(fieldName);
+        Object value = values.get(fieldName); // don't use getValue here, it'll introduce MMB-1628
         if (value == null) {
             checkFieldExistance(fieldName);
             log.debug("NULL on " + fieldName + " " + this, new Exception());
@@ -1223,6 +1227,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             log.error("MMObjectNode -> can't get parent");
             return "problem";
         }
+        //return "" + getFunctionValue("gui", null); // proposed fix for MMB-1575. No good, it can
+        //cause infinite loops.
     }
 
     /**
@@ -1425,7 +1431,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return always <code>true</code>
      */
     public boolean sendFieldChangeSignal(String fieldName) {
-        return parent.sendFieldChangeSignal(this,fieldName);
+        return parent.sendFieldChangeSignal(this, fieldName);
     }
 
     /**
