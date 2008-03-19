@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.167 2008-03-18 10:57:10 pierre Exp $
+$Id: build.xml,v 1.168 2008-03-19 11:39:31 pierre Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -764,25 +764,26 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${download.dir}/j2ee" href="${j2ee-javadoc.loc}" />
       <link offline="true" packagelistLoc="${download.dir}/jstl" href="${jstl-javadoc.loc}" />
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
-      <fileset dir="${source.dir}/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${generated-source-src.dir}" defaultexcludes="${default.excludes}" />
-      <fileset dir="${contributions.home}/aselect/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${contributions.home}/mmbob/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${contributions.home}/thememanager/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/taglib/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/resources/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/jumpers/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/editwizard/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/cloudcontext/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/crontab/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/dove/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/email/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/media/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/oscache-cache/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/richtext/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/xmlimporter/src" defaultexcludes="${default.excludes}" />
-      <fileset dir="${applications.home}/clustering/src" defaultexcludes="${default.excludes}" />
+      <packageset dir="${source.dir}/src" defaultexcludes="yes" />
+      <packageset dir="${generated-source-src.dir}" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/lucene/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
+      <packageset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/dove/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/editwizard/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/email/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/jumpers/src" defaultexcludes="${default.excludes}" />
+      <packageset dir="${applications.home}/media/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/oscache-cache/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/resources/src" defaultexcludes="${default.excludes}" />
+      <packageset dir="${applications.home}/richtext/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/taglib/src" defaultexcludes="yes" />
+      <packageset dir="${applications.home}/xmlimporter/src" defaultexcludes="yes" />
 
       <classpath>
         <fileset dir="${release.lib.dir}">
@@ -802,6 +803,10 @@ Build-compiler: ${build.compiler}
           <include name="**/*.zip"/>
         </fileset>
         <fileset dir="${applications.home}/resources/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${contributions.home}/lucene/">
           <include name="**/*.jar"/>
           <include name="**/*.zip"/>
         </fileset>
