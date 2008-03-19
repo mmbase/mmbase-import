@@ -74,3 +74,17 @@ div#preview > h1 {
 div#preview > a {
   float: right;
 }
+
+
+.mm_related {
+  width: 100%;
+  background-color: #eee;
+}
+.mm_related table {
+  width: 100%;
+  background-color: #fff;
+}
+.mm_related .fields {
+  display: none;
+}
+

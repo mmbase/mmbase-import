@@ -36,14 +36,16 @@ $(document).ready(function(){
     $("div#preview").draggable({handle: ">h1"});
     $("div#preview > a").click(function() {
 	var params = {};
-	$("form#transaction").find("input[@checked], input[@type='text'], input[@type='hidden'], input[@type='password'], option[@selected], textarea").each(function() {
-	    params[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value; });
+	params['objectnumber'] = this.id.substring(7);
+	$("form#transaction").find("input[@checked], input[@type='text'], input[@type='hidden'], input[@type='password'], option[@selected], textarea")
+	.each(function() {
+	    params[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+	});
 
 	$.post("preview.jspx", params, function(data, textStatus) {
-	    console.log(this);
-	    console.log(data.documentElement);
 	    $("div#preview > div").replaceWith(data.documentElement);
 	});
 	//$("div#preview > div").load("preview.jspx", null, function() { })
+	return false;
     });
 });

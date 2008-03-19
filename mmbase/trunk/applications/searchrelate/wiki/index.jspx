@@ -1,14 +1,15 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl"
-      xmlns:rich="http://www.mmbase.org/tags/mm/rich"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <mm:content type="application/xhtml+xml"
-              jspvar="c"
-              expires="${param.expires}"
-              language="en">
-  <mm:cloud>
+<html
+    xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl"
+    xmlns:rich="http://www.mmbase.org/tags/mm/rich"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <mm:content
+      type="application/xhtml+xml"
+      expires="${param.expires}"
+      language="en">
+    <mm:cloud>
 
-    <head>
+      <head>
         <mm:link page="/mmbase/style/css/mmxf.css">
           <link rel="stylesheet" type="text/css" href="${_}" />
         </mm:link>
@@ -47,7 +48,7 @@
         </mm:present>
 
       </body>
-  </mm:cloud>
+    </mm:cloud>
 
   </mm:content>
 </html>

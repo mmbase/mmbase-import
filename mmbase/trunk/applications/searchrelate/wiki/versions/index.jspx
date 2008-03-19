@@ -19,7 +19,7 @@
           <ul>
             <mm:listnodes>
               <li>
-                ${_node.version} ${_node.ip} <mm:nodeinfo type="gui" />
+                ${_node.version} ${_node.ip} <mm:nodeinfo type="gui" />: ${_node.comments}
               </li>
             </mm:listnodes>
           </ul>
