@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.236 2008-03-11 16:48:02 michiel Exp $
+ * @version $Id: MMBase.java,v 1.237 2008-03-19 11:43:30 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -262,7 +262,7 @@ public class MMBase extends ProcessorModule {
             return;
         } else if (mmbaseState == STATE_SHUT_DOWN) {
             log.warn("was shutdown... should NOT restart again!");
-	    return;
+        return;
         }
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
 
@@ -330,13 +330,18 @@ public class MMBase extends ProcessorModule {
 
         log.service("Localhost: " + localHost);
 
-        tmp = getInitParameter("HOST");
-        if (tmp != null && !tmp.equals("")) {
-            host = tmp;
+        String hostParam = getInitParameter("HOST");
+        if (hostParam != null && !hostParam.equals("")) {
+            // try to incorporate the localhost (if needed)
+            int pos = hostParam.indexOf("${LOCALHOST}");
+            if (pos != -1) {
+                hostParam =hostParam.substring(0, pos) +
+                    localHost + hostParam.substring(pos + 12);
+            }
+            host = hostParam;
         } else {
             host = localHost;
         }
-
 
         org.mmbase.util.XMLEntityResolver.clearMMEntities(false);
 
