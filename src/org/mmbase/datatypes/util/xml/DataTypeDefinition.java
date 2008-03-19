@@ -20,6 +20,7 @@ import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.XMLWriter;
+import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.62 2008-01-28 16:27:38 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.63 2008-03-19 17:07:50 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -306,22 +307,11 @@ public class DataTypeDefinition {
     protected boolean setProperty(Element element) {
         try {
             String name = DataTypeXml.getAttribute(element, "name");
-            String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
             String value = DataTypeXml.getAttribute(element, "value");
             Class claz = dataType.getClass();
-            Method method = claz.getMethod(methodName, String.class);
-            method.invoke(dataType, value);
-        } catch (NoSuchMethodException nsme) {
-            log.warn(nsme);
-            return false;
-        } catch (SecurityException se) {
-            log.warn(se);
-            return false;
-        } catch (IllegalAccessException iae) {
-            log.warn(iae);
-            return false;
-        } catch (InvocationTargetException ite) {
-            log.warn(ite);
+            Instantiator.setProperty(name, claz, dataType, value);
+        } catch (Exception e) {
+            log.warn(e);
             return false;
         }
         return true;
