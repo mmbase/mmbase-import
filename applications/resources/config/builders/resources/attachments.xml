@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
-    name="attachments" maintainer="www.mmbase.org" version="1" extends="object">
+    name="attachments" maintainer="mmbase.org" version="1" extends="object">
 
   <class>org.mmbase.module.builders.Attachments</class>
 

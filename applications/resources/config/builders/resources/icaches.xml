@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
-    name="icaches" maintainer="www.mmbase.org" version="0" extends="object">
+    name="icaches" maintainer="mmbase.org" version="0" extends="object">
 
   <class>org.mmbase.module.builders.ImageCaches</class>
   <searchage>14</searchage>
