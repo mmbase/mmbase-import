@@ -36,12 +36,13 @@
       <xsd:element ref="jdbc" />
     </xsd:choice>
   </xsd:group>
-  
+
 
   <xsd:element name="luceneindex">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="extractor" maxOccurs="unbounded" minOccurs="0" />
+        <xsd:element ref="strategy"  maxOccurs="unbounded" minOccurs="0" />
         <xsd:element ref="index"     maxOccurs="unbounded" minOccurs="0" />
       </xsd:sequence>
       <xsd:attribute name="disableIndexes" type="xsd:string" />
@@ -49,7 +50,7 @@
     <xsd:unique name="indexNames">
       <xsd:selector xpath="./lucene:index"/>
       <xsd:field xpath="@name"/>
-    </xsd:unique> 
+    </xsd:unique>
   </xsd:element>
 
   <xsd:element name="list" type="mmsq:SearchQuery"/>
@@ -108,6 +109,12 @@
     <xsd:complexType>
       <xsd:attribute name="class" type="xsd:string" />
       <xsd:attribute name="mimetype" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="strategy">
+    <xsd:complexType>
+      <xsd:attribute name="class" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
 

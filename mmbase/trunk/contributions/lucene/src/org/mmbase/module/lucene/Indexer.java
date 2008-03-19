@@ -34,7 +34,7 @@ import java.text.DateFormat;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Indexer.java,v 1.57 2008-02-25 14:10:01 michiel Exp $
+ * @version $Id: Indexer.java,v 1.58 2008-03-19 16:25:22 michiel Exp $
  **/
 public class Indexer {
 
@@ -487,11 +487,12 @@ public class Indexer {
                     log.debug("Indexed " + indexed + " documents");
                 }
             }
-            index(entry, document);
             if (Thread.currentThread().isInterrupted()) {
-                log.info("Interrupted");
+                log.service("Interrupted");
                 break;
             }
+            index(entry, document);
+
             lastIdentifier = newIdentifier;
         }
         if (document != null) {
