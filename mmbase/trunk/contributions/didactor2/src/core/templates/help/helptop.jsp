@@ -2,24 +2,22 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <mm:content postprocessor="reducespace">
 <mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
 <body>
-
-<di:hasrole role="contenteditor">
-      <a href="<mm:url page="/help/opleiding_editor.htm"/>" target="helpcontent">Didactor cursusontwikkelhelp</a> 
-</di:hasrole>
-<di:hasrole role="contenteditor" inverse="true">
-  <di:hasrole role="courseeditor">
-     <a href="<mm:url page="/help/opleiding_editor.htm"/>" target="helpcontent">Didactor cursusontwikkelhelp</a> 
+  <di:hasrole role="contenteditor">
+    <a href="<mm:url page="/help/opleiding_editor.htm"/>" target="helpcontent">Didactor cursusontwikkelhelp</a> 
   </di:hasrole>
-</di:hasrole>
-   <di:hasrole role="teacher">
+  <di:hasrole role="contenteditor" inverse="true">
+    <di:hasrole role="courseeditor">
+      <a href="<mm:url page="/help/opleiding_editor.htm"/>" target="helpcontent">Didactor cursusontwikkelhelp</a> 
+    </di:hasrole>
+  </di:hasrole>
+  <di:hasrole role="teacher">
     <a href="<mm:url page="/help/frame_docent.html"/>" target="helpcontent">Didactor docenten help</a>
-    </di:hasrole>
-    <di:hasrole role="student">
-       <a href="<mm:url page="/help/frame_student.html"/>" target="helpcontent">Didactor studenten help</a>
-    </di:hasrole>
-    <a href="<mm:url page="/help/didactor_help.htm"/>" target="helpcontent">Algemeen QRC</a>
+  </di:hasrole>
+  <di:hasrole role="student">
+    <a href="<mm:url page="/help/frame_student.html"/>" target="helpcontent">Didactor studenten help</a>
+  </di:hasrole>
+  <a href="<mm:url page="/help/didactor_help.htm"/>" target="helpcontent">Algemeen QRC</a>
 </body>
 </mm:cloud>
 </mm:content>
