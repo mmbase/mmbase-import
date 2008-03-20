@@ -9,6 +9,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.bridge.implementation.BasicCloudContext;
+import org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
@@ -299,6 +300,10 @@ public class Authentication extends org.mmbase.security.Authentication {
         // go to the first one (aselect if that one is compiled in)
         for (AuthenticationComponent ac : securityComponents) {
             String loginPage = request != null ? ac.getLoginPage(request, response) : null;
+
+            // Could use a TreeHelper here to do didactor specific tree-includeing on the login page
+            // itself too.
+
             if (log.isDebugEnabled()) {
                 log.debug("" + ac + ".getLoginPage() -> " + loginPage);
             }
