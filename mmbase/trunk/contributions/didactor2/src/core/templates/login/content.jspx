@@ -3,6 +3,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     class="columns">
+  <jsp:output omit-xml-declaration="true" />
   <div class="columnLeft">
     <img src="${mm:treelink('/gfx/logo_didactor.gif',  includePath)}"
          width="100%" height="106" border="0" title="Didactor logo" alt="Didactor logo" />
