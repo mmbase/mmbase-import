@@ -5,10 +5,12 @@
   <mm:cloud method="asis">
     <mm:node referid="provider">
       <mm:countrelations type="flashpages" write="false">
+
         <mm:islessthan value="1">
           <h1><di:translate key="core.welcome" /></h1>
           <h3><di:translate key="core.welcomemessage" /></h3>
         </mm:islessthan>
+
       </mm:countrelations>
 
       <di:include page="/shared/related.flashpages.jsp" />
