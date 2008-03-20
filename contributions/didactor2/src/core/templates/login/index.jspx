@@ -16,9 +16,8 @@
       This pages contains odd logic, which depending on certain installed components makes itself render differently
   -->
 
-  <di:include debug="html" page="/login/educationbar.jspx" />
-  <di:include debug="html" page="/login/content.jspx" />
-
+  <di:include debug="html" page="/login/navigation.jspx" />
+  <di:include debug="html" page="/login/main.jspx" />
 </di:html>
 
 
