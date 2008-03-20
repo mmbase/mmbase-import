@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.43 2008-03-20 14:00:38 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.44 2008-03-20 14:07:56 michiel Exp $
  */
 var validators = new Array();
 
@@ -726,9 +726,10 @@ MMBaseValidator.prototype.addValidation = function(el) {
     if (el == null) {
         el = document.documentElement;
     }
-    this.log("Will validate elements in " + el + " (" + els.length + " elements)");
 
     var els = getElementsByClass(el, "mm_validate");
+    this.log("Will validate elements in " + el + " (" + els.length + " elements)");
+
     for (var i = 0; i < els.length; i++) {
         var entry = els[i];
         if (entry.type == "textarea") {
