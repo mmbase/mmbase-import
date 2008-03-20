@@ -32,3 +32,16 @@ function check_passwords(loginId, passwordId) {
     return document.getElementById(loginId).value.length > 0 &&
 	document.getElementById(passwordId).value.length > 0;
 }
+
+
+function getUrl(url){
+    var i = new Image();
+    i.src = url;
+    i = null;
+}
+
+function keepalive(url){
+    getUrl(url)
+    setTimeout("keepalive('" + url + "');", 1000  * 60 * 2); // keep alive every 2 minutes
+}
+
