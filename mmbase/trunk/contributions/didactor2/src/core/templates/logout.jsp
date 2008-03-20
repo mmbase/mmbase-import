@@ -12,7 +12,4 @@
 <mm:cloud method="logout">
   <mm:cloudinfo type="user" />
 </mm:cloud>
-
 <mm:redirect page="/" />
-
-

@@ -24,7 +24,10 @@
               <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
                 <jsp:text> </jsp:text>
               </script>
-              <script type="text/javascript">_uacct="${_}"; urchinTracker();</script>
+              <script type="text/javascript">
+                _uacct="${_}";
+                urchinTracker();
+              </script>
             </mm:isnotempty>
           </mm:write>
         </di:settingvalue>

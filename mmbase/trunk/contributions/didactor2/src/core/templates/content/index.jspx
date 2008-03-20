@@ -5,6 +5,11 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <mm:cloud method="asis">
 
+    <!--
+         This page can be requested with ajax, or be include directly.
+         It returns the actual content represented by a certain object, typically a learnobject.
+    -->
+
     <mm:import externid="learnobject" />
     <mm:import externid="object">${learnobject}</mm:import>
 
