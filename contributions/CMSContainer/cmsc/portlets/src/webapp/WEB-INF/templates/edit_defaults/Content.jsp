@@ -33,6 +33,31 @@
 
 <table class="editcontent">
 	<tr>
+		<td colspan="3" align="center"><h4><fmt:message key="edit_defaults.portletset"/></h4></td>
+	</tr>
+	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.define"/>:</td>
+		<% String mm=(String)request.getAttribute("com.finalist.cmsc.beans.om.definitionId");%>
+			<mm:cloud>
+				<mm:node number="<%=mm%>" >		
+					<td ><input type="text" name="portletname" value="<mm:field name='title'/>"  disabled="disabled"/></td>
+				</mm:node>
+			</mm:cloud>
+	</tr>
+	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.view" />:</td>
+		<td>
+			<cmsc:select var="view">
+				<c:forEach var="v" items="${views}">
+					<cmsc:option value="${v.id}" name="${v.title}" />
+				</c:forEach>
+			</cmsc:select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3"><h4><fmt:message key="edit_defaults.contentset"/></h4></td>
+	</tr>
+	<tr>
 		<td><fmt:message key="edit_defaults.contentelement" />:</td>
 		<td align="right">
 			<a href="<c:url value='/editors/repository/select/index.jsp?contentnumber=${contentelement}' />"
@@ -49,14 +74,6 @@
 		</mm:cloud>
 		<input type="hidden" name="contentelement" value="${contentelement}" />
 		<input type="text" name="contentelementtitle" value="${contentelementtitle}" disabled="true" />
-	</tr>
-	<tr>
-		<td colspan="2"><fmt:message key="edit_defaults.view" />:</td>
-		<td><cmsc:select var="view">
-			<c:forEach var="v" items="${views}">
-				<cmsc:option value="${v.id}" name="${v.title}" />
-			</c:forEach>
-		</cmsc:select></td>
 	</tr>
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.uselifecycle" />:</td>

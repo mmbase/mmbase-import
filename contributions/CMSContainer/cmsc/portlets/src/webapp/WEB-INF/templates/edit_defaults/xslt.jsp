@@ -6,10 +6,21 @@
 <form method="post" name="<portlet:namespace />form" action="<cmsc:actionURL><cmsc:param name="action" value="edit"/></cmsc:actionURL>" target="_parent">
 
 <table class="editcontent">
-   <tr>
+	<tr>
+		<td><fmt:message key="edit_defaults.define"/></td>
+		<% String mm=(String)request.getAttribute("com.finalist.cmsc.beans.om.definitionId");%>
+		<mm:cloud>
+			<mm:node number="<%=mm%>" >
+			<td >
+				<input type="text" name="portletname" value="<mm:field name='title'/>"  disabled="disabled"/>
+			</td>
+			</mm:node>
+		</mm:cloud>
+	</tr>
+	<tr>
       <td><fmt:message key="edit_defaults.source" />:</td>
       <td><cmsc:text var="source" /></td>
-   </tr>
+	</tr>
 	<tr>
 		<td><fmt:message key="edit_defaults.view" />:</td>
 		<td>
