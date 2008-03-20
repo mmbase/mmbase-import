@@ -22,7 +22,7 @@ import nl.didactor.security.UserContext;
 /**
  * Default AuthenticationComponent for Didactor.
  * @javadoc
- * @version $Id: PlainSecurityComponent.java,v 1.22 2008-01-15 11:18:35 michiel Exp $
+ * @version $Id: PlainSecurityComponent.java,v 1.23 2008-03-20 19:56:49 michiel Exp $
  */
 
 public class PlainSecurityComponent implements AuthenticationComponent {
@@ -184,7 +184,7 @@ public class PlainSecurityComponent implements AuthenticationComponent {
                 page = "/portal";
             }
         }
-        return page == null ? "/login_plain.jsp" : page;
+        return page == null ? "/login/" : page;
     }
 
 
