@@ -8,12 +8,9 @@
       description="Didactor head" />
   <head>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
-    <mm:link page="/core/js/utils.js">
-      <script src="${_}"><!-- Help IE --></script>
-    </mm:link>
-    <mm:link page="/education/js/browser_version.js">
-      <script src="${_}"><!-- Help IE --></script>
-    </mm:link>
+
+    <di:script src="/core/js/utils.js" />
+    <di:script src="/education/js/browser_version.js" />
 
     <link rel="stylesheet" type="text/css" href="${mm:treelink('/css/base.css', includePath)}" />
 
