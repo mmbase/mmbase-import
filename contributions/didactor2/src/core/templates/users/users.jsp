@@ -9,7 +9,7 @@
   If the user is connected directly to education it shows all useres in all classes
   -->
   <mm:content postprocessor="none">
-    <mm:cloud rank="didactor user">
+    <mm:hasrank minvalue="didactor user">
 
       <mm:import externid="mode"/>
 
@@ -56,6 +56,6 @@
          </mm:compare>
         </mm:relatednodes>
       </mm:node>
-    </mm:cloud>
+    </mm:hasrank>
   </mm:content>
 </jsp:root>
