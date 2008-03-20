@@ -51,6 +51,30 @@ function openRepositoryWithChannel() {
 		</td>
 	</tr>
 	<tr>
+		<td colspan="3"><h3><fmt:message key="edit_defaults.portletset"/></h3></td>
+	</tr>
+	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.define"/>:</td>
+		<% String mm=(String)request.getAttribute("com.finalist.cmsc.beans.om.definitionId");%>
+		<mm:cloud>
+			<mm:node number="<%=mm%>">		
+			<td>
+				<input type="text" name="portletname" value="<mm:field name='title'/>"  disabled="disabled"/>
+			</td>
+			</mm:node>
+		</mm:cloud>
+	</tr>
+	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.view" />:</td>
+		<td>
+			<cmsc:select var="view">
+				<c:forEach var="v" items="${views}">
+					<cmsc:option value="${v.id}" name="${v.title}" />
+				</c:forEach>
+			</cmsc:select>
+		</td>
+	</tr>
+	<tr>
 		<td colspan="3">
 			<h3><fmt:message key="edit_defaults.title" /></h3>
 		</td>
@@ -75,14 +99,6 @@ function openRepositoryWithChannel() {
 		<input type="hidden" name="contentchannel" value="${contentchannel}" />
 		<input type="text" name="contentchannelpath" value="${contentchannelpath}" disabled="true" />
 		</td>
-	</tr>
-	<tr>
-		<td colspan="2"><fmt:message key="edit_defaults.view" />:</td>
-		<td><cmsc:select var="view">
-			<c:forEach var="v" items="${views}">
-				<cmsc:option value="${v.id}" name="${v.title}" />
-			</c:forEach>
-		</cmsc:select></td>
 	</tr>
 	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.viewtype" />:</td>
