@@ -31,7 +31,7 @@
               class="learnenvironment">
 
 
-            <di:include page="/education/learnblocks/node.jspx" />
+            <di:include debug="xml" page="/education/learnblocks/node.jspx" />
           </div>
 
           <di:include page="/education/prev_next.jsp" />
