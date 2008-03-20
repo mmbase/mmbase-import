@@ -6,7 +6,7 @@
 */
 html {
   background-color: white;
-  height: 100%;
+  height:100%;
 }
 
 body {
@@ -14,6 +14,7 @@ body {
   font-size: 0.7em;
   width: 100%;
   margin: 0 0 0 0;
+  height: 100%;
 }
 
 h1 {
@@ -78,6 +79,8 @@ a.menubar:active {
   text-decoration: none
 }
 
+.di_body {
+ }
 .content {
   height: 100%;
   width: 100%;
@@ -292,6 +295,8 @@ input.search {
 /* ###### cockpit: 3 columns ###### */
 
 .columns {
+  position: absolute;
+  top: 20%;
   height: 80%;
   width: 100%;
   background-color: #FFFFFF
@@ -1075,7 +1080,7 @@ body.editwizards .contentBody {
   height: 100%;
   padding: 0em;
 }
-body.editwizards .componentBody {
+.componentBody {
   height: 100%;
 }
 body.editwizards .titlebar a {
