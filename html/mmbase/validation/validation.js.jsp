@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.42 2007-12-21 13:45:04 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.43 2008-03-20 14:00:38 michiel Exp $
  */
 var validators = new Array();
 
@@ -726,7 +726,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
     if (el == null) {
         el = document.documentElement;
     }
-    this.log("Will validate " + el);
+    this.log("Will validate elements in " + el + " (" + els.length + " elements)");
 
     var els = getElementsByClass(el, "mm_validate");
     for (var i = 0; i < els.length; i++) {
@@ -771,6 +771,11 @@ MMBaseValidator.prototype.addValidation = function(el) {
             this.validateHook(valid, entry);
         }
 
+    }
+    if (els.length == 0) {
+        if (this.validateHook) {
+            this.validateHook(this.invalidElements == 0);
+        }
     }
     el = null;
 }
