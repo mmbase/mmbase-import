@@ -10,16 +10,17 @@
     <a name="learnblock_${_node}"><jsp:text> </jsp:text></a>
 
     <mm:nodeinfo type="type">
+      &lt;!-- type ${_} --&gt;
       <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx">
-        <mm:treeinclude page="/education/pages/${_}/index.jspx"
+        <mm:treeinclude debug="xml" page="/education/pages/${_}/index.jspx"
                         objectlist="$includePath"
                         referids="$referids,_node@learnobject" />
       </mm:treehaspage>
       <mm:treehaspage objectlist="${includePath}" page="/education/pages/${_}/index.jspx" inverse="true">
-        <mm:treeinclude page="/education/pages/content.jsp"
+        <mm:treeinclude debug="xml" page="/education/pages/content.jsp"
                         objectlist="$includePath"
                         referids="$referids,_node@learnobject" />
-        <mm:treeinclude page="/education/paragraph/paragraph.jsp" objectlist="$includePath"
+        <mm:treeinclude debug="xml" page="/education/paragraph/paragraph.jsp" objectlist="$includePath"
                         referids="$referids,_node@node_id">
           <mm:param name="path_segment">${pageContext.request.contextPath}/education/</mm:param>
         </mm:treeinclude>

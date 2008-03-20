@@ -23,11 +23,7 @@
           NO EDUCATION YET
         </c:when>
         <c:otherwise>
-          <mm:link page="/content/js/open.jsp">
-            <script type="text/javascript" src="${_}">
-              <jsp:text><!-- help IE --> </jsp:text>
-            </script>
-          </mm:link>
+          <di:script  src="/content/js/open.jsp" />
           <di:include debug="html" page="/education/navigation.jspx" />
           <di:include debug="html" page="/education/main.jspx" />
         </c:otherwise>

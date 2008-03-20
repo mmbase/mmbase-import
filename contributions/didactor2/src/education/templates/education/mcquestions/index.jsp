@@ -28,7 +28,7 @@
           </mm:compare>
         </mm:field>
 
-        <p/><!-- WTF, why don't we produce, say, for example, HTML!  This is pure horror -->
+        <p /><!-- WTF, why don't we produce, say, for example, HTML!  This is pure horror -->
 
         <mm:field name="text" escape="tagstripper(xss)"/>
         <p/>
