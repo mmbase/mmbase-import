@@ -1,34 +1,40 @@
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
-<%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
-<%-- expires is 0; show always new content --%>
-<mm:content postprocessor="reducespace" expires="0">
-<mm:cloud method="delegate" jspvar="cloud">
-<%@include file="/shared/setImports.jsp" %>
-<mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
-  <mm:param name="extraheader">
-    <title><di:translate key="core.configuration" /></title>
-  </mm:param>
-</mm:treeinclude>
-<div class="rows">
-<div class="navigationbar">
-  <div class="titlebar">
-    <img src="<mm:treefile write="true" page="/gfx/icon_settings.gif" objectlist="$includePath" />" width="25" height="13" border="0" title="<di:translate key="core.configuration" />" alt="<di:translate key="core.configuration" />" />
-    <di:translate key="core.configuration" />
-  </div>
-</div>
-<div class="folders">
-  <div class="folderHeader">
-  </div>
-  <div class="folderBody">
-  </div>
-</div>
-<div class="mainContent">
-  <div class="contentHeader">
-  </div>
-  <div class="contentBodywit">
-    <mm:treeinclude page="/admin/body.jsp" objectlist="$includePath" referids="$referids"/>
-  </div>
-</div>
-<mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids" />
-</mm:cloud>
-</mm:content>
+<jsp:root version="2.0"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+          xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+          >
+  <di:html
+      styleClass="configuration"
+      expires="0" component="core"
+      title="${di:translate('core.configuration')}">
+    <div class="rows">
+      <div class="navigationbar">
+        <div class="titlebar">
+          <img src="${mm:treelink('/gfx/icon_settings.gif', includePath)}" width="25" height="13"
+               border="0"
+               title="${di:translate('core.configuration')}"
+               alt="${di:translate('core.configuration')}"
+               />
+          <di:translate key="core.configuration" />
+        </div>
+      </div>
+      <div class="folders">
+        <div class="folderHeader">
+          <jsp:text> </jsp:text>
+        </div>
+        <div class="folderBody">
+          <jsp:text> </jsp:text>
+        </div>
+      </div>
+      <div class="mainContent">
+        <div class="contentHeader">
+          <jsp:text> </jsp:text>
+        </div>
+        <div class="contentBodywit">
+          <di:include page="/admin/body.jsp" />
+        </div>
+      </div>
+    </div>
+  </di:html>
+</jsp:root>

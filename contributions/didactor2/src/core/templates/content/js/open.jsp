@@ -267,7 +267,7 @@ function openContent(type, number, el) {
     var href = addParameter('<mm:url page="/content/" />', 'object=' + number);
     if (type != null && type != '') {
         href = addParameter(href, 'type=' + type);
-    };
+    }
     requestContent(href);
 
 
