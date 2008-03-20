@@ -4,7 +4,6 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     styleClass="login"
     css="/css/loginpage.css"
-    type="text/html"
     rank="anonymous">
 
   <!--
@@ -17,8 +16,8 @@
       This pages contains odd logic, which depending on certain installed components makes itself render differently
   -->
 
-  <di:include page="/login/educationbar.jspx" />
-  <di:include page="/login/content.jspx" />
+  <di:include debug="html" page="/login/educationbar.jspx" />
+  <di:include debug="html" page="/login/content.jspx" />
 
 </di:html>
 

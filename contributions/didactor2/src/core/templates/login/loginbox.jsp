@@ -23,16 +23,10 @@
         </mm:isnotempty>
       </div>
       <br />
-      <script>
-        function check_passwords(){
-        if((document.getElementById("loginUsername").value.length == 0) &amp;&amp; (document.getElementById("loginPassword").value.length == 0)) return false;
-        else return true;
-        }
-      </script>
       <mm:import externid="referrer">/index.jsp</mm:import>
 
 
-      <form method="post" action="${referrer}" name="loginForm" onSubmit="return(check_passwords())">
+      <form method="post" action="${referrer}" name="loginForm" onSubmit="return check_passwords()">
         ${referrer}
         <input type="hidden" name="authenticate"  value="plain"  />
         <input type="hidden" name="command" value="login" />

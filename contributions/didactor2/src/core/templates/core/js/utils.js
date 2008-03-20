@@ -25,3 +25,10 @@ function focusFirstForm() {
         }
     }
 }
+
+function check_passwords(loginId, passwordId) {
+    if (loginId == null) loginId = "loginUsername";
+    if (passwordId == null) passwordId = "loginPassword";
+    return document.getElementById(loginId).value.length > 0 &&
+	document.getElementById(passwordId).value.length > 0;
+}
