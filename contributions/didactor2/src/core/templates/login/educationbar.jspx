@@ -1,0 +1,16 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    class="educationMenubarCockpit" style="white-space: nowrap">
+  <jsp:text> </jsp:text>
+  <!-- sigh -->
+  <mm:hasnode number="component.faq">
+    <mm:include page="/faq/cockpit/general.jsp" />
+  </mm:hasnode>
+
+  <mm:hasnode number="component.cmshelp">
+    <di:include page="/cmshelp/cockpit/general.jsp" />
+  </mm:hasnode>
+
+</div>
