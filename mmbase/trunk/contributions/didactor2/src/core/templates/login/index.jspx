@@ -15,12 +15,10 @@
 
       So, stuff specific to the education can be shown.
   -->
-  <div class="rows" id="rows">
-    <di:script  src="/content/js/open.jsp" />
+  <di:script  src="/content/js/open.jsp" />
 
-    <di:include debug="html" page="/login/navigation.jspx" />
-    <di:include debug="html" page="/login/main.jspx" />
-  </div>
+  <di:include debug="xml" page="/login/navigation.jspx" />
+  <di:include debug="xml" page="/login/main.jspx" />
 </di:html>
 
 

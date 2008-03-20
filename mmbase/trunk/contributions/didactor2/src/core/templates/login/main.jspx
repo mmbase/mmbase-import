@@ -2,7 +2,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    class="mainContent">
+    class="columns">
 
   <jsp:output omit-xml-declaration="true" />
   <di:include page="/login/leftcolumn.jsp" />
