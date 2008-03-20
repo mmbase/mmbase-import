@@ -110,29 +110,31 @@
               <!-- Determine if all questions are showed -->
               <c:choose>
                 <c:when test="${fn:length(my_questions) + fn:length(givenanswers) ge fn:length(questions)}">
+
                   <input type="button"
-                         disabled="disabled"
-                         value="${di:translate('education.buttontextdone')}" class="formbutton"
-                         onClick="questionform.command.value='done'; postContent('${post}', questionform);"/>
+                        disabled="disabled"
+                         value="${di:translate('education.buttontextdone')}"
+                         class="formbutton"
+                         onclick="document.forms.questionform.command.value='done'; postContent('${post}', document.forms.questionform);" />
                 </c:when>
                 <c:otherwise>
                   <c:if test="${page gt 0}">
                     <input type="button"
                            value="${di:translate('education.buttontextprev')}"
                            class="formbutton"
-                           onClick="questionform.command.value='back'; postContent('${post}', questionform);" />
+                           onclick="questionform.command.value='back'; postContent('${post}', questionform);" />
                   </c:if>
                   <c:if test="${learnobject.questionsperpage gt 0 or page * learnobject.questionsperpage lt fn:length(questions)}">
                     <input type="button"
                            value="${di:translate('education.buttontextnext')}"
                            class="formbutton"
-                           onClick="postContent('${post}', questionform);" />
+                           onclick="postContent('${post}', questionform);" />
                   </c:if>
                   <c:if test="${learnobject.questionsperpage lt 1 or page * learnobject.questionsperpage ge fn:length(questions)}">
-                    <input type="button"
+                     <input type="button"
                            value="${di:translate('education.buttontextdone')}"
                            class="formbutton"
-                           onClick="questionform.command.value='done'; postContent('${post}', questionform);" />
+                           onclick="questionform.command.value='done'; postContent('${post}', questionform);" />
                   </c:if>
                 </c:otherwise>
               </c:choose>
