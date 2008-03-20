@@ -24,7 +24,6 @@ BUILD_HOME="/home/nightly"
 export CLASSPATH=
 for i in ~/.ant/lib/* ; do export CLASSPATH=${CLASSPATH}:$i ; done
 
-~/mmbase/head/src/org/mmbase/module/core/
 
 # settings
 antcommand="/usr/bin/ant"
@@ -34,16 +33,19 @@ optdir="/home/nightly/optional-libs"
 echo generating version, and some directories
 
 #nightly build:
-#version=`date '+%Y-%m-%d'`
-#cvsversion=-D "${version} `date '+%H:%M:%S'`"
-#revision=MMBase-1_8
-#headrevision="-A"
+version=`date '+%Y-%m-%d'`
+cvsversion="-D ${version}T`date '+%H:%M:%S'`"
+
+echo $cvsversion
+
+revision=MMBase-1_8
+headrevision="-A"
 
 #release:
-version=MMBase-1_8_5
-cvsversion=
-revision=MMBase-1_8_5_Final
-headrevision="-r MMBase-1_8_5_Final"
+#version=MMBase-1_8_5
+#cvsversion=
+#revision=MMBase-1_8_5_Final
+#headrevision="-r MMBase-1_8_5_Final"
 
 # STABLE branch
 builddir="/home/nightly/builds/stable/${version}"
@@ -69,7 +71,7 @@ echo update cvs to `pwd`  using -r '${cvsversion}' | tee -a  ${builddir}/message
 
 if ( true ) ; then
     for i in '.' 'applications' 'contributions'; do
-    echo updating `pwd`/$i | tee -a ${builddir}/messages.log
+    echo updating `pwd`/$i using     ${CVS} -q update -d -P -l ${cvsversion} -r "${revision}"  $i | tee -a ${builddir}/messages.log;
     ${CVS} -q update -d -P -l ${cvsversion} -r "${revision}"  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     for i in 'applications/build.xml' 'contributions/build.xml' 'download.xml' ; do
