@@ -32,7 +32,8 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.22 2008-02-23 16:00:44 michiel Exp $
+ * @version $Id: TreeHelper.java,v 1.23 2008-03-20 10:23:04 michiel Exp $
+ * @todo   MM: This class is not actually related to Taglib. I propose to move it to  org.mmbase.util, or org.mmbase.bridge.util
  */
 
 public class TreeHelper {
