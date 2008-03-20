@@ -62,22 +62,20 @@
                 <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
               </mm:link>
             </mm:haspage>
-            <c:if test="${! empty css}">
-              <mm:treehaspage page="${css}" objectlist="${includePath}">
-                <mm:treefile write="false" page="${css}" objectlist="${includePath}">
-                  <link rel="stylesheet" type="text/css" href="${_}" />
-                </mm:treefile>
-              </mm:treehaspage>
-            </c:if>
-            <c:if test="${! empty education}">
-              <mm:node referid="education">
-                <mm:field name="intro" escape="tagstripper,text/html/attribute">
-                  <mm:isnotempty>
-                    <meta name="description" content="${_}" />
-                  </mm:isnotempty>
-                </mm:field>
-              </mm:node>
-            </c:if>
+          </c:if>
+          <c:if test="${! empty css}">
+            <mm:treefile write="false" page="${css}" objectlist="${includePath}">
+              <link rel="stylesheet" type="text/css" href="${_}" />
+            </mm:treefile>
+          </c:if>
+          <c:if test="${! empty education}">
+            <mm:node referid="education">
+              <mm:field name="intro" escape="tagstripper,text/html/attribute,trimmer">
+                <mm:isnotempty>
+                  <meta name="description" content="${_}" />
+                </mm:isnotempty>
+              </mm:field>
+            </mm:node>
           </c:if>
         </di:head>
         <body class="${styleClass}">
