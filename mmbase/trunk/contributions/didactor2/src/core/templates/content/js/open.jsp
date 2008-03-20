@@ -151,7 +151,8 @@ function requestContent(href) {
                     //                    console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
                     Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
                     contentEl.validator = new MMBaseValidator();
-                    contentEl.validator.validatePage(false, contentEl);
+                    //contentEl.validator.logEnabled = true;
+                    //contentEl.validator.traceEnabled = true;
                     contentEl.validator.validateHook = function(valid) {
                         var buttons = getElementsByClass(contentEl, "formbutton", "input");
                         for (i = 0; i < buttons.length; i++) {
@@ -162,6 +163,7 @@ function requestContent(href) {
                             buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
                         }
                     };
+                    contentEl.validator.validatePage(false, contentEl);
                     contentEl.validator.addValidation(contentEl);
                     check(xmlhttp.responseXML.documentElement.getAttribute('class'));
                     document.href_frame = href;

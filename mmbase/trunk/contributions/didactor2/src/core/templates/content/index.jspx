@@ -23,10 +23,10 @@
         </c:when>
         <c:otherwise>
           <mm:treehaspage page="${domain}${type}/index.jsp" objectlist="$includePath">
-            <mm:treeinclude page="${domain}${type}/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?,justposted?" />
+            <mm:treeinclude debug="xml" page="${domain}${type}/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?,justposted?" />
           </mm:treehaspage>
           <mm:treehaspage page="${domain}${type}/index.jsp" objectlist="$includePath" inverse="true">
-            <mm:treeinclude page="${domain}learnblocks/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?" />
+            <mm:treeinclude debug="xml" page="${domain}learnblocks/index.jsp" objectlist="$includePath" referids="object@learnobject,$referids,fb_madetest?" />
           </mm:treehaspage>
         </c:otherwise>
       </c:choose>
