@@ -12,12 +12,13 @@
       happens on 'cockpit') but you are not yet logged in.
 
       So, stuff specific to the education can be shown.
-
-      This pages contains odd logic, which depending on certain installed components makes itself render differently
   -->
+  <div class="rows" id="rows">
+    <di:script  src="/content/js/open.jsp" />
 
-  <di:include debug="html" page="/login/navigation.jspx" />
-  <di:include debug="html" page="/login/main.jspx" />
+    <di:include debug="html" page="/login/navigation.jspx" />
+    <di:include debug="html" page="/login/main.jspx" />
+  </div>
 </di:html>
 
 
