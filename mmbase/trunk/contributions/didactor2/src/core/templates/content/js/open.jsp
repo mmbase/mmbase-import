@@ -243,6 +243,12 @@ function openContent(type, number, el) {
     if (currentel != null) {
         currentel.className = "";
     }
+    if (/^[+-]?\d+$/.test(type)) {
+        el = number;
+        number = type;
+        type = null;
+    }
+
     if (el != null) {
         el.className = "active";
     }
