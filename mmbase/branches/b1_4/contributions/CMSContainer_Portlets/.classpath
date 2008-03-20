@@ -13,7 +13,6 @@
 	<classpathentry kind="src" path="portlets-dynamicforms/src/java"/>
 	<classpathentry kind="src" path="portlets-login/src/java"/>
 	<classpathentry kind="src" path="portlets-googlemap/src/java"/>
-	<classpathentry kind="src" path="portlets-newsletter/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/activation/jars/activation-1.0.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar"/>
