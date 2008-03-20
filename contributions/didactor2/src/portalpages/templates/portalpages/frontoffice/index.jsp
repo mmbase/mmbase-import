@@ -5,11 +5,6 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0"
           >
   <mm:cloud method="asis">
-    <mm:link page="/content/js/open.jsp">
-      <script type="text/javascript" src="${_}">
-        <jsp:text><!-- help IE --> </jsp:text>
-      </script>
-    </mm:link>
 
     <div class="rows">
       <div class="navigationbar">
