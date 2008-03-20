@@ -8,7 +8,7 @@
   <table>
 	<tr>
 	  <td>
-	    <h1 style="color:#B85602;"><mm:field name="title" /></h1>
+	    <h1 style="color:#B85602;"><mm:field name="title" /></h1> <!-- WTF, style in the jsp? -->
 	  </td>
 	</tr>
 	<tr>
@@ -19,14 +19,14 @@
   </table>
   <mm:field name="impos">
     <mm:compare value="1">
-      <mm:field name="body" />	
+      <mm:field name="body" />
       <table>
         <tr>
           <td>
             <mm:relatednodes type="images">
               <h3><mm:field name="title" /></h3>
               <img src="<mm:image />" width="200" border="0" /><br/>
-              <mm:field name="description" /> 
+              <mm:field name="description" />
             </mm:relatednodes>
           </td>
         </tr>
@@ -40,22 +40,22 @@
          <mm:relatednodes type="images">
            <h3><mm:field name="title" /></h3>
            <img src="<mm:image />" width="200" border="0" />
-           <mm:field name="description" /> 
+           <mm:field name="description" />
          </mm:relatednodes>
         </tr>
         <tr>
  	      <td>
  	        <mm:field name="body" />
- 	      </td>   
+ 	      </td>
  	    </tr>
-      </table>	  
+      </table>
     </mm:compare>
   </mm:field>
   <mm:field name="impos">
     <mm:compare value="2">
       <table>
-        <tr>	
-  	      <td>   
+        <tr>
+  	      <td>
             <mm:relatednodes type="images">
               <table>
                 <tr> <h3><mm:field name="title"/></h3></tr>
@@ -63,7 +63,7 @@
                 <tr> <td><img src="<mm:image />" width="200" border="0"/><br/></td></tr>
               </table>
             </mm:relatednodes>
-          </td>      
+          </td>
           <td>
             <mm:field name="body" />
           </td>
