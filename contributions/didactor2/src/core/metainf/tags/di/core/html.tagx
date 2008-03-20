@@ -7,6 +7,7 @@
   <jsp:directive.tag
       description="Didactor template, put your component in its's body. Like so, you don't need to explicitly use ugly header and footer includes yourself."
       />
+  <jsp:directive.attribute name="description"    />  <!-- ignored, just to document the page itself -->
   <jsp:directive.attribute name="title_key"    />
   <jsp:directive.attribute name="title"    />
   <jsp:directive.attribute name="title_nodeparams"  />
@@ -32,6 +33,7 @@
               language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
       <html  xmlns="http://www.w3.org/1999/xhtml">
+        <c:if test="${! empty description}">&lt;!-- ${description} --&gt;</c:if>
         <di:head>
           <title>
             <c:forTokens items="${title_nodeparams}" delims="," var="title_nodeparam">
