@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.226 2008-03-17 10:05:02 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.227 2008-03-21 09:07:56 nklasens Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -121,6 +121,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     /**
+     * Set nodemanager for node
+     * @param node node to derive nodemanager from.
      * @since MMBase-1.8
      */
     protected void setNodeManager(MMObjectNode node) {
@@ -318,6 +320,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * Like getObjectValue, but skips any processing that MMBase would normally perform on a field.
      * You can use this to get data from a field for validation purposes.
      * @param fieldName name of field
+     * @return the value without processing
      * @since MMBase-1.8
      */
     public Object getValueWithoutProcess(String fieldName) {
@@ -595,6 +598,7 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
 
     /**
      * Recursively deletes relations to relations
+     * @param relation relation to be removed
      * @since MMBase-1.8.5
      */
     private void deleteRelation(MMObjectNode relation) {
@@ -713,7 +717,8 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
      * @return list of relations
      * @throws NotFoundException
      *
-     * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
+     * See {@link Queries#createRelationNodesQuery(Node, NodeManager, String, String)}
+     *  Should perhaps be implemented with that
      */
     @Override
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
@@ -800,6 +805,10 @@ public class BasicNode extends org.mmbase.bridge.util.AbstractNode implements No
     }
 
     /**
+     * Get related nodes for this node
+     * @param otherManager nodemanager on the other side of the relation
+     * @param role name of the relation
+     * @return List of related nodes
      * @since MMBase-1.8.2
      */
     protected NodeList getRelatedNodes(NodeManager otherManager, String role) {
