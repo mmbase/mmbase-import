@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.30 2008-02-22 14:30:35 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.31 2008-03-21 09:26:33 fpunt Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -191,5 +191,4 @@ public class ComponentRepository {
         component.configure(doc.getDocumentElement());
         return component;
     }
-
 }
