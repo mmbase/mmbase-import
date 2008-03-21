@@ -217,7 +217,11 @@ th, td
     vertical-align: top;
 }
 
-th.view, td.view { text-align: right; }
+th.view, td.view
+{
+	text-align: right;
+	white-space: nowrap;
+}
 th.center, td.center { text-align: center; }
 
 div#aboutthisredbox { display: none; }
