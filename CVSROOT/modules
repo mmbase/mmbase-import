@@ -25,7 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-# $Id: modules,v 1.41 2007-10-05 11:44:14 michiel Exp $
+# $Id: modules,v 1.42 2008-03-21 21:17:45 nklasens Exp $
 
 
 # the mmbase java sources and resources
@@ -73,3 +73,5 @@ comptributions -d contributions contributions lucene aselect calendar poll theme
 # to check out sufficiently to build a bindist.
 minimall -d mmbase all &src &config &html &applications &documentation &comptributions
 
+# mmbase-nightly is everything except contrib
+nightly  -d mmbase all &src &config &html &documentation &tests &applications
