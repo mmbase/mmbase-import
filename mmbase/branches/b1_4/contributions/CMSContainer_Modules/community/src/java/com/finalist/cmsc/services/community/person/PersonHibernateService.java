@@ -9,11 +9,14 @@
  */
 package com.finalist.cmsc.services.community.person;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,40 +36,79 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	/** {@inheritDoc} */
 	@Transactional(readOnly = true)
 	public Person getPersonByUserId(String userId) {
+		if (StringUtils.isBlank(userId)) { 
+			throw new IllegalArgumentException("UserId is not filled in. "); 
+		}
 		return findPersonByUserId(userId);
+	}
+	
+	/** {@inheritDoc} */
+   @Transactional
+	@SuppressWarnings("unchecked")
+	public List<Person> getPerson(Person person){
+		if (person == null) 
+			return Collections.emptyList();
+		
+		List personList = getSession()
+			.createCriteria(Person.class)
+			.add(Example.create(person))
+			.list();
+		return personList;
+
 	}
 
 	/** {@inheritDoc} */
 	@Transactional
-	public void createPerson(String firstName, String infix, String lastName, String userId) {
-		Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
+	public Person createPerson(String firstName, String infix, String lastName, Long authenticationId) {
+		if (firstName == null) { 
+			throw new IllegalArgumentException("Firstname is null. "); 
+		}
+		if (lastName == null) { 
+			throw new IllegalArgumentException("Lastname is null. "); 
+		}
+		if (authenticationId == null) { 
+			throw new IllegalArgumentException("authenticationId is not filled in. "); 
+		}
+
 		if (authenticationId != null) {
 			Person person = new Person();
 			person.setFirstName(firstName);
 			person.setInfix(infix);
 			person.setLastName(lastName);
-			person.setAuthenticationId(authenticationId);
+			person.setAuthenticationId(authenticationId); //used to find account
 			getSession().save(person);
+			return person;
 		}
+		return null;
 	}
+	
+	/** {@inheritDoc} */
+   @Transactional
+   public void updatePerson(Person person) {
+      getSession().saveOrUpdate(person);
+   }
+
 
 	/** {@inheritDoc} */
 	@Transactional
-	public void deletePersonByUserId(String userId) {
-		if (userId != null) {
+	public boolean deletePersonByUserId(String userId) {
+		if (!StringUtils.isBlank(userId)) {
 			Person person = findPersonByUserId(userId);
 			if (person != null) {
 				getSession().delete(person);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	private Person findPersonByUserId(String userId) {
 		Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
 		Person person = null;
 		if (authenticationId != null) {
-			Criteria criteria = getSession().createCriteria(Person.class).add(
-					Restrictions.eq("authenticationId", authenticationId));
+			Criteria criteria = getSession()
+									.createCriteria(Person.class)
+									.add(Restrictions.eq("authenticationId", authenticationId));
 			person = findPersonByCriteria(criteria);
 		}
 		return person;
@@ -82,4 +124,5 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	public void setAuthenticationService(AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
 	}
+
 }

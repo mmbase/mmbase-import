@@ -38,7 +38,7 @@ public class Community {
    public static List<String> getAuthorities() {
       return communityService.getAuthorities();
    }
-
+   
    public static boolean hasAuthority(String authority) {
       return communityService.hasAuthority(authority);
    }
@@ -47,20 +47,24 @@ public class Community {
       return communityService.getPreferenceValues(module, userId, key);
    }
 
-   public Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value){
+   public static Map<String, Map<String,List<String>>> getPreferences(String module, String userId, String key, String value){
       return communityService.getPreferences(module, userId, key, value);
    }
 
-   public void createPreference(String module, String userId, String key, List<String> values){
+   public static void createPreference(String module, String userId, String key, List<String> values){
       communityService.createPreference(module, userId, key, values);
    }
 
-   public void removePreferences(String module, String userId, String key){
+   public static void removePreferences(String module, String userId, String key){
       communityService.removePreferences(module, userId, key);
    }
 
-   public Map<String, Map<String, String>> getUserProperty(String userName){
+   public static Map<String, Map<String, String>> getUserProperty(String userName){
       return communityService.getUserProperty(userName);
+   }
+
+   public static boolean sendPassword(String username, String emailText, String emailHeader) {
+      return communityService.sendPassword(username, emailText, emailHeader);
    }
 
 }

@@ -29,12 +29,13 @@ public class AuthenticationHibernateService extends HibernateService implements 
 
 	/** {@inheritDoc} */
 	@Transactional
-	public void createAuthentication(String userId, String password) {
+	public Authentication createAuthentication(String userId, String password) {
 		Authentication authentication = new Authentication();
 		authentication.setUserId(userId);
 		authentication.setPassword(encodePassword(password, userId));
 		authentication.setEnabled(true);
-		getSession().save(authentication);
+		authentication.setId((Long)getSession().save(authentication));
+		return authentication;
 	}
 
 	/** {@inheritDoc} */
@@ -171,4 +172,10 @@ public class AuthenticationHibernateService extends HibernateService implements 
 	public void setAuthorityService(AuthorityService authorityService) {
 		this.authorityService = authorityService;
 	}
+
+   public Authentication getAuthenticationById(
+         Long authenticationId) {
+      // TODO Auto-generated method stub
+      return null;
+   }
 }

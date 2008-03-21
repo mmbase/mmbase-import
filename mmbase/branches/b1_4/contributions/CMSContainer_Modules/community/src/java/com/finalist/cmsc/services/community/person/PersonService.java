@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community.person;
 
+import java.util.List;
+
 /**
  * This service encapsulates the management of people and groups.
  * 
@@ -23,8 +25,14 @@ public interface PersonService {
 
     Person getPersonByUserId(String userId);
     
-    void createPerson(String firstName, String infix, String lastName, String userId);
+    List<Person> getPerson(Person person);
+    
+    Person createPerson(String firstName, String infix, String lastName, Long authenticationId);
+    
+    /* Save or update the person to the database
+     */
+    void updatePerson(Person person);
 
-    void deletePersonByUserId(String userId);
+    boolean deletePersonByUserId(String userId);
 
 }

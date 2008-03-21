@@ -57,10 +57,13 @@ public class LoginPortlet extends CmscPortlet {
 		} else if ("logout".equals(action)) {
 			Community.logout();
 		} else if ("send_password".equals(action)) {
-            throw new UnsupportedOperationException("Community module does not have all methods yet");
-//            String username = request.getParameter("username");
-//            if (!StringUtils.isBlank(username)) {
-//            }
+            String username = request.getParameter("username");
+            if (!StringUtils.isBlank(username)) {
+               //Get email text and email header from portlet properties and use it for sending an email
+               String emailText = request.getPreferences().getValue("email.text", "Your account details associated with the given email address.\n");
+               String emailHeader = request.getPreferences().getValue("email.header", "Account details");
+            	Community.sendPassword(username, emailText, emailHeader);
+            }
 		}
 		else {
 		    // Unknown
@@ -75,7 +78,7 @@ public class LoginPortlet extends CmscPortlet {
 	    String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
 		if (template==null) template = "login/login.jsp";
 		
-		String error = request.getParameter("errormessage");
+	    String error = request.getParameter("errormessage");
 	    if (!StringUtils.isBlank(error)) {
 	        request.setAttribute("errormessage", error);
 	    }

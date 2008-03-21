@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.services.community;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
 
-import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.AuthenticationManager;
 import org.acegisecurity.GrantedAuthority;
@@ -23,6 +23,7 @@ import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.acegisecurity.userdetails.User;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -30,8 +31,14 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.finalist.cmsc.mmbase.EmailUtil;
 import com.finalist.cmsc.services.Properties;
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.preferences.PreferenceService;
+import com.finalist.cmsc.services.community.security.Authentication;
+import com.finalist.cmsc.services.community.security.AuthenticationService;
+import com.finalist.cmsc.util.NameUtil;
 
 /**
  * CommunityServiceImpl, a CMSc service class.
@@ -43,7 +50,9 @@ public class CommunityServiceImpl extends CommunityService {
 	private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
 
 	private AuthenticationManager authenticationManager;
-    private PreferenceService preferenceService;
+   private PreferenceService preferenceService;
+   private PersonService personService;
+   private AuthenticationService authenticationService;
 
     @Override
 	protected void init(ServletConfig config, Properties properties) throws Exception {
@@ -56,7 +65,7 @@ public class CommunityServiceImpl extends CommunityService {
 	public void login(String userName, String password) {
 		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
 		try {
-			Authentication authentication = authenticationManager.authenticate(authRequest);
+		   org.acegisecurity.Authentication authentication = authenticationManager.authenticate(authRequest);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (AuthenticationException ae) {
 	        SecurityContextHolder.clearContext();
@@ -72,7 +81,7 @@ public class CommunityServiceImpl extends CommunityService {
 	@Override
 	public boolean isAuthenticated() {
     	SecurityContext context = SecurityContextHolder.getContext();
-    	Authentication authentication = context.getAuthentication();
+    	org.acegisecurity.Authentication authentication = context.getAuthentication();
         return (authentication != null) && authentication.isAuthenticated();
     }
 
@@ -111,7 +120,7 @@ public class CommunityServiceImpl extends CommunityService {
 
 	private User getPrincipal() {
     	SecurityContext context = SecurityContextHolder.getContext();
-    	Authentication authentication = context.getAuthentication();
+    	org.acegisecurity.Authentication authentication = context.getAuthentication();
     	return authentication != null ? (User)authentication.getPrincipal() : null;
     }
 
@@ -166,6 +175,35 @@ public class CommunityServiceImpl extends CommunityService {
 		return null;
 	}
 
+	@Override
+   public boolean sendPassword(String email, String emailText, String emailHeader) {
+      if (StringUtils.isEmpty(email)) {
+         throw new IllegalArgumentException("Username not found.");
+      }
+      if (StringUtils.isEmpty(emailText)) {
+         emailText = "Email text is missing";
+      }
+      if (StringUtils.isEmpty(emailHeader)) {
+         emailHeader = "Email header is missing";
+      }
+      Person person = new Person();
+      person.setEmail(email);
+      List<Person> persons = personService.getPerson(person);
+      List<Authentication> authList = new ArrayList<Authentication>(); 
+      StringBuilder body = new StringBuilder();
+      
+      for (Person person2 : persons) {
+         Authentication auth = authenticationService.getAuthenticationById(person2.getAuthenticationId());
+         authList.add(auth);
+         String name = NameUtil.getFullName(person2.getFirstName(), person2.getInfix(), person2.getLastName());
+         body.append(name + "\n" + auth.getUserId() + "\n" + auth.getPassword() + "\n\n");
+      }
+      String finalBody = MessageFormat.format(emailText, body.toString()); 
+      String name = NameUtil.getFullName(person.getFirstName(), person.getInfix(), person.getLastName());
+      EmailUtil.send(name, email, emailHeader, finalBody);
+      return true;
+   }
+
     /**
      * @deprecated please try to use another service
      */
@@ -186,4 +224,14 @@ public class CommunityServiceImpl extends CommunityService {
 	public void setPreferenceService(PreferenceService preferenceService) {
 		this.preferenceService = preferenceService;
 	}
+	
+   @Required
+	public void setPersonService(PersonService personService) {
+	   this.personService = personService;
+	}
+
+   @Required
+   public void setAuthenticationService(AuthenticationService authenticationService) {
+      this.authenticationService = authenticationService;
+   }
 }

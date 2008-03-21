@@ -23,4 +23,5 @@ public class DummyCommunityService extends CommunityService {
 	@Override public void createPreference(String module, String userId, String key, List<String> values) {}
 	@Override public void removePreferences(String module, String userId, String key) {}
 	@Override public Map<String, Map<String, String>> getUserProperty(String userName) { return null; }
+   @Override public boolean sendPassword(String email, String emailText, String emailHeader) { return true; }
 }

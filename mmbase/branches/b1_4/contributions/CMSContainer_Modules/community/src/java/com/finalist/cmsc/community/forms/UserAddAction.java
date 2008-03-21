@@ -17,12 +17,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
- * Add a Authentication and Person
+ * Add an Authentication and Person
  * 
  * @author Remco Bos
  * @author Wouter Heijke
@@ -37,39 +38,65 @@ public class UserAddAction extends AbstractCommunityAction {
 		if (!isCancelled(httpServletRequest)) {
 			UserForm userForm = (UserForm) actionForm;
 
-			String id = userForm.getEmail();
+			//String accountName = userForm.getEmail();
+			String accountName = userForm.getAccount();
 
-			AuthorityService aus = getAuthorityService();
+//			AuthorityService aus = getAuthorityService(); //Never used (yet).
 			AuthenticationService as = getAuthenticationService();
 			PersonService ps = getPersonService();
 
 			if (userForm.getAction().equalsIgnoreCase(ACTION_ADD)) {
-				Long check1 = as.getAuthenticationIdForUserId(id);
-				if (check1 == null) {
-					as.createAuthentication(userForm.getEmail(), userForm.getPassword());
-					Long check2 = as.getAuthenticationIdForUserId(id);
-					if (check2 != null) {
-						ps.createPerson(userForm.getVoornaam(), userForm.getTussenVoegsels(), userForm.getAchterNaam(), id);
+				Long authenticationId = as.getAuthenticationIdForUserId(accountName);
+				if (authenticationId == null) {
+				   Authentication authentication = as.createAuthentication(userForm.getEmail(), userForm.getPasswordText());
+//					Long authenticationId = as.getAuthenticationIdForUserId(accountName);
+					if (authentication.getId() != null) {
+						Person person = ps.createPerson(userForm.getFirstName(), userForm.getPrefix(), userForm.getLastName(), authentication.getId());
+						person.setEmail(userForm.getEmail());  //Also add an email address to the user.
+						ps.updatePerson(person);
+						
 					} else {
-						log.info("add check2 failed");
+						log.info("add authenticationId failed");
 					}
 				} else {
-					log.info("add check1 failed for: " + id);
+					log.info("add check1 failed for: " + accountName);
 				}
 
 			} else if (userForm.getAction().equalsIgnoreCase(ACTION_EDIT)) {
-				Long check1 = as.getAuthenticationIdForUserId(id);
-				if (check1 != null) {
-					String newPassword1 = userForm.getPassword();
+				Long authenticationId = as.getAuthenticationIdForUserId(accountName);
+				if (authenticationId != null) {
+					String newPassword1 = userForm.getPasswordText();
 					String newPassword2 = userForm.getPasswordConfirmation();
 					if (newPassword1 != null && newPassword2 != null) {
 						if (newPassword1.equalsIgnoreCase(newPassword2)) {
-							as.updateAuthenticationPassword(id, newPassword1);
+							as.updateAuthenticationPassword(accountName, newPassword1);
 						}
 					}
+					
+					//First retrieve the right person object from the database
+               Person p = new Person();
+               p.setAuthenticationId(authenticationId);
+               Person person = null;
 
+               if (ps.getPerson(p).isEmpty()) { //User did not exists, so create it.
+                  person = new Person();
+                  person.setAuthenticationId(authenticationId);
+               } else {
+                  //Update existing Person from database.
+                  person = ps.getPerson(p).get(0); //Retrieve first user found
+               }
+               
+               //Also save other fields entered in the form to the right person object
+               person.setFirstName(userForm.getFirstName());
+					person.setInfix(userForm.getPrefix());
+					person.setLastName(userForm.getLastName());
+               person.setEmail(userForm.getEmail());
+               
+					//Store the new person data to the database again.
+               ps.updatePerson(person);
+					
 				} else {
-					log.info("edit check1 failed for: " + id);
+					log.info("edit check1 failed for: " + accountName);
 				}
 
 			} else {

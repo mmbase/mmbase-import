@@ -26,19 +26,19 @@ public class UserForm extends ActionForm {
 
 	private String email;
 
-	private String password;
+	private String passwordText;
 
 	private String passwordConfirmation;
 
 	private String account;
 
-	private String voornaam;
+	private String firstName;
 
-	private String tussenVoegsels;
+	private String prefix;
 
-	private String achterNaam;
+	private String lastName;
 
-	private String bedrijf;
+	private String company;
 
 	public String getAction() {
 		return action;
@@ -56,28 +56,28 @@ public class UserForm extends ActionForm {
 		this.account = account;
 	}
 
-	public String getVoornaam() {
-		return voornaam;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setVoornaam(String voornaam) {
-		this.voornaam = voornaam;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getTussenVoegsels() {
-		return tussenVoegsels;
+	public String getPrefix() {
+		return prefix;
 	}
 
-	public void setTussenVoegsels(String tussenVoegsels) {
-		this.tussenVoegsels = tussenVoegsels;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
-	public String getAchterNaam() {
-		return achterNaam;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setAchterNaam(String achterNaam) {
-		this.achterNaam = achterNaam;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -88,20 +88,20 @@ public class UserForm extends ActionForm {
 		this.email = email;
 	}
 
-	public String getBedrijf() {
-		return bedrijf;
+	public String getCompany() {
+		return company;
 	}
 
-	public void setBedrijf(String bedrijf) {
-		this.bedrijf = bedrijf;
+	public void setBedrijf(String company) {
+		this.company = company;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPasswordText() {
+		return passwordText;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPasswordText(String passwordText) {
+		this.passwordText = passwordText;
 	}
 
 	public String getPasswordConfirmation() {
@@ -117,13 +117,13 @@ public class UserForm extends ActionForm {
 		if (email.equals("")) {
 			actionErrors.add("email", new ActionMessage("email.empty"));
 		}
-		if (password.equals("")) {
+		if (passwordText.equals("")) {
 			actionErrors.add("password", new ActionMessage("password.empty"));
 		}
 		if (passwordConfirmation.equals("")) {
 			actionErrors.add("passwordConfirmation", new ActionMessage("passwordConfirmation.empty"));
 		}
-		if (!password.equals("") && !passwordConfirmation.equals("") && !password.equals(passwordConfirmation)) {
+		if (!passwordText.equals("") && !passwordConfirmation.equals("") && !passwordText.equals(passwordConfirmation)) {
 			actionErrors.add("password", new ActionMessage("passwords.not_equal"));
 		}
 		return actionErrors;

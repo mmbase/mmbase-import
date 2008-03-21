@@ -34,7 +34,7 @@ public class UserAddInitAction extends AbstractCommunityAction {
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 
-		AuthorityService aus = getAuthorityService();
+//		AuthorityService aus = getAuthorityService();
 
 		String id = request.getParameter(USERID);
 		UserForm userForm = (UserForm) actionForm;
@@ -44,14 +44,16 @@ public class UserAddInitAction extends AbstractCommunityAction {
 			AuthenticationService as = getAuthenticationService();
 			Authentication auth = as.findAuthentication(id);
 			if (auth != null) {
-				userForm.setEmail(auth.getUserId());
-
 				PersonService ps = getPersonService();
-				Person person = ps.getPersonByUserId(id);
+				Person person = ps.getPersonByUserId(id); //Returns null when no Person object was found!
+				userForm.setAccount(id);
+				
 				if (person != null) {
-					userForm.setVoornaam(person.getFirstName());
-					userForm.setTussenVoegsels(person.getInfix());
-					userForm.setAchterNaam(person.getLastName());
+					userForm.setFirstName(person.getFirstName());
+					userForm.setPrefix(person.getInfix());
+					userForm.setLastName(person.getLastName());
+					userForm.setEmail(person.getEmail());
+					
 				} else {
 					log.info("person failed");
 				}

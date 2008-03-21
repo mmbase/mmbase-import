@@ -22,7 +22,7 @@ public interface AuthenticationService {
      * @param userId
      * @param password
      */
-    void createAuthentication(String userId, String password);
+    Authentication createAuthentication(String userId, String password);
 
     /**
      * Update the login information for the authentication (typically called by the user)
@@ -126,4 +126,11 @@ public interface AuthenticationService {
      * @return authenticationId
      */ 
 	Long getAuthenticationIdForUserId(String userId);
+
+	/**
+	 * Find authentication information by Id for a user
+	 * @param authenticationId
+	 * @return Authentication
+	 */
+   Authentication getAuthenticationById(Long authenticationId);
 }
