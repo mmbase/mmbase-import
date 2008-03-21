@@ -35,12 +35,12 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.21 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: FrameworkFilter.java,v 1.22 2008-03-21 10:58:15 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
 
-    private static final Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
+    private static Logger log = Logging.getLoggerInstance(FrameworkFilter.class);
 
     /**
      * MMBase needs to be started first to be able to load config
@@ -62,6 +62,8 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
     public void setMMBase(MMBase mm) {
         mmbase = mm;
+        // logging is not completey initialized, replace logger instance too
+        log = Logging.getLoggerInstance(FrameworkFilter.class);
     }
 
     public void setInitException(ServletException se) {
