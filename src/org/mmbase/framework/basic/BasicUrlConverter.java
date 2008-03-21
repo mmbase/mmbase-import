@@ -25,13 +25,14 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.9 2008-02-23 14:36:30 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.10 2008-03-21 10:25:52 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(BasicUrlConverter.class);
 
-    private static final CharTransformer paramEscaper = new Url(Url.ESCAPE);
+    private static final CharTransformer PARAM_ESCAPER= new Url(Url.ESCAPE);
+
 
     /**
      * General utility function to create an Url
@@ -66,17 +67,29 @@ public final class BasicUrlConverter implements UrlConverter {
             Writer w = new StringBuilderWriter(show);
             for (Map.Entry<String, ? extends Object> entry : params.entrySet()) {
                 Object value = entry.getValue();
-                if (value != null && Casting.isStringRepresentable(value.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
-                    if (value instanceof Iterable) {
+                if (value != null) {
+                    if (value.getClass().isArray()) {
+                        for (Object v : (Object[]) value) {
+                            if (v == null || Casting.isStringRepresentable(v.getClass())) { // if not string representable, that suppose it was an 'automatic' parameter which does need presenting on url
+                                show.append(connector).append(entry.getKey()).append("=");
+                                PARAM_ESCAPER.transform(new StringReader(Casting.toString(v)), w);
+                                connector = amp;
+                            }
+                        }
+                    } else if (value instanceof Iterable) {
                         for (Object v : (Iterable<?>) value) {
-                            show.append(connector).append(entry.getKey()).append("=");
-                            paramEscaper.transform(new StringReader(Casting.toString(v)), w);
-                            connector = amp;
+                            if (v == null || Casting.isStringRepresentable(v.getClass())) {
+                                show.append(connector).append(entry.getKey()).append("=");
+                                PARAM_ESCAPER.transform(new StringReader(Casting.toString(v)), w);
+                                connector = amp;
+                            }
                         }
                     } else {
-                        show.append(connector).append(entry.getKey()).append("=");
-                        paramEscaper.transform(new StringReader(Casting.toString(value)), w);
-                        connector = amp;
+                        if (Casting.isStringRepresentable(value.getClass())) {
+                            show.append(connector).append(entry.getKey()).append("=");
+                            PARAM_ESCAPER.transform(new StringReader(Casting.toString(value)), w);
+                            connector = amp;
+                        }
                     }
                 }
             }
@@ -105,13 +118,15 @@ public final class BasicUrlConverter implements UrlConverter {
         State state = State.getState(request);
         Map<String, Object> map = new TreeMap<String, Object>();
         if (log.isDebugEnabled()) {
-            log.debug("path '" + path + "' " + parameters + " " + frameworkParameters);
+            log.debug("path '" + path + "' p:" + parameters + " fwp:" + frameworkParameters + " " + state);
         }
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
         }
         if (state.isRendering()) {
             map = new TreeMap<String, Object>(framework.prefix(state, map));
+            String prefix = framework.getPrefix(state);
+            log.debug("Using prefix " + prefix);
             for (Object e : request.getParameterMap().entrySet()) {
                 Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
 
@@ -119,10 +134,12 @@ public final class BasicUrlConverter implements UrlConverter {
                 if (k.startsWith(framework.getPrefix(state))) {
                     // for this block, don't add that,
                     // because should be in parameters then
+                    log.trace("skipping " + entry);
                     continue;
                 }
                 if (! map.containsKey(k)) {
-                    map.put(k, entry.getValue()[0]);
+                    log.trace("Adding " + entry);
+                    map.put(k, entry.getValue());
                 }
             }
             Block block = state.getBlock();
