@@ -22,7 +22,7 @@
       <mm:param name="a">AA</mm:param>
       <p>
         <c:choose>
-          <c:when test="${_ eq url}">ok</c:when>
+          <c:when test="${_ eq url}">ok (${_})</c:when>
           <c:otherwise>NOT OK ${_} != ${url}</c:otherwise>
         </c:choose>
       </p>
