@@ -26,6 +26,14 @@
     <property name="password"></property>
     -->
 
+    <!--
+        Any property starting with "mail." is set on the mail Session.
+        See e.g.:
+        http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html
+    -->
+    <property name="mail.smtp.connectiontimeout">10000</property>
+    <proeprty name="mail.smtp.timeout">10000</proeprty>
+
 
     <property name="emailbuilder">email</property>
     <property name="emailbuilder.bodyfield">body</property>
