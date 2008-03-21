@@ -29,7 +29,9 @@
     <mm:link absolute="context" referids="a" page="suburls">
       <p>${_ eq '/mmbase/test/test/suburls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
+
   </div>
 </jsp:root>
