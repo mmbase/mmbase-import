@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  @version $Id: framework.xsd,v 1.7 2008-02-24 10:46:21 michiel Exp $
+  @version $Id: framework.xsd,v 1.8 2008-03-21 16:08:16 michiel Exp $
 -->
 <xsd:schema
     xmlns="http://www.mmbase.org/xmlns/framework"
@@ -71,6 +71,9 @@
 
   <xsd:element name="blockType">
     <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="title"       minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
       <xsd:attribute name="weight" type="xsd:integer"  />
     </xsd:complexType>
   </xsd:element>
@@ -96,5 +99,16 @@
       </xsd:simpleContent>
     </xsd:complexType>
   </xsd:element>
+
+  <xsd:element name="title">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+          <xsd:attribute ref="xml:lang" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
 
 </xsd:schema>
