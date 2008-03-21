@@ -22,6 +22,7 @@
         <mm:formatter xslt="xslt/framework/head.xslt" escape="none">
           <head>
             <title>MMBase<mm:present referid="category"> - <mm:write referid="category" /></mm:present><mm:present referid="block"> : <mm:write referid="block" /></mm:present></title>
+
             <mm:link page="/mmbase/admin/css/admin.css">
               <link rel="stylesheet" href="${_}" type="text/css" />
             </mm:link>
@@ -55,16 +56,16 @@
                 <mm:link page="/mmbase/admin/logout.jsp"><a href="${_}">logout</a></mm:link>
               </p>
             </div>
-          </div>
+           </div>
           <div id="wrap">
-            <div id="navigation">
+             <div id="navigation">
               <ul>
                 <mm:functioncontainer>
                   <mm:param name="id">mmbase</mm:param>
                   <mm:listfunction set="components" name="blockClassification">
                     <mm:stringlist referid="_.subTypes" id="cat">
                       <mm:link id="link"><mm:frameworkparam name="category">${cat.name}</mm:frameworkparam></mm:link>
-                      <li><a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${cat.name}</a>
+                      <li class="weight_${cat.weight}"><a class="${category eq cat.name ? 'selected' : ''}" href="${link}">${mm:string(cat.title)}</a>
                       <mm:compare referid="category" value="${cat.name}">
                         <ul>
                           <c:forEach var="b" items="${cat.blocks}">
@@ -87,7 +88,7 @@
                 </mm:functioncontainer>
               </ul>
             </div>
-            <div id="content">
+             <div id="content">
               <c:catch var="exception">
                 <h2 class="top">${mm:string(blockObject.title)}</h2>
                 <mm:component debug="xml" name="$component" block="${block}">
@@ -100,8 +101,6 @@
                 </pre>
                 <pre>
                   ${mm:escape('text/xml', exception.cause.cause.cause)}
-
-
                   ${mm:escape('text/xml', exception.cause.cause)}
                   ${mm:escape('text/xml', exception.cause)}
                 </pre>
