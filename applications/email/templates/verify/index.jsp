@@ -2,8 +2,7 @@
 %><mm:content language="nl" expires="0">
 <mm:cloud method="asis" jspvar="cloud">
   <mm:import externid="signature" jspvar="signature" vartype="string" required="true" />
-  <%
-  org.mmbase.datatypes.VerifyEmailProcessor.validate(cloud, signature);%>
+  <%=org.mmbase.datatypes.VerifyEmailProcessor.validate(cloud, signature)%>
 </mm:cloud>
 </mm:content>
 
