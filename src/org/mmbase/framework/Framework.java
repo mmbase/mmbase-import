@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.47 2008-02-24 10:46:20 michiel Exp $
+ * @version $Id: Framework.java,v 1.48 2008-03-21 16:08:16 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -75,6 +75,7 @@ public abstract class Framework {
                                 int weight = Integer.parseInt(element.getAttribute("weight"));
                                 for (Block.Type t : Block.Type.getClassification(classification, true)) {
                                     t.setWeight(weight);
+                                    t.getTitle().fillFromXml("title", element);
                                 }
                             }
                         } catch (Exception e) {
