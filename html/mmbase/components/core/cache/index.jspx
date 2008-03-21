@@ -3,22 +3,17 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    class="component ${requestScope.componentClassName}"
+    class="component mm_c ${requestScope.componentClassName}"
     id="${requestScope.componentId}">
   <jsp:directive.page import="org.mmbase.cache.*" />
   <jsp:output omit-xml-declaration="true" />
   <mm:cloud rank="administrator">
-
 
 <mm:import externid="active" from="request" />
 <mm:import externid="clear"  from="request" />
 <mm:import externid="rs_active" from="request" />
 <mm:import externid="rs_show"   from="request" />
 
-<div
-  class="component mm_c ${requestScope.componentClassName}"
-  id="${requestScope.componentId}">
-  
   <h3>Cache Monitor</h3>
 
   <!-- activate or deactivate cache -->
@@ -257,7 +252,5 @@
   </mm:functioncontainer>
   </table>
 
-
-</div>
-</mm:cloud>
+  </mm:cloud>
 </div>
