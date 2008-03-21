@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.33 2008-02-23 16:46:19 michiel Exp $
+ * @version $Id: Block.java,v 1.34 2008-03-21 09:26:33 fpunt Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -68,6 +68,7 @@ public class Block {
     public LocalizedString getTitle() {
         return title;
     }
+
 
     /**
      * Mimetype for this block. E.g. "text/html".
@@ -180,28 +181,30 @@ public class Block {
          */
         public static Type[] getClassification(String p, boolean create) {
             if (p == null || "".equals(p)) return new Type[] {NO};
-            List<Type> r = new ArrayList<Type>();
+            List<Type> result = new ArrayList<Type>();
             PARTS:
             for (String part : p.split("\\s*?[,\\s]\\s*")) {
-                Type t = ROOT;
-                for (String e : part.split("\\.")) {
-                    Type proposal = new Type(e, t);
-                    int i = t.subs.indexOf(proposal);
-                    if (i == -1) {
+                Type type = ROOT;
+                for (String subpart : part.split("\\.")) {
+                	int weight = subpart.contains(":")?Integer.parseInt(subpart.substring(subpart.indexOf(":")+1)):0;
+                	subpart = subpart.contains(":")?subpart.substring(0,subpart.indexOf(":")):subpart;
+                    Type proposal = new Type(subpart, type);
+                    int index = type.subs.indexOf(proposal);
+                    if (index == -1) {
                         if (create) {
-                            t.subs.add(proposal);
+                            type.subs.add(proposal);
                         } else {
                             continue PARTS;
                         }
                     } else {
-                        proposal = t.subs.get(i);
+                        proposal = type.subs.get(index);
                     }
-                    Collections.sort(t.subs);
-                    t = proposal;
+                    Collections.sort(type.subs);
+                    type = proposal;
                 }
-                r.add(t);
+                result.add(type);
             }
-            return r.toArray(new Type[] {});
+            return result.toArray(new Type[] {});
         }
 
         private final String name;
@@ -268,7 +271,7 @@ public class Block {
         public int compareTo(Type t) {
             int s = weight - t.weight;
             return s == 0 ? name.compareTo(t.name) : s;
-        }
+    }
     }
 
 
