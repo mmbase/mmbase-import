@@ -41,4 +41,21 @@ See http://www.MMBase.org/license
 		</util:available>
 	</preGoal>
 	
+ 
+<!--  disabled documentation, because documentation dir contains xml's which are not docs. 
+    <preGoal name="site"> -->
+    <!-- 1.5 TransformerFactory class -->
+     ${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+
+    <!-- 1.4 TransformerFactory class
+    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
+    -->
+<!-- disabled
+    <ant:xslt in="${basedir}/config/datatypes.xml"
+        out="${basedir}/documentation/build/datatypes.docbook.xml" 
+        style="${basedir}/documentation/datatypes2docbook.xslt"
+        processor="trax">
+    </ant:xslt>
+    </preGoal>
+-->
 </project>
