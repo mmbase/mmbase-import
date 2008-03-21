@@ -1,17 +1,6 @@
-.label
+h4
 {
-	background-color: #cccccc;
-	width: 50%;
-	float: left;
+	font-size: 1.1em;
+	margin: 0;
 }
-
-.data { float: left; }
-
-.row
-{
-	border-bottom: 1px solid black;
-	overflow: auto;
-}
-
-a:visited { color: blue; }
-hr { color: #333333; }
+strong { display: block; }
