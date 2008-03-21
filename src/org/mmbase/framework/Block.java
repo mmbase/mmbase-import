@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.34 2008-03-21 09:26:33 fpunt Exp $
+ * @version $Id: Block.java,v 1.35 2008-03-21 10:39:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -56,7 +56,8 @@ public class Block {
     }
 
     /**
-     * Name for this block. Never <code>null</code>
+     * Name for this block. Never <code>null</code>. The name identifies the block uniquely (between
+     * the blocks of its component).
      */
     public String getName() {
         return name;
