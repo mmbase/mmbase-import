@@ -22,7 +22,6 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.RelationStep;
-import org.mmbase.model.*;
 import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.Logger;
@@ -44,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.238 2008-03-21 13:42:59 michiel Exp $
+ * @version $Id: MMBase.java,v 1.239 2008-03-21 14:36:27 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -131,8 +130,6 @@ public class MMBase extends ProcessorModule {
      * A collection of builders from this map can be accessed by calling {@link #getBuilders}
      */
     private final Map<String, MMObjectBuilder> mmobjs = new ConcurrentHashMap<String, MMObjectBuilder>();
-
-    private CloudModel cloudModel;
 
     /**
      * Determines whether MMBase is in development mode.
@@ -389,8 +386,6 @@ public class MMBase extends ProcessorModule {
 
         log.debug("Loading builders:");
 
-        cloudModel = ModelsManager.addModel("default","default.xml");
-
         loadBuilders();
 
         if(Thread.currentThread().isInterrupted()) {
@@ -469,7 +464,6 @@ public class MMBase extends ProcessorModule {
         insRel = null;
         typeRel = null;
         mmobjs.clear();
-        cloudModel = null;
         storageManagerFactory = null;
         rootBuilder = null;
         mmbaseCop = null;
@@ -827,9 +821,6 @@ public class MMBase extends ProcessorModule {
             String resourceName = ResourceLoader.getName(builderXml);
             String resourceDirectory = ResourceLoader.getDirectory(builderXml) + "/";
             loadBuilderFromXML(resourceName, resourceDirectory);
-            if (cloudModel != null) {
-                cloudModel.addBuilder(resourceName,"builders/" + resourceDirectory + resourceName + ".xml");
-            }
         }
 
         log.debug("Starting Cluster Builder");
@@ -991,9 +982,6 @@ public class MMBase extends ProcessorModule {
         }
         String path = getBuilderPath(builderName, ipath);
         if (path != null) {
-            if (cloudModel != null) {
-                cloudModel.addBuilder(builderName,path+builderName+".xml");
-            }
             return loadBuilderFromXML(builderName, path);
         } else {
             throw new BuilderConfigurationException("Cannot find specified builder " + builderName + " (" + path + ")");

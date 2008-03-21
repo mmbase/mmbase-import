@@ -9,13 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import org.mmbase.module.core.*;
-import org.mmbase.model.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: ApplicationWriter.java,v 1.7 2008-01-10 16:29:36 michiel Exp $
+ * @version $Id: ApplicationWriter.java,v 1.8 2008-03-21 14:36:27 nklasens Exp $
  */
 public class ApplicationWriter extends DocumentWriter  {
 
@@ -40,6 +40,7 @@ public class ApplicationWriter extends DocumentWriter  {
      * The constructor calls its super to  create a basic document, based on the application document type.
      * @param reader the reader for the original application
      * @param mmbase the mmbase instance to get the application data from
+     * @throws DOMException When failed to parse xml or write
      */
     public ApplicationWriter(ApplicationReader reader, MMBase mmbase) throws DOMException {
         super("application", ApplicationReader.PUBLIC_ID_APPLICATION,
@@ -184,15 +185,12 @@ public class ApplicationWriter extends DocumentWriter  {
      * Generates the documents for this application and store it as a set of files in the given path.
      * @param targetPath the filepath (directory) where the configuration is to be stored
      * @param logger This thing must receive the errors
-     * @throws TransformerException if one or more documents are malformed
+     * @throws SAXException if one or more documents are malformed
      * @throws IOException if one or more files cannot be written
      * @throws SearchQueryException if data could not be obtained from the database
      */
-    public void writeToPath(String targetPath, Logger logger) throws java.io.IOException, org.xml.sax.SAXException,  SearchQueryException {
-        //writeToFile(targetPath + "/" + reader.getName() + ".xml");
-	CloudModel cm = ModelsManager.getModel(reader.getName());
-	log.info("CMW="+cm);
-        if (cm!=null) cm.writeToFile(targetPath + "/" + reader.getName() + ".xml");
+    public void writeToPath(String targetPath, Logger logger) throws java.io.IOException, SAXException,  SearchQueryException {
+        writeApplicationToFile(targetPath + "/" + reader.getName() + ".xml", reader.getName() + ".xml");
 
         // now the tricky part starts figure out what nodes to write
         writeDateSources(targetPath, logger);
@@ -239,17 +237,15 @@ public class ApplicationWriter extends DocumentWriter  {
         // create the dir for the Data & resource files
         File file = new File(targetPath + "/" + reader.getName() + "/builders");
         file.mkdirs();
-	// get the default model.
-	CloudModel cm = ModelsManager.getModel("default");
-	log.info("CM="+cm);
+
         List<Map<String,String>> builders = reader.getNeededBuilders();
         for (Map<String, String> bset : builders) {
             String name = bset.get("name");
             MMObjectBuilder builder = mmbase.getBuilder(name);
             if (builder != null) {
                 logger.info("save builder : " + name);
-		CloudModelBuilder cmb = cm.getModelBuilder(name);
-		cmb.writeToFile(targetPath + "/" + reader.getName() + "/builders/" + name + ".xml");
+                String path = MMBase.getMMBase().getBuilderPath(name, "") + name + ".xml";
+                writeBuilderToFile(targetPath + "/" + reader.getName() + "/builders/" + name + ".xml", path);
 
 		/*
                 BuilderWriter builderOut = new BuilderWriter(builder);
@@ -259,6 +255,53 @@ public class ApplicationWriter extends DocumentWriter  {
 		*/
             }
         }
+    }
+
+    public boolean writeApplicationToFile(String filepath, String path) {
+        ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
+        InputStream in = applicationLoader.getResourceAsStream(path);
+        if (in!=null) {
+            try {
+                FileOutputStream out = new FileOutputStream(filepath);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                }
+                in.close();
+                        out.flush();
+                out.close();
+                    } catch(Exception e) {
+                       e.printStackTrace();
+               return false;
+                    }
+        } else {
+            log.info("Resource not found : "+path);
+        }
+        return true;
+    }
+    
+    public boolean writeBuilderToFile(String filepath, String path) {
+        InputStream in = ResourceLoader.getConfigurationRoot().getResourceAsStream(path);
+        if (in!=null) {
+           try {                
+                FileOutputStream out = new FileOutputStream(filepath);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                in.close();
+                out.flush();
+                out.close();
+            } catch(Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            log.error("Resource not found : "+path);
+        }
+        return true;
     }
 
 }
