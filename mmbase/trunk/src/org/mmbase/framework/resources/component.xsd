@@ -115,6 +115,7 @@
   <xsd:element name="block">
     <xsd:complexType>
       <xsd:sequence>
+        <xsd:element ref="title" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element ref="description" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="head"    type="RendererType"  minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="body"    type="RendererType"  minOccurs="0" maxOccurs="1" />
