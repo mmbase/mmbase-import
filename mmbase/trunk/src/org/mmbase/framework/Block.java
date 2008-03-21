@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.35 2008-03-21 10:39:23 michiel Exp $
+ * @version $Id: Block.java,v 1.36 2008-03-21 16:08:16 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -207,7 +207,7 @@ public class Block {
             }
             return result.toArray(new Type[] {});
         }
-
+        private final LocalizedString title;
         private final String name;
         private final Type parent;
         private int weight = 100;
@@ -216,12 +216,14 @@ public class Block {
         private Type(String n) {
             name = n;
             parent = null;
+            title = new LocalizedString(name);
         }
         protected Type(String n, Type p) {
             if (n == null) throw new IllegalArgumentException();
             if (p == null) throw new IllegalArgumentException();
             name = n;
             parent = p;
+            title = new LocalizedString(name);
         }
         public List<Type> getSubTypes() {
             return Collections.unmodifiableList(subs);
@@ -272,7 +274,11 @@ public class Block {
         public int compareTo(Type t) {
             int s = weight - t.weight;
             return s == 0 ? name.compareTo(t.name) : s;
-    }
+        }
+
+        public LocalizedString getTitle() {
+            return title;
+        }
     }
 
 
