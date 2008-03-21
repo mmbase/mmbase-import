@@ -11,6 +11,7 @@ package org.mmbase.storage.implementation.database;
 
 import java.sql.*;
 
+import java.io.File;
 import javax.sql.DataSource;
 import java.lang.reflect.*;
 
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.16 2008-02-22 12:27:48 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.17 2008-03-21 13:44:23 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -42,7 +43,7 @@ public final class GenericDataSource implements DataSource {
 
     private java.io.PrintWriter printWriter = null;
 
-    final private String dataDir;
+    final private File dataDir;
     final private boolean meta;
 
     private boolean basePathOk = false;
@@ -54,13 +55,13 @@ public final class GenericDataSource implements DataSource {
      * @param A Datadir (as a string ending in a /) which may be used in some URL's (most noticably those of HSQLDB). Can be <code>null</code> if not used.
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
-    GenericDataSource(MMBase mmbase, String dataDir) throws StorageInaccessibleException {
+    GenericDataSource(MMBase mmbase, File dataDir) throws StorageInaccessibleException {
         jdbc = Module.getModule(JDBC.class);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
         jdbc.startModule();
-        this.dataDir = dataDir == null ? "" : dataDir;
+        this.dataDir = dataDir;
         meta = false;
     }
     /**
@@ -209,7 +210,15 @@ public final class GenericDataSource implements DataSource {
             }
         }
         String url = jdbc.makeUrl();
-        String newUrl = url.replaceAll("\\$DATADIR", dataDir);
+        String data;
+        try {
+            data = dataDir.getCanonicalPath();
+        } catch (Exception e) {
+            log.error(e + " Falling back to " + dataDir);
+            data = dataDir.toString();
+
+        }
+        String newUrl = url.replaceAll("\\$DATADIR", data + File.separator);
         if ((!basePathOk) && (! newUrl.equals(url))) {
             basePathOk = DatabaseStorageManagerFactory.checkBinaryFileBasePath(dataDir);
         }

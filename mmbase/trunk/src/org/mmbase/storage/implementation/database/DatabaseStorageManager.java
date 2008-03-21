@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.190 2008-03-19 11:52:51 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.191 2008-03-21 13:44:23 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -681,7 +681,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @return The File where to store or read the binary data
      */
     protected File getBinaryFile(MMObjectNode node, String fieldName) {
-        String basePath = factory.getBinaryFileBasePath();
+        File basePath = factory.getBinaryFileBasePath();
         StringBuilder pathBuffer = new StringBuilder();
         int number = node.getNumber() / 1000;
         while (number > 0) {
@@ -710,8 +710,15 @@ public class DatabaseStorageManager implements StorageManager {
         else {
             builderName = node.getBuilder().getFullTableName();
         }
+        String canon;
+        try {
+            canon = basePath.getCanonicalPath();
+        } catch (Exception e) {
+            log.warn(e);
+            canon = basePath.toString();
+        }
 
-        pathBuffer.insert(0, basePath + factory.getDatabaseName() + File.separator + builderName);
+        pathBuffer.insert(0, canon + File.separator + factory.getDatabaseName() + File.separator + builderName);
         return new File(pathBuffer.toString(), "" + node.getNumber() + '.' + fieldName);
     }
 
@@ -721,7 +728,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     private File getLegacyBinaryFile(MMObjectNode node, String fieldName) {
         // the same basePath, so you so need to set that up right.
-        String basePath = factory.getBinaryFileBasePath();
+        File basePath = factory.getBinaryFileBasePath();
 
         File f = new File(basePath, node.getBuilder().getTableName() + File.separator + node.getNumber() + '.' + fieldName);
         if (f.exists()) { // 1.6 storage or 'support' blobdatadir
@@ -732,7 +739,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
 
-        f = new File(basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName() + File.separator + node.getNumber() + '.' + fieldName);
+        f = new File(basePath, factory.getCatalog() + File.separator + node.getBuilder().getFullTableName() + File.separator + node.getNumber() + '.' + fieldName);
         if (f.exists()) { // 1.7.0.rc1 blob data dir
             if (!f.canRead()) {
                 log.warn("Found '" + f + "' but it cannot be read");

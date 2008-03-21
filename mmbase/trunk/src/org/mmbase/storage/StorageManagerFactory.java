@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.33 2008-02-22 12:28:19 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.34 2008-03-21 13:44:23 michiel Exp $
  */
 public abstract class StorageManagerFactory<SM extends StorageManager> {
 
@@ -657,18 +657,7 @@ public abstract class StorageManagerFactory<SM extends StorageManager> {
         return TimeZone.getDefault().getOffset(time);
     }
 
-    protected String getDataDir() {
-        String dataDir = mmbase.getInitParameter("datadir");
-        if (dataDir == null || dataDir.equals("")) {
-            ServletContext sc = MMBaseContext.getServletContext();
-            dataDir = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
-            if (dataDir == null) {
-                dataDir = System.getProperty("user.dir") + java.io.File.separator + "data";
-            }
-        }
-        log.info("MMBase data dir: " + dataDir);
-        return dataDir;
-    }
+
 
 
 }
