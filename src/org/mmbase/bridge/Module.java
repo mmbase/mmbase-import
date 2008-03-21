@@ -21,7 +21,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.18 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: Module.java,v 1.19 2008-03-21 09:03:04 nklasens Exp $
  */
 public interface Module extends Descriptor, Comparable<Module> {
 
@@ -129,9 +129,9 @@ public interface Module extends Descriptor, Comparable<Module> {
     public Collection getFunctions();
 
     /**
-     * Returns a Fuction object.
+     * Returns a Function object.
      * The object returned is a {@link org.mmbase.util.functions.Function} object.
-     * You need to explixitly cast the result to this object, since not all bridge
+     * You need to explicitly cast the result to this object, since not all bridge
      * implementations (i.e. the RMMCI) support this class.
      *
      * @since MMBase-1.8
@@ -144,7 +144,7 @@ public interface Module extends Descriptor, Comparable<Module> {
     /**
      * Creates a parameter list for a function.
      * The list can be filled with parameter values by either using the List set(int, Object) method, to
-     * set values for parameters by psoition, or by using the set(String, Object) method to
+     * set values for parameters by position, or by using the set(String, Object) method to
      * set parameters by name.<br />
      * This object can then be passed to the getFunctionValue method.
      * Note that adding extra parameters (with the add(Object) method) won't work and may cause exceptions.
@@ -160,7 +160,7 @@ public interface Module extends Descriptor, Comparable<Module> {
      *
      * @since MMBase-1.8
      * @param functionName name of the function
-     * @param parameters list with parameters for the fucntion
+     * @param parameters list with parameters for the function
      * @return the result value of executing the function
      * @throws NotFoundException if the function does not exist
      */
