@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.57 2008-03-17 13:20:18 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.58 2008-03-21 13:42:59 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -383,13 +383,6 @@ public class MMBaseContext {
             htmlRootUrlPathInitialized = true;
         }
         return htmlRootUrlPath;
-    }
-
-    /**
-     * @since MMBase-1.8.4
-     */
-    public static File getDataDir() {
-        return null;
     }
 
 

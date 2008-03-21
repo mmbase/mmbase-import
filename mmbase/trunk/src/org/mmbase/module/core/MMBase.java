@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.237 2008-03-19 11:43:30 pierre Exp $
+ * @version $Id: MMBase.java,v 1.238 2008-03-21 13:42:59 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1301,5 +1301,56 @@ public class MMBase extends ProcessorModule {
             }
         }
     }
+
+
+    /**
+     * @since MMBase-1.9
+     */
+    public File getDataDir() {
+        String dataDirString = getInitParameter("datadir");
+
+        javax.servlet.ServletContext sc = MMBaseContext.getServletContext();
+        if (dataDirString == null || dataDirString.equals("")) {
+            if (sc == null) {
+                dataDirString = "data";
+            } else {
+                dataDirString = "WEB-INF/data";
+            }
+        }
+        File dataDir = new File(dataDirString);
+
+        if (! dataDir.isAbsolute()) {
+            if (sc != null) {
+                dataDir = new File(sc.getRealPath("/" + dataDirString));
+            } else {
+                dataDir = new File(System.getProperty("user.dir"), dataDirString);
+            }
+        }
+
+        if (! dataDir.exists()) {
+            try {
+                if (dataDir.mkdirs()) {
+                    log.info("Created " + dataDir);
+                }
+            } catch (SecurityException  se) {
+                log.warn(se);
+            }
+        }
+
+        if (! dataDir.isDirectory()) {
+            log.warn("Datadir " + dataDir + " is not a directory");
+        }
+        if (! dataDir.canRead()) {
+            log.warn("Datadir " + dataDir + " is not readable");
+        }
+        if (! dataDir.canWrite()) {
+            log.warn("Datadir " + dataDir + " is not writable");
+        }
+
+        log.info("MMBase data dir: " + dataDir);
+        return dataDir;
+
+    }
+
 
 }
