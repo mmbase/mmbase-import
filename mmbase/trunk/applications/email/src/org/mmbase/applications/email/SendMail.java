@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.40 2008-03-21 14:51:45 michiel Exp $
+ * @version $Id: SendMail.java,v 1.41 2008-03-21 15:05:26 michiel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -405,8 +405,10 @@ public class SendMail extends AbstractSendMail {
             log.debug("SendMail done.");
             return true;
         } catch (MessagingException e) {
-            log.error("SendMail failure: " + e.getMessage() + " from: " + from + " to: " + to);
-            log.debug(e);
+            log.error("SendMail failure: " + e.getMessage() + " from: " + from + " to: " + to + " " + e.getCause());
+            if (log.isDebugEnabled()) {
+                log.debug("because: ", new Exception());
+            }
         }
         return false;
     }
