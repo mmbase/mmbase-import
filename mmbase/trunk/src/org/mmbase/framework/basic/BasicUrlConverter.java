@@ -13,6 +13,7 @@ import java.util.*;
 import org.mmbase.util.*;
 import java.io.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.11 2008-03-21 10:39:23 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.12 2008-03-21 12:05:28 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -111,10 +112,22 @@ public final class BasicUrlConverter implements UrlConverter {
     public Parameter[] getParameterDefinition() {
         return new Parameter[] {Parameter.REQUEST};
     }
+
+    /**
+     * Entirely unwraps the request. So, this returns the original request object, without implicit
+     * additions by e.g. the Filter.
+     */
+    public static HttpServletRequest getUserRequest(HttpServletRequest req) {
+        while (req instanceof HttpServletRequestWrapper) {
+            req = (HttpServletRequest) ((HttpServletRequestWrapper) req).getRequest();
+        }
+        return req;
+    }
+
     protected String getUrl(String path,
                             Map<String, Object> parameters,
                             Parameters frameworkParameters, boolean escapeAmps, boolean action) {
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        HttpServletRequest request = getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
         Map<String, Object> map = new TreeMap<String, Object>();
         if (log.isDebugEnabled()) {
