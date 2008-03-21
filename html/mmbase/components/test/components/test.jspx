@@ -49,7 +49,9 @@
           </mm:link>
         </p>
         <mm:link>
-          <form method="post" action="${_}">
+          <form method="post"
+                enctype="multipart/form-data"
+                action="${_}">
             <p>Form with ${_}</p>
 
             <table>
