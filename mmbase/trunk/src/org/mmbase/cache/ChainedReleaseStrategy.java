@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @since MMBase-1.8
  * @author Ernst Bunders
- * @version $Id: ChainedReleaseStrategy.java,v 1.26 2008-03-19 16:21:25 michiel Exp $
+ * @version $Id: ChainedReleaseStrategy.java,v 1.27 2008-03-21 12:19:53 michiel Exp $
  */
 public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<ReleaseStrategy> {
 
@@ -165,7 +165,7 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
      * @see org.mmbase.cache.ReleaseStrategy#getName()
      */
     public String getName() {
-        return "Multi Release Strategy";
+        return "Chained Release Strategy";
     }
 
     /*
@@ -180,6 +180,13 @@ public class ChainedReleaseStrategy extends ReleaseStrategy implements Iterable<
 
     public Iterator<ReleaseStrategy> iterator() {
         return releaseStrategies.iterator();
+    }
+
+    /**
+     * @since MMBase-1.9
+     */
+    public List<ReleaseStrategy> getList() {
+        return Collections.unmodifiableList(releaseStrategies);
     }
 
     /*
