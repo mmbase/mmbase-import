@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.4 2008-02-22 14:05:57 michiel Exp $
+ * @version $Id: State.java,v 1.5 2008-03-21 10:39:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -92,6 +92,13 @@ public class State {
      */
     public int getDepth() {
         return depth;
+    }
+
+    /**
+     * If the state is leading, then the currently rendered block is not a 'block in a block'.
+     */
+    public boolean isLeading() {
+        return getDepth() == 0;
     }
 
     public ServletRequest getRequest() {
@@ -275,7 +282,7 @@ public class State {
     }
 
     public String toString() {
-        return "state:" + getId() + (isRendering() ? (":" + (renderer != null ? renderer : processor)) : "");
+        return "state:" + getDepth() + ":" + getId() + (isRendering() ? (":" + (renderer != null ? renderer : processor)) : "");
     }
 
 }

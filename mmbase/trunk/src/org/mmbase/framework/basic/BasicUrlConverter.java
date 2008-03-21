@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.10 2008-03-21 10:25:52 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.11 2008-03-21 10:39:23 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -118,7 +118,7 @@ public final class BasicUrlConverter implements UrlConverter {
         State state = State.getState(request);
         Map<String, Object> map = new TreeMap<String, Object>();
         if (log.isDebugEnabled()) {
-            log.debug("path '" + path + "' p:" + parameters + " fwp:" + frameworkParameters + " " + state);
+            log.debug("path '" + path + "' p:" + parameters + " fwp:" + frameworkParameters + " " + state + " rp:" + request.getParameterMap());
         }
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
             map.put(e.getKey(), e.getValue());
