@@ -12,6 +12,7 @@ package org.mmbase.storage.implementation.database;
 import java.sql.*;
 import java.util.StringTokenizer;
 
+
 import javax.naming.*;
 import javax.sql.DataSource;
 import java.io.*;
@@ -41,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.49 2008-02-22 12:27:48 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.50 2008-03-21 13:44:23 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -95,11 +96,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected boolean supportsTransactions = false;
 
 
-    private static final String BASE_PATH_UNSET = "UNSET";
+    private static final File BASE_PATH_UNSET = new File("UNSET");
     /**
      * Used by #getBinaryFileBasePath
      */
-    private String basePath = BASE_PATH_UNSET;
+    private File basePath = BASE_PATH_UNSET;
 
     public double getVersion() {
         return 0.1;
@@ -152,7 +153,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * @param binaryFileBasePath For some datasource a file base path may be needed (some configurations of hsql). It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL may be configured then which does not need the file base path.
      * @since MMBase-1.8
      */
-    protected DataSource createDataSource(String binaryFileBasePath) {
+    protected DataSource createDataSource(File binaryFileBasePath) {
         DataSource ds = null;
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
@@ -356,7 +357,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     /**
      * As {@link #getBinaryFileBasePath(boolean)} with <code>true</code>
      */
-    public String getBinaryFileBasePath() {
+    protected File getBinaryFileBasePath() {
         return getBinaryFileBasePath(true);
     }
 
@@ -365,19 +366,19 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * @param check If the path is only perhaps needed, you may want to provide 'false' here.
      * @since MMBase-1.8.1
      */
-    public String getBinaryFileBasePath(boolean check) {
+    protected File getBinaryFileBasePath(boolean check) {
         if (basePath == BASE_PATH_UNSET) {
-            basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
-            if (basePath == null || basePath.equals("")) {
-                basePath = getDataDir();
+            String path = (String) getAttribute(Attributes.BINARY_FILE_PATH);
+            if (path == null || path.equals("")) {
+                basePath = mmbase.getDataDir();
             } else {
-                MessageFormat mf = new MessageFormat(basePath);
-                java.io.File baseFile = new java.io.File(mf.format(getDataDir()));
+                MessageFormat mf = new MessageFormat(path);
+                java.io.File baseFile = new java.io.File(mf.format(mmbase.getDataDir()));
                 if (! baseFile.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
                     String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
                     if (absolute == null) absolute = System.getProperty("user.dir") + File.separator;
-                    basePath = absolute + basePath;
+                    basePath = new File(absolute + basePath);
                 }
             }
             if (basePath == null) {
@@ -386,16 +387,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
             } else {
                 log.service("Binary file base path " + basePath);
             }
-            File baseDir = new File(basePath);
-            try {
-                basePath = baseDir.getCanonicalPath();
-                if (check) checkBinaryFileBasePath(basePath);
-            } catch (IOException ioe) {
-                log.error(ioe);
-            }
-            if (! basePath.endsWith(File.separator)) {
-                basePath += File.separator;
-            }
+            if (check) checkBinaryFileBasePath(basePath);
         }
         return basePath;
     }
@@ -405,13 +397,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * @param basePath a Directory name
      * @since MMBase-1.8.1
      */
-    public static boolean checkBinaryFileBasePath(String basePath) {
-        File baseDir = new File(basePath);
+    public static boolean checkBinaryFileBasePath(File baseDir) {
         if (! baseDir.mkdirs() && ! baseDir.exists()) {
-            log.error("Cannot create the binary file path " + basePath);
+            log.error("Cannot create the binary file path " + baseDir);
         }
         if (! baseDir.canWrite()) {
-            log.error("Cannot write in the binary file path " + basePath);
+            log.error("Cannot write in the binary file path " + baseDir);
             return false;
         } else {
             return true;
