@@ -25,7 +25,6 @@ import org.mmbase.module.Module;
 import org.mmbase.module.ProcessorModule;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.module.core.*;
-import org.mmbase.model.*;
 import org.mmbase.security.Rank;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.SearchQueryException;
@@ -41,7 +40,7 @@ import org.xml.sax.InputSource;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.159 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: MMAdmin.java,v 1.160 2008-03-21 14:36:27 nklasens Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1067,12 +1066,6 @@ public class MMAdmin extends ProcessorModule {
         if (def != null) {
             def.setGUIName(value, new Locale(country, ""));
         }
-
-    CloudModel cloudmodel = ModelsManager.getModel("default");
-    if (cloudmodel != null) {
-            CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-            if (cloudmodelbuilder != null) cloudmodelbuilder.setGuiName(fieldname,country,value);
-    }
     }
 
     /**
@@ -1218,11 +1211,6 @@ public class MMAdmin extends ProcessorModule {
                         def.setMaxLength(newSize);
                         // make change in storage
                         mmb.getStorageManager().change(def);
-                    CloudModel cloudmodel = ModelsManager.getModel("default");
-                    if (cloudmodel != null) {
-                           CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBSize(fieldname,value);
-                    }
                     } catch (StorageException se) {
                         def.setMaxLength(oldSize);
                         throw se;
@@ -1307,11 +1295,6 @@ public class MMAdmin extends ProcessorModule {
                 } finally {
                     def.finish();
                 }
-                    CloudModel cloudmodel = ModelsManager.getModel("default");
-                    if (cloudmodel != null) {
-                           CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                           if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBState(fieldname,value);
-                    }
             }
         }
     }
@@ -1338,11 +1321,6 @@ public class MMAdmin extends ProcessorModule {
             } else {
                 def.setUnique(false);
             }
-        CloudModel cloudmodel = ModelsManager.getModel("default");
-        if (cloudmodel != null) {
-                CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBKey(fieldname,value);
-        }
             def.finish();
         }
         // TODO: when changing key, should call CHANGE
@@ -1372,11 +1350,6 @@ public class MMAdmin extends ProcessorModule {
                 try {
                     // make change in storage
                     mmb.getStorageManager().change(def);
-                CloudModel cloudmodel = ModelsManager.getModel("default");
-                if (cloudmodel != null) {
-                        CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                        if (cloudmodelbuilder != null) cloudmodelbuilder.setBuilderDBNotNull(fieldname,value);
-                }
                     // need to be rerouted syncBuilderXML(bul, builder);
                 } catch (StorageException se) {
                     def.getDataType().setRequired(oldNotNull);
@@ -1450,17 +1423,6 @@ public class MMAdmin extends ProcessorModule {
             log.trace("Adding to builder");
             // only then add to builder
             bul.addField(def);
-
-        CloudModel cloudmodel = ModelsManager.getModel("default");
-        if (cloudmodel != null) {
-                log.debug("Calling cloud module builder");
-        CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-        if (cloudmodelbuilder != null) {
-                    cloudmodelbuilder.addField(pos,fieldName, (String)vars.get("mmbasetype"), (String)vars.get("guitype"), (String)vars.get("dbstate"), (String)vars.get("dbnotnull"), (String)vars.get("dbkey"), (String)vars.get("dbsize"));
-                }
-        } else {
-                log.warn("No cloud model 'default' found");
-            }
             def.finish();
         } else {
             log.service("Cannot add field to builder " + builder + " because it could not be found");
@@ -1488,11 +1450,6 @@ public class MMAdmin extends ProcessorModule {
             // only then delete in builder
             bul.removeField(fieldname);
 
-           CloudModel cloudmodel = ModelsManager.getModel("default");
-           if (cloudmodel != null) {
-                CloudModelBuilder cloudmodelbuilder = cloudmodel.getModelBuilder(builder);
-                if (cloudmodelbuilder != null) cloudmodelbuilder.removeField(fieldname);
-            }
             def.finish();
         }
     }
