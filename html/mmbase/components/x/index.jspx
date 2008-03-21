@@ -11,8 +11,8 @@
   <div
       class="mm_c mm_c_x mm_c_b_index ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
-    <mm:import externid="nodemanager" from="request">object</mm:import>
-    <mm:import externid="only" from="request" />
+    <mm:import externid="nodemanager">object</mm:import>
+    <mm:import externid="only" />
     <mm:import externid="pagesize" from="request,">50</mm:import>
     <mm:import externid="referids" from="request">nodemanager,only?,pagesize</mm:import>
 
@@ -34,9 +34,9 @@
       <mm:redirect page="multiple.jspx" referids="nodes,$referids" />
     </mm:compare>
 
-    <mm:import id="thispage"><mm:url page="."  /></mm:import>
-    page: ${thispage}
-    <form id="form" action="${thispage}" method="post">
+    <mm:url id="thispage" write="false" />
+    <p>page: ${thispage}</p>
+    <mm:form id="form">
       <input type="hidden" name="pagesize" value="${pagesize}" />
       <h1>
         <a href="javascript:void(0);" onclick="this.getElementsByTagName('input')[0].form.submit();"  class="search">
@@ -157,7 +157,7 @@
             <tfoot>
               <tr class="paging">
                 <th colspan="2">
-                  <form method="POST" action="${base}">
+                  <form method="POST" action="">
                     <select name="pagesize"  onchange="this.form.submit();">
                       <option value="50">50</option>
                       <option value="100">100</option>
@@ -196,58 +196,9 @@
           </c:if>
         </mm:listnodescontainer>
       </table>
-    </form>
-    <script type="text/javascript">
-      function check(tr, checked) {
-      var pattern = new RegExp("\\bselected\\b");
-      if (! checked &amp;amp;&amp;amp; pattern.test(tr.className)) {
-      tr.className = tr.className.replace(pattern, "");
-      } else if (checked &amp;amp;&amp;amp; ! pattern.test(tr.className)) {
-      tr.className += " selected";
-      }
-      }
-      window.addEventListener("load", function() {
-      var els = document.getElementById("searchresult").getElementsByTagName("td");
-      var pattern  = new RegExp("\\bclick\\b");
-      var pattern2 = new RegExp("\\bnodeselect\\b");
-      for (var i = 0; i &amp;lt; els.length; i++) {
-      if ( pattern.test(els[i].className) ) {
-      els[i].addEventListener("click", function() {
-         document.location = this.parentNode.cells[1].getElementsByTagName("a")[0].href;
-      }, false);
-      }
-      if (pattern2.test(els[i].className)) {
-      els[i].addEventListener("click", function(e) {
-      var input = this.childNodes[0];
-      input.checked = ! input.checked;
-      check(this.parentNode, input.checked);
-      }, false);
-      els[i].childNodes[0].addEventListener("click", function() {
-      check(this.parentNode.parentNode, this.checked);
-      }, false);
-      }
-      }
-      var selectAll = document.getElementById("selectall");
-      selectAll.addEventListener("change", function() {
-      var els = document.getElementsByTagName('input');
-      for (var el in els) {
-      if (els[el].className == 'nodesbox') {
-      els[el].checked = this.checked; els[el].checked
-      check(els[el].parentNode.parentNode, this.checked);
-      }
-      }
-      }, false);
-      var els = document.getElementById("searchresult").getElementsByTagName("td");
+    </mm:form>
+    <mm:include page="index.js" />
 
-      for (var i = 0; i &amp;lt; els.length; i++) {
-      if ( pattern.test(els[i].className) ) {
-      els[i].addEventListener("click", function() {
-      document.location.href = this.parentNode.cells[1].firstChild.href;
-      }, false);
-      }
-      }
-      }, false);
-    </script>
   </div>
   </mm:cloud>
 </mm:content>

@@ -10,6 +10,10 @@
     <mm:url write="false" id="ok"     page="/mmbase/style/images/ok.png" />
     <mm:url write="false" id="logout" page="/mmbase/style/images/reload.png" />
 
+.mm_c_x.mm_c {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 .mm_c_x .table { 
   margin-left: 0px;
   margin-right: 0px;
