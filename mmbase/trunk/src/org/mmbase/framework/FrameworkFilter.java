@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.22 2008-03-21 10:58:15 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.23 2008-03-21 12:03:27 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -178,7 +178,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                 String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params).toString();
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Received '" + forwardUrl + "' from framework, forwarding.");
+                    log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + params);
                 }
 
                 if (forwardUrl != null && !forwardUrl.equals("")) {
