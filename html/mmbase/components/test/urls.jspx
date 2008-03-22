@@ -30,6 +30,12 @@
       <p>${_ eq '/mmbase/test/test/suburls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
 
+    <mm:link absolute="context" page="/justsomeurl">
+      <mm:param name="foo">bar</mm:param>
+      <mm:param name="foo">xxx</mm:param>
+      <p>${_ eq '/justsomeurl?foo=bar&amp;foo=xxx' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
 
