@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.48 2008-03-21 16:08:16 michiel Exp $
+ * @version $Id: Framework.java,v 1.49 2008-03-22 09:12:59 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -46,6 +46,8 @@ public abstract class Framework {
     static {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
     }
+
+
 
     /**
      * Return the framework, or null if there is no framework defined in mmbaseroot.xml
@@ -68,16 +70,7 @@ public abstract class Framework {
                                     framework = (Framework) Instantiator.getInstance(el);
                                 }
                             }
-                            org.w3c.dom.NodeList blockTypes = fwConfiguration.getDocumentElement().getElementsByTagName("blocktype");
-                            for (int i = 0; i < blockTypes.getLength(); i++) {
-                                org.w3c.dom.Element element = (org.w3c.dom.Element) blockTypes.item(i);
-                                String classification = element.getAttribute("name");
-                                int weight = Integer.parseInt(element.getAttribute("weight"));
-                                for (Block.Type t : Block.Type.getClassification(classification, true)) {
-                                    t.setWeight(weight);
-                                    t.getTitle().fillFromXml("title", element);
-                                }
-                            }
+
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
                             framework = new org.mmbase.framework.basic.BasicFramework();
