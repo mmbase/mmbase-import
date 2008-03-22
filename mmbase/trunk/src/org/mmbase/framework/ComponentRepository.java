@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.31 2008-03-21 09:26:33 fpunt Exp $
+ * @version $Id: ComponentRepository.java,v 1.32 2008-03-22 09:12:59 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -131,12 +131,36 @@ public class ComponentRepository {
         clear();
     }
     protected void clear() {
+
         Block.Type.ROOT.subs.clear();
         Block.Type.ROOT.blocks.clear();
         Block.Type.NO.subs.clear();
         Block.Type.NO.blocks.clear();
+        readBlockTypes();
+
         rep.clear();
         failed.clear();
+    }
+
+    /**
+     * @todo Is it a bit odd that this uses the framework.xml?
+     */
+    private void readBlockTypes() {
+        try {
+            org.w3c.dom.Document fwConfiguration = ResourceLoader.getConfigurationRoot().getDocument("framework.xml", true, Framework.class);
+            org.w3c.dom.NodeList blockTypes = fwConfiguration.getDocumentElement().getElementsByTagName("blocktype");
+            for (int i = 0; i < blockTypes.getLength(); i++) {
+                org.w3c.dom.Element element = (org.w3c.dom.Element) blockTypes.item(i);
+                String classification = element.getAttribute("name");
+                int weight = Integer.parseInt(element.getAttribute("weight"));
+                for (Block.Type t : Block.Type.getClassification(classification, true)) {
+                    t.setWeight(weight);
+                    t.getTitle().fillFromXml("title", element);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
     }
 
     /**
@@ -144,6 +168,7 @@ public class ComponentRepository {
      */
     protected void readConfiguration(String child) {
         clear();
+
         ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
         Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
         log.info("In " + loader + " the following components XML's were found " + components);
