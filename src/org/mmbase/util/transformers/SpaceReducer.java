@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mmbase.util.logging.*;
+
 
 /**
  * Replace 1 or more spaces by 1 space, and 1 or more newlines by 1
@@ -29,42 +31,33 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.12.2.5 2008-03-19 13:57:51 pierre Exp $
+ * @version $Id: SpaceReducer.java,v 1.12.2.6 2008-03-24 08:31:49 ernst Exp $
  */
 
 public class SpaceReducer extends ReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
-    /**
-     * This is a list of tags, of who's body the empty lines should not be filtered.
-     */
-    private static List tagsToPass = new ArrayList();
-    static{
-        tagsToPass.add(new Tag("pre"));
-        tagsToPass.add(new Tag("textarea"));
-    }
-    protected Tag currentlyOpened = null;
 
-
-    protected boolean transform(PrintWriter bw, String line) {
+    protected boolean transform(PrintWriter bw, String line, Status status) {
         boolean result = false;
-        if(!line.trim().equals("") || currentlyOpened != null){
+        if(!line.trim().equals("") || status.getCurrentlyOpen() != null){
             bw.write(line);
             result = true;
         }
-        if(currentlyOpened != null){
+        if(status.getCurrentlyOpen() != null){
             //look for a closing tag.
-            currentlyOpened.setLine(line);
-            if(currentlyOpened.hasClosed()){
-                currentlyOpened = null;
+            status.getCurrentlyOpen().setLine(line);
+            if(status.getCurrentlyOpen().hasClosed()){
+                status.setCurrentlyOpen(null);
             }
-        } else {
+        }else{
             //look for an opening tag
-            for (Iterator i = tagsToPass.iterator(); i.hasNext(); ) {
-                Tag tag = (Tag)i.next();
+            for (Iterator i = status.getTagsToPass().iterator(); i.hasNext(); ) {
+                Tag tag = (Tag) i.next();
                 tag.setLine(line);
                 if(tag.hasOpened()){
-                    currentlyOpened = tag;
+                    status.setCurrentlyOpen(tag);
+                    break;
                 }
             }
         }
@@ -76,8 +69,9 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
             BufferedReader br = new BufferedReader(r);
             PrintWriter bw = new PrintWriter(new BufferedWriter(w));
             String line = br.readLine();
+            Status status = new Status();
             while (line != null) {
-                boolean nl = transform(bw, line);
+                boolean nl = transform(bw, line, status);
                 line = br.readLine();
                 if (nl && line != null) bw.write('\n');
             }
@@ -176,7 +170,7 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
         private int countOccurences(Pattern pattern, String line) {
             Matcher m = pattern.matcher(line);
             int counter = 0;
-            while(m.find() && counter < 5){
+            while(m.find()){
                 counter ++;
                 line = line.substring(m.end(), line.length());
                 m = pattern.matcher(line);
@@ -211,7 +205,28 @@ public class SpaceReducer extends ReaderTransformer implements CharTransformer {
             return name;
         }
     }
-
+    
+    public static class Status {
+        private List tagsToPass = new ArrayList();
+        private Tag currentlyOpen = null;
+        
+        public Status(){
+            tagsToPass.add(new Tag("pre"));
+            tagsToPass.add(new Tag("textarea"));
+        }
+        
+        public List getTagsToPass() {
+            return tagsToPass;
+        }
+        
+        public Tag getCurrentlyOpen() {
+            return currentlyOpen;
+        }
+        public void setCurrentlyOpen(Tag currentlyOpen) {
+            this.currentlyOpen = currentlyOpen;
+        }
+    }
+    
     /**
      * method to test the tag class
      * TODO: this should be a unit test
