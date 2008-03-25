@@ -28,10 +28,9 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
- * information see the javadoc of that class.
+ * Utility functions, used by various classes in the package.
  * @author Michiel Meeuwissen
- * @version $Id: Util.java,v 1.1 2008-03-25 17:52:18 michiel Exp $
+ * @version $Id: Util.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
  */
 
 public abstract class Util {
