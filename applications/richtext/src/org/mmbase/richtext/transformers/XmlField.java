@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.4 2007-02-21 15:03:25 michiel Exp $
+ * @version $Id: XmlField.java,v 1.5 2008-03-25 17:07:59 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -66,20 +66,22 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     protected final static boolean LISTS_OUTSIDE_P  = false;
 
 
+    static {
+        org.mmbase.util.Encode.register(XmlField.class.getName());
+    }
+
+
+
     private static Pattern wikiWrappingAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
     private static Pattern wikiP = Pattern.compile("<p>\\[(\\w+)\\]");
     private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
     private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
 
-    static {
-        org.mmbase.util.Encode.register(XmlField.class.getName());
-    }
-
-    public static String wikiToXML(String data) {
+    public static String wikiToXML(String data, boolean placeListsInsideP) {
         Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
-        handleRich(obj, true, false, true);
+        handleRich(obj, true, false, true, placeListsInsideP);
         handleFormat(obj, false);
         String string = obj.toString();
         Matcher ps = wikiP.matcher(string);
@@ -89,7 +91,9 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         Matcher anchors = wikiAnchor.matcher(string);
         string = anchors.replaceAll("<a id=\"$1\" />");
         return string;
-
+    }
+    public static String wikiToXML(String data) {
+        return wikiToXML(data, false);
     }
 
     /**
