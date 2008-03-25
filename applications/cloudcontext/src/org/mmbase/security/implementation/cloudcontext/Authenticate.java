@@ -31,7 +31,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.21 2008-01-25 14:02:33 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.22 2008-03-25 21:00:25 nklasens Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -61,7 +61,10 @@ public class Authenticate extends Authentication {
     }
 
 
-    // javadoc inherited
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void load() throws SecurityException {
         Users users = Users.getBuilder();
         if (users == null) {
@@ -89,7 +92,6 @@ public class Authenticate extends Authentication {
     }
 
     /**
-     * {@inheritDoc}
      * @since MMBase-1.9
      */
     public org.mmbase.bridge.Node getNode(org.mmbase.bridge.Cloud cloud) throws SecurityException {
@@ -101,7 +103,9 @@ public class Authenticate extends Authentication {
     }
 
 
-    // javadoc inherited
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserContext login(String s, Map<String, Object> map, Object aobj[]) throws SecurityException  {
         if (log.isTraceEnabled()) {
@@ -186,7 +190,6 @@ public class Authenticate extends Authentication {
         return loggedInExtraAdmins.get(userName);
     }
 
-    // javadoc inherited
     public boolean isValid(UserContext userContext) throws SecurityException {
         if (! (userContext instanceof User)) {
             log.debug("Changed to other security implementation");

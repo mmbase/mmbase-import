@@ -90,7 +90,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
     /**
      * handleTransaction can be called externally and will execute the TCP commands.
      * @param template The template containing the TCP commands 
-     * @param the session variables of an user
+     * @param session variables of an user
      * @param sp the scanpage 
      */
     public void handleTransaction(String template, sessionInfo session, scanpage sp) {

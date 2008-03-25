@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImageMaster.java,v 1.29 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ImageMaster.java,v 1.30 2008-03-25 21:00:25 nklasens Exp $
  */
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
@@ -243,7 +243,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
      * Handles an images/mirror service request.
      * Converts images to an asis file format, then places the asis file in the files list,
      * so it will be sent to a mirror site by the ImagePusher.
-     * @param node the filenet node that contains the service request
+     * @param filenode the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -349,7 +349,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Handles a images/main service request.
      * Schedules requests to mirror the file using {@link #doMainRequest}<br />
-     * @param node the filenet node that contains the service request
+     * @param filenode the filenet node that contains the service request
      * @param status the current status of the node
      * @param ctype the type of change on that node ("c" : node was changed)
      * @return <code>true</code>
@@ -452,7 +452,6 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
     /**
      * Retrieves a named property of a server.
      * Should use the same system as PageMaster (retrieve data from MSMerver).
-     * @param machine name of the server
      * @param key name of the property to retrieve
      * @return the property value
      */

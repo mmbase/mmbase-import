@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.97 2008-03-12 15:21:43 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.98 2008-03-25 21:00:24 nklasens Exp $
  */
 public class BuilderReader extends DocumentReader {
 
@@ -919,11 +919,10 @@ public class BuilderReader extends DocumentReader {
 
     /**
      * Get the properties of this builder
-     * @code-conventions return type should be Map
      * @return the properties in a Map (as name-value pairs)
      */
-    public Hashtable<String,String> getProperties() {
-        Hashtable<String,String> results = new Hashtable<String,String>();
+    public Map<String,String> getProperties() {
+        Map<String,String> results = new HashMap<String,String>();
         if (parentBuilder != null) {
             Map<String,String> parentparams = parentBuilder.getInitParameters();
             if (parentparams != null) {

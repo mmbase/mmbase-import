@@ -10,21 +10,19 @@ See http://www.MMBase.org/license
 package org.mmbase.sms;
 
 import java.util.*;
-import java.util.regex.*;
 
 import org.mmbase.core.event.EventManager;
-import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * SMS Sender implementation, which only wraps the message in an {@link #SMSEvent} and offers it to
+ * SMS Sender implementation, which only wraps the message in an {@link SMSEvent} and offers it to
  * the Event Manager. Assumed is that precisely one of the mmbases in the cluster is configured with
  * some actual SMS sending implementation and accepts the event.
  *
  * @author Michiel Meeuwissen
- * @version $Id: EventSender.java,v 1.2 2007-12-10 10:22:12 michiel Exp $
+ * @version $Id: EventSender.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
  **/
 public class EventSender extends Sender {
     private static final Logger log = Logging.getLoggerInstance(EventSender.class);

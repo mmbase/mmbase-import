@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.97 2008-03-25 16:50:13 michiel Exp $
+ * @version $Id: Queries.java,v 1.98 2008-03-25 21:00:25 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -318,7 +318,7 @@ abstract public class Queries {
      * @param fieldType Field Type constant (@link Field)
      * @param operator Compare operator
      * @param value value to convert
-     * @param cloud The cloud may be used to pass locale sensitive properties which may be needed for comparisions (locales, timezones)
+     * @param cloud The cloud may be used to pass locale sensitive properties which may be needed for comparisons (locales, timezones)
      * @return new Compare value
      * @since MMBase-1.8.2
      */
@@ -408,7 +408,7 @@ abstract public class Queries {
      * @param query      The query to create the constraint for
      * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
      * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
-     * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
+     * @param originalValue  The value to compare with, which must be of the right type. If field is number it might also be an alias.
      * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
      * @param datePart       The part of a DATETIME value that is to be checked

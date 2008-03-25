@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: State.java,v 1.5 2008-03-21 10:39:23 michiel Exp $
+ * @version $Id: State.java,v 1.6 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 public class State {
@@ -185,10 +185,10 @@ public class State {
 
     /**
      * @return Whether action must be performed.
-     * @renderer Proposed renderer (State may decide to render another one, and return that)
+     * @param frameworkParameters The parameters that are required by the framework
+     * @param renderer Proposed renderer (State may decide to render another one, and return that)
      * @throws IllegalStateException When renderers which should occur 'later' were already rendered,
      * or when the belonging request was already 'ended'.
-
      */
     public Renderer startBlock(Parameters frameworkParameters, Renderer renderer) {
         if (count == 0) {
@@ -208,8 +208,7 @@ public class State {
     }
 
     /**
-     * Determins what should be rendered now.
-     * @param block a proposal
+     * Determines what should be rendered now.
      */
     protected Renderer getRenderer(Renderer r) {
         String blockName = request.getParameter("__b" + getId());

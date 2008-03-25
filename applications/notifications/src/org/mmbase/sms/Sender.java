@@ -9,12 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.sms;
 
-import org.mmbase.bridge.*;
 import org.mmbase.core.event.EventManager;
 import org.mmbase.util.xml.UtilReader;
 import java.util.*;
 import java.util.regex.*;
-import java.util.concurrent.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,11 +20,11 @@ import org.mmbase.util.logging.Logging;
  * The core of this class are {@link #offer(SMS)} and {@link #send(SMS)}, which both send an SMS,
  * but the first one allows for some delay.
  *
- * This class is abstract and must be extended. The method {@link getInstance} returns one instance
+ * This class is abstract and must be extended. The method {@link #getInstance} returns one instance
  * of an extension. Which class is instantiated is determined by &lt;config&gt;utils/sms_sender.xml
  *
  * @author Michiel Meeuwissen
- * @version $Id: Sender.java,v 1.8 2007-12-10 09:58:23 michiel Exp $
+ * @version $Id: Sender.java,v 1.9 2008-03-25 21:00:24 nklasens Exp $
  **/
 public abstract class Sender {
     private static final Logger log = Logging.getLoggerInstance(Sender.class);
@@ -84,7 +82,7 @@ public abstract class Sender {
         if (sender == null) {
             try {
                 if (determinActive()) {
-                    Class clazz = Class.forName(config.get("class"));
+                    Class<?> clazz = Class.forName(config.get("class"));
                     sender = (Sender) clazz.newInstance();
                     EventManager.getInstance().addEventListener(SMSEventListener.getInstance());
                     log.info("Using " + sender + " to send SMS. " + SMSEventListener.getInstance() + " is listening for remote SMSs");

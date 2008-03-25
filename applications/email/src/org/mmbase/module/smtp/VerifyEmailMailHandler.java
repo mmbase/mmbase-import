@@ -18,9 +18,9 @@ import javax.mail.*;
 /**
  * This MailHandler explores the Message to see if it just a response to an email verification, and
  * if so, handles it. Otherwise ignores the message.
- * This Handler can be put in front of the {@link ChainedMailedHandler}.
+ * This Handler can be put in front of the {@link ChainedMailHandler}.
  *
- * @version $Id: VerifyEmailMailHandler.java,v 1.6 2008-02-03 17:42:06 nklasens Exp $
+ * @version $Id: VerifyEmailMailHandler.java,v 1.7 2008-03-25 21:00:24 nklasens Exp $
  */
 public class VerifyEmailMailHandler implements MailHandler {
     private static final Logger log = Logging.getLoggerInstance(VerifyEmailMailHandler.class);

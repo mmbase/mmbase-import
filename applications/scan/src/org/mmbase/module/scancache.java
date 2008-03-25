@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.45 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: scancache.java,v 1.46 2008-03-25 21:00:25 nklasens Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -150,7 +150,7 @@ public class scancache extends Module implements scancacheInterface {
      * the default expiration time (6 hours).
      * For cache "PAGE", this method does not check expiratio, and retrieves the data
      * from the file from disk, NOT from the memory cache.
-     * @param poolname name of the cache pool, either "HENK" or "PAGE"
+     * @param poolName name of the cache pool, either "HENK" or "PAGE"
      * @param key URL of the page to retrieve
      * @return the page's content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
@@ -211,7 +211,7 @@ public class scancache extends Module implements scancacheInterface {
          * It will signal the scanparser to calculate a new one in the background.
          * This avoids contention on a busy server as the page is only calculated once when expired
          * not calculate every request that comes in during the window of calculation.
-     * @param poolname name of the cache pool, expected (but not verified) are "HENK" or "PAGE"
+     * @param poolName name of the cache pool, expected (but not verified) are "HENK" or "PAGE"
      * @param key URL of the page to retrieve
      * @param line the expiration value, either the expiration value in seconds or the word 'NOEXPIRE'. Due to
      *               legacy this value needs to be closed with a '>'.
@@ -362,14 +362,14 @@ public class scancache extends Module implements scancacheInterface {
      * the default expiration time (6 hours).
      * For cache "PAGE", this method does not check expiration, and retrieves the data
      * from the file from disk, NOT from the memory cache.
-     * @param poolname name of the cache pool, either "HENK" or "PAGE"
-     * @param res reponse object for retrieving headers (used by mmbase.org?)
+     * @param poolName name of the cache pool, either "HENK" or "PAGE"
+     * @param res response object for retrieving headers (used by mmbase.org?)
      *                    only needed for cachepool "PAGE"
      * @param key URL of the page to store
      * @param value the page content to store
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found
-     *     (i.e. cache was empty or poolname was invalid).
+     *     (i.e. cache was empty or poolName was invalid).
      */
     public String newput(String poolName,HttpServletResponse res, String key,String value, String mimeType) {
         if (status==false) return null;  // no caching if inactive
@@ -413,15 +413,15 @@ public class scancache extends Module implements scancacheInterface {
      * Store a file in the indicated pool's cache (both in file and in the memory cache).
      * Returns the old value if available.
      * Is used in scanpage to recalculate the cached page.
-     * @param poolname name of the cache pool, either "HENK" or "PAGE"
+     * @param poolName name of the cache pool, either "HENK" or "PAGE"
      * @param key URL of the page to store
      * @param value the page content to store
-     * @param int cachetype only needed for cachepool "PAGE".
+     * @param cachetype only needed for cachepool "PAGE".
      *        If 0, no file transfer is performed. Otherwise the {@link NetFileSrv} builder is
      *        invoked to start the VWM that handles the transfer.
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found
-     *     (i.e. cache was empty or poolname was invalid).
+     *     (i.e. cache was empty or poolName was invalid).
      */
     public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
         if (status==false) return null; // no caching when inactive
@@ -466,7 +466,7 @@ public class scancache extends Module implements scancacheInterface {
     /**
      * Store a file in the indicated pool's cache (both on file and in the memory cache).
      * Returns the old value if available.
-     * @param poolname name of the cache pool
+     * @param poolName name of the cache pool
      * @param key URL of the page to store
      * @param value the page content to store
      * @return the page's old content as a string, or <code>null</code> if no entry was found
@@ -611,7 +611,7 @@ public class scancache extends Module implements scancacheInterface {
      * Removes an entry from the cache pool (both the file on disk and in the memory cache).
      * If the pool is "PAGE", the file will only be removed from the local cache,
      * not from any mirror servers.
-     * @param pool name of cache pool, expected (but not verified) "HENK" or "PAGE"
+     * @param poolName name of cache pool, expected (but not verified) "HENK" or "PAGE"
      * @param key URL of the page to remove
      */
     public void remove(String poolName, String key) {

@@ -27,14 +27,14 @@ import org.mmbase.core.CoreField;
 import org.mmbase.util.logging.*;
 
 /**
- * The servdb servlet handles binairy requests.
+ * The servdb servlet handles binary requests.
  * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
  * With servscan it provides the communication between the clients browser and the mmbase space.
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.65 2007-08-27 14:12:10 michiel Exp $
+ * @deprecated use {@link org.mmbase.servlet.ImageServlet} or {@link org.mmbase.servlet.AttachmentServlet} instead
+ * @version $Id: servdb.java,v 1.66 2008-03-25 21:00:24 nklasens Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {

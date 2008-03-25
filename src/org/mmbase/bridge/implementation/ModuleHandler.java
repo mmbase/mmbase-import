@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.37 2007-08-02 10:06:12 michiel Exp $
+ * @version $Id: ModuleHandler.java,v 1.38 2008-03-25 21:00:25 nklasens Exp $
  */
 public class ModuleHandler implements Module, InvocationHandler {
     private static final Logger log = Logging.getLoggerInstance(ModuleHandler.class);
@@ -229,7 +229,11 @@ public class ModuleHandler implements Module, InvocationHandler {
      * A module is 'larger' than another module if its name is larger (alphabetically, case sensitive)
      * than that of the other module. If names are the same, the modules are compared on cloud context.
      *
-     * @param o the object to compare it with
+     * @see Comparable#compareTo(Object)
+     *
+     * @param m the Module to compare it with
+     * @return  a negative integer, zero, or a positive integer as this object
+     *      is less than, equal to, or greater than the specified object.
      */
     public int compareTo(Module m) {
         int res=getName().compareTo(m.getName());

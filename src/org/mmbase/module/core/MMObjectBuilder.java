@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.421 2007-11-16 09:47:34 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.422 2008-03-25 21:00:25 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -2609,7 +2609,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * Changed properties will not be saved.
      * @param properties the properties to set
      */
-    void setInitParameters(Hashtable<String, String> properties) {
+    void setInitParameters(Map<String,String> properties) {
         this.properties.putAll(properties);
         loadInitParameters();
         update();
@@ -2624,7 +2624,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
     }
     /**
      * Override properties through application context
-     * @param contextPath path in application context where properties are located
      * @since MMBase 1.8.5
      */
     public void loadInitParameters() {
@@ -2641,7 +2640,6 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
      * @param contextPath path in application context where properties are located
      * @return a <code>Map</code> containing the current properties
      * @since MMBase 1.8.2
-     * @deprecated
      */
     public Map getInitParameters(String contextPath) {
         Map map = new HashMap();

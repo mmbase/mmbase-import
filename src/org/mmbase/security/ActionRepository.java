@@ -12,11 +12,11 @@ import java.util.*;
 
 /**
  * The defined 'actions' are maintained by the 'action' repository. The security implementation can
- * decide how to persistify actions and how to connect rights to it.
+ * decide how to persist actions and how to connect rights to it.
  *
- * @see {@link Action}.
+ * @see Action
  * @author Michiel Meeuwissen
- * @version $Id: ActionRepository.java,v 1.7 2008-01-21 17:28:15 michiel Exp $
+ * @version $Id: ActionRepository.java,v 1.8 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 public abstract class ActionRepository extends Configurable {
