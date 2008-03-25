@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.96 2008-02-29 11:00:05 michiel Exp $
+ * @version $Id: Queries.java,v 1.97 2008-03-25 16:50:13 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1271,6 +1271,47 @@ abstract public class Queries {
         // if all fields match - return 0 as if equal
         return result;
     }
+
+    /**
+     * Explores a query object, and creates a certain new relation object, which would make the
+     * given node appear in the query's result.
+     *
+     * You can read this as 'the query object is a related nodes query, and is used to contain information
+     * about the relation (role, startnodes)'. This currently is also the only implemented part of
+     * this method.
+
+     * @throw UnsupportedOperationException If it cannot be determined how the node should be related.
+     *
+     * @since MMBase-1.8.6
+     */
+    public static void addToResult(Query q, Node n) {
+        List<Step> steps = q.getSteps();
+
+        if (steps.size() < 3) throw new UnsupportedOperationException();
+
+        // First, try if the node can be related to a startNode.
+        int start = 0;
+        Step startStep = steps.get(start);
+        Cloud cloud = n.getCloud();
+        SortedSet<Integer> startNodes = startStep.getNodes();
+        NodeManager nextManager = cloud.getNodeManager(steps.get(start + 2).getTableName());
+        if (startNodes.size() > 0 && (nextManager.equals(n.getNodeManager()) || nextManager.getDescendants().contains(nextManager))) {
+            Node startNode = cloud.getNode(startNodes.iterator().next());
+            RelationStep rel = (RelationStep) steps.get(start + 1);
+            String role = cloud.getNode(rel.getRole().intValue()).getStringValue("sname");
+            switch(rel.getDirectionality()) {
+            case RelationStep.DIRECTIONS_SOURCE:
+                cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
+                break;
+            default:
+                cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
+            }
+            return;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
 
     public static void main(String[] argv) {
         System.out.println(ConstraintParser.convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
