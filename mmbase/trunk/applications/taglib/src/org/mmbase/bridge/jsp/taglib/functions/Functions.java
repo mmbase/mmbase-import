@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.25 2008-03-17 16:18:15 michiel Exp $
+ * @version $Id: Functions.java,v 1.26 2008-03-25 11:32:52 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -135,9 +135,10 @@ public class Functions {
      * @since MMBase-1.8.4
      */
     public static String treefile(String page, javax.servlet.jsp.PageContext pageContext, Object objectList) throws javax.servlet.jsp.JspTagException, java.io.IOException {
-        org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th =
-            new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
-        th.setCloud((Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE));
+        Cloud cloud = (Cloud) pageContext.getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        if (cloud == null) throw new IllegalStateException("No current cloud (key '" + CloudTag.KEY + "', can not execute treefile");
+        org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper th = new org.mmbase.bridge.jsp.taglib.pageflow.TreeHelper();
+        th.setCloud(cloud);
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
         String t = th.findTreeFile(page, Casting.toString(objectList), pageContext.getSession());
         if (t == null || "".equals(t)) {
