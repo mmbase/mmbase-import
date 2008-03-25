@@ -414,14 +414,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="documentation.html" depends="init" if="do.generate.documentation">
-    <ant dir="${documentation.home}" target="documentation.html">
+    <ant dir="${source.dir}" target="documentation.html" antfile="${source.dir}/build-documentation.xml">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
     </ant>
   </target>
 
   <target name="documentation.pdf" depends="init" if="do.generate.documentation">
-    <ant dir="${documentation.home}" target="documentation.pdf">
+    <ant dir="${documentation.home}" target="documentation.pdf" antfile="${source.dir}/build-documentation.xml">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.temp.dir"       value="${project.build.dir}/temp" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />

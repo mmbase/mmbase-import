@@ -19,5 +19,14 @@ See http://www.MMBase.org/license
     <type>example</type>
     <status>stable</status>
   </properties>
+  <dependencies>
+    <!-- Code does not enforce it through the compiler, but it will not work in runtime -->
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-resources</artifactId>
+      <version>${mmbase.version}</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
 </project>
 

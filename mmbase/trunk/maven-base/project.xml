@@ -46,15 +46,19 @@ See http://www.MMBase.org/license
       <url>http://www.mmbase.org/license</url>
     </license>
   </licenses>
-  <description>MMBase is a Web Content Management System with strong multi media features. MMBase has a large installed base in The Netherlands, and is used by major Dutch broadcasters, publishers, educational institutes, national and local governments. MMBase is written in Java, it is Open Source Software (MPL) and all standards used are as 'open' as possible. The system can be used with all major operating systems, webservers and databases.</description>
+  <description>
+    MMBase is a Web Content Management System with strong multi media features. 
+    MMBase has a large installed base in The Netherlands, and is used by major 
+    Dutch broadcasters, publishers, educational institutes, national and local 
+    governments. MMBase is written in Java, it is Open Source Software (MPL) 
+    and all standards used are as 'open' as possible. The system can be used 
+    with all major operating systems, webservers and databases.
+  </description>
   <url>http://www.mmbase.org</url>
-  <issueTrackingUrl>http://www.mmbase.org/bug</issueTrackingUrl>
-  <siteAddress>http://www.mmbase.org</siteAddress>
-  <siteDirectory>/home/maven/site/mmbase</siteDirectory>
-  <distributionDirectory>/home/maven/site/mmapps/jars/</distributionDirectory>
+  <issueTrackingUrl>http://www.mmbase.org/jira/secure/Dashboard.jspa</issueTrackingUrl>
   <repository>
     <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
-    <developerConnection>scm:cvs:pserver:${maven.username}@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mmbase.org:/var/cvs:mmbase-core</developerConnection>
     <url>http://cvs.mmbase.org/viewcvs/</url>
   </repository>
   <mailingLists>
@@ -283,15 +287,13 @@ See http://www.MMBase.org/license
       <type>plugin</type>
       <url>http://mmapps.sourceforge.net/maven-mmbase-module-plugin/</url>
     </dependency>
-<!--  disabled documentation, because documentation dir contains xml's which are not docs. 
-        <dependency>
-            <groupId>maven-plugins</groupId>
-            <artifactId>maven-sdocbook-plugin</artifactId>
-            <version>1.4.1</version>
-            <type>plugin</type>
-            <url>http://maven-plugins.sourceforge.net</url>
-        </dependency>
--->
+    <dependency>
+        <groupId>maven-plugins</groupId>
+        <artifactId>maven-sdocbook-plugin</artifactId>
+        <version>1.4.1</version>
+        <type>plugin</type>
+        <url>http://maven-plugins.sourceforge.net</url>
+    </dependency>
   </dependencies>
   <build>
     <nagEmailAddress>developers@mmbase.org</nagEmailAddress>
@@ -311,28 +313,24 @@ See http://www.MMBase.org/license
         <filtering>false</filtering>
       </resource>
       <resource>
-        <directory>${basedir}/html/WEB-INF/classes</directory>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <targetPath>META-INF</targetPath>
+        <targetPath>${basedir}/META-INF</targetPath>
         <directory>META-INF</directory>
         <excludes>
           <exclude>"**/CVS"</exclude>
         </excludes>
+        <filtering>false</filtering>
       </resource>
-      <!-- This does not work the same way as the ant build does.
-           We have to change more in the build to get it working -->
       <resource>
         <targetPath>org/mmbase/config</targetPath>
         <directory>config</directory>
         <excludes>
           <exclude>"**/CVS"</exclude>
         </excludes>
+        <filtering>false</filtering>
       </resource>
     </resources>
     <!-- Unit test cases -->
-    <unitTestSourceDirectory>${basedir}/tests</unitTestSourceDirectory><!-- does this work?? -->
+    <unitTestSourceDirectory>${basedir}/unittests</unitTestSourceDirectory>
     <unitTest>
       <includes>
         <include>**/*Tests.java</include>
@@ -346,18 +344,16 @@ See http://www.MMBase.org/license
   </build>
   <reports>
     <report>maven-changelog-plugin</report>
-        <report>maven-changes-plugin</report>
-        <report>maven-developer-activity-plugin</report>
-        <report>maven-file-activity-plugin</report>
-        <report>maven-javadoc-plugin</report>
+    <report>maven-changes-plugin</report>
+    <report>maven-developer-activity-plugin</report>
+    <report>maven-file-activity-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-tasklist-plugin</report>
+    <report>maven-license-plugin</report>
     <!--
         <report>maven-jdepend-plugin</report>
         <report>maven-junit-report-plugin</report>
-        <report>maven-jxr-plugin</report>
-    -->
-        <report>maven-license-plugin</report>
-        <report>maven-tasklist-plugin</report>
-    <!--
         <report>maven-linkcheck-plugin</report>
         <report>maven-jdiff-plugin</report>
         <report>maven-checkstyle-plugin</report>
@@ -366,4 +362,3 @@ See http://www.MMBase.org/license
     -->
   </reports>
 </project>
-
