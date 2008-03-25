@@ -6,14 +6,14 @@
   <mm:content expires="0" type="text/xml">
     <jsp:output omit-xml-declaration="true" />
     <mm:import externid="objectnumber" required="true"/>
-    <mm:cloud rank="basic user" jspvar="cloud">
-      <mm:form id="transaction" mode="validate">
+    <mm:cloud method="asis">
+
+      <mm:form id="transaction" mode="transaction">
         <mm:node referid="objectnumber" commitonclose="false">
           <mm:fieldlist type="edit">
             <mm:fieldinfo type="useinput" />
           </mm:fieldlist>
           <h1><mm:field name="title" /></h1>
-          <p><jsp:expression>cloud</jsp:expression> <mm:time time="now" /></p>
           <h2><mm:field name="subtitle" /></h2>
           <mm:field name="intro" escape="p" />
 
