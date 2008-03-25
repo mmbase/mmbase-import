@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.4 2008-02-22 14:05:57 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.5 2008-03-25 09:20:24 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -64,7 +64,7 @@ public class MMBaseUrlConverter implements UrlConverter {
         if (log.isDebugEnabled()) {
             log.debug("path '" + path + "' parameters: " + parameters + " framework parameters " + frameworkParameters);
         }
-        HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
         State state = State.getState(request);
 
         String category = frameworkParameters.get(CATEGORY);
@@ -162,7 +162,8 @@ public class MMBaseUrlConverter implements UrlConverter {
                 if (k.equals(BLOCK.getName())) continue;
                 if (k.equals(COMPONENT.getName())) continue;
                 if (k.equals(CATEGORY.getName())) continue;
-                map.put(k, entry.getValue()[0]);
+                log.debug("putting " + entry);
+                map.put(k, entry.getValue());
             }
         } else {
             //log.debug("Now processing " + processor);
