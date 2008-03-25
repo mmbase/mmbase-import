@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * chained before MmxfGetString to ensure that the field is really Mmxf, even if such 'p' fields are stored.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UnPGet.java,v 1.2 2005-10-25 22:29:17 michiel Exp $
+ * @version $Id: UnPGet.java,v 1.3 2008-03-25 17:52:18 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -49,7 +49,7 @@ public class UnPGet implements  Processor {
                 try {
                     Document realValue = node.getXMLValue(field.getName());
                     java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/text.xslt");
-                    StringWriter res = new StringWriter();            
+                    StringWriter res = new StringWriter();
                     XSLTransformer.transform(new DOMSource((Document) realValue), u, new StreamResult(res), null);
                     string = res.toString();
                 } catch (Exception e) {
@@ -71,7 +71,7 @@ public class UnPGet implements  Processor {
                 String string;
                 try {
                     java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/text.xslt");
-                    StringWriter res = new StringWriter();            
+                    StringWriter res = new StringWriter();
                     XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), null);
                     string = res.toString();
                 } catch (Exception e) {
@@ -84,7 +84,7 @@ public class UnPGet implements  Processor {
                 value = trans.transformBack(string);
                 log.debug("MMXF-lized " + value);
                 try {
-                    value = MmxfSetString.parse(value);
+                    value = Util.parse(value);
                 } catch (Exception e) {
                     log.warn(e);
                     return value;
@@ -96,11 +96,11 @@ public class UnPGet implements  Processor {
         } else {
             return value;
         }
-        
+
     }
-     
+
     public String toString() {
         return "get_unp";
     }
-  
+
 }
