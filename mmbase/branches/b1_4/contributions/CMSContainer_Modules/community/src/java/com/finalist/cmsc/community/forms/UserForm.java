@@ -10,6 +10,7 @@
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -20,6 +21,10 @@ import org.apache.struts.action.ActionMessage;
  */
 public class UserForm extends ActionForm {
 
+   protected static final String ACTION_ADD = "add";
+
+   protected static final String ACTION_EDIT = "edit";
+   
 	private static final long serialVersionUID = 1L;
 
 	private String action;
@@ -114,19 +119,37 @@ public class UserForm extends ActionForm {
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		ActionErrors actionErrors = new ActionErrors();
+		if (account.equals("")) {
+         actionErrors.add("account", new ActionMessage("userform.account.empty"));
+      }
 		if (email.equals("")) {
-			actionErrors.add("email", new ActionMessage("email.empty"));
+			actionErrors.add("email", new ActionMessage("userform.email.empty"));
 		}
-		if (passwordText.equals("")) {
-			actionErrors.add("password", new ActionMessage("password.empty"));
-		}
-		if (passwordConfirmation.equals("")) {
-			actionErrors.add("passwordConfirmation", new ActionMessage("passwordConfirmation.empty"));
-		}
-		if (!passwordText.equals("") && !passwordConfirmation.equals("") && !passwordText.equals(passwordConfirmation)) {
-			actionErrors.add("password", new ActionMessage("passwords.not_equal"));
+		if (this.getAction().equalsIgnoreCase(ACTION_ADD)){
+		   validatePassword(actionErrors);
+		} else {
+		   if (this.getAction().equalsIgnoreCase(ACTION_EDIT)){
+   		   if (!StringUtils.isBlank(passwordText) || !StringUtils.isBlank(passwordConfirmation)){
+   		      validatePassword(actionErrors);
+   		   }
+		   }
 		}
 		return actionErrors;
 	}
+
+   public void validatePassword(ActionErrors actionErrors) {
+      //Only check this if an user is added
+      if (StringUtils.isBlank(passwordText)) {
+      	actionErrors.add("password", new ActionMessage("userform.password.empty"));
+      }
+      if (StringUtils.isBlank(passwordConfirmation)) {
+      	actionErrors.add("passwordConfirmation", new ActionMessage("userform.password.empty"));
+      }
+      if (!StringUtils.isBlank(passwordText) 
+            && !StringUtils.isBlank(passwordConfirmation) 
+            && !passwordText.equals(passwordConfirmation)) {
+      	actionErrors.add("password", new ActionMessage("userform.passwords.not_equal"));
+      }
+   }
 
 }

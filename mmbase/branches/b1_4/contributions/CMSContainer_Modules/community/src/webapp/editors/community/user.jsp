@@ -19,11 +19,11 @@
 				<td>
 
                <logic:equal name="communityUserForm" property="action" value="add">
-                  <html:text property="email" size="30" />
-                  <span class="notvalid"><html:errors bundle="SECURITY" property="email" /></span>
+                  <html:text property="account" size="30" />
+                  <span class="notvalid"><html:errors bundle="SECURITY" property="account" /></span>
                </logic:equal> 
                <logic:notEqual name="communityUserForm" property="action" value="add">
-                  <bean:write name="communityUserForm" property="email" />
+                  <bean:write name="communityUserForm" property="account" />
                </logic:notEqual>
 
 				</td>
@@ -44,11 +44,6 @@
             <td class="fieldname"><fmt:message key="view.email" /></td>
             <td><html:text property="email" size='30' /></td>
          </tr>
-         <tr>
-            <td class="fieldname"><fmt:message key="view.account" /></td>
-            <td><html:text property="account" size='30' /></td>
-         </tr>
-         
          <tr>
             <td class="fieldname"><fmt:message key="view.password" /></td>
             <td>

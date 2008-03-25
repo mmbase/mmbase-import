@@ -34,7 +34,9 @@ public class AuthenticationHibernateService extends HibernateService implements 
 		authentication.setUserId(userId);
 		authentication.setPassword(encodePassword(password, userId));
 		authentication.setEnabled(true);
-		authentication.setId((Long)getSession().save(authentication));
+		Long id = (Long)getSession().save(authentication);
+		getSession().flush();
+		authentication.setId(id);
 		return authentication;
 	}
 

@@ -11,6 +11,7 @@
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
@@ -45,7 +46,7 @@ public class UserAddAction extends AbstractCommunityAction {
 			AuthenticationService as = getAuthenticationService();
 			PersonService ps = getPersonService();
 
-			if (userForm.getAction().equalsIgnoreCase(ACTION_ADD)) {
+			if (userForm.getAction().equalsIgnoreCase(UserForm.ACTION_ADD)) {
 				Long authenticationId = as.getAuthenticationIdForUserId(accountName);
 				if (authenticationId == null) {
 				   Authentication authentication = as.createAuthentication(userForm.getEmail(), userForm.getPasswordText());
@@ -62,29 +63,24 @@ public class UserAddAction extends AbstractCommunityAction {
 					log.info("add check1 failed for: " + accountName);
 				}
 
-			} else if (userForm.getAction().equalsIgnoreCase(ACTION_EDIT)) {
+			} else if (userForm.getAction().equalsIgnoreCase(UserForm.ACTION_EDIT)) {
 				Long authenticationId = as.getAuthenticationIdForUserId(accountName);
 				if (authenticationId != null) {
 					String newPassword1 = userForm.getPasswordText();
 					String newPassword2 = userForm.getPasswordConfirmation();
-					if (newPassword1 != null && newPassword2 != null) {
+					if (!StringUtils.isBlank(newPassword1) && !StringUtils.isBlank(newPassword2)) {
 						if (newPassword1.equals(newPassword2)) {
 							as.updateAuthenticationPassword(accountName, newPassword1);
 						}
 					}
 					
 					//First retrieve the right person object from the database
-               Person p = new Person();
-               p.setAuthenticationId(authenticationId);
-               Person person = null;
+               Person person = ps.getPersonByAuthentication(authenticationId);
 
-               if (ps.getPerson(p).isEmpty()) { //User did not exists, so create it.
+               if (person == null) { //User did not exists, so create it.
                   person = new Person();
                   person.setAuthenticationId(authenticationId);
-               } else {
-                  //Update existing Person from database.
-                  person = ps.getPerson(p).get(0); //Retrieve first user found
-               }
+               } 
                
                //Also save other fields entered in the form to the right person object
                person.setFirstName(userForm.getFirstName());

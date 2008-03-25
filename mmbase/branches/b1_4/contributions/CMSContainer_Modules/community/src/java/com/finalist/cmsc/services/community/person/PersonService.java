@@ -27,6 +27,8 @@ public interface PersonService {
     
     List<Person> getPerson(Person person);
     
+    Person getPersonByAuthentication(Long authenticationId);
+    
     Person createPerson(String firstName, String infix, String lastName, Long authenticationId);
     
     /* Save or update the person to the database

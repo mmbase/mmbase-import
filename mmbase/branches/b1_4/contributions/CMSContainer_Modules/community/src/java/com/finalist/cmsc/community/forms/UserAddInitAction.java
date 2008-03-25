@@ -38,7 +38,7 @@ public class UserAddInitAction extends AbstractCommunityAction {
 		String id = request.getParameter(USERID);
 		UserForm userForm = (UserForm) actionForm;
 		if (id != null) {
-			userForm.setAction(ACTION_EDIT);
+			userForm.setAction(UserForm.ACTION_EDIT);
 
 			AuthenticationService as = getAuthenticationService();
 			Authentication auth = as.findAuthentication(id);
@@ -63,7 +63,7 @@ public class UserAddInitAction extends AbstractCommunityAction {
 
 		} else {
 			// new
-			userForm.setAction(ACTION_ADD);
+			userForm.setAction(UserForm.ACTION_ADD);
 		}
 
 		return actionMapping.findForward(SUCCESS);

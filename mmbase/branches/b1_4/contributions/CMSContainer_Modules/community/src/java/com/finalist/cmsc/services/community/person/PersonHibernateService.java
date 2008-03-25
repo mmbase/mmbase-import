@@ -13,8 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
@@ -28,8 +26,6 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
  * @author Remco Bos
  */
 public class PersonHibernateService extends HibernateService implements PersonService {
-
-	private static Log log = LogFactory.getLog(PersonHibernateService.class);
 
 	private AuthenticationService authenticationService;
 
@@ -86,6 +82,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    @Transactional
    public void updatePerson(Person person) {
       getSession().saveOrUpdate(person);
+      getSession().flush();
    }
 
 
@@ -104,14 +101,7 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
 	private Person findPersonByUserId(String userId) {
 		Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
-		Person person = null;
-		if (authenticationId != null) {
-			Criteria criteria = getSession()
-									.createCriteria(Person.class)
-									.add(Restrictions.eq("authenticationId", authenticationId));
-			person = findPersonByCriteria(criteria);
-		}
-		return person;
+		return getPersonByAuthentication(authenticationId);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -124,5 +114,18 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 	public void setAuthenticationService(AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
 	}
+	
+   /** {@inheritDoc} */
+	@Transactional(readOnly = true)
+   public Person getPersonByAuthentication(Long authenticationId) {
+      Person person = null;
+      if (authenticationId != null) {
+         Criteria criteria = getSession()
+                           .createCriteria(Person.class)
+                           .add(Restrictions.eq("authenticationId", authenticationId));
+         person = findPersonByCriteria(criteria);
+      }
+      return person;
+   }
 
 }
