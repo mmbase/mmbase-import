@@ -7,14 +7,13 @@ import junit.framework.TestCase;
  * Currently only tests a small part of the XmlField functionality.
  *
  * @author Simon Groenewolt (simon@submarine.nl)
- * @version $Id: XmlFieldTest.java,v 1.4 2007-01-05 12:53:35 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.5 2008-03-25 21:11:01 nklasens Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
     private String result;
     private String expectedResult;
     private String expectedListResult;
-    private XmlField xmlField;
     private String comment;
     private String listData;
     private boolean leaveExtraNewLines;
@@ -23,7 +22,6 @@ public class XmlFieldTest  extends TestCase {
 
     /** Creates a new instance of XmlFieldTest */
     public XmlFieldTest() {
-        xmlField = new XmlField();
     }
 
     protected String ignoreNL(StringObject in) {
@@ -34,29 +32,22 @@ public class XmlFieldTest  extends TestCase {
         return in.toString().replaceAll("\r", "R").replaceAll("\n", "N");
     }
 
-    public void testWikiToXML() {
-        XmlField xmlField = new XmlField();
-        result = xmlField.wikiToXML("hallo");
-        expectedResult = "<p>hallo</p>";
-        assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
-    }
-
     public void testRichToHTMLBlock1() {
 
-        result = xmlField.richToHTMLBlock("");
+        result = XmlField.richToHTMLBlock("");
         expectedResult = "<p></p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
     public void testRichToHTMLBlock1a() {
 
-        result = xmlField.richToHTMLBlock("hallo");
+        result = XmlField.richToHTMLBlock("hallo");
         expectedResult = "<p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
     public void testRichToHTMLBlock2() {
-        result = xmlField.richToHTMLBlock("hallo\n\nhallo");
+        result = XmlField.richToHTMLBlock("hallo\n\nhallo");
         expectedResult = "<p>hallo</p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
@@ -69,7 +60,7 @@ public class XmlFieldTest  extends TestCase {
         // hallo
 //        result = xmlField.richToHTMLBlock("hallo\n-eending\n-nogeending\nhallo");
         StringObject in = new StringObject("hallo\n-eending\n-nogeending\nhallo");
-        xmlField.handleRich(in,
+        XmlField.handleRich(in,
                             XmlField.NO_SECTIONS,
                             XmlField.REMOVE_NEWLINES,
                             XmlField.SURROUNDING_P,
@@ -87,7 +78,7 @@ public class XmlFieldTest  extends TestCase {
         // -nogeending
         //
         // hallo
-        result = xmlField.richToHTMLBlock("hallo\n\n-eending\n-nogeending\n\nhallo");
+        result = XmlField.richToHTMLBlock("hallo\n\n-eending\n-nogeending\n\nhallo");
         expectedResult = "<p>hallo</p><p><ul><li>eending</li><li>nogeending</li></ul></p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
@@ -98,7 +89,7 @@ public class XmlFieldTest  extends TestCase {
         // *eending
         // *nogeending
         // hallo
-        result = xmlField.richToHTMLBlock("hallo\n*eending\n*nogeending\nhallo");
+        result = XmlField.richToHTMLBlock("hallo\n*eending\n*nogeending\nhallo");
         expectedResult = "<p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
@@ -119,7 +110,7 @@ public class XmlFieldTest  extends TestCase {
     public void testRichToXML() {
         for (String[] testCase : RICH_TO_XML_CASES) {
             StringObject in = new StringObject(testCase[0]);
-            xmlField.handleRich(in,
+            XmlField.handleRich(in,
                                 XmlField.SECTIONS,
                                 XmlField.REMOVE_NEWLINES,
                                 XmlField.SURROUNDING_P,
