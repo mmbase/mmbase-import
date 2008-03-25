@@ -6,7 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:content type="application/xhtml+xml">
+  <mm:content type="text/xml">
     <!--
          This JSP outputs learnenvironment menu as a tree.
 
