@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.92 2008-03-19 12:13:31 andre Exp $
+ * @version $Id: Dove.java,v 1.93 2008-03-25 13:53:54 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1170,11 +1170,11 @@ public class Dove extends AbstractDove {
      */
     protected boolean putChangeRelation(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
         String role = (String)values.get("_role");
-        
+
         RelationManager relman = cloud.getRelationManager(role);
         String sourcenumber=getNodeReferenceFromValue("_source",values, aliases);
         String destinationnumber=getNodeReferenceFromValue("_destination",values, aliases);
-        
+
         if (log.isDebugEnabled()) log.debug("Changing a relation between node " + sourcenumber + " and " + destinationnumber);
 
         org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
@@ -1200,7 +1200,7 @@ public class Dove extends AbstractDove {
             return false;
         }
     }
-    
+
     /**
      * Changes a node.
      * @param alias the node alias in the put tree
@@ -1294,7 +1294,7 @@ public class Dove extends AbstractDove {
                 }
             } else {
                 // give error not a org. node
-                Element err = addContentElement(ERROR,"Invalid status "+status+" for node : "+alias,out);
+                Element err = addContentElement(ERROR,"Invalid status '" + status + "' for node : "+alias,out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
                 return false;
             }
@@ -1326,7 +1326,7 @@ public class Dove extends AbstractDove {
                 }
             } else {
                 // give error not a org. node
-                Element err = addContentElement(ERROR, "Invalid status " + status + " for node : " + alias, out);
+                Element err = addContentElement(ERROR, "Invalid status '" + status + "' for node : " + alias, out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
                 return false;
             }
