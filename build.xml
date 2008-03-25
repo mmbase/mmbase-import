@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.168 2008-03-19 11:39:31 pierre Exp $
+$Id: build.xml,v 1.169 2008-03-25 21:03:08 nklasens Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -747,7 +747,24 @@ Build-compiler: ${build.compiler}
     </antcall>
     <mkdir dir="${mmdocs.dir}/javadoc/complete" />
     <echo message="Generating javadocs for ${javadoc.packages} to ${mmdocs.dir}/javadoc/complete" />
-    <javadoc packagenames="${javadoc.packages}"
+	<!--
+	      <packageset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
+	      <packageset dir="${contributions.home}/lucene/src" defaultexcludes="yes" />
+	      <packageset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
+	      <packageset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
+	      <packageset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
+
+        <fileset dir="${contributions.home}/lucene/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+        <fileset dir="${contributions.home}/aselect/">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+	-->
+
+  	<javadoc packagenames="${javadoc.packages}"
              destdir="${mmdocs.dir}/javadoc/complete"
              author="true"
              version="true"
@@ -766,11 +783,6 @@ Build-compiler: ${build.compiler}
       <link offline="true" packagelistLoc="${expand.dir}/${log4j.fullversion}/docs/api" href="http://logging.apache.org/log4j/docs/api/" />
       <packageset dir="${source.dir}/src" defaultexcludes="yes" />
       <packageset dir="${generated-source-src.dir}" defaultexcludes="yes" />
-      <packageset dir="${contributions.home}/aselect/src" defaultexcludes="yes" />
-      <packageset dir="${contributions.home}/lucene/src" defaultexcludes="yes" />
-      <packageset dir="${contributions.home}/mmbob/src" defaultexcludes="yes" />
-      <packageset dir="${contributions.home}/thememanager/src" defaultexcludes="yes" />
-      <packageset dir="${contributions.home}/multilanguagegui/src" defaultexcludes="yes" />
       <packageset dir="${applications.home}/cloudcontext/src" defaultexcludes="yes" />
       <packageset dir="${applications.home}/clustering/src" defaultexcludes="yes" />
       <packageset dir="${applications.home}/crontab/src" defaultexcludes="yes" />
@@ -803,14 +815,6 @@ Build-compiler: ${build.compiler}
           <include name="**/*.zip"/>
         </fileset>
         <fileset dir="${applications.home}/resources/">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${contributions.home}/lucene/">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-        <fileset dir="${contributions.home}/aselect/">
           <include name="**/*.jar"/>
           <include name="**/*.zip"/>
         </fileset>
@@ -1092,7 +1096,7 @@ Build-compiler: ${build.compiler}
     <ant dir="${applications.home}" target="install">
       <property name="build.documentation" value="true" />
     </ant>
-    <ant dir="${documentation.home}" target="documentation">
+    <ant target="documentation" antfile="build-documentation.xml">
       <property name="mmbase.default.dir" value=".." />
       <property name="download.dir" value="${download.dir}" />
       <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
@@ -1124,7 +1128,7 @@ Build-compiler: ${build.compiler}
   <!-- Clean the documentation directory                                   -->
   <!-- =================================================================== -->
   <target name="clean.documentation" description="Clean the generated documentation">
-    <ant dir="${documentation.home}" target="clean">
+    <ant target="clean" antfile="build-documentation.xml">
       <property name="mmbase.default.dir" value=".." />
       <property name="download.dir" value="${download.dir}" />
       <property name="documentation.dest.dir" value="${mmdocs.dir}"/>

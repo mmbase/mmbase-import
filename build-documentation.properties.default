@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.18 2008-03-19 11:39:31 pierre Exp $
+# $Id: build-documentation.properties.default,v 1.1 2008-03-25 21:03:08 nklasens Exp $
 # -----------------------------------------------------------------------------
 
 

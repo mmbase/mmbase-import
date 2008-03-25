@@ -175,22 +175,20 @@
 
   </preGoal>
 
-<!--  disabled documentation, because documentation dir contains xml's which are not docs. 
     <preGoal name="site">
         <attainGoal name="sdocbook:generate-html"/>
     </preGoal>
--->
 
     <postGoal name="sdocbook:prepare-filesystem">
         <maven:get var="maven.sdocbook.stylesheets.dir"
             plugin="maven-sdocbook-plugin"
             property="maven.sdocbook.stylesheets.dir"/>
 
-		<echo>${maven.sdocbook.stylesheets.dir} from ${maven.sdocbook.src.dir}</echo>
+		<echo>${maven.sdocbook.stylesheets.dir} from ${maven.sdocbook.stylesheets.mmbase}</echo>
 
         <!-- use a custom html stylesheet -->
         <copy todir="${maven.sdocbook.stylesheets.dir}/html">
-            <fileset dir="${maven.sdocbook.src.dir}/style"/>
+            <fileset dir="${maven.sdocbook.stylesheets.mmbase}/style"/>
         </copy>
         <replace file="${maven.sdocbook.stylesheets.dir}/html/docbook2xhtml.xslt"
                  token="[BASESTYLESHEET]"
@@ -198,7 +196,7 @@
 
         <!-- copy images -->
         <copy todir="${maven.sdocbook.stylesheets.dir}/images">
-            <fileset dir="${maven.sdocbook.src.dir}/style"/>
+            <fileset dir="${maven.sdocbook.stylesheets.mmbase}/style"/>
         </copy>
     </postGoal>
 
