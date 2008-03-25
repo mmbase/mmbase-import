@@ -1,10 +1,12 @@
 addLoadEvent(zetNav)
 
 function zetNav(){
-	document.body.onclick = function(){
-		if(this.parentNode.tagName == 'LI') return;
-		hideSubNavs();
-	}
+	
+	var div = document.getElementById("top_img");
+	div.onmouseover = hideSubNavs;
+	var div = document.getElementById("background");
+	div.onmouseover = hideSubNavs;
+
 	for(i=1;i<6;i++){
 		navparent = document.getElementById('nav0'+i);
 		if(navparent == null){
