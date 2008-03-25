@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.18 2008-03-25 17:52:18 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.19 2008-03-25 18:00:14 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -36,6 +36,7 @@ public class MmxfSetString implements  Processor {
     private static XmlField xmlField = new XmlField(XmlField.WIKI);
     private static Kupu     kupu     = new Kupu();
     private static DocBook  docbook  = new DocBook();
+    private static Wiki     wiki     = new Wiki();
 
 
 
@@ -49,15 +50,15 @@ public class MmxfSetString implements  Processor {
             switch(Modes.getMode(node.getCloud().getProperty(Cloud.PROP_XMLMODE))) {
             case Modes.KUPU: {
                 log.debug("Handeling kupu-input: " + Util.toString(value));
-                return kupu.parseKupu(node, Util.parse(value));
+                return kupu.parse(node, Util.parse(value));
             }
             case Modes.WIKI: {
                 log.debug("Handling wiki-input: " + value);
-                return  Util.parse(xmlField.transformBack(Util.toString(value)));
+                return  wiki.parse(node, Util.parse(xmlField.transformBack(Util.toString(value))));
             }
             case Modes.DOCBOOK: {
                 log.debug("Handling docbook-input: " + value);
-                return  docbook.parseDocBook(node, Util.parse(value));
+                return  docbook.parse(node, Util.parse(value));
             }
             case Modes.FLAT: {
                 log.debug("Handling flat-input " + value.getClass() + " " + Util.toString(value));
@@ -123,7 +124,7 @@ public class MmxfSetString implements  Processor {
                     }
                     node = cloud.getNode(argv[1]);
                 }
-                Document mmxf = kupu.parseKupu(node, doc);
+                Document mmxf = kupu.parse(node, doc);
                 if (node != null) {
                     if (log.isDebugEnabled()) {
                         log.debug("Setting body of " + node.getNumber() + " to " + XMLWriter.write(mmxf, false));

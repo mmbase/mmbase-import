@@ -29,10 +29,9 @@ import org.mmbase.util.logging.*;
 
 
 /**
- * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
- * information see the javadoc of that class.
+ * This implements 'Kupu' Mode of {@link MmxfSetString}.
  * @author Michiel Meeuwissen
- * @version $Id: Kupu.java,v 1.1 2008-03-25 17:52:18 michiel Exp $
+ * @version $Id: Kupu.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
  */
 
 class Kupu {
@@ -112,7 +111,7 @@ class Kupu {
      * @param state        The function is called recursively, and this object remembers the state then (where it was while parsing e.g.).
      */
 
-    private void parseKupu(Element source, Element destination, List<Element> links, ParseState state) {
+    private void parse(Element source, Element destination, List<Element> links, ParseState state) {
         org.w3c.dom.NodeList nl = source.getChildNodes();
         if (log.isDebugEnabled()) {
             log.trace(state.level() + state.level + " Appending to " + destination.getNodeName() + " at " + state.offset + " of " + nl.getLength());
@@ -153,7 +152,7 @@ class Kupu {
 
             matcher = ignoreElement.matcher(name);
             if (matcher.matches()) {
-                parseKupu((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
+                parse((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
                 continue;
             }
 
@@ -165,7 +164,7 @@ class Kupu {
                     String cssClass = Util.getCssClass("div " + imp.getAttribute("class"));
                     if (! divClasses.matcher(cssClass).matches()) {
                         // this is no div of ours (copy/pasting?), ignore it.
-                        parseKupu((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
+                        parse((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
                         continue;
                     } else {
                         imp.setAttribute("class", Util.getCssClass("div " + imp.getAttribute("class")));
@@ -192,7 +191,7 @@ class Kupu {
                         log.debug("Found generated body, ignoring that");
                     } else {
                         // could only do something for 'a' and 'div', but well, never mind
-                        parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
+                        parse((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                     }
                 }
                 continue;
@@ -201,7 +200,7 @@ class Kupu {
                 if (node.getFirstChild() != null) { // ignore if empty
                     Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "em");
                     destination.appendChild(imp);
-                    parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
+                    parse((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
                 continue;
             }
@@ -209,7 +208,7 @@ class Kupu {
                 if (node.getFirstChild() != null) { // ignore if empty
                     Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "strong");
                     destination.appendChild(imp);
-                    parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
+                    parse((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
                 continue;
             }
@@ -231,7 +230,7 @@ class Kupu {
                     Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, matcher.group(0));
                     destination.appendChild(imp);
                     copyAllowedAttributes((Element) node, imp);
-                    parseKupu((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
+                    parse((Element) node, imp, links, new ParseState(state.level, MODE_INLINE));
                 }
                 continue;
             }
@@ -243,7 +242,7 @@ class Kupu {
                     Element imp = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "p");
                     destination.appendChild(imp);
                     copyAllowedAttributes((Element) node, imp);
-                    parseKupu((Element) node, imp, links,  new ParseState(state.level, MODE_INLINE));
+                    parse((Element) node, imp, links,  new ParseState(state.level, MODE_INLINE));
                     continue;
                 }
 
@@ -256,15 +255,15 @@ class Kupu {
                     Element h       = destination.getOwnerDocument().createElementNS(Mmxf.NAMESPACE, "h");
                     section.appendChild(h);
                     if (foundLevel == state.level + 1) {
-                        parseKupu((Element) node, h, links,  new ParseState(state.level, MODE_INLINE));
+                        parse((Element) node, h, links,  new ParseState(state.level, MODE_INLINE));
                         state.subSections.add(section);
                         ParseState newState = new ParseState(foundLevel, MODE_SECTION, state.offset + 1);
-                        parseKupu(source, section, links, newState);
+                        parse(source, section, links, newState);
                         state.offset = newState.offset;
                     } else {
                         state.subSections.add(section);
                         ParseState newState = new ParseState(state.level + 1, MODE_SECTION, state.offset);
-                        parseKupu(source, section, links, newState);
+                        parse(source, section, links, newState);
                         state.offset = newState.offset;
                     }
                     continue;
@@ -281,7 +280,7 @@ class Kupu {
                 }
             }
             log.warn("Unrecognised element " + name + " ignoring");
-            parseKupu((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
+            parse((Element) node, destination, links, new ParseState(state.level, MODE_INLINE));
         }
         if (state.mode == MODE_SECTION) {
             // drop state;
@@ -552,7 +551,7 @@ class Kupu {
      * @param document   XML received from Kupu
      * @return An MMXF document.
      */
-    Document parseKupu(Node editedNode, Document document) {
+    Document parse(Node editedNode, Document document) {
         if (log.isDebugEnabled()) {
             log.debug("Handeling kupu-input" + XMLWriter.write(document, false));
         }
@@ -571,7 +570,7 @@ class Kupu {
         List<Element> links = new ArrayList();
 
         // first stage.
-        parseKupu(body, mmxf, links, new ParseState(0, MODE_SECTION));
+        parse(body, mmxf, links, new ParseState(0, MODE_SECTION));
 
 
         // second stage, handle kupu-links.
@@ -699,7 +698,7 @@ class Kupu {
 
     }
     /**
-     * At the end of stage 2 of parseKupu all relations are removed which are not used any more, using this function.
+     * At the end of stage 2 of parse all relations are removed which are not used any more, using this function.
      */
     protected void cleanDanglingIdRels(NodeList clusterNodes, List<Map.Entry<String, Node>> usedNodes, String type) {
        NodeIterator i = clusterNodes.nodeIterator();
