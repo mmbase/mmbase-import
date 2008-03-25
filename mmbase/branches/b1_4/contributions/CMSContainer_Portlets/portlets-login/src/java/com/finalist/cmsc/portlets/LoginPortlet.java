@@ -74,9 +74,7 @@ public class LoginPortlet extends CmscPortlet {
 	@Override
 	protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
 	    
-		PortletPreferences preferences = request.getPreferences();
-	    String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-		if (template==null) template = "login/login.jsp";
+	    String template;
 		
 	    String error = request.getParameter("errormessage");
 	    if (!StringUtils.isBlank(error)) {
@@ -86,8 +84,7 @@ public class LoginPortlet extends CmscPortlet {
 		if (Community.isAuthenticated()) {
 			template = "login/logout.jsp";
 		} else {
-			// take template from preferences
-			// template = "login/login.jsp";
+			template = "login/login.jsp";
 	        String action = request.getParameter("action");
 	        if (!StringUtils.isBlank(action) && "send_password".equals(action)) {
 	            template = "login/send_password.jsp";
