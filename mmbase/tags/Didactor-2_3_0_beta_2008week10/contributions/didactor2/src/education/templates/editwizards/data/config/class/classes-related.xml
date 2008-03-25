@@ -1,0 +1,43 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="classes" role="related" minoccurs="0" maxoccurs="*">
+  <title xml:lang="nl">Bijbehorende klassen</title>
+  <title xml:lang="en">Related classes</title>
+  <item>
+    <field name="name" ftype="data">
+      <prompt xml:lang="nl">Naam</prompt>
+      <prompt xml:lang="en">Name</prompt>
+      <description xml:lang="nl">Naam van de klas</description>
+      <description xml:lang="en">Name of the class</description>
+    </field>
+    <field wizardname="config/class/classes" ftype="startwizard" />
+  </item>
+  
+  <action type="create">
+    <relation destinationtype="classes" role="related">
+      <object type="classes"/>
+    </relation>
+  </action>
+  
+  <action type="add">
+    <relation destinationtype="classes" role="related"/>
+  </action>
+  
+  <action type="load">
+    <relation destinationtype="classes" role="related">
+      <object type="classes"/>
+    </relation>
+  </action>
+  
+  
+  <command name="startwizard" inline="true" wizardname="config/class/classes" objectnumber="new" />
+  
+  <command name="search" nodepath="classes" fields="name" age="-1" orderby="number" directions="down" >
+    <prompt xml:lang="nl">Zoeken naar klassen</prompt>
+    <prompt xml:lang="en">Search classes</prompt>
+    <search-filter>
+      <name xml:lang="nl">Naam bevat</name>
+      <name xml:lang="en">Name contains</name>
+      <search-fields>name</search-fields>
+    </search-filter>
+  </command>
+</list>

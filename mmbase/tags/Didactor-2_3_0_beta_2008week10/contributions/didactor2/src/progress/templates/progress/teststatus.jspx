@@ -1,0 +1,128 @@
+<!--
+    input params:
+        testNo - number of the test node
+        copybookNo - number of the students relevant copybook
+
+    sets: teststatus to
+
+        "passed" if the test was passed
+        "failed" if the test was failed
+        "toberated" if the test was completed but needs teacher's input
+        "incomplete" if the test wasn't completed
+
+        madetestscore
+        requiredscore
+        goodanswers
+        badanswers
+
+   TODO: using parameters for a static jsp in this way is error prone and not very intuitively.
+         should use dynamtic include or tag-files to formalize parameters and return values,
+
+-->
+<mm:node
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    number="${testNo}">
+
+    <!-- Determine #questions to be answered -->
+    <mm:field name="questionamount">
+      <mm:compare value="-1">
+        <mm:relatednodescontainer type="questions" role="posrel">
+          <mm:size id="questionamount" write="false" />
+        </mm:relatednodescontainer>
+      </mm:compare>
+      <mm:compare value="-1" inverse="true">
+        <mm:write id="questionamount" write="false" />
+      </mm:compare>
+    </mm:field>
+
+    <mm:import id="done" reset="true">false</mm:import>
+    <mm:import id="tbs"  reset="true">false</mm:import>
+    <mm:import id="passed" reset="true">false</mm:import>
+    <mm:remove referid="requiredscore"/>
+    <mm:field id="requiredscore" name="requiredscore" write="false"/>
+    <!--
+        all the made tests are traversed. Since a test can be made many times
+        If one made test is passed, then THE test is passed. To save the score,
+        we introduce: save_madetestscore
+    -->
+    <mm:import id="save_madetestscore" reset="true"></mm:import>
+    <mm:relatednodescontainer path="madetests,copybooks" element="madetests">
+
+      <mm:constraint field="madetests.score" referid="TESTSCORE_INCOMPLETE" inverse="true"/>
+
+      <mm:present referid="copybookNo">
+        <!-- if this does not happen, performance drops very much (coaches?) -->
+        <mm:constraint field="copybooks.number" referid="copybookNo"/>
+      </mm:present>
+      <mm:relatednodes>
+        <mm:remove referid="done"/>
+        <mm:import id="done">true</mm:import>
+
+        <mm:field name="score" id="madetestscore" write="false"/>
+        <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
+          <mm:remove referid="tbs"/>
+          <mm:import id="tbs">true</mm:import>
+        </mm:compare>
+        <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
+          <!-- if madestestscore larger or equal than requiredscore -->
+          <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
+            <mm:remove referid="passed"/>
+            <mm:import id="passed">true</mm:import>
+            <mm:remove referid="save_madetestscore"/>
+            <mm:import id="save_madetestscore"><mm:write referid="madetestscore"/></mm:import>
+          </mm:islessthan>
+        </mm:compare>
+
+        <!--
+        gekregen: <mm:write referid="madetestscore"/><br/>
+        vereist: <mm:write referid="requiredscore"/><br/>
+        -->
+
+        <jsp:scriptlet>
+          int good =0;
+          int bad = 0;
+        </jsp:scriptlet>
+
+        <mm:relatednodes type="givenanswers">
+          <mm:field name="score" jspvar="score" vartype="integer" write="false">
+            <jsp:scriptlet>
+              if (score.intValue() &lt;= 0) {
+                bad++;
+              } else {
+                good++;
+              }
+            </jsp:scriptlet>
+          </mm:field>
+        </mm:relatednodes>
+
+
+        <mm:import id="goodanswers"><jsp:expression>good</jsp:expression></mm:import>
+        <mm:import id="falseanswers"><jsp:expression>bad</jsp:expression></mm:import>
+
+
+      </mm:relatednodes>
+    </mm:relatednodescontainer>
+
+
+    <!-- I think this is an example of much too much use of mm:compare and mm:import: -->
+
+    <mm:compare referid="done" value="false">
+      <mm:import id="teststatus" reset="true">incomplete</mm:import>
+    </mm:compare>
+
+    <mm:compare referid="done" value="true">
+      <mm:compare referid="tbs" value="true">
+        <mm:import id="teststatus" reset="true">toberated</mm:import>
+      </mm:compare>
+      <mm:compare referid="tbs" value="true" inverse="true">
+        <mm:compare referid="passed" value="true">
+          <mm:import id="teststatus" reset="true">passed</mm:import>
+        </mm:compare>
+        <mm:compare referid="passed" value="false">
+          <mm:import id="teststatus" reset="true">failed</mm:import>
+        </mm:compare>
+      </mm:compare>
+    </mm:compare>
+
+</mm:node>

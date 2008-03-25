@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+  <description>
+    Extra servlets for pdf-component, file will be merged into web.xml by build process.
+
+    TODO: How is a 'pdf' servlet different from attachment-servlet?
+  </description>  
+  
+  <servlet>
+    <servlet-name>pdf</servlet-name>
+    <display-name>PDF Servlet</display-name>
+    <description>Servlet used for generating PDF</description>
+    <servlet-class>nl.didactor.pdf.servlet.PDFServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+
+  <servlet-mapping>
+    <servlet-name>pdf</servlet-name>
+    <url-pattern>/pdf.db</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 
+        please set this to the interal url of the web application
+        if that is different from the "outside" url.
+
+        it needs to be the full url including the application path
+        i.e.
+
+        if the application startpage is http://localhost:8080/didactor/index.jsp
+
+        this url should be http://localhost:8080/didactor
+
+        this url is used by the application to do HTTP requests
+        to itself.
+
+         TODO: This is silly
+    -->
+  <context-param>
+    <param-name>internalUrl</param-name>
+    <param-value>${internalUrl}</param-value>
+  </context-param>
+ 
+ <taglib>
+    <taglib-uri>http://jtidy.sf.net</taglib-uri>
+    <taglib-location>jtidy-taglib-12.tld</taglib-location>
+  </taglib>
+
+
+</web-app>

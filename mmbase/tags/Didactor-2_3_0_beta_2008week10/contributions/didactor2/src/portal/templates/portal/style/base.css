@@ -1,0 +1,178 @@
+@import url(layout.css);
+
+html, body.portal {
+  background-image: url("bg_body.gif");
+  background-color: #679bff;
+  background-repeat: repeat-x;
+  font-family:Verdana,Tahoma,sans-serif;
+}
+
+.date {
+  font-style: italic;
+  font-weight: normal;
+  display: none;
+}
+.intro {
+  font-weight: normal;
+}
+
+div.x1 {
+
+}
+
+div.menu table {
+}
+
+div.column div.menu *,
+div.column div.menu {
+  background-color: transparent;
+  color: black;
+  font-family: Arial Black, Arial, Verdana,sans-serif;
+}
+
+table.rounded {
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  width: 200px;
+}
+table.rounded td {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  border: none;
+  width: 170px;
+}
+table.rounded td img {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  border: none;
+}
+table.rounded tr.top,
+table.rounded tr.bottom {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  font-size: 3pt;
+}
+
+table.rounded td.left,
+table.rounded td.right {
+  background-color: transparent !important;
+  font-size: 3pt;
+  width: 15px;
+}
+
+
+div.menu table.rounded td {
+  background-color: #FB6704;
+}
+
+div.column div.menu ul {
+  padding-top: 0ex;
+  padding-bottom: 0ex;
+  padding-left: 0ex;
+  list-style-type: none;
+}
+div.column div.menu a {
+  text-decoration: none;
+  color: #003bc5;
+  font-size: 12pt;
+}
+div.column div.menu a:hover {
+  color: #000;
+}
+div.column div.menu {
+  padding-bottom: 1ex;
+}
+
+img.corner {
+  width: 15px;
+  height: 15px;
+  border: none;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  display: block !important;
+  margin-left: 0px !important
+}
+td.right img.corner {
+  margin-right: 0px !important
+}
+
+div.x3 {
+
+}
+
+div.column * {
+  background-color: white;
+
+
+}
+div.column h1 {
+  color: white;
+  background-image: url("bg_title.jpg");
+  background-repeat: no-repeat;
+  background-color: #dc6f8c;
+}
+div.column  div.article {
+  background-color: white;
+}
+
+div.poll {
+  padding-bottom: 2ex;
+}
+
+div.poll h1 {
+  color: black;
+  background-image: none;
+  background-color: transparent;
+
+}
+
+div.poll .results {
+  overflow: visible;
+  background-color: red;
+  margin-top: 0px;
+  color: white;
+}
+div.poll ul {
+  list-style-type: none;
+}
+div.poll ul li {
+  white-space: nowrap;
+  margin-bottom: 1ex;
+
+}
+
+.menuItemApplicationMenubar.login {
+  display: block;
+  color: white;
+}
+.menuItemApplicationMenubar.login input {
+  display: inline;
+}
+.menuItemApplicationMenubar.login form {
+  display: inline;
+}
+.menuItemApplicationMenubar.login a {
+  text-decoration: underline;
+  font-weight: bold;
+}
+.menuItemApplicationMenubar.login p {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 3px;
+}
+
+div.article.selection h3 {
+  margin-bottom: 0px;
+
+}
+
+.portal .intro {
+  font-weight: bold;
+}
+
+.portal .article.teaser .intro {
+  font-weight: normal;
+}
