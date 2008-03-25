@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.13 2008-03-25 09:20:24 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.14 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -40,9 +40,10 @@ public final class BasicUrlConverter implements UrlConverter {
      *
      * @param page servletPath
      * @param params The query to be added
-     * @param req A request object is needed to determin context-paths and so on.
-     * @param writeamp Wether amperstands must be XML-escaped. Typically needed if the URL is used
+     * @param req A request object is needed to determine context-paths and so on.
+     * @param escapeamp Whether ampersands must be XML-escaped. Typically needed if the URL is used
      * in (X)HTML.
+     * @return An URL relative to the root of this web application (i.e. without a context path),
      */
     public static String getUrl(String page, Map<String, Object> params, HttpServletRequest req, boolean escapeamp) {
         if (log.isDebugEnabled()) {
@@ -112,7 +113,7 @@ public final class BasicUrlConverter implements UrlConverter {
     }
 
     /**
-     * @todo Actually these paremters are only added here, because this urlconverter is always in
+     * @todo Actually these parameters are only added here, because this urlconverter is always in
      * BasicFramework. Actually BasicFramework should add them itself.
      */
     public Parameter[] getParameterDefinition() {

@@ -23,7 +23,7 @@ import org.mmbase.storage.search.*;
  * search query api.
  * 
  * @author Nico Klasens
- * @version $Id: SearchUtil.java,v 1.19 2007-11-25 17:57:07 nklasens Exp $
+ * @version $Id: SearchUtil.java,v 1.20 2008-03-25 21:00:25 nklasens Exp $
  */
 public class SearchUtil {
 
@@ -749,7 +749,6 @@ public class SearchUtil {
      *
      * @param query - the query to add the sort order to
      * @param sf - StepField of the sort order
-     * @param sortName - name of field to sort on.
      * @param sortDirection - direction of the sort (UP, DOWN)
      */
     public static void addSortOrder(NodeQuery query, StepField sf, String sortDirection) {
@@ -1381,7 +1380,7 @@ public class SearchUtil {
      * For a string field type the match is case-insensitive.
      * 
      * @param query - the query to add the constraint to
-     * @param field - the constraint field
+     * @param stepField - the constraint field
      * @param value - value to search for in the field
      * @return constraint which matches a field value
      */

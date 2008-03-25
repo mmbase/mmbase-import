@@ -2,7 +2,7 @@
 // Written by David Megginson, david@megginson.com
 // NO WARRANTY!  This class is in the public domain.
 
-// $Id: XmlWriter.java,v 1.3 2007-10-22 17:20:58 michiel Exp $
+// $Id: XmlWriter.java,v 1.4 2008-03-25 21:00:25 nklasens Exp $
 
 package org.mmbase.util.xml;
 
@@ -12,7 +12,6 @@ import java.io.Writer;
 import java.util.*;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
@@ -106,7 +105,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  *
  * <p>You need to invoke one of the <var>characters</var> methods
  * explicitly to add newlines or indentation.  Alternatively, you
- * can use {@link com.megginson.sax.DataWriter DataWriter}, which
+ * can use {@link "com.megginson.sax.DataWriter DataWriter"}, which
  * is derived from this class -- it is optimized for writing
  * purely data-oriented (or field-oriented) XML, and does automatic
  * linebreaks and indentation (but does not support mixed content
@@ -381,7 +380,6 @@ public class XmlWriter extends XMLFilterImpl {
      *
      * @param writer The output destination, or null to use
      *        standard output.
-     * @return The current output writer.
      * @see #flush
      */
     public void setOutput (Writer writer) {
@@ -588,7 +586,7 @@ public class XmlWriter extends XMLFilterImpl {
      *
      * @param ch The array of characters to write.
      * @param start The starting position in the array.
-     * @param length The number of characters to write.
+     * @param len The number of characters to write.
      * @exception org.xml.sax.SAXException If there is an error
      *            writing the characters, or if a handler further down
      *            the filter chain raises an exception.

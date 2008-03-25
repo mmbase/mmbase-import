@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * HttpPost handles all the PostInformation
  *
  * @application SCAN. To port this, use of HttpPost by i.e. taglibs should be replaced with the jakarta FileUpload code.
- * @version $Id: HttpPost.java,v 1.30 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: HttpPost.java,v 1.31 2008-03-25 21:00:24 nklasens Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -376,8 +376,6 @@ public class HttpPost {
 
     /**
     * read a block into a array of ContentLenght size from the users networksocket
-    *
-    * @param table the hashtable that is used as the source for the mapping process
     * @return byte[] buffer of length defined in the content-length mimeheader
     */
     public byte[] readContentLength(HttpServletRequest req) throws PostValueToLargeException {
@@ -660,7 +658,7 @@ public class HttpPost {
     * Het kan dus voorkomen dat de marker op de scheiding ligt van 2 blokken ook dan
     * zal deze methode falen.
     *
-    * @param postbuffer buffer with the postbuffer information
+    * @param formFile buffer with the postbuffer information
     * @param post_header hashtable to put the fromFile information in
     */
     public boolean readPostFormData(String formFile, Hashtable<String, Object> post_header, String line) {

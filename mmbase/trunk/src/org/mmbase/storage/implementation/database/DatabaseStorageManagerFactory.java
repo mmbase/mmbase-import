@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.50 2008-03-21 13:44:23 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.51 2008-03-25 21:00:24 nklasens Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -150,7 +150,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     }
 
     /**
-     * @param binaryFileBasePath For some datasource a file base path may be needed (some configurations of hsql). It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL may be configured then which does not need the file base path.
+     * @param binaryFileBasePath
+     *            For some datasource a file base path may be needed (some configurations of hsql).
+     *            It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL
+     *            may be configured then which does not need the file base path.
      * @since MMBase-1.8
      */
     protected DataSource createDataSource(File binaryFileBasePath) {
@@ -393,8 +396,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     }
 
     /**
-     * Tries to ensure that basePath existis and is writable. Logs error and returns false otherwise.
-     * @param basePath a Directory name
+     * Tries to ensure that baseDir exists and is writable. Logs error and returns false otherwise.
+     * @param baseDir a Directory name
      * @since MMBase-1.8.1
      */
     public static boolean checkBinaryFileBasePath(File baseDir) {

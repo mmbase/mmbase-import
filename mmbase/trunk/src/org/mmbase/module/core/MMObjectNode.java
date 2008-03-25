@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.214 2008-03-19 09:53:35 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.215 2008-03-25 21:00:25 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -683,7 +683,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * Get a value of a certain field.
-     * @performance do not store byte values directly in node (?)
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
@@ -845,7 +844,6 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
 
     /**
      * Get a binary value of a certain field.
-     * @performance do not store byte values directly in node (?)
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>byte []</code> (binary/blob field)
      */

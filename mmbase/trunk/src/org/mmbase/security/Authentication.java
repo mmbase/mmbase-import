@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.41 2008-01-21 15:25:28 michiel Exp $
+ * @version $Id: Authentication.java,v 1.42 2008-03-25 21:00:24 nklasens Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -63,7 +63,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      *
      *	@return <code>null</code> if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
      *
-     *	@exception SecurityException When something strange happened, or authentication was unsucessfull.
+     *	@exception SecurityException When something strange happened, or authentication was unsuccessful.
      */
     public abstract UserContext login(String application, Map<String, Object> loginInfo, Object[] parameters) throws SecurityException;
 
@@ -193,11 +193,11 @@ public abstract class Authentication extends Configurable implements Authenticat
     long key = System.currentTimeMillis();
 
     /**
-     *<p> Some unique key associated with this security configuration. It can be explicitely set with
+     *<p> Some unique key associated with this security configuration. It can be explicitly set with
      * the 'key' entry in security.xml. It falls back to the current time in milliseconds at the time of
      * initialization of authentication.</p>
      *
-     * <p>The advantage of explicitely configuring it, is that serialized user-contextes remain valid
+     * <p>The advantage of explicitly configuring it, is that serialized user-contextes remain valid
      * after a restart of MMBase, and users need not to log in again then.</p>
      *
      * @since MMBase-1.8

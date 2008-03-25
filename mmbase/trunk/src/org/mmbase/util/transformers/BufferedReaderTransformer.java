@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
  * @author Michiel Meeuwissen
  * @since MMBase-1.9
- * @version $Id: BufferedReaderTransformer.java,v 1.7 2008-03-11 11:20:07 michiel Exp $
+ * @version $Id: BufferedReaderTransformer.java,v 1.8 2008-03-25 21:00:25 nklasens Exp $
  */
 
 public abstract class BufferedReaderTransformer extends ReaderTransformer implements CharTransformer {
@@ -27,7 +27,7 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
     private static Logger log = Logging.getLoggerInstance(BufferedReaderTransformer.class);
 
     /**
-     * Override {@link #transform(PrintWriter, String)}
+     * Override {@link ReaderTransformer#transform(Reader, Writer)}
      */
     public final Writer transform(Reader r, Writer w) {
         try {
@@ -53,7 +53,7 @@ public abstract class BufferedReaderTransformer extends ReaderTransformer implem
      * @param bw the writer to direct the output to
      * @param line the input
      * @param status this object could hold transformation status information. Or <code>null</code>
-     * @return
+     * @return <code>true</code> when line is transformed
      */
     protected abstract boolean transform(PrintWriter bw, String line, Status status);
 

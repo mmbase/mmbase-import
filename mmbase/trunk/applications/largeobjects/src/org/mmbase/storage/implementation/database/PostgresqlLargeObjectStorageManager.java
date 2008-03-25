@@ -58,11 +58,10 @@ public class PostgresqlLargeObjectStorageManager extends
 	}
 
 	/**
-	 * Deletes all references LargeObjects and calls the overridden methed in
+	 * Deletes all references LargeObjects and calls the overridden method in
 	 * its super class afterwards. This method overrides its super class delete
 	 * 
-	 * @see DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List,
-	 *      String)
+	 * @see org.mmbase.storage.implementation.database.DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List, String)
 	 */
 	protected void delete(MMObjectNode node, MMObjectBuilder builder,
 			List<CoreField> blobFileField, String tablename) {
@@ -75,7 +74,7 @@ public class PostgresqlLargeObjectStorageManager extends
 	/**
 	 * Delete all binary objects stored as large object. This excludes the
 	 * binary fields stored as file. See
-	 * {@link DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List, String)}
+	 * {@link org.mmbase.storage.implementation.database.DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List, String)}
 	 * for the arguments.
 	 * 
 	 * @param node

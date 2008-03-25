@@ -12,21 +12,18 @@ package org.mmbase.framework;
 import java.util.*;
 import java.io.*;
 import org.mmbase.util.functions.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
- * This renderer simply calles the methods of a number of other Renderes sequentially. Only
- * {@link Renderer.Type.HEAD} renderers can be chained, because they don't have to produce a well defined
+ * This renderer simply calls the methods of a number of other Renderers sequentially. Only
+ * {@link Renderer.Type#HEAD} renderers can be chained, because they don't have to produce a well defined
  * block.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedRenderer.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: ChainedRenderer.java,v 1.5 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 
 public class ChainedRenderer extends AbstractRenderer {
-    private static final Logger log = Logging.getLoggerInstance(ChainedRenderer.class);
 
     protected final List<Renderer> chain = new ArrayList<Renderer>();
     protected Parameter[] parameters = Parameter.EMPTY;

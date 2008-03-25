@@ -17,19 +17,19 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * MultiConnection is a replacement class for Connection it provides you a
- * multiplexed and reuseable connections from the connection pool.
+ * multiplexed and reusable connections from the connection pool.
  * The main function of this class is to 'log' (keep) the last sql statement passed to it.
  * Another function is to keep state (i.e. notifying that it is busy),
- * and to make itself available again to teh connectionpool once it is finished (closed).
+ * and to make itself available again to the connection pool once it is finished (closed).
  *
  * @sql It would possibly be better to pass the logging of the sql query
- *      to the code that calls the conenction, rather than place it in
- *      the conenction itself, as it's implementation leads to conflicts
+ *      to the code that calls the connection, rather than place it in
+ *      the connection itself, as it's implementation leads to conflicts
  *      between various JDBC versions.
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnectionImplementation.java,v 1.2 2007-12-06 08:05:51 michiel Exp $
+ * @version $Id: MultiConnectionImplementation.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9 (as 'MultiConnection' in < 1.9)
  */
 public class MultiConnectionImplementation extends ConnectionWrapper implements MultiConnection {
@@ -309,7 +309,7 @@ public class MultiConnectionImplementation extends ConnectionWrapper implements 
      * after it's own connections. This method is public only for the reason that specific database
      * implementations need access to this connection in order to safely clear them before they 
      * can be put back in the connection pool.
-     * @deprecated Use {@link #unwrap(Connection.class)} (a java 1.6 method from 'Wrapper')
+     * @deprecated Use {@link #unwrap(Class)} (a java 1.6 method from 'Wrapper')
      */
     public Connection getRealConnection() {
         return con;

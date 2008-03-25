@@ -12,10 +12,10 @@ import org.mmbase.util.functions.*;
 import org.mmbase.bridge.Node;
 
 /**
- * This interface represents information about the authentication implemtentation.
+ * This interface represents information about the authentication implementation.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AuthenticationData.java,v 1.9 2007-06-18 09:01:14 michiel Exp $
+ * @version $Id: AuthenticationData.java,v 1.10 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.8
  */
 public interface AuthenticationData {
@@ -37,7 +37,7 @@ public interface AuthenticationData {
      */
     static final int METHOD_DELEGATE        = 1;
     /**
-     * Logon with given credentials (only Strings), and don't store this any where (except for the current 'page').
+     * Login with given credentials (only Strings), and don't store this any where (except for the current 'page').
      */
     static final int METHOD_PAGELOGON       = 2;
 
@@ -63,7 +63,7 @@ public interface AuthenticationData {
      */
     static final int METHOD_LOGINPAGE       = 103;
     /**
-     * Delegates authentication comletely to the authentication implementation {@link
+     * Delegates authentication completely to the authentication implementation {@link
      * #METHOD_DELEGATE}, but stores the authenticated in the session then. A second request with
      * this method will simply use the session.
      */
@@ -87,7 +87,7 @@ public interface AuthenticationData {
     static final String    STRINGS = "org.mmbase.security.resources.parameters";
 
     /**
-     * Common parameters for logon-info.
+     * Common parameters for login-info.
      */
     static final Parameter<String> PARAMETER_USERNAME   = new Parameter<String>("username", String.class, true);
     static final Parameter<String> PARAMETER_PASSWORD   = new Parameter<String>("password", String.class, true);
@@ -103,7 +103,7 @@ public interface AuthenticationData {
 
 
     /**
-     *	The method returns wether the UserContext has become invalid for some reason (change in security config?)
+     *	The method returns whether the UserContext has become invalid for some reason (change in security config?)
      *	@param userContext The UserContext of which we want to know the rights
      *	@return <code>true</code> when valid, otherwise <code>false</code>
      *	@exception SecurityException When something strange happened
@@ -118,7 +118,7 @@ public interface AuthenticationData {
 
     /**
      * This method returns the builder name of the nodes that will be returned by the
-     * {@link #getNode()} call.
+     * {@link #getNode(UserContext)} call.
      * @since MMBase-1.9
      */
     String getUserBuilder();
@@ -154,8 +154,8 @@ public interface AuthenticationData {
     int getDefaultMethod(String protocol);
 
     /**
-     * <p>Gives all availabe authentication types. The first one can be used as the default. Typically,
-     * an implemention should at least support 'anonynmous' and 'class'.</p>
+     * <p>Gives all available authentication types. The first one can be used as the default. Typically,
+     * an implementation should at least support 'anonynmous' and 'class'.</p>
      * <p>
      * Since most of the time we are using HTTP any way, types for the method {@link #METHOD_HTTP}
      * ('name/password' based) and method {@link #METHOD_LOGINPAGE} ({@link #createParameters} can
@@ -177,7 +177,7 @@ public interface AuthenticationData {
      * For a given authentication type returns a parameters object to fill with credentials. {@link Parameters#toMap} can be used as the second argument
      * for {@link org.mmbase.security.Authentication#login}
      * Given a certain 'application' this will return a {@link org.mmbase.util.functions.Parameters}
-     * which tells you excactly which parameters you can and must supply to {@link #login}.
+     * which tells you exactly which parameters you can and must supply to {@link Authentication#login(String, java.util.Map, Object[])}.
      */
     Parameters createParameters(String application);
 }

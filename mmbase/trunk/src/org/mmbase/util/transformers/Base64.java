@@ -17,7 +17,7 @@ import java.util.Map;
 //import sun.misc.BASE64Encoder;
 
 /**
- * Code taken from {@link http://www.source-code.biz/snippets/java/2.htm}
+ * Code taken from {@link "http://www.source-code.biz/snippets/java/2.htm"}
  *
  * @author Michiel Meeuwissen
  */
