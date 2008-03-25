@@ -24,7 +24,7 @@
       <table class="searchresult" summary="Search results for ${search}">
         <thead>
           <tr>
-            <th class="node">#</th>
+            <th class="node number">#</th>
             <th class="node"> </th>
             <mm:fieldlist nodetype="${query.nodeManager.name}" type="list">
               <th class="fields"><mm:fieldinfo type="guiname" /></th>
@@ -34,7 +34,7 @@
         <tbody>
           <mm:listnodes varStatus="status">
             <tr class="click ${status.index % 2 eq 0 ? 'even' : 'odd'}" id="${id}_node_${_node}">
-              <td class="node">
+              <td class="node number">
                 <mm:field name="number" />
               </td>
               <td class="node">
