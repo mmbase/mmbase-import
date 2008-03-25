@@ -11,7 +11,7 @@ import org.mmbase.util.logging.Logging;
  * This commitprocessor copies on every commit the complete node to a 'versioning' table.
  * @author Sander de Boer
  * @author Michiel Meeuwissen
- * @version $Id: VersioningCommitProcessor.java,v 1.5 2008-03-17 10:08:10 michiel Exp $
+ * @version $Id: VersioningCommitProcessor.java,v 1.6 2008-03-25 09:41:51 michiel Exp $
  * @since
  */
 
@@ -42,22 +42,25 @@ public class VersioningCommitProcessor implements CommitProcessor {
             //clone this version to the versions builder
             Cloud cloud = node.getCloud();
 
-            Node version = wv.createNode();
-            //increase the version of the current node
-            int newVersionNo = node.getIntValue(field.getName()) + 1;
-            node.setIntValue(field.getName(), newVersionNo);
+            if (node.getNumber() > 0) { // TODO TODO http://www.mmbase.org/jira/browse/MMB-1632
 
-            cloneNode(node, version);
+                Node version = wv.createNode();
+                //increase the version of the current node
+                int newVersionNo = node.getIntValue(field.getName()) + 1;
+                node.setIntValue(field.getName(), newVersionNo);
 
-            version.setNodeValue(OBJECT_FIELD, node);
-            version.setIntValue(VERSION_FIELD, newVersionNo);
+                cloneNode(node, version);
 
-            version.setStringValue(COMMENTS_FIELD, Casting.toString(cloud.getProperty(COMMENTS_PROPERTY)));
-            Object validation = version.getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION);
-            version.getCloud().setProperty(Cloud.PROP_IGNOREVALIDATION, Boolean.TRUE);
-            // shit..., node fields don't like new nodes.
-            version.commit();
-            version.getCloud().setProperty(Cloud.PROP_IGNOREVALIDATION, validation);
+                version.setNodeValue(OBJECT_FIELD, node);
+                version.setIntValue(VERSION_FIELD, newVersionNo);
+
+                version.setStringValue(COMMENTS_FIELD, Casting.toString(cloud.getProperty(COMMENTS_PROPERTY)));
+                Object validation = version.getCloud().getProperty(Cloud.PROP_IGNOREVALIDATION);
+                version.getCloud().setProperty(Cloud.PROP_IGNOREVALIDATION, Boolean.TRUE);
+                // shit..., node fields don't like new nodes.
+                version.commit();
+                version.getCloud().setProperty(Cloud.PROP_IGNOREVALIDATION, validation);
+            }
             // could solve it by in this case using the _old values_ of the node.
             // But there are 2 bugs, which make this work around non-feasible:
             //  http://www.mmbase.org/jira/browse/MMB-1522.
