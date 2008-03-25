@@ -3,12 +3,27 @@
 <mm:content type="text/javascript" expires="0">
 
 function MMBaseSearcher(d) {
+    this.logEnabled   = true;
+    this.traceEnabled = false;
     this.div = d;
     this.value = "";
     this.searchResults = {};
     this.related       = {};
     this.unrelated     = {};
 }
+
+MMBaseSearcher.prototype.log = function (msg) {
+    if (this.logEnabled) {
+        var errorTextArea = document.getElementById(this.logarea);
+        if (errorTextArea) {
+            errorTextArea.value = "LOG: " + msg + "\n" + errorTextArea.value;
+        } else {
+            // firebug console
+            console.log(msg);
+        }
+    }
+}
+
 
 MMBaseSearcher.prototype.search = function(offset) {
     var newSearch = $(this.div).find("input.mm_relate_repository_search")[0].value;
@@ -18,6 +33,7 @@ MMBaseSearcher.prototype.search = function(offset) {
     }
     var id = this.div.id;
     var rep = $(this.div).find("div.mm_relate_repository")[0]
+
     var url = "${mm:link('/mmbase/taglib/page.jspx')}";
     var params = {id: id, offset: offset, search: this.value};
 
@@ -44,7 +60,7 @@ MMBaseSearcher.prototype.search = function(offset) {
 		}
 	       });
     } else {
-	console.log("resing " + offset);
+	this.log("resing " + offset);
 	$(rep).empty();
 	$(rep).append(result);
     }
@@ -54,8 +70,11 @@ MMBaseSearcher.prototype.search = function(offset) {
     return false;
 }
 MMBaseSearcher.prototype.relate = function(el) {
-    this.related[el] = el;
-    this.unrelated[el] = null;
+    var number = $(el).find("td.node.number")[0].textContent;
+    if (typeof(this.unrelated[number]) == "undefined") {
+	this.related[number] = el;
+    }
+    this.unrelated[number] = null;
     $(el).parents("div.mm_related").find("table.relatednodes tbody").append(el);
     $(el).unbind();
     var searcher = this;
@@ -65,8 +84,11 @@ MMBaseSearcher.prototype.relate = function(el) {
 }
 
 MMBaseSearcher.prototype.unrelate = function(el) {
-    this.unrelated[el] = el;
-    this.related[el] = null;
+    var number = $(el).find("td.node.number")[0].textContent;
+    if (typeof(this.related[number]) == "undefined") {
+	this.unrelated[number] = el;
+    }
+    this.related[number] = null;
     $(el).parents("div.mm_related").find("table.searchresult tbody").append(el);
     $(el).unbind();
     var searcher = this;
@@ -76,7 +98,35 @@ MMBaseSearcher.prototype.unrelate = function(el) {
 }
 
 MMBaseSearcher.prototype.commit = function(node) {
+    this.log("Commiting changed relations of " + this.div.id);
+    var id = this.div.id;
+    var url = "${mm:link('/mmbase/taglib/relate.jspx')}";
 
+    var relatedNumbers = "";
+    $.each(this.related, function(key, value) {
+	if (value != null) {
+	    if (relatedNumbers.length > 0) relatedNumbers += ",";
+	    relatedNumbers += key;
+	}
+    });
+    var unrelatedNumbers = "";
+    $.each(this.unrelated, function(key, value) {
+	if (value != null) {
+	    if (unrelatedNumbers.length > 0) unrelatedNumbers += ",";
+	    unrelatedNumbers += key + ",";
+	}
+    });
+
+    this.log("+ " + relatedNumbers);
+    this.log("- " + unrelatedNumbers);
+    var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers};
+    $.ajax({url: url, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if (status == "success") {
+		    //console.log("" + res);
+		}
+	    }
+	   });
 }
 
 $(document).ready(function(){
