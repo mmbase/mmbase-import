@@ -15,13 +15,13 @@ import java.text.*;
 /**
  * A processor that gets a number as a file-size, that is, rounded with kbytes and Mb's and so on.
  *
- * Actually, using setters like {@link #setUnit()}, this class can also be used to postfix all
+ * Actually, using setters like {@link FormatQuantity#setUnit(String)}, this class can also be used to postfix all
  * other kinds of units to integers.
  *
  * @todo Why not apply this to floats too. Also support SI prefixes below k then (c, m, micro, n, etc).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormatQuantity.java,v 1.1 2007-10-03 16:15:27 michiel Exp $
+ * @version $Id: FormatQuantity.java,v 1.2 2008-03-25 21:00:25 nklasens Exp $
  * @since MMBase-1.9
  */
 

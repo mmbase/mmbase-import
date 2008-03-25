@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.54 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: Contexts.java,v 1.55 2008-03-25 21:00:24 nklasens Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -240,7 +240,7 @@ public class Contexts extends MMObjectBuilder {
 
 
 
-        // security-implmentation related issues
+        // security-implementation related issues
         if (builder instanceof InsRel) {
             MMObjectNode source      = getNode(node.getIntValue("snumber"));
             MMObjectNode destination = getNode(node.getIntValue("dnumber"));
@@ -331,7 +331,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * Returns wether the given node is an 'own' node. It should return true if the node is representing the mmbaseusers object which represents the current user.
+     * Returns whether the given node is an 'own' node. It should return true if the node is representing the mmbaseusers object which represents the current user.
      * Extensions could e.g. also implement returning true for the associated people node.
      */
     protected boolean isOwnNode(User user, MMObjectNode node) {
@@ -340,7 +340,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * Returns wether user may do operation on a node with given context.
+     * Returns whether user may do operation on a node with given context.
      */
 
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
@@ -701,7 +701,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Wraps getPossibleContexts(User, int) of Authorisation implementation Verify.
-     * @see Verify#getPossibleContexts(User, int)
+     * @see Verify#getPossibleContexts(UserContext, int)
      * @todo Perhaps we need a possibleContextCache.
      */
     public SortedSet<String> getPossibleContexts(User user, int nodeId) throws SecurityException {
@@ -740,7 +740,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Wraps getPossibleContexts(User) of Authorisation implementation Verify.
-     * @see Verify#getPossibleContexts(User)
+     * @see Verify#getPossibleContexts(UserContext)
      * @todo Perhaps we need a possibleContextCache.
      */
     public SortedSet<String> getPossibleContexts(User user) throws SecurityException {
@@ -757,7 +757,7 @@ public class Contexts extends MMObjectBuilder {
     //********************************************************************************
 
     /**
-     * Wether users of the given group may do operation on a node of given context (so no following)
+     * Whether users of the given group may do operation on a node of given context (so no following)
      * @return boolean
      */
     protected boolean allows(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
@@ -765,7 +765,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * Wether users of the given group may do operation on a node of given context, because
+     * Whether users of the given group may do operation on a node of given context, because
      * (one of) the parents of this group allow it.
      *
      * @return boolean
@@ -787,6 +787,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
+     * @javadoc
      */
     protected boolean mayGrant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
         Users users = Users.getBuilder();
@@ -805,6 +806,7 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
+     * @javadoc
      */
     protected boolean grant(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
         if (allows(contextNode, groupOrUserNode, operation)) return true; // already allowed
@@ -849,9 +851,9 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
+     * @javadoc
      * @todo untested
      */
-
     protected boolean mayRevoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
         Users users = Users.getBuilder();
         if (users.getRank(user).getInt() >= Rank.ADMIN.getInt()) return true; // admin may do everything
@@ -867,8 +869,8 @@ public class Contexts extends MMObjectBuilder {
 
 
     /**
+     * @javadoc
      */
-
     protected boolean revoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
         if (!allows(contextNode, groupOrUserNode, operation)) return true; // already disallowed
 
@@ -909,7 +911,7 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * util
+     * @javadoc
      */
     protected MMObjectNode getUserNode(UserContext user) {
         Users users = Users.getBuilder();

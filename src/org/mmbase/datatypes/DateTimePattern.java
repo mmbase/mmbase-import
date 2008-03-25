@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DateTimePattern.java,v 1.15 2007-10-17 08:18:40 michiel Exp $
+ * @version $Id: DateTimePattern.java,v 1.16 2008-03-25 21:00:25 nklasens Exp $
  */
 
 public class DateTimePattern implements Cloneable, java.io.Serializable {
@@ -338,7 +338,7 @@ public class DateTimePattern implements Cloneable, java.io.Serializable {
         }
         /**
          * The associated constant in {@link java.util.Calendar}, e.g. {@link
-         * java.util.Calendar.DAY_OF_MONTH}  or {@link java.util.Calendar#SECOND}
+         * java.util.Calendar#DAY_OF_MONTH}  or {@link java.util.Calendar#SECOND}
          */
         public final int getField() {
             return field;

@@ -13,10 +13,10 @@ import org.mmbase.util.functions.Parameters;
 /**
  * A piece of 'action check' functionality. Provided by actions themselves, but security
  * implementations can perhaps also use this interface to administer their implementation of {@link
- * Authorization#check(UserContext, Action)}.
+ * Authorization#check(UserContext, Action, Parameters)}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ActionChecker.java,v 1.5 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: ActionChecker.java,v 1.6 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface ActionChecker extends java.io.Serializable {

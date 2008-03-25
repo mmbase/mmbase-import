@@ -19,10 +19,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * The overly simple renderer which is simply based on a String present in the configuration
- * file. Based on {@link PatterNodeFunctionProvider} so several parameters can be present.
+ * file. Based on {@link PatternNodeFunctionProvider} so several parameters can be present.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringRenderer.java,v 1.10 2008-02-20 17:44:07 michiel Exp $
+ * @version $Id: StringRenderer.java,v 1.11 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 public class StringRenderer extends AbstractRenderer {

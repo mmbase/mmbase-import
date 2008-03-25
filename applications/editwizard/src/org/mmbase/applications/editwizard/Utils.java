@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.50 2007-12-12 14:00:07 pierre Exp $
+ * @version $Id: Utils.java,v 1.51 2008-03-25 21:00:25 nklasens Exp $
  */
 
 public class Utils {
@@ -646,8 +646,8 @@ public class Utils {
     }
 
     /**
-     * This method selects a single node using the given contextnode and xpath.
-     * @param contextnode
+     * This method selects a single node using the given contextNode and xpath.
+     * @param contextNode
      * @param xpath
      * @return    The found node.
      */
@@ -662,8 +662,8 @@ public class Utils {
     }
 
     /**
-     * This method selects a multiple nodes using the given contextnode and xpath.
-     * @param contextnode
+     * This method selects a multiple nodes using the given contextNode and xpath.
+     * @param contextNode
      * @param xpath
      * @return    The found nodes in a NodeList.
      */

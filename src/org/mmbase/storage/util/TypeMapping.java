@@ -27,14 +27,14 @@ import java.text.MessageFormat;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.10 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: TypeMapping.java,v 1.11 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.7
  */
 public class TypeMapping implements Comparable<TypeMapping> {
 
     /**
      * The expression this type should translate to.
-     * You can access this property directly, but you can use {@link #getType(int)} to obtain an expanded expression.
+     * You can access this property directly, but you can use {@link #getType(long)} to obtain an expanded expression.
      */
     public String type;
     /**
@@ -56,10 +56,11 @@ public class TypeMapping implements Comparable<TypeMapping> {
     }
 
     /**
-     * Sets a fixed size for this TypeMapping.
-     * Effectively, this sets the minimimum and maximum size of the type mapping to the specified value, ensuring this TypeMapping object
-     * is equal to all TypeMappings whos minimum size is equal to or smaller than the size, and teh maximum size is equal to or greater
-     * that this size.
+     * Sets a fixed size for this TypeMapping. Effectively, this sets the minimum and maximum size
+     * of the type mapping to the specified value, ensuring this TypeMapping object is equal to all
+     * TypeMappings which minimum size is equal to or smaller than the size, and the maximum size is
+     * equal to or greater that this size.
+     * 
      * @param size the size to set
      */
     public void setFixedSize(long size) {
@@ -96,7 +97,7 @@ public class TypeMapping implements Comparable<TypeMapping> {
             TypeMapping tm = (TypeMapping) o;
             // A typemapping equals another type-mapping when the one contains the other.
             // Because of this the 'fixed' size type-mappings (created DatabaseStorageManager) are found by indexOf of the typeMappings Collection of DatabaseStorageManager.
-            // In this typeMappings Collection there are normally only 'ranged' of sizes (as defined in th XML)
+            // In this typeMappings Collection there are normally only 'ranged' of sizes (as defined in the XML)
             return (name == null ? tm.name == null : name.equals(tm.name)) &&
                (
                 ( (minSize >= tm.minSize || (tm.minSize <= 0)) && (maxSize <= tm.maxSize || (tm.maxSize <= 0)) )  // contained by.
@@ -108,7 +109,10 @@ public class TypeMapping implements Comparable<TypeMapping> {
             return false;
         }
     }
-    // javadoc inherited
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
     public int hashCode() {
         // because of the complicated equals implementation minSize and maxSize cannot be present in hashCode
         return name == null ? 0 : name.hashCode();
@@ -116,12 +120,16 @@ public class TypeMapping implements Comparable<TypeMapping> {
 
     /**
      * Returns the mappings type.
+     * @param size Size  of type
+     * @return mappings type
      */
     public String getType(long size) {
         return MessageFormat.format(type,new Object[]{Long.valueOf(size) });
     }
 
-    // javadoc inherited
+    /**
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return name+" ("+minSize+","+maxSize+")+>"+type;
     }

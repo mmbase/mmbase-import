@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated use Encode
  * @author vpro
- * @version $Id: URLParamEscape.java,v 1.2 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: URLParamEscape.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
  */
 public class URLParamEscape {
 
@@ -61,7 +61,7 @@ public class URLParamEscape {
      * Escape a url.
      * Replaces 'invalid characters' with their Escaped code, i.e.
      * the questionmark (?) is escaped with %3F.
-     * @param url the urls to escape
+     * @param str the urls to escape
      * @return the escaped url.
      */
     public static String escapeurl(String str) {
@@ -101,7 +101,7 @@ public class URLParamEscape {
      * Unescape a url.
      * Replaces escapesequenced with the actual character.
      * i.e %3F is replaced with the the questionmark (?).
-     * @param url the urls to unescape
+     * @param str the urls to unescape
      * @return the unescaped url.
      */
     public static String unescapeurl(String str) {

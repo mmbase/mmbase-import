@@ -13,7 +13,7 @@ package org.mmbase.security;
  * This class is a kind of enumeration (introduced before java 1.5 enumerations) of the operations
  * possible within the security authorization.
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.13 2007-12-06 08:08:13 michiel Exp $
+ * @version $Id: Operation.java,v 1.14 2008-03-25 21:00:24 nklasens Exp $
  * @see Authorization
  */
 public final class Operation {
@@ -51,7 +51,7 @@ public final class Operation {
     public final static Operation READ = new Operation(READ_INT, "read");
 
     /**
-     * {@link Node#setValue} is an example of a write-operation.
+     * {@link org.mmbase.bridge.Node#setValue(String, Object)} is an example of a write-operation.
      */
     public final static Operation WRITE = new Operation(WRITE_INT, "write");
 
@@ -77,15 +77,10 @@ public final class Operation {
      */
     public final static Operation CHANGE_CONTEXT = new Operation(CHANGE_CONTEXT_INT, "change context");
 
-
-    /** 
-     * Identifier for change context operation, which is used when changing the context of a node 
-     * @deprecated Use CHANGE_CONTEXT
-     */
-    public final static Operation CHANGECONTEXT = CHANGE_CONTEXT;
-
     /**
      *	Private constructor, to prevent creation of new Operations
+     * @param level operation identifier 
+     * @param description operation description
      */
     private Operation(int level, String description) {
         this.level = level;
@@ -118,7 +113,10 @@ public final class Operation {
      */
     private final String description;
  
-    /** retrieve a Operation by a given string */
+    /** retrieve a Operation by a given string 
+     * @param operationString the {@link Operation#toString()}   
+     * @return Operation
+     */
     public static Operation getOperation(String operationString) {
         if(READ.toString().equals(operationString)) return READ;
         if(WRITE.toString().equals(operationString)) return WRITE;

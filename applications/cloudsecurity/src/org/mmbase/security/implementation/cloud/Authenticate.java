@@ -21,11 +21,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Very simply security from within MMBase. You might want to look at Cloud Context Security which offers a much more powerfull implementation.
+ * Very simply security from within MMBase. You might want to look at Cloud Context Security which offers a much more powerful implementation.
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.3 2007-06-06 11:35:48 nklasens Exp $
+ * @version $Id: Authenticate.java,v 1.4 2008-03-25 21:00:25 nklasens Exp $
  */
 
 public class Authenticate extends Authentication {
@@ -46,7 +46,9 @@ public class Authenticate extends Authentication {
     }
 
     /**
-     * Gets rank from user, whici sin
+     * Gets rank from user
+     * @param userName account name of user
+     * @return Rank of the user
      * @since MMBase-1.8
      */
     protected Rank getRank(String userName) {

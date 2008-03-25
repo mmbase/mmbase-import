@@ -25,7 +25,7 @@ import org.mmbase.util.functions.Required;
  * This class can be overriden to make an even smarter search possible.
  *
  * @since MMBase-1.8.5
- * @version $Id: SmartPathFunction.java,v 1.11 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: SmartPathFunction.java,v 1.12 2008-03-25 21:00:25 nklasens Exp $
  */
 public class SmartPathFunction {
     private static final Logger log = Logging.getLoggerInstance(SmartPathFunction.class);
@@ -80,7 +80,7 @@ public class SmartPathFunction {
 
     /**
      * the root of the path to search.
-     * @deprecated Use {@link #setLoader(ResourceLoder)}.
+     * @deprecated Use {@link #setLoader(ResourceLoader)}.
      */
     public void setRoot(String r) {
         documentRoot = r;

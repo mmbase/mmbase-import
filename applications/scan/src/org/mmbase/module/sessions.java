@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @rename Sessions
  * @author Daniel Ockeloen
- * @version $Id: sessions.java,v 1.31 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: sessions.java,v 1.32 2008-03-25 21:00:25 nklasens Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -126,7 +126,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
      *
      * @param session  the sessionInfo containing the set.
      * @param key      the name of the set.
-     * @param value    a Vector containing the
+     * @param values   a Vector containing the
      *                 Strings to be added to the set.
      */
     public void addSetValues(sessionInfo session,String key,Vector<Object> values) {
@@ -143,7 +143,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 
     /**
      * Adds a String to a set. If the String is
-     * allready contained by the set nothing happens.
+     * already contained by the set nothing happens.
      *
      * @param session  the sessionInfo containing the set.
      * @param key      the name of the set.

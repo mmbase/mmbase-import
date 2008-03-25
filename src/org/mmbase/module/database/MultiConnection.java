@@ -56,8 +56,8 @@ public interface MultiConnection {
     public SQLWarning getWarnings() throws SQLException;
     public void clearWarnings() throws SQLException;
     public CallableStatement prepareCall(String sql, int i, int y) throws SQLException;
-    public void setTypeMap(Map mp) throws SQLException;
-    public Map getTypeMap() throws SQLException;
+    public void setTypeMap(Map<String,Class<?>> mp) throws SQLException;
+    public Map<String,Class<?>> getTypeMap() throws SQLException;
     public PreparedStatement prepareStatement(String sql,int i, int y) throws SQLException;
     public void setHoldability(int holdability) throws SQLException;
     public int getHoldability() throws SQLException;

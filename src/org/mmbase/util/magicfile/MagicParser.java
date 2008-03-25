@@ -23,13 +23,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * This Parser translates the configuration file of UNIX's file to a
- * list of Detectors (and to a magic.xml) Perhaps it's easier to
- * rewrite this stuff to perl or something like that.
+ * list of Detectors (and to a magic.xml)
  *
- * @version $Id: MagicParser.java,v 1.12 2007-02-24 21:57:50 nklasens Exp $
- * @todo NOT TESTED YET
+ * @version $Id: MagicParser.java,v 1.13 2008-03-25 21:00:25 nklasens Exp $
  */
-
 public class MagicParser implements DetectorProvider {
     /**
      * the default files used to create the Detectors
@@ -53,6 +50,7 @@ public class MagicParser implements DetectorProvider {
 
     /**
      * Construct a new MagicParser with configuration file
+     * @param fileName File which contains the magic data
      * @since MMBase-1.7
      */
     public MagicParser(String fileName) {
@@ -104,7 +102,10 @@ public class MagicParser implements DetectorProvider {
 
     /**
      * Separate command from offset
-     * @exception Throws an exception when parsing failed
+     * @param s Line to process
+     * @param startIndex index to start from in the line
+     * @return new offset after processing
+     * @throws Exception Throws an exception when parsing failed
      */
     private int parseOffsetString(String s, int startIndex) throws Exception {
         try {
@@ -129,8 +130,12 @@ public class MagicParser implements DetectorProvider {
 
     /**
      * Parse the type string from the magic file
-     *
      *   -- nothing to be done: the found string is already atomic :-)
+     * 
+     * @param s Line to process
+     * @param startIndex index to start from in the line
+     * @return new offset after processing
+     * @throws Exception Throws an exception when parsing failed
      */
     private int parseTypeString(String s, int startIndex) throws Exception {
         int m = nextWhiteSpace(s, startIndex);
@@ -151,6 +156,11 @@ public class MagicParser implements DetectorProvider {
     /**
      * Parse the test string from the magic file
      *   -- determine: a.) the test comparator, and b.) the test value
+     *   
+     * @param s Line to process
+     * @param startIndex index to start from in the line
+     * @return new offset after processing
+     * @throws Exception Throws an exception when parsing failed
      */
     private int parseTestString(String s, int startIndex) throws Exception {
         int start = 0;
@@ -415,8 +425,12 @@ public class MagicParser implements DetectorProvider {
 
     /**
      * Parse the message string from the magic file
-     *
      *   -- nothing to be done: the found string is already atomic :-)
+     *
+     * @param s Line to process
+     * @param startIndex index to start from in the line
+     * @return new offset after processing
+     * @throws Exception Throws an exception when parsing failed
      */
     private int parseMessageString(String s, int startIndex) throws Exception {
         if (false)
@@ -474,7 +488,10 @@ public class MagicParser implements DetectorProvider {
     }
 
     /**
-     * Write the current datastructure to an XML file
+     * Write the current data structure to an XML file
+     * @param f File to write to
+     * @return written successful or not
+     * @throws IOException Throws an exception when parsing failed
      */
     public boolean toXML(File f) throws IOException {
         FileWriter writer = new FileWriter(f);

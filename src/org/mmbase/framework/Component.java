@@ -16,10 +16,10 @@ import org.mmbase.security.Action;
  * A component is a piece of pluggable functionality that typically has dependencies on other
  * components.
  *
- * A Component bundles {@link Block}s, {@link Action}s and {@link @Setting}.
+ * A Component bundles {@link Block}s, {@link Action}s and {@link Setting}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Component.java,v 1.19 2008-02-22 14:05:57 michiel Exp $
+ * @version $Id: Component.java,v 1.20 2008-03-25 21:00:24 nklasens Exp $
  * @since MMBase-1.9
  */
 public interface Component {
