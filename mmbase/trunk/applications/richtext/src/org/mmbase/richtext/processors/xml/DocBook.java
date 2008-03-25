@@ -21,10 +21,10 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
- * information see the javadoc of that class.
+ * This implements 'DocBook' Mode of {@link MmxfSetString}.
+ * @todo EXPERIMENTAL
  * @author Michiel Meeuwissen
- * @version $Id: DocBook.java,v 1.1 2008-03-25 17:52:18 michiel Exp $
+ * @version $Id: DocBook.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
  */
 
 class DocBook {
@@ -35,7 +35,7 @@ class DocBook {
      * Receives Docbook XML, and saves as MMXF. Docbook is more powerfull as MMXF so this
      * transformation will not be perfect. It is mainly meant for MMBase documentation.
      */
-    Document parseDocBook(Node editedNode, Document source) {
+    Document parse(Node editedNode, Document source) {
         Cloud cloud = editedNode.getCloud();
         java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/docbook2pseudommxf.xslt");
         DOMResult result = new DOMResult();
