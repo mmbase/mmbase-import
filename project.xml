@@ -56,15 +56,21 @@ See http://www.MMBase.org/license
                 </includes>
                 <filtering>false</filtering>
             </resource>
-<!-- This does not work the same way as the ant build does.
-	We have to change more in the build to get it working
--->
             <resource>
+               <targetPath>${basedir}/META-INF</targetPath>
+               <directory>META-INF</directory>
+               <excludes>
+                   <exclude>"**/CVS"</exclude>
+               </excludes>
+               <filtering>false</filtering>
+           </resource>
+           <resource>
                 <targetPath>org/mmbase/config</targetPath>
                 <directory>config</directory>
                 <excludes>
                     <exclude>"**/CVS"</exclude>
                 </excludes>
+               <filtering>false</filtering>
             </resource>
 
         </resources>

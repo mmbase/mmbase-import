@@ -1,5 +1,5 @@
 <!--
-  $Id: build.xml,v 1.45 2007-11-30 15:50:31 michiel Exp $
+  $Id: build-documentation.xml,v 1.1 2008-03-25 21:03:08 nklasens Exp $
 -->
 <project name="MMBase-Documentation" default="documentation" basedir=".">
 
@@ -13,11 +13,11 @@
 
   <!-- project customized properties -->
   <!-- these override the onces in build.properties.default -->
-  <property file="build.properties"/>
+  <property file="build-documentation.properties"/>
 
 
   <!-- mmbase defaults, properties available also in ../build.xml -->
-  <property name="source.dir"   location=".." />
+  <property name="source.dir"   location="." />
   <property file="${source.dir}/build.properties"/> <!-- use the same overriding -->
 
   <property name="build.dir"            value="${source.dir}/build" />
@@ -39,12 +39,12 @@
 
 
   <!-- project defaults -->
-  <property file="build.properties.default"/>
+  <property file="${source.dir}/build-documentation.properties.default"/>
 
   <!-- documentation related settings -->
   <property name="mmbase.html.documentation.dir" value="${source-html.dir}/mmdocs" />
   <property name="documentation.dest.dir" value="${mmdocs.dir}"/>
-  <property name="documentation.src.dir"  value="."/>
+  <property name="documentation.src.dir"  value="${source.dir}/documentation"/>
 
   <property name="documentation.xml-source.dir" value="${documentation.src.dir}"/>
   <property name="documentation.builders.language" value="en" />
@@ -58,7 +58,7 @@
             value="${expand.dir}/${docbook-xsl.version}/fo/docbook.xsl" />
 
   <import file="${source.dir}/download.xml" />
-  <import file="xslt.xml" />
+  <import file="build-xslt.xml" />
 
   <!-- =============== Init  ============================================= -->
   <target name="init">
@@ -147,7 +147,7 @@
 
   <target name="datatypes.docbook" depends="xsltransformer">
     <antcall target="xsl">
-      <param name="xsl"   location="datatypes2docbook.xslt" />
+      <param name="xsl"   location="${documentation.src.dir}/datatypes2docbook.xslt" />
       <param name="xml"   value="${source.dir}/config/datatypes.xml" />
       <param name="output"   value="${documentation.build.dir}/datatypes.docbook.xml" />
     </antcall>
