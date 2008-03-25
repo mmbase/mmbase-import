@@ -84,7 +84,9 @@ public class SubSiteAction extends PagerAction {
 		  subsiteNode = cloud.getNode(subsite);
 	  }
       
-      request.setAttribute("subsite", String.valueOf(subsiteNode.getNumber()));
+      if (subsiteNode != null){
+    	  request.setAttribute("subsite", String.valueOf(subsiteNode.getNumber()));
+      }
 	  
 	  if (subsiteNode == null){ //If there are no subsites at all, return empty list
 		  searchForm.setResultCount(0);
