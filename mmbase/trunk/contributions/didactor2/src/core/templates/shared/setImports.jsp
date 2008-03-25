@@ -31,7 +31,7 @@
 <mm:isnotempty referid="validatemessage">
   <mm:cloud method="logout" />
   <% if (! response.isCommitted()) { %>
-  <mm:redirect page="/declined.jsp" referids="validatemessage@message">
+  <mm:redirect page="/login/declined.jspx" referids="validatemessage@message">
     <mm:param name="referrer"><mm:treefile page="/index.jsp" objectlist="$includePath" referids="$referids" /></mm:param>
   </mm:redirect>
   <% } %>
