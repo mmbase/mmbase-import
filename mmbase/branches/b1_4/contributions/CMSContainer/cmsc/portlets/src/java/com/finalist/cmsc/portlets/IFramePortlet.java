@@ -93,6 +93,9 @@ public class IFramePortlet extends CmscPortlet {
 
       // get IFRAME source
       String source = getPreference(preferences, SOURCE_ATTR_PARAM, SOURCE_ATTR_DEFAULT);
+      // TODO
+      // add username and password from community to the source, if they are available
+      
       // IFRAME attribute members.
       String alignAttr = getPreference(preferences, ALIGN_ATTR_PARAM, ALIGN_ATTR_DEFAULT);
       String classAttr = getPreference(preferences, CLASS_ATTR_PARAM, null);
