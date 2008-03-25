@@ -47,13 +47,6 @@
             <type>mmbase-module</type>
         </dependency>
 
-      <dependency>
-         <groupId>finalist</groupId>
-         <artifactId>cmsc-portlets-newsletter</artifactId>
-         <version>${cmscportlets.version}</version>
-         <type>mmbase-module</type>
-      </dependency>
-
        <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-portlets-jforum</artifactId>
