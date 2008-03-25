@@ -35,10 +35,10 @@ public class Authentication implements Serializable {
     
     @Id
     @GeneratedValue
-    private Long id;
+    private Long id; //Authentication id
     
     @Column(unique = true)
-    private String userId;
+    private String userId; //account used for login
     
     private String password;
     

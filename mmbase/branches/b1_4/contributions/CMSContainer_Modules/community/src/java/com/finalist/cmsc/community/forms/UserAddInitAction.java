@@ -22,7 +22,6 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
  * @author Remco Bos
