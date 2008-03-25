@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.framework;
 
 import java.util.*;
+import java.net.URL;
 import org.w3c.dom.*;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.Instantiator;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.32 2008-03-22 09:12:59 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.33 2008-03-25 09:20:24 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -136,30 +137,23 @@ public class ComponentRepository {
         Block.Type.ROOT.blocks.clear();
         Block.Type.NO.subs.clear();
         Block.Type.NO.blocks.clear();
-        readBlockTypes();
 
         rep.clear();
         failed.clear();
     }
 
     /**
-     * @todo Is it a bit odd that this uses the framework.xml?
      */
-    private void readBlockTypes() {
-        try {
-            org.w3c.dom.Document fwConfiguration = ResourceLoader.getConfigurationRoot().getDocument("framework.xml", true, Framework.class);
-            org.w3c.dom.NodeList blockTypes = fwConfiguration.getDocumentElement().getElementsByTagName("blocktype");
-            for (int i = 0; i < blockTypes.getLength(); i++) {
-                org.w3c.dom.Element element = (org.w3c.dom.Element) blockTypes.item(i);
-                String classification = element.getAttribute("name");
-                int weight = Integer.parseInt(element.getAttribute("weight"));
-                for (Block.Type t : Block.Type.getClassification(classification, true)) {
-                    t.setWeight(weight);
-                    t.getTitle().fillFromXml("title", element);
-                }
+    private void readBlockTypes(Element root) {
+        NodeList blockTypes = root.getElementsByTagName("blocktype");
+        for (int i = 0; i < blockTypes.getLength(); i++) {
+            org.w3c.dom.Element element = (org.w3c.dom.Element) blockTypes.item(i);
+            String classification = element.getAttribute("name");
+            int weight = Integer.parseInt(element.getAttribute("weight"));
+            for (Block.Type t : Block.Type.getClassification(classification, true)) {
+                t.setWeight(weight);
+                t.getTitle().fillFromXml("title", element);
             }
-        } catch (Exception e) {
-            log.error(e);
         }
     }
 
@@ -172,28 +166,45 @@ public class ComponentRepository {
         ResourceLoader loader =  ResourceLoader.getConfigurationRoot().getChildResourceLoader(child);
         Collection<String> components = loader.getResourcePaths(ResourceLoader.XML_PATTERN, true /* recursive*/);
         log.info("In " + loader + " the following components XML's were found " + components);
-        for (String file : components) {
-            try {
-                Document doc = loader.getDocument(file, true, getClass());
-                String namespace = doc.getDocumentElement().getNamespaceURI();
-                String name = doc.getDocumentElement().getAttribute("name");
-                String fileName = ResourceLoader.getName(file);
-                if (! fileName.equals(name)) {
-                    log.warn("Component " + name + " is defined in resource with name " + file);
-                } else {
-                    log.service("Instantiating component '" + name + "' " + namespace);
+        for (String resource : components) {
+            for (URL url : loader.getResourceList(resource)) {
+                try {
+                    if (url.openConnection().getDoInput()) {
+
+                        Document doc = ResourceLoader.getDocument(url, true, getClass());
+                        Element documentElement = doc.getDocumentElement();
+                        String namespace = documentElement.getNamespaceURI();
+                        if (documentElement.getTagName().equals("component")) {
+                            String name = documentElement.getAttribute("name");
+                            String fileName = ResourceLoader.getName(resource);
+                            if (! fileName.equals(name)) {
+                                log.warn("Component " + url + " is defined in resource with name " + resource);
+                            } else {
+                                log.service("Instantiating component '" + url + "' " + namespace);
+                            }
+                            if (rep.containsKey(name)) {
+                                Component org = rep.get(name);
+                                log.debug("There is already a component with name '" + name + "' (" + org.getUri() + "), " + doc.getDocumentURI() + " defines another one, which is now ignored");
+                            } else {
+                                Component newComponent = getComponent(name, doc);
+                                rep.put(name, newComponent);
+                            }
+                        } else if (documentElement.getTagName().equals("blocktypes")) {
+                            log.service("Reading block types from '" + url + "' " + namespace);
+                            readBlockTypes(documentElement);
+                        } else {
+                            log.warn("Resource '" + url + "' " + namespace + " and entry '" + documentElement.getTagName() + "' cannot be recoginized");
+                        }
+                    } else {
+                        log.debug("" + url + " does not exist");
+                    }
+                } catch (Exception e) {
+                    log.error("For " + url + ": " + e.getMessage(), e);
                 }
-                if (rep.containsKey(name)) {
-                    failed.add(getComponent(name, doc));
-                    Component org = rep.get(name);
-                    log.error("There is already a component with name '" + name + "' (" + org.getUri() + "), " + doc.getDocumentURI() + " defines another one, which is now ignored");
-                } else {
-                    rep.put(name, getComponent(name, doc));
-                }
-            } catch (Exception e) {
-                log.error("For " + loader.getResource(file) + ": " + e.getMessage(), e);
+
             }
         }
+
         if (! resolve()) {
             log.error("Not all components satisfied their dependencies");
         }
