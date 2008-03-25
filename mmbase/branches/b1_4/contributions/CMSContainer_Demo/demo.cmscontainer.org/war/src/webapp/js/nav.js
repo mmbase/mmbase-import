@@ -2,6 +2,10 @@ addLoadEvent(zetNav)
 
 function zetNav(){
 	
+	document.body.onclick = function(){
+		hideSubNavs();
+	}
+	
 	var div = document.getElementById("top_img");
 	div.onmouseover = hideSubNavs;
 	var div = document.getElementById("background");
