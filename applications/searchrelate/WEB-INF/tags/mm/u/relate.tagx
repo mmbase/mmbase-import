@@ -11,7 +11,8 @@
   <mm:import externid="current" from="this" />
   <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
   <mm:write request="mm_relate_sequence" value="${seq + 1}" />
-  <mm:write session="mm_related_${seq}" referid="repository" />
+  <mm:write session="mm_related_${seq}"         referid="repository" />
+  <mm:write session="mm_related_${seq}_current" referid="current" />
 
   <c:if test="${seq eq 0}">
     <script type="text/javascript" src="${mm:link('/mmbase/taglib/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>

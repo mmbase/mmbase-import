@@ -4,6 +4,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     lang="en">
   <jsp:directive.page buffer="2000kb" />
@@ -11,7 +12,7 @@
               postprocessor="none"
               language="nl" expires="0">
 
-    <mm:cloud rank="basic user">
+    <mm:cloud rank="basic user" jspvar="cloud">
 
       <mm:param name="org.mmbase.xml-mode" value="wiki" />
 
@@ -34,17 +35,16 @@
         <mm:haspage page="/mmbase/jquery/jquery-1.2.3.min.js" inverse="true">
           <h1 class="error">You need to have jquery installed in /mmbase/jquery!</h1>
         </mm:haspage>
-        <mm:import externid="objectnumber" />
-        <mm:compare referid="objectnumber" value="new">
-          <mm:remove referid="objectnumber" />
-          <mm:createnode type="wikiobjects" id="objectnumber"  />
 
-        </mm:compare>
+        <mm:import externid="objectnumber" />
 
         <div id="main">
           <mm:form id="transaction" page="." commitonclose="false">
-            <mm:node id="objectnumber" referid="objectnumber" commitonclose="false">
-
+            <mm:compare referid="objectnumber" value="new">
+              <mm:remove referid="objectnumber" />
+              <mm:createnode type="wikiobjects" id="objectnumber"  />
+            </mm:compare>
+            <mm:node id="objectnumber" referid="objectnumber" commitonclose="false" jspvar="node">
               <input type="hidden" name="objectnumber" value="${_node}" />
               <table>
                 <mm:fieldlist type="edit">
@@ -61,6 +61,7 @@
               </table>
 
               <input type="submit" name="submit" id="submit" value="submit" />
+              <span id="submitTest">submitTest</span>
               <input type="submit" name="cancel" id="cancel" value="cancel" />
               <input type="text" name="comments" value="Beschrijf uw verandering hier" />
               <hr />
@@ -83,19 +84,19 @@
 
             <mm:form name="transaction">
               <ul>
-                <c:forTokens items="urls,images" delims="," var="type" >
+                <c:forTokens items="urls" delims="," var="type" >
                   <mm:include page="related.li.jspx" referids="type" />
                 </c:forTokens>
               </ul>
             </mm:form>
           </mm:node>
-          </div>
+        </div>
           <div id="commit">
             <mm:form id="transaction" mode="validate">
               <mm:import externid="cancel" />
               <mm:present referid="cancel">
                 <mm:cancel />
-                <mm:log>Canceling transaction ${transaction}</mm:log>
+                <mm:log>Canceling transaction ${transaction.cloudVar}</mm:log>
                 <mm:redirect page=".." referids="objectnumber">
                   <mm:param name="expires">0</mm:param>
                 </mm:redirect>
@@ -116,8 +117,8 @@
             </mm:form>
           </div>
           <div id="title">
-            <mm:node referid="objectnumber" commitonclose="false">
-              <mm:field name="number" />: <mm:nodeinfo type="gui" /> : v. ${_node.version}
+            <mm:node referid="objectnumber" commitonclose="false" jspvar="node">
+              <mm:field name="number" />: <mm:nodeinfo type="gui" /> : v. ${_node.version} : <jsp:expression>node.getCloud()</jsp:expression>
             </mm:node>
           </div>
       </body>
