@@ -27,102 +27,96 @@ import com.finalist.cmsc.services.community.security.AuthenticationService;
  */
 public class PersonHibernateService extends HibernateService implements PersonService {
 
-	private AuthenticationService authenticationService;
+   private AuthenticationService authenticationService;
 
-	/** {@inheritDoc} */
-	@Transactional(readOnly = true)
-	public Person getPersonByUserId(String userId) {
-		if (StringUtils.isBlank(userId)) { 
-			throw new IllegalArgumentException("UserId is not filled in. "); 
-		}
-		return findPersonByUserId(userId);
-	}
-	
-	/** {@inheritDoc} */
+   /** {@inheritDoc} */
+   @Transactional(readOnly = true)
+   public Person getPersonByUserId(String userId) {
+      if (StringUtils.isBlank(userId)) {
+         throw new IllegalArgumentException("UserId is not filled in. ");
+      }
+      return findPersonByUserId(userId);
+   }
+
+   /** {@inheritDoc} */
    @Transactional
-	@SuppressWarnings("unchecked")
-	public List<Person> getPerson(Person person){
-		if (person == null) 
-			return Collections.emptyList();
-		
-		List personList = getSession()
-			.createCriteria(Person.class)
-			.add(Example.create(person))
-			.list();
-		return personList;
+   @SuppressWarnings("unchecked")
+   public List<Person> getPerson(Person person) {
+      if (person == null)
+         return Collections.emptyList();
 
-	}
+      List personList = getSession().createCriteria(Person.class).add(Example.create(person)).list();
+      return personList;
 
-	/** {@inheritDoc} */
-	@Transactional
-	public Person createPerson(String firstName, String infix, String lastName, Long authenticationId) {
-		if (firstName == null) { 
-			throw new IllegalArgumentException("Firstname is null. "); 
-		}
-		if (lastName == null) { 
-			throw new IllegalArgumentException("Lastname is null. "); 
-		}
-		if (authenticationId == null) { 
-			throw new IllegalArgumentException("authenticationId is not filled in. "); 
-		}
+   }
 
-		if (authenticationId != null) {
-			Person person = new Person();
-			person.setFirstName(firstName);
-			person.setInfix(infix);
-			person.setLastName(lastName);
-			person.setAuthenticationId(authenticationId); //used to find account
-			getSession().save(person);
-			return person;
-		}
-		return null;
-	}
-	
-	/** {@inheritDoc} */
+   /** {@inheritDoc} */
+   @Transactional
+   public Person createPerson(String firstName, String infix, String lastName, Long authenticationId) {
+      if (firstName == null) {
+         throw new IllegalArgumentException("Firstname is null. ");
+      }
+      if (lastName == null) {
+         throw new IllegalArgumentException("Lastname is null. ");
+      }
+      if (authenticationId == null) {
+         throw new IllegalArgumentException("authenticationId is not filled in. ");
+      }
+
+      if (authenticationId != null) {
+         Person person = new Person();
+         person.setFirstName(firstName);
+         person.setInfix(infix);
+         person.setLastName(lastName);
+         person.setAuthenticationId(authenticationId); // used to find account
+         getSession().save(person);
+         return person;
+      }
+      return null;
+   }
+
+   /** {@inheritDoc} */
    @Transactional
    public void updatePerson(Person person) {
       getSession().saveOrUpdate(person);
       getSession().flush();
    }
 
-
-	/** {@inheritDoc} */
-	@Transactional
-	public boolean deletePersonByUserId(String userId) {
-		if (!StringUtils.isBlank(userId)) {
-			Person person = findPersonByUserId(userId);
-			if (person != null) {
-				getSession().delete(person);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private Person findPersonByUserId(String userId) {
-		Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
-		return getPersonByAuthentication(authenticationId);
-	}
-
-	@SuppressWarnings("unchecked")
-	private Person findPersonByCriteria(Criteria criteria) {
-		List personList = criteria.list();
-		return personList.size() == 1 ? (Person) personList.get(0) : null;
-	}
-
-	@Required
-	public void setAuthenticationService(AuthenticationService authenticationService) {
-		this.authenticationService = authenticationService;
-	}
-	
    /** {@inheritDoc} */
-	@Transactional(readOnly = true)
-   public Person getPersonByAuthentication(Long authenticationId) {
+   @Transactional
+   public boolean deletePersonByUserId(String userId) {
+      if (!StringUtils.isBlank(userId)) {
+         Person person = findPersonByUserId(userId);
+         if (person != null) {
+            getSession().delete(person);
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private Person findPersonByUserId(String userId) {
+      Long authenticationId = authenticationService.getAuthenticationIdForUserId(userId);
+      return getPersonByAuthenticationId(authenticationId);
+   }
+
+   @SuppressWarnings("unchecked")
+   private Person findPersonByCriteria(Criteria criteria) {
+      List personList = criteria.list();
+      return personList.size() == 1 ? (Person) personList.get(0) : null;
+   }
+
+   @Required
+   public void setAuthenticationService(AuthenticationService authenticationService) {
+      this.authenticationService = authenticationService;
+   }
+
+   /** {@inheritDoc} */
+   @Transactional(readOnly = true)
+   public Person getPersonByAuthenticationId(Long authenticationId) {
       Person person = null;
       if (authenticationId != null) {
-         Criteria criteria = getSession()
-                           .createCriteria(Person.class)
-                           .add(Restrictions.eq("authenticationId", authenticationId));
+         Criteria criteria = getSession().createCriteria(Person.class).add(Restrictions.eq("authenticationId", authenticationId));
          person = findPersonByCriteria(criteria);
       }
       return person;
