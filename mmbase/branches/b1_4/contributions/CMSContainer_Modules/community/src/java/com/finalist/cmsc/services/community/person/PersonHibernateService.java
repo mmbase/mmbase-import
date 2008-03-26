@@ -41,11 +41,12 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    /** {@inheritDoc} */
    @Transactional
    @SuppressWarnings("unchecked")
-   public List<Person> getPerson(Person person) {
-      if (person == null)
+   public List<Person> getPersons(Person example) {
+      if (example == null) {
          return Collections.emptyList();
+      }
 
-      List personList = getSession().createCriteria(Person.class).add(Example.create(person)).list();
+      List personList = getSession().createCriteria(Person.class).add(Example.create(example)).list();
       return personList;
 
    }

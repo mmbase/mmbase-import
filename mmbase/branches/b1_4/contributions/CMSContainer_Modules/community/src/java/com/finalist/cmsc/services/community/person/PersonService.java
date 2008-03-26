@@ -25,7 +25,15 @@ public interface PersonService {
 
    Person getPersonByUserId(String userId);
 
-   List<Person> getPerson(Person person);
+   /**
+    * Get a list of matching persons that match the given example. The fields
+    * that are set on the example Person are the criteria for the search.
+    *
+    * @param example
+    *           the example person
+    * @return a list of persons that match the given example.
+    */
+   List<Person> getPersons(Person example);
 
    Person getPersonByAuthenticationId(Long authenticationId);
 

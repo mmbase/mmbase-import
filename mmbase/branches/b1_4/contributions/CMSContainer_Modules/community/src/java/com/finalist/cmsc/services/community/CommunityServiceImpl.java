@@ -6,7 +6,7 @@ OSI Certified is a certification mark of the Open Source Initiative.
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
-*/
+ */
 package com.finalist.cmsc.services.community;
 
 import java.text.MessageFormat;
@@ -47,135 +47,135 @@ import com.finalist.cmsc.util.NameUtil;
  */
 public class CommunityServiceImpl extends CommunityService {
 
-	private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
+   private static Log log = LogFactory.getLog(CommunityServiceImpl.class);
 
-	private AuthenticationManager authenticationManager;
+   private AuthenticationManager authenticationManager;
    private PreferenceService preferenceService;
    private PersonService personService;
    private AuthenticationService authenticationService;
 
-    @Override
-	protected void init(ServletConfig config, Properties properties) throws Exception {
-    	/* Some Spring magic. Sets the AuthenticationManager and PreferenceService */
-    	ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
-    	ac.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
-	}
+   @Override
+   protected void init(ServletConfig config, Properties properties) throws Exception {
+      /* Some Spring magic. Sets the AuthenticationManager and PreferenceService */
+      ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+      ac.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
+   }
 
-	@Override
-	public void login(String userName, String password) {
-		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
-		try {
-		   org.acegisecurity.Authentication authentication = authenticationManager.authenticate(authRequest);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		} catch (AuthenticationException ae) {
-	        SecurityContextHolder.clearContext();
-	        log.debug(String.format("Authentication attempt failed for user %s", userName), ae);
-		}
-	}
+   @Override
+   public void login(String userName, String password) {
+      UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+      try {
+         org.acegisecurity.Authentication authentication = authenticationManager.authenticate(authRequest);
+         SecurityContextHolder.getContext().setAuthentication(authentication);
+      } catch (AuthenticationException ae) {
+         SecurityContextHolder.clearContext();
+         log.debug(String.format("Authentication attempt failed for user %s", userName), ae);
+      }
+   }
 
-	@Override
-	public void logout() {
-    	SecurityContextHolder.clearContext();
-    }
+   @Override
+   public void logout() {
+      SecurityContextHolder.clearContext();
+   }
 
-	@Override
-	public boolean isAuthenticated() {
-    	SecurityContext context = SecurityContextHolder.getContext();
-    	org.acegisecurity.Authentication authentication = context.getAuthentication();
-        return (authentication != null) && authentication.isAuthenticated();
-    }
+   @Override
+   public boolean isAuthenticated() {
+      SecurityContext context = SecurityContextHolder.getContext();
+      org.acegisecurity.Authentication authentication = context.getAuthentication();
+      return (authentication != null) && authentication.isAuthenticated();
+   }
 
-	@Override
-	public String getAuthenticatedUser() {
-		User principal = getPrincipal();
-		return principal != null ? principal.getUsername() : null;
-	}
+   @Override
+   public String getAuthenticatedUser() {
+      User principal = getPrincipal();
+      return principal != null ? principal.getUsername() : null;
+   }
 
-	@Override
-	public List<String> getAuthorities() {
-		List<String> authorities = new ArrayList<String>();
-		User principal = getPrincipal();
-		if (principal != null) {
-			GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
-			for (int i = 0; i < grantedAuthorities.length; i++) {
-				authorities.add(grantedAuthorities[i].getAuthority());
-			}
-		}
-		return authorities;
-	}
+   @Override
+   public List<String> getAuthorities() {
+      List<String> authorities = new ArrayList<String>();
+      User principal = getPrincipal();
+      if (principal != null) {
+         GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
+         for (int i = 0; i < grantedAuthorities.length; i++) {
+            authorities.add(grantedAuthorities[i].getAuthority());
+         }
+      }
+      return authorities;
+   }
 
-	@Override
-	public boolean hasAuthority(String authority) {
-		User principal = getPrincipal();
-		if (principal != null) {
-			GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
-			for (int i = 0; i < grantedAuthorities.length; i++) {
-				if (grantedAuthorities[i].getAuthority().equals(authority)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+   @Override
+   public boolean hasAuthority(String authority) {
+      User principal = getPrincipal();
+      if (principal != null) {
+         GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
+         for (int i = 0; i < grantedAuthorities.length; i++) {
+            if (grantedAuthorities[i].getAuthority().equals(authority)) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
 
-	private User getPrincipal() {
-    	SecurityContext context = SecurityContextHolder.getContext();
-    	org.acegisecurity.Authentication authentication = context.getAuthentication();
-    	return authentication != null ? (User)authentication.getPrincipal() : null;
-    }
+   private User getPrincipal() {
+      SecurityContext context = SecurityContextHolder.getContext();
+      org.acegisecurity.Authentication authentication = context.getAuthentication();
+      return authentication != null ? (User) authentication.getPrincipal() : null;
+   }
 
-	public Map<Long, Map<String, String>> getPreferencesByModule(String module) {
-    	return preferenceService.getPreferencesByModule(module);
-    }
+   public Map<Long, Map<String, String>> getPreferencesByModule(String module) {
+      return preferenceService.getPreferencesByModule(module);
+   }
 
-    public Map<String, Map<String, String>> getPreferencesByUserId(String userId) {
-    	return preferenceService.getPreferencesByUserId(userId);
-    }
+   public Map<String, Map<String, String>> getPreferencesByUserId(String userId) {
+      return preferenceService.getPreferencesByUserId(userId);
+   }
 
-    public List<String> getPreferenceValues(String module, String userId, String key) {
-    	return preferenceService.getPreferenceValues(module, userId, key);
-    }
+   @Override
+   public List<String> getPreferenceValues(String module, String userId, String key) {
+      return preferenceService.getPreferenceValues(module, userId, key);
+   }
 
-    public void createPreference(String module, String userId, String key, String value) {
-    	preferenceService.createPreference(module, userId, key, value);
-    }
+   public void createPreference(String module, String userId, String key, String value) {
+      preferenceService.createPreference(module, userId, key, value);
+   }
 
-    public void deletePreference(String module, String userId, String key, String value) {
-    	preferenceService.deletePreference(module, userId, key, value);
-    }
+   public void deletePreference(String module, String userId, String key, String value) {
+      preferenceService.deletePreference(module, userId, key, value);
+   }
 
-    //TODO: replace the previous methods by methods who accept the following
-    //      properties!
+   // TODO: replace the previous methods by methods who accept the following
+   // properties!
 
-    /**
-     * @deprecated please try to use another service
-     */
-	@Override
-	public void createPreference(String module, String userId, String key, List<String> values) {
-		for(String value : values) {
-			preferenceService.createPreference(module, userId, key, value);
-		}
-	}
+   /**
+    * @deprecated please try to use another service
+    */
+   @Override
+   public void createPreference(String module, String userId, String key, List<String> values) {
+      for (String value : values) {
+         preferenceService.createPreference(module, userId, key, value);
+      }
+   }
 
-    /**
-     * @deprecated please try to use another service
-     */
-	@Override
-	public Map<String, Map<String, List<String>>> getPreferences(String module,
-			String userId, String key, String value) {
-		return null;
-	}
+   /**
+    * @deprecated please try to use another service
+    */
+   @Override
+   public Map<String, Map<String, List<String>>> getPreferences(String module, String userId, String key, String value) {
+      return null;
+   }
 
-    /**
-     * @deprecated please try to use another service
-     */
-	@Override
-	public Map<String, Map<String, String>> getUserProperty(String userId) {
-//		return preferenceService.getPreferencesByUserId(userId);
-		return null;
-	}
+   /**
+    * @deprecated please try to use another service
+    */
+   @Override
+   public Map<String, Map<String, String>> getUserProperty(String userId) {
+      // return preferenceService.getPreferencesByUserId(userId);
+      return null;
+   }
 
-	@Override
+   @Override
    public boolean sendPassword(String email, String emailText, String emailHeader) {
       if (StringUtils.isEmpty(email)) {
          throw new IllegalArgumentException("Username not found.");
@@ -188,47 +188,47 @@ public class CommunityServiceImpl extends CommunityService {
       }
       Person person = new Person();
       person.setEmail(email);
-      List<Person> persons = personService.getPerson(person);
-      List<Authentication> authList = new ArrayList<Authentication>(); 
+      List<Person> persons = personService.getPersons(person);
+      List<Authentication> authList = new ArrayList<Authentication>();
       StringBuilder body = new StringBuilder();
-      
+
       for (Person person2 : persons) {
          Authentication auth = authenticationService.getAuthenticationById(person2.getAuthenticationId());
          authList.add(auth);
          String name = NameUtil.getFullName(person2.getFirstName(), person2.getInfix(), person2.getLastName());
          body.append(name + "\n" + auth.getUserId() + "\n" + auth.getPassword() + "\n\n");
       }
-      String finalBody = MessageFormat.format(emailText, body.toString()); 
+      String finalBody = MessageFormat.format(emailText, body.toString());
       String name = NameUtil.getFullName(person.getFirstName(), person.getInfix(), person.getLastName());
       EmailUtil.send(name, email, emailHeader, finalBody);
       return true;
    }
 
-    /**
-     * @deprecated please try to use another service
-     */
-	@Override
-	public void removePreferences(String module, String userId, String key) {
-		List<String> valueList = preferenceService.getPreferenceValues(module, userId, key);
-		for (String value : valueList) {
-			preferenceService.deletePreference(module, userId, key, value);
-		}
-	}
+   /**
+    * @deprecated please try to use another service
+    */
+   @Override
+   public void removePreferences(String module, String userId, String key) {
+      List<String> valueList = preferenceService.getPreferenceValues(module, userId, key);
+      for (String value : valueList) {
+         preferenceService.deletePreference(module, userId, key, value);
+      }
+   }
 
-	@Required
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
-	}
-
-	@Required
-	public void setPreferenceService(PreferenceService preferenceService) {
-		this.preferenceService = preferenceService;
-	}
-	
    @Required
-	public void setPersonService(PersonService personService) {
-	   this.personService = personService;
-	}
+   public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+      this.authenticationManager = authenticationManager;
+   }
+
+   @Required
+   public void setPreferenceService(PreferenceService preferenceService) {
+      this.preferenceService = preferenceService;
+   }
+
+   @Required
+   public void setPersonService(PersonService personService) {
+      this.personService = personService;
+   }
 
    @Required
    public void setAuthenticationService(AuthenticationService authenticationService) {
