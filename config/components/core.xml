@@ -223,15 +223,15 @@
       <param name="active" type="String" />
       <param name="cache"  type="String" />
       <param name="clear"  type="String" />
-      <param name="rs_show"  type="String" />
-      <param name="rs_action"  type="String" />
-      <param name="rs_name"  type="String" />
+      <param name="rs_active" type="String" />
+      <param name="rs_show"   type="String" />
+      <param name="rs_name"   type="String" />
     </body>
   </block>
   <block name="showcache"
          mimetype="text/html">
     <body jsp="cache/show.jspx">
-      <param name="cache"        type="String" required="true"/>
+      <param name="cache"        type="String" required="true" />
       <param name="deleteentry"  type="String" />
       <param name="deletekey"    type="String" />
       <param name="key"          type="String" />
