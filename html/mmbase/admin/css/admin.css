@@ -24,6 +24,8 @@ h1, h2, h3, h4, h5, h6
     color: #002828;
 }
 
+h4 { font-size: 1.1em; }
+
 img
 {
     border: 0;
@@ -188,6 +190,14 @@ h2.top
     line-height: 1.1em;
 }
 
+/* form stuff */
+label
+{
+	font-weight: bold;
+	display: block;
+}
+
+/* table stuff */
 table
 {
     border-color: #CCC #CCC transparent #CCC;
@@ -226,6 +236,7 @@ th.center, td.center { text-align: center; }
 
 div#aboutthisredbox { display: none; }
 
+/* messages, errors */
 .msg
 {
     border: 1px solid #002828;

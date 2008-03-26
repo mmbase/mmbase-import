@@ -50,7 +50,7 @@
     <div class="msg">The releasestrategies of cache <em>${cache}</em> are turned ${active}.</div>
   </mm:present>
 
-  <table summary="cache manager" cellspacing="0" cellpadding="3" border="0">
+  <table summary="MMBase caches, their statistics and actions that can be taken" cellspacing="0" cellpadding="3" border="0">
     <caption>
       This tools hows the performance of the various MMBase caches. You can also (temporary) turn
       on/off the cache here. For a persistant change you should change caches.xml.
@@ -71,14 +71,14 @@
     <mm:listfunction set="caches" name="list" id="qc">
       <mm:first>
         <tr>
-          <th>Cache</th>
-          <th class="center">Requests</th>
-          <th class="center">Hits</th>
-          <th class="center">Misses</th>
-          <th class="center">Puts</th>
-          <th class="center">Size</th>
-          <th class="center">Performance</th>
-          <th class="center">Action</th>
+          <th scope="col">Cache</th>
+          <th scope="col" class="center">Requests</th>
+          <th scope="col" class="center">Hits</th>
+          <th scope="col" class="center">Misses</th>
+          <th scope="col" class="center">Puts</th>
+          <th scope="col" class="center">Size</th>
+          <th scope="col" class="center">Performance</th>
+          <th scope="col" class="center">Action</th>
         </tr>
       </mm:first>
       <tr>
@@ -202,14 +202,14 @@
     <mm:listfunction set="caches" name="list" remove="qc" id="c">
       <mm:first>
         <tr>
-          <th>Cache</th>
-          <th class="center">Requests</th>
-          <th class="center">Hits</th>
-          <th class="center">Misses</th>
-          <th class="center">Puts</th>
-          <th class="center">Size</th>
-          <th class="center">Performance</th>
-          <th class="center">Action</th>
+          <th scope="col">Cache</th>
+          <th scope="col" class="center">Requests</th>
+          <th scope="col" class="center">Hits</th>
+          <th scope="col" class="center">Misses</th>
+          <th scope="col" class="center">Puts</th>
+          <th scope="col" class="center">Size</th>
+          <th scope="col" class="center">Performance</th>
+          <th scope="col" class="center">Action</th>
         </tr>
       </mm:first>
       <tr>
