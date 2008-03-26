@@ -52,9 +52,9 @@ public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
 	
 	         if (SecurityUtil.isEditor(role)) {
 	            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.alias.edit",
-	                        RESOURCEBUNDLE, "../alias/AliasEdit.do?number=" + id));
+	                        RESOURCEBUNDLE, "../alias/AliasEdit.do?number=" + id+"&parentpage="+parentParentNode.getNumber()));
 	            element.addOption(renderer.createTreeOption("delete.png", "site.alias.remove", 
-	                    RESOURCEBUNDLE, "../alias/AliasDelete.do?number=" + id));
+	                    RESOURCEBUNDLE, "../alias/AliasDelete.do?number=" + id+"&parentpage="+parentParentNode.getNumber()));
 	         }
 	         
 	         if (SecurityUtil.isChiefEditor(role)) {
