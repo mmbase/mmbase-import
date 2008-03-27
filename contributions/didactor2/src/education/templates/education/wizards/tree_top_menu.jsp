@@ -17,7 +17,7 @@
         }
       </style>
 
-      <mm:import externid="mode">components</mm:import>
+      <mm:import externid="mode">educations</mm:import>
 
       <mm:node number="$user" >
         <mm:hasrank value="administrator">
