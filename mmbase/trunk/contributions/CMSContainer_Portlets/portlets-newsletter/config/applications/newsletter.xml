@@ -15,6 +15,7 @@
 		<builder maintainer="finalist.com" version="2">newslettertheme</builder>
 		<builder maintainer="finalist.com" version="2">newsletterpublication</builder>
 		<builder maintainer="finalist.com" version="2">newsletterpublicationtheme</builder>
+		<builder maintainer="finalist.com" version="2">newsletterdailylog</builder>
 	</neededbuilderlist>
 	<neededreldeflist>
 		 <reldef source="defaulttheme" target="defaulttheme" direction="bidirectional" guisourcename="defaulttheme" guitargetname="defaulttheme" builder="insrel" />
@@ -27,7 +28,8 @@
 		<relation from="newsletter" to="newslettertheme" type="newslettertheme" />
 		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
 		<relation from="newsletter" to="newsletterpublication" type="related" />
-		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="newslettertheme" />
+      <relation from="newsletter" to="newsletterdailylog" type="related" />
+      <relation from="newsletterpublication" to="newsletterpublicationtheme" type="newslettertheme" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="defaulttheme" />
 		<relation from="newsletterpublicationtheme" to="newslettertheme" type="related" />
 		
