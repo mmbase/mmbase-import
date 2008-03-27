@@ -8,6 +8,9 @@
   <mm:cloud>
     <mm:import externid="listjsp"   from="request" required="true"/>
     <mm:import externid="wizardjsp" from="request" required="true"/>
+    <mm:import from="request" externid="referrer" />
+    <mm:import id="kupu_back"><mm:url page="${referrer}" /></mm:import>
+
     <mm:import id="nodes_exist" reset="true">false</mm:import>
     <mm:listnodes type="portalpagesnodes">
       <mm:import id="nodes_exist" reset="true">true</mm:import>
@@ -60,6 +63,7 @@
               </di:leaf>
               <div id="portal_node_${_node}" style="display:none">
                 <di:leaf
+                    icon="new_education"
                     branchPath="..${status.last ? '.' : ' '} "
                     >
                   <mm:link referid="wizardjsp" referids="_node@origin">
@@ -68,15 +72,49 @@
                     <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td>
                   </mm:link>
                 </di:leaf>
-                <di:leaf
-                    branchPath="..${status.last ? '.' : ' '} "
-                    >
-                  <mm:link referid="wizardjsp" referids="_node@origin">
-                    <mm:param name="wizard">config/portalpages/newsimplecontents</mm:param>
-                    <mm:param name="objectnumber">new</mm:param>
-                    <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
-                  </mm:link>
-                </di:leaf>
+
+                 <di:getsetting setting="new_contents" component="portalpages" vartype="list" id="new_contents" write="false" />
+                 <mm:stringlist referid="new_contents">
+                   <c:choose>
+                     <c:when test="${_ eq 'simplecontents'}">
+                       <di:leaf
+                           icon="new_education"
+                           branchPath="..${status.last ? '.' : ' '} "
+                           >
+                         <mm:link referid="wizardjsp" referids="_node@origin">
+                           <mm:param name="wizard">config/portalpages/newsimplecontents</mm:param>
+                           <mm:param name="objectnumber">new</mm:param>
+                           <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
+                         </mm:link>
+                       </di:leaf>
+                     </c:when>
+                     <c:when test="${_ eq 'simplexmlcontents'}">
+
+
+                       <di:leaf
+                           icon="kupu_icon"
+                           branchPath="..${status.last ? '.' : ' '} "
+                           >
+                         <mm:link page="/mmbase/kupu/mmbase" referids="_node@origin,referrer,kupu_back">
+                           <mm:param name="templates">/editwizards/data</mm:param>
+                           <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
+                           <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
+                           <mm:param name="language">${locale.language}</mm:param>
+                           <mm:param name="objectnumber">new</mm:param>
+                           <a href="${_}" title="nieuwe content" target="text">nieuwe content</a>
+                         </mm:link>
+                       </di:leaf>
+                     </c:when>
+                     <c:otherwise>
+                       <di:leaf
+                           icon=""
+                           branchPath="..${status.last ? '.' : ' '} "
+                           >
+                         UNKNONWN ${_}
+                       </di:leaf>
+                     </c:otherwise>
+                   </c:choose>
+                 </mm:stringlist>
 
                 <mm:treeinclude page="/portalpages/backoffice/related_portalpagesnodes.jsp" objectlist="${includePath}">
                   <mm:param name="branchPath">..${status.last ? '.' : ' '}</mm:param>
