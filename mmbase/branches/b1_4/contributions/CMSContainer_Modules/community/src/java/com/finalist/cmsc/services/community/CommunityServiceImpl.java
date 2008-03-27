@@ -176,7 +176,7 @@ public class CommunityServiceImpl extends CommunityService {
 
    /** {@inheritDoc} */
    @Override
-   boolean sendPassword(String email, String emailSubject, String emailBody) {
+   boolean sendPassword(String email, String senderName, String senderEmail, String emailSubject, String emailBody) {
       boolean authenticationFound = false;
 
       if (StringUtils.isEmpty(email)) {
@@ -215,7 +215,7 @@ public class CommunityServiceImpl extends CommunityService {
       }
 
       if (authenticationFound) {
-         EmailUtil.send(name, email, emailSubject, body.toString());
+         EmailUtil.send(null, name, email, senderName, senderEmail, emailSubject, body.toString());
       }
 
       return authenticationFound;

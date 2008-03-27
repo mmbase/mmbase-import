@@ -74,6 +74,10 @@ public class Community {
     *
     * @param username
     *           The username to search for a password.
+    * @param senderName
+    *           Name used as email sender
+    * @param senderEmail
+    *           Email used as email sender
     * @param emailSubject
     *           The email subject
     * @param emailBody
@@ -84,8 +88,8 @@ public class Community {
     * @deprecated Don't use this method, this functionality should be
     *             implemented somewhere else.
     */
-   public static boolean sendPassword(String username, String emailSubject, String emailBody) {
-      return communityService.sendPassword(username, emailSubject, emailBody);
+   public static boolean sendPassword(String username, String senderName, String senderEmail, String emailSubject, String emailBody) {
+      return communityService.sendPassword(username, senderName, senderEmail, emailSubject, emailBody);
    }
 
 }

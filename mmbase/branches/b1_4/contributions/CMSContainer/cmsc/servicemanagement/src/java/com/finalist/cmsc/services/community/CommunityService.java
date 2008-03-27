@@ -39,7 +39,7 @@ public abstract class CommunityService extends Service {
    /**
     * Do not use.
     *
-    * @see Community#sendPassword(String, String, String)
+    * @see Community#sendPassword(String, String, String, String, String)
     */
-   abstract boolean sendPassword(String username, String emailSubject, String emailBody);
+   abstract boolean sendPassword(String username, String senderName, String senderEmail, String emailSubject, String emailBody);
 }
