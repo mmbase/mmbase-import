@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Johannes Verelst &lt;johannes.verelst@eo.nl&gt;
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.42 2008-03-26 14:11:01 michiel Exp $
+ * @version $Id: SendMail.java,v 1.43 2008-03-27 22:01:28 nklasens Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(SendMail.class);
@@ -314,10 +314,12 @@ public class SendMail extends AbstractSendMail {
                 prop.put("mail.smtp.connectiontimeout", "10000");
                 prop.put("mail.smtp.timeout", "10000");
 
-                for (Iterator<Map.Entry> i = getInitParameters().entrySet().iterator(); i.hasNext();) {
-                    Map.Entry<String, String> entry = i.next();
-                    if (entry.getKey().startsWith("mail.")) {
-                        prop.put(entry.getKey(), entry.getValue());
+                Map parameters = getInitParameters();
+                for (Iterator i = parameters.entrySet().iterator(); i.hasNext();) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    String key = (String) entry.getKey();
+                    if (key.startsWith("mail.")) {
+                        prop.put(key, entry.getValue());
                     }
                 }
                 StringBuilder buf = new StringBuilder(smtpHost);
