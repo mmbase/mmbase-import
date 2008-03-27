@@ -48,7 +48,7 @@
           </mm:link>
         </di:leaf>
         <mm:listnodes type="portalpagescontainers">
-          <mm:relatednodescontainer type="portalpagesnodes" >
+          <mm:relatednodescontainer type="portalpagesnodes" searchdirs="destination" >
             <mm:sortorder field="number" direction="up" />
             <mm:relatednodes varStatus="status">
               <di:leaf
