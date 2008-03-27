@@ -33,69 +33,80 @@
               language="${requestScope.language}" expires="${expires}">
     <mm:cloud rank="${empty rank ? 'didactor user' : rank}">
       <html  xmlns="http://www.w3.org/1999/xhtml">
-        <c:if test="${! empty description}">&lt;!-- ${description} --&gt;</c:if>
-        <di:head>
-          <title>
-            <c:forTokens items="${title_nodeparams}" delims="," var="title_nodeparam">
-              <c:if test="${! empty title_nodeparam and ! empty param[title_nodeparam]}">
-                <mm:node number="${param[title_nodeparam]}">
-                  <mm:nodeinfo type="gui" />
-                  <jsp:text> - </jsp:text>
+        <mm:import escape="trimmer" id="validatemessage"><mm:treeinclude page="/shared/validateUser.jsp" objectlist="$includePath" referids="$referids" /></mm:import>
+        <c:choose>
+          <c:when test="${! empty validatemessage}">
+            <mm:cloud method="logout" />
+            <mm:redirect page="/login/declined.jspx" referids="validatemessage@message">
+              <mm:param name="referrer">${request.servletPath}</mm:param>
+            </mm:redirect>
+          </c:when>
+          <c:otherwise>
+            <c:if test="${! empty description}">&lt;!-- ${description} --&gt;</c:if>
+            <di:head>
+              <title>
+                <c:forTokens items="${title_nodeparams}" delims="," var="title_nodeparam">
+                  <c:if test="${! empty title_nodeparam and ! empty param[title_nodeparam]}">
+                    <mm:node number="${param[title_nodeparam]}">
+                      <mm:nodeinfo type="gui" />
+                      <jsp:text> - </jsp:text>
+                    </mm:node>
+                  </c:if>
+                </c:forTokens>
+                <jsp:text>${title}</jsp:text>
+                <c:if test="${! empty title_key}">
+                  <di:translate key="${title_key}" />
+                </c:if>
+                <c:if test="${! empty education}">
+                  <mm:node referid="education"><mm:field name="name"><mm:isnotempty> -  <mm:write /></mm:isnotempty></mm:field></mm:node>
+                </c:if>
+              </title>
+              <c:if test="${! empty component}">
+                <mm:haspage page="/${component}/style/base.css">
+                  <mm:link page="/${component}/style/base.css">
+                    <link rel="stylesheet" type="text/css" href="${_}" />
+                  </mm:link>
+                </mm:haspage>
+                <mm:haspage page="/${component}/style/print.css">
+                  <mm:link page="/${component}/style/print.css">
+                    <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
+                    <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
+                  </mm:link>
+                </mm:haspage>
+              </c:if>
+              <c:if test="${! empty css}">
+                <mm:treefile write="false" page="${css}" objectlist="${includePath}">
+                  <link rel="stylesheet" type="text/css" href="${_}" />
+                </mm:treefile>
+              </c:if>
+              <c:if test="${! empty education}">
+                <mm:node referid="education">
+                  <mm:field name="intro" escape="tagstripper,text/html/attribute,trimmer">
+                    <mm:isnotempty>
+                      <meta name="description" content="${_}" />
+                    </mm:isnotempty>
+                  </mm:field>
                 </mm:node>
               </c:if>
-            </c:forTokens>
-            <jsp:text>${title}</jsp:text>
-            <c:if test="${! empty title_key}">
-              <di:translate key="${title_key}" />
-            </c:if>
-            <c:if test="${! empty education}">
-              <mm:node referid="education"><mm:field name="name"><mm:isnotempty> -  <mm:write /></mm:isnotempty></mm:field></mm:node>
-            </c:if>
-          </title>
-          <c:if test="${! empty component}">
-            <mm:haspage page="/${component}/style/base.css">
-              <mm:link page="/${component}/style/base.css">
-                <link rel="stylesheet" type="text/css" href="${_}" />
-              </mm:link>
-            </mm:haspage>
-            <mm:haspage page="/${component}/style/print.css">
-              <mm:link page="/${component}/style/print.css">
-                <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
-                <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
-              </mm:link>
-            </mm:haspage>
-          </c:if>
-          <c:if test="${! empty css}">
-            <mm:treefile write="false" page="${css}" objectlist="${includePath}">
-              <link rel="stylesheet" type="text/css" href="${_}" />
-            </mm:treefile>
-          </c:if>
-          <c:if test="${! empty education}">
-            <mm:node referid="education">
-              <mm:field name="intro" escape="tagstripper,text/html/attribute,trimmer">
-                <mm:isnotempty>
-                  <meta name="description" content="${_}" />
-                </mm:isnotempty>
-              </mm:field>
-            </mm:node>
-          </c:if>
-        </di:head>
-        <body class="${styleClass}">
-          <mm:hasrank minvalue="didactor user">
-            <di:include page="/shared/keepalive.jsp" />
-          </mm:hasrank>
+            </di:head>
+            <body class="${styleClass}">
+              <mm:hasrank minvalue="didactor user">
+                <di:include page="/shared/keepalive.jsp" />
+              </mm:hasrank>
 
-          <div class="componentBody">
-            <mm:write request="component" value="${component}" />
-            <di:include page="/cockpit/applicationbar.jsp" />
-            <di:include page="/cockpit/providerbar.jsp" />
-            <di:include page="/cockpit/educationbar.jsp" />
-            <div class="di_body mm_c_${component}">
-              <jsp:doBody />
-            </div>
-          </div>
-          <di:include page="/cockpit/footer.jspx" />
-        </body>
+              <div class="componentBody">
+                <mm:write request="component" value="${component}" />
+                <di:include page="/cockpit/applicationbar.jsp" />
+                <di:include page="/cockpit/providerbar.jsp" />
+                <di:include page="/cockpit/educationbar.jsp" />
+                <div class="di_body mm_c_${component}">
+                  <jsp:doBody />
+                </div>
+              </div>
+              <di:include page="/cockpit/footer.jspx" />
+            </body>
+          </c:otherwise>
+        </c:choose>
       </html>
     </mm:cloud>
   </mm:content>
