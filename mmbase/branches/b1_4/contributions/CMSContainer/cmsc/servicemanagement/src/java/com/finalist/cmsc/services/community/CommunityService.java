@@ -36,6 +36,10 @@ public abstract class CommunityService extends Service {
 
    public abstract Map<String, Map<String, String>> getUserProperty(String userName);
 
-   public abstract boolean sendPassword(String username, String emailText, String emailHeader);
-
+   /**
+    * Do not use.
+    *
+    * @see Community#sendPassword(String, String, String)
+    */
+   abstract boolean sendPassword(String username, String emailSubject, String emailBody);
 }

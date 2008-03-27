@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.services.community;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -175,33 +174,51 @@ public class CommunityServiceImpl extends CommunityService {
       return null;
    }
 
+   /** {@inheritDoc} */
    @Override
-   public boolean sendPassword(String email, String emailText, String emailHeader) {
+   boolean sendPassword(String email, String emailSubject, String emailBody) {
+      boolean authenticationFound = false;
+
       if (StringUtils.isEmpty(email)) {
          throw new IllegalArgumentException("Username not found.");
       }
-      if (StringUtils.isEmpty(emailText)) {
-         emailText = "Email text is missing";
+      if (StringUtils.isEmpty(emailSubject)) {
+         emailSubject = "<email subject is missing>";
       }
-      if (StringUtils.isEmpty(emailHeader)) {
-         emailHeader = "Email header is missing";
+      if (StringUtils.isEmpty(emailBody)) {
+         emailBody = "<email body is missing>";
       }
-      Person person = new Person();
-      person.setEmail(email);
-      List<Person> persons = personService.getPersons(person);
-      List<Authentication> authList = new ArrayList<Authentication>();
-      StringBuilder body = new StringBuilder();
 
-      for (Person person2 : persons) {
-         Authentication auth = authenticationService.getAuthenticationById(person2.getAuthenticationId());
-         authList.add(auth);
-         String name = NameUtil.getFullName(person2.getFirstName(), person2.getInfix(), person2.getLastName());
-         body.append(name + "\n" + auth.getUserId() + "\n" + auth.getPassword() + "\n\n");
+      String name = "";
+      StringBuilder body = new StringBuilder(emailBody);
+
+      Person example = new Person();
+      example.setEmail(email);
+      // Retrieve a list of persons that match this example
+      List<Person> persons = personService.getPersons(example);
+
+      for (Person person : persons) {
+         Authentication authentication = authenticationService.getAuthenticationById(person.getAuthenticationId());
+
+         if (authentication != null) {
+            if ("".equals(name)) {
+               name = NameUtil.getFullName(person.getFirstName(), person.getInfix(), person.getLastName());
+            }
+
+            body.append("\n---\n");
+            body.append("Gebruikersnaam: ").append(authentication.getUserId());
+            body.append("\n");
+            body.append("Wachtwoord    : ").append(authentication.getPassword());
+
+            authenticationFound = true;
+         }
       }
-      String finalBody = MessageFormat.format(emailText, body.toString());
-      String name = NameUtil.getFullName(person.getFirstName(), person.getInfix(), person.getLastName());
-      EmailUtil.send(name, email, emailHeader, finalBody);
-      return true;
+
+      if (authenticationFound) {
+         EmailUtil.send(name, email, emailSubject, body.toString());
+      }
+
+      return authenticationFound;
    }
 
    /**

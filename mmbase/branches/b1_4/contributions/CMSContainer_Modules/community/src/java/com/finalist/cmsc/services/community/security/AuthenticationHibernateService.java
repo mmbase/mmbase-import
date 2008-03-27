@@ -175,6 +175,7 @@ public class AuthenticationHibernateService extends HibernateService implements 
    }
 
    /** {@inheritDoc} */
+   @Transactional(readOnly = true)
    public Authentication getAuthenticationById(Long authenticationId) {
       return (Authentication) getSession().get(Authentication.class, authenticationId);
    }
