@@ -108,7 +108,7 @@ public class Authentication extends org.mmbase.security.Authentication {
      * @since Didactor-2.3
      */
     protected void logout(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Processing didactor logout");
+        log.debug("Processing didactor logout because ", new Exception());
         HttpSession session = request == null ? null : request.getSession(false);
         if (session != null) {
             String loginComponent = (String)session.getAttribute("didactor-logincomponent");
@@ -244,7 +244,16 @@ public class Authentication extends org.mmbase.security.Authentication {
             }
         }
 
-        log.debug("Apparently not logged in yet, try to do that now");
+        log.debug("Apparently not logged in yet, try to do that now: " + application);
+
+
+        if ("name/password".equals(application)) {
+            log.debug("Found 'name/password' application. Decorating request with name/password.");
+            request.setAttribute("username", loginInfo.get("username"));
+            request.setAttribute("password", loginInfo.get("password"));
+            application = "login";
+        }
+
         // Apparently not, so we ask the components if they can process the login,
         // maybe there was a post to the current page?
         for (AuthenticationComponent ac : securityComponents) {
@@ -284,11 +293,6 @@ public class Authentication extends org.mmbase.security.Authentication {
             return new UserContext("anonymous", "anonymous", Rank.ANONYMOUS, "asis");
         }
 
-        if ("name/password".equals(application)) {
-            request.setAttribute("username", loginInfo.get("username"));
-            request.setAttribute("password", loginInfo.get("password"));
-            application = "login";
-        }
 
         assert  application.equals("login") : "Unknown security application " + application;
 
@@ -321,9 +325,10 @@ public class Authentication extends org.mmbase.security.Authentication {
                     }
                     // how about the paramters already present. This seems to be too simple. Escaping?
                     String redirect = response.encodeRedirectURL(referUrl.toString());
+                    log.debug("Redirecting to " + redirect);
                     response.sendRedirect(redirect);
                 } catch (Exception e) {
-                    throw new SecurityException("Can't redirect to login page(" + loginPage + ")", e);
+                    throw new SecurityException("Can't redirect to login page(" + loginPage + ") because " + e.getClass() + ":" + e.getMessage(), e);
                 }
                 return null;
             }
