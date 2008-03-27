@@ -178,6 +178,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
          int end = maxElements == null || maxElements.length() == 0 ? -1 : Integer.valueOf(maxElements);
 
          if (start > 0 || end > 0) {
+            if (start <= 0) start = 1;
             List<String> contenttypes = SiteManagement.getContentTypes(String.valueOf(portlet.getId()));
 
             String contentchannel = portlet.getParameterValue(CONTENTCHANNEL);
@@ -196,7 +197,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
             Node channel = cloud.getNode(contentchannel);
 
             NodeList l = RepositoryUtil.getLinkedElements(channel, contenttypes, orderby, direction, useLifecycleBool,
-                  archive, start, end, -1, -1, -1);
+                  archive, start - 1, end, -1, -1, -1);
             for (Iterator<Node> iterator = l.iterator(); iterator.hasNext();) {
                Node node = iterator.next();
                if (node.getNumber() == content.getNumber()) {
