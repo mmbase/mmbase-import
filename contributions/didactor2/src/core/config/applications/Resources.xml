@@ -9,7 +9,7 @@
     <builder maintainer="mmbase.org" version="0">attachments</builder>
     <builder maintainer="mmbase.org" version="0">posrel</builder>
     <builder maintainer="mmbase.org" version="0">pools</builder>
-    
+
     <builder maintainer="mmbase.org" version="0">descriptionrel</builder>
     <builder maintainer="mmbase.org" version="0">pdfs</builder>
 
@@ -17,7 +17,6 @@
     <builder maintainer="mmbase.org" version="0">mmevents</builder>
     <builder maintainer="mmbase.org" version="0">audiotapes</builder>
     <builder maintainer="mmbase.org" version="0">videotapes</builder>
-    <builder maintainer="mmbase.org" version="0">jumpers</builder>
   </neededbuilderlist>
 
   <neededreldeflist>

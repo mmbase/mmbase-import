@@ -3,7 +3,6 @@
 ./resources/attachments.xml
 ./resources/urls.xml
 ./resources/posrel.xml
-./jumpers/jumpers.xml
 ./didactor_core/authrel.xml
 ./didactor_core/classes.xml
 ./didactor_core/classrel.xml
@@ -12,12 +11,12 @@
 ./didactor_core/educations.xml
 ./didactor_core/fields.xml
 ./didactor_core/news.xml
-./didactor_core/people.xml
-./didactor_core/providers.xml
 ./didactor_core/rolerel.xml
+./didactor_core/providers.xml
 ./didactor_core/roles.xml
 ./didactor_core/workgroups.xml
 ./didactor_core/disallowedusernames.xml
+./didactor_core/people.xml
 ./didactor_component/components.xml
 ./didactor_component/settingrel.xml
 ./didactor_component/settings.xml
