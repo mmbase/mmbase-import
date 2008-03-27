@@ -54,6 +54,8 @@
       </datatype>
     </field>
 
+
+    <!-- What a horrible nonsense -->
     <field name="order_number">
       <gui>
         <guiname xml:lang="en">Order Number</guiname>
@@ -64,7 +66,9 @@
           <list>6</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer" />
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
+        <default value="1" />
+      </datatype>
     </field>
 
  </fieldlist>
