@@ -393,9 +393,7 @@
 				</positions>
 			</editor>
 			<db>
-				<name xml:lang="en">path</name>
-				<name xml:lang="nl">path</name>
-				<name xml:lang="zh">路径</name>
+				<name>path</name>
 				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
 			</db>
 		</field>
@@ -418,9 +416,7 @@
 				</positions>
 			</editor>
 			<db>
-				<name xml:lang="en">oldpath</name>
-				<name xml:lang="nl">oldpath</name>
-				<name xml:lang="zh">原路径</name>
+				<name>oldpath</name>
 				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
 			</db>
 		</field>
