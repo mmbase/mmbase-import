@@ -36,7 +36,7 @@
             <td><nobr><a href="${_}" title="portal pagina's" target="text">Portal Pagina's</a></nobr></td> <!-- I18N ? -->
           </mm:link>
       </di:leaf>
-      <div id="portal_root" style="display:none">
+      <div id="portal_root">
         <di:leaf
             icon="new_education"
             branchPath=".."
