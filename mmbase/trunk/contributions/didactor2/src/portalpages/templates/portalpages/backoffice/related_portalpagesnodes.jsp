@@ -5,8 +5,12 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <jsp:output omit-xml-declaration="yes" />
+  <mm:import id="kupu_back"><mm:url page="${referrer}" /></mm:import>
   <mm:import externid="branchPath" />
-  <mm:relatednodes role="childppnn" type="portalpagesnodes">
+  <mm:relatednodes role="childppnn"
+                   orderby="order_number"
+                   type="portalpagesnodes">
+
     <di:leaf
         branchPath="${branchPath} "
         click="portal_child_${_node}"
@@ -41,17 +45,52 @@
           </mm:link>
         </di:leaf>
       </mm:relatednodes>
+      <mm:relatednodes role="posrel"
+                       type="simplexmlcontents" varStatus="status">
+        <di:leaf
+            branchPath="${branchPath} ${status.last ? '.' : ' '}"
+            icon="kupu_icon">
+          <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
+            <mm:param name="templates">/editwizards/data</mm:param>
+            <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
+            <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
+            <mm:param name="language">${locale.language}</mm:param>
+            <a href="${_}" title="edit" target="text">
+              <mm:field name="title"/>
+            </a>
+          </mm:link>
+        </di:leaf>
+      </mm:relatednodes>
     </div>
   </mm:relatednodes>
-  <mm:relatednodes role="related" type="simplecontents" varStatus="status">
+
+  <!-- WTF is the sort order here
+       This is horrible.
+       Only let for legacy reasons.
+  -->
+  <mm:relatednodes role="related"
+                   type="simplecontents" varStatus="status">
     <di:leaf
         branchPath="${branchPath}${status.last ? '.' : ' '}"
         icon="learnblock">
       <mm:link referid="wizardjsp" referids="_node@objectnumber">
         <mm:param name="wizard">config/portalpages/simplecontents</mm:param>
-        <td>
-          <a href="${_}" title="edit" target="text"><mm:field name="title"/></a>
-        </td>
+        <a href="${_}" title="edit" target="text"><mm:field name="title"/></a>
+      </mm:link>
+    </di:leaf>
+  </mm:relatednodes>
+
+  <mm:relatednodes role="posrel"
+                   type="simplexmlcontents" varStatus="status">
+    <di:leaf
+        branchPath="${branchPath}${status.last ? '.' : ' '}"
+        icon="kupu_icon">
+      <mm:link page="/mmbase/kupu/mmbase" referids="_node@objectnumber,referrer,kupu_back">
+        <mm:param name="templates">/editwizards/data</mm:param>
+        <mm:param name="wizard">config/portalpages/simplexmlcontents</mm:param>
+        <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
+        <mm:param name="language">${locale.language}</mm:param>
+        <a href="${_}" title="edit" target="text"><mm:field name="title"/></a>
       </mm:link>
     </di:leaf>
   </mm:relatednodes>
