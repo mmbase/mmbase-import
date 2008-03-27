@@ -32,7 +32,7 @@
         http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html
     -->
     <property name="mail.smtp.connectiontimeout">10000</property>
-    <proeprty name="mail.smtp.timeout">10000</proeprty>
+    <property name="mail.smtp.timeout">10000</property>
 
 
     <property name="emailbuilder">email</property>
