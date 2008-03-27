@@ -4,8 +4,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
-  <jsp:directive.tag
-      description="Didactor head" />
+  <jsp:directive.tag description="Didactor head" />
   <head>
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
 
@@ -24,9 +23,14 @@
       <link href="${_}" rel="alternate stylesheet" title="Printer friendly" type="text/css" media="screen" />
       <link href="${_}" rel="stylesheet" type="text/css"  media="print"/>
     </mm:treefile>
-    <!-- WTF: javascript for printing?. People have that in their browser -->
+
     <script type="text/javascript">
-      addEventHandler(window, "load", focusFirstForm);
+      <mm:treefile id="keepalive" page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" write="false">
+        <!--
+            escapeamps="${empty param.escapeamps ?  false : param.escapeamps}" />
+        -->
+        <jsp:text>addEventHandler(window, "load", function() { focusFirstForm(); keepalive("${_}"); });</jsp:text>
+      </mm:treefile>
     </script>
     <jsp:doBody />
   </head>
