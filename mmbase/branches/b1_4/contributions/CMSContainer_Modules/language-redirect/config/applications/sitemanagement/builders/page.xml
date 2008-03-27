@@ -394,7 +394,7 @@
 			</editor>
 			<db>
 				<name xml:lang="en">path</name>
-				<name xml:lang="nl">weg</name>
+				<name xml:lang="nl">path</name>
 				<name xml:lang="zh">路径</name>
 				<type key="false" notnull="false" size="4000" state="virtual" readonly="true">STRING</type>
 			</db>
