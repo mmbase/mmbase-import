@@ -5,8 +5,9 @@
 
   <action type="load">
     <object type="portalpagesnodes"/>
-    <relation destinationtype="simplecontents" role="related"/>
-    <relation destinationtype="portalpagesnodes" role="childppnn"/>
+    <relation destinationtype="simplecontents" role="related" searchdir="destination" />
+    <relation destinationtype="simplexmlcontents" role="posrel" />
+    <relation destinationtype="portalpagesnodes" role="childppnn" searchdir="destination" />
     <relation destinationtype="paragraphs" role="posrel"/>
   </action>
 
@@ -43,6 +44,30 @@
       </action>
       <action type="add">
         <relation destinationtype="simplecontents" role="related" />
+      </action>
+    </list>
+
+    <list role="posrel" destination="simplexmlcontents" minoccurs="0" maxoccurs="*" orderby="field[@name='pos']">
+      <title>Rich Content</title>
+      <item>
+        <field name="title" />
+      </item>
+      <command name="search" nodepath="simplexmlcontents" fields="title" age="-1">
+        <prompt>Search Content</prompt>
+        <search-filter>
+          <name>titel bevat</name>
+          <search-fields>title</search-fields>
+        </search-filter>
+      </command>
+      <action type="create">
+        <relation destinationtype="simplexmlcontents" role="posrel" >
+          <object type="simplecontents"/>
+        </relation>
+      </action>
+      <action type="add">
+        <relation destinationtype="simplecontents" role="related">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        </relation>
       </action>
     </list>
 
