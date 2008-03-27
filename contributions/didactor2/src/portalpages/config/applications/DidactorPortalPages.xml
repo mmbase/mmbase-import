@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorPortalPages" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorPortalPages" maintainer="didactor.nl" version="5" auto-deploy="true">
   <requirements>
     <requires name="DidactorCore" maintainer="didactor.nl" version="8" />
     <requires name="DidactorComponent" maintainer="didactor.nl" version="2" />
     <requires name="Resources" maintainer="didactor.nl" version="2" />
+    <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
   </requirements>
 
   <neededbuilderlist>
@@ -43,6 +44,14 @@
       <relation from="paragraphs"        to="images"      type="pos2rel" />
       <relation from="paragraphs"        to="attachments" type="posrel" />
       <relation from="paragraphs"        to="urls"        type="posrel" />
+
+      <relation from="simplexmlcontents"    to="blocks"         type="idrel" />
+      <relation from="simplexmlcontents"    to="images"         type="idrel" />
+      <relation from="simplexmlcontents"    to="attachments"    type="idrel" />
+      <relation from="simplexmlcontents"    to="urls"           type="idrel" />
+      <relation from="simplexmlcontents"    to="news"           type="idrel" />
+      <relation from="simplexmlcontents"    to="xmlcontent"     type="idrel" />
+      <relation from="xmlcontent"           to="simplexmlcontents"  type="idrel" />
     </allowedrelationlist>
 
     <datasourcelist>
