@@ -52,7 +52,9 @@
 	   	<c:set var="elementId" value="${elem.id}" scope="request"/>
 	   	<c:set var="elementTitle" value="${elem.title}" scope="request"/>
 		<c:if test="${not empty itemHeader}">
-			<c:import url="${itemHeader}"/>
+			<c:import url="${itemHeader}">
+				<c:param name="index" value="${listStatus.index}"/>
+			</c:import>
 		</c:if>
 		<c:choose>
 			<c:when test="${displaytype eq 'detail'}">
