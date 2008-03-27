@@ -4,7 +4,7 @@
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
   <mm:content postprocessor="none">
     <mm:cloud>
-      <mm:import externid="mode">components</mm:import>
+      <mm:import externid="mode">educations</mm:import>
       <mm:link page="/education/js/tree.jsp" referids="mode">
         <script type="text/javascript" src="${_}"> <!-- help IE --></script>
       </mm:link>
