@@ -72,4 +72,5 @@
     <field name="name" ftype="data"/>
     <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
   </form-schema>
+
 </wizard-schema>
