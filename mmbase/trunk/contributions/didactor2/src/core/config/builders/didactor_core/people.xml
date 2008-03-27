@@ -432,7 +432,7 @@
       </gui>
 
       <datatype base="enableddisabled" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="false" />
+        <default value="true" />
         <required value="false" />
       </datatype>
     </field>
