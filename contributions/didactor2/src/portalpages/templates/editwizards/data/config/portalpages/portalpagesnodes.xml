@@ -17,9 +17,11 @@
     <title xml:lang="en">Name</title>
 
     <field name="name"  />
-    <field name="active" ftype="enum"  />
+    <field name="active" />
     <field name="body"   ftype="html" />
-    <field name="order_number" />
+
+    <field name="order_number" /> <!-- This is a horrible, horrible idea, because now we cannot use standard functionality to determin sort-order (posrel) -->
+
     <list role="related" destination="simplecontents" minoccurs="0" maxoccurs="*">
       <title>Content</title>
       <item>
