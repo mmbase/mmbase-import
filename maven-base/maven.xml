@@ -176,7 +176,9 @@
   </preGoal>
 
     <preGoal name="site">
-        <attainGoal name="sdocbook:generate-html"/>
+        <util:available file="${maven.sdocbook.src.dir}">    
+            <attainGoal name="sdocbook:generate-html"/>
+        </util:available>
     </preGoal>
 
     <postGoal name="sdocbook:prepare-filesystem">
