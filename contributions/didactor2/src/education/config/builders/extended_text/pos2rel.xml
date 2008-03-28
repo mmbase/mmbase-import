@@ -50,18 +50,17 @@
       </datatype>
     </field>
     <field name="pos2">
+      <!-- calling a field pos2 while it means 'popup' is straightforwardly ridiculous -->
       <gui>
-        <guiname xml:lang="nl">Positie2</guiname>
-        <guiname xml:lang="fr">Placent2</guiname>
-        <guiname xml:lang="en">Position2</guiname>
+        <guiname xml:lang="nl">Popup</guiname>
+        <guiname xml:lang="en">Pop up</guiname>
       </gui>
       <editor>
         <positions>
           <list>4</list>
         </positions>
       </editor>
-      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="boolean">
-      </datatype>
+      <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="yesno" />
     </field>
   </fieldlist>
 </builder>
