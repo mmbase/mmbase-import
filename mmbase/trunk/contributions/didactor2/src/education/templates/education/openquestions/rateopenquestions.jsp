@@ -5,7 +5,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0" >
   <mm:content postprocessor="none">
-    <mm:cloud method="didactor user">
+    <mm:cloud rank="didactor user">
 
       <mm:import externid="question" required="true"/>
       <mm:import externid="madetest" required="true"/>
