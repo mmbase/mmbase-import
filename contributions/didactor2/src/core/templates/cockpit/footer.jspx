@@ -5,7 +5,6 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
-  <jsp:directive.page session="false" />
   <jsp:output omit-xml-declaration="true" />
 
   <div class="footer">
@@ -17,21 +16,17 @@
           </di:hasrole>
         </di:ifsetting>
       </mm:hasrank>
-      <di:component name="core">
-        <di:settingvalue number="${provider}" name="google_analytics">
-          <mm:write value="${_}">
-            <mm:isnotempty>
-              <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-                <jsp:text> </jsp:text>
-              </script>
-              <script type="text/javascript">
-                _uacct="${_}";
-                urchinTracker();
-              </script>
-            </mm:isnotempty>
-          </mm:write>
-        </di:settingvalue>
-      </di:component>
+      <di:getsetting component="core" setting="google_analytics">
+        <mm:isnotempty>
+          <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+            <jsp:text> </jsp:text>
+          </script>
+          <script type="text/javascript">
+            _uacct="${_}";
+            urchinTracker();
+          </script>
+        </mm:isnotempty>
+      </di:getsetting>
     </mm:cloud>
   </div>
 </mm:content>
