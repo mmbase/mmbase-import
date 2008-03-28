@@ -15,7 +15,7 @@
     </object>
   </action>
 
-<action type="load">
+  <action type="load">
     <relation destination="hotspotanswers" role="related">
       <object>
         <relation destination="feedback" role="related">
@@ -32,11 +32,6 @@
 
   <action type="delete" />
 
-  <lists>
-    <optionlist include="config/option_list/boolean.xml" />
-    <optionlist include="config/option_list/boolean_inverse.xml" />
-  </lists>
-
   <form-schema id="step1">
     <title xml:lang="nl">Hotspot vraag invoeren</title>
     <title xml:lang="en">Enter hotspot question</title>
@@ -44,11 +39,7 @@
       <prompt xml:lang="nl">Titel</prompt>
       <prompt xml:lang="en">Title</prompt>
     </field>
-    <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
-      <prompt xml:lang="en">Show title</prompt>
-      <optionlist select="boolean" />
-    </field>
+    <field name="showtitle" />
     <field name="text" ftype="html" dtminlength="0">
       <prompt xml:lang="nl">Tekst</prompt>
       <prompt xml:lang="en">Text</prompt>
