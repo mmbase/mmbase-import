@@ -19,6 +19,12 @@
     <description xml:lang="en">An open question, where the user can select his own answer</description>
   </descriptions>
 
+  <properties>
+    <property name="key:new:name">education.createnewfillselectquestions</property>
+    <property name="key:new:description">education.createnewfillselectquestionsdescription</property>
+  </properties>
+
+
   <!-- Possible values for the 'layout' field defined in the super-builder:
      0 = Large field
      1 = Small field

@@ -1,21 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="valuequestions" maintainer="didactor.nl" version="2" extends="questions">
-  <status>active</status>
-  <classfile>nl.didactor.education.builders.ValueQuestionBuilder</classfile>
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="valuequestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.ValueQuestionBuilder</class>
   <searchage>31</searchage>
 
   <names>
-    <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Waarde vraag</singular>
     <singular xml:lang="en">Value question</singular>
-    <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Waarde vragen</plural>
     <plural xml:lang="en">Value questions</plural>
   </names>
 
   <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="nl">
       Een waardevraag geeft de student een aantal opties die hij kan
       kiezen, die alle een andere waarde geven. Ook is het mogelijk om
@@ -29,13 +28,13 @@
   </descriptions>
 
   <properties>
-    <property name="max-nodes-from-query">99999</property>
+    <property name="key:new:name">education.createnewvaluequestions</property>
+    <property name="key:new:description">education.createnewvaluequestionsdescription</property>
   </properties>
 
   <fieldlist>
-    <field>
+    <field name="type">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">
           Type van de Waarde vraag
           0 = selecteer 1 antwoord
@@ -47,32 +46,13 @@
           1 = multiple answers may be selected
         </description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="en">Type</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>3</input>
-          <!-- position in list area of the editor -->
-          <list>3</list>
-          <!-- position in search area of the editor -->
-          <search>3</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>type</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="didactor_mctype" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
-    <field>
+    <field name="openanswers">
       <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">
@@ -82,34 +62,18 @@
           The number of open answers
         </description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Open Antwoorden</guiname>
         <guiname xml:lang="en">Open Answers</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>4</input>
-          <!-- position in list area of the editor -->
-          <list>4</list>
-          <!-- position in search area of the editor -->
-          <search>4</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>openanswers</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
+        <minInclusive value="1" />
+        <maxInclusive value="100" />
+      </datatype>
     </field>
-    <field>
+    <field name="openanswersvalue">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">
           De waarde die aan individuele gegeven open antwoorden wordt toegekend
         </description>
@@ -117,34 +81,16 @@
           The value that is being used for indivudual given open answers
         </description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Waarde voor open antwoorden</guiname>
         <guiname xml:lang="en">Value for open answers</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>5</input>
-          <!-- position in list area of the editor -->
-          <list>5</list>
-          <!-- position in search area of the editor -->
-          <search>5</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>openanswersvalue</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
+      </datatype>
     </field>
-    <field>
+    <field name="minanswers">
       <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="nl">
           Het minimaal aantal antwoorden dat geselecteerd moet worden
         </description>
@@ -152,30 +98,15 @@
           The minimum number of answers that need to be selected
         </description>
       </descriptions>
-      <!-- gui related -->
       <gui>
         <guiname xml:lang="nl">Minimum Aantal</guiname>
         <guiname xml:lang="en">Minimal Number</guiname>
-        <guitype>integer</guitype>
       </gui>
-      <!-- editor related  -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>6</input>
-          <!-- position in list area of the editor -->
-          <list>6</list>
-          <!-- position in search area of the editor -->
-          <search>6</search>
-        </positions>
-      </editor>
-      <!-- database related  -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>minanswers</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
+        <default value="1" />
+        <minInclusive value="1" />
+        <maxInclusive value="100" />
+      </datatype>
     </field>
   </fieldlist>
 </builder>
