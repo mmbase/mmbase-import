@@ -6,6 +6,7 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     component="core.cockpit" >
+  <jsp:directive.page buffer="2000kb" />
     <div class="columns">
       <div class="columnLeft">
 
