@@ -12,6 +12,8 @@
   <scope name="educations" referid="education">
     <setting name="max_depth" type="integer" default="15" canbeempty="false" />
     <setting name="background_image_template" type="string" default="" />
+    <setting name="new_questiontypes" type="string" default="mcquestions,openquestions,rankingquestions,couplingquestions,hotspotquestions,valuequestions,dropquestions,fillquestions,fillselectquestions,opennumeralquestions,essayquestions,openvaluequestions" />
+
   </scope>
   <scope name="people" referid="user">
   </scope>
