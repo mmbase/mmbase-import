@@ -37,9 +37,8 @@
         <c:choose>
           <c:when test="${! empty validatemessage}">
             <mm:cloud method="logout" />
-            <mm:redirect page="/login/declined.jspx" referids="validatemessage@message">
-              <mm:param name="referrer">${request.servletPath}</mm:param>
-            </mm:redirect>
+            <mm:import externid="referrer"><mm:url absolute="server" /></mm:import>
+            <mm:redirect page="/login/declined.jspx" referids="validatemessage@message,referrer" />
           </c:when>
           <c:otherwise>
             <c:if test="${! empty description}">&lt;!-- ${description} --&gt;</c:if>
@@ -90,9 +89,6 @@
               </c:if>
             </di:head>
             <body class="${styleClass}">
-              <mm:hasrank minvalue="didactor user">
-                <di:include page="/shared/keepalive.jsp" />
-              </mm:hasrank>
 
               <div class="componentBody">
                 <mm:write request="component" value="${component}" />
