@@ -23,6 +23,10 @@ input.input, textarea.input {
 	width: 99%;
 }
 
+input[type="checkbox"] {
+	width: auto;
+} 
+
 /* edit wizards tabs */
 div.tabs
 {
