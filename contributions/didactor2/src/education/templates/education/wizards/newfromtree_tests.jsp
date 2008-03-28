@@ -14,7 +14,7 @@
       <mm:stringlist referid="new_questiontypes" id="questiontype">
         <mm:hasnodemanager name="${_}">
           <di:leaf
-              branchPath=". "
+              branchPath=".. "
               icon="new_education"
               >
             <mm:link referid="wizardjsp" referids="_node@origin">
