@@ -404,6 +404,10 @@
     <path>/META-INF/tags/di/core/title.tagx</path>
   </tag-file>
   <tag-file>
+    <name>flash</name>
+    <path>/META-INF/tags/di/core/flash.tagx</path>
+  </tag-file>
+  <tag-file>
     <name>script</name>
     <path>/META-INF/tags/di/core/script.tagx</path>
   </tag-file>
