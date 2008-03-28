@@ -117,7 +117,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                   Object value = parameterMap.get(fieldIdentifier);
                   String textValue = null;
                   if (sendEmail) {
-                     userEmailAddress = (String)value.toString();
+                     userEmailAddress = value.toString();
                   }
                   if (type == TYPE_TEXTAREA && value != null && maxlength > 0 && value.toString().length() > maxlength) {
                      errorMessages.put(fieldIdentifier, Integer.valueOf(maxlength).toString());
@@ -290,6 +290,12 @@ public class ResponseFormPortlet extends ContentPortlet {
          catch (MessagingException e) {
             getLogger().error("error sending email", e);
          }
+      }
+      else {
+          getLogger().error("error in mail data: userEmailText = '" + userEmailText +"' " +
+                " userEmailSenderName = '" + userEmailSenderName +"' " +
+                " userEmailAddress = '" + userEmailAddress +"' " +
+                " userEmailSenderAddress = '" + userEmailSenderAddress +"' ");
       }
       return sent;
    }
