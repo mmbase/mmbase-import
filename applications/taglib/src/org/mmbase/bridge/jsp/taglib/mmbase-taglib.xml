@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.423 2008-02-28 12:22:59 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.424 2008-03-28 13:04:17 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -173,6 +173,16 @@ version: $Id: mmbase-taglib.xml,v 1.423 2008-02-28 12:22:59 michiel Exp $
     <function-signature>java.lang.String treelink(java.lang.String, java.lang.Object)</function-signature>
     <since>MMBase-1.8.5</since>
     <see tag="treefile" />
+  </function>
+  <function>
+    <description>
+      Property of a nodeManager.
+    </description>
+    <name>managerProperty</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>java.lang.Object managerProperty(java.lang.String, java.lang.String)</function-signature>
+    <since>MMBase-1.8.6</since>
+    <see tag="property" />
   </function>
   <function>
     <description>
