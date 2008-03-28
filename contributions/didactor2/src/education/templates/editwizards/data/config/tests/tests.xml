@@ -34,7 +34,9 @@
     <title xml:lang="nl">Toets invoeren</title>
     <title xml:lang="en">Enter test</title>
 
-    <field name="name"  />
+    <field name="name"   ftype="bloe" />
+
+
     <field name="showtitle"  />
     <field name="text" ftype="html" dtminlength="0" />
     <field name="questionamount" />
@@ -45,8 +47,8 @@
     <field name="feedbackpage" />
     <field name="always_online" />
 
-    <field name="online_date" ftype="date" />
-    <field name="offline_date" ftype="date" />
+    <field name="online_date" />
+    <field name="offline_date"  />
 
 
     <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" role="posrel" destination="questions">

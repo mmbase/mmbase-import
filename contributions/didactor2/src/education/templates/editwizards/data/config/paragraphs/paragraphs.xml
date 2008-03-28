@@ -3,30 +3,16 @@
 <wizard-schema id="empty">
    <title xml:lang="nl">Alinea</title>
    <title xml:lang="en">Paragraph</title>
+
    <action include="config/paragraphs/create_paragraphs.xml" />
    <action include="config/paragraphs/delete_paragraphs.xml" />
    <action include="config/paragraphs/load_paragraphs.xml" />
-   <lists>
-      <optionlist include="config/option_list/images_position.xml" />
-      <optionlist include="config/option_list/boolean.xml" />
-   </lists>
-   <steps>
-      <step form-schema="edit_paragraphs" />
-   </steps>
+
    <form-schema id="edit_paragraphs">
-      <field name="title" ftype="line" >
-         <prompt xml:lang="nl">Alinea titel</prompt>
-         <prompt xml:lang="en">Paragraph title</prompt>
-      </field>
-      <field name="showtitle" ftype="enum">
-         <prompt xml:lang="nl">Titel laten zien</prompt>
-         <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
-      </field>
-      <field name="body" ftype="html" rows="10">
-         <prompt xml:lang="nl">Alinea tekst</prompt>
-         <prompt xml:lang="en">Paragraph body</prompt>
-      </field>
+      <field name="title" />
+      <field name="showtitle" />
+      <field name="body" ftype="html" rows="10" />
+
       <list include="config/image/add_images_pos2rel_position.xml" />
       <list include="config/attachment/attachments-posrel.xml" />
       <list include="config/url/add_exturls_posrel.xml" />
