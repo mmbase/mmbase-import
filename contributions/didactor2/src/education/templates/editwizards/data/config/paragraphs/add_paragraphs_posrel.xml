@@ -3,22 +3,17 @@
    <title xml:lang="nl">Alinea</title>
    <title xml:lang="en">Paragraph</title>
    <item>
-      <title xml:lang="nl">Alinea</title>
+      <title xml:lang="nl">Alineaa</title>
       <title xml:lang="en">Paragraph</title>
-      <field fdatapath="field[@name=&apos;pos&apos;]" ftype="line"><prompt>Positie</prompt></field>
-      <field name="title" ftype="line" >
-         <prompt xml:lang="nl">Alinea titel</prompt>
-         <prompt xml:lang="en">Paragraph title</prompt>
-      </field>
-      <field name="showtitle" ftype="enum">
-         <prompt xml:lang="nl">Titel laten zien</prompt>
-         <prompt xml:lang="en">Show title</prompt>
-         <optionlist select="boolean"></optionlist>
-      </field>
-      <field name="body" ftype="html" rows="10">
-         <prompt xml:lang="nl">Alinea tekst</prompt>
-         <prompt xml:lang="en">Paragraph body</prompt>
-      </field>
+
+      <fieldset>
+        <prompt xml:lang="nl">Titel</prompt>
+        <prompt xml:lang="en">Title</prompt>
+        <field name="title"      />
+        <field name="showtitle" />
+      </fieldset>
+
+      <field name="body"    ftype="html" rows="10" />
 
       <list include="config/image/add_images_pos2rel_position.xml" />
       <list include="config/attachment/attachments-posrel.xml" />
@@ -26,14 +21,14 @@
    </item>
 
    <command name="insert">
-      <prompt>Nieuwe alinea</prompt>
+     <prompt xml:lang="nl">Nieuwe alinea</prompt>
    </command>
 
    <action type="create">
-      <relation role="posrel">
-         <object type="paragraphs" /> 
-         <field name="pos">{sum(//relation[@role=&apos;posrel&apos; and @lastitem=&apos;true&apos;]/field[@name=&apos;pos&apos;])+{$pos}}</field>
-      </relation>
+     <relation role="posrel">
+       <object type="paragraphs" />
+       <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+     </relation>
    </action>
 </list>
 

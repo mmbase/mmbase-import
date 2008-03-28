@@ -12,13 +12,6 @@
   <action type="create">
     <object type="tests">
       <relation destination="$origin" role="posrel" createdir="source"/>
-      <field name="showtitle">1</field>
-      <field name="maychange">0</field>
-      <field name="mayview">0</field>
-      <field name="questionsperpage">0</field>
-      <field name="feedbackpage">0</field>
-      <field name="always_online">0</field>
-      <field name="offline_date">2145928440</field>
     </object>
   </action>
 
