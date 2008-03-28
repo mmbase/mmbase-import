@@ -60,17 +60,7 @@
         <guiname xml:lang="nl">Positie afbeelding</guiname>
         <guiname xml:lang="en">Image position</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="0" />
-        <enumeration>
-          <entry value="0" xml:lang="nl" display="Boven" />
-          <entry value="0" xml:lang="en" display="Above" />
-          <entry value="1" xml:lang="nl" display="Onder" />
-          <entry value="1" xml:lang="en" display="Under" />
-          <entry value="2" xml:lang="nl" display="Naast" />
-          <entry value="2" xml:lang="en" display="Next to" />
-        </enumeration>
-      </datatype>
+      <datatype base="didactor_imageposition" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
     <field name="flashOrText">
@@ -78,15 +68,7 @@
         <description xml:lang="nl">Kies flash of tekst</description>
         <description xml:lang="en">Choose flash file or text</description>
       </descriptions>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <default value="1" />
-        <enumeration>
-          <entry value="0" xml:lang="nl" display="Tekst" />
-          <entry value="0" xml:lang="en" display="Text" />
-          <entry value="1" xml:lang="nl" display="Flash" />
-          <entry value="1" xml:lang="en" display="Flash" />
-        </enumeration>
-      </datatype>
+      <datatype base="didactor_flashortext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
