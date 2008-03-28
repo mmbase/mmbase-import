@@ -1,7 +1,7 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0" >
-  <mm:content postprocessor="reducespace">
+  <mm:content postprocessor="none">
     <mm:cloud method="delegate">
 
       <mm:import externid="question" required="true"/>
