@@ -183,7 +183,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
       if (override) {
          // loop through pages
          // if override only take the sheets of the last page
-         for (int count = pagesToRoot.size(); count == 0; count--) {
+         for (int count = pagesToRoot.size()-1; count >= 0; count--) {
             getStylesheetForPage(pagesToRoot, count, stylesheets);
 
             if (!stylesheets.isEmpty()) {
