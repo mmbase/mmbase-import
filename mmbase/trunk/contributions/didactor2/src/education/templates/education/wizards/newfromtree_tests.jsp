@@ -4,6 +4,10 @@
 <mm:cloud method="delegate" jspvar="cloud">
 <%@include file="/shared/setImports.jsp"%>
 
+<!--
+    TODO. This JSP is horrible.
+-->
+
 <mm:import id="wizardjsp"       reset="true"><%= request.getParameter("wizardjsp") %></mm:import>
 <mm:import id="the_last_parent" reset="true"><%= request.getParameter("the_last_parent") %></mm:import>
 
@@ -88,11 +92,20 @@
                   %>
 
                   <td><img src="gfx/new_education.gif" width="16" border="0" align="middle" /></td>
-                  <% 
+                  <%
                   if(request.getParameter("testname") != null) {%>
                    <mm:import id="newfromtreetestname" reset="true"><%=request.getParameter("testname")%></mm:import>
                   <% } %>
-                  <td>&nbsp;<nobr><a href='<mm:write referid="wizardjsp"/>&wizard=<%= arrstrBuilders[f] %>&objectnumber=new&origin=<mm:field name="number"/>&path=<mm:write referid="newfromtreetestname"/>' title='<di:translate key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text"><di:translate key="<%= arrstrNames[f] %>"/></a></nobr></td>
+                  <td><nobr>
+                    <mm:link referid="wizardjsp" referids="_node@origin,newfromtreetestname@path">
+                      <mm:param name="wizard"><%= arrstrBuilders[f] %></mm:param>
+                      <mm:param name="objectnumber">new</mm:param>
+                      <a href="${_}"
+                         title='<di:translate key="<%= arrstrDescriptionsIDs[f] %>"/>' target="text">
+                      <di:translate key="<%= arrstrNames[f] %>"/></a>
+                      </mm:link>
+                    </nobr>
+                  </td>
                </tr>
             </table>
          <%
