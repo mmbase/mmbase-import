@@ -9,7 +9,7 @@
 		
 	-->
 	<status>active</status>
-	<class>com.finalist.cmsc.navigation.NavigationBuilder</class>
+	<class>com.finalist.cmsc.navigation.builder.PageBuilder</class>
 	<searchage>70</searchage>
 	<names>
       <singular xml:lang="nl">Pagina</singular>
