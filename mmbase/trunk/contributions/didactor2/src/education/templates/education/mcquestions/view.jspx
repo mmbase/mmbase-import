@@ -4,21 +4,13 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page">
   <jsp:output omit-xml-declaration="yes" />
-  <mm:node number="${param.question}">
-    <mm:field name="type" id="type" write="false"/>
-  </mm:node>
 
-  <mm:compare referid="type" value="0">
-    <mm:relatednodes type="answers">
-      <b class="type0"><di:translate key="education.givenanswer" />: </b>
-      <mm:field name="text"/>
-    </mm:relatednodes>
-  </mm:compare>
-  <mm:compare referid="type" value="1">
-    <b class="type1"><di:translate key="education.givenanswers" />: </b>
-    <mm:relatednodes type="answers">
-      <mm:field name="text"/>
-      <mm:last inverse="true">, </mm:last>
-    </mm:relatednodes>
-  </mm:compare>
+  <mm:node number="${param.question}" id="question" />
+
+  <b class="type${question.type}"><di:translate key="education.givenanswer${question.type eq 1 ? 's' : ''}" />: </b>
+  <mm:relatednodes type="answers">
+    <mm:field name="text"/>
+    <mm:last inverse="true">, </mm:last>
+  </mm:relatednodes>
+
 </mm:node>
