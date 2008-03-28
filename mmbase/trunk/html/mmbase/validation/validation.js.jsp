@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.44 2008-03-20 14:07:56 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.45 2008-03-28 15:47:54 michiel Exp $
  */
 var validators = new Array();
 
@@ -57,7 +57,10 @@ function MMBaseValidator(w, root) {
 
 MMBaseValidator.prototype.setup = function(w) {
     if (w != null) {
-        addEventHandler(w, "load", this.onLoad, this);
+	var self = this;
+	$(document).ready(function(event) {
+	    self.onLoad(event);
+	});
     }
 }
 
@@ -126,7 +129,7 @@ MMBaseValidator.prototype.isChanged = function(el) {
  */
 MMBaseValidator.prototype.isRequired = function(el) {
     if (el.mm_isrequired != null) return el.mm_isrequired;
-    var re = this.getDataTypeXml(el).selectSingleNode('//dt:datatype/dt:required');
+    var re = $(this.getDataTypeXml(el)).find('datatype required')[0];
     el.mm_isrequired = "true" == "" + re.getAttribute("value");
     el.mm_isrequired_enforce = re.getAttribute("enforce");
     return el.mm_isrequired;
@@ -140,7 +143,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     var xml = this.getDataTypeXml(el);
 
     if (el.mm_minLength_set == null) {
-        var ml =  xml.selectSingleNode('//dt:datatype/dt:minLength');
+        var ml =  $(xml).find('datatype minLength')[0];
         if (ml != null) {
             el.mm_minLength = ml.getAttribute("value");
             el.mm_minLength_enforce = ml.getAttribute("enforce");
@@ -152,7 +155,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     }
 
     if (el.mm_maxLength_set == null) {
-        var ml =  xml.selectSingleNode('//dt:datatype/dt:maxLength');
+        var ml =  $(xml).find('datatype maxLength')[0];
         if (ml != null) {
             el.mm_maxLength = ml.getAttribute("value");
             el.mm_maxLength_enforce = ml.getAttribute("enforce");
@@ -165,7 +168,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     }
 
     if (el.mm_length_set == null) {
-        var l =  xml.selectSingleNode('//dt:datatype/dt:length');
+        var l =  $(xml).find('datatype length')[0];
         if (l != null) {
             el.mm_length = l.getAttribute("value");
             el.mm_length_enforce = l.getAttribute("enforce");
@@ -208,7 +211,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
-            var javaPattern = xml.selectSingleNode('//dt:datatype/dt:pattern').getAttribute("value");
+            var javaPattern = $(xml).find('datatype  pattern')[0].getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
             this.trace("pattern : " + el.mm_pattern + " " + el.value);
@@ -222,7 +225,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
 MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
     var pattern = new RegExp(javaClass);
     var xml = this.getDataTypeXml(el);
-    var javaClassElement = xml.selectSingleNode('//dt:datatype/dt:class');
+    var javaClassElement = $(xml).find('datatype class')[0];
     var name = javaClassElement.getAttribute("name");
     if (pattern.test(name)) {
         return true;
@@ -323,7 +326,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
         var numeric = this.isNumeric(el);
         {
             if (el.mm_minInc_set == null) {
-                var minInclusive = xml.selectSingleNode('//dt:datatype/dt:minInclusive');
+                var minInclusive = $(xml).find('datatype minInclusive')[0];
                 el.mm_minInc = this.getValueAttribute(numeric, minInclusive);
                 el.mm_minInc_enforce = minInclusive != null ? minInclusive.getAttribute("enforce") : null;
                 el.mm_minInc_set = true;
@@ -337,7 +340,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
 
         {
             if (el.mm_minExcl_set == null) {
-                var minExclusive = xml.selectSingleNode('//dt:datatype/dt:minExclusive');
+                var minExclusive = $(xml).find('datatype/ minExclusive')[0];
                 el.mm_minExcl = this.getValueAttribute(numeric, minExclusive);
                 el.mm_minExcl_enforce = minExclusive != null ? minExclusive.getAttribute("enforce") : null;
                 el.mm_minExcl_set = true;
@@ -349,7 +352,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
         }
         {
             if (el.mm_maxInc_set == null) {
-                var maxInclusive = xml.selectSingleNode('//dt:datatype/dt:maxInclusive');
+                var maxInclusive = $(xml).find('datatype maxInclusive')[0];
                 el.mm_maxInc = this.getValueAttribute(numeric, maxInclusive);
                 el.mm_maxInc_enforce = maxInclusive != null ? maxInclusive.getAttribute("enforce") : null;
                 el.mm_maxInc_set = true;
@@ -362,7 +365,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
 
         {
             if (el.mm_maxExcl_set == null) {
-                var maxExclusive = xml.selectSingleNode('//dt:datatype/dt:maxExclusive');
+                var maxExclusive = $(xml).find('datatype maxExclusive')[0];
                 el.mm_maxExcl = this.getValueAttribute(numeric, maxExclusive);
                 el.mm_maxExcl_enforce = maxExclusive != null ? maxExclusive.getAttribute("enforce") : null;
                 el.mm_maxExcl_set = true;
@@ -374,7 +377,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
         }
     } catch (ex) {
         this.log(ex);
-        throw exsdf
+        throw ex;
     }
     return true;
 
@@ -393,17 +396,19 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
     var dataType = this.dataTypeCache[el.mm_key];
     if (dataType == null) {
 
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatype.jspx" />' + this.getDataTypeArguments(key), false);
-        xmlhttp.send(null);
-        dataType = xmlhttp.responseXML;
-        try {
-            dataType.setProperty("SelectionNamespaces", "xmlns:dt='http://www.mmbase.org/xmlns/datatypes'");
-            dataType.setProperty("SelectionLanguage", "XPath");
-        } catch (ex) {
-            // happens in safari
-        }
-        this.dataTypeCache[el.mm_key] = dataType;
+	var url = '<mm:url page="/mmbase/validation/datatype.jspx" />';
+	var params = this.getDataTypeArguments(key);
+	var self = this;
+	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+		complete: function(res, status){
+		    if (status == "success") {
+			dataType = res.responseXML;
+			self.dataTypeCache[el.mm_key] = dataType;
+		    }
+		}
+	       });
+
+
     }
     return dataType;
 }
@@ -458,28 +463,26 @@ MMBaseValidator.prototype.getDataTypeKey = function(el) {
  *
  */
 MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", '<mm:url page="/mmbase/validation/datatypes.jspx" />?nodemanager=' + nodemanager, false);
-    xmlhttp.send(null);
-    var dataTypes = xmlhttp.responseXML;
 
-    var fields = dataTypes.documentElement.childNodes;
-    for (var i = 0; i < fields.length; i++) {
-        var key = new Key();
-        key.nodeManager = nodemanager;
-        key.field = fields[i].getAttribute("name");
-        var xml = Sarissa.getDomDocument();
+    var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
+    var params = {nodemanager: nodemanager };
+    var self = this;
+    $.ajax({url: url, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if (status == "success") {
+		    var dataTypes = res.responseXML;
 
-        try {
-            xml.setProperty("SelectionNamespaces", "xmlns:dt='http://www.mmbase.org/xmlns/datatypes'");
-            xml.setProperty("SelectionLanguage", "XPath");
-        } catch (ex) {
-            // happens in safari
-        }
-        xml.appendChild(fields[i].firstChild.cloneNode(true));
-
-        this.dataTypeCache[key.string()] = xml;
-    }
+		    var fields = dataTypes.documentElement.childNodes;
+		    for (var i = 0; i < fields.length; i++) {
+			var key = new Key();
+			key.nodeManager = nodemanager;
+			key.field = fields[i].getAttribute("name");
+			this.dataTypeCache[key.string()] = $(res.responseText)[0];
+		    }
+		    //console.log("" + res);
+		}
+	    }
+	   });
 
 }
 
@@ -492,9 +495,9 @@ MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
  */
 MMBaseValidator.prototype.getDataTypeArguments = function(key) {
     if (key.dataType != null) {
-        return "?datatype=" + key.dataType;
+        return {datatype: key.dataType};
     } else {
-        return "?field=" + key.field + "&nodemanager=" + key.nodeManager;
+        return {field: key.field, nodemanager: key.nodeManager};
     }
 }
 
@@ -608,19 +611,31 @@ MMBaseValidator.prototype.serverValidation = function(el) {
     if (el == null) return;
     try {
         var key = this.getDataTypeKey(el);
-        var xmlhttp = new XMLHttpRequest();
         var value = this.getDateValue(el);
-        var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />' +
+        var validationUrl = '<mm:url page="/mmbase/validation/valid.jspx" />';
             this.getDataTypeArguments(key) +
             (this.lang != null ? "&lang=" + this.lang : "") +
 	    (this.sessionName != null ? "&sessionname=" + this.sessionName : "") +
             "&value=" + value +
             (key.node != null && key.node > 0 ? ("&node=" + key.node) : "") +
             "&changed=" + this.isChanged(el);
-        xmlhttp.open("GET", validationUrl, false);
-        xmlhttp.send(null);
-        el.serverValidated = true;
-        return xmlhttp.responseXML;
+	var params = this.getDataTypeArguments(key);
+	if (this.lang != null) params.lang = this.lang;
+	if (this.sessionName != null) params.sessionname = this.sessionName;
+	params.value = value;
+	if (key.node != null && key.node > 0) params.node = key.node;
+	params.changed = this.isChanged(el);
+	var result;
+	$.ajax({async: false, url: validationUrl, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if (status == "success") {
+		    el.serverValidated = true;
+		    result = res.responseXML;
+		    //console.log("" + res);
+		}
+	    }
+	   });
+	return result;
     } catch (ex) {
         this.log(ex);
         throw ex;
@@ -632,7 +647,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
  */
 MMBaseValidator.prototype.validResult = function(xml) {
     try {
-        return "true" == "" + xml.selectSingleNode('/result/@valid').nodeValue;
+        return "true" == "" + $(xml).find('result')[0].getAttribute("valid");
     } catch (ex) {
         this.log(ex);
         throw ex;
@@ -677,7 +692,7 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
             var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
             errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
             if (errorDiv) {
-                Sarissa.clearChildNodes(errorDiv);
+                $(errorDiv).empty();
                 var errors = serverXml.documentElement.childNodes;
                 this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
 
@@ -726,8 +741,7 @@ MMBaseValidator.prototype.addValidation = function(el) {
     if (el == null) {
         el = document.documentElement;
     }
-
-    var els = getElementsByClass(el, "mm_validate");
+    var els = $(el).find(".mm_validate");
     this.log("Will validate elements in " + el + " (" + els.length + " elements)");
 
     for (var i = 0; i < els.length; i++) {
@@ -735,29 +749,30 @@ MMBaseValidator.prototype.addValidation = function(el) {
         if (entry.type == "textarea") {
             entry.value = entry.value.replace(/^\s+|\s+$/g, "");
         }
+	var self = this;
         // switch stolen from editwizards, not all cases are actually supported already here.
         switch(entry.type) {
         case "text":
         case "textarea":
-            addEventHandler(entry, "keyup", this.validate, this);
-            addEventHandler(entry, "change", this.validate, this);
-            addEventHandler(entry, "blur", this.serverValidate, this);
+            $(entry).bind("keyup",  function(ev) { self.validate(ev); });
+            $(entry).bind("change", function(ev) { self.validate(ev); });
+            $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             // IE calls this when the user does a right-click paste
-            addEventHandler(entry, "paste", this.validate, this);
+            $(entry).bind("paste", function(ev) { self.validate(ev); });
             // FireFox calls this when the user does a right-click paste
-            addEventHandler(entry, "input", this.validate, this);
+            $(entry).bind("input", function(ev) { self.validate(ev); });
             break;
         case "radio":
         case "checkbox":
-            addEventHandler(entry, "click", this.validate, this);
-            addEventHandler(entry, "blur", this.serverValidate, this);
+            $(entry).bind("click", function(ev) { self.validate(ev); });
+            $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
             break;
         case "select-one":
         case "select-multiple":
         default:
             this.log("Adding eventhandler to " + entry);
-            addEventHandler(entry, "change", this.validate, this);
-            addEventHandler(entry, "blur", this.serverValidate, this);
+            $(entry).bind("change", function(ev) { self.validate(ev); });
+            $(entry).bind("blur",   function(ev) { self.serverValidate(ev); });
         }
 
         entry.originalValue = this.getValue(entry);
