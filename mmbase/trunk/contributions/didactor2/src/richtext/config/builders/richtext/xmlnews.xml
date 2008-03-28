@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         extends="xmlcontent" maintainer="mmbase.org" name="xmlnews"
-         version="0" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
-  <status>active</status>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    extends="object" maintainer="mmbase.org" name="xmlnews"
+    version="0" xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
   <searchage>14</searchage>
   <names>
     <singular xml:lang="en">XML NewsItem</singular>
@@ -21,6 +22,8 @@
     <description xml:lang="nl">Nieuws item zijn om XML velden te demonstreren</description>
     <description xml:lang="eo">Novaĵoj ekzistas por montro de XML-kampoj</description>
   </descriptions>
+
+  <xi:include href="rich.fields.xml" />
 
   <fieldlist>
 
