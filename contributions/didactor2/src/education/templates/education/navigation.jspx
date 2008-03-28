@@ -19,7 +19,7 @@
         <mm:constraint field="dnumber" value="${education}" />
       </mm:composite>
       <script type="text/javascript">
-        addEventHandler(window, "onload", function() {
+        $(window).ready(function() {
         <mm:listnodes >
         <c:if test="${ ! empty _node.lastpage}">
           <!-- is lastpage field ever filled ? -->
@@ -59,7 +59,7 @@
   <mm:import externid="frame" />
   <mm:present referid="frame">
     <script type="text/javascript">
-      addEventHandler(window, "onload", function() {
+      $(document).ready(function() {
       closeAll();
       openContent('${learnobjectype}','${education}');
       openOnly('div${learnobject}',   'img${education}');
@@ -69,7 +69,7 @@
 
     <mm:notpresent referid="frame">
       <script type="text/javascript">
-        addEventHandler(window, "load", function() {
+        $(window).ready(function() {
         closeAll();
 
         <!-- we open need menu item in case it is a reference from another education -->

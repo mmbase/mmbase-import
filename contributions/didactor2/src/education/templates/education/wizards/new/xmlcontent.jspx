@@ -17,14 +17,17 @@
     <mm:hasnodemanager name="xmlcontent">
       <mm:nodeinfo id="guitype" nodetype="xmlcontent" type="guitype" write="false" />
 
+      <mm:property nodemanager="xmlcontent" name="key:new:name" id="name" write="false"/>
+      <mm:property nodemanager="xmlcontent" name="key:new:description" id="description" write="false" />
+
       <mm:link page="/mmbase/kupu/mmbase" referids="_node@origin,referrer,kupu_back">
         <mm:param name="wizard">config/xmlcontent/xmlcontent</mm:param>
         <mm:param name="templates">/editwizards/data</mm:param>
         <mm:param name="link_nodetypes">${di:setting('richtext', 'link_nodetypes')}</mm:param>
         <mm:param name="objectnumber">new</mm:param>
         <a href="${_}"
-           title="${di:translate('education.new')} ${guitype}"
-           target="text"><di:translate key="education.new" /> ${guitype}</a>
+           title="${di:translate(description)}"
+           target="text">${di:translate(name)}</a>
       </mm:link>
     </mm:hasnodemanager>
     <mm:hasnodemanager name="xmlcontent" inverse="true">
