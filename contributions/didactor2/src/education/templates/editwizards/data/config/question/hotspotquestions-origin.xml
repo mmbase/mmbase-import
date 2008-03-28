@@ -11,8 +11,6 @@
   <action type="create">
     <object type="hotspotquestions">
       <relation destination="$origin" role="posrel" createdir="source"/>
-      <field name="showtitle">1</field>
-      <field name="layout">0</field>
     </object>
   </action>
 
@@ -25,11 +23,6 @@
 
   <action type="delete" />
 
-  <lists>
-    <optionlist include="config/option_list/boolean.xml" />
-    <optionlist include="config/option_list/boolean_inverse.xml" />
-  </lists>
-
 
   <form-schema id="step1">
     <title xml:lang="nl">Hotspot vraag invoeren</title>
@@ -38,11 +31,7 @@
       <prompt xml:lang="nl">Titel</prompt>
       <prompt xml:lang="en">Title</prompt>
     </field>
-    <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
-      <prompt xml:lang="en">Show title</prompt>
-      <optionlist select="boolean" />
-    </field>
+    <field name="showtitle" />
     <field name="text" ftype="html" dtminlength="0">
       <prompt xml:lang="nl">Tekst</prompt>
       <prompt xml:lang="en">Text</prompt>
