@@ -99,10 +99,10 @@
                   </mm:field>
                 </mm:field>
 
-                <mm:relatednodes role="posrel" type="questions" orderby="posrel.pos">
+                <mm:relatednodes role="posrel" type="questions" orderby="posrel.pos" varStatus="relstatus">
                   <di:leaf
                       icon="edit_learnobject"
-                      branchPath=". ">
+                      branchPath="..${relstatus.last ? '.' : ' '}">
                     <mm:nodeinfo type="type" id="type_of_node" write="false">
 
                       <mm:compare value="mcquestions">
