@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+    
+   <display-name>CMS Container implementation</display-name>
+   <description>CMS Container implementation</description>
+
+
+	<!-- 
+		MMBase Taglib settings
+	-->
+	<!-- 
+		Whether tags should try to evaluate the body without buffering if that is possible. This feature
+		of taglibs is not supported by all applications servers (orion, tomcat < 4.1.19?), in which case
+		setting this to true will cause rather strange results.
+		If your application server does support this well (resin 3, tomcat 5), you can set this to true,
+		and improve performance.
+	-->
+	<context-param>
+		<param-name>mmbase.taglib.eval_body_include</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<!-- 
+		Whether the mm:url tag (and other URL producing tags) should produce relative URL's (relative to
+		the page on which the mm:url is called).  You might try to set this to 'true' if you desire only
+		relative urls in your site. This is an expirimental option, which is known not to work in
+		certain situations (like redirects).
+	-->
+	<context-param>
+		<param-name>mmbase.taglib.url.makerelative</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>cmsc.portal.aggregation.base.dir</param-name>
+		<param-value>/WEB-INF/templates/</param-value>
+	</context-param>
+<!-- Default settings for template locations
+	<context-param>
+		<param-name>cmsc.portal.layout.base.dir</param-name>
+		<param-value>/WEB-INF/templates/layout/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>cmsc.portal.view.base.dir</param-name>
+		<param-value>/WEB-INF/templates/view/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>cmsc.portal.edit.base.dir</param-name>
+		<param-value>/WEB-INF/templates/edit/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>cmsc.portal.edit_default.base.dir</param-name>
+		<param-value>/WEB-INF/templates/edit_default/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>cmsc.portal.help.base.dir</param-name>
+		<param-value>/WEB-INF/templates/help/</param-value>
+	</context-param>
+-->
+	<context-param>
+		<param-name>cmsc.portal.portlet.header.jsp</param-name>
+		<param-value>PortletFragmentHeader.jsp</param-value>
+	</context-param>
+	<context-param>
+		<param-name>cmsc.portal.portlet.footer.jsp</param-name>
+		<param-value>PortletFragmentFooter.jsp</param-value>
+	</context-param>
+
+	<!-- 
+		The MMBase taglib stores its variable compatible with EL. If you don't want that (e.g. because
+		it was not like this in MMBase 1.7) then you can set this parameter to 'true'
+	-->
+	<!-- context-param>
+		<param-name>mmbase.taglib.isELIgnored</param-name>
+		<param-value>false</param-value>
+	</context-param -->
+
+   <filter>
+      <description>Filter catch all requests.</description>
+      <display-name>DisableUrlSession Filter</display-name>
+      <filter-name>DisableUrlSessionFilter</filter-name>
+      <filter-class>com.finalist.cmsc.filters.DisableUrlSessionFilter</filter-class>
+   </filter>
+
+   <filter>
+      <description>Filter catch all requests.</description>
+      <display-name>CloudThread Filter</display-name>
+      <filter-name>CloudThreadFilter</filter-name>
+      <filter-class>net.sf.mmapps.commons.web.CloudThreadFilter</filter-class>
+   </filter>
+
+   <filter>
+      <description>Set Character encoding for request parameters.</description>
+      <display-name>Set Character Encoding Filter</display-name>
+      <filter-name>CharacterEncoding</filter-name>
+      <filter-class>org.mmbase.servlet.CharacterEncodingFilter</filter-class>
+      <init-param>
+         <param-name>encoding</param-name>
+         <param-value>UTF-8</param-value>
+      </init-param>
+    </filter>
+
+   <!-- navigation controller -->
+   <filter>
+      <description>Filter catch all requests.</description>
+      <display-name>Controller Filter</display-name>
+      <filter-name>ControllerFilter</filter-name>
+      <filter-class>com.finalist.cmsc.portalImpl.ControllerFilter</filter-class>
+      <init-param>
+         <param-name>excludes</param-name>
+         <param-value>([.]jpg$|[.]gif$|[.]png$|[.]css$|[.]js$|[.]jsp$|[.]html$|[.]do$|[.]ico$)|robots.txt|/mmbase|/editors</param-value>
+      </init-param>
+   </filter>
+   
+   <filter-mapping>
+      <filter-name>DisableUrlSessionFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   
+   <filter-mapping>
+      <filter-name>CloudThreadFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>CharacterEncoding</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>ControllerFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   
+    <servlet>
+        <display-name>Pluto Driver</display-name>
+        <servlet-name>CmscPortalServlet</servlet-name>
+        <servlet-class>com.finalist.cmsc.portalImpl.PortalServlet</servlet-class>
+        <init-param>
+            <param-name>charset</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+
+   <servlet>
+      <description>All portlets are handled through this servlet.</description>
+      <display-name>Portlet servlet</display-name>
+      <servlet-name>CmscPortletServlet</servlet-name>
+      <servlet-class>com.finalist.cmsc.portalImpl.PortletServlet</servlet-class>
+      <load-on-startup>3</load-on-startup>
+   </servlet>
+
+    <servlet>
+        <display-name>Pluto Driver</display-name>
+        <servlet-name>CmscPortalErrorServlet</servlet-name>
+        <servlet-class>com.finalist.cmsc.portalImpl.PortalErrorServlet</servlet-class>
+        <init-param>
+            <param-name>charset</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+
+    
+    <servlet>
+        <display-name>Redirect</display-name>
+        <servlet-name>CmscRedirectServlet</servlet-name>
+        <servlet-class>com.finalist.cmsc.services.search.RedirectServlet</servlet-class>
+        <init-param>
+			<param-name>forwardRequest</param-name>
+			<param-value>true</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+    
+	<!-- The base MMBase servlet informs about the current MMBase version -->
+	<servlet>
+		<servlet-name>version</servlet-name>
+		<servlet-class>org.mmbase.servlet.MMBaseServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- The MMBase image serving servlet. -->
+	<servlet>
+		<servlet-name>images</servlet-name>
+		<servlet-class>org.mmbase.servlet.ImageServlet</servlet-class>
+		<init-param>
+			<!-- Expire time of original images. Cached images never expire. -->
+			<param-name>expire</param-name>
+			<!-- 10 minutes (default is one hour)-->
+			<param-value>600</param-value>
+		</init-param>
+		<init-param>
+			<!-- Whether to accepts image conversion on the URL -->
+			<param-name>convert</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<!-- Field of image node to use for 'last modified' -->
+			<param-name>lastmodifiedfield</param-name>
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<!-- Whether to filter jpeg image for meta xml data -->
+			<param-name>IECompatibleJpeg</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<!-- The MMBase attachment serving servlet. -->
+	<servlet>
+		<servlet-name>attachments</servlet-name>
+		<servlet-class>
+			org.mmbase.servlet.AttachmentServlet
+		</servlet-class>
+		<init-param>
+			<!-- Expire time of original images. Cached images never expire. -->
+			<param-name>expire</param-name>
+			<!-- 10 minutes (default is one hour)-->
+			<param-value>600</param-value>
+		</init-param>
+		<init-param>
+			<!-- Field of attachment node to use for 'last modified' -->
+			<param-name>lastmodifiedfield</param-name>
+			<param-value></param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+
+	<!-- Standard Action Servlet Configuration (with debugging) -->
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>
+			com.finalist.cmsc.struts.ActionServlet
+		</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>detail</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>validate</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<description>Returns xml content</description>
+		<servlet-name>xmlcontent</servlet-name>
+		<servlet-class>com.finalist.cmsc.repository.xml.XMLServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>version</servlet-name>
+		<url-pattern>/version</url-pattern>
+	</servlet-mapping>
+	<!-- mapping for image-requests -->
+	<servlet-mapping>
+		<servlet-name>images</servlet-name>
+		<url-pattern>/mmbase/images/*</url-pattern>
+	</servlet-mapping>
+	<!-- mapping for attachment-requests -->
+	<servlet-mapping>
+		<servlet-name>attachments</servlet-name>
+		<url-pattern>/mmbase/attachments/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>CmscRedirectServlet</servlet-name>
+		<url-pattern>/content/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CmscPortalErrorServlet</servlet-name>
+		<url-pattern>/PortalError</url-pattern>
+	</servlet-mapping>
+	<!-- Standard Action Servlet Mapping -->
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>xmlcontent</servlet-name>
+		<url-pattern>/editors/repository/xml</url-pattern>
+	</servlet-mapping>
+
+	<mime-mapping>
+		<extension>html</extension>
+		<mime-type>text/html</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>htm</extension>
+		<mime-type>text/html</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>xml</extension>
+		<mime-type>text/xml</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>txt</extension>
+		<mime-type>text/plain</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>pdf</extension>
+		<mime-type>application/pdf</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>doc</extension>
+		<mime-type>application/msword</mime-type>
+	</mime-mapping>
+
+	<welcome-file-list>
+    	<welcome-file>index.jspx</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+    	<welcome-file>default.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+	<error-page>
+		<error-code>400</error-code>
+		<location>/PortalError</location>
+	</error-page>
+	<!-- cloud login method http sends a 401 with an autheticate request -->
+	<!--error-page>
+		<error-code>401</error-code>
+		<location>/error/401.jsp</location>
+	</error-page-->
+	<error-page>
+		<error-code>403</error-code>
+		<location>/PortalError</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/PortalError</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/PortalError</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/PortalError</location>
+	</error-page>
+
+	<resource-ref>
+		<description>Mail resource for MMBase</description>
+		<res-ref-name>mail/Session</res-ref-name>
+		<res-type>javax.mail.Session</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+
+	<resource-ref>
+		<description>DB Connection</description>
+		<res-ref-name>jdbc/cmsc</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+
+	<env-entry>
+		<description></description>
+		<env-entry-name>cmsc/richtext/resolveIds</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>false</env-entry-value>
+	</env-entry>
+
+</web-app>

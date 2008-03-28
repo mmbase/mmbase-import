@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view exportsource="jdbc:mysql://localhost/banner" timestamp="20050919142139">
+	<node number="44710" owner="default">
+		<title>banner/basic</title>
+		<resource>banner/basic.jsp</resource>
+	</node>
+</view>

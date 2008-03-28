@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allowrel exportsource="jdbc:mysql://localhost/reactform" timestamp="20060906000000">
+   <node number="803" owner="default" snumber="44004" dnumber="44040" rtype="allowrel" dir="bidirectional">
+      <allow>yes</allow>
+   </node>
+</allowrel>

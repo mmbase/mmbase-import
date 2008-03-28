@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"
+	extends="insrel" maintainer="finalist.com" name="creationrel" version="1">
+<!--
+ 
+-->
+   <status>active</status>
+   <!--
+   <class>ContentRepository.Creationrel</class>
+   -->
+   <searchage>70</searchage>
+   <names>
+      <singular xml:lang="nl">creationrel</singular>
+      <singular xml:lang="en">creationrel</singular>
+	  <singular xml:lang="zh">创建链接</singular>
+      <plural xml:lang="nl">creationrel</plural>
+      <plural xml:lang="en">creationrel</plural>
+	  <plural xml:lang="en">创建链接</plural>
+   </names>
+   <descriptions>
+      <description xml:lang="nl"></description>
+      <description xml:lang="en"></description>
+	  <description xml:lang="zh"></description>
+   </descriptions>
+
+	<properties>
+		</properties>
+   <fieldlist>
+</fieldlist>
+</builder>

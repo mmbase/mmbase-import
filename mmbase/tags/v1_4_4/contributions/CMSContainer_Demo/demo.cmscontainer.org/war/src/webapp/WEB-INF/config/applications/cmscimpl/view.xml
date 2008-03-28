@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view exportsource="cmsc file dumper" timestamp="20070324161134">
+	<node number="655" owner="default">
+		<title>Date and title</title>
+		<resource>demo/news/simplelist.jsp</resource>
+	</node>
+	<node number="659" owner="default">
+		<title>Intro text only</title>
+		<resource>demo/news/intro_only/list.jsp</resource>
+	</node>
+	<node number="643" owner="default">
+		<title>Linklist</title>
+		<resource>demo/collection/list.jsp</resource>
+	</node>
+	<node number="87152" owner="default">
+		<title>Sitemap</title>
+		<resource>demo/navigation/sitemap.jsp</resource>
+	</node>
+	<node number="651" owner="default">
+		<title>Banners</title>
+		<resource>demo/banner/list.jsp</resource>
+	</node>
+	<node number="637" owner="default">
+		<title>Titles</title>
+		<resource>demo/news/small/list.jsp</resource>
+	</node>
+	<node number="661" owner="default">
+		<title>News overview</title>
+		<resource>demo/news/list.jsp</resource>
+	</node>
+	<node number="647" owner="default">
+		<title>Article detail</title>
+		<resource>demo/news/detail_view.jsp</resource>
+	</node>
+	<node number="673" owner="default">
+		<title>Menu left</title>
+		<resource>demo/navigation/leftmenu.jsp</resource>
+	</node>
+	<node number="653" owner="default">
+		<title>Article detail without date</title>
+		<description>Zonder datum en 'terug' link</description>
+		<resource>demo/news/detail_view_simple.jsp</resource>
+	</node>
+	<node number="663" owner="default">
+		<title>Submenu</title>
+		<resource>demo/navigation/submenu.jsp</resource>
+	</node>
+	<node number="657" owner="default">
+		<title>Breadcrumb</title>
+		<resource>demo/navigation/breadcrumb.jsp</resource>
+	</node>
+	<node number="671" owner="default">
+		<title>Title, intro, photo</title>
+		<resource>demo/news/sidebar_teaser/list.jsp</resource>
+	</node>
+	<node number="645" owner="default">
+		<title>Landingspage</title>
+		<resource>demo/news/landing_page_layout/list.jsp</resource>
+	</node>
+</view>

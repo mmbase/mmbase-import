@@ -1,0 +1,116 @@
+div.page_buttons
+{
+	width: 100%;
+	background-image: url('../../../gfx/tab_2_left.gif');
+	background-repeat: no-repeat;
+	height: 39px;
+	background-color: #ffffff;	
+}
+
+div.page_buttons div.begin
+{
+	background-image: url('../../../gfx/tab_2_right.gif');
+	background-repeat: no-repeat;
+	height: 39px;
+	width: 9px;
+	float: right;
+}
+
+div.page_buttons div.button
+{
+	background-image: url('../../../gfx/tab_2_left.gif');
+	background-repeat: no-repeat;
+	background-position: top left;
+	height: 39px;
+	float: right;
+	border-style: none none none solid;
+	border-width: 1px;
+	border-color: #97b7c8;
+
+}
+
+div.page_buttons div.button div.button_body
+{
+	background-image: url('../../../gfx/tab_2_right.gif');
+	background-repeat: no-repeat;
+	background-position: top right;
+	height: 39px;
+	float: left;	
+}
+
+div.page_buttons div.button div.button_body_last
+{
+	background-image: url('../../../gfx/tab_2_end.gif');
+	background-repeat: no-repeat;
+	background-position: top right;
+	height: 39px;
+	float: left;		
+}
+
+div.page_buttons div.button div.button_body a,
+div.page_buttons div.button div.button_body_last a
+{
+	float: left;
+	padding: 10px;
+	margin: 0px;
+	color: #313728;
+	font-size: 13px;	
+	display: block;
+}
+
+/* buttons hovers */
+div.page_buttons div.button:hover
+{
+	background-image: url('../../../gfx/tab_2_active_left.gif');
+	background-repeat: no-repeat;
+	background-position: top left;
+	height: 39px;
+	float: right;
+	border-style: none none none solid;
+	border-width: 1px;
+	border-color: #97b7c8;
+	background-color: #f1f400;
+	cursor: pointer;
+}
+
+div.page_buttons div.button:hover div.button_body
+{
+	background-image: url('../../../gfx/tab_2_active_right.gif');
+	background-repeat: no-repeat;
+	background-position: top right;
+	height: 39px;
+	float: left;	
+}
+div.page_buttons div.button a.a_hover:hover
+{   
+  background-image: url('../../../gfx/tab_2_active_left.gif');
+	background-repeat: no-repeat;
+	background-position: top left;
+	height: 39px;
+	float: right;
+	border-style: none none none solid;
+	border-width: 1px;
+	border-color: #97b7c8;
+	background-color: #f1f400;
+	cursor: pointer;
+}
+
+div.page_buttons div.button a.a_hover:hover div.button_body
+{   
+   background-image: url('../../../gfx/tab_2_active_right.gif');
+	background-repeat: no-repeat;
+	background-position: top right;
+	height: 39px;
+	float: left;
+}
+
+div.page_buttons div.button:hover div.button_body a,
+div.page_buttons div.button:hover div.body_last a
+{
+	float: left;
+	padding: 10px;
+	margin: 0px;
+	color: #313728;
+	font-size: 13px;	
+	display: block;
+}
