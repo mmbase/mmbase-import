@@ -49,6 +49,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_SHOW);      
    }
 
+
    private String determineDisplayType(RenderRequest request) {
       String displayType = (String) request.getAttribute(KEY_DISPLAYTYPE);
       if (displayType == null) {
@@ -65,6 +66,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
 
    @Override
    protected void doView(RenderRequest request, RenderResponse res) throws PortletException, java.io.IOException {
+       
       PortletPreferences preferences = request.getPreferences();
       PortletSession session = request.getPortletSession(true);
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
