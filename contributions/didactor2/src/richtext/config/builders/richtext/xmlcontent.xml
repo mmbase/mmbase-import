@@ -21,6 +21,11 @@
     <description xml:lang="eo">Enhavaĵoj</description>
   </descriptions>
 
+  <properties>
+    <property name="key:new:name">richtext.createnewxmlcontent</property>
+    <property name="key:new:description">richtext.createnewxmlcontentdescription</property>
+  </properties>
+
   <xi:include href="rich.fields.xml" />
 
 </builder>
