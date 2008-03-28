@@ -90,7 +90,7 @@ See http://www.MMBase.org/license
   <developers>
     <developer>
       <name>Andre van Toly</name>
-      <id>0</id>
+      <id>andre</id>
       <email>andre@toly.nl</email>
       <timezone>1</timezone>
       <roles>
@@ -181,7 +181,7 @@ See http://www.MMBase.org/license
     </developer>
     <developer>
       <name>Pierre van Rooden</name>
-      <id>10</id>
+      <id>pierre</id>
       <email>Pierre.van.Rooden@omroep.nl</email>
       <organization>Publieke Omroep</organization>
       <timezone>1</timezone>
