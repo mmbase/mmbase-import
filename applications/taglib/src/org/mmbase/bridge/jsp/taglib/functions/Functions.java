@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.15.2.5 2008-03-25 11:31:54 michiel Exp $
+ * @version $Id: Functions.java,v 1.15.2.6 2008-03-28 13:02:05 michiel Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {
@@ -129,6 +129,14 @@ public class Functions {
      */
     public static String link(String page) {
         return url(page, ContextReferrerTag.getThreadPageContext());
+    }
+
+    /**
+     * @since MMBase-1.8.6
+     */
+    public static Object managerProperty(String nodeManager, String name) {
+        Cloud cloud = (Cloud) ContextReferrerTag.getThreadPageContext().getAttribute(CloudTag.KEY, CloudTag.SCOPE);
+        return cloud.getNodeManager(nodeManager).getProperty(name);
     }
 
     /**
