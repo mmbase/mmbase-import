@@ -11,12 +11,8 @@
 
 
   <action type="create">
-    <object type="fillquestions">
-      <field name="showtitle">1</field>
-      <field name="layout">0</field>
-      <field name="impos">0</field>
-      <field name="flashOrText">0</field>
-    </object>
+    <object type="fillquestions" />
+
   </action>
 
   <action type="load">
@@ -40,7 +36,6 @@
 
 
   <lists>
-    <optionlist include="config/option_list/boolean.xml" />
     <optionlist include="config/option_list/flashOrText.xml" />
     <optionlist name="imagepos">
       <option id="0">
@@ -62,38 +57,17 @@
   <form-schema id="step1">
     <title xml:lang="en">Enter fill in the gaps question</title>
     <title xml:lang="nl">Invulvraag editor</title>
-    <field name="title" >
-      <prompt xml:lang="nl">Invulvraag titel</prompt>
-      <prompt xml:lang="en">Title</prompt>
-    </field>
-
+    <field name="title"  />
     <field name="showtitle" />
-
-
-    <!--  INSERT FLASH/TEXT -->
     <field name="flashOrText" ftype="enum">
       <prompt xml:lang="en">Choose flash or text</prompt>
       <prompt xml:lang="nl">Kies flash of tekst </prompt>
       <optionlist select="flashOrText" />
     </field>
-    <!-- END INSERT FLASH/TEXT -->
 
-    <!--  INSERT TEXT -->
-    <field name="text" ftype="html" dtminlength="0">
-      <prompt xml:lang="nl">Tekst</prompt>
-      <prompt xml:lang="en">Text</prompt>
-    </field>
-    <!-- END INSERT TEXT -->
-
-    <!--  INSERT FLASH -->
-
+    <field name="text" ftype="html" dtminlength="0" />
     <list minoccurs="0" maxoccurs="1" role="related" extends="config/attachment/attachments.xml" />
 
-    <!-- END INSERT FLASH -->
-
-
-
-    <!--  INSERT IMAGE -->
 
     <list role="posrel" destination="images" minoccurs="0" maxoccurs="*">
       <title xml:lang="nl">Bijbehorende afbeeldingen</title>
@@ -118,25 +92,17 @@
       </action>
     </list>
 
-    <!-- END INSERT IMAGE -->
-
-    <!--  INSERT IMAGE POSITION-->
-
     <field name="impos" ftype="enum">
       <prompt xml:lang="en">Image position</prompt>
       <prompt xml:lang="nl">Afbeeldingen positie</prompt>
       <optionlist select="imagepos" />
     </field>
 
-    <!-- END INSERT IMAGE POSITION-->
-
 
     <field name="textFirst" ftype="line" dtminlength="0">
       <prompt xml:lang="nl">Eerste deel van de zin </prompt>
       <prompt xml:lang="en">The first part of the sentence </prompt>
     </field>
-
-    <!--  INSERT ANSWER -->
 
     <list destination="openanswers" role="related" ordertype="number" orderby="number" >
       <title xml:lang="nl">Bijbehorende antwoorden (niet verplicht)</title>
@@ -182,25 +148,13 @@
       <command name="insert" />
     </list>
 
-    <!-- END INSERT ANSWER -->
-
-
-
-
-
     <field name="textSecond" ftype="line" dtminlength="0">
       <prompt xml:lang="nl">Tweede deel van de zin</prompt>
       <prompt xml:lang="en">The second part of the sentence </prompt>
     </field>
 
 
-
-
-
-    <!--  FEEDBACK    -->
     <list role="related" extends="config/feedback/feedback-list.xml" />
-    <!--  END FEEDBACK -->
-
 
 
   </form-schema>

@@ -10,11 +10,7 @@
   <title xml:lang="en">Open question Editor</title>
 
   <action type="create">
-    <object type="openquestions">
-		  <field name="showtitle">1</field>
-		  <field name="layout">0</field>
-		  <field name="type_of_score">0</field>
-    </object>
+    <object type="openquestions" />
   </action>
 
   <action type="load">
@@ -29,15 +25,8 @@
   <form-schema id="step1">
     <title xml:lang="nl">Open vraag invoeren</title>
     <title xml:lang="en">Enter open question</title>
-    <field name="title" >
-      <prompt xml:lang="nl">Open vraag titel</prompt>
-      <prompt xml:lang="en">Open question title</prompt>
-    </field>
-    <field name="showtitle" ftype="enum">
-      <prompt xml:lang="nl">Titel laten zien</prompt>
-      <prompt xml:lang="en">Show title</prompt>
-      <optionlist select="boolean" />
-    </field>
+    <field name="title"  />
+    <field name="showtitle" />
     <field name="text" ftype="html" dtminlength="0" />
     <field name="layout" />
     <field name="type_of_score" />
