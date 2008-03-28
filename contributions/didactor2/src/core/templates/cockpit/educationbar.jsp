@@ -3,6 +3,7 @@
           xmlns:c="http://java.sun.com/jsp/jstl/core"
           xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
           xmlns:di="http://www.didactor.nl/ditaglib_1.0">
+  <jsp:directive.page session="false" />
   <jsp:directive.page import="java.util.*,nl.didactor.component.*" />
   <mm:cloud method="asis">
     <div class="educationMenubar">
@@ -11,11 +12,7 @@
         <mm:present referid="education">
           <mm:hasnode number="component.progress">
             <mm:treefile page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" write="false" escapeamps="false">
-              <script type="text/javascript">
-                function reloadProgress() {
-                Sarissa.updateContentFromURI('${_}', document.getElementById('progressMeter'));
-                }
-              </script>
+              <script type="text/javascript"> function reloadProgress() { $("#progressMeter").load('${_}'); } </script>
             </mm:treefile>
             <div id="progressMeter">
               <mm:treeinclude page="/progress/cockpit/bar_connector.jspx" objectlist="$includePath" referids="$referids" />

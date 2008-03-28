@@ -8,8 +8,8 @@
       <mm:compare referid="showlogin" value="yes">
         <div class="menuItemApplicationMenubar login">
           <mm:import externid="referrer">
-            <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids"
-                       /></mm:import>
+            <mm:treefile page="/education/index.jsp" objectlist="$includePath" referids="$referids" />
+          </mm:import>
           <form method="post" action="${referrer}">
             <p>
               <input type="hidden" name="authenticate"  value="plain"  />
