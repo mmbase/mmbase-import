@@ -16,4 +16,9 @@
     <description xml:lang="nl">Koppel vraag, waar de antwoorden gekoppeld moeten worden</description>
     <description xml:lang="en">Coupling questions, where answes need to be related to eachother</description>
   </descriptions>
+
+  <properties>
+    <property name="key:new:name">education.createnewmcquestions</property>
+    <property name="key:new:description">education.createnewmcquestionsdescription</property>
+  </properties>
 </builder>

@@ -16,5 +16,11 @@
     <description xml:lang="en">Drag and Drop question, where you need to select the right spot on an image</description>
   </descriptions>
 
+  <properties>
+    <property name="key:new:name">education.createnewdropquestions</property>
+    <property name="key:new:description">education.createnewdropquestionsdescription</property>
+  </properties>
+
+
 </builder>
 

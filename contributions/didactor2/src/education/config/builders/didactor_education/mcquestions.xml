@@ -18,8 +18,10 @@
     <description xml:lang="en">A multiple choise question, where the student selects one or multiple questions</description>
   </descriptions>
 
-
-  -->
+  <properties>
+    <property name="key:new:name">education.createnewmcquestions</property>
+    <property name="key:new:description">education.createnewmcquestionsdescription</property>
+  </properties>
 
   <fieldlist>
 
@@ -53,18 +55,7 @@
         <guiname xml:lang="nl">Type</guiname>
         <guiname xml:lang="en">Type</guiname>
       </gui>
-      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes">
-        <default value="0" />
-        <enumeration>
-          <entry value="0" xml:lang="nl" display="Een van de gegeven antwoorden kan worden geselecteerd" />
-          <entry value="1" xml:lang="nl" display="Meerdere antwoorden kunnen worden geselecteerd" />
-          <entry value="2" xml:lang="nl" display="Een waarde-antwoord kan worden geselecteerd" />
-
-          <entry value="0" xml:lang="en" display="One of the answers can be selected" />
-          <entry value="1" xml:lang="en" display="Zero or more answwers can be selected" />
-          <entry value="2" xml:lang="en" display="A value answer can be selected" /> <!-- I have no idea what this is -->
-        </enumeration>
-      </datatype>
+      <datatype base="didactor_mctype" xmlns="http://www.mmbase.org/xmlns/datatypes" />
     </field>
 
   </fieldlist>
