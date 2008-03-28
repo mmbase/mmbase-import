@@ -195,10 +195,10 @@ function requestContent(href) {
 function postContent(href, form) {
     loadIconOn();
     var params = {};
-    $(form).each("textarea", function() {
+    $(form).find("textarea").each(function() {
             params[this.name] = this.value;
         });
-    $(form).each("input", function() {
+    $(form).find("input").each(function() {
             if (this.type == "checkbox" && ! this.checked) {
             } else {
                 params[this.name] = this.value;
@@ -224,7 +224,6 @@ function postContent(href, form) {
 
 
     //console.log("posting " + content);
-    xmlhttp.send(content);
     scrollToTop();
 }
 
