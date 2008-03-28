@@ -111,7 +111,7 @@ function loadIconOff() {
 function disablePopups() {
     if (enabledPopups) {
         enabledPopups = false;
-        var popups = getElementsByClass(document, "popup");
+        var popups = $(document).find(".popup");
         for(var i = 0; i < popups.length; i++) {
             popups[i].style.display = "none";
         }
@@ -122,7 +122,7 @@ function disablePopups() {
 function enablePopups() {
     if (! enabledPopups) {
         enabledPopups = true;
-        var popups = getElementsByClass(document, "popup");
+        var popups = $(document).find(".popup");
         for(var i = 0; i < popups.length; i++) {
             popups[i].style.display = "inline";
         }
@@ -142,55 +142,48 @@ function requestContent(href) {
    var content = usedFrames[href];
    if (content == null) {
        loadIconOn();
-       var xmlhttp = new XMLHttpRequest();
-       xmlhttp.open("GET", href, true);
-       xmlhttp.onreadystatechange = function()  {
-           if (xmlhttp.readyState == 4) {
-               try {
-                    var contentEl = document.getElementById('contentFrame');
-                    //                    console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
-                    Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, loadIconOff);
-                    contentEl.validator = new MMBaseValidator();
-                    //contentEl.validator.logEnabled = true;
-                    //contentEl.validator.traceEnabled = true;
-                    contentEl.validator.validateHook = function(valid) {
-                        var buttons = getElementsByClass(contentEl, "formbutton", "input");
-                        for (i = 0; i < buttons.length; i++) {
-                            var disabled = (contentEl.validator.invalidElements > 0);
-                            buttons[i].disabled = disabled;
-                            // just because IE does not recognize input[disabled]
-                            // IE SUCKS
-                            buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
-                        }
-                    };
-                    contentEl.validator.validatePage(false, contentEl);
-                    contentEl.validator.addValidation(contentEl);
-                    check(xmlhttp.responseXML.documentElement.getAttribute('class'));
-                    document.href_frame = href;
-               } catch (exception) {
-                   // backwards compatibility
-                   contentEl.innerHTML = "<iframe width='100%' height='100%' id='content' name='content' frameborder='0'  src='" + href + "' />";
-                   resize();
-                   //throw exception;
-                   alert(exception);
-               }
-               var array = new Array();
-               // in case it is more than one element (e.g. comments or so), store all childnodes.
+       var contentEl = document.getElementById('contentFrame');
+       $.ajax({async: true, url: href, type: "GET", dataType: "xml", data: null,
+                   complete: function(res, status){
+                   loadIconOff();
+                   if (status == "success") {
+                       $(contentEl).empty();
+                       $(contentEl).append(res.responseText);
+                       // console.log("updating " + contentEl + "with" + xmlhttp.responseXML);
+                       contentEl.validator = new MMBaseValidator();
+                       //contentEl.validator.logEnabled = true;
+                       //contentEl.validator.traceEnabled = true;
+                       contentEl.validator.validateHook = function(valid) {
+                           var buttons = $(contentEl).find("input.formbutton");
+                           for (i = 0; i < buttons.length; i++) {
+                               var disabled = (contentEl.validator.invalidElements > 0);
+                               buttons[i].disabled = disabled;
+                               // just because IE does not recognize input[disabled]
+                               // IE SUCKS
+                               buttons[i].className = "formbutton " + (disabled ? "disabled" : "enabled");
+                           }
+                       };
+                       contentEl.validator.validatePage(false, contentEl);
+                       contentEl.validator.addValidation(contentEl);
+                       check(res.responseXML.documentElement.getAttribute('class'));
+                       document.href_frame = href;
+                       var array = new Array();
+                       // in case it is more than one element (e.g. comments or so), store all childnodes.
 
-               try {
-                   for (var i = 0; i < contentEl.childNodes.length; i++) {
-                       array.push(contentEl.childNodes[i]);
+                       try {
+                           for (var i = 0; i < contentEl.childNodes.length; i++) {
+                               array.push(contentEl.childNodes[i]);
+                           }
+                       } catch (ex) {
+                           alert(ex);
+                       }
+                       usedFrames[href] = array;
                    }
-               } catch (ex) {
-                   alert(ex);
                }
-               usedFrames[href] = array;
-           }
-       };
-       xmlhttp.send(null);
+           });
    } else {
        var contentEl = document.getElementById('contentFrame');
-       Sarissa.clearChildNodes(contentEl);
+       $(contentEl).empty();
        for (var i=0; i < content.length; i++) {
            contentEl.appendChild(content[i]);
        }
@@ -201,41 +194,35 @@ function requestContent(href) {
 
 function postContent(href, form) {
     loadIconOn();
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", href, true);
-    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xmlhttp.onreadystatechange =  function()  {
-        //console.log("" + xmlhttp);
-        if (xmlhttp.readyState == 4) {
-            //console.log("ready")
-            if (xmlhttp.status == 200) {
-                var contentEl = document.getElementById('contentFrame');
-                Sarissa.updateContentFromNode(xmlhttp.responseXML, contentEl, null, afterPost);
-                usedFrames[document.href_frame] = null;
-                document.href_frame = href;
-                //console.log("Found result " + contentEl);
-                usedFrames[href] = contentEl.childNodes;
+    var params = {};
+    $(form).each("textarea", function() {
+            params[this.name] = this.value;
+        });
+    $(form).each("input", function() {
+            if (this.type == "checkbox" && ! this.checked) {
             } else {
-                alert(xmlhttp.status);
+                params[this.name] = this.value;
             }
-        }
-    };
-    var content = '';
-    var sep = '';
-    var textareas = form.getElementsByTagName("textarea");
-    for (i=0; i<textareas.length; i++) {
-        var ta = textareas[i];
-        content += sep + ta.name + '=' + ta.value;
-        sep = '&';
-    }
-    var textareas = form.getElementsByTagName("input");
-    for (i=0; i<textareas.length; i++) {
-        if (textareas[i].type == "checkbox" && !textareas[i].checked)
-            continue;
-        var ta = textareas[i];
-        content += sep + ta.name + '=' + ta.value;
-        sep = '&';
-    }
+        });
+
+    $.ajax({url: href, type: "POST", dataType: "xml", data: params,
+                complete: function(res, status) {
+                if (status == "success") {
+                    var contentEl = document.getElementById('contentFrame');
+                    $(contentEl).empty();
+                    $(contentEl).append(res.responseText);
+                    afterPost();
+                    usedFrames[document.href_frame] = null;
+                    document.href_frame = href;
+                    //console.log("Found result " + contentEl);
+                    usedFrames[href] = contentEl.childNodes;
+                } else {
+                    alert(status);
+                }
+            }
+        });
+
+
     //console.log("posting " + content);
     xmlhttp.send(content);
     scrollToTop();
@@ -446,7 +433,7 @@ function afterPost() {
     function reloadEducationTree() {
         usedFrames    = new Object();
         //console.log("Updating '" + document.getElementById('education-tree') + " with url ${_}");
-        Sarissa.updateContentFromURI('${_}', document.getElementById('education-tree'), null, closeAppropriate);
+        $("education-tree").load('${_}');
 
     }
 </mm:treefile>
