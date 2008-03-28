@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
-<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
-[
-<!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
-]>
-<wizard-schema>
-  <title xml:lang="nl">Leerblok-Editor</title>
+<wizard-schema
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns="http://www.mmbase.org/xmlns/editwizard"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/editwizard http://www.mmbase.org/xmlns/editwizard.xsd"
+    >
+  <title xml:lang="nl">Leerblok-Editort</title>
   <title xml:lang="en">Learnblock Editor</title>
 
   <action type="create">
     <object type="learnblocks" />
   </action>
 
-  <action include="config/learnblocks/load.xml" />
+  <xi:include href="load.xml" />
 
   <action type="delete" />
 
-  <form-schema extends="config/learnblocks/step1.xml" />
-  <form-schema extends="config/learnblocks/paragraphs.xml" />
-  <form-schema extends="config/learnblocks/learnobjects.xml" />
+  <xi:include href="step1.xml" />
+  <xi:include href="paragraphs.xml" />
+  <xi:include href="learnobjects.xml" />
 
-  &extra_schemas;
 </wizard-schema>

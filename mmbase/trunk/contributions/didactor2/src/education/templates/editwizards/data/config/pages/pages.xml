@@ -36,8 +36,10 @@
   <form-schema id="step1">
     <title xml:lang="nl">Pagina invoeren</title>
     <title xml:lang="en">Enter page</title>
-    <field name="name"  />
-    <field name="showtitle" />
+    <fieldset>
+      <field name="name"  />
+      <field name="showtitle" />
+    </fieldset>
     <field name="text" ftype="html" dtminlength="0" />
     <field name="layout" />
     <field name="imagelayout" />
