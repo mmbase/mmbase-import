@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="rankingquestions" maintainer="didactor.nl" version="2" extends="questions">
-  <status>active</status>
-  <classfile>nl.didactor.education.builders.RankingQuestionBuilder</classfile>
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="rankingquestions" maintainer="didactor.nl" version="2" extends="questions">
+  <class>nl.didactor.education.builders.RankingQuestionBuilder</class>
   <searchage>31</searchage>
 
   <names>
-    <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="nl">Rangorde Vraag</singular>
     <singular xml:lang="en">Ranking Question</singular>
-    <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="nl">Rangorde Vragen</plural>
     <plural xml:lang="nl">Ranking Questions</plural>
   </names>
@@ -21,6 +21,8 @@
   </descriptions>
 
   <properties>
-    <property name="max-nodes-from-query">99999</property>
+    <property name="key:new:name">education.createnewrankingquestions</property>
+    <property name="key:new:description">education.createnewrankingquestionsdescription</property>
   </properties>
+
 </builder>
