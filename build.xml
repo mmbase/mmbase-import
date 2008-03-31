@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.169 2008-03-25 21:03:08 nklasens Exp $
+$Id: build.xml,v 1.170 2008-03-31 16:39:01 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -293,11 +293,9 @@ builddate=${builddate}
   </target>
 
 
-  <target name="lib.release.renametojar" unless="norenametojar">
-    <!--
-    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
-    <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
-    -->
+
+  <target name="lib.release.xerces"  if="install.xerces">
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.jar" />
   </target>
 
   <!-- =================================================================== -->
@@ -350,7 +348,7 @@ builddate=${builddate}
     <!-- org.apache.xpath.XPathAPI is used here and there. This dependency can be dropped in 1.5 (which includes xpath api itself) -->
     <!--
     <copy file="${xalan.jar}"                 todir="${compile.lib.dir}" />
-    <copy file="${serializer.jar}"            todir="${compile.lib.dir}" /> 
+    <copy file="${serializer.jar}"            todir="${compile.lib.dir}" />
     -->
     <!-- used when making tld's in taglib -->
 
@@ -484,27 +482,11 @@ builddate=${builddate}
     <mkdir dir="${build.dir}/classes/org/mmbase/config"/>
     <copy todir="${build.dir}/classes/org/mmbase/config"  preservelastmodified="true">
       <fileset dir="${source-config.dir}">
-        <include name="caches.xml"/>
-        <include name="magic.xml"/>
-        <include name="eventmanager.xml"/>
-        <include name="datatypes.xml"/>
-        <include name="applications/Basics.xml"/>
-        <include name="builders/core/*.xml"/>
-        <include name="builders/INDEX" />
-        <include name="components/**" />
-        <include name="functions/**/*.xml"/>
-        <include name="storage/**/*.xml" />
-        <include name="storage/**/INDEX" />
-        <include name="modules/mmbaseroot.xml"/>
-        <include name="modules/mmadmin.xml"/>
-        <include name="security/classauthentication.xml" />
-        <include name="log/log.xml" />
-        <include name="utils/**/*.xml"/>
+        <include name="**/*.xml"/>
         <include name="xslt/**/*.xsl"/>
         <include name="xslt/**/*.xslt"/>
         <include name="dtd/**"/>
         <include name="xmlns/**"/>
-        <include name="security/classauthentication.xml"/>
       </fileset>
     </copy>
     <echo file="${build.dir}/classes/org/mmbase/config/INDEX">
@@ -525,7 +507,10 @@ mmadmin.xml
     </echo>
   </target>
 
-  <target name="compile" description="Compile the source directory"  depends="init.compile,javacc">
+  <target name="compile" description="Compile the source directory"  depends="init.compile,javacc,_compile">
+  </target>
+
+  <target name="_compile" depends="init.compile">
 
     <echo message="java version: ${ant.java.version}" />
     <echo message="compiling with debug=${debug}, optimize=${optimize}, nowarn=${nowarn}, deprecation=${deprecation}"/>
@@ -664,7 +649,7 @@ Build-compiler: ${build.compiler}
   />
 
   <target name="webapp" depends="lib.release,web,jar,applications" />
-  
+
   <target name="war" description="Create a MMBase war-file" depends="webapp">
     <war warfile="${build.dir}/mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
       <lib dir="${release.lib.dir}" />
@@ -689,7 +674,7 @@ Build-compiler: ${build.compiler}
             <filename name="standard*.jar" />
             <filename name="log4j*.jar" />
             <filename name="commons-fileupload*.jar" />
-            <!-- Xalan is used only by context security 
+            <!-- Xalan is used only by context security
                  Would be nice to drop that dependency.
                  In real life always editwizard depend too
             <filename name="xalan.jar" />
@@ -967,7 +952,7 @@ Build-compiler: ${build.compiler}
 
     <!-- copy the html -->
     <copy todir="${webapp.dir}">
-      <fileset dir="${source-html.dir}" 
+      <fileset dir="${source-html.dir}"
                defaultexcludes="${default.excludes}">
         <exclude name="WEB-INF/classes/**" />
         <exclude name="WEB-INF/web*.xml" />
