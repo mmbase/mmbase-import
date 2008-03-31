@@ -68,7 +68,7 @@ $(document).ready(function(){
 	    $("body").find(".mm_related a.search").each(function() {
 		this.searcher.commit();
 	    });
-	    return false;
+	    return true;
 
 	});
     });
