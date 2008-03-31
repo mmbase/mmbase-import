@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: Editor.java,v 1.15 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: Editor.java,v 1.16 2008-03-31 14:40:52 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -59,6 +59,25 @@ abstract public class Editor {
     }
     public final List<String> getFieldList() {
         return fieldList;
+    }
+
+    /**
+     * Here is were the FieldTag registers its fields and some associated
+     * and maybe usefull information with the EditTag.
+     *
+     * @param query     SearchQuery object that delivered the field
+     * @param nodenr    int with the number of the node the field belongs to
+     * @param fieldName String with the fieldname
+     */
+    public void registerField(Query query, int nodenr, String fieldName) {
+        if (log.isDebugEnabled()) {
+            log.debug("nodenr: " + nodenr);
+            log.debug("fieldName: " + fieldName);
+            log.debug("query: " + query);
+        }
+        queryList.add(query);
+        nodenrList.add(String.valueOf(nodenr));
+        fieldList.add(fieldName);
     }
 
 
