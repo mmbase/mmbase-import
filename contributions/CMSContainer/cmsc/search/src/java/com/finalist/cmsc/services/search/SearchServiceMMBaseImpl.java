@@ -445,33 +445,35 @@ public class SearchServiceMMBaseImpl extends SearchService {
          for (Integer portletId : portlets) {
             Portlet portlet = SiteManagement.getPortlet(portletId);
 
-            if (detailOnly && !isDetailPortlet(portlet)) {
-               continue;
-            }
-
-            List<Object> parameters = portlet.getPortletparameters();
-            for (Object param : parameters) {
-               if (param instanceof NodeParameter) {
-                  String value = ((NodeParameter) param).getValueAsString();
-                  if (value != null) {
-                     Node found = cloud.getNode(value);
-                     if (RepositoryUtil.isContentChannel(found)) {
-                        NodeList elements = RepositoryUtil.getLinkedElements(found);
-                        for (Iterator<Node> iterator = elements.iterator(); iterator.hasNext();) {
-                           Node contentElement = iterator.next();
-                           if (evaluateArchive(portlet, contentElement)) {
-                              result.add(contentElement);
-                           }
-                        }
-                     }
-                     else {
-                        if (ContentElementUtil.isContentElement(found)) {
-                           if (evaluateArchive(portlet, found)) {
-                              result.add(found);
-                           }
-                        }
-                     }
-                  }
+            if (portlet != null) {
+                if (detailOnly && !isDetailPortlet(portlet)) {
+                   continue;
+                }
+    
+                List<Object> parameters = portlet.getPortletparameters();
+                for (Object param : parameters) {
+                   if (param instanceof NodeParameter) {
+                      String value = ((NodeParameter) param).getValueAsString();
+                      if (value != null) {
+                         Node found = cloud.getNode(value);
+                         if (RepositoryUtil.isContentChannel(found)) {
+                            NodeList elements = RepositoryUtil.getLinkedElements(found);
+                            for (Iterator<Node> iterator = elements.iterator(); iterator.hasNext();) {
+                               Node contentElement = iterator.next();
+                               if (evaluateArchive(portlet, contentElement)) {
+                                  result.add(contentElement);
+                               }
+                            }
+                         }
+                         else {
+                            if (ContentElementUtil.isContentElement(found)) {
+                               if (evaluateArchive(portlet, found)) {
+                                  result.add(found);
+                               }
+                            }
+                         }
+                      }
+                   }
                }
             }
          }
