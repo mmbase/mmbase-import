@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Notfound;
+import org.mmbase.bridge.jsp.taglib.editor.Editor;
 import org.mmbase.bridge.jsp.taglib.editor.EditTag;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.72 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: FieldTag.java,v 1.73 2008-03-31 13:10:47 michiel Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -119,11 +120,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
      */
     protected void handleEditTag() {
     	// See if this FieldTag has a parent EditTag
-        Tag t = findAncestorWithClass(this, EditTag.class);
-        if (t == null) {
+        Editor editor = (Editor) pageContext.getAttribute(EditTag.KEY, EditTag.SCOPE);
+        if (editor == null) {
             if (log.isDebugEnabled()) log.debug("No EditTag as parent. We don't want to edit, i presume.");
         } else {
-            EditTag et = (EditTag)t;
             Query query = null;
             try {
                 query = findNodeProvider().getGeneratingQuery();
@@ -178,7 +178,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
             // register stuff with EditTag
             if (log.isDebugEnabled()) log.debug("Registering fieldName '" + fieldName + "' with nodenr '" + nodenr + "' and query: " + query);
-            et.registerField(query, nodenr, fieldName);
+            editor.registerField(query, nodenr, fieldName);
         }
     }
 
