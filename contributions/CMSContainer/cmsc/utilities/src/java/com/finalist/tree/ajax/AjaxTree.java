@@ -76,24 +76,32 @@ public class AjaxTree extends Tree {
 	         XmlUtil.createAttribute(element, "loaded", true);
 	      }
 	      else {
-	         if (showChildren(node) && getCellRenderer().showChildren(node)) {
-	            XmlUtil.createAttribute(element, "loaded", true);
-	            XmlUtil.createAttribute(element, "open", true);
-
-	            int count = getModel().getChildCount(node);
-	            if (count > 0) {
-	               for (int i = 0; i < count; i++) {
-	                  Object child = getModel().getChild(node, i);
-	                  Element item = XmlUtil.createChild(element, "item");
-	                  renderNode(child, item);
-	               }
-	            }
+	         if (getCellRenderer().showChildren(node)) {
+    	         if (showChildren(node)) {
+    	            XmlUtil.createAttribute(element, "loaded", true);
+    	            XmlUtil.createAttribute(element, "open", true);
+    
+    	            int count = getModel().getChildCount(node);
+    	            if (count > 0) {
+    	               for (int i = 0; i < count; i++) {
+    	                  Object child = getModel().getChild(node, i);
+    	                  Element item = XmlUtil.createChild(element, "item");
+    	                  renderNode(child, item);
+    	               }
+    	            }
+    	         }
+    	         else {
+    	            XmlUtil.createAttribute(element, "loaded", false);
+    	            XmlUtil.createAttribute(element, "open", false);
+    	         }
 	         }
 	         else {
-	            XmlUtil.createAttribute(element, "loaded", false);
-	            XmlUtil.createAttribute(element, "open", false);
+                 XmlUtil.createAttribute(element, "loaded", true);
 	         }
 	      }
+      }
+      else {
+    	  element.getParentNode().removeChild(element);
       }
    }
 
