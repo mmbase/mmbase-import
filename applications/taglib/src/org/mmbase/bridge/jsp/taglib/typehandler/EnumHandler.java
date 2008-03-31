@@ -16,6 +16,7 @@ import org.mmbase.datatypes.DataType;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.util.Casting;
+import org.mmbase.util.transformers.Xml;
 
 import java.util.*;
 
@@ -28,12 +29,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.41 2007-09-21 12:53:43 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.42 2008-03-31 13:05:43 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
+    private static final Xml XML = new Xml(Xml.ESCAPE);
     private Iterator iterator;
     private boolean available;
 
@@ -161,7 +163,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             }
             String keyString = Casting.toString(key);
             buffer.append("<option value=\"");
-            buffer.append(keyString);
+            buffer.append(XML.transform(keyString));
             buffer.append("\"");
             if (keyString.equals(valueString)) {
                 buffer.append(" selected=\"selected\"");
@@ -172,7 +174,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                 }
             }
             buffer.append(">");
-            buffer.append(entry.getValue());
+            buffer.append(XML.transform(Casting.toString(entry.getValue())));
             buffer.append("</option>");
         }
         buffer.append("</select>");
