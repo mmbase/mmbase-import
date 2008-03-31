@@ -46,9 +46,9 @@ public interface AuthenticationService {
      * Delete an authentication entry
      * TODO if a authentication is deleted, what should happen with the user's content (in other systems)?
      *
-     * @param userId
+     * @param id
      */
-    void deleteAuthentication(Long userId);
+    void deleteAuthentication(Long id);
 
     /**
      * Check if the given authentication exists
