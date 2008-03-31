@@ -33,10 +33,16 @@ public class Authentication implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
+    /** Authentication id
+     *
+     */
     @Id
     @GeneratedValue
     private Long id;
     
+    /** account used for login
+     * 
+     */
     @Column(unique = true)
     private String userId;
     

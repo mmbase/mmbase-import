@@ -38,7 +38,8 @@
          <forward name="success" path="/editors/community/user.jsp" redirect="true" />
       </action>
       <action path="/editors/community/userAddAction" type="com.finalist.cmsc.community.forms.UserAddAction"
-         name="communityUserForm" scope="session" unknown="false" validate="false">
+         name="communityUserForm" scope="session" unknown="false" validate="true" input="/editors/community/user.jsp">
+         <set-property property="cancellable" value="true"/>
          <forward name="success" path="/editors/community/index.jsp" redirect="true" />
       </action>
       <action path="/editors/community/deleteUserAction" type="com.finalist.cmsc.community.forms.DeleteUserAction"
