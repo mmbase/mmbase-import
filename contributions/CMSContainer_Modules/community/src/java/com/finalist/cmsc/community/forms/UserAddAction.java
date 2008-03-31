@@ -11,76 +11,102 @@
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
- * Add a Authentication and Person
- * 
+ * Add an Authentication and Person
+ *
  * @author Remco Bos
  * @author Wouter Heijke
  */
 public class UserAddAction extends AbstractCommunityAction {
 
-	private static Log log = LogFactory.getLog(UserAddInitAction.class);
+   private static Log log = LogFactory.getLog(UserAddInitAction.class);
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) throws Exception {
+   @Override
+   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+            throws Exception {
 
-		if (!isCancelled(httpServletRequest)) {
-			UserForm userForm = (UserForm) actionForm;
+      if (!isCancelled(httpServletRequest)) {
+         UserForm userForm = (UserForm) actionForm;
 
-			String id = userForm.getEmail();
+         // String accountName = userForm.getEmail();
+         String accountName = userForm.getAccount();
 
-			AuthorityService aus = getAuthorityService();
-			AuthenticationService as = getAuthenticationService();
-			PersonService ps = getPersonService();
+         // AuthorityService aus = getAuthorityService(); //Never used (yet).
+         AuthenticationService as = getAuthenticationService();
+         PersonService ps = getPersonService();
 
-			if (userForm.getAction().equalsIgnoreCase(ACTION_ADD)) {
-				Long check1 = as.getAuthenticationIdForUserId(id);
-				if (check1 == null) {
-					as.createAuthentication(userForm.getEmail(), userForm.getPassword());
-					Long check2 = as.getAuthenticationIdForUserId(id);
-					if (check2 != null) {
-						ps.createPerson(userForm.getVoornaam(), userForm.getTussenVoegsels(), userForm.getAchterNaam(), id);
-					} else {
-						log.info("add check2 failed");
-					}
-				} else {
-					log.info("add check1 failed for: " + id);
-				}
+         if (userForm.getAction().equalsIgnoreCase(UserForm.ACTION_ADD)) {
+            Long authenticationId = as.getAuthenticationIdForUserId(accountName);
+            if (authenticationId == null) {
+               Authentication authentication = as.createAuthentication(userForm.getEmail(), userForm.getPasswordText());
+               // Long authenticationId =
+               // as.getAuthenticationIdForUserId(accountName);
+               if (authentication.getId() != null) {
+                  Person person = ps.createPerson(userForm.getFirstName(), userForm.getPrefix(), userForm.getLastName(), authentication.getId());
+                  person.setEmail(userForm.getEmail()); // Also add an email address to the user.
+                  ps.updatePerson(person);
 
-			} else if (userForm.getAction().equalsIgnoreCase(ACTION_EDIT)) {
-				Long check1 = as.getAuthenticationIdForUserId(id);
-				if (check1 != null) {
-					String newPassword1 = userForm.getPassword();
-					String newPassword2 = userForm.getPasswordConfirmation();
-					if (newPassword1 != null && newPassword2 != null) {
-						if (newPassword1.equalsIgnoreCase(newPassword2)) {
-							as.updateAuthenticationPassword(id, newPassword1);
-						}
-					}
+               } else {
+                  log.info("add authenticationId failed");
+               }
+            } else {
+               log.info("add check1 failed for: " + accountName);
+            }
 
-				} else {
-					log.info("edit check1 failed for: " + id);
-				}
+         } else if (userForm.getAction().equalsIgnoreCase(UserForm.ACTION_EDIT)) {
+            Long authenticationId = as.getAuthenticationIdForUserId(accountName);
+            if (authenticationId != null) {
+               String newPassword1 = userForm.getPasswordText();
+               String newPassword2 = userForm.getPasswordConfirmation();
+               if (!StringUtils.isBlank(newPassword1) && !StringUtils.isBlank(newPassword2)) {
+                  if (newPassword1.equals(newPassword2)) {
+                     as.updateAuthenticationPassword(accountName, newPassword1);
+                  }
+               }
 
-			} else {
-				log.info("action failed");
-			}
-		} else {
-			log.info("cancelled");
-		}
+               // First retrieve the right person object from the database
+               Person person = ps.getPersonByAuthenticationId(authenticationId);
 
-		removeFromSession(httpServletRequest, actionForm);
+               if (person == null) { // User did not exists, so create it.
+                  person = new Person();
+                  person.setAuthenticationId(authenticationId);
+               }
 
-		return actionMapping.findForward(SUCCESS);
-	}
+               // Also save other fields entered in the form to the right person
+               // object
+               person.setFirstName(userForm.getFirstName());
+               person.setInfix(userForm.getPrefix());
+               person.setLastName(userForm.getLastName());
+               person.setEmail(userForm.getEmail());
+
+               // Store the new person data to the database again.
+               ps.updatePerson(person);
+
+            } else {
+               log.info("edit check1 failed for: " + accountName);
+            }
+
+         } else {
+            log.info("action failed");
+         }
+      } else {
+         log.info("cancelled");
+      }
+
+      removeFromSession(httpServletRequest, actionForm);
+
+      return actionMapping.findForward(SUCCESS);
+   }
 }

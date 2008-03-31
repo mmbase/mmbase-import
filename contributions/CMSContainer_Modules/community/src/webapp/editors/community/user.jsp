@@ -4,10 +4,10 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="user.edit.title">
+<cmscedit:head title="view.title">
 </cmscedit:head>
 <body style="overflow: auto">
-<cmscedit:contentblock title="view.edit.title" titleClass="content_block_pink">
+<cmscedit:contentblock title="view.title" titleClass="content_block_pink">
 <mm:cloud loginpage="../login.jsp" rank='administrator'>
 	<mm:cloudinfo type="user" id="cloudusername" write="false" />
    <html:form action="/editors/community/userAddAction">
@@ -19,40 +19,51 @@
 				<td>
 
                <logic:equal name="communityUserForm" property="action" value="add">
-                  <html:text property="email" size="30" />
-                  <span class="notvalid"><html:errors bundle="SECURITY" property="email" /></span>
+                  <html:text property="account" size="30" />
+                  <span class="notvalid"><html:errors bundle="COMMUNITY" property="account" /></span>
                </logic:equal> 
                <logic:notEqual name="communityUserForm" property="action" value="add">
-                  <bean:write name="communityUserForm" property="email" />
+                  <bean:write name="communityUserForm" property="account" />
                </logic:notEqual>
 
 				</td>
 			</tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.firstname" /></td>
-            <td><html:text property="voornaam" size='30' /></td>
+            <td><html:text property="firstName" size='30' />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="firstName" /></span>
+            </td>
          </tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.prefix" /></td>
-            <td><html:text property="tussenVoegsels" size="15" /></td>
+            <td><html:text property="prefix" size="15" />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="prefix" /></span>
+            </td>
          </tr>         
          <tr>
             <td class="fieldname"><fmt:message key="view.surname" /></td>
-            <td><html:text property="achterNaam" size='30' /></td>
+            <td><html:text property="lastName" size='30' />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="lastName" /></span>
+            </td>
          </tr>
-         
+         <tr>
+            <td class="fieldname"><fmt:message key="view.email" /></td>
+            <td><html:text property="email" size='30' />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="email" /></span>
+            </td>
+         </tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.password" /></td>
             <td>
-               <html:password property="password" size="15" maxlength="15" />
-               <span class="notvalid"><html:errors bundle="SECURITY" property="password" /></span>
+               <html:password property="passwordText" size="15" maxlength="15" />
+               <span class="notvalid"><html:errors bundle="COMMUNITY" property="passwordText" /></span>
             </td>
          </tr>
          <tr>
             <td class="fieldname" nowrap><fmt:message key="view.confirmpassword" /></td>
             <td>
                <html:password property="passwordConfirmation" size="15" maxlength="15" />
-               <span class="notvalid"><html:errors bundle="SECURITY" property="passwordConfirmation" /></span>
+               <span class="notvalid"><html:errors bundle="COMMUNITY" property="passwordConfirmation" /></span>
             </td>
          </tr>
            

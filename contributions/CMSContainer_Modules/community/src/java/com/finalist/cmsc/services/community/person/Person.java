@@ -21,21 +21,21 @@ import javax.persistence.Table;
 @Table(name = "people")
 public class Person {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+   @Id
+   @GeneratedValue
+   private Long id;
+  
+   private Long authenticationId; // his/her credentials (usually an e-mail address and password)
+  
+   private String firstName;
+   private String lastName;
+   private String infix; 
+   private String nickname;
+   private String email;
+   private String uri;
 
-    private Long authenticationId; // his/her credentials (usually an e-mail adress and password)
-
-    private String firstName;
-    private String lastName;
-    private String infix; 
-    private String nickname;
-    private String email;
-    private String uri;
-
-    public Long getId() {
-		return id;
+   public Long getId() {
+      return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
@@ -120,7 +120,5 @@ public class Person {
 			return false;
 		return true;
 	}
-	
-	
 
 }

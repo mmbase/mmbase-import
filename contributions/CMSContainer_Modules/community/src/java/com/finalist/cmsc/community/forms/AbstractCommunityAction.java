@@ -28,17 +28,9 @@ import com.finalist.cmsc.services.community.security.AuthorityService;
  */
 public class AbstractCommunityAction extends ActionSupport {
 
-	protected static final String ACTION_ADD = "add";
-
-	protected static final String ACTION_EDIT = "edit";
-
 	protected static final String SUCCESS = "success";
 
    protected static final String CANCEL = "cancel";
-
-   protected static final String USERID = "userid";
-
-	protected static final String GROUPID = "groupid";
 
 	protected AuthenticationService getAuthenticationService() {
 		WebApplicationContext ctx = getWebApplicationContext();
