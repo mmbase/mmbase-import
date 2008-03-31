@@ -7,6 +7,8 @@
   <shortDescription>Remember users and roles.</shortDescription>
   <description>Remember users and roles.</description>
   
+  <currentVersion>1.4.5-20080331</currentVersion>
+  
   <dependencies>
   
 <!-- Hibernate dependencies -->
