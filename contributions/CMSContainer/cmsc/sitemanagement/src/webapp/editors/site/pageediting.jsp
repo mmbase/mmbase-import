@@ -3,6 +3,8 @@
 
 
 <html>
+	<head>
+		<title><fmt:message key="site.title" /></title>
 <script type="text/javascript">
     function preview() {
         var contentLocation = this.frames["pcontent"].location.href;
@@ -39,7 +41,8 @@
 			</c:if>
 		}
 </script>
-
+</head>
+	
 <c:set var="str">${requestScope.toolbar}?number=${requestScope.nodeId}&pagepath=${requestScope.pathofpage}</c:set>
 <frameset rows="35,*" framespacing="0" border="0">
     <frame frameborder="0" src="${str}" name="toolbar" scrolling="no"/>
