@@ -20,7 +20,6 @@
       <head>
         <mm:import id="jq"><mm:url page="/mmbase/jquery/" /></mm:import>
 
-        <script src="${jq}jquery-1.2.3.min.js"><jsp:text> </jsp:text></script>
         <script src="${jq}jquery.dimensions.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.mouse.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.resizable.js"></script>
