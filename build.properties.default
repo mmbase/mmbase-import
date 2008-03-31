@@ -12,7 +12,7 @@
 #
 # for possible mirrors.
 #
-# $Id: build.properties.default,v 1.40 2008-03-18 10:57:10 pierre Exp $
+# $Id: build.properties.default,v 1.41 2008-03-31 16:25:11 michiel Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -97,9 +97,9 @@ log4j.jar=${expand.dir}/${log4j.fullversion}/dist/lib/log4j-${log4j.version}.jar
 
 
 # ----- Xalan and Xerces ----------
-xalan.version=xalan-j_2_7_0
+xalan.version=xalan-j_2_7_1
 xalan.fullversion=${xalan.version}
-xalan.file=${xalan.version}-bin.tar.gz
+xalan.file=${xalan.version}-bin-2jars.tar.gz
 xalan.dest=${download.dir}/${xalan.file}
 xalan.loc=${mmbase.loc}/xalan/${xalan.file}
 xalan.jar=${expand.dir}/${xalan.fullversion}/xalan.jar
@@ -135,7 +135,7 @@ taglibs-standard-standard.jar=${expand.dir}/${taglibs-standard.version}/lib/stan
 
 
 
-# ----- javacc ---- 
+# ----- javacc ----
 #https://javacc.dev.java.net/files/documents/17/13959/javacc-4.0beta1.tar.gz
 javacc.version=4.0
 javacc.file=javacc-${javacc.version}.tar.gz
