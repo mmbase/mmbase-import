@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dwr>
-	<allow>
-		<create creator="static" javascript="AjaxUtils" class="net.jforum.util.ajax.AjaxUtils"/>
-		<convert converter="bean" match="net.jforum.entities.*"/>
-	</allow>
-</dwr>
