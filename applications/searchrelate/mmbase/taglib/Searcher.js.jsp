@@ -5,13 +5,13 @@
  * Generic mmbase search & relate tool. Javascript part.
  *
  *
- * Usage: It is sufficient to use the <mm:relate tag. This tag wil know wether this javascript is already loaded, and if not, will arrange for that. It is required to load jquery, though.
+ * Usage: It is sufficient to use the mm:relate tag. This tag wil know wether this javascript is already loaded, and if not, will arrange for that. It is required to load jquery, though.
 
  * On ready, the necessary javascript will then be connected to .mm_related a.search
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.6 2008-03-31 14:10:30 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.7 2008-03-31 14:28:56 michiel Exp $
  */
 
 
