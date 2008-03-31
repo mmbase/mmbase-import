@@ -23,7 +23,7 @@
       </th>
       <c:if test="${workflowType == 'page' || workflowType == 'content' }">
          <th style="width: 140px;">
-            <a href="#" <%=onClickandStyle(pageContext, "lastmodifier")%>>
+            <a href="#" <%=onClickandStyle(pageContext, "lastmodifieddate")%>>
                <fmt:message key="workflow.lastmodifieddate"/>
             </a>
          </th>
