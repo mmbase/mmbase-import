@@ -98,9 +98,6 @@ public class BannerPortlet extends ContentChannelPortlet {
                               && (counter.getIntValue("clicks") >= banner.getIntValue("maxclicks"))) {
                          log.debug("Maximum number of clicks reached for banner: " + banner.getNumber() + ", skipping it");
                          iter.remove();
-                      } else {
-                         counter.setDateValue("enddate", now);
-                         counter.commit();
                       }
                    } else {
                       counter = createBannerCounter(cloud, banner, page, position);
@@ -137,7 +134,10 @@ public class BannerPortlet extends ContentChannelPortlet {
                getLogger().debug("Could not find counter for banner: " + bannerId + ", created a new one");
             }
             int clicks = counter.getIntValue("clicks") + 1;
+            Date now = new Date();
             counter.setIntValue("clicks", clicks);
+            counter.setDateValue("enddate", now);
+
             counter.commit();
             getLogger().debug("Clicks updated to: " + clicks + " for banner: " + bannerId);
 
