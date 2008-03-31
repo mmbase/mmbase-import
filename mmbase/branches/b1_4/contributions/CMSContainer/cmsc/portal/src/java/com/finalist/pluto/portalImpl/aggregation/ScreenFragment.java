@@ -37,13 +37,9 @@ public class ScreenFragment extends AbstractFragment {
 
    public void processAction(HttpServletRequest request, HttpServletResponse response, String actionFragment)
          throws IOException {
-      Fragment fragment = getFragment(actionFragment);
-      if (fragment instanceof PortletFragment) {
-         PortletFragment pf = (PortletFragment) fragment;
-
-         setupRequest(request);
-         pf.processAction(request, response);
-      }
+      PortletFragment pf = getFragment(actionFragment);
+      setupRequest(request);
+      pf.processAction(request, response);
    }
 
 
@@ -106,11 +102,11 @@ public class ScreenFragment extends AbstractFragment {
    }
 
 
-   public Fragment getFragment(String id) {
-      Fragment fragment = null;
+   public PortletFragment getFragment(String id) {
+      PortletFragment fragment = null;
       Iterator<PortletFragment> iterator = this.getChildFragments().iterator();
       while (iterator.hasNext()) {
-         Fragment tmp = iterator.next();
+         PortletFragment tmp = iterator.next();
          if (tmp != null) {
             if (tmp.getKey().equalsIgnoreCase(id)) {
                fragment = tmp;
