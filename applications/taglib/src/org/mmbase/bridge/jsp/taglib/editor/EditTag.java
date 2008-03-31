@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  *
  * @author Andr&eacute; van Toly
  * @author Michiel Meeuwissen
- * @version $Id: EditTag.java,v 1.17.2.1 2006-12-05 21:56:58 michiel Exp $
+ * @version $Id: EditTag.java,v 1.17.2.2 2008-03-31 13:06:37 michiel Exp $
  * @see Editor
  * @see BasicEditor
  * @see YAMMEditor
@@ -57,6 +57,9 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EditTag.class);
     private static final Map edittagTypes = new HashMap();      // edittagtype -> editordefinition
+
+    public static final String KEY = "org.mmbase.taglib.edit";
+    public static final int SCOPE = PageContext.REQUEST_SCOPE;
 
     static {
         try {
@@ -136,11 +139,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
 
     private Attribute type = Attribute.NULL;
 
-    private Query query;
-    private int nodenr;
-    private String fieldName;
-
-
+    private Object prevEditor = null;
     private Editor editor = null;     // should do all the work
 
     /**
@@ -186,7 +185,7 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
      */
     public int doStartTag() throws JspTagException {
         if (log.isDebugEnabled()) log.debug("doStartTag of EditTag");
-
+        prevEditor = pageContext.getAttribute(KEY, SCOPE);
 
         EditorDefinition def = (EditorDefinition) edittagTypes.get(getType());
         if (def == null) {
@@ -196,6 +195,8 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
             log.debug("Using editor: " + def);
         }
         editor = def.newInstance();
+        pageContext.setAttribute(KEY, editor, SCOPE);
+
 
         return EVAL_BODY;
     }
@@ -214,28 +215,15 @@ public class EditTag extends CloudReferrerTag implements ParamHandler {
         } catch (IOException ioe) {
             log.error("Error writing to PageContext: " + ioe.getMessage(), ioe);
         }
+        pageContext.setAttribute(KEY, prevEditor, SCOPE);
         // for gc:
         editor = null;
+        prevEditor = null;
         return super.doEndTag();
     }
 
-    /**
-     * Here is were the FieldTag registers its fields and some associated
-     * and maybe usefull information with the EditTag.
-     *
-     * @param query     SearchQuery object that delivered the field
-     * @param nodenr    int with the number of the node the field belongs to
-     * @param fieldName String with the fieldname
-     */
-    public void registerField(Query query, int nodenr, String fieldName) {
-        if (log.isDebugEnabled()) {
-            log.debug("nodenr: " + nodenr);
-            log.debug("fieldName: " + fieldName);
-            log.debug("query: " + query);
-        }
-        editor.queryList.add(query);
-        editor.nodenrList.add(String.valueOf(nodenr));
-        editor.fieldList.add(fieldName);
+    public Editor getEditor() {
+        return editor;
     }
 
 
