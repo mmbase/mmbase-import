@@ -60,8 +60,8 @@ public class AuthenticationHibernateService extends HibernateService implements 
 
    /** {@inheritDoc} */
    @Transactional
-   public void deleteAuthentication(String userId) {
-      Authentication authentication = findAuthenticationByUserId(userId);
+   public void deleteAuthentication(Long id) {
+      Authentication authentication = getAuthenticationById(id);
       getSession().delete(authentication);
    }
 

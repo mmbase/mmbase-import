@@ -44,6 +44,6 @@ public interface PersonService {
     */
    void updatePerson(Person person);
 
-   boolean deletePersonByUserId(String userId);
+   boolean deletePersonByAuthenticationId(Long userId);
 
 }

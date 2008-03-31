@@ -86,9 +86,9 @@
          <c:forEach var="auth" items="${userList}">
             <pg:item>
             <tr>
-               <td style="padding-right: 10px"><a href="userAddInitAction.do?userid=${auth.userId}">${auth.userId}</a></td>
+               <td style="padding-right: 10px"><a href="userAddInitAction.do?authid=${auth.id}">${auth.userId}</a></td>
                <td>
-                  <a href="deleteUserAction.do?userid=${auth.userId}">
+                  <a href="deleteUserAction.do?authid=${auth.id}">
                      <img src="../gfx/icons/delete.png" border='0' title="<fmt:message key="view.removeuser" />"
                         onclick="return confirm('<fmt:message key="view.removeuserquestion" />')" />
                   </a>

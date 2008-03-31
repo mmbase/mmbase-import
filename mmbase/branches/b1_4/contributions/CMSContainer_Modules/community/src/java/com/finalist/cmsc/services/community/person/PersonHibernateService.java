@@ -85,9 +85,9 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
    /** {@inheritDoc} */
    @Transactional
-   public boolean deletePersonByUserId(String userId) {
-      if (!StringUtils.isBlank(userId)) {
-         Person person = findPersonByUserId(userId);
+   public boolean deletePersonByAuthenticationId(Long authenticationId) {
+      if (authenticationId != null) {
+         Person person = getPersonByAuthenticationId(authenticationId);
          if (person != null) {
             getSession().delete(person);
             return true;

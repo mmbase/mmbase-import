@@ -32,10 +32,6 @@ public class AbstractCommunityAction extends ActionSupport {
 
    protected static final String CANCEL = "cancel";
 
-   protected static final String USERID = "userid";
-
-	protected static final String GROUPID = "groupid";
-
 	protected AuthenticationService getAuthenticationService() {
 		WebApplicationContext ctx = getWebApplicationContext();
 		return (AuthenticationService) ctx.getBean("authenticationService");

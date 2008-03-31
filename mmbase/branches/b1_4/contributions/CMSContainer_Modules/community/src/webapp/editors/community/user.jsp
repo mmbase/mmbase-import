@@ -20,7 +20,7 @@
 
                <logic:equal name="communityUserForm" property="action" value="add">
                   <html:text property="account" size="30" />
-                  <span class="notvalid"><html:errors bundle="SECURITY" property="account" /></span>
+                  <span class="notvalid"><html:errors bundle="COMMUNITY" property="account" /></span>
                </logic:equal> 
                <logic:notEqual name="communityUserForm" property="action" value="add">
                   <bean:write name="communityUserForm" property="account" />
@@ -30,32 +30,40 @@
 			</tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.firstname" /></td>
-            <td><html:text property="firstName" size='30' /></td>
+            <td><html:text property="firstName" size='30' />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="firstName" /></span>
+            </td>
          </tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.prefix" /></td>
-            <td><html:text property="prefix" size="15" /></td>
+            <td><html:text property="prefix" size="15" />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="prefix" /></span>
+            </td>
          </tr>         
          <tr>
             <td class="fieldname"><fmt:message key="view.surname" /></td>
-            <td><html:text property="lastName" size='30' /></td>
+            <td><html:text property="lastName" size='30' />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="lastName" /></span>
+            </td>
          </tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.email" /></td>
-            <td><html:text property="email" size='30' /></td>
+            <td><html:text property="email" size='30' />
+            <span class="notvalid"><html:errors bundle="COMMUNITY" property="email" /></span>
+            </td>
          </tr>
          <tr>
             <td class="fieldname"><fmt:message key="view.password" /></td>
             <td>
                <html:password property="passwordText" size="15" maxlength="15" />
-               <span class="notvalid"><html:errors bundle="SECURITY" property="passwordText" /></span>
+               <span class="notvalid"><html:errors bundle="COMMUNITY" property="passwordText" /></span>
             </td>
          </tr>
          <tr>
             <td class="fieldname" nowrap><fmt:message key="view.confirmpassword" /></td>
             <td>
                <html:password property="passwordConfirmation" size="15" maxlength="15" />
-               <span class="notvalid"><html:errors bundle="SECURITY" property="passwordConfirmation" /></span>
+               <span class="notvalid"><html:errors bundle="COMMUNITY" property="passwordConfirmation" /></span>
             </td>
          </tr>
            

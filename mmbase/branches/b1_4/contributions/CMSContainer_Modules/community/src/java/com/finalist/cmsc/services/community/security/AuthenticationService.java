@@ -48,7 +48,7 @@ public interface AuthenticationService {
      *
      * @param userId
      */
-    void deleteAuthentication(String userId);
+    void deleteAuthentication(Long userId);
 
     /**
      * Check if the given authentication exists

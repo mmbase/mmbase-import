@@ -152,4 +152,16 @@ public class UserForm extends ActionForm {
       }
    }
 
+    public void clear() {
+        action = null;
+        email = null;
+        passwordText = null;
+        passwordConfirmation = null;
+        account = null;
+        firstName = null;
+        prefix = null;
+        lastName = null;
+        company = null;
+    }
+
 }

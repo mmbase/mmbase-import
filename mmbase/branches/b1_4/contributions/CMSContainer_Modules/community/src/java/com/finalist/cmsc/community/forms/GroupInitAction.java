@@ -34,57 +34,59 @@ import com.finalist.cmsc.services.community.security.AuthorityService;
  */
 public class GroupInitAction extends AbstractCommunityAction {
 
-	private static Log log = LogFactory.getLog(GroupInitAction.class);
+   private static Log log = LogFactory.getLog(GroupInitAction.class);
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
-			HttpServletResponse httpServletResponse) throws Exception {
+   protected static final String GROUPID = "groupid";
 
-		List<LabelValueBean> usersList = new ArrayList<LabelValueBean>();
-		List<LabelValueBean> membersList = new ArrayList<LabelValueBean>();
+   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+         HttpServletResponse httpServletResponse) throws Exception {
 
-		AuthenticationService as = getAuthenticationService();
-		List<Authentication> users = as.findAuthentications();
+      List<LabelValueBean> usersList = new ArrayList<LabelValueBean>();
+      List<LabelValueBean> membersList = new ArrayList<LabelValueBean>();
 
-		AuthorityService aus = getAuthorityService();
+      AuthenticationService as = getAuthenticationService();
+      List<Authentication> users = as.findAuthentications();
 
-		String id = request.getParameter(GROUPID);
-		GroupForm groupForm = (GroupForm) actionForm;
+      AuthorityService aus = getAuthorityService();
 
-		if (id != null) {
-			groupForm.setAction(GroupForm.ACTION_EDIT);
-			Authority auth = aus.findAuthorityByName(id);
-			if (auth != null) {
-				groupForm.setName(auth.getName());
-				for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
-					Authentication user = iter.next();
-					Set<String> names = aus.getAuthorityNamesForUser(user.getUserId());
-					String label = user.getUserId();
-					LabelValueBean bean = new LabelValueBean(label, label);
-					if (names.contains(id)) {
-						membersList.add(bean);
-					} else {
-						usersList.add(bean);
-					}
-				}
-			} else {
-				log.error("group failed");
-			}
-		} else {
-			// new
-			groupForm.setAction(GroupForm.ACTION_ADD);
-			groupForm.reset(actionMapping, request);
-			for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
-				Authentication user = iter.next();
-				String label = user.getUserId();
-				LabelValueBean bean = new LabelValueBean(label, label);
-				usersList.add(bean);
-			}
-		}
+      String id = request.getParameter(GROUPID);
+      GroupForm groupForm = (GroupForm) actionForm;
 
-		request.setAttribute("membersList", membersList);
-		request.setAttribute("usersList", usersList);
+      if (id != null) {
+         groupForm.setAction(GroupForm.ACTION_EDIT);
+         Authority auth = aus.findAuthorityByName(id);
+         if (auth != null) {
+            groupForm.setName(auth.getName());
+            for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
+               Authentication user = iter.next();
+               Set<String> names = aus.getAuthorityNamesForUser(user.getUserId());
+               String label = user.getUserId();
+               LabelValueBean bean = new LabelValueBean(label, label);
+               if (names.contains(id)) {
+                  membersList.add(bean);
+               } else {
+                  usersList.add(bean);
+               }
+            }
+         } else {
+            log.error("group failed");
+         }
+      } else {
+         // new
+         groupForm.setAction(GroupForm.ACTION_ADD);
+         groupForm.reset(actionMapping, request);
+         for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
+            Authentication user = iter.next();
+            String label = user.getUserId();
+            LabelValueBean bean = new LabelValueBean(label, label);
+            usersList.add(bean);
+         }
+      }
 
-		return actionMapping.findForward(SUCCESS);
+      request.setAttribute("membersList", membersList);
+      request.setAttribute("usersList", usersList);
 
-	}
+      return actionMapping.findForward(SUCCESS);
+
+   }
 }
