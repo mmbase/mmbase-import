@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.147.2.6 2008-03-19 11:37:45 pierre Exp $
+$Id: build.xml,v 1.147.2.7 2008-03-31 16:37:29 michiel Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -290,9 +290,14 @@ builddate=${builddate}
   </target>
 
 
-  <target name="lib.release.renametojar" unless="norenametojar">
+  <target name="lib.release.renametojar" if="install.xerces.renametojar">
     <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.renametojar" />
     <copy file="${xml-apis.jar}"       tofile="${release.lib.dir}/xml-apis.renametojar" />
+  </target>
+
+
+  <target name="lib.release.xerces"  depends="lib.release.renametojar" if="install.xerces">
+    <copy file="${xerces.jar}"         tofile="${release.lib.dir}/xercesImpl.jar" />
   </target>
 
   <!-- =================================================================== -->
@@ -307,6 +312,8 @@ builddate=${builddate}
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
     <copy file="${serializer.jar}"     todir="${release.lib.dir}" />
+
+    <antcall target="lib.release.xerces" />
 
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${fileupload.jar}"     tofile="${release.lib.dir}/commons-fileupload.jar" />
@@ -494,6 +501,7 @@ builddate=${builddate}
         <include name="storage/**/*.xml"/>
         <include name="modules/mmbaseroot.xml"/>
         <include name="modules/mmadmin.xml"/>
+        <include name="modules/jdbc.xml"/>
         <include name="security/classauthentication.xml" />
         <include name="log/log.xml" />
         <include name="utils/**/*.xml"/>
@@ -516,6 +524,7 @@ Resources.xml
     <echo file="${build.dir}/classes/org/mmbase/config/modules/INDEX">
 mmbaseroot.xml
 mmadmin.xml
+jdbc.xml
     </echo>
   </target>
 
@@ -534,7 +543,7 @@ mmadmin.xml
            deprecation="${deprecation}"
            includeAntRuntime="false"
            >
-      <src path="${source-src.dir}"/>
+      <src path="${source-src.dir}"></src>
       <src path="${generated-source-src.dir}" />
     </javac>
     <tstamp/>
