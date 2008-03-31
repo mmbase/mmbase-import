@@ -10,8 +10,12 @@
   </a>
   <div>
     <form>
-      <mm:relatednodescontainer role="idrel" type="${type}" id="current" />
-      <mm:listnodescontainer type="${type}" id="repository" />
+      <mm:relatednodescontainer role="idrel" type="${type}" id="current">
+        <mm:relatednodes id="currentlyRelated" />
+      </mm:relatednodescontainer>
+      <mm:listnodescontainer type="${type}" id="repository">
+        <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
+      </mm:listnodescontainer>
 
       <mm-u:relate repository="${repository}" current="${current}">
         <jsp:attribute name="n">
