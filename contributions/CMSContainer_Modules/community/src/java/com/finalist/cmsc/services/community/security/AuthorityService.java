@@ -35,7 +35,7 @@ public interface AuthorityService {
      * @param parentName
      * @param authorityName
      */
-    void createAuthority(String parentName, String authorityName);
+    Authority createAuthority(String parentName, String authorityName);
 
     /**
      * Delete an Authority

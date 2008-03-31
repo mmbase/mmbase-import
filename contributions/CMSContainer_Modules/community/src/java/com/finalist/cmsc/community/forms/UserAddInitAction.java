@@ -22,49 +22,51 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.cmsc.services.community.security.Authentication;
 import com.finalist.cmsc.services.community.security.AuthenticationService;
-import com.finalist.cmsc.services.community.security.AuthorityService;
 
 /**
  * @author Remco Bos
  * @author Wouter Heijke
  */
 public class UserAddInitAction extends AbstractCommunityAction {
-	private static Log log = LogFactory.getLog(UserAddInitAction.class);
+   private static Log log = LogFactory.getLog(UserAddInitAction.class);
 
-	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
-			HttpServletResponse httpServletResponse) throws Exception {
+   protected static final String AUTHENTICATION_ID = "authid";
 
-		AuthorityService aus = getAuthorityService();
+   public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
+         HttpServletResponse httpServletResponse) throws Exception {
 
-		String id = request.getParameter(USERID);
-		UserForm userForm = (UserForm) actionForm;
-		if (id != null) {
-			userForm.setAction(ACTION_EDIT);
+      String authId = request.getParameter(AUTHENTICATION_ID);
+      UserForm userForm = (UserForm) actionForm;
+      userForm.clear();
 
-			AuthenticationService as = getAuthenticationService();
-			Authentication auth = as.findAuthentication(id);
-			if (auth != null) {
-				userForm.setEmail(auth.getUserId());
+      Authentication auth = null;
+      
+      AuthenticationService as = getAuthenticationService();
+      if (authId != null) {
+          auth = as.getAuthenticationById(Long.valueOf(authId));
+      }
+      
+      if (auth != null) {
+         userForm.setAction(UserForm.ACTION_EDIT);
+         userForm.setAccount(auth.getUserId());
+         
+         PersonService ps = getPersonService();
+         //Returns null when no Person object was found!
+         Person person = ps.getPersonByAuthenticationId(auth.getId());
+        
+         if (person != null) {
+            userForm.setFirstName(person.getFirstName());
+            userForm.setPrefix(person.getInfix());
+            userForm.setLastName(person.getLastName());
+            userForm.setEmail(person.getEmail());
+         } else {
+            log.debug("person failed");
+         }
+      } else {
+         // new
+         userForm.setAction(UserForm.ACTION_ADD);
+      }
 
-				PersonService ps = getPersonService();
-				Person person = ps.getPersonByUserId(id);
-				if (person != null) {
-					userForm.setVoornaam(person.getFirstName());
-					userForm.setTussenVoegsels(person.getInfix());
-					userForm.setAchterNaam(person.getLastName());
-				} else {
-					log.info("person failed");
-				}
-
-			} else {
-				log.info("auth failed");
-			}
-
-		} else {
-			// new
-			userForm.setAction(ACTION_ADD);
-		}
-
-		return actionMapping.findForward(SUCCESS);
-	}
+      return actionMapping.findForward(SUCCESS);
+   }
 }

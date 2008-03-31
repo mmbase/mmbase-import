@@ -7,8 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -24,8 +22,6 @@ import com.finalist.cmsc.services.community.security.AuthorityService;
  * @author Wouter Heijke
  */
 public class GroupAction extends AbstractCommunityAction {
-
-	private static Log log = LogFactory.getLog(GroupAction.class);
 
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
@@ -64,7 +60,7 @@ public class GroupAction extends AbstractCommunityAction {
 			// validate
 			ActionMessages errors = new ActionMessages();
 
-			if (groupForm.getAction().equalsIgnoreCase(ACTION_ADD)) {
+			if (groupForm.getAction().equalsIgnoreCase(GroupForm.ACTION_ADD)) {
 				if (id == null || id.length() < 3) {
 					errors.add("groupname", new ActionMessage("error.groupname.invalid"));
 					saveErrors(request, errors);

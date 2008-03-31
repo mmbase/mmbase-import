@@ -23,6 +23,8 @@ import org.apache.struts.action.ActionMapping;
  */
 public class DeleteGroupAction extends AbstractCommunityAction {
 
+    protected static final String GROUPID = "groupid";
+
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 		String groupId = request.getParameter(GROUPID);

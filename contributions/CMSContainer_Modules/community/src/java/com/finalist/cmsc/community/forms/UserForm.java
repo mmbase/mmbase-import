@@ -10,6 +10,7 @@
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -20,25 +21,29 @@ import org.apache.struts.action.ActionMessage;
  */
 public class UserForm extends ActionForm {
 
+   protected static final String ACTION_ADD = "add";
+
+   protected static final String ACTION_EDIT = "edit";
+   
 	private static final long serialVersionUID = 1L;
 
 	private String action;
 
 	private String email;
 
-	private String password;
+	private String passwordText;
 
 	private String passwordConfirmation;
 
 	private String account;
 
-	private String voornaam;
+	private String firstName;
 
-	private String tussenVoegsels;
+	private String prefix;
 
-	private String achterNaam;
+	private String lastName;
 
-	private String bedrijf;
+	private String company;
 
 	public String getAction() {
 		return action;
@@ -56,28 +61,28 @@ public class UserForm extends ActionForm {
 		this.account = account;
 	}
 
-	public String getVoornaam() {
-		return voornaam;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setVoornaam(String voornaam) {
-		this.voornaam = voornaam;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getTussenVoegsels() {
-		return tussenVoegsels;
+	public String getPrefix() {
+		return prefix;
 	}
 
-	public void setTussenVoegsels(String tussenVoegsels) {
-		this.tussenVoegsels = tussenVoegsels;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
-	public String getAchterNaam() {
-		return achterNaam;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setAchterNaam(String achterNaam) {
-		this.achterNaam = achterNaam;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -88,20 +93,20 @@ public class UserForm extends ActionForm {
 		this.email = email;
 	}
 
-	public String getBedrijf() {
-		return bedrijf;
+	public String getCompany() {
+		return company;
 	}
 
-	public void setBedrijf(String bedrijf) {
-		this.bedrijf = bedrijf;
+	public void setBedrijf(String company) {
+		this.company = company;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPasswordText() {
+		return passwordText;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPasswordText(String passwordText) {
+		this.passwordText = passwordText;
 	}
 
 	public String getPasswordConfirmation() {
@@ -114,19 +119,49 @@ public class UserForm extends ActionForm {
 
 	public ActionErrors validate(ActionMapping actionMapping, HttpServletRequest httpServletRequest) {
 		ActionErrors actionErrors = new ActionErrors();
+		if (account.equals("")) {
+         actionErrors.add("account", new ActionMessage("userform.account.empty"));
+      }
 		if (email.equals("")) {
-			actionErrors.add("email", new ActionMessage("email.empty"));
+			actionErrors.add("email", new ActionMessage("userform.email.empty"));
 		}
-		if (password.equals("")) {
-			actionErrors.add("password", new ActionMessage("password.empty"));
-		}
-		if (passwordConfirmation.equals("")) {
-			actionErrors.add("passwordConfirmation", new ActionMessage("passwordConfirmation.empty"));
-		}
-		if (!password.equals("") && !passwordConfirmation.equals("") && !password.equals(passwordConfirmation)) {
-			actionErrors.add("password", new ActionMessage("passwords.not_equal"));
+		if (this.getAction().equalsIgnoreCase(ACTION_ADD)){
+		   validatePassword(actionErrors);
+		} else {
+		   if (this.getAction().equalsIgnoreCase(ACTION_EDIT)){
+   		   if (!StringUtils.isBlank(passwordText) || !StringUtils.isBlank(passwordConfirmation)){
+   		      validatePassword(actionErrors);
+   		   }
+		   }
 		}
 		return actionErrors;
 	}
+
+   public void validatePassword(ActionErrors actionErrors) {
+      //Only check this if an user is added
+      if (StringUtils.isBlank(passwordText)) {
+      	actionErrors.add("password", new ActionMessage("userform.password.empty"));
+      }
+      if (StringUtils.isBlank(passwordConfirmation)) {
+      	actionErrors.add("passwordConfirmation", new ActionMessage("userform.password.empty"));
+      }
+      if (!StringUtils.isBlank(passwordText) 
+            && !StringUtils.isBlank(passwordConfirmation) 
+            && !passwordText.equals(passwordConfirmation)) {
+      	actionErrors.add("password", new ActionMessage("userform.passwords.not_equal"));
+      }
+   }
+
+    public void clear() {
+        action = null;
+        email = null;
+        passwordText = null;
+        passwordConfirmation = null;
+        account = null;
+        firstName = null;
+        prefix = null;
+        lastName = null;
+        company = null;
+    }
 
 }

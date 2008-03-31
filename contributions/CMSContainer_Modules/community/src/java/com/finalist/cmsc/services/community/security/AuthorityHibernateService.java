@@ -30,10 +30,11 @@ public class AuthorityHibernateService extends HibernateService implements Autho
 
     /** {@inheritDoc} */
     @Transactional
-    public void createAuthority(String parentName, String name) {
+    public Authority createAuthority(String parentName, String name) {
         Authority authority = new Authority();
         authority.setName(name);
         getSession().save(authority);
+        return authority;
     }
 
     /** {@inheritDoc} */

@@ -36,6 +36,8 @@ public class GroupInitAction extends AbstractCommunityAction {
 
 	private static Log log = LogFactory.getLog(GroupInitAction.class);
 
+   protected static final String GROUPID = "groupid";
+
 	public ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 
@@ -51,7 +53,7 @@ public class GroupInitAction extends AbstractCommunityAction {
 		GroupForm groupForm = (GroupForm) actionForm;
 
 		if (id != null) {
-			groupForm.setAction(ACTION_EDIT);
+			groupForm.setAction(GroupForm.ACTION_EDIT);
 			Authority auth = aus.findAuthorityByName(id);
 			if (auth != null) {
 				groupForm.setName(auth.getName());
@@ -71,7 +73,7 @@ public class GroupInitAction extends AbstractCommunityAction {
 			}
 		} else {
 			// new
-			groupForm.setAction(ACTION_ADD);
+			groupForm.setAction(GroupForm.ACTION_ADD);
 			groupForm.reset(actionMapping, request);
 			for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
 				Authentication user = iter.next();

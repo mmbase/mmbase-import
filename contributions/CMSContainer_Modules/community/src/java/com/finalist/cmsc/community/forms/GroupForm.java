@@ -19,6 +19,10 @@ import org.apache.struts.action.ActionMapping;
  */
 public class GroupForm extends ActionForm {
 
+   protected static final String ACTION_ADD = "add";
+
+   protected static final String ACTION_EDIT = "edit";
+   
 	private static final long serialVersionUID = 1L;
 
 	private String action;
