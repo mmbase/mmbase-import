@@ -184,8 +184,8 @@ public class XMLServlet extends HttpServlet {
          else {
             xml = xmlController.toXml(node, RepositoryUtil.CONTENTCHANNEL);
          }
-         HttpUtil.sendXml(xml, response);
          xml = transformXml(xsl, xml);
+         HttpUtil.sendXml(xml, response);
          return;
       }
       catch (IOException e) {
