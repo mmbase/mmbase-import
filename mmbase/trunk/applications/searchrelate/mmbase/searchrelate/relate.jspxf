@@ -1,0 +1,11 @@
+<mm:listnodes referid="related" jspvar="n">
+  <jsp:expression>Queries.addToResult(current, n)</jsp:expression>
+</mm:listnodes>
+<%--
+    Not yet supported
+    <mm:listnodes referid="unrelated" jspvar="n">
+    <jsp:scriptlet>
+    Queries.removeFromResult(current, n);
+    </jsp:scriptlet>
+    </mm:listnodes>
+--%>

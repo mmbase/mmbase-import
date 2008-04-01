@@ -12,19 +12,15 @@
       <mm:import externid="unrelated" vartype="list" required="true" />
       <mm:import from="session" externid="${id}" id="query" required="true" />
       <mm:import from="session" externid="${id}_current" id="current" required="true" jspvar="current" vartype="org.mmbase.bridge.Query" />
-      <mm:listnodes referid="related" jspvar="n">
-        <jsp:scriptlet>
-          Queries.addToResult(current, n);
-        </jsp:scriptlet>
-      </mm:listnodes>
-      <!--
-          Not yet supported
-      <mm:listnodes referid="unrelated" jspvar="n">
-        <jsp:scriptlet>
-          Queries.removeFromResult(current, n);
-        </jsp:scriptlet>
-      </mm:listnodes>
-      -->
+      <mm:import externid="transaction" />
+      <mm:isempty referid="transaction">
+        <jsp:directive.include file="relate.jspxf" />
+      </mm:isempty>
+      <mm:isnotempty referid="transaction">
+        <mm:form mode="transaction" id="${transaction}">
+          <jsp:directive.include file="relate.jspxf" />
+        </mm:form>
+      </mm:isnotempty>
     </mm:cloud>
   </mm:content>
 </div>
