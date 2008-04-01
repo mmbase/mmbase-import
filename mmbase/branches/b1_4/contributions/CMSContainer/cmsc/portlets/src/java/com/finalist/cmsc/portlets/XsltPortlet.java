@@ -89,7 +89,8 @@ public class XsltPortlet extends CmscPortlet {
       if (!StringUtil.isEmpty(xsl) && !StringUtil.isEmpty(xmlSource)) {
          try {
             HashMap<String, Object> xslParams = getXsltParams(preferences);
-
+            xslParams.put("renderurl", response.createRenderURL());
+            
             StringBuffer content = new StringBuffer(4096);
 
             String html = transformXml(xsl, xmlSource, xslParams);
