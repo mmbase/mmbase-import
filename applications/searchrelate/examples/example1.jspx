@@ -1,0 +1,16 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    class="drawer">
+  <jsp:output omit-xml-declaration="true" />
+  <h1>Example1</h1>
+  <p>The most basic example</p>
+  <div>
+    <mm:relatednodescontainer role="posrel" type="news" id="current" />
+    <mm:listnodescontainer type="news" id="repository" />
+    <mm-sr:relate repository="${repository}" current="${current}" submit="submit1" />
+    <a id="submit1">Submit</a>
+  </div>
+</div>
