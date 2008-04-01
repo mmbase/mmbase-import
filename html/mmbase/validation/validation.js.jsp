@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.47 2008-04-01 11:28:38 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.48 2008-04-01 15:47:11 michiel Exp $
  */
 var validators = new Array();
 
@@ -43,7 +43,6 @@ function MMBaseValidator(w, root) {
     //this.changedElements  = 0;
     this.elements        = new Array();
     this.validateHook;
-
     this.setup(w);
     this.root = root;
     this.lang          = null;
@@ -470,7 +469,7 @@ MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
     var url = '<mm:url page="/mmbase/validation/datatypes.jspx" />';
     var params = {nodemanager: nodemanager };
     var self = this;
-    $.ajax({url: url, type: "GET", dataType: "xml", data: params,
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 	    complete: function(res, status){
 		if (status == "success") {
 		    var dataTypes = res.responseXML;
@@ -635,6 +634,8 @@ MMBaseValidator.prototype.serverValidation = function(el) {
 		    el.serverValidated = true;
 		    result = res.responseXML;
 		    //console.log("" + res);
+		} else {
+		    result = $("<result valid='false' />");
 		}
 	    }
 	   });
