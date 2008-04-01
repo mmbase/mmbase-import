@@ -9,7 +9,7 @@
 
   <jsp:directive.attribute name="submit"     type="java.lang.String"  />
   <jsp:directive.attribute name="unrelate"   type="java.lang.Boolean"   />
-  <jsp:directive.attribute name="transaction"   type="java.lang.String"   />
+  <jsp:directive.attribute name="transaction" type="java.lang.String"   />
 
   <!--
   <jsp:directive.attribute name="n"          fragment="true" />
