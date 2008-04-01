@@ -21,7 +21,7 @@
     <description xml:lang="nl">Deze relatie heeft een positie attribuut</description>
   </descriptions>
   <fieldlist>
-    <field>
+    <field name="pos">
       <descriptions>
         <description xml:lang="en">Position number, useful for ordering the relations</description>
         <description xml:lang="nl">Postitie of volgordenummer, te gebruiken voor het sorteren van de relaties</description>
@@ -38,10 +38,11 @@
           <search>3</search>
         </positions>
       </editor>
-      <db>
-        <name>pos</name>
-        <type key="false" notnull="false" state="persistent">INTEGER</type>
-      </db>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <commitprocessor>
+          <class name="org.mmbase.datatypes.processors.PosrelCommitProcessor" />
+        </commitprocessor>
+      </datatype>
     </field>
   </fieldlist>
 </builder>
