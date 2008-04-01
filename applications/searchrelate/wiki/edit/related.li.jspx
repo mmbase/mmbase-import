@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <li xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="yes" />
   <mm:import externid="type" required="true" />
@@ -17,14 +17,7 @@
         <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
       </mm:listnodescontainer>
 
-      <mm-u:relate repository="${repository}" current="${current}">
-        <jsp:attribute name="n">
-          <mm:field name="number" />
-        </jsp:attribute>
-        <jsp:attribute name="relate">
-          <mm:createrelation source="source" destination="destination" role="related" />
-        </jsp:attribute>
-      </mm-u:relate>
+      <mm-sr:relate repository="${repository}" current="${current}" submit="submit" />
     </form>
   </div>
 </li>

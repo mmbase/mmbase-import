@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.5 2008-04-01 11:38:13 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.6 2008-04-01 12:19:19 michiel Exp $
  */
 
 
@@ -21,6 +21,11 @@ function MMBaseSearcher(d) {
     this.div = d;
     this.value = "";
     this.canUnrelate = $(d).hasClass("can_unrelate");
+    this.transaction   = null;
+    var self = this;
+    $(d).find("span.transactioname").each(function() {
+	this.transaction = this.nodeValue;
+    });
     this.searchResults = {};
     this.related       = {};
     this.unrelated     = {};
@@ -153,7 +158,7 @@ MMBaseSearcher.prototype.commit = function(node) {
 
     this.log("+ " + relatedNumbers);
     this.log("- " + unrelatedNumbers);
-    var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers};
+    var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers, transaction: this.transaction};
     $.ajax({url: url, type: "GET", dataType: "xml", data: params,
 	    complete: function(res, status){
 		if (status == "success") {

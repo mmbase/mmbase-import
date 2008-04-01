@@ -63,13 +63,4 @@ $(document).ready(function(){
 	});
     }
 
-    $("body").find("#submitTest").each(function() {
-	$(this).click(function() {
-	    $("body").find(".mm_related a.search").each(function() {
-		this.searcher.commit();
-	    });
-	    return true;
-
-	});
-    });
 });
