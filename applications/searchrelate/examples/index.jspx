@@ -5,17 +5,17 @@
 
     expires="0" type="application/xhtml+xml"
     unacceptable="CRIPPLE" >
+
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
               doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-  <!--
-    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
-    -->
 
   <html  xmlns="http://www.w3.org/1999/xhtml">
 
     <title><mm:write id="title" value="Search &amp; Relate examples" /></title>
-    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- mainly for jquery -->
+
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
+
     <script type="text/javascript">
       $(document).ready(function() {
       $("div.drawer > div").slideUp("fast");
