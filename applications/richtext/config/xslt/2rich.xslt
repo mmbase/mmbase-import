@@ -3,10 +3,10 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.1 2005-10-25 21:16:45 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.2 2008-04-01 14:52:41 michiel Exp $
   @since:   MMBase-1.6
 -->
-<xsl:stylesheet  
+<xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
     xmlns:o="http://www.mmbase.org/xmlns/objects"
@@ -19,6 +19,7 @@
   <xsl:output method="text" omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
   <xsl:param name="cloud">mmbase</xsl:param>
+  <xsl:param name="show_broken">false</xsl:param>
 
   <xsl:template match="o:objects">
     <div class="objects">
@@ -44,7 +45,7 @@
     <!-- store the 'relation' nodes for convenience in $rels:-->
     <xsl:variable name="rels"  select="ancestor::o:object/o:relation[@role='idrel']" />
     <xsl:variable name="id"   select="@id" />
-    
+
     <!-- also for conveniences: all related nodes to this node-->
     <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
 
@@ -56,7 +57,7 @@
     <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
 
     <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/o:field[@name = 'dnumber']] | $related_to_node[@id = $drelations/o:field[@name='snumber']]" />
-    
+
     <xsl:if test="count($relatednodes) &gt; 0" >
       <xsl:text>[</xsl:text><xsl:value-of select="@id" /><xsl:text>]</xsl:text>
     </xsl:if>
@@ -66,10 +67,10 @@
     <!-- store the 'relation' nodes for convenience in $rels:-->
     <xsl:variable name="rels"  select="ancestor::o:object/o:relation[@role='idrel']" />
     <xsl:variable name="id"   select="@id" />
-    
+
     <!-- also for conveniences: all related nodes to this node-->
     <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
-   
+
     <!-- There are two type of relations, it is handy to treat them seperately: -->
     <xsl:variable name="srelations" select="//o:objects/o:object[@id=$rels[@type='source']/@object and o:field[@name='id'] = current()/@id]" />
     <xsl:variable name="drelations" select="//o:objects/o:object[@id=$rels[@type='destination']/@object and o:field[@name='id'] = current()/@id]" />
@@ -78,9 +79,9 @@
     <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
 
     <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/o:field[@name = 'dnumber']] | $related_to_node[@id = $drelations/o:field[@name='snumber']]" />
-    
+
     <xsl:choose>
-      <xsl:when test="count($relatednodes) &gt; 0" >
+      <xsl:when test="count($relatednodes) &gt; 0 or $show_broken = 'true'" >
         <xsl:text>[</xsl:text><xsl:value-of select="@id" />
         <xsl:if test="count(*|text()) &gt; 0">
           <xsl:text>:</xsl:text>
@@ -93,7 +94,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
-  
+
+
 
 </xsl:stylesheet>

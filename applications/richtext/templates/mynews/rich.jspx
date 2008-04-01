@@ -2,11 +2,11 @@
   Static include
 
 -->
-<jsp:root	
+<jsp:root
     version="1.2"
-    xmlns:jsp="http://java.sun.com/JSP/Page"	
+    xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
-  <mm:edit type="kupu">   
+  <mm:edit type="kupu">
     <mm:import externid="popupwidth">800</mm:import>
     <mm:param name="when" value="onrequest" />
     <mm:param name="target" value="" />
@@ -29,8 +29,8 @@
         <mm:field name="intro" escape="p-ommit-surrounding" />
       </p>
     </div>
-    
-    <mm:formatter referids="thumbwidth?,popupwidth?" format="xhtml"> 
+
+    <mm:formatter referids="thumbwidth?,popupwidth?" format="xhtml">
       <mm:present referid="home">
         <mm:param name="home" value="home=${home}&amp;" />
       </mm:present>
