@@ -338,6 +338,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="init.compile" depends="explicit.dependency.dir" unless="external.libs.exist" description="Sets up the classpath for compiling this">
+    <mkdir dir="${project.build.dir}/classes"/>
     <echo message="Using default classpath based on on ${project.jars.dir} and ${build.dir}/lib" />
     <available property="dummy" classname="dummy">
       <classpath id="compile.classpath">
@@ -361,7 +362,6 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="compile" description="Compile the source directory" depends="init,init.compile" if="src.available">
 
 
-    <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
 
     <echo message="copying to ${project.build.dir}" />
