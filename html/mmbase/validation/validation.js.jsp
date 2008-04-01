@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.46 2008-03-31 15:51:51 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.47 2008-04-01 11:28:38 michiel Exp $
  */
 var validators = new Array();
 
@@ -407,8 +407,11 @@ MMBaseValidator.prototype.getDataTypeXml = function(el) {
 		    }
 		}
 	       });
+	this.log("Found " + dataType);
 
 
+    } else {
+	this.trace("Found in cache " + dataType);
     }
     return dataType;
 }
@@ -477,7 +480,7 @@ MMBaseValidator.prototype.prefetchNodeManager = function(nodemanager) {
 			var key = new Key();
 			key.nodeManager = nodemanager;
 			key.field = fields[i].getAttribute("name");
-			self.dataTypeCache[key.string()] = $(res.responseText)[0];
+			self.dataTypeCache[key.string()] = fields[i];
 		    }
 		    //console.log("" + res);
 		}
