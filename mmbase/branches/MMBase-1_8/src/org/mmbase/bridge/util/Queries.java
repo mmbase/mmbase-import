@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.7 2008-03-25 16:48:00 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.8 2008-04-01 12:00:02 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1303,12 +1303,14 @@ abstract public class Queries {
      * @throw UnsupportedOperationException If it cannot be determined how the node should be related.
      *
      * @since MMBase-1.8.6
+     * @returns Newly created node(s)
      */
-    public static void addToResult(Query q, Node n) {
+    public static NodeList addToResult(Query q, Node n) {
         List steps = q.getSteps();
 
         if (steps.size() < 3) throw new UnsupportedOperationException();
 
+        NodeList result = q.getCloud().createNodeList();
         // First, try if the node can be related to a startNode.
         int start = 0;
         Step startStep = (Step) steps.get(start);
@@ -1320,13 +1322,19 @@ abstract public class Queries {
             RelationStep rel = (RelationStep) steps.get(start + 1);
             String role = cloud.getNode(rel.getRole().intValue()).getStringValue("sname");
             switch(rel.getDirectionality()) {
-            case RelationStep.DIRECTIONS_SOURCE:
-                cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
+            case RelationStep.DIRECTIONS_SOURCE: {
+                Relation newRel = cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
+                newRel.commit();
+                result.add(newRel);
                 break;
-            default:
-                cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
             }
-            return;
+            default: {
+                Relation newRel = cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
+                newRel.commit();
+                result.add(newRel);
+            }
+            }
+            return result;
         } else {
             throw new UnsupportedOperationException();
         }
