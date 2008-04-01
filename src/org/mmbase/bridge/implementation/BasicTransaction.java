@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.25.2.7 2008-01-09 10:58:04 michiel Exp $
+ * @version $Id: BasicTransaction.java,v 1.25.2.8 2008-04-01 14:46:07 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
@@ -115,6 +115,9 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         committed = true;
         return true;
     }
+
+
+
 
     public synchronized void cancel() {
         if (canceled) {
@@ -232,6 +235,12 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return value;
         }
     }
+    public Map getProperties() {
+        Map ret = new HashMap();
+        ret.putAll(parentCloud.getProperties());
+        ret.putAll(super.getProperties());
+        return Collections.unmodifiableMap(ret);
+    }
 
     /**
      * @see org.mmbase.bridge.Transaction#getCloudName()
@@ -244,6 +253,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             return parentCloud.getName();
         }
     }
+
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         _readObject(in);
@@ -266,9 +276,14 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public String toString() {
         UserContext uc = getUser();
-        return  "BasicTransaction '" + getName() + "' of " + (uc != null ? uc.getIdentifier() : "NO USER YET") + " @" + Integer.toHexString(hashCode());
+        return  "BasicTransaction '" + getName() + "' of " + parentCloud.toString();
     }
 
+    /*
+    public Cloud getNonTransactionalCloud() {
+        return parentCloud.getNonTransactionalCloud();
+    }
+    */
 
 }
 
