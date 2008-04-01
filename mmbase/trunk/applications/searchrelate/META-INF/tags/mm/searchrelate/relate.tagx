@@ -22,7 +22,7 @@
   <mm:write session="mm_related_${seq}_current" referid="current" />
 
   <c:if test="${seq eq 0}">
-    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
   </c:if>
   <c:if test="${! empty submit}">
     <!-- if a submit id is given, commit the search/relate on click of that element -->
@@ -65,7 +65,7 @@
       <a href="#repository_${seq}" class="search">Search</a>
       <input class="mm_relate_repository_search" value="" />
       <div   class="mm_relate_repository">
-        <div />
+        <div>&lt;!-- IE sucks --&gt;</div>
       </div>
     </mm:listnodescontainer>
   </div>
