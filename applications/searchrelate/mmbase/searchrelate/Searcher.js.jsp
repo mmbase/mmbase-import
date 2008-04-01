@@ -11,15 +11,16 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.4 2008-04-01 09:35:30 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.5 2008-04-01 11:38:13 michiel Exp $
  */
 
 
 function MMBaseSearcher(d) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     this.traceEnabled = false;
     this.div = d;
     this.value = "";
+    this.canUnrelate = $(d).hasClass("can_unrelate");
     this.searchResults = {};
     this.related       = {};
     this.unrelated     = {};
@@ -66,15 +67,7 @@ MMBaseSearcher.prototype.search = function(offset) {
 			$(rep).empty();
 			$(rep).append(r);
 			self.searchResults["" + offset] = r;
-			$(rep).find("a.navigate").each(function() {
-			    $(this).click(function() {
-				return self.search(this.name);
-			    })});
-			$(rep).find("tr.click").each(function() {
-			    $(this).click(function() {
-				self.relate(this);
-				return false;
-			    })});
+			self.bindEvents(rep);
 		    }
 		}
 	       });
@@ -82,13 +75,23 @@ MMBaseSearcher.prototype.search = function(offset) {
 	this.log("reusing " + offset);
 	$(rep).empty();
 	$(rep).append(result);
+	self.bindEvents(rep);
     }
-
-
-
     return false;
 }
 
+MMBaseSearcher.prototype.bindEvents = function(rep) {
+    var self = this;
+    $(rep).find("a.navigate").each(function() {
+	$(this).click(function() {
+	    return self.search(this.name);
+	})});
+    $(rep).find("tr.click").each(function() {
+	$(this).click(function() {
+	    self.relate(this);
+	    return false;
+	})});
+}
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
  */
@@ -165,18 +168,18 @@ $(document).ready(function(){
     $("body").find("div.mm_related")
     .each(function() {
 	var parent = this;
-	console.log("found " + parent);
 	var anchor = $(parent).find("> a.search")[0];
-	console.log(anchor);
 	anchor.searcher = new MMBaseSearcher(parent);
 	$(anchor).click(function() {
 	    return this.searcher.search(0);
 	});
-	$(parent).find("tr.click").each(function() {
-	    $(this).click(function() {
-		anchor.searcher.unrelate(this);
-		return false;
-	    })});
+	if (anchor.search.canUnrelate) {
+	    $(parent).find("tr.click").each(function() {
+		$(this).click(function() {
+		    anchor.searcher.unrelate(this);
+		    return false;
+		})});
+	}
     });
 
 });
