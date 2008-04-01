@@ -1,0 +1,74 @@
+<mm:content
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    expires="0" type="application/xhtml+xml"
+    unacceptable="CRIPPLE" >
+  <jsp:output doctype-root-element="html"
+              doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
+              doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+  <!--
+    xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
+    -->
+
+  <html  xmlns="http://www.w3.org/1999/xhtml">
+
+    <title><mm:write id="title" value="Search &amp; Relate examples" /></title>
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- mainly for jquery -->
+    <script type="text/javascript">
+      $(document).ready(function() {
+      $("div.drawer > div").slideUp("fast");
+      $("div.drawer h1").click(function(e) {
+         $(e.target).parent().children("div").slideToggle("fast");
+         });
+      });
+    </script>
+    <body>
+      <h1>${title}</h1>
+      <mm:cloud rank="basic user">
+
+        <mm:import externid="mag">default.mags</mm:import>
+
+        <mm:hasnode number="$mag" inverse="true">
+          <p>
+            You need to have the MyNews application installed.
+          </p>
+        </mm:hasnode>
+        <mm:hasnode number="$mag">
+          <div class="drawer">
+            <mm:context>
+            <h1>Example1</h1>
+            <div>
+              <mm:node number="$mag">
+                <mm:relatednodescontainer role="posrel" type="news" id="current" />
+                <mm:listnodescontainer type="news" id="repository" />
+                <mm-sr:relate repository="${repository}" current="${current}" submit="submit1" />
+              </mm:node>
+              <a id="submit1">Submit</a>
+            </div>
+            </mm:context>
+          </div>
+          <div class="drawer">
+            <mm:context>
+              <h1>Example2</h1>
+              <p>Showing how to make it impossible to relate already related nodes.</p>
+              <div>
+              <mm:node number="$mag">
+                <mm:relatednodescontainer role="posrel" type="news" id="current" >
+                  <mm:relatednodes id="currentlyRelated" />
+                </mm:relatednodescontainer>
+                <mm:listnodescontainer type="news" id="repository">
+                  <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
+                </mm:listnodescontainer>
+                <mm-sr:relate repository="${repository}" current="${current}" submit="submit2" />
+              </mm:node>
+              <a id="submit2">Submit</a>
+              </div>
+            </mm:context>
+          </div>
+        </mm:hasnode>
+      </mm:cloud>
+    </body>
+  </html>
+</mm:content>
