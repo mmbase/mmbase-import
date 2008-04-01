@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.7 2008-04-01 13:09:30 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.8 2008-04-01 16:18:49 michiel Exp $
  */
 
 
@@ -136,7 +136,11 @@ MMBaseSearcher.prototype.unrelate = function(el) {
 *  This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
  */
 
-MMBaseSearcher.prototype.commit = function(node) {
+MMBaseSearcher.prototype.commit = function(el) {
+    var a = el.target;
+    $(a).addClass("submitting");
+    $(a).removeClass("failed");
+    $(a).removeClass("succeeded");
     this.log("Commiting changed relations of " + this.div.id);
     var id = this.div.id;
     var url = "${mm:link('/mmbase/searchrelate/relate.jspx')}";
@@ -162,10 +166,16 @@ MMBaseSearcher.prototype.commit = function(node) {
     if (this.transaction != null) {
 	params.transaction = this.transaction;
     }
-    $.ajax({url: url, type: "GET", dataType: "xml", data: params,
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 	    complete: function(res, status){
+		$(a).removeClass("submitting");
 		if (status == "success") {
 		    //console.log("" + res);
+		    $(a).addClass("succeeded");
+		    return true;
+		} else {
+		    $(a).addClass("failed");
+		    return false;
 		}
 	    }
 	   });

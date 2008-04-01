@@ -14,7 +14,7 @@
     <mm:cloud rank="basic user" jspvar="cloud">
 
       <mm:param name="org.mmbase.xml-mode" value="wiki" />
-
+      <mm:param name="show_broken" value="true" />
 
       <head>
         <mm:import id="jq"><mm:url page="/mmbase/jquery/" /></mm:import>
@@ -60,8 +60,7 @@
                 </mm:fieldlist>
               </table>
 
-              <input type="submit" name="submit" id="submit" value="submit" />
-              <span id="submitTest">submitTest</span>
+              <input type="submit" name="submit" id="submit" value="submit" onclick="return false" />
               <input type="submit" name="cancel" id="cancel" value="cancel" />
               <input type="text" name="comments" value="Beschrijf uw verandering hier" />
               <hr />
@@ -101,13 +100,9 @@
                   <mm:param name="expires">0</mm:param>
                 </mm:redirect>
               </mm:present>
-              <mm:log>0</mm:log>
               <mm:valid>
-                <mm:log>a</mm:log>
                 <mm:import externid="submit" />
-                <mm:log>b</mm:log>
                 <mm:present referid="submit">
-                  <mm:log>c</mm:log>
                   <mm:import externid="comments" />
                   <mm:param name="org.mmbase.versioning.comments" referid="comments" />
                   <h1>Committing ${_} for ${transaction.cloudVar}</h1>

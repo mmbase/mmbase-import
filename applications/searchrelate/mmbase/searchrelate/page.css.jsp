@@ -60,4 +60,14 @@
   background-color: #e8d8d8;
 }
 
+.failed {
+ background-color: red;
+}
+.submitting {
+ background-color: green;
+}
+.succeeded {
+ background-color: yellow;
+}
+
 </mm:content>
