@@ -5,13 +5,13 @@
  * Generic mmbase search & relate tool. Javascript part.
  *
  *
- * Usage: It is sufficient to use the mm:relate tag. This tag wil know wether this javascript is already loaded, and if not, will arrange for that. It is required to load jquery, though.
+ * Usage: It is sufficient to use the <mm:relate tag. This tag wil know wether this javascript is already loaded, and if not, will arrange for that. It is required to load jquery, though.
 
  * On ready, the necessary javascript will then be connected to .mm_related a.search
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.7 2008-03-31 14:28:56 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.1 2008-04-01 08:33:00 michiel Exp $
  */
 
 
@@ -40,7 +40,7 @@ MMBaseSearcher.prototype.log = function (msg) {
 
 /**
  * This method is called if somebody clicks on a.search.
- * It depends on a jsp /mmbase/taglib/page.jspx to return the search results.
+ * It depends on a jsp /mmbase/searcher/page.jspx to return the search results.
  * Feeded are 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
@@ -53,7 +53,7 @@ MMBaseSearcher.prototype.search = function(offset) {
     var id = this.div.id;
     var rep = $(this.div).find("div.mm_relate_repository")[0]
 
-    var url = "${mm:link('/mmbase/taglib/page.jspx')}";
+    var url = "${mm:link('/mmbase/searcher/page.jspx')}";
     var params = {id: id, offset: offset, search: this.value};
 
     var result = this.searchResults["" + offset];
@@ -124,14 +124,14 @@ MMBaseSearcher.prototype.unrelate = function(el) {
 }
 
 /**
- * Commits made changes to MMBase. Depends on a jsp /mmbase/taglib/relate.jsp to do the actual work.
+ * Commits made changes to MMBase. Depends on a jsp /mmbase/searcher/relate.jsp to do the actual work.
 *  This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
  */
 
 MMBaseSearcher.prototype.commit = function(node) {
     this.log("Commiting changed relations of " + this.div.id);
     var id = this.div.id;
-    var url = "${mm:link('/mmbase/taglib/relate.jspx')}";
+    var url = "${mm:link('/mmbase/searcher/relate.jspx')}";
 
     var relatedNumbers = "";
     $.each(this.related, function(key, value) {
