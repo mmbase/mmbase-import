@@ -14,8 +14,6 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.cache.CachePolicy;
 
-import com.finalist.community.DetailNewsletterInfo;
-import com.finalist.community.UserInfo;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 
 public interface NewsletterSubscriptionServices {
