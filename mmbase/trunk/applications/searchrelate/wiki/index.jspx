@@ -37,7 +37,7 @@
               <h3>v <mm:field name="version" /></h3>
               <mm:field name="intro" escape="p" />
 
-              <rich:body />
+              <rich:field name="body" />
 
             </mm:node>
           </mm:edit>

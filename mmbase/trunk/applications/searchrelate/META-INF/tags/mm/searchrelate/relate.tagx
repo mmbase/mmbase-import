@@ -29,8 +29,8 @@
     <!-- if a submit id is given, commit the search/relate on click of that element -->
     <script type="text/javascript">
       $(document).ready(function() {
-         $("${submit}").click(function() {
-            $("#mm_related_${seq} > a.search")[0].searcher.commit();
+         $("${submit}").click(function(el) {
+           return $("#mm_related_${seq} > a.search")[0].searcher.commit(el);
          });
       });
     </script>
