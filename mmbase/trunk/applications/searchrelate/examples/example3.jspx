@@ -1,0 +1,20 @@
+<div
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate"
+    class="drawer">
+  <jsp:output omit-xml-declaration="true" />
+  <h1>Example3</h1>
+  <p>Unrelating should also be possible (but is not yet)</p>
+  <div>
+    <mm:relatednodescontainer role="posrel" type="news" id="current" >
+      <mm:relatednodes id="currentlyRelated" />
+    </mm:relatednodescontainer>
+    <mm:listnodescontainer type="news" id="repository">
+      <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
+    </mm:listnodescontainer>
+    <mm-sr:relate repository="${repository}" current="${current}" submit="submit3" unrelate="true" />
+    <a id="submit3">Submit</a>
+  </div>
+</div>
