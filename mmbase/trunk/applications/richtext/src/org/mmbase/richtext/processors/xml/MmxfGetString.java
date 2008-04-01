@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.9 2008-04-01 14:52:41 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.10 2008-04-01 16:03:15 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -88,6 +88,25 @@ public class MmxfGetString implements  Processor {
     }
 
 
+    /**
+     * Stupid Xalan can come with exceptions like:
+     * java.lang.IllegalArgumentException: The value of param org.mmbase.cloud.ignore-validation must be a valid Java Object
+     * If values are <code>null</code> This avoid setting values to null.
+     */
+
+    protected void putParams(Map source, Map dest) {
+        Iterator i = source.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String key = Casting.toString(entry.getKey());
+            Object value = entry.getValue();
+            if (value != null) {
+                dest.put(key, value);
+            }
+        }
+    }
+
+
     public Object process(Node node, Field field, Object value) {
         if (log.isDebugEnabled()) {
             log.debug("Getting " + field + " from " + node + " as a String");
@@ -106,7 +125,7 @@ public class MmxfGetString implements  Processor {
                 StringWriter res = new StringWriter();
                 // TODO: XSL transformation parameter stuff must be generalized (not only cloud, but only e.g. request specific stuff must be dealt with).
                 Map params = new HashMap();
-                params.putAll(node.getCloud().getProperties());
+                putParams(node.getCloud().getProperties(), params);
                 params.put("cloud", node.getCloud());
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
@@ -117,7 +136,7 @@ public class MmxfGetString implements  Processor {
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2rich.xslt");
                 StringWriter res = new StringWriter();
                 Map params = new HashMap();
-                params.putAll(node.getCloud().getProperties());
+                putParams(node.getCloud().getProperties(), params);
                 params.put("cloud", node.getCloud());
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
@@ -130,7 +149,7 @@ public class MmxfGetString implements  Processor {
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2rich.xslt");
                 StringWriter res = new StringWriter();
                 Map params = new HashMap();
-                params.putAll(node.getCloud().getProperties());
+                putParams(node.getCloud().getProperties(), params);
                 params.put("cloud", node.getCloud());
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
