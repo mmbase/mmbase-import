@@ -7,18 +7,16 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
     <mm:cloud method="asis">
-      <mm:form mode="transaction" id="transaction">
-        <mm:import externid="id" required="true" />
-        <mm:import externid="related"   vartype="list" required="true" />
-        <mm:import externid="unrelated" vartype="list" required="true" />
-        <mm:import from="session" externid="${id}" id="query" required="true" />
-        <mm:import from="session" externid="${id}_current" id="current" required="true" jspvar="current" vartype="org.mmbase.bridge.Query" />
-        <mm:listnodes referid="related" jspvar="n">
-          <jsp:scriptlet>
-            Queries.addToResult(current, n);
-          </jsp:scriptlet>
-        </mm:listnodes>
-      </mm:form>
+      <mm:import externid="id" required="true" />
+      <mm:import externid="related"   vartype="list" required="true" />
+      <mm:import externid="unrelated" vartype="list" required="true" />
+      <mm:import from="session" externid="${id}" id="query" required="true" />
+      <mm:import from="session" externid="${id}_current" id="current" required="true" jspvar="current" vartype="org.mmbase.bridge.Query" />
+      <mm:listnodes referid="related" jspvar="n">
+        <jsp:scriptlet>
+          Queries.addToResult(current, n);
+        </jsp:scriptlet>
+      </mm:listnodes>
     </mm:cloud>
   </mm:content>
 </div>
