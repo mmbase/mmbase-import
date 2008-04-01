@@ -33,6 +33,7 @@ public class IFramePortlet extends CmscPortlet {
    public static final String NAME_ATTR_PARAM = "name";
    public static final String SCROLLING_ATTR_PARAM = "scrolling";
    public static final String SOURCE_ATTR_PARAM = "source";
+   public static final String SOURCE_REQ_PARAM = "source";
    public static final String STYLE_ATTR_PARAM = "style";
    public static final String WIDTH_ATTR_PARAM = "width";
 
@@ -94,6 +95,7 @@ public class IFramePortlet extends CmscPortlet {
 
       // get IFRAME source
       String source = getPreference(preferences, SOURCE_ATTR_PARAM, SOURCE_ATTR_DEFAULT);
+      if(request.getParameter(SOURCE_REQ_PARAM) != null) source = request.getParameter(SOURCE_REQ_PARAM);
       
       if(Community.isAuthenticated()){
     	  // TODO
