@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.8 2008-02-14 15:32:22 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.9 2008-04-01 14:52:41 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -106,6 +106,7 @@ public class MmxfGetString implements  Processor {
                 StringWriter res = new StringWriter();
                 // TODO: XSL transformation parameter stuff must be generalized (not only cloud, but only e.g. request specific stuff must be dealt with).
                 Map params = new HashMap();
+                params.putAll(node.getCloud().getProperties());
                 params.put("cloud", node.getCloud());
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
@@ -116,6 +117,7 @@ public class MmxfGetString implements  Processor {
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/2rich.xslt");
                 StringWriter res = new StringWriter();
                 Map params = new HashMap();
+                params.putAll(node.getCloud().getProperties());
                 params.put("cloud", node.getCloud());
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();
@@ -128,6 +130,7 @@ public class MmxfGetString implements  Processor {
                 java.net.URL u = ResourceLoader.getConfigurationRoot().getResource("xslt/mmxf2rich.xslt");
                 StringWriter res = new StringWriter();
                 Map params = new HashMap();
+                params.putAll(node.getCloud().getProperties());
                 params.put("cloud", node.getCloud());
                 XSLTransformer.transform(new DOMSource(xml), u, new StreamResult(res), params);
                 return res.toString();

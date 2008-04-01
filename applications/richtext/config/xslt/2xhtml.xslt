@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.25 2007-06-20 14:29:55 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.26 2008-04-01 14:52:41 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -107,10 +107,10 @@
       Produces an URL to point to a certain object.
   -->
   <xsl:template match="o:object" mode="url">
-    <xsl:value-of select="node:function($cloud, string(@id ), 'url', $request)" />
+    <xsl:value-of select="node:function($cloud, string(@id), 'url', $request)" />
   </xsl:template>
 
-  <xsl:template match="o:object[@type = 'images']|o:object[@type ='attachments']|o:object[@type='icaches']" mode="url">   
+  <xsl:template match="o:object[@type = 'images']|o:object[@type ='attachments']|o:object[@type='icaches']" mode="url">
     <xsl:value-of select="node:saxonFunction($cloud, string(@id), 'servletpath')" />
   </xsl:template>
 
@@ -120,7 +120,7 @@
   </xsl:template>
 
 
-  <!-- Produces output for one object 
+  <!-- Produces output for one object
        Required argument: relation, the relation object which made this necessary.
        position, last: if used in a list, these can be provided.
   -->
@@ -202,12 +202,12 @@
     </img>
   </xsl:template>
 
-  <!-- 
+  <!--
        Produces the presentation for an object which is related somewhere already inside an a
        tag. This means that it has to be careful to produce more a-tags.
   -->
   <xsl:template match="o:object" mode="in_a">
-    <xsl:param name="relation" />    
+    <xsl:param name="relation" />
     <xsl:apply-templates select="." mode="title" />
     <xsl:apply-templates select="." mode="inline">
       <xsl:with-param name="relation" select="$relation" />
@@ -215,7 +215,7 @@
   </xsl:template>
 
   <xsl:template match="o:object[@type = 'images' or contains(@ancestors, ' images ')]" mode="in_a">
-    <xsl:param name="relation" />    
+    <xsl:param name="relation" />
     <xsl:apply-templates select="." mode="img" >
       <xsl:with-param name="relation" select="$relation" />
     </xsl:apply-templates>
@@ -224,8 +224,8 @@
 
 
 
-  <!-- 
-       produces an icon for an object 
+  <!--
+       produces an icon for an object
        Used for nodes of the type attachments, of course, but it can als be imaginable for other objects
   -->
   <xsl:template match="o:object" mode="icon">
@@ -239,7 +239,7 @@
        Produces output for one o:object of type images.
        params: relation, position, last
   -->
-  <xsl:template match="o:object[@type = 'images' or contains(@ancestors, ' images ')]" mode="inline">    
+  <xsl:template match="o:object[@type = 'images' or contains(@ancestors, ' images ')]" mode="inline">
     <xsl:param name="relation" />
     <xsl:param name="position" />
     <xsl:param name="last" />
@@ -256,7 +256,7 @@
     <xsl:choose>
       <xsl:when test="o:field[@name='width'] &gt; $thumbw + 20">
         <!-- if thumb is smaller than actual image, produce a link to popup -->
-        <xsl:choose>         
+        <xsl:choose>
           <xsl:when test="$popupwidth = '-1'">
             <xsl:apply-templates select="." mode="img">
               <xsl:with-param name="relation" select="$relation" />
@@ -291,7 +291,7 @@
               <xsl:attribute name="title"><xsl:value-of select="./o:field[@name = 'title']" /></xsl:attribute>
               <xsl:attribute name="id">
                 <xsl:value-of select="$relation/o:field[@name = 'id']" />
-                <xsl:value-of select="$position" />                
+                <xsl:value-of select="$position" />
               </xsl:attribute>
               <xsl:apply-templates select="." mode="img">
                 <xsl:with-param name="relation" select="$relation" />
@@ -313,7 +313,7 @@
     <xsl:if test="$position != $last">,</xsl:if>
   </xsl:template>
 
-  
+
 
 
   <!--
@@ -374,7 +374,7 @@
   <xsl:template match="o:object[@type = 'blocks']" mode="quote">
     <span style="font-size: +30pt; float: left;">&#x2018;</span>
        <xsl:apply-templates select="o:field[@name = 'body']" />
-    <span style="font-size: +30pt; float: right;">&#x2019;</span>    
+    <span style="font-size: +30pt; float: right;">&#x2019;</span>
   </xsl:template>
 
 
@@ -435,7 +435,7 @@
 
 
   <xsl:template match="mmxf:*" mode="in_a">
-    <xsl:apply-templates select=".">      
+    <xsl:apply-templates select=".">
       <xsl:with-param name="in_a">yes</xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
@@ -445,7 +445,7 @@
        to determine the relations and calls jumps to with_relations mode, where the 'relations'
        parameter becomes available (all relations pointing to this element).
   -->
-  
+
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <xsl:param name="in_a" />
      <!-- store all 'relation' nodes of this node for convenience in $rels:-->
@@ -513,7 +513,7 @@
           <xsl:with-param name="body"     select="node()" />
         </xsl:apply-templates>
       </xsl:when>
-      <xsl:when test="not(node()) and count($relations) = 1 and $in_a = 'yes'">        
+      <xsl:when test="not(node()) and count($relations) = 1 and $in_a = 'yes'">
         <xsl:variable name="toNodeNumber" select="ancestor::o:object/o:relation[@object = $relations[1]/@id]/@related" />
         <xsl:apply-templates select="id($toNodeNumber)" mode="in_a">
           <xsl:with-param name="relation" select="$relations[1]" />
@@ -528,7 +528,7 @@
       <!-- otherwise, things get a bit different -->
       <xsl:otherwise>
         <xsl:apply-templates select="node()" />
-        <xsl:apply-templates select="." mode="relations">          
+        <xsl:apply-templates select="." mode="relations">
           <xsl:with-param name="relations" select="$relations" />
           <xsl:with-param name="body"     select="node()" />
         </xsl:apply-templates>
@@ -536,7 +536,7 @@
     </xsl:choose>
   </xsl:template>
 
-  
+
   <!--
     Presents only relations. Iterates over all given relations, and applies the 'inline' mode template on every related node.
     It provides three parameters then:

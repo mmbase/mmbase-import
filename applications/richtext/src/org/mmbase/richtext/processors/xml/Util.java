@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
 /**
  * Utility functions, used by various classes in the package.
  * @author Michiel Meeuwissen
- * @version $Id: Util.java,v 1.2 2008-03-25 18:00:14 michiel Exp $
+ * @version $Id: Util.java,v 1.3 2008-04-01 14:52:41 michiel Exp $
  */
 
 public abstract class Util {
@@ -47,7 +47,9 @@ public abstract class Util {
     public static Document parse(Object value)  throws javax.xml.parsers.ParserConfigurationException, org.xml.sax.SAXException,  java.io.IOException {
         if (value instanceof Document) return (Document) value;
         try {
-            log.info("Parsing " + value);
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing " + value);
+            }
             return parse(new java.io.ByteArrayInputStream(("" + value).getBytes("UTF-8")));
         } catch (java.io.UnsupportedEncodingException uee) {
             // cannot happen, UTF-8 is supported..
