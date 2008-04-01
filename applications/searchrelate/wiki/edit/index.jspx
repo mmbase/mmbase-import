@@ -3,7 +3,6 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:mm-u="urn:jsptagdir:/WEB-INF/tags/mm/u"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     lang="en">
@@ -20,14 +19,16 @@
       <head>
         <mm:import id="jq"><mm:url page="/mmbase/jquery/" /></mm:import>
 
+        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+
         <script src="${jq}jquery.dimensions.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.mouse.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.resizable.js"></script>
         <script src="${jq}ui.draggable.js"><jsp:text> </jsp:text></script>
         <script src="${jq}ui.draggable.ext.js"><jsp:text> </jsp:text></script>
-        <jsp:directive.include file="/mmbase/validation/javascript.jspxf" />
+
         <script language="javascript" src="edit.js"><jsp:text> </jsp:text></script>
-        <link rel="stylesheet" type="text/css" href="${mm:link('/mmbase/taglib/page.css.jsp')}" />
+        <link rel="stylesheet" type="text/css" href="${mm:link('/mmbase/searchrelate/page.css.jsp')}" />
         <link rel="stylesheet" type="text/css" href="q.css" />
       </head>
       <body>
