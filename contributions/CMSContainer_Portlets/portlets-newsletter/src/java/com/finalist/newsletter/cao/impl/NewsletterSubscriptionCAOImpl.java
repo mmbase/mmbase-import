@@ -18,9 +18,6 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
-import com.finalist.cmsc.repository.ContentElementUtil;
-import com.finalist.cmsc.repository.RepositoryUtil;
-import com.finalist.community.DetailNewsletterInfo;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.cao.util.NewsletterSubscriptionUtil;
@@ -48,7 +45,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		cloud = provider.getCloud();
 	}
 
-	public static DetailNewsletterInfo getUserSubscriptionList(String userName,
+	/*public static DetailNewsletterInfo getUserSubscriptionList(String userName,
 			Cloud cloud) {
 		DetailNewsletterInfo detailNewsletterInfo = new DetailNewsletterInfo();
 
@@ -84,7 +81,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 
 		return detailNewsletterInfo;
 	}
-
+*/
 	public static List<Node> querySubcriptionByUser(String userName, Cloud cloud) {
 		String nodeType = "subscriptionrecord";
 		NodeManager manager = cloud.getNodeManager(nodeType);
@@ -107,7 +104,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		return results;
 	}
 
-	public static void addSubscriptionRecord(Cloud cloud,
+	/*public static void addSubscriptionRecord(Cloud cloud,
 			DetailNewsletterInfo detailNewsletterInfo) {
 		String nodeType = "subscriptionrecord";
 		NodeManager subscriptionrecordNodeManager = cloud
@@ -129,18 +126,18 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		subscriptionrecordNode.commit();
 		detailNewsletterInfo
 				.setId(subscriptionrecordNode.getIntValue("number"));
-	}
+	}*/
 
 	public static void updateSubscriptionRecord(Node node, String status) {
 		node.setStringValue("status", status);
 		node.commit();
 	}
 
-	public static Node getUpdateNode(Cloud cloud,
+/*	public static Node getUpdateNode(Cloud cloud,
 			DetailNewsletterInfo detailNewsletterInfo) {
 		int nodeNumber = detailNewsletterInfo.getId();
 		Node node = cloud.getNode(nodeNumber);
 		return node;
-	}
+	}*/
 
 }
