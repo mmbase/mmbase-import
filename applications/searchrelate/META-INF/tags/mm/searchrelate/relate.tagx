@@ -7,7 +7,8 @@
   <jsp:directive.attribute name="repository" type="org.mmbase.bridge.NodeQuery"  required="true" />
   <jsp:directive.attribute name="current"    type="org.mmbase.bridge.NodeQuery"  required="true" />
 
-  <jsp:directive.attribute name="submit"     type="java.lang.String"  required="true" />
+  <jsp:directive.attribute name="submit"     type="java.lang.String"  />
+  <jsp:directive.attribute name="unrelate"   type="java.lang.Boolean"   />
 
   <!--
   <jsp:directive.attribute name="n"          fragment="true" />
@@ -23,17 +24,22 @@
   <c:if test="${seq eq 0}">
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>
   </c:if>
-  <script type="text/javascript">
-    $(document).ready(function() {
-    $("#${submit}").click(function() {
-       $("#mm_related_${seq} > a.search")[0].searcher.commit();
-	    });
+  <c:if test="${! empty submit}">
+    <!-- if a submit id is given, commit the search/relate on click of that element -->
+    <script type="text/javascript">
+      $(document).ready(function() {
+         $("#${submit}").click(function() {
+            $("#mm_related_${seq} > a.search")[0].searcher.commit();
+         });
       });
-  </script>
+    </script>
+  </c:if>
 
-  <div class="mm_related" id="mm_related_${seq}">
+  <div class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}" id="mm_related_${seq}">
     <mm:listnodescontainer clone="current">
+      <!--
       <mm:maxnumber value="10" />
+      -->
       <table class="relatednodes">
         <thead>
           <tr>

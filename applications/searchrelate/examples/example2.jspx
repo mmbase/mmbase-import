@@ -8,6 +8,7 @@
   <p>Showing how to make it impossible to relate already related nodes.</p>
   <div>
     <mm:relatednodescontainer role="posrel" type="news" id="current" >
+      <mm:sortorder field="posrel.pos" />
       <mm:relatednodes id="currentlyRelated" />
     </mm:relatednodescontainer>
     <mm:listnodescontainer type="news" id="repository">

@@ -17,6 +17,14 @@
           Queries.addToResult(current, n);
         </jsp:scriptlet>
       </mm:listnodes>
+      <!--
+          Not yet supported
+      <mm:listnodes referid="unrelated" jspvar="n">
+        <jsp:scriptlet>
+          Queries.removeFromResult(current, n);
+        </jsp:scriptlet>
+      </mm:listnodes>
+      -->
     </mm:cloud>
   </mm:content>
 </div>

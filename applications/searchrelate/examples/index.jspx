@@ -2,9 +2,8 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-
-    expires="0" type="application/xhtml+xml"
-    unacceptable="CRIPPLE" >
+    expires="0"
+    type="application/xhtml+xml" unacceptable="CRIPPLE" >
 
   <jsp:output doctype-root-element="html"
               doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -14,9 +13,11 @@
 
     <title><mm:write id="title" value="Search &amp; Relate examples" /></title>
 
-    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
+        <link rel="stylesheet" type="text/css" href="${mm:link('/mmbase/searchrelate/page.css.jsp')}" />
 
+    <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
     <script type="text/javascript">
+      <!-- some javascript to make the examples slide away/slideToggable -->
       $(document).ready(function() {
       $("div.drawer > div").slideUp("fast");
       $("div.drawer h1").click(function(e) {
