@@ -6,8 +6,14 @@
     >
   <jsp:directive.attribute name="repository" type="org.mmbase.bridge.NodeQuery"  required="true" />
   <jsp:directive.attribute name="current"    type="org.mmbase.bridge.NodeQuery"  required="true" />
+
+  <jsp:directive.attribute name="submit"     type="java.lang.String"  required="true" />
+
+  <!--
   <jsp:directive.attribute name="n"          fragment="true" />
   <jsp:directive.attribute name="relate"     fragment="true" />
+  -->
+
   <mm:import externid="current" from="this" />
   <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
   <mm:write request="mm_relate_sequence" value="${seq + 1}" />
@@ -17,6 +23,13 @@
   <c:if test="${seq eq 0}">
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>
   </c:if>
+  <script type="text/javascript">
+    $(document).ready(function() {
+    $("#${submit}").click(function() {
+       $("#mm_related_${seq} > a.search")[0].searcher.commit();
+	    });
+      });
+  </script>
 
   <div class="mm_related" id="mm_related_${seq}">
     <mm:listnodescontainer clone="current">
@@ -24,7 +37,7 @@
       <table class="relatednodes">
         <thead>
           <tr>
-            <th class="node">#</th>
+            <th class="node number">#</th>
             <th class="node"> </th>
             <mm:fieldlist nodetype="${current.nodeManager.name}" type="list">
               <th class="fields"><mm:fieldinfo type="guiname" /></th>
@@ -34,7 +47,7 @@
         <tbody>
           <mm:listnodes varStatus="status">
             <tr class="click ${status.index % 2 eq 0 ? 'even' : 'odd'}" id="${id}_node_${_node}">
-              <td class="node"><mm:field name="number" /></td>
+              <td class="node number"><mm:field name="number" /></td>
               <td class="node"><mm:nodeinfo type="gui" /></td>
               <mm:fieldlist type="list">
                 <td class="fields"><mm:fieldinfo type="guivalue" /></td>

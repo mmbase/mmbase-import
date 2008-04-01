@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.3 2008-04-01 09:02:02 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.4 2008-04-01 09:35:30 michiel Exp $
  */
 
 
@@ -79,7 +79,7 @@ MMBaseSearcher.prototype.search = function(offset) {
 		}
 	       });
     } else {
-	this.log("resing " + offset);
+	this.log("reusing " + offset);
 	$(rep).empty();
 	$(rep).append(result);
     }
@@ -162,14 +162,23 @@ MMBaseSearcher.prototype.commit = function(node) {
 
 
 $(document).ready(function(){
-    $("body").find(".mm_related a.search")
+    $("body").find("div.mm_related")
     .each(function() {
-	var parent = $(this).parent("div.mm_related");
-	this.searcher = new MMBaseSearcher(parent[0]);
-	$(this).click(function() {
+	var parent = this;
+	console.log("found " + parent);
+	var anchor = $(parent).find("> a.search")[0];
+	console.log(anchor);
+	anchor.searcher = new MMBaseSearcher(parent);
+	$(anchor).click(function() {
 	    return this.searcher.search(0);
 	});
+	$(parent).find("tr.click").each(function() {
+	    $(this).click(function() {
+		anchor.searcher.unrelate(this);
+		return false;
+	    })});
     });
+
 });
 
 
