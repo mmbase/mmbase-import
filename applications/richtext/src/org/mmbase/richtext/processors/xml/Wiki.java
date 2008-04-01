@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.2 2008-04-01 14:52:41 michiel Exp $
+ * @version $Id: Wiki.java,v 1.3 2008-04-01 16:03:34 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -42,13 +42,17 @@ class Wiki {
         while (ni.hasNext()) {
             Node relation = ni.nextNode();
             String relId = relation.getStringValue("id");
+            log.debug("Id in " + relation.getNumber() + " " + relId + " comparing with '" + id);
             if (! "".equals(relId)) {
                 if (relId.equals(id)) {
+                    log.debug(relId + "==" + id);
                     return relation;
+                } else {
+                    log.debug(relId + "!=" + id);
                 }
             } else {
                 Node destination = relation.getNodeValue("dnumber");
-                log.info("Found " + destination);
+                log.debug("Found " + destination);
                 if (destination == null) {
                     log.warn("dnumber null in " + relation);
                 } else {
@@ -101,8 +105,8 @@ class Wiki {
                 log.debug("Found " + XMLWriter.write(a, true));
             }
             Node link = findById(links, id);
-            if (link != null) {
-                // odd, so never mind, we simply suppose it a node, and create the relation implicitely
+            if (link == null) {
+                log.service("No relation found with id'" + id + "'. Implicitely creating one now.");
                 Node node = getNode(cloud, id);
                 Relation newRel = editedNode.createRelation(node, cloud.getRelationManager(editedNode.getNodeManager(), node.getNodeManager(), "idrel"));
                 newRel.setStringValue("id", id);
