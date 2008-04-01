@@ -164,6 +164,7 @@ Create a build.xml with a DOCTYPE like this:
 
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
+    <mkdir dir="${project.build.dir}/classes"/>
     <property name="builddate"       value="${DSTAMP}"/>
 
     <property name="zip.name"      value="mmbase-${distro.version}.${builddate}-${project.name}" />
@@ -316,7 +317,6 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
   <target name="compile" description="Compile the source directory" depends="init" if="src.available">
 
-    <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
 
     <echo message="copying to ${project.build.dir}" />
@@ -481,6 +481,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
   <target name="install.dependencies" depends="jar,install.templates,install.examples,install.config,install.documentation" />
+
   <target name="install" depends="install.dependencies">
     <copy todir="${release.lib.dir}" preservelastmodified="true" flatten="true">
       <fileset dir="${project.jar.dir}">
