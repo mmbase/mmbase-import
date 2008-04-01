@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.2 2008-04-01 08:53:47 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.3 2008-04-01 09:02:02 michiel Exp $
  */
 
 
@@ -40,7 +40,7 @@ MMBaseSearcher.prototype.log = function (msg) {
 
 /**
  * This method is called if somebody clicks on a.search.
- * It depends on a jsp /mmbase/searcher/page.jspx to return the search results.
+ * It depends on a jsp /mmbase/searchrelate/page.jspx to return the search results.
  * Feeded are 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
@@ -53,7 +53,7 @@ MMBaseSearcher.prototype.search = function(offset) {
     var id = this.div.id;
     var rep = $(this.div).find("div.mm_relate_repository")[0]
 
-    var url = "${mm:link('/mmbase/searcher/page.jspx')}";
+    var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
     var params = {id: id, offset: offset, search: this.value};
 
     var result = this.searchResults["" + offset];
@@ -124,14 +124,14 @@ MMBaseSearcher.prototype.unrelate = function(el) {
 }
 
 /**
- * Commits made changes to MMBase. Depends on a jsp /mmbase/searcher/relate.jsp to do the actual work.
+ * Commits made changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
 *  This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
  */
 
 MMBaseSearcher.prototype.commit = function(node) {
     this.log("Commiting changed relations of " + this.div.id);
     var id = this.div.id;
-    var url = "${mm:link('/mmbase/searcher/relate.jspx')}";
+    var url = "${mm:link('/mmbase/searchrelate/relate.jspx')}";
 
     var relatedNumbers = "";
     $.each(this.related, function(key, value) {

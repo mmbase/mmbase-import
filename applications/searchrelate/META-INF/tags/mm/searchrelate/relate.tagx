@@ -15,7 +15,7 @@
   <mm:write session="mm_related_${seq}_current" referid="current" />
 
   <c:if test="${seq eq 0}">
-    <script type="text/javascript" src="${mm:link('/mmbase/taglib/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>
+    <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text> </jsp:text></script>
   </c:if>
 
   <div class="mm_related" id="mm_related_${seq}">
