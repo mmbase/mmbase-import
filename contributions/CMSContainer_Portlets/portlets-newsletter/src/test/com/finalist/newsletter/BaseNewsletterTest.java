@@ -12,7 +12,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 public abstract class BaseNewsletterTest extends TestCase {
 
-    Cloud cloud;
+    protected Cloud cloud;
 
     protected void setUp() throws Exception {
         MMBaseContext.init();
