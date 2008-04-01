@@ -12,7 +12,7 @@
       <mm:sortorder field="posrel.pos" />
     </mm:relatednodescontainer>
     <mm:listnodescontainer type="news" id="repository" />
-    <mm-sr:relate repository="${repository}" current="${current}" submit="submit1" />
+    <mm-sr:relate repository="${repository}" current="${current}" submit="#submit1" />
     <a id="submit1">Submit</a>
   </div>
 </div>

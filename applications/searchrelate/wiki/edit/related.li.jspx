@@ -17,7 +17,7 @@
         <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
       </mm:listnodescontainer>
 
-      <mm-sr:relate repository="${repository}" current="${current}" submit="submit" />
+      <mm-sr:relate repository="${repository}" current="${current}" submit="#submit,#submitTest" />
     </form>
   </div>
 </li>

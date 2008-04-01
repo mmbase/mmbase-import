@@ -14,7 +14,7 @@
     <mm:listnodescontainer type="news" id="repository">
       <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
     </mm:listnodescontainer>
-    <mm-sr:relate repository="${repository}" current="${current}" submit="submit3" unrelate="true" />
+    <mm-sr:relate repository="${repository}" current="${current}" submit="#submit3" unrelate="true" />
     <a id="submit3">Submit</a>
   </div>
 </div>
