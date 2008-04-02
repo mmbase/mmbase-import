@@ -43,7 +43,7 @@ import com.finalist.pluto.container.factory.impl.PortletFactoryImpl;
  * Servlet to handle Portlets
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class PortletServlet extends HttpServlet {
    private static Log log = LogFactory.getLog(PortletServlet.class);
@@ -132,7 +132,12 @@ public class PortletServlet extends HttpServlet {
             // prepare container objects to run in this webModule
             prepareRenderRequest(renderRequest, request);
             prepareRenderResponse(renderResponse, request, response);
-
+            
+             String contentType  =  request.getHeader("Content-Type");
+             if(contentType != null) {
+                renderRequest.setAttribute("Content-Type",contentType);
+             }
+            
             portletClass.render(renderRequest, renderResponse);
          }
          else if (method_id == Constants.METHOD_ACTION) {
