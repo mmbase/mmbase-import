@@ -1,6 +1,12 @@
 package com.finalist.newsletter.generator;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 
 public class NewsletterGeneratorPlain extends NewsletterGenerator {
 
@@ -10,10 +16,7 @@ public class NewsletterGeneratorPlain extends NewsletterGenerator {
    }
 
    @Override
-   public Message generateNewsletterMessage(String userName) {
-      // TODO Auto-generated method stub
-
-      return null;
+   protected String getType() {      
+      return "text/plain";
    }
-
 }
