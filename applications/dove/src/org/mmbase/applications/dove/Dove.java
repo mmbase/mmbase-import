@@ -55,7 +55,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.93 2008-03-25 13:53:54 michiel Exp $
+ * @version $Id: Dove.java,v 1.94 2008-04-02 14:53:09 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -150,7 +150,7 @@ public class Dove extends AbstractDove {
         fel.setAttribute(ELM_TYPE, dataType.getBaseTypeIdentifier());
         fel.setAttribute(ELM_NAME, fname);
         fel.setAttribute("nodemanager", nm.getName());
-        Iterator<Map.Entry<?, String>> i = dataType.getEnumerationValues(node.getCloud().getLocale(), node.getCloud(), node, f);
+        Iterator<Map.Entry<?, String>> i = getOptionList(dataType, node.getCloud(), node, f);
         if (i != null) {
             Element ol = addContentElement("optionlist", "", out);
             ol.setAttribute("name", "_" + node.getNodeManager().getName() + "_" + f.getName());
@@ -166,6 +166,44 @@ public class Dove extends AbstractDove {
             }
         }
         return fel;
+    }
+    private Iterator<Map.Entry<?, String>>  getOptionList(DataType dataType, Cloud cloud, org.mmbase.bridge.Node node, Field f) {
+        Iterator<Map.Entry<?, String>> i = dataType.getEnumerationValues(cloud.getLocale(), cloud, node, f);
+        if (i != null) return i;
+
+        long min = Long.MIN_VALUE;
+        long max = Long.MAX_VALUE;
+        if (dataType instanceof IntegerDataType) {
+            IntegerDataType idt = (IntegerDataType) dataType;
+            min = idt.getMin() + (idt.isMinInclusive() ? 0 : 1);
+            max = idt.getMax() - (idt.isMaxInclusive() ? 0 : 1);
+        }
+
+
+        if (dataType instanceof LongDataType) {
+            LongDataType ldt = (LongDataType) dataType;
+            min = ldt.getMin() + (ldt.isMinInclusive() ? 0 : 1);
+            max = ldt.getMax() - (ldt.isMaxInclusive() ? 0 : 1);
+        }
+        if ((double) max - min < 200.0) {
+            final long end = max;
+            final long start = min;
+            return new Iterator<Map.Entry<?, String>>() {
+                long value = start;
+                public boolean hasNext() {
+                    return value <= end;
+                }
+                public Map.Entry<?, String> next() {
+                    Long v = new Long(value++);
+                    return new org.mmbase.util.Entry(v, "" + v);
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+        return null;
+
     }
 
     /**
@@ -622,7 +660,7 @@ public class Dove extends AbstractDove {
                             specialization = origin.getName();
                         }
                     }
-                    if (dataType.getEnumerationValues(nm.getCloud().getLocale(), nm.getCloud(), null, fielddef) != null) {
+                    if (getOptionList(dataType, nm.getCloud(), null, fielddef) != null) {
                         specialization = "enum";
                     } else if (dataType instanceof StringDataType) {
                         if (((StringDataType) dataType).getPattern().matcher("a\na").matches()) {
@@ -647,7 +685,8 @@ public class Dove extends AbstractDove {
                             baseType = "string";
                         } else if (dataType instanceof BinaryDataType) {
                             Pattern p = ((BinaryDataType) dataType).getValidMimeTypes();
-                            if (p.matcher("image/someimageformat").matches()) {
+                            if (p.matcher("image/someimageformat").matches() &&
+                                ! p.matcher("application/nonimageformat").matches()) {
                                 specialization = "image";
                             } else {
                                 specialization = "file";
