@@ -21,7 +21,7 @@ import java.util.Date;
  * 'fieldName') parameter.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.1.2.2 2008-02-29 14:45:19 michiel Exp $
+ * @version $Id: FunctionValueIfEmptyCommitProcessor.java,v 1.1.2.3 2008-04-02 12:33:53 michiel Exp $
  * @since MMBase-1.8.5
  */
 
@@ -44,7 +44,7 @@ public class FunctionValueIfEmptyCommitProcessor implements CommitProcessor {
             if (fieldName != null) {
                 node.setValueWithoutProcess(field.getName(), node.getValue(fieldName));
             } else {
-                node.setValue(field.getName(), node.getFunctionValue(functionName, null));
+                node.setValue(field.getName(), node.getFunctionValue(functionName, null).get());
             }
         }
     }
