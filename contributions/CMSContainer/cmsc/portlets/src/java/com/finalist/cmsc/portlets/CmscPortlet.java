@@ -1,6 +1,7 @@
 package com.finalist.cmsc.portlets;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import javax.portlet.*;
@@ -35,7 +36,7 @@ public class CmscPortlet extends GenericPortlet {
 
    private static final String CONTENT_TYPE = "contenttype";
    private static final String CONTENT_TYPE_DEFAULT = "text/html";
-
+   private static final String CONTENT_TYPE_PLAIN = "text/plain";
    private Log log;
 
 
@@ -338,7 +339,13 @@ public class CmscPortlet extends GenericPortlet {
    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
       PortletPreferences preferences = req.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-      doInclude("view", template, req, res);
+      
+      if (req.getAttribute("Content-Type") != null && req.getAttribute("Content-Type").equals(CONTENT_TYPE_PLAIN)) {
+         doInclude("plain", template, req, res);
+      }
+      else {
+         doInclude("view", template, req, res);
+      }
    }
 
 
@@ -404,7 +411,6 @@ public class CmscPortlet extends GenericPortlet {
          contentType = CONTENT_TYPE_DEFAULT;
       }
       response.setContentType(contentType);
-
       PortletRequestDispatcher rd = getRequestDispatcher(type, template);
       rd.include(request, response);
    }
