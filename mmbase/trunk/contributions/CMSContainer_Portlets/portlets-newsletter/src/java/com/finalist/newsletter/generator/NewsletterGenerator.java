@@ -8,7 +8,9 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -81,7 +83,29 @@ public abstract class NewsletterGenerator {
       return (output);
    }
 
-   public abstract Message generateNewsletterMessage(String userName);
+   public  Message generateNewsletterMessage(String userName) {
+      Session session = getMailSession();
+      Message message = new MimeMessage(session);
+      String rawHtmlContent = getContent(userName,getType());
+
+      if (rawHtmlContent != null) {
+         // BodyPart htmlBodyPart = new MimeBodyPart();
+         // Multipart content = new MimeMultipart();
+         try {
+            // content.addBodyPart(htmlBodyPart);
+            // message.setContent(content);
+            message.setText(rawHtmlContent + "\n");
+            message.setHeader("Content-type", getType());
+         } catch (MessagingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
+
+      return (message);
+   }
+   
+   protected abstract String getType();
 
    private String getApplicationName(String hostUrl) {
       String[] hostUrlParts = hostUrl.split("/");
@@ -89,7 +113,7 @@ public abstract class NewsletterGenerator {
       return (appName);
    }
 
-   protected String getContent(String userName) {
+   protected String getContent(String userName,String type) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node publicationNode = cloud.getNode(publicationNumber);
 
@@ -103,7 +127,12 @@ public abstract class NewsletterGenerator {
             URLConnection connection = url.openConnection();
             ((HttpURLConnection) connection).setRequestMethod("GET");
             connection.setDoInput(true);
-            connection.setRequestProperty("Content-Type", "text/html");
+            if(type == null || type.trim().length() == 0) {
+               connection.setRequestProperty("Content-Type", "text/html");
+            }
+            else {
+               connection.setRequestProperty("Content-Type", type);  
+            }
             connection.setRequestProperty("username", userName);
             InputStream input = connection.getInputStream();
             Reader reader = new InputStreamReader(input);
