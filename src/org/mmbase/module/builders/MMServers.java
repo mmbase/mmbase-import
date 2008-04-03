@@ -30,7 +30,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.50 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: MMServers.java,v 1.51 2008-04-03 13:36:55 nklasens Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
@@ -194,17 +194,14 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
-     * Returns all the nodes from the builder.
+     * Returns all the nodes from the builder without loading it in the nodes cache of MMBase.
      * @return The nodes.
+     * @throws SearchQueryException when something fails on database level.
      */
-    public List<MMObjectNode> getNodes() {
-        try {
-            List<MMObjectNode> nodes = storageConnector.getNodes(new NodeSearchQuery(this), false);
-            if (nodes != null) {
-                return nodes;
-            }
-        } catch (SearchQueryException e) {
-            log.error(e);
+    public List<MMObjectNode> getMMServerNodes() throws SearchQueryException {
+        List<MMObjectNode> nodes = storageConnector.getNodes(new NodeSearchQuery(this), false);
+        if (nodes != null) {
+            return nodes;
         }
         return new ArrayList<MMObjectNode>();
     }
