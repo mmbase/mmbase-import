@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * but /img.db). Normally this is no problem, because the alias is resolved by the image-tag. But if
  * for some reason you need aliases to be working on the URL, you must map to URL's with a question mark.
  *
- * @version $Id: BridgeServlet.java,v 1.33 2007-02-10 16:22:37 nklasens Exp $
+ * @version $Id: BridgeServlet.java,v 1.34 2008-04-03 13:57:49 nklasens Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -101,38 +101,7 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         String q = req.getQueryString();
 
         if (q == null || "".equals(q)) { // should be null if no query string, but http://issues.apache.org/bugzilla/show_bug.cgi?id=38113, there is version of tomcat in which it isn't.
-            // also possible to use /attachments/[session=abc+]<number>/filename.pdf
-            if (contextPathLength == -1) {
-                contextPathLength = req.getContextPath().length();
-            }
-            String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
-
-            // some silly application-servers leave jsession id it the requestURI. Take if off again, because we'll be very confused by it.
-            if (req.isRequestedSessionIdFromURL()) {
-                int jsessionid = reqString.indexOf(";jsessionid=");
-                if (jsessionid != -1) {
-                    reqString = reqString.substring(0, jsessionid);
-                }
-            }
-
-            if(log.isDebugEnabled()) {
-                log.debug("using servlet URI " + reqString + " to find node number");
-            }
-
-            qp = readServletPath(reqString);
-            if (qp == null) {
-                log.debug("Did not match");
-                if(res != null) {
-                    res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
-                    req.setAttribute(MESSAGE_ATTRIBUTE, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
-                } else {
-                    log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
-                }
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("found " + qp);
-                }
-            }
+            qp = readQueryFromRequestURI(req, res);
         } else {
             if(log.isDebugEnabled()) {
                 log.debug("using query " + q + " to find node number");
@@ -152,6 +121,46 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         qp.setResponse(res);
 
         req.setAttribute("org.mmbase.servlet.BridgeServlet$QueryParts", qp);
+        return qp;
+    }
+
+
+
+    protected QueryParts readQueryFromRequestURI(HttpServletRequest req, HttpServletResponse res)
+            throws IOException {
+        QueryParts qp;
+        // also possible to use /attachments/[session=abc+]<number>/filename.pdf
+        if (contextPathLength == -1) {
+            contextPathLength = req.getContextPath().length();
+        }
+        String reqString = req.getRequestURI().substring(contextPathLength); // substring needed, otherwise there may not be digits in context path.
+
+        // some silly application-servers leave jsession id it the requestURI. Take if off again, because we'll be very confused by it.
+        if (req.isRequestedSessionIdFromURL()) {
+            int jsessionid = reqString.indexOf(";jsessionid=");
+            if (jsessionid != -1) {
+                reqString = reqString.substring(0, jsessionid);
+            }
+        }
+
+        if(log.isDebugEnabled()) {
+            log.debug("using servlet URI " + reqString + " to find node number");
+        }
+
+        qp = readServletPath(reqString);
+        if (qp == null) {
+            log.debug("Did not match");
+            if(res != null) {
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+                req.setAttribute(MESSAGE_ATTRIBUTE, "Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+            } else {
+                log.error("Malformed URL: '" + reqString + "' does not match '"  + FILE_PATTERN.pattern() + "'.");
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("found " + qp);
+            }
+        }
         return qp;
     }
 
