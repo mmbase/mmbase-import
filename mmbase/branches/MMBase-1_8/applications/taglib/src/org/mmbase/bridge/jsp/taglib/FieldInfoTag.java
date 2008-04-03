@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.97.2.5 2007-11-19 15:09:37 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.97.2.6 2008-04-03 16:28:18 michiel Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -509,11 +509,12 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * @since MMBase-1.8
      */
     public String getPrefix() throws JspTagException {
-        FormTag ft = getFormTag(false, null);
 
-        String id = (ft != null ? ft.getId() : null);
+        String id = fieldProvider.getId();
+
         if (id == null) {
-            id = fieldProvider.getId();
+            FormTag ft = getFormTag(false, null);
+            id = (ft != null ? ft.getId() : null);
         }
         if (id == null) {
             id = "";
