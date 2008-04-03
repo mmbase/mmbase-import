@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.49 2008-04-03 16:14:29 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.50 2008-04-03 16:23:33 michiel Exp $
  */
 var validators = new Array();
 
@@ -139,7 +139,7 @@ MMBaseValidator.prototype.isChanged = function(el) {
 */
 MMBaseValidator.prototype.find = function(el, path, r) {
     if (r == null) r = [];
-    if (typeof(path) == "string") path = path.split(" ");
+    if (typeof(path) == "string") path = path.split(/\s+/);
 
     var tagName = path.shift();
 
@@ -248,7 +248,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
-            var javaPattern = this.find(xml, 'datatype  pattern')[0].getAttribute("value");
+            var javaPattern = this.find(xml, 'datatype pattern')[0].getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
             this.trace("pattern : " + el.mm_pattern + " " + el.value);
