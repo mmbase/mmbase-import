@@ -29,7 +29,7 @@ import org.mmbase.storage.search.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.44.2.2 2007-01-03 09:16:28 nklasens Exp $
+ * @version $Id: MMServers.java,v 1.44.2.3 2008-04-03 13:36:49 nklasens Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable, org.mmbase.datatypes.resources.StateConstants {
 
@@ -173,7 +173,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             String machineName = mmb.getMachineName();
             String host = mmb.getHost();
             log.debug("doCheckUp(): machine=" + machineName);
-            for (Iterator iter = getNodes().iterator(); iter.hasNext();) {
+            for (Iterator iter = getMMServerNodes().iterator(); iter.hasNext();) {
                 MMObjectNode node = (MMObjectNode) iter.next();
                 String name = node.getStringValue("name");
                 String h    = node.getStringValue("host");
@@ -193,17 +193,14 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
     }
 
     /**
-     * Returns all the nodes from the builder.
+     * Returns all the nodes from the builder without loading it in the nodes cache of MMBase.
      * @return The nodes.
+     * @throws SearchQueryException when something fails on database level.
      */
-    public List getNodes() {
-        try {
-            List nodes = storageConnector.getNodes(new NodeSearchQuery(this), false);
-            if (nodes != null) {
-                return nodes;
-            }
-        } catch (SearchQueryException e) {
-            log.error(e);
+    public List getMMServerNodes() throws SearchQueryException {
+        List nodes = storageConnector.getNodes(new NodeSearchQuery(this), false);
+        if (nodes != null) {
+            return nodes;
         }
         return new ArrayList();
     }
