@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.54 2006-07-17 15:38:47 johannes Exp $
+ * @version $Id: FieldListTag.java,v 1.54.2.1 2008-04-03 16:26:29 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -121,6 +121,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
     public Node getNodeVar() throws JspTagException {
+
+        Node node =  parentNodeId == Attribute.NULL ? getNodeFromPageContext() : null;
+        if (node != null) return node;
+
         /*
         if (nodeManagerString != null) {
             return null;
@@ -167,9 +171,13 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      * @since MMBase-1.8.1
      */
     protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, container.getString(this), exception);
-        NodeQuery query = qc.getNodeQuery();
-        return query.getNodeManager();
+        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, id, exception);
+        if (qc != null) {
+            NodeQuery query = qc.getNodeQuery();
+            return query.getNodeManager();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -243,6 +251,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             } else {
                 returnList.add(addObject);
             }
+
         }
         if (retain != Attribute.NULL) {
             Object retainObject = getObject(retain.getString(this));
