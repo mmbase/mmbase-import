@@ -23,10 +23,9 @@
     <description xml:lang="eo">Novaĵoj ekzistas por montro de XML-kampoj</description>
   </descriptions>
 
-  <xi:include href="rich.fields.xml" />
 
   <fieldlist>
-
+    <xi:include href="title.field.xml" />
     <field name="date">
       <gui>
         <guiname xml:lang="nl">Datum</guiname>
@@ -44,6 +43,9 @@
       </datatype>
     </field>
   </fieldlist>
+
+  <xi:include href="rich.fields.xml" />
+
 
   <functionlist>
     <function key="{REQUEST.getContextPath}/portal?article={NODE.number}&amp;col2=rich-article&amp;col3=ignore" name="url">
