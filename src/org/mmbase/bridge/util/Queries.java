@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.98 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: Queries.java,v 1.99 2008-04-03 13:24:19 nklasens Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1280,7 +1280,7 @@ abstract public class Queries {
      * about the relation (role, startnodes)'. This currently is also the only implemented part of
      * this method.
 
-     * @throw UnsupportedOperationException If it cannot be determined how the node should be related.
+     * @throws UnsupportedOperationException If it cannot be determined how the node should be related.
      *
      * @since MMBase-1.8.6
      */
