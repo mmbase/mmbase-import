@@ -10,11 +10,13 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.48 2008-04-01 15:47:11 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.49 2008-04-03 16:14:29 michiel Exp $
  */
 var validators = new Array();
 
 
+
+// I don't know how to do timeouts in a OO way.
 function watcher() {
     for (var i = 0; i < validators.length; i++) {
 	var validator = validators[i];
@@ -119,7 +121,43 @@ MMBaseValidator.prototype.enforce = function(el, enf) {
 }
 
 MMBaseValidator.prototype.isChanged = function(el) {
-    return this.getValue(el) != el.originalValue;
+    if (el != null) {
+	return this.getValue(el) != el.originalValue;
+    } else {
+	var els = this.elements;
+	for (var  i = 0; i < els.length; i++) {
+            var entry = els[i];
+	    if (this.isChanged(entry)) return true;
+	}
+	return false;
+    }
+}
+
+/**
+ * Work around http://dev.jquery.com/ticket/155
+ * Actually, or course, it's a bug in that horrible browser IE.
+*/
+MMBaseValidator.prototype.find = function(el, path, r) {
+    if (r == null) r = [];
+    if (typeof(path) == "string") path = path.split(" ");
+
+    var tagName = path.shift();
+
+    var tag = el.firstChild;
+    while (tag != null) {
+	if (tag.nodeType == 1) {
+	    var name = tag.nodeName.replace(/^.*:/,'');
+	    if (name == tagName) {
+		if (path.length == 0) {
+		    r.push(tag);
+		} else {
+		    this.find(tag, path, r);
+		}
+	    }
+	}
+	tag = tag.nextSibling;
+    }
+    return r;
 }
 
 
@@ -128,7 +166,7 @@ MMBaseValidator.prototype.isChanged = function(el) {
  */
 MMBaseValidator.prototype.isRequired = function(el) {
     if (el.mm_isrequired != null) return el.mm_isrequired;
-    var re = $(this.getDataTypeXml(el)).find('datatype required')[0];
+    var re = this.find(this.getDataTypeXml(el), 'datatype required')[0];
     el.mm_isrequired = "true" == "" + re.getAttribute("value");
     el.mm_isrequired_enforce = re.getAttribute("enforce");
     return el.mm_isrequired;
@@ -142,7 +180,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     var xml = this.getDataTypeXml(el);
 
     if (el.mm_minLength_set == null) {
-        var ml =  $(xml).find('datatype minLength')[0];
+        var ml =  this.find(xml, 'datatype minLength')[0];
         if (ml != null) {
             el.mm_minLength = ml.getAttribute("value");
             el.mm_minLength_enforce = ml.getAttribute("enforce");
@@ -154,7 +192,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     }
 
     if (el.mm_maxLength_set == null) {
-        var ml =  $(xml).find('datatype maxLength')[0];
+        var ml =  this.find(xml, 'datatype maxLength')[0];
         if (ml != null) {
             el.mm_maxLength = ml.getAttribute("value");
             el.mm_maxLength_enforce = ml.getAttribute("enforce");
@@ -167,7 +205,7 @@ MMBaseValidator.prototype.lengthValid = function(el) {
     }
 
     if (el.mm_length_set == null) {
-        var l =  $(xml).find('datatype length')[0];
+        var l =  this.find(xml, 'datatype length')[0];
         if (l != null) {
             el.mm_length = l.getAttribute("value");
             el.mm_length_enforce = l.getAttribute("enforce");
@@ -210,7 +248,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
     if (this.isString(el)) {
         var xml = this.getDataTypeXml(el);
         if (el.mm_pattern == null) {
-            var javaPattern = $(xml).find('datatype  pattern')[0].getAttribute("value");
+            var javaPattern = this.find(xml, 'datatype  pattern')[0].getAttribute("value");
             el.mm_pattern = this.javaScriptPattern(javaPattern);
             if (el.mm_pattern == null) return true;
             this.trace("pattern : " + el.mm_pattern + " " + el.value);
@@ -224,7 +262,7 @@ MMBaseValidator.prototype.patternValid = function(el) {
 MMBaseValidator.prototype.hasJavaClass = function(el, javaClass) {
     var pattern = new RegExp(javaClass);
     var xml = this.getDataTypeXml(el);
-    var javaClassElement = $(xml).find('datatype class')[0];
+    var javaClassElement = this.find(xml, 'datatype class')[0];
     var name = javaClassElement.getAttribute("name");
     if (pattern.test(name)) {
         return true;
@@ -325,7 +363,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
         var numeric = this.isNumeric(el);
         {
             if (el.mm_minInc_set == null) {
-                var minInclusive = $(xml).find('datatype minInclusive')[0];
+                var minInclusive = this.find(xml, 'datatype minInclusive')[0];
                 el.mm_minInc = this.getValueAttribute(numeric, minInclusive);
                 el.mm_minInc_enforce = minInclusive != null ? minInclusive.getAttribute("enforce") : null;
                 el.mm_minInc_set = true;
@@ -339,7 +377,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
 
         {
             if (el.mm_minExcl_set == null) {
-                var minExclusive = $(xml).find('datatype/ minExclusive')[0];
+                var minExclusive = this.find(xml, 'datatype/ minExclusive')[0];
                 el.mm_minExcl = this.getValueAttribute(numeric, minExclusive);
                 el.mm_minExcl_enforce = minExclusive != null ? minExclusive.getAttribute("enforce") : null;
                 el.mm_minExcl_set = true;
@@ -351,7 +389,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
         }
         {
             if (el.mm_maxInc_set == null) {
-                var maxInclusive = $(xml).find('datatype maxInclusive')[0];
+                var maxInclusive = this.find(xml, 'datatype maxInclusive')[0];
                 el.mm_maxInc = this.getValueAttribute(numeric, maxInclusive);
                 el.mm_maxInc_enforce = maxInclusive != null ? maxInclusive.getAttribute("enforce") : null;
                 el.mm_maxInc_set = true;
@@ -364,7 +402,7 @@ MMBaseValidator.prototype.minMaxValid  = function(el) {
 
         {
             if (el.mm_maxExcl_set == null) {
-                var maxExclusive = $(xml).find('datatype maxExclusive')[0];
+                var maxExclusive = this.find(xml, 'datatype maxExclusive')[0];
                 el.mm_maxExcl = this.getValueAttribute(numeric, maxExclusive);
                 el.mm_maxExcl_enforce = maxExclusive != null ? maxExclusive.getAttribute("enforce") : null;
                 el.mm_maxExcl_set = true;
@@ -651,7 +689,7 @@ MMBaseValidator.prototype.serverValidation = function(el) {
  */
 MMBaseValidator.prototype.validResult = function(xml) {
     try {
-        return "true" == "" + $(xml).find('result')[0].getAttribute("valid");
+        return "true" == "" + this.find(xml, 'result')[0].getAttribute("valid");
     } catch (ex) {
         this.log(ex);
         throw ex;
@@ -694,19 +732,21 @@ MMBaseValidator.prototype.validateElement = function(element, server) {
         valid = this.validResult(serverXml);
         if (element.id) {
             var errorDiv = document.getElementById("mm_check_" + element.id.substring(3));
-            errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
-            if (errorDiv) {
-                $(errorDiv).empty();
-                var errors = serverXml.documentElement.childNodes;
-                this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
+	    if (errorDiv != null) {
+		errorDiv.className = valid ? "mm_check_noerror" : "mm_check_error";
+		if (errorDiv) {
+                    $(errorDiv).empty();
+                    var errors = serverXml.documentElement.childNodes;
+                    this.log("errors for " + element.id + " " +  serverXml + " " + errors.length);
 
 
-                for (var  i = 0; i < errors.length; i++) {
-                    var span = document.createElement("span");
-                    span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
-                    errorDiv.appendChild(span);
-                }
-            }
+                    for (var  i = 0; i < errors.length; i++) {
+			var span = document.createElement("span");
+			span.innerHTML = errors[i].childNodes[0].nodeValue; // IE does not support textContent
+			errorDiv.appendChild(span);
+                    }
+		}
+	    }
         }
     } else {
         element.serverValidated = false;
