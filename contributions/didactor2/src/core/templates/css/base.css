@@ -1075,3 +1075,8 @@ body.editwizards .contentBody {
 body.editwizards .titlebar a {
   margin-left: 1ex;
 }
+
+
+img.icon {
+  border: none;
+}
