@@ -21,10 +21,6 @@
     <description xml:lang="en">A workgroup is a subset of a class, with 1 teacher and several students.</description>
   </descriptions>
 
-  <properties>
-    <property name="max-nodes-from-query">99999</property>
-  </properties>
-
   <fieldlist>
     <field name="name">
       <descriptions>
@@ -42,10 +38,8 @@
         </positions>
       </editor>
       <datatype base="line"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <maxLength value="255" />
       </datatype>
-      <db>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
     </field>
 
     <field name="protected">
@@ -57,15 +51,19 @@
         <guiname xml:lang="nl">Beschermd</guiname>
         <guiname xml:lang="en">Protected</guiname>
       </gui>
-      <editor>
-        <positions>
-          <list>2</list>
-        </positions>
-      </editor>
-      <!-- boolean? -->
-      <datatype base="integer"  xmlns="http://www.mmbase.org/xmlns/datatypes"  />
+      <editor><positions><list>2</list></positions></editor>
+      <datatype base="integer"  xmlns="http://www.mmbase.org/xmlns/datatypes" >
+        <default value="1" />
+        <requred value="true" />
+        <enumeration>
+          <entry value="1" xml:lang="nl" display="Werkgroep (alleen door docenten aan te passen)" />
+          <entry value="1" xml:lang="en" display="Work group (modifiable only by teachers)" />
+          <entry value="0" xml:lang="nl" display="Projectgroep (ook door studenten aan te passen)" />
+          <entry value="0" xml:lang="en" display="Project group (modifiable only by students" />
+        </enumeration>
+      </datatype>
     </field>
- 
+
   </fieldlist>
 
   <functionlist>
