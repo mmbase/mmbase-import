@@ -31,7 +31,7 @@ import org.mmbase.util.Encode;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.70 2008-02-12 17:41:14 michiel Exp $
+ * @version $Id: Config.java,v 1.71 2008-04-03 19:51:38 michiel Exp $
  */
 
 public class Config implements java.io.Serializable {
@@ -55,7 +55,7 @@ public class Config implements java.io.Serializable {
     public static String wizardStyleSheet = "xsl/wizard.xsl";
     public static String listStyleSheet = "xsl/list.xsl";
     public static String searchlistStyleSheet = "xsl/searchlist.xsl";
-    public static int maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE;
+    public static long maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE;
 
     /**
      * @since MMBase-1.8.1
@@ -89,7 +89,7 @@ public class Config implements java.io.Serializable {
         tmp = (String) configuration.get("maxUploadSize");
         if (tmp != null && !tmp.equals("")) {
             try {
-                maxUploadSize = Integer.parseInt(tmp);
+                maxUploadSize = Long.parseLong(tmp);
             } catch (Exception e) {}
             log.service("Editwizard default max upload size "    + maxUploadSize);
         }
@@ -98,7 +98,7 @@ public class Config implements java.io.Serializable {
 
     public String sessionKey = null;
     public URIResolver uriResolver = null;
-    public int maxupload = Config.maxUploadSize;
+    public long maxupload = Config.maxUploadSize;
     public Stack<SubConfig> subObjects = new Stack<SubConfig>(); // stores the Lists and Wizards.
     public String sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String backPage;
@@ -797,6 +797,11 @@ public class Config implements java.io.Serializable {
             String i = getParam(paramName);
             if (i == null || i.equals("")) return def;
             return Integer.parseInt(i);
+        }
+        protected long  getParam(String paramName, long def) {
+            String i = getParam(paramName);
+            if (i == null || i.equals("")) return def;
+            return Long.parseLong(i);
         }
 
         protected Integer getParam(String paramName, Integer def) {
