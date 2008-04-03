@@ -87,7 +87,7 @@
     <field name="filename">
       <descriptions>
         <description xml:lang="en">Original filename of attachment if it was an uploaded file</description>
-        <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-uplaod bestand betreft</description>
+        <description xml:lang="nl">Oorspronkelijke bestandsnaam als de bijlage een ge-upload bestand betreft</description>
       </descriptions>
       <gui>
         <guiname xml:lang="en">Filename</guiname>
