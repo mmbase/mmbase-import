@@ -29,6 +29,7 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.FieldValueDateConstraint;
 import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -614,7 +615,17 @@ public class RepositoryUtil {
     }
 
 
+    public static NodeList getLinkedElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String, Object> extraParameters) {
+        NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, extraParameters);
+        return query.getNodeManager().getList(query);
+    }
+    
+
     public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
+    	return createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, null);
+    }
+    
+    public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String, Object> extraParameters) {
         String destinationManager = CONTENTELEMENT;
 
         if (contenttypes != null && contenttypes.size() == 1) {
@@ -671,6 +682,15 @@ public class RepositoryUtil {
            if(day != -1) {
               SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(day), FieldValueDateConstraint.DAY_OF_MONTH));
            }
+        }
+        
+        if(extraParameters != null) {
+        	for(String key:extraParameters.keySet()) {
+        		Object value = extraParameters.get(key);
+        		Field field = query.getCloud().getNodeManager("contentelement").getField(key);
+                StepField basicStepField = query.getStepField(field);
+        		SearchUtil.addConstraint(query, new BasicFieldValueConstraint(basicStepField, value));
+        	}
         }
 
         SearchUtil.addLimitConstraint(query, offset, maxNumber);
