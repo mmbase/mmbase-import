@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.23 2008-04-03 16:23:12 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.24 2008-04-04 10:16:20 michiel Exp $
  */
 var validators = new Array();
 
@@ -43,7 +43,7 @@ function MMBaseValidator(w, root) {
     this.dataTypeCache   = new Object();
     this.invalidElements = 0;
     //this.changedElements  = 0;
-    this.elements        = new Array();
+    this.elements        = [];
     this.validateHook;
     this.setup(w);
     this.root = root;
@@ -776,6 +776,28 @@ MMBaseValidator.prototype.validatePage = function(server) {
         this.validateElement(entry, server);
     }
     return this.invalidElements == 0;
+}
+
+MMBaseValidator.prototype.removeValidation = function(el) {
+    if (el == null) {
+        el = document.documentElement;
+    }
+    var self = this;
+    var els = $(el).find(".mm_validate *").each(function() {
+	var entry = this;
+	if ($.inArray(entry(self.elements))) {
+	    if (! entry.prevValid) self.invalidElements--;
+	    $(entry).unbind();
+	    var newElements = [];
+	    $(self.elements).each(function() {
+		if (this != entry) {
+		    newWlements.push(this);
+		}
+	    });
+	    self.elements = newElements;
+	}
+    });
+
 }
 
 /**
