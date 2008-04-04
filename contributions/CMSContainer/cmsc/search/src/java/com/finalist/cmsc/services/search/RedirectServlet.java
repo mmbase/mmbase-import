@@ -61,7 +61,7 @@ public class RedirectServlet extends BridgeServlet {
     }
     
     private void doRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        QueryParts queryParts = readQuery(request, null);
+        QueryParts queryParts = readQueryFromRequestURI(request, null);
         Node node = getNode(queryParts);
         if (node == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "No redirect possible");
