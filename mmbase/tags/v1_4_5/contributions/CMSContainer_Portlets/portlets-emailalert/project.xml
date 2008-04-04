@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>cmsc-portlets-emailalert</artifactId>
+    <name>Email alert portlet</name>
+    <shortDescription>Email alert portlet</shortDescription>
+	<dependencies>
+	</dependencies>
+</project>
+

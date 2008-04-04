@@ -1,0 +1,66 @@
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" version="1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+
+    <portlet>
+        <description>SecureContentPortlet</description>
+        <portlet-name>securecontentportlet</portlet-name>
+        <display-name>SecureContentPortlet</display-name>
+        <portlet-class>com.finalist.portlets.secure.SecureContentPortlet</portlet-class>
+        <init-param>
+            <name>template.edit_defaults</name>
+            <value>Content.jsp</value>
+        </init-param>
+        <init-param>
+            <name>template.help</name>
+            <value>Content.jsp</value>
+        </init-param>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>HELP</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+            <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+            <portlet-mode>DELETE</portlet-mode>
+        </supports>
+        <supported-locale>en</supported-locale>
+        <supported-locale>nl</supported-locale>
+        <resource-bundle>com.finalist.cmsc.portlets.ContentPortlet</resource-bundle>
+        <portlet-info>
+            <title>SecureContentPortlet</title>
+            <short-title>SecureContentPortlet</short-title>
+            <keywords>Content,Securet</keywords>
+        </portlet-info>
+    </portlet>
+
+    <portlet>
+        <description>SecureContentChannelPortlet</description>
+        <portlet-name>securecontentchannelportlet</portlet-name>
+        <display-name>SecureContentChannelPortlet</display-name>
+        <portlet-class>com.finalist.portlets.secure.SecureContentChannelPortlet</portlet-class>
+        <init-param>
+            <name>template.edit_defaults</name>
+            <value>ContentChannel.jsp</value>
+        </init-param>
+        <init-param>
+            <name>template.help</name>
+            <value>ContentChannel.jsp</value>
+        </init-param>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>HELP</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+            <portlet-mode>EDIT_DEFAULTS</portlet-mode>
+            <portlet-mode>DELETE</portlet-mode>
+        </supports>
+        <supported-locale>en</supported-locale>
+        <supported-locale>nl</supported-locale>
+        <resource-bundle>com.finalist.cmsc.portlets.ContentChannelPortlet</resource-bundle>
+        <portlet-info>
+            <title>SecureContentChannelPortlet</title>
+            <short-title>SecureContentChannelPortlet</short-title>
+            <keywords>ContentChannel,Securet</keywords>
+        </portlet-info>
+    </portlet>
+</portlet-app>

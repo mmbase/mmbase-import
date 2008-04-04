@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="glossary" maintainer="finalist.com" version="1" auto-deploy="true">
+   <requirements>
+      <requires name="contentrepository" maintainer="finalist.com" version="2" type="application"/>
+   </requirements>
+
+   <neededbuilderlist>
+     <!-- These are the application specific builders -->
+      <builder maintainer="finalist.com" version="1">glossary</builder>
+   </neededbuilderlist>
+
+   <neededreldeflist>
+   </neededreldeflist>
+
+   <allowedrelationlist>
+   </allowedrelationlist>
+
+   <datasourcelist>
+       <datasource builder="editwizards" path="glossary/editwizards.xml"/>
+   </datasourcelist>
+
+   <relationsourcelist>
+   </relationsourcelist>
+
+   <contextsourcelist>
+   </contextsourcelist>
+
+   <description><![CDATA[Installs the glossary. Included are all the builders.]]></description>
+   <install-notice><![CDATA[You have installed the glossary.]]></install-notice>
+</application>

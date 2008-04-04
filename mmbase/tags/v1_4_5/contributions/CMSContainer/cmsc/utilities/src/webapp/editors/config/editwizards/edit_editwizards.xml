@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<form-schema id="edit_editwizards">
+	<title xml:lang="nl">Editwizard</title>
+	<title xml:lang="en">Editwizard</title>
+	<title xml:lang="zh">编辑向导</title>
+	
+	<field name="name" dtmaxlength="40">
+		<prompt xml:lang="en">Name</prompt>
+		<prompt xml:lang="nl">Naam</prompt>
+		<prompt xml:lang="zh">名称</prompt>
+	</field>
+	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
+		<prompt xml:lang="en">Description</prompt>
+		<prompt xml:lang="nl">Omschrijving</prompt>
+		<prompt xml:lang="zh">描述</prompt>
+	</field>
+	<field name="type" dtmaxlength="40">
+		<prompt xml:lang="en">Type</prompt>
+		<prompt xml:lang="nl">Type</prompt>
+		<prompt xml:lang="zh">类型</prompt>
+	</field>
+	<field name="wizard" dtmaxlength="255" ftype="text">
+		<prompt xml:lang="en">Wizard</prompt>
+		<prompt xml:lang="nl">Wizard</prompt>
+		<prompt xml:lang="zh">向导</prompt>
+	</field>
+	<field name="objectnumber" dtmaxlength="40">
+		<prompt xml:lang="en">Objectnumber</prompt>
+		<prompt xml:lang="nl">Objectnummer</prompt>
+		<prompt xml:lang="zh">对象编号</prompt>
+	</field>
+	<field name="nodepath" dtmaxlength="40">
+		<prompt xml:lang="en">Nodepath</prompt>
+		<prompt xml:lang="nl">Node pad</prompt>
+		<prompt xml:lang="zh">结点</prompt>
+	</field>
+	<field name="fields" dtmaxlength="255" ftype="text">
+		<prompt xml:lang="en">Fields</prompt>
+		<prompt xml:lang="nl">Velden</prompt>
+		<prompt xml:lang="zh">区域</prompt>
+	</field>
+	<field name="constraints" dtmaxlength="255" ftype="text">
+		<prompt xml:lang="en">Constraints</prompt>
+		<prompt xml:lang="nl">Beperking</prompt>
+		<prompt xml:lang="zh">约束</prompt>
+	</field>
+	<field name="age">
+		<prompt xml:lang="en">Age</prompt>
+		<prompt xml:lang="nl">Leeftijd</prompt>
+		<prompt xml:lang="zh">生命期</prompt>
+	</field>
+	<field name="distinctlist" dtmaxlength="40">
+		<prompt xml:lang="en">Distinct</prompt>
+		<prompt xml:lang="nl">Distinct</prompt>
+		<prompt xml:lang="zh">特点</prompt>
+	</field>
+	<field name="searchdir" dtmaxlength="40">
+		<prompt xml:lang="en">Searchdir</prompt>
+		<prompt xml:lang="nl">Zoekrichting</prompt>
+		<prompt xml:lang="zh">查找路径</prompt>
+	</field>
+	<field name="orderby" dtmaxlength="40">
+		<prompt xml:lang="en">Orderby</prompt>
+		<prompt xml:lang="nl">Sorteer op</prompt>
+		<prompt xml:lang="zh">排序</prompt>
+	</field>
+	<field name="directions" dtmaxlength="40">
+		<prompt xml:lang="en">Directions</prompt>
+		<prompt xml:lang="nl">Richting</prompt>
+		<prompt xml:lang="zh">方向</prompt>
+	</field>
+	<field name="pagelength">
+		<prompt xml:lang="en">Page length</prompt>
+		<prompt xml:lang="nl">Pagina lengte</prompt>
+		<prompt xml:lang="zh">页面长度</prompt>
+	</field>
+	<field name="maxpagecount">
+		<prompt xml:lang="en">Maximum pages</prompt>
+		<prompt xml:lang="nl">Maximaal pagina's</prompt>
+		<prompt xml:lang="zh">最大页数</prompt>
+	</field>
+	<field name="maxupload">
+		<prompt xml:lang="en">Maximum upload</prompt>
+		<prompt xml:lang="nl">Maximale upload</prompt>
+		<prompt xml:lang="zh">最大上载值</prompt>
+	</field>
+	<field name="searchfields" dtmaxlength="255" ftype="text">
+		<prompt xml:lang="en">Searchfields</prompt>
+		<prompt xml:lang="nl">Zoekvelden</prompt>
+		<prompt xml:lang="zh">查找框</prompt>
+	</field>
+	<field name="searchtype" dtmaxlength="40">
+		<prompt xml:lang="en">Searchtype</prompt>
+		<prompt xml:lang="nl">Zoektype</prompt>
+		<prompt xml:lang="zh">查找类型</prompt>
+	</field>
+	<field name="searchvalue" dtmaxlength="255" ftype="text">
+		<prompt xml:lang="en">Searchvalue</prompt>
+		<prompt xml:lang="nl">Zoekwaarde</prompt>
+		<prompt xml:lang="zh">查找值</prompt>
+	</field>
+	<field name="search" dtmaxlength="40">
+		<prompt xml:lang="en">Search</prompt>
+		<prompt xml:lang="nl">Zoeken</prompt>
+		<prompt xml:lang="zh">查找</prompt>
+	</field>
+	<field name="origin" dtmaxlength="40">
+		<prompt xml:lang="en">Origin</prompt>
+		<prompt xml:lang="nl">Bron</prompt>
+		<prompt xml:lang="zh">起源</prompt>
+	</field>
+	<field name="title" dtmaxlength="40">
+		<prompt xml:lang="en">Title</prompt>
+		<prompt xml:lang="nl">Titel</prompt>
+		<prompt xml:lang="zh">标题</prompt>
+	</field>
+</form-schema>

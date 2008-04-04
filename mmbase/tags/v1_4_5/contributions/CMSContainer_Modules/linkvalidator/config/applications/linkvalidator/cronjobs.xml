@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronjobs exportsource="mmbase://127.0.0.1/tasks" timestamp="20050101000000">
+
+    <node number="104973" owner="default">
+        <name>LinkValidator Job</name>
+        <!--  start job om 01:00 -->
+        <crontime>0 1 * * *</crontime>
+        <classfile>com.finalist.cmsc.linkvalidator.LinkValidatorCronJob</classfile>
+        <config></config>
+        <type>2</type>
+    </node>
+
+</cronjobs>
