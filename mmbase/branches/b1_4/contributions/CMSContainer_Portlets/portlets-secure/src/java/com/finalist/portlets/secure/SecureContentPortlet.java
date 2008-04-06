@@ -45,12 +45,6 @@ public class SecureContentPortlet extends AbstractContentPortlet {
 
 	   }
 
-
-	private boolean isUserLoggedIn() {
-		return Community.isAuthenticated();
-	}
-
-
 	private boolean isSecure(String elementId) {
 		Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 		Node node = cloud.getNode(elementId);
