@@ -19,8 +19,8 @@
   <mm:import externid="current" from="this" />
   <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
   <mm:write request="mm_relate_sequence" value="${seq + 1}" />
-  <mm:write session="mm_related_${seq}"         referid="repository" />
-  <mm:write session="mm_related_${seq}_current" referid="current" />
+  <mm:write session="mm_related_${seq}_repository" referid="repository" />
+  <mm:write session="mm_related_${seq}_current"    referid="current" />
   <c:if test="${seq eq 0}">
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
   </c:if>
@@ -29,13 +29,14 @@
     <script type="text/javascript">
       $(document).ready(function() {
          $("${submit}").click(function(el) {
-           return $("#mm_related_${seq} > a.search")[0].searcher.commit(el);
+           return $("#mm_related_${seq}")[0].relater.commit(el);
          });
       });
     </script>
   </c:if>
 
-  <div class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}">
+  <div id="mm_related_${seq}"
+       class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}">
     <c:if test="${! empty transaction}">
       <span class="transactionname" style="display: none;">${transaction}</span>
     </c:if>
@@ -43,15 +44,15 @@
       <!--
       <mm:maxnumber value="10" />
       -->
-      <div id="mm_related_${seq}_current" class="mm_relate_current searchable">
-        <a href="#repository_${seq}" class="search">Search</a>
+      <div  class="mm_relate_current searchable">
+        <a href="#mm_related_${seq}_current" class="search">Search</a>
         <input  value="" />
         <mm:include page="/mmbase/searchrelate/page.jspx">
           <mm:param name="id">mm_related_${seq}_current</mm:param>
         </mm:include>
       </div>
-      <div  id="mm_related_${seq}" class="mm_relate_repository searchable">
-        <a href="#repository_${seq}" class="search">Search</a>
+      <div  class="mm_relate_repository searchable">
+        <a href="#mm_related_${seq}_repository" class="search">Search</a>
         <input  value="" />
         <div>&lt;!-- IE sucks --&gt;
         <jsp:text>Click search to search.</jsp:text>
