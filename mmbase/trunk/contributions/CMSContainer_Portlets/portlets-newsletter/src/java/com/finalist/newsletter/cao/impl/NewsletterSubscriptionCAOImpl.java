@@ -18,94 +18,114 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
+import com.finalist.community.DetailNewsletterInfo;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.cao.util.NewsletterSubscriptionUtil;
 
 public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO {
+	CloudProvider provider = CloudProviderFactory.getCloudProvider();
+	private Cloud cloud =provider.getCloud() ;
 
-	private Cloud cloud;
+	/*public void setCloud(Cloud cloud) {
+		CloudProvider provider = CloudProviderFactory.getCloudProvider();
+		this.cloud = provider.getCloud();
+	}*/
 
-	public void setCloud(Cloud cloud) {
-		this.cloud = cloud;
+	public List<Newsletter> getAllNewsletter(){
+		List<Newsletter> list = new ArrayList<Newsletter>();
+		Newsletter letter = new Newsletter();
+		String newsletter = "newsletter";
+		NodeManager manager = cloud.getNodeManager(newsletter);
+		NodeQuery query = cloud.createNodeQuery();
+		Step theStep = null;
+		theStep = query.addStep(manager);
+		query.setNodeStep(theStep);
+		List<Node> nodelist = manager.getList(query);
+		Iterator<Node> it =nodelist.iterator();
+		for(int i=0;i<nodelist.size();i++)
+		{
+			Node node = it.next();
+			letter.setTitle(node.getStringValue("title"));
+			NodeManager tagManager = cloud.getNodeManager("tag");	
+			NodeList taglist = node.getRelatedNodes(tagManager);
+			letter = NewsletterSubscriptionUtil.convertNodeListtoTagList(taglist, letter);
+			list.add(letter);
+		}
+		return list;
 	}
-
+	
 	public Newsletter getNewsletterById(int id) {
 		
 		Newsletter newsletter = new Newsletter();
 		Node node = cloud.getNode(id);
 		newsletter = NewsletterSubscriptionUtil.populateNewsletter(node, newsletter);
-		NodeList taglist = node.getRelatedNodes("tag");		
+		NodeManager tagManager = cloud.getNodeManager("tag");	
+		NodeList taglist = node.getRelatedNodes(tagManager);
 		newsletter = NewsletterSubscriptionUtil.convertNodeListtoTagList(taglist, newsletter);
 		return newsletter;
 	}
 
 	public NewsletterSubscriptionCAOImpl() {
-		CloudProvider provider = CloudProviderFactory.getCloudProvider();
-		cloud = provider.getCloud();
+	
 	}
 
-	/*public static DetailNewsletterInfo getUserSubscriptionList(String userName,
-			Cloud cloud) {
-		DetailNewsletterInfo detailNewsletterInfo = new DetailNewsletterInfo();
+	public List<Newsletter> getUserSubscriptionList(String userName)
+	{
+		List<Newsletter> list = new ArrayList<Newsletter>();
+		Newsletter newsletter = new Newsletter();
 
 		List<Node> resluts = new ArrayList<Node>();
-		resluts = NewsletterSubscriptionCAOImpl.querySubcriptionByUser(
-				userName, cloud);
-		detailNewsletterInfo.setSubscriber(userName);
+		resluts = querySubcriptionByUser(userName);
 		Iterator<Node> nodes = resluts.iterator();
 		for (int i = 0; i < resluts.size(); i++) {
 			Node node = nodes.next();
+			int a = node.getNumber();
 			String status = node.getStringValue("status");
-			detailNewsletterInfo.setStatus(status);
+			newsletter.setStatus(status);
 			Date interval = node.getDateValue("interval");
-			detailNewsletterInfo.setInterval(interval);
+			newsletter.setInterval(interval);
 			String format = node.getStringValue("format");
-			detailNewsletterInfo.setFormat(format);
+			newsletter.setFormat(format);
 
 			NodeList newsletters = node.getRelatedNodes("newsletter");
 			Iterator<Node> newsletterIterator = newsletters.iterator();
 			for (int j = 0; j < newsletters.size(); j++) {
-				String newsletter = newsletterIterator.next().getStringValue(
+				String title = newsletterIterator.next().getStringValue(
 						"title");
-				detailNewsletterInfo.setNewsletter(newsletter);
+				newsletter.setTitle(title);
 			}
 
-			NodeList tags = node.getRelatedNodes("tags");
+			NodeManager tagManager = cloud.getNodeManager("tag");
+			NodeList tags = node.getRelatedNodes(tagManager);
 			Iterator<Node> tagsItetator = tags.iterator();
 			for (int y = 0; y < tags.size(); y++) {
-				String tag = tagsItetator.next().getStringValue("title");
-				detailNewsletterInfo.setTag(tag);
+				String tag = tagsItetator.next().getStringValue("name");
+				newsletter.setTags(tags);
 			}
+			list.add(newsletter);
 		}
 
-		return detailNewsletterInfo;
-	}
-*/
-	public static List<Node> querySubcriptionByUser(String userName, Cloud cloud) {
-		String nodeType = "subscriptionrecord";
-		NodeManager manager = cloud.getNodeManager(nodeType);
-		List<Node> results = createDetailQuery(cloud, manager, userName);
-		return results;
+		return list;
 	}
 
-	public static List<Node> createDetailQuery(Cloud cloud,
-			NodeManager manager, String userName) {
-		NodeQuery query = cloud.createNodeQuery();
+	public List<Node> querySubcriptionByUser(String userName) {
+		List<Node> results = null;  
+		NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
+	    NodeQuery query = cloud.createNodeQuery();
 		String subscriber = "subscriber";
 		Step theStep = null;
-		theStep = query.addStep(manager);
+		theStep = query.addStep(recordManager);
 		query.setNodeStep(theStep);
-		Field field = manager.getField(subscriber);
+		Field field = recordManager.getField(subscriber);
 		Constraint titleConstraint = SearchUtil.createLikeConstraint(query,
 				field, userName);
 		SearchUtil.addConstraint(query, titleConstraint);
-		NodeList results = cloud.getList(query);
-		return results;
+		return query.getList();
+	
 	}
 
-	/*public static void addSubscriptionRecord(Cloud cloud,
-			DetailNewsletterInfo detailNewsletterInfo) {
+	public void addSubscriptionRecord(DetailNewsletterInfo detailNewsletterInfo) {
 		String nodeType = "subscriptionrecord";
 		NodeManager subscriptionrecordNodeManager = cloud
 				.getNodeManager(nodeType);
@@ -126,18 +146,17 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		subscriptionrecordNode.commit();
 		detailNewsletterInfo
 				.setId(subscriptionrecordNode.getIntValue("number"));
-	}*/
+	}
 
-	public static void updateSubscriptionRecord(Node node, String status) {
+	public void updateSubscriptionRecord(Node node, String status) {
 		node.setStringValue("status", status);
 		node.commit();
 	}
 
-/*	public static Node getUpdateNode(Cloud cloud,
-			DetailNewsletterInfo detailNewsletterInfo) {
+	public Node getUpdateNode(DetailNewsletterInfo detailNewsletterInfo) {
 		int nodeNumber = detailNewsletterInfo.getId();
 		Node node = cloud.getNode(nodeNumber);
 		return node;
-	}*/
+	}
 
 }
