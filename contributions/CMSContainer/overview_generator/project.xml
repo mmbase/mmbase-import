@@ -39,7 +39,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>jcvsii</groupId>
             <artifactId>jcvsii</artifactId>
-            <version>5.4.2</version>
+            <version>5.3.2</version>
             <type>jar</type>
             <properties>
                 <jar.manifest.classpath>true</jar.manifest.classpath>
@@ -57,7 +57,7 @@ See http://www.MMBase.org/license
         <dependency>
             <groupId>svnkit</groupId>
             <artifactId>svnkit</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.6</version>
             <type>jar</type>
             <properties>
                 <jar.manifest.classpath>true</jar.manifest.classpath>
