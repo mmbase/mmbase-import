@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 	This software is OSI Certified Open Source Software.
 	OSI Certified is a certification mark of the Open Source Initiative.
 	
@@ -65,13 +65,13 @@
 <!-- Application dependencies -->	
 
 <!-- CMS Container standard -->	
-   		<dependency>
+  		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-basicmodel</artifactId>
 			<version>${cmsc.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-   		<dependency>
+   	    <dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-contentrepository</artifactId>
 			<version>${cmsc.version}</version>
@@ -180,7 +180,7 @@
          <type>mmbase-module</type>
       </dependency>
 
-<!-- MMBase -->	
+<!-- MMBase -->
 		<dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase</artifactId>
@@ -248,7 +248,7 @@
 				<mmbase.config.bundle>false</mmbase.config.bundle>
 			</properties>
 		</dependency>
-      <dependency>
+       <dependency>
 			<groupId>mmbase</groupId>
 			<artifactId>mmbase-taglib</artifactId>
 			<version>${mmbase.version}</version>
@@ -258,7 +258,7 @@
 			</properties>
 		</dependency>
 
-<!-- MMApps.sourceforge.net -->	
+<!-- MMApps.sourceforge.net -->
 		<dependency>
 			<groupId>mmapps</groupId>
 			<artifactId>cloudprovider</artifactId>
@@ -287,7 +287,7 @@
 			</properties>
 		</dependency>
 
-<!-- Apache portals - pluto -->	
+<!-- Apache portals - pluto -->
 		<dependency>
 			<id>pluto</id>
 			<groupId>org.apache.pluto</groupId>
@@ -379,7 +379,7 @@
 			</properties>
 		</dependency>
 
-<!-- Servlet/JSP -->	
+<!-- Servlet/JSP -->
 		<dependency>
 			<groupId>servletapi</groupId>
 			<artifactId>servletapi</artifactId>
