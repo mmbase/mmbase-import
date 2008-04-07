@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.193.2.9 2008-03-19 09:49:07 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.193.2.10 2008-04-07 11:29:18 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -973,8 +973,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
         if (VALUE_SHORTED.equals(value)) {
             BlobCache blobs = parent.getBlobCache(fieldName);
             String key = blobs.getKey(getNumber(), fieldName);
-            byte[] v = (byte[]) blobs.get(key);
-            if (v == null) {
+            byte[] v;
+            if (! blobs.containsKey(key)) {
                 if (getSize(fieldName) < blobs.getMaxEntrySize()) {
                     v = parent.mmb.getStorageManager().getBinaryValue(this, parent.getField(fieldName));
                     if (log.isDebugEnabled()) {
@@ -986,9 +986,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
                     return parent.mmb.getStorageManager().getInputStreamValue(this, parent.getField(fieldName));
                 }
             } else {
+                v = (byte[]) blobs.get(key);
                 log.debug("Found in blob cache " + fieldName);
             }
-            return new ByteArrayInputStream(v);
+            return v == null ? null : new ByteArrayInputStream(v);
         } else {
             if (value instanceof byte[]) {
                 return new ByteArrayInputStream((byte[]) value);
@@ -1306,14 +1307,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
      * @return the GUI iddicator as a <code>String</code>
      */
     public String getGUIIndicator() {
-          if (parent!=null) {
-             return parent.getGUIIndicator(this);
-         } else {
-             log.error("MMObjectNode -> can't get parent");
-             return "problem";
-         }
-
-          //return "" + getFunctionValue("gui", null);
+        if (parent!=null) {
+            return parent.getGUIIndicator(this);
+        } else {
+            log.error("MMObjectNode -> can't get parent");
+            return "problem";
+        }
+        //return "" + getFunctionValue("gui", null);
     }
 
     /**
