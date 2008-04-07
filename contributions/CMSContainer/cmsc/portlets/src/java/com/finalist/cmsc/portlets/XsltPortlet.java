@@ -16,6 +16,8 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import javax.portlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -24,9 +26,12 @@ import net.sf.mmapps.commons.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
 
+import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.util.XsltUtil;
+import com.finalist.pluto.PortletURLImpl;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class XsltPortlet extends CmscPortlet {
@@ -36,6 +41,9 @@ public class XsltPortlet extends CmscPortlet {
 
    public static final String SOURCE_ATTR_PARAM = "source";
    private static final String VIEW = "view";
+   
+   protected static final String PAGE = "page";
+   protected static final String WINDOW = "window";
 
 
    /**
@@ -57,6 +65,8 @@ public class XsltPortlet extends CmscPortlet {
             // get the values submitted with the form
             setPortletParameter(portletId, SOURCE_ATTR_PARAM, request.getParameter(SOURCE_ATTR_PARAM));
             setPortletView(portletId, request.getParameter(VIEW));
+            setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
+            setPortletParameter(portletId, WINDOW, request.getParameter(WINDOW));
          }
          else {
             getLogger().error("No portletId");
@@ -73,6 +83,28 @@ public class XsltPortlet extends CmscPortlet {
    @Override
    protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
       addViewInfo(req);
+      
+      /** 
+       * process clickon prefs 
+       * NB this is a copy of the same functionality in AbstractContentPortlet.
+       */
+      PortletPreferences preferences = req.getPreferences();
+      String pageid = preferences.getValue(PAGE, null);
+      if (!StringUtil.isEmpty(pageid)) {
+
+         String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
+
+         if (pagepath != null) {
+            setAttribute(req, "pagepath", pagepath);
+
+            Set<String> positions = SiteManagement.getPagePositions(pageid);
+            ArrayList<String> orderedPositions = new ArrayList<String>(positions);
+            Collections.sort(orderedPositions);
+            setAttribute(req, "pagepositions", new ArrayList<String>(orderedPositions));
+         }
+      }
+      /** END process clickon prefs */
+      
       super.doEditDefaults(req, res);
    }
 
@@ -81,6 +113,8 @@ public class XsltPortlet extends CmscPortlet {
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
+      String page = preferences.getValue(PAGE, null);
+      String window = preferences.getValue(WINDOW, null);
       String xsl = getTemplate("view", template, "xsl");
       String xmlSource = preferences.getValue(SOURCE_ATTR_PARAM, null);
 
@@ -89,7 +123,25 @@ public class XsltPortlet extends CmscPortlet {
       if (!StringUtil.isEmpty(xsl) && !StringUtil.isEmpty(xmlSource)) {
          try {
             HashMap<String, Object> xslParams = getXsltParams(preferences);
-
+            
+            /** get renderUrl */
+            PortletURL renderUrl = null;
+            if (page != null && window != null) {
+				String link = "";
+				NavigationItem item = SiteManagement.convertToNavigationItem(page);
+					if (item != null) {
+					link = SiteManagement.getPath(item, !ServerUtil.useServerName());
+					}
+				else {
+					link = page;
+				}
+                renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) request,
+                     (HttpServletResponse) response, false);
+            } else {
+            	renderUrl = response.createRenderURL();
+            }
+            xslParams.put("RENDERURL", renderUrl);
+            
             StringBuffer content = new StringBuffer(4096);
 
             String html = transformXml(xsl, xmlSource, xslParams);
