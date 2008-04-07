@@ -4,9 +4,13 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     class="drawer">
+  <!--
+    xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+    -->
   <jsp:output omit-xml-declaration="true" />
-  <h1>Example1</h1>
+  <h1><a href="#example1">Example1</a></h1>
   <p>The most basic example</p>
+
   <div>
     <mm:relatednodescontainer role="posrel" type="news" id="current">
       <mm:sortorder field="posrel.pos" />
@@ -15,4 +19,5 @@
     <mm-sr:relate repository="${repository}" current="${current}" submit="#submit1" />
     <a id="submit1">Submit</a>
   </div>
+
 </div>
