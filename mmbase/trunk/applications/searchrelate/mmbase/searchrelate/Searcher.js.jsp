@@ -11,16 +11,42 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.8 2008-04-01 16:18:49 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.9 2008-04-07 10:13:06 michiel Exp $
  */
 
+$(document).ready(function(){
+    $("body").find("div.mm_related")
+    .each(function() {
+	var parent = this;
+	$(parent).find(".searchable").each(function() {
+	    var searchable = this;
+	    $(searchable).find("a.search").each(function() {
+		var anchor = this;
+		anchor.searcher = new MMBaseSearcher(searchable, parent);
+		$(anchor).click(function() {
+		    return this.searcher.search(0);
+		});
+		if (anchor.searcher.canUnrelate) {
+		$(parent).find("tr.click").each(function() {
+		    $(this).click(function() {
+			anchor.searcher.unrelate(this);
+			return false;
+		    })});
+		}
+	    });
+	});
+    });
+});
 
-function MMBaseSearcher(d) {
-    this.logEnabled   = false;
-    this.traceEnabled = false;
+
+
+function MMBaseSearcher(d, p) {
+    this.logEnabled   = true;
+    this.traceEnabled = true;
     this.div = d;
+    this.parent = p;
     this.value = "";
-    this.canUnrelate = $(d).hasClass("can_unrelate");
+    this.canUnrelate = $(p).hasClass("can_unrelate");
     this.transaction   = null;
     var self = this;
     $(d).find("span.transactioname").each(function() {
@@ -51,13 +77,13 @@ MMBaseSearcher.prototype.log = function (msg) {
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
 MMBaseSearcher.prototype.search = function(offset) {
-    var newSearch = $(this.div).find("input.mm_relate_repository_search")[0].value;
+    var newSearch = $(this.div).find("input")[0].value;
     if (newSearch != this.value) {
 	this.searchResults = {};
 	this.value = newSearch;
     }
     var id = this.div.id;
-    var rep = $(this.div).find("div.mm_relate_repository")[0]
+    var rep = $(this.div).find("> div")[0]
 
     var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
     var params = {id: id, offset: offset, search: this.value};
@@ -69,8 +95,9 @@ MMBaseSearcher.prototype.search = function(offset) {
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
 			var r = $(res.responseText)[0];
+			self.log(rep);
 			$(rep).empty();
-			$(rep).append(r);
+			$(rep).append($(r).find("> *"));
 			self.searchResults["" + offset] = r;
 			self.bindEvents(rep);
 		    }
@@ -105,8 +132,11 @@ MMBaseSearcher.prototype.relate = function(el) {
     if (typeof(this.unrelated[number]) == "undefined") {
 	this.related[number] = el;
     }
+    this.log("Found number to relate " + number + "+" + this.getNumbers(this.related));
     this.unrelated[number] = null;
-    $(el).parents("div.mm_related").find("table.relatednodes tbody").append(el);
+    var current =  $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody");
+    this.log(current[0]);
+    $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody").append(el);
     $(el).unbind();
     var searcher = this;
     $(el).click(function() {
@@ -131,6 +161,18 @@ MMBaseSearcher.prototype.unrelate = function(el) {
     });
 }
 
+
+MMBaseSearcher.prototype.getNumbers = function(map) {
+    var numbers = "";
+    $.each(map, function(key, value) {
+	if (value != null) {
+	    if (numbers.length > 0) numbers += ",";
+	    numbers += key;
+	}
+    });
+    return numbers;
+}
+
 /**
  * Commits made changes to MMBase. Depends on a jsp /mmbase/searchrelate/relate.jsp to do the actual work.
 *  This jsp, in turn, depends on the query in the user's session which defined what precisely must happen.
@@ -145,20 +187,8 @@ MMBaseSearcher.prototype.commit = function(el) {
     var id = this.div.id;
     var url = "${mm:link('/mmbase/searchrelate/relate.jspx')}";
 
-    var relatedNumbers = "";
-    $.each(this.related, function(key, value) {
-	if (value != null) {
-	    if (relatedNumbers.length > 0) relatedNumbers += ",";
-	    relatedNumbers += key;
-	}
-    });
-    var unrelatedNumbers = "";
-    $.each(this.unrelated, function(key, value) {
-	if (value != null) {
-	    if (unrelatedNumbers.length > 0) unrelatedNumbers += ",";
-	    unrelatedNumbers += key + ",";
-	}
-    });
+    var relatedNumbers   = this.getNumbers(this.related);
+    var unrelatedNumbers = this.getNumbers(this.unrelated);
 
     this.log("+ " + relatedNumbers);
     this.log("- " + unrelatedNumbers);
@@ -166,7 +196,7 @@ MMBaseSearcher.prototype.commit = function(el) {
     if (this.transaction != null) {
 	params.transaction = this.transaction;
     }
-    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+    $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
 	    complete: function(res, status){
 		$(a).removeClass("submitting");
 		if (status == "success") {
@@ -182,25 +212,6 @@ MMBaseSearcher.prototype.commit = function(el) {
 }
 
 
-$(document).ready(function(){
-    $("body").find("div.mm_related")
-    .each(function() {
-	var parent = this;
-	var anchor = $(parent).find("> a.search")[0];
-	anchor.searcher = new MMBaseSearcher(parent);
-	$(anchor).click(function() {
-	    return this.searcher.search(0);
-	});
-	if (anchor.search.canUnrelate) {
-	    $(parent).find("tr.click").each(function() {
-		$(this).click(function() {
-		    anchor.searcher.unrelate(this);
-		    return false;
-		})});
-	}
-    });
-
-});
 
 
 </mm:content>
