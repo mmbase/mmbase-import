@@ -15,11 +15,13 @@
 
     <link rel="stylesheet" type="text/css" href="${mm:link('/mmbase/searchrelate/page.css.jsp')}" />
 
+    <link rel="stylesheet" type="text/css" href="${mm:link('example.css')}" />
+
     <jsp:directive.include file="/mmbase/validation/javascript.jspxf" /> <!-- for jquery -->
     <script type="text/javascript">
       <!-- some javascript to make the examples slide away/slideToggable -->
       $(document).ready(function() {
-      $("div.drawer > div").slideUp("fast");
+      $("div.drawer > div").hide();
       $("div.drawer h1 a").click(function(e) {
          $(e.target).parent().parent().children("div").slideToggle("fast");
          return false;
