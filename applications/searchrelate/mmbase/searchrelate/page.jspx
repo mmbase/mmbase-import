@@ -31,21 +31,6 @@
             </mm:fieldlist>
           </tr>
         </thead>
-        <tbody>
-          <mm:listnodes varStatus="status">
-            <tr class="click ${status.index % 2 eq 0 ? 'even' : 'odd'}" id="${id}_node_${_node}">
-              <td class="node number">
-                <mm:field name="number" />
-              </td>
-              <td class="node">
-                <mm:nodeinfo type="gui" />
-              </td>
-              <mm:fieldlist type="list">
-                <td class="fields"><mm:fieldinfo type="guivalue" /></td>
-              </mm:fieldlist>
-            </tr>
-          </mm:listnodes>
-        </tbody>
         <tfoot>
           <tr>
             <td colspan="10000">
@@ -61,6 +46,21 @@
             </td>
           </tr>
         </tfoot>
+        <tbody>
+          <mm:listnodes varStatus="status">
+            <tr class="click ${status.index % 2 eq 0 ? 'even' : 'odd'}" id="${id}_node_${_node}">
+              <td class="node number">
+                <mm:field name="number" />
+              </td>
+              <td class="node">
+                <mm:nodeinfo type="gui" />
+              </td>
+              <mm:fieldlist type="list">
+                <td class="fields"><mm:fieldinfo type="guivalue" /></td>
+              </mm:fieldlist>
+            </tr>
+          </mm:listnodes>
+        </tbody>
       </table>
     </mm:listnodescontainer>
   </mm:content>
