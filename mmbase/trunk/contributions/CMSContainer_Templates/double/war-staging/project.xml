@@ -37,8 +37,7 @@
 			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-
-   		<dependency>
+   	    <dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-workflow</artifactId>
 			<version>${cmscmodules.version}</version>
