@@ -14,7 +14,6 @@ import java.io.IOException;
 import javax.portlet.*;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
-import com.finalist.cmsc.services.community.Community;
 
 /**
  * IFramePortlet
@@ -33,7 +32,6 @@ public class IFramePortlet extends CmscPortlet {
    public static final String NAME_ATTR_PARAM = "name";
    public static final String SCROLLING_ATTR_PARAM = "scrolling";
    public static final String SOURCE_ATTR_PARAM = "source";
-   public static final String SOURCE_REQ_PARAM = "source";
    public static final String STYLE_ATTR_PARAM = "style";
    public static final String WIDTH_ATTR_PARAM = "width";
 
@@ -95,13 +93,6 @@ public class IFramePortlet extends CmscPortlet {
 
       // get IFRAME source
       String source = getPreference(preferences, SOURCE_ATTR_PARAM, SOURCE_ATTR_DEFAULT);
-      if(request.getParameter(SOURCE_REQ_PARAM) != null) source = request.getParameter(SOURCE_REQ_PARAM);
-      
-      if(Community.isAuthenticated()){
-    	  // TODO
-    	  // add username and password from community to the source, if they are available
-      }
-      
       // IFRAME attribute members.
       String alignAttr = getPreference(preferences, ALIGN_ATTR_PARAM, ALIGN_ATTR_DEFAULT);
       String classAttr = getPreference(preferences, CLASS_ATTR_PARAM, null);

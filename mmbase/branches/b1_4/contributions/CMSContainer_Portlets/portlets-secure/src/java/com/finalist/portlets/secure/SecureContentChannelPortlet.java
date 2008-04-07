@@ -42,6 +42,11 @@ public class SecureContentChannelPortlet extends ContentChannelPortlet {
 		}
 	}
 
+
+	private boolean isUserLoggedIn() {
+		return Community.isAuthenticated();
+	}
+
 	private List<ContentElement> getContentElements(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String,Object> extraParameters) {
 		List<ContentElement> result = new ArrayList<ContentElement>();
 		if (channel != null) {

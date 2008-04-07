@@ -24,7 +24,6 @@ import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.services.community.Community;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.cmsc.util.bundles.CombinedResourceBundle;
@@ -36,7 +35,6 @@ public class CmscPortlet extends GenericPortlet {
 
    private static final String CONTENT_TYPE = "contenttype";
    private static final String CONTENT_TYPE_DEFAULT = "text/html";
-   private static final String REQ_ATTR_COMMUNITY_AUTHENTICATED = "communityauthenticated";
 
    private Log log;
 
@@ -340,7 +338,6 @@ public class CmscPortlet extends GenericPortlet {
    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
       PortletPreferences preferences = req.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-      setAttribute(req, REQ_ATTR_COMMUNITY_AUTHENTICATED, isUserLoggedIn());
       doInclude("view", template, req, res);
    }
 
@@ -580,9 +577,5 @@ public class CmscPortlet extends GenericPortlet {
       ServletRequest servletRequest = ((HttpServletRequestWrapper) internalPortletRequest).getRequest();
       return (PortletFragment) servletRequest.getAttribute(PortalConstants.FRAGMENT);
    }
-   
-	protected boolean isUserLoggedIn() {
-		return Community.isAuthenticated();
-	}
 
 }
