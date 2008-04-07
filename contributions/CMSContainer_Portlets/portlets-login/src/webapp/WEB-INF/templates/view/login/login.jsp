@@ -29,15 +29,6 @@
       <input type="submit" value="<fmt:message key="view.submit" />" />
     </td>
   </tr>
-<%-- Community module does not have all methods yet
-  <tr>
-    <td></td>
-    <td id="Submit" align="right">
-      <cmsc:renderURL var="sendPasswordUrl"><cmsc:param name="action" value="send_password"/></cmsc:renderURL>
-      <a href="${sendPasswordUrl}"><fmt:message key="view.send_password" /></a>
-    </td>
-  </tr>
- --%>
 </table>
 
 </form>
