@@ -4,7 +4,7 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     class="drawer">
   <jsp:output omit-xml-declaration="true" />
-  <h1>Example2</h1>
+  <h1><a href="#example2">Example2</a></h1>
   <p>Showing how to make it impossible to relate already related nodes.</p>
   <div>
     <mm:relatednodescontainer role="posrel" type="news" id="current" >
