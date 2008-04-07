@@ -1,12 +1,12 @@
-<%@page language="java" contentType="text/html;charset=utf-8" import="com.finalist.tree.*" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@page language="java" contentType="text/html;charset=utf-8" import="com.finalist.tree.*" 
+%><%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><%@include file="globals.jsp" %>
 
 <html>
 	<head>
 		<title><fmt:message key="site.title" /></title>
 		<script type="text/javascript" src="portalcontrols.js.jsp"></script>
-<script type="text/javascript">
+      <script type="text/javascript">
     function preview() {
         var contentLocation = this.frames["pcontent"].location.href;
         if (contentLocation.indexOf("mode=preview") > -1) {
