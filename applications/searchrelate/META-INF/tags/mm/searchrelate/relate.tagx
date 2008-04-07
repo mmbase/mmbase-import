@@ -10,6 +10,7 @@
   <jsp:directive.attribute name="submit"     type="java.lang.String"  />
   <jsp:directive.attribute name="unrelate"   type="java.lang.Boolean"   />
   <jsp:directive.attribute name="transaction" type="java.lang.String"   />
+  <jsp:directive.attribute name="pagesize" type="java.lang.Integer"   />
 
   <!--
   <jsp:directive.attribute name="n"          fragment="true" />
@@ -29,9 +30,13 @@
     <script type="text/javascript">
       $(document).ready(function() {
          $("${submit}").click(function(el) {
-           return $("#mm_related_${seq}")[0].relater.commit(el);
+            return $("#mm_related_${seq}")[0].relater.commit(el);
          });
+      <c:if test="${! empty pagesize}">
+        $("#mm_related_${seq}").find(".searchable").each(function() { this.searcher.pagesize = ${pagesize}; });
+      </c:if>
       });
+
     </script>
   </c:if>
 
@@ -40,24 +45,22 @@
     <c:if test="${! empty transaction}">
       <span class="transactionname" style="display: none;">${transaction}</span>
     </c:if>
-    <mm:listnodescontainer clone="current">
-      <!--
-      <mm:maxnumber value="10" />
-      -->
-      <div  class="mm_relate_current searchable">
-        <a href="#mm_related_${seq}_current" class="search">Search</a>
-        <input  value="" />
-        <mm:include page="/mmbase/searchrelate/page.jspx">
-          <mm:param name="id">mm_related_${seq}_current</mm:param>
-        </mm:include>
+    <div  class="mm_relate_current searchable">
+      <a href="#mm_related_${seq}_current" class="search">Search</a>
+      <input  value="" />
+      <mm:include page="/mmbase/searchrelate/page.jspx">
+        <c:if test="${! empty pagesize}">
+          <mm:param name="pagesize" referid="pagesize" />
+        </c:if>
+        <mm:param name="id">mm_related_${seq}_current</mm:param>
+      </mm:include>
+    </div>
+    <div  class="mm_relate_repository searchable">
+      <a href="#mm_related_${seq}_repository" class="search">Search</a>
+      <input  value="" />
+      <div>&lt;!-- IE sucks --&gt;
+      <jsp:text>Click search to search.</jsp:text>
       </div>
-      <div  class="mm_relate_repository searchable">
-        <a href="#mm_related_${seq}_repository" class="search">Search</a>
-        <input  value="" />
-        <div>&lt;!-- IE sucks --&gt;
-        <jsp:text>Click search to search.</jsp:text>
-        </div>
-      </div>
-    </mm:listnodescontainer>
+    </div>
   </div>
 </jsp:root>
