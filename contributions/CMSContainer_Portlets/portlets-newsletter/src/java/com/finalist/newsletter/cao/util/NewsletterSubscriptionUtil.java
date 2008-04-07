@@ -1,5 +1,6 @@
 package com.finalist.newsletter.cao.util;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,9 +18,10 @@ public class NewsletterSubscriptionUtil {
 	
 	public static Newsletter convertNodeListtoTagList(NodeList list,Newsletter newsletter){
 		Iterator<Node> nodelist = list.iterator();
-		List<Tag> taglist= null;
-		Tag tag = null;
+		List<Tag> taglist= new ArrayList<Tag>();
+		
 		for (int j = 0; j < list.size(); j++) {
+			Tag tag = new Tag();
 			Node node = nodelist.next();
 			tag.setName(node.getStringValue("name"));
 			taglist.add(tag);
