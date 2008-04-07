@@ -7,6 +7,7 @@
   <mm:content expires="0" type="application/xml">
     <mm:import externid="id" required="true" />
     <mm:import externid="search" />
+    <mm:import externid="pagesize">10</mm:import>
     <mm:import from="session" externid="${id}" id="query" required="true" />
     <mm:import externid="offset" vartype="integer">0</mm:import>
     <mm:listnodescontainer id="b" clone="query">
@@ -19,7 +20,7 @@
           </mm:fieldlist>
         </mm:composite>
       </c:if>
-      <mm:maxnumber value="10" />
+      <mm:maxnumber value="${pagesize}" />
       <mm:offset value="${offset}" />
       <table class="searchresult" summary="Search results for ${search}">
         <thead>
@@ -27,13 +28,14 @@
             <th class="node number">#</th>
             <th class="node"> </th>
             <mm:fieldlist nodetype="${query.nodeManager.name}" type="list">
-              <th class="fields"><mm:fieldinfo type="guiname" /></th>
+              <th class="fields ${_}"><mm:fieldinfo type="guiname" /></th>
+              <mm:last><mm:index write="false" id="colcount" /></mm:last>
             </mm:fieldlist>
           </tr>
         </thead>
         <tfoot>
           <tr>
-            <td colspan="10000">
+            <td colspan="${colcount + 2}">
               <mm:previousbatches>
                 <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
                 <jsp:text>, </jsp:text>
@@ -56,7 +58,7 @@
                 <mm:nodeinfo type="gui" />
               </td>
               <mm:fieldlist type="list">
-                <td class="fields"><mm:fieldinfo type="guivalue" /></td>
+                <td class="fields /${_field.name}/"><mm:fieldinfo type="guivalue" /></td>
               </mm:fieldlist>
             </tr>
           </mm:listnodes>

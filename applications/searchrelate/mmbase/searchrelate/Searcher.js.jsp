@@ -11,20 +11,20 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.10 2008-04-07 15:03:18 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.11 2008-04-07 16:36:26 michiel Exp $
  */
 
 $(document).ready(function(){
-    $("body").find("div.mm_related")
-    .each(function() {
+    $("body").find("div.mm_related").each(function() {
 	this.relater = new MMBaseRelater(this);
     });
 });
 
 
-function MMBaseLogger() {
+function MMBaseLogger(area) {
     this.logEnabled   = false;
     this.traceEnabled = false;
+    this.logarea      = area;
 }
 
 MMBaseLogger.prototype.debug = function (msg) {
@@ -62,8 +62,6 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
     var relater = this;
     if ($(el).hasClass("searchable")) {
 	$(el).find("a.search").each(function() {
-	    console.log(el);
-	    console.log("found "+ this);
 	    var anchor = this;
 	    anchor.searcher = new MMBaseSearcher(el, relater, type, relater.logger);
 	    $(anchor).click(function(el) {
@@ -152,11 +150,13 @@ MMBaseRelater.prototype.getNumbers = function(map) {
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
-    $(rep).find("tr.click").each(function() {
-	$(this).click(function() {
-	    self.relate(this);
-	    return false;
-	})});
+    if (type == "repository") {
+	$(rep).find("tr.click").each(function() {
+	    $(this).click(function() {
+		self.relate(this);
+		return false;
+	    })});
+    }
 }
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
@@ -171,6 +171,9 @@ MMBaseRelater.prototype.relate = function(el) {
     var current =  $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody");
     this.logger.debug(current[0]);
     $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody").append(el);
+
+    $(el).parents("div.mm_related").find("div.mm_relate_current")[0].searcher.resetTrClasses();
+    $(el).parents("div.mm_related").find("div.mm_relate_repository")[0].searcher.resetTrClasses();
     $(el).unbind();
     var searcher = this;
     $(el).click(function() {
@@ -184,8 +187,10 @@ MMBaseRelater.prototype.relate = function(el) {
 
 function MMBaseSearcher(d, r, type, logger) {
     this.div = d;
+    this.div.searcher = this;
     this.relater = r;
     this.type    = type;
+    this.pagesize = 10;
     this.logger  = logger != null ? logger : new MMBaseLogger();
     this.value = "";
     this.transaction   = null;
@@ -194,6 +199,8 @@ function MMBaseSearcher(d, r, type, logger) {
 	this.transaction = this.nodeValue;
     });
     this.searchResults = {};
+    this.bindEvents();
+
 }
 
 
@@ -209,47 +216,62 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 	this.searchResults = {};
 	this.value = newSearch;
     }
-    var id = el.href.substring(el.href.indexOf("#") + 1);
+    var searchAnchor = $(el).parents(".searchable").find("> a.search")[0];
+    var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
     var rep = $(this.div).find("> div")[0]
 
     var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
-    var params = {id: id, offset: offset, search: this.value};
+    var params = {id: id, offset: offset, search: this.value, pagesize: this.pagesize};
 
     var result = this.searchResults["" + offset];
     var self = this;
+    $(rep).empty();
     if (result == null) {
 	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
-			var r = $(res.responseText)[0];
+			result = res.responseText;
 			self.logger.debug(rep);
 			$(rep).empty();
-			$(rep).append($(r).find("> *"));
-			self.searchResults["" + offset] = r;
+			$(rep).append($(result).find("> *"));
+			self.searchResults["" + offset] = result;
 			self.bindEvents(rep);
 
 		    }
 		}
 	       });
+	$(rep).append($("<p>Searching</p>"));
     } else {
 	this.logger.debug("reusing " + offset);
-	$(rep).empty();
-	$(rep).append(result);
+	self.logger.debug(rep);
+	$(rep).append($(result).find("> *"));
 	self.bindEvents(rep);
     }
     return false;
 }
 
-MMBaseSearcher.prototype.bindEvents = function(el) {
+MMBaseSearcher.prototype.bindEvents = function() {
     if (this.relater != null) {
-	this.relater.bindEvents(el, this.type);
+	this.relater.bindEvents(this.div, this.type);
     }
     var self = this;
-    $(el).find("a.navigate").click(function(el) {
+    this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
+
+    $(this.div).find("a.navigate").click(function(el) {
+	self.logger.debug("navigating " );
 	var anchor = el.target;
 	return self.search(anchor, anchor.name);
     });
 }
 
+MMBaseSearcher.prototype.resetTrClasses = function() {
+    var i = 0;
+    $(this.div).find("table.searchresult tbody tr").each(function() {
+	$(this).removeClass("odd");
+	$(this).removeClass("even");
+	$(this).addClass(i % 2 == 0 ? "even" : "odd");
+	i++;
+    });
+}
 
 </mm:content>
