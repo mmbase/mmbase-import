@@ -12,8 +12,9 @@ foreach $file (@ARGV) {
     }
 }
 
-print "Testing for XML compliance:$files\n";
 if ($files ne "") {
+    print "Testing for XML compliancy:$files\n";
+
     #@output = `SGML_CATALOG_FILES=/usr/share/sgml/docbook/xmlcatalog:/usr/share/sgml/docbook/dtd/xml/4.1.2/catalog.xml /usr/bin/xmllint --valid --noout $files 2>&1`;
 
     @output = `/usr/bin/xmllint --noout $files 2>&1`;
