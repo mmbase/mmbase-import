@@ -42,7 +42,6 @@
         <mm:hasnode number="$mag">
           <mm:node number="$mag">
             <h1>Using node ${_node}</h1>
-
             <mm:include page="example1.jspx" />
             <mm:include page="example2.jspx" />
             <mm:include page="example3.jspx" />

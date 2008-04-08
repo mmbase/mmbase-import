@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.16 2008-04-08 16:26:28 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.1 2008-04-08 16:31:20 michiel Exp $
  */
 
 $(document).ready(function(){
