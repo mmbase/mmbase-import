@@ -1,8 +1,20 @@
-// -*- css -*-
+/* -*- css -*- */
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"
 %><mm:content  expires="0" type="text/css">
 
-.searchresult {
+.searchable h1 {
+  background-color: #eee;
+  font-weight: bold;
+  font-size: normal;
+  margin-bottom: 0px;
+  border: solid 1px #000;
+}
+.searchable .searchform {
+  width: 100%;
+  border: solid 1px #000;
+}
+
+.searchresult table {
   border: solid 1px #000;
 }
 .searchresult thead tr,
@@ -22,6 +34,13 @@
 }
 .searchresult tbody tr.odd.new {
   background-color: #efe;
+}
+
+.searchresult tbody tr.even.removed {
+  background-color: #edd;
+}
+.searchresult tbody tr.odd.removed {
+  background-color: #fee;
 }
 
 .searchresult tbody tr:hover {

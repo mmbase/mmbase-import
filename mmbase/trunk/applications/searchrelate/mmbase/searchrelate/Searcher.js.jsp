@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.12 2008-04-08 08:48:28 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.13 2008-04-08 09:24:01 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -22,7 +22,7 @@ $(document).ready(function(){
 
 
 function MMBaseLogger(area) {
-    this.logEnabled   = false;
+    this.logEnabled   = true;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -118,23 +118,6 @@ MMBaseRelater.prototype.commit = function(el) {
 }
 
 
-/**
- * Moves a node from the list of related nodes to the 'unrelated' repository.
- */
-MMBaseRelater.prototype.unrelate = function(el) {
-    var number = $(el).find("td.node.number")[0].textContent;
-    if (typeof(this.related[number]) == "undefined") {
-	this.unrelated[number] = el;
-    }
-    this.related[number] = null;
-    $(el).parents("div.mm_related").find("table.searchresult tbody").append(el);
-    $(el).unbind();
-    var searcher = this;
-    $(el).click(function() {
-	searcher.relate(this)
-    });
-}
-
 
 MMBaseRelater.prototype.getNumbers = function(map) {
     var numbers = "";
@@ -157,6 +140,13 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
 		return false;
 	    })});
     }
+    if (type == "current") {
+	$(rep).find("tr.click").each(function() {
+	    $(this).click(function() {
+		self.unrelate(this);
+		return false;
+	    })});
+    }
 }
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
@@ -164,27 +154,68 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
 MMBaseRelater.prototype.relate = function(el) {
     var number = $(el).find("td.node.number")[0].textContent;
 
-    $(el).addClass("new");
 
+    // Set up data
     if (typeof(this.unrelated[number]) == "undefined") {
 	this.related[number] = el;
     }
     this.logger.debug("Found number to relate " + number + "+" + this.getNumbers(this.related));
     this.unrelated[number] = null;
 
+    // Set up HTML
     var current =  $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody");
     this.logger.debug(current[0]);
-    $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody").append(el);
+    current.append(el);
 
-    $(el).parents("div.mm_related").find("div.mm_relate_current")[0].searcher.resetTrClasses();
-    $(el).parents("div.mm_related").find("div.mm_relate_repository")[0].searcher.resetTrClasses();
+    // Classes
+    $(el).removeClass("removed");
+    $(el).addClass("new");
+    this.resetTrClasses();
+
+    // Events
     $(el).unbind();
-    var searcher = this;
+    var self = this;
     $(el).click(function() {
-	searcher.unrelate(this);
+	self.unrelate(this);
     });
 }
 
+
+MMBaseRelater.prototype.resetTrClasses  = function() {
+    $(this.div).find("div.mm_relate_current")[0].searcher.resetTrClasses();
+    $(this.div).find("div.mm_relate_repository")[0].searcher.resetTrClasses();
+
+}
+
+
+/**
+ * Moves a node from the list of related nodes to the 'unrelated' repository.
+ */
+MMBaseRelater.prototype.unrelate = function(el) {
+    var number = $(el).find("td.node.number")[0].textContent;
+
+    // Set up data
+    if (typeof(this.related[number]) == "undefined") {
+	this.unrelated[number] = el;
+    }
+    this.related[number] = null;
+
+    // Set up HTML
+    var repository =  $(el).parents("div.mm_related").find("div.mm_relate_repository table.searchresult tbody");
+    repository.append(el);
+
+    // Classes
+    $(el).removeClass("new");
+    $(el).addClass("removed");
+    this.resetTrClasses();
+
+    // Events
+    $(el).unbind();
+    var searcher = this;
+    $(el).click(function() {
+	searcher.relate(this)
+    });
+}
 
 
 
@@ -220,9 +251,9 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 	this.searchResults = {};
 	this.value = newSearch;
     }
-    var searchAnchor = $(el).parents(".searchable").find("> a.search")[0];
+    var searchAnchor = $(el).parents(".searchable").find("a.search")[0];
     var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
-    var rep = $(this.div).find("> div")[0]
+    var rep = $(this.div).find("div.searchresult")[0]
 
     var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
     var params = {id: id, offset: offset, search: this.value, pagesize: this.pagesize};
