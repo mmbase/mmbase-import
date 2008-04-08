@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.14 2008-04-08 12:56:19 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.15 2008-04-08 15:19:33 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -46,9 +46,14 @@ function MMBaseRelater(d) {
     this.related       = {};
     this.unrelated     = {};
     this.logger        = new MMBaseLogger();
+    this.logger.debug(d);
     this.logger.debug("setting up current");
     this.current       = $(d).find(".mm_relate_current")[0];
-    if (this.current != null) this.addSearcher(this.current, "current");
+    if (this.current != null) {
+	this.addSearcher(this.current, "current");
+    } else {
+	log.debug("No current rep found");
+    }
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
     if (this.repository != null) this.addSearcher(this.repository, "repository");
@@ -61,20 +66,21 @@ function MMBaseRelater(d) {
 MMBaseRelater.prototype.addSearcher = function(el, type) {
     var relater = this;
     if ($(el).hasClass("searchable")) {
+	var searcher =  new MMBaseSearcher(el, this, type, this.logger);
 	$(el).find("a.search").each(function() {
 	    var anchor = this;
-	    anchor.searcher = new MMBaseSearcher(el, relater, type, relater.logger);
+	    anchor.searcher = searcher;
 	    $(anchor).click(function(el) {
 		return this.searcher.search(anchor, 0);
 	    });
-	    if (relater.canUnrelate) {
-		$(parent).find("tr.click").each(function() {
-		    $(this).click(function() {
-			anchor.searcher.unrelate(this);
-			return false;
-		    })});
-	    }
 	});
+	if (this.canUnrelate) {
+	    $(el).find("tr.click").each(function() {
+		$(this).click(function() {
+		    anchor.searcher.unrelate(this);
+		    return false;
+		})});
+	}
     }
 }
 
@@ -85,37 +91,43 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
  */
 
 MMBaseRelater.prototype.commit = function(el) {
-    var a = el.target;
-    $(a).addClass("submitting");
-    $(a).removeClass("failed");
-    $(a).removeClass("succeeded");
-    this.logger.debug("Commiting changed relations of " + this.div.id);
-    var id = this.div.id;
-    var url = "${mm:link('/mmbase/searchrelate/relate.jspx')}";
-
     var relatedNumbers   = this.getNumbers(this.related);
     var unrelatedNumbers = this.getNumbers(this.unrelated);
 
-    this.logger.debug("+ " + relatedNumbers);
-    this.logger.debug("- " + unrelatedNumbers);
-    var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers};
-    if (this.transaction != null) {
-	params.transaction = this.transaction;
-    }
-    $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
-	    complete: function(res, status){
-		$(a).removeClass("submitting");
-		if (status == "success") {
-		    //console.log("" + res);
-		    $(a).addClass("succeeded");
-		    return true;
-		} else {
-		    $(a).addClass("failed");
-		    return false;
+    $(a).addClass("submitting");
+    $(a).removeClass("failed");
+    $(a).removeClass("succeeded");
+    if (relatedNumbers != "" || unrelatedNumbers != "") {
+	var a = el.target;
+	this.logger.debug("Commiting changed relations of " + this.div.id);
+	var id = this.div.id;
+	var url = "${mm:link('/mmbase/searchrelate/relate.jspx')}";
+
+	this.logger.debug("+ " + relatedNumbers);
+	this.logger.debug("- " + unrelatedNumbers);
+	var params = {id: id, related: relatedNumbers, unrelated: unrelatedNumbers};
+	if (this.transaction != null) {
+	    params.transaction = this.transaction;
+	}
+	$.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
+		complete: function(res, status){
+		    $(a).removeClass("submitting");
+		    if (status == "success") {
+			//console.log("" + res);
+			$(a).addClass("succeeded");
+			return true;
+		    } else {
+			$(a).addClass("failed");
+			return false;
+		    }
 		}
-	    }
-	   });
+	       });
+    } else {
+	this.logger.debug("No changes, no need to commit");
+	$(a).addClass("succeeded");
+    }
 }
+
 
 
 
@@ -142,12 +154,24 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
     }
     if (type == "current") {
 	$(rep).find("tr.click").each(function() {
-	    $(this).click(function() {
-		self.unrelate(this);
-		return false;
-	    })});
+	    if ($(this).hasClass("new") || (self.relater != null && self.relater.canUnrelate)) {
+		$(this).click(function() {
+		    self.unrelate(this);
+		    return false;
+		})
+	    }
+	});
     }
 }
+
+
+MMBaseRelater.prototype.resetTrClasses  = function() {
+    $(this.div).find("div.mm_relate_current")[0].searcher.resetTrClasses();
+    $(this.div).find("div.mm_relate_repository")[0].searcher.resetTrClasses();
+
+}
+
+
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
  */
@@ -168,8 +192,11 @@ MMBaseRelater.prototype.relate = function(el) {
     current.append(el);
 
     // Classes
-    $(el).removeClass("removed");
-    $(el).addClass("new");
+    if ($(el).hasClass("removed")) {
+	$(el).removeClass("removed");
+    } else {
+	$(el).addClass("new");
+    }
     this.resetTrClasses();
 
     // Events
@@ -180,12 +207,6 @@ MMBaseRelater.prototype.relate = function(el) {
     });
 }
 
-
-MMBaseRelater.prototype.resetTrClasses  = function() {
-    $(this.div).find("div.mm_relate_current")[0].searcher.resetTrClasses();
-    $(this.div).find("div.mm_relate_repository")[0].searcher.resetTrClasses();
-
-}
 
 
 /**
@@ -201,12 +222,15 @@ MMBaseRelater.prototype.unrelate = function(el) {
     this.related[number] = null;
 
     // Set up HTML
-    var repository =  $(el).parents("div.mm_related").find("div.mm_relate_repository table.searchresult tbody");
+    var repository =  $(this.div).find("div.mm_relate_repository div.searchresult table tbody");
     repository.append(el);
 
     // Classes
-    $(el).removeClass("new");
-    $(el).addClass("removed");
+    if ($(el).hasClass("new")) {
+	$(el).removeClass("new");
+    } else {
+	$(el).addClass("removed");
+    }
     this.resetTrClasses();
 
     // Events
