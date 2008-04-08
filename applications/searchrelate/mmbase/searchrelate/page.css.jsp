@@ -16,6 +16,14 @@
 .searchresult tbody tr.odd {
   background-color: #fff;
 }
+
+.searchresult tbody tr.even.new {
+  background-color: #ded;
+}
+.searchresult tbody tr.odd.new {
+  background-color: #efe;
+}
+
 .searchresult tbody tr:hover {
   cursor: pointer;
 }

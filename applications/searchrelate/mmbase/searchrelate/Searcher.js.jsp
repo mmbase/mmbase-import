@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.11 2008-04-07 16:36:26 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.12 2008-04-08 08:48:28 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -23,7 +23,7 @@ $(document).ready(function(){
 
 function MMBaseLogger(area) {
     this.logEnabled   = false;
-    this.traceEnabled = false;
+    /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
 
@@ -163,11 +163,15 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
  */
 MMBaseRelater.prototype.relate = function(el) {
     var number = $(el).find("td.node.number")[0].textContent;
+
+    $(el).addClass("new");
+
     if (typeof(this.unrelated[number]) == "undefined") {
 	this.related[number] = el;
     }
     this.logger.debug("Found number to relate " + number + "+" + this.getNumbers(this.related));
     this.unrelated[number] = null;
+
     var current =  $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody");
     this.logger.debug(current[0]);
     $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody").append(el);
@@ -224,9 +228,9 @@ MMBaseSearcher.prototype.search = function(el, offset) {
     var params = {id: id, offset: offset, search: this.value, pagesize: this.pagesize};
 
     var result = this.searchResults["" + offset];
-    var self = this;
     $(rep).empty();
     if (result == null) {
+	var self = this;
 	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
@@ -235,6 +239,7 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 			$(rep).empty();
 			$(rep).append($(result).find("> *"));
 			self.searchResults["" + offset] = result;
+			self.addNewlyRelated(rep);
 			self.bindEvents(rep);
 
 		    }
@@ -243,11 +248,23 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 	$(rep).append($("<p>Searching</p>"));
     } else {
 	this.logger.debug("reusing " + offset);
-	self.logger.debug(rep);
+	this.logger.debug(rep);
 	$(rep).append($(result).find("> *"));
-	self.bindEvents(rep);
+	this.addNewlyRelated(rep);
+	this.bindEvents(rep);
     }
     return false;
+}
+
+MMBaseSearcher.prototype.addNewlyRelated = function(rep) {
+    if (this.relater != null && this.type == "current") {
+	this.logger.debug("adding newly related");
+	this.logger.debug(this.relater.related);
+	this.logger.debug("Appending related " + $(rep).find("table.searchresult tbody")[0]);
+	$.each(this.relater.related, function(key, value) {
+	    $(rep).find("table.searchresult tbody").append(value);
+	});
+    }
 }
 
 MMBaseSearcher.prototype.bindEvents = function() {
