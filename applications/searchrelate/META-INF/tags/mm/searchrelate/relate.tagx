@@ -49,10 +49,16 @@
     </c:if>
     <div  class="mm_relate_current searchable">
       <jsp:invoke fragment="currentTitle" />
-      <div class="searchform">
-        <a href="#mm_related_${seq}_current" class="search">Search</a>
-        <input  value="" />
-      </div>
+      <mm:listnodescontainer clone="current">
+        <mm:size>
+          <mm:isgreaterthan value="${pagesize}">
+            <div class="searchform">
+              <a href="#mm_related_${seq}_current" class="search">Search</a>
+              <input  value="" />
+            </div>
+          </mm:isgreaterthan>
+        </mm:size>
+      </mm:listnodescontainer>
       <mm:include page="/mmbase/searchrelate/page.jspx">
         <c:if test="${! empty pagesize}">
           <mm:param name="pagesize" referid="pagesize" />
