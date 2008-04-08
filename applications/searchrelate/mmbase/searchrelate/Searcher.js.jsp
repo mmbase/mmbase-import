@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.15 2008-04-08 15:19:33 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.16 2008-04-08 16:26:28 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -171,17 +171,21 @@ MMBaseRelater.prototype.resetTrClasses  = function() {
 
 }
 
+MMBaseRelater.prototype.getNumber = function(tr) {
+    return  $(tr).find("td.node.number")[0].textContent;
+}
+
 
 /**
  * Moves a node from the 'unrelated' repository to the list of related nodes.
  */
-MMBaseRelater.prototype.relate = function(el) {
-    var number = $(el).find("td.node.number")[0].textContent;
+MMBaseRelater.prototype.relate = function(tr) {
+    var number = this.getNumber(tr);
 
 
     // Set up data
     if (typeof(this.unrelated[number]) == "undefined") {
-	this.related[number] = el;
+	this.related[number] = tr;
     }
     this.logger.debug("Found number to relate " + number + "+" + this.getNumbers(this.related));
     this.unrelated[number] = null;
@@ -189,20 +193,20 @@ MMBaseRelater.prototype.relate = function(el) {
     // Set up HTML
     var current =  $(this.div).find("div.mm_relate_current div.searchresult table tbody");
     this.logger.debug(current[0]);
-    current.append(el);
+    current.append(tr);
 
     // Classes
-    if ($(el).hasClass("removed")) {
-	$(el).removeClass("removed");
+    if ($(tr).hasClass("removed")) {
+	$(tr).removeClass("removed");
     } else {
-	$(el).addClass("new");
+	$(tr).addClass("new");
     }
     this.resetTrClasses();
 
     // Events
-    $(el).unbind();
+    $(tr).unbind();
     var self = this;
-    $(el).click(function() {
+    $(tr).click(function() {
 	self.unrelate(this);
     });
 }
@@ -212,31 +216,31 @@ MMBaseRelater.prototype.relate = function(el) {
 /**
  * Moves a node from the list of related nodes to the 'unrelated' repository.
  */
-MMBaseRelater.prototype.unrelate = function(el) {
-    var number = $(el).find("td.node.number")[0].textContent;
+MMBaseRelater.prototype.unrelate = function(tr) {
+    var number = this.getNumber(tr);
 
     // Set up data
     if (typeof(this.related[number]) == "undefined") {
-	this.unrelated[number] = el;
+	this.unrelated[number] = tr;
     }
     this.related[number] = null;
 
     // Set up HTML
     var repository =  $(this.div).find("div.mm_relate_repository div.searchresult table tbody");
-    repository.append(el);
+    repository.append(tr);
 
     // Classes
-    if ($(el).hasClass("new")) {
-	$(el).removeClass("new");
+    if ($(tr).hasClass("new")) {
+	$(tr).removeClass("new");
     } else {
-	$(el).addClass("removed");
+	$(tr).addClass("removed");
     }
     this.resetTrClasses();
 
     // Events
-    $(el).unbind();
+    $(tr).unbind();
     var searcher = this;
-    $(el).click(function() {
+    $(tr).click(function() {
 	searcher.relate(this)
     });
 }
@@ -295,6 +299,7 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 			$(rep).append($(result).find("> *"));
 			self.searchResults["" + offset] = result;
 			self.addNewlyRelated(rep);
+			self.deleteNewlyRemoved(rep);
 			self.bindEvents(rep);
 
 		    }
@@ -304,11 +309,40 @@ MMBaseSearcher.prototype.search = function(el, offset) {
     } else {
 	this.logger.debug("reusing " + offset);
 	this.logger.debug(rep);
+	var self = this;
 	$(rep).append($(result).find("> *"));
 	this.addNewlyRelated(rep);
+	self.deleteNewlyRemoved(rep);
 	this.bindEvents(rep);
     }
     return false;
+}
+
+MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
+    var self = this;
+    var deleted = false;
+    if (this.relater != null && this.type == "repository") {
+	$(rep).find("tr.click").each(function() {
+	    if (self.filter(this)) {
+		document.createElement("removed").appendChild(this);
+		deleted = true;
+	    }
+	});
+    }
+    if (deleted) {
+	this.resetTrClasses();
+    }
+
+}
+
+
+MMBaseSearcher.prototype.filter = function(tr) {
+    if (this.type == "repository" && this.relater != null) {
+	var number = this.relater.getNumber(tr);
+	return this.relater.related[number] != null; // if already related, don't show again
+    } else {
+	return false;
+    }
 }
 
 MMBaseSearcher.prototype.addNewlyRelated = function(rep) {
