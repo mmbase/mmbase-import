@@ -9,6 +9,7 @@
     <mm:import externid="id" required="true" />
     <mm:import externid="search" />
     <mm:import externid="pagesize">10</mm:import>
+    <mm:import externid="maxpages">20</mm:import>
     <mm:import from="session" externid="${id}" id="query" required="true" />
     <mm:import externid="offset" vartype="integer">0</mm:import>
     <mm:listnodescontainer id="b" clone="query">
@@ -37,14 +38,24 @@
         <tfoot>
           <tr>
             <td colspan="${colcount + 2}">
-              <mm:previousbatches>
+              <mm:previousbatches maxtotal="${maxpages}" indexoffset="1">
+                <mm:first>
+                  <mm:index>
+                    <mm:compare value="1" inverse="true">...</mm:compare>
+                  </mm:index>
+                </mm:first>
                 <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
                 <jsp:text>, </jsp:text>
               </mm:previousbatches>
-              <mm:index />
-              <mm:nextbatches>
+              <mm:index offset="1" />
+              <mm:nextbatches maxtotal="${maxpages}" indexoffset="1">
                 <jsp:text>, </jsp:text>
                 <a class="navigate" href="${'#'}${id}_${_}" name="${_}"><mm:index /></a>
+                <mm:last>
+                  <mm:index>
+                    <mm:compare value="${maxpages}">...</mm:compare>
+                  </mm:index>
+                </mm:last>
               </mm:nextbatches>
             </td>
           </tr>

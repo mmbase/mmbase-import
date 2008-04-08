@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.13 2008-04-08 09:24:01 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.14 2008-04-08 12:56:19 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -22,7 +22,7 @@ $(document).ready(function(){
 
 
 function MMBaseLogger(area) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -163,7 +163,7 @@ MMBaseRelater.prototype.relate = function(el) {
     this.unrelated[number] = null;
 
     // Set up HTML
-    var current =  $(el).parents("div.mm_related").find("div.mm_relate_current table.searchresult tbody");
+    var current =  $(this.div).find("div.mm_relate_current div.searchresult table tbody");
     this.logger.debug(current[0]);
     current.append(el);
 
@@ -253,7 +253,7 @@ MMBaseSearcher.prototype.search = function(el, offset) {
     }
     var searchAnchor = $(el).parents(".searchable").find("a.search")[0];
     var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
-    var rep = $(this.div).find("div.searchresult")[0]
+    var rep = $(el).parents(".searchable").find("div.searchresult")[0]
 
     var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
     var params = {id: id, offset: offset, search: this.value, pagesize: this.pagesize};
@@ -291,9 +291,9 @@ MMBaseSearcher.prototype.addNewlyRelated = function(rep) {
     if (this.relater != null && this.type == "current") {
 	this.logger.debug("adding newly related");
 	this.logger.debug(this.relater.related);
-	this.logger.debug("Appending related " + $(rep).find("table.searchresult tbody")[0]);
+	this.logger.debug("Appending related " + $(rep).find("table tbody")[0]);
 	$.each(this.relater.related, function(key, value) {
-	    $(rep).find("table.searchresult tbody").append(value);
+	    $(rep).find("table tbody").append(value);
 	});
     }
 }
@@ -314,7 +314,7 @@ MMBaseSearcher.prototype.bindEvents = function() {
 
 MMBaseSearcher.prototype.resetTrClasses = function() {
     var i = 0;
-    $(this.div).find("table.searchresult tbody tr").each(function() {
+    $(this.div).find("div.searchresult table tbody tr").each(function() {
 	$(this).removeClass("odd");
 	$(this).removeClass("even");
 	$(this).addClass(i % 2 == 0 ? "even" : "odd");
