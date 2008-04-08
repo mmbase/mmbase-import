@@ -1,4 +1,5 @@
 <div
+    class="searchresult"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
@@ -22,7 +23,7 @@
       </c:if>
       <mm:maxnumber value="${pagesize}" />
       <mm:offset value="${offset}" />
-      <table class="searchresult" summary="Search results for ${search}">
+      <table summary="Search results for ${search}">
         <thead>
           <tr>
             <th class="node number">#</th>
@@ -58,7 +59,10 @@
                 <mm:nodeinfo type="gui" />
               </td>
               <mm:fieldlist type="list">
-                <td class="fields /${_field.name}/"><mm:fieldinfo type="guivalue" /></td>
+                <mm:fieldinfo type="name">
+                  <td class="fields ${_}"><mm:fieldinfo type="guivalue" />
+                  </td>
+                </mm:fieldinfo>
               </mm:fieldlist>
             </tr>
           </mm:listnodes>
