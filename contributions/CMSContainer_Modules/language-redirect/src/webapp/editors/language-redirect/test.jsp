@@ -75,7 +75,10 @@
 				   		</td>
 				   		<td>
 				   			<mm:import jspvar="id" vartype="Integer">${channel.id}</mm:import>
-			   				<%=com.finalist.cmsc.languageredirect.LanguageRedirectUtil.translate("en", id.intValue())%>
+				   			<%
+				   				try { out.print(com.finalist.cmsc.languageredirect.LanguageRedirectUtil.translate("en", id.intValue())); }
+			   					catch (Exception e) { out.print("<b>?? (Warning: language independent name not unique?)</b>"); }
+				   			%>
 			   			</td>
 			   		</tr>
 						
@@ -91,7 +94,10 @@
 					   		</td>
 					   		<td>
 					   			<mm:import jspvar="id" vartype="Integer">${subchannel.id}</mm:import>
-				   				<%=com.finalist.cmsc.languageredirect.LanguageRedirectUtil.translate("en", id.intValue())%>
+				   				<%
+				   					try { out.print(com.finalist.cmsc.languageredirect.LanguageRedirectUtil.translate("en", id.intValue())); }
+			   						catch (Exception e) { out.print("<b>?? (Warning: language independent name not unique?)</b>"); }
+				   				%>
 				   			</td>
 				   		</tr>
 							
