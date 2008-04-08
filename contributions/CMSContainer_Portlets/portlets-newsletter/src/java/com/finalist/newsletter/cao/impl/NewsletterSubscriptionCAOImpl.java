@@ -18,14 +18,14 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
-import com.finalist.community.DetailNewsletterInfo;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.cao.util.NewsletterSubscriptionUtil;
+import com.finalist.cmsc.services.community.person.Person;
 
 public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO {
-	CloudProvider provider = CloudProviderFactory.getCloudProvider();
-	private Cloud cloud =provider.getCloud() ;
+
+	private Cloud cloud;
 
 	/*public void setCloud(Cloud cloud) {
 		CloudProvider provider = CloudProviderFactory.getCloudProvider();
@@ -47,27 +47,31 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		{
 			Node node = it.next();
 			letter.setTitle(node.getStringValue("title"));
-			NodeManager tagManager = cloud.getNodeManager("tag");	
+			NodeManager tagManager = cloud.getNodeManager("tag");
 			NodeList taglist = node.getRelatedNodes(tagManager);
 			letter = NewsletterSubscriptionUtil.convertNodeListtoTagList(taglist, letter);
 			list.add(letter);
 		}
 		return list;
 	}
-	
-	public Newsletter getNewsletterById(int id) {
-		
+
+   public List<Person> getSubscribers(int newsletterId) {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+   }
+
+   public Newsletter getNewsletterById(int id) {
+
 		Newsletter newsletter = new Newsletter();
 		Node node = cloud.getNode(id);
 		newsletter = NewsletterSubscriptionUtil.populateNewsletter(node, newsletter);
-		NodeManager tagManager = cloud.getNodeManager("tag");	
+		NodeManager tagManager = cloud.getNodeManager("tag");
 		NodeList taglist = node.getRelatedNodes(tagManager);
 		newsletter = NewsletterSubscriptionUtil.convertNodeListtoTagList(taglist, newsletter);
 		return newsletter;
 	}
 
 	public NewsletterSubscriptionCAOImpl() {
-	
+
 	}
 
 	public List<Newsletter> getUserSubscriptionList(String userName)
@@ -110,7 +114,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 	}
 
 	public List<Node> querySubcriptionByUser(String userName) {
-		List<Node> results = null;  
+		List<Node> results = null;
 		NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
 	    NodeQuery query = cloud.createNodeQuery();
 		String subscriber = "subscriber";
@@ -122,30 +126,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				field, userName);
 		SearchUtil.addConstraint(query, titleConstraint);
 		return query.getList();
-	
-	}
 
-	public void addSubscriptionRecord(DetailNewsletterInfo detailNewsletterInfo) {
-		String nodeType = "subscriptionrecord";
-		NodeManager subscriptionrecordNodeManager = cloud
-				.getNodeManager(nodeType);
-		Node subscriptionrecordNode = subscriptionrecordNodeManager
-				.createNode();
-		subscriptionrecordNode.setStringValue("subscriber",
-				detailNewsletterInfo.getSubscriber());
-		subscriptionrecordNode.setStringValue("status", detailNewsletterInfo
-				.getStatus());
-		subscriptionrecordNode.setDateValue("interval", detailNewsletterInfo
-				.getInterval());
-		subscriptionrecordNode.setStringValue("newsletter",
-				detailNewsletterInfo.getNewsletter());
-		subscriptionrecordNode.setStringValue("tag", detailNewsletterInfo
-				.getTag());
-		subscriptionrecordNode.setStringValue("format", detailNewsletterInfo
-				.getFormat());
-		subscriptionrecordNode.commit();
-		detailNewsletterInfo
-				.setId(subscriptionrecordNode.getIntValue("number"));
 	}
 
 	public void updateSubscriptionRecord(Node node, String status) {
@@ -153,10 +134,5 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		node.commit();
 	}
 
-	public Node getUpdateNode(DetailNewsletterInfo detailNewsletterInfo) {
-		int nodeNumber = detailNewsletterInfo.getId();
-		Node node = cloud.getNode(nodeNumber);
-		return node;
-	}
 
 }
