@@ -10,7 +10,6 @@
       <mm:import externid="id" required="true" />
       <mm:import externid="related"   vartype="list" required="true" />
       <mm:import externid="unrelated" vartype="list" required="true" />
-      <mm:import from="session" externid="${id}" id="query" required="true" />
       <mm:import from="session" externid="${id}_current" id="current" required="true" jspvar="current" vartype="org.mmbase.bridge.Query" />
       <mm:import externid="transaction" />
       <mm:isempty referid="transaction">
