@@ -14,7 +14,7 @@ foreach $file (@ARGV) {
 
 print "Testing for XML DTD compliance:$files\n";
 if ($files ne "") {
-  @output = `SGML_CATALOG_FILES=/usr/share/sgml/docbook/xmlcatalog:/usr/share/sgml/docbook/dtd/xml/4.1.2/catalog.xml /usr/bin/xmllint --valid --noout $files 2>&1`;
+  @output = `SGML_CATALOG_FILES=/usr/share/sgml/docbook/xmlcatalog:/usr/share/sgml/docbook/dtd/xml/4.1.2/catalog.xml /usr/bin/xmllint --noout $files 2>&1`;
   for $line (@output) {
     print STDERR $line;
   }
