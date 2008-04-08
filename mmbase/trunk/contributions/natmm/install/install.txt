@@ -14,7 +14,7 @@ A. How to install NatMM (Natuurmonumenten internet)
 
 3. copy the ant war.natmm.internet to your tomcat webapps directory
 
-4. make sure you have a appropriate mysql connector jar in your tomcat common/lib directory
+4. make sure you have an appropriate mysql connector jar in your tomcat common/lib directory
 
 5. in case you use an already existing database, you are ready to run the application:
    http://[HOST]:[PORT]/natmm-internet/
@@ -35,7 +35,7 @@ B. How to install NMIntra (Natuurmonumenten intranet)
 
 3. copy the ant war.natmm.intranet to your tomcat webapps directory
 
-4. make sure you have a appropriate mysql connector jar in your tomcat common/lib directory
+4. make sure you have an appropriate mysql connector jar in your tomcat common/lib directory
 
 5. in case you use an already existing database, you are ready to run the application:
    http://[HOST]:[PORT]/natmm-intranet/
