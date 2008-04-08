@@ -1,14 +1,8 @@
 #!/usr/bin/perl
-
-
-# Michiel: not yet used, but we propose to do it soon (when xmllint is available)
-# 
-# <Gullie> commitinfo:^eo/docs   $CVSROOT/CVSROOT/xmlvalidate.xml
-
 $module_dir = shift @ARGV;
 
 foreach $file (@ARGV) {
-  if ($file =~ m/xml$/ && $file !~ m/build.xml/) {
+  if ($file =~ m/\.(xml|jspx|xsl|xslt|tagx|tld)$/) {
     if (open FIL, "<$file") {
       close FIL;
       $files .= " $file";
