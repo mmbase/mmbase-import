@@ -5,7 +5,9 @@
     xmlns:mm-sr="http://www.mmbase.org/tags/mm/searchrelate"
     class="drawer">
   <!--
+
     xmlns:mm-sr="urn:jsptagdir:/WEB-INF/tags/mm/searchrelate/"
+
     -->
   <jsp:output omit-xml-declaration="true" />
   <h1><a href="#example1">Example1</a></h1>
@@ -17,7 +19,10 @@
     </mm:relatednodescontainer>
     <mm:listnodescontainer type="news" id="repository" />
     <a id="submit1" class="submit">Submit</a>
-    <mm-sr:relate repository="${repository}" current="${current}" submit="#submit1" pagesize="3"/>
+    <mm-sr:relate repository="${repository}" current="${current}" submit="#submit1" pagesize="3">
+      <jsp:attribute name="currentTitle"><h1>Currently Related</h1></jsp:attribute>
+      <jsp:attribute name="repositoryTitle"><h1>All nodes of type news</h1></jsp:attribute>
+    </mm-sr:relate>
 
   </div>
 
