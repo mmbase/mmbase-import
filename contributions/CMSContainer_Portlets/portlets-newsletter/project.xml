@@ -59,6 +59,15 @@
 			<version>${cmsc.version}</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+	      <groupId>hibernate</groupId>
+	      <artifactId>ejb3-persistence</artifactId>
+	      <version>3.0</version>
+	      <type>jar</type>
+	      <properties>
+	        <war.bundle>${war.bundle}</war.bundle>
+	      </properties>
+	    </dependency>
 	</dependencies>
 </project>
 
