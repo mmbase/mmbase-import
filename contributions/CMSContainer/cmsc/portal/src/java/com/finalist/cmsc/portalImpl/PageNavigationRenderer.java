@@ -72,7 +72,6 @@ public class PageNavigationRenderer implements NavigationItemRenderer {
             if (portlet != null) {
                PortletDefinition definition = SiteManagement.getPortletDefinition(portlet.getDefinition());
                View view = SiteManagement.getView(portlet.getView());
-
                PortletFragment pf = new PortletFragment(sc, sf, layoutId, portlet, definition, view);
                if (pf != null) {
                   sf.addChild(pf);
