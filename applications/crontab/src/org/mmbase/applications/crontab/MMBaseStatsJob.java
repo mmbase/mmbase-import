@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * The configuration string is one of the following
  <ul>
   <li>MEMORY: Logs free and total memory</li>
-  <li>CACHE.&lt;cache-name&gt;: Logs hits and total request of cache with given name</li>
+  <li>CACHE.&lt;cache-name&gt;: Logs hits,  total number of requests and size  of cache with given name</li>
  </ul>
 In log4j.xml you may add something like this:
 <pre>
@@ -38,7 +38,7 @@ and:
   &lt;/logger&gt;
 </pre>
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseStatsJob.java,v 1.4 2006-06-23 18:11:56 michiel Exp $
+ * @version $Id: MMBaseStatsJob.java,v 1.4.2.1 2008-04-10 09:18:43 michiel Exp $
  */
 
 public class MMBaseStatsJob extends AbstractCronJob  {
@@ -69,9 +69,9 @@ public class MMBaseStatsJob extends AbstractCronJob  {
         } else if (w.equals("JOBSPOOL")) {
             job = new Runnable() {
                     public void run() {
-                        edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor j = 
+                        edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor j =
                             (edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor) ThreadPools.jobsExecutor;
-                        statsLogger.service("" + j.getCompletedTaskCount() + '\t' + j.getActiveCount() + '\t'+ j.getQueue().size() + '\t' + 
+                        statsLogger.service("" + j.getCompletedTaskCount() + '\t' + j.getActiveCount() + '\t'+ j.getQueue().size() + '\t' +
                                             j.getPoolSize() + '\t' + j.getLargestPoolSize() + '\t' + j.getCorePoolSize() + '\t' + j.getMaximumPoolSize());
                     }
                 };
@@ -87,7 +87,7 @@ public class MMBaseStatsJob extends AbstractCronJob  {
                         if (cache == null) cache = getCache();
                         if (cache != null) {
                             int h = cache.getHits();
-                            statsLogger.service("" +  h + "\t" + (h + cache.getMisses()));
+                            statsLogger.service("" +  h + "\t" + (h + cache.getMisses()) + "\t" + cache.size());
                         }
                     }
                 };
