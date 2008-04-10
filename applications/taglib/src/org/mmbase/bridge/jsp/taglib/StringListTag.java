@@ -22,7 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.32 2006-07-28 11:31:22 michiel Exp $
+ * @version $Id: StringListTag.java,v 1.32.2.1 2008-04-10 16:24:11 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -37,6 +37,7 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
     protected Attribute  add= Attribute.NULL;
     protected Attribute  retain = Attribute.NULL;
     protected Attribute  remove = Attribute.NULL;
+    protected Attribute  varStatus = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -85,6 +86,10 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
         comparator = getAttribute(c);
     }
 
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = getAttribute(s);
+    }
+
     /**
      * Lists do implement ContextProvider
      */
@@ -125,6 +130,10 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
 
         collector = new ContextCollector(getContextProvider());
 
+        if (varStatus != Attribute.NULL) {
+            org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = this.getContextProvider().getContextContainer();
+            cc.register(varStatus.getString(this), new ListProviderLoopTagStatus(this));
+        }
 
         helper.overrideWrite(false); // default behavior is not to write to page
 
@@ -231,11 +240,15 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             collector.release(pageContext, getContextProvider().getContextContainer());
             collector  = null;
         }
+        if (varStatus != Attribute.NULL) {
+            getContextProvider().getContextContainer().unRegister(varStatus.getString(this));
+        }
+
         bodyContent = null;
         helper.doEndTag();
         return  super.doEndTag();
     }
-    
+
     public void doFinally() {
         returnList = null;
         iterator   = null;
