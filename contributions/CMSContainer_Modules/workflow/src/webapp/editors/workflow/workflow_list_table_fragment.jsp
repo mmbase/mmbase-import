@@ -11,8 +11,8 @@
             <fmt:message key="workflow.title"/>
          </a>
       </th>
-      <th style="width: 68px;"><fmt:message key="workflow.type"/></th>
-      <th style="width: 68px;"><fmt:message key="workflow.number"/></th>
+      <th style="width: 68px;"><a href="#" <%=onClickandStyle(pageContext, "type")%>><fmt:message key="workflow.type"/></th>
+      <th style="width: 68px;"><a href="#" <%=onClickandStyle(pageContext, "number")%>><fmt:message key="workflow.number"/></th>
       <th style="width: 50px;">
          <a href="#" <%=onClickandStyle(pageContext, "remark")%>><fmt:message key="workflow.remark"/></a>
       </th>
