@@ -1,21 +1,11 @@
 package com.finalist.newsletter.publisher;
 
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.util.Date;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.Message.RecipientType;
-import javax.mail.internet.InternetAddress;
-
+import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.generator.NewsletterGenerator;
+import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
+import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
+import com.finalist.newsletter.util.NewsletterUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -23,12 +13,16 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.newsletter.generator.NewsletterGenerator;
-import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
-import com.finalist.newsletter.util.NewsletterPublicationUtil;
-import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.cmsc.services.community.person.Person;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class NewsletterPublisher extends Thread {
 
@@ -52,12 +46,10 @@ public class NewsletterPublisher extends Thread {
       }
    }
 
-   private Message generateNewsletter(String userName, int publicationNumber,
-         String mimeType) {
+   private Message generateNewsletter(String userName, int publicationNumber, String mimeType) {
       NewsletterGeneratorFactory factory = NewsletterGeneratorFactory
             .getInstance();
-      NewsletterGenerator generator = factory.getNewsletterGenerator(
-            publicationNumber, mimeType);
+      NewsletterGenerator generator = factory.getNewsletterGenerator(publicationNumber, mimeType);
       if (generator != null) {
          Message message = generator.generateNewsletterMessage(userName);
          return (message);
@@ -78,8 +70,7 @@ public class NewsletterPublisher extends Thread {
    private void sendNewsletter(Node publicationNode, String userName) {
       String mimeType = NewsletterSubscriptionUtil
             .getPreferredMimeType(userName);
-      Message message = generateNewsletter(userName, publicationNumber,
-            mimeType);
+      Message message = generateNewsletter(userName, publicationNumber, mimeType);
 
       try {
          message = setMailHeaders(publicationNode, userName, message);
@@ -95,17 +86,14 @@ public class NewsletterPublisher extends Thread {
       }
    }
 
-   private Message setMailHeaders(Node publicationNode, String userName,
-         Message message) throws MessagingException,
-         UnsupportedEncodingException {
+   private Message setMailHeaders(Node publicationNode, String userName, Message message) throws MessagingException, UnsupportedEncodingException {
 
       String emailFrom = null;
       String nameFrom = null;
       String emailReplyTo = null;
       String nameReplyTo = null;
 
-      Node newsletterNode = SearchUtil.findRelatedNode(publicationNode,
-            "newsletter", "related");
+      Node newsletterNode = SearchUtil.findRelatedNode(publicationNode, "newsletter", "related");
       if (newsletterNode != null) {
          emailFrom = newsletterNode.getStringValue("from_mail");
          nameFrom = newsletterNode.getStringValue("from_name");
@@ -138,7 +126,8 @@ public class NewsletterPublisher extends Thread {
             fromAddress.setPersonal(nameFrom);
          }
          message.setFrom(fromAddress);
-      } else {
+      }
+      else {
          return (null);
       }
 
@@ -150,7 +139,8 @@ public class NewsletterPublisher extends Thread {
          InternetAddress[] addresses = new InternetAddress[1];
          addresses[0] = replyToAddress;
          message.setReplyTo(addresses);
-      } else {
+      }
+      else {
          return (null);
       }
 
@@ -200,8 +190,7 @@ public class NewsletterPublisher extends Thread {
       String locale = Locale.getDefault().getDisplayCountry();
       Locale loc = new Locale(locale);
 
-      DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-            DateFormat.SHORT, loc);
+      DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, loc);
       formatter.setTimeZone(tz);
       String currentDate = formatter.format(date);
 
@@ -211,7 +200,7 @@ public class NewsletterPublisher extends Thread {
       publicationNode.commit();
    }
 
-   public void deliver(int id,List<Person> persons){
-      
+   public void deliver(int id, List<Person> persons) {
+
    }
 }
