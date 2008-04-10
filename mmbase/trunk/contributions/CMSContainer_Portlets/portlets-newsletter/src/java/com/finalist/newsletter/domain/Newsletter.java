@@ -5,55 +5,61 @@ import java.util.Date;
 import java.util.List;
 
 public class Newsletter {
-	
-	private String format;
-	private String status;
-	private Date interval;
-	private List<Tag> tags = new ArrayList<Tag>();
-	private String title;
 
-	public List<Tag> getTags() {
-		return tags;
-	}
+   private String format;
+   private String status;
+   private Date interval;
+   private List<Tag> tags = new ArrayList<Tag>();
+   private String title;
+   private int number;
 
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
-	}
+   public int getNumber() {
+      return number;
+   }
 
-	public String getTitle() {
-		return title;
-	}
+   public void setNumber(int number) {
+      this.number = number;
+   }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+   public List<Tag> getTags() {
+      return tags;
+   }
 
-	public String getFormat() {
-		return format;
-	}
+   public void setTags(List<Tag> tags) {
+      this.tags = tags;
+   }
 
-	public void setFormat(String format) {
-		this.format = format;
-	}
+   public String getTitle() {
+      return title;
+   }
 
-	public Date getInterval() {
-		return interval;
-	}
+   public void setTitle(String title) {
+      this.title = title;
+   }
 
-	public void setInterval(Date interval) {
-		this.interval = interval;
-	}
+   public String getFormat() {
+      return format;
+   }
 
-	public String getStatus() {
-		return status;
-	}
+   public void setFormat(String format) {
+      this.format = format;
+   }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	
+   public Date getInterval() {
+      return interval;
+   }
 
-	
-	
+   public void setInterval(Date interval) {
+      this.interval = interval;
+   }
+
+   public String getStatus() {
+      return status;
+   }
+
+   public void setStatus(String status) {
+      this.status = status;
+   }
+
+
 }
