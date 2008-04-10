@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.mmbase.bridge.Cloud;
 
-import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices{
