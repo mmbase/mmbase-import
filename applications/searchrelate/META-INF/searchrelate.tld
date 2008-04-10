@@ -11,5 +11,10 @@
     <path>/META-INF/tags/mm/searchrelate/relate.tagx</path>
   </tag-file>
 
+  <tag-file>
+    <name>relatednodes</name>
+    <path>/META-INF/tags/mm/searchrelate/relatednodes.tagx</path>
+  </tag-file>
+
 
 </taglib>

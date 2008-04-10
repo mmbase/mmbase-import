@@ -45,6 +45,7 @@
             <mm:include page="example1.jspx" />
             <mm:include page="example2.jspx" />
             <mm:include page="example3.jspx" />
+            <mm:include page="example4.jspx" />
           </mm:node>
         </mm:hasnode>
       </mm:cloud>
