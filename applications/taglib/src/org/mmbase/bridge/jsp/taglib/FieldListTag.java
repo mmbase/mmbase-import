@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.61 2008-04-03 16:27:22 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.62 2008-04-10 15:55:20 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -224,7 +224,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
             }
 
-            if (type != Attribute.NULL) {
+            if (! "".equals(type.getString(this))) {
                 returnList = nodeManager.getFields(getType());
                 if (fields != Attribute.NULL) {
                     for (String fieldName : getFields()) {
