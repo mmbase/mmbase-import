@@ -18,19 +18,16 @@ body {
 }
 
 h1 {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.25em;
   color: #ED6F2C
 }
 
 h2 {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.1em;
   color: #ED6F2C
 }
 
 h3 {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1em;
   color: #ED6F2C
 }
@@ -48,7 +45,6 @@ a {
 }
 
 a.menubar:link {
-  font-family: Tahoma, Arial, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   color: #FFFFFF;
@@ -56,7 +52,6 @@ a.menubar:link {
 }
 
 a.menubar:visited {
-  font-family: Tahoma, Arial, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   color: #FFFFFF;
@@ -64,7 +59,6 @@ a.menubar:visited {
 }
 
 a.menubar:hover {
-  font-family: Tahoma, Arial, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   color: #FFFFFF;
@@ -72,7 +66,6 @@ a.menubar:hover {
 }
 
 a.menubar:active {
-  font-family: Tahoma, Arial, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   color: #FFFFFF;
@@ -88,7 +81,6 @@ a.menubar:active {
 }
 
 table.font {
-  font-family: Tahoma, Arial, Verdana, sans-serif;
   font-size: 1em;
   font-weight: normal;
   color: #000000;
@@ -169,7 +161,6 @@ table.pixellijn {
 /* ###### searchfield in menuline2 ###### */
 
 input.search {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   color: #000000;
@@ -390,7 +381,6 @@ div.ListStudents {
 a.users:link,
 a.users:visited,
 a.users:active  {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1em;
   font-weight: normal;
   color: #000000;
@@ -448,7 +438,6 @@ a.users:hover {
 }
 
 .titlebar {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   color: #000000;
@@ -465,7 +454,6 @@ a.users:hover {
 }
 
 .pathbar {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   color: #000000;
@@ -486,7 +474,6 @@ a.users:hover {
 a.path:link,
 a.path:visited,
 a.path:active  {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1em;
   font-weight: normal;
   color: #000000;
@@ -597,7 +584,6 @@ a.path:hover {
 a.treeNavigation:link,
 a.treeNavigation:visited,
 a.treeNavigation:active  {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.2em;
   font-weight: normal;
   color: #000000;
@@ -698,7 +684,6 @@ div.selectedContent a {
 /* ###### input fields ###### */
 
 input.forminput {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   width: 24em;
@@ -712,7 +697,6 @@ input.forminput {
 
 
 input.formbutton {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   color: #000;
@@ -727,7 +711,6 @@ input.formbutton.disabled {
 
 
 textarea.forminput {
-  font-family: arial, tahoma, verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   color: #000000;
@@ -739,7 +722,6 @@ textarea.forminput {
 }
 
 textarea {
-  font-family: arial, tahoma, verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   color: #000000;
@@ -750,7 +732,6 @@ textarea {
 }
 
 input {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   padding: 0em 0em 0em 0em
@@ -765,7 +746,6 @@ input.mm_validate.invalid {
 
 
 option {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1.1em;
   font-weight: normal;
   color: #000000;
@@ -776,7 +756,6 @@ option {
 /* ###### button ###### */
 
 .button1 {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 1em;
   font-weight: bold;
   width: 8em;
@@ -822,7 +801,6 @@ table.listTable {
 
 th.listHeader, .listTable tr th {
   background: #ED6F2C;
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   color : #000000;
   border: 2px solid #E7E7E7;
   font-size: 0.8em;
@@ -834,7 +812,6 @@ th.listHeader, .listTable tr th {
 
 td.listItem, .listTable tr td {
   background-color: #FFFFFF;
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   color : #000000;
   border: 2px solid #E7E7E7;
   font-size : 0.8em;
@@ -848,7 +825,6 @@ td.listItem, .listTable tr td {
 /* ###### text in folderbody of the forumcomponent ###### */
 
 a.forumlist:link {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 0.8em;
   font-weight: normal;
   color: #000000;
@@ -856,7 +832,6 @@ a.forumlist:link {
 }
 
 a.forumlist:visited {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 0.8em;
   font-weight: normal;
   color: #000000;
@@ -864,7 +839,6 @@ a.forumlist:visited {
 }
 
 a.forumlist:hover {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 0.8em;
   font-weight: normal;
   color: #000000;
@@ -872,7 +846,6 @@ a.forumlist:hover {
 }
 
 a.forumlist:active {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 0.8em;
   font-weight: normal;
   color: #000000;
@@ -882,7 +855,6 @@ a.forumlist:active {
 /* ###### level division help component backgroundcolor ###### */
 
 .subtable {
-  font-family: Arial, Tahoma, Verdana, sans-serif;
   font-size: 0.8em;
   color : #000000;
   padding-left : 3px;
