@@ -1,0 +1,26 @@
+<div
+    class="create"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+  <mm:content expires="0" type="application/xml">
+    <mm:cloud method="asis">
+      <mm:import externid="id" required="true" />
+      <mm:import from="session" externid="${id}" id="query" required="true" />
+
+      <table summary="Create node">
+        <mm:fieldlist nodetype="${query.nodeManager.name}" type="create">
+          <tr>
+            <th><mm:fieldinfo type="guiname" /></th>
+            <td>
+              <mm:fieldinfo type="input" />
+              <mm:fieldinfo type="errors" />
+            </td>
+          </tr>
+        </mm:fieldlist>
+      </table>
+    </mm:cloud>
+  </mm:content>
+</div>
