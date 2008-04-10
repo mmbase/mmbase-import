@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.54.2.1 2008-04-03 16:26:29 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.54.2.2 2008-04-10 15:54:26 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -93,7 +93,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else if ("all".equals(t)) {
             return  NodeManager.ORDER_NONE;
         } else {
-            throw new JspTagException("Unknown field order type " + t);
+            throw new JspTagException("Unknown field order type '" + t + "'");
         }
     }
 
@@ -171,7 +171,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      * @since MMBase-1.8.1
      */
     protected NodeManager getNodeManagerFromQuery(String id, boolean exception) throws JspTagException {
-        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, id, exception);
+        NodeQueryContainer qc = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, container.getString(this), exception);
         if (qc != null) {
             NodeQuery query = qc.getNodeQuery();
             return query.getNodeManager();
@@ -204,6 +204,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer, or Query-referrer
                 if (container != Attribute.NULL) {
                     nodeManager = getNodeManagerFromQuery(container.getString(this), true);
+                    if (nodeManager == null) {
+                        throw new JspTagException("Explicit container '" + container.getString(this) + "' for " + this + "' but no query container found");
+                    }
                 } else {
                     Node n = getNodeVar();
                     if (n == null) {
@@ -219,7 +222,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
             }
 
-            if (type != Attribute.NULL) {
+            if (! "".equals(type.getString(this))) {
                 returnList = nodeManager.getFields(getType());
                 if (fields != Attribute.NULL) {
                     Iterator i = getFields().iterator();
