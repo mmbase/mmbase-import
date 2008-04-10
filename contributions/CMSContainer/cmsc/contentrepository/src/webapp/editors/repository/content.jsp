@@ -115,7 +115,7 @@
 
 <c:set var="listSize" value="${elementCount}"/>
 <c:set var="offset" value="${param.offset}"/>
-<c:set var="extraparams" value="&parentchannel=${param.parentchannel}"/>
+<c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}"/>
 
 <%@ include file="../pages.jsp" %>
 
