@@ -23,7 +23,7 @@ import org.mmbase.bridge.*;
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.54.2.2 2008-04-10 15:54:26 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.54.2.3 2008-04-10 16:24:11 michiel Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider, QueryContainerReferrer {
 
@@ -42,6 +42,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     protected Attribute  retain = Attribute.NULL;
     protected Attribute  remove = Attribute.NULL;
     private  Attribute comparator = Attribute.NULL;
+    private  Attribute varStatus = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -74,6 +75,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
+    }
+
+    public void setVarStatus(String s) throws JspTagException {
+        varStatus = getAttribute(s);
     }
 
     public void setType(String t) throws JspTagException {
@@ -185,6 +190,11 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
      **/
     public int doStartTag() throws JspTagException{
         collector = new ContextCollector(getContextProvider());
+
+        if (varStatus != Attribute.NULL) {
+            org.mmbase.bridge.jsp.taglib.util.ContextContainer cc = this.getContextProvider().getContextContainer();
+            cc.register(varStatus.getString(this), new ListProviderLoopTagStatus(this));
+        }
 
         if (getReferid() != null) {
             if (nodeManagerAtt != Attribute.NULL || type != Attribute.NULL) {
@@ -314,6 +324,9 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), returnList, false);
+        }
+        if (varStatus != Attribute.NULL) {
+            getContextProvider().getContextContainer().unRegister(varStatus.getString(this));
         }
         super.doEndTag();
         return EVAL_PAGE;
