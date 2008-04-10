@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.1 2008-04-08 16:31:20 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.2 2008-04-10 14:59:24 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -54,11 +54,14 @@ function MMBaseRelater(d) {
     } else {
 	log.debug("No current rep found");
     }
+
+    if (typeof MMBaseValidator == "function") {
+	this.validator = new MMBaseValidator(this.div);
+    }
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
     if (this.repository != null) this.addSearcher(this.repository, "repository");
     this.canUnrelate = $(d).hasClass("can_unrelate");
-
 
 }
 
@@ -72,6 +75,13 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 	    anchor.searcher = searcher;
 	    $(anchor).click(function(el) {
 		return this.searcher.search(anchor, 0);
+	    });
+	});
+	$(el).find("a.create").each(function() {
+	    var anchor = this;
+	    anchor.searcher = searcher;
+	    $(anchor).click(function(el) {
+		return this.searcher.create(anchor);
 	    });
 	});
 	if (this.canUnrelate) {
@@ -263,9 +273,20 @@ function MMBaseSearcher(d, r, type, logger) {
     });
     this.searchResults = {};
     this.bindEvents();
+    this.validator = this.relater.validator;
 
 }
 
+
+MMBaseSearcher.prototype.getQueryId = function() {
+    var searchAnchor = $(this.div).find("a.search")[0];
+    var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
+    return id;
+}
+
+MMBaseSearcher.prototype.getResultDiv = function() {
+    return $(this.div).find("div.searchresult")[0]
+}
 
 /**
  * This method is called if somebody clicks on a.search.
@@ -279,12 +300,10 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 	this.searchResults = {};
 	this.value = newSearch;
     }
-    var searchAnchor = $(el).parents(".searchable").find("a.search")[0];
-    var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
-    var rep = $(el).parents(".searchable").find("div.searchresult")[0]
 
+    var rep = this.getResultDiv();
     var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
-    var params = {id: id, offset: offset, search: this.value, pagesize: this.pagesize};
+    var params = {id: this.getQueryId(), offset: offset, search: this.value, pagesize: this.pagesize};
 
     var result = this.searchResults["" + offset];
     $(rep).empty();
@@ -316,6 +335,24 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 	this.bindEvents(rep);
     }
     return false;
+}
+
+MMBaseSearcher.prototype.create = function () {
+    var rep = this.getResultDiv();
+    var url = "${mm:link('/mmbase/searchrelate/create.jspx')}";
+    var params = {id: this.getQueryId()};
+    var self = this;
+    $.ajax({url: url, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if ( status == "success") {
+		    result = res.responseText;
+		    $(rep).empty();
+		    $(rep).append($(result).find("> *"));
+		    self.validator.addValidation(rep);
+		}
+	    }
+	   });
+    $(rep).append($("<p>Creating</p>"));
 }
 
 MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
