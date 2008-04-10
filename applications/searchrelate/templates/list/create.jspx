@@ -1,0 +1,24 @@
+<jsp:root
+    version="2.0"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:rich="http://www.mmbase.org/tags/mm/rich"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    >
+  <jsp:output omit-xml-declaration="true" />
+
+  <mm:import externid="source" required="true" />
+  <mm:import externid="type">object</mm:import>
+  <mm:import externid="role">posrel</mm:import>
+  <mm:import externid="fields" />
+
+  <mm:cloud method="asis">
+    <mm:node id="source" referid="source" />
+    <mm:createnode type="${type}" id="d"  />
+    <mm:createrelation source="source" destination="d" role="${role}" />
+    <mm:node referid="d">
+      <mm:include page="li.jspx" referids="source,fields" />
+    </mm:node>
+  </mm:cloud>
+</jsp:root>
