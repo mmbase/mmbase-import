@@ -133,6 +133,11 @@
                     </di:leaf>
                   </mm:hasnode>
 
+                  <mm:listrelations role="posrel" orderby="posrel.pos"
+                                    type="learnobjects" searchdir="destination"
+                                    directions="down" max="1">
+                    <mm:field name="pos" write="false" id="maxpos" />
+                  </mm:listrelations>
                   <!-- create new learnblock item -->
                   <di:leaf
                       icon="new_education"
