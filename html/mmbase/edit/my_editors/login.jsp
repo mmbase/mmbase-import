@@ -6,13 +6,13 @@
 <%@ include file="inc/head.jsp" %>
   <link rel="stylesheet" href="<mm:url absolute="server" page="css/login.css" />" type="text/css" />
 </head>
-<body class="login">
+<body class="login" onload="document.loginbox.username.focus()">
 
 <mm:import externid="username" from="parameters" />
 <mm:import externid="reason">please</mm:import>
 <mm:import externid="referrer">index.jsp</mm:import>
 
-<form id="loginbox" method="post" action="<mm:url page="$referrer" />">
+<form id="loginbox" name="loginbox" method="post" action="<mm:url page="$referrer" />">
 <mm:compare referid="reason" value="failed">
   <div class="message">You failed to log in. Try again.</div>
 </mm:compare>
