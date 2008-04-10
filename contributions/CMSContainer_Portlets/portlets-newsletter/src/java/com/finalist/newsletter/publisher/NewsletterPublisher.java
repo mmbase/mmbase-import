@@ -23,13 +23,12 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.services.community.NewsletterCommunication;
 import com.finalist.newsletter.generator.NewsletterGenerator;
 import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.cmsc.services.community.person.Person;
 
 public class NewsletterPublisher extends Thread {
 
@@ -49,8 +48,7 @@ public class NewsletterPublisher extends Thread {
    private void createConfirmationList(List<String> subscribers) {
       for (int s = 0; s < subscribers.size(); s++) {
          String userName = subscribers.get(s);
-         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER,
-               String.valueOf(publicationNumber));
+//         NewsletterCommunication.setUserPreference(userName, UNSENT_NEWSLETTER,                  String.valueOf(publicationNumber));
       }
    }
 
@@ -68,8 +66,8 @@ public class NewsletterPublisher extends Thread {
    }
 
    private void removeFromConfirmationList(String userName) {
-      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER,
-            String.valueOf(publicationNumber));
+//      NewsletterCommunication.removeUserPreference(userName, UNSENT_NEWSLETTER,
+//            String.valueOf(publicationNumber));
    }
 
    @Override
@@ -115,24 +113,24 @@ public class NewsletterPublisher extends Thread {
          nameReplyTo = newsletterNode.getStringValue("replyto_name");
       }
 
-      if (emailFrom == null || emailFrom.length() == 0) {
-         emailFrom = PropertiesUtil.getProperty("newsletter.from.mail");
-         if (emailFrom == null || emailFrom.length() == 0) {
-            emailFrom = PropertiesUtil.getProperty("mail.system.email");
-         }
-      }
-
-      if (nameFrom == null || nameFrom.length() == 0) {
-         nameFrom = PropertiesUtil.getProperty("newsletter.from.name");
-      }
-
-      if (emailReplyTo == null || emailReplyTo.length() == 0) {
-         emailReplyTo = PropertiesUtil.getProperty("newsletter.replyto.mail");
-      }
-
-      if (nameReplyTo == null || nameReplyTo.length() == 0) {
-         nameReplyTo = PropertiesUtil.getProperty("newsletter.replyto.name");
-      }
+//      if (emailFrom == null || emailFrom.length() == 0) {
+//         emailFrom = PropertiesUtil.getProperty("newsletter.from.mail");
+//         if (emailFrom == null || emailFrom.length() == 0) {
+//            emailFrom = PropertiesUtil.getProperty("mail.system.email");
+//         }
+//      }
+//
+//      if (nameFrom == null || nameFrom.length() == 0) {
+//         nameFrom = PropertiesUtil.getProperty("newsletter.from.name");
+//      }
+//
+//      if (emailReplyTo == null || emailReplyTo.length() == 0) {
+//         emailReplyTo = PropertiesUtil.getProperty("newsletter.replyto.mail");
+//      }
+//
+//      if (nameReplyTo == null || nameReplyTo.length() == 0) {
+//         nameReplyTo = PropertiesUtil.getProperty("newsletter.replyto.name");
+//      }
 
       if (emailFrom != null && emailFrom.length() > 0) {
          InternetAddress fromAddress = new InternetAddress(emailFrom);
@@ -156,14 +154,14 @@ public class NewsletterPublisher extends Thread {
          return (null);
       }
 
-      String userEmail = NewsletterCommunication.getUserPreference(userName,
-            "email");
-      if (userEmail != null && userEmail.length() > 0) {
-         InternetAddress toAddress = new InternetAddress(userEmail);
-         message.setRecipient(RecipientType.TO, toAddress);
-      } else {
-         return (null);
-      }
+//      String userEmail = NewsletterCommunication.getUserPreference(userName,
+//            "email");
+//      if (userEmail != null && userEmail.length() > 0) {
+//         InternetAddress toAddress = new InternetAddress(userEmail);
+//         message.setRecipient(RecipientType.TO, toAddress);
+//      } else {
+//         return (null);
+//      }
 
       String subject = "" + publicationNode.getStringValue("subject");
       message.setSubject(subject);
@@ -211,5 +209,9 @@ public class NewsletterPublisher extends Thread {
       String newTitle = currentTitle.concat(" - ").concat(currentDate);
       publicationNode.setStringValue("title", newTitle);
       publicationNode.commit();
+   }
+
+   public void deliver(int id,List<Person> persons){
+      
    }
 }
