@@ -62,20 +62,22 @@
                 </mm:link>
               </di:leaf>
               <div id="portal_node_${_node}" style="display:none">
-                <di:leaf
-                    icon="new_education"
-                    branchPath="..${status.last ? '.' : ' '} "
-                    >
-                  <mm:link referid="wizardjsp" referids="_node@origin">
-                    <mm:param name="wizard">config/portalpages/leafmapportalpages-origin</mm:param>
-                    <mm:param name="objectnumber">new</mm:param>
-                    <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td>
-                  </mm:link>
-                </di:leaf>
 
                  <di:getsetting setting="new_contents" component="portalpages" vartype="list" id="new_contents" write="false" />
                  <mm:stringlist referid="new_contents">
                    <c:choose>
+                     <c:when test="${_ eq 'portalpagesnodes'}">
+                       <di:leaf
+                           icon="new_education"
+                           branchPath="..${status.last ? '.' : ' '} "
+                           >
+                         <mm:link referid="wizardjsp" referids="_node@origin">
+                           <mm:param name="wizard">config/portalpages/leafmapportalpages-origin</mm:param>
+                           <mm:param name="objectnumber">new</mm:param>
+                           <td><a href="${_}" title="nieuwe map" target="text">nieuwe map</a></td>
+                         </mm:link>
+                       </di:leaf>
+                     </c:when>
                      <c:when test="${_ eq 'simplecontents'}">
                        <di:leaf
                            icon="new_education"
