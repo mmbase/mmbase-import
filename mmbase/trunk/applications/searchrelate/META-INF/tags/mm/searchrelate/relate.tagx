@@ -4,20 +4,46 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     version="2.0"
     >
-  <jsp:directive.attribute name="repository" type="org.mmbase.bridge.NodeQuery"  required="true" />
-  <jsp:directive.attribute name="current"    type="org.mmbase.bridge.NodeQuery"  required="true" />
-
-  <jsp:directive.attribute name="submit"     type="java.lang.String"  />
-  <jsp:directive.attribute name="unrelate"   type="java.lang.Boolean"   />
-  <jsp:directive.attribute name="transaction" type="java.lang.String"   />
-  <jsp:directive.attribute name="pagesize" type="java.lang.Integer"   />
-  <jsp:directive.attribute name="currentTitle"          fragment="true" />
-  <jsp:directive.attribute name="repositoryTitle"       fragment="true" />
-
   <!--
-  <jsp:directive.attribute name="n"          fragment="true" />
-  <jsp:directive.attribute name="relate"     fragment="true" />
+      @author Michiel Meeuwissen
+      @version $Id: relate.tagx,v 1.15 2008-04-10 14:59:24 michiel Exp $
   -->
+  <jsp:directive.tag
+      example="See /mmexamples/searchrelate"
+      description="This tag produces 1 div containing 2 other divs, .mm_relate_current and .mm_relate_repository, and fills those with the result of two queries.
+                   Using javascript/ajax, both search results can be searched in. Also events are binded to the elements in those lists, which make it possible
+                   to move elements between these two divs.
+                   On submit (which happens when clicked on the element(s) defined by the 'submit' attribute'), the changes defined by this moves, are commited to
+                   mmbase." />
+
+  <jsp:directive.attribute name="repository"        type="org.mmbase.bridge.NodeQuery"  required="true"
+                           description="An mmbase Query describing in which list the searcher must search" />
+
+  <jsp:directive.attribute name="current"           type="org.mmbase.bridge.NodeQuery"  required="true"
+                           description="An mmbase Query describing which list is considered to represent already 'related' nodes" />
+
+  <jsp:directive.attribute name="submit"            type="java.lang.String"
+                           description="A jquery selector. The 'commit' action will be binded to the 'onclick' of the elements that match"  />
+
+  <jsp:directive.attribute name="unrelate"          type="java.lang.Boolean"
+                           description="Whether, or not, the tools should also allow deletion of relations" />
+
+  <jsp:directive.attribute name="create"             type="java.lang.Boolean"
+                           description="Whether, or not, the tools should also allow creation of new nodes" />
+
+  <jsp:directive.attribute name="transaction "       type="java.lang.String"
+                           description="The name of the mmbase transaction to be used" />
+
+  <jsp:directive.attribute name="pagesize"           type="java.lang.Integer"
+                           description="The size of the pages, used during paging. Default is determined by /mmbase/searchrelate/page.jspx" />
+
+  <jsp:directive.attribute name="currentTitle"       fragment="true"
+                           description="A piece of HTML that will be presented first in the 'current' div"/>
+
+  <jsp:directive.attribute name="repositoryTitle"       fragment="true"
+                           description="A piece of HTML that will be presented first in the 'repository' div"/>
+
+
 
   <mm:import externid="current" from="this" />
   <mm:import from="request" id="seq" externid="mm_relate_sequence" vartype="integer">0</mm:import>
@@ -42,42 +68,49 @@
     </script>
   </c:if>
 
-  <div id="mm_related_${seq}"
-       class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}">
-    <c:if test="${! empty transaction}">
-      <span class="transactionname" style="display: none;">${transaction}</span>
-    </c:if>
-    <div  class="mm_relate_current searchable">
-      <jsp:invoke fragment="currentTitle" />
-      <mm:listnodescontainer clone="current">
-        <mm:size>
-          <mm:isgreaterthan value="${pagesize}">
-            <div class="searchform">
-              <a href="#mm_related_${seq}_current" class="search">Search</a>
-              <input  value="" />
-            </div>
-          </mm:isgreaterthan>
-        </mm:size>
-      </mm:listnodescontainer>
-      <mm:include page="/mmbase/searchrelate/page.jspx">
-        <c:if test="${! empty pagesize}">
-          <mm:param name="pagesize" referid="pagesize" />
-        </c:if>
-        <mm:param name="id">mm_related_${seq}_current</mm:param>
-      </mm:include>
-    </div>
-    <div  class="mm_relate_repository searchable">
-      <jsp:invoke fragment="repositoryTitle" />
-      <div class="searchform">
-        <a href="#mm_related_${seq}_repository" class="search">Search</a>
-        <input  value="" />
+  <fmt:bundle
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      basename="org.mmbase.searchrelate.resources.searchrelate">
+    <div id="mm_related_${seq}"
+         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}">
+      <c:if test="${! empty transaction}">
+        <span class="transactionname" style="display: none;">${transaction}</span>
+      </c:if>
+      <div  class="mm_relate_current searchable">
+        <jsp:invoke fragment="currentTitle" />
+        <mm:listnodescontainer clone="current">
+          <mm:size>
+            <mm:isgreaterthan value="${pagesize}">
+              <div class="searchform">
+                <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
+                <input  value="" />
+              </div>
+            </mm:isgreaterthan>
+          </mm:size>
+        </mm:listnodescontainer>
+        <mm:include page="/mmbase/searchrelate/page.jspx">
+          <c:if test="${! empty pagesize}">
+            <mm:param name="pagesize" referid="pagesize" />
+          </c:if>
+          <mm:param name="id">mm_related_${seq}_current</mm:param>
+        </mm:include>
       </div>
-      <mm:include page="/mmbase/searchrelate/page.jspx">
-        <c:if test="${! empty pagesize}">
-          <mm:param name="pagesize" referid="pagesize" />
-        </c:if>
-        <mm:param name="id">mm_related_${seq}_repository</mm:param>
-      </mm:include>
+      <div  class="mm_relate_repository searchable">
+        <jsp:invoke fragment="repositoryTitle" />
+        <div class="searchform">
+          <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
+          <input  value="" />
+          <c:if test="${! empty create and create}">
+            <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
+          </c:if>
+        </div>
+        <mm:include page="/mmbase/searchrelate/page.jspx">
+          <c:if test="${! empty pagesize}">
+            <mm:param name="pagesize" referid="pagesize" />
+          </c:if>
+          <mm:param name="id">mm_related_${seq}_repository</mm:param>
+        </mm:include>
+      </div>
     </div>
-  </div>
+  </fmt:bundle>
 </jsp:root>
