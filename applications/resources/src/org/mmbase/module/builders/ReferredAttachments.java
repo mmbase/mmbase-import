@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package nl.teleacnot.mmbase.builders;
+package org.mmbase.module.builders;
 
 import java.io.*;
 import java.net.*;
@@ -28,7 +28,7 @@ import org.mmbase.util.functions.*;
  * binary resource on another server using an url. 
  *
  * @author Pierre van Rooden
- * @version $Id: ReferredAttachments.java,v 1.1 2008-04-11 09:23:57 pierre Exp $
+ * @version $Id: ReferredAttachments.java,v 1.2 2008-04-11 10:01:41 nklasens Exp $
  * @since   MMBase-1.8
  */
 public class ReferredAttachments extends Attachments {
