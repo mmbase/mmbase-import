@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.62 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.63 2008-04-11 15:32:22 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -351,7 +351,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     final protected String findString(Field field) throws JspTagException {
         String fieldName = field.getName();
-        String search = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
+
+        String search = Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName)));
         if (search == null || "".equals(search)) {
             return null;
         }
