@@ -217,6 +217,8 @@
   <block name="cache"
          classification="mmbase.tools"
          mimetype="text/html">
+    <title xml:lang="en">Caches</title>
+    <title xml:lang="nl">Caches</title>
     <description xml:lang="en">This tools hows the performance of the various MMBase
     caches. You can also (temporary) turn on/off the cache here. For a persistant
     change you should change caches.xml.</description>
@@ -251,6 +253,8 @@
   <block name="blobs"
          classification="mmbase.tools"
          mimetype="text/html">
+    <title xml:lang="en">Blobs</title>
+    <title xml:lang="nl">Blobs</title>
     <description xml:lang="en">This page provides a tool to convert blobs to
     the filesystem. Per default blobs live in the database.</description>
     <description xml:lang="nl">Via deze pagina is het mogelijk om blobs naar het 
@@ -262,8 +266,21 @@
   <block name="resourceedit"
          classification="mmbase.tools"
          mimetype="text/html">
-    <description xml:lang="en"></description>
+    <title xml:lang="en">Resource editor</title>
+    <title xml:lang="nl">Resource editor</title>
+    <description xml:lang="en">Tool to on-line edit MMBase resources.</description>
+    <description xml:lang="en">Maakt het mogelijk om on-line MMBase resources te editen.</description>
     <body jsp="resourceedit.jsp">
+      <param name="resource" type="String" />
+      <param name="root"     type="String" />
+      <param name="dirs"     type="String" />
+      <param name="search"   type="String" />
+      <param name="keepsearch" type="String" />
+      <param name="recursive" type="String" />
+      <param name="xml"      type="String" />
+      <param name="wasxml"   type="String" />
+      <param name="save"     type="String" />
+      <param name="text"     type="String" />
     </body>
   </block>
 
