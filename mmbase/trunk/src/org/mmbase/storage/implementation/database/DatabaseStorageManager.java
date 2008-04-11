@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.191 2008-03-21 13:44:23 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.192 2008-04-11 15:13:38 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -533,7 +533,6 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to be able to change the placeholder strategy.
      * @param field the (MMBase) fieldtype
      * @return <code>true</code> if the field should be shortened
-     * @throws SQLException when a database error occurs
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected boolean shorten(CoreField field) {
@@ -584,7 +583,9 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+    /**
+     * @see org.mmbase.storage.StorageManager#getBinaryValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
+     */
     public byte[] getBinaryValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             Blob b = getBlobValue(node, field);
@@ -597,7 +598,11 @@ public class DatabaseStorageManager implements StorageManager {
             throw new StorageException(sqe);
         }
     }
-    // javadoc is inherited
+    
+
+    /**
+     * @see org.mmbase.storage.StorageManager#getInputStreamValue(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
+     */
     public InputStream getInputStreamValue(MMObjectNode node, CoreField field) throws StorageException {
         try {
             return getBlobValue(node, field).getBinaryStream();
@@ -772,6 +777,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @todo how to do this in a transaction???
      * @param node the node the binary data belongs to
      * @param field the binary field
+     * @throws StorageException when an error occured while a binary is written to file
      */
     protected void storeBinaryAsFile(MMObjectNode node, CoreField field) throws StorageException {
         try {
@@ -809,12 +815,12 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
 
-    // Determines whether blob warnings have been issued
-    static private boolean blobsOnDiskWarningIssued = true;
-
     /**
      * Checks whether file is readable and existing. Warns if not.
      * If non-existing it checks older locations.
+     * @param binaryFile file location of binary
+     * @param node the binary is a field value of this node
+     * @param field field of the node
      * @return the file to be used, or <code>null</code> if no existing readable file could be found, also no 'legacy' one.
      */
     protected File checkFile(File binaryFile, MMObjectNode node, CoreField field) {
@@ -857,7 +863,9 @@ public class DatabaseStorageManager implements StorageManager {
      * @todo how to do this in a transaction???
      * @param node the node the binary data belongs to
      * @param field the binary field
+     * @param mayShorten shorten the value when it might be large 
      * @return the byte array containing the binary data, <code>null</code> if no binary data was stored
+     * @throws StorageException if an error occurred during reading 
      */
     protected Blob getBlobFromFile(MMObjectNode node, CoreField field, boolean mayShorten) throws StorageException {
         String fieldName = field.getName();
@@ -876,7 +884,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectNode)
+     */
     public int create(MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
         int nodeNumber = node.getNumber();
@@ -973,7 +984,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Executes an update query for given node and fields. It will close the connections which are no
      * good, which it determines by trying "SELECT 1 FROM <OBJECT TABLE>" after failure. If that happens, the connection
-     * is explicitely closed (in case the driver has not done that), which will render is unusable
+     * is explicitly closed (in case the driver has not done that), which will render is unusable
      * and at least GenericDataSource will automaticly try to get new ones.
      *
      * @throws SQLException If something wrong with the query, or the database is down or could not be contacted.
@@ -1017,6 +1028,10 @@ public class DatabaseStorageManager implements StorageManager {
      * Executes an update query for given node and fields.  This is wrapped in a function because it
      * is repeatedly called in {@link #executeUpdateCheckConnection} which in turn is called from
      * several spots in this class.
+     * @param query update query
+     * @param node updated node
+     * @param fields updated fields
+     * @throws SQLException if database connections failures occurs 
      *
      * @since MMBase-1.7.1
      */
@@ -1511,6 +1526,13 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * This default implementation calls {@link #setStringValue}.
      * Override this method if you want to override this behavior.
+     * @param statement prepared update statement
+     * @param index index in statement to set the value in
+     * @param objectValue value to set
+     * @param field update of this node field
+     * @param node updated node 
+     * @throws StorageException error occured in storage layer 
+     * @throws SQLException if database connections failures occurs
      * @since MMBase-1.7.1
      */
     protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, CoreField field, MMObjectNode node) throws StorageException, SQLException {
@@ -1527,7 +1549,10 @@ public class DatabaseStorageManager implements StorageManager {
         setStringValue(statement, index, objectValue, field, node);
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#delete(org.mmbase.module.core.MMObjectNode)
+     */
     public void delete(MMObjectNode node) throws StorageException {
         // determine parent
         if (node.hasRelations()) {
@@ -1601,7 +1626,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#getNode(org.mmbase.module.core.MMObjectBuilder, int)
+     */
     public MMObjectNode getNode(final MMObjectBuilder builder, final int number) throws StorageException {
         if (builder == null) throw new IllegalArgumentException("Builder cannot be null when requesting node " + number);
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -1654,6 +1682,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Use this after a create or change action, so the data in memory is consistent with
      * any data stored in the database.
      * @param node the node to refresh
+     * @throws StorageException error occured in storage layer 
      */
     protected void refresh(MMObjectNode node) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
@@ -1797,7 +1826,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#getNodeType(int)
+     */
     public int getNodeType(int number) throws StorageException {
         Integer numberValue = number;
         Integer otypeValue =  typeCache.get(numberValue);
@@ -1844,6 +1876,7 @@ public class DatabaseStorageManager implements StorageManager {
      * Returns whether tables inherit fields form parent tables.
      * this determines whether fields that are inherited in mmbase builders
      * are redefined in the database tables.
+     * @return tables inherit fields form parent tables
      */
     protected boolean tablesInheritFields() {
         return true;
@@ -1852,6 +1885,8 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Determines whether the storage should make a field definition in a builder table for a
      * specified field.
+     * @param field 
+     * @return storage should make a field definition
      */
     protected boolean isPartOfBuilderDefinition(CoreField field) {
         // persistent field?
@@ -1866,7 +1901,10 @@ public class DatabaseStorageManager implements StorageManager {
         return isPart;
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#create(org.mmbase.module.core.MMObjectBuilder)
+     */
     public void create(MMObjectBuilder builder) throws StorageException {
         log.debug("Creating a table for " + builder);
         // use the builder to get the fields and create a
@@ -2692,7 +2730,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#create(org.mmbase.core.CoreField)
+     */
     public void create(CoreField field) throws StorageException {
         if (field == null) throw new IllegalArgumentException("No field given");
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
@@ -2740,7 +2781,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#change(org.mmbase.core.CoreField)
+     */
     public void change(CoreField field) throws StorageException {
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (change field) are not supported.");
@@ -2786,7 +2830,10 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-    // javadoc is inherited
+
+    /**
+     * @see org.mmbase.storage.StorageManager#delete(org.mmbase.core.CoreField)
+     */
     public void delete(CoreField field) throws StorageException {
         if (!factory.hasOption(Attributes.SUPPORTS_DATA_DEFINITION)) {
             throw new StorageException("Data definiton statements (delete field) are not supported.");
@@ -2821,6 +2868,8 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Convert legacy file
      * @return Number of converted fields. Or -1 if not storing binaries as files
+     * @throws org.mmbase.storage.search.SearchQueryException
+     * @throws SQLException if opening the connection failed
      */
     public int convertLegacyBinaryFiles() throws org.mmbase.storage.search.SearchQueryException, SQLException {
         if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
@@ -3010,4 +3059,83 @@ public class DatabaseStorageManager implements StorageManager {
             }
         }
     }
+
+
+    /**
+     * @see org.mmbase.storage.StorageManager#isNull(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
+     */
+    public boolean isNull(MMObjectNode node, CoreField field) throws StorageException {
+        int dbtype = Field.TYPE_UNKNOWN;
+        if (field != null) {
+            dbtype = field.getType();
+        }
+
+        if (dbtype == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+            String fieldName = field.getName();
+            File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
+            return binaryFile == null;
+        } else {
+            try {
+                MMObjectBuilder builder = node.getBuilder();
+                Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
+                String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
+                getActiveConnection();
+                Statement s = activeConnection.createStatement();
+                ResultSet result = s.executeQuery(query);
+                try {
+                    if ((result != null) && result.next()) {
+                        String id = (String)factory.getStorageIdentifier(field);
+                        return isNull(result, result.findColumn(id), dbtype);
+                    } else {
+                        throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found.");
+                    }
+                } finally {
+                    if (result != null) {
+                        result.close();
+                    }
+                    if (s != null) {
+                        s.close();
+                    }
+                }
+            } catch (SQLException se) {
+                throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
+            }
+        }
+
+    }
+
+    private boolean isNull(ResultSet result, int index, int dbtype) throws SQLException {
+        switch (dbtype) {
+            // string-type fields
+        case Field.TYPE_XML :
+        case Field.TYPE_STRING :
+            result.getBinaryStream(index);
+            break;
+        case Field.TYPE_BINARY :
+            if (factory.hasOption(Attributes.SUPPORTS_BLOB)) {
+                result.getBlob(index);
+            }
+            else {
+                result.getBinaryStream(index);                
+            }
+            break;
+        case Field.TYPE_DATETIME :
+            result.getTimestamp(index);
+            break;
+        case Field.TYPE_BOOLEAN :
+            result.getBoolean(index);
+            break;
+        case Field.TYPE_INTEGER :
+        case Field.TYPE_NODE :
+            result.getObject(index);
+            break;
+        default :
+            result.getObject(index);
+            break;
+        }
+        return result.wasNull();
+    }
+
 }
