@@ -17,7 +17,7 @@
 
   <!-- about etc. -->
   <block name="welcome"
-         classification="mmbase.about"
+         classification="mmbase.about:10"
          mimetype="text/html">
     <title xml:lang="nl">Welkom</title>
     <title xml:lang="en">Welcome</title>
@@ -27,7 +27,7 @@
   </block>
 
   <block name="license"
-         classification="mmbase.about"
+         classification="mmbase.about:20"
          mimetype="text/html">
     <title xml:lang="nl">Licentie</title>
     <title xml:lang="en">Licence</title>
@@ -243,7 +243,7 @@
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en">The blobs</description>
-    <body jsp="/mmbase/admin/admin/blobs.jsp">
+    <body jsp="blobs.jspx">
     </body>
   </block>
 
@@ -251,7 +251,7 @@
          classification="mmbase.tools"
          mimetype="text/html">
     <description xml:lang="en"></description>
-    <body jsp="resourceedit.jspx">
+    <body jsp="resourceedit.jsp">
     </body>
   </block>
 
@@ -325,12 +325,12 @@
          classification="mmbase.examples"
          mimetype="text/html">
     <description xml:lang="en">Shows the MMBase example pages</description>
-    <body jsp="/mmbase/admin/mmexamples.div.jsp">
+    <body jsp="examples/index.jspx">
     </body>
   </block>
 
   <block name="mmbase_news"
-         classification="mmbase.about"
+         classification="mmbase.about:100"
          mimetype="text/html">
     <title xml:lang="nl">Nieuws</title>
     <title xml:lang="en">News</title>
@@ -344,7 +344,7 @@
   </block>
 
   <block name="releasenotes"
-         classification="mmbase.about"
+         classification="mmbase.about:11"
          mimetype="text/html">
     <title xml:lang="nl">Releasenotes</title>
     <title xml:lang="en">Release notes</title>
