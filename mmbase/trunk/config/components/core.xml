@@ -19,8 +19,8 @@
   <block name="welcome"
          classification="mmbase.about:10"
          mimetype="text/html">
-    <title xml:lang="nl">Welkom</title>
     <title xml:lang="en">Welcome</title>
+    <title xml:lang="nl">Welkom</title>
     <description xml:lang="en">Shows welcome page for MMBase admin pages</description>
     <description xml:lang="nl">Welkompagina voor de MMBase admin pagina's</description>
     <body jsp="about.jspx" />
@@ -40,8 +40,8 @@
   <block name="servers"
          classification="mmbase.admin"
          mimetype="text/html">
-    <title xml:lang="nl">Servers</title>
     <title xml:lang="en">Servers</title>
+    <title xml:lang="nl">Servers</title>
     <description xml:lang="en">An overview describing all MMBase servers running on this system</description>
     <description xml:lang="nl">Een overzicht van alle MMBase servers op dit systeem</description>
     <head>
@@ -57,37 +57,47 @@
   <block name="databases"
          classification="mmbase.admin"
          mimetype="text/html">
-    <title xml:lang="nl">Databases</title>
     <title xml:lang="en">Databases</title>
-    <description xml:lang="en">Information about the database and its connections</description>
-    <description xml:lang="nl">Informatie over de database en database connections</description>
-    <body jsp="/mmbase/admin/admin/databases.div.jsp" />
+    <title xml:lang="nl">Databases</title>
+    <description xml:lang="en">
+      Information about the database and its connections.
+      This overview lists all database systems supported by this system, as well as
+      all connection pools - which administrate the actual database connections.
+    </description>
+    <description xml:lang="nl">
+      Informatie over de database en database connections.
+      Dit overzicht toont de databases die door dit systeem worden ondersteunt, evenals
+      de connections pools die de feitelijke database connecties onderhouden.
+    </description>
+    <body jsp="databases.jsp" />
   </block>
 
   <block name="databases-connections"
          mimetype="text/html">
-    <title xml:lang="nl">Database connecties</title>
     <title xml:lang="en">Database connections</title>
+    <title xml:lang="nl">Database connecties</title>
     <description xml:lang="en">View of the database connections</description>
-    <description xml:lang="en">Overzicht van de database connecties</description>
-    <body jsp="/mmbase/admin/admin/database/connections.jsp" />
+    <description xml:lang="nl">Overzicht van de database connecties</description>
+    <body jsp="databases-connections.jsp" />
   </block>
 
   <block name="modules"
          classification="mmbase.admin"
          mimetype="text/html">
-    <title xml:lang="nl">Modules</title>
     <title xml:lang="en">Modules</title>
-    <description xml:lang="en">Information about the installed modules</description>
-    <body jsp="/mmbase/admin/admin/modules.div.jsp" />
+    <title xml:lang="nl">Modules</title>
+    <description xml:lang="en">Information about the installed MMBase modules</description>
+    <description xml:lang="nl">Informatie over geïnstalleerde MMBase modules</description>
+    <body jsp="modules.jsp" />
   </block>
 
   <block name="modules-actions"
          mimetype="text/html">
-    <title xml:lang="nl">Bewerkingen op modules</title>
     <title xml:lang="en">Actions on modules</title>
+    <title xml:lang="nl">Bewerkingen op modules</title>
     <description xml:lang="en">View, edit or add module properties</description>
-    <body jsp="/mmbase/admin/admin/module/actions.jsp">
+    <description xml:lang="nl">View, edit of add module properties</description>
+    <body jsp="modules-actions.jsp">
       <param name="module"   type="String" />
       <param name="cmd"      type="String" />
       <param name="action"   type="String" />
@@ -100,8 +110,8 @@
   <block name="applications"
          classification="mmbase.admin"
          mimetype="text/html">
-    <title xml:lang="nl">Applicaties</title>
     <title xml:lang="en">Applications</title>
+    <title xml:lang="nl">Applicaties</title>
     <description xml:lang="en">Shows an overview of all MMBase apps1 applications</description>
     <description xml:lang="nl">Overzicht van MMBase apps1 applicaties</description>
     <body jsp="applications.jspx">
@@ -114,8 +124,8 @@
     <title xml:lang="nl">Resultaat van een applicatie actie</title>
     <title xml:lang="en">Result of an application backup or install</title>
     <description xml:lang="en">
-      Is the follow-up for the application installation page and shows the results of an
-      application backup or install.
+      This is the follow-up for the application installation page and shows the 
+      results of an application backup or install.
     </description>
     <body jsp="applications-actions.jspx">
       <param name="application" type="String" />
@@ -129,8 +139,8 @@
   <block name="builders"
          classification="mmbase.admin"
          mimetype="text/html">
-    <title xml:lang="nl">Builder-overzicht</title>
-    <title xml:lang="en">Builder overview</title>
+    <title xml:lang="en">Builders</title>
+    <title xml:lang="nl">Builders</title>
     <description xml:lang="en">
       Shows an overview of all builders present in this MMBase installation.
 	  The first list contains all builders that are currently 'active' (accessible through MMBase).
@@ -150,8 +160,8 @@
 
   <block name="builders-actions"
          mimetype="text/html">
-    <title xml:lang="nl">Builder velden</title>
     <title xml:lang="en">Builder fields</title>
+    <title xml:lang="nl">Builder velden</title>
     <description xml:lang="en">
       Folow-up for the first builders block, shows a builders fields.
     </description>
@@ -167,8 +177,8 @@
 
   <block name="builders-field"
          mimetype="text/html">
-    <title xml:lang="nl">Attributen van builder velden</title>
     <title xml:lang="en">Attributes of builder fields</title>
+    <title xml:lang="nl">Attributen van builder velden</title>
     <description xml:lang="en">
       Folow-up for the second builders block, shows the various attributes of a field.
     </description>
@@ -184,21 +194,20 @@
   <block name="security"
          classification="mmbase.admin"
          mimetype="text/html">
-    <description xml:lang="en">Shows details of security configuration</description>
+    <title xml:lang="en">Security</title>
+    <title xml:lang="nl">Security</title>
+    <description xml:lang="en">Shows details of the current security configuration.</description>
+    <description xml:lang="nl">Een overzicht van de details van de gebruikte security configuratie.</description>
     <body jsp="security.jspx" />
-  </block>
-
-  <block name="authenticate"
-         classification="mmbase.examples"
-         mimetype="text/html">
-    <description xml:lang="en">Shows details of security configuration</description>
-    <body jsp="authenticate.jspx" />
   </block>
 
   <block name="transactions"
          classification="mmbase.admin"
          mimetype="text/html">
+    <title xml:lang="en">Transactions</title>
+    <title xml:lang="nl">Transacties</title>
     <description xml:lang="en">Shows an overview of all open MMBase transactions</description>
+    <description xml:lang="nl">Een overzicht van alle open MMBase transacties</description>
     <body jsp="transactions.jspx">
       <param name="transaction" type="String" />
     </body>
@@ -242,7 +251,10 @@
   <block name="blobs"
          classification="mmbase.tools"
          mimetype="text/html">
-    <description xml:lang="en">The blobs</description>
+    <description xml:lang="en">This page provides a tool to convert blobs to
+    the filesystem. Per default blobs live in the database.</description>
+    <description xml:lang="nl">Via deze pagina is het mogelijk om blobs naar het 
+    filesystem te converteren. Per default staan blobs in de database.</description>
     <body jsp="blobs.jspx">
     </body>
   </block>
@@ -290,11 +302,17 @@
     <body jsp="/mmbase/admin/entities.div.jspx" />
   </block>
 
-  <!-- components -->
   <block name="components"
          classification="mmbase.admin,mmbase.components"
          mimetype="text/html">
-    <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
+    <title xml:lang="en">Components</title>
+    <title xml:lang="nl">Componenten</title>
+    <description xml:lang="en">
+      Shows an overview of all available components in the current MMBase.
+    </description>
+    <description xml:lang="nl">
+      Een overzicht van alle beschikbare componenten in deze MMBase installatie.
+    </description>
     <body jsp="components/list.jspx">
       <param name="component" type="String" />
       <param name="view" type="String" /> <!-- hmm, should not be done like this -->
@@ -304,12 +322,17 @@
   <block name="component-block-tree"
          classification=""
          mimetype="text/html">
-    <description xml:lang="en">Shows an overview of all available components in the current MMBase</description>
+    <title xml:lang="en">Components tree</title>
+    <title xml:lang="nl">Componentenboom</title>
+    <description xml:lang="en">
+      Hierarchical tree view of the available components. 
+    </description>
+    <description xml:lang="en">
+       Hierarchish overzicht van de beschikbare componenten.
+    </description>
     <body jsp="components/tree.jspx">
     </body>
   </block>
-
-
 
   <block name="login"
          classification=""
