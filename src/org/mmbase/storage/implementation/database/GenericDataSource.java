@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.17 2008-03-21 13:44:23 michiel Exp $
+ * @version $Id: GenericDataSource.java,v 1.18 2008-04-11 11:42:02 pierre Exp $
  */
 public final class GenericDataSource implements DataSource {
     private static final Logger log = Logging.getLoggerInstance(GenericDataSource.class);
@@ -210,13 +210,14 @@ public final class GenericDataSource implements DataSource {
             }
         }
         String url = jdbc.makeUrl();
-        String data;
-        try {
-            data = dataDir.getCanonicalPath();
-        } catch (Exception e) {
-            log.error(e + " Falling back to " + dataDir);
-            data = dataDir.toString();
-
+        String data = "";
+        if (dataDir !=null) {
+            try {
+                data = dataDir.getCanonicalPath();
+            } catch (Exception e) {
+                log.error(e + " Falling back to " + dataDir);
+                data = dataDir.toString();
+				    }
         }
         String newUrl = url.replaceAll("\\$DATADIR", data + File.separator);
         if ((!basePathOk) && (! newUrl.equals(url))) {
