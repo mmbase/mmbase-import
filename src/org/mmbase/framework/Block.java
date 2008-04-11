@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.36 2008-03-21 16:08:16 michiel Exp $
+ * @version $Id: Block.java,v 1.37 2008-04-11 09:57:24 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -40,16 +40,17 @@ public class Block {
     private final LocalizedString title;
     private final Type[] classification;
 
-    public Block(String name, String mimetype, Component parent, Type[] cla) {
+    public Block(String name, String mimetype, Component parent, String cla) {
         if (name   == null) throw new IllegalArgumentException();
         if (parent == null) throw new IllegalArgumentException();
         if (cla    == null) throw new IllegalArgumentException();
         this.name = name;
         this.parent = parent;
         this.mimetype = mimetype; // can this be null?
-        this.classification = cla;
-        for (Type t : classification) {
-            t.blocks.add(this);
+        this.classification = Block.Type.getClassification(cla, false);
+        for (BlockContainer bc : Block.Type.getWeightedClassification(this, cla)) {
+            bc.getType().blocks.add(bc);
+            Collections.sort(bc.getType().blocks);
         }
         this.description = new LocalizedString(name);
         this.title       = new LocalizedString(name);
@@ -187,8 +188,7 @@ public class Block {
             for (String part : p.split("\\s*?[,\\s]\\s*")) {
                 Type type = ROOT;
                 for (String subpart : part.split("\\.")) {
-                	int weight = subpart.contains(":")?Integer.parseInt(subpart.substring(subpart.indexOf(":")+1)):0;
-                	subpart = subpart.contains(":")?subpart.substring(0,subpart.indexOf(":")):subpart;
+
                     Type proposal = new Type(subpart, type);
                     int index = type.subs.indexOf(proposal);
                     if (index == -1) {
@@ -207,12 +207,45 @@ public class Block {
             }
             return result.toArray(new Type[] {});
         }
+
+        static Collection<BlockContainer> getWeightedClassification(final Block b, final String p) {
+            List<BlockContainer> result = new ArrayList<BlockContainer>();
+            PARTS:
+            for (String part : p.split("\\s*?[,\\s]\\s*")) {
+
+                int weight;
+                int colon = part.indexOf(":");
+                if (colon > 0) {
+                    weight = Integer.parseInt(part.substring(colon + 1));
+                    part = part.substring(0, colon);
+                } else {
+                    weight = 100;
+                }
+
+                Type type = ROOT;
+                for (String subpart : part.split("\\.")) {
+
+                    Type proposal = new Type(subpart, type);
+                    int index = type.subs.indexOf(proposal);
+                    if (index == -1) {
+                        continue PARTS;
+                    } else {
+                        proposal = type.subs.get(index);
+                    }
+                    type = proposal;
+                }
+                BlockContainer bc = new BlockContainer(b, type, weight);
+
+                result.add(bc);
+            }
+            return result;
+        }
         private final LocalizedString title;
         private final String name;
         private final Type parent;
         private int weight = 100;
         final List<Type>  subs   = new ArrayList<Type>();
-        final List<Block> blocks = new ArrayList<Block>();
+        final List<BlockContainer> blocks = new ArrayList<BlockContainer>();
         private Type(String n) {
             name = n;
             parent = null;
@@ -225,12 +258,20 @@ public class Block {
             parent = p;
             title = new LocalizedString(name);
         }
+
         public List<Type> getSubTypes() {
             return Collections.unmodifiableList(subs);
         }
 
         public List<Block> getBlocks() {
-            return Collections.unmodifiableList(blocks);
+            return new AbstractList<Block>() {
+                public int size() {
+                    return blocks.size();
+                }
+                public Block get(int i) {
+                    return blocks.get(i).get();
+                }
+            };
         }
         public String getName() {
             return name;
@@ -278,6 +319,32 @@ public class Block {
 
         public LocalizedString getTitle() {
             return title;
+        }
+    }
+
+    static class BlockContainer implements Comparable<BlockContainer> {
+        final int weight;
+        final Block block;
+        final Block.Type type;
+        BlockContainer(Block block, Block.Type type, int weight) {
+            this.block  = block;
+            this.weight = weight;
+            this.type   = type;
+        }
+
+        Block get() {
+            return block;
+        }
+        Block.Type getType() {
+            return type;
+        }
+        public int compareTo(BlockContainer o) {
+            int c =  weight - o.weight;
+            if (c != 0) {
+                return c;
+            } else {
+                return block.getName().compareTo(o.get().getName());
+            }
         }
     }
 
