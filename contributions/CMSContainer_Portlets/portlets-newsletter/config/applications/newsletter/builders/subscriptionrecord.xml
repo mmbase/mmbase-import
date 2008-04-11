@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" 
 	extends="object" 
 	maintainer="finalist.com" 
-	name="newslettertheme" 
+	name="subscriptionrecord" 
 	version="1">
 
 	<status>active</status>
