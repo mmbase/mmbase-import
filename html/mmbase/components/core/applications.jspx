@@ -10,10 +10,11 @@
       id="${requestScope.componentId}">
 
     <mm:notpresent referid="application">
-      <h3>Administrate Applications</h3>
+      
+      <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
       <table summary="applications" border="0" cellspacing="0" cellpadding="3">
         <caption>
-          This overview lists all MMBase applications known to this system.
+          ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
         </caption>
         <tr>
           <th>Name</th>
