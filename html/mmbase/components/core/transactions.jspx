@@ -8,23 +8,37 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.framework.*,java.util.*" />
   <mm:content type="text/html" language="en_US" expires="0" postprocessor="none">
-    <h1>Transactions admin page</h1>
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     <mm:cloud rank="administrator">
-      <p>${mm:string(requestScope["org.mmbase.framework.renderer"].block.description)}</p>
       <mm:import externid="transaction" from="request" />
       <mm:notpresent referid="transaction">
-        <p>Current transactions</p>
-        <ul>
+        <table summary="current transactions" border="0" cellspacing="0" cellpadding="3">
+          <caption>
+            ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+          </caption>
+          <tr>
+            <th>Transaction</th>
+            <th class="view">View</th>
+          </tr>
           <mm:listfunction id="trans" set="transactions" name="list" >
-            <li>
+          <tr>
+            <td>
               <mm:link>
                 <mm:param name="transaction">${trans.key}</mm:param>
                 <a href="${_}">${trans.key}</a>
               </mm:link>
-            </li>
+            </td>
+            <td>
+              <mm:link>
+                <mm:param name="transaction">${trans.key}</mm:param>
+                <a href="${_}"><mm:link page="/mmbase/style/images/next.png"><img src="${_}" alt="view" /></mm:link></a>
+              </mm:link>
+            </td>
+          </tr>
           </mm:listfunction>
-        </ul>
+        </table>
       </mm:notpresent>
+      
       <mm:present referid="transaction">
         <h1>'${transaction}'</h1>
         <ul>
@@ -36,6 +50,7 @@
           <a href="${_}">back</a>
         </mm:link>
       </mm:present>
+      
     </mm:cloud>
   </mm:content>
 </div>
