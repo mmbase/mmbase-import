@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.10 2008-03-19 11:43:14 pierre Exp $
+ * @version $Id: MMBase.java,v 1.200.2.11 2008-04-11 08:40:46 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -805,7 +805,9 @@ public class MMBase extends ProcessorModule {
     /**
      * Adds a remote observer to a specified builder.
      * The observer is notified whenever an object of that builder is changed, added, or removed.
-     * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise.
+     * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise
+     * @deprecated MMBaseObverser is deprecated, and these methods are any how simple wrappers
+     * around {@link MMObjectBuilder#addRemoteObverser}. Removed 1.9.
      */
     public boolean addRemoteObserver(String type, MMBaseObserver obs) {
         MMObjectBuilder builder = getMMObject(type);
@@ -821,6 +823,8 @@ public class MMBase extends ProcessorModule {
      * Adds a local observer to a specified builder.
      * The observer is notified whenever an object of that builder is changed, added, or removed.
      * @return <code>true</code> if adding the observer succeeded, <code>false</code> otherwise.
+     * @deprecated MMBaseObverser is deprecated, and these methods are any how simple wrappers
+     * around {@link MMObjectBuilder#addLocaleObverser}. Removed in 1.9.
      */
     public boolean addLocalObserver(String type, MMBaseObserver obs) {
         MMObjectBuilder builder = getMMObject(type);
