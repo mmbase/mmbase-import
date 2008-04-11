@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Date;
 
 public interface NewsletterPublicationCAO {
-   public List<Publication> getIntimePublication(Date date);
+   public List<Publication> getIntimePublication();
    public void setStatus(Publication publication,Publication.STATUS status);
 }
    

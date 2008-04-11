@@ -5,6 +5,7 @@ import java.util.Date;
 import org.mmbase.bridge.Cloud;
 
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices{
 	/*public static UserInfo getUserInfo(String userName)
@@ -54,4 +55,8 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		NewsletterSubscriptionCAOImpl.getUpdateNode(cloud, detailNewsletterInfo);
 	}
 	*/
+
+   public void setCao(NewsletterSubscriptionCAO subscriptionCAO) {
+      //To change body of created methods use File | Settings | File Templates.
+   }
 }
