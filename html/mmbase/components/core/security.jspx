@@ -10,16 +10,37 @@
   <div
       class="mm_c mm_c_core mm_c_b_security ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
-    <h1>Security configuration</h1>
+    
+    <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
     <mm:function set="utils" name="mmbase">
-      <p>you: <mm:cloudinfo type="user" />, rank: <mm:cloudinfo type="rank" /></p>
-      <p>Implementation: ${cloud.cloudContext.authentication}</p>
-      <p>User-builder:
-      <c:catch var="exception">
-        ${cloud.cloudContext.authentication.userBuilder}
-      </c:catch>
-      ${exception}
-      </p>
+    
+<table summary="security implementation detail" border="0" cellspacing="0" cellpadding="3">
+<caption>
+  ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+</caption>
+<tr>
+  <th class="view">You</th>
+  <td><mm:cloudinfo type="user" /></td>
+</tr>
+<tr>
+  <th class="view">Your rank</th>
+  <td><mm:cloudinfo type="rank" /></td>
+</tr>
+<tr>
+  <th class="view">Implementation</th>
+  <td>${cloud.cloudContext.authentication}</td>
+</tr>
+<tr>
+  <th class="view">User-builder</th>
+  <td>
+    <c:catch var="exception">
+      ${cloud.cloudContext.authentication.userBuilder}
+    </c:catch>
+    ${exception}  
+  </td>
+</tr>
+</table>
+
       <h2>Types ('application', 'authentication')</h2>
       <ul>
         <c:catch var="exception">
@@ -34,6 +55,7 @@
         </c:catch>
       </ul>
       ${exception}
+      
       <h2>Default-method</h2>
       <p>
         <jsp:expression>org.mmbase.security.Authentication.getMethod(cloud.getCloudContext().getAuthentication().getDefaultMethod("http"))</jsp:expression>
