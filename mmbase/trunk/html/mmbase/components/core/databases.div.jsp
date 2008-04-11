@@ -1,14 +1,13 @@
 <%@ page import="org.mmbase.module.core.MMBase" 
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp">
 <div
   class="mm_c mm_c_core mm_c_b_databases ${requestScope.componentClassName}"
   id="${requestScope.componentId}">
-<h3>Database overview</h3>
+<h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 <table summary="databases" border="0" cellspacing="0" cellpadding="3">
   <caption>
-    This overview lists all database systems supported by this system, as well as
-    all connection pools (which administrate the actual database connections).
+    ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}
   </caption>
 <% 
 java.util.Map params = new java.util.Hashtable();

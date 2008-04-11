@@ -12,7 +12,7 @@
     <mm:notpresent referid="server">
       <table summary="servers" border="0" cellspacing="0" cellpadding="3">
         <caption>
-          This overview describes all MMBase servers running on this MMBase system
+	      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
         </caption>
         <tr>
           <th>Machine</th>
