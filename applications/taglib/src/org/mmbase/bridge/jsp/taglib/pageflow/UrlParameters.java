@@ -44,7 +44,6 @@ public class UrlParameters extends AbstractMap<String, Object> {
                 if (log.isDebugEnabled()) {
                     log.debug("url parameters " + wrapped + " " + refs + "/" + tag.extraParameters);
                 }
-                tag = null; // no need any more. dereference.
             } catch (JspTagException je) {
                 throw new RuntimeException(je);
             }
@@ -59,6 +58,10 @@ public class UrlParameters extends AbstractMap<String, Object> {
     public Set<Map.Entry<String, Object>> entrySet() {
         getWrapped();
         return wrapped.entrySet();
+    }
+
+    protected void invalidate() {
+        wrapped = null;
     }
 
 
