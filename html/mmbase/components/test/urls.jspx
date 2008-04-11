@@ -11,23 +11,37 @@
   <div
       class="test mm_c mm_c_test mm_c_b_urls ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
-    <h1>This block needs to be showed on
-    <mm:link page="/mmbase/test/test/urls"><a href="${_}">/mmbase/test/test/urls</a></mm:link>
+
+
+    <h1>
+      <jsp:text>This block needs to be showed on</jsp:text>
+      <mm:link page="/mmbase/test/test/urls"><a href="${_}">/mmbase/test/test/urls</a></mm:link>
     </h1>
+
     <mm:link absolute="context">
       <p>${_ eq '/mmbase/test/test/urls' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
     <mm:link absolute="context" referids="a">
       <p>${_ eq '/mmbase/test/test/urls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
     <mm:link absolute="context" page="test">
       <p>${_ eq '/mmbase/test/test/test' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
     <mm:link absolute="context" referids="a" page="test">
       <p>${_ eq '/mmbase/test/test/test?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
     <mm:link absolute="context" referids="a" page="suburls">
       <p>${_ eq '/mmbase/test/test/suburls?1:a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
+    </mm:link>
+
+
+    <mm:link absolute="context" page="/justsomeurl">
+      <mm:param name="foo">bar</mm:param>
+      <p>${_ eq '/justsomeurl?foo=bar' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
 
     <mm:link absolute="context" page="/justsomeurl">
@@ -35,6 +49,7 @@
       <mm:param name="foo">xxx</mm:param>
       <p>${_ eq '/justsomeurl?foo=bar&amp;foo=xxx' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
 
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
