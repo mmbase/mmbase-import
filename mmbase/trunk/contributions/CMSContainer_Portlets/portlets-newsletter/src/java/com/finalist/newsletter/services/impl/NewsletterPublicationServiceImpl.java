@@ -6,6 +6,7 @@ import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Subscription;
 import static com.finalist.newsletter.domain.Publication.STATUS;
 import com.finalist.cmsc.services.community.person.Person;
 
@@ -36,11 +37,11 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    }
 
    public void deliverAllPublication() {
-      List<Publication> publications = publicationCAO.getIntimePublication(new Date(System.currentTimeMillis()));
+      List<Publication> publications = publicationCAO.getIntimePublication();
       for(Publication publication:publications){
-         List<Person> persons = subscriptionCAO.getSubscribers(publication.getNewsletterId());
-         publisher.deliver(publication.getId(),persons);
-         statisticCAO.logPubliction(publication.getId(),persons.size());
+         List<Subscription> subscriptions = subscriptionCAO.getSubscription(publication.getNewsletterId());
+         publisher.deliver(publication.getId(),subscriptions);
+         statisticCAO.logPubliction(publication.getId(),subscriptions.size());
          publicationCAO.setStatus(publication, STATUS.DELIVERED);
       }
 

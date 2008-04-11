@@ -10,6 +10,13 @@ public class FakeNewsletterPublisher extends NewsletterPublisher{
 
    private Map<Integer,List<Person>> map = new HashMap<Integer,List<Person>>();
 
+   public FakeNewsletterPublisher(){
+      
+   }
+   public FakeNewsletterPublisher(int publicationNumber) {
+      super(publicationNumber);
+   }
+
    public void deliver(int publicationId, List<Person> persons) {
       map.put(publicationId,persons);
    }
