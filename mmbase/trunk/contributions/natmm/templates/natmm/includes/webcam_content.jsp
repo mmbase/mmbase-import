@@ -59,7 +59,7 @@ String attachmentID = request.getParameter("at");
 	
 	<%
 	} else {
-	// displaying hightlight video - not webcam, here
+	// displaying highlight video - not webcam, here
 	%>
 	<mm:node number="<%= attachmentID %>">
 	<h3>Highlight Video</h3>
