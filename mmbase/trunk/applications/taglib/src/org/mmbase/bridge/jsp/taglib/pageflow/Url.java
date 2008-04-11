@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.40 2008-04-11 11:42:47 michiel Exp $;
+ * @version $Id: Url.java,v 1.41 2008-04-11 12:09:16 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -121,6 +121,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     public String getLegacy(boolean writeamp) throws JspTagException {
         Map<String, Object> m = new HashMap<String, Object>();
         m.putAll(params);
+        if (log.isDebugEnabled()) {
+            log.debug("legacy url " + page + m);
+        }
         String res = BasicUrlConverter.getUrl(page, m, (HttpServletRequest)tag.getPageContext().getRequest(), writeamp).toString();
         pageLog.service("getting legacy: " + page + " -> " + res);
         return res;
@@ -136,7 +139,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         }
 
         String result = writeamp ? cacheAmp : cacheNoAmp;
-        if (result != null) return result;
+        if (result != null) {
+            log.debug("found cached " + result);
+            return result;
+        }
 
         Framework framework = Framework.getInstance();
 
@@ -258,6 +264,10 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     }
 
     protected void invalidate() {
+        log.debug("invalidating");
+        if (params instanceof UrlParameters) {
+            ((UrlParameters) params).invalidate();
+        }
         string = cacheAmp = cacheNoAmp = null;
     }
 
