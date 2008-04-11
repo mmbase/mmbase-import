@@ -4,10 +4,14 @@ import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.util.POConvertUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
+import org.mmbase.module.corebuilders.InsRel;
+import org.apache.commons.beanutils.ConvertUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +23,10 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
    private Cloud cloud;
 
    public void setCloud(Cloud cloud) {
+      this.cloud = cloud;
+   }
+
+   public NewsletterSubscriptionCAOImpl(Cloud cloud) {
       this.cloud = cloud;
    }
 
@@ -44,9 +52,18 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
       return list;
    }
 
-   public List<Person> getSubscribers(int newsletterId) {
-      return null;
+   public List<Subscription> getSubscription(int newsletterId) {
+      NodeManager subscriptionManager = cloud.getNodeManager("subscriptionrecord");
+      NodeManager newsletterManager = cloud.getNodeManager("newsletter");
+
+      NodeQuery query = cloud.createNodeQuery();
+      query.addStep(subscriptionManager);
+      query.addRelationStep(newsletterManager);
+      SearchUtil.addEqualConstraint(query,newsletterManager.getField("number"),newsletterId);
+
+      return POConvertUtils.convertSubscriptions(query.getList());
    }
+
 
    public Newsletter getNewsletterById(int id) {
 

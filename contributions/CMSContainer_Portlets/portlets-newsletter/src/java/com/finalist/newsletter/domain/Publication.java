@@ -3,7 +3,12 @@ package com.finalist.newsletter.domain;
 import java.util.Date;
 
 public class Publication {
+
    private int id;
+   private int newsletterId;
+   private Date deliverTime;
+   private STATUS status;
+
 
    public int getId() {
       return id;
@@ -17,8 +22,6 @@ public class Publication {
       DELIVERED, READY
    }
 
-   private Date deliverTime;
-   private int newsletterId;
 
    public Date getDeliverTime() {
       return deliverTime;
@@ -34,5 +37,13 @@ public class Publication {
 
    public void setNewsletterId(int newsletterId) {
       this.newsletterId = newsletterId;
+   }
+
+   public STATUS getStatus() {
+      return status;
+   }
+
+   public void setStatus(STATUS status) {
+      this.status = status;
    }
 }

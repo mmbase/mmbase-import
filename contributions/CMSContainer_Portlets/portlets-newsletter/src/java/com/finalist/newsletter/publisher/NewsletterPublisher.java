@@ -5,6 +5,7 @@ import com.finalist.newsletter.generator.NewsletterGenerator;
 import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.newsletter.domain.Subscription;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -37,6 +38,10 @@ public class NewsletterPublisher extends Thread {
    public NewsletterPublisher(int publicationNumber) {
       this.publicationNumber = publicationNumber;
       this.cloud = CloudProviderFactory.getCloudProvider().getCloud();
+   }
+
+   public NewsletterPublisher() {
+
    }
 
    private void createConfirmationList(List<String> subscribers) {
@@ -200,7 +205,7 @@ public class NewsletterPublisher extends Thread {
       publicationNode.commit();
    }
 
-   public void deliver(int id, List<Person> persons) {
-
+   public void deliver(int id, List<Subscription> subscriptions) {
+      //To change body of created methods use File | Settings | File Templates.
    }
 }

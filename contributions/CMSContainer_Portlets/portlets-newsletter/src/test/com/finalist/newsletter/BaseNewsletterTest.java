@@ -7,8 +7,14 @@ import org.mmbase.module.tools.MMAdmin;
 import org.mmbase.module.tools.ApplicationInstaller;
 import org.mmbase.module.Module;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.Node;
+import org.mmbase.storage.search.Step;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
+import java.util.List;
 
 public abstract class BaseNewsletterTest extends TestCase {
 
@@ -25,4 +31,14 @@ public abstract class BaseNewsletterTest extends TestCase {
         CloudProvider provider = CloudProviderFactory.getCloudProvider();
         cloud = provider.getCloud();
     }
+
+   protected void clearAllNode(String nodeType){
+      NodeQuery query = cloud.createNodeQuery();
+      Step theStep =  query.addStep(cloud.getNodeManager(nodeType));
+      query.setNodeStep(theStep);
+      List<Node> list  = query.getList();
+      for(Node node:list){
+         node.delete();
+      }
+   }
 }

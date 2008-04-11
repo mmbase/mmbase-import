@@ -12,31 +12,19 @@ import org.mmbase.bridge.RelationManager;
 
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.BaseNewsletterTest;
 
 import junit.framework.TestCase;
 
-public class SubscriptionCAOTest extends TestCase {
+public class SubscriptionCAOTest extends BaseNewsletterTest {
 
-   Cloud cloud;
    NewsletterSubscriptionCAO cao;
 
-   public void setUp() {
-      CloudProvider provider = CloudProviderFactory.getCloudProvider();
-      cloud = provider.getCloud();
+   public void setUp() throws Exception {
+      super.setUp();
       cao = new NewsletterSubscriptionCAOImpl();
    }
-
-   public void teset() {
-      CloudProvider provider = CloudProviderFactory.getCloudProvider();
-      Cloud cloud = provider.getCloud();
-      NodeManager manager = cloud.getNodeManager("article");
-      Node node = manager.createNode();
-      node.setStringValue("title", "3333333");
-      node.setStringValue("intro", "introintrointrointrointro");
-      node.commit();
-      System.out.println("1111111111");
-   }
-
 
    public void testGetNewsletterById() {
       int number = initNewsletters();
@@ -69,6 +57,28 @@ public class SubscriptionCAOTest extends TestCase {
 
       List a = cloud.getRelationManagers();
       return node.getNumber();
+   }
+
+   public void testGetSubscription() {
+
+      NodeManager letterManager = cloud.getNodeManager("newsletter");
+      Node node = letterManager.createNode();
+      node.setStringValue("title", "testtitle");
+      node.commit();
+
+      NodeManager subscriptionmanager = cloud.getNodeManager("subscriptionrecord");
+      Node snode = subscriptionmanager.createNode();
+      node.commit();
+
+      Node snode2 = subscriptionmanager.createNode();
+      node.commit();
+
+      RelationManager relManager = cloud.getRelationManager(letterManager,subscriptionmanager,"related");
+      relManager.createRelation(node,snode).commit();
+      relManager.createRelation(node,snode2).commit();
+
+      List<Subscription> subscriptions = cao.getSubscription(node.getNumber());
+      assertEquals(2,subscriptions.size());
    }
 
 }
