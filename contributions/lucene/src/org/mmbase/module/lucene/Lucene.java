@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.109 2008-03-19 16:25:22 michiel Exp $
+ * @version $Id: Lucene.java,v 1.110 2008-04-11 08:11:34 michiel Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -661,7 +661,7 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         //try to get the index path from the strorage configuration
                         try {
                             DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
-                            indexPath = dsmf.getBinaryFileBasePath();
+                            indexPath = dsmf.getBinaryFileBasePath().toString();
                             if(indexPath != null) indexPath = indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
                         } catch(Exception e){}
                     }
