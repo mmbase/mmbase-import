@@ -109,7 +109,7 @@ if(verloopdatum.longValue()<nowSec) {
          		</td>
          		<td>	
          </mm:first>
-         <a href="<mm:attachment />" title="download <mm:field name="filename" />" class="attachment"><mm:field name="title" /></a><br/>
+         <a href="<mm:attachment />" title="download <mm:field name="filename" />" target="_blank" class="attachment"><mm:field name="title" /></a><br/>
          <mm:last>
       	      </td>
             </tr>
