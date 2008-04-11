@@ -8,6 +8,7 @@ core/oalias.xml
 core/object.xml
 core/reldef.xml
 core/syncnodes.xml
+core/systemproperties.xml
 core/typedef.xml
 core/typerel.xml
 core/versions.xml
