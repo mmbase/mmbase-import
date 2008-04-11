@@ -39,6 +39,13 @@
     <process jsp="components/test.jspx" />
   </block>
 
+  <block name="authenticate"
+         classification="mmbase.test"
+         mimetype="text/html">
+    <description xml:lang="en">Shows details of security configuration</description>
+    <body jsp="authenticate.jspx" />
+  </block>
+
   <block name="urls"
          classification="mmbase.test"
          mimetype="text/html">
