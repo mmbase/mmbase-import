@@ -22,6 +22,7 @@
 		 <reldef source="defaulttheme" target="defaulttheme" direction="bidirectional" guisourcename="defaulttheme" guitargetname="defaulttheme" builder="insrel" />
 		 <reldef source="newslettertheme" target="newslettertheme" direction="bidirectional" guisourcename="newslettertheme" guitargetname="newslettertheme" builder="insrel" />
 		 <reldef source="newslettercontent" target="newslettercontent" direction="bidirectional" guisourcename="newslettercontent" guitargetname="newslettercontent" builder="insrel" />		
+		 <reldef source="tagged" target="tagged" direction="bidirectional" guisourcename="tagged" guitargetname="tagged" builder="insrel" />
 	</neededreldeflist>
 	<allowedrelationlist>
 		<relation from="article" to="newslettertheme" type="newslettercontent" />
@@ -29,8 +30,9 @@
 		<relation from="newsletter" to="newslettertheme" type="newslettertheme" />
 		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
 		<relation from="newsletter" to="newsletterpublication" type="related" />
-		<relation from="newsletter" to="tag" type="insrel" />
-		<relation from="subscriptionrecord" to="tag" type="insrel" />
+		<relation from="newsletter" to="tag" type="tagged" />
+		<relation from="subscriptionrecord" to="tag" type="tagged" />
+		<relation from="subscriptionrecord" to="newsletter" type="newslettered" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="newslettertheme" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="defaulttheme" />
 		<relation from="newsletterpublicationtheme" to="newslettertheme" type="related" />
