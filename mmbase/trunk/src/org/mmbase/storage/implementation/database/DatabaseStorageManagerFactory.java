@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.51 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.52 2008-04-11 08:10:53 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -360,7 +360,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     /**
      * As {@link #getBinaryFileBasePath(boolean)} with <code>true</code>
      */
-    protected File getBinaryFileBasePath() {
+    public File getBinaryFileBasePath() {
         return getBinaryFileBasePath(true);
     }
 
