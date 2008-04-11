@@ -11,12 +11,15 @@ package org.mmbase.framework.basic;
 import org.mmbase.framework.*;
 import java.util.*;
 import java.io.*;
+import java.net.URI;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import org.mmbase.util.*;
 import org.mmbase.util.xml.Instantiator;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
+import org.mmbase.core.util.SystemProperties;
 import org.mmbase.util.functions.*;
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
@@ -25,12 +28,14 @@ import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import sun.security.krb5.internal.crypto.c;
+
 /**
  * The Basic framework is based on a list of {@link UrlConverter}s. It is
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.12 2008-02-24 10:46:20 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.13 2008-04-11 15:03:31 nklasens Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -244,7 +249,8 @@ public class BasicFramework extends Framework {
             setBlockParametersForRender(state, blockParameters);
             actualRenderer.render(blockParameters, frameworkParameters, w, windowState);
         } catch (FrameworkException fe) {
-            Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), renderer.getUri().toString(), 500, fe);
+            URI uri = renderer.getUri();
+            Renderer error = new ErrorRenderer(renderer.getType(), renderer.getBlock(), (uri != null) ? uri.toString() : null, 500, fe);
             error.render(blockParameters, frameworkParameters, w, windowState);
         } finally {
             state.endBlock();
@@ -328,6 +334,11 @@ public class BasicFramework extends Framework {
         if (settingValues.containsKey(setting)) {
             return (C) settingValues.get(setting);
         } else {
+            C settingValue = loadSettingValue(setting);
+            if (settingValue != null) {
+                settingValues.put(setting, settingValue);
+                return settingValue;
+            }
             return setting.getDataType().getDefaultValue();
         }
     }
@@ -343,6 +354,7 @@ public class BasicFramework extends Framework {
         } else {
             Cloud cloud = parameters.get(Parameter.CLOUD);
             if (cloud.getUser().getRank() == org.mmbase.security.Rank.ADMIN) {
+                saveSettingValue(setting, value);
                 return (C) settingValues.put(setting, value);
             } else {
                 throw new SecurityException("Permission denied");
@@ -350,7 +362,17 @@ public class BasicFramework extends Framework {
         }
     }
 
-
-
-
+    public <C> C loadSettingValue(Setting<C> setting) {
+        String v = SystemProperties.getComponentProperty(setting.getComponent().getName(),
+                setting.getName());
+        if (v != null) {
+            return setting.getDataType().cast(v, null, null);
+        }
+        return null;
+    }
+    
+    public <C> void saveSettingValue(Setting<C> setting, C value) {
+        SystemProperties.setComponentProperty(setting.getComponent().getName(),
+                setting.getName(), value.toString());
+    }
 }
