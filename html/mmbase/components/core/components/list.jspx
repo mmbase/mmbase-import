@@ -16,34 +16,50 @@
       <mm:import externid="view"      from="request" />
 
       <mm:notpresent referid="component">
-        <h2><fmt:message key="components.title" /></h2>
+        <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 	    <table summary="components" border="0" cellspacing="0" cellpadding="3">
 		  <caption>
-			Information about components on this MMBase system
-      </caption>
-      <mm:function set="utils" name="framework">
-        <tr><th>Framework</th><td>${_}</td></tr>
-      </mm:function>
-      <tr><th>Failed components</th><td><mm:function  set="components" name="failed" /></td></tr>
-      </table>
-      <h3><fmt:message key="components.available" /></h3>
-      <ul>
-        <mm:listfunction id="comp" set="components" name="list" >
-          <li>
-            <mm:link>
-              <mm:param name="component">${comp.name}</mm:param>
-              <a href="${_}" class="navigate">${comp.name}</a>
-              <jsp:text> (version: ${comp.version}).</jsp:text>
-            </mm:link>
-          </li>
-        </mm:listfunction>
-      </ul>
-      <mm:link page="component-block-tree">
-        <a href="${_}">Tree view</a>
-      </mm:link>
+            ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
+          </caption>
+          <tr>
+            <th>Component</th>
+            <th>Description</th>
+            <th>Version</th>
+          </tr>
+          <mm:listfunction id="comp" set="components" name="list" >
+            <tr>
+              <td>
+                <mm:link>
+                  <mm:param name="component">${comp.name}</mm:param>
+                  <a href="${_}" class="navigate">${comp.name}</a>
+                </mm:link>
+              </td>
+              <td>${comp.description}</td>
+              <td>${comp.version}</td>
+            </tr>
+          </mm:listfunction>
+          <tr>
+            <th colspan="3">
+              <mm:link page="component-block-tree">
+                <a href="${_}">Tree view of available components</a>
+              </mm:link>
+            </th>
+          </tr>
+        </table>
+      
+	    <table summary="framework" border="0" cellspacing="0" cellpadding="3">
+		  <caption>
+            Current Framework 
+          </caption>
+          <mm:function set="utils" name="framework">
+            <tr><th>Framework</th><td>${_}</td></tr>
+          </mm:function>
+          <tr><th>Failed components</th><td><mm:function set="components" name="failed" /></td></tr>
+        </table>
       </mm:notpresent>
+      
       <mm:present referid="component">
-        <h2>'${component}'</h2>
+        <h2>Component '${component}'</h2>
         <mm:function set="components" name="get" referids="component@name" id="c">
           <table summary="component" border="0" cellspacing="0" cellpadding="3">
             <caption>
