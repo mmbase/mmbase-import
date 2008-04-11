@@ -17,18 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
-import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 
 /**
- * An attachement builder where, asside form storing the binary data in the database, you can point out a 
+ * An attachment builder where, aside form storing the binary data in the database, you can point out a 
  * binary resource on another server using an url. 
  *
  * @author Pierre van Rooden
- * @version $Id: ReferredAttachments.java,v 1.2 2008-04-11 10:01:41 nklasens Exp $
+ * @version $Id: ReferredAttachments.java,v 1.3 2008-04-11 11:30:18 nklasens Exp $
  * @since   MMBase-1.8
  */
 public class ReferredAttachments extends Attachments {
@@ -36,14 +34,12 @@ public class ReferredAttachments extends Attachments {
     public static final String FIELD_URL = "url";
     private static final Logger log = Logging.getLoggerInstance(ReferredAttachments.class);
 
-    private NodeFunction formerFunction;
-
-    public NodeFunction servletPathFunction =
-	new NodeFunction("servletpath", new Parameter[] {
-                                             new Parameter("session",  String.class), // For read-protection
-                                             new Parameter("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
-                                             new Parameter("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
-                                             new Parameter("argument", String.class), // Parameter to use for the argument, overrides 'field'
+    public NodeFunction<String> servletPathFunction =
+	new NodeFunction<String>("servletpath", new Parameter[] {
+                                             new Parameter<String>("session",  String.class), // For read-protection
+                                             new Parameter<String>("field",    String.class), // The field to use as argument, defaults to number unless 'argument' is specified.
+                                             new Parameter<String>("context",  String.class), // Path to the context root, defaults to "/" (but can specify something relative).
+                                             new Parameter<String>("argument", String.class), // Parameter to use for the argument, overrides 'field'
                                              Parameter.REQUEST,
                                              Parameter.CLOUD
                                          },
@@ -58,8 +54,8 @@ public class ReferredAttachments extends Attachments {
                     String context             = (String) a.get("context");
 
                     if (context == null) {
-                        // no path to context-root specified explitiely, try to determin:
-                        HttpServletRequest request = (HttpServletRequest) a.get(Parameter.REQUEST);
+                        // no path to context-root specified explicitly, try to determine:
+                        HttpServletRequest request = a.get(Parameter.REQUEST);
                         if (request == null) {
                             // no request object given as well, hopefully it worked on servlet's initalizations (it would, in most servlet containers, like tomcat)
                             servlet.append(ReferredAttachments.this.getServletPath()); // use 'absolute' path (starting with /)
@@ -67,13 +63,13 @@ public class ReferredAttachments extends Attachments {
                             servlet.append(ReferredAttachments.this.getServletPath(request.getContextPath()));
                         }
                     } else {
-                        // explicitely specified the path!
+                        // explicitly specified the path!
                         servlet.append(ReferredAttachments.this.getServletPath(context));
                     }
                     return servlet;
                 }
 
-                public Object getFunctionValue(Node node, Parameters a) {
+                public String getFunctionValue(Node node, Parameters a) {
                   String url = node.getStringValue("url");
                   if (url != null && !url.equals("")) {
                     return url;
@@ -118,14 +114,13 @@ public class ReferredAttachments extends Attachments {
                   }
                 }
 
-                public Object getFunctionValue(Parameters a) {
+                public String getFunctionValue(Parameters a) {
                     return getServletPath(a).toString();
                 }
             };
 
     public boolean init() {
       super.init();
-      formerFunction = (NodeFunction) getFunction("servletpath"); 
       addFunction(servletPathFunction);
       return true;
     }
@@ -165,15 +160,15 @@ public class ReferredAttachments extends Attachments {
     }
     
     public boolean commit(MMObjectNode node) {
-        Collection changed = node.getChanged();
+        Collection<String> changed = node.getChanged();
         if (changed.contains(FIELD_URL)) {
             // set those fields to null, which are not changed too:
-            Collection cp = new ArrayList();
+            Collection<String> cp = new ArrayList<String>();
             cp.addAll(getHandleFields());
             cp.removeAll(changed);
-            Iterator i = cp.iterator();
+            Iterator<String> i = cp.iterator();
             while (i.hasNext()) {
-                String f = (String) i.next();
+                String f = i.next();
                 if (node.getBuilder().hasField(f)) {
                     node.setValue(f, null);
                 }
