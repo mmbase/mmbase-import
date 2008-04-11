@@ -31,7 +31,7 @@
 	</mm:field>
    <mm:remove referid="firstfound" />
    <mm:relatednodes type="attachments" orderby="title">
-      <a href="<mm:attachment />" title="download <mm:field name="filename" />" class="attachment"><mm:field name="title" /></a><br/>
+      <a href="<mm:attachment />" title="download <mm:field name="filename" />" target="_blank" class="attachment"><mm:field name="title" /></a><br/>
    </mm:relatednodes>
    <mm:relatednodes type="link" orderby="titel">
       <a href="<mm:field name="url" />" title="<mm:field name="alt_tekst" />" target="<mm:field name="target" />" class="url"><mm:field name="titel" /></a><br/>
