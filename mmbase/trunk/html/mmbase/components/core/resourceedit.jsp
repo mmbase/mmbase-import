@@ -18,7 +18,7 @@
     ResourceLoader parent = resourceLoader.getParentResourceLoader() == null ? resourceLoader : resourceLoader.getParentResourceLoader();
   </jsp:scriptlet>
   <form method="post" name="resource" action="">
-    <table style="padding: 0">
+    <table border="0" cellspacing="0" cellpadding="3">
       <mm:cloud rank="administrator">
         <mm:import externid="dirs" />
         <mm:write referid="dirs" jspvar="dir" vartype="String">
@@ -143,8 +143,8 @@
         <input type="submit" name="s" value="search" />
       </td>
     </tr>
-    <tr><th>&amp;nbsp;</th><th>Resource-name</th><th>External URL</th></tr>
-    <tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="" /></mm:url>">new</a></td><td colspan="2"></td></tr>
+    <tr><th> </th><th>Resource-name</th><th>External URL</th></tr>
+    <tr><td><a href="<mm:url referids="search"><mm:param name="resource" value="" /></mm:url>">New</a></td><td colspan="2"></td></tr>
     <jsp:scriptlet>
     Iterator i = resourceLoader.getResourcePaths(search == null || search.equals("") ? null : java.util.regex.Pattern.compile(search), recursive).iterator();
 
@@ -274,7 +274,7 @@
   <tr>
      <td colspan="3">
        Resolve-scheme.
-       <table>
+       <table border="0" cellspacing="0" cellpadding="3">
          <tr><th>URL</th><th>read</th><th>write</th><th></th></tr>
          <%
             List urls = resourceLoader.getResourceList(resource.equals("") ? "&lt;new resource name&gt;" : resource);
@@ -332,7 +332,7 @@
               </th>
             </tr>
             <% } %>
-            <tr><td colspan="4"><hr /></td></tr>
+            <tr><th colspan="4"> </th></tr>
        </table>
 
      </td>

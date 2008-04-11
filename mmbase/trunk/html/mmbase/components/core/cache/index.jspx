@@ -14,7 +14,7 @@
 <mm:import externid="rs_active" from="request" />
 <mm:import externid="rs_show"   from="request" />
 
-  <h3>Cache Monitor</h3>
+  <h3>${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.title)}</h3>
 
   <!-- activate or deactivate cache -->
   <mm:present referid="active">
@@ -52,8 +52,7 @@
 
   <table summary="MMBase caches, their statistics and actions that can be taken" cellspacing="0" cellpadding="3" border="0">
     <caption>
-      This tools hows the performance of the various MMBase caches. You can also (temporary) turn
-      on/off the cache here. For a persistant change you should change caches.xml.
+      ${mm:string(requestScope['org.mmbase.framework.state'].renderer.block.description)}        
     </caption>
 
     <tr>
