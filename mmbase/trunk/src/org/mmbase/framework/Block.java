@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.37 2008-04-11 09:57:24 michiel Exp $
+ * @version $Id: Block.java,v 1.38 2008-04-11 10:03:12 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -186,6 +186,11 @@ public class Block {
             List<Type> result = new ArrayList<Type>();
             PARTS:
             for (String part : p.split("\\s*?[,\\s]\\s*")) {
+
+                int colon = part.indexOf(":");
+                if (colon > 0) {
+                    part = part.substring(0, colon);
+                }
                 Type type = ROOT;
                 for (String subpart : part.split("\\.")) {
 
