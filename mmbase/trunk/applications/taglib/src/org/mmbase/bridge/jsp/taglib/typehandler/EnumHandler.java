@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.42 2008-03-31 13:05:43 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.43 2008-04-11 15:32:22 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -168,7 +168,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
             if (keyString.equals(valueString)) {
                 buffer.append(" selected=\"selected\"");
             } else if (search) {
-                String searchs = (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName()));
+                String searchs = Casting.toString(tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(field.getName())));
                 if (keyString.equals(searchs)) {
                     buffer.append(" selected=\"selected\"");
                 }
