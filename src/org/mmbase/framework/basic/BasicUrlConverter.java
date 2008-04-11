@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.14 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.15 2008-04-11 10:23:58 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
@@ -144,30 +144,33 @@ public final class BasicUrlConverter implements UrlConverter {
             map.put(e.getKey(), e.getValue());
         }
         if (state.isRendering()) {
-            map = new TreeMap<String, Object>(framework.prefix(state, map));
-            String prefix = framework.getPrefix(state);
-            log.debug("Using prefix " + prefix);
-            for (Object e : request.getParameterMap().entrySet()) {
-                Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
-
-                String k = entry.getKey();
-                if (k.startsWith(framework.getPrefix(state))) {
-                    // for this block, don't add that,
-                    // because should be in parameters then
-                    log.trace("skipping " + entry);
-                    continue;
-                }
-                if (! map.containsKey(k)) {
-                    log.trace("Adding " + entry);
-                    map.put(k, entry.getValue());
-                }
-            }
             Block block = state.getBlock();
             if (log.isDebugEnabled()) {
                 log.debug("current block " + block);
             }
             Block toBlock = block.getComponent().getBlock(path);
+
             if (toBlock != null) {
+
+                map = new TreeMap<String, Object>(framework.prefix(state, map));
+                String prefix = framework.getPrefix(state);
+                log.debug("Using prefix " + prefix);
+                for (Object e : request.getParameterMap().entrySet()) {
+                    Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) e;
+
+                    String k = entry.getKey();
+                    if (k.startsWith(framework.getPrefix(state))) {
+                        // for this block, don't add that,
+                        // because should be in parameters then
+                        log.trace("skipping " + entry);
+                        continue;
+                    }
+                    if (! map.containsKey(k)) {
+                        log.trace("Adding " + entry);
+                        map.put(k, entry.getValue());
+                    }
+                }
+
                 path = null;
                 if (! toBlock.equals(block)) {
                     log.debug("New block " + toBlock);
@@ -178,6 +181,7 @@ public final class BasicUrlConverter implements UrlConverter {
             } else {
                 log.debug("No block '" + path + "' found");
             }
+
         }
         log.debug("constructing '" + path + "'" + map);
         return BasicUrlConverter.getUrl(path, map, request, escapeAmps);
