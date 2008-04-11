@@ -312,6 +312,7 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
+
   <target name="install.jumpers" if="jumpers.exists">
     <ant dir="jumpers"      target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -323,7 +324,7 @@ Applications build file
     </ant>
   </target>
 
-  <target name="install" depends="minimalistic.install,install.rmmci,install.codings,install.mynews,install.resources,install.jumpers,install.myyahoo">
+  <target name="install" depends="init,minimalistic.install,install.rmmci,install.codings,install.mynews,install.resources,install.jumpers,install.myyahoo">
 
     <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
