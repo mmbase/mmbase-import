@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.169.2.10 2008-03-19 11:52:47 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.169.2.11 2008-04-11 15:18:30 nklasens Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -976,6 +976,7 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
         try {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
+            log.error("Failed to update", sqe);
             while (true) {
                 Statement s = null;
                 ResultSet rs = null;
@@ -1002,6 +1003,7 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
                  }
                 break;
             }
+            log.info("Second try update with new connection");
             executeUpdate(query, node, fields);
         }
     }
@@ -3019,5 +3021,82 @@ x            BufferedOutputStream out = new BufferedOutputStream(new FileOutputS
                 inputStream = null;
             }
         }
+    }
+
+    /**
+     * @see org.mmbase.storage.StorageManager#isNull(org.mmbase.module.core.MMObjectNode, org.mmbase.core.CoreField)
+     */
+    public boolean isNull(MMObjectNode node, CoreField field) throws StorageException {
+        int dbtype = Field.TYPE_UNKNOWN;
+        if (field != null) {
+            dbtype = field.getType();
+        }
+
+        if (dbtype == Field.TYPE_BINARY && factory.hasOption(Attributes.STORES_BINARY_AS_FILE)) {
+            String fieldName = field.getName();
+            File binaryFile = checkFile(getBinaryFile(node, fieldName), node, field);
+            return binaryFile == null;
+        } else {
+            try {
+                MMObjectBuilder builder = node.getBuilder();
+                Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
+                String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
+                getActiveConnection();
+                Statement s = activeConnection.createStatement();
+                ResultSet result = s.executeQuery(query);
+                try {
+                    if ((result != null) && result.next()) {
+                        String id = (String)factory.getStorageIdentifier(field);
+                        return isNull(result, result.findColumn(id), dbtype);
+                    } else {
+                        throw new StorageException("Node with number " + node.getNumber() + " of type " + builder + " not found.");
+                    }
+                } finally {
+                    if (result != null) {
+                        result.close();
+                    }
+                    if (s != null) {
+                        s.close();
+                    }
+                }
+            } catch (SQLException se) {
+                throw new StorageException(se);
+            } finally {
+                releaseActiveConnection();
+            }
+        }
+
+    }
+
+    private boolean isNull(ResultSet result, int index, int dbtype) throws SQLException {
+        switch (dbtype) {
+            // string-type fields
+        case Field.TYPE_XML :
+        case Field.TYPE_STRING :
+            result.getBinaryStream(index);
+            break;
+        case Field.TYPE_BINARY :
+            if (factory.hasOption(Attributes.SUPPORTS_BLOB)) {
+                result.getBlob(index);
+            }
+            else {
+                result.getBinaryStream(index);                
+            }
+            break;
+        case Field.TYPE_DATETIME :
+            result.getTimestamp(index);
+            break;
+        case Field.TYPE_BOOLEAN :
+            result.getBoolean(index);
+            break;
+        case Field.TYPE_INTEGER :
+        case Field.TYPE_NODE :
+            result.getObject(index);
+            break;
+        default :
+            result.getObject(index);
+            break;
+        }
+        return result.wasNull();
     }
 }

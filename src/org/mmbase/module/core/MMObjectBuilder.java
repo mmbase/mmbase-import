@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.14 2007-11-19 15:38:39 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.15 2008-04-11 15:18:30 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -3081,6 +3081,16 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         }
     }
 
+    protected boolean isNull(String fieldName, MMObjectNode node) {
+        if (node.getNumber() < 0) return true; // capture calls from temporary nodes
+        try {
+            return mmb.getStorageManager().isNull(node, getField(fieldName));
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            log.error(Logging.stackTrace(se));
+            return true;
+        }
+    }
 }
 
 
