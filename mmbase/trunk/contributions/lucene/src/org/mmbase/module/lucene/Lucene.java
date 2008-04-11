@@ -48,7 +48,7 @@ import org.mmbase.module.lucene.extraction.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Lucene.java,v 1.110 2008-04-11 08:11:34 michiel Exp $
+ * @version $Id: Lucene.java,v 1.111 2008-04-11 12:24:04 pierre Exp $
  **/
 public class Lucene extends ReloadableModule implements NodeEventListener, RelationEventListener, IdEventListener {
 
@@ -662,7 +662,12 @@ public class Lucene extends ReloadableModule implements NodeEventListener, Relat
                         try {
                             DatabaseStorageManagerFactory dsmf = (DatabaseStorageManagerFactory)mmbase.getStorageManagerFactory();
                             indexPath = dsmf.getBinaryFileBasePath().toString();
-                            if(indexPath != null) indexPath = indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+                            if (indexPath != null) {  // this test is needed for compatibility betwen 1.8 and 1.9
+                                if (! indexPath.endsWith(File.separator)) {
+                                    indexPath += File.separator;
+                                }
+                                indexPath = indexPath + dsmf.getDatabaseName() + File.separator + "lucene";
+                            }
                         } catch(Exception e){}
                     }
 
