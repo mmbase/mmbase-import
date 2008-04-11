@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectNode.java,v 1.216 2008-04-07 11:37:02 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.217 2008-04-11 15:13:38 nklasens Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Serializable  {
@@ -674,6 +674,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable, java.io.Ser
             }
             if (field != null && field.getType() == Field.TYPE_NODE) {
                 return getIntValue(fieldName) <= -1;
+            }
+            Object value = values.get(fieldName);
+            if (VALUE_SHORTED.equals(value)) {
+                // value is not loaded from the database. We have to check the database to be sure.
+                return parent.isNull(fieldName, this);
             }
             return values.get(fieldName) == null;
         } else {
