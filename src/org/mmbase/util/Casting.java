@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.109 2008-04-11 14:48:54 michiel Exp $
+ * @version $Id: Casting.java,v 1.110 2008-04-11 14:50:41 nklasens Exp $
  */
 
 import java.util.*;
@@ -214,7 +214,7 @@ public class Casting {
                     // just to avoid the error
                     return null;
                 }
-                log.error("Dont now how to convert to " + type);
+                log.error("Dont know how to convert to " + type);
                 // don't know
                 return (C) value;
             }
