@@ -30,7 +30,7 @@ public class UrlParameters extends AbstractMap<String, Object> {
     UrlParameters(UrlTag tag) {
         this.tag = tag;
     }
-    protected void getWrapped() {
+    protected void getWrapped(boolean dereference) {
         if (wrapped == null) {
             try {
                 wrapped = new TreeMap<String, Object>();
@@ -44,6 +44,7 @@ public class UrlParameters extends AbstractMap<String, Object> {
                 if (log.isDebugEnabled()) {
                     log.debug("url parameters " + wrapped + " " + refs + "/" + tag.extraParameters);
                 }
+                if (dereference) tag = null;
             } catch (JspTagException je) {
                 throw new RuntimeException(je);
             }
@@ -52,11 +53,11 @@ public class UrlParameters extends AbstractMap<String, Object> {
         }
     }
     public int size() {
-        getWrapped();
+        getWrapped(false);
         return wrapped.size();
     }
     public Set<Map.Entry<String, Object>> entrySet() {
-        getWrapped();
+        getWrapped(false);
         return wrapped.entrySet();
     }
 
