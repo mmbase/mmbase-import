@@ -5,7 +5,8 @@ Author: J. de Ruijter
 A. How to install NatMM (Natuurmonumenten internet)
 ---------------------------------------------------
 
-1. modify the following configuration files (choose from /conf/internet/):
+1. copy the contents of the example configuration files from /conf/internet/ to the following directory 
+   and modify when needed to your local configuration:
    * /conf/filters.properties
    * /conf/natmmconfig.properties
 
