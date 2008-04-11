@@ -16,6 +16,7 @@ import java.util.*;
 
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.util.*;
+import org.mmbase.bridge.jsp.taglib.pageflow.Url;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +28,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.98 2008-03-17 17:27:04 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.99 2008-04-11 15:19:52 michiel Exp $
  */
 
 public class WriterHelper {
@@ -387,6 +388,13 @@ public class WriterHelper {
                 }
                 break;
             case TYPE_STRING:
+                if (v instanceof Url) {
+                    try {
+                    v = ((Url)v).get(false);
+                    } catch (Exception e) {
+                        log.warn(e);
+                    }
+                }
                 if (! (v instanceof String)) {
                     v = Casting.toString(v);
                 }
