@@ -18,7 +18,7 @@
   <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
     <c:if test="${deleteentry eq status.index}">
       <div class="msg">
-        Removed <mm:function set="caches" name="remove" referids="cache.name@cache,entry.key@key" /> from cache.
+        Removed '<mm:function set="caches" name="remove" referids="cache.name@cache,deletekey@key" />' from cache.
       </div>
     </c:if>
   </c:forEach>
@@ -49,34 +49,28 @@
 
       <c:forEach items="${cache.entrySet}" var="entry" end="500" varStatus="status">
         <mm:context>
-          <mm:voidfunction id="k" set="utils" name="toString" referids="entry.key@object" />
-
-          <mm:write value="${entry.key}">
-            <mm:compare regexp="${key}">
-              <mm:write value="${entry.value}">
-                <mm:compare regexp="${value}">
-                  <tr>
-                    <td class="view">${status.index}</td>
-                    <td class="center">
-                       ${cache.counts[entry.key]}
-                    </td>
-                    <td>${entry.key} </td>
-                    <td>${entry.value} </td>
-                    <td class="center">
-                      <mm:link referids="name@cache">
-                        <mm:param name="deletekey" value="${entry.key}" />
-                        <mm:param name="deleteentry" value="${status.index}" />
-                        <a title="remove this entry" href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="remove" /></a>
-                      </mm:link>
-                    </td>
-                  </tr>
-                </mm:compare>
-              </mm:write>
+          <mm:import id="ckey" jspvar="ckey" reset="true">${entry.key}</mm:import>
+          <mm:import id="cvalue" reset="true">${entry.value}</mm:import>
+          <mm:compare referid="ckey" regexp="${key}">
+            <mm:compare referid="cvalue" regexp="${value}">
+              <tr>
+                <td class="view">${status.index} </td>
+                <td class="center">${cache.counts[ckey]} </td>
+                <td>${entry.key} </td>
+                <td>${entry.value} </td>
+                <td class="center">
+                  <mm:link referids="name@cache">
+                    <mm:param name="deletekey" value="$ckey" />
+                    <mm:param name="deleteentry" value="${status.index}" />
+                    <a title="remove this entry" href="${_}"><img src="${mm:link('/mmbase/style/images/delete.png')}" alt="remove" /></a>
+                  </mm:link>
+                </td>
+              </tr>
             </mm:compare>
-          </mm:write>
+          </mm:compare>
         </mm:context>
       </c:forEach>
-      
+    
     </table>
   </form>
 
