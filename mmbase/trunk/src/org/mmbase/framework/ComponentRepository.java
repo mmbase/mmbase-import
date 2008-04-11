@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.33 2008-03-25 09:20:24 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.34 2008-04-11 09:57:24 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -65,7 +65,8 @@ public class ComponentRepository {
     private ComponentRepository() { }
 
     /**
-     * @javadoc
+     * Converts a comma seperated list of blocks to an array of {@link Block.Type}.s. Possible
+     * 'weights' per block are ignored.
      */
     public Block.Type[] getBlockClassification(String id) {
         if (id == null) {
