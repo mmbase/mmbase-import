@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component
     name="test"
-    version="9"
+    version="1"
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component
                         http://www.mmbase.org/xmlns/component.xsd">
 
-  <description xml:lang="en">MMBase core components</description>
-  <description xml:lang="nl">MMBase core componenten</description>
+  <description xml:lang="en">MMBase test components</description>
+  <description xml:lang="nl">MMBase testcomponenten</description>
 
   <!-- This bundle provides translations for the mmbase 'core' component -->
   <bundle name="org.mmbase.framework.resources.core" />
