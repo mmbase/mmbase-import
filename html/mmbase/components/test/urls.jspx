@@ -50,13 +50,19 @@
       <p>${_ eq '/justsomeurl?foo=bar&amp;amp;foo=xxx' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
 
-
     <mm:link absolute="context" page="/justsomeurl">
       <mm:param name="a">A</mm:param>
       <p>${_ eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: ${_}</p>
       <mm:param name="b">B</mm:param>
       <p>${_ eq '/justsomeurl?a=A&amp;amp;b=B' ? 'ok' : 'NOT ok'}: ${_}</p>
     </mm:link>
+
+    <mm:url id="url" absolute="context" page="/justsomeurl" write="false">
+      <mm:param name="a">A</mm:param>
+    </mm:url>
+
+    <p>${url eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: ${url}</p>
+
 
 
     <mm:component name="test" block="suburls" />
