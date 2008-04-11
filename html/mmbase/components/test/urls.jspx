@@ -12,7 +12,6 @@
       class="test mm_c mm_c_test mm_c_b_urls ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
 
-
     <h1>
       <jsp:text>This block needs to be showed on</jsp:text>
       <mm:link page="/mmbase/test/test/urls"><a href="${_}">/mmbase/test/test/urls</a></mm:link>
@@ -63,7 +62,14 @@
 
     <p>${url eq '/justsomeurl?a=A' ? 'ok' : 'NOT ok'}: ${url}</p>
 
+    <mm:url id="url2" page="/justsomeurl" write="false">
+      <mm:param name="a">A</mm:param>
+      <mm:param name="b">B</mm:param>
+    </mm:url>
 
+    <mm:write referid="url2" vartype="string"  jspvar="url" write="false">
+      <jsp:expression>(url.equals("/justsomeurl?a=A&amp;b=B") ? "ok" : "NOT ok") + ": " + url</jsp:expression>
+    </mm:write>
 
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
