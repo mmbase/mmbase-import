@@ -313,16 +313,16 @@ See http://www.MMBase.org/license
         <filtering>false</filtering>
       </resource>
       <resource>
-        <targetPath>${basedir}/META-INF</targetPath>
-        <directory>META-INF</directory>
+        <directory>${basedir}/META-INF</directory>
+        <targetPath>META-INF</targetPath>
         <excludes>
           <exclude>"**/CVS"</exclude>
         </excludes>
         <filtering>false</filtering>
       </resource>
       <resource>
+        <directory>${basedir}/config</directory>
         <targetPath>org/mmbase/config</targetPath>
-        <directory>config</directory>
         <excludes>
           <exclude>"**/CVS"</exclude>
         </excludes>
