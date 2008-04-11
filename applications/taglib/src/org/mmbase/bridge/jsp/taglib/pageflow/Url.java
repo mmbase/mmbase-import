@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.39 2008-02-22 14:10:14 michiel Exp $;
+ * @version $Id: Url.java,v 1.40 2008-04-11 11:42:47 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -280,4 +280,31 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
     public int compareTo(Object o) {
         return toString().compareTo(Casting.toString(o));
     }
+    /**
+     * Add a key/value pair to a map, but does not replace the already exsiting mapping.
+     * In stead, the already mapped value is converted to a list, contain both values.
+     */
+    public static Map<String, Object> addParameter(Map<String, Object> map, String key, Object value) {
+        if (map.containsKey(key)) {
+            log.debug("map already contains mapping for " + key);
+            Object existingValue = map.get(key);
+            if (existingValue instanceof ImplicitList) {
+                log.trace("Adding to existing");
+                ((ImplicitList) existingValue).add(value);
+            } else {
+                List listValue = new ImplicitList();
+                listValue.add(existingValue);
+                listValue.add(value);
+                map.put(key, listValue);
+            }
+        } else {
+            map.put(key, value);
+        }
+        return map;
+    }
+    static class ImplicitList extends ArrayList {
+        ImplicitList() {
+        }
+    }
+
 }
