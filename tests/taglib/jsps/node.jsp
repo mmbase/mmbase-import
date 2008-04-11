@@ -1,5 +1,5 @@
 <%@page language="java"
-       pageEncoding="UTF-8" contentType="text/html;charset=utf-8" 
+       pageEncoding="UTF-8" contentType="text/html;charset=utf-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <html>
 <title>Testing MMBase/taglib</title>
@@ -21,7 +21,7 @@
 <em>see <a href="<mm:url page="${taglibdoc}/fieldlist.jsp" />">fieldlist</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/fieldinfo.jsp" />">fieldinfo</a></em><br />
 <mm:node referid="nodenumber">
-  <mm:fieldlist> 
+  <mm:fieldlist>
     <mm:fieldinfo type="guiname" />: <mm:field /><br />
   </mm:fieldlist>
 </mm:node>
@@ -29,7 +29,7 @@
 <h3>getting node by number (number attribute): </h3>
 <em>see <a href="<mm:url page="${taglibdoc}/last.jsp" />">last</a></em><br />
 <mm:node number="$nodenumber">
-  <mm:fieldlist> 
+  <mm:fieldlist>
     <mm:fieldinfo type="name" /><mm:last inverse="true">, </mm:last>
     <mm:last><br /></mm:last>
   </mm:fieldlist>
@@ -37,7 +37,7 @@
 (should see all field names seperated by comma's (showing mm:last inverse))
 <h3>listing certain fields, getting node by Node (referid attribute):</h3>
 <mm:node referid="node">
-  <mm:fieldlist type="edit"> 
+  <mm:fieldlist type="edit">
     <mm:fieldinfo type="guiname" />: <mm:field /><br />
   </mm:fieldlist>
   [<mm:nodeinfo type="query" jspvar="q"><%= q.getClass().getName() %> XXXX <mm:write /></mm:nodeinfo>]<br >
@@ -46,7 +46,7 @@
 
 <h3>listing specified  fields, getting node by Node (referid attribute). Showing value with fieldinfo.</h3>
 <mm:node referid="node">
-  <mm:fieldlist fields="title,subtitle"> 
+  <mm:fieldlist fields="title,subtitle">
     <mm:fieldinfo type="guiname" />: <mm:fieldinfo type="value" /><br />
   </mm:fieldlist>
 </mm:node>
@@ -69,7 +69,7 @@
 <em>see <a href="<mm:url page="${taglibdoc}/aliaslist.jsp" />">aliaslist</a></em><br />
 <mm:node referid="node">
   <mm:setfield name="subtitle"><mm:field name="subtitle" />edited</mm:setfield>
-   <!-- mm:createalias default.mags mm:createalias CANNOT catch  bridgeexception in jsp in orion!!! --> 
+   <!-- mm:createalias default.mags mm:createalias CANNOT catch  bridgeexception in jsp in orion!!! -->
   subtitle: <mm:field id="subtitle" name="subtitle" /><br />
   <mm:createalias><mm:field name="subtitle" /></mm:createalias>
 </mm:node>
@@ -105,7 +105,7 @@ not using it:<br />
 <mm:node number="this_alias_does_not_exist_really" />
   WRONG!! Should have thrown exception (node not found)
 <% } catch (Exception e) { %>
-   Ok, this threw an exception <br /> 
+   Ok, this threw an exception <br />
 <% } %>
 notfound="skip"<br />
 <% try { %>
@@ -114,7 +114,7 @@ notfound="skip"<br />
 </mm:node>
   Ok, this didn't threw Exception.
 <% } catch (Exception e) { %>
-   WRONG!! Threw exception even though 'skip' was specified.<br /> 
+   WRONG!! Threw exception even though 'skip' was specified.<br />
 <% } %>
 
 <mm:log>testing relations lists</mm:log>
@@ -135,10 +135,10 @@ notfound="skip"<br />
   <mm:listrelations id="listrelations" type="urls">
      Relation: <mm:field name="gui()" /> /  Should see url (with relatednode):
      <mm:relatednode>
-       <mm:field name="number" /> <mm:field name="url" /> 
+       <mm:field name="number" /> <mm:field name="url" />
      </mm:relatednode>
      <br />
-  </mm:listrelations>  
+  </mm:listrelations>
   <p>
     Reusing the listrelations (inside the node):
   </p>
@@ -184,16 +184,16 @@ using list tag: <br />
      </mm:relatednodes>
      <mm:relatednodes type="urls" searchdir="destination">
        4  related url (used relatednodes): <mm:field name="url" /><br />
-     </mm:relatednodes>  
+     </mm:relatednodes>
      <mm:relatednodes type="urls" searchdir="source">
          SHOULD NOT SEE THIS  (searchdir without role not honoured)<br />
-     </mm:relatednodes>  
+     </mm:relatednodes>
      <mm:relatednodes type="urls" role="related">
          SHOULD NOT SEE THIS (role is not 'related' but 'posrel') <br />
-     </mm:relatednodes>  
+     </mm:relatednodes>
      <mm:relatednodes type="urls" role="posrel" searchdir="source">
          SHOULD NOT SEE THIS (excplitiy asked for other direction)<br />
-     </mm:relatednodes>  
+     </mm:relatednodes>
      <mm:relatednodes type="urls" orderby="description" constraints="">
        5  related url (used relatednodes): <mm:field name="url" /><br />
      </mm:relatednodes>
@@ -231,7 +231,7 @@ using list tag: <br />
      <% } %>
      <mm:relatedcontainer path="urls2">
        <mm:constraint field="urls2.url" value="$url" /> <!-- testing also constraint -->
-       relatedcontainer: size  <mm:size /> (should be 2) <br />      
+       relatedcontainer: size  <mm:size /> (should be 2) <br />
        <mm:related>
           9.<mm:index />  related url (used related): <mm:field name="urls2.url" /><br />
        </mm:related>
@@ -273,7 +273,7 @@ using list tag: <br />
        <mm:sortorder field="posrel232.pos" />
        relatedcontainer: size  <mm:size /> (should be 1) <br />
        <mm:relatednodes>
-          14  position (relatednodescontainer): <mm:field name="pos" /> (should be 10)<br /> 
+          14  position (relatednodescontainer): <mm:field name="pos" /> (should be 10)<br />
        </mm:relatednodes>
      </mm:relatednodescontainer>
      <mm:relatednodes type="object" role="posrel" orderby="posrel.pos" jspvar="rnode">
@@ -354,6 +354,7 @@ using list tag: <br />
     3.<mm:index /> news: <mm:field name="title" /><br />
    </mm:listnodes>
 </mm:listnodescontainer>
+
 <mm:listnodescontainer path="news,urls" element="news" nodes="urls.$urlnumber">
    listnodescontainer with nodes=: size <mm:size /> (should be 2) <br />
    <mm:listnodes>
@@ -431,7 +432,7 @@ mm:listnodes with path/element (should show twice the article):<br />
 <mm:log>distinct on mm:listnodescontainer</mm:log>
 <em>Using mm:distinct on mm:listnodescontainer</em><br />
 
-<mm:listnodescontainer path="news,urls" element="urls">  
+<mm:listnodescontainer path="news,urls" element="urls">
   <mm:constraint field="url" value="$url" />
   <mm:distinct />
   listnodescontainer: size <mm:size /> (should be 1) <br />
@@ -448,8 +449,8 @@ mm:listnodes with path/element (should show twice the article):<br />
 <mm:log>mm:list with one element</mm:log>
 
 <h3>List-tag with only one element</h3>
-<mm:list nodes="$nodenumber" path="news" fields="news.title"  constraints="news.number > 10/10">
-cd 
+<mm:list nodes="$nodenumber" path="news" fields="news.title"  constraints="[news.number] > 10/10">
+cd
    <em>all the following should have values</em>:<br />
    news.title:    <mm:field name="news.title" />   <br />
    news.subtitle: <mm:field name="news.subtitle" /><br />
