@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.239 2008-03-21 14:36:27 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.240 2008-04-12 10:43:14 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -452,25 +452,43 @@ public class MMBase extends ProcessorModule {
         //}
     }
 
-    // javadoc inherited
+
+    /**
+     * @see org.mmbase.module.Module#shutdown()
+     */
     public void shutdown() {
         mmbaseState = STATE_SHUT_DOWN;
 
-        // there all over the place static references to mmbasroot are maintained, which I cannot
-        // change presently. so let's clean up mmbaseroot itself as well as possible...
-        typeDef = null;
-        relDef = null;
+        //shutdown in the reverse order as init does
+        
+        org.mmbase.core.event.EventManager.getInstance().shutdown();
+
+        org.mmbase.util.ThreadPools.shutdown();
+
+        mmbaseCop = null;
+
+        if (mmobjs != null) { 
+            for (Iterator mmbobjecIter = mmobjs.values().iterator(); mmbobjecIter.hasNext();) {
+                MMObjectBuilder builder = (MMObjectBuilder) mmbobjecIter.next();
+                builder.shutdown();
+            }
+            mmobjs.clear();
+        }
+
         oAlias = null;
         insRel = null;
         typeRel = null;
-        mmobjs.clear();
-        storageManagerFactory = null;
-        rootBuilder = null;
-        mmbaseCop = null;
+        relDef = null;
+        typeDef = null;
+
         clusterBuilder = null;
+        rootBuilder = null;
+
+        storageManagerFactory = null;
+        
+        // there all over the place static references to mmbasroot are maintained, which I cannot
+        // change presently. so let's clean up mmbaseroot itself as well as possible...
         mmbaseroot = null;
-        org.mmbase.util.ThreadPools.shutdown();
-        org.mmbase.core.event.EventManager.getInstance().shutdown();
     }
 
     /**

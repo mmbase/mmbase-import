@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.391.2.15 2008-04-11 15:18:30 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.391.2.16 2008-04-12 10:43:04 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -538,6 +538,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
 
 
         return true;
+    }
+
+    /** clean all acquired resources, because system is shutting down */ 
+    public void shutdown() {
+        // on default, nothing needs to be done.
     }
 
     /**
@@ -3091,6 +3096,7 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
             return true;
         }
     }
+
 }
 
 

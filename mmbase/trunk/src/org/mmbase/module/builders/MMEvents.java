@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.23 2007-08-03 18:13:42 michiel Exp $
+ * @version $Id: MMEvents.java,v 1.24 2008-04-12 10:43:14 nklasens Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -53,6 +53,13 @@ public class MMEvents extends MMObjectBuilder {
         return true;
     }
 
+    public void shutdown() {
+        if (enableNotify && probe != null) {
+            probe.stop();
+            probe = null;
+        }
+        super.shutdown();
+    }
 
     public String getGUIIndicator(MMObjectNode node) {
         int tmp=node.getIntValue("start");

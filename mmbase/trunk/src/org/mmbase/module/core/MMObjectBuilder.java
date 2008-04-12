@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rob van Maris
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: MMObjectBuilder.java,v 1.423 2008-04-11 15:13:37 nklasens Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.424 2008-04-12 10:43:14 nklasens Exp $
  */
 public class MMObjectBuilder extends MMTable implements NodeEventListener, RelationEventListener {
 
@@ -496,6 +496,11 @@ public class MMObjectBuilder extends MMTable implements NodeEventListener, Relat
         MMBase.getMMBase().addNodeRelatedEventsListener(getTableName(), this);
 
         return true;
+    }
+
+    /** clean all acquired resources, because system is shutting down */ 
+    public void shutdown() {
+        // on default, nothing needs to be done.
     }
 
     /**
