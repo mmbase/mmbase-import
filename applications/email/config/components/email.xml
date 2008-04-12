@@ -13,13 +13,27 @@
     <title xml:lang="en">Email</title>
     <title xml:lang="nl">E-mail</title>
     <description xml:lang="en">
-      Tool to monitor emails that are scheduled and/or send with the email application.
+      Tool to monitor the email application. Like emails that are scheduled and/or send.
     </description>
     <description xml:lang="nl">
-      Tool om e-mails te monitoren die klaargezet zijn ('scheduled') voor verzending en/of al zijn 
-      verzonden met de e-mail applicatie.
+      Tool om de e-mail applicatie te monitoren. Zoals e-mails die klaargezet zijn ('scheduled') voor 
+      verzending en/of al zijn verzonden.
     </description>
-    <body jsp="/mmbase/admin/tools/email.jsp">
+    <body jsp="index.jspx">
+    </body>
+  </block>
+
+  <block name="emailqueue"
+         mimetype="text/html">
+    <title xml:lang="en">Email queue</title>
+    <title xml:lang="nl">E-mail queue</title>
+    <description xml:lang="en">
+      E-mail queue
+    </description>
+    <description xml:lang="nl">
+      E-mail queue
+    </description>
+    <body jsp="/mmbase/admin/tools/email/emailqueue.jsp">
     </body>
   </block>
 
