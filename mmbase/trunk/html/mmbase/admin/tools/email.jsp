@@ -1,4 +1,4 @@
-<%@ page import="org.mmbase.bridge.*"
+<%@ page import="org.mmbase.bridge.*" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %>
 <mm:cloud rank="administrator" loginpage="login.jsp" jspvar="cloud">
 <div
@@ -9,24 +9,16 @@
 
 
 
-<table summary="email test">
 <mm:hasnodemanager name="email">
+<table summary="email test">
 <%
-    NodeManager email=null;
-    try {
-       email=cloud.getNodeManager("email");
-    } catch (NotFoundException e) {}
+    // mm:hasnodemanager already did the check for NotFoundException
+    NodeManager email=email=cloud.getNodeManager("email");
 %>
 
 <tr>
   <th class="header" colspan="4">Dynamic &amp; Timed Email System - Queue Monitor - v1.0</th>
 </tr>
-<% if (email==null) { %>
-<tr>
-  <td class="multidata" colspan="4"><p>Email builder not active</p></td>
-</tr>
-<% } else { %>
-
 <tr>
   <td class="multidata" colspan="4"><p>This tool shows the performamce of the timed MMBase email builder.</p></td>
 </tr>
@@ -62,8 +54,6 @@
     <a href="<mm:url page="email/emailqueue.jsp" />" ><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="view" border="0" /></a>
   </td>
 </tr>
-
-<% } %>
 
 <tr><td>&nbsp;</td></tr>
 
