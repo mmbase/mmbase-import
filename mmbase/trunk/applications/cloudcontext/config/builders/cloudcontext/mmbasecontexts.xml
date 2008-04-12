@@ -24,6 +24,7 @@
   <properties>
     <property name="readall">false</property>
     <!-- if true, read rights never need a check -->
+
     <property name="allcontextspossible">true</property>
     <!-- 
     if this is true, and if you have the 'change context' right, then you may change to every existing context 
