@@ -97,8 +97,7 @@ public class VersionUtil {
             java.util.jar.Manifest mf = new java.util.jar.Manifest(manifestURL.openStream());
             java.util.Map<String, java.util.jar.Attributes> entries = mf.getEntries();
             applicationVersion = "unknown";
-            for (java.util.Iterator<Attributes> i = entries.values().iterator(); i.hasNext();) {
-               java.util.jar.Attributes attributes = i.next();
+            for (Attributes attributes : entries.values()) {
                String implementationVersion = attributes.getValue("Implementation-Version");
                if (implementationVersion != null) {
                   applicationVersion = implementationVersion;

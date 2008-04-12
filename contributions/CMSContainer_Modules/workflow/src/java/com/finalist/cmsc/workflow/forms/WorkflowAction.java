@@ -129,18 +129,17 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       List<Node> errors = new ArrayList<Node>();
 
       if (ACTION_FINISH.equals(action)) {
-         for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-            Workflow.finish(i.next(), remark);
+         for (Node node : nodes) {
+            Workflow.finish(node, remark);
          }
       }
       if (ACTION_ACCEPT.equals(action)) {
-         for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-            Workflow.accept(i.next(), remark);
+         for (Node node : nodes) {
+            Workflow.accept(node, remark);
          }
       }
       if (ACTION_REJECT.equals(action)) {
-         for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-            Node node = i.next();
+         for (Node node : nodes) {
             // Node in status published might be completed already before
             // request reaches this point.
             if (node.getCloud().hasNode(node.getNumber())) {
@@ -149,22 +148,20 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
          }
       }
       if (ACTION_RENAME.equals(action)) {
-         for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-            Workflow.remark(i.next(), remark);
+         for (Node node : nodes) {
+            Workflow.remark(node, remark);
          }
       }
       if (ACTION_PUBLISH.equals(action)) {
          List<Integer> publishNumbers = new ArrayList<Integer>();
-         for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
-            Node publishNode = i.next();
+         for (Node publishNode : nodes) {
             if (Workflow.isAllowedToPublish(publishNode)) {
                publishNumbers.add((publishNode).getNumber());
             }
          }
 
-         for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
+         for (Node publishNode : nodes) {
             try {
-               Node publishNode = i.next();
                if (publishNumbers.contains(publishNode.getNumber())) {
                   Workflow.publish(publishNode, publishNumbers);
                }

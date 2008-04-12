@@ -71,12 +71,12 @@ public class NtlmKnownVisitorModule extends KnownVisitorModule {
          NamingEnumeration answer = ctx.search("ldap://" + server + "/" + searchDN, query, null);
          if (answer.hasMoreElements()) {
             SearchResult result = (SearchResult) answer.next();
-            Attribute values = (Attribute) result.getAttributes().get(getProperty(PROPERTY_FIELD_REALNAME));
+            Attribute values = result.getAttributes().get(getProperty(PROPERTY_FIELD_REALNAME));
             if (values.size() > 0) {
                visitor.setDisplayName((String) values.get(0));
             }
 
-            values = (Attribute) result.getAttributes().get(getProperty(PROPERTY_FIELD_EMAIL));
+            values = result.getAttributes().get(getProperty(PROPERTY_FIELD_EMAIL));
             if (values.size() > 0) {
                visitor.setEmail((String) values.get(0));
             }

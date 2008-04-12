@@ -54,7 +54,7 @@ public class SearchBannerInitAction extends MMBaseAction {
       SearchUtil.addSortOrder(query, manager, "name", "up");
       log.debug("Query: " + query.toSql());
       NodeList nodes = query.getList();
-      List<Map> customers = populateCustomersRows(nodes);
+      List<Map<String, Object>> customers = populateCustomersRows(nodes);
 
       request.setAttribute("customers", customers);
 
@@ -79,8 +79,8 @@ public class SearchBannerInitAction extends MMBaseAction {
    }
 
 
-   private List<Map> populateCustomersRows(NodeList nodes) {
-      List<Map> rows = new ArrayList<Map>();
+   private List<Map<String, Object>> populateCustomersRows(NodeList nodes) {
+      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
       for (NodeIterator iter = nodes.nodeIterator(); iter.hasNext();) {
          Node node = iter.nextNode();
          Map<String, Object> columns = new HashMap<String, Object>();

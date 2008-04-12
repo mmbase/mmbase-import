@@ -62,7 +62,7 @@ public class SearchBannerAction extends MMBaseAction {
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cld) throws Exception {
 
-      List<Map> rows = new ArrayList<Map>();
+      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
       BannerForm bannerForm = (BannerForm) form;
       log.debug("Searching on remote cloud? " + bannerForm.isRemote());
@@ -86,7 +86,6 @@ public class SearchBannerAction extends MMBaseAction {
          maxNumber = MAX_NUMBER_EXPORT;
       }
       int queryOffset = maxNumber * offset;
-      String direction = getParameterAsString(request, "direction", "up");
 
       String action = request.getParameter("action");
       String page = request.getParameter("pagepath");
@@ -126,8 +125,8 @@ public class SearchBannerAction extends MMBaseAction {
    }
 
 
-   private List<Map> populateBannersAndPositions(NodeList nodes) {
-      List<Map> rows = new ArrayList<Map>();
+   private List<Map<String, Object>> populateBannersAndPositions(NodeList nodes) {
+      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
       for (NodeIterator iter = nodes.nodeIterator(); iter.hasNext();) {
 
          Node node = iter.nextNode();
@@ -185,16 +184,6 @@ public class SearchBannerAction extends MMBaseAction {
       }
       return cloud;
    }
-
-
-   private String getParameterAsString(HttpServletRequest request, String name, String defaultValue) {
-      String value = request.getParameter(name);
-      if (StringUtils.isBlank(value)) {
-         return defaultValue;
-      }
-      return value;
-   }
-
 
    private void addConstraint(Query query, NodeManager manager, Step step, String fieldName, String value) {
       if (StringUtils.isBlank(value)) {

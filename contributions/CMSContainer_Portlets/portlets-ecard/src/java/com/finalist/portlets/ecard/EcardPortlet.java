@@ -68,7 +68,7 @@ public class EcardPortlet extends ContentChannelPortlet {
    protected static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
 
-   public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processView(ActionRequest request, ActionResponse response) {
       Map<String, String> errorMessages = new HashMap<String, String>();
       Map<String, String> parameterMap = new HashMap<String, String>();
       // elementId represents the image number

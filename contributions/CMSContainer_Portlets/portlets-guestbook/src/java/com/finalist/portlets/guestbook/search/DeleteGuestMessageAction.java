@@ -16,7 +16,6 @@ import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.resources.forms.DeleteSecondaryContentAction;
 import com.finalist.cmsc.resources.forms.DeleteSecondaryContentForm;
-import com.finalist.cmsc.struts.MMBaseAction;
 
 public class DeleteGuestMessageAction extends DeleteSecondaryContentAction {
 

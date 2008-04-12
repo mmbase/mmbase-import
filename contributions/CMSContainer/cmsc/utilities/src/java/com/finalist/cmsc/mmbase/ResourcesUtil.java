@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.mmbase;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import net.sf.mmapps.commons.util.StringUtil;

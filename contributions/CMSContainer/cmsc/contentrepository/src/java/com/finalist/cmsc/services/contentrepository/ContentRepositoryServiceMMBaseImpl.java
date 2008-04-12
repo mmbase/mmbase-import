@@ -10,7 +10,6 @@
 package com.finalist.cmsc.services.contentrepository;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -162,8 +161,7 @@ public class ContentRepositoryServiceMMBaseImpl extends ContentRepositoryService
 		List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
         
         List<NodetypeBean> result = new ArrayList<NodetypeBean>();
-        for (Iterator<NodeManager> iter = types.iterator(); iter.hasNext();) {
-            NodeManager nm = iter.next();
+        for (NodeManager nm : types) {
             NodetypeBean ct = MMBaseNodeMapper.copyNode(nm, NodetypeBean.class);
             result.add(ct);
         }

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.navigation;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import net.sf.mmapps.commons.bridge.CloneUtil;
 import net.sf.mmapps.commons.bridge.RelationUtil;
@@ -511,8 +512,7 @@ public class PortletUtil {
          Map<String, Object> parameters) {
       Node portlet = createPortlet(cloud, portletName, definitionNode, viewNode);
       if (parameters != null) {
-         for (Iterator<Map.Entry<String, Object>> iter = parameters.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry<String, Object> entry = iter.next();
+         for (Entry<String, Object> entry : parameters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof String) {

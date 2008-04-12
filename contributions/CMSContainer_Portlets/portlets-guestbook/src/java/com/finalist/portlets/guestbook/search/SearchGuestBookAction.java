@@ -55,7 +55,7 @@ public class SearchGuestBookAction extends MMBaseAction {
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cld) throws Exception {
 
-      List<Map> rows = new ArrayList<Map>();
+      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
       QueryStringComposer queryStringComposer = new QueryStringComposer();
       GuestBookForm guestBookForm = (GuestBookForm) form;
       Cloud cloud = getCloud(guestBookForm.isRemote());
@@ -109,8 +109,8 @@ public class SearchGuestBookAction extends MMBaseAction {
    }
 
 
-   private List<Map> populateMessageRows(NodeList nodes) {
-      List<Map> rows = new ArrayList<Map>();
+   private List<Map<String, Object>> populateMessageRows(NodeList nodes) {
+      List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
       for (NodeIterator iter = nodes.nodeIterator(); iter.hasNext();) {
          Node node = iter.nextNode();
          Map<String, Object> columns = new HashMap<String, Object>();

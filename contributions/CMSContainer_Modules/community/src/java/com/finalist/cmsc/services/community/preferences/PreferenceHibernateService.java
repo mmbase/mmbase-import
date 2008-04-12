@@ -40,7 +40,7 @@ public class PreferenceHibernateService extends HibernateService implements Pref
         Map<Long, Map<String, String>> userPreferenceMap = new HashMap<Long, Map<String, String>>();
         for (Iterator iter = preferenceList.iterator(); iter.hasNext();) {
             Preference p = (Preference) iter.next();
-            Map<String, String> preferenceMap = (Map<String, String>)userPreferenceMap.get(p.getAuthenticationId());
+            Map<String, String> preferenceMap = userPreferenceMap.get(p.getAuthenticationId());
             if (preferenceMap == null) {
             	preferenceMap = new HashMap<String, String>();
             	userPreferenceMap.put(p.getAuthenticationId(), preferenceMap);
@@ -61,7 +61,7 @@ public class PreferenceHibernateService extends HibernateService implements Pref
         Map<String, Map<String, String>> modulePreferenceMap = new HashMap<String, Map<String, String>>();
         for (Iterator iter = preferenceList.iterator(); iter.hasNext();) {
             Preference p = (Preference) iter.next();
-            Map<String, String> preferenceMap = (Map<String, String>)modulePreferenceMap.get(p.getModule());
+            Map<String, String> preferenceMap = modulePreferenceMap.get(p.getModule());
             if (preferenceMap == null) {
             	preferenceMap = new HashMap<String, String>();
             	modulePreferenceMap.put(p.getModule(), preferenceMap);

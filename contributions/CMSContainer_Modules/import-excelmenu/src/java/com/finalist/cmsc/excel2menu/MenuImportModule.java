@@ -16,7 +16,7 @@ import org.mmbase.util.ResourceLoader;
  * Module to convert excel menu information to CMSC specific data structure
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MenuImportModule extends Module {
    static Log log = LogFactory.getLog(MenuImportModule.class);
@@ -69,7 +69,7 @@ public class MenuImportModule extends Module {
 
       String inputfile = getInitParameter("inputfile");
 
-      Map<String, String> params = (Map<String, String>) getInitParameters();
+      Map<String, String> params = getInitParameters();
       ExcelConfig config = new ExcelConfig(params);
 
       Excel2Menu t = new Excel2Menu(getAdminCloud(), config);
