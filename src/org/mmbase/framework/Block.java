@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.38 2008-04-11 10:03:12 michiel Exp $
+ * @version $Id: Block.java,v 1.39 2008-04-12 12:58:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class Block {
@@ -327,6 +327,11 @@ public class Block {
         }
     }
 
+
+    /**
+     * A wrapper class for a certain block in a type, which defined its weighted place in between
+     * it's child block of the same type.
+    */
     static class BlockContainer implements Comparable<BlockContainer> {
         final int weight;
         final Block block;
