@@ -297,7 +297,10 @@
   <block name="events"
          classification="mmbase.tools"
          mimetype="text/html">
+    <title xml:lang="en">Events</title>
+    <title xml:lang="nl">Events</title>
     <description xml:lang="en">A tool to directly send events into your MMBase system.</description>
+    <description xml:lang="nl">Een tool om rechtstreeks events naar MMBase te sturen.</description>
     <body jsp="events.jspx">
       <param name="id" type="String" />
       <param name="type" type="Integer" />
