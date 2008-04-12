@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.31 2008-02-27 11:47:26 michiel Exp $
+ * @version $Id: BasicList.java,v 1.32 2008-04-12 11:18:09 michiel Exp $
  */
 public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> implements BridgeList<E>  {
 
@@ -26,9 +26,7 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
 
     private Map<Object, Object> properties = new HashMap<Object, Object>();
 
-    // during inititializion of the list, you sometimes want to switch off
-    // also when everything is certainly converted
-    boolean autoConvert = true;
+    private boolean converted = false;
 
     BasicList() {
         super();
@@ -92,11 +90,7 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
 
     @Override
     public E get(int index) {
-        if (autoConvert) {
-            return convert(super.get(index), index);
-        } else {
-            return super.get(index);
-        }
+        return convert(super.get(index), index);
     }
 
     public void sort() {
@@ -108,34 +102,24 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
     }
 
 
-    @Override
-    public void add(int index, E o) {
-        autoConvert = true;
-        super.add(index, o);
-    }
-
-    @Override
-    public boolean add(E o) {
-        autoConvert = true;
-        return super.add(o);
-    }
-
     /**
      * @since MMBase-1.6.2
      */
     protected void convertAll() {
-        log.debug("convert all");
-        for (int i = 0; i < size(); i++) {
-            convert(super.get(i), i);
+        if (! converted) {
+            log.debug("convert all");
+            for (int i = 0; i < size(); i++) {
+                convert(super.get(i), i);
+            }
+            converted = true;
         }
-        autoConvert = false;
     }
 
 
     @Override
     public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
-        if (autoConvert) convertAll();
+        convertAll();
         return super.toArray();
     }
 
@@ -176,7 +160,6 @@ public class BasicList<E extends Comparable<? super E>> extends ArrayList<E> imp
         }
 
         public void add(E o) {
-            BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
