@@ -28,14 +28,12 @@ import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import sun.security.krb5.internal.crypto.c;
-
 /**
  * The Basic framework is based on a list of {@link UrlConverter}s. It is
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.13 2008-04-11 15:03:31 nklasens Exp $
+ * @version $Id: BasicFramework.java,v 1.14 2008-04-12 08:11:25 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
