@@ -17,7 +17,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.10 2007-02-11 14:46:13 nklasens Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.11 2008-04-12 14:10:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
@@ -35,7 +35,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
      * @param logicalOperator The logical operator.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicCompositeConstraint(int logicalOperator) {
+    public BasicCompositeConstraint(int logicalOperator, Constraint... childs) {
         // Invalid argument, must be either LOGICAL_AND or LOGICAL_OR.
         if (logicalOperator != CompositeConstraint.LOGICAL_AND
         && logicalOperator != CompositeConstraint.LOGICAL_OR) {
@@ -45,6 +45,9 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
             + CompositeConstraint.LOGICAL_OR));
         }
         this.logicalOperator = logicalOperator;
+        for (Constraint child : childs) {
+            addChild(child);
+        }
     }
 
     /**
