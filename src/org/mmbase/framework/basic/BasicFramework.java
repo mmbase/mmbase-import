@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.14 2008-04-12 08:11:25 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.15 2008-04-12 12:58:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -48,6 +48,8 @@ public class BasicFramework extends Framework {
         XMLEntityResolver.registerSystemID(NAMESPACE + ".xsd", XSD, Framework.class);
     }
 
+
+    public static final Parameter<String> ACTION     = new Parameter<String>("action", String.class);
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
 
@@ -72,6 +74,9 @@ public class BasicFramework extends Framework {
 
     public String getProcessUrl(String path, Map<String, Object> parameters,
                                Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
+        HttpServletRequest request = BasicUrlConverter.getUserRequest(frameworkParameters.get(Parameter.REQUEST));
+        State state = State.getState(request);
+        frameworkParameters.set(ACTION, state.getId());
         return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
     }
 
@@ -187,7 +192,7 @@ public class BasicFramework extends Framework {
     /**
      */
     public Parameter[] getParameterDefinition() {
-        return urlConverter.getParameterDefinition();
+        return new Parameter[] { ACTION, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
     }
 
     public Parameters createParameters() {
@@ -223,6 +228,7 @@ public class BasicFramework extends Framework {
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
         State state = State.getState(request);
+
         try {
 
             request.setAttribute(COMPONENT_CLASS_KEY, "mm_fw_basic");
@@ -234,8 +240,9 @@ public class BasicFramework extends Framework {
                 blockParameters = newBlockParameters;
 
             }
-
+            state.setAction(request.getParameter(ACTION.getName()));
             if (state.needsProcess()) {
+                log.service("Performing action on " + actualRenderer.getBlock());
                 Processor processor = actualRenderer.getBlock().getProcessor();
                 state.process(processor);
                 log.service("Processing " + actualRenderer.getBlock() + " " + processor);
@@ -368,7 +375,7 @@ public class BasicFramework extends Framework {
         }
         return null;
     }
-    
+
     public <C> void saveSettingValue(Setting<C> setting, C value) {
         SystemProperties.setComponentProperty(setting.getComponent().getName(),
                 setting.getName(), value.toString());
