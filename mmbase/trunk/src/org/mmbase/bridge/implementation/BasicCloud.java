@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.181 2008-02-27 11:47:54 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.182 2008-04-12 11:18:09 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeasurable, Serializable {
 
@@ -751,47 +751,42 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         return new BasicStringList(BasicCloudContext.mmb.getMMBaseCop().getAuthorization().getPossibleContexts(getUser()));
     }
 
-    void   checkNodes(BasicNodeList resultNodeList, Query query) {
+    List<MMObjectNode> checkNodes(List<MMObjectNode> in, Query query) {
+
+        
+        List<MMObjectNode> resultNodeList = new ArrayList<MMObjectNode>(in);
+            
         Authorization auth = BasicCloudContext.mmb.getMMBaseCop().getAuthorization();
-        resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
 
         if (log.isTraceEnabled()) {
             log.trace(resultNodeList);
         }
 
         log.debug("Starting read-check");
-        // resultNodeList is now a BasicNodeList; read restriction should only be applied now
-        // assumed is though, that it contain _only_ MMObjectNodes..
-
-        // get authorization for this call only
-
+  
         List<Step> steps = query.getSteps();
         Step nodeStep = null;
         if (query instanceof NodeQuery) {
             nodeStep = ((NodeQuery) query).getNodeStep();
         }
         log.debug("Creating iterator");
-        ListIterator<Node> li = resultNodeList.listIterator();
+        ListIterator<MMObjectNode> li = resultNodeList.listIterator();
         while (li.hasNext()) {
-            Node o = li.next();
+            MMObjectNode node = li.next();
             log.debug("next");
-            if (log.isDebugEnabled()) {
-                log.debug(o.getClass().getName());
-            }
-            Node node = o;
             boolean mayRead = true;
             for (int j = 0; mayRead && (j < steps.size()); ++j) {
                 Step step = steps.get(j);
                 int nodenr;
                 if (step.equals(nodeStep)) {
-                    nodenr = node.getIntValue("number");
+                    nodenr = node.getNumber();
                 } else {
                     String pref = step.getAlias();
                     if (pref == null) {
                         pref = step.getTableName();
                     }
                     String fn = pref + ".number";
-                    if (node.getNodeManager().hasField(fn)) {
+                    if (node.getBuilder().hasField(fn)) {
                         nodenr = node.getIntValue(pref + ".number");
                     } else {
                         log.warn("Could not check step " + step + ". Because, the field '" + fn + "' is not found in the node " + node + " which is in the result of " + query.toSql());
@@ -807,8 +802,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
                 li.remove();
             }
         }
-        resultNodeList.autoConvert = true;
-
+        return resultNodeList;
 
     }
 
@@ -832,12 +826,14 @@ public class BasicCloud implements Cloud, Cloneable, Comparable<Cloud>, SizeMeas
         // create resultNodeList
         NodeManager  tempNodeManager = new VirtualNodeManager(query, this);
 
+
+        if (! checked) {
+            resultList = checkNodes(resultList, query);
+        }
+
         BasicNodeList resultNodeList = new BasicNodeList(resultList, tempNodeManager);
         resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
 
-        if (! checked) {
-            checkNodes(resultNodeList, query);
-        }
 
         return resultNodeList;
     }
