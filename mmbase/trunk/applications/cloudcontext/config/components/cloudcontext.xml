@@ -44,17 +44,48 @@
       </class>
     </head>
     <body jsp="create_user.jspx" />
-
+    <process jsp="commit_user.jspx" />
   </block>
 
   <block name="groups"
          classification="mmbase.cloudsecurity:20"
          mimetype="text/html">
-    <title xml:lang="nl">Groupen</title>
+    <title xml:lang="nl">Groepen</title>
     <title xml:lang="en">Groups</title>
     <description xml:lang="en">Generic security editor</description>
-    <body jsp="/mmbase/security/index_groups.jsp">
-    </body>
+    <body jsp="groups.jspx" />
+  </block>
+
+
+  <block name="create_group" mimetype="text/html">
+    <title xml:lang="nl">Creëeer groep</title>
+    <title xml:lang="en">Create group</title>
+    <head>
+      <class name="org.mmbase.framework.StringRenderer">
+        <param name="string">&lt;link href="{REQUEST.getContextPath}/mmbase/security/style/style.css" rel="stylesheet" title="Cloud Context Security" type="text/css" media="screen" /&gt; </param>
+      </class>
+    </head>
+    <body jsp="create_group.jspx" />
+    <process jsp="commit_group.jspx" />
+  </block>
+
+
+  <block name="contexts"
+         classification="mmbase.cloudsecurity:30"
+         mimetype="text/html">
+    <title xml:lang="nl">Contexten</title>
+    <title xml:lang="en">Contexts</title>
+    <description xml:lang="en">Generic security editor</description>
+    <body jsp="contexts.jspx" />
+  </block>
+
+  <block name="actions"
+         classification="mmbase.cloudsecurity:40"
+         mimetype="text/html">
+    <title xml:lang="nl">Acties</title>
+    <title xml:lang="en">Actionss</title>
+    <description xml:lang="en">Generic security editor</description>
+    <body jsp="actions.jspx" />
   </block>
 
 </component>
