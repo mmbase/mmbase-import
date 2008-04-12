@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * This (singleton) class maintains all compoments which are registered in the current MMBase.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.34 2008-04-11 09:57:24 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.35 2008-04-12 13:23:27 michiel Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
@@ -91,6 +91,10 @@ public class ComponentRepository {
      */
     public Collection<Component> getFailedComponents() {
         return Collections.unmodifiableCollection(failed);
+    }
+
+    public Map<String, Component> toMap()  {
+        return Collections.unmodifiableMap(rep);
     }
 
     /**
