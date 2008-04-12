@@ -284,14 +284,6 @@
     </body>
   </block>
 
-  <block name="email"
-         classification="mmbase.tools"
-         mimetype="text/html">
-    <description xml:lang="en">Tool to monitor emails that are scheduled and/or send with the email application.</description>
-    <body jsp="/mmbase/admin/tools/email.jsp">
-    </body>
-  </block>
-
   <block name="sqltool"
          classification="mmbase.tools"
          mimetype="text/html">
