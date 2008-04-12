@@ -16,14 +16,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The UrlConverter which deals in urls and filters links that start with '/mmbase/'.
- *
+ * The UrlConverter which deals in urls and filters links that start with '/mmbase/' (or whatever
+ * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.5 2008-03-25 09:20:24 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.6 2008-04-12 12:58:20 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
+
     private static final Logger log = Logging.getLoggerInstance(MMBaseUrlConverter.class);
 
     /**
@@ -143,7 +144,7 @@ public class MMBaseUrlConverter implements UrlConverter {
         if (log.isDebugEnabled()) {
             log.debug("Creating URL to component " + component + " generating URL to " + block + " State " + state + " category " + category);
         }
-        boolean processUrl = Boolean.TRUE.equals(frameworkParameters.get("process"));
+        boolean processUrl = frameworkParameters.get(BasicFramework.ACTION) != null;
         if (processUrl) {
             // get current components ids
             if (state.isRendering()) {
