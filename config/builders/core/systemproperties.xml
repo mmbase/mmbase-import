@@ -32,11 +32,7 @@
             <guiname xml:lang="zh">关键字</guiname>
          </gui>
          <editor>
-            <positions>
-               <input>4</input>
-               <list>4</list>
-               <search>4</search>
-            </positions>
+            <positions><list>4</list></positions>
          </editor>
          <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="line">
             <unique value="true"/>
@@ -55,11 +51,6 @@
             <guiname xml:lang="en">Description</guiname>
             <guiname xml:lang="zh">描述</guiname>
          </gui>
-         <editor>
-            <positions>
-               <input>5</input>
-            </positions>
-         </editor>
          <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="field">
             <maxLength value="1024"/>
          </datatype>
@@ -77,12 +68,10 @@
          </gui>
          <editor>
             <positions>
-               <input>6</input>
-               <list>-1</list>
-               <search>-1</search>
+               <list>6</list>
             </positions>
          </editor>
-         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes">
             <required value="true"/>
             <maxLength value="1024"/>
          </datatype>
@@ -98,15 +87,7 @@
             <guiname xml:lang="en">Production</guiname>
             <guiname xml:lang="zh">生产</guiname>
          </gui>
-         <editor>
-            <positions>
-               <input>7</input>
-               <list>-1</list>
-               <search>-1</search>
-            </positions>
-         </editor>
-         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
-            <required value="true"/>
+         <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
             <maxLength value="1024"/>
          </datatype>
       </field>
@@ -121,15 +102,7 @@
             <guiname xml:lang="en">Acceptance</guiname>
             <guiname xml:lang="zh">认可</guiname>
          </gui>
-         <editor>
-            <positions>
-               <input>8</input>
-               <list>-1</list>
-               <search>-1</search>
-            </positions>
-         </editor>
-         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
-            <required value="true"/>
+         <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
             <maxLength value="1024"/>
          </datatype>
       </field>
@@ -144,15 +117,7 @@
             <guiname xml:lang="en">Test</guiname>
             <guiname xml:lang="zh">测试</guiname>
          </gui>
-         <editor>
-            <positions>
-               <input>9</input>
-               <list>-1</list>
-               <search>-1</search>
-            </positions>
-         </editor>
-         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
-            <required value="true"/>
+         <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
             <maxLength value="1024"/>
          </datatype>
       </field>
@@ -167,15 +132,7 @@
             <guiname xml:lang="en">Development</guiname>
             <guiname xml:lang="zh">开发</guiname>
          </gui>
-         <editor>
-            <positions>
-               <input>10</input>
-               <list>-1</list>
-               <search>-1</search>
-            </positions>
-         </editor>
-         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
-            <required value="true"/>
+         <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
             <maxLength value="1024"/>
          </datatype>
       </field>
@@ -190,14 +147,8 @@
             <guiname xml:lang="en">Component</guiname>
             <guiname xml:lang="zh">模型</guiname>
          </gui>
-         <editor>
-            <positions>
-               <input>10</input>
-               <list>-1</list>
-               <search>-1</search>
-            </positions>
-         </editor>
-         <datatype base="field" xmlns="http://www.mmbase.org/xmlns/datatypes">
+         <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+	   <class name="org.mmbase.datatypes.ComponentNamesDataType" />
             <required value="true"/>
             <maxLength value="1024"/>
          </datatype>
