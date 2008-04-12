@@ -24,11 +24,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class PollPortlet extends ContentPortlet {
 
-   protected static final String ACTION_PARAM = "action";
-   protected static final String CONTENTELEMENT = "contentelement";
-
-
-   public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processView(ActionRequest request, ActionResponse response) throws PortletException {
       String action = request.getParameter(ACTION_PARAM);
       if (action == null) {
          response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);

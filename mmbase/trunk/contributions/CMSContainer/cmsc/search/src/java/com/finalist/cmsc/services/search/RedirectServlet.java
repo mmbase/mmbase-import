@@ -19,7 +19,6 @@ import org.mmbase.bridge.Node;
 import org.mmbase.servlet.BridgeServlet;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.beans.om.Page;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;

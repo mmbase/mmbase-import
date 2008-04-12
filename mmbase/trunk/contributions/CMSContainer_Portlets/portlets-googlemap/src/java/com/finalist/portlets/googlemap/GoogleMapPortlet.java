@@ -19,8 +19,9 @@ import org.apache.commons.logging.LogFactory;
 public class GoogleMapPortlet extends CmscPortlet
 
 {
+    private static Log log = LogFactory.getLog(GoogleMapPortlet.class);
 
-   private static Log log = LogFactory.getLog(com.finalist.portlets.googlemap.GoogleMapPortlet.class);
+   private static final String GOOGLE_KEY_PROPERTY = "google.key";
 
    private static final String ACTION_PARAM = "action";
    private static final String WINDOW = "window";
@@ -30,34 +31,30 @@ public class GoogleMapPortlet extends CmscPortlet
    private static final String KEY = "key";
 
 
-   public GoogleMapPortlet() {
-   }
-
-
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
-      request.setAttribute("address", preferences.getValue("address", null));
-      request.setAttribute("info", preferences.getValue("info", null));
-      String key = StringUtils.isEmpty(preferences.getValue("key", null)) ? PropertiesUtil.getProperty("google.key")
-            : preferences.getValue("key", null);
-      request.setAttribute("key", key);
+      request.setAttribute(ADDRESS, preferences.getValue(ADDRESS, null));
+      request.setAttribute(INFO, preferences.getValue(INFO, null));
+      String key = StringUtils.isEmpty(preferences.getValue(KEY, null)) ? PropertiesUtil.getProperty(GOOGLE_KEY_PROPERTY)
+            : preferences.getValue(KEY, null);
+      request.setAttribute(KEY, key);
       super.doView(request, response);
    }
 
 
-   public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
-      String action = request.getParameter("action");
+   public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException {
+      String action = request.getParameter(ACTION_PARAM);
       if (action == null)
          response.setPortletMode(CmscPortletMode.EDIT_DEFAULTS);
       else if (action.equals("edit")) {
          PortletPreferences preferences = request.getPreferences();
          String portletId = preferences.getValue("com.finalist.cmsc.beans.om.portletId", null);
          if (portletId != null) {
-            setPortletParameter(portletId, "address", request.getParameter("address"));
-            setPortletParameter(portletId, "info", request.getParameter("info"));
-            setPortletParameter(portletId, "window", request.getParameter("window"));
-            setPortletParameter(portletId, "key", request.getParameter("key"));
-            setPortletNodeParameter(portletId, "page", request.getParameter("page"));
+            setPortletParameter(portletId, ADDRESS, request.getParameter(ADDRESS));
+            setPortletParameter(portletId, INFO, request.getParameter(INFO));
+            setPortletParameter(portletId, WINDOW, request.getParameter(WINDOW));
+            setPortletParameter(portletId, KEY, request.getParameter(KEY));
+            setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
          }
          else if (log.isDebugEnabled())
             log.error((new StringBuilder()).append("Unknown action: '").append(action).append("'").toString());

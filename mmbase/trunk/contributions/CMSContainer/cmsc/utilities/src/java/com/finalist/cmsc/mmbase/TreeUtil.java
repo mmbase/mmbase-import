@@ -113,8 +113,7 @@ public class TreeUtil {
 
       // check that the source item is not a parent of the destination item
       List<Node> pathNodes = getPathToRoot(destItem, treeManagers, relationName);
-      for (Iterator<Node> iter = pathNodes.iterator(); iter.hasNext();) {
-         Node item = iter.next();
+      for (Node item : pathNodes) {
          if (item.getNumber() == sourceItem.getNumber()) {
             isParent = true;
          }

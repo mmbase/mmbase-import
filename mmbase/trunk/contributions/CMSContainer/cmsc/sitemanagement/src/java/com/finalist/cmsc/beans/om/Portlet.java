@@ -68,8 +68,7 @@ public class Portlet extends NodeBean implements Comparable<Portlet> {
 
 
    public String getParameterValue(String key) {
-      for (Iterator<Object> iter = portletparameters.iterator(); iter.hasNext();) {
-         Object param = iter.next();
+      for (Object param : portletparameters) {
          if (param instanceof NodeParameter) {
             NodeParameter nodeparam = (NodeParameter) param;
             if (key.equals(nodeparam.getKey())) {

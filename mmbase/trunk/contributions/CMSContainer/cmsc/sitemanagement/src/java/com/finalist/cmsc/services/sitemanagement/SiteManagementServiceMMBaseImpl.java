@@ -240,8 +240,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    public <E extends NavigationItem> List<E> getListFromPath(String path, Class<E> clazz) {
       List<E> itemsForPath = siteModelManager.getItemsForPath(path, clazz);
       if (ServerUtil.isStaging()) {
-          for (Iterator<E> iterator = itemsForPath.iterator(); iterator.hasNext();) {
-             E child = iterator.next();
+          for (E child : itemsForPath) {
              if (!showNavigation(child)) {
                 itemsForPath.clear();
                 break;

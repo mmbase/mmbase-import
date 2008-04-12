@@ -58,8 +58,8 @@ public class CheckboxTag extends SimpleTagSupport {
 			} else if (selectedValues instanceof Integer[]) {
 				Integer[] selected = (Integer[]) selectedValues;
 				List<Integer> selectedItems = new ArrayList<Integer>();
-				for (int i = 0; i < selected.length; i++) {
-					selectedItems.add(Integer.valueOf(selected[i]));
+				for (Integer element : selected) {
+					selectedItems.add(Integer.valueOf(element));
 				}
 				if (selectedItems.contains(value)) {
 					return true;

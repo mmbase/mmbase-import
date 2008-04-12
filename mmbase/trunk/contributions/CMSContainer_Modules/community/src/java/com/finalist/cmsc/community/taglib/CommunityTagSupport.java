@@ -2,7 +2,6 @@ package com.finalist.cmsc.community.taglib;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -34,8 +33,6 @@ public abstract class CommunityTagSupport extends SimpleTagSupport {
 	@Override
 	public void doTag() throws JspException, IOException {
 		PageContext pctx = (PageContext) getJspContext();
-		HttpServletRequest req = (HttpServletRequest) pctx.getRequest();
-		
 		ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(pctx.getServletContext());
 		ctx.getAutowireCapableBeanFactory().autowireBeanProperties(this, Autowire.BY_NAME.value(), false);
 

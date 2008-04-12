@@ -1,9 +1,5 @@
 package com.finalist.cmsc.directreaction.taglib;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
@@ -29,7 +25,7 @@ public class GetReactionTag extends SimpleTagSupport {
    private String var;
 
 
-   public void doTag() throws JspException, IOException {
+   public void doTag() {
       Cloud remoteCloud = getLiveCloud();
       Node node = remoteCloud.getNode(number);
 

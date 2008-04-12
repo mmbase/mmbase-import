@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.struts;
 
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,8 +66,7 @@ public abstract class TreeAction extends MMBaseAction {
 
             PrintWriter out = HttpUtil.getWriterForXml(response);
             out.write("<options>");
-            for (Iterator<String> iter = children.iterator(); iter.hasNext();) {
-               String element = iter.next();
+            for (String element : children) {
                out.write("<option>" + element + "</option>");
             }
             out.write("</options>");
@@ -81,8 +79,7 @@ public abstract class TreeAction extends MMBaseAction {
             Node channelNode = cloud.getNode(channel);
             List<Node> openChannels = getOpenChannels(channelNode);
             if (openChannels != null) {
-               for (Iterator<Node> iter = openChannels.iterator(); iter.hasNext();) {
-                  Node node = iter.next();
+               for (Node node : openChannels) {
                   info.expand(node.getNumber());
                }
                addToRequest(request, "channel", channelNode);

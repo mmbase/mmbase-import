@@ -144,8 +144,7 @@ public class SiteCacheLoader {
           }
        }
 
-       for (Iterator<Node> iter = unfinishedNodes.iterator(); iter.hasNext();) {
-          Node navrelNode = iter.next();
+       for (Node navrelNode : unfinishedNodes) {
           log.warn("Page treenode not found for navrel: " + navrelNode);
        }
     }

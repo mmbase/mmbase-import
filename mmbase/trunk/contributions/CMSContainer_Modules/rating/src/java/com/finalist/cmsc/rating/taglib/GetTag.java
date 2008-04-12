@@ -1,8 +1,5 @@
 package com.finalist.cmsc.rating.taglib;
 
-import java.io.IOException;
-
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.finalist.cmsc.rating.util.Rating;
@@ -17,7 +14,7 @@ public class GetTag extends SimpleTagSupport {
    private String user;
 
 
-   public void doTag() throws JspException, IOException {
+   public void doTag() {
       Rating rating = RatingUtil.getContentRating(number);
       getJspContext().setAttribute(var, new Float(rating.getRating()));
       if (countVar != null) {

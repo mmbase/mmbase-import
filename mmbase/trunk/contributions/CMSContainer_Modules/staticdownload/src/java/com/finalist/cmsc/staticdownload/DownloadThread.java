@@ -16,7 +16,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -252,6 +251,7 @@ public class DownloadThread extends Thread {
             Thread.sleep(1000);
          }
          catch (InterruptedException e) {
+             // nothing
          }
 
          String errors = readOutput(process.getErrorStream());
@@ -267,6 +267,7 @@ public class DownloadThread extends Thread {
             stillRunning = false;
          }
          catch (IllegalThreadStateException e) {
+             // nothing
          }
       }
 
@@ -297,8 +298,7 @@ public class DownloadThread extends Thread {
 
    public String getStatus() {
       StringBuffer status = new StringBuffer();
-      for (Iterator<String> i = results.keySet().iterator(); i.hasNext();) {
-         String key = i.next();
+      for (String key : results.keySet()) {
          ArrayList<String> downloads = results.get(key);
          status.append(key);
          status.append(": #");

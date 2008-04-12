@@ -4,10 +4,6 @@ import junit.framework.TestCase;
 
 public class GlossaryTest extends TestCase {
 
-    public GlossaryTest()
-    {
-    }
-
     protected void setUp()
         throws Exception
     {

@@ -43,12 +43,8 @@ public class StripQueryStringFilter implements Filter {
 
 class EmptyQueryStringRequestWrapper extends HttpServletRequestWrapper {
 
-   private Set<String> parameters;
-
-
    public EmptyQueryStringRequestWrapper(HttpServletRequest request, Set<String> parameters) {
       super(request);
-      this.parameters = parameters;
    }
 
 
@@ -84,7 +80,6 @@ class EmptyQueryStringRequestWrapper extends HttpServletRequestWrapper {
       return null;
    }
 
-   private static final String[] EMPTY_STRING_ARRAY = new String[0];
    private static final Enumeration EMPTY_ENUMERATION = new EmptyEnumeration();
 
    static final class EmptyEnumeration implements Enumeration {

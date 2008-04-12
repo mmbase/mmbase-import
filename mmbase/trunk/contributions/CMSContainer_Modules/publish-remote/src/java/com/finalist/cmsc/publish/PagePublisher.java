@@ -119,8 +119,7 @@ public class PagePublisher extends Publisher {
 
     protected void addChannels(Map<Node, Date> nodes, Node contentChannel) {
         List<Node> path = RepositoryUtil.getPathToRoot(contentChannel);
-        for (Iterator<Node> iter = path.iterator(); iter.hasNext();) {
-            Node pathElement = iter.next();
+        for (Node pathElement : path) {
             if (!Publish.isPublished(pathElement) && !nodes.containsKey(pathElement)) {
                 nodes.put(pathElement, new Date());
             }

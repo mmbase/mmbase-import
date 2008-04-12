@@ -67,8 +67,7 @@ public class RichTextBuilder extends MMObjectBuilder {
       }
 
       Collection<CoreField> fields = getFields();
-      for (Iterator<CoreField> iter = fields.iterator(); iter.hasNext();) {
-         CoreField field = iter.next();
+      for (CoreField field : fields) {
          DataType dataType = field.getDataType();
          while (StringUtil.isEmpty(dataType.getName())) {
             dataType = dataType.getOrigin();
@@ -586,8 +585,7 @@ public class RichTextBuilder extends MMObjectBuilder {
       NodeSearchQuery query = getQuery(id, builder, idField);
       try {
          List<MMObjectNode> nodes = builder.getNodes(query);
-         for (Iterator<MMObjectNode> iter = nodes.iterator(); iter.hasNext();) {
-            MMObjectNode imagerel = iter.next();
+         for (MMObjectNode imagerel : nodes) {
             return imagerel;
          }
       }

@@ -36,15 +36,12 @@ import org.mmbase.bridge.Relation;
 import com.finalist.captcha.CaptchaServiceSingleton;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.portlets.ContentPortlet;
-import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 import com.octo.captcha.service.CaptchaServiceException;
 
 public class GuestBookPortlet extends ContentPortlet {
     
     private static final Log log = LogFactory.getLog(GuestBookPortlet.class);
 
-    protected static final String ACTION_PARAM = "action";
-    protected static final String CONTENTELEMENT = "contentelement";
     private static final String TITLE_FIELD = "title";
     private static final String NAME_FIELD = "name";
     private static final String EMAIL_FIELD = "email";
@@ -54,7 +51,7 @@ public class GuestBookPortlet extends ContentPortlet {
 
     /** name of the parameter that defines the mode the view is displayed in */
 
-    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+    public void processView(ActionRequest request, ActionResponse response) {
         String action = request.getParameter(ACTION_PARAM);
         
         log.debug("Action: " + action);

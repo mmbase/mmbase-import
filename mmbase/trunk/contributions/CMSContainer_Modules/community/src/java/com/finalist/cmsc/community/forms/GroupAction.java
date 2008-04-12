@@ -1,7 +1,6 @@
 package com.finalist.cmsc.community.forms;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,8 +38,7 @@ public class GroupAction extends AbstractCommunityAction {
 
 			AuthorityService aus = getAuthorityService();
 
-			for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
-				Authentication user = iter.next();
+			for (Authentication user : users) {
 				String label = user.getUserId();
 				LabelValueBean bean = new LabelValueBean(label, label);
 				usersList.add(bean);
@@ -87,8 +85,7 @@ public class GroupAction extends AbstractCommunityAction {
 						current.remove(m);
 					}
 				}
-				for (Iterator<Authentication> iter = current.iterator(); iter.hasNext();) {
-					Authentication user = iter.next();
+				for (Authentication user : current) {
 					as.removeAuthorityFromUser(user.getUserId(), id);
 				}
 			}

@@ -176,8 +176,7 @@ public class PageWorkflow extends WorkflowManager {
    protected void checkNode(Node node, List<Node> errors, List<Integer> publishNumbers) {
       List<Node> path = NavigationUtil.getPathToRoot(node);
       path.remove(path.size() - 1);
-      for (Iterator<Node> iter = path.iterator(); iter.hasNext();) {
-         Node pathElement = iter.next();
+      for (Node pathElement : path) {
          if (!Publish.isPublished(pathElement)
                && (publishNumbers == null || !publishNumbers.contains(pathElement.getNumber()))) {
             errors.add(pathElement);

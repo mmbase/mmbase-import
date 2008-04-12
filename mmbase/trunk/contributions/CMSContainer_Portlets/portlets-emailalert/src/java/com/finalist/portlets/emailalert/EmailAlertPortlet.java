@@ -24,8 +24,6 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class EmailAlertPortlet extends ContentPortlet {
 
-   protected static final String ACTION_PARAM = "action";
-   protected static final String CONTENTELEMENT = "contentelement";
    private static final String SUBSCRIBEREL = "subscriberel";
    private static final String SUBSCRIBER = "subscriber";
    private static final String ERRORMESSAGES = "errormessages";
@@ -35,7 +33,7 @@ public class EmailAlertPortlet extends ContentPortlet {
    private static final String VALID = "valid";
 
 
-   public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processView(ActionRequest request, ActionResponse response) throws PortletException {
       String action = request.getParameter(ACTION_PARAM);
       Map<String, String> errorMessages = new Hashtable<String, String>();
       if (action == null) {
@@ -148,7 +146,7 @@ public class EmailAlertPortlet extends ContentPortlet {
             request.setAttribute(CONFIRM, confirm);
          }
          if (portletSession.getAttribute(ERRORMESSAGES) != null) {
-            Hashtable errormessages = (Hashtable) portletSession.getAttribute(ERRORMESSAGES);
+             Map<String, String> errormessages = (Map<String, String>) portletSession.getAttribute(ERRORMESSAGES);
             portletSession.removeAttribute(ERRORMESSAGES);
             request.setAttribute(ERRORMESSAGES, errormessages);
          }
