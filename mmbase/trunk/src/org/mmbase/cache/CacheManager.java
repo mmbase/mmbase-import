@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache manager manages the static methods of {@link Cache}. If you prefer you can call them on this in stead.
  *
  * @since MMBase-1.8
- * @version $Id: CacheManager.java,v 1.25 2008-03-19 15:32:40 michiel Exp $
+ * @version $Id: CacheManager.java,v 1.26 2008-04-12 13:15:23 michiel Exp $
  */
 public class CacheManager {
 
@@ -203,7 +203,9 @@ public class CacheManager {
     private static ResourceWatcher configWatcher = new ResourceWatcher () {
             public void onChange(String resource) {
                 try {
-                    configReader = new DocumentReader(ResourceLoader.getConfigurationRoot().getInputSource(resource), Cache.class);
+                    org.xml.sax.InputSource is =  ResourceLoader.getConfigurationRoot().getInputSource(resource);
+                    log.service("Reading " + is.getSystemId());
+                    configReader = new DocumentReader(is, Cache.class);
                 } catch (Exception e) {
                     log.error(e);
                     return;
