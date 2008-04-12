@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.63 2008-03-12 16:04:23 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.64 2008-04-12 14:09:12 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -253,7 +253,14 @@
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
     </specialization>
 
-
+    <specialization id="components">
+      <description xml:lang="en">
+	The names of all available MMBase Framework Components
+      </description>
+      <class name="org.mmbase.datatypes.ComponentNamesDataType" />
+      <required value="true"/>
+      <maxLength value="1024"/>
+    </specialization>
 
     <specialization id="whitespacereplacer">
       <description xml:lang="en">
