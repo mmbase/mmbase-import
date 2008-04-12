@@ -68,11 +68,11 @@
     </mm:url>
 
     <mm:write referid="url2" vartype="string"  jspvar="url" write="false">
-      <jsp:expression>(url.equals("/justsomeurl?a=A&amp;b=B") ? "ok" : "NOT ok") + ": " + url</jsp:expression>
+      <jsp:expression>(url.equals("/justsomeurl?a=A&amp;b=B") ? "ok" : "NOT ok")</jsp:expression>
+      :<mm:escape><jsp:expression>url</jsp:expression></mm:escape>
     </mm:write>
 
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
-
   </div>
 </jsp:root>
