@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.11 2008-04-11 08:40:46 michiel Exp $
+ * @version $Id: MMBase.java,v 1.200.2.12 2008-04-12 10:43:05 nklasens Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -423,26 +423,45 @@ public class MMBase extends ProcessorModule {
 
     }
 
-    // javadoc inherited
+
+    /**
+     * @see org.mmbase.module.Module#shutdown()
+     */
     public void shutdown() {
         mmbaseState = STATE_SHUT_DOWN;
 
-        // there all over the place static references to mmbasroot are maintained, which I cannot
-        // change presently. so let's clean up mmbaseroot itself as well as possible...
-        typeDef = null;
-        relDef = null;
+        //shutdown in the reverse order as init does
+        
+        org.mmbase.core.event.EventManager.getInstance().shutdown();
+
+        org.mmbase.util.ThreadPools.shutdown();
+
+        mmbaseCop = null;
+
+        if (mmobjs != null) { 
+            for (Iterator mmbobjecIter = mmobjs.values().iterator(); mmbobjecIter.hasNext();) {
+                MMObjectBuilder builder = (MMObjectBuilder) mmbobjecIter.next();
+                builder.shutdown();
+            }
+            mmobjs.clear();
+            mmobjs = null;
+        }
+
         oAlias = null;
         insRel = null;
         typeRel = null;
-        if (mmobjs != null) mmobjs.clear();
-        mmobjs = null;
-        cloudModel = null;
-        storageManagerFactory = null;
-        rootBuilder = null;
-        mmbaseCop = null;
+        relDef = null;
+        typeDef = null;
+
         clusterBuilder = null;
-        org.mmbase.util.ThreadPools.shutdown();
-        org.mmbase.core.event.EventManager.getInstance().shutdown();
+        rootBuilder = null;
+        
+        cloudModel = null;
+
+        storageManagerFactory = null;
+        
+        // there all over the place static references to mmbasroot are maintained, which I cannot
+        // change presently. so let's clean up mmbaseroot itself as well as possible...
         mmbaseroot = null;
     }
 
