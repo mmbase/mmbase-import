@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  *</p>
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataTypes.java,v 1.27 2008-01-28 16:31:29 michiel Exp $
+ * @version $Id: DataTypes.java,v 1.28 2008-04-12 13:15:54 michiel Exp $
  */
 
 public class DataTypes {
@@ -102,6 +102,7 @@ public class DataTypes {
         while (i.hasPrevious()) {
             try {
                 URL u = i.previous();
+                log.service("Reading " + u);
                 URLConnection con = u.openConnection();
                 if (con.getDoInput()) {
                     InputSource dataTypesSource = new InputSource(con.getInputStream());
@@ -124,7 +125,11 @@ public class DataTypes {
         if (failed.size() > 0) {
             log.error("Failed " + failed);
         }
-        if (log.isDebugEnabled()) log.debug(dataTypeCollector.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("Read datatypes: " + dataTypeCollector.toString());
+        } else {
+            log.service("Read datatypes: " + dataTypeCollector.getDataTypes().keySet());
+        }
     }
 
     /**
