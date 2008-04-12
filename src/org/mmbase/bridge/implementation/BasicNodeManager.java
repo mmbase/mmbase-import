@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.133 2007-06-21 13:46:51 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.134 2008-04-12 11:18:09 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -373,15 +373,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
             boolean useCache = query.getCachePolicy().checkPolicy(query);
             List<MMObjectNode> resultList = builder.getStorageConnector().getNodes(query, useCache);
             
+            if (! checked) {
+                resultList = cloud.checkNodes(resultList, query);
+            }
+
             BasicNodeList resultNodeList;
             NodeManager nm = query.getNodeManager();
             resultNodeList = new BasicNodeList(resultList, cloud);
-
             resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);
-
-            if (! checked) {
-                cloud.checkNodes(resultNodeList, query);
-            }
 
             return resultNodeList;
         } catch (SearchQueryException sqe) {
