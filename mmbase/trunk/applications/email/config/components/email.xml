@@ -4,11 +4,24 @@
     xmlns="http://www.mmbase.org/xmlns/component"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
-  <class name="org.mmbase.framework.BasicComponent">
-
-  </class>
-  <description xml:lang="nl">Email component</description>
   <description xml:lang="en">Email component</description>
+  <description xml:lang="nl">E-mail component</description>
+
+  <block name="email"
+         classification="mmbase.tools"
+         mimetype="text/html">
+    <title xml:lang="en">Email</title>
+    <title xml:lang="nl">E-mail</title>
+    <description xml:lang="en">
+      Tool to monitor emails that are scheduled and/or send with the email application.
+    </description>
+    <description xml:lang="nl">
+      Tool om e-mails te monitoren die klaargezet zijn ('scheduled') voor verzending en/of al zijn 
+      verzonden met de e-mail applicatie.
+    </description>
+    <body jsp="/mmbase/admin/tools/email.jsp">
+    </body>
+  </block>
 
   <block
       classification="mmbase.examples"
