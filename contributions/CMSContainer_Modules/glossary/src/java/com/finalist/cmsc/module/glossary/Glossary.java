@@ -11,10 +11,6 @@ public class Glossary {
    private static Glossary glossary = null;
 
 
-   private Glossary() {
-   }
-
-
    void addTerm(String term, String description) {
       TERMS.put(term, description);
    }
@@ -68,7 +64,7 @@ public class Glossary {
    }
 
 
-   public Map getTerms() {
+   public Map<String, String> getTerms() {
       return TERMS;
    }
 

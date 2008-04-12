@@ -324,8 +324,7 @@ public class IndexUpdateTask implements Runnable {
 
       // add path to page as metadata
       List<Node> path = NavigationUtil.getPathToRoot(pageNode);
-      for (Iterator<Node> pathIter = path.iterator(); pathIter.hasNext();) {
-         Node pathNode = pathIter.next();
+      for (Node pathNode : path) {
          doc.add(EnvelopeFieldFactory.getStringField(PagesUtil.FRAGMENT_FIELD, pathNode.getStringValue("number")));
       }
 

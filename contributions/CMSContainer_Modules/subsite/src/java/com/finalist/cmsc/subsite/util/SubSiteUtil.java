@@ -5,11 +5,7 @@ import java.util.List;
 import net.sf.mmapps.commons.util.StringUtil;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 
 import com.finalist.cmsc.navigation.NavigationUtil;

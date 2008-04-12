@@ -19,7 +19,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  * Fulltext search portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class SearchPortlet extends CmscPortlet {
 
@@ -57,7 +57,7 @@ public class SearchPortlet extends CmscPortlet {
     *      javax.portlet.ActionResponse)
     */
    @Override
-   public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException {
       getLogger().debug("===>SearchPortlet.EDIT_DEFAULTS mode");
 
       String action = request.getParameter(ACTION_PARAM);

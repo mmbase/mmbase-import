@@ -10,7 +10,6 @@
 package com.finalist.cmsc.community.forms;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -57,8 +56,7 @@ public class GroupInitAction extends AbstractCommunityAction {
 			Authority auth = aus.findAuthorityByName(id);
 			if (auth != null) {
 				groupForm.setName(auth.getName());
-				for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
-					Authentication user = iter.next();
+				for (Authentication user : users) {
 					Set<String> names = aus.getAuthorityNamesForUser(user.getUserId());
 					String label = user.getUserId();
 					LabelValueBean bean = new LabelValueBean(label, label);
@@ -75,8 +73,7 @@ public class GroupInitAction extends AbstractCommunityAction {
 			// new
 			groupForm.setAction(GroupForm.ACTION_ADD);
 			groupForm.reset(actionMapping, request);
-			for (Iterator<Authentication> iter = users.iterator(); iter.hasNext();) {
-				Authentication user = iter.next();
+			for (Authentication user : users) {
 				String label = user.getUserId();
 				LabelValueBean bean = new LabelValueBean(label, label);
 				usersList.add(bean);

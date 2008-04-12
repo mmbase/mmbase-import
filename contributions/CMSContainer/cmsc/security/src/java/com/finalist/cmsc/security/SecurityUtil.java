@@ -517,8 +517,7 @@ public class SecurityUtil {
         while (groupIter.hasNext()) {
            Node group = groupIter.next();
            List<Node> userNodes = getMembers(group);
-           for (Iterator<Node> iterator = userNodes.iterator(); iterator.hasNext();) {
-                Node user = iterator.next();
+           for (Node user : userNodes) {
                 addToList(users, user);
            }
         }

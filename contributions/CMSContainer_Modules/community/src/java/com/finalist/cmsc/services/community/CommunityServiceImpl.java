@@ -96,8 +96,8 @@ public class CommunityServiceImpl extends CommunityService {
       User principal = getPrincipal();
       if (principal != null) {
          GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
-         for (int i = 0; i < grantedAuthorities.length; i++) {
-            authorities.add(grantedAuthorities[i].getAuthority());
+         for (GrantedAuthority grantedAuthoritie : grantedAuthorities) {
+            authorities.add(grantedAuthoritie.getAuthority());
          }
       }
       return authorities;
@@ -108,8 +108,8 @@ public class CommunityServiceImpl extends CommunityService {
       User principal = getPrincipal();
       if (principal != null) {
          GrantedAuthority[] grantedAuthorities = principal.getAuthorities();
-         for (int i = 0; i < grantedAuthorities.length; i++) {
-            if (grantedAuthorities[i].getAuthority().equals(authority)) {
+         for (GrantedAuthority grantedAuthoritie : grantedAuthorities) {
+            if (grantedAuthoritie.getAuthority().equals(authority)) {
                return true;
             }
          }

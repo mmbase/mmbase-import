@@ -9,20 +9,12 @@
  */
 package com.finalist.cmsc.module.luceusmodule.taglib;
 
-import java.io.IOException;
-
-import javax.servlet.jsp.JspException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Perform a Luceus FullIndex
  * 
  * @author Wouter Heijke
  */
 public class FullIndexTag extends LuceusmoduleTag {
-   private static Log log = LogFactory.getLog(FullIndexTag.class);
 
    /**
     * Erase index first, so do a clean-fullindex.
@@ -31,7 +23,7 @@ public class FullIndexTag extends LuceusmoduleTag {
 
 
    @Override
-   public void doTag() throws JspException, IOException {
+   public void doTag() {
       if (isRunning()) {
          getModule().startFullIndex(erase);
       }

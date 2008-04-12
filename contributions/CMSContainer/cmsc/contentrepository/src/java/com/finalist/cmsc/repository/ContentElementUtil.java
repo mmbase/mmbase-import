@@ -136,8 +136,7 @@ public class ContentElementUtil {
 
    public static void removeContentBlock(Node node) {
       List<Node> nodes = findContentBlockNodes(node);
-      for (Iterator<Node> iter = nodes.iterator(); iter.hasNext();) {
-         Node removeNode = iter.next();
+      for (Node removeNode : nodes) {
          removeNode.delete(true);
       }
    }

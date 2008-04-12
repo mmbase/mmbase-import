@@ -6,8 +6,6 @@ public class WorkflowItem extends NodeBean {
 
    private static final long serialVersionUID = 3636369822534243850L;
 
-   private int type;
-
    private String remark;
 
    private int status;

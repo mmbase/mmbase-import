@@ -127,8 +127,8 @@ public class ThreadUtil {
    public static String printStackTrace(Thread thread, StackTraceElement[] trace) {
       StringBuilder sb = new StringBuilder();
       sb.append(thread + "\n");
-      for (int i = 0; i < trace.length; i++)
-         sb.append("\tat " + trace[i] + "\n");
+      for (StackTraceElement element : trace)
+        sb.append("\tat " + element + "\n");
       return sb.toString();
    }
 

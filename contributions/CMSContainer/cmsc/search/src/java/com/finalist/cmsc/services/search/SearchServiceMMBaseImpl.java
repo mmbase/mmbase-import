@@ -263,8 +263,7 @@ public class SearchServiceMMBaseImpl extends SearchService {
 
    protected List<PageInfo> convertToPageInfos(List<Node> pages) {
        List<PageInfo> infos = new ArrayList<PageInfo>();
-       for (Iterator<Node> iter = pages.iterator(); iter.hasNext();) {
-          Node pageNode = iter.next();
+       for (Node pageNode : pages) {
           PageInfo pageInfo = getPageInfo(pageNode, true);
           if (pageInfo != null && !infos.contains(pageInfo)) {
              infos.add(pageInfo);

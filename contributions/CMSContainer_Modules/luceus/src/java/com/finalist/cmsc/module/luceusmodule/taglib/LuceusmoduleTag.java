@@ -13,8 +13,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.module.Module;
 
@@ -26,7 +24,6 @@ import com.finalist.cmsc.module.luceusmodule.LuceusModule;
  * @author Wouter Heijke
  */
 public class LuceusmoduleTag extends SimpleTagSupport {
-   private static Log log = LogFactory.getLog(LuceusmoduleTag.class);
 
    private LuceusModule mod;
 

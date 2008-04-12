@@ -5,10 +5,6 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.portlet.PortletSession;
-
-import org.springframework.context.ApplicationContext;
-
 /**
  * This class is for now just a sort of interface because the Newsletter module
  * is not yet updated to the new generic way of getting preferences. This class
@@ -19,10 +15,6 @@ import org.springframework.context.ApplicationContext;
 public class NewsletterCommunicationServiceMysqlImpl extends NewsletterCommunicationService {
 
    private static Log log = LogFactory.getLog(NewsletterCommunicationServiceMysqlImpl.class);
-
-   private PortletSession session;
-   
-   private ApplicationContext aC;
 
    public List<String> getAllNewsPrefs(){
       return (null);

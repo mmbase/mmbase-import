@@ -28,11 +28,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
 
 public class MailFriendPortlet extends ContentPortlet {
 
-   protected static final String ACTION_PARAM = "action";
-   protected static final String CONTENTELEMENT = "contentelement";
-
-
-   public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
+   public void processView(ActionRequest request, ActionResponse response) throws PortletException {
       String action = request.getParameter(ACTION_PARAM);
       Map<String, String> errorMessages = new Hashtable<String, String>();
       if (action == null) {
@@ -149,17 +145,17 @@ public class MailFriendPortlet extends ContentPortlet {
             request.setAttribute("confirm", confirm);
          }
          if (portletSession.getAttribute("errormessages") != null) {
-            Hashtable errormessages = (Hashtable) portletSession.getAttribute("errormessages");
+            Map<String, String> errormessages = (Map<String, String>) portletSession.getAttribute("errormessages");
             portletSession.removeAttribute("errormessages");
             request.setAttribute("errormessages", errormessages);
          }
          if (portletSession.getAttribute("parameterMap") != null) {
-            Map parameterMap = (HashMap) portletSession.getAttribute("parameterMap");
+            Map<String, String> parameterMap = (Map<String, String>) portletSession.getAttribute("parameterMap");
             portletSession.removeAttribute("parameterMap");
-            Iterator keyIterator = parameterMap.keySet().iterator();
+            Iterator<String> keyIterator = parameterMap.keySet().iterator();
             while (keyIterator.hasNext()) {
-               String keyValue = (String) keyIterator.next();
-               String entryValue = (String) parameterMap.get(keyValue);
+               String keyValue = keyIterator.next();
+               String entryValue = parameterMap.get(keyValue);
                request.setAttribute(keyValue, entryValue);
             }
          }

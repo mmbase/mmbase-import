@@ -12,7 +12,6 @@ package com.finalist.cmsc.taglib.form;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class MultipleSelectTag extends SimpleTagSupport {
          List valueList = Arrays.asList(values);
          if (valueList != null && valueList.size() > 0) {
             for (int i = 0; i < valueList.size(); i++) {
-               String value = (String) valueList.get(i).toString();
+               String value = valueList.get(i).toString();
                selected.add(value);
             }
          }

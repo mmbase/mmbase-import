@@ -1,7 +1,6 @@
 package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -65,8 +64,7 @@ public class PageNavigationRenderer implements NavigationItemRenderer {
          // place portletfragments and emptyfragments in the screenfragment
 
          Set<String> names = layout.getNames();
-         for (Iterator<String> iter = names.iterator(); iter.hasNext();) {
-            String layoutId = iter.next();
+         for (String layoutId : names) {
             Integer portletId = page.getPortlet(layoutId);
             Portlet portlet = SiteManagement.getPortlet(portletId);
             if (portlet != null) {

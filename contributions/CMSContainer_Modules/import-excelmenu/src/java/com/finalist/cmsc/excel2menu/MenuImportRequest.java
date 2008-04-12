@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import net.sf.mmapps.commons.util.UploadUtil;
+import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
 
 public class MenuImportRequest {
 
@@ -38,8 +39,7 @@ public class MenuImportRequest {
          ExcelConfig config = new ExcelConfig(params);
          Excel2Menu t = new Excel2Menu(cloud, config);
 
-         for (Iterator<UploadUtil.BinaryData> iter = binaries.iterator(); iter.hasNext();) {
-            UploadUtil.BinaryData binary = iter.next();
+         for (BinaryData binary : binaries) {
             t.convert(binary.getInputStream());
          }
       }

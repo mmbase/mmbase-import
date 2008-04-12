@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import com.finalist.cmsc.services.community.security.AuthorityService;
@@ -16,7 +15,7 @@ public class ListGroupsTag extends CommunityTagSupport {
 	private String var;
 
 	@Override
-	protected void doTagLogic() throws JspException, IOException {
+	protected void doTagLogic() throws IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
 

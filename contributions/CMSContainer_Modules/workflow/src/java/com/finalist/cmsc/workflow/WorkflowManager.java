@@ -1,6 +1,7 @@
 package com.finalist.cmsc.workflow;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
 
 import java.util.*;
 
@@ -483,8 +484,8 @@ public abstract class WorkflowManager {
    protected void relateToUsers(Node workflowItem, List<Node> users) {
       RelationManager manager = cloud.getRelationManager(WORKFLOW_MANAGER_NAME, SecurityUtil.USER, ASSIGNEDREL);
 
-      for (Iterator<Node> iter = users.iterator(); iter.hasNext();) {
-         workflowItem.createRelation(iter.next(), manager).commit();
+      for (Node node : users) {
+         workflowItem.createRelation(node, manager).commit();
       }
    }
 
