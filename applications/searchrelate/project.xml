@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 -->
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
-  <artifactId>mmbase-searchresult</artifactId>
+  <artifactId>mmbase-searchrelate</artifactId>
   <name>Search &amp; Relate</name>
   <shortDescription>MMBase Search &amp; Relate utilities.</shortDescription>
   <description>
