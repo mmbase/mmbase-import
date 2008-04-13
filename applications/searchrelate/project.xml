@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 <project>
   <extend>${basedir}/../app-base/project.xml</extend>
   <artifactId>mmbase-searchrelate</artifactId>
-  <name>Search &amp; Relate</name>
-  <shortDescription>MMBase Search &amp; Relate utilities.</shortDescription>
+  <name>Search &amp;amp; Relate</name>
+  <shortDescription>MMBase Search &amp;amp; Relate utilities.</shortDescription>
   <description>
     This applictions provides various tag-files and javascript libraries to make modern editors.
   </description>
