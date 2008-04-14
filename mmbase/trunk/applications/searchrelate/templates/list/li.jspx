@@ -4,21 +4,22 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="source" required="true" />
   <mm:import externid="fields" />
 
   <li>
-    <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" id="node${_node}">
+    <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" id="node${_node}" varStatus="status">
       <mm:fieldinfo type="input" />
+      <c:if test="${status.first}">
+        <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
+          <a class="delete" href="${_}">
+            <img class="icon" alt="-" src="${mm:link('/mmbase/style/images/delete.png')}" />
+          </a>
+        </mm:link>
+      </c:if>
       <mm:fieldinfo type="errors" />
     </mm:fieldlist>
-    <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
-      <a class="delete" href="${_}">
-        <img class="icon" alt="-" src="${mm:link('/mmbase/style/images/delete.png')}" />
-      </a>
-    </mm:link>
   </li>
 </jsp:root>
