@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.25 2008-04-14 14:19:18 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.26 2008-04-14 15:46:23 michiel Exp $
  */
 var validators = new Array();
 
@@ -785,13 +785,13 @@ MMBaseValidator.prototype.removeValidation = function(el) {
     var self = this;
     var els = $(el).find(".mm_validate *").each(function() {
 	var entry = this;
-	if ($.inArray(entry(self.elements))) {
+	if ($.inArray(entry, self.elements)) {
 	    if (! entry.prevValid) self.invalidElements--;
 	    $(entry).unbind();
 	    var newElements = [];
 	    $(self.elements).each(function() {
 		if (this != entry) {
-		    newWlements.push(this);
+		    newElements.push(this);
 		}
 	    });
 	    self.elements = newElements;
