@@ -16,7 +16,7 @@
     </mm:listnodescontainer>
     <a id="submit4">Submit</a>
     <mm-sr:relate repository="${repository}" current="${current}"
-                  submit="#submit3" unrelate="true"
+                  submit="#submit4" unrelate="true"
                   create="true"
                   />
   </div>
