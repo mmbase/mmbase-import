@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.68 2007-12-06 08:19:29 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.69 2008-04-14 17:17:27 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -246,6 +246,8 @@ public class XMLEntityResolver implements EntityResolver {
                         log.debug(ite);
                     } catch (AbstractMethodError ame) {
                         log.debug(ame);
+                    } catch (Exception e) {
+                        log.warn("Error", e);
                     }
                 }
             }
@@ -290,6 +292,7 @@ public class XMLEntityResolver implements EntityResolver {
         InputStream definitionStream = null;
 
         if ("http://www.mmbase.org/mmentities.ent".equals(systemId)) {
+            log.debug("Reding mmbase entities for " + systemId + " " + publicId);
             //StringBuilder sb = new StringBuilder();
             //Class c = org.mmbase.framework.Framework.class;
             String ents = getMMEntities();
