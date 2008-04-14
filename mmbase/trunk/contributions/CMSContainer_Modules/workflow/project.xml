@@ -11,5 +11,13 @@ See http://www.MMBase.org/license
     <artifactId>cmsc-modules-workflow</artifactId>
     <name>CMS Container workflow</name>
     <shortDescription>CMS Container workflow</shortDescription>
+    <dependencies>
+      <dependency>
+         <groupId>jmock</groupId>
+         <artifactId>jmock</artifactId>
+         <version>1.2.0</version>
+         <type>jar</type>
+      </dependency>
+   </dependencies>
 </project>
 
