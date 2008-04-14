@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.15 2008-04-10 14:59:24 michiel Exp $
+      @version $Id: relate.tagx,v 1.16 2008-04-14 09:37:51 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -37,11 +37,19 @@
   <jsp:directive.attribute name="pagesize"           type="java.lang.Integer"
                            description="The size of the pages, used during paging. Default is determined by /mmbase/searchrelate/page.jspx" />
 
+  <jsp:directive.attribute name="maxpages"           type="java.lang.Integer"
+                           description="Max number of pages to show in the pager" />
+
+  <jsp:directive.attribute name="styleClass"
+                           description="Extra classes to be added to outer div"/>
+
+
   <jsp:directive.attribute name="currentTitle"       fragment="true"
                            description="A piece of HTML that will be presented first in the 'current' div"/>
 
   <jsp:directive.attribute name="repositoryTitle"       fragment="true"
                            description="A piece of HTML that will be presented first in the 'repository' div"/>
+
 
 
 
@@ -60,9 +68,8 @@
          $("${submit}").click(function(el) {
             return $("#mm_related_${seq}")[0].relater.commit(el);
          });
-      <c:if test="${! empty pagesize}">
-        $("#mm_related_${seq}").find(".searchable").each(function() { this.searcher.pagesize = ${pagesize}; });
-      </c:if>
+      <c:if test="${! empty pagesize}"> $("#mm_related_${seq}").find(".searchable").each(function() { this.searcher.pagesize = ${pagesize}; }); </c:if>
+      <c:if test="${! empty maxpages}"> $("#mm_related_${seq}").find(".searchable").each(function() { this.searcher.maxpages = ${maxpages}; }); </c:if>
       });
 
     </script>
@@ -72,7 +79,7 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
     <div id="mm_related_${seq}"
-         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}">
+         class="mm_related ${empty unrelate or ! unrelate ? '' : 'can_unrelate'}  ${styleClass}">
       <c:if test="${! empty transaction}">
         <span class="transactionname" style="display: none;">${transaction}</span>
       </c:if>
@@ -80,7 +87,7 @@
         <jsp:invoke fragment="currentTitle" />
         <mm:listnodescontainer clone="current">
           <mm:size>
-            <mm:isgreaterthan value="${pagesize}">
+            <mm:isgreaterthan value="${empty pagesize ? 10 : pagesize}">
               <div class="searchform">
                 <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
                 <input  value="" />
@@ -91,6 +98,9 @@
         <mm:include page="/mmbase/searchrelate/page.jspx">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
+          </c:if>
+          <c:if test="${! empty maxpages}">
+            <mm:param name="maxpages" referid="maxpages" />
           </c:if>
           <mm:param name="id">mm_related_${seq}_current</mm:param>
         </mm:include>
@@ -107,6 +117,9 @@
         <mm:include page="/mmbase/searchrelate/page.jspx">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
+          </c:if>
+          <c:if test="${! empty maxpages}">
+            <mm:param name="maxpages" referid="maxpages" />
           </c:if>
           <mm:param name="id">mm_related_${seq}_repository</mm:param>
         </mm:include>
