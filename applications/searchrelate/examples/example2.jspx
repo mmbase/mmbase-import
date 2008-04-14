@@ -16,5 +16,7 @@
     </mm:listnodescontainer>
     <a id="submit2">Submit</a>
     <mm-sr:relate repository="${repository}" current="${current}" submit="#submit2" />
+
+    <div class="code"><textarea><mm:include cite="true" page="example2.jspx" escape="text/html" /></textarea></div>
   </div>
 </div>

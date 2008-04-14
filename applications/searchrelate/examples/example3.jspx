@@ -7,6 +7,7 @@
   <h1><a href="#example3">Example3</a></h1>
   <p>Unrelating is also possible</p>
   <div>
+
     <mm:relatednodescontainer role="posrel" type="news" id="current" >
       <mm:sortorder field="posrel.pos" />
       <mm:relatednodes id="currentlyRelated" />
@@ -15,7 +16,8 @@
       <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
     </mm:listnodescontainer>
     <a id="submit3">Submit</a>
-    <mm-sr:relate repository="${repository}" current="${current}"
-                  submit="#submit3" unrelate="true" />
+    <mm-sr:relate repository="${repository}" current="${current}" submit="#submit3" unrelate="true" />
+
+    <div class="code"><textarea><mm:include cite="true" page="example3.jspx" escape="text/html" /></textarea></div>
   </div>
 </div>

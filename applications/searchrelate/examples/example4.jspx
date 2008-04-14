@@ -19,5 +19,7 @@
                   submit="#submit4" unrelate="true"
                   create="true"
                   />
+
+    <div class="code"><textarea><mm:include cite="true" page="example4.jspx" escape="text/html" /></textarea></div>
   </div>
 </div>
