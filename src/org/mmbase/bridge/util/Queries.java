@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.99 2008-04-03 13:24:19 nklasens Exp $
+ * @version $Id: Queries.java,v 1.100 2008-04-14 15:58:17 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1289,22 +1289,29 @@ abstract public class Queries {
 
         if (steps.size() < 3) throw new UnsupportedOperationException();
 
+        NodeList result = q.getCloud().createNodeList();
         // First, try if the node can be related to a startNode.
         int start = 0;
         Step startStep = steps.get(start);
         Cloud cloud = n.getCloud();
         SortedSet<Integer> startNodes = startStep.getNodes();
         NodeManager nextManager = cloud.getNodeManager(steps.get(start + 2).getTableName());
-        if (startNodes.size() > 0 && (nextManager.equals(n.getNodeManager()) || nextManager.getDescendants().contains(nextManager))) {
+        if (startNodes.size() > 0 && (nextManager.equals(n.getNodeManager()) || nextManager.getDescendants().contains(n.getNodeManager()))) {
             Node startNode = cloud.getNode(startNodes.iterator().next());
             RelationStep rel = (RelationStep) steps.get(start + 1);
             String role = cloud.getNode(rel.getRole().intValue()).getStringValue("sname");
             switch(rel.getDirectionality()) {
-            case RelationStep.DIRECTIONS_SOURCE:
-                cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
+            case RelationStep.DIRECTIONS_SOURCE: {
+                Relation newRel = cloud.getRelationManager(n.getNodeManager(), startNode.getNodeManager(), role).createRelation(startNode, n);
+                newRel.commit();
+                result.add(newRel);
                 break;
-            default:
-                cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
+            }
+            default: {
+                Relation newRel = cloud.getRelationManager(startNode.getNodeManager(), n.getNodeManager(), role).createRelation(startNode, n);
+                newRel.commit();
+                result.add(newRel);
+            }
             }
             return;
         } else {
@@ -1312,6 +1319,54 @@ abstract public class Queries {
         }
     }
 
+
+    /**
+     * Explores a query object, and explores if the node could be in its result. If so, the node is
+     * added to the necessary query step, and relations are found and deleted.
+
+     * @throw UnsupportedOperationException If it cannot be determined how the node should be related.
+     *
+     * @since MMBase-1.8.6
+     * @returns Removed relations.
+     */
+    public static NodeList removeFromResult(Query q, Node n) {
+        List<Step> steps = q.getSteps();
+
+        if (steps.size() < 3) throw new UnsupportedOperationException();
+
+        NodeList result = q.getCloud().createNodeList();
+
+        // First, try if the node is related to a startNode.
+        int start = 0;
+        Step startStep = steps.get(start);
+        Cloud cloud = n.getCloud();
+        for (int step = 2; step < steps.size(); step += 2) {
+            Step nextStep = steps.get(step);
+            NodeManager manager = cloud.getNodeManager(nextStep.getTableName());
+            if (manager.equals(n.getNodeManager()) || manager.getDescendants().contains(n.getNodeManager())) {
+                Query clone = q.cloneWithoutFields();
+                Step nextStepClone = clone.getSteps().get(step);
+                clone.addNode(nextStepClone, n);
+                Step relationStep = clone.getSteps().get(step - 1); // (also  + 1?)
+                StepField relField = clone.addField(relationStep, cloud.getNodeManager(relationStep.getTableName()).getField("number"));
+                String alias = relField.getAlias();
+                if (alias == null) {
+                    alias = relationStep.getAlias() + ".number";
+                }
+                NodeList list = cloud.getList(clone);
+                NodeIterator ni = list.nodeIterator();
+                while (ni.hasNext()) {
+                    Node virtual = ni.nextNode();
+                    Node r = cloud.getNode(virtual.getIntValue(alias));
+                    result.add(r);
+                    r.delete();
+
+                }
+
+            }
+        }
+        return result;
+    }
 
     public static void main(String[] argv) {
         System.out.println(ConstraintParser.convertClauseToDBS("(([cpsettings.status]='[A]' OR [cpsettings.status]='I') AND [users.account] != '') and (lower([users.account]) LIKE '%t[est%' OR lower([users.email]) LIKE '%te]st%' OR lower([users.firstname]) LIKE '%t[e]st%' OR lower([users.lastname]) LIKE '%]test%')"));
