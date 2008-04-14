@@ -16,7 +16,10 @@
     delete the relation, but the related nodes itself. So this code actually assumes that the same
     two nodes are never related mode than once.
   </p>
+  <mm:cloudinfo type="user" />
 
   <mm-sr:relatednodes type="news" role="posrel" />
 
+
+    <div class="code"><textarea><mm:include cite="true" page="relatednodes.jspx" escape="text/html" /></textarea></div>
 </div>
