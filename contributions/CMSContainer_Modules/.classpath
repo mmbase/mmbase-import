@@ -25,9 +25,7 @@
 	<classpathentry kind="src" output="tasks/target/classes" path="tasks/src/java"/>
 	<classpathentry kind="src" output="versioning/target/classes" path="versioning/src/java"/>
 	<classpathentry kind="src" output="workflow/target/classes" path="workflow/src/java"/>
-	
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
-	
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://commons.apache.org/beanutils/apidocs/"/>
@@ -63,7 +61,6 @@
 			<attribute name="javadoc_location" value="http://commons.apache.org/logging/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://tomcat.apache.org/tomcat-5.5-doc/jspapi"/>
@@ -84,7 +81,6 @@
 			<attribute name="javadoc_location" value="http://java.sun.com/products/jsp/jstl/1.1/docs/api"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/cloudprovider/apidocs/"/>
@@ -105,11 +101,9 @@
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/remotepublishing/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080404.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
@@ -150,7 +144,6 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://logging.apache.org/log4j/1.2/apidocs/"/>
@@ -161,7 +154,6 @@
 			<attribute name="javadoc_location" value="http://struts.apache.org/1.x/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/javadoc/"/>
@@ -172,24 +164,18 @@
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/ehcache-constructs/documentation/javadoc/"/>
 		</attributes>
 	</classpathentry>
-
-	<!-- MS office parsers -->
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5.1.jar"/>
-
-	<!-- unit tests -->
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://junit.sourceforge.net/javadoc"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-server-0.42.jar"/>
-
 	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-core-2.1.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.13.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/jmock/jars/jmock-1.0.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jmock/jars/jmock-1.2.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/ejb3-persistence-3.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
@@ -199,7 +185,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/javax.transaction/jars/jta-1.0.1B.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-struts-2.5.1.jar"/>
-
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
