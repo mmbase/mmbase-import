@@ -3,53 +3,60 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     >
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="text/html">
-    <mm:cloud method="asis">
-      <mm:import externid="id" required="true" />
-      <mm:import from="session" externid="${id}" id="query" required="true" />
+    <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
+      <mm:cloud method="asis">
+        <mm:import externid="id" required="true" />
+        <mm:import from="session" externid="${id}" id="query" required="true" />
 
-      <mm:form page="/mmbase/searchrelate/create.jspx">
-        <input type="hidden" name="id" value="${id}" />
-        <input type="hidden" name="nodemanager" value="${query.nodeManager.name}" />
-        <table  class="create" summary="Create node">
-          <tfoot>
-            <tr class="buttons">
-              <td colspan="2">
-                <input type="submit"  />
-                <input type="hidden"  name="s" />
-              </td>
-            </tr>
-          </tfoot>
-          <mm:createnode id="newnode" type="${query.nodeManager.name}">
-            <tbody>
-              <mm:fieldlist type="create" varStatus="field">
-                <tr class="fields ${field.current.name}">
-                  <th class="node">
-                    <mm:fieldinfo type="guiname" />
-                  </th>
-                  <td>
-                    <mm:fieldinfo type="input" />
-                    <mm:fieldinfo type="errors" />
-                  </td>
-                </tr>
-              </mm:fieldlist>
-            </tbody>
-          </mm:createnode>
-        </table>
-        <mm:import externid="s" />
-        <mm:present referid="s">
-          <mm:valid>
-            <mm:commit />
-            <mm:node referid="newnode">
-              <mm:log>Created new node ${_node}</mm:log>
-              Created <span class="newnode">${_node}</span>
-            </mm:node>
-          </mm:valid>
-        </mm:present>
-      </mm:form>
-    </mm:cloud>
+        <mm:form page="/mmbase/searchrelate/create.jspx">
+          <input type="hidden" name="id" value="${id}" />
+          <input type="hidden" name="nodemanager" value="${query.nodeManager.name}" />
+          <fmt:message key="createsummary" var="summary">
+            <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
+          </fmt:message>
+          <fmt:message key="create" var="createmessage" />
+          <table  class="create" summary="${summary}">
+            <tfoot>
+              <tr class="buttons">
+                <td colspan="2">
+                  <input type="submit" value="${createmessage}" />
+                  <input type="hidden"  name="s" />
+                </td>
+              </tr>
+            </tfoot>
+            <mm:createnode id="newnode" type="${query.nodeManager.name}">
+              <tbody>
+                <mm:fieldlist type="create" varStatus="field">
+                  <tr class="fields ${field.current.name}">
+                    <th class="node">
+                      <mm:fieldinfo type="guiname" />
+                    </th>
+                    <td>
+                      <mm:fieldinfo type="input" />
+                      <mm:fieldinfo type="errors" />
+                    </td>
+                  </tr>
+                </mm:fieldlist>
+              </tbody>
+            </mm:createnode>
+          </table>
+          <mm:import externid="s" />
+          <mm:present referid="s">
+            <mm:valid>
+              <mm:commit />
+              <mm:node referid="newnode">
+                <mm:log>Created new node ${_node}</mm:log>
+                Created <span class="newnode">${_node}</span>
+              </mm:node>
+            </mm:valid>
+          </mm:present>
+        </mm:form>
+      </mm:cloud>
+    </fmt:bundle>
   </mm:content>
 </div>
 
