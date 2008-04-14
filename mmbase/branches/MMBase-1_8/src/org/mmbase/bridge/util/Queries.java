@@ -17,6 +17,8 @@ import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.BasicSortOrder;
+import org.mmbase.storage.search.implementation.BasicStep;
+import org.mmbase.storage.search.implementation.BasicStepField;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -27,7 +29,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.77.2.8 2008-04-01 12:00:02 michiel Exp $
+ * @version $Id: Queries.java,v 1.77.2.9 2008-04-14 15:27:48 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -1317,7 +1319,7 @@ abstract public class Queries {
         Cloud cloud = n.getCloud();
         SortedSet startNodes = startStep.getNodes();
         NodeManager nextManager = cloud.getNodeManager(((Step) steps.get(start + 2)).getTableName());
-        if (startNodes.size() > 0 && (nextManager.equals(n.getNodeManager()) || nextManager.getDescendants().contains(nextManager))) {
+        if (startNodes.size() > 0 && (nextManager.equals(n.getNodeManager()) || nextManager.getDescendants().contains(n.getNodeManager()))) {
             Node startNode = cloud.getNode(((Integer) startNodes.iterator().next()).intValue());
             RelationStep rel = (RelationStep) steps.get(start + 1);
             String role = cloud.getNode(rel.getRole().intValue()).getStringValue("sname");
@@ -1336,8 +1338,62 @@ abstract public class Queries {
             }
             return result;
         } else {
+            // deeper queries not yet supported
             throw new UnsupportedOperationException();
         }
+    }
+
+
+    /**
+     * Explores a query object, and creates a certain new relation object, which would make the
+     * given node appear in the query's result.
+     *
+     * You can read this as 'the query object is a related nodes query, and is used to contain information
+     * about the relation (role, startnodes)'. This currently is also the only implemented part of
+     * this method.
+
+     * @throw UnsupportedOperationException If it cannot be determined how the node should be related.
+     *
+     * @since MMBase-1.8.6
+     * @returns Newly created node(s)
+     */
+    public static NodeList removeFromResult(Query q, Node n) {
+        List steps = q.getSteps();
+
+        if (steps.size() < 3) throw new UnsupportedOperationException();
+
+        NodeList result = q.getCloud().createNodeList();
+
+        // First, try if the node is related to a startNode.
+        int start = 0;
+        Step startStep = (Step) steps.get(start);
+        Cloud cloud = n.getCloud();
+        for (int step = 2; step < steps.size(); step += 2) {
+            Step nextStep = (Step) steps.get(step);
+            NodeManager manager = cloud.getNodeManager(nextStep.getTableName());
+            if (manager.equals(n.getNodeManager()) || manager.getDescendants().contains(n.getNodeManager())) {
+                Query clone = q.cloneWithoutFields();
+                BasicStep nextStepClone = (BasicStep) clone.getSteps().get(step);
+                nextStepClone.addNode(n.getNumber());
+                RelationStep relationStep = (RelationStep) clone.getSteps().get(step - 1); // (also  + 1?)
+                BasicStepField relField = (BasicStepField) clone.addField(relationStep, cloud.getNodeManager(relationStep.getTableName()).getField("number"));
+                String alias = relField.getAlias();
+                if (alias == null) {
+                    alias = relationStep.getAlias() + ".number";
+                }
+                NodeList list = cloud.getList(clone);
+                NodeIterator ni = list.nodeIterator();
+                while (ni.hasNext()) {
+                    Node virtual = ni.nextNode();
+                    Node r = cloud.getNode(virtual.getIntValue(alias));
+                    result.add(r);
+                    r.delete();
+
+                }
+
+            }
+        }
+        return result;
     }
 
     public static void main(String[] argv) {
