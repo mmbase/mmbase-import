@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.11.2.24 2008-04-04 10:16:20 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.11.2.25 2008-04-14 14:19:18 michiel Exp $
  */
 var validators = new Array();
 
@@ -35,7 +35,7 @@ function watcher() {
 }
 setTimeout("watcher()", 500);
 
-function MMBaseValidator(w, root) {
+function MMBaseValidator(root) {
 
     this.logEnabled   = false;
     this.traceEnabled = false;
@@ -45,8 +45,8 @@ function MMBaseValidator(w, root) {
     //this.changedElements  = 0;
     this.elements        = [];
     this.validateHook;
-    this.setup(w);
     this.root = root;
+    this.setup();
     this.lang          = null;
     this.sessionName   = null;
     this.id = validators.push(this);
@@ -56,8 +56,8 @@ function MMBaseValidator(w, root) {
 
 }
 
-MMBaseValidator.prototype.setup = function(w) {
-    if (w != null) {
+MMBaseValidator.prototype.setup = function() {
+    if (this.root != null) {
 	var self = this;
 	$(document).ready(function(event) {
 	    self.onLoad(event);
@@ -799,6 +799,7 @@ MMBaseValidator.prototype.removeValidation = function(el) {
     });
 
 }
+
 
 /**
  * Adds event handlers to all mm_validate form entries
