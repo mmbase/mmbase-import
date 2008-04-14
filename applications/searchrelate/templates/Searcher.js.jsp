@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.2 2008-04-10 14:59:24 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.3 2008-04-14 15:45:15 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -49,10 +49,11 @@ function MMBaseRelater(d) {
     this.logger.debug(d);
     this.logger.debug("setting up current");
     this.current       = $(d).find(".mm_relate_current")[0];
+    this.canUnrelate = $(d).hasClass("can_unrelate");
     if (this.current != null) {
 	this.addSearcher(this.current, "current");
     } else {
-	log.debug("No current rep found");
+	this.logger.debug("No current rep found");
     }
 
     if (typeof MMBaseValidator == "function") {
@@ -61,7 +62,6 @@ function MMBaseRelater(d) {
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
     if (this.repository != null) this.addSearcher(this.repository, "repository");
-    this.canUnrelate = $(d).hasClass("can_unrelate");
 
 }
 
@@ -86,8 +86,8 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 	});
 	if (this.canUnrelate) {
 	    $(el).find("tr.click").each(function() {
-		$(this).click(function() {
-		    anchor.searcher.unrelate(this);
+		$(this).click(function(tr) {
+		    relater.unrelate(this);
 		    return false;
 		})});
 	}
@@ -119,7 +119,7 @@ MMBaseRelater.prototype.commit = function(el) {
 	if (this.transaction != null) {
 	    params.transaction = this.transaction;
 	}
-	$.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
+	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    $(a).removeClass("submitting");
 		    if (status == "success") {
@@ -264,8 +264,10 @@ function MMBaseSearcher(d, r, type, logger) {
     this.relater = r;
     this.type    = type;
     this.pagesize = 10;
+    this.maxpages = 20;
     this.logger  = logger != null ? logger : new MMBaseLogger();
     this.value = "";
+    this.offset = 0;
     this.transaction   = null;
     var self = this;
     $(d).find("span.transactioname").each(function() {
@@ -300,10 +302,11 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 	this.searchResults = {};
 	this.value = newSearch;
     }
+    this.offset = offset;
 
     var rep = this.getResultDiv();
     var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
-    var params = {id: this.getQueryId(), offset: offset, search: this.value, pagesize: this.pagesize};
+    var params = {id: this.getQueryId(), offset: offset, search: this.value, pagesize: this.pagesize, maxpages: this.maxpages};
 
     var result = this.searchResults["" + offset];
     $(rep).empty();
@@ -342,18 +345,48 @@ MMBaseSearcher.prototype.create = function () {
     var url = "${mm:link('/mmbase/searchrelate/create.jspx')}";
     var params = {id: this.getQueryId()};
     var self = this;
-    $.ajax({url: url, type: "GET", dataType: "xml", data: params,
+    $.ajax({url: url, type: "GET", data: params,
 	    complete: function(res, status){
 		if ( status == "success") {
 		    result = res.responseText;
 		    $(rep).empty();
 		    $(rep).append($(result).find("> *"));
+		    console.log($(result).find("input[name='nodemanager']")[0]);
+		    self.validator.prefetchNodeManager($(result).find("input[name='nodemanager']")[0].value);
 		    self.validator.addValidation(rep);
+		    var options = {
+			url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
+			target:     null,
+			success:    function(res) {
+			    var newNode = $(res).find("span.newnode")[0].firstChild.nodeValue;
+			    var tr = self.getTr(newNode);
+			    self.relater.relate(tr);
+			    self.search(null, self.offset);
+			}
+		    };
+		    $(rep).find("form.mm_form").ajaxForm(options);
+
 		}
 	    }
 	   });
     $(rep).append($("<p>Creating</p>"));
 }
+
+
+MMBaseSearcher.prototype.getTr = function(node) {
+    var url = "${mm:link('/mmbase/searchrelate/node.tr.jspx')}";
+    var params = {id: this.getQueryId(), node: node};
+    var result;
+    $.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+	    complete: function(res, status){
+		if ( status == "success" || status == "notmodified" ) {
+		    result = res.responseText;
+		}
+	    }
+	   });
+    return result;
+}
+
 
 MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
     var self = this;
