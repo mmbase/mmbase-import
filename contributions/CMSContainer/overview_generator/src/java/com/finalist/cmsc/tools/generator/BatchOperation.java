@@ -68,9 +68,13 @@ public class BatchOperation {
         VCSConfig config = new VCSConfig("svn");
         StringTokenizer tokens = new StringTokenizer(str, " ");
         tokens.nextElement();
+		if(tokens.hasMoreElements())
         config.setUrl(tokens.nextElement().toString());
+		if(tokens.hasMoreElements())
         config.setModule(tokens.nextElement().toString());
+		if(tokens.hasMoreElements())
         config.setUsername(tokens.nextElement().toString());
+		if(tokens.hasMoreElements())
         config.setPassword(tokens.nextElement().toString());
         return config;
     }
