@@ -28,6 +28,8 @@
       <jsp:attribute name="repositoryTitle"><h1>All nodes of type news</h1></jsp:attribute>
     </mm-sr:relate>
 
+    <div class="code"><textarea><mm:include cite="true" page="example1.jspx" escape="text/html" /></textarea></div>
+
   </div>
 
 </div>

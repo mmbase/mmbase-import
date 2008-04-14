@@ -32,6 +32,8 @@
       <h1>${title}</h1>
       <mm:cloud rank="basic user">
 
+	You are <mm:cloudinfo type="user" />
+
         <mm:import externid="mag">default.mags</mm:import>
 
         <mm:hasnode number="$mag" inverse="true">
@@ -42,6 +44,7 @@
         <mm:hasnode number="$mag">
           <mm:node number="$mag">
             <h1>Using node ${_node}</h1>
+
             <mm:include page="example1.jspx" />
             <mm:include page="example2.jspx" />
             <mm:include page="example3.jspx" />
