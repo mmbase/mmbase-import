@@ -13,10 +13,8 @@
 	<classpathentry kind="src" output="portlets-poll/target/classes" path="portlets-poll/src/java"/>
 	<classpathentry kind="src" output="portlets-print/target/classes" path="portlets-print/src/java"/>
 	<classpathentry kind="src" output="portlets-search/target/classes" path="portlets-search/src/java"/>
-
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_5"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
-
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://commons.apache.org/beanutils/apidocs/"/>
@@ -52,7 +50,6 @@
 			<attribute name="javadoc_location" value="http://commons.apache.org/logging/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://tomcat.apache.org/tomcat-5.5-doc/jspapi"/>
@@ -73,7 +70,6 @@
 			<attribute name="javadoc_location" value="http://java.sun.com/products/jsp/jstl/1.1/docs/api"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/cloudprovider/apidocs/"/>
@@ -94,11 +90,9 @@
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/remotepublishing/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080404.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
@@ -139,7 +133,6 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://logging.apache.org/log4j/1.2/apidocs/"/>
@@ -150,7 +143,6 @@
 			<attribute name="javadoc_location" value="http://struts.apache.org/1.x/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/javadoc/"/>
@@ -172,8 +164,7 @@
 			<attribute name="javadoc_location" value="http://junit.sourceforge.net/javadoc"/>
 		</attributes>
 	</classpathentry>
-
-	<classpathentry kind="var" path="MAVEN_REPO/jaf/jars/activation-1.0.2.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/activation/jars/activation-1.0.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://java.sun.com/javase/technologies/desktop/javabeans/glasgow/javadocs"/>
 		</attributes>
@@ -183,13 +174,10 @@
 			<attribute name="javadoc_location" value="http://java.sun.com/products/javamail/javadocs"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.octo.captcha/jars/jcaptcha-all-1.0-RC6.jar"/>
-
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-
 	<classpathentry kind="output" path="classes"/>
 </classpath>
