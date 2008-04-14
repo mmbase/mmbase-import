@@ -1,5 +1,7 @@
 // -*- mode: javascript; -*-
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"  %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
 <mm:content type="text/javascript" expires="0">
 
 /**
@@ -9,9 +11,9 @@
  *
  * Items in the list can be added and deleted. They can also be edited (with validation).
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
+ *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.1 2008-04-10 15:58:55 michiel Exp $
- * @todo    I may generalize this a bit more, and put it in the mmbase-searchrelate application.
+ * @version $Id: List.js.jsp,v 1.2 2008-04-14 15:44:44 michiel Exp $
  */
 
 
@@ -198,3 +200,4 @@ List.prototype.commit = function(stale, async) {
 
 
 </mm:content>
+</fmt:bundle>
