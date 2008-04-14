@@ -17,7 +17,7 @@ import org.mmbase.util.*;
  * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SecurityContextDataType.java,v 1.6 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: SecurityContextDataType.java,v 1.7 2008-04-14 17:14:36 michiel Exp $
  * @since MMBase-1.8
  */
 public class SecurityContextDataType extends StringDataType {
@@ -32,7 +32,7 @@ public class SecurityContextDataType extends StringDataType {
         super(name);
     }
 
-    public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
+    public Iterator<Map.Entry<String, String>> getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         if (node == null && cloud == null) return null; // we don't know..
         return new Iterator() {
             StringList list = node == null ? cloud.getPossibleContexts() : node.getPossibleContexts();
@@ -40,7 +40,7 @@ public class SecurityContextDataType extends StringDataType {
             public boolean hasNext() {
                 return iterator.hasNext();
             }
-            public Object next() {
+            public Map.Entry<String, String> next() {
                 String val = iterator.nextString();
                 return new Entry(val, val);
             }
