@@ -136,3 +136,18 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+
+Name: Upgrade Lucene & Luceus
+Goal: Luceus 0.42 works on Lucene 2.3.1
+Type:  action
+--- Start script ---
+- Search for the Lucene references in the customer project that uses Luceus
+- Update Lucene to version 2.3.1 where you find a Lucene version
+- Remember to upgrade the Luceus as well in your project.properties: "luceus.version=0.42"
+- Remove the indexes of Lucene /temp/ or perform a Clean Full Index, found in the war-live Editors. 
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
