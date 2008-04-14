@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.52 2008-04-11 08:10:53 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.53 2008-04-14 17:18:22 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
 
@@ -376,7 +376,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
                 basePath = mmbase.getDataDir();
             } else {
                 MessageFormat mf = new MessageFormat(path);
-                java.io.File baseFile = new java.io.File(mf.format(mmbase.getDataDir()));
+                java.io.File baseFile = new java.io.File(mf.format(mmbase.getDataDir().toString()));
                 if (! baseFile.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
                     String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
