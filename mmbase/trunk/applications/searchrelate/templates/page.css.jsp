@@ -87,6 +87,11 @@
   background-color: #e8d8d8;
 }
 
+.mm_related .searchable table .paging.notneeded {
+  display: none;
+}
+
+
 .failed {
  background-color: red;
 }
