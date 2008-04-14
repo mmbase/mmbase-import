@@ -4,7 +4,6 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:rich="http://www.mmbase.org/tags/mm/rich"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
-    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     >
   <jsp:output omit-xml-declaration="true" />
   <li>
