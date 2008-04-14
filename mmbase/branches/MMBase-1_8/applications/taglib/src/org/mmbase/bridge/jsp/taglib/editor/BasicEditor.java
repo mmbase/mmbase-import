@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.9.2.1 2008-02-26 10:09:23 michiel Exp $
+ * @version $Id: BasicEditor.java,v 1.9.2.2 2008-04-14 10:05:30 sdeboer Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -46,6 +46,7 @@ public class BasicEditor extends Editor {
         new Parameter("iconparams", Map.class, null),
         new Parameter("when", String.class, "always"),
         new Parameter("target", String.class, "new"),
+        new Parameter("styleClass", String.class, "mm_edit"),
         Parameter.CLOUD
     };
 
@@ -106,7 +107,7 @@ public class BasicEditor extends Editor {
                 locale = org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale();
             }
             String title = ResourceBundle.getBundle("org.mmbase.bridge.jsp.taglib.resources.messages", locale).getString("edit");
-            html.write("<a class=\"mm_edit\" title=\"" + title + "\" href=\"");
+            html.write("<a class=\"" + styleClass + "\" title=\"" + title + "\" href=\"");
             html.write(url);
             html.write("\" ");
             if ("new".equals(parameters.getString("target"))) {
