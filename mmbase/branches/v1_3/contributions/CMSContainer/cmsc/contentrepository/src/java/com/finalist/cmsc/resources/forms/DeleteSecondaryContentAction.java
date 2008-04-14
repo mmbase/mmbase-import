@@ -22,25 +22,24 @@ public class DeleteSecondaryContentAction extends MMBaseAction {
 		DeleteSecondaryContentForm deleteForm = (DeleteSecondaryContentForm) form;
 		
 		String number = deleteForm.getObjectnumber();
-		if(MMBaseAction.SITEADMIN.equals(cloud.getUser().getRank().toString())) {
-            try {
-				log.debug("deleting secondary content: "+number);
-                Node objectNode = cloud.getNode(number);
-                
-                Publish.remove(objectNode);
-                Publish.unpublish(objectNode);
-                
-                objectNode.delete(true);
-            } catch (NotFoundException nfe) {
-                log.info("Failed to delete secondaryContent with number " + number + ", node not found");
-            }
-		}
-		else {
-			log.warn("did not delete secondary content because user was not administrator: "+number+" ("+cloud.getUser()+":"+cloud.getUser().getRank()+")");
-		}
+        try {
+			log.debug("deleting secondary content: "+number);
+            Node objectNode = cloud.getNode(number);
+            
+            Publish.remove(objectNode);
+            Publish.unpublish(objectNode);
+            
+            objectNode.delete(true);
+        } catch (NotFoundException nfe) {
+            log.info("Failed to delete secondaryContent with number " + number + ", node not found");
+        }
 		
 		String returnurl = deleteForm.getReturnurl();
 		return new ActionForward(returnurl);
 	}
 
+	public String getRequiredRankStr() {
+	    return MMBaseAction.SITEADMIN;
+	}
+	
 }
