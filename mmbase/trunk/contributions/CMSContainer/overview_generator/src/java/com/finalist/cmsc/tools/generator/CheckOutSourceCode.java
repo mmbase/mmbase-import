@@ -83,9 +83,11 @@ public class CheckOutSourceCode extends BatchOperation {
         String userName = vcsConfig.getUsername();
         String passWord = vcsConfig.getPassword();
         String url = vcsConfig.getUrl();
-        String hostName = url.substring(0, url.indexOf(":"));
+        String temp = url.substring(url.indexOf("@")+1);
+        String hostName = temp.substring(0, temp.indexOf(":"));
         String module = vcsConfig.getModule();
-        String rootDirectory = url.substring(url.indexOf(":") + 1, url.length());
+        String rootDirectory = temp.substring(temp.indexOf("/"));
+		
         String localDirectory = CVSCUtilities.stripFinalSeparator(path.getPath());
 
         boolean isPServer = true;
@@ -122,6 +124,7 @@ public class CheckOutSourceCode extends BatchOperation {
         // Now establish information required by CVSProject
         project.setProjectDef(projectDef);
         project.setUserName(userName);
+
         project.setRepository(module);
         project.setRootDirectory(rootDirectory);
         project.setLocalRootDirectory(localDirectory);
