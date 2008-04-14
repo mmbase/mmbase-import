@@ -1,10 +1,32 @@
-To run the reporting tools.
-You hava to add below jar to the same folder as cmsc-overview_generator-0.1.jar
 
-commons-logging-1.1.jar
-j2ssh-core-0.2.2.jar
-jcvsii-5.3.2.jar
-log4j-1.2.11.jar
-svnkit-1.1.4.jar
+Locate to  CMSContainer/overview_generator 
+there are 3 methods to generate report,
 
-and then running it using java -jar cmsc-overview_generator-0.1.jar
+The first generate a jar including all dependencies;
+   run it with the command "maven gen:multi"
+   locate to CMSContainer/overview_generator/target,we'll find a jar generated
+   This jar file is executable,wo can run it with "java -jar jarfilename configfile [workfolder] [outputpath]"
+
+      e.g:windows,  java -jar cmsc-overview_generator-0.1.jar D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties d:/
+
+The Second ,generate a jar file ,excluding all dependencies,but all dependencies will be copy to the same folder,
+   run it with the command "maven gen:single"
+   we'll find some jar files generated in directory CMSContainer/overview_generator/target
+
+   wo can run it with "java -jar jarfilename configfile [workfolder] [outputpath]"
+
+The last method is generate report using maven goal,the following is the step
+ 
+1. config.sample.properties file is used to hold a list of source systems can either be cvs or svn
+  e.g :
+    #svn https://extranet.finalist.com/svn/nai/trunk trunk username password.
+    svn http://svn.apache.org/repos/asf/tomcat/trunk/ trunk 123 123
+    #cvs :pserver:guest@cvs.mmbase.org:/var/cvs contributions/CMSContainer guest guest
+    cvs :pserver:guest@cvs.mmbase.org:/var/cvs contributions/CMSContainer_Demo guest guest
+2. open project.properties ,mofidy the path, there are 3 key/value,
+   e.g:
+      maven.overview_generator.src = D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties  #the  file configed at 2 step
+      maven.overview_generator.dest = D:/project/cmsc/CMSContainer/overview_generator/dest     # the directory which  the source code  be checked out
+      maven.overview_generator.reportFileLocation = D:/                     #the directory where report file is in 
+   
+3.   run it with the command "maven gen:mavenrun"
