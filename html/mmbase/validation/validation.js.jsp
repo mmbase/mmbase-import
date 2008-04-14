@@ -10,7 +10,7 @@
  *                              then call validator.setup(window[,root]).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.50 2008-04-03 16:23:33 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.51 2008-04-14 15:46:48 michiel Exp $
  */
 var validators = new Array();
 
@@ -35,7 +35,7 @@ function watcher() {
 }
 setTimeout("watcher()", 500);
 
-function MMBaseValidator(w, root) {
+function MMBaseValidator(root) {
 
     this.logEnabled   = false;
     this.traceEnabled = false;
@@ -43,10 +43,10 @@ function MMBaseValidator(w, root) {
     this.dataTypeCache   = new Object();
     this.invalidElements = 0;
     //this.changedElements  = 0;
-    this.elements        = new Array();
+    this.elements        = [];
     this.validateHook;
-    this.setup(w);
     this.root = root;
+    this.setup();
     this.lang          = null;
     this.sessionName   = null;
     this.id = validators.push(this);
@@ -56,8 +56,8 @@ function MMBaseValidator(w, root) {
 
 }
 
-MMBaseValidator.prototype.setup = function(w) {
-    if (w != null) {
+MMBaseValidator.prototype.setup = function() {
+    if (this.root != null) {
 	var self = this;
 	$(document).ready(function(event) {
 	    self.onLoad(event);
@@ -777,6 +777,29 @@ MMBaseValidator.prototype.validatePage = function(server) {
     }
     return this.invalidElements == 0;
 }
+
+MMBaseValidator.prototype.removeValidation = function(el) {
+    if (el == null) {
+        el = document.documentElement;
+    }
+    var self = this;
+    var els = $(el).find(".mm_validate *").each(function() {
+	var entry = this;
+	if ($.inArray(entry, self.elements)) {
+	    if (! entry.prevValid) self.invalidElements--;
+	    $(entry).unbind();
+	    var newElements = [];
+	    $(self.elements).each(function() {
+		if (this != entry) {
+		    newElements.push(this);
+		}
+	    });
+	    self.elements = newElements;
+	}
+    });
+
+}
+
 
 /**
  * Adds event handlers to all mm_validate form entries
