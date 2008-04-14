@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.3 2008-04-14 15:45:15 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.4 2008-04-14 16:19:01 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -351,7 +351,6 @@ MMBaseSearcher.prototype.create = function () {
 		    result = res.responseText;
 		    $(rep).empty();
 		    $(rep).append($(result).find("> *"));
-		    console.log($(result).find("input[name='nodemanager']")[0]);
 		    self.validator.prefetchNodeManager($(result).find("input[name='nodemanager']")[0].value);
 		    self.validator.addValidation(rep);
 		    var options = {
