@@ -5,7 +5,7 @@
     class="drawer">
   <jsp:output omit-xml-declaration="true" />
   <h1><a href="#example3">Example3</a></h1>
-  <p>Unrelating should also be possible (but is not yet)</p>
+  <p>Unrelating is also possible</p>
   <div>
     <mm:relatednodescontainer role="posrel" type="news" id="current" >
       <mm:sortorder field="posrel.pos" />
@@ -15,6 +15,7 @@
       <mm:constraint field="number" operator="IN" referid="currentlyRelated" inverse="true" />
     </mm:listnodescontainer>
     <a id="submit3">Submit</a>
-    <mm-sr:relate repository="${repository}" current="${current}" submit="#submit3" unrelate="true" />
+    <mm-sr:relate repository="${repository}" current="${current}"
+                  submit="#submit3" unrelate="true" />
   </div>
 </div>
