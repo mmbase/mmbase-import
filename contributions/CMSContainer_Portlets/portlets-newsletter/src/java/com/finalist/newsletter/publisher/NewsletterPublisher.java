@@ -2,7 +2,7 @@ package com.finalist.newsletter.publisher;
 
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.generator.NewsletterGenerator;
+import com.finalist.newsletter.publisher.NewsletterGenerator;
 import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
