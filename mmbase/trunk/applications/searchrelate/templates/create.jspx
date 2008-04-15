@@ -8,7 +8,7 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="text/html">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-      <mm:cloud method="asis">
+      <mm:cloud rank="basic user">
         <mm:import externid="id" required="true" />
         <mm:import from="session" externid="${id}" id="query" required="true" />
 
