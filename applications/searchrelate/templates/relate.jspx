@@ -6,7 +6,7 @@
   <jsp:directive.page import="org.mmbase.bridge.util.Queries" />
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
-    <mm:cloud method="asis">
+    <mm:cloud rank="basic user">
       <mm:import externid="id" required="true" />
       <mm:import externid="related"   vartype="list" required="true" />
       <mm:import externid="unrelated" vartype="list" required="true" />
