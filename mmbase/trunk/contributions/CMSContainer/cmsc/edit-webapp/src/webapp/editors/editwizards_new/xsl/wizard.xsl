@@ -48,7 +48,7 @@
 
   <xsl:variable name="htmlareadir"><xsl:value-of select="$ew_context" />/mmbase/edit/wizard/xinha/</xsl:variable>
 
-  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator();  xinha_init(); initPopCalendar();</xsl:variable>
+  <xsl:variable name="BodyOnLoad">doOnLoad_ew();start_validator();xinha_init();initPopCalendar();inits();</xsl:variable>
 
   <xsl:template name="javascript-html">
     <script type="text/javascript">
@@ -760,5 +760,26 @@
   </xsl:template>
 
 <!-- END OVERRIDE PROMPTS.XSL -->
-  
+  <xsl:template name="ftype-unknown">
+    <xsl:choose>
+      <xsl:when test="@ftype=&apos;calendar&apos;">
+      	<xsl:call-template name="ftype-calendar"/>
+      </xsl:when>
+      <xsl:otherwise>
+      	 <xsl:call-template name="ftype-other"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="ftype-calendar">
+     <nobr><select name="calendar-type" id="calendar-type">
+	<option value="1">Once</option>
+	<option value="2">Daily</option>
+	<option value="3">Weekly</option>
+	<option value="4">Monthly</option>
+      </select> &#x0020;
+      <input type="hidden" name="{@fieldname}" value="{value}" title="new-calendar" id="{@fieldname}"/>
+      <a href="#" onclick="javascript:window.open ('calendar.jsp?id={@fieldname}&amp;type='+document.getElementById('calendar-type').value, 'calendar', 'height=400, width=500, top='+eval((window.screen.availHeight - 400)/2)+', left='+eval((window.screen.availWidth - 500)/2)+',toolbar=no, menubar=no, scrollbars=no, location=no, status=no')">select</a> <a href="#" onclick="javascript:document.getElementById('calendar-expression').innerHTML='';document.getElementById('{@fieldname}').value=''">delete</a></nobr>
+      <div id="calendar-expression"></div>  	
+  </xsl:template>
 </xsl:stylesheet>
