@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+    <!-- ========== Data Sources Definitions =================================== -->
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+        <form-bean name="GuestBookForm" type="com.finalist.portlets.guestbook.search.GuestBookForm" />
+    </form-beans>
+
+    <!-- ========== Global Exceptions Definitions =================================== -->
+    <!-- ========== Global Forward Definitions =================================== -->
+    <!-- ========== Action Mapping Definitions =================================== -->
+    <action-mappings>
+
+        <action path="/editors/resources/SearchGuestBookAction" type="com.finalist.portlets.guestbook.search.SearchGuestBookAction"
+            name="GuestBookForm" scope="request" input="/editors/resources/messages.jsp" unknown="false" validate="true">
+            <forward name="guestmessages" path="/editors/resources/messages.jsp" redirect="false" />
+            <forward name="error" path="/editors/resources/messages.jsp" redirect="false" />
+        </action>
+
+        <action path="/editors/resources/DeleteGuestMessageAction" type="com.finalist.portlets.guestbook.search.DeleteGuestMessageAction"
+            name="DeleteSecondaryContentForm" scope="request" input="/editors/resources/messages.jsp" unknown="false" validate="false">
+        </action>
+
+    </action-mappings>
+    <message-resources parameter="portlets-guestbook" key="PORTLETS-GUESTBOOK" />
+</struts-config>
