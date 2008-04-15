@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.2 2008-04-01 14:52:41 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.3 2008-04-15 15:54:52 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -83,7 +83,7 @@
     <xsl:choose>
       <xsl:when test="count($relatednodes) &gt; 0 or $show_broken = 'true'" >
         <xsl:text>[</xsl:text><xsl:value-of select="@id" />
-        <xsl:if test="count(*|text()) &gt; 0">
+        <xsl:if test="count(*|text()) &gt; 1 or (count(*|text()) = 1 and count(text()) &gt; 0)">
           <xsl:text>:</xsl:text>
           <xsl:apply-templates />
         </xsl:if>
