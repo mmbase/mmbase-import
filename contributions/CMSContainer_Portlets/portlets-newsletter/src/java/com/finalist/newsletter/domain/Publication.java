@@ -51,7 +51,7 @@ public class Publication {
    }
 
    public String getUrl() {
-      String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
+//      String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
       return url;
    }
 
