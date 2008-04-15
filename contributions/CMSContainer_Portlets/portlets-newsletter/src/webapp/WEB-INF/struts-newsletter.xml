@@ -33,7 +33,8 @@
 		<action path="/editors/newsletter/NewsletterResume" type="com.finalist.newsletter.forms.NewsletterResume" unknown="false" validate="false">
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
-		
+		<action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false" validate="false">
+		</action>
 		<!-- ==== Select page nodes ==== -->
 
 
