@@ -160,3 +160,177 @@ function resizeEditTable() {
         }
     }
 }
+
+function inits(){
+   var inputs =document.getElementsByTagName("input");
+   var calvalue = "";
+   var message = "";
+   for (var i = 0; i < inputs.length ;i++ ) {
+      if(inputs[i].title == 'new-calendar') {
+         calvalue = inputs[i].value;
+         break;
+      }
+   }
+
+  if(calvalue == null  || calvalue == "") return;
+
+  var calendartype =document.getElementById("calendar-type");
+  var calendarexpression =document.getElementById("calendar-expression");
+
+   var expression = calvalue.split('|');
+     var type;
+     if(expression != null && expression.length >0) {
+       type = expression[0];
+     }
+     calendartype.options[type-1].selected = true;
+
+     if(type == '1') {
+        message += "Once,start datetime:"+expression[1]+" "+expression[2]+":"+expression[3];
+     }
+     else if(type == '2') {
+        message += "Daily,start datetime:"+expression[1]+" "+expression[2]+":"+expression[3];
+        if(expression[4] == "0") {
+            message += "<br/>  every day"; 
+         }
+         else if(expression[4] == "1") {
+            message += "<br/>  every weekday"; 
+         }
+          else if(expression[4] == "2") {
+            message += "<br/>  every "+expression[5]+" day"; 
+         }
+     }
+     else if(type == '3') {
+         message += "Weekly,start time:"+expression[1]+":"+expression[2];
+         message += "<br/> Every "+expression[3]+" week";
+
+        var varWeek = "";
+        for(var i = 0 ; i < expression[4].length;i++) {
+            var month = expression[4].substr(i,1);
+               if(month == "1") {
+                  varWeek += "Monday,";
+               }
+               else if(month == "2") {
+                  varWeek += "Tuesday,";
+               }
+               else if(month == "3") {
+                  varWeek += "Wednesday,";
+               }
+               else if(month == "4") {
+                  varWeek += "Thursday,";
+               }
+               else if(month == "5") {
+                  varWeek += "Friday,";
+               }
+               else if(month == "6") {
+                  varWeek += "Saturday,";
+               }
+               else if(month == "7") {
+                  varWeek += "Sunday,";
+               }
+        }
+        if(varWeek != null && varWeek != ""){
+           if(varWeek.substr(varWeek.length-1,1) ==","){
+              varWeek = varWeek.substr(0,varWeek.length-1) ;
+           }
+        }
+        message += "<br/> week: "+varWeek;
+     }
+     else if(type == '4') {
+         message += "Monthly,start time:"+expression[1]+":"+expression[2];
+         var months = "";
+          if(expression[3] == "0") {
+            message += "<br/> Every "+expression[4]+" day";
+            months = expression[5];
+         }
+         else if(expression[3] == "1") {
+            message += "<br/> Week: ";
+
+            if(expression[4] == '1') {
+               message += "the First Week,";
+            }
+            else if (expression[4] == '2') {
+               message += "the Second Week,";
+            }
+            else if (expression[4] == '3') {
+               message += "the Third Week,";
+            }
+            else if (expression[4] == '4') {
+               message += "the Forth Week,";
+            }
+            else if (expression[4] == '5') {
+               message += "the Last Week,";
+            }
+
+            if(expression[5] == '1') {
+               message += "Monday.";
+            }
+            else if (expression[5] == '2') {
+               message += "Tuesday.";
+            }
+            else if (expression[5] == '3') {
+               message += "Wednesday.";
+            }
+            else if (expression[5] == '4') {
+               message += "Thursday.";
+            }
+            else if (expression[5] == '5') {
+               message += "Friday.";
+            }
+            else if (expression[5] == '6') {
+               message += "Saturday.";
+            }
+            else if (expression[5] == '7') {
+               message += "Sunday.";
+            }
+             months = expression[6];
+         }
+         var temp = "";
+         for(var i = 0 ; i < months.length;i++) {
+              var month = months.substr(i,1);
+               if(month == "0") {
+                  temp+="January,";
+               }
+               else if(month == "1") {
+                  temp+="February,";
+               }
+               else if(month == "2") {
+                  temp+="March,";
+               }
+               else if(month == "3") {
+                  temp+="April,";
+               }
+               else if(month == "4") {
+                  temp+="May,";
+               }
+               else if(month == "5") {
+                  temp+="June,";
+               }
+               else if(month == "6") {
+                  temp+="July,";
+               }
+               else if(month == "7") {
+                  temp+="August,";
+               }
+               else if(month == "8") {
+                  temp+="September,";
+               }
+               else if(month == "9") {
+                  temp+="October,";
+               }
+               else if(month == "a") {
+                  temp+="November,";
+               }
+               else if(month == "b") {
+                  temp+="December,";
+               }
+        }
+        if(temp != null && temp != ""){
+           if(temp.substr(temp.length-1,1) ==","){
+              temp = temp.substr(0,temp.length-1) ;
+           }
+        }
+        message += "<br/> Month: "+temp;
+
+     }
+  calendarexpression.innerHTML  = message;
+}
