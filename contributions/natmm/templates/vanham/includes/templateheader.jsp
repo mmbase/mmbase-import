@@ -43,9 +43,9 @@ if(queryString!=null&&!queryString.equals("")) {
 
 %>
 <mm:cloud>
-<base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
 <html>
   <head>
+    <base href="<%= javax.servlet.http.HttpUtils.getRequestURL(request) %>" />
     <title>
       <mm:node number="$paginaID" notfound="skipbody">
          <mm:relatednodes type="rubriek" path="posrel,rubriek"><mm:field name="naam" /></mm:relatednodes> - <mm:field name="titel" />
