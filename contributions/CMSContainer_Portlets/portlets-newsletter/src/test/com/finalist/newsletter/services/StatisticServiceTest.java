@@ -31,6 +31,7 @@ public class StatisticServiceTest extends TestCase {
       assertEquals("newsletter.summary", result.getName());
    }
 
+  
 //	public List<StatisticResult> statisticAll();
 //	public List<StatisticResult> statisticByNewsletter(int newsletterId);
 //	public List<StatisticResult> statisticAllByPeriod(String start,String end);

@@ -18,7 +18,8 @@ public class POConvertUtils {
 
    public static Subscription convertSubscription(Node node) {
       Subscription subscription = new Subscription();
-      subscription.setEmail("test@test.com");
+      Person subscripber = CommunityModuleAdapter.getSubscriber(Integer.decode(node.getStringValue("subscriber")));
+      subscription.setSubscriber(subscripber);
       return subscription;
    }
 

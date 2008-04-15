@@ -1,12 +1,11 @@
 package com.finalist.newsletter.services;
 
-import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
+import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
 import com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
-import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.publisher.FakeNewsletterPublisher;
@@ -43,7 +42,6 @@ public class NewsletterPublicationServiceTest extends TestCase {
          }
       });
 
-
       mockController.expect(new NewsletterSubscriptionCAOImpl() {
          public List<Subscription> getSubscribers(int newsletterId) {
             assertEquals(1, newsletterId);
@@ -68,41 +66,29 @@ public class NewsletterPublicationServiceTest extends TestCase {
          }
       });
 
-
       mockController.expect(new NewsletterSubscriptionCAOImpl() {
          public List<Subscription> getSubscribers(int newsletterId) {
             assertEquals(3, newsletterId);
             Subscription subscriptioin = new Subscription();
             return Collections.singletonList(subscriptioin);
          }
-      }
+      });
 
-      );
+      mockController.expect(new NewsLetterStatisticCAOImpl() {
+         public void logPubliction(int id, int i) {
+            assertEquals(3, id);
+            assertEquals(1, i);
+         }
+      });
 
-      mockController.expect(new
-
-            NewsLetterStatisticCAOImpl() {
-               public void logPubliction(int id, int i) {
-                  assertEquals(3, id);
-                  assertEquals(1, i);
-               }
-
-            }
-
-      );
-      mockController.expect(new
-
-            NewsletterPublicationCAOImpl() {
-               public void setStatus(Publication publication, Publication.STATUS status) {
-                  assertNotNull(publication);
-                  assertEquals(3, publication.getId());
-                  assertNotNull(status);
-                  assertEquals(status, Publication.STATUS.DELIVERED);
-               }
-            }
-
-      );
-
+      mockController.expect(new NewsletterPublicationCAOImpl() {
+         public void setStatus(Publication publication, Publication.STATUS status) {
+            assertNotNull(publication);
+            assertEquals(3, publication.getId());
+            assertNotNull(status);
+            assertEquals(status, Publication.STATUS.DELIVERED);
+         }
+      });
 
       service.setPublicationCAO(publicationCAO);
       service.setSubscriptionCAO(subscriptionCAO);
@@ -113,41 +99,9 @@ public class NewsletterPublicationServiceTest extends TestCase {
 
       mockController.verify();
 
-      assertEquals(2, publisher.getMap()
-
-            .
-
-                  keySet()
-
-            .
-
-            size()
-
-      );
-
-      assertEquals(1, publisher.getMap()
-
-            .
-
-                  get(1)
-
-            .
-
-            size()
-
-      );
-
-      assertEquals(1, publisher.getMap()
-
-            .
-
-                  get(3)
-
-            .
-
-            size()
-
-      );
+      assertEquals(2, publisher.getMap().keySet().size());
+      assertEquals(1, publisher.getMap().get(1).size());
+      assertEquals(1, publisher.getMap().get(3).size());
 
    }
 
