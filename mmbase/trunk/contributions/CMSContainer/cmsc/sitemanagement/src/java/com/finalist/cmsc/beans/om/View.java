@@ -22,6 +22,7 @@ public class View extends NodeBean implements Comparable<View> {
    private String title;
    private String description;
    private String resource;
+   private boolean detailsupport = true; // when field is not present or virtual then this is the default value
    private List<String> contenttypes = new ArrayList<String>();
 
 
@@ -68,4 +69,12 @@ public class View extends NodeBean implements Comparable<View> {
    public int compareTo(View o) {
       return title.compareTo(o.title);
    }
+
+    public boolean isDetailsupport() {
+        return detailsupport;
+    }
+    
+    public void setDetailsupport(boolean detailsupport) {
+        this.detailsupport = detailsupport;
+    }
 }

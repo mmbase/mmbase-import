@@ -4,5 +4,6 @@
 	<field name="title" />
 	<field name="description" />
 	<field name="resource" />
+	<field name="detailsupport" />
 	<relation destination="typedef" role="allowrel" />
 </action>

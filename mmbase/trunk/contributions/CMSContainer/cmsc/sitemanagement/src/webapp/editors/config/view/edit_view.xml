@@ -16,5 +16,10 @@
 		<prompt xml:lang="en">View file</prompt>
 		<prompt xml:lang="nl">View bestand</prompt>
 	</field>
+	<field name="detailsupport" ftype="enum">
+		<prompt xml:lang="en">Detail available</prompt>
+		<prompt xml:lang="nl">Detailweergave</prompt>
+		<optionlist select="boolean" />
+	</field>
 	<list include="config/typedef/search_view_allowrel_typedef.xml" />
 </form-schema>

@@ -138,7 +138,6 @@ Exceptions/errors/other problems and what to do:
 *
 
 
-
 Name: Upgrade Lucene & Luceus
 Goal: Luceus 0.42 works on Lucene 2.3.1
 Type:  action
@@ -147,6 +146,19 @@ Type:  action
 - Update Lucene to version 2.3.1 where you find a Lucene version
 - Remember to upgrade the Luceus as well in your project.properties: "luceus.version=0.42"
 - Remove the indexes of Lucene /temp/ or perform a Clean Full Index, found in the war-live Editors. 
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
+Name: Add detailsupport to views.
+Goal: SearchService will use this setting for determination of detail pages
+Type: sql-script
+--- Start script ---
+alter table mm_view add column detailsupport tinyint(1) NOT NULL default '1';
+alter table live_view add column detailsupport tinyint(1) NOT NULL default '1';
 --- End script ---
 Exceptions/errors/other problems and what to do:
 *
