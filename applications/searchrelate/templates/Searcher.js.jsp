@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.5 2008-04-15 08:39:20 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.6 2008-04-15 13:39:56 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -158,7 +158,7 @@ MMBaseRelater.prototype.getNumbers = function(map) {
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
-    if (type == "repository") {
+    if (type == "repository" && self.current != null) {
 	$(rep).find("tr.click").each(function() {
 	    $(this).click(function() {
 		self.relate(this);
@@ -179,8 +179,10 @@ MMBaseRelater.prototype.bindEvents = function(rep, type) {
 
 
 MMBaseRelater.prototype.resetTrClasses  = function() {
-    $(this.div).find("div.mm_relate_current")[0].searcher.resetTrClasses();
-    $(this.div).find("div.mm_relate_repository")[0].searcher.resetTrClasses();
+    if (this.current != null) {
+	this.current.searcher.resetTrClasses();
+    }
+    this.repository.searcher.resetTrClasses();
 
 }
 
@@ -346,22 +348,25 @@ MMBaseSearcher.prototype.search = function(el, offset) {
 MMBaseSearcher.prototype.create = function () {
     var rep = this.getResultDiv();
     var url = "${mm:link('/mmbase/searchrelate/create.jspx')}";
-    var params = {id: this.getQueryId()};
+    var params = { queryid: this.getQueryId() };
     var self = this;
     $.ajax({url: url, type: "GET", data: params,
 	    complete: function(res, status){
-		if ( status == "success") {
-		    result = res.responseText;
+		if (status == "success") {
+		    var result = res.responseText;
 		    $(rep).empty();
-		    $(rep).append($(result).find("> *"));
-		    self.validator.prefetchNodeManager($(result).find("input[name='nodemanager']")[0].value);
+		    $(rep).append($(result));
+		    var nodeManager = $(result).find("input[name='nodemanager']")[0].value;
+		    self.logger.debug(nodeManager);
+		    self.validator.prefetchNodeManager(nodeManager);
 		    self.validator.addValidation(rep);
 		    var options = {
 			url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
 			target:     null,
-			success:    function(res) {
-			    self.logger.debug(status);
-			    var newNode = $(res).find("span.newnode")[0].firstChild.nodeValue;
+			success:    function(subres, substatus) {
+			    self.logger.debug(substatus);
+			    var newNode = $(subres).find("span.newnode")[0].firstChild.nodeValue;
+			    self.logger.debug(newNode);
 			    var tr = self.getTr(newNode);
 			    self.relater.relate(tr);
 			    self.search(null, self.offset);
