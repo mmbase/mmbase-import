@@ -5,9 +5,9 @@
    nl.leocms.util.DoubleDateNode,
    nl.leocms.evenementen.forms.SubscribeForm,
    nl.leocms.evenementen.Evenement,
-   nl.leocms.evenementen.EventNotifier" %>
-<%@include file="includes/top0.jsp" %>
-<%
+   nl.leocms.evenementen.EventNotifier" 
+%><%@include file="includes/top0.jsp" 
+%><%
 // *** use paginaID from session to return to the last visited agenda page (in case of redirect from subscribe form) ***
 if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) { 
    paginaID = (String) session.getAttribute("pagina");
@@ -17,9 +17,10 @@ if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) {
 <%@include file="includes/top2_cacheparams.jsp" %>
 <mm:import jspvar="searchID" externid="search">show</mm:import>
 <!-- cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application" -->
-<%@include file="includes/top3_nav.jsp" %>
-<%@include file="includes/top4_head.jsp" %>
-<%@include file="includes/top5_breadcrumbs_and_pano.jsp" %>
+<%@include file="includes/top3_nav.jsp" 
+%><%@include file="includes/top4_head.jsp" 
+%><%@include file="includes/top5_breadcrumbs_and_pano.jsp" 
+%>
 
 <%-- Any template calling others need to pass isNaardermeer as PaginaHelper/mm:import fails--%>
 <%request.setAttribute("isNaardermeer", isNaardermeer);%>
@@ -115,10 +116,13 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                <% 
             } %>
             </td>
-            <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
-            	 <% if (isNaardermeer.equals("true")) { %>			
+             	 <% if (isNaardermeer.equals("true")) { %>
+            	 <td style="vertical-align:top;padding-left:5px;padding-right:5px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">			
    					<img src="media/trans.gif" height="226" width="1">
-	 			 <% } %>	
+	 			 <% } 
+	 			 else { %>
+	 			 <td style="vertical-align:top;padding-left:10px;padding-right:10px;width:185px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+	 			 	<% } %>
 			  <br/>
                <jsp:include page="includes/events/searchform.jsp">
                   <jsp:param name="p" value="<%= paginaID %>" />
