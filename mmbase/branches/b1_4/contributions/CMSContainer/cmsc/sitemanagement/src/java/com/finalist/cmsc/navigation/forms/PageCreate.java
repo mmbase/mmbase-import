@@ -46,8 +46,7 @@ public class PageCreate extends MMBaseFormlessAction {
             PagesUtil.linkPortlets(newPage, layoutNode);
             request.getSession().removeAttribute("parentpage");
             addToRequest(request, "showpage", ewnodelastedited);
-            ActionForward ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited
-                  + "&fresh=fresh");
+            ActionForward ret = mapping.findForward(SUCCESS);
             return ret;
          }
          request.getSession().removeAttribute("parentpage");
