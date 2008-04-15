@@ -21,7 +21,7 @@ boolean showNextDotLine = false;
 <mm:node number="<%=objectID%>" notfound="skipbody">
 <%-- For vertical logo of naardermeer site to be displayed without covering article content --%>
   <% if (isNaardermeer.equals("true")) { %>		
-   	<table width="88%" cellpadding="0" cellspacing="0" border="0" align="left" height="226">
+   	<table width="88%" cellpadding="0" cellspacing="0" border="0">
   <% } else { %>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0">
 	<% } %>

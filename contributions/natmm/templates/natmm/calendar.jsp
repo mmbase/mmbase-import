@@ -46,7 +46,7 @@
 	      <jsp:param name="sr" value="1" />
 	   </jsp:include>
    </td>
-   <td style="vertical-align:top;padding-left:10px;width:175px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
+   <td style="vertical-align:top;padding-left:5px;width:175px;<jsp:include page="includes/rightcolumn_bgimage.jsp"><jsp:param name="rnimageid" value="<%= rnImageID %>" /></jsp:include>">
       <jsp:include page="includes/viewmonths.jsp">
          <jsp:param name="r" value="<%= rubriekID %>" />
          <jsp:param name="rs" value="<%= styleSheet %>" />
