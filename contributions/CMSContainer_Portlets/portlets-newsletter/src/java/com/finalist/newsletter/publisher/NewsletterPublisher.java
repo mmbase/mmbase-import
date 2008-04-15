@@ -27,7 +27,7 @@ public class NewsletterPublisher {
       for (Subscription subscription : subscriptions) {
          try {
             Message message = new MimeMessage(getMailSession());
-            setBody(message, publication);
+            setBody(message, publication,subscription);
             setHeader(message, subscription);
             Transport.send(message);
          } catch (MessagingException e) {
