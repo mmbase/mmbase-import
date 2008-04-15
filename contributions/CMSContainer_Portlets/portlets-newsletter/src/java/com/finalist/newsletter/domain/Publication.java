@@ -1,5 +1,7 @@
 package com.finalist.newsletter.domain;
 
+import com.finalist.cmsc.navigation.NavigationUtil;
+
 import java.util.Date;
 
 public class Publication {
@@ -8,6 +10,7 @@ public class Publication {
    private int newsletterId;
    private Date deliverTime;
    private STATUS status;
+   private String url;
 
 
    public int getId() {
@@ -45,5 +48,14 @@ public class Publication {
 
    public void setStatus(STATUS status) {
       this.status = status;
+   }
+
+   public String getUrl() {
+      String newsletterPath = NavigationUtil.getPathToRootString(publicationNode, true);
+      return url;
+   }
+
+   public void setUrl(String url) {
+      this.url = url;
    }
 }

@@ -23,7 +23,7 @@ public class SubscriptionCAOTest extends BaseNewsletterTest {
 
    public void setUp() throws Exception {
       super.setUp();
-      cao = new NewsletterSubscriptionCAOImpl();
+      cao = new NewsletterSubscriptionCAOImpl(cloud);
    }
 
    public void testGetNewsletterById() {
@@ -68,14 +68,21 @@ public class SubscriptionCAOTest extends BaseNewsletterTest {
 
       NodeManager subscriptionmanager = cloud.getNodeManager("subscriptionrecord");
       Node snode = subscriptionmanager.createNode();
-      node.commit();
+      snode.setStringValue("status","active");
+      snode.commit();
 
       Node snode2 = subscriptionmanager.createNode();
-      node.commit();
+      snode2.setStringValue("status","inactive");
+      snode2.commit();
 
-      RelationManager relManager = cloud.getRelationManager(letterManager,subscriptionmanager,"related");
+      Node snode3 = subscriptionmanager.createNode();
+      snode3.setStringValue("status","active");
+      snode3.commit();
+
+      RelationManager relManager = cloud.getRelationManager("newsletter","subscriptionrecord","newslettered");
       relManager.createRelation(node,snode).commit();
       relManager.createRelation(node,snode2).commit();
+      relManager.createRelation(node,snode3).commit();
 
       List<Subscription> subscriptions = cao.getSubscription(node.getNumber());
       assertEquals(2,subscriptions.size());

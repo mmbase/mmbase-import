@@ -18,26 +18,26 @@ import java.util.List;
 
 public abstract class BaseNewsletterTest extends TestCase {
 
-    protected Cloud cloud;
+   protected Cloud cloud;
 
-    protected void setUp() throws Exception {
-        MMBaseContext.init();
-        MMBase mmb = MMBase.getMMBase();
+   protected void setUp() throws Exception {
+      MMBaseContext.init();
+      MMBase mmb = MMBase.getMMBase();
 
-        MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
-        ApplicationInstaller installer = new ApplicationInstaller(mmb, mmadmin);
-        installer.installApplications();
+      MMAdmin mmadmin = (MMAdmin) Module.getModule("mmadmin", true);
+      ApplicationInstaller installer = new ApplicationInstaller(mmb, mmadmin);
+      installer.installApplications();
 
-        CloudProvider provider = CloudProviderFactory.getCloudProvider();
-        cloud = provider.getCloud();
-    }
+      CloudProvider provider = CloudProviderFactory.getCloudProvider();
+      cloud = provider.getCloud();
+   }
 
-   protected void clearAllNode(String nodeType){
+   protected void clearAllNode(String nodeType) {
       NodeQuery query = cloud.createNodeQuery();
-      Step theStep =  query.addStep(cloud.getNodeManager(nodeType));
+      Step theStep = query.addStep(cloud.getNodeManager(nodeType));
       query.setNodeStep(theStep);
-      List<Node> list  = query.getList();
-      for(Node node:list){
+      List<Node> list = query.getList();
+      for (Node node : list) {
          node.delete();
       }
    }
