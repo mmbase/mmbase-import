@@ -25,16 +25,20 @@ public class NewsletterPublisher {
 
    public void deliver(Publication publication,List<Subscription> subscriptions) {
       for (Subscription subscription : subscriptions) {
-         try {
-            Message message = new MimeMessage(getMailSession());
-            setBody(message, publication,subscription);
-            setHeader(message, subscription);
-            Transport.send(message);
-         } catch (MessagingException e) {
-            log.error(e);
-         } catch (UnsupportedEncodingException e) {
-            log.error(e);
-         }
+         deliver(publication, subscription);
+      }
+   }
+
+   private void deliver(Publication publication, Subscription subscription) {
+      try {
+         Message message = new MimeMessage(getMailSession());
+         setBody(message, publication,subscription);
+         setHeader(message, subscription);
+         Transport.send(message);
+      } catch (MessagingException e) {
+         log.error(e);
+      } catch (UnsupportedEncodingException e) {
+         log.error(e);
       }
    }
 
