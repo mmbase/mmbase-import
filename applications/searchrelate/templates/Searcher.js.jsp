@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.4 2008-04-14 16:19:01 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.5 2008-04-15 08:39:20 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -119,12 +119,15 @@ MMBaseRelater.prototype.commit = function(el) {
 	if (this.transaction != null) {
 	    params.transaction = this.transaction;
 	}
+	var self = this;
 	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    $(a).removeClass("submitting");
 		    if (status == "success") {
 			//console.log("" + res);
 			$(a).addClass("succeeded");
+			this.related = {};
+			this.unrelated = {};
 			return true;
 		    } else {
 			$(a).addClass("failed");
@@ -357,6 +360,7 @@ MMBaseSearcher.prototype.create = function () {
 			url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
 			target:     null,
 			success:    function(res) {
+			    self.logger.debug(status);
 			    var newNode = $(res).find("span.newnode")[0].firstChild.nodeValue;
 			    var tr = self.getTr(newNode);
 			    self.relater.relate(tr);
