@@ -48,8 +48,9 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                String expression = (String)schedule;
                String[] expressions = expression.split("\\|");
                DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+               //only once  pattern :
                if(expressions[0].equals("1")) { 
-                  log.info("---------->AutoCreateCronJob type1----------------");
+                  log.debug("---------->AutoCreateCronJob type1----------------");
                   String datetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
                   Date now = new Date();
                   try {
@@ -64,7 +65,7 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                   }
                }
                else if (expressions[0].equals("2")) {
-                  log.info("---------->AutoCreateCronJob type2----------------");
+                  log.debug("---------->AutoCreateCronJob type2----------------");
                   String datetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
                   Date now = new Date();
                   Calendar calender = Calendar.getInstance();
@@ -114,7 +115,7 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                   }
                }
                else if(expressions[0].equals("3")) {
-                  log.info("---------->AutoCreateCronJob type3----------------");
+                  log.debug("---------->AutoCreateCronJob type3----------------");
                   Calendar createTime = Calendar.getInstance();
                   createTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(expressions[1]));
                   createTime.set(Calendar.MINUTE, Integer.parseInt(expressions[2]));
@@ -142,10 +143,12 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                                     break; 
                                  }
                               }
-                           } catch (NumberFormatException e) {
-                              e.printStackTrace();
-                           } catch (ParseException e) {
-                              e.printStackTrace();
+                           }
+                           catch (NumberFormatException e) {
+                              log.debug("-->NumberFormatException "+e.getMessage());
+                           } 
+                           catch (ParseException e) {
+                              log.debug("--> parse date Exception "+e.getMessage());
                            }
                         }
                      }
@@ -155,7 +158,7 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                   }
                }
                else if(expressions[0].equals("4")) {
-                  log.info("---------->AutoCreateCronJob type4----------------");
+                  log.debug("---------->AutoCreateCronJob type4----------------");
                   Calendar createTime = Calendar.getInstance();
                   createTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(expressions[1]));
                   createTime.set(Calendar.MINUTE, Integer.parseInt(expressions[2]));
@@ -169,8 +172,22 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                         if((Integer.parseInt(month) == calender.get(Calendar.MONTH)) ||(month.equals("a") && calender.get(Calendar.MONTH) == 10) || (month.equals("b") && calender.get(Calendar.MONTH) == 11)) {
                            if(calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(day)) {
                               if(calender.after(createTime)) {
-                                 flag = true;
-                                 break;
+                                 try {
+                                    Date minDate = df.parse("01-01-1970 00:00");
+                                    if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)){
+                                       flag = true;
+                                       break;
+                                    }
+                                    else {
+                                       if(!DateUtils.isSameDay(new Date(),lastCreateDateTime )) {
+                                          flag = true;
+                                          break; 
+                                       }
+                                    }
+                                 }
+                                 catch (ParseException e) {
+                                    log.debug("--> ParseException "+e.getMessage());
+                                 }
                               }
                            }
                         }
@@ -187,8 +204,22 @@ public class NewsletterAutoCreateCronJob implements CronJob {
                            if(calender.get(Calendar.WEEK_OF_MONTH) == Integer.parseInt(whichWeek)) {
                               if(calender.get(Calendar.DAY_OF_WEEK)!= 1 && calender.get(Calendar.DAY_OF_WEEK)== (Integer.parseInt(week)+1)) {
                                  if(calender.after(createTime)) {
-                                    flag = true;
-                                    break;
+                                    try {
+                                       Date minDate = df.parse("01-01-1970 00:00");
+                                       if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)){
+                                          flag = true;
+                                          break;
+                                       }
+                                       else {
+                                          if(!DateUtils.isSameDay(new Date(),lastCreateDateTime )) {
+                                             flag = true;
+                                             break; 
+                                          }
+                                       }
+                                    } 
+                                    catch (ParseException e) {
+                                       log.debug("--> ParseException "+e.getMessage());
+                                    }
                                  }
                               }
                            }
