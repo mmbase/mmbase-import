@@ -269,6 +269,8 @@ public class SearchServiceMMBaseImpl extends SearchService {
              infos.add(pageInfo);
           }
        }
+       // put the best page as first
+       Collections.sort(infos, new PageInfoComparator());
        return infos;
     }
 
@@ -304,6 +306,12 @@ public class SearchServiceMMBaseImpl extends SearchService {
          Integer portletId = page.getPortlet(portletWindowName);
          if (portletId == -1) {
             return null;
+         }
+         else {
+             Portlet portlet = SiteManagement.getPortlet(portletId);
+             if (!isDetailPortlet(portlet)) {
+                 return null;
+             }
          }
 
          String host = null;
@@ -488,6 +496,13 @@ public class SearchServiceMMBaseImpl extends SearchService {
          String pageNumber = portlet.getParameterValue(PAGE);
          if (pageNumber != null) {
             return false;
+         }
+         else {
+             int viewNumber = portlet.getView();
+             if (viewNumber > 0) {
+                 View view = SiteManagement.getView(viewNumber);
+                 return view.isDetailsupport();
+             }
          }
       }
       return true;
