@@ -39,12 +39,15 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          if (SecurityUtil.isWebmaster(role) || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
             element.addOption(renderer.createTreeOption("delete.png", "site.newsletterpublication.remove", "newsletter",
                   "../newsletter/NewsletterPublicationDelete.do?number=" + id));
-            element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
-                  "../newsletter/NewsletterPublicationPublish.do?number=" + id));
+           // element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.publish", "newsletter",
+           //       "../newsletter/NewsletterPublicationPublish.do?number=" + id));
             /*
             element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.test", "newsletter",
                   "../newsletter/NewsletterPublicationTest.do?number=" + id));
             */
+            
+             element.addOption(renderer.createTreeOption("mail.png", "site.newsletterpublication.test", "newsletter",
+                   "../newsletter/NewsletterPublicationTest.do?number=" + id));
          }
 
          if (NavigationUtil.getChildCount(parentNode) >= 2) {

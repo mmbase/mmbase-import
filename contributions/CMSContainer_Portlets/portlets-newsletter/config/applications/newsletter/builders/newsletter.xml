@@ -89,7 +89,7 @@
 				<name>publishinterval</name>
 				<type key="false" notnull="false" state="persistent">LONG</type>
 			</db>
-		</field>
+		</field>      		
 		<field>
 			<descriptions>
 				<description xml:lang="nl"></description>
@@ -233,6 +233,94 @@
 			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes">
 				<default value="false" />
 			</datatype>
+		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl">Send when empty</description>
+				<description xml:lang="en">Send when empty</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Send when empty</guiname>
+				<guiname xml:lang="en">Send when empty</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>7</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>sendempty</name>
+	       	<type key="false" required="true" state="persistent">BOOLEAN</type>
+			</db>
+		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Text when empty</guiname>
+				<guiname xml:lang="en">Text when empty</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>txtempty</name>
+				<type key="false" required="true" state="persistent">BOOLEAN</type>
+			</db>
+		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Schedule</guiname>
+				<guiname xml:lang="en">Schedule</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+			<db>
+				<name>schedule</name>
+				<type key="false" notnull="false" size="100" state="persistent">STRING</type>
+			</db>
+		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">last create</guiname>
+				<guiname xml:lang="en">last create</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes"/>
+			<db>
+				<name>lastcreate</name>
+			<type key="false" notnull="false" state="system">DATETIME</type>
+			</db>
 		</field>
 	</fieldlist>
 </builder>
