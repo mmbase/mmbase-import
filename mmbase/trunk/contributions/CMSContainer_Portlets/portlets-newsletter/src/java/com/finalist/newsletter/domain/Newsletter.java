@@ -11,6 +11,7 @@ public class Newsletter {
    private Date interval;
    private List<Tag> tags = new ArrayList<Tag>();
    private String title;
+
    private int number;
 
    public int getNumber() {

@@ -40,7 +40,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       List<Publication> publications = publicationCAO.getIntimePublication();
       for(Publication publication:publications){
          List<Subscription> subscriptions = subscriptionCAO.getSubscription(publication.getNewsletterId());
-         publisher.deliver(publication.getId(),subscriptions);
+         publisher.deliver(publication,subscriptions);
          statisticCAO.logPubliction(publication.getId(),subscriptions.size());
          publicationCAO.setStatus(publication, STATUS.DELIVERED);
       }

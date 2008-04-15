@@ -1,6 +1,5 @@
 package com.finalist.newsletter.cao.impl;
 
-import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.domain.Newsletter;
@@ -10,8 +9,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
-import org.mmbase.module.corebuilders.InsRel;
-import org.apache.commons.beanutils.ConvertUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,15 +50,20 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
    }
 
    public List<Subscription> getSubscription(int newsletterId) {
-      NodeManager subscriptionManager = cloud.getNodeManager("subscriptionrecord");
-      NodeManager newsletterManager = cloud.getNodeManager("newsletter");
 
-      NodeQuery query = cloud.createNodeQuery();
-      query.addStep(subscriptionManager);
-      query.addRelationStep(newsletterManager);
-      SearchUtil.addEqualConstraint(query,newsletterManager.getField("number"),newsletterId);
+      Node letterNode = cloud.getNode(newsletterId);
+      List<Node> records = letterNode.getRelatedNodes("subscriptionrecord");
 
-      return POConvertUtils.convertSubscriptions(query.getList());
+      Iterator<Node> it = records.iterator();
+      while (it.hasNext()) {
+         Node node = it.next();
+         if (!"active".equals(node.getStringValue("status"))) {
+            it.remove();
+         }
+      }
+
+      return POConvertUtils.convertSubscriptions(records);
+
    }
 
 
