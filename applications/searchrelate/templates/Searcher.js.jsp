@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.6 2008-04-15 13:39:56 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.7 2008-04-15 14:03:37 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -40,7 +40,6 @@ MMBaseLogger.prototype.debug = function (msg) {
 }
 
 
-
 function MMBaseRelater(d) {
     this.div          = d;
     this.related       = {};
@@ -62,8 +61,20 @@ function MMBaseRelater(d) {
     this.logger.debug("setting up repository");
     this.repository    = $(d).find(".mm_relate_repository")[0];
     if (this.repository != null) this.addSearcher(this.repository, "repository");
-
+    this.relateCallBack = null;
+    for (var i = 0; i < MMBaseRelater.readyFunctions.length; i++) {
+	var fun =  MMBaseRelater.readyFunctions[i];
+	fun(this);
+    }
 }
+
+MMBaseRelater.readyFunctions = [];
+
+
+MMBaseRelater.ready = function(fun) {
+    MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
+}
+
 
 
 MMBaseRelater.prototype.addSearcher = function(el, type) {
@@ -158,7 +169,7 @@ MMBaseRelater.prototype.getNumbers = function(map) {
 
 MMBaseRelater.prototype.bindEvents = function(rep, type) {
     var self = this;
-    if (type == "repository" && self.current != null) {
+    if (type == "repository") {
 	$(rep).find("tr.click").each(function() {
 	    $(this).click(function() {
 		self.relate(this);
@@ -206,24 +217,30 @@ MMBaseRelater.prototype.relate = function(tr) {
     this.unrelated[number] = null;
 
     // Set up HTML
-    var current =  $(this.div).find("div.mm_relate_current div.searchresult table tbody");
-    this.logger.debug(current[0]);
-    current.append(tr);
+    if (this.current != null) {
+	var currentList =  this.current.find("div.searchresult table tbody");
+	this.logger.debug(currentList[0]);
+	currentList.append(tr);
 
-    // Classes
-    if ($(tr).hasClass("removed")) {
-	$(tr).removeClass("removed");
-    } else {
-	$(tr).addClass("new");
+	// Classes
+	if ($(tr).hasClass("removed")) {
+	    $(tr).removeClass("removed");
+	} else {
+	    $(tr).addClass("new");
+	}
+	this.resetTrClasses();
+
+	// Events
+	$(tr).unbind();
+
+	var self = this;
+	$(tr).click(function() {
+	    self.unrelate(this);
+	});
     }
-    this.resetTrClasses();
-
-    // Events
-    $(tr).unbind();
-    var self = this;
-    $(tr).click(function() {
-	self.unrelate(this);
-    });
+    if (this.relateCallBack != null) {
+	this.relateCallBack(tr);
+    }
 }
 
 
