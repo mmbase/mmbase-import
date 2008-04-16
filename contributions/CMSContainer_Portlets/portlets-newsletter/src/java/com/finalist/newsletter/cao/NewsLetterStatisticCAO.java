@@ -3,9 +3,6 @@ package com.finalist.newsletter.cao;
 import java.util.Date;
 import java.util.List;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-
 import com.finalist.newsletter.domain.StatisticResult;
 
 public interface NewsLetterStatisticCAO {
