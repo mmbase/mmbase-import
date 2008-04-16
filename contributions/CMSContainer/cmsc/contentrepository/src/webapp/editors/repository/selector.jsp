@@ -96,6 +96,7 @@
         		<li class="images"><a href="<mm:url page="../resources/ImageInitAction.do"/>" target="content"><fmt:message key="selector.images" /></a></li>
 				<li class="attachements"><a href="<mm:url page="../resources/AttachmentInitAction.do"/>" target="content"><fmt:message key="selector.attachments" /></a></li>
 				<li class="urls"><a href="<mm:url page="../resources/UrlInitAction.do"/>" target="content"><fmt:message key="selector.urls" /></a></li>
+				<li class="newsletterpublications"><a href="<mm:url page="../resources/NewletterPublicationInitAction.do"/>" target="content"><fmt:message key="selector.newsletterpublications" /></a></li>
 			</ul>
 		</cmscedit:sideblock>
 		<cmscedit:sideblock title="selector.title" titleClass="side_block_gray" bodyClass="body_table"
