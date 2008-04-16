@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.7 2008-04-15 14:03:37 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.8 2008-04-16 09:05:01 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -21,6 +21,10 @@ $(document).ready(function(){
 });
 
 
+/** 
+ * Logger, a bit like org.mmbase.util.logging.Logger. Logs to firebug console or a dedicated area.
+ *
+ */
 function MMBaseLogger(area) {
     this.logEnabled   = false;
     /*this.traceEnabled = false;*/
@@ -35,11 +39,18 @@ MMBaseLogger.prototype.debug = function (msg) {
         } else {
             // firebug console
             console.log(msg);
+	   
         }
     }
 }
 
+/*
+ * ************************************************************************************************************************ 
+ */
 
+/**
+ * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other. 
+ */
 function MMBaseRelater(d) {
     this.div          = d;
     this.related       = {};
@@ -67,6 +78,12 @@ function MMBaseRelater(d) {
 	fun(this);
     }
 }
+
+/**
+ *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready' function, you can do something 
+ *  immediately after the MMBaseRealter is ready. E.g. you can add a 'relateCallBack' function.
+ *  @todo I think jquery provides something with user defined events.
+ */
 
 MMBaseRelater.readyFunctions = [];
 
@@ -277,7 +294,9 @@ MMBaseRelater.prototype.unrelate = function(tr) {
     });
 }
 
-
+/*
+ * ***********************************************************************************************************************
+ */
 
 
 function MMBaseSearcher(d, r, type, logger) {
