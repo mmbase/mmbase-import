@@ -2,12 +2,10 @@ package com.finalist.newsletter.cao;
 
 import java.util.List;
 
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
-import com.finalist.cmsc.services.community.person.Person;
 
 public interface NewsletterSubscriptionCAO {
    public Newsletter getNewsletterById(int id);

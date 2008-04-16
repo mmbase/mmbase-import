@@ -1,9 +1,8 @@
 package com.finalist.newsletter.cao;
 
-import com.finalist.newsletter.domain.Publication;
-
 import java.util.List;
-import java.util.Date;
+
+import com.finalist.newsletter.domain.Publication;
 
 public interface NewsletterPublicationCAO {
    public List<Publication> getIntimePublication();

@@ -1,14 +1,19 @@
 package com.finalist.newsletter.cao.impl;
 
-import com.finalist.newsletter.cao.NewsletterPublicationCAO;
-import com.finalist.newsletter.domain.Publication;
-import org.mmbase.bridge.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.finalist.newsletter.cao.NewsletterPublicationCAO;
+import com.finalist.newsletter.domain.Publication;
 
 
 public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {

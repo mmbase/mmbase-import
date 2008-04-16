@@ -1,10 +1,8 @@
 package com.finalist.newsletter.cao.impl;
 
 import java.util.Date;
-import java.util.List;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
@@ -14,8 +12,6 @@ import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
-import org.mmbase.storage.search.implementation.BasicStep;
 
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 
