@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_newsletter">
 	<title xml:lang="nl">Nieuwsbrief</title>
@@ -25,7 +25,7 @@
 		<prompt xml:lang="nl">Omschrijving</prompt>
 		<prompt xml:lang="zh">描述</prompt>
 	</field>
-	<field name="intro" dtmaxlength="1024" ftype="text" rows="3">
+	<field name="intro" dtmaxlength="1024" ftype="text" rows="3" dtrequired="true">
 		<prompt xml:lang="en">Introduction</prompt>
 		<prompt xml:lang="nl">Inleiding</prompt>
 		<prompt xml:lang="zh">摘要</prompt>
@@ -51,11 +51,7 @@
 		<prompt xml:lang="nl">Naam antwoord</prompt>
 		<prompt xml:lang="zh">收件人</prompt>
 	</field>
-	<field name="publishinterval" dtmaxlength="40">
-		<prompt xml:lang="en">Publication interval</prompt>
-		<prompt xml:lang="nl">Publicatie interval</prompt>
-		<prompt xml:lang="zh">间歇发布</prompt>
-	</field>
+
 	<field name="paused" ftype="enum">
 		<prompt xml:lang="en">Paused</prompt>
 		<prompt xml:lang="nl">Gepauseerd</prompt>
@@ -74,8 +70,25 @@
 		<prompt xml:lang="zh">安全</prompt>
 		<optionlist select="boolean" />
 	</field>
-
+	<field name="sendempty" ftype="enum">
+		<prompt xml:lang="en">Send when empty</prompt>
+		<prompt xml:lang="nl">Send when empty</prompt>
+		<prompt xml:lang="zh">内容为空时是否发送</prompt>
+		<optionlist select="boolean" />
+	</field>
+	<field name="txtempty" ftype="enum">
+		<prompt xml:lang="en">Text when empty</prompt>
+		<prompt xml:lang="nl">Text when empty</prompt>
+		<prompt xml:lang="zh">内容为空时是否发送其他内容</prompt>
+		<optionlist select="boolean" />
+	</field>
+   <field name="schedule" ftype="calendar">
+		<prompt xml:lang="en">schedule</prompt>
+		<prompt xml:lang="nl">schedule</prompt>
+		<prompt xml:lang="zh">定时发送</prompt>
+	</field>
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
 	<list include="config/images/search_page_namedrel_images.xml" />
+   <list include="config/attachments/search_newsletter_posrel_attachments.xml" />
 	<list include="config/newslettertheme/search_newsletter_related_newslettertheme.xml" />
 </form-schema>
