@@ -3,7 +3,7 @@
 	<node number="104972" owner="default">
 		<name>Newsletter Job</name>
 		<crontime>*/5 * * * *</crontime>
-		<classfile>com.finalist.newsletter.NewsletterAutoCreateCronJob</classfile>
+		<classfile>com.finalist.newsletter.NewsletterCronJob</classfile>
 		<config></config>
 		<type>2</type>
 	</node>
