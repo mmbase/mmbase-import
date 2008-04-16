@@ -14,6 +14,7 @@ import org.mmbase.bridge.RelationList;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.newsletter.domain.Publication;
 
 public abstract class NewsletterPublicationUtil {
 
@@ -63,6 +64,7 @@ public abstract class NewsletterPublicationUtil {
             String urlFragment = String.valueOf(publicationNode.getNumber());
             publicationNode.setStringValue("urlfragment", urlFragment);
             publicationNode.setStringValue("publishdate","null");
+            publicationNode.setStringValue("status", Publication.STATUS.INITIAL.toString());
             publicationNode.commit();
 
             copyThemesAndContent(newsletterNode, publicationNode, copyContent);

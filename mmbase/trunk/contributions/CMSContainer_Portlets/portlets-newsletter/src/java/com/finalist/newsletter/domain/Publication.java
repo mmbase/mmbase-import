@@ -22,7 +22,7 @@ public class Publication {
    }
 
    public enum STATUS {
-      DELIVERED, READY
+      DELIVERED, READY,INITIAL
    }
 
 
