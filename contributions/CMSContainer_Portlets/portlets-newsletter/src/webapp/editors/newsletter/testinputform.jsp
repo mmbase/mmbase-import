@@ -1,6 +1,5 @@
 <%@page language="java" contentType="text/html;charset=utf-8"%>
-<%@include file="../globals.jsp" %>
-
+<%@include file="../globals.jsp"%>
 <fmt:setBundle basename="newsletter" scope="request" />
 
 <mm:content type="text/html" encoding="UTF-8" expires="0">
@@ -18,10 +17,25 @@
 	<p>
 		<fmt:message key="testinput.subtitle" />		
 	</p>
-	<form action="?">
-		<html:hidden property="number" value="${number}" />
-		<html:text property="email" />
-	   	<html:submit property="test"><fmt:message key="testinput.send"/></html:submit>&nbsp;
+   <c:url var="actionUrl" value="/editors/newsletter/NewsletterPublicationTest.do"/>
+	<form action="${actionUrl}" method="post">
+      <input type="hidden" name="number" id="number" value="${number}"/>
+      <input type="hidden" name="action" id="action" value="send"/>
+      <table>
+         <tr><td>
+		      email:</td>
+          <td><input type="text" name="email" id="email" />
+          </td></tr>
+         <tr><td>
+             MIMI-TYPE:</td><td>
+             <select name="mimitype" id="mimitype">
+                <option value="text/html">text/html</option>    
+                <option value="text/plain">text/plain</option>    
+             </select>
+        </td></tr>
+      </table>
+      <br/>
+	   	<html:submit property="test"><fmt:message key="testinput.send"/></html:submit>
 	   	<html:submit property="cancel"><fmt:message key="testinput.cancel"/></html:submit>
 	</form>
 
