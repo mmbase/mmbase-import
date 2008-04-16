@@ -4,11 +4,11 @@ import java.util.Map;
 
 public abstract class AbstractSchedule {
 
-   public abstract String chansfer();
+   public abstract String transform();
    
    private Map<String,Object> parameters;
    
-   public void setParameters(Map<String,Object> parameters) {
+   public void setRequestParameters(Map<String,Object> parameters) {
       this.parameters = parameters;
    }
    protected Map<String,Object> getParameters() {
