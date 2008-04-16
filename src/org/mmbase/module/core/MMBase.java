@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.240 2008-04-12 10:43:14 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.241 2008-04-16 12:19:33 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -460,14 +460,14 @@ public class MMBase extends ProcessorModule {
         mmbaseState = STATE_SHUT_DOWN;
 
         //shutdown in the reverse order as init does
-        
+
         org.mmbase.core.event.EventManager.getInstance().shutdown();
 
         org.mmbase.util.ThreadPools.shutdown();
 
         mmbaseCop = null;
 
-        if (mmobjs != null) { 
+        if (mmobjs != null) {
             for (Iterator mmbobjecIter = mmobjs.values().iterator(); mmbobjecIter.hasNext();) {
                 MMObjectBuilder builder = (MMObjectBuilder) mmbobjecIter.next();
                 builder.shutdown();
@@ -485,7 +485,7 @@ public class MMBase extends ProcessorModule {
         rootBuilder = null;
 
         storageManagerFactory = null;
-        
+
         // there all over the place static references to mmbasroot are maintained, which I cannot
         // change presently. so let's clean up mmbaseroot itself as well as possible...
         mmbaseroot = null;
@@ -1310,7 +1310,9 @@ public class MMBase extends ProcessorModule {
 
 
     /**
-     * @since MMBase-1.9
+     * A setting 'datadir' can be specified in mmbaseroot.xml (and hence in your context xml). This
+     * serves as a default for the 'blobs on disk' directory, but it can be used on other spots as well.
+     * @since MMBase-1.8.6
      */
     public File getDataDir() {
         String dataDirString = getInitParameter("datadir");
