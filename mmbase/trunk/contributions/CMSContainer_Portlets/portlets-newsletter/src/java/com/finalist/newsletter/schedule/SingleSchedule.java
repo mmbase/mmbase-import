@@ -6,16 +6,16 @@ import java.util.Date;
 public class SingleSchedule  extends AbstractSchedule {
 
    /**
-    * the expression is 1|datetime
+    * the expression is 1|date|hour|minute
     */
    @Override
-   public  String chansfer() {
+   public  String transform() {
 
-      StringBuffer target = new StringBuffer("1");
+      StringBuffer expression = new StringBuffer("1");
       if(getParameters() != null && getParameters().containsKey("date")) {
-         target.append("|"+getParameters().get("date"));
+         expression.append("|"+getParameters().get("date"));
       }
-      appendHourAndMin(target);
-      return target.toString();
+      appendHourAndMin(expression);
+      return expression.toString();
    }
 }
