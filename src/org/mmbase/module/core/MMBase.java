@@ -46,7 +46,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author Pierre van Rooden
  * @author Johannes Verelst
  * @author Ernst Bunders
- * @version $Id: MMBase.java,v 1.200.2.12 2008-04-12 10:43:05 nklasens Exp $
+ * @version $Id: MMBase.java,v 1.200.2.13 2008-04-16 12:20:29 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1491,6 +1491,57 @@ public class MMBase extends ProcessorModule {
 
             }
         }
+    }
+
+    /**
+     * A setting 'datadir' can be specified in mmbaseroot.xml (and hence in your context xml). This
+     * serves as a default for the 'blobs on disk' directory, but it can be used on other spots as well.
+     * @since MMBase-1.8.6
+     */
+    public File getDataDir() {
+        String dataDirString = getInitParameter("datadir");
+
+        javax.servlet.ServletContext sc = MMBaseContext.getServletContext();
+        if (dataDirString == null || dataDirString.equals("")) {
+            if (sc == null) {
+                dataDirString = "data";
+            } else {
+                dataDirString = "WEB-INF/data";
+            }
+        }
+        File dataDir = new File(dataDirString);
+
+        if (! dataDir.isAbsolute()) {
+            if (sc != null) {
+                dataDir = new File(sc.getRealPath("/" + dataDirString));
+            } else {
+                dataDir = new File(System.getProperty("user.dir"), dataDirString);
+            }
+        }
+
+        if (! dataDir.exists()) {
+            try {
+                if (dataDir.mkdirs()) {
+                    log.info("Created " + dataDir);
+                }
+            } catch (SecurityException  se) {
+                log.warn(se);
+            }
+        }
+
+        if (! dataDir.isDirectory()) {
+            log.warn("Datadir " + dataDir + " is not a directory");
+        }
+        if (! dataDir.canRead()) {
+            log.warn("Datadir " + dataDir + " is not readable");
+        }
+        if (! dataDir.canWrite()) {
+            log.warn("Datadir " + dataDir + " is not writable");
+        }
+
+        log.info("MMBase data dir: " + dataDir);
+        return dataDir;
+
     }
 
 
