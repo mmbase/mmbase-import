@@ -65,8 +65,8 @@ public class NewsletterCronJob implements CronJob {
       Date minDate =  null;
       try {
          minDate =  df.parse("01-01-1970 00:00");
-      } catch (ParseException e1) {
-         log.debug("--> parse date Exception");;
+      } catch (ParseException e) {
+         log.debug("--> Parse date Exception");;
       }
       //only once  pattern :
       if(expressions[0].equals("1")) { 
@@ -79,7 +79,7 @@ public class NewsletterCronJob implements CronJob {
             }
          } 
          catch (ParseException e) {
-            log.debug("--> parse date Exception");
+            log.debug("--> Parse date Exception");
          }
       }
       else if (expressions[0].equals("2")) {
@@ -115,7 +115,7 @@ public class NewsletterCronJob implements CronJob {
             }
          } 
          catch (ParseException e) {
-            log.debug("--> parse date Exception");
+            log.debug("--> Parse date Exception");
          }
       }
       else if(expressions[0].equals("3")) {

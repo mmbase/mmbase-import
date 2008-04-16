@@ -11,11 +11,11 @@ public class ScheduleService {
       this.schedule = schedule;
    }
    
-   public void setParameters(Map<String,Object> parameters) {
-      schedule.setParameters(parameters);
+   public void setRequestParameters(Map<String,Object> requestParameters) {
+      schedule.setRequestParameters(requestParameters);
    }
    
-   public String chansfer() {
-      return schedule.chansfer();
+   public String transform() {
+      return schedule.transform();
    }
 }

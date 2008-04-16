@@ -7,29 +7,29 @@ import java.util.Map;
 public class DailySchedule extends AbstractSchedule  {
 
    /**
-    * the Expression is 2|datetime|approach[|interval]
+    * the Expression is 2|datet|hour|minute|approach[|interval]
     * approach {0|1|2}
     */
    @Override
-   public  String chansfer() {
-      StringBuffer target = new StringBuffer("2");
+   public  String transform() {
+      StringBuffer expression = new StringBuffer("2");
       String approach = null;
       if(getParameters() != null && getParameters().containsKey("date")) {
-         target.append("|"+getParameters().get("date"));
+         expression.append("|"+getParameters().get("date"));
       }
-      appendHourAndMin(target);
+      appendHourAndMin(expression);
       if(getParameters() != null && getParameters().containsKey("approach")) {
          approach = (String)getParameters().get("approach");
       }
       if(approach != null) {
-         target.append("|"+approach);
+         expression.append("|"+approach);
          
          if(approach.equals("2")) {
             if(getParameters().containsKey("interval")) {
-               target.append("|"+getParameters().get("interval"));
+               expression.append("|"+getParameters().get("interval"));
             }
          }
       }
-      return target.toString();
+      return expression.toString();
    }
 }
