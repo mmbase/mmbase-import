@@ -29,7 +29,7 @@ public class NewsletterPublisher {
       }
    }
 
-   private void deliver(Publication publication, Subscription subscription) {
+   public void deliver(Publication publication, Subscription subscription) {
       try {
          Message message = new MimeMessage(getMailSession());
          setBody(message, publication,subscription);
