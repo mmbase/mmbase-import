@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.8 2008-04-16 09:05:01 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.9 2008-04-16 09:26:40 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -235,7 +235,7 @@ MMBaseRelater.prototype.relate = function(tr) {
 
     // Set up HTML
     if (this.current != null) {
-	var currentList =  this.current.find("div.searchresult table tbody");
+	var currentList =  $(this.current).find("div.searchresult table tbody");
 	this.logger.debug(currentList[0]);
 	currentList.append(tr);
 
