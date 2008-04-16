@@ -47,4 +47,12 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 
 
    }
+
+   public void testDeliver(int number,String email,String mineType) {
+      Publication publication = publicationCAO.getPublication(number);
+      Subscription subscription = new Subscription();
+      subscription.setMimeType(mineType);
+      subscription.getSubscriber().setEmail(email);
+      publisher.deliver(publication, subscription);
+   }
 }
