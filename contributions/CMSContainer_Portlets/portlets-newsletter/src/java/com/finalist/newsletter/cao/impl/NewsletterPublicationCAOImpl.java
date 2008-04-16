@@ -58,4 +58,9 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
       return pubs;
    }
+
+   public Publication getPublication(int number) {
+      Node newsletterPublicationNode = cloud.getNode(number);
+      return convert(newsletterPublicationNode);
+   }
 }

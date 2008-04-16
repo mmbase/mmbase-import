@@ -8,5 +8,5 @@ import java.util.List;
 public interface NewsletterPublicationService {
    public void deliverAllPublication();
 
-   
+   public void testDeliver(int number,String email,String mineType);
 }
