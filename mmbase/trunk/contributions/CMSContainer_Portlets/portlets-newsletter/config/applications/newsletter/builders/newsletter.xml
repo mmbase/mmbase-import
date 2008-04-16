@@ -68,28 +68,7 @@
 				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
 			</db>
 		</field>
-		<field>
-			<descriptions>
-				<description xml:lang="nl"></description>
-				<description xml:lang="en"></description>
-			</descriptions>
-			<gui>
-				<guiname xml:lang="nl">Publicatie interval</guiname>
-				<guiname xml:lang="en">Publisch interval</guiname>
-			</gui>
-			<editor>
-				<positions>
-					<input>7</input>
-					<list>-1</list>
-					<search>-1</search>
-				</positions>
-			</editor>
-			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="long"></datatype>
-			<db>
-				<name>publishinterval</name>
-				<type key="false" notnull="false" state="persistent">LONG</type>
-			</db>
-		</field>      		
+    		
 		<field>
 			<descriptions>
 				<description xml:lang="nl"></description>
