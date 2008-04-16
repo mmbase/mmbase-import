@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_newsletterfields">
 	<title xml:lang="nl">Algemeen</title>
@@ -19,11 +19,6 @@
 		<prompt xml:lang="en">(First) publishdate</prompt>
 		<prompt xml:lang="nl">(Eerste) publicatie datum</prompt>
 		<prompt xml:lang="zh">起始发布日期</prompt>
-	</field>
-	<field name="publishinterval" ftype="duration">
-		<prompt xml:lang="en">Publish interval</prompt>
-		<prompt xml:lang="nl">Publicatie interval</prompt>
-		<prompt xml:lang="zh">间歇发布</prompt>
 	</field>
 	<field name="use_expirydate" ftype="enum">
 		<prompt xml:lang="en">Use expirydate</prompt>
