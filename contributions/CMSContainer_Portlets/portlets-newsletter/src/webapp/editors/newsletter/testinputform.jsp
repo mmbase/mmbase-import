@@ -9,6 +9,24 @@
 	<style type="text/css">
 	input { width: 100px;}
 	</style>
+   <script src="check.js" type="text/javascript"></script>
+   <script language="javascript">
+
+      function sendEmail() {
+         var email = document.getElementById("email");
+         if(!isEmail(email.value)) {
+            alert('<fmt:message key="testinput.email.incorrect"/>');
+            email.focus();
+            return;
+         }
+         document.forms[0].submit()
+      }
+      function cancel() {
+         var action = document.getElementById("action");
+         action.value = "cancel";
+         document.forms[0].submit()
+      }
+   </script>
 </cmscedit:head>
 <mm:import externid="number" required="true" from="parameters"/>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
@@ -22,21 +40,22 @@
       <input type="hidden" name="number" id="number" value="${number}"/>
       <input type="hidden" name="action" id="action" value="send"/>
       <table>
-         <tr><td>
-		      email:</td>
-          <td><input type="text" name="email" id="email" />
-          </td></tr>
-         <tr><td>
-             MIMI-TYPE:</td><td>
-             <select name="mimitype" id="mimitype">
+         <tr>
+            <td><fmt:message key="testinput.email"/></td>
+            <td><input type="text" name="email" id="email" /></td>
+         </tr>
+         <tr>
+            <td><fmt:message key="testinput.mimetype"/></td>
+            <td><select name="mimitype" id="mimitype">
                 <option value="text/html">text/html</option>    
                 <option value="text/plain">text/plain</option>    
              </select>
-        </td></tr>
+            </td>
+        </tr>
       </table>
       <br/>
-	   	<html:submit property="test"><fmt:message key="testinput.send"/></html:submit>
-	   	<html:submit property="cancel"><fmt:message key="testinput.cancel"/></html:submit>
+         <input type="button" onclick="sendEmail()" value='<fmt:message key="testinput.send"/>'/>
+         <input type="button" onclick="cancel()" value='<fmt:message key="testinput.cancel"/>'/>
 	</form>
 
 </cmscedit:sideblock>
