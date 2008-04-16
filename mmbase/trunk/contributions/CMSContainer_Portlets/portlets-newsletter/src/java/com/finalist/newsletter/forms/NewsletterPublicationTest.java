@@ -21,6 +21,8 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.publisher.NewsletterPublisher;
+import com.finalist.newsletter.services.NewsletterPublicationService;
+import com.finalist.newsletter.services.NewsletterServiceFactory;
 
 public class NewsletterPublicationTest extends MMBaseFormlessAction {
 
@@ -36,6 +38,8 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
       int number = Integer.parseInt(getParameter(request, "number", true));
 
       if (isSendAction(request)) {
+         String email = getParameter(request, "email");
+         String mineType = getParameter(request, "minetype");
          Node newsletterPublicationNode = cloud.getNode(number);
 
          UserRole role = NavigationUtil.getRole(newsletterPublicationNode.getCloud(), newsletterPublicationNode, false);
@@ -44,9 +48,10 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
          if (NavigationUtil.getChildCount(newsletterPublicationNode) > 0 && !isWebMaster) {
             return mapping.findForward("confirmationpage");
          }
-         Thread publisher = new NewsletterPublisher(number);
-         publisher.start();
-
+//         Thread publisher = new NewsletterPublisher(number);
+//         publisher.start();
+         NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
+         publicationService.testDeliver(number,email,mineType);
          return mapping.findForward(SUCCESS);
       }
 
