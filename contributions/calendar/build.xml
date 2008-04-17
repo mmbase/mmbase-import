@@ -2,6 +2,7 @@
 <project name="calendar"  default="package" basedir=".">
   <property name="project.name"      value="calendar" />
   <property name="project.comment"   value="MMBase Calendar application" />
+  <property name="java.source.version" value="1.5" />
 
   <import file="../../applications/buildbase-include.xml" />
   <property file="build.properties.default" />
