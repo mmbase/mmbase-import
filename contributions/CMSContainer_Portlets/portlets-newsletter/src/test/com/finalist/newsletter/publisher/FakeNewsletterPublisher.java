@@ -13,9 +13,6 @@ public class FakeNewsletterPublisher extends NewsletterPublisher{
    public FakeNewsletterPublisher(){
       
    }
-   public FakeNewsletterPublisher(int publicationNumber) {
-      super(publicationNumber);
-   }
 
    public void deliver(int publicationId, List<Person> persons) {
       map.put(publicationId,persons);

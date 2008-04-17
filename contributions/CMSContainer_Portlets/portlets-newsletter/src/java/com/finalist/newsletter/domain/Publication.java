@@ -7,10 +7,10 @@ import java.util.Date;
 public class Publication {
 
    private int id;
-   private int newsletterId;
    private Date deliverTime;
    private STATUS status;
    private String url;
+   private Newsletter newsletter;
 
 
    public int getId() {
@@ -22,7 +22,7 @@ public class Publication {
    }
 
    public enum STATUS {
-      DELIVERED, READY,INITIAL
+      DELIVERED, READY, INITIAL
    }
 
 
@@ -34,12 +34,12 @@ public class Publication {
       this.deliverTime = deliverTime;
    }
 
-   public int getNewsletterId() {
-      return newsletterId;
+   public Newsletter getNewsletter() {
+      return newsletter;
    }
 
-   public void setNewsletterId(int newsletterId) {
-      this.newsletterId = newsletterId;
+   public void setNewsletter(Newsletter newsletter) {
+      this.newsletter = newsletter;
    }
 
    public STATUS getStatus() {
