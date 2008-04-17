@@ -17,8 +17,9 @@
   </gui>
   <editor><positions><list>1</list></positions></editor>
   <datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes">
+    <default value="..." />
     <required value="true" />
-    <minLength value="3" />
+    <minLength value="2" />
     <maxLength value="255" />
   </datatype>
 </field>
