@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.2 2008-04-14 15:44:44 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.3 2008-04-17 09:18:55 michiel Exp $
  */
 
 
@@ -37,9 +37,10 @@ function List(d) {
     this.lastChange = null;
     this.lastCommit = null;
 
+    this.defaultStale = 1000;
+
     this.valid = true;
-    this.validator = new MMBaseValidator();
-    this.validator.setup(this.div);
+    this.validator = new MMBaseValidator(this.div);
 
     this.validator.validateHook = function(valid) {
 	self.valid = valid;
@@ -162,9 +163,10 @@ List.prototype.status = function(message) {
  */
 List.prototype.commit = function(stale, async) {
     if(this.needsCommit()) {
+
 	if (this.valid) {
 	    var now = new Date();
-	    if (stale == null) stale = 5000; //
+	    if (stale == null) stale = this.defaultStale; //
 	    if (now.getTime() - this.lastChange.getTime() > stale) {
 		this.lastCommit = now;
 		var params = {};
