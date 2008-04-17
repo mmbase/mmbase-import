@@ -99,7 +99,7 @@ public class SqlExecutor {
                         Context initialContext = new InitialContext();
                         Context environmentContext = (Context) initialContext.lookup(contextName);
                         DataSource ds = (DataSource)environmentContext.lookup(dataSourceURI);
-                        if (ds == null) {
+                        if (ds != null) {
                             connection = ds.getConnection();
                         }
                     } catch(NamingException ne) {
