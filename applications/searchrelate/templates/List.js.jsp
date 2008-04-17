@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.4 2008-04-17 09:40:24 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.5 2008-04-17 12:03:18 michiel Exp $
  */
 
 
@@ -57,7 +57,7 @@ function List(d) {
 		   function(ev) {
 		       var result = self.commit(0, false);
 		       if (!result) {
-			   ev.returnValue = "Formulier is niet geldig!";
+			   ev.returnValue = '<fmt:message key="invalid" />';
 		       }
 		       return result;
 		   });
@@ -176,13 +176,13 @@ List.prototype.commit = function(stale, async) {
 		    params[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
 		});
 		var self = this;
-		this.status("<img src='${mm:link('/gfx/ajax-loader.gif')}' />");
+		this.status("<img src='${mm:link('/mmbase/ajax-loader.gif')}' />");
 		$.ajax({ type: "POST",
 			 async: async == null ? true : async,
 			 url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
 			 data: params,
 			 success: function() {
-			     self.status("Opgeslagen");
+			     self.status('<fmt:message key="saved" />');
 			 }
 		      });
 
