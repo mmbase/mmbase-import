@@ -26,12 +26,12 @@
 		 <reldef source="tagged" target="tagged" direction="bidirectional" guisourcename="tagged" guitargetname="tagged" builder="insrel" />
 	</neededreldeflist>
 	<allowedrelationlist>
-		<relation from="article" to="newslettertheme" type="newslettercontent" />
+		<relation from="article" to="newsletter" type="newslettercontent" />
 		<relation from="article" to="newsletterpublicationtheme" type="newslettercontent" />
 		<relation from="newsletter" to="newslettertheme" type="newslettertheme" />
 		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
 		<relation from="newsletter" to="newsletterpublication" type="related" />
-		<relation from="newsletter" to="tag" type="tagged" />
+		<relation from="newsletter" to="tag" type="posrel" />
 		<relation from="subscriptionrecord" to="tag" type="tagged" />
 		<relation from="newsletter" to="subscriptionrecord" type="newslettered" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="newslettertheme" />
