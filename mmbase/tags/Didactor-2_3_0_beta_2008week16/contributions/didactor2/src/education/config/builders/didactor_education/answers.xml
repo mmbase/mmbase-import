@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="answers" maintainer="didactor.nl" version="2" extends="object">
+  <names>
+    <singular xml:lang="nl">Antwoord</singular>
+    <singular xml:lang="en">Answer</singular>
+    <plural xml:lang="nl">Antwoorden</plural>
+    <plural xml:lang="en">Answers</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Een mogelijk antwoord op een vraag. Dit object is abstract: het zal niet direct aangemaakt worden maar andere builders extenden deze builder.</description>
+    <description xml:lang="en">A possible answer to a question. This object is abstract: it will not be created directly but other builders will extend this one.</description>
+  </descriptions>
+
+</builder>

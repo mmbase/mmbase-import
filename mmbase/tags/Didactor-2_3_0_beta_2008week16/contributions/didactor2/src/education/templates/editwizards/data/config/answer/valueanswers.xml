@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="nl">Waarde Antwoord Editor</title>
+  <title xml:lang="en">Value Answer Editor</title>
+  <action type="create">
+    <object type="valueanswers" />
+  </action>
+  
+  <action type="load">
+    <relation destination="feedback" role="related" />
+  </action>
+  
+  <action type="delete" />
+  
+  <form-schema id="step1">
+    <title xml:lang="nl">Value Antwoord invoeren</title>
+    <title xml:lang="en">Enter Value Answer</title>
+    <field name="text" ftype="html" dtminlength="0">
+      <prompt xml:lang="nl">Tekst</prompt>
+      <prompt xml:lang="en">Text</prompt>
+      <description xml:lang="nl">De antwoord tekst</description>
+      <description xml:lang="en">The answer text</description>
+    </field>
+    <list role="related" extends="config/feedback/feedback-list.xml" />
+  </form-schema>
+</wizard-schema>

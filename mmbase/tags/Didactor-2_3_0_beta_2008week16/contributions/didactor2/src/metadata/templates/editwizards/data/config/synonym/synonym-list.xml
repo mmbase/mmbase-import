@@ -1,0 +1,44 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="synonym" role="related" minoccurs="0" maxoccurs="*">
+    <title xml:lang="nl">Bijbehorende synoniemen</title>
+    <title xml:lang="en">Related synonyms</title>
+    <item>
+        <field name="name" ftype="data">
+            <prompt xml:lang="nl">Naam</prompt>
+            <prompt xml:lang="en">Name</prompt>
+        </field>
+
+        <field wizardname="config/synonym/synonym" ftype="startwizard" />
+    </item>
+
+    <action type="create">
+        <relation destinationtype="synonym" role="related">
+        </relation>
+    </action>
+
+    <action type="add">
+        <relation destinationtype="synonym" role="related">
+            <object type="synonym">
+            </object>
+        </relation>
+    </action>
+
+    <action type="load">
+      <relation destinationtype="metavocabulary" role="related" />
+      <relation destinationtype="metadefinition" role="related" />
+      <relation destinationtype="metastaddard" role="related" />
+    </action>
+
+    <command name="startwizard" inline="true" wizardname="config/synonym/synonym" objectnumber="new" />
+
+    <command name="search" nodepath="synonym" fields="name" age="-1" orderby="number" directions="down" >
+        <prompt xml:lang="nl">Zoeken naar synoniemen</prompt>
+        <prompt xml:lang="en">Search for synonyms</prompt>
+        <search-filter>
+            <name xml:lang="nl">Naam</name>
+            <name xml:lang="en">Name</name>
+            <search-fields>name</search-fields>
+        </search-filter>
+
+    </command>
+</list>

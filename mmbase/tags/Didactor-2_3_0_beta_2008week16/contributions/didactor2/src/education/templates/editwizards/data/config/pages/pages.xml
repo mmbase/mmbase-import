@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+[
+  <!ENTITY extra_loads SYSTEM "extra_loads.xml">
+  <!ENTITY extra_schemas SYSTEM "extra_schemas.xml">
+]>
+<wizard-schema id="empty">
+  <title xml:lang="nl">Paginaeditor</title>
+  <title xml:lang="en">Page Editor</title>
+
+  <action type="create">
+    <object type="pages">
+      <field name="showtitle">1</field>
+    </object>
+  </action>
+
+  <action type="load">
+    <relation destination="mmevents" role="related" />
+    <relation destination="images" role="sizerel" />
+    <relation destination="audiotapes" role="posrel" />
+    <relation destination="videotapes" role="posrel" />
+    <relation destination="attachments" role="posrel" />
+    <relation destination="urls" role="posrel" />
+    <relation destination="paragraphs" role="posrel">
+      <object>
+        <relation destination="attachments" role="posrel" />
+        <relation destination="images" role="pos2rel" />
+        <relation destination="urls" role="posrel" />
+      </object>
+    </relation>
+    &extra_loads;
+  </action>
+
+  <action type="delete" />
+
+  <form-schema id="step1">
+    <title xml:lang="nl">Pagina invoeren</title>
+    <title xml:lang="en">Enter page</title>
+    <fieldset>
+      <field name="name"  />
+      <field name="showtitle" />
+    </fieldset>
+    <field name="text" ftype="html" dtminlength="0" />
+    <field name="layout" />
+    <field name="imagelayout" />
+
+    <list role="sizerel" extends="config/image/sizedimages.xml" />
+    <list role="posrel" extends="config/attachment/attachments-posrel.xml" />
+    <list role="posrel" extends="config/audiotape/audiotapes-posrel.xml" />
+    <list role="posrel" extends="config/videotape/videotapes-posrel.xml" />
+    <list destination="urls" role="posrel" extends="config/url/urls-posrel.xml" />
+    <list role="related" extends="config/online/online-list.xml" />
+  </form-schema>
+
+  <form-schema id="step2">
+    <title xml:lang="nl">Alineas invoeren</title>
+    <title xml:lang="en">Enter paragraphs</title>
+
+    <field name="name" ftype="data"/>
+    <field name="showtitle" />
+
+    <list extends="config/paragraphs/add_paragraphs_posrel.xml"/>
+  </form-schema>
+
+
+  &extra_schemas;
+</wizard-schema>

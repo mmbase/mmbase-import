@@ -1,0 +1,22 @@
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list destination="mmevents" role="related" minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='start']">
+  <title xml:lang="nl">Online/Offline tijden</title>
+  <title xml:lang="en">Online/Offline times</title>
+  <item>
+    <field name="start" ftype="dateoffset" dttype="datetime">
+      <prompt xml:lang="nl">Online</prompt>
+      <prompt xml:lang="en">Online</prompt>
+    </field>
+    <field name="stop" ftype="dateoffset" dttype="datetime">
+      <prompt xml:lang="nl">Offline</prompt>
+      <prompt xml:lang="en">Offline</prompt>
+    </field>
+  </item>
+
+  <action type="create">
+    <relation destinationtype="mmevents" role="related">
+    </relation>
+  </action>
+
+  <command name="startwizard" inline="true" wizardname="config/online/online" objectnumber="new" />
+</list>

@@ -1,0 +1,37 @@
+<jsp:root
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:di="http://www.didactor.nl/ditaglib_1.0"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    version="2.0">
+  <jsp:directive.tag description="Displays the 'url' field of a node" />
+  <jsp:directive.attribute name="element"    />
+  <jsp:directive.attribute name="path_segment"  />
+
+  <mm:node element="${element}">
+    <mm:field name="url">
+      <mm:compare regexp="http://.*">
+        <img src="${path_segment}gfx/http_url.gif" />
+        <di:translate key="education.websites" />
+        <jsp:text>: </jsp:text>
+        <a href="${_}" class="urls">
+          <mm:field name="name" write="true">
+            <mm:isempty><mm:field name="url" /></mm:isempty>
+          </mm:field>
+        </a>
+      </mm:compare>
+      <mm:compare regexp="mailto://.*">
+        <img src="${path_segment}gfx/email_url.gif"/>
+        <di:translate key="education.email" />
+        <jsp:text>: </jsp:text>
+        <a href="${_}${empty _node.name ? '' : '?subject='}${_node.name}" class="urls">
+        <mm:field name="name" write="true">
+          <mm:isempty>
+            <mm:field name="url" />
+          </mm:isempty>
+        </mm:field>
+        </a>
+      </mm:compare>
+    </mm:field>
+  </mm:node>
+</jsp:root>
