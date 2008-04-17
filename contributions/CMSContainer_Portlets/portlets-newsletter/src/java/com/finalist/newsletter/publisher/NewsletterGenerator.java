@@ -10,21 +10,53 @@ import javax.mail.MessagingException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
 
-public abstract class NewsletterGenerator {
+public class NewsletterGenerator {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterGenerator.class.getName());
 
+   private static String personaliser;
+
+   public void setPersonaliser(String personaliser) {
+      NewsletterGenerator.personaliser = personaliser;
+   }
+
+
    public static void generate(Message message, Publication publication, Subscription subscription) throws MessagingException {
       String rawHtmlContent = getContent(publication, subscription.getMimeType());
+      rawHtmlContent = personalise(rawHtmlContent, subscription);
       message.setText(rawHtmlContent + "\n");
    }
 
-   protected static String checkUrls(String input) {
+   private static String personalise(String rawHtmlContent, Subscription subscription) {
+      String result = rawHtmlContent;
+
+      if (null == personaliser) {
+         personaliser = PropertiesUtil.getProperty("newsletter.personaliser");
+      }
+
+      if (StringUtils.isNotEmpty(personaliser)) {
+         try {
+            Personaliser ps = (Personaliser) Class.forName(personaliser).newInstance();
+            result = ps.personalise(rawHtmlContent, subscription);
+         } catch (ClassNotFoundException e) {
+            log.error("No specified personaliser found:" + personaliser, e);
+         } catch (IllegalAccessException e) {
+            log.error(e);
+         } catch (InstantiationException e) {
+            log.error(e);
+         }
+      }
+      return result;
+
+   }
+
+   protected String checkUrls(String input) {
       String hostUrl = getLiveHostUrl();
       String appName = getApplicationName(hostUrl);
 
@@ -34,13 +66,13 @@ public abstract class NewsletterGenerator {
       return output;
    }
 
-   private static String getApplicationName(String hostUrl) {
+   private String getApplicationName(String hostUrl) {
       String[] hostUrlParts = hostUrl.split("/");
       String appName = hostUrlParts[hostUrlParts.length - 1];
       return (appName);
    }
 
-   protected static String getContent(Publication publication, String type) {
+   public String getContent(Publication publication, String type) {
 
 
       String inputString = "";
@@ -59,7 +91,7 @@ public abstract class NewsletterGenerator {
          int c;
          while ((c = reader.read()) != -1) {
             char character = (char) c;
-            buffer.append("" + character);
+            buffer.append("").append(character);
          }
 
          reader.close();
@@ -73,7 +105,7 @@ public abstract class NewsletterGenerator {
       return inputString;
    }
 
-   private static String getLiveHostUrl() {
+   private String getLiveHostUrl() {
       String hostUrl = PropertiesUtil.getProperty("host.live");
       if (hostUrl != null && !hostUrl.endsWith("/")) {
          hostUrl += "/";
