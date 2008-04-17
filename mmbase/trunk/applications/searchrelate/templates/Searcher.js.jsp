@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.9 2008-04-16 09:26:40 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.10 2008-04-17 20:57:58 andre Exp $
  */
 
 $(document).ready(function(){
@@ -102,7 +102,15 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 	    var anchor = this;
 	    anchor.searcher = searcher;
 	    $(anchor).click(function(el) {
-		return this.searcher.search(anchor, 0);
+	    var id = anchor.href.substring(anchor.href.indexOf("#") + 1);
+		return this.searcher.search(document.getElementById(id), 0);
+	    });
+	});
+	$(el).find("form.searchform").each(function() {
+	    var form = this;
+	    form.searcher = searcher;
+	    $(form).submit(function(el) {
+		return this.searcher.search(form, 0);
 	    });
 	});
 	$(el).find("a.create").each(function() {
@@ -320,7 +328,6 @@ function MMBaseSearcher(d, r, type, logger) {
 
 }
 
-
 MMBaseSearcher.prototype.getQueryId = function() {
     var searchAnchor = $(this.div).find("a.search")[0];
     var id = searchAnchor.href.substring(searchAnchor.href.indexOf("#") + 1);
@@ -338,7 +345,7 @@ MMBaseSearcher.prototype.getResultDiv = function() {
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
 MMBaseSearcher.prototype.search = function(el, offset) {
-    var newSearch = $(this.div).find("input")[0].value;
+    var newSearch = $(el).find("input").val();
     if (newSearch != this.value) {
 	this.searchResults = {};
 	this.value = newSearch;
@@ -346,8 +353,9 @@ MMBaseSearcher.prototype.search = function(el, offset) {
     this.offset = offset;
 
     var rep = this.getResultDiv();
-    var url = "${mm:link('/mmbase/searchrelate/page.jspx')}";
-    var params = {id: this.getQueryId(), offset: offset, search: this.value, pagesize: this.pagesize, maxpages: this.maxpages};
+    var url = $(el).attr("action");
+
+    var params = {id: el.id, offset: offset, search: this.value, pagesize: this.pagesize, maxpages: this.maxpages};
 
     var result = this.searchResults["" + offset];
     $(rep).empty();
@@ -477,10 +485,11 @@ MMBaseSearcher.prototype.bindEvents = function() {
     var self = this;
     this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
 
-    $(this.div).find("a.navigate").click(function(el) {
+    $(this.div).find("a.navigate").click(function(ev) {
 	self.logger.debug("navigating " );
-	var anchor = el.target;
-	return self.search(anchor, anchor.name);
+	var anchor = ev.target;
+    var id = anchor.href.substring(anchor.href.indexOf("#") + 1, anchor.href.lastIndexOf("_"));
+	return self.search(document.getElementById(id), anchor.name); 
     });
 }
 
