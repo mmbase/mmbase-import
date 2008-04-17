@@ -48,7 +48,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    }
 
    private void deliver(Publication publication) {
-      List<Subscription> subscriptions = subscriptionCAO.getSubscription(publication.getNewsletterId());
+      List<Subscription> subscriptions = subscriptionCAO.getSubscription(publication.getNewsletter().getId());
       publisher.deliver(publication,subscriptions);
       statisticCAO.logPubliction(publication.getId(),subscriptions.size());
       publicationCAO.setStatus(publication, STATUS.DELIVERED);
