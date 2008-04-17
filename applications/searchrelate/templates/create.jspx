@@ -8,13 +8,12 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="text/html">
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
-      <mm:cloud rank="basic user">
-        <mm:import externid="id" required="true" />
-        <mm:import from="session" externid="${id}" id="query" required="true" />
+      <mm:cloud method="asis">
+        <mm:import externid="queryid"  />
+        <mm:log>Found id ${queryid}</mm:log>
+        <mm:import from="session" externid="${queryid}" id="query" required="true" />
 
         <mm:form page="/mmbase/searchrelate/create.jspx">
-          <input type="hidden" name="id" value="${id}" />
-          <input type="hidden" name="nodemanager" value="${query.nodeManager.name}" />
           <fmt:message key="createsummary" var="summary">
             <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
           </fmt:message>
@@ -24,7 +23,9 @@
               <tr class="buttons">
                 <td colspan="2">
                   <input type="submit" value="${createmessage}" />
-                  <input type="hidden"  name="s" />
+                  <input type="hidden"  name="s" value="submitted" />
+                  <input type="hidden" name="queryid" value="${queryid}" />
+                  <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
                 </td>
               </tr>
             </tfoot>
@@ -45,6 +46,7 @@
             </mm:createnode>
           </table>
           <mm:import externid="s" />
+          <mm:log>found ${s}</mm:log>
           <mm:present referid="s">
             <mm:valid>
               <mm:commit />
