@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.4 2008-04-16 09:22:47 michiel Exp $
+      @version $Id: page.jspx,v 1.5 2008-04-17 18:20:35 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
@@ -35,9 +35,13 @@
         <mm:maxnumber value="${pagesize}" />
         <mm:offset value="${offset}" />
         <fmt:message key="searchresults" var="summary">
+          <fmt:param value="${offset}" />
+          <fmt:param value="${pagesize}" />
+          <fmt:param value="${size}" />
           <fmt:param value="${search}" />
         </fmt:message>
         <table summary="${summary}">
+          <caption><c:if test="${! empty search}">${summary}</c:if></caption>
           <thead>
             <tr>
               <th class="node number">#</th>
