@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.5 2008-04-17 18:20:35 andre Exp $
+      @version $Id: page.jspx,v 1.6 2008-04-17 20:00:00 andre Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
@@ -34,12 +34,27 @@
         <mm:size id="size" write="false" />
         <mm:maxnumber value="${pagesize}" />
         <mm:offset value="${offset}" />
-        <fmt:message key="searchresults" var="summary">
-          <fmt:param value="${offset}" />
-          <fmt:param value="${pagesize}" />
-          <fmt:param value="${size}" />
-          <fmt:param value="${search}" />
-        </fmt:message>
+        <c:choose>
+          <c:when test="${size > 0}">
+            <fmt:message key="searchresults" var="summary">
+              <c:choose>
+                <c:when test="${size > 0}"><fmt:param value="${offset + 1}" /></c:when>
+                <c:otherwise><fmt:param value="0" /></c:otherwise>
+              </c:choose>
+              <c:choose>
+                <c:when test="${pagesize > size}"><fmt:param value="${size}" /></c:when>
+                <c:otherwise><fmt:param value="${pagesize}" /></c:otherwise>
+              </c:choose>
+              <fmt:param value="${size}" />
+              <fmt:param value="${search}" />
+            </fmt:message>
+          </c:when>
+          <c:otherwise>
+            <fmt:message key="nothingfound" var="summary">
+              <fmt:param value="${search}" />
+            </fmt:message>
+          </c:otherwise>
+        </c:choose>
         <table summary="${summary}">
           <caption><c:if test="${! empty search}">${summary}</c:if></caption>
           <thead>
