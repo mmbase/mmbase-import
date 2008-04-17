@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.3 2008-04-17 09:18:55 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.4 2008-04-17 09:40:24 michiel Exp $
  */
 
 
@@ -70,6 +70,7 @@ function List(d) {
 	});
 
     this.setTabIndices();
+    $(this.div).trigger("mmsrRelatedNodesReady", [self]);
 }
 
 /**
