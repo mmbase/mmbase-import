@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.1 2008-04-10 15:58:55 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.2 2008-04-17 09:19:22 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -43,6 +43,7 @@
         <input type="hidden" name="type" value="${type}" />
         <input type="hidden" name="role" value="${r}" />
         <input type="hidden" name="submit" value="${_node}" />
+        <input type="hidden" name="fields" value="${fields}" />
         <ol>
           <mm:node id="source" />
           <mm:relatednodes type="${type}"
@@ -58,6 +59,7 @@
             <img class="icon" alt="+" src="${mm:link('/mmbase/style/images/create.png')}" />
           </a>
         </mm:link>
+        <span class="status">...</span>
       </div>
     </mm:form>
     </div>
