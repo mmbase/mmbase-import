@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.18 2008-04-15 13:40:21 michiel Exp $
+      @version $Id: relate.tagx,v 1.19 2008-04-17 20:58:01 andre Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -85,15 +85,15 @@
         <span class="transactionname" style="display: none;">${transaction}</span>
       </c:if>
       <c:if test="${! empty current}">
-        <div  class="mm_relate_current searchable">
+        <div class="mm_relate_current searchable">
           <jsp:invoke fragment="currentTitle" />
           <mm:listnodescontainer clone="current">
             <mm:size>
               <mm:isgreaterthan value="${empty pagesize ? 10 : pagesize}">
-                <div class="searchform">
+                <form class="searchform" action="${mm:link('/mmbase/searchrelate/page.jspx')}" method="post">
                   <a href="#mm_related_${seq}_current" class="search"><fmt:message key="search" /></a>
-                  <input  value="" />
-                </div>
+                  <input type="text" value="" />
+                </form>
               </mm:isgreaterthan>
             </mm:size>
           </mm:listnodescontainer>
@@ -108,16 +108,16 @@
           </mm:include>
         </div>
       </c:if>
-      <div  class="mm_relate_repository searchable">
+      <div class="mm_relate_repository searchable">
         <jsp:invoke fragment="repositoryTitle" />
-        <div class="searchform">
+        <form class="searchform" id="mm_related_${seq}_repository" action="${mm:link('/mmbase/searchrelate/page.jspx')}" method="post">..
           <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
-          <input  value="" />
+          <input type="text" value="" />
           <c:if test="${! empty create and create}">
             <a href="#mm_related_${seq}_repository_create" class="create"><fmt:message key="create" /></a>
           </c:if>
-        </div>
-        <mm:include  page="/mmbase/searchrelate/page.jspx">
+        </form>
+        <mm:include page="/mmbase/searchrelate/page.jspx">
           <c:if test="${! empty pagesize}">
             <mm:param name="pagesize" referid="pagesize" />
           </c:if>
