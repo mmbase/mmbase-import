@@ -8,6 +8,7 @@ import com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.publisher.FakeNewsletterPublisher;
 import com.finalist.newsletter.services.impl.NewsletterPublicationServiceImpl;
 import com.sevenirene.archetype.testingplatform.impl.logic.mock.MockController;
@@ -108,7 +109,11 @@ public class NewsletterPublicationServiceTest extends TestCase {
    private void addPublication(List<Publication> pubs, int id) {
       Publication publication = new Publication();
       publication.setId(id);
-      publication.setNewsletterId(id);
+
+      Newsletter newsletter = new Newsletter();
+      newsletter.setId(id);
+      publication.setNewsletter(newsletter);
+
       pubs.add(publication);
    }
 }
