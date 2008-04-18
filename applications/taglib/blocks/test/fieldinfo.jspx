@@ -37,6 +37,15 @@
       </mm:fieldlist>
     </mm:form>
   </div>
+  <div id="test6" class="test">
+    <mm:listnodes type="object" max="1">
+      <mm:form id="form6">
+        <mm:field name="owner">
+          <p><mm:fieldinfo type="name" />:<mm:fieldinfo type="input" /></p>
+        </mm:field>
+      </mm:form>
+    </mm:listnodes>
+  </div>
 
   <p>
     Testing produced HTML by mm:fieldinfo tags. Should only see 'true's:
@@ -46,11 +55,12 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $(document).find(".mm_c_taglib.mm_c_b_test_fieldinfo .test").css("display", "none");
-      $("#errors").append("\n" + ($("#test1").find("select[name = '_owner']").length == 1));
-      $("#errors").append("\n" + ($("#test2").find("select[name = 'test2_owner']").length == 1));
-      $("#errors").append("\n" + ($("#test3").find("select[name = 'test3_owner']").length == 1));
-      $("#errors").append("\n" + ($("#test4").find("select[name = '_owner']").length == 1));
-      $("#errors").append("\n" + ($("#test5").find("select[name = 'fieldlist5_owner']").length == 1));
+      $("#errors").append("\n1 " + ($("#test1").find("select[name = '_owner']").length == 1));
+      $("#errors").append("\n2 " + ($("#test2").find("select[name = 'test2_owner']").length == 1));
+      $("#errors").append("\n3 " + ($("#test3").find("select[name = 'test3_owner']").length == 1));
+      $("#errors").append("\n4 " + ($("#test4").find("select[name = '_owner']").length == 1));
+      $("#errors").append("\n5 " + ($("#test5").find("select[name = 'fieldlist5_owner']").length == 1));
+      $("#errors").append("\n6 " + ($("#test6").find("select[name = 'form6_owner']").length == 1));
     });
   </script>
   <p>
