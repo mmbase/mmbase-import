@@ -13,7 +13,9 @@
 	<field name="from_name" />
 	<field name="replyto_mail" />
 	<field name="replyto_name" />
-	<field name="paused" />
+   <field name="paused" />
+	<field name="pausedstartdate" />
+   <field name="pausedstopdate" />
 	<field name="inmenu" />
 	<field name="secure" />
 	<field name="title" />
