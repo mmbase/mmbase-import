@@ -25,6 +25,9 @@
       <param name="pagesize" />
       <param name="node" />
       <param name="offset" />
+      <param name="nodemanager" />
+      <param name="ok" />
+      <param name="back" />
     </body>
   </block>
 
