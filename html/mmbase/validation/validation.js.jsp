@@ -4,41 +4,21 @@
 /**
  * See test.jspx for example usage.
 
- * new MMBaseValidator(window, root): attaches events to all elements in root when loading window.
- * new MMBaseValidator(window): attaches events to all elements in window when loading window.
+ * new MMBaseValidator(el): attaches events to all elements in elwhen ready.
  * new MMBaseValidator():       attaches no events yet. You could replace some functions, add hooks, set settings first or so.
- *                              then call validator.setup(window[,root]).
+ *                              then call validator.setup(el).
  *
  * @author Michiel Meeuwissen
- * @version $Id: validation.js.jsp,v 1.51 2008-04-14 15:46:48 michiel Exp $
+ * @version $Id: validation.js.jsp,v 1.52 2008-04-18 08:54:28 michiel Exp $
  */
-var validators = new Array();
 
 
-
-// I don't know how to do timeouts in a OO way.
-function watcher() {
-    for (var i = 0; i < validators.length; i++) {
-	var validator = validators[i];
-	var el = validator.activeElement;
-	var now = new Date().getTime();
-        if (el != null) {
-            if (! el.serverValidated) {
-		if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
-                          validators[i].validateElement(validators[i].activeElement, true);
-		}
-            }
-        }
-    }
-    setTimeout("watcher()", 150);
-
-}
-setTimeout("watcher()", 500);
 
 function MMBaseValidator(root) {
 
     this.logEnabled   = false;
     this.traceEnabled = false;
+
 
     this.dataTypeCache   = new Object();
     this.invalidElements = 0;
@@ -49,14 +29,40 @@ function MMBaseValidator(root) {
     this.setup();
     this.lang          = null;
     this.sessionName   = null;
-    this.id = validators.push(this);
+    this.id = MMBaseValidator.validators.push(this);
+    if (MMBaseValidator.validators.length == 1) {
+	setTimeout(MMBaseValidator.watcher, 500);
+    }
     this.activeElement = null;
     this.checkAfter    = 600;
     this.logArea       = "logarea";
 
 }
 
-MMBaseValidator.prototype.setup = function() {
+MMBaseValidator.validators = [];
+
+
+MMBaseValidator.watcher = function() {
+    for (var i = 0; i < MMBaseValidator.validators.length; i++) {
+	var validator = MMBaseValidator.validators[i];
+	var el = validator.activeElement;
+	var now = new Date().getTime();
+        if (el != null) {
+            if (! el.serverValidated) {
+		if (new Date(validator.checkAfter + el.lastChange.getTime()) < now) {
+                    MMBaseValidator.validators[i].validateElement(MMBaseValidator.validators[i].activeElement, true);
+		}
+            }
+        }
+    }
+    setTimeout(MMBaseValidator.watcher, 150);
+
+}
+
+
+
+MMBaseValidator.prototype.setup = function(el) {
+    if (el != null) this.root = el;
     if (this.root != null) {
 	var self = this;
 	$(document).ready(function(event) {
