@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+If your block needs jquery, you can use:
+  <xi:include href="http://www.mmbase.org/components/jquery.head.xml" />
+
+This will include jquery.js with the version number information shipped with the distro.
+
+-->
+<class name="org.mmbase.framework.StringRenderer"
+       xmlns="http://www.mmbase.org/xmlns/component"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+  <param name="string"><![CDATA[<script src="{REQUEST.getContextPath}/mmbase/jquery/jquery-1.2.3.min.js" type="text/javascript"> </script>]]></param>
+</class>
