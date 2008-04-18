@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.42 2008-04-18 13:47:58 michiel Exp $;
+ * @version $Id: Url.java,v 1.43 2008-04-18 13:52:50 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -163,7 +163,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
             } else {
                 log.debug("Creating internal url link to page: " + page);
             }
-            result = framework.getInternalUrl(page, params, frameworkParameters).toString();
+            result = framework.getInternalUrl(page, params, frameworkParameters);
         } else {
             if (process) {
                 result = framework.getProcessUrl(page, params, frameworkParameters, writeamp);
