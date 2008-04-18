@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.6 2008-04-12 12:58:20 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.7 2008-04-18 13:47:13 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -56,7 +56,7 @@ public class MMBaseUrlConverter implements UrlConverter {
     }
 
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] {CATEGORY, COMPONENT, BLOCK};
+        return new Parameter[] {Parameter.REQUEST, CATEGORY, COMPONENT, BLOCK};
     }
 
     protected String getUrl(String path,
@@ -212,6 +212,7 @@ public class MMBaseUrlConverter implements UrlConverter {
     }
     public String getInternalUrl(String page, Map<String, Object> params, Parameters frameworkParameters) {
         HttpServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        if (request == null) return null;
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith(dir)) {
             String sp = FrameworkFilter.getPath(request);

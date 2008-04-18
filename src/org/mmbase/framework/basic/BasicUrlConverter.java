@@ -26,13 +26,15 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicUrlConverter.java,v 1.15 2008-04-11 10:23:58 michiel Exp $
+ * @version $Id: BasicUrlConverter.java,v 1.16 2008-04-18 13:47:13 michiel Exp $
  * @since MMBase-1.9
  */
 public final class BasicUrlConverter implements UrlConverter {
     private static final Logger log = Logging.getLoggerInstance(BasicUrlConverter.class);
 
     private static final CharTransformer PARAM_ESCAPER= new Url(Url.ESCAPE);
+
+
 
 
     /**

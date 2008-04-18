@@ -23,7 +23,7 @@ import org.mmbase.util.functions.*;
  * They will be chained one after another.
 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.6 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: UrlConverter.java,v 1.7 2008-04-18 13:47:13 michiel Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {
@@ -40,7 +40,8 @@ public interface UrlConverter {
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;).
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is
      *                   for some reason called directly.
-     * @return An URL relative to the root of this web application (i.e. without a context path),
+     * @return An URL relative to the root of this web application (i.e. without a context
+     * path). <code>null</code> if not determinable.
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     String getUrl(String path,
@@ -48,6 +49,9 @@ public interface UrlConverter {
                   Parameters frameworkParameters,
                   boolean escapeAmps) throws FrameworkException;
 
+    /**
+     * @return An URL relative to the root of this web application (i.e. without a context  path). Never <code>null</code>
+     */
     String getProcessUrl(String path,
                          Map<String, Object> parameters,
                          Parameters frameworkParameters,

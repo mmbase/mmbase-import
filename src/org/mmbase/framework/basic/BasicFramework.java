@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.15 2008-04-12 12:58:20 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.16 2008-04-18 13:47:13 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -52,6 +52,7 @@ public class BasicFramework extends Framework {
     public static final Parameter<String> ACTION     = new Parameter<String>("action", String.class);
 
     protected final ChainedUrlConverter urlConverter = new ChainedUrlConverter();
+    protected final UrlConverter fallbackConverter   = new BasicUrlConverter(this);
 
     protected final LocalizedString description      = new LocalizedString("description");
 
@@ -62,13 +63,18 @@ public class BasicFramework extends Framework {
         configure(el);
     }
     public BasicFramework() {
-        urlConverter.add(new BasicUrlConverter(this));
+
     }
 
 
     public String getUrl(String path, Map<String, Object> parameters,
                          Parameters frameworkParameters, boolean escapeAmps) throws FrameworkException {
-        return urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        String url = urlConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        if (url == null) {
+            return fallbackConverter.getUrl(path, parameters, frameworkParameters, escapeAmps);
+        } else {
+            return url;
+        }
     }
 
 
@@ -117,10 +123,12 @@ public class BasicFramework extends Framework {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        /*
         BasicUrlConverter buc = new BasicUrlConverter(this);
         if (! urlConverter.contains(buc)) {
             urlConverter.add(buc);
         }
+        */
         log.info("Configured BasicFramework: " + this);
 
     }
@@ -368,8 +376,7 @@ public class BasicFramework extends Framework {
     }
 
     public <C> C loadSettingValue(Setting<C> setting) {
-        String v = SystemProperties.getComponentProperty(setting.getComponent().getName(),
-                setting.getName());
+        String v = SystemProperties.getComponentProperty(setting.getComponent().getName(), setting.getName());
         if (v != null) {
             return setting.getDataType().cast(v, null, null);
         }
@@ -377,7 +384,6 @@ public class BasicFramework extends Framework {
     }
 
     public <C> void saveSettingValue(Setting<C> setting, C value) {
-        SystemProperties.setComponentProperty(setting.getComponent().getName(),
-                setting.getName(), value.toString());
+        SystemProperties.setComponentProperty(setting.getComponent().getName(), setting.getName(), value.toString());
     }
 }

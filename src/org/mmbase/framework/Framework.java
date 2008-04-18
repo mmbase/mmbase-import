@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.50 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: Framework.java,v 1.51 2008-04-18 13:47:13 michiel Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {
@@ -231,7 +231,7 @@ public abstract class Framework {
      * @param escapeAmps <code>true</code> if parameters should be added with an escaped &amp; (&amp;amp;).
      *                   You should escape &amp; when a URL is exposed (i.e. in HTML), but not if the url is
      *                   for some reason called directly.
-     * @return An URL relative to the root of this web application (i.e. without a context path),
+     * @return An URL relative to the root of this web application (i.e. without a context path), Never <code>null</code>.
      * @throws FrameworkException thrown when something goes wrong in the Framework
      */
     public abstract String getUrl(String path,
