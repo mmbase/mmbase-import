@@ -82,7 +82,7 @@
   </block>
 
   <block name="modules"
-         classification="mmbase.admin"
+         classification="mmbase.admin mmbase.modules"
          mimetype="text/html">
     <title xml:lang="en">Modules</title>
     <title xml:lang="nl">Modules</title>
