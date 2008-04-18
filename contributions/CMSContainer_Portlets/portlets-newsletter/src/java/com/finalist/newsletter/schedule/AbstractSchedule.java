@@ -15,12 +15,12 @@ public abstract class AbstractSchedule {
       return parameters;
    }
    
-   protected void appendHourAndMin(StringBuffer sb) {
+   protected void appendHourAndMin(StringBuffer deliverPublication) {
       if(getParameters() != null && getParameters().containsKey("hour")) {
-         sb.append("|"+getParameters().get("hour"));
+         deliverPublication.append("|"+getParameters().get("hour"));
       }
       if(getParameters() != null && getParameters().containsKey("minute")) {
-         sb.append("|"+getParameters().get("minute"));
+         deliverPublication.append("|"+getParameters().get("minute"));
       }
    }
    

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_newsletter">
 	<title xml:lang="nl">Nieuwsbrief</title>
@@ -51,11 +51,21 @@
 		<prompt xml:lang="nl">Naam antwoord</prompt>
 		<prompt xml:lang="zh">收件人</prompt>
 	</field>
-
 	<field name="paused" ftype="enum">
 		<prompt xml:lang="en">Paused</prompt>
 		<prompt xml:lang="nl">Gepauseerd</prompt>
-		<prompt xml:lang="zh">暂停</prompt>
+		<optionlist select="boolean" />
+	</field>
+  	<field name="pausedstartdate">
+		<prompt xml:lang="en">Paused Start</prompt>
+		<prompt xml:lang="nl">Gepauseerd</prompt>
+		<prompt xml:lang="zh">暂停起始</prompt>
+		<optionlist select="boolean" />
+	</field>
+   <field name="pausedstopdate">
+		<prompt xml:lang="en">Paused Stop</prompt>
+		<prompt xml:lang="nl">Gepauseerd</prompt>
+		<prompt xml:lang="zh">暂停截止</prompt>
 		<optionlist select="boolean" />
 	</field>
 	<field name="inmenu" ftype="enum">
@@ -83,8 +93,8 @@
 		<optionlist select="boolean" />
 	</field>
    <field name="schedule" ftype="calendar">
-		<prompt xml:lang="en">schedule</prompt>
-		<prompt xml:lang="nl">schedule</prompt>
+		<prompt xml:lang="en">Schedule</prompt>
+		<prompt xml:lang="nl">Schedule</prompt>
 		<prompt xml:lang="zh">定时发送</prompt>
 	</field>
 	<list include="config/layout/search_page_layoutrel_layout.xml" />
