@@ -62,7 +62,12 @@
         <mm:field name="wrap(title, 10)" escape="p" />
         <pre><mm:field name="wrap(title,10)" /></pre>
         -->
-        <mm:field name="info()" escape="text/html" />
+        <c:catch var="exception_info">
+          <mm:field name="info()" escape="text/html" />
+        </c:catch>
+        <c:if test="${! empty exception_info}">
+          WRONG, field name="info()" throw exception ${exception_info}
+        </c:if>
       </mm:node>
 
 
@@ -151,7 +156,10 @@
           Reusing the listrelations (inside the node):
         </p>
         <mm:listrelations referid="listrelations">
-          <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+          <c:catch var="exception_relatednode">
+            <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+          </c:catch>
+          <c:if test="${! empty exception_relatednode}">WRONG!! Exception: ${exception_relatednode}<br /></c:if>
           <br />
         </mm:listrelations>
       </mm:node>
@@ -159,7 +167,10 @@
         Reusing the listrelations (outside the node):
       </p>
       <mm:listrelations referid="listrelations">
-        <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+        <c:catch var="exception_relatednodes2">
+          <mm:field name="gui()" />/<mm:relatednode><mm:field name="url" /></mm:relatednode>
+        </c:catch>
+        <c:if test="${! empty exception_relatednode2}">WRONG!! Exception: ${exception_relatednode2}<br /></c:if>
         <br />
       </mm:listrelations>
 
