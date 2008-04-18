@@ -11,13 +11,13 @@
 <body class="basic" onLoad="document.create.elements[3].focus();">
 
   <script type="text/javascript">
-    var validator = new MMBaseValidator();
+    var validator = new MMBaseValidator(document);
     validator.prefetchNodeManager('${node_type}');
     validator.validateHook = function(valid) {
        document.getElementById('okbutton').disabled = this.invalidElements != 0;
     }
     validator.lang = '${config.lang}';
-    validator.setup(window);
+    validator.setup();
   </script>
 
 
