@@ -130,4 +130,3 @@ if(hasRightCell) {
 }
 %>
 </mm:cloud>
-

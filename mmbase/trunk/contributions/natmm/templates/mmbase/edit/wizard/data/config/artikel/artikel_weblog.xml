@@ -51,9 +51,9 @@
       <field name="datumlaatstewijziging" ftype="data"><prompt>datumlaatstewijziging</prompt></field>
       <field name="begindatum"><prompt>datum die op website te zien is</prompt></field>
       <!-- field name="einddatum"><prompt>einddatum</prompt></field -->
-      <!-- field name="embargo"><prompt>verschijnt op website vanaf</prompt></field -->
-      <!-- field name="verloopdatum"><prompt>verwijderd van website op</prompt></field -->
-      <!-- field name="use_verloopdatum" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field-->
+      <field name="embargo"><prompt>verschijnt op website vanaf</prompt></field>
+      <field name="verloopdatum"><prompt>verwijderd van website op</prompt></field>
+      <field name="use_verloopdatum" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field>
       <!-- field name="status"><prompt>status</prompt></field -->
       <!-- is in use for routes: field name="type" ftype="line"><prompt>type</prompt></field -->
       <field name="intro" ftype="html" rows="14"><prompt>quote (vette tekst)</prompt></field>
