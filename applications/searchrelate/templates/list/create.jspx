@@ -16,6 +16,7 @@
   <mm:cloud method="asis">
     <mm:node id="source" referid="source" />
     <mm:createnode type="${type}" id="d"  />
+
     <mm:createrelation source="source" destination="d" role="${role}" />
     <mm:node referid="d">
       <mm:include page="li.jspx" referids="source,fields" />

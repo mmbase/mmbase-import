@@ -8,6 +8,8 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="source" required="true" />
   <mm:import externid="fields" />
+  <mm:import externid="icondir">/mmbase/style/images</mm:import>
+  <mm:import id="deleteicon">${icondir}/delete.png</mm:import>
 
   <li>
     <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" id="node${_node}" varStatus="status">
@@ -15,7 +17,8 @@
       <c:if test="${status.first}">
         <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
           <a class="delete" href="${_}">
-            <img class="icon" alt="-" src="${mm:link('/mmbase/style/images/delete.png')}" />
+            <img class="icon" alt="-"
+                 src="${mm:link(deleteicon)}" />
           </a>
         </mm:link>
       </c:if>
