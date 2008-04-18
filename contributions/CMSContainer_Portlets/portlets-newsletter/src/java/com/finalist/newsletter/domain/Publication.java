@@ -8,7 +8,7 @@ public class Publication {
 
    private int id;
    private Date deliverTime;
-   private STATUS status;
+   private STATUS status = STATUS.INITIAL;
    private String url;
    private Newsletter newsletter;
 
