@@ -17,6 +17,10 @@
 			
 <mm:cloud jspvar="cloud" loginpage="login.jsp" rank="administrator">
 	<ul class="shortcuts">
+       <li class="views">
+          <c:url var="unlinkUrl" value="/editors/maintenance/view_usage.jsp"/>
+          <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.view_layout.etc_usage" /></a>
+       </li>
         <li class="advancedpublish">
            <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
            <a href="${threadsUrl}" target="rightpane"><fmt:message key="maintenance.threads" /></a>
@@ -59,6 +63,7 @@
 	                  <c:url var="unlinkUrl" value="/editors/maintenance/staging/unlink-remotenodes.jsp"/>
 	                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
 	               </li>
+
 
                <% } %>
             </mm:haspage>
