@@ -21,8 +21,10 @@ expireTime = 0;
   <% if (isNaardermeer.equals("true")) { %>		
    	<div style="position:absolute; left:681px; width:70px; height:216px; background-image: url(media/natmm_logo_rgb2.gif); background-repeat:no-repeat;"></div>
   <% } %>
-<% if(artikelID.equals("-1")) { %>
-	<mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="down" max="1">
+<% if(artikelID.equals("-1")) {
+   String articleConstraint = (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
+%>
+	<mm:relatednodes type="artikel" path="contentrel,artikel" orderby="begindatum" directions="down" constraints="<%= articleConstraint %>" max="1">
        <mm:field name="number" jspvar="artikel_number" vartype="String" write="false">
           <% artikelID = artikel_number;%>
        </mm:field>
@@ -61,6 +63,3 @@ expireTime = 0;
 </mm:node>
 </cache:cache>
 </mm:cloud>
-
-
-

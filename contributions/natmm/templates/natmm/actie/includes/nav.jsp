@@ -54,6 +54,9 @@ try{
        </mm:isnotempty>
        </mm:field>
        <mm:compare referid="show_links" value="true">
+       <% if (isNaardermeer != null && isNaardermeer.equals("true")) 
+             objectConstraint += (new SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
+       %>
           <mm:relatednodes type="<%= objecttype %>" path="<%= "contentrel," + objecttype %>"
              offset="<%= "" + (thisOffset-1)*objectPerPage %>" max="<%= ""+ objectPerPage %>" 
              constraints="<%= objectConstraint %>" orderby="<%= objecttype + "." + objectdate %>" directions="DOWN">
