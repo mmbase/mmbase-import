@@ -193,7 +193,7 @@ public class DynamicDate extends Date {
             "TZ UTC today noon", "TZ Europe/Amsterdam today noon", "TZ UTC today", "TZ Europe/Amsterdam today",
             "TZ Europe/Amsterdam -1000",
             "today 6 oclock", "today 23 oclock", "today 43 oclock",
-            "tosecond", "tominute", "tohour", "today", "previous monday", "tomonth", "toyear", "tocentury", "tocentury_pedantic", "toera",
+            "tosecond", "tominute", "tohour", "today", "previous monday", "tomonth", "toyear", "tocentury", "tocentury_pedantic", "toera", "toweek",
             "now this second", "now this minute", "now this hour", "now this day", "today previous monday", "now this month", "now this year", "now this century", "now this era",
             "now - 15 year this century", "now - 20 year this century_pedantic", "today + 2 century", "toera - 1 minute",
             "this july", "previous july", "next july", "this sunday", "previous sunday", "next sunday",
