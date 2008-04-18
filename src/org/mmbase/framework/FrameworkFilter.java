@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.23 2008-03-21 12:03:27 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.24 2008-04-18 13:47:13 michiel Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -167,20 +167,25 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
 
             // URL is not excluded, pass it to UrlConverter to process and forward the request
             Framework fw =  Framework.getInstance();
+            if (fw == null) {
+                log.error("No MMBase framework found");
+                chain.doFilter(request, response);
+                return;
+            }
             Parameters params = fw.createParameters();
             if (params.containsParameter(Parameter.REQUEST)) {
                 params.set(Parameter.REQUEST, req);
-            }
+            } 
             if (params.containsParameter(Parameter.RESPONSE)) {
                 params.set(Parameter.RESPONSE, res);
             }
             try {
-                String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params).toString();
+                String forwardUrl = fw.getInternalUrl(path, req.getParameterMap(), params);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Received '" + forwardUrl + "' from framework, forwarding. rp:" + req.getParameterMap() + " fwp:" + params);
                 }
-
+                
                 if (forwardUrl != null && !forwardUrl.equals("")) {
                     res.setHeader("X-MMBase-forward", forwardUrl);
                     /*
