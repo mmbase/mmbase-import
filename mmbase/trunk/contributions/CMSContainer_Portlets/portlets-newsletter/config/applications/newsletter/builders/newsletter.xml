@@ -93,7 +93,7 @@
 				<type key="false" notnull="false" state="persistent">INTEGER</type>
 			</db>
 		</field>
-		<field>
+      <field>
 			<descriptions>
 				<description xml:lang="nl"></description>
 				<description xml:lang="en"></description>
@@ -113,6 +113,50 @@
 			<db>
 				<name>paused</name>
 				<type key="false" required="true" state="persistent">BOOLEAN</type>
+			</db>
+		</field>
+       <field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Gepauseerd</guiname>
+				<guiname xml:lang="en">Paused start date</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype  xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>pausedstartdate</name>
+				<type key="false" required="false" state="persistent">DATETIME</type>
+			</db>
+		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl"></description>
+				<description xml:lang="en"></description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">Gepauseerd</guiname>
+				<guiname xml:lang="en">Paused stop date</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype  xmlns="http://www.mmbase.org/xmlns/datatypes" />
+			<db>
+				<name>pausedstopdate</name>
+				<type key="false" required="false" state="persistent">DATETIME</type>
 			</db>
 		</field>
 		<field>
@@ -297,7 +341,7 @@
 			</editor>
 			<datatype xmlns="http://www.mmbase.org/xmlns/datatypes"/>
 			<db>
-				<name>lastcreate</name>
+				<name>lastcreateddate</name>
 			<type key="false" notnull="false" state="system">DATETIME</type>
 			</db>
 		</field>

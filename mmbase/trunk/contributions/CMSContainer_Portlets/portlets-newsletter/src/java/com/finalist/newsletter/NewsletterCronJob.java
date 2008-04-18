@@ -39,27 +39,27 @@ public class NewsletterCronJob implements CronJob {
       for (int i = 0; i < newsletters.size(); i++) {
          Node newsletter = newsletters.getNode(i);
          if (!Publish.isPublished(newsletter)) {
-            Object schedule = newsletter.getValue("schedule");
-            Date lastCreateDateTime = newsletter.getDateValue("lastcreate");
-            if (schedule != null) {
-               shouldPublish(newslettersToPublish, newsletter, schedule,
-                     lastCreateDateTime);
+            Object scheduleExpression = newsletter.getValue("schedule");
+            Date lastCreatedDateTime = newsletter.getDateValue("lastcreateddate");
+            if (scheduleExpression != null) {
+               createPublication(newslettersToPublish, newsletter, scheduleExpression,
+                     lastCreatedDateTime);
             } 
          } 
       }
       return (newslettersToPublish);
    }
 
-   private void shouldPublish(List<Node> newslettersToPublish, Node newsletter,
-         Object schedule, Date lastCreateDateTime) {
-      String expression = (String)schedule;
+   private void createPublication(List<Node> newslettersToPublish, Node newsletter,
+         Object scheduleExpression, Date lastCreatedDateTime) {
+      String expression = (String)scheduleExpression;
       String[] expressions = expression.split("\\|");
-      if(isShouldPublish(expressions,lastCreateDateTime)) {
+      if(isPublish(expressions,lastCreatedDateTime)) {
          newslettersToPublish.add(newsletter);
       }
    }
    
-   private boolean isShouldPublish(String[] expressions,Date lastCreateDateTime) {
+   private boolean isPublish(String[] expressions,Date lastCreatedDateTime) {
       boolean isPublish = false;
       DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
       Date minDate =  null;
@@ -68,46 +68,46 @@ public class NewsletterCronJob implements CronJob {
       } catch (ParseException e) {
          log.debug("--> Parse date Exception");;
       }
-      //only once  pattern :
+      Date now = new Date();
+      Calendar calender = Calendar.getInstance();
+      //expressions[0] value: 1 once 
       if(expressions[0].equals("1")) { 
-         String datetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
-         Date now = new Date();
+         String startDatetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
          try {
-            Date date = df.parse(datetime);
-            if(now.after(date) && (lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime))) {
+            Date startDate = df.parse(startDatetime);
+            if(now.after(startDate) && (lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime))) {
                isPublish = true;
             }
          } 
          catch (ParseException e) {
             log.debug("--> Parse date Exception");
          }
-      }
+      }//expressions[0] : 2 daily 
       else if (expressions[0].equals("2")) {
-         String datetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
-         Date now = new Date();
-         Calendar calender = Calendar.getInstance();
+         String startDatetime = expressions[1]+" "+expressions[2]+":"+expressions[3];
+
          try {
-            Date date = df.parse(datetime);
-            if(now.after(date)) {
+            Date startDate = df.parse(startDatetime);
+            if(now.after(startDate)) {
                if(expressions[4].equals("0")) {
-                  isPublish = compareDate(lastCreateDateTime, isPublish,
+                  isPublish = compareDate(lastCreatedDateTime, isPublish,
                         minDate, now);
                }
                else if(expressions[4].equals("1")) {
                   if(calender.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && calender.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-                     isPublish = compareDate(lastCreateDateTime, isPublish,
+                     isPublish = compareDate(lastCreatedDateTime, isPublish,
                            minDate, now);
                   }
                }
                else if(expressions[4].equals("2")) {
                   int interval = Integer.parseInt(expressions[5]);
-                  if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)) {
-                     if(DateUtils.isSameDay(DateUtils.addDays(date, interval),now)) {
+                  if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
+                     if(DateUtils.isSameDay(DateUtils.addDays(startDate, interval),now)) {
                         isPublish = true;
                      }
                   }
                   else {
-                     if(DateUtils.isSameDay(DateUtils.addDays(lastCreateDateTime, interval),now)) {
+                     if(DateUtils.isSameDay(DateUtils.addDays(lastCreatedDateTime, interval),now)) {
                         isPublish = true;
                      }
                   }
@@ -117,28 +117,24 @@ public class NewsletterCronJob implements CronJob {
          catch (ParseException e) {
             log.debug("--> Parse date Exception");
          }
-      }
+      }//expressions[0] : 3 weekly 
       else if(expressions[0].equals("3")) {
-         Calendar createTime = Calendar.getInstance();
-         createTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(expressions[1]));
-         createTime.set(Calendar.MINUTE, Integer.parseInt(expressions[2]));
-         
-         Calendar calender = Calendar.getInstance();
+         Calendar startTime = getStartCalendar(expressions);
          char[] weeks = expressions[4].toCharArray();
        
          for(int j = 0 ; j < weeks.length; j++) {
 
             String week = String.valueOf(weeks[j]);
             if((calender.get(Calendar.DAY_OF_WEEK) != 1 && calender.get(Calendar.DAY_OF_WEEK) == (Integer.parseInt(week)+1)) || (calender.get(Calendar.DAY_OF_WEEK) == 1 && Integer.parseInt(week) == 7)) {
-               if(calender.after(createTime)) {
+               if(calender.after(startTime)) {
                   try {
-                     if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)){
+                     if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)){
                         isPublish = true;
                         break;
                      }
                      else {
                         int interval = Integer.parseInt(expressions[3]);
-                        Date beCreate = DateUtils.addWeeks(lastCreateDateTime, interval);
+                        Date beCreate = DateUtils.addWeeks(lastCreatedDateTime, interval);
                         if(DateUtils.isSameDay(new Date(),beCreate )) {
                            isPublish = true;
                            break; 
@@ -151,28 +147,25 @@ public class NewsletterCronJob implements CronJob {
                }
             }
          }
-      }
+      }//expressions[0] : 4 monthly
       else if(expressions[0].equals("4")) {
-         Calendar createTime = Calendar.getInstance();
-         createTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(expressions[1]));
-         createTime.set(Calendar.MINUTE, Integer.parseInt(expressions[2]));
-         Calendar calender = Calendar.getInstance();
+         Calendar startTime = getStartCalendar(expressions);
          if(expressions[3].equals("0")) {
-            String day = expressions[4];
+            String dayOfMonth = expressions[4];
             char[] months = expressions[5].toCharArray();
             for(int j = 0 ; j < months.length ; j++) {
                String month = String.valueOf(months[j]);
                System.out.println("month="+month);
                System.out.println(Arrays.toString(months));
                if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("b") && calender.get(Calendar.MONTH) == 11) || (month.equals("a") && calender.get(Calendar.MONTH) == 10)) {
-                  if(calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(day)) {
-                     if(calender.after(createTime)) {
-                           if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)){
+                  if(calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(dayOfMonth)) {
+                     if(calender.after(startTime)) {
+                           if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)){
                               isPublish = true;
                               break;
                            }
                            else {
-                              if(!DateUtils.isSameDay(new Date(),lastCreateDateTime )) {
+                              if(!DateUtils.isSameDay(new Date(),lastCreatedDateTime )) {
                                  isPublish = true;
                                  break; 
                               }
@@ -183,22 +176,22 @@ public class NewsletterCronJob implements CronJob {
             }
          }
          else if(expressions[3].equals("1")) {
-            String whichWeek = expressions[4];
+            String weekOfMonth = expressions[4];
             String week = expressions[5];
             
             char[] months = expressions[6].toCharArray();
             for(int j = 0 ; j < months.length ; j++) {
                String month = String.valueOf(months[j]);
                if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("a") && calender.get(Calendar.MONTH) == 10) || (month.equals("b") && calender.get(Calendar.MONTH) == 11)) {
-                  if(calender.get(Calendar.WEEK_OF_MONTH) == Integer.parseInt(whichWeek)) {
+                  if(calender.get(Calendar.WEEK_OF_MONTH) == Integer.parseInt(weekOfMonth)) {
                      if(calender.get(Calendar.DAY_OF_WEEK)!= 1 && calender.get(Calendar.DAY_OF_WEEK)== (Integer.parseInt(week)+1)) {
-                        if(calender.after(createTime)) {
-                              if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)){
+                        if(calender.after(startTime)) {
+                              if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)){
                                  isPublish = true;
                                  break;
                               }
                               else {
-                                 if(!DateUtils.isSameDay(new Date(),lastCreateDateTime )) {
+                                 if(!DateUtils.isSameDay(new Date(),lastCreatedDateTime )) {
                                     isPublish = true;
                                     break; 
                                  }
@@ -213,13 +206,20 @@ public class NewsletterCronJob implements CronJob {
       return isPublish;
    }
 
-   private boolean compareDate(Date lastCreateDateTime, boolean isPublish,
+   private Calendar getStartCalendar(String[] expressions) {
+      Calendar startCalendar = Calendar.getInstance();
+      startCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(expressions[1]));
+      startCalendar.set(Calendar.MINUTE, Integer.parseInt(expressions[2]));
+      return startCalendar;
+   }
+
+   private boolean compareDate(Date lastCreatedDateTime, boolean isPublish,
          Date minDate, Date now) {
-      if(lastCreateDateTime == null || DateUtils.isSameDay(minDate, lastCreateDateTime)) {
+      if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
          isPublish = true;
       }
       else  {
-         if(!DateUtils.isSameDay(now, lastCreateDateTime)) {
+         if(!DateUtils.isSameDay(now, lastCreatedDateTime)) {
             isPublish = true;
          }
       }
@@ -235,7 +235,7 @@ public class NewsletterCronJob implements CronJob {
       List<Node> newslettersToPublish = getNewslettersToPublish();
       for (int newsletterIterator = 0; newsletterIterator < newslettersToPublish.size(); newsletterIterator++) {
          Node newsletterNode = newslettersToPublish.get(newsletterIterator);
-         newsletterNode.setDateValue("lastcreate", new Date());
+         newsletterNode.setDateValue("lastcreateddate", new Date());
          newsletterNode.commit();
          int newsletterNumber = newsletterNode.getNumber();
          log.info("Running Newsletter CronJob for newsletter " + newsletterNumber);
