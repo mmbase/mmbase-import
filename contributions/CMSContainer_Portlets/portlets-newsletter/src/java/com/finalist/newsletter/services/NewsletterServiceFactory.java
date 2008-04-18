@@ -24,7 +24,6 @@ public class NewsletterServiceFactory {
 	private static CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
 	
 	public static NewsletterSubscriptionServices getNewsletterSubscriptionServices(){
-		
 		NewsletterSubscriptionCAO subscriptionCAO = new NewsletterSubscriptionCAOImpl(cloudProvider.getCloud());
 		NewsletterSubscriptionServicesImpl newsletterSubscriptionServices = new NewsletterSubscriptionServicesImpl();
 		newsletterSubscriptionServices.setCao(subscriptionCAO); 
@@ -32,7 +31,7 @@ public class NewsletterServiceFactory {
 		
 	}
 	
-	  public static NewsletterPublicationService getNewsletterPublicationService(){
+	 public static NewsletterPublicationService getNewsletterPublicationService(){
 	      
 	      NewsletterSubscriptionCAO subscriptionCAO = new NewsletterSubscriptionCAOImpl(cloudProvider.getCloud());
 	      NewsLetterStatisticCAO    statisticCAO = new NewsLetterStatisticCAOImpl(cloudProvider.getCloud());	      
