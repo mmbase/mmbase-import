@@ -2,109 +2,120 @@ package com.finalist.newsletter.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Newsletter {
 
-   private int id;
-   private String format;
-   private String status;
-   private Date interval;
-   private List<Tag> tags = new ArrayList<Tag>();
-   private String title;
+	private int id;
 
-   private int number;
-   private String replytoName;
-   private String replytoMail;
-   private String fromName;
-   private String fromMail;
+	private String format;
 
-   public int getId() {
-      return id;
-   }
+	private String status;
 
-   public void setId(int id) {
-      this.id = id;
-   }
+	private Date interval;
 
-   public int getNumber() {
-      return number;
-   }
+	private Set<Tag> tags = new HashSet<Tag>();
 
-   public void setNumber(int number) {
-      this.number = number;
-   }
+	private String title;
 
-   public List<Tag> getTags() {
-      return tags;
-   }
+	private int number;
 
-   public void setTags(List<Tag> tags) {
-      this.tags = tags;
-   }
+	private String replyName;
 
-   public String getTitle() {
-      return title;
-   }
+	private String replyAddress;
 
-   public void setTitle(String title) {
-      this.title = title;
-   }
+	private String fromName;
 
-   public String getFormat() {
-      return format;
-   }
+	private String fromAddress;
 
-   public void setFormat(String format) {
-      this.format = format;
-   }
+	public int getId() {
+		return id;
+	}
 
-   public Date getInterval() {
-      return interval;
-   }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-   public void setInterval(Date interval) {
-      this.interval = interval;
-   }
+	public int getNumber() {
+		return number;
+	}
 
-   public String getStatus() {
-      return status;
-   }
+	public void setNumber(int number) {
+		this.number = number;
+	}
 
-   public void setStatus(String status) {
-      this.status = status;
-   }
+	public String getTitle() {
+		return title;
+	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-   public String getReplytoName() {
-      return replytoName;
-   }
+	public String getFormat() {
+		return format;
+	}
 
-   public void setReplytoName(String replytoName) {
-      this.replytoName = replytoName;
-   }
+	public void setFormat(String format) {
+		this.format = format;
+	}
 
-   public String getReplytoMail() {
-      return replytoMail;
-   }
+	public Date getInterval() {
+		return interval;
+	}
 
-   public void setReplytoMail(String replytoMail) {
-      this.replytoMail = replytoMail;
-   }
+	public void setInterval(Date interval) {
+		this.interval = interval;
+	}
 
-   public String getFromName() {
-      return fromName;
-   }
+	public String getStatus() {
+		return status;
+	}
 
-   public void setFromName(String fromName) {
-      this.fromName = fromName;
-   }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-   public String getFromMail() {
-      return fromMail;
-   }
+	public String getReplyName() {
+		return replyName;
+	}
 
-   public void setFromMail(String fromMail) {
-      this.fromMail = fromMail;
-   }
+	public void setReplyName(String replyName) {
+		this.replyName = replyName;
+	}
+
+	public String getReplyAddress() {
+		return replyAddress;
+	}
+
+	public void setReplyAddress(String replyAddress) {
+		this.replyAddress = replyAddress;
+	}
+
+	public String getFromName() {
+		return fromName;
+	}
+
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
+	}
+
+	public String getFromAddress() {
+		return fromAddress;
+	}
+
+	public void setFromAddress(String fromAddress) {
+		this.fromAddress = fromAddress;
+	}
+
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
+	}
+
 }
