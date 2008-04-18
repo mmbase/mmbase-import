@@ -38,7 +38,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 			.getLog(NewsletterSubscriptionCAOImpl.class);
 
 	private Cloud cloud;
-	
+
 	public NewsletterSubscriptionCAOImpl() {
 
 	}
@@ -88,8 +88,6 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				taglist, newsletter);
 		return newsletter;
 	}
-
-	
 
 	public List<Newsletter> getUserSubscriptionList(int userId) {
 		List<Newsletter> list = new ArrayList<Newsletter>();
@@ -303,25 +301,27 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				.getField("number"), newsletterId);
 
 		List<Node> subscriptionList = query.getList();
-
 		Subscription subscription = new Subscription();
 		if (0 != subscriptionList.size()) {
-			log.debug("Get subscription successful");
-			subscription.setMimeType(subscriptionList.get(0).getStringValue("format"));
-			subscription.setStatus(Subscription.STATUS.valueOf(subscriptionList.get(0).getStringValue("status")));
-			List<Node> tagList =  subscriptionList.get(0).getRelatedNodes("tag");
-			Set<Tag> tags = new HashSet<Tag>();
+			Node subscriptionNode = subscriptionList.get(0);		
+			int subscriptionId = subscriptionNode.getIntValue("subscriptionrecord.number");
+			log.debug("Get subscription successful");		
+				
+			subscription.setId(subscriptionId);
+			subscription.setMimeType(subscriptionNode.getStringValue("subscriptionrecord.format"));
+			subscription.setStatus(Subscription.STATUS.valueOf(subscriptionNode.getStringValue("subscriptionrecord.status")));			
+			
+			List<Node> tagList =  cloud.getNode(subscriptionId).getRelatedNodes("tag");
+			log.debug("tagList.size()="+tagList.size());
 			Iterator tagIt = tagList.iterator();
-			Tag tag = new Tag();
 			for(int i=0;i<tagList.size();i++){
+				Tag tag = new Tag();
 				Node tagNode = (Node) tagIt.next();
 				tag.setId(tagNode.getNumber());
 				tag.setName(tagNode.getStringValue("name"));
 				tag.setSubscription(true);
-				tags.add(tag);
+				subscription.getTags().add(tag);
 			}
-			
-
 		} else {
 			log.debug("Get subscription failed,user " + userId
 					+ " may not subscripbe " + newsletterId);
@@ -331,22 +331,22 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		return subscription;
 
 	}
-	 public List<Subscription> getSubscription(int newsletterId) {
 
-	      Node letterNode = cloud.getNode(newsletterId);
-	      List<Node> records = letterNode.getRelatedNodes("subscriptionrecord");
+	public List<Subscription> getSubscription(int newsletterId) {
 
-	      Iterator<Node> it = records.iterator();
-	      while (it.hasNext()) {
-	         Node node = it.next();
-	         if (!"active".equals(node.getStringValue("status"))) {
-	            it.remove();
-	         }
-	      }
+		Node letterNode = cloud.getNode(newsletterId);
+		List<Node> records = letterNode.getRelatedNodes("subscriptionrecord");
 
-	      return POConvertUtils.convertSubscriptions(records);
+		Iterator<Node> it = records.iterator();
+		while (it.hasNext()) {
+			Node node = it.next();
+			if (!"active".equals(node.getStringValue("status"))) {
+				it.remove();
+			}
+		}
 
-	   }
+		return POConvertUtils.convertSubscriptions(records);
 
-	
+	}
+
 }
