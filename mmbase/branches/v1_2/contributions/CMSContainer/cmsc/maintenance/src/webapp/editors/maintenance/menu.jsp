@@ -29,6 +29,10 @@
                <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
                <a href="${threadsUrl}" target="rightpane"><fmt:message key="maintenance.threads" /></a>
             </li>
+            <li class="advancedpublish">
+               <c:url var="checksumUrl" value="/editors/maintenance/compute-checksums.jsp"/>
+               <a href="${checksumUrl}" target="rightpane"><fmt:message key="maintenance.checksum" /></a>
+            </li>
 			<mm:haspage page="/editors/publish-remote">
                <li class="advancedpublish">
                   <c:url var="compareUrl" value="/editors/maintenance/compare-models.jsp"/>
