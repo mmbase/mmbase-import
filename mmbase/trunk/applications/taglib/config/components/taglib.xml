@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component
+    name="taglib"
+    xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
+
+  <class name="org.mmbase.framework.BasicComponent" />
+
+  <description xml:lang="nl">MMBase taglib</description>
+  <description xml:lang="en">MMBase taglib</description>
+
+
+  <dependency component="core" version="9" />
+
+  <bundle name="org.mmbase.bridge.jsp.taglib.resources.messages" />
+
+  <block name="test" mimetype="text/html"
+         classification="mmbase.test taglib">
+    <title xml:lang="nl">Taglib-testen</title>
+    <title xml:lang="en">Taglib tests</title>
+    <body jsp="test/index.jspx" />
+
+  </block>
+
+  <block name="test_cloud" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/cloud.jspx" />
+  </block>
+  <block name="test_fieldinfo" mimetype="text/html"
+         classification="taglib.test">
+    <head>
+      <xi:include href="http://www.mmbase.org/components/jquery.head.xml" />
+    </head>
+    <body jsp="test/fieldinfo.jspx" />
+  </block>
+
+</component>
