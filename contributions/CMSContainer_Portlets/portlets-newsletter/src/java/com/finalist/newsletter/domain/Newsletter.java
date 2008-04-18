@@ -14,10 +14,10 @@ public class Newsletter {
    private String title;
 
    private int number;
-   private String replyName;
-   private String replyAddress;
+   private String replytoName;
+   private String replytoMail;
    private String fromName;
-   private String fromAddress;
+   private String fromMail;
 
    public int getId() {
       return id;
@@ -76,20 +76,20 @@ public class Newsletter {
    }
 
 
-   public String getReplyName() {
-      return replyName;
+   public String getReplytoName() {
+      return replytoName;
    }
 
-   public void setReplyName(String replyName) {
-      this.replyName = replyName;
+   public void setReplytoName(String replytoName) {
+      this.replytoName = replytoName;
    }
 
-   public String getReplyAddress() {
-      return replyAddress;
+   public String getReplytoMail() {
+      return replytoMail;
    }
 
-   public void setReplyAddress(String replyAddress) {
-      this.replyAddress = replyAddress;
+   public void setReplytoMail(String replytoMail) {
+      this.replytoMail = replytoMail;
    }
 
    public String getFromName() {
@@ -100,11 +100,11 @@ public class Newsletter {
       this.fromName = fromName;
    }
 
-   public String getFromAddress() {
-      return fromAddress;
+   public String getFromMail() {
+      return fromMail;
    }
 
-   public void setFromAddress(String fromAddress) {
-      this.fromAddress = fromAddress;
+   public void setFromMail(String fromMail) {
+      this.fromMail = fromMail;
    }
 }
