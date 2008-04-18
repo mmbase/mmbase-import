@@ -2,6 +2,7 @@ package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -15,7 +16,10 @@ import javax.portlet.WindowState;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
-import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
@@ -33,9 +37,11 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
       PortletPreferences preferences = request.getPreferences();
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
+      System.out.println("doEditDefaults");
       if (newsletters != null) {
          request.setAttribute(ALLOWED_NEWSLETTERS, newsletters);
       }
+      
       super.doEditDefaults(request, response);
    }
 
@@ -43,14 +49,14 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletSession session = request.getPortletSession(true);
       PortletPreferences preferences = request.getPreferences();
+      String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 
-      String action = request.getParameter("action");
+      NewsletterSubscriptionServices services = new NewsletterSubscriptionServicesImpl();
+      
+         String userName = "username";
+         int userId = 12345; 
+        
 
-      if (isLoggedIn(session) == true) {
-         String userName = getUserName(session);
-
-         List<String> availableMimeTypes = NewsletterGeneratorFactory.getMimeTypes();
-         request.setAttribute(NewsletterGeneratorFactory.AVAILABLE_MIMETYPES, availableMimeTypes);
          List<Integer> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
          request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, availableStatusOptions);
 
@@ -72,17 +78,24 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
             request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
          }
-
-         if (action != null) {
-            String template = "" + request.getParameter("template");
-            doInclude("view", template, request, response);
-         } else {
-            String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-            doInclude("view", template, request, response);
+         if(null==newsletters)
+         {
+        	doInclude("view", "/fragment/null.jsp", request, response);
          }
-      } else {
-
-      }
+         else 
+        	 {
+	        	 if(services.hasSubscription(userId)){
+	        	 List<Newsletter> newsletterList = services.getNewsletterList(newsletters, userId);
+	        	 request.setAttribute("newsletterList", newsletterList);
+	        	 request.setAttribute("aaa","bbb");
+	             doInclude("view", "/fragment/list.jsp", request, response);
+	        	 } 
+	        	 else {
+	        	 List<Newsletter> newsletterList = services.getAllowedNewsletterList(newsletters);
+	        	 request.setAttribute("newsletterList", newsletterList);
+	             doInclude("view", "/fragment/welcome.jsp", request, response);
+	        	 }
+        	 }
    }
 
    private String getUserName(PortletSession session) {
