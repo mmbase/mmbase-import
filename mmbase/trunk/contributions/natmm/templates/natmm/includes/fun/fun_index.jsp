@@ -14,14 +14,12 @@
    <jsp:param name="rs" value="<%= styleSheet %>" />
    <jsp:param name="sr" value="1" />
 </jsp:include>
-
 <%
 int imagesInARow = 3;
 if (isNaardermeer.equals("true")) {
 	imagesInARow = 2;
 } 
 %>
-
 <table class="dotline"><tr><td height="3"></td></tr></table>
 <table border="0" cellspacing="0" cellpadding="0">
 	<tr>
