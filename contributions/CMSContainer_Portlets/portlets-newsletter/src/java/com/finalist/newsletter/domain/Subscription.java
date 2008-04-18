@@ -1,43 +1,77 @@
 package com.finalist.newsletter.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.finalist.cmsc.services.community.person.Person;
 
-public class Subscription{
+public class Subscription {
 
-   private Person subscriber;
-   private String mimeType;
-   private int id;
-   private Newsletter newsletter;
+	private Person subscriber;
 
-   public Person getSubscriber() {
-      return subscriber;
-   }
+	private String mimeType;
+	private STATUS status = STATUS.INACTIVE;
 
-   public void setSubscriber(Person subscriber) {
-      this.subscriber = subscriber;
-   }
+	private Set<Tag> tags = new HashSet<Tag>();
+	private Newsletter newsletter;
 
-   public String getMimeType() {
-      return mimeType;
-   }
+	private int id;
+	
+	 public enum STATUS {
+	      ACTIVE, PAUSED, INACTIVE
+	   }
 
-   public void setMimeType(String mimeType) {
-      this.mimeType = mimeType;
-   }
+	public Person getSubscriber() {
+		return subscriber;
+	}
 
-   public int getId() {
-      return id;
-   }
+	public void setSubscriber(Person subscriber) {
+		this.subscriber = subscriber;
+	}
 
-   public void setId(int id) {
-      this.id = id;
-   }
+	public String getMimeType() {
+		return mimeType;
+	}
 
-   public Newsletter getNewsletter() {
-      return newsletter;
-   }
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
 
-   public void setNewsletter(Newsletter newsletter) {
-      this.newsletter = newsletter;
-   }
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Newsletter getNewsletter() {
+		return null; // To change body of created methods use File | Settings
+		// | File Templates.
+	}
+
+
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
+	}
+
+	
+
+	public void setNewsletter(Newsletter newsletter) {
+		this.newsletter = newsletter;
+	}
+
+	public STATUS getStatus() {
+		return status;
+	}
+
+	public void setStatus(STATUS status) {
+		this.status = status;
+	}
+	
+	
 }

@@ -1,22 +1,33 @@
 package com.finalist.newsletter.domain;
 
 public class Tag {
-   private String name;
-   private Boolean subscription;
+	private int id;
+	private String name;
+	private boolean subscription = false;
 
-   public Boolean getSubscription() {
-      return subscription;
-   }
 
-   public void setSubscription(Boolean subscription) {
-      this.subscription = false;
-   }
 
-   public String getName() {
-      return name;
-   }
+	public boolean isSubscription() {
+		return subscription;
+	}
 
-   public void setName(String name) {
-      this.name = name;
-   }
+	public void setSubscription(boolean subscription) {
+		this.subscription = subscription;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }
