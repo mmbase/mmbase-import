@@ -18,7 +18,6 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -115,9 +114,7 @@ public class BannerPortlet extends ContentChannelPortlet {
 
    @Override
    public void processView(ActionRequest request, ActionResponse response) {
-      PortletPreferences preferences = request.getPreferences();
-
-      String position = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, null);
+      String position = (String) request.getAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
       String screenId = (String) request.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
       String page = SiteManagement.getPath(Integer.valueOf(screenId), true);
 
