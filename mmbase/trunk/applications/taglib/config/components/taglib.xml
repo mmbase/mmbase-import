@@ -34,4 +34,21 @@
     <body jsp="test/fieldinfo.jspx" />
   </block>
 
+  <block name="test_attributes" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/attributes.jspx" />
+  </block>
+  <block name="test_cloud" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/cloud.jspx" />
+  </block>
+  <block name="test_transaction" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/transaction.jspx" />
+  </block>
+  <block name="test_node" mimetype="text/html"
+         classification="taglib.test">
+    <body jsp="test/node.jspx" />
+  </block>
+
 </component>
