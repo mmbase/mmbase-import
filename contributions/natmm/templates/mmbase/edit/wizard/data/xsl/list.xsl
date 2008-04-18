@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.3 2006-09-06 09:37:08 henk Exp $
+    @version $Id: list.xsl,v 1.4 2008-04-18 14:52:00 jkoster Exp $
     @version added newfromlist functionality
   -->
 
@@ -318,7 +318,7 @@
             <xsl:if test="$newfromlist!=&apos;-1&apos;">
               <a
                 href="{$deletepage}&amp;wizard={$wizard}&amp;objectnumber={@number}"
-                title="Remove this item from the list. Removed items are still present in MMBase.">
+                title="Verwijder dit item uit de lijst (blijft bestaan in de database).">
                 <xsl:call-template name="prompt_remove" />
               </a>
             </xsl:if>
