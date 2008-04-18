@@ -13,6 +13,12 @@
 							<mm:haspage page="/editors/modules/customermenu.jsp">
 								<jsp:include page="/editors/modules/customermenu.jsp"/>
 							</mm:haspage>
+							
+							<mm:haspage page="/editors/resources/banners_and_positions.jsp">
+								<li class="banners"> <a href="<mm:url page="/editors/resources/banners_and_positions.jsp"/>" target="rightpane">
+									<fmt:message key="modules.banners" />
+									</a> </li>
+							</mm:haspage>
 							<mm:haspage page="/editors/messageoftheday">
 								<li class="messageoftheday">
 									<c:url var="messageofthedayUrl" value="/editors/messageoftheday/index.jsp"/>
