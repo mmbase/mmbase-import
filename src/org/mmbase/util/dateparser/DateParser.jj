@@ -76,6 +76,12 @@ public class DateParser {
         beginOfHour();
     }
 
+    protected void beginOfWeek() {
+        beginOfDay();
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+
+    }
+
     protected void beginOfMonth() {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         beginOfDay();
@@ -92,7 +98,7 @@ public class DateParser {
     }
     protected void beginOfEra() {
         beginOfYear();
-        cal.set(Calendar.YEAR, cal.getActualMinimum(Calendar.YEAR)); 
+        cal.set(Calendar.YEAR, cal.getActualMinimum(Calendar.YEAR));
     }
 
     protected Calendar getInstance() {
@@ -139,10 +145,10 @@ void date() :  {}
 {
     LOOKAHEAD(6)
 
-    year_number() "-" month_or_day_or_week_number() ("-" day_of_month_or_week_number())? { 
-         if (monthorday > 0) cal.set(Calendar.DAY_OF_YEAR, monthorday); 
+    year_number() "-" month_or_day_or_week_number() ("-" day_of_month_or_week_number())? {
+         if (monthorday > 0) cal.set(Calendar.DAY_OF_YEAR, monthorday);
          if (week >= 0) { cal.set(Calendar.WEEK_OF_YEAR, week); cal.set(Calendar.DAY_OF_WEEK, 2);  week = -1;}
-         beginOfDay(); dynamic = false; 
+         beginOfDay(); dynamic = false;
     }
     | day_of_week() {beginOfDay();}
     | month_of_year() {beginOfMonth();}
@@ -174,11 +180,11 @@ void unary() : {}
 }
 void integer() : {}
 {
-    unary() <POSITIVE> 
+    unary() <POSITIVE>
 |  <POSITIVE>
 }
 
-void seconds() : {} 
+void seconds() : {}
 {
     integer() {  cal.setTimeInMillis((positive ? 1 : -1 ) * Long.parseLong(token.toString()) * 1000); dynamic = false; positive = true;}
 }
@@ -210,7 +216,7 @@ void day_of_month_or_week_number() : { }
         } else {
             cal.set(Calendar.WEEK_OF_YEAR, week);
             week = -1;
-            int day = (Integer.parseInt(token.toString()) + 1) % 7; if (day == 0) day = 7;  
+            int day = (Integer.parseInt(token.toString()) + 1) % 7; if (day == 0) day = 7;
             cal.set(Calendar.DAY_OF_WEEK, day);
         }
     }
@@ -260,7 +266,7 @@ void decrement() : {}
 {
     "-"  inc_number() inc_period() {cal.add(field, -1 * amount * factor); factor = 1; }
 }
-void to_period() : { cal = getInstance(); } 
+void to_period() : { cal = getInstance(); }
 {
     this_period()
 }
@@ -282,6 +288,7 @@ void this_period() : {}  {
   | "minute"  { beginOfMinute(); }
   | "hour"  { beginOfHour(); }
   | "day"  { beginOfDay(); }
+  | "week"  { beginOfWeek(); }
   | "month" { beginOfMonth(); }
   |  "year" { beginOfYear(); }
   | "century" { beginOfCentury(false); }
