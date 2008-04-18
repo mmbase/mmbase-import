@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.3 2008-04-17 10:05:25 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.4 2008-04-18 12:49:09 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -20,6 +20,8 @@
   <jsp:directive.attribute name="orderby"     type="java.lang.String" />
   <jsp:directive.attribute name="role"        type="java.lang.String" />
   <jsp:directive.attribute name="fields"      type="java.lang.String" />
+
+  <jsp:directive.attribute name="icondir"      type="java.lang.String" />
 
   <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
   <mm:import id="order">${empty orderby ? r : role}${empty orderby ? '.pos' : ''}</mm:import>
@@ -49,13 +51,16 @@
                            role="${r}"
                            orderby="${order}">
 
-            <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,f@fields" />
+            <mm:include page="/mmbase/searchrelate/list/li.jspx" referids="source,f@fields,icondir?" />
 
           </mm:relatednodes>
         </ol>
-        <mm:link page="/mmbase/searchrelate/list/create.jspx" referids="type,r@role,_node@source,default?,f@fields">
+        <mm:import id="icons"><mm:url page="${empty icondir ? '/mmbase/style/images' : icondir}" /></mm:import>
+
+        <mm:link page="/mmbase/searchrelate/list/create.jspx"
+                 referids="type,r@role,_node@source,default?,f@fields,icondir?">
           <a href="${_}" class="create">
-            <img class="icon" alt="+" src="${mm:link('/mmbase/style/images/create.png')}" />
+            <img class="icon" alt="+" src="${icons}/create.png" />
           </a>
         </mm:link>
         <span class="status">...</span>
