@@ -30,17 +30,27 @@
       </mm:fieldlist>
     </mm:form>
   </div>
+  <div id="test5" class="test">
+    <mm:form id="form5">
+      <mm:fieldlist nodetype="object" id="fieldlist5">
+        <p><mm:fieldinfo type="name" />:<mm:fieldinfo type="input" /></p>
+      </mm:fieldlist>
+    </mm:form>
+  </div>
 
+  <p>
+    Testing produced HTML by mm:fieldinfo tags. Should only see 'true's:
+  </p>
   <pre id="errors">
   </pre>
   <script type="text/javascript">
     $(document).ready(function() {
       $(document).find(".mm_c_taglib.mm_c_b_test_fieldinfo .test").css("display", "none");
-      $("#errors").append("Testing select names");
       $("#errors").append("\n" + ($("#test1").find("select[name = '_owner']").length == 1));
       $("#errors").append("\n" + ($("#test2").find("select[name = 'test2_owner']").length == 1));
       $("#errors").append("\n" + ($("#test3").find("select[name = 'test3_owner']").length == 1));
       $("#errors").append("\n" + ($("#test4").find("select[name = '_owner']").length == 1));
+      $("#errors").append("\n" + ($("#test5").find("select[name = 'fieldlist5_owner']").length == 1));
     });
   </script>
   <p>
