@@ -96,7 +96,7 @@
         />
 
     <cache name="com.finalist.cmsc.beans.om.Portlet"
-        maxElementsInMemory="100"
+        maxElementsInMemory="3000"
         eternal="true"
         overflowToDisk="false"
         diskPersistent="false"
