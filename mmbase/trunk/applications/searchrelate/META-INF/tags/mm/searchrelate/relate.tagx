@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.20 2008-04-21 09:22:18 michiel Exp $
+      @version $Id: relate.tagx,v 1.21 2008-04-21 17:40:57 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -44,6 +44,10 @@
                            description="Extra classes to be added to outer div"/>
 
 
+  <jsp:directive.attribute name="context"
+                           description="The MMBase security context for new nodes (defaults to unset, which will normally result in nodes in the default context of the current user)" />
+
+
   <jsp:directive.attribute name="currentTitle"       fragment="true"
                            description="A piece of HTML that will be presented first in the 'current' div"/>
 
@@ -62,19 +66,23 @@
     <script type="text/javascript" src="${mm:link('/mmbase/jquery/jquery.form.js')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
     <script type="text/javascript" src="${mm:link('/mmbase/searchrelate/Searcher.js.jsp')}"><jsp:text>&lt;!-- Help Freakin' IE --&gt;</jsp:text></script>
   </c:if>
-  <c:if test="${! empty submit}">
-    <!-- if a submit id is given, commit the search/relate on click of that element -->
-    <script type="text/javascript">
-      $(document).ready(function() {
+  <script type="text/javascript">
+    $(document).ready(function() {
+    <c:if test="${! empty submit}">
+      <!-- if a submit id is given, commit the search/relate on click of that element -->
+
          $("${submit}").click(function(el) {
             return $("#mm_related_${seq}")[0].relater.commit(el);
          });
-      <c:if test="${! empty pagesize}"> $("#mm_related_${seq}").find(".searchable").each(function() { this.searcher.pagesize = ${pagesize}; }); </c:if>
-      <c:if test="${! empty maxpages}"> $("#mm_related_${seq}").find(".searchable").each(function() { this.searcher.maxpages = ${maxpages}; }); </c:if>
-      });
+    </c:if>
+    $("#mm_related_${seq}").each(function() {
+    <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
+    <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
+    <c:if test="${! empty context}">  this.relater.setContext('${context}'); </c:if>
+    });
+    });
 
     </script>
-  </c:if>
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
