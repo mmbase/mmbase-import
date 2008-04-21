@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.11 2008-04-21 10:54:14 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.12 2008-04-21 11:11:10 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -26,7 +26,7 @@ $(document).ready(function(){
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -102,7 +102,7 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 	    var anchor = this;
 	    anchor.searcher = searcher;
 	    $(anchor).click(function(el) {
-	    var id = anchor.href.substring(anchor.href.indexOf("#") + 1);
+		var id = anchor.href.substring(anchor.href.indexOf("#") + 1);
 		return this.searcher.search(document.getElementById(id), 0);
 	    });
 	});
@@ -346,8 +346,12 @@ MMBaseSearcher.prototype.getResultDiv = function() {
  * Feeded are 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
-MMBaseSearcher.prototype.search = function(form, offset) {
-    var newSearch = $(form).find("input").val();
+MMBaseSearcher.prototype.search = function(val, offset) {
+    if (val.tagName == "FORM") {
+	val = $(val).find("input").val();
+    }
+
+    var newSearch = val;
     if (newSearch != this.value) {
 	this.searchResults = {};
 	this.value = newSearch;
@@ -413,7 +417,7 @@ MMBaseSearcher.prototype.create = function () {
 			    self.logger.debug(newNode);
 			    var tr = self.getTr(newNode);
 			    self.relater.relate(tr);
-			    self.search(null, self.offset);
+			    self.search(newNode, self.offset);
 			}
 		    };
 		    $(rep).find("form.mm_form").ajaxForm(options);
@@ -490,7 +494,6 @@ MMBaseSearcher.prototype.bindEvents = function() {
 	self.logger.debug("navigating " + anchor);
 
 	var id = anchor.href.substring(anchor.href.indexOf("#") + 1, anchor.href.lastIndexOf("_"));
-	self.logger.debug("Found id " + id);
 	return self.search(document.getElementById(id), anchor.name);
     });
 }
