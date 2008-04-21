@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.19 2008-04-17 20:58:01 andre Exp $
+      @version $Id: relate.tagx,v 1.20 2008-04-21 09:22:18 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -110,7 +110,10 @@
       </c:if>
       <div class="mm_relate_repository searchable">
         <jsp:invoke fragment="repositoryTitle" />
-        <form class="searchform" id="mm_related_${seq}_repository" action="${mm:link('/mmbase/searchrelate/page.jspx')}" method="post">..
+        <form class="searchform"
+              id="mm_related_${seq}_repository"
+              action="${mm:link('/mmbase/searchrelate/page.jspx')}"
+              method="post">
           <a href="#mm_related_${seq}_repository" class="search"><fmt:message key="search" /></a>
           <input type="text" value="" />
           <c:if test="${! empty create and create}">
