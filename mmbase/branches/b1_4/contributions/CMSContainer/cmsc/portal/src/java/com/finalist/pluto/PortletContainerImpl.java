@@ -37,9 +37,10 @@ import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.om.window.PortletWindow;
 import org.apache.pluto.services.PortletContainerEnvironment;
 
-import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.beans.om.Portlet;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
+import com.finalist.cmsc.portalImpl.PortalConstants;
+import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
 import com.finalist.pluto.portalImpl.aggregation.*;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
@@ -106,26 +107,21 @@ public class PortletContainerImpl extends org.apache.pluto.PortletContainerImpl 
          if (m != null && m.equals(CmscPortletMode.DELETE)) {
             log.debug("CMSC Portlet DELETE action");
 
-            ObjectID id = portletWindow.getId();
-            PortalRegistry registry = PortalRegistry.getPortalRegistry(servletRequest);
-
-            ScreenFragment screenFragment = registry.getScreen();
-            Fragment fragment = screenFragment.getFragment(id.toString());
-
-            if (fragment instanceof EmptyFragment) {
+            PortletFragment portletFragment = (PortletFragment) servletRequest.getAttribute(PortalConstants.FRAGMENT);
+            if (portletFragment instanceof EmptyFragment) {
                log.debug("Can't delete empty portlets of this type.");
             }
-            else if (fragment instanceof PortletFragment) {
-               PortletFragment portletFragment = (PortletFragment) fragment;
-               Page page = screenFragment.getPage();
-               Portlet portlet = portletFragment.getPortlet();
-               String layoutId = portletFragment.getKey();
-               SiteManagementAdmin.deleteScreenPortlet(page, portlet, layoutId);
-            }
             else {
-               log.debug("Can't delete portlets of this type " + fragment.getClass().getName());
+               String pageId = (String) servletRequest.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
+               NavigationItem item = SiteManagement.getNavigationItem(Integer.valueOf(pageId));
+               if (item instanceof Page) {
+                   Page page = (Page) item;
+                   Portlet portlet = portletFragment.getPortlet();
+                   String layoutId = portletFragment.getKey();
+                   SiteManagementAdmin.deleteScreenPortlet(page, portlet, layoutId);
+               }
+               actionResponse.setPortletMode(PortletMode.VIEW);
             }
-            actionResponse.setPortletMode(PortletMode.VIEW);
          }
          else {
             // call action() at the portlet

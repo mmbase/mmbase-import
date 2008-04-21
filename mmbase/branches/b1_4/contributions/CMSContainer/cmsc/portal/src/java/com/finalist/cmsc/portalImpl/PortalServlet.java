@@ -29,11 +29,8 @@ import org.apache.pluto.PortletContainerException;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.*;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.ServiceManager;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
-import com.finalist.pluto.portalImpl.core.PortalControlParameter;
 import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 import com.finalist.pluto.portalImpl.core.PortalURL;
 import com.finalist.pluto.portalImpl.core.PortletContainerEnvironment;
@@ -158,19 +155,6 @@ public class PortalServlet extends HttpServlet {
          }
       }
 
-      PortalControlParameter control = new PortalControlParameter(currentURL);
-      if (isActionUrl(control)) {
-         String id = control.getPortletWindowOfAction();
-
-         log.debug("===>CONTROL='" + control.toString() + "'");
-         log.debug("===>WINDOW='" + id + "'");
-
-         PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
-         ScreenFragment screen = registry.getScreen();
-         screen.processAction(request, response, id);
-         return; // we issued an redirect, so return directly
-      }
-
       processRenderPhase(request, response, currentURL);
       log.debug("===>PortalServlet.doGet EXIT!");
    }
@@ -191,11 +175,6 @@ public class PortalServlet extends HttpServlet {
       }
    }
 
-   private boolean isActionUrl(PortalControlParameter control) {
-      String id = control.getPortletWindowOfAction();
-      return id != null;
-   }
-
    private void processRenderPhase(HttpServletRequest request, HttpServletResponse response,
          PortalURL currentURL) {
       try {
@@ -214,7 +193,8 @@ public class PortalServlet extends HttpServlet {
       }
    }
 
-   protected boolean doRender(HttpServletRequest request, HttpServletResponse response, String path) {
+   protected boolean doRender(HttpServletRequest request, HttpServletResponse response, String path)
+       throws IOException {
      NavigationItem item = SiteManagement.getNavigationItemFromPath(path);
      if (item != null) {
         NavigationItemRenderer manager = NavigationManager.getRenderer(item);

@@ -12,9 +12,7 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.alias.beans.om.Alias;
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.navigation.*;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 
 public class AliasNavigationRenderer implements NavigationItemRenderer {
@@ -25,7 +23,7 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
    protected static String CONTENT_TYPE = "text/html";
 
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
-           ServletConfig servletConfig) {
+           ServletConfig servletConfig) throws IOException {
        
       if (item instanceof Alias) {
           Alias alias = (Alias) item;
@@ -35,9 +33,7 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
 
              HttpServletRequest aliasRequest = new AliasHttpServletRequest(request, path); 
              PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response, servletConfig);
-             PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
              response.setContentType(CONTENT_TYPE); 
-             ScreenFragment oldScreen = registry.getScreen();
              
              if (pageItem != null) {
                 NavigationItemRenderer manager = NavigationManager.getRenderer(pageItem);
@@ -45,8 +41,6 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
                     manager.render(pageItem, aliasRequest, response, servletConfig);
                 }
              }
-             
-             registry.setScreen(oldScreen);            
          }
          else {
              String url = alias.getUrl();

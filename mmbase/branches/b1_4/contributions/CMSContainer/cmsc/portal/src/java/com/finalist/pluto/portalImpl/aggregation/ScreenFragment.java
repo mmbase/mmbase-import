@@ -40,6 +40,7 @@ public class ScreenFragment extends AbstractFragment {
       PortletFragment pf = getFragment(actionFragment);
       setupRequest(request);
       pf.processAction(request, response);
+      cleanRequest(request);
    }
 
 
@@ -69,11 +70,16 @@ public class ScreenFragment extends AbstractFragment {
       else {
          log.error("No page for ScreenFragment");
       }
+      cleanRequest(request);
    }
 
 
    public void setupRequest(HttpServletRequest request) {
       request.setAttribute(PortalConstants.CMSC_OM_PAGE_ID, String.valueOf(getPage().getId()));
+   }
+
+   private void cleanRequest(HttpServletRequest request) {
+       request.removeAttribute(PortalConstants.CMSC_OM_PAGE_ID);
    }
 
 
