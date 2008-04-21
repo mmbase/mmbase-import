@@ -125,8 +125,8 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				selectTag.setName(selectTagNode.getStringValue("name"));
 				selectTag.setId(selectTagNode.getNumber());
 				selectTag.setSubscription(true);
-				tagList.add(selectTag);
-				newsletter.setTags(new HashSet(tagList));
+		   	tagList.add(selectTag);
+				newsletter.setTags(tagList);
 			}
 			list.add(newsletter);
 		}

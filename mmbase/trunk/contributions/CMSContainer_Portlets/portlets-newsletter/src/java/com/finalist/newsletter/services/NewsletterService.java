@@ -5,6 +5,8 @@ import java.util.List;
 import com.finalist.newsletter.domain.Newsletter;
 
 public interface NewsletterService {
-	
-	public List<Newsletter> getAllNewsletter();
+
+	public List<Newsletter> getAllNewsletter ();
+
+	public String getNewsletterName (int newsletterId);
 }

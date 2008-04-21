@@ -13,11 +13,14 @@ import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
+import com.finalist.newsletter.cao.impl.NewsletterCAOImpl;
 import com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.publisher.NewsletterPublisher;
 import com.finalist.newsletter.services.impl.NewsletterPublicationServiceImpl;
+import com.finalist.newsletter.services.impl.NewsletterServiceImpl;
 import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
+import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 
 public class NewsletterServiceFactory {
 	
@@ -45,4 +48,18 @@ public class NewsletterServiceFactory {
 	      return newsletterPublicationService;
 	      
 	   }
+
+	public static NewsletterService getNewsletterService (){
+
+		NewsletterServiceImpl service = new NewsletterServiceImpl();
+		service.setNewsletterCAO(new NewsletterCAOImpl(cloudProvider.getCloud()));
+		return service;
+	}
+
+	public static StatisticService getStatisticService (){
+		StatisticServiceImpl service = new StatisticServiceImpl();
+		service.setNewLettercao(new NewsletterCAOImpl(cloudProvider.getCloud()));
+		service.setStatisticcao(new NewsLetterStatisticCAOImpl(cloudProvider.getCloud()));
+		return service;
+	}
 }

@@ -1,34 +1,48 @@
 package com.finalist.newsletter.cao.impl;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Query;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.StepField;
+import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 
 import com.finalist.newsletter.cao.NewsletterCAO;
+import com.finalist.newsletter.cao.util.NlUtil;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Tag;
 
 public class NewsletterCAOImpl implements NewsletterCAO {
-   private Cloud cloud;
 
-   public void setCloud(Cloud cloud) {
-      this.cloud = cloud;
-   }
+	private Cloud cloud;
 
-   public List<Newsletter> getAllNewsletters() {
-      Query query = cloud.createQuery();
-      query.addStep(cloud.getNodeManager("newsletter"));
-      NodeList list = query.getList();
-      return list;
-   }
+	public NewsletterCAOImpl() {
+	}
 
-   public Newsletter getNewsletterById(int id) {
+	public NewsletterCAOImpl(Cloud cloud) {
+		super();
+		this.cloud = cloud;
+	}
+
+	public List<Newsletter> getAllNewsletters (){
+
+		NodeManager manager = cloud.getNodeManager("newsletter");
+		NodeQuery query = cloud.createNodeQuery();
+		query.setNodeStep(query.addStep(manager));
+		List<Node> nodelist = manager.getList(query);
+		
+		NlUtil nlUtil = new NlUtil();
+		return nlUtil.convertFromNodeList(nodelist);
+	}
+
+	public Newsletter getNewsletterById(int id) {
       Node newsletterNode = cloud.getNode(id);
       Newsletter newsletter = new Newsletter();
       newsletter.setNumber(newsletterNode.getIntValue("number"));
@@ -45,6 +59,5 @@ public class NewsletterCAOImpl implements NewsletterCAO {
       }
       return newsletter;
    }
-
 
 }

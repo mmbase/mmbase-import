@@ -1,62 +1,114 @@
 package com.finalist.newsletter.forms;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.actions.MappingDispatchAction;
-
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
-
-import com.finalist.newsletter.services.NewsletterService;
-import com.finalist.newsletter.services.impl.NewsletterStatisticServiceImpl;
-import com.finalist.newsletter.services.impl.NewsletterServiceImpl;
+import com.finalist.newsletter.services.*;
+import com.finalist.newsletter.util.DateUtil;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.struts.action.*;
+import org.apache.struts.actions.MappingDispatchAction;
 
 public class NewsletterStatisticAction extends MappingDispatchAction {
 
-   public ActionForward show(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public NewsletterStatisticAction() {
 
-      NewsletterService newsletterService = new NewsletterServiceImpl();
+	}
 
-      List<Newsletter> newsletters = newsletterService.getAllNewsletter();
+	public ActionForward show (ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception{
 
-      request.setAttribute("newsletters", newsletters);
-      System.out.println("unspecified");
+		NewsletterService newsletterService = NewsletterServiceFactory
+				.getNewsletterService();
+		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
+		addBlankNewsletter(newsletters);
+		request.setAttribute("newsletters", newsletters);
+		return mapping.findForward("result");
+	}
 
+	public ActionForward search (ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception{
 
-      return mapping.findForward("result");
-   }
+		NewsletterService newsletterService = NewsletterServiceFactory
+				.getNewsletterService();
+		StatisticService service = NewsletterServiceFactory.getStatisticService();
+		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
+		addBlankNewsletter(newsletters);
+		request.setAttribute("newsletters", newsletters);
+		NewsLetterLogSearchForm searchForm = (NewsLetterLogSearchForm) form;
+		StatisticResult result = new StatisticResult();
+		request.setAttribute("searchForm", searchForm);
+		
+		boolean isAll = Integer.parseInt(searchForm.getNewsletters()) == 0;
+		boolean isDetail = searchForm.getDetailOrSum().equals("2");
+		boolean hasDate = searchForm.getEndDate() != ""
+				&& searchForm.getStartDate() != "";
+		String startDate = searchForm.getStartDate();
+		String endDate = searchForm.getEndDate();
+		int newsletterId = Integer.parseInt(searchForm.getNewsletters());
+		
+		if (isAll && hasDate && isDetail) {
+			List<StatisticResult> records = service.statisticAllByPeriod(
+					startDate, endDate);
+			transferShowingFromDB(records, newsletterService);
+			request.setAttribute("records", records);
+		}
+		else if (isAll && !hasDate && isDetail) {
+			List<StatisticResult> records = service.statisticAll();
+			transferShowingFromDB(records, newsletterService);
+			request.setAttribute("records", records);
+		}
+		else if (!isAll && !hasDate && isDetail) {
+			List<StatisticResult> records = service
+					.statisticByNewsletter(newsletterId);
+			transferShowingFromDB(records, newsletterService);
+			request.setAttribute("records", records);
+		}
+		else if (!isAll && hasDate && !isDetail) {
+			result = service.statisticByNewsletterPeriod(newsletterId, startDate,
+					endDate);
+			request.setAttribute("result", result);
+		}
+		else if (!isAll && !hasDate && !isDetail) {
+			result = service.StatisticSummaryByNewsletter(newsletterId);
+			request.setAttribute("result", result);
+		}
+		else if (isAll && !hasDate && !isDetail) {
+			result = service.statisticSummery();
+			request.setAttribute("result", result);
+		}
+		else if (isAll && hasDate && !isDetail) {
+			result = service.statisticSummeryPeriod(startDate, endDate);
+			request.setAttribute("result", result);
+		}
+		else if (!isAll && hasDate && isDetail) {
+			List<StatisticResult> records = service
+					.StatisticDetailByNewsletterPeriod(newsletterId, startDate,
+							endDate);
+			transferShowingFromDB(records, newsletterService);
+			request.setAttribute("records", records);
+		}
+		return mapping.findForward("result");
+	}
 
-   public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-      NewsletterService newsletterService = new NewsletterServiceImpl();
+	private void addBlankNewsletter (List<Newsletter> newsletters){
 
-      List<Newsletter> newsletters = newsletterService.getAllNewsletter();
+		Newsletter newsletter = new Newsletter();
+		newsletter.setTitle("ALL");
+		newsletter.setNumber(0);
+		newsletters.add(newsletter);
+	}
 
-      request.setAttribute("newsletters", newsletters);
+	private void transferShowingFromDB (List<StatisticResult> records,
+			NewsletterService newsletterService){
 
-      System.out.println("#####################");
+		for (StatisticResult s : records) {
+			s.setShowingdate(DateUtil.parser(s.getLogdate()));
+			s.setName(newsletterService.getNewsletterName(s.getNewsletterId()));
+		}
 
-      NewsletterStatisticServiceImpl service = new NewsletterStatisticServiceImpl();
-//		service.setStatisticcao(new NewsletterServiceImpl());
-      NewsLetterLogSearchForm searchForm = (NewsLetterLogSearchForm) form;
-
-      StatisticResult result = service.statisticSummeryPeriod(searchForm
-            .getStartDate(), searchForm.getEndDate());
-      request.setAttribute("result", result);
-
-
-      ActionErrors errors = new ActionErrors();
-      errors.add("error1", new ActionMessage("error1"));
-      saveErrors(request, errors);
-      request.setAttribute("test", "test");
-
-      return mapping.findForward("result");
-   }
+	}
 }
