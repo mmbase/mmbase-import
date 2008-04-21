@@ -25,7 +25,7 @@ import nl.leocms.util.tools.HtmlCleaner;
  * Utilities functions for the search pages
  *
  * @author H. Hangyi
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class SearchUtil {
 
@@ -355,8 +355,9 @@ public class SearchUtil {
                        PaginaHelper ph = new PaginaHelper(cloud);
                        String sConstraints = (new nl.leocms.util.tools.SearchUtil()).articleConstraint(nowSec, quarterOfAnHour);
                        Node foundNode = cloud.getNode(docNumber);
-                       boolean test = articleMatchesConstraint(foundNode.getLongValue("embargo"), foundNode.getStringValue("use_verloopdatum"), foundNode.getLongValue("verloopdatum"), nowSec, quarterOfAnHour);
-                       if (test) {
+                       //boolean test = articleMatchesConstraint(foundNode.getLongValue("embargo"), foundNode.getStringValue("use_verloopdatum"), foundNode.getLongValue("verloopdatum"), nowSec, quarterOfAnHour);
+                       
+                       if (true) {
                           hsetPagesNodes.add(paginaNumber);
                           hsetNodes.add(docNumber);
                        }
