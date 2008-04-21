@@ -19,9 +19,9 @@
     <field name="subtitle"><prompt>productsoort</prompt></field>
     <field name="type" ftype="enum"><prompt>type</prompt><optionlist select="product_types"></optionlist></field>
     <field name="id"><prompt>productnummer</prompt></field>
-    <field name="price1"><prompt>prijs (in centen, zonder punt of komma)</prompt></field>
-    <field name="price2"><prompt>leden prijs (in centen, zonder punt of komma)</prompt></field>
-    <field name="price3"><prompt>oude prijs (in centen, zonder punt of komma)</prompt></field>
+    <field name="price1"><prompt>prijs (in centen, zonder punt of komma)</prompt></field>    
+    <field name="price2"><prompt>oude prijs (in centen, zonder punt of komma)</prompt></field>
+    <field name="price3"><prompt>ledenprijs (in centen, zonder punt of komma)</prompt></field>
     <field name="price4"><prompt>oude ledenprijs (in centen, zonder punt of komma)</prompt></field>
     <list include="config/keywords/add_related.xml" />
     <field name="intro" ftype="html" rows="16" ><prompt>introductie</prompt></field>
