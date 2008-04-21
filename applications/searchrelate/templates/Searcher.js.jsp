@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.12 2008-04-21 11:11:10 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.13 2008-04-21 12:17:11 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -26,7 +26,7 @@ $(document).ready(function(){
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = false;
+    this.logEnabled   = true;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -349,8 +349,9 @@ MMBaseSearcher.prototype.getResultDiv = function() {
 MMBaseSearcher.prototype.search = function(val, offset) {
     if (val.tagName == "FORM") {
 	val = $(val).find("input").val();
+    } else {
+	$(this.div).find("form.searchform input").val(val);
     }
-
     var newSearch = val;
     if (newSearch != this.value) {
 	this.searchResults = {};
@@ -369,7 +370,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
 			result = res.responseText;
-			self.logger.debug(rep);
+			self.logger.debug(result);
 			$(rep).empty();
 			$(rep).append($(result).find("> *"));
 			self.searchResults["" + offset] = result;
