@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.58 2008-03-21 13:42:59 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.59 2008-04-21 13:19:59 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -207,8 +207,8 @@ public class MMBaseContext {
         String version = org.mmbase.Version.get();
         log.info("version           : " + version);
         Runtime rt = Runtime.getRuntime();
-        log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
-        log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
+        log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
+        log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
         log.info("system locale     : " + Locale.getDefault());
         log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
     }
@@ -337,7 +337,7 @@ public class MMBaseContext {
      */
     public synchronized static String getHtmlRootUrlPath() {
         if (! htmlRootUrlPathInitialized) {
-            log.info("Finding root url");
+            log.debug("Finding root url");
             if (! initialized) {
                 throw new RuntimeException("The init method should be called first.");
             }
