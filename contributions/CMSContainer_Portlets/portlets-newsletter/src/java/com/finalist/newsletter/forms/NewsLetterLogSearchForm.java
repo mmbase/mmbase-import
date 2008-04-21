@@ -1,5 +1,6 @@
 package com.finalist.newsletter.forms;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -16,104 +17,74 @@ import org.apache.struts.util.MessageResourcesFactory;
 
 import com.finalist.newsletter.util.DateUtil;
 
+public class NewsLetterLogSearchForm extends
+		org.apache.struts.action.ActionForm {
 
-public class NewsLetterLogSearchForm extends org.apache.struts.action.ActionForm {
+	private String newsletters;
 
+	private String startDate;
 
-   private String newsletters;
-   /*private String startDate_year;
-    private String startDate_month;
-    private String startDate_day;
-    private String endDate_year;
-    private String endDate_month;
-    private String endDate_day;*/
-   private String startDate;
-   private String endDate;
-   private boolean flag = false;
+	private String endDate;
 
-   /*public void joinDateStart(){
+	private String detailOrSum;
 
-       startDate=startDate_year+"-"+startDate_month+"-"+startDate_day;
-    }
-    public void joinDateEnd(){
+	public String getDetailOrSum (){
 
-       endDate= endDate_year+"-"+endDate_month+"-"+endDate_day;
-    }*/
-   public boolean isFlag() {
-      return flag;
-   }
+		return detailOrSum;
+	}
 
-   public void setFlag(boolean flag) {
-      this.flag = flag;
-   }
+	public void setDetailOrSum (String detailorsum){
 
+		this.detailOrSum = detailorsum;
+	}
 
-   public String getNewsletters() {
-      return newsletters;
-   }
+	public String getNewsletters (){
 
-   public void setNewsletters(String newsletters) {
-      this.newsletters = newsletters;
-   }
+		return newsletters;
+	}
 
-//	@Override
-//	public ActionErrors validate(ActionMapping mapping,
-//			HttpServletRequest request) {
-//		ActionErrors errors = new ActionErrors();
-//		MessageResourcesFactory factory = org.apache.struts.util.MessageResourcesFactory.createFactory();
-//		MessageResources res = factory.createResources("cmsc-newsletter");
-//		
-//		
-//		if(startDate!=null&&endDate!=null){
-//			try {
-//				Date dateStart = DateUtil.parser(startDate);
-//				Date dateEnd = DateUtil.parser(endDate);
-//				if(dateStart.after(dateEnd)){
-//					errors.add("error1", new ActionMessage("error1"));
-//					
-//
-//					
-//					System.out.println("res=="+res);
-//					String value = res.getMessage("error1");
-//					System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiii-->"+value);
-//					System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiii-->"+new ActionMessage(res.getMessage("error1")));
-//					System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiii"+new ActionMessage("error1"));
-//				}
-//			} catch (ParseException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		
-//		}
-//		else if(startDate==null&&endDate==null&&newsletters==null){
-//			errors.add("error2", new ActionMessage("error2"));
-//		}
-//		
-//		System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiii==="+errors.size());
-//		System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiii==="+errors.get("error1").toString());
-//		ActionErrors e = new ActionErrors();
-//      e.add("myProperty",new ActionMessage("edit_defaults.title"));
-//
-//	     
-//		return e;
-//	}
+	public void setNewsletters (String newsletters){
 
+		this.newsletters = newsletters;
+	}
 
-   public String getStartDate() {
-      return startDate;
-   }
+	@Override
+	public ActionErrors validate (ActionMapping mapping,
+			HttpServletRequest request){
 
-   public void setStartDate(String startDate) {
-      this.startDate = startDate;
-   }
+		ActionErrors errors = new ActionErrors();
 
-   public String getEndDate() {
-      return endDate;
-   }
+		if (startDate == "" && endDate != "") {
+			this.startDate = "2007-12-30";
 
-   public void setEndDate(String endDate) {
-      this.endDate = endDate;
-   }
+		}
+		else if (startDate != "" && endDate == "") {
+			Long time = System.currentTimeMillis();
+			Date date = new Date(time);
+			this.endDate = DateFormat.getDateInstance().format(date);
 
+		}
+		return errors;
+	}
+
+	public String getStartDate (){
+
+		return startDate;
+	}
+
+	public void setStartDate (String startDate){
+
+		this.startDate = startDate;
+	}
+
+	public String getEndDate (){
+
+		return endDate;
+	}
+
+	public void setEndDate (String endDate){
+
+		this.endDate = endDate;
+	}
 
 }
