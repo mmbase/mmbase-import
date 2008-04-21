@@ -10,6 +10,7 @@
     <fmt:bundle basename="org.mmbase.searchrelate.resources.searchrelate">
       <mm:cloud method="asis">
         <mm:import externid="queryid"  />
+        <mm:import externid="context"  />
         <mm:log>Found id ${queryid}</mm:log>
         <mm:import from="session" externid="${queryid}" id="query" required="true" />
 
@@ -25,11 +26,15 @@
                   <input type="submit" value="${createmessage}" />
                   <input type="hidden"  name="s" value="submitted" />
                   <input type="hidden" name="queryid" value="${queryid}" />
+                  <input type="hidden" name="context" value="${context}" />
                   <input type="hidden" name="nodemanager" id="nodemanager" value="${query.nodeManager.name}" />
                 </td>
               </tr>
             </tfoot>
             <mm:createnode id="newnode" type="${query.nodeManager.name}">
+              <c:if test="${! empty context}">
+                <mm:setcontext>${context}</mm:setcontext>
+              </c:if>
               <tbody>
                 <mm:fieldlist type="create" varStatus="field">
                   <tr class="fields ${field.current.name}">
