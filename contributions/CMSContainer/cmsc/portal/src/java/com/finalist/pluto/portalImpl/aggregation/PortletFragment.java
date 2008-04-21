@@ -144,6 +144,7 @@ public class PortletFragment extends AbstractFragment {
       catch (PortletContainerException e) {
          log.fatal("portlet container raised an exception", e);
       }
+      cleanRequest(request);
    }
 
 
@@ -204,7 +205,6 @@ public class PortletFragment extends AbstractFragment {
       ServletDefinition servletDefinition = getServletDefinition();
 
       if (servletDefinition != null && !servletDefinition.isUnavailable()) {
-         request.setAttribute(PortalConstants.FRAGMENT, this);
          PrintWriter writer2 = new PrintWriter(storedWriter);
 
          // create a wrapped response which the Portlet will be rendered to
@@ -236,17 +236,23 @@ public class PortletFragment extends AbstractFragment {
             writer2.println(getErrorMsg(e));
          }
 
-         request.removeAttribute(PortalConstants.FRAGMENT);
       }
       else {
          log.error("Error no servletDefinition!!!");
       }
+      cleanRequest(request);
       log.debug("PortletFragment service exits");
    }
 
 
    private void setupRequest(HttpServletRequest request) {
       request.setAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID, getKey());
+      request.setAttribute(PortalConstants.FRAGMENT, this);
+   }
+
+   private void cleanRequest(HttpServletRequest request) {
+       request.removeAttribute(PortalConstants.FRAGMENT);
+       request.removeAttribute(PortalConstants.CMSC_OM_PORTLET_LAYOUTID);
    }
 
 

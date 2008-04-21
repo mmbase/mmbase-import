@@ -12,11 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.pluto.core.impl.PortletRequestImpl;
 
-import com.finalist.cmsc.beans.om.Portlet;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
+import com.finalist.cmsc.beans.om.*;
+import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.aggregation.Fragment;
-import com.finalist.pluto.portalImpl.aggregation.PortletFragment;
 
 import net.sf.mmapps.commons.util.StringUtil;
 
@@ -39,22 +37,24 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
 
 
    private String getElementIdFromScreen(RenderRequest req, String window) {
-      HttpServletRequest servletRequest = getServletRequest(req);
-      PortalRegistry pr = PortalRegistry.getPortalRegistry(servletRequest);
-      Fragment fragment = pr.getScreen().getFragment(window);
-      if (fragment == null) {
-         return null;
+      Integer pageId = getCurrentPageId(req);
+      NavigationItem item = SiteManagement.getNavigationItem(pageId);
+      if (item instanceof Page) {
+          Page page = (Page) item;
+          int portletId = page.getPortlet(window);
+          Portlet portlet = SiteManagement.getPortlet(portletId);
+          if (portlet != null) {
+              return portlet.getParameterValue(CONTENTELEMENT);
+          }
       }
-      Portlet portlet = ((PortletFragment) fragment).getPortlet();
-      if (portlet == null) {
-         return null;
-      }
-      return portlet.getParameterValue("contentelement");
-
-      // Fragment fragment = pr.getScreen().getFragment(window);
-      // return
-      // ((PortletFragment)fragment).getPortlet().getParameterValue("contentelement");
+      return null;
    }
+
+
+    private Integer getCurrentPageId(RenderRequest req) {
+        String pageId = (String) req.getAttribute(PortalConstants.CMSC_OM_PAGE_ID);
+        return Integer.valueOf(pageId);
+    }
 
 
    private HttpServletRequest getServletRequest(RenderRequest req) {
@@ -81,10 +81,7 @@ public class RelatedContentPortlet extends AbstractContentPortlet {
 
    @Override
    protected void doEditDefaults(RenderRequest req, RenderResponse res) throws IOException, PortletException {
-      HttpServletRequest servletRequest = getServletRequest(req);
-      PortalRegistry pr = PortalRegistry.getPortalRegistry(servletRequest);
-
-      Integer pageid = pr.getScreen().getPage().getId();
+      Integer pageid = getCurrentPageId(req);
       String pagepath = SiteManagement.getPath(pageid, true);
 
       if (pagepath != null) {

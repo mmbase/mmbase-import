@@ -15,12 +15,7 @@
  */
 package com.finalist.pluto.portalImpl.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -256,7 +251,11 @@ public class PortalURL {
       }
 
       StringBuffer result = new StringBuffer(100);
-      Iterator<String> iterator = encodedStateFullParams.keySet().iterator();
+      // sort encodedNames in the natural order.
+      // Search spiders usually use the url as key for a html document.
+      // This makes portal urls more the same instead of the random order of the hashmap
+      Set<String> encodedNames = new TreeSet<String>(encodedStateFullParams.keySet());
+      Iterator<String> iterator = encodedNames.iterator();
       while (iterator.hasNext()) {
          result.append("/");
          String encodedName = iterator.next();
