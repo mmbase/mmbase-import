@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.8 2008-04-21 12:32:03 michiel Exp $
+      @version $Id: page.jspx,v 1.9 2008-04-21 17:40:32 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
@@ -21,7 +21,7 @@
       <mm:import from="session" externid="${id}" id="query" required="true" />
       <mm:import externid="offset" vartype="integer">0</mm:import>
 
-      <mm:listnodescontainer id="b" clone="query">
+      <mm:listnodescontainer id="b" clone="query" jspvar="bq">
         <c:if test="${! empty search}">
           <mm:composite operator="OR">
             <mm:fieldlist container="b" type="search" varStatus="field">
@@ -31,7 +31,6 @@
             </mm:fieldlist>
             <mm:compare regexp="[0-9]+" referid="search">
               <mm:constraint field="number" value="${search}" />
-
             </mm:compare>
           </mm:composite>
         </c:if>
@@ -41,26 +40,21 @@
         <c:choose>
           <c:when test="${size > 0}">
             <fmt:message key="searchresults" var="summary">
-              <c:choose>
-                <c:when test="${size > 0}"><fmt:param value="${offset + 1}" /></c:when>
-                <c:otherwise><fmt:param value="0" /></c:otherwise>
-              </c:choose>
-              <c:choose>
-                <c:when test="${pagesize > size}"><fmt:param value="${size}" /></c:when>
-                <c:otherwise><fmt:param value="${pagesize}" /></c:otherwise>
-              </c:choose>
-              <fmt:param value="${size}" />
-	      <fmt:param value="${empty search ? '' : search}" />
-	    </fmt:message>
+              <fmt:param value="&lt;span class='offset'&gt;${size > 0 ? offset + 1 : 0}&lt;/span&gt;" />
+              <fmt:param value="&lt;span class='foundsize'&gt;${pagesize > size ? size  : pagesize}&lt;/span&gt;" />
+              <fmt:param value="&lt;span class='size'&gt;${size}&lt;/span&gt;" />
+              <fmt:param value="${empty search ? '' : search}" />
+            </fmt:message>
           </c:when>
           <c:otherwise>
             <fmt:message key="nothingfound" var="summary">
-              <fmt:param value="${search}" />
+              <fmt:param value="${empty search ? '' : search}" />
             </fmt:message>
           </c:otherwise>
         </c:choose>
-        <table summary="${summary}">
+        <table summary="${mm:escape('tagstripper(none)', summary)}">
           <caption class="${empty search ? 'emptysearch' : 'search'}">${summary}</caption>
+          &lt;!-- <jsp:expression>bq.toSql()</jsp:expression> --&gt;
           <thead>
             <tr>
               <th class="node number">#</th>
