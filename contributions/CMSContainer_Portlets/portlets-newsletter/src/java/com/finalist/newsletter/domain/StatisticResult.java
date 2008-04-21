@@ -1,33 +1,115 @@
 package com.finalist.newsletter.domain;
 
+import java.util.Date;
+
 public class StatisticResult {
-   private int newsletterId = 0;
-   private String name;
-   private int post = 0;
 
-   public int getNewsletterId() {
-      return newsletterId;
-   }
+	private int newsletterId = 0;
 
-   public void setNewsletterId(int newsletterId) {
-      this.newsletterId = newsletterId;
-   }
+	private String name;
 
-   public String getName() {
-      return name;
-   }
+	private int post = 0;
 
-   public void setName(String name) {
-      this.name = name;
-   }
+	private int bounches = 0;
 
-   public int getPost() {
-      return post;
-   }
+	private int subscribe = 0;
 
-   public void setPost(int post) {
-      this.post = post;
-   }
+	private int unsubscribe = 0;
 
+	private int removed = 0;
+
+	private Date logdate;
+
+	private String showingdate;
+
+	public String getShowingdate (){
+
+		return showingdate;
+	}
+
+	public void setShowingdate (String showingdate){
+
+		this.showingdate = showingdate;
+	}
+
+	public int getNewsletterId (){
+
+		return newsletterId;
+	}
+
+	public void setNewsletterId (int newsletterId){
+
+		this.newsletterId = newsletterId;
+	}
+
+	public String getName (){
+
+		return name;
+	}
+
+	public void setName (String name){
+
+		this.name = name;
+	}
+
+	public int getPost (){
+
+		return post;
+	}
+
+	public void setPost (int post){
+
+		this.post = post;
+	}
+
+	public int getBounches (){
+
+		return bounches;
+	}
+
+	public void setBounches (int bounches){
+
+		this.bounches = bounches;
+	}
+
+	public int getSubscribe (){
+
+		return subscribe;
+	}
+
+	public void setSubscribe (int subscribe){
+
+		this.subscribe = subscribe;
+	}
+
+	public int getUnsubscribe (){
+
+		return unsubscribe;
+	}
+
+	public void setUnsubscribe (int unsubscribe){
+
+		this.unsubscribe = unsubscribe;
+	}
+
+	public int getRemoved (){
+
+		return removed;
+	}
+
+	public void setRemoved (int removed){
+
+		this.removed = removed;
+	}
+
+	public Date getLogdate (){
+
+		return logdate;
+	}
+
+	public void setLogdate (Date logdate){
+
+		this.logdate = logdate;
+	}
 
 }

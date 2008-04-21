@@ -1,31 +1,37 @@
 package com.finalist.newsletter.services.impl;
 
+import java.util.List;
+
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.services.NewsletterService;
 
-import java.util.List;
-
 public class NewsletterServiceImpl implements NewsletterService {
 
-   NewsletterCAO newsletterCAO;
+	NewsletterCAO newsletterCAO;
 
+	public NewsletterServiceImpl() {
 
-   public NewsletterServiceImpl() {
+	}
 
-   }
+	public NewsletterServiceImpl(NewsletterCAO newsletterCAO) {
 
-   public NewsletterServiceImpl(NewsletterCAO newsletterCAO) {
-      this.newsletterCAO = newsletterCAO;
-   }
+		this.newsletterCAO = newsletterCAO;
+	}
 
-   public void setNewsletterCAO(NewsletterCAO newsletterCAO) {
-      this.newsletterCAO = newsletterCAO;
-   }
+	public void setNewsletterCAO (NewsletterCAO newsletterCAO){
 
-   public List<Newsletter> getAllNewsletter() {
-      return newsletterCAO.getAllNewsletters();
-   }
+		this.newsletterCAO = newsletterCAO;
+	}
 
+	public List<Newsletter> getAllNewsletter (){
+
+		return newsletterCAO.getAllNewsletters();
+	}
+
+	public String getNewsletterName (int newsletterId){
+
+		return newsletterCAO.getNewsletterById(newsletterId).getTitle();
+	}
 
 }
