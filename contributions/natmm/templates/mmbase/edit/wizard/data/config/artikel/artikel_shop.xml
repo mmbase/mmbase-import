@@ -77,7 +77,7 @@
 		<!-- field name="verloopdatum"><prompt>verwijderd van website op</prompt></field -->
 		<!-- field name="use_verloopdatum" ftype="enum"><prompt>verwijderdatum gebruiken</prompt><optionlist select="ja_nee"/></field -->
 		<!-- field name="status"><prompt>status</prompt></field -->
-		<field name="intro" ftype="html" rows="14"><prompt>intro (vette tekst)</prompt></field>
+		<field name="intro" ftype="html" rows="14"><prompt>intro (vet, gebruikt bij Nieuws)</prompt></field>
 		<field name="tekst" ftype="html" rows="20"><prompt>tekst (alleen voor kleine berichten)</prompt></field>
 		<list include="config/images/zoek_pagina_posrel_images.xml" />
 		<list include="config/items/add_shopitems_readmore.xml" />
