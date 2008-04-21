@@ -5,7 +5,7 @@
 <%
 LinkedList shop_items = new LinkedList();
 %><mm:list nodes="<%= paginaID %>" path="pagina,posrel,items" fields="items.number,items.titel"
-	orderby="posrel.pos,items.titel" directions="UP,UP"
+	orderby="posrel.pos,items.titel" directions="DOWN,UP"
    ><mm:field name="items.number" jspvar="shop_items_number" vartype="String" write="false"><% 
     shop_items.add(shop_items_number);
    %></mm:field
