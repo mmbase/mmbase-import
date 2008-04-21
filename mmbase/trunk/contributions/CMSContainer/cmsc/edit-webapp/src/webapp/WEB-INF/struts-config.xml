@@ -16,4 +16,5 @@
 	</action-mappings>
 
 	<message-resources parameter="cmsc" key="CMSC" />
+   <message-resources parameter="cmsc-calendar" key="CALENDAR" />
 </struts-config>
