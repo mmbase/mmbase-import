@@ -14,9 +14,14 @@
   border: solid 1px #000;
 }
 
-.searchresult table {
+.searchresult table {  
   border: solid 1px #000;
 }
+.searchresult table caption  {
+  border-left: solid 1px #000;
+  border-right: solid 1px #000;
+}
+.searchresult caption,
 .searchresult thead tr,
 .searchresult tfoot tr {
   background-color: #ffb;
