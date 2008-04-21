@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.10 2008-04-17 20:57:58 andre Exp $
+ * @version $Id: Searcher.js.jsp,v 1.11 2008-04-21 10:54:14 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -21,12 +21,12 @@ $(document).ready(function(){
 });
 
 
-/** 
+/**
  * Logger, a bit like org.mmbase.util.logging.Logger. Logs to firebug console or a dedicated area.
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = false;
+    this.logEnabled   = true;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -39,17 +39,17 @@ MMBaseLogger.prototype.debug = function (msg) {
         } else {
             // firebug console
             console.log(msg);
-	   
+
         }
     }
 }
 
 /*
- * ************************************************************************************************************************ 
+ * ************************************************************************************************************************
  */
 
 /**
- * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other. 
+ * The 'relater' encapsulated 1 or 2 'searchers', and is responsible for moving elements from one to the other.
  */
 function MMBaseRelater(d) {
     this.div          = d;
@@ -80,7 +80,7 @@ function MMBaseRelater(d) {
 }
 
 /**
- *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready' function, you can do something 
+ *  This Searcher.js.jsp is normally loaded implicetly by the first mm-sr:relate. Using the 'ready' function, you can do something
  *  immediately after the MMBaseRealter is ready. E.g. you can add a 'relateCallBack' function.
  *  @todo I think jquery provides something with user defined events.
  */
@@ -325,6 +325,8 @@ function MMBaseSearcher(d, r, type, logger) {
     this.searchResults = {};
     this.bindEvents();
     this.validator = this.relater.validator;
+    this.searchUrl = $(this.div).find("form.searchform").attr("action");
+    this.logger.debug("found " + this.searchUrl);
 
 }
 
@@ -344,8 +346,8 @@ MMBaseSearcher.prototype.getResultDiv = function() {
  * Feeded are 'id' 'offset' and 'search'.
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
-MMBaseSearcher.prototype.search = function(el, offset) {
-    var newSearch = $(el).find("input").val();
+MMBaseSearcher.prototype.search = function(form, offset) {
+    var newSearch = $(form).find("input").val();
     if (newSearch != this.value) {
 	this.searchResults = {};
 	this.value = newSearch;
@@ -353,15 +355,13 @@ MMBaseSearcher.prototype.search = function(el, offset) {
     this.offset = offset;
 
     var rep = this.getResultDiv();
-    var url = $(el).attr("action");
-
-    var params = {id: el.id, offset: offset, search: this.value, pagesize: this.pagesize, maxpages: this.maxpages};
+    var params = {id: this.getQueryId(), offset: offset, search: this.value, pagesize: this.pagesize, maxpages: this.maxpages};
 
     var result = this.searchResults["" + offset];
     $(rep).empty();
     if (result == null) {
 	var self = this;
-	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
+	$.ajax({url: this.searchUrl, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
 			result = res.responseText;
@@ -486,10 +486,12 @@ MMBaseSearcher.prototype.bindEvents = function() {
     this.logger.debug("binding to "+ $(this.div).find("a.navigate"));
 
     $(this.div).find("a.navigate").click(function(ev) {
-	self.logger.debug("navigating " );
 	var anchor = ev.target;
-    var id = anchor.href.substring(anchor.href.indexOf("#") + 1, anchor.href.lastIndexOf("_"));
-	return self.search(document.getElementById(id), anchor.name); 
+	self.logger.debug("navigating " + anchor);
+
+	var id = anchor.href.substring(anchor.href.indexOf("#") + 1, anchor.href.lastIndexOf("_"));
+	self.logger.debug("Found id " + id);
+	return self.search(document.getElementById(id), anchor.name);
     });
 }
 
