@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.13 2008-04-21 12:17:11 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.14 2008-04-21 12:21:44 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -26,7 +26,7 @@ $(document).ready(function(){
  *
  */
 function MMBaseLogger(area) {
-    this.logEnabled   = true;
+    this.logEnabled   = false;
     /*this.traceEnabled = false;*/
     this.logarea      = area;
 }
@@ -347,7 +347,7 @@ MMBaseSearcher.prototype.getResultDiv = function() {
  * The actual query is supposed to be on the user's session, and will be picked up in page.jspx.
  */
 MMBaseSearcher.prototype.search = function(val, offset) {
-    if (val.tagName == "FORM") {
+    if (val.tagName.toUpperCase() == "FORM") {
 	val = $(val).find("input").val();
     } else {
 	$(this.div).find("form.searchform input").val(val);
