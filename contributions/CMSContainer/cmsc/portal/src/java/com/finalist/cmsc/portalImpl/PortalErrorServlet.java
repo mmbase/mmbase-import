@@ -24,9 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.cmsc.portalImpl.registry.PortalRegistry;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.aggregation.ScreenFragment;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.util.version.VersionUtil;
 
@@ -112,9 +110,6 @@ public class PortalErrorServlet extends PortalServlet {
                 HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode)); 
                 PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response, config);
 
-                PortalRegistry registry = PortalRegistry.getPortalRegistry(request);
-                ScreenFragment oldScreen = registry.getScreen();
-
                 response.setContentType(CONTENT_TYPE);
 
                 String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
@@ -124,8 +119,6 @@ public class PortalErrorServlet extends PortalServlet {
                 if (!renderSucceed) {
                    defaultError(request, response, statusCode);
                 }
-                
-                registry.setScreen(oldScreen);
             }
             else {
                defaultError(request, response, statusCode);
