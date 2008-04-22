@@ -7,11 +7,6 @@
     <guiname xml:lang="nl">Versie</guiname>
     <guiname xml:lang="en">Version</guiname>
   </gui>
-  <editor>
-    <positions>
-      <input>-1</input> <!-- version is automaticly increased after commit, showing it during commit can be a bit confusing -->
-    </positions>
-  </editor>
   <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="integer">
     <default value="0" />
     <commitprocessor>
