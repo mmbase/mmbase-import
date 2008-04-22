@@ -45,7 +45,6 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
 //         Thread publisher = new NewsletterPublisher(number);
 //         publisher.start();
          NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
-         publicationService.testDeliver(number,email,mimeType);
          return mapping.findForward(SUCCESS);
       }
 
