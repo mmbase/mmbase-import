@@ -44,8 +44,8 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          if (NavigationUtil.getChildCount(publicationNode) > 0 && !isWebMaster) {
             return mapping.findForward("confirmationpage");
          }
-         Thread publisher = new NewsletterPublisher(number);
-         publisher.start();
+//         Thread publisher = new NewsletterPublisher(number);
+//         publisher.start();
 
          return mapping.findForward(SUCCESS);
       }
