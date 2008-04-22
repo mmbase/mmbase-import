@@ -14,7 +14,7 @@
         <mm:log>Found id ${queryid}</mm:log>
         <mm:import from="session" externid="${queryid}" id="query" required="true" />
 
-        <mm:form page="/mmbase/searchrelate/create.jspx">
+        <mm:form page="/mmbase/searchrelate/create.jspx" commitonclose="false">
           <fmt:message key="createsummary" var="summary">
             <fmt:param><mm:nodeinfo nodetype="${query.nodeManager.name}" type="guinodemanager" /></fmt:param>
           </fmt:message>
@@ -65,7 +65,11 @@
             </mm:valid>
             <mm:valid inverse="true">
               NOT VALID
+              <mm:cancel />
             </mm:valid>
+          </mm:present>
+          <mm:present referid="s" inverse="true">
+            <mm:cancel />
           </mm:present>
         </mm:form>
       </mm:cloud>
