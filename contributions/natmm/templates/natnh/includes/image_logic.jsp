@@ -16,12 +16,13 @@
 		 if(image_position==4) { // large image, no spacer between table and text
 			  imageTemplate = "+s(500)";
 			 %><table cellspacing="0" cellpadding="0" border="0" align="center">
+			     <tr><td colspan="3"><img src="media/spacer.gif" alt="" border="0" width="1" height="10px"></td></tr>
 				  <tr><td colspan="3" class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
 				  <tr><td class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td>
 						<td><img src="<%@include file="../includes/imagessource.jsp" %>" alt="" border="0"></td>
 						<td class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
 				  <tr><td colspan="3" class="black"><img src="media/spacer.gif" alt="" border="0" width="1" height="1"></td></tr>
-				  <tr><td colspan="3"><img src="media/spacer.gif" alt="" border="0" width="1" height="5"></td></tr>
+				  <tr><td colspan="3"><img src="media/spacer.gif" alt="" border="0" width="1" height="10px"></td></tr>
 				  </table><br><%
 				  
 		 } else { // medium or small image, spacer between table and text
