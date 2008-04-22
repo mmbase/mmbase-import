@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.15 2008-04-21 17:40:32 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.16 2008-04-22 07:56:16 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -398,7 +398,8 @@ MMBaseSearcher.prototype.search = function(val, offset) {
     }
     this.offset = offset;
 
-    var rep = this.getResultDiv();    var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, pagesize: this.pagesize, maxpages: this.maxpages};
+    var rep = this.getResultDiv();
+    var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, pagesize: this.pagesize, maxpages: this.maxpages};
 
     var result = this.searchResults["" + offset];
 
@@ -413,7 +414,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
 			$(rep).empty();
 			//console.log($(result).find("*").length);
 			$(rep).append($(result).find("> *"));
-			//self.searchResults["" + offset] = result;
+			self.searchResults["" + offset] = result;
 			self.addNewlyRelated(rep);
 			self.deleteNewlyRemoved(rep);
 			self.bindEvents(rep);
@@ -426,7 +427,7 @@ MMBaseSearcher.prototype.search = function(val, offset) {
 	this.logger.debug("reusing " + offset);
 	this.logger.debug(rep);
 	var self = this;
-	$(rep).append($(result).find("*"));
+	$(rep).append($(result).find("> *"));
 	this.addNewlyRelated(rep);
 	self.deleteNewlyRemoved(rep);
 	this.bindEvents(rep);
