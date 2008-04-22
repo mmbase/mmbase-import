@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.46.2.1 2007-03-19 13:50:47 michiel Exp $
+ * @version $Id: XmlField.java,v 1.46.2.2 2008-04-22 11:14:58 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -698,34 +698,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         handleEmph(obj, '*', "strong");
     }
 
-    static void handleNewlines(StringObject obj) {
+    protected static void handleNewlines(StringObject obj) {
         obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />" the \n was necessary for </ul></p>
         obj.replace("\n", "<br />\r");  // handle new remaining newlines.
     }
 
-    private static Pattern wikiWrappingAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
-    private static Pattern wikiP = Pattern.compile("<p>\\[(\\w+)\\]");
-    private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
-    private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
 
-    public static String wikiToXML(String data, boolean placeListsInsideP) {
-        Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
-        data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
-        StringObject obj = new StringObject(data);
-        handleRich(obj, true, false, true, placeListsInsideP);
-        handleFormat(obj, false);
-        String string = obj.toString();
-        Matcher ps = wikiP.matcher(string);
-        string = ps.replaceAll("<p id=\"$1\">");
-        Matcher sections = wikiSection.matcher(string);
-        string = sections.replaceAll("<section id=\"$1\"><h>");
-        Matcher anchors = wikiAnchor.matcher(string);
-        string = anchors.replaceAll("<a id=\"$1\" />");
-        return string;
-    }
-    public static String wikiToXML(String data) {
-        return wikiToXML(data, false);
-    }
 
     /**
      * Defines a kind of 'rich' text format. This is a way to easily
