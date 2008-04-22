@@ -4,6 +4,7 @@ import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.publisher.NewsletterGenerator;
+import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
@@ -42,8 +43,10 @@ public class NewsletterPublisher {
          log.debug("mail send!");
       } catch (MessagingException e) {
          log.error(e);
+         throw new NewsletterSendFailException(e);
       } catch (UnsupportedEncodingException e) {
          log.error(e);
+         throw new NewsletterSendFailException(e);
       }
    }
 
@@ -65,7 +68,7 @@ public class NewsletterPublisher {
       String emailReplyTo = getHeaderProperties(newsletter.getReplyAddress(), "newsletter.default.replytoadress");
       String nameReplyTo = getHeaderProperties(newsletter.getReplyName(), "newsletter.default.replyto");
 
-      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo);
+      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo+"|type:"+subscription.getMimeType());
 
       InternetAddress fromAddress = new InternetAddress(emailFrom);
       fromAddress.setPersonal(nameFrom);

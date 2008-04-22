@@ -33,7 +33,7 @@
 <body>
 <cmscedit:sideblock title="testinput.title" titleClass="side_block_green">
 	<p>
-		<fmt:message key="testinput.subtitle" />		
+		<fmt:message key="testinput.subtitle" />
 	</p>
    <c:url var="actionUrl" value="/editors/newsletter/NewsletterPublicationTest.do"/>
 	<form action="${actionUrl}" method="post">
@@ -46,9 +46,11 @@
          </tr>
          <tr>
             <td><fmt:message key="testinput.mimetype"/></td>
-            <td><select name="mimitype" id="mimitype">
-                <option value="text/html">text/html</option>    
-                <option value="text/plain">text/plain</option>    
+
+            <td>
+               <select name="mimetype" id="mimetype">
+                <option value="text/html">text/html</option>
+                <option value="text/plain">text/plain</option>
              </select>
             </td>
         </tr>

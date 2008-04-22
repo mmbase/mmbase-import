@@ -34,9 +34,10 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       int number = Integer.parseInt(getParameter(request, "number", true));
+      System.out.println("------"+request.getParameter("mimetype"));
       if (isSendAction(request)) {
          String email = getParameter(request, "email");
-         String mimeType = getParameter(request, "minetype");
+         String mimeType = request.getParameter("mimetype");
          NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
          publicationService.deliver(number,email,mimeType);
          return mapping.findForward(SUCCESS);
