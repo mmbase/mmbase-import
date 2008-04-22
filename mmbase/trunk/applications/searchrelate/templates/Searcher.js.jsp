@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.16 2008-04-22 07:56:16 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.17 2008-04-22 08:11:07 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -363,7 +363,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.searchUrl = $(this.div).find("form.searchform").attr("action");
     this.context   = "";
     this.totalsize = -1;
-    this.foundsize = -1;
+    this.last = -1;
     this.logger.debug("found " + this.searchUrl);
 
 }
@@ -395,8 +395,12 @@ MMBaseSearcher.prototype.search = function(val, offset) {
 	this.searchResults = {};
 	this.value = newSearch;
 	this.totalsize = -1;
+	this.last = -1;
     }
-    this.offset = offset;
+    if (this.offset != offset) {
+	this.last = -1;
+	this.offset = offset;
+    }
 
     var rep = this.getResultDiv();
     var params = {id: this.getQueryId(), offset: offset, search: "" + this.value, pagesize: this.pagesize, maxpages: this.maxpages};
@@ -448,17 +452,17 @@ MMBaseSearcher.prototype.totalSize = function(size) {
     return this.totalsize;
 }
 
-MMBaseSearcher.prototype.foundSize = function(size) {
-    var span = $(this.div).find("caption span.foundsize")[0];
+MMBaseSearcher.prototype.last= function(size) {
+    var span = $(this.div).find("caption span.last")[0];
     if (size == null) {
-	if (this.foundsize == -1) {
-	    this.foundsize = span.textContent;
+	if (this.last == -1) {
+	    this.last = span.textContent;
 	}
     } else {
 	span.textContent = size;
-	this.foundsize= size;
+	this.last= size;
     }
-    return this.foundsize;
+    return this.last;
 }
 
 MMBaseSearcher.prototype.inc = function() {
