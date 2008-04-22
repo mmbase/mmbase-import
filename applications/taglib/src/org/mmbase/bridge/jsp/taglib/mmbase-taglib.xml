@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.424 2008-03-28 13:04:17 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.425 2008-04-22 07:54:30 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -8590,15 +8590,21 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <possiblevalue>
         <value>url</value>
-        <info>An URL is made available in the body (can be write in action of a form-tag</info>
+        <info>Produces an URL for an HTML form only (available in the body), and (reuses) an MMBase transaction. Only explicit commit/cancel</info>
       </possiblevalue>
       <possiblevalue>
         <value>form</value>
-        <info>Produces a form-tag with the correct attribute (default)</info>
+        <info> Produces an HTML form, and (reuses) an MMBase transaction. Only explicit commit/cancel (with
+        mm:commit, mm:cancel, or 'commitonclose'). This value is the default</info>
       </possiblevalue>
       <possiblevalue>
         <value>validate</value>
-        <info>Does nothing, besides communicating with mm:fieldinfo's and mm:valid's.</info>
+        <info>Does nothing, besides communicating with mm:fieldinfo's and mm:valid's.  Does not produce any content. Implicitely cancels the transaction if not committed.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>transaction</value>
+        <info> Does not produce any content. Besides communicating with children fieldinfo's and valid's ehaves like mm:transaction. Only difference is that on default
+        it does not commit on close. </info>
       </possiblevalue>
     </attribute>
     <attribute>
