@@ -13,6 +13,7 @@ import org.mmbase.util.logging.Logging;
 import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
 
@@ -28,6 +29,9 @@ public class NewsletterGenerator {
 
 
    public static void generate(Message message, Publication publication, Subscription subscription) throws MessagingException {
+
+      log.debug("generate newsletter:"+publication.getNewsletter().getTitle());
+      
       String rawHtmlContent = getContent(publication, subscription.getMimeType());
       rawHtmlContent = personalise(rawHtmlContent, subscription);
       message.setText(rawHtmlContent + "\n");
@@ -56,27 +60,13 @@ public class NewsletterGenerator {
 
    }
 
-   protected String checkUrls(String input) {
-      String hostUrl = getLiveHostUrl();
-      String appName = getApplicationName(hostUrl);
 
-      String output = input;
-      output = output.replaceAll("\"/" + appName, "\"/");
-      output = output.replaceAll("\"/", hostUrl);
-      return output;
-   }
-
-   private String getApplicationName(String hostUrl) {
-      String[] hostUrlParts = hostUrl.split("/");
-      String appName = hostUrlParts[hostUrlParts.length - 1];
-      return (appName);
-   }
-
-   public String getContent(Publication publication, String type) {
-
-
+   public static String getContent(Publication publication, String type) {
       String inputString = "";
       try {
+
+         log.debug("Try to get content from URL:"+publication.getUrl());
+         
          URL url = new URL(publication.getUrl());
          HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -97,15 +87,15 @@ public class NewsletterGenerator {
          reader.close();
 
          inputString = buffer.toString().trim();
-         inputString = checkUrls(inputString);
          return (inputString);
       } catch (Exception e) {
-         log.debug("Error");
+         log.debug("Error when try to get content from"+publication.getUrl(),e);
       }
+
       return inputString;
    }
 
-   private String getLiveHostUrl() {
+   private static String getLiveHostUrl() {
       String hostUrl = PropertiesUtil.getProperty("host.live");
       if (hostUrl != null && !hostUrl.endsWith("/")) {
          hostUrl += "/";
