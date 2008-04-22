@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.52 2008-03-25 17:07:24 michiel Exp $
+ * @version $Id: XmlField.java,v 1.53 2008-04-22 11:15:58 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -713,7 +713,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         handleEmph(obj, '*', "strong");
     }
 
-    static void handleNewlines(StringObject obj) {
+    protected static void handleNewlines(StringObject obj) {
         obj.replace("</ul>\n", "</ul>"); // otherwise we will wind up with the silly "</ul><br />" the \n was necessary for </ul></p>
         obj.replace("\n", "<br />\r");  // handle new remaining newlines.
     }
