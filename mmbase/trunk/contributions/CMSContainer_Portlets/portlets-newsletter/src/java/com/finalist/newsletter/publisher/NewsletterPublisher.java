@@ -2,10 +2,13 @@ package com.finalist.newsletter.publisher;
 
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.publisher.NewsletterGenerator;
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.apache.commons.lang.StringUtils;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -23,7 +26,7 @@ public class NewsletterPublisher {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
 
-   public void deliver(Publication publication,List<Subscription> subscriptions) {
+   public void deliver(Publication publication, List<Subscription> subscriptions) {
       for (Subscription subscription : subscriptions) {
          deliver(publication, subscription);
       }
@@ -32,9 +35,11 @@ public class NewsletterPublisher {
    public void deliver(Publication publication, Subscription subscription) {
       try {
          Message message = new MimeMessage(getMailSession());
-         setBody(message, publication,subscription);
+         setBody(message, publication, subscription);
          setHeader(message, subscription);
-         Transport.send(message);
+         send(message);
+
+         log.debug("mail send!");
       } catch (MessagingException e) {
          log.error(e);
       } catch (UnsupportedEncodingException e) {
@@ -42,16 +47,25 @@ public class NewsletterPublisher {
       }
    }
 
-   private void setBody(Message message, Publication publication,Subscription subscription) throws MessagingException {
-      NewsletterGenerator.generate(message,publication,subscription);
+   protected void send(Message message) throws MessagingException {
+      Transport.send(message);
+   }
+
+   protected void setBody(Message message, Publication publication, Subscription subscription) throws MessagingException {
+      NewsletterGenerator.generate(message, publication, subscription);
    }
 
    private void setHeader(Message message, Subscription subscription) throws MessagingException, UnsupportedEncodingException {
 
-      String emailFrom = subscription.getFromAddress();
-      String nameFrom = subscription.getFromName();
-      String emailReplyTo = subscription.getReplyAddress();
-      String nameReplyTo = subscription.getReplyname();
+      System.out.println("------"+subscription.getNewsletter());
+
+      Newsletter newsletter = subscription.getNewsletter();
+      String emailFrom = getHeaderProperties(newsletter.getFromAddress(), "newsletter.default.fromaddress");
+      String nameFrom = getHeaderProperties(newsletter.getFromName(), "newsletter.default.fromname");
+      String emailReplyTo = getHeaderProperties(newsletter.getReplyAddress(), "newsletter.default.replytoadress");
+      String nameReplyTo = getHeaderProperties(newsletter.getReplyName(), "newsletter.default.replyto");
+
+      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo);
 
       InternetAddress fromAddress = new InternetAddress(emailFrom);
       fromAddress.setPersonal(nameFrom);
@@ -64,11 +78,22 @@ public class NewsletterPublisher {
       InternetAddress toAddress = new InternetAddress(subscription.getSubscriber().getEmail());
       message.setRecipient(MimeMessage.RecipientType.TO, toAddress);
 
-      message.setSubject(subscription.getTitle());
-      message.setHeader("Content-type",subscription.getMimeType());
+      message.setSubject(subscription.getNewsletter().getTitle());
+      message.setHeader("Content-type", subscription.getMimeType());
    }
 
-   private static Session getMailSession() {
+   private String getHeaderProperties(String property, String defaultKey) {
+
+
+      if (StringUtils.isEmpty(property)) {
+         property = PropertiesUtil.getProperty(defaultKey);
+         log.debug("get header property:" + property + " from system property got:" + property);
+      }
+      log.debug("get header property:" + property +" got:"+property);
+      return property;
+   }
+
+   protected Session getMailSession() {
 
       Session session = null;
 

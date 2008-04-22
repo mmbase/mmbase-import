@@ -2,22 +2,22 @@ package com.finalist.newsletter.util;
 
 
 public class Model {
-   private String description;
-   private String emailFrom;
+   private String intro;
+   private String replytoMail;
 
-   public String getDescription() {
-      return description;
+   public String getIntro() {
+      return intro;
    }
 
-   public void setDescription(String description) {
-      this.description = description;
+   public void setIntro(String intro) {
+      this.intro = intro;
    }
 
-   public String getEmailFrom() {
-      return emailFrom;
+   public String getReplytoMail() {
+      return replytoMail;
    }
 
-   public void setEmailFrom(String emailFrom) {
-      this.emailFrom = emailFrom;
+   public void setReplytoMail(String replytoMail) {
+      this.replytoMail = replytoMail;
    }
 }

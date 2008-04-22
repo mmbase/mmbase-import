@@ -26,94 +26,36 @@ public class NewsletterPublicationServiceTest extends TestCase {
       mockController = new MockController();
    }
 
-   public void testDeliverAllPublication() {
+   public void testDeliverTest() {
       NewsletterPublicationServiceImpl service = new NewsletterPublicationServiceImpl();
+      FakeNewsletterPublisher fakepuFakeNewsletterPublisher = new FakeNewsletterPublisher();
 
       NewsletterPublicationCAO publicationCAO = (NewsletterPublicationCAO) mockController.getMock(NewsletterPublicationCAOImpl.class);
-      NewsletterSubscriptionCAO subscriptionCAO = (NewsletterSubscriptionCAO) mockController.getMock(NewsletterSubscriptionCAOImpl.class);
-      NewsLetterStatisticCAO statisticCAO = (NewsLetterStatisticCAO) mockController.getMock(NewsLetterStatisticCAOImpl.class);
-      FakeNewsletterPublisher publisher = new FakeNewsletterPublisher();
-
-      mockController.expect(new NewsletterPublicationCAOImpl() {
-         public List<Publication> getIntimePublication() {
-            List<Publication> pubs = new ArrayList<Publication>();
-            addPublication(pubs, 1);
-            addPublication(pubs, 3);
-            return pubs;
-         }
-      });
-
-      mockController.expect(new NewsletterSubscriptionCAOImpl() {
-         public List<Subscription> getSubscribers(int newsletterId) {
-            assertEquals(1, newsletterId);
-            Subscription subscriptioin = new Subscription();
-            return Collections.singletonList(subscriptioin);
-         }
-      });
-
-      mockController.expect(new NewsLetterStatisticCAOImpl() {
-         public void logPubliction(int id, int i) {
-            assertEquals(1, id);
-            assertEquals(1, i);
-         }
-
-      });
-      mockController.expect(new NewsletterPublicationCAOImpl() {
-         public void setStatus(Publication publication, Publication.STATUS status) {
-            assertNotNull(publication);
-            assertEquals(1, publication.getId());
-            assertNotNull(status);
-            assertEquals(status, Publication.STATUS.DELIVERED);
-         }
-      });
-
-      mockController.expect(new NewsletterSubscriptionCAOImpl() {
-         public List<Subscription> getSubscribers(int newsletterId) {
-            assertEquals(3, newsletterId);
-            Subscription subscriptioin = new Subscription();
-            return Collections.singletonList(subscriptioin);
-         }
-      });
-
-      mockController.expect(new NewsLetterStatisticCAOImpl() {
-         public void logPubliction(int id, int i) {
-            assertEquals(3, id);
-            assertEquals(1, i);
-         }
-      });
-
-      mockController.expect(new NewsletterPublicationCAOImpl() {
-         public void setStatus(Publication publication, Publication.STATUS status) {
-            assertNotNull(publication);
-            assertEquals(3, publication.getId());
-            assertNotNull(status);
-            assertEquals(status, Publication.STATUS.DELIVERED);
-         }
-      });
-
       service.setPublicationCAO(publicationCAO);
-      service.setSubscriptionCAO(subscriptionCAO);
-      service.setStatisticCAO(statisticCAO);
-      service.setMailSender(publisher);
+      service.setMailSender(fakepuFakeNewsletterPublisher);
 
-      service.deliverAllPublication();
+      mockController.expect(new NewsletterPublicationCAOImpl() {
+         public Publication getPublication(int number) {
+            assertEquals(1, number);
+            Publication publication = new Publication();
+
+            Newsletter letter = new Newsletter();
+            letter.setId(9999);
+
+            publication.setNewsletter(letter);
+
+            return publication;
+         }
+      });
+
+      service.deliver(1, "test@test.test", "html");
+
+      assertEquals("test@test.test", fakepuFakeNewsletterPublisher.subscription.getSubscriber().getEmail());
+      assertEquals("html", fakepuFakeNewsletterPublisher.subscription.getMimeType());
+      assertEquals(9999, fakepuFakeNewsletterPublisher.publication.getNewsletter().getId());
 
       mockController.verify();
-
-      assertEquals(2, publisher.getMap().keySet().size());
-      assertEquals(1, publisher.getMap().get(1).size());
-      assertEquals(1, publisher.getMap().get(3).size());
-
    }
 
-   private void addPublication(List<Publication> pubs, int id) {
-      Publication publication = new Publication();
-      publication.setId(id);
 
-      Newsletter newsletter = new Newsletter();
-      newsletter.setId(id);
-      publication.setNewsletter(newsletter);
-
-      pubs.add(publication);
-   }
 }

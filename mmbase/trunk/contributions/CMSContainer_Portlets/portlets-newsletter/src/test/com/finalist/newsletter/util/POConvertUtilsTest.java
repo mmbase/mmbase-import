@@ -13,12 +13,16 @@ public class POConvertUtilsTest extends BaseNewsletterTest {
    }
 
    public void testConvert() throws IllegalAccessException, InvocationTargetException, InstantiationException {
-      NodeManager manager = cloud.getNodeManager("contentelement");
+      NodeManager manager = cloud.getNodeManager("newsletter");
       Node node = manager.createNode();
-      node.setStringValue("description", "adescription");
+
+      node.setStringValue("intro", "aintro");
+      node.setStringValue("replyto_mail", "areplyto_mail");
+
       Model model = new Model();
       new POConvertUtils<Model>().convert(model, node);
-      assertEquals("adescription", model.getDescription());
+      assertEquals("aintro", model.getIntro());
+      assertEquals("areplyto_mail", model.getReplytoMail());
    }
 
 
