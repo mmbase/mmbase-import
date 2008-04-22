@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.26 2008-04-01 14:52:41 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.27 2008-04-22 11:16:59 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -53,6 +53,9 @@
    <!-- If objects is the entrance to this XML, then only handle the root child of it -->
   <xsl:template match="o:objects">
     <div class="objects">
+      <!--
+           The first object is the 'core' object and is going to be shown. The following nodes are only a 'repository' which will be used to resolve relations.
+      -->
       <xsl:apply-templates select="o:object[1]" />
     </div>
   </xsl:template>
@@ -102,23 +105,42 @@
 
   </xsl:template>
 
+  <!--
+      ********************************************************************************
+      URL mode.
+      In URL mode, an actual URL is to be produced.
+  -->
+
 
   <!--
-      Produces an URL to point to a certain object.
+      Produces an URL to point to a certain MMBase Node.
+      This general version depends on external java code, to call the 'url' function on the node.
   -->
   <xsl:template match="o:object" mode="url">
     <xsl:value-of select="node:function($cloud, string(@id), 'url', $request)" />
   </xsl:template>
 
+  <!--
+      For images, and atachments, the URL is determined a bit differently.
+  -->
   <xsl:template match="o:object[@type = 'images']|o:object[@type ='attachments']|o:object[@type='icaches']" mode="url">
     <xsl:value-of select="node:saxonFunction($cloud, string(@id), 'servletpath')" />
   </xsl:template>
 
-
+  <!--
+      For url objects the url is the url field.
+  -->
   <xsl:template match="o:object[@type = 'urls']" mode="url">
     <xsl:value-of select="./o:field[@name='url']" />
   </xsl:template>
 
+
+  <!--
+      ********************************************************************************
+      inline mode
+      Converts an MMBase node (presented by o:object) to inline HTML (so no blocks).
+
+  -->
 
   <!-- Produces output for one object
        Required argument: relation, the relation object which made this necessary.
@@ -222,11 +244,10 @@
   </xsl:template>
 
 
-
-
   <!--
        produces an icon for an object
        Used for nodes of the type attachments, of course, but it can als be imaginable for other objects
+
   -->
   <xsl:template match="o:object" mode="icon">
     <img width="16" height="16" class="icon">
@@ -336,10 +357,14 @@
   </xsl:template>
 
 
+  <!--
+      Given a relation object, produces a value for a style-class attribute in HTML.
+  -->
   <xsl:template match="o:object[@type = 'blocks']" mode="class">
     <xsl:param name="relation" />
     <xsl:value-of select="$relation/o:field[@name='class']" />
   </xsl:template>
+
   <!--
        Produces output for one o:object of type 'blocks'
        params: relation
@@ -379,7 +404,8 @@
 
 
   <!--
-       Produces output for one o:object of type urls
+       Produces output for one o:object of type urls, or 'segments' (used by the richtext 'book' example).
+
        params: relation, position, last
   -->
   <xsl:template match="o:object[@type = 'urls']|o:object[@type = 'segments']" mode="inline">
@@ -448,13 +474,19 @@
 
   <xsl:template match="mmxf:section[@id != '']|mmxf:p[@id != '']|mmxf:a" >
     <xsl:param name="in_a" />
+
+    <!--
+         The most difficult part of this XSL happens here.
+         Resolving of the idrels.
+    -->
+
      <!-- store all 'relation' nodes of this node for convenience in $rels:-->
     <xsl:variable name="rels"   select="ancestor::o:object/o:relation[@role='idrel']" />
 
     <!-- also for conveniences: all related nodes to this node-->
+    <!--
     <xsl:variable name="related_to_node"   select="id($rels/@related)" />
-
-
+    -->
     <xsl:variable name="relations" select="id($rels/@object)[o:field[@name='id'] = current()/@id]" />
 
     <xsl:apply-templates select="." mode="with_relations">

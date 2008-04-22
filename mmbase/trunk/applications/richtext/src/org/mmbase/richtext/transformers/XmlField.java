@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.5 2008-03-25 17:07:59 michiel Exp $
+ * @version $Id: XmlField.java,v 1.6 2008-04-22 11:16:59 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -48,6 +48,7 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     public final static int BODY     = 3;
     public final static int XML      = 4;
     public final static int WIKI     = 12;
+    public final static int WIKIBRS  = 13;
 
     // default doctype
     public final static String XML_DOCTYPE = "<!DOCTYPE mmxf PUBLIC \"" + Mmxf.DOCUMENTTYPE_PUBLIC + "\" \"" + Mmxf.DOCUMENTTYPE_SYSTEM + "\">\n";
@@ -77,11 +78,14 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
     private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
     private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
 
-    public static String wikiToXML(String data, boolean placeListsInsideP) {
+    public static String wikiToXML(String data, boolean leaveExtraNewLines, boolean placeListsInsideP) {
         Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
-        handleRich(obj, true, false, true, placeListsInsideP);
+        handleRich(obj, true, leaveExtraNewLines, true, placeListsInsideP);
+        if (leaveExtraNewLines) {
+            handleNewlines(obj);
+        }
         handleFormat(obj, false);
         String string = obj.toString();
         Matcher ps = wikiP.matcher(string);
@@ -93,7 +97,7 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         return string;
     }
     public static String wikiToXML(String data) {
-        return wikiToXML(data, false);
+        return wikiToXML(data, true, false);
     }
 
     /**
@@ -128,6 +132,7 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         case POOR :
             return XSLTransform("mmxf2rich.xslt", data);
         case WIKI :
+        case WIKIBRS :
             return XSLTransform("2rich.xslt", data);
         case XHTML :
             return XSLTransform("mmxf2xhtml.xslt", data);
@@ -151,7 +156,11 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
                 validate(XML_HEADER + result);
                 break;
             case WIKI :
-                result = XML_TAGSTART + wikiToXML(r, LISTS_INSIDE_P) + XML_TAGEND;
+                result = XML_TAGSTART + wikiToXML(r, false,  LISTS_INSIDE_P) + XML_TAGEND;
+                validate(XML_HEADER + result);
+                break;
+            case WIKIBRS :
+                result = XML_TAGSTART + wikiToXML(r, true, LISTS_INSIDE_P) + XML_TAGEND;
                 validate(XML_HEADER + result);
                 break;
             case BODY :
@@ -181,6 +190,10 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
             return "MMXF_ASCII";
         case XML :
             return "MMXF_MMXF";
+        case WIKI :
+            return "MMXF_WIKI";
+        case WIKIBRS :
+            return "MMXF_WIKIBRS";
         default :
             return super.getEncoding();
         }
