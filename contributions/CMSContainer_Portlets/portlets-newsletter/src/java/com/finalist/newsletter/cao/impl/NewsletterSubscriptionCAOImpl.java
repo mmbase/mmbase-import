@@ -47,7 +47,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		this.cloud = cloud;
 	}
 
-	public List<Newsletter> getAllNewsletter() {
+	/*public List<Newsletter> getAllNewsletter() {
 		CloudProvider provider = CloudProviderFactory.getCloudProvider();
 		cloud = provider.getCloud();
 		List<Newsletter> list = new ArrayList<Newsletter>();
@@ -72,8 +72,8 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		}
 		return list;
 	}
-
-	public Newsletter getNewsletterById(int id) {
+*/
+	/*public Newsletter getNewsletterById(int id) {
 		CloudProvider provider = CloudProviderFactory.getCloudProvider();
 		cloud = provider.getCloud();
 		System.out.println("Newsletterid=" + id);
@@ -87,10 +87,11 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		newsletter = NewsletterSubscriptionUtil.convertNodeListtoTagList(
 				taglist, newsletter);
 		return newsletter;
-	}
+	}*/
 
-	public List<Newsletter> getUserSubscriptionList(int userId) {
-		List<Newsletter> list = new ArrayList<Newsletter>();
+	/*public List<Subscription> getUserSubscriptionList(int userId) {
+		List<Subscription> list = new ArrayList<Subscription>();
+		Subscription subscription = new Subscription();
 		Newsletter newsletter = new Newsletter();
 
 		List<Node> resluts = new ArrayList<Node>();
@@ -100,11 +101,9 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		for (int i = 0; i < resluts.size(); i++) {
 			Node node = nodes.next();
 			String status = node.getStringValue("status");
-			newsletter.setStatus(status);
-			Date interval = node.getDateValue("interval");
-			newsletter.setInterval(interval);
+			subscription.setStatus(Subscription.STATUS.valueOf(status));
 			String format = node.getStringValue("format");
-			newsletter.setFormat(format);
+			subscription.setMimeType(format);
 
 			NodeList newsletters = node.getRelatedNodes("newsletter");
 			Iterator<Node> newsletterIterator = newsletters.iterator();
@@ -112,6 +111,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				String title = newsletterIterator.next()
 						.getStringValue("title");
 				newsletter.setTitle(title);
+				subscription.setNewsletter(newsletter);
 			}
 
 			NodeManager tagManager = cloud.getNodeManager("tag");
@@ -125,18 +125,17 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				selectTag.setName(selectTagNode.getStringValue("name"));
 				selectTag.setId(selectTagNode.getNumber());
 				selectTag.setSubscription(true);
-		   	tagList.add(selectTag);
-				newsletter.setTags(tagList);
+				tagList.add(selectTag);
+				subscription.setTags(new HashSet(tagList));
 			}
-			list.add(newsletter);
+			list.add(subscription);
 		}
 		return list;
-	}
+	}*/
 
 	public List<Node> querySubcriptionByUser(int userId) {
 		CloudProvider provider = CloudProviderFactory.getCloudProvider();
 		cloud = provider.getCloud();
-		List<Node> results = null;
 		NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
 		NodeQuery query = cloud.createNodeQuery();
 		String subscriber = "subscriber";
@@ -144,7 +143,6 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		theStep = query.addStep(recordManager);
 		query.setNodeStep(theStep);
 		Field field = recordManager.getField(subscriber);
-		String userIdString = String.valueOf(userId);
 		Constraint titleConstraint = SearchUtil.createEqualConstraint(query,
 				field, userId);
 
@@ -152,56 +150,51 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		return query.getList();
 	}
 
-	public void addSubscriptionRecord(Newsletter newsletter, int userId) {
+	public void addSubscriptionRecord(Subscription subscription, int userId) {
 		String nodeType = "subscriptionrecord";
 		NodeManager subscriptionrecordNodeManager = cloud
 				.getNodeManager(nodeType);
 		Node subscriptionrecordNode = subscriptionrecordNodeManager
 				.createNode();
 		subscriptionrecordNode.setIntValue("subscriber", userId);
-		subscriptionrecordNode.setStringValue("status", newsletter.getStatus());
-		subscriptionrecordNode.setStringValue("format", newsletter.getFormat());
+		subscriptionrecordNode.setStringValue("status", subscription.getStatus().toString());
+		subscriptionrecordNode.setStringValue("format", subscription.getMimeType());
 		subscriptionrecordNode.commit();
 		// add Relation to newsletter
-		int nodeNumber = newsletter.getId();
+		int nodeNumber = subscription.getNewsletter().getId();
 		Node newsletternode = cloud.getNode(nodeNumber);
 		System.out.println("newsletternode=" + newsletternode.getNumber());
 		RelationManager insrel = cloud.getRelationManager("subscriptionrecord",
 				"newsletter", "newslettered");
 		subscriptionrecordNode.createRelation(newsletternode, insrel).commit();
+		subscription.setId(subscriptionrecordNode.getNumber());
 	}
 
-	public void modifySubscriptionStauts(Newsletter newsletter, int userId) {
+	public void modifySubscriptionStauts(Subscription subscription) {
 		System.out.println("modifySubscriptionStauts");
-		String stauts = newsletter.getStatus();
-		int newsletterId = newsletter.getId();
-		List<Node> records = getSubscriptionrecord(newsletterId, userId);
-		if (0 != records.size()) {
-			Node record = records.get(0);
-			record.setStringValue("status", stauts);
-			record.commit();
-			if ("unSubscription".equals(stauts)) {
-				record.deleteRelations("tagged");
+		String stauts = subscription.getStatus().toString();
+		int recordId = subscription.getId();
+		Node record = cloud.getNode(recordId);
+		record.setStringValue("status", stauts);
+		record.commit();
+		
+		if ("INACTIVE".equals(stauts)) {
+			record.deleteRelations("tagged");
 			}
-		}
 
 	}
 
-	public void modifySubscriptionFormat(Newsletter newsletter, int userId) {
-		int newsletterId = newsletter.getId();
-		System.out
-				.println("newsletterId=" + newsletterId + ";userId=" + userId);
-		List<Node> records = getSubscriptionrecord(newsletterId, userId);
-		if (0 != records.size()) {
-			Node record = records.get(0);
-			System.out.println("recordId=" + record);
-			String format = newsletter.getFormat();
-			record.setStringValue("format", format);
-			record.commit();
-		}
+	public void modifySubscriptionFormat(Subscription subscription) {
+		int recordId = subscription.getId();	
+		Node record = cloud.getNode(recordId);
+		
+		System.out.println("recordId=" + record);
+		String format = subscription.getMimeType();
+		record.setStringValue("format", format);
+		record.commit();
 	}
 
-	public void modifySubscriptionInterval(Newsletter newsletter, int userId) {
+	/*public void modifySubscriptionInterval(Newsletter newsletter, int userId) {
 		int newsletterId = newsletter.getId();
 		List<Node> records = getSubscriptionrecord(newsletterId, userId);
 		if (0 != records.size()) {
@@ -210,9 +203,9 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 			record.setDateValue("interval", interval);
 			record.commit();
 		}
-	}
+	}*/
 
-	public List<Node> getSubscriptionrecord(int newsletterId, int userId) {
+	/*public List<Node> getSubscriptionrecord(int newsletterId, int userId) {
 		// get subscriptionrecord
 		CloudProvider provider = CloudProviderFactory.getCloudProvider();
 		cloud = provider.getCloud();
@@ -243,27 +236,23 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 			}
 		}
 		return results;
-	}
+	}*/
 
-	public void addSubscriptionTag(Newsletter newsletter, int userId, int tagId) {
-		int newsletterId = newsletter.getId();
-		List<Node> records = getSubscriptionrecord(newsletterId, userId);
-		if (0 != records.size()) {
+	public void addSubscriptionTag(Subscription subscription,int tagId) {
+			int recordId = subscription.getId();
 			System.out.println("addSubscriptionTag");
-			Node record = records.get(0);
+			Node record = cloud.getNode(recordId);
+			
 			Node tag = cloud.getNode(tagId);
 			RelationManager insrel = cloud.getRelationManager(
 					"subscriptionrecord", "tag", "tagged");
 			record.createRelation(tag, insrel).commit();
-		}
 	}
 
-	public void removeSubscriptionTag(Newsletter newsletter, int userId,
-			int tagId) {
-		int newsletterId = newsletter.getId();
-		List<Node> records = getSubscriptionrecord(newsletterId, userId);
-		if (0 != records.size()) {
-			Node record = records.get(0);
+	public void removeSubscriptionTag(Subscription subscription,int tagId) {
+			int recordId = subscription.getId();
+			Node record = cloud.getNode(recordId);
+			
 			List<Node> taglist = record.getRelatedNodes("tag");
 			Iterator taglistIt = taglist.iterator();
 			record.deleteRelations("tagged");
@@ -275,14 +264,12 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 					record.createRelation(tag, insrel).commit();
 				}
 			}
-
-		}
 	}
 
 	public Subscription getSubscription(int newsletterId, int userId) {
-
 		log.debug("getSubscriptionrecord that newsletterId=" + newsletterId);
-
+		CloudProvider provider = CloudProviderFactory.getCloudProvider();
+		cloud = provider.getCloud();
 		NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
 		NodeManager newsletterManager = cloud.getNodeManager("newsletter");
 
@@ -310,7 +297,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 			subscription.setId(subscriptionId);
 			subscription.setMimeType(subscriptionNode.getStringValue("subscriptionrecord.format"));
 			subscription.setStatus(Subscription.STATUS.valueOf(subscriptionNode.getStringValue("subscriptionrecord.status")));			
-			
+			log.debug("Status="+subscription.getStatus());
 			List<Node> tagList =  cloud.getNode(subscriptionId).getRelatedNodes("tag");
 			log.debug("tagList.size()="+tagList.size());
 			Iterator tagIt = tagList.iterator();
@@ -322,14 +309,12 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				tag.setSubscription(true);
 				subscription.getTags().add(tag);
 			}
+			return subscription;
 		} else {
 			log.debug("Get subscription failed,user " + userId
 					+ " may not subscripbe " + newsletterId);
 			return null;
 		}
-
-		return subscription;
-
 	}
 
 	public List<Subscription> getSubscription(int newsletterId) {
@@ -344,9 +329,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 				it.remove();
 			}
 		}
-
 		return POConvertUtils.convertSubscriptions(records);
-
 	}
 
 }

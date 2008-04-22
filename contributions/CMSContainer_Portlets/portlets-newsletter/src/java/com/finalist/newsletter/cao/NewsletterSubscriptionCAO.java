@@ -10,28 +10,18 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 
 public interface NewsletterSubscriptionCAO {
-	public Newsletter getNewsletterById(int id);
-
-	public List<Newsletter> getUserSubscriptionList(int userId);
 
 	public List<Node> querySubcriptionByUser(int userId);
 
-	public List<Newsletter> getAllNewsletter();
+	public void addSubscriptionRecord(Subscription subscription, int userId);
 
-	public void addSubscriptionRecord(Newsletter newsletter, int userId);
+	public void modifySubscriptionStauts(Subscription subscription);
 
-	public void modifySubscriptionStauts(Newsletter newsletter, int userId);
+	public void modifySubscriptionFormat(Subscription subscription);
 
-	public void modifySubscriptionFormat(Newsletter newsletter, int userId);
+	public void addSubscriptionTag(Subscription subscription,int tagId);
 
-	public void modifySubscriptionInterval(Newsletter newsletter, int userId);
-
-	public void addSubscriptionTag(Newsletter newsletter, int userId, int tagId);
-
-	public void removeSubscriptionTag(Newsletter newsletter, int userId,
-			int tagId);
-
-	public List<Node> getSubscriptionrecord(int newsletterId, int userId);
+	public void removeSubscriptionTag(Subscription subscription,int tagId);	
 
 	public List<Subscription> getSubscription(int newsletterId);
 
