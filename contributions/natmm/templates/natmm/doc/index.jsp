@@ -18,13 +18,13 @@
             <th style="width:20%;">Document</th></tr>
 
         <tr><td style="width:80%;">het werken met de MMBase <b>editwizards</b></td>
-            <td style="width:20%;"><a href="GebruikershandleidingEditors.doc" title="GebruikershandleidingEditors.doc">GebruikershandleidingEditors.doc</a></td></tr>
+            <td style="width:20%;"><a href="../../doc/GebruikershandleidingEditors.doc" title="GebruikershandleidingEditors.doc">GebruikershandleidingEditors.doc</a></td></tr>
 
         <tr><td style="width:80%;">het werken met <b>www.natuurmonumenten.nl (inclusief Naardermeer, A6-A9, etc.)</b></td>
             <td style="width:20%;"><a href="GebruikershandleidingNatMM.doc" title="GebruikershandleidingNatMM.doc">GebruikershandleidingNatMM.doc</a></td></tr>
 
 		  <tr><td style="width:80%;">het werken met <b>de Natuurherstel website</b></td>
-            <td style="width:20%;"><a href="GebruikershandleidingNatuurherstel.doc" title="GebruikershandleidingNatuurherstel.doc">GebruikershandleidingNatuurherstel.doc</a></td></tr>
+            <td style="width:20%;"><a href="../../natnh/doc/GebruikershandleidingNatuurherstel.doc" title="GebruikershandleidingNatuurherstel.doc">GebruikershandleidingNatuurherstel.doc</a></td></tr>
 				
         <tr><td style="width:80%;">het <b>zoeken van activiteiten</b> in de Centrale Activiteiten Database</td>
             <td style="width:20%;"><a href="GebruikershandleidingCADZoek.doc" title="GebruikershandleidingCADZoek.doc">GebruikershandleidingCADZoek.doc</a></td></tr>
@@ -38,11 +38,18 @@
         <tr><td style="width:80%;"><b>briefing voor gidsen</b> voor gebruik van de Centrale Activiteiten Database</td>
             <td style="width:20%;"><a href="BriefingGidsen.doc" title="BriefingGidsen.doc">BriefingGidsen.doc</a></td></tr>
 
+        <tr><td style="width:80%;"><b>datamodel</b> van de Centrale Activiteiten Database</td>
+            <td style="width:20%;"><a href="DatamodelCAD.doc" title="DatamodelCAD.doc">DatamodelCAD.doc</a></td></tr>
+
         <tr><td style="width:80%;"><b>autorisatie van gebruikers</b> in de beheeromgeving</td>
-            <td style="width:20%;"><a href="GebruikershandleidingAutorisatie.doc" title="GebruikershandleidingAutorisatie.doc">GebruikershandleidingAutorisatie.doc</a></td></tr>
+            <td style="width:20%;"><a href="../../doc/GebruikershandleidingAutorisatie.doc" title="GebruikershandleidingAutorisatie.doc">GebruikershandleidingAutorisatie.doc</a></td></tr>
 
         <tr><td style="width:80%;">het gebruiken van de <b>Mailformulier functionaliteit</b> door externe website</td>
             <td style="width:20%;"><a href="GebruikershandleidingMailformExtern.doc" title="GebruikershandleidingMailformExtern.doc">GebruikershandleidingMailformExtern.doc</a></td></tr>
+            
+        <tr><td style="width:80%;">het werken met <b>het intranet</b></td>
+            <td style="width:20%;"><a href="../../nmintra/doc/GebruikershandleidingNMIntra.doc" title="GebruikershandleidingNMIntra.doc">GebruikershandleidingNMIntra.doc</a></td></tr>
+
 	   </table>
 		<h3>Richtlijn voor het (her)gebruik van afbeeldingen</h3>
 		<p>
