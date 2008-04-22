@@ -2,8 +2,8 @@ About Jircs
 ===========
 
 Jircs stands for Java IRC Server. It's development started in 2002 for the EO
-(http://www.eo.nl) by Jaco de Groot (jaco@dynasol.nl). The Flash clients that
-communicate with Jircs are developed by Jelle Katsman (jelle@katsman.nl).
+(http://www.eo.nl) by Jaco de Groot. The Flash clients that communicate with
+Jircs are developed by Jelle Katsman.
 
 Because a chat server was needed that could communicate with Flash and MMBase
 (http://www.mmbase.org), the content management system used by the EO, but we
