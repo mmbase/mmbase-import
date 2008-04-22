@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsd:schema 
+<xsd:schema
     xmlns="http://www.mmbase.org/xmlns/mmxf"
     targetNamespace="http://www.mmbase.org/xmlns/mmxf"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -36,6 +36,7 @@
         <xsd:element ref="a" />
         <xsd:element ref="ol" />
         <xsd:element ref="ul" />
+        <xsd:element ref="br" />
       </xsd:choice>
       <xsd:attribute name="id" type="xsd:NMTOKEN" />
     </xsd:complexType>
@@ -73,6 +74,7 @@
       <xsd:attribute name="id" type="xsd:NMTOKEN" use="required" />
     </xsd:complexType>
   </xsd:element>
+  <xsd:element name="br" />
   <xsd:element name="table">
     <xsd:complexType>
       <xsd:sequence maxOccurs="unbounded">

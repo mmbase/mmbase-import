@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.19 2008-03-25 18:00:14 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.20 2008-04-22 11:16:59 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -33,7 +33,8 @@ public class MmxfSetString implements  Processor {
     private static final long serialVersionUID = 1L;
 
 
-    private static XmlField xmlField = new XmlField(XmlField.WIKI);
+    private static XmlField xmlField    = new XmlField(XmlField.WIKI);
+    private static XmlField xmlFieldBrs = new XmlField(XmlField.WIKIBRS);
     private static Kupu     kupu     = new Kupu();
     private static DocBook  docbook  = new DocBook();
     private static Wiki     wiki     = new Wiki();
@@ -53,8 +54,14 @@ public class MmxfSetString implements  Processor {
                 return kupu.parse(node, Util.parse(value));
             }
             case Modes.WIKI: {
-                log.debug("Handling wiki-input: " + value);
-                return  wiki.parse(node, Util.parse(xmlField.transformBack(Util.toString(value))));
+                if (log.isTraceEnabled()) {
+                    log.trace("Handling wiki-input: " + value);
+                }
+                String xml = xmlFieldBrs.transformBack(Util.toString(value));
+                if (log.isDebugEnabled()) {
+                    log.debug("XML: " + xml);
+                }
+                return  wiki.parse(node, Util.parse(xml));
             }
             case Modes.DOCBOOK: {
                 log.debug("Handling docbook-input: " + value);
