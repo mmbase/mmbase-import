@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -17,6 +18,7 @@ import javax.portlet.WindowState;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
 import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Tag;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
@@ -56,7 +58,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          String userName = "username";
          int userId = 12345; 
         
-
+/*
          List<Integer> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
          request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, availableStatusOptions);
 
@@ -77,7 +79,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
             request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
             String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
             request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
-         }
+         }*/
          if(null==newsletters)
          {
         	doInclude("view", "/fragment/null.jsp", request, response);
@@ -85,14 +87,23 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
          else 
         	 {
 	        	 if(services.hasSubscription(userId)){
-	        	 List<Newsletter> newsletterList = services.getNewsletterList(newsletters, userId);
-	        	 request.setAttribute("newsletterList", newsletterList);
-	        	 request.setAttribute("aaa","bbb");
+	        	 List<Subscription> subscriptionList = services.getSubscriptionList(newsletters, userId);
+	        	 request.setAttribute("subscriptionList", subscriptionList);
 	             doInclude("view", "/fragment/list.jsp", request, response);
 	        	 } 
 	        	 else {
-	        	 List<Newsletter> newsletterList = services.getAllowedNewsletterList(newsletters);
-	        	 request.setAttribute("newsletterList", newsletterList);
+	        	 List<Subscription> subscriptionList = services.getNewSubscription(newsletters);
+	        	 Iterator it = subscriptionList.iterator();
+	             for(int i=0;i<subscriptionList.size();i++)
+	             {
+	            	 Subscription subscription = (Subscription) it.next();
+	            	 Newsletter newsletter = subscription.getNewsletter();
+	            	 String title = newsletter.getTitle();
+	    			 Set<Tag> tags = subscription.getTags();
+	    			 int newsletterId = subscription.getNewsletter().getId();
+	    			 System.out.println("----title="+title+";newsletterId="+newsletterId);
+	             }
+	        	 request.setAttribute("subscriptionList", subscriptionList);
 	             doInclude("view", "/fragment/welcome.jsp", request, response);
 	        	 }
         	 }
