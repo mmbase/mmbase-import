@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.4 2008-04-22 14:47:13 michiel Exp $
+ * @version $Id: Wiki.java,v 1.5 2008-04-22 16:00:50 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -38,8 +38,10 @@ class Wiki {
     private static final Logger log = Logging.getLoggerInstance(Wiki.class);
     private static final long serialVersionUID = 1L;
 
-
-    Node findById(NodeList links, String id) {
+    /**
+     * Searches in the existsing relations for a relation with the given id
+     */
+    Node findById(Element a, NodeList links, String id) {
         NodeIterator ni = links.nodeIterator();
         while (ni.hasNext()) {
             Node relation = ni.nextNode();
@@ -60,8 +62,10 @@ class Wiki {
                 } else {
                     if (destination.getStringValue("number").equals(id)) {
                         log.debug("Setting relation id of " + relation.getNumber() + " to " + destination.getNumber());
-                        relation.setStringValue("id", "" + destination.getNumber());
+                        String decoratedId = decorateId("" + destination.getNumber());
+                        relation.setStringValue("id", decoratedId);
                         relation.commit();
+                        a.setAttribute("id", decoratedId);
                         log.debug("relation " + relation + " " + relation.getCloud());
                         return relation;
                     }
@@ -69,6 +73,17 @@ class Wiki {
             }
         }
         return null; // not found
+    }
+
+    String cleanId(String id) {
+        if (id.startsWith("n_")) {
+            return id.substring(2);
+        } else {
+            return id;
+        }
+    }
+    String decorateId(String id) {
+        return "n_" + cleanId(id);
     }
 
    /**
@@ -85,7 +100,6 @@ class Wiki {
      *
      */
     Document parse(Node editedNode, Document source) {
-
 
         Map<Integer, Node> usedLinks = new HashMap<Integer, Node>();
         // reolve anchors. Allow to use nodenumber as anchor.
@@ -106,14 +120,18 @@ class Wiki {
             if (log.isDebugEnabled()) {
                 log.debug("Found " + XMLWriter.write(a, true));
             }
-            Node link = findById(links, id);
+            Node link = findById(a, links, id);
             if (link == null) {
                 log.service("No relation found with id'" + id + "'. Implicitely creating one now.");
-                Node node = getNode(cloud, id);
+                Node node = getNode(cloud, cleanId(id));
                 Relation newRel = editedNode.createRelation(node, cloud.getRelationManager(editedNode.getNodeManager(), node.getNodeManager(), "idrel"));
-                newRel.setStringValue("id", id);
+                String decoratedId = decorateId(id);
+                newRel.setStringValue("id", decoratedId);
                 newRel.commit();
+                a.setAttribute("id", decoratedId);
+
             }
+
         }
 
         return source;

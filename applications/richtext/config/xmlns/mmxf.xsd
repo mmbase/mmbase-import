@@ -33,6 +33,7 @@
     <xsd:complexType mixed="true">
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element ref="em" />
+        <xsd:element ref="strong" />
         <xsd:element ref="a" />
         <xsd:element ref="ol" />
         <xsd:element ref="ul" />
@@ -66,6 +67,7 @@
     </xsd:complexType>
   </xsd:element>
   <xsd:element name="em" />
+  <xsd:element name="strong" />
   <xsd:element name="a">
     <xsd:complexType mixed="true">
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
@@ -95,6 +97,7 @@
     <xsd:complexType mixed="true">
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element ref="em" />
+        <xsd:element ref="strong" />
         <xsd:element ref="a" />
         <xsd:element ref="ol" />
         <xsd:element ref="ul" />
@@ -110,6 +113,7 @@
         </xsd:choice>
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
           <xsd:element ref="em" />
+          <xsd:element ref="strong" />
           <xsd:element ref="a" />
           <xsd:element ref="ol" />
           <xsd:element ref="ul" />
@@ -126,6 +130,7 @@
         </xsd:choice>
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
           <xsd:element ref="em" />
+          <xsd:element ref="strong" />
           <xsd:element ref="a" />
           <xsd:element ref="ol" />
           <xsd:element ref="ul" />

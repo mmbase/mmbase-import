@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.5 2008-04-22 14:47:13 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.6 2008-04-22 16:00:49 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -23,6 +23,7 @@
 
   <xsl:param name="cloud">mmbase</xsl:param>
   <xsl:param name="org.mmbase.richtext.wiki.show_broken">false</xsl:param>
+  <xsl:param name="org.mmbase.richtext.wiki.undecorateids">false</xsl:param>
 
   <xsl:template match="o:objects">
     <div class="objects">
@@ -85,7 +86,7 @@
 
     <xsl:choose>
       <xsl:when test="count($relatednodes) &gt; 0 or $org.mmbase.richtext.wiki.show_broken = 'true'" >
-        <xsl:text>[</xsl:text><xsl:value-of select="@id" />
+        <xsl:text>[</xsl:text><xsl:apply-templates select="." mode="undecorateids" />
         <xsl:if test="count(*|text()) &gt; 1 or (count(*|text()) = 1 and count(text()) &gt; 0)">
           <xsl:text>:</xsl:text>
           <xsl:apply-templates />
@@ -101,6 +102,21 @@
   <xsl:template match="mmxf:br">
     <xsl:text>
 </xsl:text>
+  </xsl:template>
+
+  <!--
+      Sometimes, ids are autoamticly generated as n[a..z]_<node_number>. Remove this prefix, if requested, so wiki-user can see only the number.
+  -->
+  <xsl:template match="*" mode="undecorateids">
+    <xsl:choose>
+      <xsl:when test="$org.mmbase.richtext.wiki.undecorateids = 'true'
+                      and string-length(substring-after(@id, '_')) gt 0" >
+        <xsl:value-of select="substring-after(@id, '_')" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@id" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>
