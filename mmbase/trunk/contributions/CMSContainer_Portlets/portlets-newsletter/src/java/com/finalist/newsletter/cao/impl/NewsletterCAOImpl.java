@@ -1,53 +1,44 @@
 package com.finalist.newsletter.cao.impl;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import net.sf.mmapps.modules.cloudprovider.CloudProvider;
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Query;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
-import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 
 import com.finalist.newsletter.cao.NewsletterCAO;
-import com.finalist.newsletter.cao.util.NlUtil;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Tag;
 
 public class NewsletterCAOImpl implements NewsletterCAO {
+   private Cloud cloud;
 
-	private Cloud cloud;
+   public void setCloud(Cloud cloud) {
+      this.cloud = cloud;
+   }
 
-	public NewsletterCAOImpl() {
-	}
+   public List<Newsletter> getAllNewsletters() {
+      Query query = cloud.createQuery();
+      query.addStep(cloud.getNodeManager("newsletter"));
+      NodeList list = query.getList();
+      return list;
+   }
 
-	public NewsletterCAOImpl(Cloud cloud) {
-		super();
-		this.cloud = cloud;
-	}
-
-	public List<Newsletter> getAllNewsletters (){
-
-		NodeManager manager = cloud.getNodeManager("newsletter");
-		NodeQuery query = cloud.createNodeQuery();
-		query.setNodeStep(query.addStep(manager));
-		List<Node> nodelist = manager.getList(query);
-		
-		NlUtil nlUtil = new NlUtil();
-		return nlUtil.convertFromNodeList(nodelist);
-	}
-
-	public Newsletter getNewsletterById(int id) {
+   public Newsletter getNewsletterById(int id) {
+	  CloudProvider provider = CloudProviderFactory.getCloudProvider();
+	  cloud = provider.getCloud();
       Node newsletterNode = cloud.getNode(id);
       Newsletter newsletter = new Newsletter();
       newsletter.setNumber(newsletterNode.getIntValue("number"));
       newsletter.setTitle(newsletterNode.getStringValue("title"));
-      List<Node> tagList = newsletterNode.getRelatedNodes();
+      List<Node> tagList = newsletterNode.getRelatedNodes("tag");
       Iterator tagIt = tagList.iterator();
       for(int i=0;i<tagList.size();i++){
     	  Tag tag = new Tag();
@@ -59,5 +50,6 @@ public class NewsletterCAOImpl implements NewsletterCAO {
       }
       return newsletter;
    }
+
 
 }

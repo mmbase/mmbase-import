@@ -1,8 +1,10 @@
 package com.finalist.newsletter.cao.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -18,7 +20,7 @@ public class NewsletterSubscriptionUtil {
 	
 	public static Newsletter convertNodeListtoTagList(NodeList list,Newsletter newsletter){
 		Iterator<Node> nodelist = list.iterator();
-		List<Tag> taglist= new ArrayList<Tag>();
+		Set<Tag> taglist= new HashSet<Tag>();
 		
 		for (int j = 0; j < list.size(); j++) {
 			Tag tag = new Tag();
