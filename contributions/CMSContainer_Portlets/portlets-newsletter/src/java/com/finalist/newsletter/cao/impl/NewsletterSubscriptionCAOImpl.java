@@ -117,7 +117,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 			NodeManager tagManager = cloud.getNodeManager("tag");
 			NodeList tags = node.getRelatedNodes(tagManager);
 			System.out.println("selectTags=" + tags.size());
-			List<Tag> tagList = new ArrayList<Tag>();
+			Set<Tag> tagList = new HashSet<Tag>();
 			Iterator<Node> tagsItetator = tags.iterator();
 			for (int y = 0; y < tags.size(); y++) {
 				Node selectTagNode = (Node) tagsItetator.next();

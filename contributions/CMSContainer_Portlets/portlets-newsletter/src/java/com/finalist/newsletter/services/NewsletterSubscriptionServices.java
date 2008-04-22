@@ -16,6 +16,7 @@ import org.mmbase.cache.CachePolicy;
 
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
 
 public interface NewsletterSubscriptionServices {
 	
@@ -40,4 +41,8 @@ public interface NewsletterSubscriptionServices {
 	public void modifyInterval(int userId,int newsletterId,Date interval);
 	
 	public void addNewRecord(int userId,int newsletterId);
+
+   List<Subscription> getSubscriptionList(String[] newsletters, int userId);
+
+   List<Subscription> getNewSubscription(String[] newsletters);
 }

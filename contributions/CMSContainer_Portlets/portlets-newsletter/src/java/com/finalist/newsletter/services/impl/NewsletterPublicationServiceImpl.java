@@ -12,7 +12,12 @@ import com.finalist.newsletter.services.NewsletterPublicationService;
 
 import java.util.List;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class NewsletterPublicationServiceImpl implements NewsletterPublicationService {
+
+   private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
 
    private NewsletterPublisher publisher;
    private NewsletterPublicationCAO publicationCAO;
@@ -49,13 +54,15 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       publicationCAO.setStatus(publication, STATUS.DELIVERED);
    }
 
-   public void deliver(int number,String email,String mimeType) {
+   public void deliver(int newsletterId,String email,String mimeType) {
 
-      Publication publication = publicationCAO.getPublication(number);
+      log.debug("deliver newsletter "+newsletterId+" to "+email+" in mimetype "+mimeType);
+      
+      Publication publication = publicationCAO.getPublication(newsletterId);
       Subscription subscription = new Subscription();
 
       subscription.setMimeType(mimeType);
-      System.out.println("------------------------"+publication.getNewsletter());
+
       subscription.setNewsletter(publication.getNewsletter());
 
       Person person = new Person();

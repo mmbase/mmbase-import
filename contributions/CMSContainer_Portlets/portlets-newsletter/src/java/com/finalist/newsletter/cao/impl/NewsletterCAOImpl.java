@@ -20,6 +20,14 @@ import com.finalist.newsletter.domain.Tag;
 public class NewsletterCAOImpl implements NewsletterCAO {
    private Cloud cloud;
 
+   public NewsletterCAOImpl(Cloud cloud) {
+
+   }
+
+   public NewsletterCAOImpl() {
+
+   }
+
    public void setCloud(Cloud cloud) {
       this.cloud = cloud;
    }

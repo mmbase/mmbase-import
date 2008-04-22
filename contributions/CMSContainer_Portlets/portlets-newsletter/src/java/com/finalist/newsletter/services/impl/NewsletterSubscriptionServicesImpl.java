@@ -116,7 +116,19 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		}
 	}
 
-	public void selectTagInLetter(int userId, int newsletterId, int tagId) {
+   public List<Newsletter> getAllowedNewsletterList(String[] allowedLetters) {
+      return null;
+   }
+
+   public List<Newsletter> getNewsletterList(String[] allowedLetters, int userId) {
+      return null;
+   }
+
+   public Newsletter addRecordInfo(Newsletter allowedNewsletter, List<Newsletter> recordList) {
+      return null;
+   }
+
+   public void selectTagInLetter(int userId, int newsletterId, int tagId) {
 		Subscription subscription = cao.getSubscription(newsletterId, userId);
 		Set<Tag> tagList = subscription.getTags();
 		Iterator it = tagList.iterator();
@@ -149,8 +161,12 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		subscription.setStatus(Subscription.STATUS.valueOf(status));
 		cao.modifySubscriptionStauts(subscription);
 	}
-	
-	public void modifyFormat(int userId, int newsletterId, String format) {
+
+   public void modifyInterval(int userId, int newsletterId, Date interval) {
+
+   }
+
+   public void modifyFormat(int userId, int newsletterId, String format) {
 		System.out.println("modifyformat");
 		Subscription subscription = cao.getSubscription(newsletterId, userId);
 		subscription.setMimeType(format);
