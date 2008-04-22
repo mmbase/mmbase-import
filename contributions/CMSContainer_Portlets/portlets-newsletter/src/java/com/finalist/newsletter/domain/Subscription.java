@@ -46,8 +46,7 @@ public class Subscription {
 	}
 
 	public Newsletter getNewsletter() {
-		return null; // To change body of created methods use File | Settings
-		// | File Templates.
+		return this.newsletter;
 	}
 
 

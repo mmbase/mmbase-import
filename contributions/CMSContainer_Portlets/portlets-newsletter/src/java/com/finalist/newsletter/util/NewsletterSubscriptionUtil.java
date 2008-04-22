@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.finalist.cmsc.services.community.NewsletterCommunication;
-import com.finalist.newsletter.generator.NewsletterGeneratorFactory;
 
 public abstract class NewsletterSubscriptionUtil {
 
@@ -168,7 +167,6 @@ public abstract class NewsletterSubscriptionUtil {
    public static void setPreferredMimeType(String userName, String mimeType) {
       if (userName != null) {
          if (mimeType == null) {
-            mimeType = NewsletterGeneratorFactory.MIMETYPE_DEFAULT;
          }
          NewsletterCommunication.removeUserPreference(userName, PREFERRED_MIMETYPE);
          NewsletterCommunication.setUserPreference(userName, PREFERRED_MIMETYPE, mimeType);
