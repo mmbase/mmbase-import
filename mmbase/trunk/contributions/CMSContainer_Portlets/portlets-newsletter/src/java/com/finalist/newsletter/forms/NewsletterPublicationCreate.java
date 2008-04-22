@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.RelationManager;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
@@ -32,6 +33,11 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
          int parent = Integer.parseInt(getParameter(request, "parent", true));
          boolean copyContent = Boolean.valueOf(getParameter(request, "copycontent", true));
          Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);
+         Node parentNode = cloud.getNode(parent);
+         Node pubNode = cloud.getNode(publicationNode.getNumber());
+         RelationManager relManager = cloud.getRelationManager("newsletter", "newsletterpublication", "related");
+         relManager.createRelation(parentNode,pubNode).commit();
+
          String objectnumber = String.valueOf(publicationNode.getNumber());
          request.getSession().removeAttribute("parent");
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
