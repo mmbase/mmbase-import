@@ -8,13 +8,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
+import com.finalist.newsletter.cao.impl.NewsletterCAOImpl;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Tag;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
@@ -22,100 +26,99 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 	
 	NewsletterSubscriptionCAO cao;
 	NewsletterCAO newsletterCAO;
+	
+	private static Log log = LogFactory
+	.getLog(NewsletterSubscriptionServicesImpl.class);
+
 										
 	public void setCao(NewsletterSubscriptionCAO cao) {
-		this.cao = new NewsletterSubscriptionCAOImpl();
+		this.cao = cao;
+		
+	}
+	public void setNewsletterCao(NewsletterCAO newsletterCAO){
+		this.newsletterCAO = newsletterCAO;
 	}
 	
-	public List<Newsletter> getNewsletterList(String[] allowedLetters,int userId){
-		List<Newsletter> allowedLetterList = getAllowedNewsletterList(allowedLetters);
-		List<Newsletter> recordList = cao.getUserSubscriptionList(userId);
-		List<Newsletter> list = new ArrayList<Newsletter>();
-		Newsletter allowedNewsletter = new Newsletter();
-		Iterator it = allowedLetterList.iterator();
-		for(int i=0;i<allowedLetterList.size();i++)
+	public List<Subscription> getSubscriptionList(String[] allowedLetters,int userId){
+		
+	    List<Subscription> subscriptionList = new ArrayList<Subscription>();
+		int newsletterId;
+		for(int i=0;i<allowedLetters.length;i++)
 		{
-			allowedNewsletter = (Newsletter) it.next();
-			allowedNewsletter = addRecordInfo(allowedNewsletter,recordList);
-			list.add(allowedNewsletter);
+			newsletterId = Integer.parseInt(allowedLetters[i]);
+			subscriptionList.add(addRecordInfo(newsletterId,userId));
 		}	
-		return list;
+		return subscriptionList;
 	}
 	
-	public Newsletter addRecordInfo(Newsletter allowedNewsletter, List<Newsletter> recordList) {
+	public Subscription addRecordInfo(int newsletterId, int userId) {
+	
+		Subscription subscription = cao.getSubscription(newsletterId,userId);
+		log.debug("addRecordInfo");
+		System.out.println("addRecordInfo---");
 
-//
-//		Iterator it = recordList.iterator();
-//		for(int i=0;i<recordList.size();i++)
-//		{
-//			Newsletter recordNewsletter = (Newsletter) it.next();
-//			if(allowedNewsletter.getTitle().equals(recordNewsletter.getTitle()))
-//			{
-//				newsletter.setFormat(recordNewsletter.getFormat());
-//				newsletter.setInterval(recordNewsletter.getInterval());
-//				newsletter.setStatus(recordNewsletter.getStatus());
-//				newsletter.setTags(recordNewsletter.getTags());
-//			}
-//		}
-		return null;
+		Newsletter newsletter = newsletterCAO.getNewsletterById(newsletterId);
+		if(subscription==null){
+			Subscription newSubscription = new Subscription();
+			newSubscription.setNewsletter(newsletter);
+			newSubscription.setTags(newsletter.getTags());	
+			return newSubscription;
+		}else{
+			Iterator newsletterTagListIt = newsletter.getTags().iterator();
+			for(int i=0;i<newsletter.getTags().size();i++)
+			{
+				Tag tag = (Tag) newsletterTagListIt.next();
+				if(!subscription.getTags().contains(tag))
+				{
+					subscription.getTags().add(tag);
+				}
+			}
+			return subscription;
+		}	
 	}
-	public Newsletter addRecordInfo(Newsletter allowedNewsletter, int userId) {
-//
-//		cao.getSubscriptionrecord(newsletterId, userId)
-//		Iterator it = recordList.iterator();
-//		for(int i=0;i<recordList.size();i++)
-//		{
-//			Newsletter recordNewsletter = (Newsletter) it.next();
-//			if(allowedNewsletter.getTitle().equals(recordNewsletter.getTitle()))
-//			{
-//				newsletter.setFormat(recordNewsletter.getFormat());
-//				newsletter.setInterval(recordNewsletter.getInterval());
-//				newsletter.setStatus(recordNewsletter.getStatus());
-//				newsletter.setTags(recordNewsletter.getTags());
-//			}
-//		}
-		return null;
-	}
-	public List<Newsletter> getAllowedNewsletterList(String[] allowedLetters)
+	
+	public List<Subscription> getNewSubscription(String[] allowedLetters)
 	{
-		List<Newsletter> list = new ArrayList<Newsletter>();
-		cao = new NewsletterSubscriptionCAOImpl();
+		newsletterCAO = new NewsletterCAOImpl();
+		List<Subscription> list = new ArrayList<Subscription>();
 		int nodenumber;
 		for(int i=0;i<allowedLetters.length;i++)
 		{
 			nodenumber = Integer.parseInt(allowedLetters[i]);
-			Newsletter newsletter = cao.getNewsletterById(nodenumber);
-	    	list.add(newsletter);
+			Newsletter newsletter = newsletterCAO.getNewsletterById(nodenumber);
+			Subscription subscription = new Subscription();
+			subscription.setNewsletter(newsletter);
+			Newsletter test = subscription.getNewsletter();
+			subscription.setTags(newsletter.getTags());	
+			list.add(subscription);
 		}
 		return list;
 	}
 	
-	public List<Newsletter> getAllNewsletterListUsed()
+/*	public List<Newsletter> getAllNewsletterListUsed()
 	{
 		List<Newsletter> list = new ArrayList();
 		list = cao.getAllNewsletter();
 		return list;
 	}
-
+*/
 	public boolean hasSubscription(int userId) {
 		
 		NewsletterSubscriptionCAO cao = new NewsletterSubscriptionCAOImpl();
 		System.out.println("userId="+userId);
 		List<Node> list = cao.querySubcriptionByUser(userId);
-		System.out.println("list="+list.size());
 		if(0==list.size()){
 		return false;
 		}
 		else
 		{
-			System.out.println("@@@@@@@@");
 		return true;
 		}
 	}
 
 	public void selectTagInLetter(int userId, int newsletterId, int tagId) {
-		Newsletter newsletter = cao.getNewsletterById(newsletterId);
-		Set<Tag> tagList = newsletter.getTags();
+		Subscription subscription = cao.getSubscription(newsletterId, userId);
+		Set<Tag> tagList = subscription.getTags();
 		Iterator it = tagList.iterator();
 		for(int i=0;i<tagList.size();i++){
 			Tag tag = (Tag)it.next();
@@ -123,13 +126,13 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 				tag.setSubscription(true);
 			}
 		}
-		cao.addSubscriptionTag(newsletter, userId, tagId);
+		cao.addSubscriptionTag(subscription,tagId);
 		
 	}
 	
 	public void unSelectTagInLetter(int userId, int newsletterId, int tagId) {
-		Newsletter newsletter = cao.getNewsletterById(newsletterId);
-		Set<Tag> tagList = newsletter.getTags();
+		Subscription subscription = cao.getSubscription(newsletterId, userId);
+		Set<Tag> tagList = subscription.getTags();
 		Iterator it = tagList.iterator();
 		for(int i=0;i<tagList.size();i++){
 			Tag tag = (Tag)it.next();
@@ -137,32 +140,31 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 				tag.setSubscription(false);
 			}
 		}
-		cao.removeSubscriptionTag(newsletter, userId, tagId);
+		cao.removeSubscriptionTag(subscription,tagId);
 	}
 
 	public void modifyStauts(int userId, int newsletterId, String status) {
 		System.out.println("-----modifyStauts-----");
-		Newsletter newsletter = cao.getNewsletterById(newsletterId);
-		newsletter.setStatus(status);
-		cao.modifySubscriptionStauts(newsletter, userId);
+		Subscription subscription = cao.getSubscription(newsletterId, userId);
+		subscription.setStatus(Subscription.STATUS.valueOf(status));
+		cao.modifySubscriptionStauts(subscription);
 	}
 	
 	public void modifyFormat(int userId, int newsletterId, String format) {
 		System.out.println("modifyformat");
-		Newsletter newsletter = cao.getNewsletterById(newsletterId);		
-		newsletter.setFormat(format);
-		cao.modifySubscriptionFormat(newsletter, userId);		
+		Subscription subscription = cao.getSubscription(newsletterId, userId);
+		subscription.setMimeType(format);
+		cao.modifySubscriptionFormat(subscription);		
 	}
 
-	public void modifyInterval(int userId, int newsletterId, Date interval) {
-		Newsletter newsletter = cao.getNewsletterById(newsletterId);
+	/*public void modifyInterval(int userId, int newsletterId, Date interval) {
+		Newsletter newsletter = newsletterCAO.getNewsletterById(newsletterId);
 		newsletter.setInterval(interval);
 		cao.modifySubscriptionFormat(newsletter, userId);				
 	}
-
+*/
 	public boolean noSubscriptionRecord(int userId, int newsletterId) {
-		List<Node> list = cao.getSubscriptionrecord(newsletterId, userId);	
-		if(list.size()==0){
+		if(cao.getSubscription(newsletterId, userId)==null){
 			return true;
 		}else{
 			return false;
@@ -171,11 +173,13 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
 	public void addNewRecord(int userId, int newsletterId) {
 		System.out.println("userId="+userId+"newsletterId"+newsletterId);
+		Subscription subscription = new Subscription();
 		Newsletter newsletter = new Newsletter();
 		newsletter.setId(newsletterId);
-		newsletter.setFormat("HTML");
-		newsletter.setStatus("normal");
-		cao.addSubscriptionRecord(newsletter, userId);	
+		subscription.setNewsletter(newsletter);
+		subscription.setMimeType("html");
+		subscription.setStatus(Subscription.STATUS.ACTIVE);
+		cao.addSubscriptionRecord(subscription,userId);	
 	}
 
 	
