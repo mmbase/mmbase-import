@@ -37,15 +37,18 @@
               </c:if>
               <tbody>
                 <mm:fieldlist type="create" varStatus="field">
-                  <tr class="fields ${field.current.name}">
-                    <th class="node">
-                      <mm:fieldinfo type="guiname" />
-                    </th>
-                    <td>
-                      <mm:fieldinfo type="input" />
-                      <mm:fieldinfo type="errors" />
-                    </td>
-                  </tr>
+                  <c:if test="${field.current.state eq 2}">
+
+                    <tr class="fields ${field.current.name}">
+                      <th class="node">
+                        <mm:fieldinfo type="guiname" />
+                      </th>
+                      <td>
+                        <mm:fieldinfo type="input" />
+                        <mm:fieldinfo type="errors" />
+                      </td>
+                    </tr>
+                  </c:if>
                 </mm:fieldlist>
               </tbody>
             </mm:createnode>
@@ -59,6 +62,9 @@
                 <mm:log>Created new node ${_node}</mm:log>
                 Created <span class="newnode">${_node}</span>
               </mm:node>
+            </mm:valid>
+            <mm:valid inverse="true">
+              NOT VALID
             </mm:valid>
           </mm:present>
         </mm:form>
