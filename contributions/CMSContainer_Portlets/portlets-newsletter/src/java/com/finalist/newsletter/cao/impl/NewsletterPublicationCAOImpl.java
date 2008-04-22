@@ -11,13 +11,24 @@ import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.util.POConvertUtils;
+import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 
 
 public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
+   private static Logger log = Logging.getLoggerInstance(NewsletterPublicationCAOImpl.class.getName());
 
    Cloud cloud;
 
@@ -47,14 +58,14 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       publicationNode.commit();
    }
 
-   private Publication convert(Node node){
+   private Publication convert(Node node) {
       Publication pub = new Publication();
       pub.setId(node.getNumber());
       pub.setStatus(Publication.STATUS.valueOf(node.getStringValue("status")));
       return pub;
    }
 
-   private List<Publication> convert(List<Node> nodeList){
+   private List<Publication> convert(List<Node> nodeList) {
       List<Publication> pubs = new ArrayList<Publication>();
 
       for (Node node : nodeList) {
@@ -66,6 +77,44 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
    public Publication getPublication(int number) {
       Node newsletterPublicationNode = cloud.getNode(number);
-      return convert(newsletterPublicationNode);
+
+      String hostUrl = getHostUrl();
+      String newsletterPath = getNewsletterPath(newsletterPublicationNode);
+      String newsletterUrl = "".concat(hostUrl).concat(newsletterPath);
+      
+      List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
+
+      log.debug("Get "+relatedNewsletters.size() +" related newsletter");
+      
+      Publication pub = new Publication();
+      pub.setId(newsletterPublicationNode.getNumber());
+      pub.setStatus(Publication.STATUS.valueOf(newsletterPublicationNode.getStringValue("status")));
+      pub.setUrl(newsletterUrl);
+
+      Newsletter newsletter = new Newsletter();
+      new POConvertUtils<Newsletter>().convert(newsletter,relatedNewsletters.get(0));
+      pub.setNewsletter(newsletter);
+
+      return pub;
+   }
+
+   protected String getNewsletterPath(Node newsletterPublicationNode) {
+      String newsletterPath = NavigationUtil.getPathToRootString(newsletterPublicationNode, true);
+      return newsletterPath;
+   }
+
+   protected String getHostUrl() {
+      String hostUrl = PropertiesUtil.getProperty("host");
+
+      if(StringUtils.isEmpty(hostUrl)){
+         throw new NewsletterSendFailException("get property <host> from system property and get nothing");
+      }
+
+      log.debug("get property <host> from system property and get:"+hostUrl);
+
+      if (!hostUrl.endsWith("/")) {
+         hostUrl += "/";
+      }
+      return hostUrl;
    }
 }
