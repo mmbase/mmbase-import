@@ -26,7 +26,7 @@ import javax.servlet.jsp.PageContext;
  * The result can be reported with mm:valid.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FormTag.java,v 1.6.2.5 2007-11-28 18:00:21 michiel Exp $
+ * @version $Id: FormTag.java,v 1.6.2.6 2008-04-22 22:56:52 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -36,9 +36,27 @@ public class FormTag extends TransactionTag implements Writer {
     public static final String KEY = "org.mmbase.bridge.jsp.taglib.form";
     public static final int SCOPE  = PageContext.REQUEST_SCOPE;
 
+    /**
+     * Produces an HTML form, and (reuses) an MMBase transaction. Only explicit commit/cancel (with
+     * mm:commit, mm:cancel, or 'commitonclose').
+     */
     public static final int MODE_HTML_FORM       = 0;
+
+    /**
+     * Produces an URL for an HTML form only, and (reuses) an MMBase transaction. Only explicit commit/cancel.
+     */
     public static final int MODE_URL             = 1;
+
+    /**
+     * Does not produce any content. Implicitely cancels the transaction if not committed.
+     */
     public static final int MODE_VALIDATE        = 2;
+
+    /**
+     * Does not produce any content. Behaves like mm:transaction. Only difference is that on default
+     * it does not commit on close.
+     */
+    public static final int MODE_TRANSACTION     = 3;
 
 
     private Attribute mode = Attribute.NULL;
@@ -75,6 +93,8 @@ public class FormTag extends TransactionTag implements Writer {
             return MODE_URL;
         } else if (m.equals("validate")) {
             return MODE_VALIDATE;
+        } else if (m.equals("transaction")) {
+            return MODE_TRANSACTION;
         } else {
             throw new JspTagException("Value '" + m + "' not known for 'mode' attribute");
         }
@@ -104,6 +124,7 @@ public class FormTag extends TransactionTag implements Writer {
             break;
         case MODE_HTML_FORM:
             String url = page.getString(this);
+            if (url.startsWith("/")) url = ((javax.servlet.http.HttpServletRequest) pageContext.getRequest()).getContextPath() + url;
             String id = getId();
             String c  = clazz.getString(this);
             try {
@@ -130,14 +151,17 @@ public class FormTag extends TransactionTag implements Writer {
             } catch (java.io.IOException ioe) {
                 throw new TaglibException(ioe);
             }
+            break;
         }
         if (getId() != null) {
             getContextProvider().getContextContainer().unRegister(getId());
         }
         Transaction t = transaction;
         int result = super.doEndTag();
-        if (! t.isCommitted()) {
-            t.cancel();
+        if (m == MODE_VALIDATE) {
+            if (! t.isCommitted()) {
+                t.cancel();
+            }
         }
         return result;
     }
