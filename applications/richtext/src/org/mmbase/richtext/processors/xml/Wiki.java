@@ -28,11 +28,13 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.3 2008-04-01 16:03:34 michiel Exp $
+ * @version $Id: Wiki.java,v 1.4 2008-04-22 14:47:13 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
 class Wiki {
+
+
     private static final Logger log = Logging.getLoggerInstance(Wiki.class);
     private static final long serialVersionUID = 1L;
 
@@ -69,7 +71,7 @@ class Wiki {
         return null; // not found
     }
 
-    /**
+   /**
      * Simply considers the id the node-number, but this could be sophisitcated on.
      */
     Node getNode(Cloud cloud, String id) {
