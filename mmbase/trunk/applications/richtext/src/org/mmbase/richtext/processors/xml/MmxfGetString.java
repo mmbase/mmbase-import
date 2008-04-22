@@ -30,11 +30,14 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.10 2008-04-01 16:03:15 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.11 2008-04-22 14:47:13 michiel Exp $
  * @since MMBase-1.8
  */
 
 public class MmxfGetString implements  Processor {
+    public static String MODE_SHOWBROKEN    = "org.mmbase.richtext.wiki.show_broken";
+    public static String MODE_LOADRELATIONS = "org.mmbase.richtext.wiki.load_relations";
+
     private static final Logger log = Logging.getLoggerInstance(MmxfGetString.class);
 
     private static final int serialVersionUID = 1;
@@ -72,16 +75,20 @@ public class MmxfGetString implements  Processor {
         Generator generator = getGenerator(node.getCloud());
         generator.setNamespaceAware(true);
         generator.add(node, field);
-        org.mmbase.bridge.NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "destination");
-        if (log.isDebugEnabled()) {
-            log.debug("Idrelated " + relatedNodes);
+
+        Object loadRelations = node.getCloud().getProperty(MODE_LOADRELATIONS);
+        if (loadRelations == null || Casting.toBoolean(loadRelations)) {
+            org.mmbase.bridge.NodeList relatedNodes = node.getRelatedNodes("object", "idrel", "destination");
+            if (log.isDebugEnabled()) {
+                log.debug("Idrelated " + relatedNodes);
+            }
+            generator.add(relatedNodes);
+            org.mmbase.bridge.RelationList relationsNodes = node.getRelations("idrel", node.getCloud().getNodeManager("object"), "destination");
+            if (log.isDebugEnabled()) {
+                log.debug("Idrelations " + relationsNodes);
+            }
+            generator.add(relationsNodes);
         }
-        generator.add(relatedNodes);
-        org.mmbase.bridge.RelationList relationsNodes = node.getRelations("idrel", node.getCloud().getNodeManager("object"), "destination");
-        if (log.isDebugEnabled()) {
-            log.debug("Idrelations " + relationsNodes);
-        }
-        generator.add(relationsNodes);
 
         // TODO. With advent of 'blocks' one deeper level must be queried here (see node.body.jspx)
         return generator.getDocument();
@@ -181,7 +188,7 @@ public class MmxfGetString implements  Processor {
                 return "";
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getClass() + ": " + e.getMessage(), e);
             return value;
         }
     }

@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.4 2008-04-22 11:16:59 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.5 2008-04-22 14:47:13 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -22,7 +22,7 @@
   <xsl:output method="text" omit-xml-declaration="yes" /> <!-- xhtml is a form of xml -->
 
   <xsl:param name="cloud">mmbase</xsl:param>
-  <xsl:param name="show_broken">false</xsl:param>
+  <xsl:param name="org.mmbase.richtext.wiki.show_broken">false</xsl:param>
 
   <xsl:template match="o:objects">
     <div class="objects">
@@ -84,7 +84,7 @@
     <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/o:field[@name = 'dnumber']] | $related_to_node[@id = $drelations/o:field[@name='snumber']]" />
 
     <xsl:choose>
-      <xsl:when test="count($relatednodes) &gt; 0 or $show_broken = 'true'" >
+      <xsl:when test="count($relatednodes) &gt; 0 or $org.mmbase.richtext.wiki.show_broken = 'true'" >
         <xsl:text>[</xsl:text><xsl:value-of select="@id" />
         <xsl:if test="count(*|text()) &gt; 1 or (count(*|text()) = 1 and count(text()) &gt; 0)">
           <xsl:text>:</xsl:text>
