@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.29.2.4 2008-03-11 11:51:35 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.5 2008-04-23 13:21:52 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
@@ -215,8 +215,7 @@ public class DocumentReader  {
             db.setEntityResolver(resolver);
 
         } catch(ParserConfigurationException pce) {
-            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
-            log.error(Logging.stackTrace(pce));
+            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested", pce);
             return null;
         }
         return db;
