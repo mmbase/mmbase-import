@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.27 2006-08-24 14:39:58 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.27.2.1 2008-04-23 13:21:38 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable, Serializable {
@@ -408,7 +408,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      */
 
     static class Entry implements java.io.Serializable {
-        private static final long serialVersionUID = 1L; 
+        private static final long serialVersionUID = 1L;
         private String prefix;
         private URL    dir;
         private ClassLoader classLoader;
@@ -454,7 +454,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
             } catch (Throwable t) {
                 log.warn(t);
             }
-            prefixLength = prefix.length(); 
+            prefixLength = prefix.length();
         }
 
         String getPrefix() {
@@ -490,7 +490,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
                 return dir != null && dir.equals(o);
             } else if (o instanceof Entry) {
                 Entry e = (Entry) o;
-                return dir != null ? 
+                return dir != null ?
                     dir.equals(e.dir) :
                     classLoader.equals(e.classLoader);
             } else {
@@ -518,9 +518,10 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
         System.out.println("Resolving with " + resolver);
         String href, base;
 
-        href = "xsl/list.xsl";  base = null;
-        System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
-        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/mmbase17/mmbase/edit/wizard/data/xsl/base.xsl";
+        href = "mm:xsl/list.xsl";
+        base = null;
+        //System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
+        href = "xsl/prompts.xsl";  base = "file:///home/mmbase/head/mmbase/edit/wizard/data/xsl/base.xsl";
         System.out.println("href: " + href + " base: " + base + " --> " + resolver.resolveToURL(href, base));
 
         FileOutputStream fos = new FileOutputStream("/tmp/uriresolver.ser");
