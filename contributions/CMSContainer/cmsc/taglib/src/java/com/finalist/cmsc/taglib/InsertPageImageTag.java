@@ -106,7 +106,7 @@ public class InsertPageImageTag extends CmscTag {
    private List<Integer> getImagesOfParent() {
       List<Page> pages = SiteManagement.getPagesFromPath(getPath());
 
-      if (pages.size() > 2) {
+      if (pages.size() > 1) {
 
          for (int i = pages.size() - 2; i > 0; i--) {
             if (pages.get(i).getPageImages().size() > 0)
