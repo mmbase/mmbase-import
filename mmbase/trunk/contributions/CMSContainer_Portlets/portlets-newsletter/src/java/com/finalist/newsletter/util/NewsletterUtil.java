@@ -3,13 +3,18 @@ package com.finalist.newsletter.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
+
+import com.finalist.cmsc.beans.om.ContentElement;
 
 public abstract class NewsletterUtil {
 
@@ -193,7 +198,41 @@ public abstract class NewsletterUtil {
       }
       return (null);
    }
-
+   
+   public static List<ContentElement> getArticlesByNewsletter(int newsletterNumber,int offset,int elementsPerPage,String orderBy,String direction) {
+      if (newsletterNumber > 0) {
+         List<ContentElement> articles = new ArrayList<ContentElement>();
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterNode = cloud.getNode(newsletterNumber);
+         NodeManager articleNodeManager = cloud.getNodeManager("article");         
+         NodeQuery  query =  Queries.createRelatedNodesQuery(newsletterNode,articleNodeManager,null,null);
+         Queries.addSortOrders(query, orderBy, direction);
+         query.setOffset(offset);
+         query.setMaxNumber(elementsPerPage);
+         NodeList articleList =query.getList();
+         if (articleList != null) {
+            for (int i = 0; i < articleList.size(); i++) {
+               Node articleNode = articleList.getNode(i);
+               ContentElement element = MMBaseNodeMapper.copyNode(articleNode, ContentElement.class);
+               articles.add(element);
+            }
+         }
+         
+         return (articles);
+      }
+      return (null);
+   }
+   public static int countArticlesByNewsletter(int newsletterNumber) {
+      if (newsletterNumber > 0) {
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node newsletterNode = cloud.getNode(newsletterNumber);
+         NodeManager articleNodeManager = cloud.getNodeManager("article");         
+         NodeQuery  query =  Queries.createRelatedNodesQuery(newsletterNode,articleNodeManager,null,null);
+         return Queries.count(query);
+      }
+      return (0);
+   }
+   
    public static int getDefaultTheme(int number) {
       int defaultTheme = 0;
       if (number > 0) {
