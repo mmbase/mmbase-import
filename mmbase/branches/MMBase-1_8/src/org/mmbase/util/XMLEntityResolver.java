@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.59 2006-01-17 12:25:21 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.59.2.1 2008-04-23 13:22:27 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -171,9 +171,9 @@ public class XMLEntityResolver implements EntityResolver {
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
-        if (! validate) {
+        if (! validate && systemId.endsWith(".dtd")) {
             log.debug("Not validating, not need to resolve DTD,  returning empty resource");
-            return new InputSource(new ByteArrayInputStream(new byte[0])); 
+            return new InputSource(new ByteArrayInputStream(new byte[0]));
         }
 
         InputStream definitionStream = null;
@@ -201,7 +201,7 @@ public class XMLEntityResolver implements EntityResolver {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Cannot resolve " + systemId + ", but needed for validation leaving to parser.");
-                    log.debug("Find culpit: " + Logging.stackTrace(new Exception()));
+                    log.debug("Find culprit: " + Logging.stackTrace(new Exception()));
                 }
                 return null;
             } else {
@@ -234,12 +234,12 @@ public class XMLEntityResolver implements EntityResolver {
                     }
                 }
                 if (definitionStream == null) {
-                    
+
                     if (resolveBase != null) {
                         log.error("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     } else {
                         log.service("Could not find MMBase entity '" + publicId + " " +  systemId + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
-                        
+
                     }
                     // not sure, probably should return 'null' after all, then it will be resolved with internet.
                     // but this can not happen, in fact...
