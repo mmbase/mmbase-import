@@ -75,8 +75,8 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Last publication number</guiname>
-				<guiname xml:lang="en">Laatste publicatie nummer</guiname>
+				<guiname xml:lang="en">Last publication number</guiname>
+				<guiname xml:lang="nl">Laatste publicatie nummer</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -121,7 +121,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Gepauseerd</guiname>
+				<guiname xml:lang="nl">Pauze start datum</guiname>
 				<guiname xml:lang="en">Paused start date</guiname>
 			</gui>
 			<editor>
@@ -143,7 +143,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Gepauseerd</guiname>
+				<guiname xml:lang="nl">Pauze stop datum</guiname>
 				<guiname xml:lang="en">Paused stop date</guiname>
 			</gui>
 			<editor>
@@ -259,11 +259,11 @@
 		</field>
       <field>
 			<descriptions>
-				<description xml:lang="nl">Send when empty</description>
+				<description xml:lang="nl">Verstuur als leeg gelaten</description>
 				<description xml:lang="en">Send when empty</description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Send when empty</guiname>
+				<guiname xml:lang="nl">Verstuur als leeg gelaten</guiname>
 				<guiname xml:lang="en">Send when empty</guiname>
 			</gui>
 			<editor>
@@ -285,7 +285,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Text when empty</guiname>
+				<guiname xml:lang="nl">Tekst als leeggelaten</guiname>
 				<guiname xml:lang="en">Text when empty</guiname>
 			</gui>
 			<editor>
@@ -307,7 +307,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Schedule</guiname>
+				<guiname xml:lang="nl">Planning</guiname>
 				<guiname xml:lang="en">Schedule</guiname>
 			</gui>
 			<editor>
@@ -329,8 +329,8 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">last create</guiname>
-				<guiname xml:lang="en">last create</guiname>
+				<guiname xml:lang="nl">Laatste creatiedatum</guiname>
+				<guiname xml:lang="en">last create date</guiname>
 			</gui>
 			<editor>
 				<positions>
