@@ -16,7 +16,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.89.2.3 2007-12-11 14:45:38 michiel Exp $
+ * @version $Id: Casting.java,v 1.89.2.4 2008-04-23 13:23:29 michiel Exp $
  */
 
 import java.util.*;
@@ -524,6 +524,9 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static Node toNode(Object i, Cloud cloud) {
+        if (log.isDebugEnabled()) {
+            log.debug("Convering to node " + i + " using " + cloud);
+        }
         Node res = null;
         if (i instanceof Node) {
             res = (Node)i;
