@@ -25,11 +25,10 @@
       %><mm:node number="<%= sEvenementId %>">
          <mm:field name="titel" jspvar="stitel" vartype="String" write="false"><%sTitel2 = stitel;%></mm:field>
          <%
-            searchResults.add("<span class=\"colortitle\">" + sRubriek2 + "</span><br/>"
-               + "<b>" + sPagina2 + "</b>"
-               + "<ul style=\"margin:0px;margin-left:16px;\">"
-               + "<li><a href=\"" + templateUrl + "e=" + Evenement.getNextOccurence(sEvenementId) + "\">" + sTitel2 + "</a></li>"
-               + "</ul><br/>");
+            searchResults.add("<ul><li>"
+                  + "<a href=\"" + templateUrl + "e=" + Evenement.getNextOccurence(sEvenementId) + "\">" + sTitel2 + "</a><br/>"
+                  + "<span class=\"colortitle\">" + sRubriek2 + "</span> - <b>" + sPagina2 + "</b>"
+                  + "</li></ul><br/>");         
          %>
       </mm:node><%
    }       
