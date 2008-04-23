@@ -46,9 +46,8 @@ public class Subscription {
 	}
 
 	public Newsletter getNewsletter() {
-		return this.newsletter;
+		return newsletter;
 	}
-
 
 	public Set<Tag> getTags() {
 		return tags;
@@ -57,8 +56,6 @@ public class Subscription {
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
-
-	
 
 	public void setNewsletter(Newsletter newsletter) {
 		this.newsletter = newsletter;

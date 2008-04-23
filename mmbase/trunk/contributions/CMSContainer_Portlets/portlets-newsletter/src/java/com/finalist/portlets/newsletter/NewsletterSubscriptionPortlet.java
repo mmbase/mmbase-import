@@ -6,19 +6,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.portlet.*;
-import javax.servlet.ServletContext;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletSession;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.WindowState;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
-import org.apache.pluto.core.impl.PortletConfigImpl;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
 
@@ -34,11 +40,10 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
       PortletPreferences preferences = request.getPreferences();
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
-      System.out.println("doEditDefaults");
       if (newsletters != null) {
          request.setAttribute(ALLOWED_NEWSLETTERS, newsletters);
       }
-
+      
       super.doEditDefaults(request, response);
    }
 
@@ -48,57 +53,25 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       PortletPreferences preferences = request.getPreferences();
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 
-      NewsletterSubscriptionServices services = new NewsletterSubscriptionServicesImpl();
-
-      String userName = "username";
-      int userId = 12345;
-
-/*
-List<Integer> availableStatusOptions = NewsletterSubscriptionUtil.getStatusOptions();
-request.setAttribute(NewsletterSubscriptionUtil.STATUS_OPTIONS, availableStatusOptions);
-
-List<Integer> subscribedThemes = NewsletterSubscriptionUtil.getUserSubscribedThemes(userName);
-List<Integer> subscribedNewsletters = NewsletterSubscriptionUtil.getUserSubscribedNewsletters(userName);
-
-if (subscribedNewsletters != null && subscribedNewsletters.size() > 0) {
-   request.setAttribute(NEWSLETTERSUBSCRIPTIONS, subscribedNewsletters);
-}
-
-if (subscribedThemes != null && subscribedThemes.size() > 0) {
-   request.setAttribute(NewsletterSubscriptionUtil.NEWSLETTER_THEME, subscribedThemes);
-}
-
-if ((subscribedThemes != null && subscribedThemes.size() > 0) || (subscribedNewsletters != null && subscribedNewsletters.size() > 0)) {
-   request.setAttribute(HAS_SUBSCRIPTIONS, true);
-   String status = NewsletterSubscriptionUtil.getSubscriptionStatus(userName);
-   request.setAttribute(NewsletterSubscriptionUtil.SUBSCRIPTION_STATUS_KEY, status);
-   String preferredMimeType = NewsletterSubscriptionUtil.getPreferredMimeType(userName);
-   request.setAttribute(NewsletterSubscriptionUtil.PREFERRED_MIMETYPE, preferredMimeType);
-}*/
-      if (null == newsletters) {
-         doInclude("view", "/fragment/null.jsp", request, response);
-      }
-      else {
-         if (services.hasSubscription(userId)) {
-            List<Subscription> subscriptionList = services.getSubscriptionList(newsletters, userId);
-            request.setAttribute("subscriptionList", subscriptionList);
-            doInclude("view", "/fragment/list.jsp", request, response);
+      	 NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+      	 int userId = 842170; 
+         if(null==newsletters)
+         {
+        	doInclude("view", "/fragment/null.jsp", request, response);
          }
-         else {
-            List<Subscription> subscriptionList = services.getNewSubscription(newsletters);
-            Iterator it = subscriptionList.iterator();
-            for (int i = 0; i < subscriptionList.size(); i++) {
-               Subscription subscription = (Subscription) it.next();
-               Newsletter newsletter = subscription.getNewsletter();
-               String title = newsletter.getTitle();
-               Set<Tag> tags = subscription.getTags();
-               int newsletterId = subscription.getNewsletter().getId();
-               System.out.println("----title=" + title + ";newsletterId=" + newsletterId);
-            }
-            request.setAttribute("subscriptionList", subscriptionList);
-            doInclude("view", "/fragment/welcome.jsp", request, response);
-         }
-      }
+         else 
+        	 {
+	        	 if(services.hasSubscription(userId)){
+	        	 List<Subscription> subscriptionList = services.getSubscriptionList(newsletters, userId);
+	        	 request.setAttribute("subscriptionList", subscriptionList);
+	             doInclude("view", "/fragment/list.jsp", request, response);
+	        	 } 
+	        	 else {
+	        	 List<Subscription> subscriptionList = services.getNewSubscription(newsletters);
+	        	 request.setAttribute("subscriptionList", subscriptionList);
+	             doInclude("view", "/fragment/welcome.jsp", request, response);
+	        	 }
+        	 }
    }
 
    private String getUserName(PortletSession session) {
@@ -195,20 +168,12 @@ if ((subscribedThemes != null && subscribedThemes.size() > 0) || (subscribedNews
             response.setWindowState(WindowState.MAXIMIZED);
             if (action.equals(ACTION_SUBSCRIBE)) {
                processNewSubscription(request, response);
-            }
-            else if (action.equals(ACTION_CHANGE)) {
+            } else if (action.equals(ACTION_CHANGE)) {
                processChangeSubscription(request, response);
-            }
-            else if (action.equals(ACTION_TERMINATE)) {
+            } else if (action.equals(ACTION_TERMINATE)) {
                processTermination(request, response);
             }
          }
       }
-   }
-
-   protected ServletContext getServletContext(PortletRequest request) {
-      PortletConfigImpl portletConfigImpl = (PortletConfigImpl) request.getAttribute("javax.portlet.config ");
-      ServletContext servletContext = portletConfigImpl.getServletConfig().getServletContext();
-      return servletContext;
    }
 }

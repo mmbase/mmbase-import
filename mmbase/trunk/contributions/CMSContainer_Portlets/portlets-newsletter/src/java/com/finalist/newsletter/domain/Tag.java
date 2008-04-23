@@ -30,4 +30,21 @@ public class Tag {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Tag) {
+			Tag tag = (Tag) obj;
+			if(this.name.equals(tag.name)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
+	}
+	
 }
