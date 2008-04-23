@@ -20,11 +20,10 @@
                templateUrl = ph.createPaginaUrl(sPageId,request.getContextPath());
                templateUrl += (templateUrl.indexOf("?") ==-1 ? "?" : "&");
             
-               searchResults.add("<span class=\"colortitle\">" + sRubriek + "</span><br/>"
-                  + "<b>" + sPagina + "</b>"
-                  + "<ul style=\"margin:0px;margin-left:16px;\">"
-                  + "<li><a href=\"" + templateUrl + "id=" + sArticleId + "\">" + sTitel + "</a></li>"
-                  + "</ul><br/>");
+               searchResults.add("<ul><li>"
+                  + "<a href=\"" + templateUrl + "id=" + sArticleId + "\">" + sTitel + "</a><br/>"
+                  + "<span class=\"colortitle\">" + sRubriek + "</span> - <b>" + sPagina + "</b>"
+                  + "</li></ul><br/>");
             %>
             </mm:field>
          </mm:related>
