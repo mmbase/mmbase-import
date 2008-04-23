@@ -1,151 +1,179 @@
 package com.finalist.portlets.newsletter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
-import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import net.sf.mmapps.commons.util.StringUtil;
+
+import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.beans.om.NavigationItem;
-import com.finalist.cmsc.beans.om.Page;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterContentPortlet extends AbstractContentPortlet {
 
-   private static final String KEY_DUPLICATEHANDLERS = "duplicatehandlers";
-   private static final String KEY_DEFAULTTHEME = "defaulttheme";
-   private static final String KEY_ADDITIONAL_THEMES = "additionalthemes";
-   private static final String KEY_DEFAULTARTICLES = "defaultarticles";
+   protected static final String DISPLAYTYPE_PARAM = "displayType";
 
-   private static ResourceBundle rb = ResourceBundle.getBundle("portlets-newslettercontent");
+   protected static final String USE_PAGING = "usePaging";
+   protected static final String OFFSET = "pager.offset";
+   protected static final String SHOW_PAGES = "showPages";
+   protected static final String ELEMENTS_PER_PAGE = "elementsPerPage";
+   protected static final String PAGES_INDEX = "pagesIndex";
+   protected static final String INDEX_POSITION = "position";
 
-   public static final String KEY_ARTICLES = "articles";
-
-   public static final String KEY_DISPLAYTYPE = "displaytype";
-   public static final String DISPLAYTYPE_NORMAL = "all";
-   public static final String DISPLAYTYPE_PERSONALIZED = "personalized";
-   public static final String DISPLAYTYPE_DEFAULT = DISPLAYTYPE_NORMAL;
-
-   public static final String DUPLICATE_HANDLING_TYPE = "duplicatehandling";
-   public static final String DUPLICATE_HANDLING_SHOW = rb.getString("duplicatehandling.show");
-   public static final String DUPLICATE_HANDLING_HIDE = rb.getString("duplicatehandling.hide");
-   public static final String DUPLICATE_HANDLING_TYPE_DEFAULT = DUPLICATE_HANDLING_HIDE;
-
-   private static List<String> duplicateHandlers = new ArrayList<String>();
-
-   static {
-      duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_HIDE);
-      duplicateHandlers.add(NewsletterContentPortlet.DUPLICATE_HANDLING_SHOW);      
-   }
-
-
-   private String determineDisplayType(RenderRequest request) {
-      String displayType = (String) request.getAttribute(KEY_DISPLAYTYPE);
-      if (displayType == null) {
-         displayType = DISPLAYTYPE_DEFAULT;
-      }
-      return displayType;
-   }
-
+   protected static final String KEY_DEFAULTARTICLES = "defaultarticles";
+   protected static final String ARTICLES_SORT_ORDERBY = "orderby";
+   protected static final String ARTICLES_SORT_DIRECTION = "direction";
+   protected static final String ARCHIVE_PAGE = "archivepage";
+   protected static final String START_INDEX = "startindex";
+   protected static final String TOTAL_ELEMENTS = "totalElements";
+   protected static final String ELEMENTS = "elements";
+   protected static final String TYPES = "types";
+   protected static final String MAX_ELEMENTS = "maxElements";
    @Override
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
-      request.setAttribute(KEY_DUPLICATEHANDLERS, duplicateHandlers);
       super.doEditDefaults(request, response);
    }
 
    @Override
-   protected void doView(RenderRequest request, RenderResponse res) throws PortletException, java.io.IOException {
-       
+   protected void doView(RenderRequest request, RenderResponse response) throws PortletException, java.io.IOException {
       PortletPreferences preferences = request.getPreferences();
-      PortletSession session = request.getPortletSession(true);
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-      String duplicateHandling = preferences.getValue(DUPLICATE_HANDLING_TYPE, null);
-
       String currentPath = getUrlPath(request);
       NavigationItem result = SiteManagement.getNavigationItemFromPath(currentPath);
 
       if (result != null) {
          int itemNumber = result.getId();
-
-         if (NewsletterUtil.isNewsletterOrPublication(itemNumber)) {
-            String displayType = determineDisplayType(request);
-
-            int defaultTheme = NewsletterUtil.getDefaultTheme(itemNumber);
-            List<Integer> defaultArticles = NewsletterUtil.getArticlesForTheme(defaultTheme);
-            if (defaultArticles != null && defaultArticles.size() > 0) {
-               request.setAttribute(KEY_DEFAULTTHEME, defaultTheme);
-               request.setAttribute(KEY_DEFAULTARTICLES, defaultArticles);
-            }
-
-            List<Integer> additionalThemes = null;
-            List<Integer> availableThemes = NewsletterUtil.getAllThemes(itemNumber);
-            if (availableThemes != null && availableThemes.size() > 0) {
-               if (displayType.equals(DISPLAYTYPE_PERSONALIZED)) {
-                  String userName = getUserName(session);
-                  if (userName != null) {
-                     additionalThemes = NewsletterSubscriptionUtil.compareToUserSubscribedThemes(availableThemes, userName, itemNumber);
-                  }
-               } else {
-                  additionalThemes = availableThemes;
-               }
-            }
-
-            if (additionalThemes != null && additionalThemes.size() > 0) {
-               List<Integer> temporaryArticleListing = new ArrayList<Integer>();
-               temporaryArticleListing.addAll(defaultArticles);
-
-               for (int i = 0; i < additionalThemes.size(); i++) {
-                  int themeNumber = additionalThemes.get(i);
-                  List<Integer> articles = NewsletterUtil.getArticlesForTheme(themeNumber);
-                  if (duplicateHandling != null && duplicateHandling.equals(DUPLICATE_HANDLING_HIDE)) {
-                     articles = NewsletterUtil.removeDuplicates(temporaryArticleListing, articles);
-                  }
-                  if (articles != null && articles.size() > 0) {
-                     request.setAttribute(KEY_ARTICLES + themeNumber, articles);
-                     for (int a = 0; a < articles.size(); a++) {
-                        temporaryArticleListing.add(articles.get(a));
-                     }
-                  } else {
-                     additionalThemes.remove(additionalThemes.indexOf(themeNumber));
-                     i--;
-                  }
-               }
-               request.setAttribute(KEY_ADDITIONAL_THEMES, additionalThemes);
-            }
-         } else {
-            throw new RuntimeException("Newsletterportlet placed on non-newsletter node");
-         }
-      } else {
+         addContentElements(request,itemNumber);
+      } 
+      else {
          throw new RuntimeException("The page number could not be found");
       }
-      doInclude("view", template, request, res);
+      doInclude("view", template, request, response);
+   }
+   protected void addContentElements(RenderRequest req, int itemNumber) {
+      String elementId = req.getParameter(ELEMENT_ID);
+      if (StringUtil.isEmpty(elementId)) {
+         PortletPreferences preferences = req.getPreferences();
+         String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
+         List<String> contenttypes = SiteManagement.getContentTypes(portletId);
+
+         int offset = 0;
+         String currentOffset = req.getParameter(OFFSET);
+         if (!StringUtil.isEmpty(currentOffset)) {
+            offset = Integer.parseInt(currentOffset);
+         }
+         int startIndex = Integer.parseInt(preferences.getValue(START_INDEX, "1")) - 1;
+         if (startIndex > 0) {
+            offset = offset + startIndex;
+         }
+         setAttribute(req, "offset", offset);
+
+         String orderby = preferences.getValue(ARTICLES_SORT_ORDERBY, null);
+         String direction = preferences.getValue(ARTICLES_SORT_DIRECTION, null);
+         String useLifecycle = preferences.getValue(USE_LIFECYCLE, null);
+
+         int maxElements = Integer.parseInt(preferences.getValue(MAX_ELEMENTS, "-1"));
+         if (maxElements <= 0) {
+            maxElements = Integer.MAX_VALUE;
+         }
+         int elementsPerPage = Integer.parseInt(preferences.getValue(ELEMENTS_PER_PAGE, "-1"));
+         if (elementsPerPage <= 0) {
+            elementsPerPage = Integer.MAX_VALUE;
+         }
+         elementsPerPage = Math.min(elementsPerPage, maxElements);
+
+
+         boolean useLifecycleBool = Boolean.valueOf(useLifecycle).booleanValue();
+         if (useLifecycleBool && ServerUtil.isLive()) {
+            // A live server will remove expired nodes.
+            useLifecycleBool = false;
+         }
+
+         int totalItems = countContentElements(itemNumber);
+         if (startIndex > 0) {
+            totalItems = totalItems - startIndex;
+         }
+
+         List<ContentElement> elements = getContentElements(req,itemNumber,offset,elementsPerPage, orderby, direction);
+
+         setAttribute(req, ELEMENTS, elements);
+         if (contenttypes != null && !contenttypes.isEmpty()) {
+            setAttribute(req, TYPES, contenttypes);
+         }
+         setAttribute(req, TOTAL_ELEMENTS, Math.min(maxElements, totalItems));
+         setAttribute(req, ELEMENTS_PER_PAGE, elementsPerPage);
+
+         String pagesIndex = preferences.getValue(PAGES_INDEX, null);
+         if (StringUtil.isEmpty(pagesIndex)) {
+            setAttribute(req, PAGES_INDEX, "center");
+         }
+
+         String showPages = preferences.getValue(SHOW_PAGES, null);
+         if (StringUtil.isEmpty(showPages)) {
+            setAttribute(req, SHOW_PAGES, 10);
+         }
+
+         boolean usePaging = Boolean.valueOf(preferences.getValue(USE_PAGING, "true"));
+         if (usePaging) {
+            usePaging = totalItems > elementsPerPage;
+         }
+         setAttribute(req, USE_PAGING, usePaging);
+
+         String indexPosition = preferences.getValue(INDEX_POSITION, null);
+         if (StringUtil.isEmpty(indexPosition)) {
+            setAttribute(req, INDEX_POSITION, "bottom");
+         }
+      }
+      else {
+         setMetaData(req, elementId);
+      }
+   }
+   
+   protected int countContentElements(int itemNumber) {
+      int totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber);
+      
+      return totalItems;
    }
 
-   private String getUserName(PortletSession session) {
-      String userName = (String) session.getAttribute("userName", PortletSession.APPLICATION_SCOPE);
-      return userName;
+   protected List<ContentElement> getContentElements(RenderRequest req, int itemNumber,int offset,int elementsPerPage, String orderBy, String direction) {
+
+      List<ContentElement> elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,offset,elementsPerPage,orderBy,direction);
+      return elements;
    }
 
+
+   public int getOffset(int currentPage, int pageSize) {
+      return ((currentPage - 1) * pageSize) + 1;
+   }
+   
    @Override
    public void processEditDefaults(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
-      String duplicateHandling = request.getParameter(DUPLICATE_HANDLING_TYPE);
-      if (duplicateHandling == null) {
-         duplicateHandling = DUPLICATE_HANDLING_TYPE_DEFAULT;
-      }
-      setPortletParameter(portletId, DUPLICATE_HANDLING_TYPE, duplicateHandling);
+      
+      String orderBy = request.getParameter(ARTICLES_SORT_ORDERBY);
+      String direction = request.getParameter(ARTICLES_SORT_DIRECTION);
+      setPortletParameter(portletId, ARTICLES_SORT_ORDERBY, orderBy);
+      setPortletParameter(portletId, ARTICLES_SORT_DIRECTION, direction);
+      
+      setPortletParameter(portletId, USE_LIFECYCLE, request.getParameter(USE_LIFECYCLE));
+      setPortletParameter(portletId, ELEMENTS_PER_PAGE, request.getParameter(ELEMENTS_PER_PAGE));
+      setPortletParameter(portletId, SHOW_PAGES, request.getParameter(SHOW_PAGES));
+      setPortletParameter(portletId, USE_PAGING, request.getParameter(USE_PAGING));
+      setPortletParameter(portletId, PAGES_INDEX, request.getParameter(PAGES_INDEX));
+      setPortletParameter(portletId, INDEX_POSITION, request.getParameter(INDEX_POSITION));
+      setPortletParameter(portletId, MAX_ELEMENTS, request.getParameter(MAX_ELEMENTS));
       super.processEditDefaults(request, response);
    }
 }

@@ -48,18 +48,30 @@
 					</cmsc:select>
 				</td>
 			</tr>
-			<tr>
+         <tr>
 				<td>
-					<fmt:message key="edit_defaults.duplicatehandling" />
+					<fmt:message key="edit_defaults.orderby" />
 				</td>
 				<td>
-					<cmsc:select var="duplicatehandling">
-						<c:forEach var="v" items="${duplicatehandlers}">
-							<cmsc:option value="${v}" name="${v}" />
-						</c:forEach>
-					</cmsc:select>
+               <cmsc:select var="orderby">
+		         	<cmsc:option value="title" message="edit_defaults.orderby.title" />
+		         	<cmsc:option value="description" message="edit_defaults.orderby.description" />
+			         <cmsc:option value="creationdate" message="edit_defaults.orderby.creationdate" />
+			         <cmsc:option value="lastmodifieddate" message="edit_defaults.orderby.lastmodifieddate" />
+			         <cmsc:option value="publishdate" message="edit_defaults.orderby.publishdate" />
+			         <cmsc:option value="expirydate" message="edit_defaults.orderby.expirydate" />
+	         	</cmsc:select>
 				</td>
-			</tr>
+		  </tr>
+	     <tr>
+		     <td><fmt:message key="edit_defaults.direction" /></td>
+		     <td>
+              <cmsc:select var="direction">
+                 <cmsc:option value="DOWN" message="edit_defaults.descending" />
+			        <cmsc:option value="UP" message="edit_defaults.ascending" />
+		        </cmsc:select>
+           </td>
+	     </tr>
 			<tr>
 				<td colspan="2">
 					<a href="javascript:document.forms['<portlet:namespace />form'].submit()" class="button">
@@ -67,6 +79,6 @@
 				</td>
 			</tr>
 		</table>
-		${themes}
+		
 	</form>
 </div>
