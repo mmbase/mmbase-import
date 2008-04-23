@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyNewsUrlConverter.java,v 1.16 2008-02-22 14:06:25 michiel Exp $
+ * @version $Id: MyNewsUrlConverter.java,v 1.17 2008-04-23 08:21:39 michiel Exp $
  * @since MMBase-1.9
  */
 public class MyNewsUrlConverter implements UrlConverter {
@@ -137,7 +137,7 @@ public class MyNewsUrlConverter implements UrlConverter {
                 log.debug("Going to filter " + Arrays.asList(path));
             }
             if (path.length >= 2) {
-                StringBuilder result = new StringBuilder("/mmbase/components/mynews/render.jspx");
+                StringBuilder result = new StringBuilder("/mmbase/mynews/render.jspx");
                 assert path[0].equals("");
                 assert path[1].equals(directory.substring(1));
                 if (path.length == 2) {
