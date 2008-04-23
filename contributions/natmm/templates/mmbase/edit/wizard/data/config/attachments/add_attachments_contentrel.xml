@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="contentrel" destination="attachments"  minoccurs="0" maxoccurs="*"
-        orderby="expiredate" ordertype="number">
+        orderby="field[@name='pos']" ordertype="number">
     <title>bijlagen</title>
     <description></description>
     <command name="search" nodepath="attachments" fields="title,filename" age="-1">
@@ -24,7 +24,7 @@
     </item>
     <action type="create">
         <relation role="contentrel" destinationtype="attachments">
-            <field name="pos">-1</field>
+            <field name="pos">{sum(//relation[@role='contentrel' and @lastitem='true' and object/@type ='attachments']/field[@name='pos'])+{$pos}}</field>
         </relation>
     </action>
 </list>
