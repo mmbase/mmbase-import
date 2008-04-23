@@ -1,5 +1,4 @@
 package com.finalist.newsletter.services;
-//
 
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
@@ -33,8 +32,6 @@ public class CommunityModuleAdapter {
             String username = ((UserDetails) obj).getUsername();
             PersonService personService = (PersonService) ctx.getBean("personService");
             person = personService.getPersonByUserId(username);
-
-            System.out.println("000000000000" + username);
          }
       }
 

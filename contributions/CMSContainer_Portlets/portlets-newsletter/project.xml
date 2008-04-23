@@ -10,19 +10,19 @@
 			<artifactId>cmsc-contentrepository</artifactId>
 			<version>${cmsc.version}</version>
 			<type>jar</type>
-		</dependency> 
+		</dependency>
    		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-sitemanagement</artifactId>
 			<version>${cmsc.version}</version>
 			<type>jar</type>
-		</dependency> 
+		</dependency>
    		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-contentrepository</artifactId>
 			<version>${cmsc.version}</version>
 			<type>jar</type>
-		</dependency> 
+		</dependency>
    		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-modules-community</artifactId>
@@ -34,7 +34,7 @@
 			<artifactId>cmsc-contentrepository</artifactId>
 			<version>${cmsc.version}</version>
 			<type>jar</type>
-		</dependency> 
+		</dependency>
    		<dependency>
 			<groupId>finalist</groupId>
 			<artifactId>cmsc-portlets-login</artifactId>
@@ -68,6 +68,15 @@
 	        <war.bundle>${war.bundle}</war.bundle>
 	      </properties>
 	    </dependency>
-	</dependencies>
+      <dependency>
+         <groupId>acegisecurity</groupId>
+         <artifactId>acegi-security</artifactId>
+         <version>1.0.6</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
+   </dependencies>
 </project>
 
