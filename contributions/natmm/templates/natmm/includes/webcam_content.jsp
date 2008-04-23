@@ -38,7 +38,7 @@ String attachmentID = request.getParameter("at");
 	<p>
 	<br/>
 
-	<mm:related path="contentrel,attachments" fields="attachments.titel">
+	<mm:related path="contentrel,attachments" fields="contentrel.pos,attachments.titel" orderby="contentrel.pos">
 	    <mm:field name="attachments.number" jspvar="pagina_number" vartype="String" write="false">  
 	    <mm:first>
 	       <span class="colortitle">Highlight video's</span>
