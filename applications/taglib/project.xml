@@ -30,16 +30,16 @@ See http://www.MMBase.org/license
   <build>
     <resources>
       <resource>
-        <directory>${maven.build.dir}/generated-tld/</directory>
-        <targetPath>META-INF</targetPath>
-        <includes>
-          <include>**/*.tld</include>
+	<directory>${maven.build.dir}/generated-tld/</directory>
+	<targetPath>META-INF</targetPath>
+	<includes>
+	  <include>**/*.tld</include>
         </includes>
         <filtering>false</filtering>
       </resource>
       <resource>
         <directory>${basedir}/src</directory>
-        <includes>
+	<includes>
           <include>**/*.xml</include>
           <include>**/*.dtd</include>
           <include>**/*.properties</include>
@@ -50,8 +50,13 @@ See http://www.MMBase.org/license
         <directory>${basedir}/META-INF</directory>
         <targetPath>META-INF</targetPath>
         <includes>
-          <include>**/*.*</include>
-        </includes>
+	  <include>**/*.*</include>
+	</includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+	<directory>${basedir}/config</directory>
+        <targetPath>org/mmbase/config</targetPath>
         <filtering>false</filtering>
       </resource>
     </resources>
