@@ -26,7 +26,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39.2.5 2008-02-18 12:52:00 michiel Exp $
+ * @version $Id: Generator.java,v 1.39.2.6 2008-04-23 13:29:17 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -43,6 +43,7 @@ public class Generator {
 
     private boolean namespaceAware = false;
 
+    private boolean getElementByIdWorks = false;
     /**
      * To create documents representing structures from the cloud, it
      * needs a documentBuilder, to contruct the DOM Document, and the
@@ -177,7 +178,9 @@ public class Generator {
         Element object = getNode(node);
 
         if (! (object.getFirstChild() instanceof Element)) {
-            log.warn("Cannot find first field of " + XMLWriter.write(object, false));
+            Node firstChild = object.getFirstChild();
+            log.warn("Cannot find first field of " + XMLWriter.write(object, false) + " for " + node);
+            log.warn(firstChild == null ? "NULL" : ("" + firstChild.getClass() + " " + firstChild.getNodeName()), new Exception());
             return object;
         }
         // get the field...
@@ -278,21 +281,26 @@ public class Generator {
 
     protected Element getElementById(Node n, String id) {
 
-        NodeList list = n.getChildNodes();
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            if (node instanceof Element) {
-                if (getAttribute((Element) node, "id").equals(id)) {
-                    return (Element) node;
+        if (getElementByIdWorks) {
+            object = getDocument().getElementById("" + node.getNumber());
+        } else {
+            NodeList list = n.getChildNodes();
+            for (int i = 0 ; i < list.getLength(); i++) {
+                Node node = list.item(i);
+                if (node instanceof Element) {
+                    if (getAttribute((Element) node, "id").equals(id)) {
+                        return (Element) node;
+                    }
                 }
             }
+            for (int i = 0 ; i < list.getLength(); i++) {
+                Node node = list.item(i);
+                Element subs = getElementById(node, id);
+                if (subs != null) return subs;
+            }
+
+            return null;
         }
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Node node = list.item(i);
-            Element subs = getElementById(node, id);
-            if (subs != null) return subs;
-        }
-        return null;
 
     }
 
@@ -310,6 +318,7 @@ public class Generator {
         try {
             java.lang.reflect.Method m =  cl.getMethod("setIdAttribute", new Class[] {String.class, Boolean.TYPE});
             m.invoke(object, new Object[] {name, Boolean.TRUE});
+            getElementByIdWorks = true;
         } catch(NoSuchMethodException nsme) {
             log.warn(nsme + "Try a better dom implementation. This one sucks.", nsme);
         } catch(Exception iae) {
@@ -325,14 +334,8 @@ public class Generator {
 
         // if we are a relation,.. behave like one!
         // why do we find it out now, and not before?
-        boolean getElementByIdWorks = false;
-        Element object = null;
-        if (getElementByIdWorks) {
-            // Michiel: I tried it by specifieing id as ID in dtd, but that also doesn't make it work.
-            object = getDocument().getElementById("" + node.getNumber());
-        } else {
-            object = getElementById(getDocument(), "" + node.getNumber());
-        }
+
+        Element object = getElementById(getDocument(), "" + node.getNumber());
 
         if (object != null)
             return object;
