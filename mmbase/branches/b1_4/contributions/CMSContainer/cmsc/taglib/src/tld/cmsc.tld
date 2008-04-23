@@ -228,7 +228,7 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The method of inherit images from parent page</description>
+            <description>The method of inherit images from parent page, options: "override" (to override the parent options), "directly" (to merge all the parent images) and "false" (for no inheritance, default)</description>
             <name>inherit</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
