@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.17 2008-04-22 08:11:07 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.18 2008-04-23 07:24:53 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -443,7 +443,7 @@ MMBaseSearcher.prototype.totalSize = function(size) {
     var span = $(this.div).find("caption span.size")[0];
     if (size == null) {
 	if (this.totalsize == -1) {
-	    this.totalsize = span.textContent;
+	    this.totalsize = parseInt(span.textContent);
 	}
     } else {
 	span.textContent = size;
@@ -452,26 +452,26 @@ MMBaseSearcher.prototype.totalSize = function(size) {
     return this.totalsize;
 }
 
-MMBaseSearcher.prototype.last= function(size) {
+MMBaseSearcher.prototype.lastIndex = function(size) {
     var span = $(this.div).find("caption span.last")[0];
     if (size == null) {
 	if (this.last == -1) {
-	    this.last = span.textContent;
+	    this.last = parseInt(span.textContent);
 	}
     } else {
 	span.textContent = size;
-	this.last= size;
+	this.last = size;
     }
     return this.last;
 }
 
 MMBaseSearcher.prototype.inc = function() {
-    this.totalSize(this.totalSize() + 1);
-    this.foundSize(this.foundSize() + 1);
+    this.totalSize(1 + this.totalSize());
+    this.lastIndex(1 + this.lastIndex());
 }
 MMBaseSearcher.prototype.dec = function() {
-    this.totalSize(this.totalSize() - 1);
-    this.foundSize(this.foundSize() - 1);
+    this.totalSize(-1 + this.totalSize());
+    this.lastIndex(-1 + this.lastIndex());
 }
 
 
