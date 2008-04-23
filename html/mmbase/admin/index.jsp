@@ -74,7 +74,7 @@
                               <mm:frameworkparam name="component">${b.component.name}</mm:frameworkparam>
                               <mm:frameworkparam name="block">${b.name}</mm:frameworkparam>
                               <li class="${b.name eq block and subcat.component.name eq component ? 'current' : ''}">
-                                <a title="${mm:string(b.description)}" href="${_}">${mm:string(b.title)}
+                                <a title="${mm:string(b.description)}" href="${_}">${mm:escape('text/xml', mm:string(b.title))}
                                 <span class="component">(${b.component.name})</span>
                                 </a>
                               </li>
@@ -90,7 +90,7 @@
             </div>
              <div id="content">
               <c:catch var="exception">
-                <h2 class="top">${mm:string(blockObject.title)}</h2>
+                <h2 class="top">${mm:string('text/xml', mm:string(blockObject.title))}</h2>
                 <mm:component debug="xml" name="$component" block="${block}">
                   <mm:frameworkparam name="category">${category}</mm:frameworkparam>
                 </mm:component>
