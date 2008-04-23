@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * configured with an XML 'framework.xml'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.16 2008-04-18 13:47:13 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.17 2008-04-23 07:37:10 michiel Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {
@@ -200,7 +200,7 @@ public class BasicFramework extends Framework {
     /**
      */
     public Parameter[] getParameterDefinition() {
-        return new Parameter[] { ACTION, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
+        return new Parameter[] { ACTION, Parameter.REQUEST, new Parameter.Wrapper(urlConverter.getParameterDefinition())};
     }
 
     public Parameters createParameters() {
@@ -235,6 +235,7 @@ public class BasicFramework extends Framework {
      */
     public void render(Renderer renderer, Parameters blockParameters, Parameters frameworkParameters, Writer w, Renderer.WindowState windowState) throws FrameworkException {
         ServletRequest request = frameworkParameters.get(Parameter.REQUEST);
+        if (request == null) throw new IllegalArgumentException("No request object given");
         State state = State.getState(request);
 
         try {
