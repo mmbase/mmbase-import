@@ -9,10 +9,12 @@
 
   <jsp:directive.attribute name="popupwidth" />
   <jsp:directive.attribute name="cron" />
-  <jsp:directive.attribute name="time" />
+  <jsp:directive.attribute name="time"    type="java.lang.Integer" />
+  <jsp:directive.attribute name="refresh" type="java.lang.Boolean" />
+  <jsp:directive.attribute name="depth"   type="java.lang.Integer" />
   <!--
        MMBase rich-text evaluation. Using XSLT.
-       $Id: body.tagx,v 1.3 2008-03-13 10:52:21 michiel Exp $
+       $Id: body.tagx,v 1.4 2008-04-23 13:24:39 michiel Exp $
   -->
 
   <os:cache
@@ -20,28 +22,32 @@
       time="${time}"
       key="richtext_${_node.number}"
       groups="all,richtext"
-      refresh="${param.refresh}" >
+      refresh="${refresh}" >
     <!-- alternative to 'cron': time="3600"  -->
     <jsp:text>&lt;!--</jsp:text><mm:time time="now" format=":FULL.FULL" /><jsp:text>--&gt;</jsp:text>
     <mm:formatter xslt="xslt/2xhtml.xslt" escape="links">
       <mm:param name="popupwidth" value="${empty popupwidth ? -1 : popupwidth}" /><!-- default is 'no popups' -->
-      <mm:listrelationscontainer  role="idrel" searchdir="destination">
-        <mm:listrelations>
-          <mm:relatednode>
-            <mm:listrelations role="idrel" searchdir="destination">
-              <mm:relatednode>
-                <mm:nodeinfo type="nodemanager">
-                  <mm:compare value="blocks">
-                    <mm:listrelations type="object" role="idrel" searchdir="destination" >
-                      <mm:relatednode />
-                    </mm:listrelations>
-                  </mm:compare>
-                </mm:nodeinfo>
-              </mm:relatednode>
-            </mm:listrelations>
+      <c:if test="${empty depth || depth gt 0}">
+        <mm:listrelationscontainer  role="idrel" searchdir="destination">
+          <mm:listrelations>
+            <mm:relatednode>
+              <c:if test="${empty depth || depth gt 1}">
+                <mm:listrelations role="idrel" searchdir="destination">
+                  <mm:relatednode>
+                    <mm:nodeinfo type="nodemanager">
+                      <mm:compare value="blocks">
+                        <mm:listrelations type="object" role="idrel" searchdir="destination" >
+                          <mm:relatednode />
+                        </mm:listrelations>
+                      </mm:compare>
+                    </mm:nodeinfo>
+                  </mm:relatednode>
+                </mm:listrelations>
+              </c:if>
           </mm:relatednode>
-        </mm:listrelations>
-      </mm:listrelationscontainer>
+          </mm:listrelations>
+        </mm:listrelationscontainer>
+      </c:if>
       <mm:field name="${empty field ? (empty name ? 'body' : name): field}" />
     </mm:formatter>
   </os:cache>
