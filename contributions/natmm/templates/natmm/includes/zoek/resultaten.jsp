@@ -52,10 +52,11 @@
                <select name="pcontentype" style="width:100%;border:0;font-size:12px;" />
                <%
                   Map contentTypes = new TreeMap();
-                  contentTypes.put("0","Artikelen");
-                  contentTypes.put("1","Producten uit de webwinkel");
-                  contentTypes.put("2","Activiteiten");
-                  contentTypes.put("3","Natuurgebieden");
+                  contentTypes.put("0","Alles");
+                  contentTypes.put("1","Artikelen");
+                  contentTypes.put("2","Producten uit de webwinkel");
+                  contentTypes.put("3","Activiteiten");
+                  contentTypes.put("4","Natuurgebieden");
 
                   Iterator it1 = contentTypes.entrySet().iterator();              
                   while(it1.hasNext()) {
@@ -100,19 +101,23 @@
          int thisOffset = Integer.parseInt(offsetID);  
          List searchResults = new ArrayList();
          
+         boolean searchAllNodes = false;
+         
          switch (contentType) {
             case 0:
-               %><%@include file="results/articles_nodes.jsp" %><%
-               break;
+               searchAllNodes = true;
             case 1:
+               %><%@include file="results/articles_nodes.jsp" %><%
+               if (!searchAllNodes) break;
+            case 2:
                %><%@include file="results/items_nodes.jsp" %><%
-               break;
-            case 2:  
+               if (!searchAllNodes) break;
+            case 3:  
                %><%@include file="results/evenement_nodes.jsp" %><%
-               break;
-            case 3:
+               if (!searchAllNodes) break;
+            case 4:
                %><%@include file="results/natuurgebieden_nodes.jsp" %><%
-               break;
+               if (!searchAllNodes) break;
          }
          
          int listSize = searchResults.size();       
