@@ -1,12 +1,13 @@
 <mm:cloud
     method="delegate" authenticate="class"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+    xmlns:mm-res="http://www.mmbase.org/tags/mm/resources"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
   <jsp:output omit-xml-declaration="true" />
   <!--
-    xmlns:mm-res="http://www.mmbase.org/tags/mm/resources"
+    xmlns:mm-res="urn:jsptagdir:/WEB-INF/tags/mm/resources"
+
 
   -->
   <mm:import externid="to"    from="request" >webmaster@localhost</mm:import>
