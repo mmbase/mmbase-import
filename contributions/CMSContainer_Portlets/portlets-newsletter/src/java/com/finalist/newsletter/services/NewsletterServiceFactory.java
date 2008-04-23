@@ -10,6 +10,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
+import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
@@ -30,6 +31,8 @@ public class NewsletterServiceFactory {
 		NewsletterSubscriptionCAO subscriptionCAO = new NewsletterSubscriptionCAOImpl(cloudProvider.getCloud());
 		NewsletterSubscriptionServicesImpl newsletterSubscriptionServices = new NewsletterSubscriptionServicesImpl();
 		newsletterSubscriptionServices.setCao(subscriptionCAO); 
+		NewsletterCAO newsletterCAO = new NewsletterCAOImpl(cloudProvider.getCloud());
+	    newsletterSubscriptionServices.setNewsletterCao(newsletterCAO);
 		return newsletterSubscriptionServices;
 		
 	}

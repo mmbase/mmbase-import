@@ -21,28 +21,13 @@ import com.finalist.newsletter.domain.Subscription;
 public interface NewsletterSubscriptionServices {
 	
 	public boolean hasSubscription(int userId);
-
-	public List<Newsletter> getAllowedNewsletterList(String[] allowedLetters);
-	
-	public List<Newsletter> getNewsletterList(String[] allowedLetters,int userId);
-	
-	public Newsletter addRecordInfo(Newsletter allowedNewsletter, List<Newsletter> recordList);
-	
+	public Subscription addRecordInfo(int newsletterId, int userId);	
 	public boolean noSubscriptionRecord(int userId,int newsletterId);
-	
 	public void selectTagInLetter(int userId,int newsletterId,int tagId);
-	
 	public void unSelectTagInLetter(int userId,int newsletterId,int tagId);
-	
 	public void modifyFormat(int userId,int newsletterId,String format);
-	
 	public void modifyStauts(int userId,int newsletterId,String status);
-	
-	public void modifyInterval(int userId,int newsletterId,Date interval);
-	
 	public void addNewRecord(int userId,int newsletterId);
-
-   List<Subscription> getSubscriptionList(String[] newsletters, int userId);
-
-   List<Subscription> getNewSubscription(String[] newsletters);
+	public List<Subscription> getSubscriptionList(String[] newsletters, int userId);
+	public List<Subscription> getNewSubscription(String[] newsletters);  
 }
