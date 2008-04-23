@@ -28,8 +28,8 @@ public class FakeNewsletterService implements NewsletterService{
 		return letters;
 	}
 
-   public String getNewsletterName(int newsletterId) {
-      return null;
-   }
+	public String getNewsletterName(int newsletterId) {
+		return null;
+	}
 
 }
