@@ -12,8 +12,7 @@ public class NewsletterCAOTest extends BaseNewsletterTest {
 
    public void setUp() throws Exception {
       super.setUp();
-      cao = new NewsletterCAOImpl();
-      cao.setCloud(cloud);
+      cao = new NewsletterCAOImpl(cloud);
    }
 
    public void testGetAllNewsletter() {
