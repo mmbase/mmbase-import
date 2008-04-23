@@ -90,7 +90,7 @@
             </div>
              <div id="content">
               <c:catch var="exception">
-                <h2 class="top">${mm:string('text/xml', mm:string(blockObject.title))}</h2>
+                <h2 class="top">${mm:escape('text/xml', mm:string(blockObject.title))}</h2>
                 <mm:component debug="xml" name="$component" block="${block}">
                   <mm:frameworkparam name="category">${category}</mm:frameworkparam>
                 </mm:component>
