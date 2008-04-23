@@ -2,6 +2,7 @@ package com.finalist.newsletter.util;
 
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
@@ -23,8 +24,8 @@ public class POConvertUtils<T> {
 
    public static Subscription convertSubscription(Node node) {
       Subscription subscription = new Subscription();
-      Person subscripber = CommunityModuleAdapter.getSubscriber(Integer.decode(node.getStringValue("subscriber")));
-      subscription.setSubscriber(subscripber);
+//      Person subscripber = CommunityModuleAdapter.;
+//      subscription.setSubscriber(subscripber);
       return subscription;
    }
 
