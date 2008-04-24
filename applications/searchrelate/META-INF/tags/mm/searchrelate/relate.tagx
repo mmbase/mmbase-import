@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.22 2008-04-24 14:41:22 michiel Exp $
+      @version $Id: relate.tagx,v 1.23 2008-04-24 20:01:09 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -79,7 +79,9 @@
     <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
     <c:if test="${! empty context}">  this.relater.setContext('${context}'); </c:if>
-    if (this.relater.current != null) this.relater.current.searcher.maxNumber = ${current.maxNumber};
+    <c:if test="${! empty current}">
+      if (this.relater.current != null) this.relater.current.searcher.maxNumber = ${current.maxNumber};
+    </c:if>
     });
     });
 

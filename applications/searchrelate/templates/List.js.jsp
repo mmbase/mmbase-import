@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.7 2008-04-24 11:29:26 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.8 2008-04-24 20:00:52 michiel Exp $
  */
 
 
@@ -123,12 +123,13 @@ List.prototype.bindDelete = function(a) {
     $(a).click(function(ev) {
 	var url = a.href;
 	var params = {};
-	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
+	$.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
 			var li = $(a).parents("li")[0];
 			a.list.validator.removeValidation(li);
-			$(a).parents("ol")[0].removeChild(li);
+			var ol = $(a).parents("ol")[0];
+			ol.removeChild(li);
 			a.list.executeCallBack();
 		    }
 		}
