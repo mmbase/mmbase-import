@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorRichText" maintainer="didactor.nl" version="5" auto-deploy="true">
+<application name="DidactorRichText" maintainer="didactor.nl" version="6" auto-deploy="true">
   <requirements>
     <requires name="RichTextBasics"    maintainer="mmbase.org"  version="1" />
     <requires name="Resources"         maintainer="didactor.nl" version="2" />
@@ -10,6 +10,7 @@
   <neededbuilderlist>
     <builder maintainer="didactor.nl" version="1">xmlnews</builder>
     <builder maintainer="didactor.nl" version="1">xmlcontent</builder>
+    <builder maintainer="didactor.nl" version="1">rich</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
@@ -19,12 +20,14 @@
   <allowedrelationlist>
 
     <relation from="learnblocks"   to="xmlcontent"     type="posrel" />
+
     <relation from="xmlcontent"    to="blocks"         type="idrel" />
     <relation from="xmlcontent"    to="images"         type="idrel" />
     <relation from="xmlcontent"    to="attachments"    type="idrel" />
     <relation from="xmlcontent"    to="urls"           type="idrel" />
     <relation from="xmlcontent"    to="news"           type="idrel" />
     <relation from="xmlcontent"    to="xmlcontent"     type="idrel" />
+    <relation from="xmlcontent"    to="rich"     type="idrel" />
 
     <relation from="blocks"     to="news"              type="idrel" />
     <relation from="blocks"     to="xmlcontent"        type="idrel" />
@@ -35,6 +38,14 @@
     <relation from="rich"    to="urls"           type="idrel" />
     <relation from="rich"    to="news"           type="idrel" />
     <relation from="rich"    to="xmlcontent"     type="idrel" />
+    <relation from="rich"    to="rich"     type="idrel" />
+
+    <relation from="rich"    to="images"     type="background" />
+
+    <relation from="xmlnews"    to="blocks"         type="idrel" />
+    <relation from="xmlnews"    to="images"         type="idrel" />
+    <relation from="xmlnews"    to="attachments"    type="idrel" />
+    <relation from="xmlnews"    to="urls"           type="idrel" />
 
   </allowedrelationlist>
 
