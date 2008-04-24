@@ -8,9 +8,8 @@
   <jsp:output omit-xml-declaration="true" />
   <mm:import externid="source" required="true" />
   <mm:import externid="fields" />
-
-  <mm:form id="node${_node}">
-    <li>
+  <li>
+    <mm:form id="node${_node}">
       <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
         <mm:fieldinfo type="input" />
         <c:if test="${status.first}">
@@ -18,6 +17,6 @@
         </c:if>
         <mm:fieldinfo type="errors" />
       </mm:fieldlist>
-    </li>
-  </mm:form>
+    </mm:form>
+  </li>
 </jsp:root>
