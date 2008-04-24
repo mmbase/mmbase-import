@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.18 2008-04-23 07:24:53 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.19 2008-04-24 14:40:10 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -120,8 +120,8 @@ MMBaseRelater.prototype.addSearcher = function(el, type) {
 		return this.searcher.create(anchor);
 	    });
 	});
-	if (this.canUnrelate) {
-	    $(el).find("tr.click").each(function() {
+	if (this.canUnrelate && this.current) {
+	    $(this.current).find("tr.click").each(function() {
 		$(this).click(function(tr) {
 		    relater.unrelate(this);
 		    return false;
@@ -232,16 +232,21 @@ MMBaseRelater.prototype.getNumber = function(tr) {
  */
 MMBaseRelater.prototype.relate = function(tr) {
     var number = this.getNumber(tr);
-
-    // Set up data
-    if (typeof(this.unrelated[number]) == "undefined") {
-	this.related[number] = tr;
-    }
     this.logger.debug("Found number to relate " + number + "+" + this.getNumbers(this.related));
-    this.unrelated[number] = null;
-
     // Set up HTML
     if (this.current != null) {
+	if (this.current.searcher.maxNumber > 0 && (this.current.searcher.totalSize() + 1) > this.current.searcher.maxNumber) {
+	    return alert("Can only relate maximally " + this.current.searcher.maxNumber);
+	}
+	// Set up data
+	if (typeof(this.unrelated[number]) == "undefined") {
+	    this.related[number] = tr;
+	}
+
+	this.unrelated[number] = null;
+
+
+
 	var currentList =  $(this.current).find("div.searchresult table tbody");
 	this.logger.debug(currentList[0]);
 	currentList.append(tr);
@@ -277,6 +282,8 @@ MMBaseRelater.prototype.relate = function(tr) {
  */
 MMBaseRelater.prototype.unrelate = function(tr) {
     var number = this.getNumber(tr);
+    this.logger.debug("Unrelating " + number);
+
 
     // Set up data
     if (typeof(this.related[number]) == "undefined") {
@@ -365,6 +372,7 @@ function MMBaseSearcher(d, r, type, logger) {
     this.totalsize = -1;
     this.last = -1;
     this.logger.debug("found " + this.searchUrl);
+    this.maxNumber = -1;
 
 }
 
@@ -443,10 +451,10 @@ MMBaseSearcher.prototype.totalSize = function(size) {
     var span = $(this.div).find("caption span.size")[0];
     if (size == null) {
 	if (this.totalsize == -1) {
-	    this.totalsize = parseInt(span.textContent);
+	    this.totalsize = span == null ? 0 : parseInt(span.textContent);
 	}
     } else {
-	span.textContent = size;
+	if (span != null) span.textContent = size;
 	this.totalsize = size;
     }
     return this.totalsize;
@@ -454,6 +462,7 @@ MMBaseSearcher.prototype.totalSize = function(size) {
 
 MMBaseSearcher.prototype.lastIndex = function(size) {
     var span = $(this.div).find("caption span.last")[0];
+    if (span == null) return;
     if (size == null) {
 	if (this.last == -1) {
 	    this.last = parseInt(span.textContent);
@@ -466,10 +475,12 @@ MMBaseSearcher.prototype.lastIndex = function(size) {
 }
 
 MMBaseSearcher.prototype.inc = function() {
+    this.logger.debug("inc");
     this.totalSize(1 + this.totalSize());
     this.lastIndex(1 + this.lastIndex());
 }
 MMBaseSearcher.prototype.dec = function() {
+    this.logger.debug("dec");
     this.totalSize(-1 + this.totalSize());
     this.lastIndex(-1 + this.lastIndex());
 }
@@ -496,7 +507,7 @@ MMBaseSearcher.prototype.create = function () {
 			url: "${mm:link('/mmbase/searchrelate/create.jspx')}",
 			target:     null,
 			success:    function(subres, substatus) {
-			    self.logger.debug(substatus);
+			    self.logger.debug(substatus + ": " + subres);
 			    var newNode = $(subres).find("span.newnode")[0].firstChild.nodeValue;
 			    self.logger.debug(newNode);
 			    var tr = self.getTr(newNode);
@@ -528,6 +539,7 @@ MMBaseSearcher.prototype.getTr = function(node) {
 
 
 MMBaseSearcher.prototype.deleteNewlyRemoved = function(rep) {
+    this.logger.debug("Deleting newly removed");
     var self = this;
     var deleted = false;
     if (this.relater != null && this.type == "repository") {
@@ -582,6 +594,7 @@ MMBaseSearcher.prototype.bindEvents = function() {
 }
 
 MMBaseSearcher.prototype.resetTrClasses = function() {
+    this.logger.debug("Resetting tr's");
     var i = 0;
     $(this.div).find("div.searchresult table tbody tr").each(function() {
 	$(this).removeClass("odd");
