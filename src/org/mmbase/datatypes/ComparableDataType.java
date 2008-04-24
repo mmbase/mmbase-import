@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.34 2007-09-16 17:55:28 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.35 2008-04-24 11:49:55 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType<E extends java.io.Serializable&Comparable<E>> extends BasicDataType<E> {
@@ -103,7 +103,7 @@ public abstract class ComparableDataType<E extends java.io.Serializable&Comparab
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    public final E getDefaultValue() {
+    public final E getDefaultValue(Locale locale, Cloud cloud, Field field) {
         E def = super.getDefaultValue();
         if (! minRestriction.valid(def, null, null)) {
             def = minRestriction.getValue();
