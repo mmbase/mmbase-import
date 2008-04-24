@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.84 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: BasicDataType.java,v 1.85 2008-04-24 11:49:55 michiel Exp $
  */
 
 public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>, Cloneable, Comparable<DataType<C>>, Descriptor {
@@ -317,6 +317,19 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     }
 
     /**
+     * @since MMBase-1.8.6
+     */
+    protected Cloud getCloud(Cloud cloud) {
+        if (cloud == null) {
+            log.info("No cloud found");
+            CloudContext context = ContextProvider.getDefaultCloudContext();
+            if (! context.isUp()) return null;
+            cloud  = context.getCloud("mmbase", "class", null);
+        }
+        return cloud;
+    }
+
+    /**
      * Before validating the value, the value will be 'cast', on default this will be to the
      * 'correct' type, but it can be a more generic type sometimes. E.g. for numbers this wil simply
      * cast to Number.
@@ -328,10 +341,26 @@ public class BasicDataType<C> extends AbstractDescriptor implements DataType<C>,
     /**
      * {@inheritDoc}
      */
-    public C getDefaultValue() {
-        if (defaultValue == null) return null;
-        return cast(defaultValue, null, null);
+    public final C getDefaultValue() {
+        return getDefaultValue(null, null, null);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public C getDefaultValue(Locale locale, Cloud cloud, Field field) {
+        if (defaultValue == null) return null;
+        C res =  cast(defaultValue, null, null);
+        if (res != null) return res;
+
+        try {
+            return cast(defaultValue, getCloud(cloud), null, null);
+        } catch (CastException ce) {
+            log.error(ce);
+            return Casting.toType(classType, cloud, preCast(defaultValue, cloud, null, field));
+        }
+    }
+
 
     /**
      * {@inheritDoc}

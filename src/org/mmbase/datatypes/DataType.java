@@ -32,8 +32,8 @@ import org.mmbase.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.65 2008-02-16 22:13:53 nklasens Exp $
- * @param <C> Class this DataType 
+ * @version $Id: DataType.java,v 1.66 2008-04-24 11:49:55 michiel Exp $
+ * @param <C> Class this DataType
  */
 
 public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<C>>, Serializable {
@@ -141,7 +141,7 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
      * @param value The value to be filled in a value with this DataType.
      * @param node  Sometimes a node might be needed.
      * @param field Sometimes a (or 'the') field might be needed.
-     * @param <D> 
+     * @param <D>
      * @return converted value to be able to cast to the DataType of the field
      */
     public <D> D preCast(D value, Node node, Field field);
@@ -154,8 +154,14 @@ public interface DataType<C> extends Descriptor, Cloneable, Comparable<DataType<
     public C getDefaultValue();
 
     /**
-     * Set the default value for this DataType 
-     * @param def default value 
+     * Returns the (locale dependent) default value of this data type,
+     * @since MMBase-1.8.6
+     */
+    public C getDefaultValue(Locale locale, Cloud cloud, Field field);
+
+    /**
+     * Set the default value for this DataType
+     * @param def default value
      */
     public void setDefaultValue(C def);
 
