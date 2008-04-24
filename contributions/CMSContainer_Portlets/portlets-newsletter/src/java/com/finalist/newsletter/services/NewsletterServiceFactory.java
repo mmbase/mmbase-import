@@ -58,7 +58,7 @@ public class NewsletterServiceFactory {
 		service.setNewsletterCAO(new NewsletterCAOImpl(cloudProvider.getCloud()));
 		return service;
 	}
-
+ 
 	public static StatisticService getStatisticService (){
 		StatisticServiceImpl service = new StatisticServiceImpl();
 		service.setNewLettercao(new NewsletterCAOImpl(cloudProvider.getCloud()));
