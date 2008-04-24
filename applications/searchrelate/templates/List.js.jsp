@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.6 2008-04-24 09:56:33 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.7 2008-04-24 11:29:26 michiel Exp $
  */
 
 
@@ -94,7 +94,6 @@ List.prototype.bindCreate = function(a) {
     $(a).click(function(ev) {
 	var url = a.href;
 	var params = {};
-	console.log("hoi");
 	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
@@ -175,7 +174,6 @@ List.prototype.commit = function(stale, async) {
 		$(this.div).find("input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
-		    console.log("" + (this.name || this.id || this.parentNode.name || this.parentNode.id) + " = " + this.value);
 		});
 		var self = this;
 		this.status("<img src='${mm:link('/mmbase/ajax-loader.gif')}' />");
