@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.5 2008-04-17 12:03:18 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.6 2008-04-24 09:56:33 michiel Exp $
  */
 
 
@@ -30,9 +30,9 @@ function List(d) {
 
     this.callBack = null; // called on delete and create
 
-    this.type = $(this.div).find("> input[name = 'type']")[0].value;
-    this.role = $(this.div).find("> input[name = 'role']")[0].value;
-    this.source = $(this.div).find("> input[name = 'submit']")[0].value;
+    this.type = $(this.div).find("form.list input[name = 'type']")[0].value;
+    this.role = $(this.div).find("form.list input[name = 'role']")[0].value;
+    this.source = $(this.div).find("form.list input[name = 'submit']")[0].value;
 
     this.lastChange = null;
     this.lastCommit = null;
@@ -94,6 +94,7 @@ List.prototype.bindCreate = function(a) {
     $(a).click(function(ev) {
 	var url = a.href;
 	var params = {};
+	console.log("hoi");
 	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
@@ -104,7 +105,7 @@ List.prototype.bindCreate = function(a) {
 			    this.value = "";
 			    a.list.validator.validateElement(this);
 			});
-			$(a.list.div).find("> ol").append(r);
+			$(a.list.div).find("ol").append(r);
 			a.list.validator.addValidation(r);
 			$(r).find("a.delete").each(function() {
 			    a.list.bindDelete(this);
@@ -173,7 +174,8 @@ List.prototype.commit = function(stale, async) {
 		var params = {};
 		$(this.div).find("input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
-		    params[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+		    console.log("" + (this.name || this.id || this.parentNode.name || this.parentNode.id) + " = " + this.value);
 		});
 		var self = this;
 		this.status("<img src='${mm:link('/mmbase/ajax-loader.gif')}' />");

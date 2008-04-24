@@ -6,11 +6,11 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: delete.tagx,v 1.1 2008-04-18 13:05:51 michiel Exp $
+      @version $Id: delete.tagx,v 1.2 2008-04-24 09:56:07 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
-      description="Used in li's of mm-sr:relatednodes" />
+      description="Used in li's of mm-sr:relatednodes. Produces the 'delete this item' button." />
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String" />
   <jsp:directive.attribute name="source"       required="true" />
