@@ -6,17 +6,17 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-<fmt:setBundle basename="newsletter-test" scope="request" />
+<fmt:setBundle basename="newsletter-log" scope="request" />
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
 		<title>newsletters</title>
-		<link rel="icon" href="/cmsc-demo-staging/favicon.ico"
+		 <link rel="icon" href="<c:url value='/favicon.ico'/>"
 			type="image/x-icon" />
-		<link rel="shortcut icon" href="/cmsc-demo-staging/favicon.ico"
+		<link rel="shortcut icon" href="<c:url value='/favicon.ico'/>"
 			type="image/x-icon" />
-		<link href="/cmsc-demo-staging/editors/css/main.css" type="text/css"
+		<link href="<c:url value='/editors/css/newsletter.css'/>" type="text/css"
 			rel="stylesheet" />
 
 		<!-- calendar stylesheet -->
@@ -41,12 +41,12 @@
 		</script>
 
 		<!-- the format needs -->
-		<script src="/cmsc-demo-staging/editors/utils/rowhover.js"
+		<script src="<c:url value='/editors/utils/rowhover.js'/>"
 			type="text/javascript">
 		</script>
-		<script src="/cmsc-demo-staging/js/window.js" type="text/javascript">
+		<script src="<c:url value='/js/window.js'/>" type="text/javascript">
 		</script>
-		<script src="/cmsc-demo-staging/js/transparent_png.js"
+		<script src="<c:url value='/js/transparent_png.js'/>"
 			type="text/javascript">
 		</script>
 
@@ -94,7 +94,7 @@
 								<html:select property="newsletters" styleId="newsletters"
 									style="width:150px">
 									<html:optionsCollection name="newsletters" label="title"
-										value="number" />
+										value="id" />
 								</html:select>
 							</td>
 							<td></td>
