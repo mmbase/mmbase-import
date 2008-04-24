@@ -9,6 +9,8 @@ import java.util.Set;
 public class Newsletter {
 
 	private int id;
+	
+	
 
 	private String format;
 
@@ -19,8 +21,6 @@ public class Newsletter {
 	private Set<Tag> tags = new HashSet<Tag>();
 
 	private String title;
-
-	private int number;
 
 	private String replyName;
 
@@ -36,14 +36,6 @@ public class Newsletter {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
 	}
 
 	public String getTitle() {
@@ -117,5 +109,6 @@ public class Newsletter {
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
+
 
 }
