@@ -27,6 +27,10 @@ table.searchform {
   border-right: solid 1px #000;
 }
 
+.searchresult table caption.emptysearch.pagingnotneeded  {
+  display: none;
+}
+
 .searchresult a {
   color: #00f;
 }

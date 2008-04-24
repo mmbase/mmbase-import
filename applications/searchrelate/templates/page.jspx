@@ -9,7 +9,7 @@
       Presents a table with one page of query results. Plus paging to other pages (in tfoot).
       Used in ajax-calls, but can also be directly included with mm:include (for initial results).
       @todo Searching only happens in actual mmbase queries now. How about lucene queries?
-      @version $Id: page.jspx,v 1.10 2008-04-22 08:10:56 michiel Exp $
+      @version $Id: page.jspx,v 1.11 2008-04-24 20:00:52 michiel Exp $
   -->
   <jsp:output omit-xml-declaration="true" />
   <mm:content expires="0" type="application/xml">
@@ -38,22 +38,22 @@
         <mm:maxnumber value="${pagesize}" />
         <mm:offset value="${offset}" />
         <c:choose>
-          <c:when test="${size > 0}">
+          <c:when test="${size gt 0}">
             <fmt:message key="searchresults" var="summary">
               <fmt:param value="&lt;span class='offset'&gt;${size > 0 ? offset + 1 : 0}&lt;/span&gt;" />
               <fmt:param value="&lt;span class='last'&gt;${pagesize > size ? size  : offset + pagesize}&lt;/span&gt;" />
               <fmt:param value="&lt;span class='size'&gt;${size}&lt;/span&gt;" />
-              <fmt:param value="${empty search ? '' : search}" />
+              <fmt:param>"${empty search ? '' : search}"</fmt:param>
             </fmt:message>
           </c:when>
           <c:otherwise>
             <fmt:message key="nothingfound" var="summary">
-              <fmt:param value="${empty search ? '' : search}" />
+              <fmt:param>"${empty search ? '' : search}"</fmt:param>
             </fmt:message>
           </c:otherwise>
         </c:choose>
-        <table summary="${mm:escape('tagstripper(none)', summary)}">
-          <caption class="${empty search ? 'emptysearch' : 'search'}">${summary}</caption>
+        <table summary="${mm:escape('tagstripper(none),text/xml', summary)}">
+          <caption class="${empty search ? 'emptysearch' : 'search'} ${size gt pagesize ? 'pagingneeded' : 'pagingnotneeded'}">${summary}</caption>
           &lt;!-- <jsp:expression>bq.toSql()</jsp:expression> --&gt;
           <thead>
             <tr>
