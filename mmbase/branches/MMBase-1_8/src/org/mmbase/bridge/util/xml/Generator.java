@@ -26,7 +26,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.39.2.6 2008-04-23 13:29:17 michiel Exp $
+ * @version $Id: Generator.java,v 1.39.2.7 2008-04-24 07:59:30 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -282,7 +282,7 @@ public class Generator {
     protected Element getElementById(Node n, String id) {
 
         if (getElementByIdWorks) {
-            object = getDocument().getElementById("" + node.getNumber());
+            return getDocument().getElementById("" + id);
         } else {
             NodeList list = n.getChildNodes();
             for (int i = 0 ; i < list.getLength(); i++) {
