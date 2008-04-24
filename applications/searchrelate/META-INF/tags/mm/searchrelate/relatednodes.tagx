@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.5 2008-04-18 13:05:51 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.6 2008-04-24 09:56:07 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -39,9 +39,8 @@
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       basename="org.mmbase.searchrelate.resources.searchrelate">
-    <div>
-    <mm:form id="${type}_${seq}">
-      <div class="list ${type}">
+    <div class="list ${type}">
+      <mm:form id="${type}_${seq}" styleClass="list">
         <input type="hidden" name="type" value="${type}" />
         <input type="hidden" name="role" value="${r}" />
         <input type="hidden" name="submit" value="${_node}" />
@@ -60,14 +59,13 @@
         <mm:import id="icons"><mm:url page="${empty icondir ? '/mmbase/style/images' : icondir}" /></mm:import>
 
         <mm:link page="/mmbase/searchrelate/list/create.jspx"
-                 referids="type,r@role,_node@source,default?,f@fields,icondir?,li?">
+                   referids="type,r@role,_node@source,default?,f@fields,icondir?,li?">
           <a href="${_}" class="create">
             <img class="icon" alt="+" src="${icons}/create.png" />
           </a>
         </mm:link>
         <span class="status">...</span>
-      </div>
-    </mm:form>
+      </mm:form>
     </div>
   </fmt:bundle>
 </jsp:root>
