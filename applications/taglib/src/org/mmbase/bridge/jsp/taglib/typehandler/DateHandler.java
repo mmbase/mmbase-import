@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.47.2.3 2007-10-22 14:10:01 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.47.2.4 2008-04-24 11:43:54 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -385,7 +385,7 @@ public class DateHandler extends AbstractTypeHandler {
                     cal = null;
                 }
             } else {
-                Object def = field.getDataType().getDefaultValue();
+                Object def = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
                 if (def != null) {
                     cal = getInstance();
                     cal.setTime(Casting.toDate(def));

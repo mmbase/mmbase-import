@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.54 2006-07-18 12:56:55 michiel Exp $
+ * @version $Id: DataType.java,v 1.54.2.1 2008-04-24 11:41:58 michiel Exp $
  */
 
 public interface DataType extends Descriptor, Cloneable, Comparable, Serializable {
@@ -148,10 +148,17 @@ public interface DataType extends Descriptor, Cloneable, Comparable, Serializabl
     public Object preCast(Object value, Node node, Field field);
 
     /**
-     * Returns the default value of this data type.
+     * Returns the default value of this data type. See also {@link #getDefaultValue(Locale, Cloud,
+     * Field)} which may, especially with String datatypes often more correct.
      * @return the default value
      */
     public Object getDefaultValue();
+
+    /**
+     * Returns the (locale dependent) default value of this data type,
+     * @since MMBase-1.8.6
+     */
+    public Object getDefaultValue(Locale locale, Cloud cloud, Field field);
 
     /**
      * @javadoc

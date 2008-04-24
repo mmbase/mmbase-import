@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: BasicDataType.java,v 1.61.2.6 2007-09-20 13:23:06 michiel Exp $
+ * @version $Id: BasicDataType.java,v 1.61.2.7 2008-04-24 11:41:58 michiel Exp $
  */
 
 public class BasicDataType extends AbstractDescriptor implements DataType, Cloneable, Comparable, Descriptor {
@@ -310,9 +310,24 @@ s     */
 
     protected final Cloud getCloud(Node node, Field field) {
         if (node != null) return node.getCloud();
-        if (field != null) return field.getNodeManager().getCloud();
+        try {
+            if (field != null) return field.getNodeManager().getCloud();
+        } catch (UnsupportedOperationException uoe) {
+            // happens with CoreField
+            log.debug(uoe);
+        }
         return null;
     }
+    protected Cloud getCloud(Cloud cloud) {
+        if (cloud == null) {
+            log.info("No cloud found");
+            CloudContext context = ContextProvider.getDefaultCloudContext();
+            if (! context.isUp()) return null;
+            cloud  = context.getCloud("mmbase", "class", null);
+        }
+        return cloud;
+    }
+
 
     /**
      * Before validating the value, the value will be 'cast', on default this will be to the
@@ -326,11 +341,26 @@ s     */
     /**
      * {@inheritDoc}
      */
-    public Object getDefaultValue() {
-        if (defaultValue == null) return null;
-        return cast(defaultValue, null, null);
+    public final Object getDefaultValue() {
+        return getDefaultValue(null, null, null);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getDefaultValue(Locale locale, Cloud cloud, Field field) {
+        if (defaultValue == null) return null;
+        Object res =  cast(defaultValue, null, null);
+        if (res != null) return res;
+
+        try {
+            return cast(defaultValue, getCloud(cloud), null, null);
+        } catch (CastException ce) {
+            log.error(ce);
+            return Casting.toType(classType, cloud, preCast(defaultValue, cloud, null, field));
+        }
+    }
     /**
      * {@inheritDoc}
      */

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.48.2.7 2008-02-25 18:11:48 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.48.2.8 2008-04-24 11:43:54 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -184,7 +184,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
             if (node != null) {
                 value = node.isNull(fieldName) ? null : getValue(node, fieldName);
             } else if (useDefault) {
-                value = field.getDataType().getDefaultValue();
+                value = field.getDataType().getDefaultValue(tag.getLocale(), tag.getCloudVar(), field);
             }
         }
         return value;

@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * therefore can have a minimum and a maximum value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComparableDataType.java,v 1.21.2.2 2007-09-20 13:23:06 michiel Exp $
+ * @version $Id: ComparableDataType.java,v 1.21.2.3 2008-04-24 11:43:34 michiel Exp $
  * @since MMBase-1.8
  */
 public abstract class ComparableDataType extends BasicDataType {
@@ -104,11 +104,11 @@ public abstract class ComparableDataType extends BasicDataType {
      *
      * If the default value of comparable datatype is somewhy out the range, it will be truncated into it.
      */
-    public final Object getDefaultValue() {
-        Object def = super.getDefaultValue();
-        if (! minRestriction.valid(def, null, null)) {
+    public final Object getDefaultValue(Locale locale, Cloud cloud, Field field) {
+        Object def = super.getDefaultValue(locale, cloud, field);
+        if (! minRestriction.valid(def, null, field)) {
             def = minRestriction.getValue();
-        } else if (! maxRestriction.valid(def, null, null)) {
+        } else if (! maxRestriction.valid(def, null, field)) {
             def = maxRestriction.getValue();
         }
         return def;
