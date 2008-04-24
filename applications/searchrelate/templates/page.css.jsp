@@ -14,23 +14,35 @@
   border: solid 1px #000;
 }
 
-.searchresult table {  
+table.searchform {
+  margin-bottom: 0px;
+
+}
+
+.searchresult table {
   border: solid 1px #000;
 }
 .searchresult table caption  {
   border-left: solid 1px #000;
   border-right: solid 1px #000;
 }
+
+.searchresult a {
+  color: #00f;
+}
 .searchresult caption,
 .searchresult thead tr,
 .searchresult tfoot tr {
+  color: #000;
   background-color: #ffb;
 }
 
 .searchresult tbody tr.even {
+  color: #000;
   background-color: #ddd;
 }
 .searchresult tbody tr.odd {
+  color: #000;
   background-color: #fff;
 }
 
