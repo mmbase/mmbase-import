@@ -489,7 +489,7 @@ public class RepositoryUtil {
        if (!ContentElementUtil.isContentElement(content)) {
           throw new IllegalArgumentException("Only contentelements are allowed.");
        }
-       RelationList list = content.getRelations(CREATIONREL, null, "DESTINATION");
+       RelationList list = content.getRelations(CREATIONREL, null, DESTINATION);
        for (int i = 0; i < list.size(); i++) {
           Relation creationrel = list.getRelation(i);
           creationrel.delete();
