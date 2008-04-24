@@ -10,7 +10,7 @@
   <mm:import externid="fields" />
 
   <li>
-    <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" id="node${_node}" varStatus="status">
+    <mm:fieldlist type="${empty fields ? 'list' : ''}" fields="${fields}" varStatus="status">
       <mm:fieldinfo type="input" />
       <c:if test="${status.first}">
         <mm-sr:delete source="${source}" />
