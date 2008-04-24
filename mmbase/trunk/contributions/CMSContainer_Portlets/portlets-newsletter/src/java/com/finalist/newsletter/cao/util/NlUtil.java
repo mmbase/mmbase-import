@@ -12,7 +12,7 @@ import com.finalist.newsletter.domain.StatisticResult;
 
 public class NlUtil {
 
-	public List<Newsletter> convertFromNodeList (List nodelist){
+	public static List<Newsletter> convertFromNodeList (List nodelist){
 
 		List<Newsletter> list = new ArrayList<Newsletter>();
 		Iterator<Node> it = nodelist.iterator();
@@ -20,7 +20,7 @@ public class NlUtil {
 			Newsletter letter = new Newsletter();
 			Node node = it.next();
 			letter.setTitle(node.getStringValue("title"));
-			letter.setNumber(node.getNumber());
+			letter.setId(node.getNumber());
 			list.add(letter);
 		}
 		return list;
