@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.64 2008-04-12 14:09:12 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.65 2008-04-24 09:50:22 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -658,15 +658,12 @@
       <minInclusive value="0"  />
       <maxInclusive value="255"  />
     </specialization>
+
     <specialization id="weekdays">
       <description xml:lang="en">
         Stores a day of the week (so a number from 1 to 7)
       </description>
-      <enumeration >
-        <entry basename="org.mmbase.datatypes.resources.weekdays"
-               javaconstants="java.util.Calendar"
-               />
-      </enumeration>
+      <class name="org.mmbase.datatypes.WeekdaysDataType" />
     </specialization>
     <specialization id="hour_of_day">
       <description xml:lang="en">
