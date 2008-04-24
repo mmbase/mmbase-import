@@ -14,10 +14,10 @@
    -->
    <searchage>70</searchage>
    <names>
-      <singular xml:lang="nl">properties</singular>
+      <singular xml:lang="nl">instelling</singular>
       <singular xml:lang="en">properties</singular>
 	  <singular xml:lang="zh">属性</singular>
-      <plural xml:lang="nl">properties</plural>
+      <plural xml:lang="nl">instellingen</plural>
       <plural xml:lang="en">properties</plural>
 	  <plural xml:lang="zh">属性</plural>
    </names>
