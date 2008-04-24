@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<builder xmlns="http://www.mmbase.org/xmlns/builder" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         extends="object" maintainer="mmbase.org" 
-         name="calendar_items" version="0" 
+<builder xmlns="http://www.mmbase.org/xmlns/builder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         extends="object" maintainer="mmbase.org"
+         name="calendar_items" version="0"
          xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd">
   <names>
     <singular xml:lang="en">Calendar item</singular>
@@ -31,9 +31,9 @@
         <minLength value="2" />
         <maxLength value="255" />
         <pattern value="\A\s*+[^\n\r]{1,}\S\s*\z"  />
-      </datatype> 
+      </datatype>
     </field>
-    <field name="body">     
+    <field name="body">
       <gui>
         <guiname xml:lang="en">Body text</guiname>
         <guiname xml:lang="nl">Tekst</guiname>
@@ -51,8 +51,8 @@
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime">
         <default value="now" />
-        <minInclusive value="today - 1 year" />
-        <maxInclusive value="today + 100 year" />
+        <minInclusive value="today - 1 year"   enforce="never" />
+        <maxInclusive value="today + 100 year" enforce="never" />
       </datatype>
     </field>
     <field name="stop">
@@ -63,8 +63,8 @@
       </gui>
       <datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="datetime">
         <default value="now + 1 hour" />
-        <minInclusive value="today - 1 year" />
-        <maxInclusive value="today + 100 year" />
+        <minInclusive value="today - 1 year"   enforce="never"/>
+        <maxInclusive value="today + 100 year" enforce="never"/>
       </datatype>
     </field>
     <field name="allday">
