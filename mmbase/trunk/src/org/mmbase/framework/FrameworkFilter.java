@@ -30,12 +30,13 @@ import org.mmbase.util.logging.Logging;
  * corresponding page (technical URL) within the website. When the recieved URL is not
  * recognized by the framework as an 'userfriendly' one, it just gets forwarded in its original
  * form. The filtering and conversion to an URL pointing to an existing JSP template is done by
- * an UrlConverter, of which the framework extends.
+ * an {@link basic/UrlConverter}.
+ * 
  * Regular expressions that define URL's to be excluded from filtering should be listed in the
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.24 2008-04-18 13:47:13 michiel Exp $
+ * @version $Id: FrameworkFilter.java,v 1.25 2008-04-25 14:31:39 andre Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {

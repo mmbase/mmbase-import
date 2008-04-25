@@ -29,11 +29,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * The Basic framework is based on a list of {@link UrlConverter}s. It is
- * configured with an XML 'framework.xml'.
+ * The Basic Framework is based on a list of {@link UrlConverter}s. It is
+ * configured in 'config/framework.xml'. The order in which the UrlConverters
+ * are configured is the order in which they are processed.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicFramework.java,v 1.17 2008-04-23 07:37:10 michiel Exp $
+ * @version $Id: BasicFramework.java,v 1.18 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 public class BasicFramework extends Framework {

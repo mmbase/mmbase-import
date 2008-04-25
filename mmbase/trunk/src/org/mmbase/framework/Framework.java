@@ -27,8 +27,9 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
+ * @author Nico Klasens
  * @author Andr&eacute; van Toly
- * @version $Id: Framework.java,v 1.52 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: Framework.java,v 1.53 2008-04-25 14:35:12 andre Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {

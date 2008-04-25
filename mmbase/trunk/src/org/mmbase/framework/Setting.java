@@ -18,15 +18,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Representation of component related settings. These settings can be defined in the component
- * XML.
+ * Representation of {@link Component} related settings. 
+ * These settings can be defined in their proper Component XML.
  *
  * @todo The <em>values</em> of the settings can still only be set in memory and in the component
  * xml. There must be some way to persistify them. There should also be a editor in the admin pages.
  *
- *
  * @author Michiel Meeuwissen
- * @version $Id: Setting.java,v 1.6 2008-01-28 16:28:22 michiel Exp $
+ * @version $Id: Setting.java,v 1.7 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 public class Setting<C> {
