@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<properties exportsource="mmbase://127.0.0.1/contentrepository" timestamp="20050101000000">
-
-	<node number="300" owner="admin">
-		<key>repository.search.results.per.page</key>
-		<value>50</value>
-	</node>
-</properties>

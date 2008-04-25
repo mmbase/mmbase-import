@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<images exportsource="mmbase://www.didactor.org/version2.0" timestamp="20080204170724">
-  <node number="510001" owner="system" alias="didactor.textbackground">
-    <handle file="textbackground.png"></handle>
-    <title>Dummy plaatje (LATEN STAAN!)</title>
-    <description>dit plaatje is nodig als tekst template voor</description>
-  </node>
-</images>

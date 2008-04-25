@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.36 2008-04-25 15:37:58 nklasens Exp $
+ * @version $Id: Attribute.java,v 1.35 2008-04-11 15:17:20 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -44,9 +44,6 @@ public class Attribute {
     /**
      * This is the function for public use. It takes the string and returns an Attribute, creating
      * a new one if it is not in the Attribute cache.
-     * @param at unparsed attribute
-     * @return Attribute
-     * @throws JspTagException when parsing of attributes fails
      */
     public static final Attribute getAttribute(final String at) throws JspTagException {
         if (at == null) return NULL;
@@ -76,8 +73,6 @@ public class Attribute {
 
     /**
      * The constructor is protected, construction is done by the cache.
-     * @param at unparsed attribute
-     * @throws JspTagException when parsing of attributes fails
      */
     protected Attribute(String at) throws JspTagException {
         attribute = at;
@@ -91,10 +86,8 @@ public class Attribute {
     /**
      * Appends the evaluated Attribute to StringBuilder
      *
-     * @param tag The tag relative to which the variable evaluations must be done
+     * @param tag The tag relative to which the variable evalutations must be done
      *            (normally 'this' in a Tag implementation)
-     * @param buffer buffer to write attribute value to
-     * @throws JspTagException when parsing of attributes fails
      */
 
     public void appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException {
@@ -110,9 +103,6 @@ public class Attribute {
 
     /**
      * Returns the evaluated Attribute as an Object. Can also be null.
-     * @param tag tag with the attribute
-     * @return Value of attribute
-     * @throws JspTagException when parsing of attributes fails
      */
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (! containsVars) return attribute;
@@ -129,9 +119,6 @@ public class Attribute {
 
     /**
      * Returns the evaluated Attribute as a String. This is never null (empty string in that case)..
-     * @param tag tag with the attribute
-     * @return Value of attribute
-     * @throws JspTagException when parsing of attributes fails
      */
     public String getString(ContextReferrerTag tag) throws JspTagException {
         return Casting.toString(getValue(tag));
@@ -139,10 +126,6 @@ public class Attribute {
 
     /**
      * Returns the evaluated Attribute as a int
-     * @param tag tag with the attribute
-     * @param def default value
-     * @return Value of attribute
-     * @throws JspTagException when parsing of attributes fails
      */
 
     public int getInt(ContextReferrerTag tag, int def) throws JspTagException {
@@ -154,12 +137,9 @@ public class Attribute {
     }
 
     /**
-     * Returns the evaluated Attribute as a List (evaluated to comma-separated String, which is 'split').
+     * Returns the evaluated Attribute as a List (evalatued to comma-seperated String, which is 'split').
      * The List is empty if getValue would give empty String or null.
      *
-     * @param tag tag with the attribute
-     * @return Value of attribute
-     * @throws JspTagException when parsing of attributes fails
      */
 
     public List<String> getList(ContextReferrerTag tag) throws JspTagException {
@@ -168,13 +148,11 @@ public class Attribute {
     }
 
     /**
-     * Returns the evaluated Attribute as a boolean (depending on if getValue returns one of the
-     * strings 'true' or 'false' (case insensitive)).
+     * Returns the evaluated Attribute as a boolen (depending on if getValue returns one of the
+     * strings 'true' or 'false' (case insensitve)).
      *
      * @param  def If the string is not "true" or "false', then this value is returned.
-     * @param tag tag with the attribute
      * @return true or false
-     * @throws JspTagException when parsing of attributes fails
      */
 
     public boolean getBoolean(ContextReferrerTag tag, boolean def) throws JspTagException {
@@ -191,7 +169,6 @@ public class Attribute {
 
     /**
      * String representation of this Attribute object (for debugging)
-     * @see java.lang.Object#toString()
      */
     public String toString() {
         return "att: " + attribute.toString() + " parts: " + attributeParts;
@@ -201,15 +178,14 @@ public class Attribute {
      * Parses this attribute into list of 'attributeparts'. This is
      * the heart of the Attribute class.  The method {@link #getValue}
      * will concatenate them together again (after evaluation).
-     * @throws JspTagException when parsing of attributes fails
      */
 
     protected void parse() throws JspTagException {
-        // search all occurrences of $
+        // search all occurences of $
         int foundPos     = attribute.indexOf('$');
         if (foundPos == -1) {
             containsVars = false;
-            return; // if none, return immediately.
+            return; // if none, return imediately.
         } else {
             attributeParts = new ArrayList<Part>();
             containsVars = true;
@@ -230,7 +206,7 @@ public class Attribute {
             char c = attribute.charAt(foundPos);
             if (c == '{' || c == '[') { // using parentheses
                 char close = (c == '{' ? '}' : ']');
-                // find matching closing parentheses
+                // find matching closing parenthes
                 pos = ++foundPos;
                 int opened = 1;
                 while (opened > 0) {
@@ -294,13 +270,11 @@ public class Attribute {
 
         /**
          * Returns the 'type' of a Part as a string. For debugging use.
-         * @return the 'type'
          */
         abstract protected String getType();
 
         /**
          * String representation of this AttributePart (for debugging)
-         * @see java.lang.Object#toString()
          */
         public String toString() {
             return "(" + getType() + "/" + part.toString() + ")";
@@ -388,7 +362,7 @@ public class Attribute {
     static class StringPart extends Part {
         StringPart(String o) {  part = o; }
         protected String getType() { return "String"; }
-        final Object getValue(ContextReferrerTag tag) {
+        final Object getValue(ContextReferrerTag tag) throws JspTagException {
             return part;
         }
     }
@@ -434,8 +408,8 @@ class AttributeException extends JspTagException {
  */
 final class NullAttribute extends Attribute {
     NullAttribute() { }
-    public final Object getValue(ContextReferrerTag tag) { return null; }
-    public final String getString(ContextReferrerTag tag) { return ""; }
-    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) { return; }
+    public final Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
+    public final String getString(ContextReferrerTag tag) throws JspTagException { return ""; }
+    public final void   appendValue(ContextReferrerTag tag, StringBuilder buffer) throws JspTagException { return; }
     public final String toString() { return "NULLATTRIBUTE"; }
 }

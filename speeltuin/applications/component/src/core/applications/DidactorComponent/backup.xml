@@ -1,8 +1,0 @@
-<contextdepth>
-	<startnode>
-		<builder>providers</builder>
-		<where>name=='provider'</where>
-	</startnode>
-
-	<depth>1</depth>
-</contextdepth>

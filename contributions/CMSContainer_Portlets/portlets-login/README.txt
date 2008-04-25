@@ -1,3 +1,0 @@
-DESCRIPTION:
-  Login portlet
-
