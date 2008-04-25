@@ -244,6 +244,7 @@
 								<td onMouseDown="objClick(this);" style="white-space: nowrap;">
 									${requestScope.result.post}
 								</td>
+								<td></td>
 							</tr>
 						</tbody>
 					</table>
@@ -301,6 +302,7 @@
 									<td onMouseDown="objClick(this);" style="white-space: nowrap;">
 										<c:out value="${newsletterlog.bounches}" />
 									</td>
+									<td></td>
 								</tr>
 							</c:forEach>
 						</tbody>
