@@ -4,13 +4,16 @@
   <title xml:lang="nl">Voer hier de wizard titel in</title>
   <title xml:lang="en">Enter Wizard Title Here</title>
 
+
   <action type="create">
     <object type="news">
       <field name="title">defaultvalue for this field</field>
+      <relation destination="$origin" role="posrel"  />
     </object>
   </action>
 
   <action type="delete" />
+  <action type="unlink" />
 
   <action type="load">
     <relation destination="people" />
@@ -21,13 +24,10 @@
   <form-schema id="step1">
     <title>Enter form title here</title>
     <title xml:lang="nl">Voer hier de formulier titel in</title>
-
     <field name="title" />
     <field name="subtitle" />
-
-    <field name="intro" />
-
-    <field name="body" ftype="html" rows="8" />
+    <field name="intro" ftype="text" rows="4" />
+    <field name="body"  ftype="html" rows="8" />
     <field name="date" />
 
     <list role="related" destination="people" minoccurs="0" maxoccurs="*">
