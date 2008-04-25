@@ -9,8 +9,8 @@ good!
 	//System.out.println(request.getParameter("tagId"));
 	//System.out.println(request.getParameter("select"));
 	//System.out.println(request.getParameter("format"));
-	System.out.println("^^^^^^^^^^^^^^"+request.getParameter("pausedate"));
-	System.out.println("action="+request.getParameter("action"));
+	//System.out.println("^^^^^^^^^^^^^^"+request.getParameter("pausedate"));
+	//System.out.println("action="+request.getParameter("action"));
 	NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
 	int userId = 12345;
 	int newsletterId = 0;
@@ -19,7 +19,7 @@ good!
 	String status = "unSubscription";
 	String format = "html";
 	String action = null;
-	Date pausedate = null;
+	//Date pausedate = null;
 	
 	if(null!=request.getParameter("action"))
 	{
@@ -45,12 +45,12 @@ good!
 	{
 	 status = request.getParameter("status");
 	}
-	if(null!=request.getParameter("pausedate"))
-	{
-	 String pausedateString = request.getParameter("pausedate");
-	 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");    
-	 pausedate = dateFormat.parse(pausedateString);
-	}
+	//if(null!=request.getParameter("pausedate"))
+	//{
+	// String pausedateString = request.getParameter("pausedate");
+	// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");    
+	// pausedate = dateFormat.parse(pausedateString);
+	//}
 	//add newrecord
 	if(service.noSubscriptionRecord(userId,newsletterId))
 		{
@@ -66,18 +66,17 @@ good!
 		if("ACTIVE".equals(status))
 		{
 			if(hasSelect){
-				service.modifyStauts(userId,newsletterId,"ACTIVE",null);
+				service.modifyStauts(userId,newsletterId,"ACTIVE");
 			}else{
-				service.modifyStauts(userId,newsletterId,"INACTIVE",null);
+				service.modifyStauts(userId,newsletterId,"INACTIVE");
 			}		
 		}
 		if("PAUSED".equals(status))
 		{
 			if(hasSelect){ 
-				System.out.println("pausedate="+pausedate);
-				service.modifyStauts(userId,newsletterId,"PAUSED",pausedate);
+				service.modifyStauts(userId,newsletterId,"PAUSED");
 			}else{
-				service.modifyStauts(userId,newsletterId,"ACTIVE",null);
+				service.modifyStauts(userId,newsletterId,"ACTIVE");
 			}		
 		}
 	}
