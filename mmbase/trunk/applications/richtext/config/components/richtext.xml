@@ -15,7 +15,7 @@
          >
     <description xml:lang="en">Simply shows one field of type mmxf</description>
     <head jsp="/mmbase/style/css/mmxf.css" />
-    <body jsp="/richtext/rich.jspx" />
+    <body jsp="rich.jspx" />
   </block>
 
   <block name="edit"
