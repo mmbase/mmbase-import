@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.8 2008-04-25 11:19:58 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.9 2008-04-25 14:05:23 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -221,8 +221,8 @@ public class MMBaseUrlConverter implements UrlConverter {
         if (request == null) return null;
         if (page == null) throw new IllegalArgumentException();
         if (page.startsWith(dir)) {
-            String sp = FrameworkFilter.getPath(request);
-            String[] path = sp.split("/");
+            //String sp = FrameworkFilter.getPath(request); // I don't remember where this was for.
+            String[] path = page.split("/"); // use to be sp.split("/")
             if (log.isDebugEnabled()) {
                 log.debug("Going to filter " + Arrays.asList(path));
             }
