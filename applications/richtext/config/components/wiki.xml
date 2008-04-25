@@ -3,6 +3,7 @@
     name="wiki"
     defaultblock="wiki"
     xmlns="http://www.mmbase.org/xmlns/component"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/component http://www.mmbase.org/xmlns/component.xsd">
   <class name="org.mmbase.framework.BasicComponent" />
@@ -21,9 +22,11 @@
   </block>
 
   <block name="edit">
+    <xi:include href="http://www.mmbase.org/components/validation.head.xml" />
     <body jsp="/mmbase/components/richtext/wiki/edit.jspx">
       <param name="o"   type="org.mmbase.bridge.Node" />
     </body>
+
   </block>
 
 
