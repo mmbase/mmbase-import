@@ -28,6 +28,7 @@ See http://www.MMBase.org/license
       <url>http://kupu.oscom.org/</url>
       </dependency>
   -->
+  <!--
   <build>
     <resources>
       <resource>
@@ -39,6 +40,15 @@ See http://www.MMBase.org/license
         <filtering>false</filtering>
       </resource>
       <resource>
+        <targetPath>${basedir}/META-INF</targetPath>
+        <directory>META-INF</directory>
+        <excludes>
+          <exclude>"**/CVS"</exclude>
+        </excludes>
+        <filtering>false</filtering>
+      </resource>
+
+      <resource>
         <directory>mmbase</directory>
         <targetPath>mmbase</targetPath>
         <includes>
@@ -48,6 +58,7 @@ See http://www.MMBase.org/license
       </resource>
     </resources>
   </build>
+  -->
 
 </project>
 
