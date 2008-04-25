@@ -1,7 +1,7 @@
 // Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
-// Source File Name:   GoogleMapPortlet.java
+// Source File Name: GoogleMapPortlet.java
 
 package com.finalist.portlets.googlemap;
 
@@ -16,25 +16,37 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class GoogleMapPortlet extends CmscPortlet
+public class GoogleMapPortlet extends CmscPortlet {
 
-{
-    private static Log log = LogFactory.getLog(GoogleMapPortlet.class);
+   /**
+    * Configuration constants.
+    */
+   public static final String GOOGLE_KEY_PROPERTY = "google.key";
+   public static final String ACTION_PARAM = "action";
+   public static final String WINDOW = "window";
+   public static final String PAGE = "page";
+   public static final String ADDRESS = "address";
+   public static final String INFO = "info";
+   public static final String KEY = "key";
+   public static final String HEIGHT = "height";
+   public static final String WIDTH = "width";
 
-   private static final String GOOGLE_KEY_PROPERTY = "google.key";
+   /**
+    * Configuration default constants.
+    */
+   public static final String HEIGHT_ATTR_DEFAULT = "260px";
+   public static final String WIDTH_ATTR_DEFAULT = "370px";
 
-   private static final String ACTION_PARAM = "action";
-   private static final String WINDOW = "window";
-   private static final String PAGE = "page";
-   private static final String ADDRESS = "address";
-   private static final String INFO = "info";
-   private static final String KEY = "key";
+   private static Log log = LogFactory.getLog(GoogleMapPortlet.class);
 
-
+   
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
       request.setAttribute(ADDRESS, preferences.getValue(ADDRESS, null));
       request.setAttribute(INFO, preferences.getValue(INFO, null));
+      request.setAttribute(HEIGHT, preferences.getValue(HEIGHT, HEIGHT_ATTR_DEFAULT));
+      request.setAttribute(WIDTH, preferences.getValue(WIDTH, WIDTH_ATTR_DEFAULT));
+      
       String key = StringUtils.isEmpty(preferences.getValue(KEY, null)) ? PropertiesUtil.getProperty(GOOGLE_KEY_PROPERTY)
             : preferences.getValue(KEY, null);
       request.setAttribute(KEY, key);
@@ -54,6 +66,8 @@ public class GoogleMapPortlet extends CmscPortlet
             setPortletParameter(portletId, INFO, request.getParameter(INFO));
             setPortletParameter(portletId, WINDOW, request.getParameter(WINDOW));
             setPortletParameter(portletId, KEY, request.getParameter(KEY));
+            setPortletParameter(portletId, WIDTH, request.getParameter(WIDTH));
+            setPortletParameter(portletId, HEIGHT, request.getParameter(HEIGHT));
             setPortletNodeParameter(portletId, PAGE, request.getParameter(PAGE));
          }
          else if (log.isDebugEnabled())
