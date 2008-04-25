@@ -13,7 +13,10 @@ import java.util.*;
 
 import javax.servlet.http.*;
 import java.io.*;
+import javax.servlet.http.*;
+import javax.servlet.*;
 import org.mmbase.util.functions.*;
+import org.mmbase.util.GenericResponseWrapper;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * the current user.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DeniedRenderer.java,v 1.4 2008-02-23 12:15:54 michiel Exp $
+ * @version $Id: DeniedRenderer.java,v 1.5 2008-04-25 13:42:47 andre Exp $
  * @since MMBase-1.9
  */
 
@@ -45,10 +48,19 @@ public class DeniedRenderer extends AbstractRenderer {
                 HttpServletRequest request   = blockParameters.get(Parameter.REQUEST);
                 HttpServletResponse response = blockParameters.get(Parameter.RESPONSE);
                 Locale  locale = blockParameters.get(Parameter.LOCALE);
-                decorateIntro(request, w, "denied");
-                w.write("<h1>Denied</h1>");
-                decorateOutro(request, w);
-
+                
+                GenericResponseWrapper respw = new GenericResponseWrapper(response); 
+                String url = JspRenderer.JSP_ROOT + "core/401.jspx";
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
+    
+                requestDispatcher.include(request, respw);
+                if (log.isDebugEnabled()) {
+                    log.debug("Using block.parameters " +  blockParameters.toMap());
+                    log.debug("401 denied, rendering: " + url);
+                }
+                w.write(respw.toString());
+            } catch (ServletException se) {
+                throw new FrameworkException(se.getMessage(), se);
             } catch (IOException eio) {
                 throw new FrameworkException(eio.getMessage(), eio);
             }
