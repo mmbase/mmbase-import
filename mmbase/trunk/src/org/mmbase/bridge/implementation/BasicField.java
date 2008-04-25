@@ -20,7 +20,7 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.33 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: BasicField.java,v 1.34 2008-04-25 15:41:10 nklasens Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
@@ -62,7 +62,7 @@ public class BasicField extends AbstractField implements Field {
         return coreField.getStoragePosition();
     }
 
-    public Collection validate(Object value) {
+    public Collection<String> validate(Object value) {
         Collection<LocalizedString> errors = getDataType().validate(value, null, this);
         return LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale());
     }
