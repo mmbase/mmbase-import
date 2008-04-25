@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * was configured for this prefix).
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMBaseUrlConverter.java,v 1.7 2008-04-18 13:47:13 michiel Exp $
+ * @version $Id: MMBaseUrlConverter.java,v 1.8 2008-04-25 11:19:58 michiel Exp $
  * @since MMBase-1.9
  */
 public class MMBaseUrlConverter implements UrlConverter {
@@ -47,12 +47,18 @@ public class MMBaseUrlConverter implements UrlConverter {
 
     protected String dir = "/mmbase/";
 
+    protected String renderJsp = "/mmbase/admin/index.jsp";
+
     public MMBaseUrlConverter(BasicFramework fw) {
         framework = fw;
     }
 
     public void setDir(String d) {
         dir = d;
+    }
+
+    public void setRenderJsp(String j) {
+        renderJsp = j;
     }
 
     public Parameter[] getParameterDefinition() {
@@ -236,7 +242,8 @@ public class MMBaseUrlConverter implements UrlConverter {
                     }
                 }
 
-                StringBuilder url = new StringBuilder("/mmbase/admin/index.jsp?category=");
+                StringBuilder url = new StringBuilder(renderJsp);
+                url.append("?category=");
                 url.append(category);
 
                 if (path.length == 3) return url.toString();
