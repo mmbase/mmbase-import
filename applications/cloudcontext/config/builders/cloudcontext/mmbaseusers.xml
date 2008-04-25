@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<builder 
+<builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
-                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
     name="mmbaseusers" maintainer="www.mmbase.org" version="0" extends="object">
   <class>org.mmbase.security.implementation.cloudcontext.builders.Users</class>
   <names>
@@ -38,7 +38,7 @@
     <property name="encoding">MD5</property>
     <!--
         With the option 'allowencodedpassword' you can actually sabotage the 'encoding' of the password again.
-        When this is true, then you can also loging with name/encodedpassword, and you can provide the encoded password directly. 
+        When this is true, then you can also loging with name/encodedpassword, and you can provide the encoded password directly.
         This can perhaps have been stored in a cookie.
         You may want this if the passwords are sensitive, but not necessarily only for this site.
         Switching this to true makes the 'encoded' password about as good as the password itself.
