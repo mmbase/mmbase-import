@@ -17,7 +17,7 @@ JAVAC15=${JAVA_HOME15}/bin/javac
 
 export ANT_HOME=/usr/ant
 CVS="/usr/bin/cvs -d :pserver:guest@cvs.mmbase.org:/var/cvs"
-FILTER="/home/nightly/filterlog"
+FILTER="/home/nightly/nin/filterlog"
 BUILD_HOME="/home/nightly"
 
 #I hate ant, I hate java
@@ -38,13 +38,13 @@ cvsversion="-D ${version}T`date '+%H:%M:%S'`"
 
 echo $cvsversion
 
-revision=MMBase-1_8
-headrevision="-A"
+#revision=MMBase-1_8
+#headrevision="-A"
 
 #release:
-#version=MMBase-1_8_5
-#cvsversion=
-#revision=MMBase-1_8_5_Final
+version=MMBase-1_8_6_rc1
+cvsversion=
+revision=MMBase-1_8_6_rc1
 #headrevision="-r MMBase-1_8_5_Final"
 
 # STABLE branch
