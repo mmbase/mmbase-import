@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.156 2007-10-11 08:36:36 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.157 2008-04-25 13:40:42 andre Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider, ParamHandler {
@@ -401,7 +401,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider, Param
         if (response.isCommitted()) {
             throw new JspTagException("Response is commited already, cannot send a deny");
         }
-
+        
+        request.setAttribute("org.mmbase.cloudtag.denied_message", message);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         String realm = getRealm();
