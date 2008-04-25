@@ -5,12 +5,14 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:os="http://www.opensymphony.com/oscache"
     version="2.0">
+  <jsp:tag description="Generates the 'see alo' back references, for the current node." />
+
   <jsp:directive.attribute name="see" />
   <jsp:directive.attribute name="type" />
   <jsp:directive.attribute name="types" />
   <!--
-      Generates the 'see alo' back references, for the current node.
-      $Id: referred.tagx,v 1.3 2008-03-13 14:22:00 michiel Exp $
+      TODO. Together with versioning, links not pointing to the _current_ version of the node should be ignored.
+      $Id: referred.tagx,v 1.4 2008-04-25 21:33:40 michiel Exp $
   -->
   <mm:import id="t">${empty type ? (empty types ? 'texts' : 'object') : type}</mm:import>
   <fmt:bundle basename="org.mmbase.richtext.resources.messages">
