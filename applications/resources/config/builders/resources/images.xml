@@ -105,6 +105,8 @@
         bigger that this, an IllegalArgumentException is thrown.
     -->
     <property name="MaxArea">1000000</property>
+
+    <property name="wiki_inlinecreate">true</property> <!-- indicate to wiki's that this typically can be created 'inline' -->x
   </properties>
 
   <fieldlist>
