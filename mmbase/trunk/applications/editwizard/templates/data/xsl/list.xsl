@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.50 2008-02-13 13:21:09 pierre Exp $
+    @version $Id: list.xsl,v 1.51 2008-04-25 16:55:45 andre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -16,7 +16,7 @@
   <xsl:param name="unlinkable">false</xsl:param>
   <xsl:param name="linkable">false</xsl:param>
   <xsl:param name="creatable">true</xsl:param>
-  <xsl:param name="relationOriginNode"><xsl:value-of select="$origin" /></xsl:param>
+  <xsl:param name="relationOriginNode"></xsl:param>
   <xsl:param name="relationRole"></xsl:param>
   <xsl:param name="relationCreateDir"></xsl:param>
   <xsl:param name="relationStartnodes"></xsl:param>
@@ -30,6 +30,9 @@
   </xsl:param>
   <xsl:param name="deletedescription">
     <xsl:value-of select="$tooltip_delete" />
+  </xsl:param>
+  <xsl:param name="unlinkdescription">
+    <xsl:value-of select="$tooltip_remove" />
   </xsl:param>
 
   <xsl:param name="createprompt" />
@@ -60,7 +63,7 @@
     <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <xsl:if test="$linkable='true'">
+    <xsl:if test="$nodepath != '' and $relationOriginNode != ''">
       <script type="text/javascript" src="{$javascriptdir}newfromlist.jsp{$sessionid}?language={$language}&amp;country={$country}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}&amp;relationOriginNode={$relationOriginNode}&amp;relationRole={$relationRole}&amp;relationCreateDir={$relationCreateDir}&amp;relationStartnodes={$relationStartnodes}&amp;relationNodepath={$relationNodepath}&amp;objecttype={$objecttype}">
 	<xsl:comment>help IE</xsl:comment>
       </script>
@@ -207,15 +210,10 @@
                   <input type="hidden" name="language" value="${language}" />
                   <input type="text" name="searchvalue" value="{$searchvalue}" class="search" />
 
-                    <xsl:if test="$relationOriginNode = '-1'">
-                      <a href="javascript:document.forms[0].submit();">
-                        <xsl:call-template name="prompt_search" />
-                      </a>
-                    </xsl:if>
-                    <xsl:if test="$relationOriginNode != '-1'">
-                      <a href="javascript:document.forms[0].submit();">
-                        <xsl:call-template name="prompt_search" />
-                      </a>
+                    <a href="javascript:document.forms[0].submit();">
+                      <xsl:call-template name="prompt_search" />
+                    </a>
+                    <xsl:if test="$relationOriginNode != ''">
                       <a href="javascript:doMySearch(this);">
                         <xsl:call-template name="prompt_search_all" />
                       </a>
@@ -381,12 +379,12 @@
         </td>
       </xsl:if>
 
-      <xsl:if test="$unlinkable='true'">
+      <xsl:if test="$unlinkable='true' and $relationOriginNode != ''"><!-- unlink makes only sense when related to something -->
         <td class="deletebutton">
           <xsl:if test="@maylink='true'">
             <a
               href="{$unlinkpage}&amp;wizard={$wizard}&amp;objectnumber={@number}&amp;relationOriginNode={$relationOriginNode}&amp;origin={$origin}"
-              title="{$deletedescription}"
+              title="{$unlinkdescription}"
               onmousedown="cancelClick=true;"
               onclick="return doUnlink('{$unlinkprompt}');">
               <xsl:call-template name="prompt_unlink" />
