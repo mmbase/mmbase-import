@@ -19,15 +19,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A framework displays and processes components.
- *
- * The Framework as UrlConverter must never return <code>null</code>, IOW, it should
- * <em>always</em> know how to do this.
- *
- *
+ * The MMBase Framework displays and processes components. 
+ * {@link Component}s consist of {@link Block}s which typically are pieces of JSP.
+ * The framework uses an urlfilter {@link FrameworkFilter} that can be configured 
+ * in 'config/framework.xml'.
+ * 
  * @author Johannes Verelst
  * @author Pierre van Rooden
- * @version $Id: Framework.java,v 1.51 2008-04-18 13:47:13 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @author Andr&eacute; van Toly
+ * @version $Id: Framework.java,v 1.52 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 public abstract class Framework {

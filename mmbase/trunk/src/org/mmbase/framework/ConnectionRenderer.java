@@ -24,10 +24,28 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A Renderer implementation based on an external connection.
+ * A {@link Renderer} implementation based on an external connection. 
+ * An example of a {@link ConnectionRenderer} is the following one: 
+ * 
+ * <p>
+ *    &lt;block name="mmbase_news"<br />
+ *          classification="mmbase.about:100"<br />
+ *          mimetype="text/html"&gt;<br />
+ *     &lt;title xml:lang="nl"&gt;Nieuws&lt;/title&gt;<br />
+ *     &lt;title xml:lang="en"&gt;News&lt;/title&gt;<br />
+ *     &lt;description xml:lang="en"&gt;Shows latest news from the mmbase site&lt;/description&gt;<br />
+ *     &lt;body&gt;<br />
+ *       &lt;class name="org.mmbase.framework.ConnectionRenderer"&gt;<br />
+ *         &lt;param name="url"&gt;http://www.mmbase.org/rss&lt;/param&gt;<br />
+ *         &lt;param name="xslt"&gt;xslt/rss.xslt&lt;/param&gt;<br />
+ *       &lt;/class&gt;<br />
+ *     &lt;/body&gt;<br />
+ *   &lt;/block&gt;
+ * </p>
+ *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConnectionRenderer.java,v 1.4 2008-02-23 12:44:03 michiel Exp $
+ * @version $Id: ConnectionRenderer.java,v 1.5 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 public class ConnectionRenderer extends AbstractRenderer {

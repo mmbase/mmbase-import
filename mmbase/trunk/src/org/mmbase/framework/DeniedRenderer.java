@@ -21,11 +21,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Renderer which can be used in stead, if rendering of a certain block proved to be not allowed for
- * the current user.
+ * {@link Renderer} to be used in case of access denied (status 401). 
+ * If rendering of a certain block proved to be not allowed for the current user.
+ * Requests get dispatched to a block 'core/401.jspx' with a more or less
+ * userfriendly message.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DeniedRenderer.java,v 1.5 2008-04-25 13:42:47 andre Exp $
+ * @author Andr&eacute; van Toly
+ * @version $Id: DeniedRenderer.java,v 1.6 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 
