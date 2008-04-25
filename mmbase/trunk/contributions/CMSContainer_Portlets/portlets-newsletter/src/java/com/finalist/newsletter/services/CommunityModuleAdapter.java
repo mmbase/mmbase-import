@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
 
 import javax.servlet.ServletContext;
 
-public class CommunityModuleAdapter extends AbstractService {
+public class CommunityModuleAdapter {
 
    private static Logger log = Logging.getLoggerInstance(CommunityModuleAdapter.class.getName());
 
