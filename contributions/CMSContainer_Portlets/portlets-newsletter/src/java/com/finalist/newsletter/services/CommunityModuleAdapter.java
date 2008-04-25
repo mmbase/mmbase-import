@@ -2,42 +2,48 @@ package com.finalist.newsletter.services;
 
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.newsletter.ApplicationContextFactory;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.Authentication;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import javax.servlet.ServletContext;
 
-public class CommunityModuleAdapter {
-   /**
-    * @param servletContext get servletContext:
-    *In portlet : ((PortletContextImpl) this.getPortletContext()).getServletContext()
-    * @return get current Person.
-    */
-   public static Person getCurrentUser(ServletContext servletContext) {
+public class CommunityModuleAdapter extends AbstractService {
 
-      WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+   private static Logger log = Logging.getLoggerInstance(CommunityModuleAdapter.class.getName());
+
+   public static Person getCurrentUser() {
+
+      PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");
 
       SecurityContext securityContext = SecurityContextHolder.getContext();
       Authentication authentication = securityContext.getAuthentication();
 
       Person person = null;
 
-      if (null == authentication) {
+      if (null != authentication) {
          Object obj = authentication.getPrincipal();
          if (obj instanceof UserDetails) {
             String username = ((UserDetails) obj).getUsername();
-            PersonService personService = (PersonService) ctx.getBean("personService");
             person = personService.getPersonByUserId(username);
          }
       }
 
+      return person;
+   }
 
+   public static Person getUserById(String id) {
+      
+      PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");
+      Person person = personService.getPersonByAuthenticationId(Long.decode(id));
+      log.debug("Get user(Person) " + id + " from community module,get " + person);
       return person;
 
    }
+
 
 }

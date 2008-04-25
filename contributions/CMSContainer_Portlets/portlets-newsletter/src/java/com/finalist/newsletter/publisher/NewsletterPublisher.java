@@ -2,7 +2,6 @@ package com.finalist.newsletter.publisher;
 
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.publisher.NewsletterGenerator;
 import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
@@ -22,24 +21,30 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Date;
 
 public class NewsletterPublisher {
 
    private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
 
-   public void deliver(Publication publication, List<Subscription> subscriptions) {
-      for (Subscription subscription : subscriptions) {
-         deliver(publication, subscription);
-      }
+   private static String personaliser;
+
+   public static void setPersonaliser(String personaliser) {
+      NewsletterPublisher.personaliser = personaliser;
    }
 
-   public void deliver(Publication publication, Subscription subscription) {
+   public void deliver(String url, String recipient, String mineType, String title,
+                       String fromAddress, String fromName, String replyAddress, String replyName) {
       try {
          Message message = new MimeMessage(getMailSession());
-         setBody(message, publication, subscription);
-         setHeader(message, subscription);
-         send(message);
+         setSenderInfomation(message, fromAddress, fromName, replyAddress, replyName);
 
+         setRecipient(message, recipient);
+         setBody(message, url, mineType);
+         setTitle(message, title);
+         setMIME(message, mineType);
+
+         Transport.send(message);
          log.debug("mail send!");
       } catch (MessagingException e) {
          log.error(e);
@@ -50,49 +55,62 @@ public class NewsletterPublisher {
       }
    }
 
-   protected void send(Message message) throws MessagingException {
-      Transport.send(message);
+
+   protected void setBody(Message message, String url, String mimeType) throws MessagingException {
+      String content = NewsletterGenerator.generate(url, mimeType);
+      message.setText(content + "\n");
    }
 
-   protected void setBody(Message message, Publication publication, Subscription subscription) throws MessagingException {
-      NewsletterGenerator.generate(message, publication, subscription);
-   }
+   private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
+         throws MessagingException, UnsupportedEncodingException {
 
-   private void setHeader(Message message, Subscription subscription) throws MessagingException, UnsupportedEncodingException {
+      String emailFrom = getHeaderProperties(fromAddress, "newsletter.default.fromaddress");
+      String nameFrom = getHeaderProperties(fromName, "newsletter.default.fromname");
+      String emailReplyTo = getHeaderProperties(replyAddress, "newsletter.default.replytoadress");
+      String nameReplyTo = getHeaderProperties(replyName, "newsletter.default.replyto");
 
-      System.out.println("------"+subscription.getNewsletter());
+      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo);
 
-      Newsletter newsletter = subscription.getNewsletter();
-      String emailFrom = getHeaderProperties(newsletter.getFromAddress(), "newsletter.default.fromaddress");
-      String nameFrom = getHeaderProperties(newsletter.getFromName(), "newsletter.default.fromname");
-      String emailReplyTo = getHeaderProperties(newsletter.getReplyAddress(), "newsletter.default.replytoadress");
-      String nameReplyTo = getHeaderProperties(newsletter.getReplyName(), "newsletter.default.replyto");
-
-      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo+"|type:"+subscription.getMimeType());
-
-      InternetAddress fromAddress = new InternetAddress(emailFrom);
-      fromAddress.setPersonal(nameFrom);
-      message.setFrom(fromAddress);
+      InternetAddress senderAddress = new InternetAddress(emailFrom);
+      senderAddress.setPersonal(nameFrom);
+      message.setFrom(senderAddress);
 
       InternetAddress replyToAddress = new InternetAddress(emailReplyTo);
       replyToAddress.setPersonal(nameReplyTo);
       message.setReplyTo(new InternetAddress[]{replyToAddress});
 
-      InternetAddress toAddress = new InternetAddress(subscription.getSubscriber().getEmail());
-      message.setRecipient(MimeMessage.RecipientType.TO, toAddress);
 
-      message.setSubject(subscription.getNewsletter().getTitle());
-      message.setHeader("Content-type", subscription.getMimeType());
+   }
+
+   private void setMIME(Message message, String mime) throws MessagingException {
+      message.setHeader("MIME-Version", "1.0");
+      message.setHeader("Content-Type", mime);
+      message.setHeader("X-Mailer", "Recommend-It Mailer V2.03c02");
+      message.setSentDate(new Date());
+   }
+
+   private void setTitle(Message message, String title) throws MessagingException {
+      message.setSubject(title);
+   }
+
+   private void setRecipient(Message message, String email) throws MessagingException {
+      InternetAddress toAddress = new InternetAddress(email);
+      message.setRecipient(MimeMessage.RecipientType.TO, toAddress);
    }
 
    private String getHeaderProperties(String property, String defaultKey) {
-
-
-      if (StringUtils.isEmpty(property)) {
+      if (StringUtils.isBlank(property)) {
          property = PropertiesUtil.getProperty(defaultKey);
-         log.debug("get header property:" + property + " from system property got:" + property);
+
+         log.debug("get property:" + defaultKey + " from system property got:" + property);
       }
-      log.debug("get header property:" + property +" got:"+property);
+
+      if (StringUtils.isBlank(property)) {
+         property = "newslettermodule@cmscontainer.org";
+
+         log.debug("get property:" + defaultKey + " from system property failed use default:" + property);
+      }
+
       return property;
    }
 
@@ -126,5 +144,28 @@ public class NewsletterPublisher {
          log.warn("The property " + parameter + " is missing, taking default " + parameter);
       }
       return parameter;
+   }
+
+   private static String personalise(String rawHtmlContent, Subscription subscription) {
+      String result = rawHtmlContent;
+
+      if (null == personaliser) {
+         personaliser = PropertiesUtil.getProperty("newsletter.personaliser");
+      }
+
+      if (StringUtils.isNotEmpty(personaliser)) {
+         try {
+            Personaliser ps = (Personaliser) Class.forName(personaliser).newInstance();
+            result = ps.personalise(rawHtmlContent, subscription);
+         } catch (ClassNotFoundException e) {
+            log.error("No specified personaliser found:" + personaliser, e);
+         } catch (IllegalAccessException e) {
+            log.error(e);
+         } catch (InstantiationException e) {
+            log.error(e);
+         }
+      }
+      return result;
+
    }
 }

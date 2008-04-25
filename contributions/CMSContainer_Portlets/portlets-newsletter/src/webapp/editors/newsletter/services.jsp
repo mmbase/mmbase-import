@@ -3,16 +3,11 @@
 <%@page import="com.finalist.newsletter.services.NewsletterServiceFactory"%>
 <%@page import="java.util.*"%>
 <%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.finalist.newsletter.services.CommunityModuleAdapter" %>
 good!
 <%
-	//System.out.println(request.getParameter("newsletterId"));
-	//System.out.println(request.getParameter("tagId"));
-	//System.out.println(request.getParameter("select"));
-	//System.out.println(request.getParameter("format"));
-	//System.out.println("^^^^^^^^^^^^^^"+request.getParameter("pausedate"));
-	//System.out.println("action="+request.getParameter("action"));
 	NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
-	int userId = 12345;
+	int userId = CommunityModuleAdapter.getCurrentUser().getId().intValue();
 	int newsletterId = 0;
 	int tagId = 0;
 	boolean hasSelect = false;
@@ -20,7 +15,7 @@ good!
 	String format = "html";
 	String action = null;
 	//Date pausedate = null;
-	
+
 	if(null!=request.getParameter("action"))
 	{
 	action = request.getParameter("action");
@@ -54,12 +49,9 @@ good!
 	//add newrecord
 	if(service.noSubscriptionRecord(userId,newsletterId))
 		{
-			System.out.println("add");
 			service.addNewRecord(userId,newsletterId);
-		}
-	
-	
-	//	modify status	
+		}else  
+   //	modify status
 	if("modifyStatus".equals(action))
 	{
 		System.out.println("modifyStatus="+status);
@@ -69,11 +61,11 @@ good!
 				service.modifyStauts(userId,newsletterId,"ACTIVE");
 			}else{
 				service.modifyStauts(userId,newsletterId,"INACTIVE");
-			}		
+			}
 		}
 		if("PAUSED".equals(status))
 		{
-			if(hasSelect){ 
+			if(hasSelect){
 				service.modifyStauts(userId,newsletterId,"PAUSED");
 			}else{
 				service.modifyStauts(userId,newsletterId,"ACTIVE");
