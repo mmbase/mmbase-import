@@ -21,7 +21,7 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.3 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: DataTypeField.java,v 1.4 2008-04-25 15:41:10 nklasens Exp $
  * @since   MMBase-1.8.2
  */
 
@@ -74,7 +74,7 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
     public String getGUIType() {
         return dataType.getName();
     }
-    public Collection validate(Object value) {
+    public Collection<String> validate(Object value) {
         Collection<LocalizedString> errors = dataType.validate(value, null, this);
         return LocalizedString.toStrings(errors, nodeManager.getCloud().getLocale());
     }
