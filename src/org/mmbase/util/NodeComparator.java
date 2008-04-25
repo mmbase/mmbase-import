@@ -15,42 +15,36 @@ import org.mmbase.module.core.*;
 
 /**
  * This class implements the Comparator interface for comparing MMObjectNodes.
- * At forhand you specify in which fields a specified nodes should be compared,
+ * At forehand you specify in which fields a specified nodes should be compared,
  * these fields may not have a null value.
  *
  * @application Tools
  * @author Pierre van Rooden
- * @version $Id: NodeComparator.java,v 1.6 2004-10-12 11:17:44 pierre Exp $
+ * @version $Id: NodeComparator.java,v 1.7 2008-04-25 15:39:25 nklasens Exp $
  */
-public class NodeComparator implements Comparator {
+public class NodeComparator implements Comparator<MMObjectNode> {
 
     public final static String UP = "UP";
     public final static String DOWN = "DOWN";
 
-    /**
-     * @todo Should be List, not Vector
-     */
-    private Vector fields;
-    /**
-     * @todo Should be List, not Vector
-     */
-    private Vector sortDirs;
+    private List<String> fields;
+    private List<String> sortDirs;
 
     /**
      * Simple constructor that uses the default sort order (UP).
      * @param fields the fields on which the message nodes get compared.
      */
-    public NodeComparator(Vector fields) {
+    public NodeComparator(List<String> fields) {
         this.fields = fields;
-        sortDirs = new Vector(fields.size());
+        sortDirs = new Vector<String>(fields.size());
     }
 
     /**
-     * Constructor in which you spercify the sort order (UP or DOWN) per field.
+     * Constructor in which you specify the sort order (UP or DOWN) per field.
      * @param fields the fields on which the message nodes get compared.
      * @param sortDirs the sort directions (UP or DOWN) for each field.
      */
-    public NodeComparator(Vector fields, Vector sortDirs) {
+    public NodeComparator(List<String> fields, List<String> sortDirs) {
         this.fields = fields;
         this.sortDirs = sortDirs;
         for (int i = sortDirs.size(); i < fields.size(); i++) {
@@ -73,15 +67,15 @@ public class NodeComparator implements Comparator {
      * @return 0 if both objects are equal, -1 if object 1 is 'less than'
      *    object 2, and +1 if object 1 is 'greater than' object 2.
      */
-    public int compare(Object o1, Object o2) {
+    public int compare(MMObjectNode o1, MMObjectNode o2) {
         Object f1, f2;
         int result=0;
         int fieldnr = 0;
         String field;
         while ((result == 0) && (fieldnr < fields.size())) {
-            field =(String)fields.elementAt(fieldnr);
-            f1 = ((MMObjectNode)o1).getValue(field);
-            f2 = ((MMObjectNode)o2).getValue(field);
+            field = fields.get(fieldnr);
+            f1 = o1.getValue(field);
+            f2 = o2.getValue(field);
             if (f1 instanceof Comparable) {
                 try {
                     result=((Comparable)f1).compareTo(f2);
@@ -90,7 +84,7 @@ public class NodeComparator implements Comparator {
                     // possibly the in-memory value type differs from the
                     // database value type (this can occur if you use setValue
                     // with a deviating type).
-                    // Solving this coukld bring this compare to a crawl, so we
+                    // Solving this could bring this compare to a crawl, so we
                     // don't. Just edit stuff the right way.
                 }
             } else if (!f1.equals(f2)) {
@@ -102,7 +96,7 @@ public class NodeComparator implements Comparator {
         }
         if ((fieldnr>0) &&
             (fieldnr<=sortDirs.size()) &&
-            ((String)sortDirs.elementAt(fieldnr-1)).equals(DOWN)) {
+            sortDirs.get(fieldnr-1).equals(DOWN)) {
             result=-result;
         }
         return result;
@@ -125,6 +119,7 @@ public class NodeComparator implements Comparator {
 
     /**
      * Returns the comparator's hash code.
+     * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
         return fields.hashCode()^sortDirs.hashCode();
