@@ -31,7 +31,6 @@ Applications build file
     <mkdir dir="${applications.build.dir}" />
     <available file="rmmci/build.xml" property="rmmci.exists"/>
     <available file="resources/build.xml" property="resources.exists"/>
-    <available file="codings/build.xml" property="codings.exists"/>
     <available file="mynews/build.xml" property="mynews.exists"/>
     <available file="jumpers/build.xml" property="jumpers.exists"/>
   	<available file="myyahoo/build.xml" property="myyahoo.exists"/>
@@ -227,14 +226,6 @@ Applications build file
      </ant>
   </target>
 
-  <target name="codings">
-     <ant dir="codings"  target="package" inheritAll="false">
-       <property name="project.zip.dir"        value="${applications.build.dir}" />
-       <property name="build.dir"        value="${build.dir}" />
-       <property name="download.dir"        value="${download.dir}" />
-     </ant>
-  </target>
-
   <target name="mycompany">
      <ant dir="mycompany"  target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
@@ -295,11 +286,6 @@ Applications build file
       <property name="build.dir"        value="${build.dir}" />
     </ant>
   </target>
-  <target name="install.codings" if="codings.exists">
-    <ant dir="codings"      target="install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-  </target>
 
   <target name="install.mynews" if="mynews.exists">
     <ant dir="mynews"      target="install" inheritAll="false">
@@ -324,7 +310,7 @@ Applications build file
     </ant>
   </target>
 
-  <target name="install" depends="init,minimalistic.install,install.rmmci,install.codings,install.mynews,install.resources,install.jumpers">
+  <target name="install" depends="init,minimalistic.install,install.rmmci,install.mynews,install.resources,install.jumpers">
 
     <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
@@ -412,7 +398,6 @@ Applications build file
      <ant dir="largeobjects"      target="clean" inheritAll="false" />
 
      <ant dir="cloudsecurity"      target="clean" inheritAll="false" />
-     <ant dir="codings"      target="clean" inheritAll="false" />
      <ant dir="mycompany"      target="clean" inheritAll="false" />
      <ant dir="mynews"      target="clean" inheritAll="false" />
      <ant dir="jumpers"      target="clean" inheritAll="false" />
