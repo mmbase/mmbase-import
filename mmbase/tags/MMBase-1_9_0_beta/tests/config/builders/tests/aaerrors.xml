@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
+                        http://www.mmbase.org/xmlns/builder.xsd"                        
+    name="aaerrors" maintainer="mmbase.org" version="0" extends="object">
+  <!--
+      TODO:
+      - Needing more errors here.
+      - Somehow need to arrange discrepancy between db-tags and actual db types.
+  -->
+  <names>
+    <singular xml:lang="nl">aa</singular>
+    <singular xml:lang="fr">aa</singular>
+    <singular xml:lang="en">aa</singular>
+    <plural xml:lang="nl">aa's</plural>
+    <plural xml:lang="fr">aas</plural>
+    <plural xml:lang="en">aas</plural>
+  </names>
+
+  <descriptions>
+    <description xml:lang="nl">Builder voor het testen van de bridge classes</description>
+    <description xml:lang="en">Builder to test the bridge classes</description>
+  </descriptions>
+
+  <fieldlist>
+    <field>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>stringinteger</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integerstring</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>stringdatetime</name>
+        <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>datetimestring</name>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="string" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integerstring</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="float" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>doublefloat</name>
+        <type key="false" notnull="false" state="persistent">DOUBLE</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="double" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>floatdouble</name>
+        <type key="false" notnull="false" state="persistent">FLOAT</type>
+      </db>
+    </field>
+
+    <field>
+      <datatype base="integer" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>doubleinteger</name>
+        <type key="false" notnull="false" state="persistent">DOUBLE</type>
+      </db>
+    </field>
+    <field>
+      <datatype base="double" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integerdouble</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+
+    <field>
+      <datatype base="typedef" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+      <db>
+        <name>integertypedef</name>
+        <type key="false" notnull="false" state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+
+  </fieldlist>
+
+</builder>

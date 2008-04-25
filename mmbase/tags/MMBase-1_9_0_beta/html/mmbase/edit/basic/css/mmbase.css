@@ -1,0 +1,54 @@
+@import url(../../../style/css/mmbase.css);
+@import url(base.css);
+@import url(buttons_mmbase.css);
+
+body.basic { 
+  background-color: white;
+  margin-top: 1em;
+}
+
+body.navigationbar {
+  color: white;
+}
+
+span {
+  text-align: right;
+}
+
+span.alt {
+  display: none;
+}
+
+table { 
+  width : 100%; 
+  float: none;
+}
+
+td {
+  vertical-align : top;
+  border-width: 1px;
+}	
+
+th {
+  color: black;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+table.list th { 
+  white-space: normal;
+}
+
+textarea.small {
+  height: 6em;
+}
+
+textarea.big {
+  height: 15em;
+}
+
+
+a:link    { color: blue; }
+a:visited { color: blue; }
+a:active  { color: purple; }
+a:hover   { color: purple; }

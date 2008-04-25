@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="content" maintainer="mmbase.org" version="0" extends="object">
+  <names>
+    <singular xml:lang="nl">Inhoudsobject</singular>
+    <singular xml:lang="en">Content object</singular>
+    <singular xml:lang="eo">Enhavaĵo</singular>
+    <plural xml:lang="nl">Inhoudsobjecten</plural>
+    <plural xml:lang="en">Content objects</plural>
+    <plural xml:lang="eo">Enhavaĵoj</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="nl">Inhoudsobjecten</description>
+    <description xml:lang="en">Content objects</description>
+    <description xml:lang="eo">Enhavaĵoj</description>
+  </descriptions>
+
+  <xi:include href="content.fields.xml" />
+
+</builder>

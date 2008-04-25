@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="MMBase Resources" default="package" basedir=".">
+  <property name="project.name"     value="resources" />
+  <property name="project.target.templates.dir"   value="../mmexamples" />
+
+  <property name="project.jars.dir"        location="build" />
+  <property name="project.jars.includes"   value="jai_codec.jar,jai_core.jar" />
+
+  <property name="java.source.version"     value="1.5" />
+  <import file="../buildbase-include.xml" />
+
+  <property file="build.properties.default" />
+  
+  <target name="jar" description="Create mmbase-resources.jar" depends="jai.jar,buildbase.jar" />
+
+  <target name="jai.jar" description="Get JAI jar">
+    
+    <echo message="jai" />
+
+    <echo message="jai" />
+    <antcall target="downloadbz2">
+      <param name="sourcefile" value="${jai.loc}"/>
+      <param name="destfile" value="${jai.dest}"/>
+      <param name="destdir" value="${jai.dir}"/>
+      <param name="expandedfile" value="${jai_core.jar}"/>
+    </antcall>
+	
+    <echo message="${project.jars.dir}${project.jars.includes}" />
+
+    <copy file="${jai_codec.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+    <copy file="${jai_core.jar}"  todir="${project.jar.dir}" preservelastmodified="true" />
+  </target>
+
+</project>
+
+
+
+

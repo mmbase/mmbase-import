@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
+<module maintainer="mmbase.org" version="0">
+  <class>org.mmbase.module.database.JDBC</class>
+  <properties>
+    <property name="driver">org.hsqldb.jdbcDriver</property>
+    <property name="url">jdbc:hsqldb:hsql://$HOST/$DBM</property>
+    <property name="database">test</property>
+    <property name="user">sa</property>
+    <property name="password"></property>
+
+
+    <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
+    <property name="connections">1</property>
+
+    <property name="host">localhost</property>
+    <property name="port">9001</property>
+    <property name="queries">10000</property>
+    <property name="probetime">3000</property>
+  </properties>
+</module>

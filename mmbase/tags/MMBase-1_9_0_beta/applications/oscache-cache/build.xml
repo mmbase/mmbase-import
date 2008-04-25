@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="oscache" default="jar" basedir=".">
+  
+  <property name="project.name"      value="oscache"/>
+  <property name="project.package"   value="org/mmbase/cache/oscache" />
+  <property name="project.comment"   value="MMBase OSCache cache implementation" />
+
+  <property name="project.target.templates.dir"   value="oscache" />
+  <property name="project.config.dir.includes"   value="utils/**" />
+  <property name="project.config.jar.includes"   value="**" />
+
+
+  <property name="project.jars.dir"        value="build" />
+  <property name="project.jars.includes"   value="oscache-2.4.1.jar" />
+
+  <import file="../buildbase-include.xml" />
+  <property file="build.properties.default" />
+
+  <target name="jar" description="Create mmbase-oscache.jar" depends="oscache.jar,project.manifest,buildbase.jar">
+  </target>
+
+  <target name="oscache.jar" description="Get OSCache jar">
+    <antcall target="download">
+      <param name="sourcefile" value="${oscache.loc}"/>
+      <param name="destfile" value="${oscache.dest}"/>
+    </antcall>
+
+    <echo message="${project.jars.dir}${project.jars.includes}" />
+    <copy file="${oscache.dest}" todir="${project.jar.dir}" preservelastmodified="true" />
+  </target>
+
+
+</project>

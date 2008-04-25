@@ -1,0 +1,160 @@
+===================================================================
+                     MMBase 1.9.0 - Release Notes
+===================================================================
+
+============
+INTRODUCTION:
+============
+
+This document describes the changes that have been made in the final
+release of MMBase 1.9.0, relative to the previous release of MMBase (1.8.x).
+
+Bug reports should be entered at the bug reporting system for MMBase
+at:
+
+<http://www.mmbase.org/bug>
+
+
+============
+NEW FEATURES:
+============
+
+--------------------
+General New Features:
+--------------------
+[1.9.0]
+
+- On a lot of places java 1.5 features were used in the implementation of core and applications.
+  (like generics, varargs, StringBuilder).
+
+- start on org.mmbase.framework
+
+- command server for image magick (to avoid memory doubling)
+
+
+Taglib New Features:
+-------------------
+
+- varStatus attribute on list-tags (like c:forEach)
+- jspvar of writers can have any value.
+
+Editwizard New Features:
+------------------------
+
+--------------------
+Obsolete Features:
+--------------------
+[1.9.0]
+
+------------------
+Bug Fixes:
+------------------
+[1.9.0]
+
+---------------------------------------------------------
+Known API incompatibilities of bridge, between 1.8 to 1.9.
+---------------------------------------------------------
+
+- Bridge. A RelationList is no NodeList any more (though a Relation is still a Node).
+
+- Taglib. <mm:url generates object of type org.mmbase.bridge.jsp.taglib.pageflow.Url (rather then
+  String).
+
+- org.mmbase.storage.search.implementation.*. StringBuilders are used in API.
+
+
+========================
+Know Issues and Problems:
+========================
+
+- Imagemagick does work with Windows 98/ME, but MMBase is not able to
+  use it. You have to use Jai (Java Advanced Imaging API). You can do
+  this by changing the properties in
+
+   <mmbase-webapp>/WEB-INF/config/builders/applications/images.xml (after installation of 'Resource')
+   or
+   <mmbase-webapp>/WEB-INF/config/applications/Resources/builders/images.xml (before installation of 'Resource')
+
+   into:
+
+  <properties>
+    <property name="ImageConvertClass">
+      org.mmbase.module.builders.ConvertJAI
+    </property>
+    <property name="MaxConcurrentRequests">20</property>
+  </properties>
+
+  Please keep in mind that the image builder is less powerful when
+  using JAI instead of Imagemagick.
+
+- Jumpers jump to /index.html by default, which can e.g. shield the
+  image servlet (if 'dotlessly' mapped). Remove the setting from
+  jumpers.xml if you prefer nice 404's (this is like this on default)
+
+- Resin provides its own XSL-transformation implementation, on this
+  area are some known problems.
+
+- Resin cannot swallow some of the larger jsp/taglib pages.
+
+
+============
+Requirements:
+============
+
+MMBase needs an servlet engine which supports the servlet api 2.3 and
+jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
+
+Some pages require servlet api 2.4 (using EL, Jspx).
+
+The 'bin' distro does include a hsqldb database and driver.
+
+
+=========
+Tested on:
+=========
+
+The applications listed here are known to be tested with MMBase, but
+the list is probably a lot bigger :-)
+
+See also /version?server
+
+-------------
+Java versions
+-------------
+
+- J2SE 1.5
+
+-------------
+Java compilers
+-------------
+
+- Sun's javac 1.5
+  
+  When altering line 115 in org.mmbase.cache.CacheManager from 
+    Cache cache = getCache(cacheName);
+  to
+    Cache<?,?> cache = getCache(cacheName);
+  the compiler will run into a bug in Sun's javac regarding the casting of 
+  generic types. See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4916620
+  
+------------------
+Servlet engines /
+Application servers
+------------------
+
+These are the applications servers on which MMBase was tested.
+
+- Tomcat 5.5.17, 5.5.20, 6.0
+- ..
+
+---------
+Databases
+---------
+
+- Mysql 
+- Hsqldb 1.8.0 (shipped with distro)
+- Postgresql
+- PostgreSQL 8.1.3
+
+
+

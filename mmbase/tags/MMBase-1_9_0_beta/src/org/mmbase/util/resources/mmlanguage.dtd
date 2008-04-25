@@ -1,0 +1,33 @@
+<!--
+     mmlanguage.dtd
+       - DTD for MMBase MMLANGUAGE module
+-->
+<!ELEMENT MMLANGUAGE (language+)>
+<!ELEMENT language (other_editors,search,ok,new,fields,relations,remove,display,to,of_total,back,yes,no,remove_object,change_field,go_to,save_changes,do_not_save_changes,create_relation,remove_relation,do_not_create_relation,age,none,results_found)>
+<!ATTLIST language xml:lang NMTOKEN "en">
+<!ELEMENT other_editors (#PCDATA)>
+<!ELEMENT search (#PCDATA)>
+<!ELEMENT ok (#PCDATA)>
+<!ELEMENT new (#PCDATA)>
+<!ELEMENT fields (#PCDATA)>
+<!ELEMENT relations (#PCDATA)>
+<!ELEMENT remove (#PCDATA)>
+<!ELEMENT display (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT of_total (#PCDATA)>
+<!ELEMENT back (#PCDATA)>
+<!ELEMENT yes (#PCDATA)>
+<!ELEMENT no (#PCDATA)>
+<!ELEMENT remove_object (#PCDATA)>
+<!ELEMENT change_field (#PCDATA)>
+<!ELEMENT go_to (#PCDATA)>
+<!ELEMENT save_changes (#PCDATA)>
+<!ELEMENT do_not_save_changes (#PCDATA)>
+<!ELEMENT create_relation (#PCDATA)>
+<!ELEMENT remove_relation (#PCDATA)>
+<!ELEMENT do_not_create_relation (#PCDATA)>
+<!ELEMENT age (#PCDATA)>
+<!ELEMENT none (#PCDATA)>
+<!ELEMENT results_found (#PCDATA)>
+
+

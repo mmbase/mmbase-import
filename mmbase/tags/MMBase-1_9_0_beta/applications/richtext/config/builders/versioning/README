@@ -1,0 +1,3 @@
+These are fields which must be used in versioned builders.
+
+Include them using XInclude in your own builder xmls to get versioning working.

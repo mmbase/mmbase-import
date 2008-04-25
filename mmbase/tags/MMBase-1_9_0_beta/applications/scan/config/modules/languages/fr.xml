@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE mmlanguage PUBLIC "-//MMBase//mmlanguage config 1.0//EN" "http://www.mmbase.org/dtd/mmlanguage_1_0.dtd">
+<mmlanguage xml:lang="fr">
+<!-- no version info -->
+<dictionary>
+<other_editors>D'autres e'diteurs</other_editors>
+<search>recherche</search>
+<ok>Ok</ok>
+<new>Nouveau</new>
+<fields>Zones</fields>
+<relations>Relations</relations>
+<remove>Retirent</remove>
+<display>Affichange</display>
+<to>à</to>
+<of_total>de total</of_total>
+<back>Dos</back>
+<yes>Qui</yes>
+<no>Non</no>
+<remove_object>Retirent Objets</remove_object>
+<change_field>changez la zone</change_field>
+<go_to>allez</go_to>
+<save_changes>l'économiser change</save_changes>
+<do_not_save_changes>Ne sauvegardez pas les changements</do_not_save_changes>
+<create_relation>Créez la relation</create_relation>
+<remove_relation>Enlevez la relation</remove_relation>
+<do_not_create_relation>Ne créez pas la relation</do_not_create_relation>
+<age>âge</age>
+<none>Aucun</none>
+<results_found>les résultats ont trouvé</results_found>
+</dictionary>
+</mmlanguage>

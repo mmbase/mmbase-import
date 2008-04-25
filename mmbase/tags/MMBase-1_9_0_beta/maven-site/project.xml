@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+-->
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>maven-site</artifactId>
+    <reports>
+        <report>maven-dashboard-plugin</report>
+    </reports>
+</project>
+
