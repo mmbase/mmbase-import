@@ -11,6 +11,7 @@
   <jsp:output omit-xml-declaration="true" />
   <jsp:directive.page import="org.mmbase.security.AuthenticationData,org.mmbase.bridge.*,org.mmbase.util.functions.*,java.util.*,org.mmbase.datatypes.*" />
 
+  <mm:cloud method="loginpage">
   <mm:import from="request" externid="language">en</mm:import>
   <mm:import from="request" externid="country"></mm:import>
   <mm:import from="request" externid="sessionname">cloud_mmbase</mm:import>
@@ -45,18 +46,16 @@
             Parameter param = params[j];
             Class type = param.getTypeAsClass();
             if (type.isAssignableFrom(String.class) &amp;&amp; param.isRequired()) {         
-            pageContext.setAttribute("param", param, PageContext.PAGE_SCOPE);
+            pageContext.setAttribute("parameter", param, PageContext.PAGE_SCOPE);
           </jsp:scriptlet>
           <tr>
             <td>
-              <mm:write referid="param" />
-              <jsp:expression>pageContext.getAttribute("param")</jsp:expression>
-              ${param}
-              ${param.localizedGUIName}
-              <mm:write value="param.getLocalizedDescription().get(locale)"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
+              .. ${parameter} ..
+              ... ${parameter.localizedGUIName} ...
+              <mm:write value="parameter.getLocalizedDescription().get(locale)"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:write>
             </td>
             <td>
-              <input type="${param.dataType}" name="${param.name}" />
+              <input type="${parameter.dataType}" name="${parameter.name}" />
             </td>
           </tr>
           <jsp:scriptlet>
@@ -90,4 +89,5 @@
       </table>
     </fmt:bundle>
   </mm:content>
+  </mm:cloud>
 </div>
