@@ -1,13 +1,12 @@
 package com.finalist.newsletter.cao;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Tag;
 
 public interface NewsletterSubscriptionCAO {
 
@@ -23,7 +22,9 @@ public interface NewsletterSubscriptionCAO {
 
 	public void removeSubscriptionTag(Subscription subscription,int tagId);	
 
-	public List<Subscription> getSubscription(int newsletterId);
+	public List<Subscription> getSubscriptionByNewsletterId(int newsletterId);
 
 	public Subscription getSubscription(int newsletterId, int userId);
+
+   Set<Tag> getTags(int id);
 }
