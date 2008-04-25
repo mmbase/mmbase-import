@@ -6,12 +6,15 @@
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     >
+  <jsp:output omit-xml-declaration="true" />
   <mm:import externid="a" >XXX</mm:import>
-
-  <h2>Included</h2>
-  <c:choose>
-    <c:when test="${a eq 'XXX'}">NOT ok (a=${a}, should not be 'XXX')</c:when>
-    <c:otherwise>OK ${a} != 'XXX'</c:otherwise>
-  </c:choose>
-
+  <div class="included">
+    <h2>Included</h2>
+    <p>
+      <c:choose>
+        <c:when test="${a eq 'XXX'}">NOT ok (a=${a}, should not be 'XXX')</c:when>
+        <c:otherwise>OK a != 'XXX' (but ${a})</c:otherwise>
+      </c:choose>
+    </p>
+  </div>
 </jsp:root>

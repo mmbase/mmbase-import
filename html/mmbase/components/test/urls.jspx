@@ -7,10 +7,11 @@
     >
   <mm:import externid="a" >A</mm:import>
   <mm:import externid="b" >B</mm:import>
-
+  <jsp:output omit-xml-declaration="true" />
   <div
       class="test mm_c mm_c_test mm_c_b_urls ${requestScope.componentClassName}"
       id="${requestScope.componentId}">
+
 
     <h1>
       <jsp:text>This block needs to be showed on</jsp:text>
@@ -75,7 +76,6 @@
     <mm:component name="test" block="suburls" />
     <mm:component name="test" block="suburls" />
 
-    a: ${a}
-    <mm:include referids="a" page="/mmbase/components/test/included.jspx" />
+    <mm:include debug="xml" referids="a" page="/mmbase/components/test/included.jspx" />
   </div>
 </jsp:root>
