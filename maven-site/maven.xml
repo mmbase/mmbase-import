@@ -34,4 +34,20 @@ See http://www.MMBase.org/license
         	tofile="${maven.multiproject.plugin.resources}/templates/projects-overview.jelly"/>
   </postGoal>
   
+  <postGoal name="site">
+    <ant:copy todir="${maven.docs.dest}/documentation" preservelastmodified="true">
+      <ant:mapper type="regexp" from="mmbase-(.*)docbook(.*)" to="\2" />
+      <ant:fileset dir="${maven.docs.dest}/multiproject/">
+        <include name="**/docbook/**"/>
+      </ant:fileset>
+    </ant:copy>
+    
+    <ant:copy todir="${maven.docs.dest}/documentation" preservelastmodified="true">
+      <ant:mapper type="regexp" from="docbook(.*)" to="\1" />
+      <ant:fileset dir="${maven.docs.dest}/multiproject/mmbase">
+        <include name="docbook/**"/>
+      </ant:fileset>
+    </ant:copy>
+  </postGoal>
+  
 </project>
