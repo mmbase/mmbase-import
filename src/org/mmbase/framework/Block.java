@@ -16,12 +16,28 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A Block is a representation of a page within a component. It has 2 renderers,
- * 'head' and 'body', and a  processor.
+ * A Block is a representation of a page within a component. It has two renderers,
+ * 'head' and 'body', and a processor. 
+ *
+ * Blocks can be configured in a {@link Component}. A typical block, this one is the
+ * 'applications' block (the former 'Applications' admin page) which is one of the 
+ * core components, looks like this:
+ *
+ * <p>
+ *    &lt;block name="applications" classification="mmbase.admin" mimetype="text/html"&gt;<br />
+ *     &lt;title xml:lang="en"&gt;Applications&lt;/title&gt;<br />
+ *     &lt;title xml:lang="nl"&gt;Applicaties&lt;/title&gt;<br />
+ *     &lt;description xml:lang="en"&gt;Shows an overview of all MMBase apps1 applications&lt;/description&gt;<br />
+ *     &lt;body jsp="applications.jspx"&gt;<br />
+ *       &lt;param name="application" type="String" /&gt;<br />
+ *     &lt;/body&gt;<br />
+ *   &lt;/block&gt;
+ * </p>
+ *
  *
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
- * @version $Id: Block.java,v 1.39 2008-04-12 12:58:20 michiel Exp $
+ * @version $Id: Block.java,v 1.40 2008-04-25 14:31:38 andre Exp $
  * @since MMBase-1.9
  */
 public class Block {

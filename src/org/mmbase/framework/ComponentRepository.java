@@ -21,10 +21,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * This (singleton) class maintains all compoments which are registered in the current MMBase.
+ * This (singleton) class maintains all {@link Component}s which are registered in the current MMBase.
+ * Components can be configured by placing their configuration in 'config/components/'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ComponentRepository.java,v 1.35 2008-04-12 13:23:27 michiel Exp $
+ * @version $Id: ComponentRepository.java,v 1.36 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 public class ComponentRepository {
