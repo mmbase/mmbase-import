@@ -54,7 +54,6 @@ function doAddSubmit(relationOriginNode, relationRole, relationCreateDir) {
 
     window.opener.document.forms[0].submit();
     window.close();
-
 }
 
 function buildSelectedList() {

@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.26 2008-02-14 17:19:40 nklasens Exp $
+  @version $Id: prompts.xsl,v 1.27 2008-04-25 16:55:45 andre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -56,6 +56,8 @@
 <xsl:template name="prompt_do_download">Huidig bestand bekijken</xsl:template>
 <xsl:template name="prompt_do_upload">Upload nieuw bestand</xsl:template>
 <xsl:template name="prompt_no_file">Geen (nieuw) bestand.</xsl:template>
+<xsl:template name="prompt_image_full">Volledige afbeelding</xsl:template>
+
 <!-- prompts for a dropdown box -->
 <xsl:template name="prompt_select">selecteer...</xsl:template>
 <!-- up/down button prompts and tooltips -->
@@ -145,6 +147,7 @@
   <xsl:call-template name="prompt_search_age" >
     <xsl:with-param name="age" select="$age" />
   </xsl:call-template>
+  <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   <xsl:value-of select="$title" disable-output-escaping="yes"  />
   <xsl:if test="$searchvalue" >
     - zoek op <xsl:value-of select="$searchvalue" />
