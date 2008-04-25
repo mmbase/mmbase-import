@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="pools" maintainer="mediaproject.mmbase.org" version="0" extends="pools">
+
+  <names>
+    <singular xml:lang="en">Directory</singular>
+    <singular xml:lang="nl">Directory</singular>
+    <singular xml:lang="eo">Dosieruj</singular>
+
+    <plural xml:lang="en">Directories</plural>
+    <plural xml:lang="nl">Directories</plural>
+    <plural xml:lang="eo">Dosierujoj</plural>
+  </names>
+
+
+  <fieldlist />
+</builder>

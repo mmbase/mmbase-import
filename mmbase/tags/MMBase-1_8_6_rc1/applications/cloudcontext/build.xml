@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE project
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="cloudcontext" default="jar" basedir=".">
+  <property name="project.name"      value="cloudcontextsecurity" />
+  <property name="project.package"   value="org/mmbase/security/implementation/cloudcontext" />
+  <property name="project.target.templates.dir"   value="security" />
+	<!-- property name="project.extra.path" location="../classsecurity/build/mmbase-classsecurity.jar" /-->
+  <property name="project.config.dir.includes"   value="security/**" />
+  <property name="project.config.jar.includes"   value="**" />
+  <property name="java.source.version" value="1.4" />
+  &base;
+</project>

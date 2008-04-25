@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../applications/app-base/project.xml</extend>
+  <artifactId>mmbase-thememanager</artifactId>     
+  <name>Thememanager</name>
+  <shortDescription>MMBase theme manager</shortDescription>
+  <description>
+    The ThemeManager is a contribution that allows you to 'skin' a webapplication
+    using css and image files. It comes with edit tools that allow you to assign
+    themes to different projects and even edit css files from inside
+    your web browser. 
+    This code is currently being used by MMBob, but not used much by other projects.
+    Therefore we do not recommend to use it heavily.
+  </description>
+  <properties>
+    <type>library</type>
+    <status>stable</status>
+  </properties>
+</project>
+

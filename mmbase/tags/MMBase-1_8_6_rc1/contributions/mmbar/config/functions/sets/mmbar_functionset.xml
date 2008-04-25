@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+<status>active</status>
+<version>1</version>
+<description>functions for mmbar</description>
+
+	<function name="getWriteTests">
+		<description>list all the write tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getWriteTests</method>
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+	<function name="getWriteTestBenchmarks">
+		<description>list benchmarks of a writetest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getWriteTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+	<function name="getWriteTest">
+		<description>list all the write tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getWriteTest</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.HashMap"> 
+		</return> 
+	</function>
+
+	<function name="performWriteTest">
+		<description>perform a write test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>performWriteTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="getReadTests">
+		<description>list all the read tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getReadTests</method>
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+
+	<function name="getMixedTests">
+		<description>list all the mixed tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getMixedTests</method>
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+
+	<function name="getEnduranceTests">
+		<description>list all the endurance  tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getEnduranceTests</method>
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+	<function name="getReadTestBenchmarks">
+		<description>list benchmarks of a readtest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getReadTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+
+	<function name="getMixedTestBenchmarks">
+		<description>list benchmarks of a mixedtest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getMixedTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+
+	<function name="getEnduranceTestBenchmarks">
+		<description>list benchmarks of a endurancetest</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getEnduranceTestBenchmarks</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.List"> 
+		</return> 
+	</function>
+
+	<function name="getReadTest">
+		<description>list all the read tests</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getReadTest</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.HashMap"> 
+		</return> 
+	</function>
+
+
+	<function name="getMixedTest">
+		<description>get info on a mixed test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getMixedTest</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.HashMap"> 
+		</return> 
+	</function>
+
+
+	<function name="getEnduranceTest">
+		<description>get info on a endurance test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getEnduranceTest</method>
+                <param name="name" type="String" description="" />
+		<return type="java.util.HashMap"> 
+		</return> 
+	</function>
+
+	<function name="performReadTest">
+		<description>perform a read test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>performReadTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="performMixedTest">
+		<description>perform a mixed test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>performMixedTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+	<function name="performEnduranceTest">
+		<description>perform a endurance test</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>performEnduranceTest</method>
+                <param name="name" type="String" description="" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+	<function name="getStateInfo">
+		<description>get state info</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbar.gui.Controller</class>
+		<method>getStateInfo</method>
+		<return type="java.util.HashMap"> 
+		</return> 
+	</function>
+
+</functionset>

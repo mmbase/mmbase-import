@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+  <version>4</version>
+  <description>functions for the thememanager</description>
+
+  <function name="getStyleSheet">
+    <description>get the stylesheet link</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getStyleSheet</method>
+    <param name="context" type="String" description="the context where to find the stylesheet" />
+    <param name="themeid" type="String" description="the id of the theme" />
+    <param name="styleid" type="String" description="the id of the stylesheet">default</param>
+    <return type="String"> 
+    </return> 
+  </function>
+
+  <function name="getAssignedList">
+    <description>get the assigned id's</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getAssignedList</method>
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+
+  <function name="getThemesList">
+    <description>get the themes</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getThemesList</method>
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+  <function name="getAssignInfo">
+    <description>Provide the info on a assign</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getAssignInfo</method>
+    <param name="id" type="String" description="the id of assign" />
+    <return type="java.util.Map"> 
+    </return> 
+  </function>
+
+
+  <function name="setCSSValue">
+    <description>Set a css value based on name</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>setCSSValue</method>
+    <param name="sname" type="String" description="path/name of the property" />
+    <param name="svalue" type="String" description="value of the new property" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="getCSSValue">
+    <description>get a css value based on name</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getCSSValue</method>
+    <param name="sname" type="String" description="path/name of the property" />
+    <return type="String"> 
+    </return> 
+  </function>
+
+
+  <function name="getCSSType">
+    <description>get a css value based on name</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getCSSType</method>
+    <param name="sname" type="String" description="path/name of the property" />
+    <return type="String"> 
+    </return> 
+  </function>
+
+
+  <function name="hasChanged">
+    <description>has there been a assignment change</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>hasChanged</method>
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="getThemeInfo">
+    <description>Provide the info on a theme</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getThemeInfo</method>
+    <param name="id" type="String" description="the id of theme" />
+    <return type="java.util.Map"> 
+    </return> 
+  </function>
+
+  <function name="getStyleSheetClasses">
+    <description>Provide the info on a theme</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getStyleSheetClasses</method>
+    <param name="id" type="String" description="the id of theme" />
+    <param name="cssid" type="String" description="the id of theme" />
+    <param name="searchkey" type="String" description="to limit the list" />
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+
+  <function name="getStyleSheetProperties">
+    <description>Provide the info on a theme</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getStyleSheetProperties</method>
+    <param name="tid" type="String" description="the id of theme" />
+    <param name="cssid" type="String" description="the id of stylesheet" />
+    <param name="id" type="String" description="the id of property" />
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+
+  <function name="getThemeStyleSheets">
+    <description>Provide the info on a theme</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getThemeStyleSheetsList</method>
+    <param name="id" type="String" description="the id of theme" />
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+
+  <function name="getThemeImageSets">
+    <description>Provide the info on a theme</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getThemeImageSetsList</method>
+    <param name="id" type="String" description="the id of theme" />
+    <param name="role" type="String" description="role of the imageset" />
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+
+  <function name="getThemeImage">
+    <description>Provide the real image url</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getThemeImage</method>
+    <param name="imagecontext" type="String" description="the context where to find the image" />
+    <param name="themeid" type="String" description="the id of theme" />
+    <param name="imageid" type="String" description="the id of the image" />
+    <return type="String"> 
+    </return> 
+  </function>
+
+  <function name="getThemeImages">
+    <description>Provide a list of real image urls</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>getThemeImages</method>
+    <param name="imagecontext" type="String" description="the context where to find the images" />
+    <param name="themeid" type="String" description="the id of theme" />
+    <param name="imagesetid" type="String" description="the id of the imageset" />
+    <return type="NodeList"> 
+    </return> 
+  </function>
+
+  <function name="changeAssign">
+    <description>Change the theme for a assign</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>changeAssign</method>
+    <param name="id" type="String" description="the id of assign" />
+    <param name="newtheme" type="String" description="the new theme" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+  <function name="setStyleSheetProperty">
+    <description>Change the theme for a assign</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>setStyleSheetProperty</method>
+    <param name="tid" type="String" description="the id of assign" />
+    <param name="cssid" type="String" description="the id of assign" />
+    <param name="id" type="String" description="the id of assign" />
+    <param name="name" type="String" description="the id of assign" />
+    <param name="value" type="String" description="the id of assign" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="addStyleSheetProperty">
+    <description>Change the theme for a assign</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>addStyleSheetProperty</method>
+    <param name="tid" type="String" description="the id of assign" />
+    <param name="cssid" type="String" description="the id of assign" />
+    <param name="id" type="String" description="the id of assign" />
+    <param name="name" type="String" description="the id of assign" />
+    <param name="value" type="String" description="the id of assign" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="addStyleSheetClass">
+    <description>add style sheet class</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>addStyleSheetClass</method>
+    <param name="tid" type="String" description="the id of assign" />
+    <param name="cssid" type="String" description="the id of assign" />
+    <param name="name" type="String" description="the id of assign" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="removeStyleSheetClass">
+    <description>remove style sheet class</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>removeStyleSheetClass</method>
+    <param name="tid" type="String" description="the id of assign" />
+    <param name="cssid" type="String" description="the id of assign" />
+    <param name="name" type="String" description="the id of assign" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="removeStyleSheetProperty">
+    <description>remove a property</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>removeStyleSheetProperty</method>
+    <param name="tid" type="String" description="the id of assign" />
+    <param name="cssid" type="String" description="the id of assign" />
+    <param name="id" type="String" description="the id of assign" />
+    <param name="name" type="String" description="the id of assign" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="removeAssign">
+    <description>remove a assign</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>removeAssign</method>
+    <param name="removeid" type="String" description="the id of assign" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+
+  <function name="addAssign">
+    <description>add the theme for a assign</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>addAssign</method>
+    <param name="newid" type="String" description="the newid of assign" />
+    <param name="newtheme" type="String" description="the new theme" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+  <function name="copyTheme">
+    <description>add the theme</description>
+    <type>class</type>
+    <class>org.mmbase.applications.thememanager.taglib.ThemeManagerController</class>
+    <method>addTheme</method>
+    <param name="copytheme" type="String" description="the newid of assign" />
+    <param name="newtheme" type="String" description="the new theme" />
+    <return type="Boolean"> 
+    </return> 
+  </function>
+
+</functionset>

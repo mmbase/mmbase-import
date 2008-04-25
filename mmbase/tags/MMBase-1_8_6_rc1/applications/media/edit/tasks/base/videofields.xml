@@ -1,0 +1,11 @@
+<!-- extra fields for video -->
+<fieldset>
+  <prompt xml:lang="en">size</prompt>
+  <prompt xml:lang="nl">grootte</prompt>
+  <field name="width">
+    <postfix>x</postfix>
+  </field>
+  <field name="height">
+  <postfix>pixels</postfix>
+   </field>
+</fieldset>

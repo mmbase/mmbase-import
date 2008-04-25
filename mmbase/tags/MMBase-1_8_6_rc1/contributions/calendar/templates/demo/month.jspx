@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page" 
+      xmlns:mm-cal="urn:jsptagdir:/WEB-INF/tags/mm/calendar"     
+      xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0">
+  <!--
+      This can be useful during development
+      xmlns:mm-cal="http://www.mmbase.org/tags/mm/calendar"       
+
+  -->      
+  <mm:import externid="language">client</mm:import>
+  <mm:import externid="timezone"></mm:import>
+  <mm:write request="language" referid="language" />
+  <mm:write request="timezone" referid="timezone" />
+  <mm:content type="application/xhtml+xml"
+              language="$language" 
+              timezone="$timezone"
+              postprocessor="none" expires="0">
+    <head>
+       <link href="../style.css" rel="stylesheet" title="Normaal" type="text/css" media="screen" />
+    </head>
+    <body>
+      <mm:cloud method="asis">        
+
+        
+        <mm:time id="date" time="now" vartype="date" write="false" />
+        
+        <table>
+          <thead>
+            <tr><th colspan="6"><mm:time referid="date" format="MMMM yyyy" /></th></tr>
+          </thead>
+          <mm-cal:month date="${date}" layout="horizontal">
+            <mm:time referid="day" format=":FULL" />
+          </mm-cal:month>
+        </table>        
+
+        <table>
+          <thead>
+            <tr><th colspan="6"><mm:time referid="date" format="MMMM yyyy" /></th></tr>
+          </thead>
+          <mm-cal:month date="${date}" layout="vertical">
+            <mm:time referid="day" format=":FULL" />
+          </mm-cal:month>
+        </table>        
+      </mm:cloud>
+    </body>
+  </mm:content>
+</html>
+  

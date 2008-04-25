@@ -1,0 +1,868 @@
+/* the usual */
+
+body 
+		{
+		font-size:13pt;
+		color:#000000;
+		background-color:#ffffff;
+		}
+
+body, td, div 
+		{
+		color:#000000;
+	font-family:sans-serif,verdana,arial,helvetica;		text-transform:none;
+		}
+
+INPUT, SELECT, TEXTAREA		
+		{
+		font-size: 12px;
+		color: #4F4F4F;
+		border: 1px solid #CCCCCC;
+        }
+        
+INPUT:hover, SELECT:hover, TEXTAREA:hover	
+		{
+		border: 1px solid #AAAAAA;
+		color: #000000;
+        }
+
+.input
+		{
+	font-family:sans-serif,verdana,arial,helvetica;		padding:4px;
+		color:#4F4F4F;
+		text-align:left;
+		}
+img  
+		{         
+        text-decoration:none;
+        border: none;
+        vertical-align:middle;
+		}
+
+
+a 		{
+
+		text-decoration: none;
+		color: #333333;
+		padding-bottom: 1px;
+		}
+
+a:hover {
+		color: #000000;
+		border-bottom: 1px solid #CCCCCC; 
+		text-decoration: none;
+		}
+
+
+table {
+	border: 0px;
+	border-collapse: collapse;
+}	
+
+tr {
+	vertical-align : top;
+	border: 0px;
+}
+	
+td {
+	border: 0px;
+}	
+
+/* end the usual */
+table.body	
+		{
+		font-size:12px;
+		color:#FF6600;
+		}
+.head
+		{
+		width:100%;
+		}
+
+.head .headtitle TD
+		{         
+        text-align: left;
+		}
+		 
+.headnav
+		{
+		background-color:#DDDDDD;
+		font-size:10px;
+		padding:4px;
+		}
+		
+table.body
+		 {
+	    text-align:	left;
+    	vertical-align:	top;
+	    width: 100%;
+		}
+
+/** td around the full list with buttons */
+tr.searchcanvas,
+tr.pagescanvas,
+tr.buttoncanvas,
+tr.linkcanvas 
+		{
+   		width: 100%;
+		}
+
+
+
+tr.searchcanvas table.searchcontent
+		{
+		margin-top:10px;
+		margin-bottom:10px;
+		}
+.searchcontent img
+		{
+		cursor:pointer;
+		}
+
+.header 
+		{         
+        font-weight: bold;
+        font-size: 14px;
+        text-transform:uppercase;
+        text-align:left;
+        height:20px;
+		
+        color:#FFFFFF;
+        background-color:#73BE1E;  
+        padding:5px 3px 3px 4px;
+        }
+        
+.body .formcanvas .header 
+		{         
+        font-weight: bold;
+        font-size: 14px;
+        text-transform:uppercase;
+        text-align:left;
+        height:20px;
+        width:500px;
+        _width:507px;
+		
+        color:#FFFFFF;
+        background-color:#73BE1E;  
+        padding:5px 3px 3px 4px;
+        }
+ .body .formcanvas .headerbasis 
+		{         
+        font-weight: bold;
+        font-size: 14px;
+        text-transform:uppercase;
+        text-align:left;
+        height:20px;
+        width:656px;
+        _width:516px;
+		
+        color:#FFFFFF;
+        background-color:#73BE1E;  
+        padding:5px 3px 3px 4px;
+        }
+
+        
+        
+.options
+		{         
+        font-weight: bold;
+        font-size: 12px;
+        text-align: left;
+        width:100%;
+        color:#333333;
+        background-color:#EEEEEE;
+        padding:10px;
+    	}
+
+td.number 
+		{
+  		text-align: right;
+  		width: 1%;
+		}
+
+td.deletebutton 
+		{
+  		width: 1%;
+		}
+
+.Path {
+
+			padding-left:5px;
+			height:24px;
+			background-color:#F7F7F7;
+			cursor:pointer;
+			border-bottom:2px solid #E5E5E5;
+			border-top:2px solid #E5E5E5;
+}
+div.Path:hover {
+
+			margin-top:10px;
+			
+			background-color:#CCCCCC;
+			cursor:pointer;
+			border-bottom:2px solid #E5E5E5;
+}
+
+/**
+  Header settings
+*/
+h1, h2, h3, h4, h5, h6  
+		{         
+        padding-left:3;
+        text-align: left;
+        font-weight: bold; 
+		}
+		
+h1  	{         
+        font-size: 20px;
+		}
+		
+h2  	{         
+        font-size: 18px;
+		}
+		
+h3  	{         
+        font-size: 16px;
+		}
+		
+h4  	{         
+        font-size: 14px;
+		}
+		
+h5  	{         
+        font-size: 12px;
+		}
+		
+h6  	{         
+        font-size: 10px;
+		} 
+
+.tooltip 
+		{         
+        border-width: 1px;
+        border-style: solid;
+        padding: 3;
+        position: absolute;
+        top: 0;
+        left: 0;
+        visibility: visible;
+        z-index: 1001;
+        width: 250;
+        font-size: 11px;
+		} 
+.spacer
+		{
+		margin-left:4px;
+		font-size:12px;
+		}
+
+
+tr.headtitle
+		{
+		background-color:#000000;         
+        vertical-align: middle;
+		}
+
+tr.headtitle td 
+		{
+		font-weight: bold;
+        font-size: 18px;
+        text-transform: uppercase;
+        padding: 5px 5px 5px 5px;
+        text-align: right;
+        color:#FFFFFF;
+        white-space: nowrap;
+		}
+tr.headtitle a 
+		{
+		font-weight: bold;
+        font-size: 11px;
+        text-transform: lowercase;
+        padding: 5px 5px 5px 5px;
+        text-align: right;
+        color:#FFFFFF;
+        white-space: nowrap;
+		} 
+
+tr.headsubtitle span
+		{         
+        font-weight: 600;
+        font-size: 11px;
+        padding: 5px 1px 5px 5px;
+        text-align: left;
+        vertical-align: middle;
+        }
+tr.headsubtitle 
+		{         
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        text-align: left;
+        vertical-align: middle;
+	    height:25px;
+        background-color: #BBBBBB;
+		}
+		
+.headsubtitle .valid
+		{
+		color:#333333;
+		font-weight:normal;
+
+		}
+.headsubtitle .field
+		{
+		font-weight:bold;
+		color:#333333;
+		}
+		
+tr.headsubtitle td 
+		{
+        white-space: nowrap;
+		} 
+
+
+
+
+.pagenav, .pagenav-disabled, .pagenav-current, .pagenav a  
+		{         
+        font-size: 11px;
+        text-decoration: none;
+		}
+		
+.pagenav:hover
+		{         
+        text-decoration: underline;
+		} 
+
+textarea.debug
+		{         
+        width: 100%;
+		}
+
+#editform .fieldcanvas 
+		{
+		background-color:#EEEEEE;
+		}
+		
+TD.field span.imgbutton
+		{         
+        cursor: pointer;
+        cursor: hand;
+        margin-right: 10px;
+        border-style: none;
+        border-width: 0;
+		}
+
+.imgbutton-down  
+		{         
+        cursor: pointer;
+        cursor: hand;
+        padding: 0;
+        margin: 1 0 0 1;
+        border-style: none;
+        border-width: 0;
+		}		
+
+input.search
+		{         
+        width: auto;
+		} 
+
+select.age                 {  width: 80;  }
+select.searchpossibilities {  width: 125; }
+select.search              {  width: 175; }
+
+
+tr.formcanvas,
+tr.searchcanvas,
+tr.pagescanvas,
+tr.buttoncanvas
+ 		{
+   		border-color: #cccccc;
+   		background-color: #ffffff;
+   		text-align:left;
+   		font-size:12px;
+		}
+
+table.searchcontent,
+table.listcontent 
+		{
+		/*	border-color: #000000; */ 
+		width:100%;
+  		color: black;
+  		text-align:left;
+		}
+
+tr.listheader, th.listheader 
+		{
+ 		color: #2A2A2A;
+  		background-color: #DDDDDD;
+  		font-size:11px;
+  		height:20px;
+  		text-align:left;
+		}
+
+  		
+.itemrow .deletebutton, .itemrow .number, .itemrow .field 
+		{
+		border-bottom:1px solid #FFFFFF;
+		}
+		
+.itemrow .buttons
+		{
+		border-bottom:1px solid #FFFFFF;
+		white-space: nowrap;
+		
+		}
+		
+.itemrow-hover .buttons 
+		{
+		border-bottom:1px solid #DADADA;
+		width:200px;
+		white-space: nowrap;
+		}
+
+TR.itemrow  
+		{
+		background-color:#EFEFEF;
+		font-size:12px;
+		height:30px;
+		}
+
+.itemrow-hover 
+		{
+		height:35px;
+  		cursor: pointer;
+  		cursor: hand;
+		background-color:#E5E5E5;
+		font-size:13px;
+		font-weight:bold;
+		}
+
+.itemrow-hover .deletebutton, .itemrow-hover .number, .itemrow-hover .field 
+		{
+		border-bottom:1px solid #DADADA;
+		}
+
+/* if permission to edit is lacking, the row is 'disabled' */
+.itemrow-disabled 
+		{
+  		text-decoration: none; 
+  		cursor:default;
+		}
+
+
+.tooltip
+		{
+ 		background-color: #FFFF88;
+  		border-color: #000000;
+		}
+
+tr.linkcanvas	
+		{
+		font-size:10px;
+		background-color:#DDDDDD;
+		height:20px;
+		}
+
+.stepscontent
+		{
+		font-size:12px;
+		font-weight:bold;
+		background-color:#EEEEEE;
+		margin-bottom:5px;
+		height:30px;
+		border-collapse:separate;
+		border: 1px;
+		}		
+}	
+
+.stepscontent tr {
+	border: 1px;
+}
+	
+.stepscontent td {
+	border: 1px;
+}	
+		
+		
+.stepscontentbottom
+		{
+		background-color:#EEEEEE;
+		margin-top:10px;
+		margin-bottom:0px;
+		height:30px;
+		}
+
+TD.stepcurrent
+		{
+		text-transform:uppercase;
+		background-color:#DDDDDD;
+		height:20px;
+		padding:5px;
+		}
+TD.stepcurrent:hover
+		{
+		text-transform:uppercase;
+		background-color:#CCCCCC;
+		height:20px;
+		padding:5px;
+		cursor:pointer;
+		}
+TD.stepcurrent a:hover
+		{
+		height:20px;
+		cursor:pointer;
+		border-bottom:0px;
+		}
+		
+TD.stepother
+		{
+		text-transform:uppercase;
+		background-color:#CCCCCC;
+		height:20px;
+		padding:5px;
+		}
+
+TD.stepother:hover
+		{
+		text-transform:uppercase;
+		background-color:#BBBBBB;
+		height:20px;
+		padding:5px;
+		cursor:pointer;
+		}
+TD.stepother a:hover
+		{
+		cursor:pointer;
+		border-bottom:0px;
+
+		}
+TD.stepprevious
+		{
+		text-transform:uppercase;
+		background-color:#DDDDDD;
+		height:20px;
+		padding:5px;
+		}
+TD.stepprevious:hover
+		{
+		text-transform:uppercase;
+		background-color:#BBBBBB;
+		height:20px;
+		padding:5px;
+		cursor:pointer;
+		}
+TD.stepprevious a:hover
+		{
+		cursor:pointer;
+		border-bottom:0px;
+		}
+
+TD.stepnext
+		{
+		text-transform:uppercase;
+		background-color:#AAAAAA;
+		height:20px;
+		padding:5px;
+		}
+
+TD.stepnext:hover
+		{
+		text-transform:uppercase;
+		background-color:#797979;
+		height:20px;
+		cursor:pointer;
+		padding:5px;
+		}
+		
+TD.stepnext a:hover
+		{
+		text-transform:uppercase;
+		background-color:#797979;
+		height:20px;
+		cursor:pointer;
+		border-bottom:0px;
+		}
+
+		
+.fieldcanvas .field
+		{
+
+		font-size:11px;
+		color:#333333;
+		text-align:left;
+		font-weight:bold;
+		padding-top:5px;
+		}
+		
+.itemcontent {
+	width:100%;
+}		
+		
+.itembuttons {
+	width:96px;
+}		
+		
+.itemcontent .itemfields .itemrow .fieldcanvas .field
+		{
+		font-size:11px;
+		color:#333333;
+		text-align:left;
+		font-weight:bold;
+		padding-top:5px;
+		width:400px;
+		border:0px solid #FF6600;
+		}
+
+		
+.itemcanvas .itemrow .fieldcanvas .field
+		{
+
+		font-size:11px;
+		color:#333333;
+		text-align:left;
+		font-weight:bold;
+		padding-top:5px;
+		width:387px;
+		border:0px solid #FF6600;
+		}
+.itemcanvas .itemrow .fieldcanvas-edit .field, .itemrow .itemfields .itemrow .fieldcanvas-edit .field, .fieldscontent .fieldcanvas-edit .field
+		{
+
+		font-size:11px;
+		color:#333333;
+		text-align:left;
+		font-weight:bold;
+		padding-top:5px;
+		width:410px;
+		border:0px solid #FF6600;
+		}
+
+.fieldcanvas-edit .field
+		{
+
+		font-size:11px;
+		color:#333333;
+		text-align:left;
+		font-weight:bold;
+		padding-top:5px;
+		}
+.divider	
+		{
+		background-color:#F6F4F4;
+		height:5px;
+		}		
+	
+		
+#commandbuttonbar
+		{
+		background-color:#F8F8F8;
+		height:20px;
+		margin-top:10px;
+		padding-bottom:5px;
+		border-bottom:2px solid #E5E5E5;
+		border-top:2px solid #E5E5E5;
+		}
+.buttonscontent a
+		{
+		font-size:12px;
+		font-weight:bold;
+		text-transform:uppercase;
+		}
+.buttonscontent a:hover
+		{
+		color:#000000;
+		font-size:12px;
+		font-weight:bold;
+		text-transform:uppercase;
+		border-bottom:0px;
+		}
+
+		
+.bottombutton
+		{
+		font-size:12px;
+		color:#333333;
+		}
+span.valid
+		{
+		font-size:11px;
+		color:#333333;
+		text-align:left;
+		}
+span.valid_verplichtveld
+		{
+		font-size:11px;
+		color:#FF0000;
+		}
+.listprompt
+		{
+		background-color:#027ABB;
+		color:#FFFFFF;
+		font-size:14px;
+		font-weight:bold;
+		text-transform:uppercase;
+		padding-left:5px;
+		padding-top:2px;
+		padding-bottom:2px;
+		width:250px;
+		height:25px;	
+		}
+
+.imgbutton
+		{         
+        cursor: pointer;
+        cursor: hand;
+        padding: 0px;
+        margin: 0 1 1 0;
+		white-space: nowrap;
+        border-width: 0px;
+		}
+	
+td .fieldprompt .imgbutton
+		{         
+        cursor: pointer;
+        cursor: hand;
+        padding: 0px;
+        margin: 0 1 1 0;
+		white-space: nowrap;
+		float:left;
+		}
+		
+TD .listprompt .imgbutton:hover, TD .listprompt a:hover
+		{         
+		white-space: nowrap;
+        cursor: pointer;
+        cursor: hand;
+        margin: 0 0.5 1 0;
+		text-decoration:none;
+        border: 0px solid #CCCCCC; 
+		}
+		
+.listcontent
+		{
+		text-align:left;
+		}
+.listsearch
+		{
+		width:250px;
+		padding-left:5px;
+		text-align:left;
+		background-color:#EEEEEE;
+		width:90%;
+		border:1px solid #BBBBBB;
+		}
+.related
+		{
+		background-color:#F3F3F3;
+		color:#333333;
+		}
+.related_title
+		{
+		background-color:#027ABB;
+		color:#FFFFFF;
+		font-size:14px;
+		font-weight:bold;
+		text-transform:uppercase;
+		padding-left:5px;
+		padding-top:5px;
+		padding-bottom:0px;
+		height:22px;		
+		width:99%;
+		_width:100%;
+
+		}
+
+
+.fieldprompt
+		{
+		padding:5px;
+		}
+
+div.searchnavigation  {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        padding: 10px 0px 0px 0px;
+        width: 100%;
+        z-index: 10;
+} 
+
+ /* contains only the search-result table. Needed to set height and overflow */
+div.searchresult  {         
+        top: 0px;
+        left: 0px;
+        padding: 0px 0px 0px 0px;
+        width: 100%;
+        overflow: auto;
+        text-align: left;
+        vertical-align: top;
+} 
+
+table.searchnavigation  {
+        font-size: 11px;
+        font-weight: normal;
+
+        text-align: left;
+        vertical-align: top;
+        width: 100%;
+text-indent:5px
+} 
+
+table.searchresult  {  
+        font-size: 11px;
+        font-weight: normal;
+        padding: 0px 
+        text-align: left;
+        vertical-align: top;
+        width: 100%;
+} 
+table.searchresult tr.even td  {         
+        color: #000000;
+		cursor:pointer;
+        padding: 8px; 
+        background-color: #DDD; 
+} 
+
+table.searchresult tr.odd td  {         
+        color: #000000;
+		cursor:pointer;
+        padding: 8px; 
+        background-color: #EEE;
+} 
+
+table.searchresult tr.selected-even td  {         
+        color: #fff;
+
+        padding: 8px; 
+        background-color: #027ABB; 
+} 
+
+table.searchresult tr.selected-odd td  {         
+        color: #fff;
+
+        padding: 8px; 
+        background-color: #027ABB; 
+}
+.searchresult_title
+		{
+		background-color:#73BE1E;
+		color:#FFFFFF;
+		font-size:14px;
+		font-weight:bold;
+		text-transform:uppercase;
+		padding:5px;
+		}
+
+table.searchnavigation .button {
+		border: 0px solid #CCCCCC;
+		vertical-align:middle;
+		font-size:12px;
+		color: #4F4F4F;
+		}
+
+table.searchnavigation .button:hover {
+		border: 0px solid #CCCCCC;
+		cursor:pointer;
+		}

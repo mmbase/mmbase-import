@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE functionset PUBLIC "//MMBase - functionset //" "http://www.mmbase.org/dtd/functionset_1_0.dtd">
+<functionset>
+
+  <description>Some util functions from org.mmbase.util, made accessible through the function-framework</description>
+
+  <function name="generatePassword">
+    <description>
+      Generates a password. Using a template (chain of characters A (random letter) C (random
+      alphanumeric) H (random hex) S (random syllable) 6 (random dice) 9 (random digit)). Default
+      template: SSSSSS.
+    </description>
+    <type>class</type>
+    <class>org.mmbase.util.PasswordGenerator</class>
+    <method>getPassword</method>
+    <param name="template" type="String">SSSSSS</param>
+  </function>
+
+  <function name="randomLong">
+    <description>
+      Generates a random long integer.
+    </description>
+    <type>class</type>
+    <class>org.mmbase.util.RandomPool</class>
+    <method>value_and_stir</method>
+  </function>
+
+
+</functionset>

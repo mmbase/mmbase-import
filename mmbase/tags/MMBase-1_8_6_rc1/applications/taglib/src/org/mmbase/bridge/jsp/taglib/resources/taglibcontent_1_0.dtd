@@ -1,0 +1,30 @@
+<!ELEMENT taglibcontent (content*, escaper*, parameterizedescaper*, postprocessor*) >
+<!ATTLIST taglibcontent  defaulttype   CDATA  #IMPLIED > 
+
+<!ELEMENT content  EMPTY >
+<!ATTLIST content id     CDATA  #IMPLIED > <!-- id equals type if not speficied -->
+<!ATTLIST content type   CDATA  #REQUIRED > 
+<!ATTLIST content defaultescaper       CDATA  #REQUIRED > 
+<!ATTLIST content defaultpostprocessor CDATA  #REQUIRED > 
+<!ATTLIST content defaultencoding      CDATA  "NOTSPECIFIED" > 
+
+<!ELEMENT escaper  (class*, info?) >
+<!ATTLIST escaper  id    CDATA  #REQUIRED > 
+
+<!ELEMENT parameterizedescaper  (class, info?, param*) >
+<!ATTLIST parameterizedescaper  id    CDATA  #REQUIRED > 
+
+<!ELEMENT param  (info?) >
+<!ATTLIST param  name   CDATA  #REQUIRED > 
+<!ATTLIST param  value  CDATA  #IMPLIED > 
+
+<!ELEMENT postprocessor  (class*, info?) >
+<!ATTLIST postprocessor  id    CDATA  #REQUIRED > 
+
+<!ELEMENT class      (#PCDATA) >      <!-- class of type CharTransformer -->
+<!ATTLIST class  config CDATA  #IMPLIED > 
+<!ATTLIST class  back   NMTOKEN  #IMPLIED >   <!-- if 'transformBack' must be used of CharTransformer -->
+
+
+<!ELEMENT info  (#PCDATA | p )* > 
+<!ELEMENT p  ( #PCDATA)* >
