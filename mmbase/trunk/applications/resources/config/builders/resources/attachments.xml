@@ -24,6 +24,10 @@
     <description xml:lang="nl">Bijlage, zoals een PDF bestand</description>
   </descriptions>
 
+  <properties>
+    <property name="wiki_inlinecreate">true</property> <!-- indicate to wiki's that this typically can be created 'inline' -->
+  </properties>
+
   <fieldlist>
     <field name="title">
       <descriptions>
