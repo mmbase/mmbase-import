@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * This class implements the `get' for `mmxf' fields.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MmxfGetString.java,v 1.12 2008-04-22 16:00:49 michiel Exp $
+ * @version $Id: MmxfGetString.java,v 1.13 2008-04-25 12:59:22 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -124,6 +124,7 @@ public class MmxfGetString implements  Processor {
         try {
             String stringMode = (String) node.getCloud().getProperty(Cloud.PROP_XMLMODE);
             int mode = stringMode == null ? Modes.XML : Modes.getMode(stringMode);
+            log.debug("mode: " + stringMode);
             switch(mode) {
             case Modes.KUPU: {
                 // this is actually not really used, at the moment is done on node.body.jspx
@@ -150,6 +151,7 @@ public class MmxfGetString implements  Processor {
                 return res.toString();
             }
             case Modes.FLAT: {
+                log.debug("Editing as flat text");
                 Generator generator = getGenerator(node.getCloud());
                 generator.setNamespaceAware(true);
                 generator.add(node, field);
@@ -163,6 +165,7 @@ public class MmxfGetString implements  Processor {
                 return res.toString();
             }
             case Modes.PRETTYXML: {
+                log.debug("Editing as pretty xml");
                 // get the XML from this thing....
                 // javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
                 // javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
@@ -180,6 +183,7 @@ public class MmxfGetString implements  Processor {
                 return value;
             case Modes.XML:
             default:
+                log.debug("Editing as xml");
                 Document xml = node.getXMLValue(field.getName());
 
                 if(xml != null) {

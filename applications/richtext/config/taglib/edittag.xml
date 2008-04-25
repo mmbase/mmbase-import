@@ -9,4 +9,11 @@
     </info>
   </editor>
 
+  <editor type="wiki">
+    <class>org.mmbase.bridge.jsp.taglib.editor.BasicEditor</class>
+    <param name="url">/wiki/?objectnumber={NODE.number}</param>
+    <info>
+    </info>
+  </editor>
+
 </edittagtypes>

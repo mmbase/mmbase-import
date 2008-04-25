@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -9,11 +9,11 @@ See http://www.MMBase.org/license
 <project>
 
   <extend>${basedir}/../app-base/project.xml</extend>
-  <artifactId>mmbase-richtext</artifactId>   
+  <artifactId>mmbase-richtext</artifactId>
   <name>Richtext</name>
   <shortDescription>MMBase Richtext application</shortDescription>
   <description>
-    Richtext provides utilities to use rich content in MMBase, with embedded links etc. 
+    Richtext provides utilities to use rich content in MMBase, with embedded links etc.
   </description>
   <properties>
     <type>library</type>
@@ -31,15 +31,15 @@ See http://www.MMBase.org/license
   <build>
     <resources>
       <resource>
-	<directory>build/</directory>
-	<targetPath>WEB-INF/lib</targetPath>
-	<includes>
-	  <include>*kupu-i18.jar</include>
-	</includes>
-	<filtering>false</filtering>
+        <directory>build/</directory>
+        <targetPath>WEB-INF/lib</targetPath>
+        <includes>
+          <include>*kupu-i18.jar</include>
+        </includes>
+        <filtering>false</filtering>
       </resource>
       <resource>
-	<directory>mmbase</directory>
+        <directory>mmbase</directory>
         <targetPath>mmbase</targetPath>
         <includes>
           <include>**</include>
