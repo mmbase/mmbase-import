@@ -54,7 +54,7 @@
     <dd><img src="img/mmbase-cancel.png" alt="cancel" width="21" height="20" /></dd>
   </dl><dl>
     <dt>reload</dt>
-    <dd><img src="img/mmbase-reload.png" alt="reload" width="21" height="20" /></dd>
+	<dd><mm:link><a href="${_}"><img src="img/mmbase-reload.png" alt="reload" width="21" height="20" /></a></mm:link></dd>
   </dl><dl>
     <dt>search</dt>
     <dd><img src="img/mmbase-search.png" alt="search" width="21" height="20" /></dd>
@@ -72,6 +72,7 @@
 <mm:import externid="max_days" vartype="Integer"><mm:write referid="days" /></mm:import>
 <mm:import externid="type_list"><mm:write referid="list" /></mm:import>
 <mm:import externid="search_box"><mm:write referid="searchbox" /></mm:import>
+<mm:import externid="columns_pos"><mm:write referid="columns" /></mm:import>
 
 <mm:import externid="savethis" />
 <mm:present referid="savethis">
@@ -79,6 +80,7 @@
   <mm:write cookie="my_editors_maxdays"  referid="max_days" />
   <mm:write cookie="my_editors_typelist" referid="type_list" />
   <mm:write cookie="my_editors_searchbox" referid="search_box" />
+  <mm:write cookie="my_editors_columns"  referid="columns_pos" />
 </mm:present>
 
 <h2>Configure my_editors</h2>
@@ -118,6 +120,13 @@
     <option label="after" value="after"<mm:compare referid="search_box" value="after"> selected="selected"</mm:compare>>after</option>
     <option label="before" value="before"<mm:compare referid="search_box" value="before"> selected="selected"</mm:compare>>before</option>
   </select> the list with searchresults
+</div>
+<div class="row">
+  <label><strong>Columns position</strong></label>
+  <select name="columns_pos">
+	<option label="content left" value="contentleft"<mm:compare referid="columns_pos" value="contentleft"> selected="selected"</mm:compare>>content left</option>
+	<option label="content right" value="contentright"<mm:compare referid="columns_pos" value="contentright"> selected="selected"</mm:compare>>content right</option>
+  </select>
 </div>
 <div class="lastrow">
   <input type="submit" name="savethis" value="Save" /> 
