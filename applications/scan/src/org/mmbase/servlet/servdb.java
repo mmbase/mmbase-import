@@ -19,7 +19,6 @@ import javax.servlet.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
-import org.mmbase.jumpers.Jumpers;
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.core.CoreField;
@@ -27,14 +26,14 @@ import org.mmbase.core.CoreField;
 import org.mmbase.util.logging.*;
 
 /**
- * The servdb servlet handles binary requests.
+ * The servdb servlet handles binairy requests.
  * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
  * With servscan it provides the communication between the clients browser and the mmbase space.
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated use {@link org.mmbase.servlet.ImageServlet} or {@link org.mmbase.servlet.AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.66 2008-03-25 21:00:24 nklasens Exp $
+ * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
+ * @version $Id: servdb.java,v 1.62 2005-10-06 14:07:32 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -47,7 +46,6 @@ public class servdb extends JamesServlet {
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
     private 	sessionsInterface 	sessions;
-    private String dtdbase = "http://www.mmbase.org";
 
     /**
      * Construct a servfile worker, it should be places in a worker
@@ -74,11 +72,6 @@ public class servdb extends JamesServlet {
 
     public void setMMBase(MMBase mmb) {
         super.setMMBase(mmb);
-
-        String tmp = getInitParameter("DTDBASE");
-        if (tmp != null && !tmp.equals("")) {
-            dtdbase = tmp;
-        }
 
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
@@ -132,6 +125,7 @@ public class servdb extends JamesServlet {
             boolean done=false;
             cacheline cline=null;
             long nowdate=0;
+            int cmd;
             // org.mmbase String mimetype=getContentType();
             String mimetype="image/jpeg";
 
@@ -333,10 +327,10 @@ public class servdb extends JamesServlet {
                         mimetype=cline.mimetype;
                     } else if (req.getRequestURI().indexOf("jump")!=-1) {
                         // do jumper
-                        long begin=System.currentTimeMillis();
+                        long begin=(long)System.currentTimeMillis();
                         Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
                         String key=(String)(getParamVector(req)).elementAt(0);
-                        String url = bul.getJump(key);
+                        String url = (String)bul.getJump(key);
                         log.debug("jump.db Url="+url);
                         if (url!=null) {
                             // jhash.put(key,url);
@@ -349,7 +343,7 @@ public class servdb extends JamesServlet {
                             res.setHeader("Last-Modified",dt);
                             res.setHeader("Date",dt);
                         }
-                        long end=System.currentTimeMillis();
+                        long end=(long)System.currentTimeMillis();
                         //debug("getUrl="+(end-begin)+" ms");
 
                     } else if (req.getRequestURI().indexOf("attachment")!=-1) {
@@ -412,7 +406,7 @@ public class servdb extends JamesServlet {
      * @javadoc
      */
     boolean Show_Directory(String pathname,File dirfile, PrintWriter out) {
-        String body,bfiles,bdirs,header;
+        String body,bfiles,bdirs,header,line;
         int i;
 
         String files[] = dirfile.list();
@@ -476,7 +470,7 @@ public class servdb extends JamesServlet {
 
         for (Enumeration e=getInitParameters().keys();e.hasMoreElements();) {
             tmp=(String)e.nextElement();
-            tmp2=getInitParameter(tmp);
+            tmp2=(String)getInitParameter(tmp);
             pos=tmp.indexOf("Root.");
             if (pos==0) {
                 result.put(tmp.substring(5),tmp2);
@@ -592,11 +586,11 @@ public class servdb extends JamesServlet {
     private String toXML(MMObjectNode node) {
         String tableName = node.getBuilder().getTableName();
         StringBuffer body = new StringBuffer("<?xml version=\"" + node.getBuilder().getVersion()+ "\"?>\n");
-        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(dtdbase).append("/mmnode/").append(tableName).append(".dtd\">\n");
+        body.append("<!DOCTYPE mmnode.").append(tableName).append(" SYSTEM \"").append(mmbase.getDTDBase()).append("/mmnode/").append(tableName).append(".dtd\">\n");
         body.append("<" + tableName + ">\n");
         body.append("<number>" + node.getNumber() + "</number>\n");
-        for (Object element : node.getBuilder().getFields(NodeManager.ORDER_CREATE)) {
-            CoreField field = (CoreField)element;
+        for (Iterator i = node.getBuilder().getFields(NodeManager.ORDER_CREATE).iterator(); i.hasNext();) {
+            CoreField field = (CoreField)i.next();
             int type = field.getType();
             String name = field.getName();
             body.append('<').append(name).append('>');
@@ -668,6 +662,7 @@ public class servdb extends JamesServlet {
      */
     public String getAttachmentFileName(Vector params) {
         log.debug("getAttachment(): param="+params);
+        String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
@@ -696,6 +691,7 @@ public class servdb extends JamesServlet {
      */
     public byte[] getAttachment(Vector params) {
         log.debug("getAttachment(): param="+params);
+        String result="";
         if (params.size()==1) {
             MMObjectBuilder bul=mmbase.getTypeDef();
             MMObjectNode node=null;
@@ -811,8 +807,8 @@ public class servdb extends JamesServlet {
         if (sp.req.getMethod().equals("POST")) {
             if (poster.checkPostMultiParameter("only")) {
                 String line="";
-                Vector<Object> only=poster.getPostMultiParameter("only");
-                for (Enumeration<Object> e=only.elements();e.hasMoreElements();) {
+                Vector only=poster.getPostMultiParameter("only");
+                for (Enumeration e=only.elements();e.hasMoreElements();) {
                     if (!line.equals("")) {
                         line+=","+(String)e.nextElement();
                     } else {

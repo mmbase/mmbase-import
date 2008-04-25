@@ -15,13 +15,14 @@ import org.w3c.dom.NodeList;
 
 import org.mmbase.datatypes.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.logging.*;
 
 /**
  * This class contains static methods used for reading a 'datatypes' XML into a DataTypeCollector.
  *
  * @author Pierre van Rooden
- * @version $Id: DataTypeReader.java,v 1.22 2008-01-28 16:27:38 michiel Exp $
+ * @version $Id: DataTypeReader.java,v 1.20.2.1 2008-01-28 18:43:28 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeReader {
@@ -49,19 +50,27 @@ public class DataTypeReader {
     }
 
     /**
+     * Returns the value of a certain attribute, either an unqualified attribute or an attribute that fits in the
+     * searchquery namespace
+     */
+    static private String getAttribute(Element element, String localName) {
+        return DocumentReader.getAttribute(element, NAMESPACE_DATATYPES_1_0, localName);
+    }
+
+
+    /**
      * Initialize the data types default supported by the system.
      */
-    public static List<DependencyException> readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
+    public static List readDataTypes(Element dataTypesElement, DataTypeCollector collector) {
         return readDataTypes(dataTypesElement, collector, null);
     }
 
     /**
      * Initialize the data types default supported by the system.
-     * @return a list of failures.
      */
-    public static List<DependencyException> readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
+    public static List readDataTypes(Element dataTypesElement, DataTypeCollector collector, BasicDataType baseDataType) {
         NodeList childNodes = dataTypesElement.getChildNodes();
-        List<DependencyException> failed = new ArrayList<DependencyException>();
+        List failed = new ArrayList();
         for (int k = 0; k < childNodes.getLength(); k++) {
             if (childNodes.item(k) instanceof Element) {
                 Element childElement = (Element) childNodes.item(k);

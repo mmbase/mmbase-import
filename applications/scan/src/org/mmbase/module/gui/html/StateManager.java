@@ -28,7 +28,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: StateManager.java,v 1.18.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
@@ -46,7 +46,7 @@ public class StateManager implements CommandHandlerInterface {
      * Each user has an editstate, stored in the statemanager.
      * @scope private
      */
-    Hashtable<String, EditState> editStates; // HashTable with editstates indexed by usernames
+    Hashtable editStates; // HashTable with editstates indexed by usernames
 
     /**
      * Initialises the StateManager, by creating a new (empty) map of editstates.
@@ -54,7 +54,7 @@ public class StateManager implements CommandHandlerInterface {
      */
     public StateManager(MMBase mmBase) {
         this.mmBase = mmBase;
-        editStates = new Hashtable<String, EditState>();
+        editStates = new Hashtable();
     }
 
     /**
@@ -72,7 +72,7 @@ public class StateManager implements CommandHandlerInterface {
      * @return the EditState objevt associated with this user
      */
     public EditState getEditState(String user) {
-        EditState result = editStates.get(user);
+        EditState result = (EditState)editStates.get(user);
         if (result == null) {
             result = new EditState(user,mmBase);
             editStates.put(user, result);
@@ -109,7 +109,7 @@ public class StateManager implements CommandHandlerInterface {
      *  <li>ISCHANGED : ??? </li>
      * </ul>
      */
-    public String replace(scanpage sp, StringTokenizer commands) {
+    public String replace(PageInfo sp, StringTokenizer commands) {
         // Retrieve the username.
         // Or at least, that is the intention.
         // What this method REALLY does is authenticate the user (even if he was authenticated before).
@@ -138,7 +138,7 @@ public class StateManager implements CommandHandlerInterface {
             } else if (token.equals("CLEARBUILDERS")) {
                     state.clear();
             } else if (token.equals("ADDRELATION")) {
-                    log.warn("ADDRELATION is deprecated in "+sp.getUrl()+"; use NEWINSNODE");
+                    log.warn("ADDRELATION is deprecated in "+sp.req+"; use NEWINSNODE");
                     state.addRelation(userName);
             } else if (token.equals("SETHTMLVALUE")) {
                     state.setHtmlValue(commands.nextToken(),commands.nextToken());
@@ -288,11 +288,11 @@ public class StateManager implements CommandHandlerInterface {
     /**
      * @javadoc
      */
-    String createSelectionQuery(Hashtable<String, Object> skeys,MMObjectBuilder bul) {
+    String createSelectionQuery(Hashtable skeys,MMObjectBuilder bul) {
         String where="MMNODE ",key,val;
         String name=bul.getTableName();
-            for (Enumeration<String> h=skeys.keys();h.hasMoreElements();) {
-                key=h.nextElement();
+            for (Enumeration h=skeys.keys();h.hasMoreElements();) {
+                key=(String)h.nextElement();
                 val=(String)skeys.get(key);
                     if (val!=null && !val.equals("")) {
                     // val to lower for search
@@ -353,7 +353,7 @@ public class StateManager implements CommandHandlerInterface {
      * List commands
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws org.mmbase.module.ParseException {
+    public Vector getList(PageInfo sp, StringTagger args, StringTokenizer command) {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = getEditState(userName);
@@ -373,7 +373,8 @@ public class StateManager implements CommandHandlerInterface {
      * The hook that passes all form related pages to the correct handler
      * @javadoc
      */
-    public boolean process(scanpage sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
+        String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = getEditState(userName);
 
@@ -431,11 +432,11 @@ public class StateManager implements CommandHandlerInterface {
      */
     public Vector getOpenBuilders(EditState state,StringTagger args) {
         Vector results=new Vector();
-        Vector<EditStateNode> nodes=state.getEditStates();
+        Vector nodes=state.getEditStates();
         EditStateNode node;
         MMObjectNode curnode=state.getEditNode(); // problem
-        for (Enumeration<EditStateNode> h=nodes.elements();h.hasMoreElements();) {
-            node=h.nextElement();
+        for (Enumeration h=nodes.elements();h.hasMoreElements();) {
+            node=(EditStateNode)h.nextElement();
             results.addElement(node.getDutchBuilderName());
             if (curnode==node.getEditNode()) {
                 results.addElement("a");
@@ -456,7 +457,7 @@ public class StateManager implements CommandHandlerInterface {
     public EditState getState(String user) {
         EditState result;
 
-        result = editStates.get(user);
+        result = (EditState)editStates.get(user);
         if (result == null) result = new EditState(user,mmBase);
 
         return result;

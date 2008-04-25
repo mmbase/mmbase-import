@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.50 2008-03-03 16:12:47 ernst Exp $
+ * @version $Id: CompareTag.java,v 1.43.2.2 2008-02-20 13:57:38 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -55,7 +55,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         referid2 = getAttribute(r);
     }
 
-    protected boolean doCompare(Comparable<Comparable> v1, Comparable v2) {
+    protected boolean doCompare(Comparable v1, Comparable v2) {
         if (log.isDebugEnabled()) {
             log.debug("comparing " + (v1 != null ? v1.getClass().getName() : "") + "'" + v1 + "' to " + (v2 != null ? v2.getClass().getName() : "")+ "'" + v2 + "'");
         }
@@ -89,9 +89,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
         // find compare1
         if (getReferid() == null) {
             compare1 =  findWriter().getWriterValue();
-            if (compare1 == null){
-                compare1 = "";
-            }
+            if (compare1 == null) compare1 = "";
         } else {
             compare1 = getObject(getReferid());
         }
@@ -122,7 +120,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             result = pattern.matcher("" + compare1).matches();
         } else {
             // find compare2-set.
-            Set<Object> compareToSet = new HashSet<Object>();
+            Set compareToSet = new HashSet();
             if (value != Attribute.NULL) {
                 if (valueSet != Attribute.NULL) {
                     throw new JspTagException("Can specify both 'value' and 'valueset' attributes");
@@ -140,23 +138,24 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                 compareToSet.add(getCompare2());
             }
 
-            Iterator<Object> i = compareToSet.iterator();
+            Iterator i = compareToSet.iterator();
 
 
             if (compare1 instanceof Number) {
                 compare1 = new BigDecimal(compare1.toString());
                 while (i.hasNext()) {
                     Object compare2 = i.next();
-                    if (compare2 instanceof Date) {
+                    if (compare2 instanceof Date || compare2 instanceof Boolean) {
                         compare2 = Casting.toInteger(compare2);
                     }
-
+                    if ("true".equals(compare2)) {
+                        compare2 = new Integer(1);
+                    } else if ("false".equals(compare2)) {
+                        compare2 = new Integer(0);
+                    }
                     if (compare2 instanceof String) {
                         if ("".equals(compare2)) { // do something reasonable in IsEmpty
                             compare2 = new BigDecimal("0");
-                        }else if("true".equals(((String)compare2).toLowerCase()) || "false".equals((((String)compare2).toLowerCase()))) {
-                            //if compare1 was a boolean it will be a number by now, and we will have to change compare2 to a number too.
-                            compare2 = new BigDecimal(Casting.toInteger(new Boolean((String)compare2)));
                         } else {
                             compare2 = new BigDecimal((String)compare2);
                         }
@@ -166,7 +165,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                         compare2 = new BigDecimal(((Node)compare2).getNumber());
                     }
 
-                    if (doCompare((Comparable<Comparable>)compare1, (Comparable)compare2)) {
+                    if (doCompare((Comparable)compare1, (Comparable)compare2)) {
                         result = true;
                         break;
 
@@ -176,13 +175,8 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             } else {
                 while (i.hasNext()) {
                     Object compare2 = i.next();
-                    if (compare2 instanceof Date || compare2 instanceof Boolean) {
+                    if (compare2 instanceof Date) {
                         compare2 = Casting.toInteger(compare2);
-                    }
-                    if ("true".equals(compare2)) {
-                        compare2 = 1;
-                    } else if ("false".equals(compare2)) {
-                        compare2 = 0;
                     }
                     if (compare2 instanceof Number) {
                         compare2 = new BigDecimal(compare2.toString());
@@ -191,20 +185,20 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
                             compare1n = new BigDecimal("0");
                         } else {
                             if ("true".equals(compare1)) {
-                                compare1n = new BigDecimal(1);
+                                compare1n = new BigDecimal("1");
                             } else if ("false".equals(compare1)) {
-                                compare1n = new BigDecimal(0);
+                                compare1n = new BigDecimal("0");
                             } else {
                                 compare1n = new BigDecimal((String)compare1);
                             }
                         }
-                        if (doCompare((Comparable<Comparable>)compare1n, (Comparable)compare2)) {
+                        if (doCompare((Comparable)compare1n, (Comparable)compare2)) {
                             result = true;
                             break;
                         }
                     } else { // both compare1 and compare2 are not Number, simply compare then
                         if (! (compare2 instanceof Comparable)) compare2 = Casting.toString(compare2);
-                        if (doCompare((Comparable<Comparable>)compare1, (Comparable)compare2)) {
+                        if (doCompare((Comparable)compare1, (Comparable)compare2)) {
                             result = true;
                             break;
                         }

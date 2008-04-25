@@ -18,7 +18,7 @@ import java.util.*;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Codec.java,v 1.4 2007-06-21 15:50:22 nklasens Exp $
+ * @version $Id: Codec.java,v 1.3 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -28,7 +28,7 @@ public final class Codec {   // final class!!
     public final static String RESOURCE = "org.mmbase.applications.media.resources.codecs";
     // in case you want i18ed format strings.
     
-    private static List<Codec> codecs = new ArrayList<Codec>(); // to make possible to get the Codec object by int.
+    private static List codecs = new ArrayList(); // to make possible to get the Codec object by int.
     private int    number; // for storage     
     private String id;     // for toString(), and as identifier in config file etc.
                            // Also sync with common extension?
@@ -67,7 +67,7 @@ public final class Codec {   // final class!!
     public static Codec get(int i) {
         if (i < 0) return UNKNOWN;
         try {
-            return codecs.get(i);
+            return (Codec) codecs.get(i);
         } catch (java.lang.IndexOutOfBoundsException e) {
             return UNKNOWN;
         }
@@ -75,9 +75,9 @@ public final class Codec {   // final class!!
 
     public static Codec get(String id) {
         id = id.toLowerCase();
-        Iterator<Codec> i = codecs.iterator();
+        Iterator i = codecs.iterator();
         while (i.hasNext()) {
-            Codec codec = i.next();
+            Codec codec = (Codec) i.next();
             if(codec.toString().equals(id)) return codec;
         }
         log.error("Cannot convert codec (" + id + ") to number");

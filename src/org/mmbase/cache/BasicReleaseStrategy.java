@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: BasicReleaseStrategy.java,v 1.17 2008-02-12 16:27:11 michiel Exp $
+ * @version $Id: BasicReleaseStrategy.java,v 1.13.2.1 2008-02-12 16:27:51 michiel Exp $
  */
 public class BasicReleaseStrategy extends ReleaseStrategy {
 
@@ -57,7 +57,7 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
     /* (non-Javadoc)
      * @see org.mmbase.cache.ReleaseStrategy#doEvaluate(org.mmbase.module.core.NodeEvent, org.mmbase.storage.search.SearchQuery, java.util.List)
      */
-    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected final boolean doEvaluate(NodeEvent event, SearchQuery query, List cachedResult) {
         //this simple optimization only works for nodeEvents
         MMBase mmb = MMBase.getMMBase();
         String eventTable = event.getBuilderName();
@@ -66,7 +66,9 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
             eventBuilder = mmb.getBuilder("object");
             eventTable = "object";
         }
-        for (Step step : query.getSteps()) {
+        Iterator i = query.getSteps().iterator();
+        while (i.hasNext()) {
+            Step step = (Step) i.next();
             String table = step.getTableName();
             if (table == null) {
                 // I think this cannot happen
@@ -77,15 +79,15 @@ public class BasicReleaseStrategy extends ReleaseStrategy {
             if (stepBuilder == null) stepBuilder = mmb.getBuilder("object");
             if (! (table.equals(eventTable) ||
                    eventBuilder.isExtensionOf(stepBuilder))) continue;
-            Set<Integer> nodes = step.getNodes();
-            if (nodes == null || nodes.size() == 0 ||  nodes.contains(event.getNodeNumber())) {
+            Set nodes = step.getNodes();
+            if (nodes == null || nodes.size() == 0 ||  nodes.contains(new Integer(event.getNodeNumber()))) {
                 return true;
             }
         }
         return false;
     }
 
-    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List<MMObjectNode> cachedResult) {
+    protected boolean doEvaluate(RelationEvent event, SearchQuery query, List cachedResult) {
         // no strategy for relation events
     	log.debug("basic strategy: flush: relation event");
         return true;

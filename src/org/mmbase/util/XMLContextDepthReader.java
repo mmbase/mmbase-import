@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+import java.io.File;
+
 import org.mmbase.util.logging.*;
 import org.w3c.dom.*;
 
@@ -24,10 +26,11 @@ import org.w3c.dom.*;
  * @rename ContextDepthReader
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: XMLContextDepthReader.java,v 1.12 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: XMLContextDepthReader.java,v 1.9.2.1 2008-01-10 16:14:34 michiel Exp $
  */
 public class XMLContextDepthReader {
 
+    // logger
     private static final Logger log = Logging.getLoggerInstance(XMLContextDepthReader.class);
 
     final Document document;

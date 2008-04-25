@@ -40,14 +40,14 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.39 2008-03-11 11:45:28 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.29.2.5 2008-04-23 13:21:52 michiel Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
 
     /** for the document builder of javax.xml. */
-    private static Map<String, DocumentBuilder> documentBuilders = Collections.synchronizedMap(new HashMap<String, DocumentBuilder>());
+    private static Map documentBuilders = Collections.synchronizedMap(new HashMap());
 
     protected static final String FILENOTFOUND = "FILENOTFOUND://";
 
@@ -73,7 +73,7 @@ public class DocumentReader  {
 
     private String systemId;
 
-    static UtilReader.PropertiesMap<String> utilProperties = null;
+    static UtilReader.PropertiesMap utilProperties = null;
     /**
      * Returns the default setting for validation for DocumentReaders.
      * @return true if validation is on
@@ -124,7 +124,7 @@ public class DocumentReader  {
      * @param source the input source from which to read the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, Class<?> resolveBase) {
+    public DocumentReader(InputSource source, Class resolveBase) {
         this(source, DocumentReader.validate(), resolveBase);
     }
 
@@ -136,7 +136,7 @@ public class DocumentReader  {
      * @param validating whether to validate the document
      * @param resolveBase the base class whose package is used to resolve dtds, set to null if unknown
      */
-    public DocumentReader(InputSource source, boolean validating, Class<?> resolveBase) {
+    public DocumentReader(InputSource source, boolean validating, Class resolveBase) {
         if (source == null) {
             throw new IllegalArgumentException("InputSource cannot be null");
         }
@@ -166,6 +166,7 @@ public class DocumentReader  {
 
 
     private static boolean warnedJAXP12 = false;
+    private static boolean warnedXinclude = false;
     /**
      * Creates a DocumentBuilder using SAX.
      * @param validating if true, the documentbuilder will validate documents read
@@ -183,7 +184,16 @@ public class DocumentReader  {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             // get document builder AFTER setting the validation
             dfactory.setValidating(validating);
-            dfactory.setXIncludeAware(true);
+            Class cl = dfactory.getClass();
+            try {
+                java.lang.reflect.Method m =  cl.getMethod("setXIncludeAware", new Class[] {Boolean.TYPE});
+                m.invoke(dfactory, new Object[] {Boolean.TRUE});
+            } catch(Exception e) {
+                if (! warnedXinclude) {
+                    log.info(e + " Your current document builder factory does not support xi:include.");
+                    warnedXinclude = true;
+                }
+            }
             if (validating && xsd) {
                 try {
                     dfactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
@@ -205,8 +215,7 @@ public class DocumentReader  {
             db.setEntityResolver(resolver);
 
         } catch(ParserConfigurationException pce) {
-            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested");
-            log.error(Logging.stackTrace(pce));
+            log.error("a DocumentBuilder cannot be created which satisfies the configuration requested", pce);
             return null;
         }
         return db;
@@ -251,7 +260,7 @@ public class DocumentReader  {
         validating = validate(validating);
         if (handler == null && resolver == null) {
             String key = "" + validating + xsd;
-            DocumentBuilder db = documentBuilders.get(key);
+            DocumentBuilder db = (DocumentBuilder) documentBuilders.get(key);
             if (db == null) {
                 db = createDocumentBuilder(validating, xsd, null, null);
                 documentBuilders.put(key, db);
@@ -279,7 +288,7 @@ public class DocumentReader  {
      */
     public static String getNodeTextValue(Node n, boolean trim) {
         NodeList nl = n.getChildNodes();
-        StringBuilder res = new StringBuilder();
+        StringBuffer res = new StringBuffer();
         for (int i = 0; i < nl.getLength(); i++) {
             Node textnode = nl.item(i);
             if (textnode.getNodeType() == Node.TEXT_NODE) {
@@ -297,16 +306,13 @@ public class DocumentReader  {
      * @since MMBase-1.8.1
      */
     public static void setNodeTextValue(Node n, String value) {
-        Node child = n.getFirstChild();
-        while (child != null) {
-            Node next = child.getNextSibling();
-            n.removeChild(child);
-            child = next;
+        NodeList textNodes = n.getChildNodes();
+        for (int j = 0; j < textNodes.getLength(); j++) {
+            n.removeChild(textNodes.item(j));
         }
         Text text = n.getOwnerDocument().createTextNode(value);
         n.appendChild(text);
     }
-
 
     /**
      * @since MMBase-1.8.5
@@ -375,9 +381,7 @@ public class DocumentReader  {
      *
      * @param parent The parent element, to which a new child will be added
      * @param newChild this new child
-     * @param path The beforementioned comma separated list of regexps. See also {@link
-     * java.util.regex.Pattern};
-     * Namespace prefixes are ignored.
+     * @param path The beforementioned comma separated list of regexps. See also {@link java.util.regex.Pattern};
      * @since MMBase-1.8
      */
     static public void appendChild(Element parent, Element newChild, String path) {
@@ -547,36 +551,37 @@ public class DocumentReader  {
 
     /**
      * @param path Path to the element
-     * @return a <code>List</code> of child elements
+     * @return Iterator of child elements
      */
-    public List<Element> getChildElements(String path) {
+    public Iterator getChildElements(String path) {
         return getChildElements(getElementByPath(path));
     }
 
     /**
      * @param e Element
-     * @return a <code>List</code> of child elements
+     * @return Iterator of child elements
      */
-    public List<Element> getChildElements(Element e) {
+    public Iterator getChildElements(Element e) {
         return getChildElements(e,"*");
     }
 
     /**
      * @param path Path to the element
      * @param tag tag to match ("*" means all tags")
-     * @return a <code>List</code> of child elements with the given tag
+     * @return Iterator of child elements with the given tag
      */
-    public List<Element> getChildElements(String path,String tag) {
+    public Iterator getChildElements(String path,String tag) {
         return getChildElements(getElementByPath(path),tag);
     }
 
     /**
      * @param e Element
      * @param tag tag to match ("*" means all tags")
-     * @return a <code>List</code> of child elements with the given tag
+     * @return Iterator of child elements with the given tag
+     * @todo XXXX MM: Since we have changed the return type from 1.7 to 1.8 anyway, why don't we return a List then?
      */
-    public List<Element> getChildElements(Element e, String tag) {
-        List<Element> v = new ArrayList<Element>();
+    public Iterator getChildElements(Element e,String tag) {
+        List v = new ArrayList();
         boolean ignoretag = tag.equals("*");
         if (e!=null) {
             NodeList nl = e.getChildNodes();
@@ -585,14 +590,26 @@ public class DocumentReader  {
                 if (n.getNodeType() == Node.ELEMENT_NODE &&
                     (ignoretag ||
                      ((Element)n).getLocalName().equalsIgnoreCase(tag))) {
-                    v.add((Element) n);
+                    v.add(n);
                 }
             }
         }
-        return v;
+        return v.iterator();
     }
 
-    public static void main(String argv[]) throws Exception {
-        org.mmbase.util.ResourceLoader.getSystemRoot().getDocument(argv[0]);
+    public static void main(String[] argv) throws Exception {
+        if (argv.length == 0) {
+            System.out.println("Usage: java -Dmmbase.config=<config dir> org.mmbase.util.xml.DocumentReader <path to xml>");
+            System.out.println(" The mmbase config dir is used to resolve XSD's (in config/xmlns) and DTD's (in config/dtd).");
+            System.out.println(" Errors will be reported if the XML is invalid");
+
+            return;
+        }
+        Document d = org.mmbase.util.ResourceLoader.getDocument(new java.io.File(argv[0]).toURL(), true, null);
+        /*
+        DocumentReader doc =  new DocumentReader(d);
+        System.out.println(XMLWriter.write(toDocument(doc.getRootElement()), true, false));
+        */
     }
+
 }

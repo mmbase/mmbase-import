@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * Shows the valid state of an mm:form
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValidTag.java,v 1.3 2007-06-27 13:19:56 michiel Exp $
+ * @version $Id: ValidTag.java,v 1.1.2.1 2007-06-27 13:19:03 michiel Exp $
  * @since MMBase-1.8
  */
 

@@ -20,13 +20,13 @@ import org.apache.log4j.spi.LoggingEvent;
  * See <a href="http://logging.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html">log4j pattern layout</a>
  <table>
  <tr><th>Conversion Pattern</th><th>Effect</th></tr>
- <tr><td>%q</td><td>A truncated level (from the _end_, not from the beginning as log4j's %p itself would do) . To 3 chars.</td></tr>
+ <tr><td>%q</td><td>A truncated level (from the _end_, not from the beginning as log4j's %p itself would do) . To 3 chars.</td></tr> 
  <tr><td>%k</td><td>Currently memory in use (in kb).</td></tr>
  <tr><td>%N</td><td>Machine Name of current MMBase (or 'localhost' if not set).</td></tr>
  </table>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: MMPatternParser.java,v 1.10 2007-11-19 15:26:09 michiel Exp $
+ * @version $Id: MMPatternParser.java,v 1.9 2006-01-03 10:49:35 michiel Exp $
  */
 public class MMPatternParser extends PatternParser {
 
@@ -34,7 +34,7 @@ public class MMPatternParser extends PatternParser {
     public MMPatternParser(String pattern) {
         super(pattern);
     }
-
+    
     public void finalizeConverter(char c) {
         if (c == 'q') {
             addConverter(new TruncatedLevelPatternConverter(formattingInfo));
@@ -45,56 +45,41 @@ public class MMPatternParser extends PatternParser {
         } else if (c == 'N') {
             addConverter(new MachineNamePatternConverter(formattingInfo));
             currentLiteral.setLength(0);
-        } else if (c == 'T') {
-            addConverter(new ThreadGroupPatternConverter(formattingInfo));
-            currentLiteral.setLength(0);
         } else {
             super.finalizeConverter(c);
         }
     }
-
+    
     private static class TruncatedLevelPatternConverter extends PatternConverter {
         TruncatedLevelPatternConverter(FormattingInfo formattingInfo) {
             super(formattingInfo);
         }
-
+        
         public String convert(LoggingEvent event) {
             return event.getLevel().toString().substring(0, 3);
         }
-    }
-
-    private static class MemoryPatternConverter extends PatternConverter {
+    }  
+    
+    private static class MemoryPatternConverter extends PatternConverter {        
         MemoryPatternConverter(FormattingInfo formattingInfo) {
             super(formattingInfo);
         }
-
+        
         public String convert(LoggingEvent event) {
             Runtime rt = Runtime.getRuntime();
             return  "" + (rt.totalMemory() - rt.freeMemory()) / 1024;
         }
-    }
+    }  
     /**
      * @since MMBase-1.8
      */
-    private static class MachineNamePatternConverter extends PatternConverter {
+    private static class MachineNamePatternConverter extends PatternConverter {        
         MachineNamePatternConverter(FormattingInfo formattingInfo) {
             super(formattingInfo);
         }
-
+        
         public String convert(LoggingEvent event) {
             return  "" + Logging.getMachineName();
         }
-    }
-    /**
-     * @since MMBase-1.9
-     */
-    private static class ThreadGroupPatternConverter extends PatternConverter {
-        ThreadGroupPatternConverter(FormattingInfo formattingInfo) {
-            super(formattingInfo);
-        }
-
-        public String convert(LoggingEvent event) {
-            return  "" + Thread.currentThread().getThreadGroup().getName();
-        }
-    }
+    }  
 }

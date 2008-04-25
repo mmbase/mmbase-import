@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @move org.mmbase.cache.implementation
  * @rename Cache
  * @author  $Author: nklasens $
- * @version $Id: cache.java,v 1.16 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: cache.java,v 1.13 2005-09-20 19:28:29 nklasens Exp $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -57,7 +57,7 @@ public class cache extends Module implements cacheInterface {
      * @javadoc
      * @scope private
      */
-    LRUHashtable<Object, Object> lines = new LRUHashtable<Object, Object>( MaxLines );
+    LRUHashtable lines = new LRUHashtable( MaxLines );
 
     /**
      * Simple file cache system that can be used by any servlet
@@ -74,7 +74,7 @@ public class cache extends Module implements cacheInterface {
      */
     public void reload() {
         readParams();
-        if( MaxLines > 0 ) lines = new LRUHashtable<Object, Object>( MaxLines );
+        if( MaxLines > 0 ) lines = new LRUHashtable( MaxLines );
     }
 
     /** @duplicate */
@@ -85,7 +85,7 @@ public class cache extends Module implements cacheInterface {
      * Old interface to the inner table, will be removed soon
      * @deprecated-now direct access to lines seems undesirable and is implementation-dependent
      */
-    public LRUHashtable<Object, Object> lines() {
+    public LRUHashtable lines() {
         return lines;
     }
 
@@ -150,7 +150,7 @@ public class cache extends Module implements cacheInterface {
             state_up=true;
         }
         readParams();
-        if( MaxLines > 0 ) lines = new LRUHashtable<Object, Object>( MaxLines );
+        if( MaxLines > 0 ) lines = new LRUHashtable( MaxLines );
     }
 
     /**
@@ -162,27 +162,24 @@ public class cache extends Module implements cacheInterface {
     /**
      * @javadoc
      */
-    public Map<String, String> getStates() {
-        setState("Hits",""+hits);
-        setState("Misses",""+miss);
+    public Hashtable state() {
+        state.put("Hits",""+hits);
+        state.put("Misses",""+miss);
         if (hits!=0 && miss!=0) {
-            setState("Cache hits %",""+((hits+miss)*100)/hits);
-            setState("Cache misses %",""+((hits+miss)*100)/miss);
+            state.put("Cache hits %",""+((hits+miss)*100)/hits);
+            state.put("Cache misses %",""+((hits+miss)*100)/miss);
         }
-        setState("Number cachelines",""+lines.size());
+        state.put("Number cachelines",""+lines.size());
         cacheline line;
         int size=0;
-        for (Enumeration<Object> t=lines.elements();t.hasMoreElements();) {
+        for (Enumeration t=lines.elements();t.hasMoreElements();) {
             line=(cacheline)t.nextElement();
             size+=line.filesize;
         }
-        setState("Cache Size (in kb)",""+(size+1)/1024);
-        return super.getStates();
+        state.put("Cache Size (in kb)",""+(size+1)/1024);
+        return state;
     }
 
-    public Map<String, String> state() {
-        return getStates();
-    }
 
     /**
      * @javadoc

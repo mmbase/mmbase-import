@@ -20,7 +20,7 @@ import org.mmbase.storage.*;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.6 2006-09-25 12:07:17 michiel Exp $
+ * @version $Id: Scheme.java,v 1.5 2005-06-28 14:01:41 pierre Exp $
  * @since MMBase-1.7
  */
 public final class Scheme extends MessageFormat {
@@ -28,9 +28,9 @@ public final class Scheme extends MessageFormat {
     /**
      * The factory this scheme belongs to.
      */
-    private final StorageManagerFactory factory;
+    private StorageManagerFactory factory;
 
-    private final String orgpattern;
+    private String orgpattern;
 
     /**
      * Instantiate the Scheme
@@ -76,11 +76,11 @@ public final class Scheme extends MessageFormat {
      * @return the result scheme as a String
      * @throws StorageException if one of the passed parameters cannot be resolved
      */
-    public String format(Object... params) throws StorageException {
+    public String format(Object[] params) throws StorageException {
         for (int i = 0; i < params.length; i++) {
             params[i] = resolveParameter(params[i]);
         }
-        return super.format(params);   // I think it is a bit obfuscating that there is no method super.format(Object[]).
+        return super.format(params);
     }
 
     public String toString() {

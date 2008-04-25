@@ -11,7 +11,7 @@ package org.mmbase.util.xml;
 
 import java.io.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
@@ -41,24 +41,9 @@ public class XMLWriter {
      **/
     public static void write(Node node, Writer writer, boolean indent, boolean omitxml) throws TransformerConfigurationException, TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        try {
-            transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", false);
-        } catch (IllegalArgumentException iae) {
-            // never mind
-        }
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitxml ? "yes" : "no");
-        if (! omitxml) {
-            Document d = node.getOwnerDocument();
-            if (d != null) {
-                DocumentType dt = d.getDoctype();
-                if (dt != null) {
-                    transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, dt.getPublicId());
-                    transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dt.getSystemId());
-                }
-            }
-        }
         transformer.transform(new DOMSource(node), new StreamResult(writer));
     }
 

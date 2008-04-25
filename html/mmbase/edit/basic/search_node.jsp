@@ -1,7 +1,10 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="userlogon" from="parameters" />
+<mm:log>${requestParam.authenticate}</mm:log>
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0">
-<mm:cloud  loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud">
+<mm:cloud
+    authenticate="${param.authenticate}"
+    loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" rank="$rank" jspvar="cloud">
 <mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
@@ -24,8 +27,8 @@
   </mm:present>
 </mm:url>
 
-<mm:write referid="thisurl" vartype="org.mmbase.bridge.jsp.taglib.pageflow.Url" jspvar="url">
- <%  push(urlStack, "home", url.get(false));  %>
+<mm:write referid="thisurl" vartype="string" jspvar="url"><%-- in context it is not url-encoded --%>
+ <%  push(urlStack, "home", url);  %>
 </mm:write>
 
 <table summary="node editors" width="100%" class="super">
@@ -111,7 +114,7 @@
             </form>
             <%-- /mm:timer--%>
     	    </td>
-    	    <td><%-- right column, present search result (if clicked on node manager)--%>
+    	    <td><%-- right collumn, present search result (if clicked on node manager)--%>
           <mm:present referid="node_type">
             <%-- following page needs the param 'to_page' --%>
             <mm:import id="to_page"><mm:url page="change_node.jsp"/></mm:import>

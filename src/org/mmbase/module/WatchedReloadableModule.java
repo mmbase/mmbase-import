@@ -17,33 +17,28 @@ import org.mmbase.util.ResourceWatcher;
  *
  * @author   Michiel Meeuwissen
  * @since    MMBase-1.8
- * @version  $Id: WatchedReloadableModule.java,v 1.6 2007-06-19 13:59:30 michiel Exp $
+ * @version  $Id: WatchedReloadableModule.java,v 1.4 2006-06-19 08:38:59 michiel Exp $
  */
 public abstract class WatchedReloadableModule extends ReloadableModule {
 
     private ResourceWatcher configWatcher = new ResourceWatcher() {
             public void onChange(String resource) {
                 // resource parameter can be ignored, because it inconveniently contains ".xml".
-                if (reloadConfiguration()) {
+                if (reloadConfiguration(getName())) {
                     reload();
                 }
             }
         };
-    public WatchedReloadableModule() {
-    }
-    public WatchedReloadableModule(String name) {
-        super(name);
-    }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc} 
      * On the onload of a reloadable module, a filewatcher is started. You should call
      * super.onload if you need to override this.
      */
     public void onload() {
         configWatcher.setDelay(10 * 1000);
         configWatcher.start();
-        configWatcher.add("modules/" +  configurationPath + ".xml");
+        configWatcher.add("modules/" +  getName() + ".xml");
     }
 
 

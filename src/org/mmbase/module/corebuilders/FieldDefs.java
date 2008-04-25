@@ -25,7 +25,7 @@ import org.mmbase.storage.util.Index;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.60 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: FieldDefs.java,v 1.56 2005-12-10 13:10:08 michiel Exp $
  * @see    org.mmbase.bridge.Field
  * @deprecated use {@link CoreField}
  */
@@ -43,7 +43,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     public final static int ORDER_LIST   = NodeManager.ORDER_LIST;
     public final static int ORDER_SEARCH = NodeManager.ORDER_SEARCH;
 
-    public FieldDefs(String name, int type, int listItemType, int state, DataType<? extends Object> dataType ) {
+    public FieldDefs(String name, int type, int listItemType, int state, DataType dataType ) {
         super(name, type, listItemType, state, dataType);
     }
 
@@ -72,7 +72,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @param state the state of the field (persistent, virtual, etc.)
      */
     public FieldDefs(String guiName, String guiType, int searchPos, int listPos, String name, int type, int guiPos, int state) {
-        super(name, type, TYPE_UNKNOWN, state, DataTypes.getDataTypeInstance(guiType,type));
+        super(name, type, TYPE_UNKNOWN, state, (DataType)DataTypes.getDataTypeInstance(guiType,type));
         setGUIName(guiName);
         setSearchPosition(searchPos);
         setEditPosition(guiPos);
@@ -128,32 +128,32 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * available.
      * This maps new situation to old situation.
      */
-    protected class LocaleToStringMap extends AbstractMap<String,String> {
-        private final Map<Locale,String> map;
-        public LocaleToStringMap(Map<Locale,String> m) {
+    protected class LocaleToStringMap extends AbstractMap {
+        private final Map map;
+        public LocaleToStringMap(Map m) {
             map = m;
         }
-        public Set<Entry<String,String>> entrySet() {
-            return new AbstractSet<Entry<String,String>>() {
-                    public Iterator<Entry<String,String>> iterator() {
-                        return new Iterator<Entry<String,String>>() {
-                                private final Iterator<Entry<Locale,String>> i = map.entrySet().iterator();
+        public Set entrySet() {
+            return new AbstractSet() {
+                    public Iterator iterator() {
+                        return new Iterator() {
+                                private final Iterator i = map.entrySet().iterator();
                                 public boolean hasNext() {
                                     return i.hasNext();
                                 }
                                 public void remove() {
                                     throw new UnsupportedOperationException("");
                                 }
-                                public Entry<String,String> next() {
-                                    final Entry<Locale,String> entry = i.next();
-                                    return new Map.Entry<String,String>() {
-                                            public String getKey() {
-                                                return entry.getKey().getLanguage();
+                                public Object next() {
+                                    final Map.Entry entry = (Map.Entry) i.next();
+                                    return new Map.Entry() {
+                                            public Object getKey() {
+                                                return ((Locale) entry.getKey()).getLanguage();
                                             }
-                                            public String getValue() {
+                                            public Object getValue() {
                                                 return entry.getValue();
                                             }
-                                            public String setValue(String o) {
+                                            public Object setValue(Object o) {
                                                 return entry.setValue(o);
                                             }
                                         };
@@ -177,14 +177,14 @@ public class FieldDefs extends org.mmbase.core.CoreField {
     /**
      * @deprecated use {@link #getGUIName()}
      */
-    public Map<String, String> getGUINames() {
+    public Map getGUINames() {
         return new LocaleToStringMap(getLocalizedGUIName().asMap());
     }
 
     /**
      * @deprecated use {@link #getDescription()}
      */
-    public Map<String, String> getDescriptions() {
+    public Map getDescriptions() {
         return new LocaleToStringMap(getLocalizedDescription().asMap());
     }
 
@@ -351,7 +351,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @param fielddefs the list to sort
      * @deprecated use Collections.sort
      */
-    public static void sort(List<FieldDefs> fielddefs) {
+    public static void sort(List fielddefs) {
         Collections.sort(fielddefs);
     }
 
@@ -361,7 +361,7 @@ public class FieldDefs extends org.mmbase.core.CoreField {
      * @param order one of ORDER_CREATE, ORDER_EDIT, ORDER_LIST,ORDER_SEARCH
      * @deprecated use {@link Fields#sort}
      */
-    public static void sort(List<CoreField> fielddefs, int order) {
+    public static void sort(List fielddefs, int order) {
         Fields.sort(fielddefs, order);
     }
 

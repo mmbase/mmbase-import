@@ -16,7 +16,7 @@ import java.util.Hashtable;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: UserTransactionInfo.java,v 1.4 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: UserTransactionInfo.java,v 1.3 2003-03-07 08:50:03 pierre Exp $
  */
 public class UserTransactionInfo {
 
@@ -26,7 +26,7 @@ public class UserTransactionInfo {
     }
 
     /** All known transactions of a user, mapped by the user-provided id. */
-    public Hashtable<String, Transaction> knownTransactionContexts = new Hashtable<String, Transaction>();
+    public Hashtable knownTransactionContexts = new Hashtable();
 
     /** The user. */
     public User user = null;

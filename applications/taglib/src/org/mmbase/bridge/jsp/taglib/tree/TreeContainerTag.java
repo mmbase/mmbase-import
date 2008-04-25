@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.12 2008-01-24 14:20:35 michiel Exp $
+ * @version $Id: TreeContainerTag.java,v 1.9.2.2 2008-01-24 14:18:51 michiel Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
 
@@ -69,13 +69,13 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
         String node      = nodeAttribute.getString(thisTag);
         if ("".equals(container) && "".equals(node)) {
             log.debug("no node attribute, no container attribute, trying container first");
-            NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, null, false);
+            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, null, false);
             if (c != null) {
                 query = c.getNodeQuery();
             }
         } else if (! "".equals(container)) {
             log.debug("container attribute, trying container");
-            NodeQueryContainer c = thisTag.findParentTag(NodeQueryContainer.class, container, true);
+            NodeQueryContainer c = (NodeQueryContainer) thisTag.findParentTag(NodeQueryContainer.class, container, true);
             if (c != null) {
                 query = c.getNodeQuery();
             }
@@ -118,7 +118,7 @@ public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQu
                 Queries.addPath(tree.getTemplate(), (String) path.getValue(this), (String) searchDirs.getValue(this));
 
                 // I'm not entirely sure why the following is necessary at all:
-                Step step = tree.getTemplate().getSteps().get(2);
+                Step step = (Step) tree.getTemplate().getSteps().get(2);
                 if (query.getSteps().contains(step)) {
                     query.setNodeStep(step);
                 }

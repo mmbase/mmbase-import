@@ -20,11 +20,9 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.14 2008-02-12 17:41:14 michiel Exp $
+ * @version $Id: WizardCommand.java,v 1.12 2005-10-05 10:41:38 michiel Exp $
  */
-public class WizardCommand implements java.io.Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class WizardCommand {
 
     public final static short UNKNOWN_COMMAND = -1;
     public final static short ADD_ITEM = 0;
@@ -50,7 +48,7 @@ public class WizardCommand implements java.io.Serializable {
 
     private String commandName="unknown";
     private int type = UNKNOWN_COMMAND;
-    private List<String> params = null;
+    private List params = null;
 
     private String value = null;
 
@@ -73,7 +71,7 @@ public class WizardCommand implements java.io.Serializable {
     public WizardCommand(String acommand, String avalue) {
         command = acommand.toLowerCase();
         value = avalue;
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) { 
             log.debug("command: " + command + " : "+value);
         }
 
@@ -92,7 +90,7 @@ public class WizardCommand implements java.io.Serializable {
 
         int paramcount=st.countTokens();
         if (paramcount>0) {
-            params = new ArrayList<String>(paramcount);
+            params = new ArrayList(paramcount);
             // get optional other parameters: fid, did, and otherdid, possible others...
             while (st.hasMoreTokens()) {
                 String tok=st.nextToken();
@@ -129,7 +127,7 @@ public class WizardCommand implements java.io.Serializable {
         if ((params==null) || (i>=params.size()))
             return "";
         else
-            return params.get(i);
+            return (String)params.get(i);
     }
 
     /**

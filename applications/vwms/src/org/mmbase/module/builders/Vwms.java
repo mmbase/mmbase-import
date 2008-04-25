@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.22 2007-11-14 16:33:06 michiel Exp $
+ * @version $Id: Vwms.java,v 1.20 2004-10-27 15:42:21 pierre Exp $
  */
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
@@ -62,7 +62,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
     /**
      * Cache of VWMs, by name.
      */
-    Hashtable<String, VwmInterface> vwm_cache = new Hashtable<String, VwmInterface> ();
+    Hashtable vwm_cache = new Hashtable ();
 
     /**
      * Parameter for determining the email domain of the 'sender' when sending error messages.
@@ -228,7 +228,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      */
     public boolean sendMail(String who,String to,String subject, String msg) {
 
-        SendMail sendmail=(SendMail)Module.getModule("sendmail");
+        SendMailInterface sendmail=(SendMailInterface)Module.getModule("sendmail");
         if (sendmail==null) {
             log.warn("sendmail module not active, cannot send email");
             return false;
@@ -288,7 +288,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      * @return a VwmInterface object, or null if the vwm does not exist or is not active.
      */
     public VwmInterface getVwm(String vwmname) {
-        VwmInterface vwm=vwm_cache.get(vwmname);
+        VwmInterface vwm=(VwmInterface)vwm_cache.get(vwmname);
         return vwm;
     }
 

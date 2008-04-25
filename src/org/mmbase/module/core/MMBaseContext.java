@@ -27,12 +27,12 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.59 2008-04-21 13:19:59 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.52.2.1 2008-03-17 13:18:07 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
     private static boolean initialized = false;
-    static boolean htmlRootInitialized = false;
+    private static boolean htmlRootInitialized = false;
     private static ServletContext sx;
     private static String userDir;
     private static String javaVersion;
@@ -65,7 +65,6 @@ public class MMBaseContext {
                 log.info("Reinitializing, this time with ServletContext");
             }
 
-            // get the java version we are running
             javaVersion = System.getProperty("java.version");
             // store the current context
             sx = servletContext;
@@ -207,8 +206,8 @@ public class MMBaseContext {
         String version = org.mmbase.Version.get();
         log.info("version           : " + version);
         Runtime rt = Runtime.getRuntime();
-        log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " MiB");
-        log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " MiB");
+        log.info("total memory      : " + rt.totalMemory() / (1024 * 1024) + " Mbyte");
+        log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
         log.info("system locale     : " + Locale.getDefault());
         log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
     }
@@ -286,11 +285,11 @@ public class MMBaseContext {
      * @deprecated use {@link org.mmbase.util.ResourceLoader#getConfigurationRoot} with relative path
      */
     public  synchronized static String getConfigPath() {
-        List<File> files =  ResourceLoader.getConfigurationRoot().getFiles("");
+        List files =  ResourceLoader.getConfigurationRoot().getFiles("");
         if (files.size() == 0) {
             return null;
         } else {
-            return files.get(0).getAbsolutePath();
+            return ((File) files.get(0)).getAbsolutePath();
         }
     }
 
@@ -304,7 +303,9 @@ public class MMBaseContext {
      */
     public synchronized static String getHtmlRoot() {
         if (!htmlRootInitialized) {
-            throw new RuntimeException("The initHtmlRoot method should be called first.");
+            String message = "The initHtmlRoot method should be called first.";
+            log.error(message);
+            throw new RuntimeException();
         }
        return htmlRoot;
     }
@@ -320,7 +321,9 @@ public class MMBaseContext {
      */
     public synchronized static String getOutputFile() {
         if (!initialized) {
-            throw new RuntimeException("The init method should be called first.");
+            String message = "The init method should be called first.";
+            log.error(message);
+            throw new RuntimeException(message);
         }
         return outputFile;
     }
@@ -329,17 +332,16 @@ public class MMBaseContext {
      * Returns a string representing the HtmlRootUrlPath, this is the path under
      * the webserver, what is the root for this instance.
      * this will return '/' or something like '/mmbase/' or so...
-     *
-     * This information should be requested from the ServletRequest, but if for some reason you
-     * don't have one handy, this method can be used.
-
      * @return  the HtmlRootUrlPath
+     * @deprecated  should not be needed, and this information should be requested from the ServletRequest
      */
     public synchronized static String getHtmlRootUrlPath() {
         if (! htmlRootUrlPathInitialized) {
-            log.debug("Finding root url");
+            log.info("Finding root url");
             if (! initialized) {
-                throw new RuntimeException("The init method should be called first.");
+                String message = "The init method should be called first.";
+                log.error(message);
+                throw new RuntimeException(message);
             }
             if (sx == null) { // no serlvetContext -> no htmlRootUrlPath
                 htmlRootUrlPathInitialized = true;
@@ -384,7 +386,6 @@ public class MMBaseContext {
         }
         return htmlRootUrlPath;
     }
-
 
     /**
      * Returns whether this class has been initialized.

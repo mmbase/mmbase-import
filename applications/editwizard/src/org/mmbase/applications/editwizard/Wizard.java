@@ -21,15 +21,14 @@ import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.URIResolver;
-import org.mmbase.util.xml.DocumentSerializable;
 import org.mmbase.util.XMLEntityResolver;
-
-import java.util.regex.*;
 
 import org.w3c.dom.*;
 
 import java.net.URL;
-import java.io.*;
+import java.io.Writer;
+import java.util.regex.*;
+
 
 import java.util.*;
 
@@ -46,12 +45,10 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.162 2008-03-19 13:13:56 michiel Exp $
+ * @version $Id: Wizard.java,v 1.149.2.6 2008-03-03 10:27:27 michiel Exp $
  *
  */
-public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Wizard implements org.mmbase.util.SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(Wizard.class);
     public static final String PUBLIC_ID_EDITWIZARD_1_0 = "-//MMBase//DTD editwizard 1.0//EN";
     public static final String PUBLIC_ID_EDITWIZARD_1_0_FAULT = "-//MMBase/DTD editwizard 1.0//EN";
@@ -65,7 +62,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
-    private static NodeCache nodeCache; // it's absurd to name this NodeCache
+    private static NodeCache nodeCache;
 
     static {
         wizardSchemaCache = new WizardSchemaCache();
@@ -85,6 +82,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     // the editwizard context path
     private String context = null;
 
+    // schema / session data
+    private String name;
+
     // the result objectnumber (the number of the object after a commit)
     // this value is only assigned after COMMIT is called - otherwise it is null
     private String objectNumber;
@@ -99,7 +99,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private String currentFormId;
 
     // filename of the stylesheet which should be used to make the html form.
-    private transient URL wizardStylesheetFile;
+    private URL wizardStylesheetFile;
     private String sessionId;
     private String sessionKey = "editwizard";
     private String referrer = "";
@@ -109,9 +109,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * xmldom's: the schema, the data and the originaldata is stored.
      */
-    private transient Document schema;
-    private transient Document data;
-    private transient Document originalData;
+    private Document schema;
+    private Document data;
+    private Document originalData;
 
     /**
      *  document where loaded data will be stored in when added by wizard actions
@@ -119,15 +119,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private Document loadedData;
 
     // not yet committed uploads are stored in these hashmaps
-    private Map<String, byte[]> binaries = new HashMap<String, byte[]>();
-    private Map<String, String> binaryNames = new HashMap<String, String>();
-    private Map<String, String> binaryPaths = new HashMap<String, String>();
+    private Map binaries = new HashMap();
+    private Map binaryNames = new HashMap();
+    private Map binaryPaths = new HashMap();
 
     // in the wizards, variables can be used. Values of the variables are stored here.
-    private Map<String, Object> variables = new HashMap<String, Object>();
+    private Map variables = new HashMap();
 
     // the constraints received from mmbase are stored + cached in this xmldom
-    private transient Document constraints;
+    private Document constraints;
 
     // Seconds.
     private long listQueryTimeOut = 60 * 60;
@@ -156,6 +156,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      */
     private boolean committed = false;
 
+
+    /**
+     *
+     */
+    private String popupId = "";
+    private boolean debug = false;
+
     /**
      * Constructor. Setup initial variables and connects to mmbase to load the data structure.
      *
@@ -165,7 +172,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param wizardname name of teh wizard
      * @param dataid the objectnumber
      * @param cloud the Cloud to use
-     * @throws WizardException when wizard creation failed
      */
     public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud) throws WizardException {
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
@@ -181,7 +187,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      * @param cloud the Cloud to use
-     * @throws WizardException when wizard creation failed
      */
     public Wizard(String context, URIResolver uri,
                   Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException {
@@ -268,8 +273,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
 
     /**
-     * Returns whether the wizard has committed the transaction
-     * @return <code>true</code> when committed
+     * Returns whether the wizard may be closed
      */
     public boolean committed() {
         return committed;
@@ -277,7 +281,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Returns whether the wizard may be closed
-     * @return <code>true</code> when allowed to close
      */
     public boolean mayBeClosed() {
         return mayBeClosed;
@@ -285,7 +288,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * Returns whether a sub wizard should be started
-     * @return <code>true</code> when start a sub wizard
      */
     public boolean startWizard() {
         return startWizard;
@@ -297,17 +299,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * To maintain backwards compatible, if the property is not given, the default value is true.
      * @param objectNumber the number of the node to check
      * @param operation a valid operation, i.e. maywrite or maydelete
-     * @return <code>true</code> when valid operation
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean checkNode(String objectNumber, String operation) throws WizardException {
-        Node node = nodeCache.get(objectNumber);
+        Object nodeObj = nodeCache.get(objectNumber);
 
-        if (node == null) {
+        if (nodeObj == null) {
             NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
 
             if ((nodes != null) && (nodes.getLength() > 0)) {
-                node = nodes.item(0);
+                nodeObj = nodes.item(0);
             } else {
                 if (objectNumber == null || objectNumber.equals("")) {
                     log.warn("Checking security for objectNumber '" + objectNumber + "'  "); // + Logging.stackTrace(5));
@@ -317,14 +318,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 }
                 // node is from outside the datacloud...
                 // get it through dove... should we add it, and if so where?
-                node = databaseConnector.getDataNode(null, objectNumber, null);
+                nodeObj = databaseConnector.getDataNode(null, objectNumber, null);
             }
 
-            nodeCache.put(objectNumber, node);
-            log.debug("Node loaded: " + node);
+            nodeCache.put(objectNumber, nodeObj);
+            log.debug("Node loaded: " + nodeObj);
         } else {
-            log.debug("Node found in cache: " + node);
+            log.debug("Node found in cache: " + nodeObj);
         }
+
+        Node node = (Node) nodeObj;
 
         return (node != null) &&
             Utils.getAttribute(node, operation, "true").equals("true");
@@ -333,7 +336,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Returns true if the node with the specified objectnumber can be edited
      * @param objectNumber number of the object to check
-     * @return <code>true</code> when allowed to edit
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean mayEditNode(String objectNumber) throws WizardException {
@@ -343,16 +345,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Returns true if the node with the specified objectnumber can be deleted
      * @param objectNumber number of the object to check
-     * @return <code>true</code> when allowed to delete
      * @throws WizardException if the object cannot be retrieved
      */
-    protected boolean mayDeleteNode(String objectNumber) throws WizardException {
+    protected boolean mayDeleteNode(String objectNumber)
+        throws WizardException {
         return checkNode(objectNumber, "maydelete");
     }
 
     /**
      * Returns the subwizard start command
-     * @return wizard command
      */
     public WizardCommand getStartWizardCommand() {
         return startWizardCmd;
@@ -374,7 +375,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Loads the wizard schema, and a work document, and fills it with initial data.
      *
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
-     * @throws WizardException when wizard loading failed
      */
     protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException {
         if (wizardConfig.wizard == null) {
@@ -382,7 +382,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
 
         wizardName = wizardConfig.wizard;
+        popupId = wizardConfig.popupId;
         dataId = wizardConfig.objectNumber;
+        debug = wizardConfig.debug;
 
         URL wizardSchemaFile;
         try {
@@ -459,11 +461,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         if (currentFormId == null) {
             currentFormId = determineNextForm("first");
         }
+
     }
 
     /**
-     * Load data from mmbase based on the wizard schema
-     * @throws WizardException when data loading failed
      * @since MMBase-1.7
      */
     protected void loadData() throws WizardException {
@@ -490,7 +491,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Second, all given commands are processed sequentially.
      *
      * @param req the ServletRequest contains the name-value pairs received through the http connection
-     * @throws WizardException when request processing failed
      */
     public void processRequest(ServletRequest req) throws WizardException {
         String curform = req.getParameter("curform");
@@ -511,8 +511,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param out The writer where the output (html) should be written to.
      * @param instanceName name of the current instance
-     * @throws WizardException when building the current state of the wizard xml failed
-     * @throws TransformerException when transforming the wizard xml failed
      */
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         writeHtmlForm(out, instanceName, null);
@@ -528,33 +526,30 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param instanceName name of the current instance
      * @param externParams sending parameters to the stylesheet which are not
      *    from the editwizards itself
-     * @throws WizardException when building the current state of the wizard xml failed
-     * @throws TransformerException when transforming the wizard xml failed
      */
-    public void writeHtmlForm(Writer out, String instanceName, Map<String, Object> externParams)
+    public void writeHtmlForm(Writer out, String instanceName, Map externParams)
         throws WizardException, TransformerException {
         if (log.isDebugEnabled()) {
             log.debug("writeHtmlForm for " + instanceName);
         }
 
+        Node datastart = Utils.selectSingleNode(data, "/data/*");
+
         // Build the preHtml version of the form.
         Document preForm = getPreForm(instanceName);
         Validator.validate(preForm, schema);
 
-        Map<String, Object> params = new HashMap<String, Object>(variables);
+        Map params = new HashMap(variables);
         params.put("ew_context", context);
 
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
         params.put("sessionkey", sessionKey);
         params.put("referrer", referrer);
+        params.put("referrer_encoded", java.net.URLEncoder.encode(referrer));
         params.put("language", cloud.getLocale().getLanguage());
         params.put("timezone", timezone);
-        try {
-            params.put("referrer_encoded", java.net.URLEncoder.encode(referrer, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            log.debug("" + e.getMessage(), e);
-        }
+        params.put("cloud", cloud);
 
         if (templatesDir != null) {
             params.put("templatedir", templatesDir);
@@ -564,18 +559,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             params.putAll(externParams);
         }
 
-        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params, cloud);
+        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params);
     }
 
     /**
      * Internal method which is used to store the passed values. this method is called by processRequest.
-     * @param req http servlet request containing new values
-     * @throws WizardException when failed to store data in the wizard data structure
      *
      * @see #processRequest
      */
     private void storeValues(ServletRequest req) throws WizardException {
-        Enumeration<String> list = req.getParameterNames();
+        Enumeration list = req.getParameterNames();
         log.debug("Synchronizing editor data, using the request");
 
         String formEncoding = req.getCharacterEncoding();
@@ -588,7 +581,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         }
 
         while (list.hasMoreElements()) {
-            String name = list.nextElement();
+            String name = (String) list.nextElement();
 
             if (name.startsWith("internal_")) {
                 log.debug("Ignoring parameter " + name);
@@ -728,7 +721,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * - previous
      * - next
      * </code>
-     * @return name of next form
      */
     public String determineNextForm(String direction) {
         String stepDirection = direction;
@@ -772,11 +764,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * This method generates the pre-html. See the full-spec method for more details.
-     * @param       instanceName    The instancename of this wizard
-     * @return xml representation of the wizard data ready to be transformed
-     * @throws WizardException thrown when something failed in generating the xml
      *
-     * @see #createPreHtml(Node, String, Node, String)
+     * @see #createPreHtml
      */
     public Document createPreHtml(String instanceName) throws WizardException {
         Node datastart = Utils.selectSingleNode(data, "/data/*");
@@ -797,8 +786,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       formid          The id of the current form
      * @param       data            The main node of the data tree to be used
      * @param       instanceName    The instancename of this wizard
-     * @return xml representation of the wizard data ready to be transformed
-     * @throws WizardException thrown when something failed in generating the xml
      */
     public Document createPreHtml(Node wizardSchema, String formid, Node data,
                                   String instanceName) throws WizardException {
@@ -913,12 +900,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             }
 
             // set selected=true for option which is currently selected
-            String selectedValue = Utils.selectSingleNodeText(optionlist,
-                                                              "../value/text()", ""); //.getNodeValue();
+            String selectedValue = Utils.selectSingleNodeText(optionlist, "../value/text()", ""); //.getNodeValue();
             log.debug("Trying to preselect the list at value: " + selectedValue);
 
-            Node selectedoption = Utils.selectSingleNode(optionlist,
-                                                         "option[@id='" + selectedValue + "']");
+            Node selectedoption = Utils.selectSingleNode(optionlist, "option[@id='" + selectedValue + "']");
 
             if (selectedoption != null) {
                 // found! Let's set it selected.
@@ -938,10 +923,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      */
     boolean runQuery(Node list, Node query) {
         long currentTime = new Date().getTime();
-        long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list,
-                                                                     "query-timeout", String.valueOf(this.listQueryTimeOut)));
+        long queryTimeOut = 1000 * Long.parseLong(Utils.getAttribute(list, "query-timeout", String.valueOf(this.listQueryTimeOut)));
         long lastExecuted = currentTime - queryTimeOut - 1;
-
         if (query != null) {
             String lastExecutedString = Utils.getAttribute(query, "last-executed", "never");
 
@@ -949,7 +932,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 lastExecuted = Long.parseLong(lastExecutedString);
             }
         }
-
         // Execute the query if it's there and only if it has timed out.
         if ((query != null) && ((currentTime - lastExecuted) > queryTimeOut)) {
             if (log.isDebugEnabled()) {
@@ -1017,7 +999,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       form    The node of the pre-html form which is to be generated
      * @param       formdef the node of the wizardschema form definition
      * @param       dataContext   Points to the datacontext node which should be used for this form.
-     * @throws WizardException when form generation failed
      */
     public void createPreHtmlForm(Node form, Node formdef, Node dataContext)
         throws WizardException {
@@ -1080,6 +1061,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                             createFormField(form, field, fieldDataNode);
                         } else {
                             String ftype = Utils.getAttribute(field, "ftype");
+
                             if ("function".equals(ftype)) {
                                 log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
 
@@ -1104,7 +1086,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                                 }
                             }
                         }
-                    } else
+                    }
                     // A list "field". Needs special processing.
                     if (nodeName.equals("list")) {
                         NodeList fieldInstances = Utils.selectNodeList(dataContext, xpath);
@@ -1123,8 +1105,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * This method loads the schema using the properties of the wizard. It loads the wizard using #wizardSchemaFilename,
      * resolves the includes, and 'tags' all datanodes. (Places temp. ids in the schema).
-     * @param wizardSchemaFile Url to schema file
-     * @throws WizardException when schema loading failed
+     *
      */
     private void loadSchema(URL  wizardSchemaFile) throws WizardException {
         schema = wizardSchemaCache.getDocument(wizardSchemaFile);
@@ -1132,7 +1113,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         if (schema == null) {
             schema = Utils.loadXMLFile(wizardSchemaFile);
 
-            List<URL> dependencies = resolveIncludes(schema.getDocumentElement());
+            List dependencies = resolveIncludes(schema.getDocumentElement());
             resolveShortcuts(schema.getDocumentElement(), true);
 
             wizardSchemaCache.put(wizardSchemaFile, schema, dependencies);
@@ -1157,12 +1138,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method is a recursive one. Included files are also scanned again for includes.
      *
      * @param       node    The node from where to start searching for include and extends attributes.
-     * @return list of urls which are included
-     * @throws WizardException when included urls failed to load
      * @returns    A list of included files.
+     *
      */
-    private List<URL> resolveIncludes(Node node) throws WizardException {
-        List<URL> result = new ArrayList<URL>();
+    private List resolveIncludes(Node node) throws WizardException {
+        List result = new ArrayList();
 
         // Resolve references to elements in other wizards. This can be by inclusion
         // or extension.
@@ -1265,10 +1245,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * later, other simplifying code could be placed here, so that for more simple fdatapath's more simple commands can be used.
      * (maybe we should avoid using xpath in total for normal use of the editwizards?)
      *
-     * @param   schemaNode  The schemanode from were to start searching
+     * @param   schemanode  The schemanode from were to start searching
      * @param   recurse     Set to true if you want to let the process search in-depth through the entire tree, false if you just want it to search the first-level children
      */
-    private void resolveShortcuts(Node schemaNode, boolean recurse) {
+    private void resolveShortcuts(Node schemaNode, boolean recurse) throws WizardException {
         String xpath;
 
         if (recurse) {
@@ -1282,6 +1262,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         if (children == null) {
             throw new RuntimeException("could not perform xpath:" + xpath + " for schemanode:\n" + schemaNode);
         }
+
+        Node node;
 
         for (int i = 0; i < children.getLength(); i++) {
             resolveShortcut(children.item(i));
@@ -1313,9 +1295,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     /**
      * Resolves possible shortcut for this given single node. (@see #resolveShortcuts for more information)
      *
-     * @param   singleNode    The node to resolve
+     * @param   node    The node to resolve
      */
-    private void resolveShortcut(Node singleNode) {
+    private void resolveShortcut(Node singleNode) throws WizardException {
         // transforms <field name="firstname"/> into <field fdatapath="field[@name='firstname']" />
         String nodeName = singleNode.getNodeName();
 
@@ -1369,9 +1351,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
             String searchString = Utils.getAttribute(singleNode, "searchdir", null);
 
-            StringBuilder fdatapath = null;
+            StringBuffer fdatapath = null;
             String tmp = Utils.getAttribute(singleNode, "fdatapath", null);
-            if (tmp != null) fdatapath = new StringBuilder(tmp);
+            if (tmp != null) fdatapath = new StringBuffer(tmp);
 
             if (fdatapath != null) {
                 if (searchString != null || role != null || destination != null) {
@@ -1379,7 +1361,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 }
             } else {
                 // determine role
-                fdatapath = new StringBuilder();
+                fdatapath = new StringBuffer();
 
                 if (role != null) {
                     fdatapath.append("@role='").append(role).append('\'');
@@ -1463,14 +1445,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     private final static Pattern NUMBER_ORDERTYPE = Pattern.compile("(?i).*\\bnumber\\b.*");
     private final static Pattern INVERSE_ORDERTYPE = Pattern.compile("(?i).*\\binverse\\b.*");
 
+
     /**
-     * Creates a form item (each of which may consist of several single form fields)
+     *       Creates a form item (each of which may consist of several single form fields)
      *  for each given datanode.
-     * @param form data of form
-     * @param fieldlist list of fields
-     * @param datalist list of data nodes
-     * @param parentdatanode node where data starts
-     * @throws WizardException when form creation failed
      */
     private void createFormList(Node form, Node fieldlist, NodeList datalist,
                                 Node parentdatanode) throws WizardException {
@@ -1544,16 +1522,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             maxoccurs = Integer.parseInt(maxstr);
         }
 
+
         String orderby = Utils.getAttribute(fieldlist, "orderby", null);
 
         if ((orderby != null) && (orderby.indexOf("@") == -1)) {
             orderby = "object/field[@name='" + orderby + "']";
         }
-
         final String ordertype = Utils.getAttribute(fieldlist, "ordertype", "string");
 
         // set the orderby attribute for all the nodes
-        List<Element> tempstorage = new ArrayList<Element>(datalist.getLength());
+        List tempstorage = new ArrayList(datalist.getLength());
 
         for (int dataIndex = 0; dataIndex < datalist.getLength(); dataIndex++) {
             Element datacontext = (Element) datalist.item(dataIndex);
@@ -1564,6 +1542,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 // make sure of type
                 if (NUMBER_ORDERTYPE.matcher(ordertype).matches()) {
+
                     double orderDbl;
 
                     try {
@@ -1590,7 +1569,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
         // sort list
         if (orderby != null) {
-            Comparator<Element> comp =  new OrderByComparator(NUMBER_ORDERTYPE.matcher(ordertype).matches(),
+            Comparator comp =  new OrderByComparator(NUMBER_ORDERTYPE.matcher(ordertype).matches(),
                                                      INVERSE_ORDERTYPE.matcher(ordertype).matches());
             Collections.sort(tempstorage, comp);
             if (log.isDebugEnabled()) {
@@ -1602,7 +1581,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         int listsize = tempstorage.size();
 
         for (int dataindex = 0; dataindex < listsize; dataindex++) {
-            Element datacontext = tempstorage.get(dataindex);
+            Element datacontext = (Element) tempstorage.get(dataindex);
 
             // Select the form item
             Node item = Utils.selectSingleNode(fieldlist, "item");
@@ -1644,13 +1623,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             if (orderby != null) {
                 if ((dataindex > 0) && (hiddenCommands.indexOf("|move-up|") == -1)) {
                     addSingleCommand(newitem, "move-up", datacontext,
-                                     tempstorage.get(dataindex - 1));
+                                     (Node) tempstorage.get(dataindex - 1));
                 }
 
                 if (((dataindex + 1) < listsize) &&
                     (hiddenCommands.indexOf("|move-down|") == -1)) {
                     addSingleCommand(newitem, "move-down", datacontext,
-                                     tempstorage.get(dataindex + 1));
+                                     (Node) tempstorage.get(dataindex + 1));
                 }
             }
 
@@ -1726,7 +1705,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param       form        the pre-html form node
      * @param       field       the form definition field node
      * @param       dataNode     the current context data node. It might be 'null' if the field already contains the 'number' attribute.
-     * @throws WizardException when form field creation failed
      */
     private void createFormField(Node form, Node field, Node dataNode)
         throws WizardException {
@@ -1742,7 +1720,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         // place newfield in pre-html form
         form.appendChild(newField);
 
-        List<String> exceptAttrs = new ArrayList<String>(); // what is this?
+        List exceptAttrs = new ArrayList(); // what is this?
         exceptAttrs.add("fid");
 
         // copy all attributes from data to new pre-html field def
@@ -1911,7 +1889,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
     /**
      * This method de-encodes a html field-name (@see #calculateFormName) and returns an Array with the decoded values.
-     * @param formName name of form
      * @return     The array with id's. First id in the array is the data-id (did), which indicates what datanode is pointed to,
      *              second id is the fid (field-id) which points to the proper fieldnode in the wizarddefinition.
      */
@@ -1945,7 +1922,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param  did     The data id where the value should be stored
      * @param  fid     The wizarddefinition field id what applies to this data
      * @param  value   The (String) value what should be stored in the data.
-     * @throws WizardException when failed to store data
      */
     private void storeValue(String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -2004,7 +1980,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param  did     The data id of the node
      * @param  fieldName   The name of the field
      * @param  value   The (String) value what should be stored in the data.
-     * @throws WizardException when failed to store field data
      */
     public void storeFieldValue(String did, String fieldName, String value) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -2029,8 +2004,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param  did     The data id of the node
      * @param  fieldName   The name of the field
-     * @return value of field
-     * @throws WizardException when failed to read field
      */
     public String retrieveFieldValue(String did, String fieldName) throws WizardException {
         if (log.isDebugEnabled()) {
@@ -2055,7 +2028,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method processes the commands sent over http.
      *
      * @param req The ServletRequest where the commands (name/value pairs) reside.
-     * @throws WizardException when failed to process command
      */
     private void processCommands(ServletRequest req) throws WizardException {
         log.debug("processing commands");
@@ -2063,12 +2035,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         startWizard = false;
         startWizardCmd = null;
 
+        boolean found = false;
         String commandName = "";
 
-        Enumeration<String> list = req.getParameterNames();
+        List errors = new ArrayList();
+        Enumeration list = req.getParameterNames();
 
         while (list.hasMoreElements()) {
-            commandName = list.nextElement();
+            commandName = (String) list.nextElement();
 
             if ((commandName.indexOf("cmd/") == 0) && !commandName.endsWith(".y")) {
                 if (log.isDebugEnabled()) {
@@ -2103,7 +2077,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *   <li>commit</li>
      * </ul>
      * @param cmd The command to be processed
-     * @throws WizardException when failed to process command
      *
      */
     public void processCommand(WizardCommand cmd) throws WizardException {
@@ -2177,7 +2150,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
 
                 NodeList updatedFields = Utils.selectNodeList(updatedNode, "./field");
 
-                Map<String, String> fieldValues = new HashMap<String, String>();
+                Map fieldValues = new HashMap();
 
                 for (int j = 0; j < updatedFields.getLength(); j++) {
                     Node fieldNode = updatedFields.item(j);
@@ -2186,6 +2159,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     fieldValues.put(fieldName, fieldValue);
                 }
 
+                NodeList insideObjects = Utils.selectNodeList(updatedNode, "*");
+
                 for (int i = 0; i < nodesToUpdate.getLength(); i++) {
                     Node dataNode = nodesToUpdate.item(i);
                     NodeList fieldsToUpdate = Utils.selectNodeList(dataNode, "./field");
@@ -2193,7 +2168,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
                         Node fieldNode = fieldsToUpdate.item(j);
                         String fieldName = Utils.getAttribute(fieldNode, "name");
-                        String fieldValue = fieldValues.get(fieldName);
+                        String fieldValue = (String) fieldValues.get(fieldName);
                         Utils.storeText(fieldNode, fieldValue);
                     }
                 }
@@ -2205,7 +2180,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     for (int j = 0; j < fieldsToUpdate.getLength(); j++) {
                         Node fieldNode = fieldsToUpdate.item(j);
                         String fieldName = Utils.getAttribute(fieldNode, "name");
-                        String fieldValue = fieldValues.get(fieldName);
+                        String fieldValue = (String) fieldValues.get(fieldName);
                         Utils.storeText(fieldNode, fieldValue);
                     }
                 }
@@ -2303,7 +2278,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 StringTokenizer ids = new StringTokenizer(value, "|");
 
                 while (ids.hasMoreElements()) {
-                    addListItem(fid, did, ids.nextToken(), false, createOrder);
+                    Node newObject = addListItem(fid, did, ids.nextToken(), false, createOrder);
                     createOrder++;
                 }
             } else {
@@ -2313,7 +2288,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     otherdid = null;
                 }
 
-                addListItem(fid, did, otherdid, true, 1);
+                Node newObject = addListItem(fid, did, otherdid, true, 1);
             }
 
             break;
@@ -2403,11 +2378,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @param listId  the id of the proper list definition node, the list that issued the add command
      * @param subDataId  The did (dataid) of the anchor (parent) where the new node should be created
      * @param destinationId   The new destination
-     * @param isCreate is create action
      * @param createOrder ordernr under which this item is added ()i.e. when adding more than one item to a
      *                    list using one add-item command). The first ordernr in a list is 1
      * @return The new relation.
-     * @throws WizardException when failed to add item
      */
     private Node addListItem(String listId, String subDataId, String destinationId,
                              boolean isCreate, int createOrder) throws WizardException {
@@ -2461,13 +2434,29 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 Node loadAction = Utils.selectSingleNode(schema.getDocumentElement(), "action[@type='load']/relation[@destination='" + relatedType + "']/object");
 
                 if (loadAction != null) {
-                    Collection<Node> newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
+                    Collection newSubRelations = databaseConnector.loadRelations(newRelatedNode, destinationId, loadAction);
                     // newly loaded objects must be marked.
 
-                    Iterator<Node> i = newSubRelations.iterator();
+                    Iterator i = newSubRelations.iterator();
                     while (i.hasNext()) {
-                        Node newSubRelation = i.next();
+                        Node newSubRelation = (Node) i.next();
+                        Utils.setAttribute(newSubRelation, "already-exists", "true");
+                        NodeList newSubSubRelations = Utils.selectNodeList(newSubRelation, ".//relation");
+                        for (int k = 0; k < newSubSubRelations.getLength(); k++) {
+                            Node newSubSubRelation = newSubSubRelations.item(k);
+                            Utils.setAttribute(newSubSubRelation, "already-exists", "true");
+                        }
+                        NodeList newSubObjects = Utils.selectNodeList(newSubRelation, ".//object");
+                        for (int j = 0; j < newSubObjects.getLength(); j++) {
+                            Node newSubObject = newSubObjects.item(j);
+                            Utils.setAttribute(newSubObject, "already-exists", "true");
+                            //loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubObject.cloneNode(true), true));
+                        }
+
                         loadedData.getDocumentElement().appendChild(loadedData.importNode(newSubRelation.cloneNode(true), true));
+
+
+
                     }
                 } else {
                     log.debug("Nothing found to load");
@@ -2494,11 +2483,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
     }
 
     /**
-     * set binary data for uploaded bytes
-     * @param       did     This is the dataid what points to in what field the binary should be stored, once commited.
-     * @param       bytes    This is a bytearray with the data to be stored.
-     * @param       name    This is the name which will be used to show what file is uploaded.
-     * @param       path    The (local) path of the file placed.
+     *
      * @param type Content-type of the byte (or null). If not null, then the fields 'mimetype',
      *             'size' and 'filename' are filled as well.
      * @since MMBase-1.7.2
@@ -2534,7 +2519,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @return     the binary data, if found.
      */
     public byte[] getBinary(String did) {
-        return binaries.get(did);
+        return (byte[]) binaries.get(did);
     }
 
     /**
@@ -2544,7 +2529,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @return     The name as set when #setBinary was used.
      */
     public String getBinaryName(String did) {
-        return binaryNames.get(did);
+        return (String) binaryNames.get(did);
     }
 
     /**
@@ -2554,7 +2539,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * @return     The path as set when #setBinary was used.
      */
     public String getBinaryPath(String did) {
-        return binaryPaths.get(did);
+        return (String) binaryPaths.get(did);
     }
 
     /**
@@ -2743,6 +2728,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             }
         }
 
+
         // in the old format, 'html' could also be assigned to dttype
         // in the new format this is an ftype (the dttype is string)
         if ("html".equals(dttype)) {
@@ -2816,7 +2802,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * This method gets the MMBase constraints.
      *
      * @param       objecttype      The name of the object, eg. images, jumpers, urls, news
-     * @return constrainra from mmbase
      */
     public Node getConstraints(String objecttype) {
         return getConstraints(objecttype, null);
@@ -2827,7 +2812,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      *
      * @param       objecttype      The name of the object, eg. images, jumpers, urls, news
      * @param       fieldname       The name of the field, eg. title, body, start
-     * @return constrainra from mmbase
      */
     public Node getConstraints(String objecttype, String fieldname) {
         // check if constraints are in repository, if so, return thatone,
@@ -2868,7 +2852,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
         return fieldcon;
     }
 
-    class OrderByComparator implements Comparator<Element> {
+    class OrderByComparator implements Comparator {
         final boolean compareByNumber;
         final int inverse;
 
@@ -2876,12 +2860,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             compareByNumber = numeric;
             inverse = i ? -1 : 1;
         }
+        public int compare(Object o1, Object o2) {
+            Element n1 = (Element) o1;
+            Element n2 = (Element) o2;
 
-        public String toString() {
-            return (inverse == -1 ? "inverse " : "") + (compareByNumber ? "number" : "string");
-        }
-
-        public int compare(Element n1, Element n2) {
             // Determine the orderby values and compare
             // store it??
             String order1 = n1.getAttribute("orderby");
@@ -2906,13 +2888,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Caches objectNumber to Node.
      * @since MMBase-1.6.4
      */
-    static class NodeCache extends Cache<String, Node> {
+    static class NodeCache extends Cache {
         NodeCache() {
             super(100);
         }
 
         public String getName() {
-            return "Editwizard nodes";
+            return "nodes";
         }
 
         public String getDescription() {
@@ -2924,7 +2906,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
      * Caches File to  Editwizard schema Document.
      * @since MMBase-1.6.4
      */
-    private static class WizardSchemaCache extends Cache<URL, Wizard.WizardSchemaCache.Entry> {
+    private static class WizardSchemaCache extends Cache {
         WizardSchemaCache() {
             super(100);
         }
@@ -2937,8 +2919,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             return "File -> Editwizard schema Document (resolved includes/shortcuts)";
         }
 
-        synchronized public Entry put(URL f, Document doc, List<URL> dependencies) {
-            Entry retval = super.get(f);
+        synchronized public Object put(URL f, Document doc, List dependencies) {
+            Object retval = super.get(f);
 
             if (retval != null) {
                 return retval;
@@ -2947,8 +2929,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             return super.put(f, new Entry(f, doc, dependencies));
         }
 
-        synchronized public Entry remove(URL file) {
-            Entry entry = get(file);
+        synchronized public Object remove(Object key) {
+            URL file = (URL) key;
+            Entry entry = (Entry) get(file);
 
             if ((entry != null) && (entry.fileWatcher != null)) {
                 entry.fileWatcher.exit();
@@ -2956,11 +2939,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                 log.warn("entry: " + entry);
             }
 
-            return super.remove(file);
+            return super.remove(key);
         }
 
         synchronized public Document getDocument(URL key) {
-            Entry entry = super.get(key);
+            Entry entry = (Entry) super.get(key);
 
             if (entry == null) {
                 return null;
@@ -2984,16 +2967,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
                     }
                 };
 
-            Entry(URL f, Document doc, List<URL> dependencies) {
+            Entry(URL f, Document doc, List dependencies) {
                 this.file = f;
                 this.doc = doc;
-                try {
-                    fileWatcher.add(f);
-                } catch (UnsupportedOperationException uoe) {
-                    // never mind
-                }
+                fileWatcher.add(f);
 
-                for (URL ff : dependencies) {
+                Iterator i = dependencies.iterator();
+
+                while (i.hasNext()) {
+                    URL ff = (URL) i.next();
                     fileWatcher.add(ff);
                 }
 
@@ -3002,25 +2984,4 @@ public class Wizard implements org.mmbase.util.SizeMeasurable, java.io.Serializa
             }
         }
     }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        schema = ((DocumentSerializable) in.readObject()).getDocument();
-        data = ((DocumentSerializable) in.readObject()).getDocument();
-        originalData = ((DocumentSerializable) in.readObject()).getDocument();
-        constraints = ((DocumentSerializable) in.readObject()).getDocument();
-        String u = in.readUTF();
-        wizardStylesheetFile = ResourceLoader.getWebRoot().getResource(u);
-        log.service("Deserialized wizard " + this);
-    }
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeObject(new DocumentSerializable(schema));
-        out.writeObject(new DocumentSerializable(data));
-        out.writeObject(new DocumentSerializable(originalData));
-        out.writeObject(new DocumentSerializable(constraints));
-        out.writeUTF(wizardStylesheetFile.toString());
-
-    }
-
 }

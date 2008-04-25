@@ -46,7 +46,7 @@ import org.mmbase.util.logging.Logging;
  * @author Arnout Hannink     (Alfa & Ariss)
  * @author Michiel Meeuwissen (Publieke Omroep Internet Services)
  *
- * @version $Id: ASelectAuthentication.java,v 1.14 2007-08-06 07:49:07 michiel Exp $
+ * @version $Id: ASelectAuthentication.java,v 1.11 2006-01-17 22:44:58 michiel Exp $
  * @since  MMBase-1.7
  */
 public class ASelectAuthentication extends Authentication {
@@ -67,15 +67,6 @@ public class ASelectAuthentication extends Authentication {
      * the (default) application id as registered in the A-Select Server
      */
     private static final String defaultApplication = "mmbase";
-
-    public static final String XSD = "aselectauthentication.xsd";
-    public static final String XSD_LOC = "http://www.mmbase.org/xmlns/aselectauthentication.xsd";
-    public static final String NAMESPACE = "http://www.mmbase.org/xmlns/aselect";
-
-    static {
-        XMLEntityResolver.registerSystemID(XSD_LOC, XSD, ASelectAuthentication.class);
-    }
-
 
     /**
      * Whether to use the A-Select agent or communicate with ASelectServer directly.
@@ -113,7 +104,7 @@ public class ASelectAuthentication extends Authentication {
     /**
      * List of possible ASelect applications id's.
      */
-    private List<String> applications = new ArrayList<String>();
+    private List applications = new ArrayList();
 
 
     /**
@@ -138,6 +129,8 @@ public class ASelectAuthentication extends Authentication {
      * file 'ranks.properties', stored in this object.
      */
     private Properties registeredRanks = null;
+
+
 
     /**
      * I hate XML
@@ -289,6 +282,9 @@ public class ASelectAuthentication extends Authentication {
             }
 
             useCloudContext = manager.getAuthorization() instanceof org.mmbase.security.implementation.cloudcontext.Verify;
+            if (useCloudContext) {
+
+            }
 
             if (useAgent) {
                 log.info("Using aselect agent on port " + agentPort);
@@ -435,7 +431,7 @@ public class ASelectAuthentication extends Authentication {
                     if (applications.size() < 1) {
                         throw new RuntimeException ("No 'authenticate' given and no default defined. Don't know how to log in. (Perhaps the A-Select configuration file was not found?)");
                     }
-                    app = applications.get(0);
+                    app = (String) applications.get(0);
 
                     // throw new RuntimeException("No authenticate given");
                 }
@@ -1141,8 +1137,7 @@ public class ASelectAuthentication extends Authentication {
     }
 
     public int getDefaultMethod(String protocol) {
-        log.debug("protocol : " + protocol);
-        if (protocol == null || protocol.substring(0, 4).equalsIgnoreCase("HTTP")) {
+        if (protocol == null || protocol.equalsIgnoreCase("HTTP") || protocol.substring(0, 3).equalsIgnoreCase("HTTP")) {
             return AuthenticationData.METHOD_SESSIONDELEGATE;
         } else {
             return AuthenticationData.METHOD_DELEGATE;

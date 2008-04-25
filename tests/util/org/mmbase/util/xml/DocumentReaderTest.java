@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
+import java.util.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 import java.io.*;
@@ -17,7 +18,7 @@ import junit.framework.TestCase;
 /**
  * 
  * @author Michiel Meeuwissen
- * @verion $Id: DocumentReaderTest.java,v 1.5 2007-06-21 15:50:25 nklasens Exp $
+ * @verion $Id: DocumentReaderTest.java,v 1.3 2006-05-16 22:12:30 michiel Exp $
  */
 public class DocumentReaderTest extends TestCase {
 
@@ -119,8 +120,8 @@ public class DocumentReaderTest extends TestCase {
                            "<a xml:lang='nl' c='d'><b /><b /></a>",
                            "<a xml:lang='nl' c='d'><b /><!-- hoi --><b /></a>",
                            "<a xml:lang='nl'><b>abc</b><b c='d'>hoi<c/></b></a>"};
-        for (String element : cases) {
-            testToDocument(element);
+        for (int i = 0 ; i < cases.length; i ++) {
+            testToDocument(cases[i]);
         }
     }
 }

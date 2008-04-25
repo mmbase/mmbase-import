@@ -48,7 +48,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.28 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: Encode.java,v 1.27 2006-07-19 11:07:17 johannes Exp $
  **/
 public class Encode {
 
@@ -56,12 +56,12 @@ public class Encode {
 
     private Transformer trans; // the instance of the object doing the actual work.
 
-    private  static Map<String,Config> encodings;                   // string -> Config, all encoding are registered in this.
-    private  static Set<String> registered = new HashSet<String>();  // in this is remembered which classes were registered, to avoid registering them more than once.
+    private  static Map encodings;                   // string -> Config, all encoding are registered in this.
+    private  static Set registered = new HashSet();  // in this is remembered which classes were registered, to avoid registering them more than once.
 
     static {
         log = Logging.getLoggerInstance(Encode.class);
-        encodings = new HashMap<String,Config>();
+        encodings = new HashMap();
 
         // a few Encoding are avaible by default:
         try {
@@ -92,7 +92,7 @@ public class Encode {
      */
     public Encode(String encoding) {
         if (encodings.containsKey(encoding.toUpperCase())) { // it must be known.
-            Config e = encodings.get(encoding.toUpperCase()); // get the info.
+            Config e  = (Config)encodings.get(encoding.toUpperCase()); // get the info.
             try {
                 trans = (Transformer) e.clazz.newInstance();
             } catch (InstantiationException ex) {
@@ -126,14 +126,14 @@ public class Encode {
         if (! registered.contains(clazz)) { // if already registered, do nothing.
             log.service("registering encode class " + clazz);
             try {
-                Class<?> atrans = Class.forName(clazz);
+                Class atrans = Class.forName(clazz);
                 if(Transformer.class.isAssignableFrom(atrans)) { // make sure it is of the right type.
                     if (ConfigurableTransformer.class.isAssignableFrom(atrans)) {
                         log.debug("A configurable transformer");
                         // Instantiate it, just once, to call the method 'transformers'
                         // In this way we find out what this class can do.
                         ConfigurableTransformer transformer = (ConfigurableTransformer) atrans.newInstance();                       
-                        Map<String,Config> newencodings = transformer.transformers();
+                        Map newencodings = transformer.transformers();
                         encodings.putAll(newencodings); // add them all to our encodings.
                     } else {
                         log.debug("Non configurable");
@@ -252,7 +252,7 @@ public class Encode {
      * @return Set of Strings containing the names of the registered encodings.
      */
 
-    public static Set<String> possibleEncodings() {
+    public static Set possibleEncodings() {
         return encodings.keySet();
     }
     
@@ -326,12 +326,12 @@ public class Encode {
             System.out.println("   use: java -Dmmbase.config=... org.mmbase.util.Encode [-class <classname> [-class ..]] [-encode|-decode] <coding> [string]\n\n");
             System.out.println("On default it encodes and gets the string from STDIN\n\n");
             System.out.println("possible decoding are");
-            List<String> v = new ArrayList<String>(possibleEncodings());
+            List v = new ArrayList(possibleEncodings());
             java.util.Collections.sort(v);
-            Iterator<String> i = v.iterator();
+            Iterator i = v.iterator();
             while (i.hasNext()) {
-                String enc = i.next();
-                System.out.println(enc + "   " + encodings.get(enc).info);
+                String enc = (String)i.next();
+                System.out.println(enc + "   " + ((Config)encodings.get(enc)).info);
             }
         } else {
 

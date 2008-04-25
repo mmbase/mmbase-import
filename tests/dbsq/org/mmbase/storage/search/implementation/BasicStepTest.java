@@ -3,13 +3,13 @@ package org.mmbase.storage.search.implementation;
 import junit.framework.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.search.Step;
+import org.mmbase.module.core.MMObjectBuilder;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.2 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -93,18 +93,18 @@ public class BasicStepTest extends TestCase {
             fail("Negative node, should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
         
-        SortedSet<Integer> nodes = instance.getNodes();
+        SortedSet nodes = instance.getNodes();
         assertTrue(nodes.size() == 0);
         int nodeNumber0 = 23456;
         instance.addNode(nodeNumber0);
         nodes = instance.getNodes();
         assertTrue(nodes.size() == 1);
-        Iterator<Integer> iNodes = nodes.iterator();
+        Iterator iNodes = nodes.iterator();
         assertTrue(iNodes.hasNext());
         assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
         assertTrue(!iNodes.hasNext());
         int nodeNumber1 = 2345;
-        Step result = instance.addNode(nodeNumber1);
+        BasicStep result = instance.addNode(nodeNumber1);
         nodes = instance.getNodes();
         assertTrue(nodes.size() == 2);
         iNodes = nodes.iterator();
@@ -121,8 +121,8 @@ public class BasicStepTest extends TestCase {
         // See:
         testAddNode();
         
-        SortedSet<Integer> nodes = instance.getNodes();
-        Integer item = nodes.first();
+        SortedSet nodes = instance.getNodes();
+        Object item = nodes.first();
         
         // List returned must be unmodifiable.
         try {

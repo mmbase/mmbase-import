@@ -103,11 +103,9 @@
    </mm:notpresent>
    <mm:present referid="context">
      <mm:stringlist referid="context">
-       <mm:isnotempty>
-         <mm:node id="currentcontext" number="$_">
-           <%@include file="context.div.jsp" %>
-         </mm:node>
-       </mm:isnotempty>
+      <mm:node id="currentcontext" number="$_">
+          <%@include file="context.div.jsp" %>
+      </mm:node>
      </mm:stringlist>
    </mm:present>
 

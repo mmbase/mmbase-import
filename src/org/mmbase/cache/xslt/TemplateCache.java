@@ -17,6 +17,7 @@ import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.ResourceWatcher;
 
 import java.util.*;
+
 import javax.xml.transform.URIResolver;
 
 import org.mmbase.util.logging.Logger;
@@ -32,10 +33,10 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.20 2007-08-30 08:05:45 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.15.2.1 2007-09-17 11:38:10 michiel Exp $
  * @since   MMBase-1.6
  */
-public class TemplateCache extends Cache<Key, Templates> {
+public class TemplateCache extends Cache {
 
     private static final Logger log = Logging.getLoggerInstance(TemplateCache.class);
 
@@ -71,7 +72,7 @@ public class TemplateCache extends Cache<Key, Templates> {
 
     static {
         cache = new TemplateCache(cacheSize);
-        cache.putCache();
+        putCache(cache);
         templateWatcher.setDelay(10 * 1000); // check every 10 secs if one of the stream source templates was change
         templateWatcher.start();
 
@@ -91,26 +92,31 @@ public class TemplateCache extends Cache<Key, Templates> {
         super(size);
     }
 
+
+
     /**
      * Remove all entries associated wit a certain url (used by FileWatcher).
      *
      * @param  The file under concern
      * @return The number of cache entries removed
      */
-
     private int remove(String file) {
         int removed = 0;
         if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + file);
-        Set<Key> remove = new HashSet<Key>();
+        Set remove = new HashSet();
         synchronized(this) {
-            for (Map.Entry<Key, Templates> entry : entrySet()) {
-                Key mapKey = entry.getKey();
+            Iterator i = entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                Key mapKey = (Key) entry.getKey();
                 if (mapKey.getURL().equals(file)) {
                     remove.add(mapKey);
                 }
             }
         }
-        for (Key mapKey : remove) {
+        Iterator i = remove.iterator();
+        while (i.hasNext()) {
+            Key mapKey = (Key) i.next();
             if(remove(mapKey) != null) {
                 removed++;
             } else {
@@ -120,24 +126,23 @@ public class TemplateCache extends Cache<Key, Templates> {
         return removed;
     }
 
-
     public Templates getTemplates(Source src) {
         return getTemplates(src, null);
     }
     public Templates getTemplates(Source src, URIResolver uri) {
         Key key = new Key(src, uri);
         if (log.isDebugEnabled()) log.debug("Getting from cache " + key);
-        return get(key);
+        return (Templates) get(key);
     }
 
     /**
      * When removing an entry (because of LRU e.g), then also the FileWatcher must be removed.
      */
 
-    public synchronized Templates remove(Key key) {
+    public synchronized Object remove(Object key) {
         if (log.isDebugEnabled()) log.debug("Removing " + key);
-        Templates result = super.remove(key);
-        String url = key.getURL();
+        Object result = super.remove(key);
+        String url = ((Key) key).getURL();
         remove(url);
         templateWatcher.remove(url);
         return result;
@@ -149,13 +154,13 @@ public class TemplateCache extends Cache<Key, Templates> {
      * @throws RuntimeException
      **/
 
-    public Templates put(Key key, Templates value) {
+    public Object put(Object key, Object value) {
         throw new RuntimeException("wrong types in cache");
     }
-    public Templates put(Source src, Templates value) {
+    public Object put(Source src, Templates value) {
         return put(src, value, null);
     }
-    public Templates put(Source src, Templates value, URIResolver uri) {
+    public Object put(Source src, Templates value, URIResolver uri) {
         if (! isActive()) {
             if (log.isDebugEnabled()) {
                 log.debug("XSLT Cache is not active");
@@ -163,7 +168,7 @@ public class TemplateCache extends Cache<Key, Templates> {
             return null;
         }
         Key key = new Key(src, uri);
-        Templates res = super.put(key, value);
+        Object res = super.put(key, value);
         log.service("Put xslt in cache with key " + key);
         templateWatcher.add(key.getURL());
         if (log.isDebugEnabled()) {
@@ -185,7 +190,7 @@ public class TemplateCache extends Cache<Key, Templates> {
             java.io.FileWriter fw = new java.io.FileWriter(xslFile);
             fw.write("<xsl:stylesheet  version = \"1.1\" xmlns:xsl =\"http://www.w3.org/1999/XSL/Transform\"></xsl:stylesheet>");
             fw.close();
-            for (int i= 0; i < 10; i++) {
+            for (int i =0; i<10; i++) {
                 TemplateCache cache = TemplateCache.getCache();
                 Source xsl = new StreamSource(xslFile);
                 org.mmbase.util.xml.URIResolver uri = new org.mmbase.util.xml.URIResolver(xslFile.getParentFile());
@@ -207,7 +212,6 @@ public class TemplateCache extends Cache<Key, Templates> {
     }
 
 }
-
 
 /**
  * Object to use as a key in the Caches.
@@ -246,5 +250,6 @@ class Key {
     public String toString() {
         return "" + src + "/" + uri;
     }
-    
+
 }
+

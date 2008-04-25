@@ -12,12 +12,13 @@ package org.mmbase.storage.search.implementation;
 import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.StringSearchConstraint;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicStringSearchConstraint.java,v 1.10 2007-02-24 21:57:51 nklasens Exp $
+ * @version $Id: BasicStringSearchConstraint.java,v 1.8 2005-07-08 12:23:45 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -29,10 +30,10 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     private int matchType = 0;
 
     /** Map storing additional parameters. */
-    private Map<String,Object> parameters = new HashMap<String,Object>(3);
+    private Map parameters = new HashMap(3);
 
     /** List of searchterms. */
-    private List<String> searchTerms = null;
+    private List searchTerms = null;
 
     /**
      * Creates a new instance of BasicStringSearchConstraint.
@@ -46,7 +47,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      * @see #getMatchType
      */
     public BasicStringSearchConstraint(StepField field, int searchType,
-    int matchType, List<String> searchTerms) {
+    int matchType, List searchTerms) {
         this(field, searchType, matchType);
         setSearchTerms(searchTerms);
     }
@@ -158,16 +159,21 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      *
      * @param searchTerms the searchterms
      * @return This <code>BasicStringSearchConstraint</code> instance.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicStringSearchConstraint setSearchTerms(List<String> searchTerms) {
+    public BasicStringSearchConstraint setSearchTerms(List searchTerms) {
         if (searchTerms.size() == 0) {
             throw new IllegalArgumentException(
             "Invalid search terms value: " + searchTerms);
         }
-        List<String> newSearchTerms = new ArrayList<String>();
-        Iterator<String> iSearchTerms = searchTerms.iterator();
+        List newSearchTerms = new ArrayList();
+        Iterator iSearchTerms = searchTerms.iterator();
         while (iSearchTerms.hasNext()) {
-            String  searchTerm = iSearchTerms.next();
+            Object searchTerm = iSearchTerms.next();
+            if (!(searchTerm instanceof String)) {
+                throw new IllegalArgumentException(
+                "Invalid search term value: " + searchTerm);
+            }
             newSearchTerms.add(searchTerm);
         }
         this.searchTerms = newSearchTerms;
@@ -187,7 +193,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             throw new IllegalArgumentException(
             "Invalid search terms value: \"" + searchTerms + "\"");
         }
-        List<String> newSearchTerms = new ArrayList<String>();
+        List newSearchTerms = new ArrayList();
         StringTokenizer st = new StringTokenizer(searchTerms);
         while (st.hasMoreTokens()) {
             newSearchTerms.add(st.nextToken());
@@ -240,7 +246,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     }
 
     // javadoc is inherited
-    public Map<String,Object> getParameters() {
+    public Map getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
 
@@ -277,7 +283,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     }
 
     // javadoc is inherited
-    public List<String> getSearchTerms() {
+    public List getSearchTerms() {
         return Collections.unmodifiableList(searchTerms);
     }
 
@@ -317,7 +323,8 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("StringSearchConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("StringSearchConstraint(inverse:").
+        append(isInverse()).
         append("field:").append(getFieldName()).
         append(", casesensitive:").append(isCaseSensitive()).
         append(", searchtype:").append(getSearchTypeDescription()).

@@ -7,13 +7,13 @@
 
   <property name="project.jars.dir"        value="build" />
   <property name="project.jars.includes"   value="postgresql-8.2-506.jdbc3.jar" />
-  <property name="java.source.version" value="1.5" />
+
 
   <import file="../buildbase-include.xml" />
 
   <property file="build.properties.default" />
 
-  <target name="jar" description="Create mmbase-largeobjects.jar" depends="postgresql.jar,buildbase.jar" />
+  <target name="jar" description="Create mmbase-largeobjects.jar" depends="postgresql.jar,project.manifest,buildbase.jar" />
 
   <target name="postgresql.jar" description="Get postgresql jar">
     <antcall target="download">

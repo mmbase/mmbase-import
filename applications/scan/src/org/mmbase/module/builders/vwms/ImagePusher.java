@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImagePusher.java,v 1.11 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ImagePusher.java,v 1.10 2004-02-11 20:43:23 keesj Exp $
  */
 public class ImagePusher implements Runnable {
 
@@ -114,7 +114,7 @@ public class ImagePusher implements Runnable {
      * of the actual transfer.
      */
       public void doWork() {
-        Vector<aFile2Copy> procfiles;
+        Vector procfiles;
         aFile2Copy file;
         Hashtable files;
 
@@ -124,12 +124,12 @@ public class ImagePusher implements Runnable {
             if (parent.files.size()>0) {
                 synchronized(parent.files) {
                     procfiles=parent.files;
-                    parent.files=new Vector<aFile2Copy>();
+                    parent.files=new Vector();
                 }
                 log.service("ImagePusher processing "+procfiles.size()+" files");
                 files=killdups(procfiles);
-                for (Enumeration<aFile2Copy> e =files.keys();e.hasMoreElements();) {
-                    file=e.nextElement();
+                for (Enumeration e =files.keys();e.hasMoreElements();) {
+                    file=(aFile2Copy)e.nextElement();
                     files2copy.append(file);
                 }
             }
@@ -142,11 +142,11 @@ public class ImagePusher implements Runnable {
      * @return a <code>Hashtable</code> whose keys contain the files (without duplicates).
      * Would probably be a bit more clear if the keys are returned instead.
      */
-    private Hashtable killdups(Vector<aFile2Copy> files) {
+    private Hashtable killdups(Vector files) {
         Hashtable hfiles=new Hashtable(files.size());
         aFile2Copy file;
-        for (Enumeration<aFile2Copy> e=files.elements();e.hasMoreElements();) {
-            file=e.nextElement();
+        for (Enumeration e=files.elements();e.hasMoreElements();) {
+            file=(aFile2Copy)e.nextElement();
             hfiles.put(file,"feep");
         }
         log.info("ImagePusher -> "+files.size()+" - "+hfiles.size()+" dups "+(files.size()-hfiles.size()));

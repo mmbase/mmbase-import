@@ -21,7 +21,7 @@ public class installStep {
 
     private String userfeedback;
 
-    private ArrayList<installStep> installsteps;
+    private ArrayList installsteps;
 
     private int timestamp;
 
@@ -107,9 +107,9 @@ public class installStep {
         // count all the errors of the subs
         if (installsteps != null) {
             int total = errorcount;
-            Iterator<installStep> e = installsteps.iterator();
+            Iterator e = installsteps.iterator();
             while (e.hasNext()) {
-                installStep step = e.next();
+                installStep step = (installStep) e.next();
                 total += step.getErrorCount();
             }
             return total;
@@ -127,9 +127,9 @@ public class installStep {
     public int getWarningCount() {
         if (installsteps != null) {
             int total = warningcount;
-            Iterator<installStep> e = installsteps.iterator();
+            Iterator e = installsteps.iterator();
             while (e.hasNext()) {
-                installStep step = e.next();
+                installStep step = (installStep) e.next();
                 total += step.getWarningCount();
             }
             return total;
@@ -144,7 +144,7 @@ public class installStep {
      *
      * @return    The installSteps value
      */
-    public Iterator<installStep> getInstallSteps() {
+    public Iterator getInstallSteps() {
         if (installsteps != null) {
             return installsteps.iterator();
         } else {
@@ -159,20 +159,20 @@ public class installStep {
      * @param  logid  Description of the Parameter
      * @return        The installSteps value
      */
-    public Iterator<installStep> getInstallSteps(int logid) {
+    public Iterator getInstallSteps(int logid) {
         // is it me ?
         if (logid == getId()) {
             return getInstallSteps();
         }
 
         // well maybe its one of my subs ?
-        Iterator<installStep> e = getInstallSteps();
+        Iterator e = getInstallSteps();
         if (e != null) {
             while (e.hasNext()) {
-                installStep step = e.next();
+                installStep step = (installStep) e.next();
                 Object o = step.getInstallSteps(logid);
                 if (o != null) {
-                    return (Iterator<installStep>) o;
+                    return (Iterator) o;
                 }
             }
         }
@@ -190,7 +190,7 @@ public class installStep {
         installStep step = new installStep();
         step.setParent(getId());
         if (installsteps == null) {
-            installsteps = new ArrayList<installStep>();
+            installsteps = new ArrayList();
             installsteps.add(step);
             return step;
         } else {

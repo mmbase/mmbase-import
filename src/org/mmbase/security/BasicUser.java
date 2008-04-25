@@ -8,8 +8,6 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.security;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * A UserContext object is the result of an authentication, on which authorization can be
@@ -23,20 +21,15 @@ import org.mmbase.util.logging.Logging;
  * although this is possible.
  *
  * @author Eduard Witteveen
- * @version $Id: BasicUser.java,v 1.6 2008-03-17 15:37:59 michiel Exp $
+ * @version $Id: BasicUser.java,v 1.2.2.1 2007-11-19 15:31:34 michiel Exp $
  */
 public class BasicUser implements UserContext {
-    private static final Logger log = Logging.getLoggerInstance(BasicUser.class);
 
-    protected final String authenticationType;
-    private final String identifier;
+    protected String authenticationType;
+
 
     public BasicUser(String authenticationType) {
-        this(authenticationType, "anonymous");
-    }
-    public BasicUser(String authenticationType, String identifier) {
         this.authenticationType = authenticationType;
-        this.identifier = identifier;
     }
 
     /**
@@ -46,7 +39,7 @@ public class BasicUser implements UserContext {
      * @return A unique identifier for this user.
      */
     public String getIdentifier() {
-        return identifier;
+        return "anonymous";
     }
 
     /**
@@ -77,12 +70,7 @@ public class BasicUser implements UserContext {
     }
 
     public boolean isValid() {
-        try {
-            return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
-        } catch (Exception e) {
-            log.warn(e);
-            return false;
-        }
+        return org.mmbase.module.core.MMBase.getMMBase().getMMBaseCop().getAuthentication().isValid(this);
     }
 
     public String getAuthenticationType() {

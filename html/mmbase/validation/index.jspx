@@ -1,11 +1,12 @@
 <html
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
     xml:lang="en"
     lang="en">
   <jsp:directive.page import="org.mmbase.datatypes.*,java.util.*" />
-  <jsp:text>&lt;!-- $Id: index.jspx,v 1.6 2007-11-26 17:01:20 michiel Exp $ --&gt;</jsp:text>
+  <jsp:text>&lt;!-- $Id: index.jspx,v 1.2.2.6 2008-03-28 15:45:48 michiel Exp $ --&gt;</jsp:text>
   <mm:content
       expires="600"
       unacceptable="CRIPPLE"
@@ -33,7 +34,7 @@
             <th>
               Datatype of Field
               <form method="post" action=".">
-                <select name="field" onchange="document.getElementById('fielddatatype').href='test.jspx?field=' + this.value + '&amp;amp;nodemanager=${nodemanager}';">
+                <select name="field" onchange="document.getElementById('fielddatatype').href='datatype.jspx?field=' + this.value + '&amp;amp;nodemanager=${nodemanager}'; document.getElementById('fielddatatypetest').href='test.jspx?field=' + this.value + '&amp;amp;nodemanager=${nodemanager}';">
                   <mm:fieldlist type="all" jspvar="fieldvar" nodetype="$nodemanager">
                     <c:choose>
                       <c:when test="${field eq fieldvar.name}">
@@ -63,8 +64,13 @@
               </form>
             </th>
             <td>
-              <mm:link page="/mmbase/validation/test.jspx" referids="nodemanager,field">
+              <mm:link page="/mmbase/validation/datatype.jspx" referids="nodemanager,field">
                 <a id="fielddatatype" href="${_}" class="navigate">
+                  <img alt="global datatype" src="${next}" />
+                </a>
+              </mm:link>
+              <mm:link page="/mmbase/validation/test.jspx" referids="nodemanager,field">
+                <a id="fielddatatypetest" href="${_}" class="navigate">
                   <img alt="global datatype" src="${next}" />
                 </a>
               </mm:link>

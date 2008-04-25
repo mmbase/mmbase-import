@@ -29,8 +29,8 @@ public class sessionInfo {
     private String cookie;
     private MMObjectNode node;
 
-    Hashtable<String, String> values = new Hashtable<String, String>();
-    Hashtable<String, Vector<String>> setvalues = new Hashtable<String, Vector<String>>();
+    Hashtable values = new Hashtable();
+    Hashtable setvalues = new Hashtable();
 
     public void setNode(MMObjectNode node) {
         this.node=node;
@@ -45,12 +45,12 @@ public class sessionInfo {
     }
 
     public String getValue(String wanted) {
-        return values.get(wanted);
+        return((String)values.get(wanted));
     }
 
     public String setValue(String key,String value) {
         if (isSecure(value)) {
-            return values.put(key,value);
+            return((String)values.put(key,value));
         } else {
             log.error("ERROR: Illegal input, action blocked");
             return("illegal input,see error log");
@@ -63,7 +63,7 @@ public class sessionInfo {
      * @return the original value of the attribute
      */
     public String removeValue(String key) {
-        return values.remove(key);
+        return((String)values.remove(key));
     }
 
     /**
@@ -73,10 +73,10 @@ public class sessionInfo {
 
         log.debug("addSetValue("+key+","+value+")");
 
-        Vector<String> v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v==null) {
             // not found so create it
-            v=new Vector<String>();
+            v=new Vector();
             if (isSecure(value)) {
                 v.addElement(value);
                 setvalues.put(key,v);
@@ -101,10 +101,10 @@ public class sessionInfo {
 
         log.debug("putSetValue("+key+","+value+")");
 
-        Vector<String> v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v==null) {
             // not found so create it
-            v=new Vector<String>();
+            v=new Vector();
             if (isSecure(value)) {
                 v.addElement(value);
                 setvalues.put(key,v);
@@ -127,7 +127,7 @@ public class sessionInfo {
     * deletes a value from the SESSION set.
     */
     public void delSetValue(String key,String value) {
-        Vector v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v!=null) {
             if (v.contains(value)) {
                 v.removeElement(value);
@@ -141,7 +141,7 @@ public class sessionInfo {
     * does this set contain the value ?
     */
     public String containsSetValue(String key,String value) {
-        Vector v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v!=null) {
             if (v.contains(value)) {
                 return("YES");
@@ -156,9 +156,9 @@ public class sessionInfo {
     */
     public String clearSet(String key) {
         log.debug("sessionset="+key);
-        Vector<String> v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v!=null) {
-            v=new Vector<String>();
+            v=new Vector();
             setvalues.put(key,v);
             log.debug("sessionset="+v.toString());
         }
@@ -174,7 +174,7 @@ public class sessionInfo {
 
         log.debug("getSetString("+key+")");
 
-        Vector v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v!=null) {
             String result="";
             Enumeration res=v.elements();
@@ -198,7 +198,7 @@ public class sessionInfo {
     */
     public String getSetCount(String key) {
 
-        Vector v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v!=null) {
             return(""+v.size());
         } else {
@@ -211,7 +211,7 @@ public class sessionInfo {
     * return the average of a set of numbers
     */
     public String getAvgSet(String key) {
-        Vector v=setvalues.get(key);
+        Vector v=(Vector)setvalues.get(key);
         if (v!=null) {
             int total=0;
             int count=0;

@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.65 2008-04-24 09:50:22 michiel Exp $ -->
+  <!-- @version $Id: datatypes.xml,v 1.45.2.12 2008-04-24 09:47:57 michiel Exp $ -->
 
   <!--
   schematic syntax of one datatype entry:
@@ -84,6 +84,7 @@
         <class name="org.mmbase.datatypes.processors.LastModifier" />
       </commitprocessor>
     </specialization>
+
     <specialization id="ip">
       <description xml:lang="en">
         A ready-only field, which contains the IP address of the of the last user that changed the node to which the field belongs.
@@ -97,7 +98,6 @@
         <class name="org.mmbase.datatypes.processors.Ip" />
       </commitprocessor>
     </specialization>
-
 
     <specialization id="creator">
       <description xml:lang="en">
@@ -172,7 +172,10 @@
       <!-- arbitrary check for a valid e-mail address
         below the String equivalent for testing purposes
         "(?i)\\A[A-Z0-9_\\-\\+\\&\\*\\#]+([\\.-]?[A-Z0-9_\\-\\+\\&\\*\\#])*@([A-Z0-9_-]{2,}[\\.]{1})+([A-Z]{2,})\\z" -->
+
     </specialization>
+
+
 
     <specialization id="field">
       <description xml:lang="en">
@@ -182,6 +185,9 @@
     </specialization>
 
     <specialization id="requiredfield">
+      <description xml:lang="en">
+        A field that may not remain empty.
+      </description>
       <required value="true" />
       <pattern value="(?s)\A.*\z" />
     </specialization>
@@ -200,30 +206,6 @@
       </description>
       <!-- enforced line -->
       <pattern value="\A[^\n\r]*\z" />
-
-      <specialization  id="security_context">
-        <description xml:lang="en">
-          Uses 'setContext' and 'getContext'. The idea is to use this type for a 'virtual' field.
-        </description>
-        <setprocessor >
-          <class name="org.mmbase.datatypes.processors.ContextProcessor$Set" />
-        </setprocessor>
-        <getprocessor>
-          <class name="org.mmbase.datatypes.processors.ContextProcessor$Get" />
-        </getprocessor>
-      </specialization>
-    </specialization>
-
-    <specialization id="colors">
-      <description xml:lang="en">
-        Colors as can be used in css.
-      </description>
-      <default value="white" />
-      <maxLength value="64" />
-      <pattern value="(?i)\A(aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|purple|red|silver|teal|white|yellow|#[0-9,a-f]{3}|#[0-9,a-f]{6})\z" />
-      <enumeration>
-        <entry basename="org.mmbase.datatypes.resources.string.colors" />
-      </enumeration>
     </specialization>
 
     <specialization id="trimmedline">
@@ -253,13 +235,16 @@
       <class name="org.mmbase.datatypes.SecurityContextDataType" />
     </specialization>
 
-    <specialization id="components">
+    <specialization id="security_context">
       <description xml:lang="en">
-	The names of all available MMBase Framework Components
+        Uses 'setContext' and 'getContext'. The idea is to use this type for a 'virtual' field.
       </description>
-      <class name="org.mmbase.datatypes.ComponentNamesDataType" />
-      <required value="true"/>
-      <maxLength value="1024"/>
+      <setprocessor >
+        <class name="org.mmbase.datatypes.processors.ContextProcessor$Set" />
+      </setprocessor>
+      <getprocessor>
+        <class name="org.mmbase.datatypes.processors.ContextProcessor$Get" />
+      </getprocessor>
     </specialization>
 
     <specialization id="whitespacereplacer">
@@ -360,7 +345,6 @@
             basename="org.mmbase.datatypes.resources.genders" />
       </enumeration>
     </specialization>
-
 
   </datatype>
 
@@ -476,6 +460,7 @@
         <maxInclusive value="today"    />
       </specialization>
 
+
       <specialization id="historical">
         <description xml:lang="en">
           Historical dates, with a ERA designator.
@@ -511,15 +496,8 @@
       <description xml:lang="en">
         Durations are positive longs, which present a number of seconds. (for other units, we may have to introduce other datatypes).
       </description>
-      <class name="org.mmbase.datatypes.processors.Duration$DataType" />
       <minInclusive value="0" />
       <!-- I have no idea how to do this -->
-      <setprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.Duration$SetString" />
-      </setprocessor>
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.Duration$GetString" />
-      </getprocessor>
     </specialization>
   </datatype>
 
@@ -553,13 +531,6 @@
       </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.boolean.enableddisabled" />
-      </enumeration>
-    </specialization>
-    <specialization id="check">
-      <description xml:lang="en">
-        Boolean with no explicit enumeration. Will result in checkboxes.
-      </description>
-      <enumeration>
       </enumeration>
     </specialization>
   </datatype>
@@ -598,19 +569,13 @@
       <description xml:lang="en">
         Media types.
       </description>
-      <description xml:lang="nl">
-        Media typen cq. soorten media.
-      </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.media" />
       </enumeration>
     </specialization>
     <specialization id="ordinals">
       <description xml:lang="en">
-        'First', 'second' etc. Implemented by a drop-down, so don't expect 'twothousandeth' to work.
-      </description>
-      <description xml:lang="nl">
-        'Eerste', 'tweede' etc. Geïmplementeerd in een drop-down, dus verwacht niet dat 'tweeduizendeerste' werkt.
+        'first', 'second' etc. Implemented by a drop-down, so don't expect 'twothousandeth' to work.
       </description>
       <enumeration>
         <entry basename="org.mmbase.datatypes.resources.ordinals" />
@@ -618,12 +583,6 @@
     </specialization>
 
     <specialization id="gender">
-      <description xml:lang="en">
-       A member of one or other sex, or rather being male or female.
-      </description>
-      <description xml:lang="nl">
-       Lid van een sekse, oftewel vrouw of man.
-      </description>
       <enumeration>
         <entry
             javaconstants="org.mmbase.datatypes.resources.Gender"
@@ -633,21 +592,10 @@
 
     <specialization id="filesize">
       <description xml:lang="en">
-        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'KiB' etc.
+        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'kb' etc.
       </description>
       <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatFileSize"/>
-      </getprocessor>
-    </specialization>
-
-    <specialization id="filesize_deprecated">
-      <description xml:lang="en">
-        Integer interpreted as a filesize. Results in a 'string' representation postfixed by 'kbyte' etc.
-      </description>
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatFileSize">
-          <param name="classical">true</param>
-        </class>
+        <class name="org.mmbase.datatypes.processors.FormatFileSize" />
       </getprocessor>
     </specialization>
 
@@ -658,7 +606,6 @@
       <minInclusive value="0"  />
       <maxInclusive value="255"  />
     </specialization>
-
     <specialization id="weekdays">
       <description xml:lang="en">
         Stores a day of the week (so a number from 1 to 7)
@@ -679,6 +626,7 @@
       <minInclusive value="0"  />
       <maxInclusive value="59"  />
     </specialization>
+
     <specialization id="age">
       <description xml:lang="en">
         This field can be used as a virtual field on a nodemanager with a birthdate field. This
@@ -718,79 +666,6 @@
       Double precision floating point numbers.
     </description>
     <class name="org.mmbase.datatypes.DoubleDataType" />
-
-    <specialization id="phys_distance">
-      <description xml:lang="en">
-        Some distance, in the SI unit meters. Always positive.
-      </description>
-      <minInclusive value="0" />
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatQuantity">
-          <param name="unit">m</param>
-        </class>
-      </getprocessor>
-    </specialization>
-
-    <specialization id="phys_temperature">
-      <description xml:lang="en">
-        A physical temparature.
-      </description>
-      <default value="273.15" />
-      <minInclusive value="0" />
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatQuantity">
-          <param name="unit">K</param>
-        </class>
-      </getprocessor>
-    </specialization>
-
-    <specialization id="phys_angle">
-      <description xml:lang="en">
-        An angle in radials (1 radian = 180 / π  degrees).
-      </description>
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatQuantity">
-          <param name="unit">rad</param>
-        </class>
-      </getprocessor>
-    </specialization>
-
-    <specialization id="phys_mass">
-      <description xml:lang="en">
-        An physical mass.
-      </description>
-      <minInclusive value="0" />
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatQuantity">
-          <param name="unit">g</param>
-        </class>
-      </getprocessor>
-    </specialization>
-
-
-    <specialization id="phys_duration">
-      <description xml:lang="en">
-        An physical duration, in seconds.
-      </description>
-      <minInclusive value="0" />
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatQuantity">
-          <param name="unit">s</param>
-        </class>
-      </getprocessor>
-    </specialization>
-
-
-    <specialization id="phys_energy">
-      <description xml:lang="en">
-      </description>
-      <getprocessor type="string">
-        <class name="org.mmbase.datatypes.processors.FormatQuantity">
-          <param name="unit">J</param>
-        </class>
-      </getprocessor>
-    </specialization>
-
   </datatype>
 
   <datatype id="binary">

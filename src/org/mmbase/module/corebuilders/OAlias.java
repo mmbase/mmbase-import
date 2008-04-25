@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.23 2007-04-05 14:04:18 pierre Exp $
+ * @version $Id: OAlias.java,v 1.20 2006-03-24 13:36:59 johannes Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -37,12 +37,12 @@ public class OAlias extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(OAlias.class);
 
     // alias -> node-number (Integer)
-    private Cache<String,Integer> numberCache = new Cache<String,Integer>(128) {
+    private Cache numberCache = new Cache(128) {
         public String getName()        { return "AliasCache"; }
         public String getDescription() { return "Cache for node aliases"; }
         };
 
-    private static final Integer NOT_FOUND = -1;
+    private static final Integer NOT_FOUND = new Integer(-1);
 
     public OAlias() {
         numberCache.putCache();
@@ -65,17 +65,17 @@ public class OAlias extends MMObjectBuilder {
             log.debug("Finding oalias node '" + name + "'");
         }
 
-        Integer nodeNumber = numberCache.get(name);
+        Integer nodeNumber = (Integer) numberCache.get(name);
         if (nodeNumber == null) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(this);
                 BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
                 query.setConstraint(constraint);
-                Iterator<MMObjectNode> i = getNodes(query).iterator();
+                Iterator i = getNodes(query).iterator();
                 if (i.hasNext()) {
-                    MMObjectNode node = i.next();
+                    MMObjectNode node = (MMObjectNode) i.next();
                     int rtn = node.getIntValue("destination");
-                    numberCache.put(name, rtn);
+                    numberCache.put(name, new Integer(rtn));
                     return rtn;
                 } else {
                     numberCache.put(name, NOT_FOUND);
@@ -100,12 +100,12 @@ public class OAlias extends MMObjectBuilder {
      */
     public String getAlias(int number) {
         NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), number);
+        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), new Integer(number));
         query.setConstraint(constraint);
         try {
-            Iterator<MMObjectNode> i = getNodes(query).iterator();
+            Iterator i = getNodes(query).iterator();
             if (i.hasNext()) {
-                MMObjectNode node = i.next();
+                MMObjectNode node = (MMObjectNode)i.next();
                 return node.getStringValue("name");
             } else {
                 return null;
@@ -116,29 +116,6 @@ public class OAlias extends MMObjectBuilder {
 
         }
     }
-
-    /**
-     * Obtain the aliases of a node. If a node has more aliases, it returns only one.
-     * Which one is not specified.
-     * @param number the number of the node
-     * @return a List of the aliases of the node, or an emoty list if none exist
-     * @see #getAlias
-     */
-    public List<String> getAliasList(int number) {
-        NodeSearchQuery query = new NodeSearchQuery(this);
-        BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("destination")), number);
-        query.setConstraint(constraint);
-        List<String> aliasList = new ArrayList<String>();
-        try {
-            for (MMObjectNode node : getNodes(query)) {
-                aliasList.add(node.getStringValue("name"));
-            }
-        } catch (SearchQueryException sqe) {
-            log.error(sqe.toString());
-        }
-        return aliasList;
-    }
-
 
     /**
      * Obtain a node from the cloud through its alias
@@ -207,10 +184,10 @@ public class OAlias extends MMObjectBuilder {
                 MMObjectNode node = getNode(number);
                 numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
             } else if (ctype.equals("d")) {
-                Integer n = Integer.valueOf(number);
-                Iterator<Map.Entry<String,Integer>> i = numberCache.entrySet().iterator();
+                Integer n = new Integer(number);
+                Iterator i = numberCache.entrySet().iterator();
                 while (i.hasNext()) {
-                    Map.Entry<String,Integer> entry = i.next();
+                    Map.Entry entry = (Map.Entry) i.next();
                     Object value = entry.getValue();
                     if (n.equals(value)) {
                         i.remove();

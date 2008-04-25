@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Iterator;
 import java.util.List;
 
 import org.mmbase.bridge.Field;
@@ -25,7 +26,7 @@ import org.mmbase.bridge.NodeManager;
 import org.mmbase.core.CoreField;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.database.ConnectionWrapper;
+import org.mmbase.module.database.MultiConnection;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.util.Scheme;
 import org.mmbase.util.Casting;
@@ -58,13 +59,14 @@ public class PostgresqlLargeObjectStorageManager extends
 	}
 
 	/**
-	 * Deletes all references LargeObjects and calls the overridden method in
+	 * Deletes all references LargeObjects and calls the overridden methed in
 	 * its super class afterwards. This method overrides its super class delete
 	 * 
-	 * @see org.mmbase.storage.implementation.database.DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List, String)
+	 * @see DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List,
+	 *      String)
 	 */
 	protected void delete(MMObjectNode node, MMObjectBuilder builder,
-			List<CoreField> blobFileField, String tablename) {
+			List blobFileField, String tablename) {
 
 		deleteLargeObjects(node, builder, blobFileField);
 
@@ -74,7 +76,7 @@ public class PostgresqlLargeObjectStorageManager extends
 	/**
 	 * Delete all binary objects stored as large object. This excludes the
 	 * binary fields stored as file. See
-	 * {@link org.mmbase.storage.implementation.database.DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List, String)}
+	 * {@link DatabaseStorageManager#delete(MMObjectNode, MMObjectBuilder, List, String)}
 	 * for the arguments.
 	 * 
 	 * @param node
@@ -82,11 +84,12 @@ public class PostgresqlLargeObjectStorageManager extends
 	 * @param blobFileField
 	 */
 	protected void deleteLargeObjects(MMObjectNode node,
-			MMObjectBuilder builder, List<CoreField> blobFileField) {
+			MMObjectBuilder builder, List blobFileField) {
 		// delete all binary fields stored as OID
 		//
-		List<CoreField> builderFields = builder.getFields(NodeManager.ORDER_CREATE);
-		for (CoreField field : builderFields) {
+		List builderFields = builder.getFields(NodeManager.ORDER_CREATE);
+		for (Iterator f = builderFields.iterator(); f.hasNext();) {
+			CoreField field = (CoreField) f.next();
 			if (field.inStorage() && field.getType() == Field.TYPE_BINARY
 					&& !blobFileField.contains(field)) {
 				// TODO: implement logic to differentiate between OID and BYTEA
@@ -306,18 +309,11 @@ public class PostgresqlLargeObjectStorageManager extends
 		if (activeConnection == null) {
 			throw new IllegalStateException("no active connection present");
 		}
-		final LargeObjectManager largeObjectManager;
-		if (activeConnection instanceof ConnectionWrapper) {
-            ConnectionWrapper connWrapper = (ConnectionWrapper) activeConnection;
-            if (connWrapper.isWrapperFor(org.postgresql.PGConnection.class)) {
-                org.postgresql.PGConnection pgconn = connWrapper.unwrap(org.postgresql.PGConnection.class);
-                largeObjectManager = pgconn.getLargeObjectAPI();
-            }
-            throw new IllegalStateException("Connection does not wrap org.postgresql.PGConnection");
-		}
-		else { 
-		    largeObjectManager = ((org.postgresql.PGConnection) activeConnection).getLargeObjectAPI();
-		}
+
+		final Connection conn = ((MultiConnection) activeConnection)
+				.getRealConnection();
+		final LargeObjectManager largeObjectManager = ((org.postgresql.PGConnection) conn)
+				.getLargeObjectAPI();
 		return largeObjectManager;
 	}
 

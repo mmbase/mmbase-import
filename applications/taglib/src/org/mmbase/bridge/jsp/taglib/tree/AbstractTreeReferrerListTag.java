@@ -17,7 +17,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: AbstractTreeReferrerListTag.java,v 1.8 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: AbstractTreeReferrerListTag.java,v 1.5.2.2 2008-02-14 14:37:17 michiel Exp $
  */
 abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements ListProvider, DepthProvider {
 
@@ -37,7 +37,7 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
         return true;
     }
     public Object getCurrent() {
-        return depth;
+        return new Integer(depth);
     }
     public void remove() {
         // not supported
@@ -46,17 +46,6 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
     public int getDepth() {
         return depth;
     }
-
-    public void setAdd(String c) throws JspTagException {
-        throw new UnsupportedOperationException();
-    }
-    public void setRetain(String c) throws JspTagException {
-        throw new UnsupportedOperationException();
-    }
-    public void setRemove(String c) throws JspTagException {
-        throw new UnsupportedOperationException();
-    }
-
 
     protected   ContextCollector  collector;
 

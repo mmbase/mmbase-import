@@ -59,7 +59,7 @@
         </positions>
       </editor>
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" >
-        <maxLength value="100" />
+        <maxLength value="32" />
       </datatype>
     </field>
 
@@ -180,11 +180,13 @@
     </field>
 
   </fieldlist>
+
   <indexlist>
     <index name="mmserversUnique" unique="true">
       <indexfield name="name" />
       <indexfield name="host" />
     </index>
   </indexlist>
+
 
 </builder>

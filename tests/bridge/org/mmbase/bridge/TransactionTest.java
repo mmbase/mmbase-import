@@ -16,7 +16,7 @@ import org.mmbase.tests.*;
  * Test class <code>Transaction</code> from the bridge package.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTest.java,v 1.3 2008-03-17 09:30:31 michiel Exp $
+ * @version $Id: TransactionTest.java,v 1.1.2.2 2008-03-17 09:29:59 michiel Exp $
  * @since MMBase-1.8.6
   */
 public class TransactionTest extends BridgeTest {

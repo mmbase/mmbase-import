@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.29 2007-07-23 13:51:02 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.27.2.1 2007-07-23 13:49:44 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -182,7 +182,7 @@ public class ClusterNode extends VirtualNode {
      * @param fieldName the name of the field who's data to return
      * @return the field's value as an <code>Object</code>
      */
-    public Object getValue(final String fieldName) {
+    public Object getValue(String fieldName) {
         String builderName = getBuilderName(fieldName);
         if (builderName == null) {
             // there is no 'builder' specified,
@@ -226,6 +226,7 @@ public class ClusterNode extends VirtualNode {
             }
         }
     }
+
 
     /**
      * Get a value of a certain field.
@@ -309,7 +310,7 @@ public class ClusterNode extends VirtualNode {
      * This is not allowed on a cluster node
      * @throws <code>RuntimeException</code>
      */
-    public Enumeration<MMObjectNode> getRelations() {
+    public Enumeration getRelations() {
         throw new RuntimeException("Cannot follow relations on a cluster node. ");
     }
 

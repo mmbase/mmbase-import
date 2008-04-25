@@ -8,16 +8,16 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
-import javax.servlet.jsp.jstl.core.*;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListProvider.java,v 1.17 2008-02-23 15:55:15 michiel Exp $
+ * @version $Id: ListProvider.java,v 1.13 2005-12-15 21:47:27 michiel Exp $
  */
 public interface ListProvider extends ContextProvider, LoopTag {
     /**
@@ -58,24 +58,12 @@ public interface ListProvider extends ContextProvider, LoopTag {
      */
     public void remove();
 
-    /**
-     * @since MMBase-1.9
-     */
-    public void setAdd(String c) throws JspTagException;
-    /**
-     * @since MMBase-1.9
-     */
-    public void setRetain(String c) throws JspTagException;
-    /**
-     * @since MMBase-1.9
-     */
-    public void setRemove(String c) throws JspTagException;
-
 
     /**
      * @since MMBase-1.8
      */
     public class ListProviderLoopTagStatus implements LoopTagStatus {
+        private static final Logger log = Logging.getLoggerInstance(ListProviderLoopTagStatus.class);
 
         private final ListProvider prov;
         public ListProviderLoopTagStatus(ListProvider l) {
@@ -85,26 +73,27 @@ public interface ListProvider extends ContextProvider, LoopTag {
             return prov.getCurrent();
         }
         public int getIndex() {
-            return prov.getIndex() +  prov.getIndexOffset();
+            return prov.getIndex();// - prov.getIndexOffset();
         }
 
         public int getCount() {
             return prov.size();
         }
+
         public boolean isFirst() {
-            return prov.getIndex() == 0;
+            return getIndex() == 0;
         }
         public boolean isLast() {
-            return getCount() == prov.getIndex() + 1;
+            return getCount() == getIndex() + 1;
         }
         public Integer getBegin() {
-            return prov.getIndexOffset();
+            return null;
         }
         public Integer getEnd() {
-            return prov.size() + prov.getIndexOffset() - 1;
+            return null;
         }
         public Integer getStep() {
-            return 1;
+            return null;
         }
     }
 

@@ -16,12 +16,15 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.datatypes.processors.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.datatypes.*;
 import org.mmbase.core.util.Fields;
 import org.mmbase.util.*;
+import org.mmbase.util.functions.Parameters;
+import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.xml.XMLWriter;
-import org.mmbase.util.xml.Instantiator;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.transformers.*;
 
 /**
  * This utility class contains methods to instantiate the right DataType instance. It is used by DataTypeReader.
@@ -31,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DataTypeDefinition.java,v 1.63 2008-03-19 17:07:50 michiel Exp $
+ * @version $Id: DataTypeDefinition.java,v 1.55.2.4 2008-02-04 10:33:03 michiel Exp $
  * @since MMBase-1.8
  **/
 public class DataTypeDefinition {
@@ -89,10 +92,10 @@ public class DataTypeDefinition {
                             Class claz = Class.forName(className);
                             log.debug("Instantiating " + claz + " for " + dataType);
                             java.lang.reflect.Constructor constructor = claz.getConstructor(new Class[] { String.class});
-                            dt = (BasicDataType<?>) constructor.newInstance(new Object[] { id });
+                            dt = (BasicDataType) constructor.newInstance(new Object[] { id });
                             if (baseDataType != null) {
                                 // should check class here, perhaps
-                                dt.inherit(baseDataType);
+                                dt.inherit((BasicDataType) baseDataType);
                             }
                         } catch (Exception e) {
                             log.error(e);
@@ -120,7 +123,7 @@ public class DataTypeDefinition {
     /**
      * Configures the data type definition, using data from a DOM element
      */
-    DataTypeDefinition configure(Element dataTypeElement, BasicDataType<?> requestBaseDataType) throws DependencyException {
+    DataTypeDefinition configure(Element dataTypeElement, BasicDataType requestBaseDataType) throws DependencyException {
 
         String id = DataTypeXml.getAttribute(dataTypeElement, "id");
 
@@ -131,7 +134,7 @@ public class DataTypeDefinition {
         }
         if (! base.equals("")) { // also specified, let's see if it is correct
 
-            BasicDataType<?> definedBaseDataType = collector.getDataType(base, true);
+            BasicDataType definedBaseDataType = collector.getDataType(base, true);
             if (requestBaseDataType != null) {
                 if (requestBaseDataType != definedBaseDataType) {
                     if ("".equals(id)) {
@@ -146,7 +149,7 @@ public class DataTypeDefinition {
             }
 
             if (definedBaseDataType == null) {
-                log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument().getDocumentURI() + ").");
+                log.debug("Attribute 'base' ('" + base + "') of datatype '" + id + "' is an unknown datatype (in " + dataTypeElement.getOwnerDocument() + ").");
                 throw new DependencyException(dataTypeElement, requestBaseDataType, this);
             } else {
                 requestBaseDataType = definedBaseDataType;
@@ -182,7 +185,7 @@ public class DataTypeDefinition {
                 }
                 log.debug("Considering " + childElement.getLocalName() + " for " + dataType);
                 if (!addCondition(childElement)) {
-                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that in (" + dataTypeElement.getOwnerDocument().getDocumentURI() + ")");
+                    log.error("" + XMLWriter.write(childElement, true, true) + " defines '" + childElement.getLocalName() + "', but " + dataType + " doesn't support that in (" + dataTypeElement.getOwnerDocument() + ")");
                 }
             }
         }
@@ -253,12 +256,19 @@ public class DataTypeDefinition {
                 addProcessor(action, Field.TYPE_UNKNOWN, newProcessor);
             } else if (type.equals("*")) {
                 for (int i = Fields.TYPE_MINVALUE; i <= Fields.TYPE_MAXVALUE; i++) {
-                    DataType<?> basicDataType = DataTypes.getDataType(i);
+                    BasicDataType basicDataType = DataTypes.getDataType(i);
                     int processingType = Fields.classToType(basicDataType.getTypeAsClass());
                     addProcessor(action, processingType, newProcessor);
                 }
             } else {
-                int processingType = Fields.getType(type);
+                int processingType = Field.TYPE_UNKNOWN;
+                BasicDataType basicDataType = DataTypes.getDataType(type);
+                // this makes NO sense, processors type are assocated with bridge methods (field types) not with datatypes
+                if (basicDataType != null) {
+                    processingType = Fields.classToType(basicDataType.getTypeAsClass());
+                } else {
+                    log.warn("Datatype " + type + " is unknown, create processor as a default processor");
+                }
                 addProcessor(action, processingType, newProcessor);
             }
         }
@@ -307,11 +317,22 @@ public class DataTypeDefinition {
     protected boolean setProperty(Element element) {
         try {
             String name = DataTypeXml.getAttribute(element, "name");
+            String methodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
             String value = DataTypeXml.getAttribute(element, "value");
             Class claz = dataType.getClass();
-            Instantiator.setProperty(name, claz, dataType, value);
-        } catch (Exception e) {
-            log.warn(e);
+            Method method = claz.getMethod(methodName, new Class[] {String.class});
+            method.invoke(dataType, new Object[] { value });
+        } catch (NoSuchMethodException nsme) {
+            log.warn(nsme);
+            return false;
+        } catch (SecurityException se) {
+            log.warn(se);
+            return false;
+        } catch (IllegalAccessException iae) {
+            log.warn(iae);
+            return false;
+        } catch (InvocationTargetException ite) {
+            log.warn(ite);
             return false;
         }
         return true;
@@ -407,12 +428,12 @@ public class DataTypeDefinition {
             ComparableDataType dDataType = (ComparableDataType) dataType;
             if ("minExclusive".equals(localName) || "minInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
-                dDataType.setMin((java.io.Serializable) value, "minInclusive".equals(localName));
+                dDataType.setMin(value, "minInclusive".equals(localName));
                 setRestrictionData(dDataType.getMinRestriction(), conditionElement);
                 return true;
             } else if ("maxExclusive".equals(localName) || "maxInclusive".equals(localName)) {
                 Comparable value = (Comparable) dDataType.cast(DataTypeXml.getValue(conditionElement), null, null);
-                dDataType.setMax((java.io.Serializable) value, "maxInclusive".equals(localName));
+                dDataType.setMax(value, "maxInclusive".equals(localName));
                 setRestrictionData(dDataType.getMaxRestriction(), conditionElement);
                 return true;
             }

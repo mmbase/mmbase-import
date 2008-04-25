@@ -1,19 +1,26 @@
+/*
+ * Tests for org.mmbase.util.transformers.XmlField
+ * Currently only tests a small part of the XmlField functionality.
+ * TODO: implement complete test.
+ *
+ * @author Simon Groenewolt (simon@submarine.nl)
+ */
+
 package org.mmbase.util.transformers;
 import org.mmbase.util.*;
 import junit.framework.TestCase;
 
+
 /**
- * Tests for org.mmbase.util.transformers.XmlField
- * Currently only tests a small part of the XmlField functionality.
  *
- * @author Simon Groenewolt (simon@submarine.nl)
- * @version $Id: XmlFieldTest.java,v 1.5 2008-03-25 21:11:01 nklasens Exp $
+ * @author Administrator
  */
 public class XmlFieldTest  extends TestCase {
 
     private String result;
     private String expectedResult;
     private String expectedListResult;
+    private XmlField xmlField;
     private String comment;
     private String listData;
     private boolean leaveExtraNewLines;
@@ -22,6 +29,7 @@ public class XmlFieldTest  extends TestCase {
 
     /** Creates a new instance of XmlFieldTest */
     public XmlFieldTest() {
+        xmlField = new XmlField();
     }
 
     protected String ignoreNL(StringObject in) {
@@ -32,22 +40,29 @@ public class XmlFieldTest  extends TestCase {
         return in.toString().replaceAll("\r", "R").replaceAll("\n", "N");
     }
 
+    public void testWikiToXML() {
+        XmlField xmlField = new XmlField();
+        result = xmlField.wikiToXML("hallo");
+        expectedResult = "<p>hallo</p>";
+        assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
+    }
+
     public void testRichToHTMLBlock1() {
 
-        result = XmlField.richToHTMLBlock("");
+        result = xmlField.richToHTMLBlock("");
         expectedResult = "<p></p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
     public void testRichToHTMLBlock1a() {
 
-        result = XmlField.richToHTMLBlock("hallo");
+        result = xmlField.richToHTMLBlock("hallo");
         expectedResult = "<p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
     public void testRichToHTMLBlock2() {
-        result = XmlField.richToHTMLBlock("hallo\n\nhallo");
+        result = xmlField.richToHTMLBlock("hallo\n\nhallo");
         expectedResult = "<p>hallo</p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
@@ -60,11 +75,7 @@ public class XmlFieldTest  extends TestCase {
         // hallo
 //        result = xmlField.richToHTMLBlock("hallo\n-eending\n-nogeending\nhallo");
         StringObject in = new StringObject("hallo\n-eending\n-nogeending\nhallo");
-        XmlField.handleRich(in,
-                            XmlField.NO_SECTIONS,
-                            XmlField.REMOVE_NEWLINES,
-                            XmlField.SURROUNDING_P,
-                            XmlField.LISTS_INSIDE_P);
+        xmlField.handleRich(in, false, false, true, true);
         result = ignoreNL(in);
         expectedResult = "<p>hallo<ul><li>eending</li><li>nogeending</li></ul>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
@@ -78,7 +89,7 @@ public class XmlFieldTest  extends TestCase {
         // -nogeending
         //
         // hallo
-        result = XmlField.richToHTMLBlock("hallo\n\n-eending\n-nogeending\n\nhallo");
+        result = xmlField.richToHTMLBlock("hallo\n\n-eending\n-nogeending\n\nhallo");
         expectedResult = "<p>hallo</p><p><ul><li>eending</li><li>nogeending</li></ul></p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
@@ -89,40 +100,10 @@ public class XmlFieldTest  extends TestCase {
         // *eending
         // *nogeending
         // hallo
-        result = XmlField.richToHTMLBlock("hallo\n*eending\n*nogeending\nhallo");
+        result = xmlField.richToHTMLBlock("hallo\n*eending\n*nogeending\nhallo");
         expectedResult = "<p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
-
-    public static String[][] RICH_TO_XML_CASES = {
-        {"$TITEL\nhallo\n*eending\n*nogeending\nhallo", 
-         "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending\nhallo",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending\n\n\nbla bla",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>"}
-    };
-
-    public void testRichToXML() {
-        for (String[] testCase : RICH_TO_XML_CASES) {
-            StringObject in = new StringObject(testCase[0]);
-            XmlField.handleRich(in,
-                                XmlField.SECTIONS,
-                                XmlField.REMOVE_NEWLINES,
-                                XmlField.SURROUNDING_P,
-                                XmlField.LISTS_INSIDE_P);
-            result = ignoreNL(in);
-            expectedResult = testCase[1];
-            assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
-        }
-    }
-
-
-
 
     /**
      * Tests handling lists only

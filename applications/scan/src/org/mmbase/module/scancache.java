@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * @rename SCANCache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.46 2008-03-25 21:00:25 nklasens Exp $
+ * @version $Id: scancache.java,v 1.42 2005-09-20 19:28:29 nklasens Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -63,7 +63,7 @@ public class scancache extends Module implements scancacheInterface {
      * The key to retrieve a pool is the poolname. The value returned ia a LRUHashtable,
      * configured to hold a maximum of MAX_CACHE_POOL_SIZE entries.
      */
-    Hashtable<String, LRUHashtable<String, String>> pools = new Hashtable<String, LRUHashtable<String, String>>();
+    Hashtable pools = new Hashtable();
 
     /**
      * Contains the last date (as an <code>Integer</code>) a file was stored in a pool.
@@ -71,7 +71,7 @@ public class scancache extends Module implements scancacheInterface {
      * There is a limit to the number of values stored in this pool. This means if you have
          * more then 4 pooltypes you have to bump that value or suffer performance degredation
      */
-    LRUHashtable<String,Integer> timepool = new LRUHashtable<String,Integer>(MAX_CACHE_POOL_SIZE*4);
+    LRUHashtable timepool = new LRUHashtable(MAX_CACHE_POOL_SIZE*4);
 
     // org.mmbas StatisticsInterface stats;
 
@@ -150,7 +150,7 @@ public class scancache extends Module implements scancacheInterface {
      * the default expiration time (6 hours).
      * For cache "PAGE", this method does not check expiratio, and retrieves the data
      * from the file from disk, NOT from the memory cache.
-     * @param poolName name of the cache pool, either "HENK" or "PAGE"
+     * @param poolname name of the cache pool, either "HENK" or "PAGE"
      * @param key URL of the page to retrieve
      * @return the page's content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
@@ -211,7 +211,7 @@ public class scancache extends Module implements scancacheInterface {
          * It will signal the scanparser to calculate a new one in the background.
          * This avoids contention on a busy server as the page is only calculated once when expired
          * not calculate every request that comes in during the window of calculation.
-     * @param poolName name of the cache pool, expected (but not verified) are "HENK" or "PAGE"
+     * @param poolname name of the cache pool, expected (but not verified) are "HENK" or "PAGE"
      * @param key URL of the page to retrieve
      * @param line the expiration value, either the expiration value in seconds or the word 'NOEXPIRE'. Due to
      *               legacy this value needs to be closed with a '>'.
@@ -229,15 +229,15 @@ public class scancache extends Module implements scancacheInterface {
         int now=(int)(System.currentTimeMillis()/1000);
 
         // get pool memory cache
-        LRUHashtable<String, String> pool=pools.get(poolName);
+        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
         if (pool!=null) {
-            String value=pool.get(key);
+            String value=(String)pool.get(key);
             // Check expiration
             // XXX better to check value==null first...
                         if (value!=null) {
                     try {
                         // get the time from memory
-                        Integer tmp2=timepool.get(poolName+key);
+                        Integer tmp2=(Integer)timepool.get(poolName+key);
                         int then=tmp2.intValue();
                         log.debug("scancache -> file="+then+" now="+now
                                 +" now-then="+(now-then)+" interval="+interval);
@@ -268,7 +268,7 @@ public class scancache extends Module implements scancacheInterface {
             }
             if (pool==null) {
                 // create a new pool
-                pool=new LRUHashtable<String, String>(MAX_CACHE_POOL_SIZE);
+                pool=new LRUHashtable(MAX_CACHE_POOL_SIZE);
                 pools.put(poolName,pool);
             }
             pool.put(key,fileinfo.value); // store value in the memory cache
@@ -298,7 +298,7 @@ public class scancache extends Module implements scancacheInterface {
          */
         public long getLastModDate(String poolName, String key) {
                 if (timepool.containsKey(poolName+key)) {
-                        Integer tmp2=timepool.get(poolName+key);
+                        Integer tmp2=(Integer)timepool.get(poolName+key);
                         log.debug("scancache last modified in timepool " + (tmp2.intValue()));
                         return ((long)tmp2.intValue()) * 1000;
                 }
@@ -362,28 +362,28 @@ public class scancache extends Module implements scancacheInterface {
      * the default expiration time (6 hours).
      * For cache "PAGE", this method does not check expiration, and retrieves the data
      * from the file from disk, NOT from the memory cache.
-     * @param poolName name of the cache pool, either "HENK" or "PAGE"
-     * @param res response object for retrieving headers (used by mmbase.org?)
+     * @param poolname name of the cache pool, either "HENK" or "PAGE"
+     * @param res reponse object for retrieving headers (used by mmbase.org?)
      *                    only needed for cachepool "PAGE"
      * @param key URL of the page to store
      * @param value the page content to store
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found
-     *     (i.e. cache was empty or poolName was invalid).
+     *     (i.e. cache was empty or poolname was invalid).
      */
     public String newput(String poolName,HttpServletResponse res, String key,String value, String mimeType) {
         if (status==false) return null;  // no caching if inactive
-        LRUHashtable<String, String> pool=pools.get(poolName);
+        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
         if (pool==null) {
             // create a new pool
-            pool=new LRUHashtable<String, String>();
+            pool=new LRUHashtable();
             pools.put(poolName,pool);
         }
         // insert the new item and save to disk
         if (poolName.equals("HENK")) {
             saveFile(poolName,key,value);
             timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
-            return pool.put(key,value);
+            return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
             // new file for asis support
@@ -403,7 +403,7 @@ public class scancache extends Module implements scancacheInterface {
             saveFile(poolName,filename,body);
             // signal to start transfer of file to mirrors
             signalNetFileSrv(filename);
-            return pool.put(key,value);
+            return (String)pool.put(key,value);
         }
         log.error("newPut("+poolName+",HttpServletRequest,"+key+","+value+"): poolname("+poolName+") is not a valid cache name!");
         return null;
@@ -413,22 +413,22 @@ public class scancache extends Module implements scancacheInterface {
      * Store a file in the indicated pool's cache (both in file and in the memory cache).
      * Returns the old value if available.
      * Is used in scanpage to recalculate the cached page.
-     * @param poolName name of the cache pool, either "HENK" or "PAGE"
+     * @param poolname name of the cache pool, either "HENK" or "PAGE"
      * @param key URL of the page to store
      * @param value the page content to store
-     * @param cachetype only needed for cachepool "PAGE".
+     * @param int cachetype only needed for cachepool "PAGE".
      *        If 0, no file transfer is performed. Otherwise the {@link NetFileSrv} builder is
      *        invoked to start the VWM that handles the transfer.
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found
-     *     (i.e. cache was empty or poolName was invalid).
+     *     (i.e. cache was empty or poolname was invalid).
      */
     public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
         if (status==false) return null; // no caching when inactive
-        LRUHashtable<String, String> pool=pools.get(poolName);
+        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
         if (pool==null) {
             // create a new pool
-            pool=new LRUHashtable<String, String>();
+            pool=new LRUHashtable();
             pools.put(poolName,pool);
         }
         log.debug("newput2("+poolName+","+key+","+value+","+cachetype+"): NEWPUT");
@@ -438,7 +438,7 @@ public class scancache extends Module implements scancacheInterface {
             saveFile(poolName,key,value);
             // also add time to timepool??
             timepool.put(poolName+key,new Integer((int)(System.currentTimeMillis()/1000))); // store expiration time
-            return pool.put(key,value);
+            return (String)pool.put(key,value);
         } else if (poolName.equals("PAGE")) {
             saveFile(poolName,key,value);
             // new file for asis support
@@ -457,7 +457,7 @@ public class scancache extends Module implements scancacheInterface {
             log.debug("newput2("+poolName+","+key+","+value+","+cachetype+"): NEWPUT=SAVE");
             saveFile(poolName,filename,body);
             if (cachetype!=0) signalNetFileSrv(filename);
-            return pool.put(key,value);
+            return (String)pool.put(key,value);
         }
         log.error("newput2("+poolName+","+key+","+value+","+cachetype+"): poolName("+poolName+") is not a valid cachetype!");
         return null;
@@ -466,25 +466,32 @@ public class scancache extends Module implements scancacheInterface {
     /**
      * Store a file in the indicated pool's cache (both on file and in the memory cache).
      * Returns the old value if available.
-     * @param poolName name of the cache pool
+     * @param poolname name of the cache pool
      * @param key URL of the page to store
      * @param value the page content to store
      * @return the page's old content as a string, or <code>null</code> if no entry was found
      */
     public String put(String poolName, String key,String value) {
         if (status==false) return null; // no caching if inactive
-        LRUHashtable<String, String> pool=pools.get(poolName);
+        LRUHashtable pool=(LRUHashtable)pools.get(poolName);
         if (pool==null) {
             // create a new pool
-            pool=new LRUHashtable<String, String>();
+            pool=new LRUHashtable();
             pools.put(poolName,pool);
         }
         // got pool now insert the new item and save to disk
         saveFile(poolName,key,value);
 
-        return pool.put(key,value);
+        return (String)pool.put(key,value);
     }
 
+    public Hashtable state() {
+        /*
+        state.put("Hits",""+hits);
+        state.put("Misses",""+miss);
+        */
+        return state;
+    }
 
     /**
      * Retrieve a description of the module's function.
@@ -575,7 +582,7 @@ public class scancache extends Module implements scancacheInterface {
         if (mmbase!=null) {
             NetFileSrv bul=(NetFileSrv)mmbase.getMMObject("netfilesrv");
             if (bul!=null) {
-                (bul).fileChange("pages","main",filename);
+                ((NetFileSrv)bul).fileChange("pages","main",filename);
             }
         } else {
             log.error("signalNetFileSrv("+filename+"): can't use NetFileSrv builder");
@@ -611,13 +618,13 @@ public class scancache extends Module implements scancacheInterface {
      * Removes an entry from the cache pool (both the file on disk and in the memory cache).
      * If the pool is "PAGE", the file will only be removed from the local cache,
      * not from any mirror servers.
-     * @param poolName name of cache pool, expected (but not verified) "HENK" or "PAGE"
+     * @param pool name of cache pool, expected (but not verified) "HENK" or "PAGE"
      * @param key URL of the page to remove
      */
     public void remove(String poolName, String key) {
             File file = new File(cachepath + poolName + key);
             file.delete();
-            LRUHashtable pool=pools.get(poolName);
+            LRUHashtable pool=(LRUHashtable)pools.get(poolName);
             if (pool!=null) pool.remove(key);
             timepool.remove(poolName + key);
     }

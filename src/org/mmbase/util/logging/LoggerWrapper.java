@@ -17,16 +17,16 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: LoggerWrapper.java,v 1.9 2008-02-11 16:11:02 michiel Exp $
+ * @version $Id: LoggerWrapper.java,v 1.6.2.2 2008-02-11 16:09:27 michiel Exp $
  **/
 
 public class LoggerWrapper implements Logger {
 
-    private static final Set<LoggerWrapper> wrappers = new HashSet<LoggerWrapper>();
+    private static final Set wrappers = new HashSet();
 
 
     // package
-    static Set<LoggerWrapper> getWrappers() {
+    static Set getWrappers() {
         return Collections.unmodifiableSet(wrappers);
     }
 
@@ -39,6 +39,7 @@ public class LoggerWrapper implements Logger {
         setLogger(log);
         wrappers.add(this);
     }
+
 
     // package
     String getName() {
@@ -61,21 +62,20 @@ public class LoggerWrapper implements Logger {
         return org;
     }
 
-
     final public void trace   (Object m) {
-        if (log != null) log.trace(m);
+        log.trace(m);
     }
 
     final public void trace   (Object m, Throwable t) {
-        if (log != null) log.trace(m, t);
+        log.trace(m, t);
     }
 
     final public void debug   (Object m) {
-        if (log != null) log.debug(m);
+        log.debug(m);
     }
 
     final public void debug   (Object m, Throwable t) {
-        if (log != null) log.debug(m, t);
+        log.debug(m, t);
     }
 
     final public void service (Object m) {

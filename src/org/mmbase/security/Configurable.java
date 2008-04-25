@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.14 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: Configurable.java,v 1.11 2005-09-09 15:07:50 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -33,11 +33,16 @@ public abstract class Configurable {
 
     /**
      * This specific security configuration file. The file is absolute. Might be
-     * null if the implementation does not have its own configuration file.
+     * null if the implementation does not have its own configuruation file.
      * @since MMBase-1.8
      */
     protected String configResource; // relative to securityLoader
 
+
+    /**
+     * @deprecated
+     */
+    protected java.io.File configFile;
 
 
     /**
@@ -47,13 +52,13 @@ public abstract class Configurable {
 
 
     /**
-     * The method which initialized an instance of this class. This method cannot be overridden.
+     * The method which initialized an instance of this class. This method cannot be be overrided.
      * This methods sets the member variables of this object and then
      * calls the method load();
      * @param manager The class that created this instance.
      * @param configWatcher checks the files for changes
      * @param configPath The url which contains the config information for the authorization (e.g. context/config.xml). Or null (if configured to be "")
-     * @see #load()
+     * @see #load
      */
     public final void load(MMBaseCop manager, ResourceWatcher configWatcher, String configPath) {
         if (log.isDebugEnabled()) {
@@ -70,7 +75,14 @@ public abstract class Configurable {
             } else {
                 configResource = configPath;
             }
-
+            
+            
+            java.util.List files = configWatcher.getResourceLoader().getFiles(configResource);
+            
+            if (files.size() > 0) {
+                configFile = (java.io.File) files.get(0);
+            }
+            
             configWatcher.add(configResource);
         }
 
@@ -79,9 +91,9 @@ public abstract class Configurable {
     }
 
     /**
-     * This method should be overridden by an extending class.  It should further initialize the
+     * This method should be overrided by an extending class.  It should further initialize the
      * class. It can optionally retrieve settings from the general security configuration file
-     * (available as the 'configResource' member). Security implementations with complicated
+     * (available as the 'configFile' member). Security implementations with complicated
      * configuration would typically retrieve a path to their own configuration file only.
      */
     protected abstract void load();

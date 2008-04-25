@@ -19,7 +19,7 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeReferrerTag.java,v 1.4 2008-02-14 14:36:31 michiel Exp $
+ * @version $Id: TreeReferrerTag.java,v 1.2.4.2 2008-02-14 14:37:17 michiel Exp $
  */
 abstract public class TreeReferrerTag extends NodeReferrerTag {
 
@@ -31,17 +31,17 @@ abstract public class TreeReferrerTag extends NodeReferrerTag {
         parentTreeId = getAttribute(t);
     }
 
-
     /**
      * @since MMBase-1.8.6
      */
     protected DepthProvider findDepthProvider() throws JspTagException {
-        DepthProvider dp =  findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this), false);
+        DepthProvider dp =  (DepthProvider) findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this), false);
         if (dp != null) return dp;
         dp = (DepthProvider) pageContext.getAttribute(DepthProvider.KEY, PageContext.REQUEST_SCOPE);
         if (dp != null) return dp;
         throw new JspTagException("Could not find parent depth provider");
     }
+
 
     /**
      * This method tries to find an ancestor object of type NodeProvider
@@ -49,7 +49,7 @@ abstract public class TreeReferrerTag extends NodeReferrerTag {
      *
      */
     public TreeProvider findTreeProvider() throws JspTagException {
-        TreeProvider dp =  findParentTag(TreeProvider.class, (String) parentTreeId.getValue(this), false);
+        TreeProvider dp =  (TreeProvider) findParentTag(TreeProvider.class, (String) parentTreeId.getValue(this), false);
         if (dp != null) return dp;
         dp = (TreeProvider) pageContext.getAttribute(TreeProvider.KEY, PageContext.REQUEST_SCOPE);
         if (dp != null) return dp;
@@ -57,4 +57,6 @@ abstract public class TreeReferrerTag extends NodeReferrerTag {
     }
 
 
+
 }
+

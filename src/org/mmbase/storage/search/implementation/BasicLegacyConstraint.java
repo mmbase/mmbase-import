@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Id: BasicLegacyConstraint.java,v 1.8 2006-10-16 12:56:57 pierre Exp $
+ * @version $Id: BasicLegacyConstraint.java,v 1.7 2005-05-02 13:03:30 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicLegacyConstraint extends BasicConstraint
@@ -87,7 +87,8 @@ implements LegacyConstraint {
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("LegacyConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("LegacyConstraint(inverse:").
+        append(isInverse()).
         append(", constraint:").append(getConstraint()).
         append(")");
         return sb.toString();

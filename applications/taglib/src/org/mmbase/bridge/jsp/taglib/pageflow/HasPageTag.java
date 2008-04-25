@@ -15,7 +15,12 @@ import java.net.*;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.http.*;
+import javax.servlet.*;
+
+import java.util.*;
+
 import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasPageTag.java,v 1.3 2008-01-28 13:52:32 michiel Exp $
+ * @version $Id: HasPageTag.java,v 1.1.2.1 2008-01-28 13:50:20 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -68,7 +73,6 @@ public class HasPageTag extends ContextReferrerTag implements Condition {
         }
         return resource;
     }
-
 
     public int doStartTag() throws JspTagException {
         if (page == Attribute.NULL) {

@@ -21,12 +21,9 @@
   <form-schema id="step1">
     <title>Enter form title here</title>
     <title xml:lang="nl">Voer hier de formulier titel in</title>
-
     <field name="title" />
     <field name="subtitle" />
-
-    <field name="intro" />
-
+    <field name="intro" ftype="text" rows="4" />
     <field name="body" ftype="html" rows="8" />
     <field name="date" />
 

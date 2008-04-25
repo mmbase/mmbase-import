@@ -3,7 +3,7 @@
  Make sure that we are in a node;
  not specifying by 'numer' or 'referid' attribute makes the tag look for a parent 'NodeProvider' 
  --%>
- <mm:node id="this_node" jspvar="node">
+ <mm:node id="this_node" jspvar="node" commitonclose="false">
    
    <mm:field id="this_node_number" name="number" write="false" />
    

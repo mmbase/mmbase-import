@@ -15,7 +15,7 @@ import org.mmbase.util.Casting;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextProcessor.java,v 1.1 2007-07-18 05:37:24 michiel Exp $
+ * @version $Id: ContextProcessor.java,v 1.1.2.1 2007-07-18 05:40:22 michiel Exp $
  * @since MMBase-1.8.5
  */
 
@@ -35,7 +35,7 @@ public abstract class ContextProcessor {
 
     public static class Set implements Processor {
         private static final long serialVersionUID = 1L;
-
+        
         public final Object process(Node node, Field field, Object value) {
             node.setContext(Casting.toString(value));
             return node.getContext();

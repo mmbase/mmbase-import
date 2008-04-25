@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.24 2008-04-12 10:43:14 nklasens Exp $
+ * @version $Id: MMEvents.java,v 1.20.2.2 2008-04-12 10:43:05 nklasens Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(MMEvents.class);
@@ -49,7 +49,7 @@ public class MMEvents extends MMObjectBuilder {
         if (tmp!=null && (tmp.equals("false") || tmp.equals("no"))) {
             enableNotify=false;
         }
-        if (enableNotify) probe=new MMEventsProbe(this);
+        if (enableNotify) probe = new MMEventsProbe(this);
         return true;
     }
 
@@ -124,7 +124,7 @@ public class MMEvents extends MMObjectBuilder {
     public void probeCall() {
         // the queue is really a bad idea have to make up
         // a better way.
-        Vector<MMObjectNode> also = new Vector<MMObjectNode>();
+        Vector also = new Vector();
         log.debug("MMEvent probe CALL");
         int now=(int)(System.currentTimeMillis()/1000);
         log.debug("The currenttime in seconds NOW="+now);
@@ -135,11 +135,11 @@ public class MMEvents extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField startField = query.getField(getField("start"));
             query.addSortOrder(startField);
-            query.setConstraint(new BasicFieldValueBetweenConstraint(startField, now, now + notifyWindow));
+            query.setConstraint(new BasicFieldValueBetweenConstraint(startField, new Integer(now), new Integer(now + notifyWindow)));
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0) {
-                snode = also.lastElement();
+                snode = (MMObjectNode) also.lastElement();
             }
         } catch (SearchQueryException e) {
             log.error(e);
@@ -149,11 +149,11 @@ public class MMEvents extends MMObjectBuilder {
             NodeSearchQuery query = new NodeSearchQuery(this);
             StepField stopField = query.getField(getField("stop"));
             query.addSortOrder(stopField);
-            query.setConstraint(new BasicFieldValueBetweenConstraint(stopField, now, now + notifyWindow));
+            query.setConstraint(new BasicFieldValueBetweenConstraint(stopField, new Integer(now), new Integer(now + notifyWindow)));
             if (log.isDebugEnabled()) log.debug("Executing query " + query);
             also.addAll(getNodes(query));
             if (also.size() > 0 ) {
-                enode = also.lastElement();
+                enode = (MMObjectNode) also.lastElement();
             }
         } catch (SearchQueryException e) {
             log.error(e);
@@ -185,13 +185,13 @@ public class MMEvents extends MMObjectBuilder {
             try {
                 Thread.sleep((sleeptime-now)*1000);
             } catch (InterruptedException f) {
-                log.debug("interrupted while sleeping");
+                log.error("interrupted while sleeping");
             }
             log.debug("Node local change "+wnode.getIntValue("number"));
             super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
-            Enumeration<MMObjectNode> g=also.elements();
+            Enumeration g=also.elements();
             while (g.hasMoreElements()) {
-                wnode = g.nextElement();
+                wnode=(MMObjectNode)g.nextElement();
                 if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) {
                     log.debug("Node local change "+wnode.getIntValue("number"));
                     super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");

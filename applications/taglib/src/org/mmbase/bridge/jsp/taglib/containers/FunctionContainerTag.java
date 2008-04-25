@@ -23,21 +23,20 @@ import org.mmbase.bridge.jsp.taglib.util.Referids;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.17 2007-07-14 09:26:49 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.14 2006-05-17 13:26:07 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
 
-    private  List<Entry<String, Object>> parameters ;
+    private  List parameters ;
 
     // javadoc inherited (from ParamHandler)
-    public void addParameter(String key, Object value) {
-        parameters.add(new Entry<String, Object>(key, value));
+    public void addParameter(String key, Object value) throws JspTagException {
+        parameters.add(new Entry(key, value));
     }
-    
 
     // javadoc inherited (from FunctionContainer)
-    public List<Entry<String, Object>>  getParameters() {
+    public List  getParameters() {
         return Collections.unmodifiableList(parameters);
     }
 
@@ -47,11 +46,9 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
     }
 
     public int doStartTag() throws JspTagException {
-        parameters = new ArrayList<Entry<String, Object>>();
+        parameters = new ArrayList();
         if (referids != Attribute.NULL) {
-            for (Map.Entry<String, Object> entry : Referids.getReferids(referids, this).entrySet()) {
-                addParameter(entry.getKey(), entry.getValue());    
-            } 
+            parameters.addAll(Referids.getReferids(referids, this).entrySet());
         }
         return EVAL_BODY;
     }

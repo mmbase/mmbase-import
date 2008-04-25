@@ -32,11 +32,18 @@ import org.mmbase.util.logging.Logging;
  * This is a flexible Properties version, it can handle saving of Properties with
  * the comments that will stay in your file.
  * @author Jan van Oosterom
- * @version $Id: ExtendedProperties.java,v 1.11 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: ExtendedProperties.java,v 1.9 2005-11-30 15:58:04 pierre Exp $
  */
 public class ExtendedProperties extends Properties {
     // logger
     private static Logger log = Logging.getLoggerInstance(ExtendedProperties.class.getName());
+
+    /**
+     * A table of hex digits
+     */
+    private static char[] hexDigit = {
+        '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+    };
 
     /**
     * The prefix of the comment in the Properties file.
@@ -76,7 +83,7 @@ public class ExtendedProperties extends Properties {
     * Read from Properties and return them.
     * @param filename The file from were to read the Properties.
     */
-    public Hashtable<Object,Object> readProperties(String filename) {
+    public Hashtable readProperties(String filename) {
         clear();
         try {
             getProps(filename);
@@ -84,7 +91,7 @@ public class ExtendedProperties extends Properties {
             log.debug("Failed to load the ExtendedProperties from: "+ filename, e);
         }
         ExtendedProperties propsToReturn = new ExtendedProperties();
-        Enumeration<?> e = keys();
+        Enumeration e = keys();
         while (e.hasMoreElements()) {
             String s = (String) e.nextElement();
             propsToReturn.put(s,get(s));
@@ -97,9 +104,9 @@ public class ExtendedProperties extends Properties {
     * @param filename The File were to save them
     * @param propsToSave The Properties which to save.
     */
-    public synchronized void saveProperties(String filename, Hashtable<Object,Object> propsToSave) {
+    public synchronized void saveProperties(String filename, Hashtable propsToSave) {
         clear();
-        Enumeration<?> e = propsToSave.keys();
+        Enumeration e = propsToSave.keys();
         while (e.hasMoreElements()) {
             String s = (String) e.nextElement();
             put(s,propsToSave.get(s));//ROB
@@ -116,8 +123,8 @@ public class ExtendedProperties extends Properties {
     * @param whichProp The Property to get the list from.
     * @param delimeter The delimeter to split wichProp's value with.
     */
-    public Vector<String> getPropertyValues(String whichProp, String delimeter) {
-        Vector<String> parsedPropsToReturn = new Vector<String>();
+    public Vector getPropertyValues(String whichProp, String delimeter) {
+        Vector parsedPropsToReturn = new Vector();
         if (containsKey(whichProp)) {
             //whichProp is available in this Property list
             String value = (String) get(whichProp);
@@ -306,7 +313,7 @@ public class ExtendedProperties extends Properties {
             }
 
             //everything that is left in the copy should be written also:
-            Enumeration<?> e = copyOfProps.keys();
+            Enumeration e = copyOfProps.keys();
             while (e.hasMoreElements()) {
                 String name = (String) e.nextElement();
                 newlines = newlines + "\n" + name + "=" + copyOfProps.getProperty(name);
@@ -365,7 +372,7 @@ public class ExtendedProperties extends Properties {
     * Dump the contents of this Property to your screen (for debugging)
     */
     public void showContents() {
-        Enumeration<?> names = propertyNames();
+        Enumeration names = propertyNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             log.debug(name + "=" + getProperty(name));
@@ -378,7 +385,7 @@ public class ExtendedProperties extends Properties {
         b.append(new Date());
         b.append('\n');
 
-        for (Enumeration<?> e = keys() ; e.hasMoreElements() ;) {
+        for (Enumeration e = keys() ; e.hasMoreElements() ;) {
             String key = (String)e.nextElement();
             b.append(key);
             b.append('=');

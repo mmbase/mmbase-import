@@ -20,7 +20,7 @@ import java.util.Collection;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.33 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: BasicField.java,v 1.31 2006-07-11 09:30:26 michiel Exp $
  */
 public class BasicField extends AbstractField implements Field {
 
@@ -37,49 +37,41 @@ public class BasicField extends AbstractField implements Field {
         }
     }
 
-    @Override
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-    @Override
     public int getSearchPosition(){
         return coreField.getSearchPosition();
     }
 
-    @Override
     public int getListPosition(){
         return coreField.getListPosition();
     }
 
-    @Override
     public int getEditPosition(){
         return coreField.getEditPosition();
     }
 
-    @Override
     public int getStoragePosition(){
         return coreField.getStoragePosition();
     }
 
     public Collection validate(Object value) {
-        Collection<LocalizedString> errors = getDataType().validate(value, null, this);
+        Collection errors = getDataType().validate(value, null, this);
         return LocalizedString.toStrings(errors, getNodeManager().getCloud().getLocale());
     }
 
-    @Override
     public int getMaxLength() {
         return coreField.getMaxLength();
     }
 
 
-    @Override
     protected java.util.Locale getDefaultLocale() {
         return nodeManager.getCloud().getLocale();
     }
 
     // deprecated methods
-    @Override
     public String getGUIType() {
         return coreField.getGUIType();
     }

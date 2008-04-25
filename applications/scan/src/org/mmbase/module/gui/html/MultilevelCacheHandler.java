@@ -21,11 +21,11 @@ import java.util.*;
  * @application SCAN
  * @deprecated use org.mmbase.cache.MultilevelCacheHandler
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheHandler.java,v 1.6 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.5 2004-10-01 08:43:46 pierre Exp $
  */
 public class MultilevelCacheHandler extends LRUHashtable {
 
-        private Hashtable<String, MultilevelSubscribeNode> listeners = new Hashtable<String, MultilevelSubscribeNode>();
+        private Hashtable listeners = new Hashtable();
         private MMBase mmb;
 
         public MultilevelCacheHandler(MMBase mmb,int size) {
@@ -60,7 +60,7 @@ public class MultilevelCacheHandler extends LRUHashtable {
                         if (lastchar>='1' && lastchar<='9') {
                                 type=type.substring(0,type.length()-1);
                         }
-                        MultilevelSubscribeNode l=listeners.get(type);
+                        MultilevelSubscribeNode l=(MultilevelSubscribeNode)listeners.get(type);
                         if (l==null) {
                                 l=new MultilevelSubscribeNode(mmb,type);
                                 listeners.put(type,l);

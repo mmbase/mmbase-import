@@ -39,7 +39,7 @@ public class Transformers {
      */
 
     public static CharTransformer getCharTransformer(String name, String config, String errorId, boolean back) {
-        Class<?> clazz;
+        Class clazz;
         try {
             clazz = Class.forName(name);
         } catch (ClassNotFoundException ex) {
@@ -62,7 +62,7 @@ public class Transformers {
         if (t instanceof ParameterizedTransformerFactory) {
             ParameterizedTransformerFactory pt = (ParameterizedTransformerFactory) t;
             Parameters params = pt.createParameters();
-            Iterator<String> it = org.mmbase.util.StringSplitter.split(config).iterator();
+            Iterator it = org.mmbase.util.StringSplitter.split(config).iterator();
             int i = 0;
             while (it.hasNext()) {
                 params.set(i++, it.next());
@@ -75,7 +75,6 @@ public class Transformers {
         if (t instanceof CharTransformer) {
             ct = (CharTransformer) t;
         } else if (t instanceof ByteToCharTransformer) {
-            log.debug("making a ByteCharTransformer");
             ct = new ByteCharTransformer((ByteToCharTransformer) t);
         } else {
             log.error("The class " + clazz + " specified for "  + errorId + " is not a CharTransformer or a ByteToCharTransformer");
@@ -119,7 +118,7 @@ public class Transformers {
      */
 
     public static ParameterizedTransformerFactory getTransformerFactory(String name, String errorId) {
-        Class<?> clazz;
+        Class clazz;
         try {
             clazz = Class.forName(name);
         } catch (ClassNotFoundException ex) {

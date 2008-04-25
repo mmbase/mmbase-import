@@ -11,27 +11,28 @@ package org.mmbase.storage.search;
 
 import org.mmbase.module.core.*;
 
+
 /**
- * A <code>ResultNode</code> is a virtual node, used to represent
+ * A <code>ResultNode</code> is a virtual node, used to represent 
  * the result of executing an arbitrary search query.
  * <p>
  * The fields of this node correspond to the fields of the
- * result of the query. Consequently, and unlike real a real node, a
- * <code>ResultNode</code> does not necessarilly have number,
- * owner or otype fields.
+ * result of the query. Consequently, and unlike real a real node, a 
+ * <code>ResultNode</code> does not necessarilly have number, 
+ * owner or otype fields. 
  * <p>
  * Additionally, the fields of this node can have arbitrary names,
  * specified by the field aliases in the search query.
  * <p>
- * The parent builder of a <code>ResultNode</code> is always a
+ * The parent builder of a <code>ResultNode</code> is always a 
  * {@link ResultBuilder ResultBuilder}, that contains info on the node's fields.
  *
  * @author  Rob van Maris
- * @version $Id: ResultNode.java,v 1.7 2007-12-06 08:13:36 michiel Exp $
+ * @version $Id: ResultNode.java,v 1.6 2005-10-07 18:51:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class ResultNode extends VirtualNode {
-
+    
     /**
      * Constructor.
      *
@@ -40,7 +41,7 @@ public class ResultNode extends VirtualNode {
     public ResultNode(ResultBuilder parent) {
         super(parent);
     }
-
+    
     // javadoc is inherited
     public int getDBType(String fieldName) {
         return getBuilder().getDBType(fieldName);

@@ -13,7 +13,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.9 $
  */
 public class NodeSearchQueryTest extends TestCase {
     
@@ -73,21 +73,21 @@ public class NodeSearchQueryTest extends TestCase {
             fail("Virtual builder, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
             
-        Collection<CoreField> fields = images.getFields();
-        List<StepField> stepFields = instance.getFields();
-        Iterator<StepField> iStepFields = stepFields.iterator();
+        Collection fields = images.getFields();
+        List stepFields = instance.getFields();
+        Iterator iStepFields = stepFields.iterator();
         // Test all elements in stepFields are persistent fields from images.
         while (iStepFields.hasNext()) {
-            StepField stepField = iStepFields.next();
+            StepField stepField = (StepField) iStepFields.next();
             CoreField field = images.getField(stepField.getFieldName());
             //assertTrue("" + fields + " does not contain " + field, fields.contains(field));
             //assertTrue(field.getType() != Field.TYPE_BINARY); // NodeSearchQuery is not in 'database', so it should not whine!
             assertTrue(field.inStorage());
         }
         // Test all persistent fields from images are in query.
-        Iterator<CoreField> iFields = fields.iterator();
+        Iterator iFields = fields.iterator();
         while (iFields.hasNext()) {
-            CoreField field = iFields.next();
+            CoreField field = (CoreField) iFields.next();
             if (field.getType() != Field.TYPE_BINARY && field.inStorage()) {
                 assertTrue(instance.getField(field) != null);
             }
@@ -96,9 +96,10 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of getField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testGetField() {
-        Step step = instance.getSteps().get(0);
-        Collection<CoreField> fields = images.getFields();
-        for (CoreField field : fields) {
+        Step step = (Step) instance.getSteps().get(0);
+        Collection fields = images.getFields();
+        for (Iterator iFields = fields.iterator(); iFields.hasNext();) {
+            CoreField field = (CoreField) iFields.next();
             if (field.inStorage()) {
                 StepField stepField = instance.getField(field);
                 assertTrue(stepField != null);
@@ -142,7 +143,7 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of addField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testAddField() {
-        Step step = instance.getSteps().get(0);
+        Step step = (Step) instance.getSteps().get(0);
 
         // Adding field, should throw UnsupportedOperationException.
         try {
@@ -153,7 +154,7 @@ public class NodeSearchQueryTest extends TestCase {
     
     /** Test of addAggregatedField method, of class org.mmbase.storage.search.implementation.NodeSearchQuery. */
     public void testAddAggregatedField() {
-        Step step = instance.getSteps().get(0);
+        Step step = (Step) instance.getSteps().get(0);
 
         // Adding field, should throw UnsupportedOperationException.
         try {

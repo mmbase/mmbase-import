@@ -12,7 +12,6 @@
     <builder maintainer="mmbase.org" version="0">versions</builder>
     <builder maintainer="mmbase.org" version="0">daymarks</builder>
     <builder maintainer="mmbase.org" version="0">mmservers</builder>
-    <builder maintainer="mmbase.org" version="0">systemproperties</builder>
   </neededbuilderlist>
 
   <neededreldeflist>

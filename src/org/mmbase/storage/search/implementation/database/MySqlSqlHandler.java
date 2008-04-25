@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
+import java.util.*;
 import org.mmbase.bridge.Field;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.20 2007-06-12 10:59:41 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.15.2.2 2007-04-20 12:12:36 pierre Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -48,14 +49,13 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         super();
     }
 
-    @Override
     protected String toSqlString(String str) {
         String res =  super.toSqlString(str).replaceAll("\\\\", "\\\\\\\\");
         return res;
     }
 
+
     // javadoc is inherited
-    @Override
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int result;
         switch (feature) {
@@ -78,13 +78,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc inherited
-    @Override
     protected boolean useLower(FieldCompareConstraint constraint) {
         return true; // necessary for the larger strings which are stored in blobs
     }
 
-    @Override
-    protected StringBuilder appendLikeOperator(StringBuilder sb, boolean caseSensitive) {
+    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
         } else {
@@ -94,7 +92,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     /*
-    protected StringBuilder appendRegularExpressionOperator(StringBuilder sb, boolean caseSensitive) {
+    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" REGEXP BINARY ");
         } else {
@@ -107,8 +105,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     /**
      * @javadoc
      */
-    @Override
-    protected void appendDateField(StringBuilder sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
         String datePartFunction = null;
         switch (datePart) {
         case FieldValueDateConstraint.CENTURY:
@@ -138,8 +135,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
             super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
         }
     }
-    @Override
-    protected StringBuilder appendSortOrderField(StringBuilder sb, SortOrder sortOrder, boolean multipleSteps) {
+    protected StringBuffer appendSortOrderField(StringBuffer sb, SortOrder sortOrder, boolean multipleSteps) {
         if (sortOrder.isCaseSensitive() && sortOrder.getField().getType() == Field.TYPE_STRING) {
             sb.append("BINARY ");
         }
@@ -149,7 +145,6 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
     }
 
     // javadoc is inherited
-    @Override
     public String toSql(SearchQuery query, SqlHandler firstInChain) throws SearchQueryException {
         // XXX should table and field aliases be tested for uniqueness?
 
@@ -164,7 +159,7 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         }
 
         // SELECT
-        StringBuilder sbQuery = new StringBuilder("SELECT ");
+        StringBuffer sbQuery = new StringBuffer("SELECT ");
 
         // DISTINCT
         if (query.isDistinct()) {

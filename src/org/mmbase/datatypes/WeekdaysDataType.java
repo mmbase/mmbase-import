@@ -15,10 +15,10 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * An enumeration datatype representing all days of a week, so an integer with the value 1 through 7.
+ * A StringDataType with all security contexts strings as possible value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WeekdaysDataType.java,v 1.2 2008-04-24 09:50:22 michiel Exp $
+ * @version $Id: WeekdaysDataType.java,v 1.1.2.1 2008-04-24 09:47:43 michiel Exp $
  * @since MMBase-1.8.6
  */
 public class WeekdaysDataType extends IntegerDataType {
@@ -35,8 +35,8 @@ public class WeekdaysDataType extends IntegerDataType {
 
     public Iterator getEnumerationValues(final Locale locale, final Cloud cloud, final Node node, final Field field) {
         final Calendar cal = Calendar.getInstance(locale);
-        final SortedMap<Object, Object> bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
-                                                                          SortedBundle.getConstantsProvider(Calendar.class), Integer.class, null);
+        final SortedMap bundle = SortedBundle.getResource("org.mmbase.datatypes.resources.weekdays", locale, null,
+                                                          SortedBundle.getConstantsProvider(Calendar.class), Integer.class, null);
 
         return new Iterator() {
             int i = 0;
@@ -45,7 +45,7 @@ public class WeekdaysDataType extends IntegerDataType {
                 return i < 7;
             }
             public Object next() {
-                Entry res  = new Entry(day, bundle.get(day));
+                Entry res  = new Entry(new Integer(day), bundle.get(new Integer(day)));
                 i++;
                 day++;
                 if (day > 7) day = 1;

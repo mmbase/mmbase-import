@@ -15,6 +15,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
 import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.module.builders.Versions;
+import org.mmbase.storage.search.SearchQueryException;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class BundleManager {
     private static boolean state = false;
     
     // Contains all bundles key=bundlename/maintainer value=reference to bundle
-    private static HashMap<String, BundleContainer> bundles = new HashMap<String, BundleContainer>();
+    private static HashMap bundles = new HashMap();
 
     /**
     * init this manager
@@ -55,7 +56,7 @@ public class BundleManager {
      * get all the bundles available to this MMBase
      * @return bundle list
      */
-    public static Iterator<BundleContainer> getBundles() {
+    public static Iterator getBundles() {
         return bundles.values().iterator();
     }
 
@@ -117,7 +118,7 @@ public class BundleManager {
         id = id.replace('/','_');
     
         // check if we allready have a bundle container for this
-        BundleContainer bc = bundles.get(id);
+        BundleContainer bc = (BundleContainer)bundles.get(id);
 
         boolean found = false;
         if (bc != null) {
@@ -202,7 +203,7 @@ public class BundleManager {
         return false;
     }
 
-    public static int getInstalledVersion(String id) {
+    public static int getInstalledVersion(String id) throws SearchQueryException {
         // Get the versions builder
         Versions versions = (Versions) MMBase.getMMBase().getMMObject("versions");
         if(versions==null) {
@@ -232,7 +233,7 @@ public class BundleManager {
     /**
      * return all bundles versions of this id
      */
-    public static Iterator<BundleVersionContainer> getBundleVersions(String id) {
+    public static Iterator getBundleVersions(String id) {
         Object o = bundles.get(id);
         if (o != null) {
             BundleContainer bc = (BundleContainer)o;
@@ -246,16 +247,16 @@ public class BundleManager {
         // this checks all the bundles if they are still found at their
         // providers, this is done by checking the last provider update
         // against the last bundle update
-	HashMap<String, BundleContainer> mm = (HashMap<String, BundleContainer>)bundles.clone();
-        Iterator<BundleContainer> e = mm.values().iterator();
+	HashMap mm = (HashMap)bundles.clone();
+        Iterator e = mm.values().iterator();
         while (e.hasNext()) {
-            BundleContainer pc = e.next();
-            Iterator<BundleVersionContainer> e2 = pc.getVersions();
+            BundleContainer pc = (BundleContainer)e.next();
+            Iterator e2 = pc.getVersions();
             while (e2.hasNext()) {
-               BundleVersionContainer pvc = e2.next();
-               Iterator<BundleInterface> e3 = pvc.getBundles();
+               BundleVersionContainer pvc = (BundleVersionContainer)e2.next();
+               Iterator e3 = pvc.getBundles();
                while (e3.hasNext()) {
-                   BundleInterface p = e3.next();
+                   BasicBundle p = (BasicBundle)e3.next();
                    ProviderInterface prov = p.getProvider();
                    if (wantedprov == prov) {
                        long providertime = p.getProvider().lastSeen();

@@ -8,7 +8,7 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  *
- * Revision: $Id: jquery.form.js,v 1.2 2008-04-14 15:46:07 michiel Exp $
+ * Revision: $Id: jquery.form.js,v 1.1.2.1 2008-04-14 15:45:47 michiel Exp $
  */
  (function($) {
 /**

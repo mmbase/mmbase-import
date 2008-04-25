@@ -12,12 +12,12 @@ import java.io.File;
 
 /**
  * Class to compare two Files on their modification time, used by SortedVector.
- * @see org.mmbase.util.SortedVector
- * @see org.mmbase.util.CompareInterface
+ * @see SortedVector
+ * @see CompareInterface
  *
  * @author David V van Zeventer
  * @application SCAN or Devices
- * @version $Id: FileCompare.java,v 1.9 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: FileCompare.java,v 1.8 2004-09-30 08:52:11 pierre Exp $
  * @todo   Should be named FileLastModifiedComparator and implement java.util.Comparator
  */
 public class FileCompare implements CompareInterface {
@@ -26,7 +26,7 @@ public class FileCompare implements CompareInterface {
      * Make the comparison.
      * The result is a negative value if the time of the first file is 'smaller' than the second,
      * a positive value if it is 'larger', and 0 if both times are 'equal'.
-     * @param thisone the first object to compare. should be a <code>File</code>.
+     * @param thisOne the first object to compare. should be a <code>File</code>.
      * @param other the second object to compare. should be a <code>File</code>.
      * @return the result of the comparison
      */

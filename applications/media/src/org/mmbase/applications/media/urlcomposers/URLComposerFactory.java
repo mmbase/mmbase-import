@@ -19,6 +19,7 @@ import org.mmbase.util.xml.DocumentReader;
 import org.mmbase.util.*;
 import org.w3c.dom.Element;
 import java.util.*;
+import java.io.File;
 
 /**
  * The URLComposerFactory contains the code to decide which kind of
@@ -47,7 +48,7 @@ public class URLComposerFactory  {
 
     public static final  String CONFIG_FILE = "media/urlcomposers.xml";
 
-    private static final Class<?> defaultComposerClass = URLComposer.class;
+    private static final Class defaultComposerClass = URLComposer.class;
 
     private static URLComposerFactory instance = new URLComposerFactory();
 
@@ -63,9 +64,9 @@ public class URLComposerFactory  {
         };*/
         private Format format;
         private String protocol;
-        private Class<?>  klass;
+        private Class  klass;
 
-        ComposerConfig(Format f, Class<?> k, String p) {
+        ComposerConfig(Format f, Class k, String p) {
             this.format = f;
             this.klass = k;
             this.protocol = p;
@@ -75,9 +76,9 @@ public class URLComposerFactory  {
         boolean checkFormat(Format f) {     return format.equals(f); }
         boolean checkProtocol(String p) {   return "".equals(protocol) || protocol.equals(p); }
 
-        Class<?>   getComposerClass() { return klass; };
+        Class   getComposerClass() { return klass; };
 
-        URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, Set<MMObjectNode> cacheExpireObjects) {
+        URLComposer getInstance(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, Set cacheExpireObjects) {
             try {
                 log.debug("Instatiating " + klass);
                 URLComposer newComposer = (URLComposer) klass.newInstance();
@@ -93,7 +94,7 @@ public class URLComposerFactory  {
         }
     }
     // this is the beforementioned list.
-    private List<ComposerConfig> urlComposerClasses = new ArrayList<ComposerConfig>();
+    private List urlComposerClasses = new ArrayList();
 
     private ComposerConfig defaultUrlComposer = new ComposerConfig(null, defaultComposerClass, null);
 
@@ -143,20 +144,21 @@ public class URLComposerFactory  {
                 log.error(e.toString());
             }
 
-            for(Element element:reader.getChildElements(MAIN_TAG, COMPOSER_TAG)) {
+            for(Iterator e = reader.getChildElements(MAIN_TAG, COMPOSER_TAG); e.hasNext();) {
+                Element element = (Element)e.next();
                 String  clazz   =  reader.getElementValue(element);
                 String  f = element.getAttribute(FORMAT_ATT);
-                List<Format> formats;
+                List formats;
                 if ("*".equals(f)) {
                     formats = Format.getMediaFormats();
                 } else {
-                    formats = new ArrayList<Format>();
+                    formats = new ArrayList();
                     formats.add(Format.get(f));
                 }
                 String  protocol  =  element.getAttribute(PROTOCOL_ATT);
-                Iterator<Format> i = formats.iterator();
+                Iterator i = formats.iterator();
                 while(i.hasNext()) {
-                    Format format = i.next();
+                    Format format = (Format) i.next();
                     try {
                         log.debug("Adding for format " + format + " urlcomposer " + clazz);
                         urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz), protocol));
@@ -166,11 +168,11 @@ public class URLComposerFactory  {
                 }
             }
         }
-        org.mmbase.cache.Cache<String, String> cache =  org.mmbase.applications.media.cache.URLCache.getCache();
+        org.mmbase.cache.Cache cache =  org.mmbase.applications.media.cache.URLCache.getCache();
         if (cache.size() > 0) {
             log.service("Clearing Media URL-cache");
         }
-        cache.clear();
+        org.mmbase.applications.media.cache.URLCache.getCache().clear();
     }
 
 
@@ -190,15 +192,15 @@ public class URLComposerFactory  {
      * MarkupURLComposers are configured in urlcomposers.xml).
      */
 
-    protected List<MMObjectNode> getTemplates(MMObjectNode fragment) {
-        List<MMObjectNode> templates = new ArrayList<MMObjectNode>();
+    protected List getTemplates(MMObjectNode fragment) {
+        List templates = new ArrayList();
 
         if (fragment != null) {
             MediaFragments bul = (MediaFragments) fragment.getBuilder();
-            Stack<MMObjectNode> stack = bul.getParentFragments(fragment);
-            Iterator<MMObjectNode> i = stack.iterator();
+            Stack stack = bul.getParentFragments(fragment);
+            Iterator i = stack.iterator();
             while (i.hasNext()) {
-                MMObjectNode f = i.next();
+                MMObjectNode f = (MMObjectNode) i.next();
                 templates.addAll(f.getRelatedNodes("templates"));
             }
         }
@@ -211,7 +213,7 @@ public class URLComposerFactory  {
      *
      * @return true if added, false if not.
      */
-    protected boolean addURLComposer(URLComposer uc, List<URLComposer> urls) {
+    protected boolean addURLComposer(URLComposer uc, List urls) {
         if (log.isDebugEnabled()) {
             log.debug("Trying to add " + uc + " to " + urls);
         }
@@ -243,16 +245,16 @@ public class URLComposerFactory  {
      *
      * @return The (new) list with urlcomposers.
      */
-    public  List<URLComposer> createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map<String, Object> info, List<URLComposer> urls, Set<MMObjectNode> cacheExpireObjects) {
-        if (urls == null) urls = new ArrayList<URLComposer>();
+    public  List createURLComposers(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
+        if (urls == null) urls = new ArrayList();
         Format format   = Format.get(source.getIntValue("format"));
         String protocol = provider.getStringValue("protocol");
         if (log.isDebugEnabled()) log.debug("Creating url-composers for provider " + provider.getNumber() + "(" + format + ")");
 
-        Iterator<ComposerConfig> i = urlComposerClasses.iterator();
+        Iterator i = urlComposerClasses.iterator();
         boolean found = false;
         while (i.hasNext()) {
-            ComposerConfig cc = i.next();
+            ComposerConfig cc = (ComposerConfig) i.next();
             if (log.isDebugEnabled()) {
                 log.debug("Trying " + cc + " for '" + format + "'/'" + protocol + "'");
             }
@@ -260,11 +262,11 @@ public class URLComposerFactory  {
             if (cc.checkFormat(format) && cc.checkProtocol(protocol)) {
                 if (MarkupURLComposer.class.isAssignableFrom(cc.getComposerClass())) {
                     // markupurlcomposers need a template, and a fragment can have 0-n of those.
-                    List<MMObjectNode> templates = getTemplates(fragment);
-                    Iterator<MMObjectNode> ti = templates.iterator();
+                    List templates = getTemplates(fragment);
+                    Iterator ti = templates.iterator();
                     while (ti.hasNext()) {
-                        MMObjectNode template = ti.next();
-                        Map<String, Object> templateInfo = new HashMap<String, Object>(info);
+                        MMObjectNode template = (MMObjectNode) ti.next();
+                        Map templateInfo = new HashMap(info);
                         templateInfo.put("template", template);
                         URLComposer uc = cc.getInstance(provider, source, fragment, templateInfo, cacheExpireObjects);
                         addURLComposer(uc, urls);

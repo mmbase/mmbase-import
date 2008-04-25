@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
+import java.util.*;
 import java.io.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -24,7 +25,7 @@ import org.mmbase.util.logging.*;
  * DocumentSerializable member in stead, and use {@link #getDocument}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: DocumentSerializable.java,v 1.6 2007-08-02 10:00:54 michiel Exp $
+ * @version $Id: DocumentSerializable.java,v 1.4 2006-01-06 17:36:43 michiel Exp $
  * @since MMBase-1.8
  */
 public class DocumentSerializable implements Serializable, org.mmbase.util.PublicCloneable {
@@ -61,9 +62,6 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
     public DocumentSerializable(Document d) {
         document = d;
     }
-    public <T> T unwrap(Class<T> iface) {
-        return (T) document;
-    }
 
     public final Document getDocument() {
         return document;
@@ -80,7 +78,7 @@ public class DocumentSerializable implements Serializable, org.mmbase.util.Publi
         return 
             o != null &&
             o instanceof DocumentSerializable &&
-            document.isEqualNode(((DocumentSerializable) o).document);
+            document.equals(((DocumentSerializable)o).document);            
     }
 
     public Object clone() {

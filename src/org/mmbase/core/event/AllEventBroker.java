@@ -13,7 +13,6 @@ package org.mmbase.core.event;
  * CluserManager, which has to propagate all local events int the mmbase cluster.
  * @author Ernst Bunders
  * @since 1.8
- * @version $Id: AllEventBroker.java,v 1.3 2007-07-26 11:45:54 michiel Exp $
  *
  */
 public class AllEventBroker extends AbstractEventBroker {

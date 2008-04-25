@@ -9,7 +9,9 @@ See http://www.MMBase.org/license
 package org.mmbase.datatypes.processors;
 
 import org.mmbase.bridge.*;
+import org.mmbase.util.transformers.*;
 import org.mmbase.util.functions.*;
+import java.io.StringWriter;
 
 /**
  * This factory creates processors which don't actually change the value, but only have a
@@ -17,7 +19,7 @@ import org.mmbase.util.functions.*;
  * 'lastmodified', but it also the only parameter of this processor factory.
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifiedProcessorFactory.java,v 1.3 2006-10-14 14:35:39 nklasens Exp $
+ * @version $Id: LastModifiedProcessorFactory.java,v 1.2 2006-04-18 14:17:24 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -26,7 +28,7 @@ public class LastModifiedProcessorFactory implements ParameterizedProcessorFacto
     private static final long serialVersionUID = 1L;
 
     protected static final Parameter[] PARAMS = new Parameter[] {
-        new Parameter<String>("field", String.class, "lastmodified")
+        new Parameter("field", String.class, "lastmodified")
     };
 
     /**

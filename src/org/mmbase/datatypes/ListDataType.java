@@ -12,17 +12,16 @@ package org.mmbase.datatypes;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.LocalizedString;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ListDataType.java,v 1.24 2007-09-16 17:55:28 michiel Exp $
+ * @version $Id: ListDataType.java,v 1.20 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
-public class ListDataType extends AbstractLengthDataType<List> {
+public class ListDataType extends AbstractLengthDataType {
     private static final long serialVersionUID = 1L; // increase this if object serialization changes (which we shouldn't do!)
 
     protected ItemRestriction itemRestriction = new ItemRestriction(Constants.DATATYPE_UNKNOWN);
@@ -78,18 +77,14 @@ public class ListDataType extends AbstractLengthDataType<List> {
         itemRestriction.setValue(value);
     }
 
-    public int getEnforceStrength() {
-        return Math.max(super.getEnforceStrength(), itemRestriction.getEnforceStrength());
-    }
-
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = itemRestriction.validate(errors, castValue, node, field);
         return errors;
     }
 
-    protected StringBuilder toStringBuilder() {
-        StringBuilder buf = super.toStringBuilder();
+    protected StringBuffer toStringBuffer() {
+        StringBuffer buf = super.toStringBuffer();
         buf.append("items: " + getItemDataType());
         return buf;
     }
@@ -121,7 +116,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
         }
 
         protected Collection validate(Collection errors, Object v, Node node, Field field) {
-            if (! enforce(v, node, field)) {
+            if (! enforce(node, field)) {
                 return errors;
             }
             DataType itemDataType = getItemDataType();
@@ -131,7 +126,7 @@ public class ListDataType extends AbstractLengthDataType<List> {
                 Collection col = itemDataType.validate(i.next());
                 try {
                     if (col != VALID) {
-                        if (errors == VALID) errors = new ArrayList<LocalizedString>();
+                        if (errors == VALID) errors = new ArrayList();
                         errors.addAll(col);
                     }
                 } catch (ClassCastException cce) {

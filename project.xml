@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!-- 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -49,28 +49,27 @@ See http://www.MMBase.org/license
                 </includes>
                 <filtering>false</filtering>
             </resource>
+<!-- This does not work the same way as the ant build does.
+	We have to change more in the build to get it working
+-->
             <resource>
-                <directory>${basedir}/html/WEB-INF/classes</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-               <directory>${basedir}/META-INF</directory>
-               <targetPath>META-INF</targetPath>
-               <excludes>
-                   <exclude>"**/CVS"</exclude>
-               </excludes>
-               <filtering>false</filtering>
-           </resource>
-           <resource>
-                <directory>${basedir}/config</directory>
                 <targetPath>org/mmbase/config</targetPath>
+                <directory>config</directory>
                 <excludes>
                     <exclude>"**/CVS"</exclude>
+                    <exclude>applications/CloudSecurity/**</exclude>
+                    <exclude>applications/Codings/**</exclude>
+                    <exclude>applications/MyCompany/**</exclude>
+                    <exclude>applications/MyNews/**</exclude>
+                    <exclude>applications/MyYahoo/**</exclude>
+                    <exclude>applications/RichText/**</exclude>
+                    <exclude>applications/CloudSecurity.xml</exclude>
+                    <exclude>applications/Codings.xml</exclude>
+                    <exclude>applications/MyCompany.xml</exclude>
+                    <exclude>applications/MyNews.xml</exclude>
+                    <exclude>applications/MyYahoo.xml</exclude>
+                    <exclude>applications/RichText.xml</exclude>
                 </excludes>
-               <filtering>false</filtering>
             </resource>
 
         </resources>

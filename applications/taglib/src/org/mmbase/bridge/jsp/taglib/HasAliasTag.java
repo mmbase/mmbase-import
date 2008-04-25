@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  * Straight-forward wrapper arround {@link org.mmbase.bridge.Node#getAliases}.
  *
  * @author Michiel Meeuwissen
- * @version $Id: HasAliasTag.java,v 1.2 2007-07-10 16:09:17 michiel Exp $
+ * @version $Id: HasAliasTag.java,v 1.1.2.1 2007-07-10 16:07:42 michiel Exp $
  * @since MMBase-1.8.5
  */
 

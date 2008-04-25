@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class NeededBuilderField {
 
-    Map<String, String> descriptions = new HashMap<String, String>();
-	Map<String, String> guinames = new HashMap<String, String>();
+    Map descriptions = new HashMap();
+	Map guinames = new HashMap();
 	String guitype;
 	int editorinputpos = -1;
 	int editorlistpos = -1;
@@ -109,7 +109,7 @@ public class NeededBuilderField {
 		descriptions.put(language,description);
 	}
 
-	public Map<String, String> getDescriptions() {
+	public Map getDescriptions() {
 		return descriptions;
 	}
 
@@ -129,7 +129,7 @@ public class NeededBuilderField {
 		guinames.put(language,description);
 	}
 
-	public Map<String, String> getGuiNames() {
+	public Map getGuiNames() {
 		return guinames;
 	}
 

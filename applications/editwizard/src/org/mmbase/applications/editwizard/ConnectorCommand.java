@@ -17,7 +17,7 @@ import java.util.Date;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommand.java,v 1.7 2007-06-13 20:54:26 nklasens Exp $
+ * @version $Id: ConnectorCommand.java,v 1.6 2002-10-25 12:57:24 pierre Exp $
  */
 
 public class ConnectorCommand {
@@ -40,7 +40,7 @@ public class ConnectorCommand {
      * @javadoc
      */
     public void addCommandNode(Node node) {
-        xml.getDocumentElement().appendChild(xml.importNode(node.cloneNode(true), true));
+        Node newnode = xml.getDocumentElement().appendChild(xml.importNode(node.cloneNode(true), true));
     }
 
     /**

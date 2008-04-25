@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE optionlist PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<optionlist name="teaser_size">
-   <option id="0">50%</option>
-   <option id="1">100%</option>
-   <option id="2">50% en plaatje op orginele afmeting</option>
-   <option id="3">100% en plaatje op orginele afmeting</option>
-</optionlist>

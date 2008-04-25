@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.11 2007-05-04 12:38:38 michiel Exp $
+   @version $Id: log4j.xml,v 1.10 2005-12-09 14:27:34 nklasens Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -104,17 +104,6 @@
     <level class="&mmlevel;" value ="info" />
     <appender-ref ref="pagedebug" />
   </logger>
-
-  <!--
-      If you switch logging on org.mmbase.SERVLETS on debug to on, then MMBaseSerlvet keep track of
-      ref-counts, and someimes log that. That way you can keep track off how many are running, and
-      whether that is much.
-  -->
-  <!--
-  <logger name="org.mmbase.SERVLETS">
-    <level class="&mmlevel;" value ="debug" />
-  </logger>
-  -->
 
   <!-- SQL logging -->
   <!--

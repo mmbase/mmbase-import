@@ -361,17 +361,17 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
 	return true;
     }
 
-    private HashSet<Integer> getWantedBuilders(Target target,String id) {
-	HashSet<Integer> set = new HashSet<Integer>();
+    private HashSet getWantedBuilders(Target target,String id) {
+	HashSet set = new HashSet();
 	Project prj = target.getParent();
 	Target mod = prj.getTargetById(id);
 	log.info("mod="+mod);
 	CloudModelCreator modcr = (CloudModelCreator)mod.getCreator();
         Model model = new Model(modcr.getModelFile(mod));
 
-        Iterator<NeededBuilder> nbl=model.getNeededBuilders();
+        Iterator nbl=model.getNeededBuilders();
         while (nbl.hasNext()) {
-            NeededBuilder nb=nbl.next();
+            NeededBuilder nb=(NeededBuilder)nbl.next();
 	    int i=MMBase.getMMBase().getTypeDef().getIntValue(nb.getName());
 	    set.add(new Integer(i));
         }
@@ -418,7 +418,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
         String id = target.getItem("depthname") + "@" + target.getItem("depthmaintainer") + "_cloud/model";
         id = id.replace(' ', '_');
         id = id.replace('/', '_');
-        HashSet<Integer> filters = getWantedBuilders(target,id);
+        HashSet filters = getWantedBuilders(target,id);
         Apps1DataWriter.writeDataXML(filters,datafile,target);
 	return true;
     }

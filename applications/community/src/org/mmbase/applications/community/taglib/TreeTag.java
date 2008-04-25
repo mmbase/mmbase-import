@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.19 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: TreeTag.java,v 1.18 2006-08-30 18:06:26 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -57,8 +57,8 @@ public class TreeTag extends AbstractNodeListTag {
     public void setFields(String fields) throws JspTagException {
         fieldList = getAttribute(fields);
     }
-    protected List<String> getFields(String fields) {
-        List<String> res = new ArrayList<String>();
+    protected List getFields(String fields) {
+        List res = new ArrayList();
         StringTokenizer st = new StringTokenizer(fields, ",");
         while(st.hasMoreTokens()){
             res.add(st.nextToken().trim());
@@ -66,7 +66,7 @@ public class TreeTag extends AbstractNodeListTag {
         return res;
     }
 
-    private List<String> getDefaultFields() {
+    private List getDefaultFields() {
         return getFields("number,listhead,depth,listtail,subject,timestamp,replycount,info");
     }
 
@@ -103,16 +103,16 @@ public class TreeTag extends AbstractNodeListTag {
 
         //this is where we do the seach
         community = getCloudContext().getModule("communityprc");
-        Hashtable<String, Object> params = new Hashtable<String, Object>();
+        Hashtable params = new Hashtable();
         params.put("NODE", thread.getString(this));
 
-        List<String> fields;
+        List fields;
         if (fieldList == Attribute.NULL) {
             fields = getDefaultFields();
         } else {
             fields = getFields(fieldList.getString(this));
         }
-        params.put("FIELDS", new Vector<String>(fields));
+        params.put("FIELDS", new Vector(fields));
         // if you don't supply Vector but the ArrayList, then it goes terrible wrong (without clear message).
 
         try {

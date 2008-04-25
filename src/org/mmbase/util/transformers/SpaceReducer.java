@@ -11,10 +11,14 @@ package org.mmbase.util.transformers;
 
 import java.io.*;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mmbase.util.logging.*;
+
 
 /**
  * Replace 1 or more spaces by 1 space, and 1 or more newlines by 1
@@ -27,41 +31,55 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.20 2008-03-11 12:43:05 ernst Exp $
+ * @version $Id: SpaceReducer.java,v 1.12.2.6 2008-03-24 08:31:49 ernst Exp $
  */
 
-public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
+public class SpaceReducer extends ReaderTransformer implements CharTransformer {
 
     private static Logger log = Logging.getLoggerInstance(SpaceReducer.class);
 
-    @Override
-    protected boolean transform(PrintWriter bw, String line, org.mmbase.util.transformers.BufferedReaderTransformer.Status status) {
-        
-        SpaceReducerStatus srStatus = (SpaceReducerStatus)status;
-        List<Tag> tagsToPass = srStatus.getTagsToPass();
+    protected boolean transform(PrintWriter bw, String line, Status status) {
         boolean result = false;
-        
-        if(!line.trim().equals("") || srStatus.getCurrentlyOpen() != null){
+        if(!line.trim().equals("") || status.getCurrentlyOpen() != null){
             bw.write(line);
             result = true;
         }
-        if(srStatus.getCurrentlyOpen() != null){
+        if(status.getCurrentlyOpen() != null){
             //look for a closing tag.
-            srStatus.getCurrentlyOpen().setLine(line);
-            if(srStatus.getCurrentlyOpen().hasClosed()){
-                srStatus.setCurrentlyOpen(null);
+            status.getCurrentlyOpen().setLine(line);
+            if(status.getCurrentlyOpen().hasClosed()){
+                status.setCurrentlyOpen(null);
             }
         }else{
             //look for an opening tag
-            for (Tag tag : tagsToPass) {
+            for (Iterator i = status.getTagsToPass().iterator(); i.hasNext(); ) {
+                Tag tag = (Tag) i.next();
                 tag.setLine(line);
                 if(tag.hasOpened()){
-                    srStatus.setCurrentlyOpen(tag);
+                    status.setCurrentlyOpen(tag);
                     break;
                 }
             }
         }
         return result;
+    }
+
+    public Writer transform(Reader r, Writer w) {
+        try {
+            BufferedReader br = new BufferedReader(r);
+            PrintWriter bw = new PrintWriter(new BufferedWriter(w));
+            String line = br.readLine();
+            Status status = new Status();
+            while (line != null) {
+                boolean nl = transform(bw, line, status);
+                line = br.readLine();
+                if (nl && line != null) bw.write('\n');
+            }
+            bw.flush();
+        } catch (java.io.IOException e) {
+            log.error(e.toString());
+        }
+        return w;
     }
 
     /**
@@ -73,7 +91,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         int nl    = 1;  // 'open' newlines
         // we start at 1, rather then 0, because in that way, all leading space is deleted too
 
-        StringBuilder indent = new StringBuilder();  // 'open' indentation of white-space
+        StringBuffer indent = new StringBuffer();  // 'open' indentation of white-space
         int l = 0; // number of non-white-space (letter) on the current line
 
         int lines = 0; // for debug: the total number of lines read.
@@ -107,15 +125,14 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         return w;
     }
 
-    @Override
     public String toString() {
         return "SPACEREDUCER";
     }
-    
+
     /**
      * this is a helper class that can check if a tag was opened or closed in a line of text
      * It first removes all bodyless versions of the tag from the line, and then counts all opening and
-     * closing occurrences of the tag. 
+     * closing occurrences of the tag.
      * This will not work if an opening or closing tag is partly written on the next line, so it's not perfect.
      * <ul>
      * <li>have no body
@@ -127,9 +144,9 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
     private static class Tag{
         private boolean hasOpened = false;
         private boolean hasClosed = false;
-        private Pattern openingPattern; 
-        private Pattern closingPattern; 
-        private Pattern noBodyPattern; 
+        private Pattern openingPattern;
+        private Pattern closingPattern;
+        private Pattern noBodyPattern;
         private String name;
 
         public Tag(String name){
@@ -138,22 +155,22 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
             noBodyPattern = Pattern.compile("<[\\s]*"+name+"\\s+([a-zA-Z]+\\=\"[\\S]+\")*\\s*/\\s*>", Pattern.CASE_INSENSITIVE);
             this.name=name;
         }
-        
+
         public void setLine(String line){
             //remove the bodyless versions of the tag from this line (if they exist, which they should not)
             line = removeTagsWithoutBody(line);
-            
+
             //count the opening and closing versions of the tag
             int opening = countOccurences(openingPattern, line);
             int closing = countOccurences(closingPattern, line);
             hasOpened = opening > closing;
             hasClosed = closing > opening;
         }
-        
+
         private int countOccurences(Pattern pattern, String line) {
             Matcher m = pattern.matcher(line);
             int counter = 0;
-            while(m.find() && counter < 5){
+            while(m.find()){
                 counter ++;
                 line = line.substring(m.end(), line.length());
                 m = pattern.matcher(line);
@@ -164,7 +181,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         /**
          * remove all the occurrences of bodyless versions of the tag
          * they should not be there, but for safety
-         *  
+         *
          * @param line
          * @return
          */
@@ -180,7 +197,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         public boolean hasOpened(){
             return hasOpened;
         }
-        
+
         public boolean hasClosed(){
             return hasClosed;
         }
@@ -189,21 +206,16 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         }
     }
     
-    @Override
-    public Status createNewStatus(){
-        return (Status) new SpaceReducerStatus();
-    }
-    
-    public static class SpaceReducerStatus extends Status{
-        private List<Tag> tagsToPass = new ArrayList<Tag>();
+    public static class Status {
+        private List tagsToPass = new ArrayList();
         private Tag currentlyOpen = null;
         
-        public SpaceReducerStatus(){
+        public Status(){
             tagsToPass.add(new Tag("pre"));
             tagsToPass.add(new Tag("textarea"));
         }
         
-        public List<Tag> getTagsToPass() {
+        public List getTagsToPass() {
             return tagsToPass;
         }
         
@@ -227,9 +239,10 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         test("jaja</pre>");
         test("jaja</pre> <pre> hoera</pre><p>test</p>");
         test("jaja<pre>bla <pre /></pre>filter out bodyless tags");
+        test("<pre onkeydown=\"disableRelated();\" class=\"small\" id=\"field_news_intro\"  name=\"updateNodeActions[39302909].\">hallo");
         System.out.println("FINISED");
     }
-    
+
     public static void test(String line){
         System.out.println("testing line: "+line);
         Tag tag = new Tag("pre");

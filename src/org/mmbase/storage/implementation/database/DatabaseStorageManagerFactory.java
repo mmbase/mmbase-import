@@ -12,13 +12,10 @@ package org.mmbase.storage.implementation.database;
 import java.sql.*;
 import java.util.StringTokenizer;
 
-
 import javax.naming.*;
 import javax.sql.DataSource;
-import java.io.*;
 import javax.servlet.ServletContext;
-import java.text.*;
-
+import java.io.*;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
@@ -42,9 +39,9 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.53 2008-04-14 17:18:22 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.40.2.4 2007-12-12 12:59:03 michiel Exp $
  */
-public class DatabaseStorageManagerFactory extends StorageManagerFactory<DatabaseStorageManager> {
+public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
@@ -96,11 +93,11 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected boolean supportsTransactions = false;
 
 
-    private static final File BASE_PATH_UNSET = new File("UNSET");
+    private static final String BASE_PATH_UNSET = "UNSET";
     /**
      * Used by #getBinaryFileBasePath
      */
-    private File basePath = BASE_PATH_UNSET;
+    private String basePath = BASE_PATH_UNSET;
 
     public double getVersion() {
         return 0.1;
@@ -150,13 +147,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     }
 
     /**
-     * @param binaryFileBasePath
-     *            For some datasource a file base path may be needed (some configurations of hsql).
-     *            It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL
-     *            may be configured then which does not need the file base path.
+     * @param binaryFileBasePath For some datasource a file base path may be needed (some configurations of hsql). It can be <code>null</code> during bootstrap. In lookup.xml an alternative URL may be configured then which does not need the file base path.
      * @since MMBase-1.8
      */
-    protected DataSource createDataSource(File binaryFileBasePath) {
+    protected DataSource createDataSource(String binaryFileBasePath) {
         DataSource ds = null;
         // get the Datasource for the database to use
         // the datasource uri (i.e. 'jdbc/xa/MMBase' )
@@ -267,12 +261,14 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
         // why is this not stored in real properties?
 
         setOption(Attributes.SUPPORTS_TRANSACTIONS, supportsTransactions);
-        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, transactionIsolation);
+        setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
         setOption(Attributes.SUPPORTS_COMPOSITE_INDEX, true);
         setOption(Attributes.SUPPORTS_DATA_DEFINITION, true);
 
-        for (String element : STANDARD_SQL_KEYWORDS) {
-            disallowedFields.put(element, null); // during super.load, the null values will be replaced by actual replace-values.
+        // create a default disallowedfields list:
+        // get the standard sql keywords
+        for (int i = 0; i < STANDARD_SQL_KEYWORDS.length; i++) {
+            disallowedFields.put(STANDARD_SQL_KEYWORDS[i], null); // during super.load, the null values will be replaced by actual replace-values.
         }
 
         // get the extra reserved sql keywords (according to the JDBC driver)
@@ -360,7 +356,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     /**
      * As {@link #getBinaryFileBasePath(boolean)} with <code>true</code>
      */
-    public File getBinaryFileBasePath() {
+    public String getBinaryFileBasePath() {
         return getBinaryFileBasePath(true);
     }
 
@@ -369,43 +365,58 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
      * @param check If the path is only perhaps needed, you may want to provide 'false' here.
      * @since MMBase-1.8.1
      */
-    protected File getBinaryFileBasePath(boolean check) {
+    public String getBinaryFileBasePath(boolean check) {
         if (basePath == BASE_PATH_UNSET) {
-            String path = (String) getAttribute(Attributes.BINARY_FILE_PATH);
-            if (path == null || path.equals("")) {
-                basePath = mmbase.getDataDir();
+            basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
+            if (basePath == null || basePath.equals("")) {
+                basePath = mmbase.getInitParameter("datadir");
+                if (basePath == null || basePath.equals("")) {
+                    ServletContext sc = MMBaseContext.getServletContext();
+                    basePath = sc != null ? sc.getRealPath("/WEB-INF/data") : null;
+                    if (basePath == null) {
+                        basePath = System.getProperty("user.dir") + File.separator + "data";
+                    }
+                }
+
             } else {
-                MessageFormat mf = new MessageFormat(path);
-                java.io.File baseFile = new java.io.File(mf.format(mmbase.getDataDir().toString()));
+                java.io.File baseFile = new java.io.File(basePath);
                 if (! baseFile.isAbsolute()) {
                     ServletContext sc = MMBaseContext.getServletContext();
                     String absolute = sc != null ? sc.getRealPath("/") + File.separator : null;
                     if (absolute == null) absolute = System.getProperty("user.dir") + File.separator;
-                    basePath = new File(absolute + basePath);
+                    basePath = absolute + basePath;
                 }
             }
             if (basePath == null) {
-                log.warn("Cannot determin a Binary File Base Path");
+                log.warn("Cannot determin a a Binary File Base Path");
                 return null;
-            } else {
-                log.service("Binary file base path " + basePath);
             }
-            if (check) checkBinaryFileBasePath(basePath);
+            File baseDir = new File(basePath);
+            try {
+                basePath = baseDir.getCanonicalPath();
+                if (check) checkBinaryFileBasePath(basePath);
+            } catch (IOException ioe) {
+                log.error(ioe);
+            }
+            if (! basePath.endsWith(File.separator)) {
+                basePath += File.separator;
+            }
         }
         return basePath;
     }
 
     /**
-     * Tries to ensure that baseDir exists and is writable. Logs error and returns false otherwise.
-     * @param baseDir a Directory name
+     * Tries to ensure that basePath existis and is writable. Logs error and returns false otherwise.
+     * @param basePath a Directory name
      * @since MMBase-1.8.1
      */
-    public static boolean checkBinaryFileBasePath(File baseDir) {
+    public static boolean checkBinaryFileBasePath(String basePath) {
+        File baseDir = new File(basePath);
         if (! baseDir.mkdirs() && ! baseDir.exists()) {
-            log.error("Cannot create the binary file path " + baseDir);
+            log.error("Cannot create the binary file path " + basePath);
         }
         if (! baseDir.canWrite()) {
-            log.error("Cannot write in the binary file path " + baseDir);
+            log.error("Cannot write in the binary file path " + basePath);
             return false;
         } else {
             return true;
@@ -415,8 +426,8 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory<Databas
     protected Object instantiateBasicHandler(Class handlerClass) {
         // first handler
         try {
-            java.lang.reflect.Constructor constructor = handlerClass.getConstructor();
-            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance();
+            java.lang.reflect.Constructor constructor = handlerClass.getConstructor(new Class[] {});
+            SqlHandler sqlHandler = (SqlHandler) constructor.newInstance( new Object[] {} );
             log.service("Instantiated SqlHandler of type " + handlerClass.getName());
             return sqlHandler;
         } catch (NoSuchMethodException nsme) {

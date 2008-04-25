@@ -25,7 +25,7 @@ import java.util.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: BasicMerger.java,v 1.6 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: BasicMerger.java,v 1.5 2005-01-30 16:46:38 nico Exp $
  */
 public class BasicMerger implements ObjectMerger {
 
@@ -34,7 +34,7 @@ public class BasicMerger implements ObjectMerger {
      * @param params The initialization parameters, provided as
      * name/value pairs (both String).
      */
-    public void init(HashMap<String, String> params) {
+    public void init(HashMap params) {
     }
 
     /** Merge a field. This implementation leaves all fields unaffected.
@@ -58,11 +58,11 @@ public class BasicMerger implements ObjectMerger {
      * @param relations2 List of all relations of the second object.
      */
     public void mergeRelations(TmpObject tmpObj1, TmpObject tmpObj2,
-            List<TmpObject> relations1, List<TmpObject> relations2) {
+            List relations1, List relations2) {
 
-        Iterator<TmpObject> i = relations2.iterator();
+        Iterator i = relations2.iterator();
         while (i.hasNext()) {
-            TmpObject relation = i.next();
+            TmpObject relation = (TmpObject) i.next();
             if (tmpObj2.isSourceOf(relation)) {
                relation.setSource(tmpObj1);
             }

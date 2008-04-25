@@ -11,7 +11,6 @@ package org.mmbase.datatypes;
 
 import java.util.Collection;
 import org.mmbase.util.Casting;
-import org.mmbase.util.LocalizedString;
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
@@ -21,10 +20,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: NodeDataType.java,v 1.33 2007-06-21 07:32:31 pierre Exp $
+ * @version $Id: NodeDataType.java,v 1.30 2006-07-17 07:32:29 pierre Exp $
  * @since MMBase-1.8
  */
-public class NodeDataType extends BasicDataType<Node> {
+public class NodeDataType extends BasicDataType {
 
     private static final Logger log = Logging.getLoggerInstance(NodeDataType.class);
 
@@ -85,17 +84,13 @@ public class NodeDataType extends BasicDataType<Node> {
         return mustExistRestriction;
     }
 
-    public int getEnforceStrength() {
-        return Math.max(super.getEnforceStrength(), mustExistRestriction.getEnforceStrength());
-    }
-
-    protected Collection<LocalizedString> validateCastValue(Collection<LocalizedString> errors, Object castValue, Object value, Node node, Field field) {
+    protected Collection validateCastValue(Collection errors, Object castValue, Object value, Node node, Field field) {
         errors = super.validateCastValue(errors, castValue, value, node, field);
         errors = mustExistRestriction.validate(errors, value, node, field);
         return errors;
     }
 
-    private class MustExistRestriction extends AbstractRestriction<Boolean> {
+    private class MustExistRestriction extends AbstractRestriction {
         MustExistRestriction(MustExistRestriction me) {
             super(me);
             enforceStrength = DataType.ENFORCE_ONCHANGE;

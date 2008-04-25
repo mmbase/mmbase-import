@@ -11,10 +11,10 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.packaging.bundlehandlers;
 
 import java.io.BufferedInputStream;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.jar.JarFile;
 
-import org.mmbase.applications.packaging.installhandlers.installStep;
 import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 
 /**
@@ -35,8 +35,8 @@ public interface BundleInterface {
 	public boolean uninstall();
 
 	public ProviderInterface getProvider();
-	public Iterator<installStep> getInstallSteps();
-	public Iterator<installStep> getInstallSteps(int logid);
+	public Iterator getInstallSteps();
+	public Iterator getInstallSteps(int logid);
 	public void clearInstallSteps();
         public String getDescription();
         public String getInstallationNotes();
@@ -45,16 +45,16 @@ public interface BundleInterface {
         public String getLicenseName();
         public String getLicenseVersion();
         public String getLicenseBody();
-        public List<Object> getRelatedPeople(String type);
-        public List<Object> getScreenshots();
-        public List<Object> getStarturls();
+        public List getRelatedPeople(String type);
+        public List getScreenshots();
+        public List getStarturls();
 
 	public JarFile getJarFile();
 	public JarFile getIncludedPackageJarFile(String packageid,String packageversion);
 
 	public BufferedInputStream getJarStream();
 
-        public Iterator<HashMap<String, String>> getNeededPackages();
+        public Iterator getNeededPackages();
 
 	public String getPath();
 
@@ -63,6 +63,5 @@ public interface BundleInterface {
         public void setProgressBar(int stepcount); 
         public void increaseProgressBar();
         public void increaseProgressBar(int stepcount);
-        public long lastSeen();
 
 }

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * you left the value empty on commit.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PosrelCommitProcessor.java,v 1.2 2008-02-29 14:47:07 michiel Exp $
+ * @version $Id: PosrelCommitProcessor.java,v 1.1.2.1 2008-02-29 14:45:19 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -44,8 +44,8 @@ public class PosrelCommitProcessor implements CommitProcessor {
             q.setNodeStep(relationStep);
             Integer max = (Integer) Queries.max(q, q.getStepField(q.getNodeManager().getField(field.getName())));
             log.debug("max now " + max);
-            if (max == null) max = 0;
-            node.setValueWithoutProcess(field.getName(), max + 1);
+            if (max == null) max = new Integer(0);
+            node.setValueWithoutProcess(field.getName(), new Integer(max.intValue() + 1));
         }
     }
 

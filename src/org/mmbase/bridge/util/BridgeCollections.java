@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.util;
 
-import java.io.Serializable;
 import java.util.*;
 import org.mmbase.bridge.*;
 
@@ -19,7 +18,7 @@ import org.mmbase.bridge.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BridgeCollections.java,v 1.10 2007-02-24 21:57:50 nklasens Exp $
+ * @version $Id: BridgeCollections.java,v 1.4 2006-01-19 17:00:14 pierre Exp $
  * @since   MMBase-1.8
  */
 
@@ -28,8 +27,8 @@ public abstract class BridgeCollections {
     /**
      * Makes a BridgeList unmodifiable.
      */
-    public static final <E> BridgeList<E> unmodifiableBridgeList(BridgeList<E> bridgeList) {
-        return new UnmodifiableBridgeList<E>(bridgeList);
+    public static final BridgeList unmodifiableBridgeList(BridgeList bridgeList) {
+        return new UnmodifiableBridgeList(bridgeList);
     }
 
     /**
@@ -67,6 +66,7 @@ public abstract class BridgeCollections {
         return new UnmodifiableStringList(stringList);
     }
 
+    public static final BridgeList          EMPTY_BRIDGELIST          = new EmptyBridgeList();
     public static final NodeList            EMPTY_NODELIST            = new EmptyNodeList();
     public static final NodeManagerList     EMPTY_NODEMANAGERLIST     = new EmptyNodeManagerList();
     public static final RelationManagerList EMPTY_RELATIONMANAGERLIST = new EmptyRelationManagerList();
@@ -78,15 +78,15 @@ public abstract class BridgeCollections {
     /* --------------------------------------------------------------------------------
      * Unmodifiable iterators
      */
-    static class UnmodifiableListIterator<E> implements ListIterator<E> {
-        final protected ListIterator<E> i;
-        UnmodifiableListIterator(ListIterator<E> i) {
+    static class UnmodifiableListIterator implements ListIterator {
+        final protected ListIterator i;
+        UnmodifiableListIterator(ListIterator i) {
             this.i = i;
         }
         public boolean hasNext() { return i.hasNext(); }
         public boolean hasPrevious() { return i.hasPrevious(); }
-        public E next() { return i.next(); }
-        public E previous() { return i.previous(); }
+        public Object next() { return i.next(); }
+        public Object previous() { return i.previous(); }
         public int nextIndex() { return i.nextIndex(); }
         public int previousIndex() { return i.previousIndex(); }
         public void remove() { throw new UnsupportedOperationException(); }
@@ -94,7 +94,7 @@ public abstract class BridgeCollections {
         public void set(Object o) { throw new UnsupportedOperationException(); }
     }
 
-    static class UnmodifiableNodeIterator extends UnmodifiableListIterator<Node> implements NodeIterator {
+    static class UnmodifiableNodeIterator extends UnmodifiableListIterator implements NodeIterator {
         UnmodifiableNodeIterator(NodeIterator i) {
             super(i);
         }
@@ -102,7 +102,7 @@ public abstract class BridgeCollections {
         public Node previousNode() { return ((NodeIterator) i).previousNode(); }
     }
 
-    static class UnmodifiableNodeManagerIterator extends UnmodifiableListIterator<NodeManager> implements NodeManagerIterator {
+    static class UnmodifiableNodeManagerIterator extends UnmodifiableNodeIterator implements NodeManagerIterator {
         UnmodifiableNodeManagerIterator(NodeManagerIterator i) {
             super(i);
         }
@@ -110,7 +110,7 @@ public abstract class BridgeCollections {
         public NodeManager previousNodeManager() { return ((NodeManagerIterator) i).previousNodeManager(); }
     }
 
-    static class UnmodifiableRelationManagerIterator extends UnmodifiableListIterator<RelationManager> implements RelationManagerIterator {
+    static class UnmodifiableRelationManagerIterator extends UnmodifiableNodeManagerIterator implements RelationManagerIterator {
         UnmodifiableRelationManagerIterator(RelationManagerIterator i) {
             super(i);
         }
@@ -118,7 +118,7 @@ public abstract class BridgeCollections {
         public RelationManager previousRelationManager() { return ((RelationManagerIterator) i).previousRelationManager(); }
     }
 
-    static class UnmodifiableRelationIterator extends UnmodifiableListIterator<Relation> implements RelationIterator {
+    static class UnmodifiableRelationIterator extends UnmodifiableNodeIterator implements RelationIterator {
         UnmodifiableRelationIterator(RelationIterator i) {
             super(i);
         }
@@ -126,7 +126,7 @@ public abstract class BridgeCollections {
         public Relation previousRelation() { return ((RelationIterator) i).previousRelation(); }
     }
 
-    static class UnmodifiableStringIterator extends UnmodifiableListIterator<String> implements StringIterator {
+    static class UnmodifiableStringIterator extends UnmodifiableListIterator implements StringIterator {
         UnmodifiableStringIterator(StringIterator i) {
             super(i);
         }
@@ -138,22 +138,22 @@ public abstract class BridgeCollections {
     /* --------------------------------------------------------------------------------
      * Unmodifiable Lists.
      */
-    static class UnmodifiableBridgeList<E> implements BridgeList<E> {
-        final List<E> c;
-        final BridgeList<E> parent ; // just to expose properties to sublists.
+    static class UnmodifiableBridgeList implements BridgeList {
+        final List c;
+        final BridgeList parent ; // just to expose properties to sublists.
 
         UnmodifiableBridgeList() {
-            c = new EmptyBridgeList<E>() {};
+            c = EMPTY_BRIDGELIST;
             parent = null;
         }
 
-        UnmodifiableBridgeList(BridgeList<E> c) {
+        UnmodifiableBridgeList(BridgeList c) {
             if (c == null) { throw new NullPointerException(); }
             this.c = c;
             this.parent = null;
         }
 
-        UnmodifiableBridgeList(List<E> c, BridgeList<E> parent) {
+        UnmodifiableBridgeList(List c, BridgeList parent) {
             if (c == null) { throw new NullPointerException(); }
             this.c = c;
             this.parent = parent;
@@ -163,47 +163,44 @@ public abstract class BridgeCollections {
         public boolean isEmpty() 	    { return c.isEmpty(); }
         public boolean contains(Object o)   { return c.contains(o); }
         public Object[] toArray()           { return c.toArray(); }
-        public <T> T[] toArray(T[] a) { return c.toArray(a); }
-        @Override
+        public Object[] toArray(Object[] a) { return c.toArray(a); }
         public String toString()            { return c.toString(); }
-        public ListIterator<E> listIterator(final int s) { return new UnmodifiableListIterator<E>(c.listIterator(s)); }
-        public ListIterator<E> listIterator() { return listIterator(0); }
-        public Iterator<E> iterator() { return listIterator(); }
+        public ListIterator listIterator(final int s) { return new UnmodifiableListIterator(c.listIterator(s)); }
+        public ListIterator listIterator() { return listIterator(0); }
+        public Iterator iterator() { return listIterator(); }
         public boolean add(Object o){ throw new UnsupportedOperationException(); }
         public void add(int i, Object o) { throw new UnsupportedOperationException(); }
-        public E set(int i, Object o) { throw new UnsupportedOperationException(); }
+        public Object set(int i, Object o) { throw new UnsupportedOperationException(); }
         public boolean remove(Object o) { throw new UnsupportedOperationException(); }
-        public E remove(int i) { throw new UnsupportedOperationException(); }
-        public boolean containsAll(Collection<?> coll) { return c.containsAll(coll); }
-        public boolean addAll(Collection<? extends E> coll) { throw new UnsupportedOperationException(); }
-        public boolean addAll(int i, Collection<? extends E> coll) { throw new UnsupportedOperationException(); }
-        public boolean removeAll(Collection<?> coll) { throw new UnsupportedOperationException(); }
-        public boolean retainAll(Collection<?> coll) { throw new UnsupportedOperationException(); }
+        public Object remove(int i) { throw new UnsupportedOperationException(); }
+        public boolean containsAll(Collection coll) { return c.containsAll(coll); }
+        public boolean addAll(Collection coll) { throw new UnsupportedOperationException(); }
+        public boolean addAll(int i, Collection coll) { throw new UnsupportedOperationException(); }
+        public boolean removeAll(Collection coll) { throw new UnsupportedOperationException(); }
+        public boolean retainAll(Collection coll) { throw new UnsupportedOperationException(); }
         public void clear() { throw new UnsupportedOperationException(); }
-        public E get(int i) { return c.get(i); }
+        public Object get(int i) { return c.get(i); }
 
         public Object getProperty(Object key) {
             if (parent != null) return parent.getProperty(key);
-            return ((BridgeList<E>) c).getProperty(key);
+            return ((BridgeList) c).getProperty(key);
         }
 
         public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
         public void sort() { throw new UnsupportedOperationException(); }
-        public void sort(Comparator<? super E> comparator) { throw new UnsupportedOperationException(); }
+        public void sort(Comparator comparator) { throw new UnsupportedOperationException(); }
 
-        public BridgeList<E> subList(int fromIndex, int toIndex) {
-            return new UnmodifiableBridgeList<E>(c.subList(fromIndex, toIndex), parent != null ? parent : (BridgeList<E>) c);
+        public List subList(int fromIndex, int toIndex) {
+            return new UnmodifiableBridgeList(c.subList(fromIndex, toIndex), parent != null ? parent : (BridgeList) c);
         }
 
         public int lastIndexOf(Object o) { return c.lastIndexOf(o); }
         public int indexOf(Object o) { return c.indexOf(o); }
-        @Override
         public boolean equals(Object o) { return c.equals(o); }
-        @Override
         public int hashCode() { return c.hashCode(); }
     }
 
-    static class UnmodifiableNodeList extends UnmodifiableBridgeList<Node> implements NodeList {
+    static class UnmodifiableNodeList extends UnmodifiableBridgeList implements NodeList {
 
         UnmodifiableNodeList(NodeList nodeList) {
             super(nodeList);
@@ -222,7 +219,7 @@ public abstract class BridgeCollections {
         }
     }
 
-    static class UnmodifiableNodeManagerList extends UnmodifiableBridgeList<NodeManager> implements NodeManagerList {
+    static class UnmodifiableNodeManagerList extends UnmodifiableNodeList implements NodeManagerList {
 
         UnmodifiableNodeManagerList(NodeManagerList nodeManagerList) {
             super(nodeManagerList);
@@ -237,7 +234,7 @@ public abstract class BridgeCollections {
         }
     }
 
-    static class UnmodifiableRelationManagerList extends UnmodifiableBridgeList<RelationManager> implements RelationManagerList {
+    static class UnmodifiableRelationManagerList extends UnmodifiableNodeManagerList implements RelationManagerList {
 
         UnmodifiableRelationManagerList(RelationManagerList relationManagerList) {
             super(relationManagerList);
@@ -252,7 +249,7 @@ public abstract class BridgeCollections {
         }
     }
 
-    static class UnmodifiableRelationList extends UnmodifiableBridgeList<Relation> implements RelationList {
+    static class UnmodifiableRelationList extends UnmodifiableNodeList implements RelationList {
 
         UnmodifiableRelationList(RelationList relationList) {
             super(relationList);
@@ -271,7 +268,7 @@ public abstract class BridgeCollections {
         }
     }
 
-    static class UnmodifiableStringList extends UnmodifiableBridgeList<String> implements StringList {
+    static class UnmodifiableStringList extends UnmodifiableBridgeList implements StringList {
 
         UnmodifiableStringList(StringList stringList) {
             super(stringList);
@@ -289,21 +286,27 @@ public abstract class BridgeCollections {
     /* --------------------------------------------------------------------------------
      * Empty (and unmodifiable) Lists.
      */
-    static abstract class EmptyBridgeList<E> extends AbstractList<E> implements BridgeList<E>, Serializable  {
+    static class EmptyBridgeList extends UnmodifiableBridgeList {
         EmptyBridgeList() { }
 
+        private static final Object[] EMPTY = new Object[] {};
         public final int size() { return 0; }
-        public E get(int i) { throw new IndexOutOfBoundsException(); }
-        public boolean contains(Object obj) {return false;}
-
+        public final boolean isEmpty() { return true; }
+        public final boolean contains(Object o) { return false; }
+        public final boolean containsAll(Collection col) { return col.isEmpty(); }
+        public final Object[] toArray() { return EMPTY; }
+        public String toString() { return "[]"; }
+        public final ListIterator listIterator(int c) { return Collections.EMPTY_LIST.listIterator(c); }
+        public Object get(int i) { throw new IndexOutOfBoundsException(); }
         public Object getProperty(Object key) { return null; }
-        public BridgeList<E> subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
-        public void setProperty(Object key, Object value) { throw new UnsupportedOperationException(); }
-        public void sort() { throw new UnsupportedOperationException(); }
-        public void sort(Comparator<? super E> comparator) { throw new UnsupportedOperationException(); }
+        public List subList(int fromIndex, int toIndex) { throw new IndexOutOfBoundsException(); }
+        public int lastIndexOf(Object o) { return -1; }
+        public int indexOf(Object o) { return -1; }
+        public boolean equals(Object o) { return Collections.EMPTY_LIST.equals(o); }
+        public int hashCode() { return Collections.EMPTY_LIST.hashCode(); }
     }
 
-    static class EmptyNodeList extends EmptyBridgeList<Node> implements NodeList {
+    static class EmptyNodeList extends EmptyBridgeList implements NodeList {
 
         public final Node getNode(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -311,18 +314,12 @@ public abstract class BridgeCollections {
 
         public final NodeIterator nodeIterator() {
             return new UnmodifiableNodeIterator(null) {
-                @Override
                 public boolean hasNext() { return false; }
-                @Override
                 public boolean hasPrevious() { return false; }
-                @Override
                 public Node nextNode() { throw new NoSuchElementException(); }
-                @Override
                 public Node previousNode() { throw new NoSuchElementException(); }
-                @Override
-                public Node next() { throw new NoSuchElementException(); }
-                @Override
-                public Node previous() { throw new NoSuchElementException(); }
+                public Object next() { throw new NoSuchElementException(); }
+                public Object previous() { throw new NoSuchElementException(); }
             };
         }
 
@@ -330,11 +327,9 @@ public abstract class BridgeCollections {
             if (fromIndex == 0 && toIndex == 0) return this;
             throw new IndexOutOfBoundsException();
         }
-        // Preserves singleton property
-        protected Object readResolve() { return EMPTY_NODELIST; }
     }
 
-    static class EmptyRelationList extends EmptyBridgeList<Relation> implements RelationList {
+    static class EmptyRelationList extends EmptyNodeList implements RelationList {
 
         public Relation getRelation(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -342,18 +337,14 @@ public abstract class BridgeCollections {
 
         public RelationIterator relationIterator() {
             return new UnmodifiableRelationIterator(null) {
-                @Override
                 public boolean hasNext() { return false; }
-                @Override
                 public boolean hasPrevious() { return false; }
-                @Override
                 public Relation nextRelation() { throw new NoSuchElementException(); }
-                @Override
                 public Relation previousRelation() { throw new NoSuchElementException(); }
-                @Override
-                public Relation next() { throw new NoSuchElementException(); }
-                @Override
-                public Relation previous() { throw new NoSuchElementException(); }
+                public Node nextNode() { throw new NoSuchElementException(); }
+                public Node previousNode() { throw new NoSuchElementException(); }
+                public Object next() { throw new NoSuchElementException(); }
+                public Object previous() { throw new NoSuchElementException(); }
             };
         }
 
@@ -361,10 +352,9 @@ public abstract class BridgeCollections {
             if (fromIndex == 0 && toIndex == 0) return this;
             throw new IndexOutOfBoundsException();
         }
-        protected Object readResolve() { return EMPTY_RELATIONLIST; }
     }
 
-    static class EmptyNodeManagerList extends EmptyBridgeList<NodeManager> implements NodeManagerList {
+    static class EmptyNodeManagerList extends EmptyNodeList implements NodeManagerList {
 
         public NodeManager getNodeManager(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -372,24 +362,19 @@ public abstract class BridgeCollections {
 
         public NodeManagerIterator nodeManagerIterator() {
             return new UnmodifiableNodeManagerIterator(null) {
-                @Override
                 public boolean hasNext() { return false; }
-                @Override
                 public boolean hasPrevious() { return false; }
-                @Override
                 public NodeManager nextNodeManager() { throw new NoSuchElementException(); }
-                @Override
                 public NodeManager previousNodeManager() { throw new NoSuchElementException(); }
-                @Override
-                public NodeManager next() { throw new NoSuchElementException(); }
-                @Override
-                public NodeManager previous() { throw new NoSuchElementException(); }
+                public Node nextNode() { throw new NoSuchElementException(); }
+                public Node previousNode() { throw new NoSuchElementException(); }
+                public Object next() { throw new NoSuchElementException(); }
+                public Object previous() { throw new NoSuchElementException(); }
             };
         }
-        protected Object readResolve() { return EMPTY_NODEMANAGERLIST; }
     }
 
-    static class EmptyRelationManagerList extends EmptyBridgeList<RelationManager> implements RelationManagerList {
+    static class EmptyRelationManagerList extends EmptyNodeManagerList implements RelationManagerList {
 
         public RelationManager getRelationManager(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
@@ -397,41 +382,33 @@ public abstract class BridgeCollections {
 
         public RelationManagerIterator relationManagerIterator() {
             return new UnmodifiableRelationManagerIterator(null) {
-                @Override
                 public boolean hasNext() { return false; }
-                @Override
                 public boolean hasPrevious() { return false; }
-                @Override
                 public RelationManager nextRelationManager() { throw new NoSuchElementException(); }
-                @Override
                 public RelationManager previousRelationManager() { throw new NoSuchElementException(); }
-                @Override
-                public RelationManager next() { throw new NoSuchElementException(); }
-                @Override
-                public RelationManager previous() { throw new NoSuchElementException(); }
+                public NodeManager nextNodeManager() { throw new NoSuchElementException(); }
+                public NodeManager previousNodeManager() { throw new NoSuchElementException(); }
+                public Node nextNode() { throw new NoSuchElementException(); }
+                public Node previousNode() { throw new NoSuchElementException(); }
+                public Object next() { throw new NoSuchElementException(); }
+                public Object previous() { throw new NoSuchElementException(); }
             };
         }
-        protected Object readResolve() { return EMPTY_RELATIONMANAGERLIST; }
     }
 
-    static class EmptyStringList extends EmptyBridgeList<String> implements StringList {
+    static class EmptyStringList extends EmptyBridgeList implements StringList {
         public String getString(int index) {
             throw new IndexOutOfBoundsException("Index: "+index);
         }
 
         public StringIterator stringIterator() {
             return new UnmodifiableStringIterator(null) {
-                @Override
                 public boolean hasNext() { return false; }
-                @Override
                 public boolean hasPrevious() { return false; }
-                @Override
                 public String nextString() { throw new NoSuchElementException(); }
-                @Override
                 public String previousString() { throw new NoSuchElementException(); }
             };
         }
-        protected Object readResolve() { return EMPTY_STRINGLIST; }
     }
 
 }

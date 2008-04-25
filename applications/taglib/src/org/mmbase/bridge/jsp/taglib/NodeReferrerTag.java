@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.functions.Parameters;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeReferrerTag.java,v 1.36 2008-01-24 14:20:35 michiel Exp $
+ * @version $Id: NodeReferrerTag.java,v 1.26.2.7 2008-01-24 14:18:50 michiel Exp $
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {
@@ -61,7 +62,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */
     public NodeProvider findNodeProvider() throws JspTagException {
-        return findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
+        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
@@ -69,7 +70,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */
     public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {
-        return findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
+        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
     }
 
 
@@ -84,11 +85,11 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
             return org.mmbase.util.Casting.toNode(o, getCloudVar());
         }
     }
-
     /**
      * Gets the Node variable from the parent NodeProvider.
      * @return a org.mmbase.bridge.Node
      */
+
     protected Node getNode() throws JspTagException {
         Node node =  parentNodeId == Attribute.NULL ? getNodeFromPageContext() : null;
         // get the node from a parent element.
@@ -114,7 +115,6 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     public final Node findNode() throws JspTagException {
         return getNode();
     }
-
     public Cloud getCloudVar() throws JspTagException {
         CloudProvider cp = findCloudProvider(false);
         if (cp != null) {
@@ -129,7 +129,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     }
 
 
-    public void fillStandardParameters(Parameters p) throws JspTagException {
+    protected void fillStandardParameters(Parameters p) throws JspTagException {
         super.fillStandardParameters(p);
         NodeProvider np = findNodeProvider(false);
         if (np != null) {
@@ -142,7 +142,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     }
 
     public Locale getLocale() throws JspTagException {
-        LocaleTag localeTag = findParentTag(LocaleTag.class, null, false);
+        LocaleTag localeTag = (LocaleTag)findParentTag(LocaleTag.class, null, false);
         if (localeTag != null) {
             Locale locale = localeTag.getLocale();
             if (locale != null) {

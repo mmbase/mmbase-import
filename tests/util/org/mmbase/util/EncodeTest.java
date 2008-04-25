@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import org.mmbase.util.transformers.*;
-import org.mmbase.util.functions.*;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
@@ -19,7 +20,6 @@ import junit.framework.TestCase;
  * Test cases for the Encoder
  *
  * @author keesj
- * @author Michiel Meeuwissen
  */
 public class EncodeTest extends TestCase {
 
@@ -80,10 +80,10 @@ public class EncodeTest extends TestCase {
             String name = (String) iter.next();
             Encode encode = new Encode(name);
             if (encode.isCharEncoder()){
-                for (String element : TESTS) {
-                    String encoded = encode.encode(element);
+                for (int x =0 ; x < TESTS.length ; x++){
+                    String encoded = encode.encode(TESTS[x]);
                     String decoded = encode.decode(encoded);
-                    assertTrue("char encoder["+ name +"] failed symetric test with input value["+ element+ "]",element.equals(decoded));
+                    assertTrue("char encoder["+ name +"] failed symetric test with input value["+ TESTS[x]+ "]",TESTS[x].equals(decoded));
                 }
             }
         }
@@ -148,40 +148,7 @@ public class EncodeTest extends TestCase {
         documentedEncodings.add("ROT-13");
         documentedEncodings.add("ROT-5");
         documentedEncodings.add("UNICODEESCAPER");
-        return documentedEncodings;
+       return documentedEncodings;
     }
-
-    public void testRegexpReplacer() {
-        RegexpReplacerFactory fact = new RegexpReplacerFactory();
-        Parameters pars = fact.createParameters();
-        pars.set("mode", "ENTIRE");
-        List<Map.Entry<String, String>> patterns = new ArrayList<Map.Entry<String, String>>();
-        patterns.add(new Entry<String, String>("\\s+", " "));
-        patterns.add(new Entry<String, String>("aa", "bb"));
-        patterns.add(new Entry<String, String>("bb", "AAA"));
-        pars.set("patterns", patterns);
-        CharTransformer reg = fact.createTransformer(pars);
-        assertEquals(reg.transform("a a"), "a a");
-        assertEquals(reg.transform("a  a"), "a a");
-        assertEquals(reg.transform("a \n a"), "a a");
-        assertEquals(reg.transform("a \n\t a"), "a a");
-        assertEquals(reg.transform("a  a  a"), "a a a");
-
-        pars.set("replacefirst", "true");  reg = fact.createTransformer(pars);
-        assertEquals(reg.transform("a  a  a"), "a a  a");
-        assertEquals(reg.transform("a  aa  a"), "a aa  a");
-
-        pars.set("replacefirst", "all");  reg = fact.createTransformer(pars);
-        assertEquals(reg.transform("a  aa  a"), "a bb  a");
-        assertEquals(reg.transform("a  aa  aa"), "a bb  aa");
-
-        pars.set("mode", "WORDS");
-        pars.set("replacefirst", "all");  reg = (CharTransformer)fact.createTransformer(pars);
-        assertEquals(reg.transform("a  aa  a"), "a  bb  a");
-        assertEquals(reg.transform("a  aa  aa"), "a  bb  aa");
-
-    }
-
-
 
 }

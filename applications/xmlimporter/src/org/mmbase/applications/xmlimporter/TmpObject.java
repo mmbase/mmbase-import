@@ -10,8 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
-
-import org.mmbase.bridge.Field;
+import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.12 2007-06-21 15:50:20 nklasens Exp $
+ * @version $Id: TmpObject.java,v 1.8 2005-10-06 14:14:41 michiel Exp $
  */
 public class TmpObject {
 
@@ -36,8 +35,15 @@ public class TmpObject {
     final static String _SNUMBER  = "_snumber";
     final static String _DNUMBER  = "_dnumber";
 
-    private static Logger log = Logging.getLoggerInstance(TmpObject.class);
+    /** Logger instance. */
+    private static Logger log
+        = Logging.getLoggerInstance(TmpObject.class.getName());
 
+    /** The mmbase module. */
+    private static MMBase mmbase;
+
+    /** The temporary node manager. */
+    private static TemporaryNodeManagerInterface tmpNodeManager;
 
     /** All user-related data. */
     private UserTransactionInfo uti;
@@ -55,13 +61,26 @@ public class TmpObject {
      * no relations on commit, false otherwise. */
     private boolean disposeWhenNotReferenced = false;
 
+    /**
+     * Gets reference to the MMBase module.
+     * @return The MMBase module.
+     */
+    private static MMBase getMMBase() {
+        if (mmbase == null) {
+            mmbase=(MMBase) Module.getModule("MMBASEROOT");
+        }
+        return mmbase;
+    }
 
     /**
      * Gets reference to TemporaryNodeManager module.
      * @return the TemporaryNodeManager module.
      */
-    private static synchronized TemporaryNodeManager getTmpNodeManager() {
-        return TransactionManager.getInstance().getTemporaryNodeManager();
+    private static synchronized TemporaryNodeManagerInterface getTmpNodeManager() {
+        if (tmpNodeManager == null) {
+            tmpNodeManager = new TemporaryNodeManager(getMMBase());
+        }
+        return tmpNodeManager;
     }
 
     /**
@@ -119,8 +138,8 @@ public class TmpObject {
      */
     public void setField(String name, Object value) {
        // Decode string for binary field to byte-array using Base64.
-       if (node.getDBType(name) == Field.TYPE_BINARY
-               && value instanceof String) {
+       if (node.getDBType(name) == FieldDefs.TYPE_BYTE
+       && value instanceof String) {
           String strValue = (String) value;
           value = new Encode("BASE64").decodeBytes(strValue);
        }
@@ -134,19 +153,19 @@ public class TmpObject {
      * @return All relations in the persistent cloud of the object in the
      * persistent cloud represented by this TmpObject instance.
      */
-    public List<MMObjectNode> getRelationsInPersistentCloud() {
-        List<MMObjectNode> relations;
+    public Vector getRelationsInPersistentCloud() {
+        Vector relations;
         int mmbaseId = getMMBaseId();
         if (mmbaseId != -1) {
             // Access object.
-            relations = MMBase.getMMBase().getInsRel().getRelations_main(mmbaseId);
+            relations = getMMBase().getInsRel().getRelations_main(mmbaseId);
             if (log.isDebugEnabled()) {
                 log.debug("Relations in persistent cloud of " + this
                 + ": " + relations);
             }
         } else {
             // Not an access object, so it has no relations in persistent cloud.
-            relations = new Vector<MMObjectNode>();
+            relations = new Vector();
         }
         return relations;
     }
@@ -289,6 +308,22 @@ public class TmpObject {
     }
 
     /**
+     * Compares value of specified field of this and another object.
+     * @param tmpObj The other object.
+     * @param name The field name.
+     * @return True if the fieldvalues of both objects are equal,
+     *  false otherwise.
+     */
+    private boolean compareField(TmpObject tmpObj, String name) {
+        Object value = getField(name);
+        if (value != null) {
+            return value.equals(tmpObj.getField(name));
+        } else {
+            return tmpObj.getField(name) == null;
+        }
+    }
+
+    /**
      * ToString() method, displays most important fields.
      * @return String representation of this object.
      */
@@ -315,10 +350,10 @@ public class TmpObject {
                 + "\" disposeWhenNotReferenced=\"" + disposeWhenNotReferenced
                 + "\">\n");
         }
-        Iterator<Map.Entry<String, Object>> i = node.getValues().entrySet().iterator();
+        Iterator i = node.getValues().entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry<String, Object> entry = i.next();
-            String name = entry.getKey();
+            Map.Entry entry = (Map.Entry) i.next();
+            String name = (String) entry.getKey();
             String value = entry.getValue().toString();
             if (!name.equals("otype") && !name.equals("owner")
                 && !name.equals("number") && !name.equals("_number")) {

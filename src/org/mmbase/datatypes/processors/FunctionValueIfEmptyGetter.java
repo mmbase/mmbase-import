@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * value, which can come in handy sometimes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionValueIfEmptyGetter.java,v 1.2 2008-04-02 12:37:17 michiel Exp $
+ * @version $Id: FunctionValueIfEmptyGetter.java,v 1.1.2.2 2008-04-16 15:36:40 michiel Exp $
  * @since MMBase-1.8.6
  */
 
@@ -34,7 +34,9 @@ public class FunctionValueIfEmptyGetter implements Processor {
     }
 
     public Object process(Node node, Field field, Object value) {
-        log.info("node " + node + " " + field + " "  + value);
+        if (log.isDebugEnabled()) {
+            log.debug("node " + node + " " + field + " "  + value);
+        }
         if (value == null) {
             return Casting.toType(field.getDataType().getTypeAsClass(), node.getFunctionValue(functionName, null).get());
         } else if ("".equals("")) {

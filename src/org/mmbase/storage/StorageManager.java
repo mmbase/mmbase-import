@@ -20,7 +20,7 @@ import java.io.InputStream;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.8 2008-04-11 15:13:37 nklasens Exp $
+ * @version $Id: StorageManager.java,v 1.7.2.1 2008-04-11 15:18:30 nklasens Exp $
  */
 public interface StorageManager {
 
@@ -212,6 +212,7 @@ public interface StorageManager {
      */
     public void delete(CoreField field) throws StorageException;
 
+    
     /**
      * Checks for null values for a field from the storage of this builder.
      * @param node the node to check the value for
@@ -220,5 +221,5 @@ public interface StorageManager {
      * @throws StorageException if an error occurred during the get
      */
     public boolean isNull(MMObjectNode node, CoreField field) throws StorageException;
-
 }
+

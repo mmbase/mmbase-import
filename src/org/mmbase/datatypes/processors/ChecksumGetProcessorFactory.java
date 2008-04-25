@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * Checksum 'processor', and the field for which this field is a checksum.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChecksumGetProcessorFactory.java,v 1.6 2008-02-19 20:56:35 nklasens Exp $
+ * @version $Id: ChecksumGetProcessorFactory.java,v 1.1.2.3 2008-02-19 20:56:41 nklasens Exp $
  * @since MMBase-1.8
  */
 
@@ -29,7 +29,7 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
 
     protected static final Parameter[] PARAMS = new Parameter[] {
         new Parameter.Wrapper(ChecksumFactory.PARAMS),
-        new Parameter<String>("field", String.class, true)
+        new Parameter("field", String.class, true)
     };
 
     private static final ParameterizedTransformerFactory factory = new ChecksumFactory();
@@ -41,32 +41,32 @@ public class ChecksumGetProcessorFactory implements ParameterizedProcessorFactor
         final ByteToCharTransformer transformer = (ByteToCharTransformer) factory.createTransformer(parameters);
         final String  sourceField = (String) parameters.get("field");
         return new Processor() {
-            private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-            public Object process(Node node, Field field, Object value) {
-                if (value == null || "".equals(value) ) {
-                    if (node.isNull(sourceField) || node.getSize(sourceField) == 0) {
-                        // set checksum null too.
-                        // node.setValue(field.getName(), null);
-                        return value;
+                public Object process(Node node, Field field, Object value) {
+                    if (value == null || "".equals(value) ) {
+                        if (node.isNull(sourceField) || node.getSize(sourceField) == 0) {
+							// set checksum null too.
+							// node.setValue(field.getName(), null);
+							return value;
+						} else {
+		                    StringWriter writer = new StringWriter();
+                    		transformer.transform(node.getInputStreamValue(sourceField), writer);
+                    		value = writer.toString();
+                    		if (!field.isVirtual()) {
+                        		node.setStringValue(field.getName(), (String) value);
+    							node.commit();
+                    		}
+							return value;
+						}
                     } else {
-                        StringWriter writer = new StringWriter();
-                        transformer.transform(node.getInputStreamValue(sourceField), writer);
-                        value = writer.toString();
-                        if (!field.isVirtual()) {
-                            node.setStringValue(field.getName(), (String) value);
-                            node.commit();
-                        }
-                        return value;
+                    	return value;
                     }
-                } else {
-                    return value;
                 }
-            }
-            public String toString() {
-                return transformer.toString() + " on " + sourceField;
-            }
-        };
+                public String toString() {
+                    return transformer.toString() + " on " + sourceField;
+                }
+            };
     }
 
     /**

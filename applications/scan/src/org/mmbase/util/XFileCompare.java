@@ -11,13 +11,13 @@ package org.mmbase.util;
 
 /**
  * Class to compare XFile object depending on their comparefield.
- * @see org.mmbase.util.SortedVector
- * @see org.mmbase.util.CompareInterface
- * @see org.mmbase.util.XFile
+ * @see SortedVector
+ * @see CompareInterface
+ * @see XFile
  *
  * @author David V van Zeventer
  * @application SCAN or Devices
- * @version $Id: XFileCompare.java,v 1.8 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: XFileCompare.java,v 1.7 2004-09-30 08:52:16 pierre Exp $
  * @todo    Should implement java.util.Comparator, perhaps be named 'FileComparator'.
  */
 public class XFileCompare implements CompareInterface {

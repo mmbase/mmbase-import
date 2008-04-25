@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.27 2007-08-08 09:38:28 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.23.2.2 2007-08-08 09:51:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -127,18 +127,21 @@ public class BasicStepField implements StepField {
      */
     public BasicStepField(Step step, CoreField field) {
         if (step == null) {
-            throw new IllegalArgumentException("Invalid step value: " + step);
+            throw new IllegalArgumentException(
+            "Invalid step value: " + step);
         }
         this.step = step;
 
         if (field == null) {
-            throw new IllegalArgumentException("Invalid field value: " + field + " for " + step);
+            throw new IllegalArgumentException(
+            "Invalid field value: " + field);
         }
         // Check field belongs to step
         if (!step.getTableName().equals(field.getParent().getTableName())) {
-            throw new IllegalArgumentException("Invalid field value, belongs to step " + field.getParent().getTableName()
-                                               + " instead of step " +  step.getTableName() + ": "
-                                               + field);
+            throw new IllegalArgumentException(
+            "Invalid field value, belongs to step " + field.getParent().getTableName()
+            + " instead of step " +  step.getTableName() + ": "
+            + field);
         }
         this.field = field;
     }
@@ -262,7 +265,7 @@ public class BasicStepField implements StepField {
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer("");
         Step step = getStep();
         if (step == null) {
             sb.append("null");

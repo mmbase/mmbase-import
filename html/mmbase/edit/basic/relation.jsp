@@ -33,6 +33,7 @@
         <%=otherManager.getGUIName()%>
         (<%= role %>: <%=guirole%>)
         <span class="nmname"><%=otherManager.getName()%></span>
+
     </td>
     <th colspan="3"><%=m.getString("relations.relations")%></th>
     <th colspan="3"><%=m.getString("relations.related")%>

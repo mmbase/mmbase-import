@@ -180,6 +180,8 @@ HTMLArea.prototype._fullScreen = function()
     this._htmlArea.style.left     = 0;
     this._htmlArea.style.top      = 0;
     this._isFullScreen = true;
+    
+    
     resetScroll();
 
     try

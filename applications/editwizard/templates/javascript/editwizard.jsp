@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.72 2008-04-02 12:11:46 andre Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.7 2008-04-02 12:09:47 andre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -40,7 +40,7 @@ function doOnLoad_ew() {
 
               if (elem.name == "internal_" + id + "_day") {
                 if (elem.selectedIndex) { 
-                  elem.selectedIndex = d.getDate() - 1;
+                elem.selectedIndex = d.getDate() - 1;
                 } else {
                   elem.value = d.getDate();
                 }

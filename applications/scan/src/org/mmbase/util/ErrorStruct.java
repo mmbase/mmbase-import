@@ -13,11 +13,11 @@ package org.mmbase.util;
  * Class for storing error information useful in parsing.
  * Information that can be stored includes the error type, column and
  * line number of the parsed text where the error occurred, and a message.
- * used by the org.mmbase.module.Config module when parsing XML files.
+ * used by the {@link org.mmbase.module.Config} module when parsing XML files.
  *
  * @application Config
  * @author vpro
- * @version $Id: ErrorStruct.java,v 1.6 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: ErrorStruct.java,v 1.5 2004-09-29 14:29:23 pierre Exp $
  */
 public class ErrorStruct {
 

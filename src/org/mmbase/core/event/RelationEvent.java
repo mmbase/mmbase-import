@@ -1,4 +1,5 @@
 /*
+ * Created on 21-jun-2005
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative. The
  * license (Mozilla version 1.0) can be read at the MMBase site. See
@@ -7,7 +8,9 @@
 package org.mmbase.core.event;
 
 import java.io.Serializable;
+import java.util.*;
 import org.mmbase.util.HashCodeUtil;
+import org.mmbase.module.core.MMBase;
 
 /**
  * This class reflects a ,,change relation event. it contains information about the kind of event (new, delete, change),
@@ -17,7 +20,7 @@ import org.mmbase.util.HashCodeUtil;
  * 
  * @author Ernst Bunders
  * @since MMBase-1.8
- * @version $Id: RelationEvent.java,v 1.21 2007-07-26 11:45:54 michiel Exp $
+ * @version $Id: RelationEvent.java,v 1.18 2006-06-20 21:23:57 michiel Exp $
  */
 public class RelationEvent extends Event implements Serializable, Cloneable {
 
@@ -26,14 +29,14 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
      */
     private static final long serialVersionUID = 1L;
 
-    private final int relationSourceNumber;
-    private final int relationDestinationNumber;
-    private final String relationSourceType;
-    private final String relationDestinationType;
+    private final int relationSourceNumber, relationDestinationNumber;
+    // these are not final becouse they can be reset by MMObjectBuilder.notify()
+    private String relationSourceType;
+    private String relationDestinationType;
 
     private final int role; // the reldef node number
 
-    private final NodeEvent nodeEvent;
+    private NodeEvent nodeEvent;
 
     /**
      * Constructor for relation event
@@ -97,6 +100,19 @@ public class RelationEvent extends Event implements Serializable, Cloneable {
         return role;
     }
 
+    /**
+     * I think this method is not needed.
+     * @deprecated
+     */
+    /*
+    public RelationEvent clone(String sourceType, String destType) {
+        RelationEvent clone = (RelationEvent) super.clone();
+        clone.nodeEvent = (NodeEvent) nodeEvent.clone();
+        clone.relationSourceType = sourceType;
+        clone.relationDestinationType = destType;
+        return clone;
+    }
+    */
 
     public int hashCode() {
         int result = nodeEvent.hashCode();

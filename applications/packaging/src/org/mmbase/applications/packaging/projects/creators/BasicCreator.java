@@ -23,7 +23,9 @@ import java.util.jar.JarOutputStream;
 import org.mmbase.applications.packaging.PackageManager;
 import org.mmbase.applications.packaging.Person;
 import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
-import org.mmbase.applications.packaging.projects.*;
+import org.mmbase.applications.packaging.projects.PackageDepend;
+import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.projects.packageStep;
 import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -47,9 +49,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
     private String description="";
 
 
-    private ArrayList<packageStep> packagesteps;
+    private ArrayList packagesteps;
     private packageStep projectstep;
-    ArrayList<Target> relatedtargetcreate =  new  ArrayList<Target>();
+    ArrayList relatedtargetcreate =  new  ArrayList();
     private float progressbar = 0;
     private float progressstep = 1;
     private float subprogressbar = 0;
@@ -144,7 +146,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public boolean addPackageDepends(Target target,String newpackage,String version) {
-        ArrayList<PackageDepend> packagedepends=(ArrayList<PackageDepend>)target.getItem("packagedepends");
+        ArrayList packagedepends=(ArrayList)target.getItem("packagedepends");
         PackageInterface p=PackageManager.getPackage(newpackage);
         if (p!=null) {
              PackageDepend pd=new PackageDepend();
@@ -160,8 +162,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public boolean delPackageDepends(Target target,String packageid,String version,String versionmode) {
-        ArrayList<PackageDepend> packagedepends=(ArrayList<PackageDepend>)target.getItem("packagedepends");
-        for (PackageDepend pd : packagedepends) {
+        ArrayList packagedepends=(ArrayList)target.getItem("packagedepends");
+        for (Iterator i = packagedepends.iterator(); i.hasNext();) {
+                PackageDepend pd=(PackageDepend)i.next();
                 if (pd.getId().equals(packageid) && pd.getVersion().equals(version) && pd.getVersionMode().equals(versionmode)) {
                         packagedepends.remove(pd);
                         break;
@@ -173,8 +176,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean setPackageDepends(Target target,String packageid,String oldversion,String oldversionmode,String newversion,String newversionmode) {
-        ArrayList<PackageDepend> packagedepends=(ArrayList<PackageDepend>)target.getItem("packagedepends");
-        for (PackageDepend pd : packagedepends) {
+        ArrayList packagedepends=(ArrayList)target.getItem("packagedepends");
+        for (Iterator i = packagedepends.iterator(); i.hasNext();) {
+                PackageDepend pd=(PackageDepend)i.next();
                 if (pd.getId().equals(packageid) && pd.getVersion().equals(oldversion) && pd.getVersionMode().equals(oldversionmode)) {
 			pd.setVersion(newversion);
 			pd.setVersionMode(newversionmode);
@@ -185,16 +189,16 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	return true;
    }
 	
-   public ArrayList<PackageDepend> getPackageDepends(Target target) {
+   public ArrayList getPackageDepends(Target target) {
 	Object o=target.getItem("packagedepends");
-	if (o!=null) return (ArrayList<PackageDepend>)o;
-	return new ArrayList<PackageDepend>();
+	if (o!=null) return (ArrayList)o;
+	return new ArrayList();
    }
 
    public boolean addPackageInitiator(Target target,String newname,String newcompany) {
-   	ArrayList<Person> list=getRelatedPeople("initiators",target);
+   	ArrayList list=getRelatedPeople("initiators",target);
 	if (list==null) {
-		list=new ArrayList<Person>();
+		list=new ArrayList();
 		target.setItem("initiators",list);
 	}
 	Person pr=new Person();
@@ -206,8 +210,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public boolean setPackageInitiator(Target target,String oldname,String newname,String oldcompany,String newcompany) {
-   	ArrayList<Person> people=getRelatedPeople("initiators",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("initiators",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getName().equals(oldname) && pr.getCompany().equals(oldcompany)) {
 			pr.setName(newname);		
 			pr.setCompany(newcompany);		
@@ -220,8 +225,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean delPackageInitiator(Target target,String oldname,String oldcompany) {
-   	ArrayList<Person> people=getRelatedPeople("initiators",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("initiators",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getName().equals(oldname) && pr.getCompany().equals(oldcompany)) {
 			people.remove(pr);
 			target.save();	
@@ -233,9 +239,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean addPackageDeveloper(Target target,String newname,String newcompany) {
-   	ArrayList<Person> list=getRelatedPeople("developers",target);
+   	ArrayList list=getRelatedPeople("developers",target);
         if (list==null) {
-                list=new ArrayList<Person>();
+                list=new ArrayList();
                 target.setItem("developers",list);
         }
 	Person pr=new Person();
@@ -247,8 +253,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public boolean setPackageDeveloper(Target target,String oldname,String newname,String oldcompany,String newcompany) {
-   	ArrayList<Person> people=getRelatedPeople("developers",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("developers",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getName().equals(oldname) && pr.getCompany().equals(oldcompany)) {
 			pr.setName(newname);		
 			pr.setCompany(newcompany);		
@@ -261,8 +268,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean delPackageDeveloper(Target target,String oldname,String oldcompany) {
-   	ArrayList<Person> people=getRelatedPeople("developers",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("developers",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getName().equals(oldname) && pr.getCompany().equals(oldcompany)) {
 			people.remove(pr);
 			target.save();	
@@ -274,9 +282,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean addPackageContact(Target target,String newreason,String newname,String newemail) {
-   	ArrayList<Person> list=getRelatedPeople("contacts",target);
+   	ArrayList list=getRelatedPeople("contacts",target);
         if (list==null) {
-                list=new ArrayList<Person>();
+                list=new ArrayList();
                 target.setItem("contacts",list);
         }
 	Person pr=new Person();
@@ -289,8 +297,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public boolean setPackageContact(Target target,String oldreason,String newreason,String oldname,String newname,String oldemail,String newemail) {
-   	ArrayList<Person> people=getRelatedPeople("contacts",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("contacts",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getName().equals(oldname) && pr.getReason().equals(oldreason) && pr.getMailto().equals(oldemail)) {
 			pr.setName(newname);		
 			pr.setMailto(newemail);		
@@ -304,8 +313,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean delPackageContact(Target target,String oldreason,String oldname,String oldemail) {
-   	ArrayList<Person> people=getRelatedPeople("contacts",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("contacts",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getName().equals(oldname) && pr.getMailto().equals(oldemail) && pr.getReason().equals(oldreason)) {
 			people.remove(pr);
 			target.save();	
@@ -317,9 +327,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean addPackageSupporter(Target target,String newcompany) {
-   	ArrayList<Person> list=getRelatedPeople("supporters",target);
+   	ArrayList list=getRelatedPeople("supporters",target);
         if (list==null) {
-                list=new ArrayList<Person>();
+                list=new ArrayList();
                 target.setItem("supporters",list);
         }
 	Person pr=new Person();
@@ -330,8 +340,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
    public boolean setPackageSupporter(Target target,String oldcompany,String newcompany) {
-   	ArrayList<Person> people=getRelatedPeople("supporters",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("supporters",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getCompany().equals(oldcompany)) {
 			pr.setCompany(newcompany);		
 			target.save();	
@@ -343,8 +354,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public boolean delPackageSupporter(Target target,String oldcompany) {
-   	ArrayList<Person> people=getRelatedPeople("supporters",target);
-       	for (Person pr : people) {
+   	ArrayList people=getRelatedPeople("supporters",target);
+       	for (Iterator i = people.iterator(); i.hasNext();) {
+		Person pr=(Person)i.next();
 		if (pr.getCompany().equals(oldcompany)) {
 			people.remove(pr);
 			target.save();	
@@ -396,7 +408,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
    }
 
 
-    public Iterator<packageStep> getPackageSteps() {
+    public Iterator getPackageSteps() {
 	if (packagesteps!=null) {
 		return packagesteps.iterator();
 	} else {
@@ -406,9 +418,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
     public int getErrorCount() {
 	int count=0;
-    	Iterator<packageStep> e=getPackageSteps();
+    	Iterator e=getPackageSteps();
 	while (e.hasNext()) {
-		packageStep step=e.next();
+		packageStep step=(packageStep)e.next();
 		count+=step.getErrorCount();
 	}
 	return count;
@@ -417,22 +429,22 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
     public int getWarningCount() {
 	int count=0;
-    	Iterator<packageStep> e=getPackageSteps();
+    	Iterator e=getPackageSteps();
 	while (e.hasNext()) {
-		packageStep step=e.next();
+		packageStep step=(packageStep)e.next();
 		count+=step.getWarningCount();
 	}
 	return count;
     }
 
-    public Iterator<packageStep> getPackageSteps(int logid) {
+    public Iterator getPackageSteps(int logid) {
 	// well maybe its one of my subs ?
-    	Iterator<packageStep> e=getPackageSteps();
+    	Iterator e=getPackageSteps();
 	while (e.hasNext()) {
-		packageStep step=e.next();
+		packageStep step=(packageStep)e.next();
 		Object o=step.getPackageSteps(logid);
 		if (o!=null) {
-			return (Iterator<packageStep>)o;
+			return (Iterator)o;
 		}
 	}
 	return null;
@@ -447,7 +459,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
                 step=new packageStep();
         }
         if (packagesteps==null) {
-                packagesteps=new ArrayList<packageStep>();
+                packagesteps=new ArrayList();
                 packagesteps.add(step);
                 return step;
         } else {
@@ -461,19 +473,19 @@ public class BasicCreator implements CreatorInterface,Runnable {
     }
 
 
-   public ArrayList<String> getFileNames(ArrayList<String> foundfiles,String basedir,String include,String exclude) {
+   public ArrayList getFileNames(ArrayList foundfiles,String basedir,String include,String exclude) {
 	// wrapper because we only want to filter it 1 time and not recursive
-	ArrayList<String> files=getFileNames_r(foundfiles,basedir,include,exclude);
-	ArrayList<String> filtered=new ArrayList<String>();
+	ArrayList files=getFileNames_r(foundfiles,basedir,include,exclude);
+	ArrayList filtered=new ArrayList();
 	
 	// tricky : a filter all unused dirs
-	Iterator<String> e=files.iterator();
+	Iterator e=files.iterator();
 	while (e.hasNext()) {
-		String fn=e.next();
+		String fn=(String)e.next();
 		if (fn.endsWith(File.separator)) {
-			Iterator<String> f=files.iterator();
+			Iterator f=files.iterator();
 			while (f.hasNext()) {
-				String fn2=f.next();
+				String fn2=(String)f.next();
 				if (!fn2.endsWith(File.separator) && fn2.indexOf(fn)!=-1) {
 					filtered.add(fn);
 					break;
@@ -486,18 +498,18 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	return filtered;
    }
 
-   public ArrayList<String> getFileNames_r(ArrayList<String> foundfiles,String basedir,String include,String exclude) {
+   public ArrayList getFileNames_r(ArrayList foundfiles,String basedir,String include,String exclude) {
         File currDir = new File(basedir);
 	if (currDir!=null && currDir.isDirectory()) {
         String files[] = currDir.list();
-        for (String element : files) {
-		File tfile=new File(basedir+File.separator+element);
+        for (int i=0; i<files.length; i++) {
+		File tfile=new File(basedir+File.separator+files[i]);
 		if (tfile.isDirectory()) {
-			foundfiles.add(basedir+element+"/");
-			getFileNames_r(foundfiles,basedir+element+File.separator,include,exclude);
+			foundfiles.add(basedir+files[i]+"/");
+			getFileNames_r(foundfiles,basedir+files[i]+File.separator,include,exclude);
 		} else {
 			
-			String fn=basedir+element;
+			String fn=basedir+files[i];
 			if (include.equals("*") || fn.indexOf(include)!=-1) { 
 			if (exclude.equals("") || !excludeFile(tfile,fn,exclude)) {
 				foundfiles.add(fn);
@@ -574,9 +586,10 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
    public String getPackageDependsXML(Target target) {
 	String body="\t<packagedepends>\n";
-	ArrayList<PackageDepend> packagedepends=getPackageDepends(target);
+	ArrayList packagedepends=getPackageDepends(target);
 	if (packagedepends!=null) {
-        	for (PackageDepend pd : packagedepends) {
+        	for (Iterator i = packagedepends.iterator(); i.hasNext();) {
+			PackageDepend pd=(PackageDepend)i.next();
 			body+="\t\t<package";
 			body+=" name=\""+pd.getName()+"\"";
 			body+=" maintainer=\""+pd.getMaintainer()+"\"";
@@ -596,9 +609,10 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	body+="<!DOCTYPE packagedepends PUBLIC \"-//MMBase/DTD packagedepends config 1.0//EN\" \"http://www.mmbase.org/dtd/packagedepends_1_0.dtd\">\n";
 	body+="\t<packagedepends>\n";
 
-	ArrayList<PackageDepend> packagedepends=getPackageDepends(target);
+	ArrayList packagedepends=getPackageDepends(target);
 	if (packagedepends!=null) {
-        	for (PackageDepend pd : packagedepends) {
+        	for (Iterator i = packagedepends.iterator(); i.hasNext();) {
+			PackageDepend pd=(PackageDepend)i.next();
 			body+="\t\t<package";
 			body+=" name=\""+pd.getName()+"\"";
 			body+=" maintainer=\""+pd.getMaintainer()+"\"";
@@ -630,9 +644,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
    		int bytesRead;
 		int baselen=basedir.length();
      		try {
-			Iterator<String> files=getFileNames(new ArrayList<String>(),basedir,include,exclude).iterator();
+			Iterator files=getFileNames(new ArrayList(),basedir,include,exclude).iterator();
 			while (files.hasNext()) {
-				String fn=files.next();
+				String fn=(String)files.next();
                                 if (!fn.endsWith("/")) {
       				FileInputStream file = new FileInputStream(fn);
         			packageStep substep=step.getNextPackageStep();
@@ -702,9 +716,9 @@ public class BasicCreator implements CreatorInterface,Runnable {
         return(getItemStringValue(target,"license.version"));
    }
 
-   public ArrayList<Person> getRelatedPeople(String type,Target target) {
+   public ArrayList getRelatedPeople(String type,Target target) {
 	Object o=target.getItem(type);
-	if (o!=null) return (ArrayList<Person>)o;
+	if (o!=null) return (ArrayList)o;
 	return null;
    }
 
@@ -752,10 +766,10 @@ public class BasicCreator implements CreatorInterface,Runnable {
             return;
         }
 
-        for (Iterator<String> i = target.getScreenshots().iterator(); i.hasNext();) {
-            String name = i.next();
-            String filen = i.next(); // not used here
-            String description = i.next(); // not used here
+        for (Iterator i = target.getScreenshots().iterator(); i.hasNext();) {
+            String name = (String) i.next();
+            String filen = (String) i.next(); // not used here
+            String description = (String) i.next(); // not used here
             String fn = target.getBaseDir() + "packaging" + File.separator + filen;
 
             String dfn = filen;
@@ -792,9 +806,10 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public String getRelatedPeopleXML(String type,String subtype,Target target) {
 	String result="\t<"+type+">\n";
-	List<Person> people=getRelatedPeople(type,target);
+	List people=getRelatedPeople(type,target);
 	if (people!=null) {
-        	for (Person pr : people) {
+        	for (Iterator i = people.iterator(); i.hasNext();) {
+			Person pr=(Person)i.next();
 			result+="\t\t<"+subtype;
 			if (pr.getName()!=null) result+=" name=\""+pr.getName()+"\"";
 			if (pr.getCompany()!=null) result+=" company=\""+pr.getCompany()+"\"";
@@ -811,12 +826,12 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public String getScreenshotsXML(Target target) {
 	String result="\t<screenshots>\n";
-	ArrayList<String> l=target.getScreenshots();
+	ArrayList l=target.getScreenshots();
 	if (l!=null) {
-        	for (Iterator<String> i = l.iterator(); i.hasNext();) {
-			String name=i.next();
-			String file=i.next();
-			String description=i.next();
+        	for (Iterator i = l.iterator(); i.hasNext();) {
+			String name=(String)i.next();
+			String file=(String)i.next();
+			String description=(String)i.next();
 			result+="\t\t<screenshot name=\""+name+"\" file=\""+file+"\">"+description+"</screenshot>\n";
 		}
 	}
@@ -827,12 +842,12 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public String getStarturlsXML(Target target) {
 	String result="\t<starturls>\n";
-	ArrayList<String> l=target.getStarturls();
+	ArrayList l=target.getStarturls();
 	if (l!=null) {
-        	for (Iterator<String> i = l.iterator(); i.hasNext();) {
-			String name=i.next();
-			String link=i.next();
-			String description=i.next();
+        	for (Iterator i = l.iterator(); i.hasNext();) {
+			String name=(String)i.next();
+			String link=(String)i.next();
+			String description=(String)i.next();
 			result+="\t\t<url name=\""+name+"\" link=\""+link+"\">"+description+"</url>\n";
 		}
 	}
@@ -840,7 +855,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 	return result;
   }
 
-  public ArrayList<IncludedPackage> getIncludedPackages(Target target) {
+  public ArrayList getIncludedPackages(Target target) {
 	return null;
   }
 
@@ -882,7 +897,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public boolean decodeRelatedPeople(Target target,String type,String subtype) {
 	ExtendedDocumentReader reader=target.getReader();
-	ArrayList<Person> list=new ArrayList<Person>();
+	ArrayList list=new ArrayList();
         org.w3c.dom.Node n=reader.getElementByPath(prefix+"."+type);
        	org.w3c.dom.Node n2=n.getFirstChild();
       	while (n2!=null) {
@@ -910,7 +925,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public boolean decodePackageDepends(Target target,String itemname) {
 	ExtendedDocumentReader reader=target.getReader();
-	ArrayList<PackageDepend> list=new ArrayList<PackageDepend>();
+	ArrayList list=new ArrayList();
         org.w3c.dom.Node n=reader.getElementByPath(prefix+".packagedepends");
 	if (n!=null) {
        	org.w3c.dom.Node n2=n.getFirstChild();

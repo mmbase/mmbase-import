@@ -32,10 +32,10 @@ import org.mmbase.util.logging.*;
  * @application SCAN (depends from JamesServlet). Also depends on Email.
  * @deprecated Abstract and not used anywhere.
  * @author  marmaa@vpro.nl (Marcel Maatkamp)
- * @version $Id: SimpleFormToMailServlet.java,v 1.13 2007-06-21 15:50:24 nklasens Exp $
+ * @version $Id: SimpleFormToMailServlet.java,v 1.11 2004-10-01 08:41:48 pierre Exp $
  */
 public abstract class SimpleFormToMailServlet extends JamesServlet {
-    static Logger log = Logging.getLoggerInstance(SimpleFormToMailServlet.class);
+    static Logger log = Logging.getLoggerInstance(performance.class.getName());
 
     protected SendMailInterface sendmail;
     boolean first=true;
@@ -94,14 +94,14 @@ public abstract class SimpleFormToMailServlet extends JamesServlet {
      */
     protected String getentries( HttpPost post ) {
         String result = "";
-        Hashtable<String, Object> postparams = post.getPostParameters();
-        Enumeration<String> e = postparams.keys();
+        Hashtable postparams = post.getPostParameters();
+        Enumeration e = postparams.keys();
         String key, value;
         while( e.hasMoreElements() ) {
-            key = e.nextElement();
+            key = (String) e.nextElement();
 
-            Vector<Object> v = post.getPostMultiParameter( key );
-            Enumeration<Object> e2 = v.elements();
+            Vector v = post.getPostMultiParameter( key );
+            Enumeration e2 = v.elements();
 
             if( e2.hasMoreElements() ) {
                 value = "";
@@ -178,6 +178,20 @@ public abstract class SimpleFormToMailServlet extends JamesServlet {
     private void displaySuccess( HttpServletResponse res ) {
         String titel = "Formulier is verstuurd";
         String body  = "Uw formulier is verstuurd.<BR>\n";
+        displayResult(res, titel, body);
+    }
+
+    private void displayErrorUsername ( HttpServletResponse res ) {
+        String titel = "Uw naam is niet ingevuld";
+        String body  = "Uw naam is niet ingevuld in uw formulier. <BR>\n";
+               body += "<STRONG>Uw formulier is daarom NIET opgestuurt</STRONG>";
+        displayResult(res, titel, body);
+    }
+
+    private void displayErrorEntry ( HttpServletResponse res ) {
+        String titel = "Entry niet gevonden in dokument";
+        String body  = "Het systeem heeft een fout gedetecteerd tijdens het verwerken van uw formulier.<BR>\n";
+               body += "<STRONG>Uw formulier is daarom NIET opgestuurt</STRONG>";
         displayResult(res, titel, body);
     }
 

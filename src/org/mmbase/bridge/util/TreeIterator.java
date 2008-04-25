@@ -12,12 +12,11 @@ package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 
-
 /**
  * A specialized iterator for 'TreeLists'
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeIterator.java,v 1.4 2008-02-28 12:23:51 michiel Exp $
+ * @version $Id: TreeIterator.java,v 1.3.2.1 2008-02-28 12:23:27 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.bridge.util.TreeList
  */

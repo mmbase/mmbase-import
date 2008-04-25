@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.13 2007-11-23 10:07:10 michiel Exp $
+  @version $Id: prompts.xsl,v 1.12 2005-06-03 14:10:17 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -94,7 +94,7 @@
 <!-- search : other filters -->
 <xsl:template name="prompt_search" ><img src="{$mediadir}search.gif" border="0" alt="Serĉu" /></xsl:template>
 <xsl:variable name="tooltip_search" >Serĉu aldonotan eron</xsl:variable>
-<xsl:template name="prompt_search_title" >Enhavas</xsl:template>
+<xsl:template name="prompt_search_title" >Titolo enhavas</xsl:template>
 <xsl:template name="prompt_search_owner" >Posedas</xsl:template>
 <!-- navigation -->
 <xsl:template name="prompt_index">Enirejo</xsl:template>

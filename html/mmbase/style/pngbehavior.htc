@@ -20,7 +20,7 @@
  *          2003-01-06	Fixed RegExp to correctly work with IE 5.0x
  *          2004-05-09  When printing revert to original
  *
- * Added to MMBase repository: 2005-08. $Id: pngbehavior.htc,v 1.3 2005-09-30 07:59:16 michiel Exp $
+ * Added to MMBase repository: 2005-08. $Id: pngbehavior.htc,v 1.3.2.2 2007-05-25 10:29:17 michiel Exp $
  *
  * Add to your style:
  * img {

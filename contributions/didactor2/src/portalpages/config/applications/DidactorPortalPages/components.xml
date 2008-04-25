@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<components exportsource="mmbase://www.didactor.org/version2.0" timestamp="20050922114000">
-    <node number="14010" owner="system" alias="component.portalpages">
-        <name>portalpages</name>
-        <classname>nl.didactor.component.portalpages.DidactorPortalPages</classname>
-    </node>
-</components>

@@ -17,9 +17,9 @@ import org.mmbase.util.logging.*;
 /**
  * Trims leading and trailing white space.
  *
- * @author Michiel Meeuwissen
+ * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Trimmer.java,v 1.3 2007-08-04 08:09:14 michiel Exp $
+ * @version $Id: Trimmer.java,v 1.2 2005-01-30 16:46:37 nico Exp $
  */
 
 public class Trimmer extends ReaderTransformer implements CharTransformer {
@@ -31,8 +31,8 @@ public class Trimmer extends ReaderTransformer implements CharTransformer {
     }
 
     public Writer transform(Reader r, Writer w) {
-        StringBuilder word = new StringBuilder();  // current word
-        StringBuilder space = new StringBuilder();
+        StringBuffer word = new StringBuffer();  // current word
+        StringBuffer space = new StringBuffer();
         try {
             log.trace("Starting trim");
             int c = r.read();
@@ -41,7 +41,7 @@ public class Trimmer extends ReaderTransformer implements CharTransformer {
                 c = r.read();
             }
             boolean inWord = true;
-            while (true) {
+            while (true) {           
                 if (Character.isWhitespace((char) c)) {
                     if (inWord) {
                         w.write(word.toString());

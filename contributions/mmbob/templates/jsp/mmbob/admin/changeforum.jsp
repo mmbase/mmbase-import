@@ -46,7 +46,7 @@
                 <%--  show the top menu--%>
                 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="75%" align="center">
                     <tr>
-                        <mm:import id="menu" vartype="List">info,layout,theme,login,rules,filter</mm:import>
+                        <mm:import id="menu" vartype="List">info,layout,theme,login,rules,filter,properties</mm:import>
                         <mm:stringlist referid="menu" id="item">
                             <c:choose> <c:when test="${sub == item}"><th align="center"/></c:when> <c:otherwise><td align="center"/></c:otherwise> </c:choose>
                             <mm:link page="changeforum.jsp" referids="forumid">
@@ -340,7 +340,7 @@
                                                 <th>AvatarUpload</th>
                                                 <td colspan="2" align="left">
                                                     <select name="avatarsuploadenabled">
-                                                        <mm:import id="options" reset="true" vartype="List">true,false,default</mm:import>
+                                                        <mm:import id="options" reset="true" vartype="List">on,off,default</mm:import>
                                                         <mm:import id="currentvalue" reset="true"><mm:field name="avatarsuploadenabled"/></mm:import>
                                                         <mm:remove referid="option"/>
 
@@ -365,7 +365,7 @@
                                                 <th>AvatarGallery</th>
                                                 <td colspan="2" align="left">
                                                     <select name="avatarsgalleryenabled">
-                                                        <mm:import id="currentvalue" reset="true"><mm:field name="avatarsgalleryenabled"/></mm:import>
+                                                        <mm:import id="currentvalue" reset="true"><mm:field name="avatarsuploadenabled"/></mm:import>
                                                         <mm:remove referid="option"/>
 
                                                         <mm:stringlist referid="options" id="option">

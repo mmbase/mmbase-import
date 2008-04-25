@@ -14,9 +14,9 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.13 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: NodeList.java,v 1.11 2005-06-15 07:15:44 michiel Exp $
  */
-public interface NodeList extends BridgeList<Node> {
+public interface NodeList extends BridgeList {
 
     /**
      * In the propery of the list with this name you find back the original Query object
@@ -27,12 +27,12 @@ public interface NodeList extends BridgeList<Node> {
 
     /**
      * The node-step property will be set on a cluster node list which is the result of a {@link
-     * NodeQuery} (which can also result 'real' nodes). This happens when you can
+     * NodeQuery} (which can also result 'real' nodes). This happens when you can 
      * {@link Cloud#getList(Query)} with a NodeQuery argument.
      * @since MMBase-1.8
      */
     public static final String NODESTEP_PROPERTY = "nodestep";
-
+    
     /**
      * Returns the Node at the indicated postion in the list
      * @param index the position of the Node to retrieve
@@ -53,5 +53,5 @@ public interface NodeList extends BridgeList<Node> {
      * @return sublist of this list
      */
     public NodeList subNodeList(int fromIndex, int toIndex);
-
+    
 }

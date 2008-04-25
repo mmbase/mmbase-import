@@ -5,13 +5,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler;
 import junit.framework.*;
- import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.7 $
  */
 public class PostgreSqlSqlHandlerTest extends TestCase {
 
@@ -52,7 +52,7 @@ public class PostgreSqlSqlHandlerTest extends TestCase {
 
         query = new BasicSearchQuery();
         BasicStep imageStep = query.addStep(images);
-        CoreField imageNumber = images.getField("number");
+        FieldDefs imageNumber = images.getField("number");
         BasicStepField imageNumberField = query.addField(imageStep, imageNumber);
         Constraint constraint = new BasicFieldNullConstraint(imageNumberField);
         query.setConstraint(constraint);

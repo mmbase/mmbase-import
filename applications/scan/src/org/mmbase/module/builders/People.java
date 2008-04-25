@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @application Basic [builder]
  * @author Daniel Ockeloen
- * @version $Id: People.java,v 1.10 2008-02-03 17:33:57 nklasens Exp $
+ * @version $Id: People.java,v 1.8 2004-09-27 13:24:06 marcel Exp $
  */
 public class People extends MMObjectBuilder {
 
@@ -30,7 +30,7 @@ public class People extends MMObjectBuilder {
     /**
      * Cache for the most active people
      */
-    private Cache<String, Integer> peopleCache = new Cache<String, Integer>(100) {
+    private Cache peopleCache = new Cache(100) {
         public String getName()        { return "PeopleCache"; }
         public String getDescription() { return "Cache for most active people"; }
         };
@@ -72,7 +72,7 @@ public class People extends MMObjectBuilder {
      * @performance reference to users should be set during init() method.
      */
     public int getNumber(String key) {
-        Integer n=peopleCache.get(key);
+        Integer n=(Integer)peopleCache.get(key);
         if (n!=null) {
             log.debug("People - "+key+" people found in cache.");
             return n.intValue();
@@ -84,9 +84,9 @@ public class People extends MMObjectBuilder {
             if (i!=-1) {
                 // lets find a related people object
                 MMObjectNode node=getNode(i);
-                Enumeration<MMObjectNode> e=node.getRelatedNodes("people").elements();
+                Enumeration e=node.getRelatedNodes("people").elements();
                 if (e.hasMoreElements()) {
-                    MMObjectNode node2 = e.nextElement();
+                    MMObjectNode node2=(MMObjectNode)e.nextElement();
                     if (node2!=null) {
                         int number=node2.getNumber();
                         peopleCache.put(key,new Integer(number));

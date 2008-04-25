@@ -22,14 +22,11 @@ public interface ParameterizedProcessorFactory  {
 
     /**
      * Creates a parameterized processor.
-     * @param parameters parameters for the processor
-     * @return Datatype Processor
      */
     Processor createProcessor(Parameters parameters);
 
     /**
-     * Create  empty <code>Parameters</code> object for use with {@link #createProcessor(Parameters)}.
-     * @return Datatype Processor parameters
+     * Create  empty <code>Parameters</code> object for use with {@link #createProcessor}.
      */
     Parameters createParameters();
 

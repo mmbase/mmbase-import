@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * <contenttype>=<supposed charset> properties.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CharsetRemoverFilter.java,v 1.7 2007-06-26 15:14:37 michiel Exp $
+ * @version $Id: CharsetRemoverFilter.java,v 1.6.2.1 2007-06-26 15:13:37 michiel Exp $
  * @since MMBase-1.7.4
  */
 
@@ -83,6 +83,7 @@ public class CharsetRemoverFilter implements Filter {
                 private String contentType;
                 private PrintWriter writer = null;
 
+                
                 public void setContentType(String ct) {
                     contentType = ct;
                     if (log.isDebugEnabled()) {

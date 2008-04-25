@@ -21,13 +21,14 @@ import org.mmbase.module.corebuilders.InsRel;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.16 2006-10-03 13:25:04 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.14 2005-10-06 14:00:42 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
 
     public boolean init() {
-        addEventListener(CacheInvalidator.getInstance());
+        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
+        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
         return super.init();
     }
 
@@ -102,7 +103,7 @@ public class RightsRel extends InsRel {
         if (value.equals(Operation.CHANGE_RELATION.toString())) return true;
         if (value.equals(Operation.DELETE.toString())) return true;
         if (value.equals(Operation.CHANGE_CONTEXT.toString())) return true;
-        String msg =
+        String msg = 
             "field with name operation must contain a valid operation (value was: '" + value + "')\n" +
             "valid operations are: all, " + Operation.READ + ", " + Operation.WRITE + ", " + Operation.CREATE +
             ", " + Operation.CHANGE_RELATION + ", " + Operation.DELETE + ", " + Operation.CHANGE_CONTEXT;

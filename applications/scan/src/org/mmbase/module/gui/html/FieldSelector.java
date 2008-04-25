@@ -23,7 +23,7 @@ import org.mmbase.module.corebuilders.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: FieldSelector.java,v 1.13 2006-09-11 10:44:48 pierre Exp $
+ * @version $Id: FieldSelector.java,v 1.11.2.1 2007-07-24 20:55:37 michiel Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 
@@ -39,7 +39,7 @@ public class FieldSelector implements CommandHandlerInterface {
     /**
      * General List pages coming from MMEdit.
      */
-    public Vector getList(scanpage sp, StringTagger args, StringTokenizer commands) throws ParseException {
+    public Vector getList(PageInfo sp, StringTagger args, StringTokenizer commands)  {
         String token;
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = stateMngr.getEditState(userName);
@@ -63,7 +63,7 @@ public class FieldSelector implements CommandHandlerInterface {
 
     Vector getRelTypes(EditState ed,StringTagger args) {
         Vector results=new Vector();
-        for (Enumeration h=Collections.enumeration(stateMngr.mmBase.getBuilders());h.hasMoreElements();) {
+        for (Enumeration h=stateMngr.mmBase.getMMObjects();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (bul instanceof InsRel) {
                 results.addElement(""+bul.getNumber());
@@ -77,7 +77,7 @@ public class FieldSelector implements CommandHandlerInterface {
 
     Vector getDataTypes(EditState ed,StringTagger args) {
         Vector results=new Vector();
-        for (Enumeration h=Collections.enumeration(stateMngr.mmBase.getBuilders());h.hasMoreElements();) {
+        for (Enumeration h=stateMngr.mmBase.getMMObjects();h.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
             if (!(bul instanceof InsRel)) {
                 results.addElement(""+bul.getNumber());
@@ -151,9 +151,9 @@ public class FieldSelector implements CommandHandlerInterface {
         String language=ed.getLanguage();
         MMObjectBuilder obj=ed.getBuilder();
         String key,val;
-        Vector tempresults = new Vector(obj.getFields(org.mmbase.bridge.NodeManager.ORDER_EDIT));
+        List tempresults=obj.getEditFields();
         FieldDefs def;
-        for (Enumeration h=tempresults.elements();h.hasMoreElements();) {
+        for (Enumeration h=Collections.enumeration(tempresults);h.hasMoreElements();) {
             def=(FieldDefs)h.nextElement();
             results.addElement(def.getGUIName(language));
             results.addElement(def.getGUIType());
@@ -170,14 +170,14 @@ public class FieldSelector implements CommandHandlerInterface {
     /**
      * Replace/Trigger commands
      */
-    public String replace(scanpage sp, StringTokenizer cmds) {
+    public String replace(PageInfo sp, StringTokenizer cmds) {
         return "Command not defined (FieldSelector)";
     }
 
     /**
      * The hook that passes all form related pages to the correct handler
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 

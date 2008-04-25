@@ -17,7 +17,7 @@ import java.util.Map;
 //import sun.misc.BASE64Encoder;
 
 /**
- * Code taken from {@link "http://www.source-code.biz/snippets/java/2.htm"}
+ * Code taken from {@link http://www.source-code.biz/snippets/java/2.htm}
  *
  * @author Michiel Meeuwissen
  */
@@ -54,8 +54,8 @@ public class Base64 extends ByteArrayToCharTransformer implements ByteToCharTran
      * Used when registering this class as a possible Transformer
      */
 
-    public Map<String,Config> transformers() {
-        Map<String,Config> h = new HashMap<String,Config>();
+    public Map transformers() {
+        Map h = new HashMap();
         h.put(ENCODING, new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
         return h;
     }

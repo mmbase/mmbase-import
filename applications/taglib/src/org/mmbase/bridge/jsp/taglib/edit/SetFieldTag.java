@@ -23,7 +23,7 @@ import org.mmbase.util.Casting;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.36 2007-07-18 07:50:47 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.34 2005-11-23 10:29:39 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -64,15 +64,15 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         Object value;
         String refid = valueId.getString(this);
         if (body != null) {
-            if (refid.length() != 0) throw new JspTagException("Cannot use both body and referid attribute on setfield tag");
+            if (! refid.equals("")) throw new JspTagException("Cannot use both body and referid attribute on setfield tag");
             value = body;
-        } else if (refid.length() != 0) {
+        } else if (! refid.equals("")) {
             value = getObject(refid);
         } else {
             value = "";
         }
 
-        if ((field != null) && (type == Field.TYPE_BINARY)) {
+        if ((field != null) && (type == Field.TYPE_BYTE)) {
             // if the field type is a byte[] then we expect a BASE64 encoded String, unless value is actualy a byte[].
             if (value instanceof byte[]) {
                 node.setByteValue(fieldName, (byte[]) value);

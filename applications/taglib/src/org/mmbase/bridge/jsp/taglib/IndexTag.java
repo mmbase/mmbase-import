@@ -22,7 +22,7 @@ import javax.servlet.jsp.jstl.core.*;
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.23 2008-02-27 10:49:01 michiel Exp $
+ * @version $Id: IndexTag.java,v 1.21 2005-12-15 21:47:27 michiel Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
@@ -37,7 +37,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
     }
 
 
-    private Attribute offset = Attribute.NULL;
+    private Attribute offset = Attribute.NULL; 
 
     public void setOffset(String o) throws JspTagException {
         offset = getAttribute(o);
@@ -53,7 +53,7 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
             if (parentListId != Attribute.NULL) {
                 throw new JspTagException("Cannot specify both 'container' and 'list' attributes");
             }
-            QueryContainer c = findParentTag(QueryContainer.class, (String) container.getValue(this));
+            QueryContainer c = (QueryContainer) findParentTag(QueryContainer.class, (String) container.getValue(this));
             Query query = c.getQuery();
             index = query.getOffset() / query.getMaxNumber() + offset.getInt(this, 0);
         } else if (parentListId != Attribute.NULL) {
@@ -67,13 +67,15 @@ public class IndexTag extends ListReferrerTag implements Writer, QueryContainerR
                 LoopTagStatus status = ((LoopTag) tag).getLoopStatus();
                 if (status == null) throw new TaglibException("The tag " + tag + " return loop status 'null'");
                 index = status.getIndex();
-                if (offset != Attribute.NULL) {
-                    index += -status.getBegin() + offset.getInt(this, 0);
+                if (tag instanceof ListProvider) {
+                    index += offset.getInt(this, ((ListProvider) tag).getIndexOffset());
+                } else {
+                    index += offset.getInt(this, 0);
                 }
             }
         }
 
-        helper.setValue(index);
+        helper.setValue(new Integer(index));
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }

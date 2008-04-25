@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecated use Encode
  * @author vpro
- * @version $Id: URLParamEscape.java,v 1.3 2008-03-25 21:00:24 nklasens Exp $
+ * @version $Id: URLParamEscape.java,v 1.1 2005-07-28 09:23:19 pierre Exp $
  */
 public class URLParamEscape {
 
@@ -61,7 +61,7 @@ public class URLParamEscape {
      * Escape a url.
      * Replaces 'invalid characters' with their Escaped code, i.e.
      * the questionmark (?) is escaped with %3F.
-     * @param str the urls to escape
+     * @param url the urls to escape
      * @return the escaped url.
      */
     public static String escapeurl(String str) {
@@ -72,8 +72,8 @@ public class URLParamEscape {
         } catch (java.io.UnsupportedEncodingException uee) {
             return str; // should not happen
         }
-        for (byte element : buf) {
-            int a = element & 0xff;
+        for (int i = 0; i<buf.length;i++) {
+            int a = (int)buf[i] & 0xff;
             if (a>=32 && a<128 && isacceptable[a-32]) {
                 esc.append((char)a);
             } else {
@@ -101,7 +101,7 @@ public class URLParamEscape {
      * Unescape a url.
      * Replaces escapesequenced with the actual character.
      * i.e %3F is replaced with the the questionmark (?).
-     * @param str the urls to unescape
+     * @param url the urls to unescape
      * @return the unescaped url.
      */
     public static String unescapeurl(String str) {
@@ -132,10 +132,10 @@ public class URLParamEscape {
      * Method for testing this class from the command line
      */
     public static void main(String args[]) {
-        for (String element : args) {
-            log.info("Original : '"+element+"'");
-            log.info("Escaped : '"+escapeurl(element)+"'");
-            log.info("Unescaped again : '"+unescapeurl(escapeurl(element))+"'");
+        for (int i=0;i<args.length;i++) {
+            log.info("Original : '"+args[i]+"'");
+            log.info("Escaped : '"+escapeurl(args[i])+"'");
+            log.info("Unescaped again : '"+unescapeurl(escapeurl(args[i]))+"'");
         }
 
     }

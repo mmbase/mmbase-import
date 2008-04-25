@@ -17,14 +17,14 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicCompositeConstraint.java,v 1.11 2008-04-12 14:10:31 michiel Exp $
+ * @version $Id: BasicCompositeConstraint.java,v 1.7 2005-05-02 13:02:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint implements CompositeConstraint {
     private static final Logger log = Logging.getLoggerInstance(BasicCompositeConstraint.class);
 
     /** The child constraints. */
-    private List<Constraint> childs = new ArrayList<Constraint>();
+    private List childs = new ArrayList();
 
     /** The logical operator. */
     private int logicalOperator = 0;
@@ -35,7 +35,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
      * @param logicalOperator The logical operator.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public BasicCompositeConstraint(int logicalOperator, Constraint... childs) {
+    public BasicCompositeConstraint(int logicalOperator) {
         // Invalid argument, must be either LOGICAL_AND or LOGICAL_OR.
         if (logicalOperator != CompositeConstraint.LOGICAL_AND
         && logicalOperator != CompositeConstraint.LOGICAL_OR) {
@@ -45,9 +45,6 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
             + CompositeConstraint.LOGICAL_OR));
         }
         this.logicalOperator = logicalOperator;
-        for (Constraint child : childs) {
-            addChild(child);
-        }
     }
 
     /**
@@ -80,7 +77,7 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
 
     // javadoc is inherited
-    public List<Constraint> getChilds() {
+    public List getChilds() {
         // return a unmodifiable list
         return Collections.unmodifiableList(childs);
     }
@@ -105,9 +102,9 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
     public int getBasicSupportLevel() {
         // Calculate support as lowest value among childs.
         int result = SearchQueryHandler.SUPPORT_OPTIMAL;
-        Iterator<Constraint> iChilds = childs.iterator();
+        Iterator iChilds = childs.iterator();
         while (iChilds.hasNext()) {
-            Constraint constraint = iChilds.next();
+            Constraint constraint = (Constraint) iChilds.next();
             int support = constraint.getBasicSupportLevel();
             if (support < result) {
                 result = support;
@@ -145,7 +142,8 @@ public class BasicCompositeConstraint extends BasicConstraint implements Composi
 
     // javadoc is inherited
     public String toString() {
-        StringBuilder sb = new StringBuilder("CompositeConstraint(inverse:").append(isInverse()).
+        StringBuffer sb = new StringBuffer("CompositeConstraint(inverse:").
+        append(isInverse()).
         append(", operator:").append(getLogicalOperatorDescription()).
         append(", childs:").append(getChilds()).
         append(")");

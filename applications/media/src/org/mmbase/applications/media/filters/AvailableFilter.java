@@ -19,14 +19,14 @@ import java.util.List;
 /**
  * This removes all URLComposers wich are not available.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableFilter.java,v 1.7 2007-06-21 15:50:21 nklasens Exp $
+ * @version $Id: AvailableFilter.java,v 1.6 2005-07-09 15:29:11 nklasens Exp $
  */
 public class AvailableFilter implements Filter {
 
-    public List<URLComposer> filter(List<URLComposer> urlcomposers) {
-        ListIterator<URLComposer> i = urlcomposers.listIterator();
+    public List filter(List urlcomposers) {
+        ListIterator i = urlcomposers.listIterator();
         while (i.hasNext()) {
-            URLComposer uc = i.next();
+            URLComposer uc = (URLComposer) i.next();
             if (! uc.isAvailable()) {
                 i.remove();
             }

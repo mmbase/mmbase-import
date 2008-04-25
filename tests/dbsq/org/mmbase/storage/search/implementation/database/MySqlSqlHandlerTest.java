@@ -6,13 +6,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.storage.search.implementation.database.MySqlSqlHandler;
 import junit.framework.*;
- import org.mmbase.core.CoreField;
+import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.5 $
  */
 public class MySqlSqlHandlerTest extends TestCase {
 
@@ -53,7 +53,7 @@ public class MySqlSqlHandlerTest extends TestCase {
 
         query = new BasicSearchQuery();
         BasicStep imageStep = query.addStep(images);
-        CoreField imageNumber = images.getField("number");
+        FieldDefs imageNumber = images.getField("number");
         BasicStepField imageNumberField = query.addField(imageStep, imageNumber);
         Constraint constraint = new BasicFieldNullConstraint(imageNumberField);
         query.setConstraint(constraint);

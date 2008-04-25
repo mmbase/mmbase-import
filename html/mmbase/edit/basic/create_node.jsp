@@ -8,17 +8,16 @@
 <mm:context id="create_node">
 <mm:import externid="node_type" required="true" />
 
-
 <body class="basic" onLoad="document.create.elements[3].focus();">
 
   <script type="text/javascript">
-    var validator = new MMBaseValidator();
+    var validator = new MMBaseValidator(document);
     validator.prefetchNodeManager('${node_type}');
     validator.validateHook = function(valid) {
        document.getElementById('okbutton').disabled = this.invalidElements != 0;
     }
     validator.lang = '${config.lang}';
-    validator.setup(window);
+    validator.setup();
   </script>
 
 
@@ -53,7 +52,7 @@
         </tr>
  <tr>
 <td colspan="2" class="buttons">
-<input class="submit"  id="okbutton" type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="ok" id="okbutton" value="<%=m.getString("ok")%>" />
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 </td>
 </tr>

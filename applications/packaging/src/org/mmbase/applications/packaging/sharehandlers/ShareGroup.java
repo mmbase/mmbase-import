@@ -18,7 +18,7 @@ public class ShareGroup {
 
     private String name;
 
-    private HashMap<String, ShareUser> members = new HashMap<String, ShareUser>();
+    private HashMap members = new HashMap();
 
 
     /**
@@ -83,7 +83,7 @@ public class ShareGroup {
      *
      * @return    The members value
      */
-    public Iterator<ShareUser> getMembers() {
+    public Iterator getMembers() {
         return members.values().iterator();
     }
 }

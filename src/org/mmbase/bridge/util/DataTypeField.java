@@ -21,7 +21,7 @@ import org.mmbase.datatypes.DataType;
  * (itself). This also associates a Cloud object with the DataType.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: DataTypeField.java,v 1.3 2007-02-10 17:44:03 nklasens Exp $
+ * @version $Id: DataTypeField.java,v 1.1 2006-07-18 15:17:00 michiel Exp $
  * @since   MMBase-1.8.2
  */
 
@@ -30,52 +30,44 @@ public  class DataTypeField extends org.mmbase.core.AbstractField {
     public DataTypeField(final Cloud cloud, final DataType dataType)  {
         super(dataType.getName(), dataType.getBaseType(), TYPE_UNKNOWN, Field.STATE_VIRTUAL, dataType);
         nodeManager = new AbstractNodeManager(cloud) {
-                private final Map<String, Field> fieldTypes = new HashMap<String, Field>();
+                private final Map fieldTypes = new HashMap();
                 {
                     fieldTypes.put(dataType.getName(), DataTypeField.this);
                 }
-                @Override
-                protected Map<String, Field> getFieldTypes() {
+                protected Map getFieldTypes() {
                     return Collections.unmodifiableMap(fieldTypes);
                 }
             };
     }
-    @Override
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-    @Override
     public int getSearchPosition() {
         return -1; // irrelevant, you cannot search
     }
 
-    @Override
     public int getListPosition() {
         return -1; // irrelevant, you cannot do listings
     }
 
-    @Override
     public int getEditPosition() {
         return 1;
     }
 
-    @Override
     public int getStoragePosition() {
         return -1; // irrelevant, not stored
     }
 
-    @Override
     public int getMaxLength() {
         return Integer.MAX_VALUE; // not stored, so no such restriction
     }
 
-    @Override
     public String getGUIType() {
         return dataType.getName();
     }
     public Collection validate(Object value) {
-        Collection<LocalizedString> errors = dataType.validate(value, null, this);
+        Collection errors = dataType.validate(value, null, this);
         return LocalizedString.toStrings(errors, nodeManager.getCloud().getLocale());
     }
 
