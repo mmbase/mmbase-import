@@ -16,14 +16,13 @@ import org.mmbase.util.functions.*;
 /**
  * Responsible for the proper handling of urls within the basic framework {@link BasicFramework}.
  * You should implement UrlConverter if you want to create and resolve your own
- * user-friendly links within {@link BasicFramework}
- *.
- * You can configure several UrlConverters in 'framework.xml'.
+ * user-friendly links within {@link BasicFramework}.
  *
- * They will be chained one after another.
-
+ * You can configure several UrlConverters in 'config/framework.xml'. They will be 
+ * chained one after another.
+ * 
  * @author Michiel Meeuwissen
- * @version $Id: UrlConverter.java,v 1.7 2008-04-18 13:47:13 michiel Exp $
+ * @version $Id: UrlConverter.java,v 1.8 2008-04-25 14:31:39 andre Exp $
  * @since MMBase-1.9
  */
 public interface UrlConverter {
