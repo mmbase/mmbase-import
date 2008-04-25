@@ -4,17 +4,42 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:os="http://www.opensymphony.com/oscache"
     version="2.0">
-  <jsp:directive.attribute name="field" />
-  <jsp:directive.attribute name="name" />
+  <jsp:tag description="This tag is like an mm:field. (it is available as both mm-rich:body and mm-rich:field)
+			It shows the value of one 'mmxf' field as HTML, using the XSLT 
+			config/xslt/2xhtml.xslt (which can be overridden)"
+	   />
+  <jsp:directive.attribute name="field"
+			   description="The name of the field to show. Defaults to 'body'. (mm-rich:body field='body') "
+			   />
+  <jsp:directive.attribute name="name" 
+			   description="The name of the field to show. Defaults to 'body'. (mm-rich:field name='body')"
+			   />
 
-  <jsp:directive.attribute name="popupwidth" />
-  <jsp:directive.attribute name="cron" />
-  <jsp:directive.attribute name="time"    type="java.lang.Integer" />
-  <jsp:directive.attribute name="refresh" type="java.lang.Boolean" />
-  <jsp:directive.attribute name="depth"   type="java.lang.Integer" />
+  <jsp:directive.attribute name="popupwidth" type="java.lang.Integer" 
+			   description="For images which are available in a big version, can be made clickable.
+                                        To produce a popup showing the image in a bigger form. The size of this popup 
+					is influenced by this attribute. Defaults to -1 (no popups)"
+			   />
+
+  <jsp:directive.attribute name="depth"   type="java.lang.Integer" 
+			   description="Indicates how deep (idrel) relations must be followed. 
+					0: No relations will be followed. No links are used.
+					1: Only one level deep. Blocks are shown.
+					2: Two levels deep. Relations to blocks are used too. (default)"
+			   />
+
+  <jsp:directive.attribute name="cron" 
+			   description="From os:cache. Defaults to 0 4 * * *"
+			   />
+  <jsp:directive.attribute name="time"    type="java.lang.Integer" 
+			   description="From os:cache."
+			   />
+  <jsp:directive.attribute name="refresh" type="java.lang.Boolean" 
+			   description="From os:cache."
+			   />
+
   <!--
-       MMBase rich-text evaluation. Using XSLT.
-       $Id: body.tagx,v 1.4 2008-04-23 13:24:39 michiel Exp $
+       $Id: body.tagx,v 1.5 2008-04-25 21:33:18 michiel Exp $
   -->
 
   <os:cache
