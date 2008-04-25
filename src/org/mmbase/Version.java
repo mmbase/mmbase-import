@@ -17,7 +17,7 @@ import java.io.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Version.java,v 1.42 2008-02-16 22:13:53 nklasens Exp $
+ * @version $Id: Version.java,v 1.43 2008-04-25 14:32:19 michiel Exp $
  */
 public class Version {
 
@@ -104,7 +104,7 @@ public class Version {
      * @since MMBase-1.6
      */
     public static boolean isRelease() {
-        return false;
+        return true;
     };
 
     /**
@@ -113,7 +113,7 @@ public class Version {
      * @since MMBase-1.7
      */
     public static String getReleaseStatus() {
-        return "";
+        return "beta";
     };
 
     /**
@@ -135,7 +135,7 @@ public class Version {
      * Prints the version of this mmbase on stdout.
      * can be usefull on command line:
      * <code>java -jar mmbase.jar<code>
-     * 
+     *
      * @param args command line args
      */
     public static void main(String args[]) {
