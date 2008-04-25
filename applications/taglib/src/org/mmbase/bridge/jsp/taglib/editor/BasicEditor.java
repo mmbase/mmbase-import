@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * of the very first field the edittag encounters, with an icon to click on.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: BasicEditor.java,v 1.17 2008-04-14 10:16:32 sdeboer Exp $
+ * @version $Id: BasicEditor.java,v 1.18 2008-04-25 11:50:33 michiel Exp $
  * @see EditTag
  * @see YAMMEditor
  * @since MMBase-1.8
@@ -78,9 +78,13 @@ public class BasicEditor extends Editor {
     protected String getValue(String param, Cloud cloud, String nodenr, PageContext context) {
            Function<String> urlFunction = (Function<String>) patterns.getFunction(parameters.getString(param));
            Parameters urlParameters = urlFunction.createParameters();
-           if (cloud != null) {
-               Node node = cloud.getNode(nodenr);
-               urlParameters.set(Parameter.NODE, node);
+           if (cloud != null && ! "".equals(nodenr)) {
+               if (cloud.hasNode(nodenr)) {
+                   Node node = cloud.getNode(nodenr);
+                   urlParameters.set(Parameter.NODE, node);
+               } else {
+                   log.warn("No such node " + nodenr);
+               }
            }
            urlParameters.setAll((Map) parameters.get(param + "params"));
            urlParameters.setIfDefined(Parameter.REQUEST, (HttpServletRequest) context.getRequest());
