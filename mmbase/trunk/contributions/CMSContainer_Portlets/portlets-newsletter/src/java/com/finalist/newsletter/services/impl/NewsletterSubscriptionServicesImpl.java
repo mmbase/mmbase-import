@@ -1,23 +1,16 @@
 package com.finalist.newsletter.services.impl;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.cao.impl.NewsletterCAOImpl;
-import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Tag;
@@ -139,24 +132,22 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		cao.removeSubscriptionTag(subscription,tagId);
 	}
 
-	public void modifyStauts(int userId, int newsletterId, String status) {
-		Subscription subscription = cao.getSubscription(newsletterId, userId);
-		subscription.setStatus(Subscription.STATUS.valueOf(status));
-		cao.modifySubscriptionStauts(subscription);
-	}
-	
-	public void modifyFormat(int userId, int newsletterId, String format) {
+   public void modifyStauts(int userId, int newsletterId, String status) {
+      log.debug("user " + userId + " change subscription status of newsletter " + newsletterId + " to " + status);
+      Subscription subscription = cao.getSubscription(newsletterId, userId);
+      subscription.setStatus(Subscription.STATUS.valueOf(status));
+      cao.modifySubscriptionStauts(subscription);
+   }
+
+   public void modifyFormat(int userId, int newsletterId, String format) {
 		Subscription subscription = cao.getSubscription(newsletterId, userId);
 		subscription.setMimeType(format);
 		cao.modifySubscriptionFormat(subscription);		
 	}
 
 	public boolean noSubscriptionRecord(int userId, int newsletterId) {
-		if(cao.getSubscription(newsletterId, userId)==null){
-			return true;
-		}else{
-			return false;
-		}
+      Subscription subscription = cao.getSubscription(newsletterId, userId);
+      return subscription == null;
 	}
 
 	public void addNewRecord(int userId, int newsletterId) {

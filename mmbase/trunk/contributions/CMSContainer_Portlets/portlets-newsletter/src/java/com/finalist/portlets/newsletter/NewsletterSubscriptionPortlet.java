@@ -1,30 +1,21 @@
 package com.finalist.portlets.newsletter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.WindowState;
-
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
-import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
-import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
+import org.apache.pluto.core.impl.PortletConfigImpl;
+
+import javax.portlet.*;
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
 
@@ -43,7 +34,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       if (newsletters != null) {
          request.setAttribute(ALLOWED_NEWSLETTERS, newsletters);
       }
-      
+
       super.doEditDefaults(request, response);
    }
 
@@ -54,24 +45,29 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 
       	 NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
-      	 int userId = 842170; 
-         if(null==newsletters)
-         {
-        	doInclude("view", "/fragment/null.jsp", request, response);
+
+      Person currentUser = CommunityModuleAdapter.getCurrentUser();
+
+      if (null == currentUser) {
+         doInclude("view", "/fragment/pleaselogin.jsp", request, response);
+      }
+      else {
+         int userId = currentUser.getId().intValue();
+
+         if (null == newsletters) {
+            doInclude("view", "/fragment/null.jsp", request, response);
          }
-         else 
-        	 {
-	        	 if(services.hasSubscription(userId)){
-	        	 List<Subscription> subscriptionList = services.getSubscriptionList(newsletters, userId);
-	        	 request.setAttribute("subscriptionList", subscriptionList);
-	             doInclude("view", "/fragment/list.jsp", request, response);
-	        	 } 
-	        	 else {
-	        	 List<Subscription> subscriptionList = services.getNewSubscription(newsletters);
-	        	 request.setAttribute("subscriptionList", subscriptionList);
-	             doInclude("view", "/fragment/welcome.jsp", request, response);
-	        	 }
-        	 }
+         else if (services.hasSubscription(userId)) {
+            List<Subscription> subscriptionList = services.getSubscriptionList(newsletters, userId);
+            request.setAttribute("subscriptionList", subscriptionList);
+            doInclude("view", "/fragment/list.jsp", request, response);
+         }
+         else {
+            List<Subscription> subscriptionList = services.getNewSubscription(newsletters);
+            request.setAttribute("subscriptionList", subscriptionList);
+            doInclude("view", "/fragment/welcome.jsp", request, response);
+         }
+      }
    }
 
    private String getUserName(PortletSession session) {

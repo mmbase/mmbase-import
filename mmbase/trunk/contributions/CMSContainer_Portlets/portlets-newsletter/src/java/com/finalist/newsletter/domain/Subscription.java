@@ -14,9 +14,10 @@ public class Subscription {
 
 	private Set<Tag> tags = new HashSet<Tag>();
 	private Newsletter newsletter;
+   private String subscriberId;
 
 	private int id;
-	
+
 	 public enum STATUS {
 	      ACTIVE, PAUSED, INACTIVE
 	   }
@@ -68,6 +69,12 @@ public class Subscription {
 	public void setStatus(STATUS status) {
 		this.status = status;
 	}
-	
-	
+
+   public String getSubscriberId() {
+      return subscriberId;
+   }
+
+   public void setSubscriberId(String subscriberId) {
+      this.subscriberId = subscriberId;
+   }
 }
