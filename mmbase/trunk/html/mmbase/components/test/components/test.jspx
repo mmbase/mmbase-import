@@ -48,20 +48,14 @@
             <a href="${_}">Change a</a>
           </mm:link>
         </p>
-        <mm:link>
-          <form method="post"
-                enctype="multipart/form-data"
-                action="${_}">
-            <p>Form with ${_}</p>
-
-            <table>
-              <tr><th>a</th><td><input name="a" value="${a}" /></td></tr>
-              <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
-              <tr><td colspan="100"><input type="submit" /></td></tr>
-            </table>
-
-          </form>
-        </mm:link>
+	<mm:form>
+	  <table>
+	    <tr><th>a</th><td><input name="a" value="${a}" /></td></tr>
+	    <tr><th>b</th><td><input name="b" value="${b}" /></td></tr>
+	    <tr><td colspan="100"><input type="submit" /></td></tr>
+	  </table>
+	  
+	</mm:form>
         <h2>Sub-component</h2>
         <p>
           Using mm:component <em>inside</em> this component. It should work as expected.
