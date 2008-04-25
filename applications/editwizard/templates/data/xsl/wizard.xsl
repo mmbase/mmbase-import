@@ -13,7 +13,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.181 2008-03-19 14:15:01 michiel Exp $
+    @version $Id: wizard.xsl,v 1.182 2008-04-25 16:55:45 andre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -74,7 +74,6 @@
       if (hist) {
          hist.go(1);
       }
-
       window.onresize = function(e){ resizeEditTable(); }
       -->
       ]]></xsl:text>
@@ -642,7 +641,6 @@
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="postfix"/>
     </xsl:call-template>
-
   </xsl:template>
 
 

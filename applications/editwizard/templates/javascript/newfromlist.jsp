@@ -4,7 +4,7 @@
  * Routines for NewFromList
  * 
  * @since    MMBase-1.9
- * @version  $Id: newfromlist.jsp,v 1.4 2008-02-13 13:21:09 pierre Exp $
+ * @version  $Id: newfromlist.jsp,v 1.5 2008-04-25 16:55:45 andre Exp $
  */
 
 function doMySearch(el) {
@@ -41,7 +41,9 @@ function doMySearch(el) {
             fields += ",";
         }
         var fieldname=cs[i];
-        if (fieldname.indexOf(".")!=-1 && undefined == relationNodepath) fieldname = fieldname.substring(fieldname.indexOf(".")+1,fieldname.length);
+        if (fieldname.indexOf(".")!=-1 && relationNodepath.length == 0) {
+            fieldname = fieldname.substring(fieldname.indexOf(".")+1,fieldname.length);
+        }
 
         if (searchtype=="like") {
             constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
@@ -58,7 +60,7 @@ function doMySearch(el) {
     // build url
     // var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&nodepath="+objectType+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
     var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/newfromlist.xsl&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
-    if (undefined != relationNodepath) {
+    if (relationNodepath.length != 0) {
         url += "&nodepath=" + relationNodepath + "&startnodes=" + relationStartnodes;
     } else {
         url += "&nodepath=" + objectType;
@@ -69,8 +71,6 @@ function doMySearch(el) {
     url += setParam("constraints", constraints);
     url += setParam("age", searchage+"");
    
-alert(relationOriginNode);
- 
     showPopup(url);
 }
 
