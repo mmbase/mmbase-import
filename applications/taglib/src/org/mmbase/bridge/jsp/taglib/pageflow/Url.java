@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * <p>
  * The creation of the URL is delegated to the MMBase framework.
  * </p>
- * @version $Id: Url.java,v 1.43 2008-04-18 13:52:50 michiel Exp $;
+ * @version $Id: Url.java,v 1.44 2008-04-25 11:45:15 michiel Exp $;
  * @since MMBase-1.9
  */
 public class Url implements Comparable, CharSequence, Casting.Unwrappable {
@@ -129,8 +129,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         return res;
       }
 
+
     /**
-     * Returns the URL as a String, always without the application context.
+     * Returns the URL as a String, always without the application context. Never <code>null</code>
      */
 
     public String get(boolean writeamp) throws JspTagException, FrameworkException {
@@ -164,6 +165,9 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
                 log.debug("Creating internal url link to page: " + page);
             }
             result = framework.getInternalUrl(page, params, frameworkParameters);
+            if (result == null) {
+                result = framework.getUrl(page, params, frameworkParameters, false);
+            }
         } else {
             if (process) {
                 result = framework.getProcessUrl(page, params, frameworkParameters, writeamp);
@@ -180,6 +184,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         } else {
             cacheNoAmp = result;
         }
+
         return result;
     }
 
@@ -240,6 +245,7 @@ public class Url implements Comparable, CharSequence, Casting.Unwrappable {
         try {
             String u = get(escapeAmps);
             log.debug("Produced " + u);
+            if (u == null) return "NULL_URL";
             StringBuilder show = new StringBuilder();
             if (! useAbsoluteAttribute(show, u)) {
                 log.debug("Absolute attribute not applied on " + u);
