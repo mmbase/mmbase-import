@@ -24,44 +24,52 @@ export MAILADDRESS=${CCMAILADDRESS}
 
 echo generating version, and some directories
 
-version=`date '+%Y-%m-%d'`
+#version=`date '+%Y-%m-%d'`
+#cvsversion=`date '+%Y-%m-%d %H:%M'`
 
-cvsversion=`date '+%Y-%m-%d %H:%M'`
+version="MMBase-1.9.0.beta"
+cvsversion=
+revision="MMBase-1_9_0_beta"
+
 dir=${version}
-
-#version="MMBase-1.8.1.final"
-#tag="MMBase-1_8_1_Final"
 
 # UNSTABLE branch
 builddir="/home/nightly/builds/${dir}"
 mkdir -p ${builddir}
 
-cd ${BUILD_HOME}/nightly-build/cvs/mmbase
-
-echo cwd: `pwd`, build dir: ${builddir}
-
-echo Cleaning
-echo >  ${builddir}/messages.log 2> ${builddir}/errors.log
+if [ 1 == 1 ] ; then 
+    cd ${BUILD_HOME}/nightly-build/cvs/mmbase
+    
+    echo cwd: `pwd`, build dir: ${builddir}
+    
+    echo Cleaning
+    echo >  ${builddir}/messages.log 2> ${builddir}/errors.log
 # removes all 'target' directories 
 # the same as ${MAVEN} multiproject:clean >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
-find . -type d -name target -print|xargs rm -rf 
+    find . -type d -name target -print|xargs rm -rf 
 
-echo ${CVS} -q update -d -P -D "'"${cvsversion}"'"
-${CVS} -q update -d -P -D "${cvsversion}"  >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    pwd
+    echo ${CVS} -q update -d -P  ${cvsversion} -r ${revision} 
+    ${CVS} -q update -d -P  ${cvsversion} -r ${revision} | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
+    
+    
+    echo Starting nightly build
+    echo all:install
+    ${MAVEN} all:install >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    
+    ${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
 
-
-echo Starting nightly build
-echo all:install
-${MAVEN} all:install >>  ${builddir}/messages.log 2>> ${builddir}/errors.log
-
-${CVS} log -N -d"last week<now" 2> /dev/null | ${FILTER} > ${builddir}/RECENTCHANGES.txt
-
-cd maven-site
-echo Creating site `pwd`.
-${MAVEN} multiproject:site >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+    cd maven-site
+    echo Creating site `pwd`.
+    ${MAVEN} multiproject:site >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+fi
 
 echo Copying todays artifacts
-cp -ra $HOME/.maven/repository/mmbase/mmbase-modules/*SNAPSHOT* ${builddir}
+echo $HOME
+for i in `/usr/bin/find $HOME/.maven/repository/mmbase -mtime -1` ; do 
+    echo copy $i to ${builddir}
+    cp $i ${builddir} 
+done
 
 
 echo Creating sym for latest build
