@@ -225,7 +225,12 @@
 
     	<j:set var="rootString" value="./"/>
 
-		<j:if test="${docfile.parent.length() > srcdir.length()}">
+        <!-- mu;tiproject adds some relativeness to the path which breaks the calculations of the output file -->
+    	<ant:dirname property="projectdir" file="${srcdir}" />
+    	<ant:basename property="projectdoc" file="${srcdir}" />
+        <j:set var="docdir">${projectdir}/${projectdoc}</j:set>
+
+		<j:if test="${docfile.parent.length() > docdir.length()}">
 	        <maven:get var="generatedir"
 	            plugin="maven-sdocbook-plugin"
 	            property="maven.sdocbook.generated"/>
@@ -233,7 +238,7 @@
 		        plugin="maven-sdocbook-plugin"
 		        property="maven.sdocbook.out"/>
 		
-			<j:set var="inputdir" value="${docfile.parent.substring(srcdir.length())}"/>
+			<j:set var="inputdir" value="${docfile.parent.substring(docdir.length())}"/>
 			<j:set var="outputname" value="${outpath.substring(generatedir.length())}"/>
 
 			<mkdir dir="${generatedir}${inputdir}"/>
