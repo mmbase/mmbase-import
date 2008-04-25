@@ -17,7 +17,7 @@ import org.mmbase.datatypes.DataType;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.37 2007-02-10 15:47:42 nklasens Exp $
+ * @version $Id: Field.java,v 1.38 2008-04-25 15:41:10 nklasens Exp $
  */
 public interface Field extends Descriptor, Comparable<Field> {
 
@@ -145,6 +145,7 @@ public interface Field extends Descriptor, Comparable<Field> {
     /**
      * Retrieve the position of the field when searching.
      * A value of -1 indicates the field is unavailable during search.
+     * @return position of the field when searching
      * @since MMBase-1.8
      */
     public int getSearchPosition();
@@ -152,6 +153,7 @@ public interface Field extends Descriptor, Comparable<Field> {
     /**
      * Retrieve the position of the field when listing.
      * A value of -1 indicates the field is unavailable in a list.
+     * @return position of the field when listing
      * @since MMBase-1.8
      */
     public int getListPosition();
@@ -159,19 +161,22 @@ public interface Field extends Descriptor, Comparable<Field> {
     /**
      * Retrieve the position of the field when editing.
      * A value of -1 indicates the field cannot be edited.
+     * @return  position of the field when editing
      * @since MMBase-1.8
      */
     public int getEditPosition();
 
     /**
      * Retrieve the position of the field in the database table.
+     * @return position in the database table
      * @since MMBase-1.8
      */
     public int getStoragePosition();
 
     /**
      * Returns the GUI name for the data type this field contains.
-     * @deprecated use {@link #getDataType } and {@link DataType#getName}
+     * @return the GUI name
+     * @deprecated use {@link #getDataType } and {@link Descriptor#getName}
      * @see #getDataType
      */
     @Deprecated
@@ -201,10 +206,11 @@ public interface Field extends Descriptor, Comparable<Field> {
 
     /**
      * Checks whether a given value is valid for this field.
+     * @param value value to validate
      * @return Collection of error-strings (describing the problem) in the current locale, or an empty collection if the value is ok.
      * @since MMBase-1.8
      */
-    public java.util.Collection validate(Object value);
+    public java.util.Collection<String> validate(Object value);
 
     /**
      * A field's state is 'virtual' if it is not persistent in storage.

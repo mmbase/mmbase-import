@@ -22,7 +22,7 @@ import org.mmbase.datatypes.DataType;
  * implementation on a existing <code>Field</code> instance.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: FieldWrapper.java,v 1.4 2008-02-03 17:33:56 nklasens Exp $
+ * @version $Id: FieldWrapper.java,v 1.5 2008-04-25 15:41:10 nklasens Exp $
  * @since   MMBase-1.8.1
  */
 
@@ -48,7 +48,7 @@ public abstract class FieldWrapper implements Field {
     public String getGUIType() { return field.getGUIType(); }
     public boolean isRequired() { return field.isRequired(); }
     public int getMaxLength() { return field.getMaxLength(); }
-    public Collection validate(Object value) { return field.validate(value); }
+    public Collection<String> validate(Object value) { return field.validate(value); }
     public boolean isVirtual() { return true; }
     public boolean isReadOnly() { return true; }
     public String getName() { return field.getName(); }
