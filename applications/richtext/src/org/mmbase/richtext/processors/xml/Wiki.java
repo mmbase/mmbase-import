@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.6 2008-04-24 12:52:12 sdeboer Exp $
+ * @version $Id: Wiki.java,v 1.7 2008-04-27 04:26:56 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -118,6 +118,7 @@ class Wiki {
         for (int i = 0; i < as.getLength(); i++) {
             Element a = (Element) as.item(i);
             String id = a.getAttribute("id");
+
             if (log.isDebugEnabled()) {
                 log.debug("Found " + XMLWriter.write(a, true));
             }
@@ -125,11 +126,15 @@ class Wiki {
             if (link == null) {
                 log.service("No relation found with id'" + id + "'. Implicitely creating one now.");
                 Node node = getNode(cloud, cleanId(id));
-                Relation newRel = editedNode.createRelation(node, cloud.getRelationManager(editedNode.getNodeManager(), node.getNodeManager(), "idrel"));
-                String decoratedId = decorateId(id);
-                newRel.setStringValue("id", decoratedId);
-                newRel.commit();
-                a.setAttribute("id", decoratedId);
+                try {
+                    Relation newRel = editedNode.createRelation(node, cloud.getRelationManager(editedNode.getNodeManager(), node.getNodeManager(), "idrel"));
+                    String decoratedId = decorateId(id);
+                    newRel.setStringValue("id", decoratedId);
+                    newRel.commit();
+                    a.setAttribute("id", decoratedId);
+                } catch (Exception e) {
+                    log.warn(e);
+                }
 
             }
 
