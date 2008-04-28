@@ -116,13 +116,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Type</guiname>
             <guiname xml:lang="en">Type</guiname>
-			<guiname xml:lang="zh">类型</guiname>
+			   <guiname xml:lang="zh">类型</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -157,7 +157,7 @@
          <gui>
             <guiname xml:lang="nl">Verplicht</guiname>
             <guiname xml:lang="en">Mandatory</guiname>
-			<guiname xml:lang="zh">强制的</guiname>
+			   <guiname xml:lang="zh">强制的</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -186,13 +186,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Reguliere expressie</guiname> 
-  			<guiname xml:lang="en">Regular expression</guiname> 
-			<guiname xml:lang="zh">正则表达式</guiname>
+  			   <guiname xml:lang="en">Regular expression</guiname> 
+			   <guiname xml:lang="zh">正则表达式</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -227,7 +227,7 @@
          <gui>
             <guiname xml:lang="nl">Rijen</guiname>
             <guiname xml:lang="en">Rows</guiname>
-			<guiname xml:lang="zh">行</guiname>
+			   <guiname xml:lang="zh">行</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -256,13 +256,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Kolommen</guiname>
             <guiname xml:lang="en">Columns</guiname>
-			<guiname xml:lang="zh">列</guiname>
+			   <guiname xml:lang="zh">列</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -291,13 +291,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Email naar dit veld</guiname>
             <guiname xml:lang="en">Send email to value in this field</guiname>           
-			<guiname xml:lang="zh">对本框值发送电子邮件</guiname>
+			   <guiname xml:lang="zh">对本框值发送电子邮件</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -326,13 +326,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">De default waarde</guiname>
             <guiname xml:lang="en">The default value</guiname>
-			<guiname xml:lang="zh">默认值</guiname>
+			   <guiname xml:lang="zh">默认值</guiname>
          </gui>
          <!-- editor related -->
          <editor>

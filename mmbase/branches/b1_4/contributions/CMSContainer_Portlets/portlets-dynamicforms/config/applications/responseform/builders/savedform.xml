@@ -18,7 +18,7 @@ extends="object" maintainer="mmbase.org" name="savedform" version="0">
     Names can be provided in various languages. -->
    <names>
       <!-- singular names per language as defined by ISO 639 -->
-      <singular xml:lang="nl">Bewaarde formulier</singular>
+      <singular xml:lang="nl">Bewaard formulier</singular>
       <singular xml:lang="en">Saved form</singular>
 	  <singular xml:lang="zh"></singular>
       <!-- plural names per language as defined by ISO 639 -->
