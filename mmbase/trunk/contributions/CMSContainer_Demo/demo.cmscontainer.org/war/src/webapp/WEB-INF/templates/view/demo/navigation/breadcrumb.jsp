@@ -1,7 +1,4 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<portlet:defineObjects />
-
 <cmsc:path var="listPath" />
 
 <div id="breadcrumb">
