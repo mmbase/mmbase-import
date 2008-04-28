@@ -3,11 +3,14 @@
 <%@ page import="com.finalist.newsletter.domain.Newsletter"%>
 <%@ page import="com.finalist.newsletter.domain.Tag"%>
 <%@ page import="com.finalist.newsletter.domain.Subscription"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setBundle basename="portlets-newslettersubscription" scope="request" />
 <html>
 <SCRIPT LANGUAGE="JavaScript">
-	function addOrRemoveTag(newsletterId,tagId,box){
+	function addOrRemoveTag(newsletterId,tagId,box,contextPath){
+		alert(contextPath);
 		new Ajax.Request
-				('/cmsc-demo-staging/editors/newsletter/services.jsp', 
+				(contextPath+'/editors/newsletter/services.jsp', 
 					{
 					method: 'get',
 					parameters: {newsletterId: newsletterId, tagId:tagId, select: box.checked , action: 'modifyTag'}
@@ -15,9 +18,10 @@
 				);
 			}
 	
-	function modifyFormat(newsletterId,format){
+	function modifyFormat(newsletterId,format,contextPath){
+		alert(contextPath);
 			new Ajax.Request
-				('/cmsc-demo-staging/editors/newsletter/services.jsp', 
+				(contextPath+'/editors/newsletter/services.jsp', 
 					{
 					method: 'get',
 					parameters: {newsletterId: newsletterId, format:format, action: 'modifyFormat'}
@@ -25,7 +29,8 @@
 				);
 			}
 	
-	function modifyStatus(newsletterId,status,box){
+	function modifyStatus(newsletterId,status,box,contextPath){
+		alert(contextPath);
 			if("ACTIVE"==status)
 		{
 				if(box.checked){
@@ -41,7 +46,7 @@
 			}
 		}
 			new Ajax.Request
-				('/cmsc-demo-staging/editors/newsletter/services.jsp', 
+				(contextPath+'/editors/newsletter/services.jsp', 
 					{
 					method: 'get',
 					parameters: {newsletterId: newsletterId, status:status, select: box.checked ,action: 'modifyStatus'}
@@ -69,10 +74,15 @@
 			}
 	
 </SCRIPT>
-<h1>WELCOME</h1>
+<h1>LIST</h1>
 <table border="1">
 <form action="" name="subscription">
-<tr><td>title</td><td>tag</td><td>action</td><td>format</td></tr>
+<tr>
+<td><fmt:message key="subscription.view.list.title" /></td>
+<td><fmt:message key="subscription.view.list.tag" /></td>
+<td><fmt:message key="subscription.view.list.status" /></td>
+<td><fmt:message key="subscription.view.list.format" /></td>
+</tr>
 <%	List<Subscription> list = (List<Subscription>)request.getAttribute("subscriptionList");
 	Iterator it = list.iterator();
          for(int i=0;i<list.size();i++)
@@ -120,6 +130,9 @@
 			 }
 			 %>
 			 <tr>
+			 <c:set var="contextPath">
+			 <%=request.getContextPath()%><fmt:message key="subscription.view.services.path"/>
+			 </c:set>
 			 <c:set var="newsletterId">
 			 <%=newsletterId%>
 			 </c:set>
@@ -163,20 +176,26 @@
 			 <%=select%>
 			 </c:set>
 			 ${name}
-			<input class="checkbox" type="checkbox" value='${tagId}' name="tag-${newsletterId}" style="width: 15px;" id="tag-${newsletterId}" onclick="addOrRemoveTag(${newsletterId},${tagId},this)" selected="${selected}" <c:if test="${disabledTag}">disabled</c:if> 
+			<input class="checkbox" type="checkbox" value='${tagId}' name="tag-${newsletterId}" style="width: 15px;" id="tag-${newsletterId}" onclick="addOrRemoveTag(${newsletterId},${tagId},this,'${contextPath}')" selected="${selected}" <c:if test="${disabledTag}">disabled</c:if> 
 			<c:if test="${selected}">checked</c:if> />
 			 <%}%>
 			 </td>
 			  <td>
-			 subscription<input class="checkbox" type="checkbox" value="${newsletterId}" name="subscription-${newsletterId}" style="width: 15px;" id="subscription-${newsletterId}" onclick="modifyStatus(${newsletterId},'ACTIVE',this)"   
+			 <fmt:message key="subscription.view.list.status.subscription" />
+			 <input class="checkbox" type="checkbox" value="${newsletterId}" name="subscription-${newsletterId}" style="width: 15px;" id="subscription-${newsletterId}" onclick="modifyStatus(${newsletterId},'ACTIVE',this,'${contextPath}')"   
 			 <c:if test="${isSubscription}">checked</c:if>/>
-			 pause<input class="checkbox" type="checkbox" value="${newsletterId}" name="pause-${newsletterId}" style="width: 15px;" id="pause-${newsletterId}" onclick="modifyStatus(${newsletterId},'PAUSED',this)" <c:if test="${isPause}">checked</c:if>
+			<fmt:message key="subscription.view.list.status.pause" />
+			<input class="checkbox" type="checkbox" value="${newsletterId}" name="pause-${newsletterId}" style="width: 15px;" id="pause-${newsletterId}" onclick="modifyStatus(${newsletterId},'PAUSED',this,'${contextPath}')" <c:if test="${isPause}">checked</c:if>
 			 <c:if test="${disabledPause}">disabled</c:if>/>
 			 </td>
 			 <td>
-			 <select name="format-${newsletterId}" onchange="modifyFormat(${newsletterId},this.value)" <c:if test="${disabledFormat}">disabled</c:if>>
-			 <option  name="html" value="html" <c:if test="${!isText}">selected</c:if>>html</option>
-			 <option  name="text" value="text" <c:if test="${isText}">selected</c:if>>text</option>${newsletterId}
+			 <select name="format-${newsletterId}" onchange="modifyFormat(${newsletterId},this.value,'${contextPath}')" <c:if test="${disabledFormat}">disabled</c:if>>
+			 <option  name="html" value="html" <c:if test="${!isText}">selected</c:if>>
+			 <fmt:message key="subscription.view.list.status.html" />
+			 </option>
+			 <option  name="text" value="text" <c:if test="${isText}">selected</c:if>>
+			 <fmt:message key="subscription.view.list.status.text" />
+			 </option>
 			 </select>
 			 </td>
 			</tr>
