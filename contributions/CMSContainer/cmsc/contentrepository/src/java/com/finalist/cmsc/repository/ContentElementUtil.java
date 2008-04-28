@@ -398,7 +398,7 @@ public class ContentElementUtil {
 
 
     /**
-     * judege if the content's archive date is in the archive time scope
+     * judge if the content's archive date is in the archive time scope
      * @param content the node to be match
      * @param archive spcifiy how to calculate the archive time scrop.accept "all" "old" or other String as parameter,
      * @return <li>true if archive is "all" or content is empty.
