@@ -4,10 +4,10 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:os="http://www.opensymphony.com/oscache"
     version="2.0">
-  <jsp:tag description="This tag is like an mm:field. (it is available as both mm-rich:body and mm-rich:field)
-			It shows the value of one 'mmxf' field as HTML, using the XSLT 
-			config/xslt/2xhtml.xslt (which can be overridden)"
-	   />
+  <jsp:directive.tag description="This tag is like an mm:field. (it is available as both mm-rich:body and mm-rich:field)
+                                  It shows the value of one 'mmxf' field as HTML, using the XSLT 
+                                  config/xslt/2xhtml.xslt (which can be overridden)"
+                     />
   <jsp:directive.attribute name="field"
 			   description="The name of the field to show. Defaults to 'body'. (mm-rich:body field='body') "
 			   />
@@ -39,7 +39,7 @@
 			   />
 
   <!--
-       $Id: body.tagx,v 1.5 2008-04-25 21:33:18 michiel Exp $
+       $Id: body.tagx,v 1.6 2008-04-28 09:57:06 sdeboer Exp $
   -->
 
   <os:cache
