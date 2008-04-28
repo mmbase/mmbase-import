@@ -3,7 +3,7 @@ body
 	background-color: #97b7c8;
 	margin: 0px 4px 0px 7px;
 }
-	
+
 body, table, div, input
 {
 	font-family: Arial, Verdana, Helvetica;
@@ -62,7 +62,7 @@ img
 
 /* sideblocks */
 /* block aan zijkant */
-div.side_block, 
+div.side_block,
 div.side_block_gray,
 div.side_block_green
 {
@@ -75,7 +75,7 @@ div.side_block_green
 	width: 285px;
 	border-style: none none none solid;
 	border-width: 1px;
-	border-color: #ffffff;	
+	border-color: #ffffff;
 	clear: both;
 	/*height: auto;*/
 	margin-bottom: 2px;
@@ -83,7 +83,7 @@ div.side_block_green
 
 div.content_block_pink a,
 div.content_block_purple a,
-div.side_block a, 
+div.side_block a,
 div.side_block_gray a,
 div.side_block_green a
 {
@@ -120,10 +120,10 @@ div.side_block_green div.header
 	height: 36px;
 	float: left;
 	clear: both;
-	width:100%;	
+	width:100%;
 }
 
-div.side_block div.header div.title, 
+div.side_block div.header div.title,
 div.side_block_gray div.header div.title,
 div.side_block_green div.header div.title
 {
@@ -139,7 +139,7 @@ div.side_block_green div.header div.title
 }
 
 /* block eindstuk */
-div.side_block div.side_block_end, 
+div.side_block div.side_block_end,
 div.side_block_gray div.side_block_end,
 div.side_block_green div.side_block_end
 {
@@ -152,7 +152,7 @@ div.side_block_green div.side_block_end
 }
 
 /* bovenkant eindstuk */
-div.side_block div.header div.header_end 
+div.side_block div.header div.header_end
 {
 	background-image: url('../gfx/background_side_block_end.gif');
 	width: 23px;
@@ -182,7 +182,7 @@ div.side_block_green div.header div.header_end
 }
 
 /* buttons */
-div.side_block .button, 
+div.side_block .button,
 div.side_block_gray .button,
 div.side_block_green .button
 {
@@ -213,7 +213,7 @@ div.side_block_green .expand_button
 }
 
 
-div.side_block div.search_form, 
+div.side_block div.search_form,
 div.side_block_gray div.search_form,
 div.side_block_green div.search_form
 {
@@ -223,7 +223,7 @@ div.side_block_green div.search_form
 	padding: 10px;
 }
 
-div.side_block div.search_form_options, 
+div.side_block div.search_form_options,
 div.side_block_gray div.search_form_options,
 div.side_block_green div.search_form_options
 {
@@ -232,7 +232,7 @@ div.side_block_green div.search_form_options
 	padding: 10px;
 }
 
-div.side_block div.search_form_options .button, 
+div.side_block div.search_form_options .button,
 div.side_block_gray div.search_form_options .button,
 div.side_block_green div.search_form_options .button
 {
@@ -251,18 +251,18 @@ div.side_block_green ul.shortcuts
 	clear: left;
 	float: left;
 	list-style-position: outside;
-	list-style-type: none;	
+	list-style-type: none;
 	margin: 0 0 0 10px;
 	padding: 10px 0 0 0;
 }
 
 div.content_block_pink ul.shortcuts li,
 div.content_block_purple ul.shortcuts li,
-div.side_block ul.shortcuts li, 
+div.side_block ul.shortcuts li,
 div.side_block_gray ul.shortcuts li,
 div.side_block_green ul.shortcuts li
 {
-	height: 20px;	
+	height: 20px;
 	background-position: left center;
 	background-repeat: no-repeat;
 	padding-left: 25px;
@@ -278,17 +278,17 @@ div.side_block_green ul.shortcuts li
 
 div.side_block div.body
 {
-	height: auto; 
-	float: none; 
-	clear:both; 
+	height: auto;
+	float: none;
+	clear:both;
 	padding: 10px;
 	/*display:inline;*/
 }
 div.side_block_gray div.body,
 div.side_block_green div.body{
-	height: auto; 
-	float: none; 
-	clear:both; 
+	height: auto;
+	float: none;
+	clear:both;
 	padding: 10px;
 	display:inline;
 }
@@ -310,10 +310,10 @@ div.content_block_purple
 	border-style: none none none solid;
 	/*border-style: solid;*/
 	border-width: 1px;
-	border-color: #ffffff;	
+	border-color: #ffffff;
 	float: none;
 	height: auto;
-	margin-bottom: 2px;		
+	margin-bottom: 2px;
 }
 
 /* body van inhoud van contentblock */
@@ -323,7 +323,7 @@ div.content_block_purple div.body
 	clear: both;
 	display: block;
 	height: auto;
-	width: auto;	
+	width: auto;
 	padding: 10px;
 }
 
@@ -404,10 +404,10 @@ div.content_block_pink
 	border-style: none none none solid;
 	/*border-style: solid;*/
 	border-width: 1px;
-	border-color: #ffffff;	
+	border-color: #ffffff;
 	float: none;
 	height: auto;
-	margin-bottom: 2px;		
+	margin-bottom: 2px;
 }
 
 /* body van inhoud van contentblock */
@@ -417,7 +417,7 @@ div.content_block_pink div.body
 	clear: both;
 	display: block;
 	height: auto;
-	width: auto;	
+	width: auto;
 	padding: 10px;
 }
 
@@ -533,7 +533,7 @@ div.messagebox_red
 	display: block;
 	background-image: url('../gfx/hr_red_begin.gif');
 	background-position: top left;
-	background-repeat: no-repeat;	
+	background-repeat: no-repeat;
 }
 
 div.messagebox_red div.box
@@ -588,8 +588,8 @@ div.messagebox_red div.box div.body,
 div.messagebox_red div.box div.body table
 {
 	margin: 0 10px;
-	color: #ffffff;	
-	background-color: #cc0000 !important;		
+	color: #ffffff;
+	background-color: #cc0000 !important;
 }
 
 
@@ -598,38 +598,38 @@ div.ruler_red,
 div.ruler_green,
 div.ruler_blue,
 div.ruler_gray {
-	background-color: #ffffff;	
+	background-color: #ffffff;
 
-	height: 18px;	
-	
+	height: 18px;
+
 	text-transform: uppercase;
 	background-position: left top;
-	background-repeat: no-repeat;	
-	
+	background-repeat: no-repeat;
+
 	margin-right: 3px;
 }
 div.ruler_green div,
 div.ruler_red div,
 div.ruler_blue div,
-div.ruler_gray div {		
+div.ruler_gray div {
 	display: inline;
 	margin-left: 40px;
-	padding-right: 9px;	
+	padding-right: 9px;
 
 	font-size: 14px;
 	letter-spacing: 2px;
-	
-	width: auto;			
-	
+
+	width: auto;
+
 	background-color: #ffffff;
 	background-position: right top;
-	background-repeat: no-repeat;	
+	background-repeat: no-repeat;
 }
 
 div.ruler_red {
 	background-image: url('../gfx/hr_red.gif');
 }
-div.ruler_red div {		
+div.ruler_red div {
 	color: #cc0000;
 	background-image: url('../gfx/hr_red_end.gif');
 }
@@ -685,15 +685,15 @@ div.tabs div.tab_active
 
 div.tabs div.tab_active div.body
 {
-	margin-left: 40px;	
+	margin-left: 40px;
 	padding-right: 40px;
 	background-image: url('../gfx/tab_active_right.gif');
 	background-position: top right;
 	background-repeat: no-repeat;
 	height: 35px;
-	float: left;	
+	float: left;
 	clear: both;
-	display: inline;	
+	display: inline;
 }
 
 div.tabs div.tab_active div.body div a
@@ -701,25 +701,25 @@ div.tabs div.tab_active div.body div a
 	padding-top: 17px;
 	color: black;
 	font-size: 14px;
-	float: left;	
+	float: left;
    text-decoration: none;
 }
 
 /* normale tab */
 div.tabs div.tab
 {
-	display: block;	
+	display: block;
 	background-image: url('../gfx/tab_left.gif');
 	background-position: top left;
 	background-repeat: no-repeat;
 	height: 35px;
 	float: left;
-	margin-right: 1px;	
+	margin-right: 1px;
 }
 
 div.tabs div.tab div.body
 {
-	margin-left: 40px;	
+	margin-left: 40px;
 	padding-right: 40px;
 	float: left;
 	background-image: url('../gfx/tab_right.gif');
@@ -734,7 +734,7 @@ div.tabs div.tab div.body div a
 {
 	padding-top: 14px;
 	color: #4a5040;
-	font-size: 13px;	
+	font-size: 13px;
 	float: left;
    text-decoration: none;
 }
@@ -744,10 +744,10 @@ div.editor
 {
 	background-image: url('../gfx/edit_shadow_2.gif');
 	background-repeat: repeat-y;
-	background-position: top right;	
-	
+	background-position: top right;
+
 	background-color: #ffffff;
-	
+
 	float: left;
 	/*clear: both;*/
 	width: 100%;
@@ -867,10 +867,10 @@ div.page_buttons_seperator
 {
 	background-image: url('../gfx/edit_shadow_2.gif');
 	background-repeat: repeat-y;
-	background-position: top right;	
+	background-position: top right;
 	height: 10px;
 	background-color: #ffffff;
-	
+
 	float: left;
 	clear: both;
 	width: 100%;
@@ -895,7 +895,7 @@ div.page_buttons
 	background-repeat: no-repeat;
 	height: 39px;
 	float: left;
-	background-color: #ffffff;	
+	background-color: #ffffff;
 }
 
 div.page_buttons div.begin
@@ -926,7 +926,7 @@ div.page_buttons div.button div.body
 	background-repeat: no-repeat;
 	background-position: top right;
 	height: 39px;
-	float: left;	
+	float: left;
 }
 
 div.page_buttons div.button div.body_last
@@ -935,7 +935,7 @@ div.page_buttons div.button div.body_last
 	background-repeat: no-repeat;
 	background-position: top right;
 	height: 39px;
-	float: left;		
+	float: left;
 }
 
 div.page_buttons div.button div.body div,
@@ -944,7 +944,7 @@ div.page_buttons div.button div.body_last div
 	float: left;
 	margin: 10px;
 	color: #313728;
-	font-size: 13px;	
+	font-size: 13px;
 	display: inline;
 }
 
@@ -969,7 +969,7 @@ div.page_buttons div.button:hover div.body
 	background-repeat: no-repeat;
 	background-position: top right;
 	height: 39px;
-	float: left;	
+	float: left;
 }
 
 div.page_buttons div.button:hover div.body_last
@@ -978,7 +978,7 @@ div.page_buttons div.button:hover div.body_last
 	background-repeat: no-repeat;
 	background-position: top right;
 	height: 39px;
-	float: left;		
+	float: left;
 }
 
 div.page_buttons div.button:hover div.body div,
@@ -987,7 +987,7 @@ div.page_buttons div.button:hover div.body_last div
 	float: left;
 	margin: 10px;
 	color: #313728;
-	font-size: 13px;	
+	font-size: 13px;
 	display: inline;
 }
 
@@ -1033,10 +1033,10 @@ div.edit_form_red table thead tr
 	background-color: #f5e9e6;
 }
 
-div.edit_form_red table thead .button, 
+div.edit_form_red table thead .button,
 div.edit_form_red table thead .expand_button
 {
-	color: #9a2708;	
+	color: #9a2708;
 }
 
 div.edit_form_red table th
@@ -1083,10 +1083,10 @@ div.edit_form_gray table thead tr
 	background-color: #f1f1f1;
 }
 
-div.edit_form_gray table thead .button, 
+div.edit_form_gray table thead .button,
 div.edit_form_gray table thead .expand_button
 {
-	color: #737373;	
+	color: #737373;
 }
 
 div.edit_form_gray table th
@@ -1133,10 +1133,10 @@ div.edit_form_green table thead tr
 	background-color: #e0ffc1;
 }
 
-div.edit_form_green table thead .button, 
+div.edit_form_green table thead .button,
 div.edit_form_green table thead .expand_button
 {
-	color: #418001;	
+	color: #418001;
 }
 
 div.edit_form_green table th
@@ -1183,10 +1183,10 @@ div.edit_form_gray table thead tr
 	background-color: #f1f1f1;
 }
 
-div.edit_form_gray table thead .button, 
+div.edit_form_gray table thead .button,
 div.edit_form_gray table thead .expand_button
 {
-	color: #737373;	
+	color: #737373;
 }
 
 div.edit_form_gray table th
@@ -1230,7 +1230,7 @@ div.edit_form_gray table th
 
 a.button
 {
-	color: #313728;	
+	color: #313728;
 	font-size: 11px;
 	font-weight: bold;
 	background-image: url('../gfx/button.gif');
@@ -1315,14 +1315,14 @@ div.edit_form_gray .delete_button:hover
 	background-image: url('../gfx/button_delete_active.gif');
 }
 
-#addressbar 
+#addressbar
 {
 width: 149px
 }
 
-label { 
-	display: block; 
-	width: 100px; 
+label {
+	display: block;
+	width: 100px;
 	float: left;
 }
 
@@ -1334,9 +1334,9 @@ label {
 }
 
 .dashboard iframe {
-	width:200px; 
-	height: 100px; 
-	border:0px; 
+	width:200px;
+	height: 100px;
+	border:0px;
 }
 
 .page_list_navfalse{
