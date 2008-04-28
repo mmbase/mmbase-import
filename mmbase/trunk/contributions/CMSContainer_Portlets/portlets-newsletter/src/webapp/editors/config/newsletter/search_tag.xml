@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<list role="newslettercontent" destination="tag" minoccurs="0" maxoccurs="*" >
+	<title xml:lang="nl">Tag selecteren</title>
+	<title xml:lang="en">Tag selection</title>
+
+	<item>
+		<field name="name" ftype="data">
+			<prompt xml:lang="en">tag</prompt>
+			<prompt xml:lang="nl">tag</prompt>
+		</field>
+      <field name="subject" ftype="data">
+			<prompt xml:lang="en">newsletter</prompt>
+			<prompt xml:lang="nl">newsletter</prompt>
+		</field>
+	</item>
+
+	<command name="search" nodepath="tag" age="-1" fields="name,subject">
+		<prompt xml:lang="en">Search tag</prompt>
+		<prompt xml:lang="nl">Zoek tag</prompt>
+		<search-filter>
+			<name xml:lang="en">Tag Name contains</name>
+			<name xml:lang="nl">Tag Name bevat</name>
+			<search-fields>[name]</search-fields>
+		</search-filter>
+      <search-filter>
+			<name xml:lang="en">Newsletter Title contains</name>
+			<name xml:lang="nl">Newsletter Title bevat</name>
+			<search-fields>[subject]</search-fields>
+		</search-filter>
+	</command>
+
+	<action type="create">
+		<relation destinationtype="tag" role="newslettercontent">
+						<object type="tag" >
+			</object>
+		</relation>
+	</action>
+
+	<action type="delete" />
+</list>
