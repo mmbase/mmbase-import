@@ -17,6 +17,7 @@ int iCurPart = 0;
 int ti = 1;
 %>
 <mm:import externid="p" jspvar="paginaID" vartype="String"/>
+<mm:import externid="sid" jspvar="subsiteID" vartype="String"/>
 <%
 boolean isDemoLayout = sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT);
 boolean isEventTemplate = true;
@@ -28,6 +29,13 @@ boolean isEventTemplate = true;
 </mm:node>
 <html:form action="<%= localPath +  "/SubscribeAction" %>" scope="session">
 <html:hidden property="ticketOffice" value="website" />
+
+<mm:node number="<%= subsiteID %>">
+   <mm:field name="naam" jspvar="p_naam" vartype="String" >
+      <html:hidden property="ticketOfficeSource" value="<%=p_naam%>" />
+   </mm:field>
+</mm:node>
+
 <html:hidden property="selectedParticipant" />
 <html:hidden property="subscriptionNumber" />
 <html:hidden property="pageNumber" value="<%= paginaID %>" />

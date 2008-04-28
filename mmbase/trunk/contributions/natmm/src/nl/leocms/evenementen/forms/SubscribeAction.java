@@ -746,6 +746,7 @@ public class SubscribeAction extends Action {
             thisSubscription.setStringValue("source",subscribeForm.getSource());
             thisSubscription.setStringValue("description",subscribeForm.getDescription());
             thisSubscription.setStringValue("ticket_office",subscribeForm.getTicketOffice());
+            thisSubscription.setStringValue("ticket_office_source",subscribeForm.getTicketOfficeSource());
             thisSubscription.setStringValue("betaalwijze", subscribeForm.getPaymentType());
             thisSubscription.setStringValue("bank_of_gironummer", subscribeForm.getBankaccount());
             thisSubscription.commit();

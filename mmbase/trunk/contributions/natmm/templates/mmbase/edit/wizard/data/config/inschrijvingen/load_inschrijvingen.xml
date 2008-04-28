@@ -8,6 +8,7 @@
       <field name="ingangsdatum_machtiging"/>
       <field name="description"/>
       <field name="source"/>
+      <field name="ticket_office_source"/>
       <relation destination="answers" role="posrel"/>
       <!-- relation destination="bevestigings_teksten" role="daterel"/ -->
       <relation destination="deelnemers" role="posrel"/>
