@@ -53,7 +53,7 @@
          <gui>
             <guiname xml:lang="nl">Naam</guiname>
             <guiname xml:lang="en">Name</guiname>
-			<guiname xml:lang="zh">名称</guiname>
+			   <guiname xml:lang="zh">名称</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -88,7 +88,7 @@
          <gui>
             <guiname xml:lang="nl">Antwoord opslaan</guiname>
             <guiname xml:lang="en">Save answer</guiname>
-			<guiname xml:lang="zh">保存问题</guiname>
+			   <guiname xml:lang="zh">保存问题</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -104,7 +104,7 @@
          <!-- database related -->
          <db>
             <!-- name of the field in the database -->
-            <name xml:lang="nl">saveanswer</name>
+            <name>saveanswer</name>
             <!-- MMBase datatype and demands on it -->
             <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
@@ -117,13 +117,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
-            <guiname xml:lang="nl">Email addresses</guiname>
-            <guiname xml:lang="en">Email adressen</guiname>
-			<guiname xml:lang="zh">邮件地址</guiname>
+            <guiname xml:lang="nl">Email adressen</guiname>
+            <guiname xml:lang="en">Email addresses</guiname>
+			   <guiname xml:lang="zh">邮件地址</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -152,7 +152,7 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
@@ -187,13 +187,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Afzender email</guiname>
             <guiname xml:lang="en">Sender email</guiname>
-			<guiname xml:lang="zh">发送邮件地址</guiname>
+			   <guiname xml:lang="zh">发送邮件地址</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -209,7 +209,7 @@
          <!-- database related -->
          <db>
             <!-- name of the field in the database -->
-            <name xml:lang="nl">useremailsender</name>
+            <name>useremailsender</name>
             <!-- MMBase datatype and demands on it -->
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
@@ -222,7 +222,7 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
@@ -244,7 +244,7 @@
          <!-- database related -->
          <db>
             <!-- name of the field in the database -->
-            <name xml:lang="nl">useremailsendername</name>
+            <name>useremailsendername</name>
             <!-- MMBase datatype and demands on it -->
             <type key="false" notnull="false" size="255" state="persistent">STRING</type>
          </db>
@@ -292,13 +292,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Gebruikersemail tekst voor gegevens</guiname>
             <guiname xml:lang="en">User email body before data</guiname>
-			<guiname xml:lang="zh">用户邮件主体在数据前</guiname>
+			   <guiname xml:lang="zh">用户邮件主体在数据前</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -327,13 +327,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
-            <guiname xml:lang="nl">Gebruikersemail tekst na gegevens</guiname>
+            <guiname xml:lang="nl">Gebruikersemailtekst na gegevens</guiname>
             <guiname xml:lang="en">User email body after data</guiname>
-			<guiname xml:lang="zh">用户邮件主体在数据后</guiname>
+			   <guiname xml:lang="zh">用户邮件主体在数据后</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -362,13 +362,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Email tekst voor gegevens</guiname>
             <guiname xml:lang="en">Email body before data</guiname>
-			<guiname xml:lang="zh">邮件主体在数据前</guiname>
+			   <guiname xml:lang="zh">邮件主体在数据前</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -397,13 +397,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Email tekst na gegevens</guiname>
             <guiname xml:lang="en">Email body after data</guiname>
-			<guiname xml:lang="zh">邮件主体在数据后</guiname>
+			   <guiname xml:lang="zh">邮件主体在数据后</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -431,14 +431,14 @@
          <descriptions>
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
-		    <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+		      <description xml:lang="en"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Gegevens versturen in gebruikersemail</guiname>
             <guiname xml:lang="en">Include data in useremail</guiname>
-			<guiname xml:lang="zh">用户邮件包含数据</guiname>
+			   <guiname xml:lang="zh">用户邮件包含数据</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -454,7 +454,7 @@
          <!-- database related -->
          <db>
             <!-- name of the field in the database -->
-            <name xml:lang="nl">includedata</name>
+            <name>includedata</name>
             <!-- MMBase datatype and demands on it -->
             <type key="false" notnull="false" state="persistent">INTEGER</type>
          </db>
@@ -466,7 +466,7 @@
 				<description xml:lang="zh"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Bevestigings bericht</guiname>
+				<guiname xml:lang="nl">Bevestigingsbericht</guiname>
 				<guiname xml:lang="en">Confirmation message</guiname>				
 				<guiname xml:lang="zh">确认信息</guiname>
 			</gui>
