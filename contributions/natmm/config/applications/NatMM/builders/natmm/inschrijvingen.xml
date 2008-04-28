@@ -198,6 +198,29 @@
 
       <field>
          <descriptions>
+            <description xml:lang="nl"></description>
+            <description xml:lang="en"></description>
+         </descriptions>
+         <gui>
+            <guiname xml:lang="nl">HerkomstBoeking</guiname>
+            <guiname xml:lang="en">TicketOfficeSource</guiname>
+            <guitype>string</guitype>
+         </gui>
+         <editor>
+            <positions>
+               <input>12</input>
+               <list>12</list>
+               <search>12</search>
+            </positions>
+         </editor>
+         <db>
+            <name xml:lang="nl">ticket_office_source</name>
+            <type key="false" notnull="false" size="255" state="persistent">STRING</type>
+         </db>
+      </field>
+
+      <field>
+         <descriptions>
             <description xml:lang="nl">Comma separated users list</description>
             <description xml:lang="en">Comma separated users list</description>
          </descriptions>
@@ -208,9 +231,9 @@
          </gui>
          <editor>
             <positions>
-               <input>12</input>
-               <list>12</list>
-               <search>12</search>
+               <input>13</input>
+               <list>13</list>
+               <search>13</search>
             </positions>
          </editor>
          <db>

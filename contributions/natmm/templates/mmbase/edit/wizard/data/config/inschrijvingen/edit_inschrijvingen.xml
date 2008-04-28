@@ -10,6 +10,7 @@
       <field name="ingangsdatum_machtiging"><prompt>datum ingang machtiging</prompt></field>
       <field name="description" ftype="text"><prompt>omschrijving</prompt></field>
       <field name="source" ftype="line" ><prompt>bron</prompt></field>
+      <field name="ticket_office_source" ftype="line" ><prompt>herkomst aanmelding</prompt></field>
       <!-- list include="config/bevestigings_teksten/zoek_inschrijvingen_daterel_bevestigings_teksten.xml" / -->
       <list include="config/deelnemers/zoek_inschrijvingen_posrel_deelnemers.xml" />
       <!-- list include="config/leden/zoek_inschrijvingen_related_leden.xml" / -->
