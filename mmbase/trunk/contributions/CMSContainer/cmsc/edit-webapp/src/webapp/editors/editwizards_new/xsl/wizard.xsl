@@ -346,7 +346,7 @@
     What to do with 'lists'.
   -->
   <xsl:template name="colordiv">
-    <xsl:attribute name="class">ruler<xsl:value-of select="position()"/></xsl:attribute>
+    <xsl:attribute name="class">ruler<xsl:value-of select="(position() mod 4)+1"/></xsl:attribute>
   </xsl:template>
   
   <xsl:template match="list">
@@ -770,7 +770,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template name="ftype-calendar">
      <nobr><select name="calendar-type" id="calendar-type">
 	<option value="1">Once</option>

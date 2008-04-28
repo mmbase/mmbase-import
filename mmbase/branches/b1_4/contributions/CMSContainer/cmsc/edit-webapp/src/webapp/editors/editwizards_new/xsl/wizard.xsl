@@ -346,7 +346,7 @@
     What to do with 'lists'.
   -->
   <xsl:template name="colordiv">
-    <xsl:attribute name="class">ruler<xsl:value-of select="position()"/></xsl:attribute>
+    <xsl:attribute name="class">ruler<xsl:value-of select="(position() mod 4)+1"/></xsl:attribute>
   </xsl:template>
   
   <xsl:template match="list">

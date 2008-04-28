@@ -274,11 +274,7 @@ div.page_buttons div.button:hover div.button_body a.bottombutton-disabled
 	display: block;
 }
 
-div.ruler1,
-div.ruler5,
-div.ruler9,
-div.ruler13,
-div.ruler17
+div.ruler1
 {
 	background-color: #ffffff;	
 	height: 18px;	
@@ -291,11 +287,7 @@ div.ruler17
 	width: 100%;			
 }
 
-div.ruler1 div,
-div.ruler5 div,
-div.ruler9 div,
-div.ruler13 div,
-div.ruler17 div
+div.ruler1 div
 {		
 	display: inline;
 	margin-left: 40px;
@@ -313,11 +305,7 @@ div.ruler17 div
 	background-repeat: no-repeat;	
 }
 
-div.ruler2,
-div.ruler6,
-div.ruler10,
-div.ruler14,
-div.ruler18
+div.ruler2
 {
 	background-color: #ffffff;	
 
@@ -331,11 +319,7 @@ div.ruler18
 	width: 100%;			
 }
 
-div.ruler2 div,
-div.ruler6 div,
-div.ruler10 div,
-div.ruler14 div,
-div.ruler18 div
+div.ruler2 div
 {
 	display: inline;
 	margin-left: 40px;
@@ -353,11 +337,7 @@ div.ruler18 div
 	background-repeat: no-repeat;	
 }
 
-div.ruler3,
-div.ruler7,
-div.ruler11,
-div.ruler15,
-div.ruler19
+div.ruler3
 {
 	background-color: #ffffff;	
 
@@ -371,11 +351,7 @@ div.ruler19
 	width: 100%;
 }
 
-div.ruler3 div,
-div.ruler7 div,
-div.ruler11 div,
-div.ruler15 div,
-div.ruler19 div
+div.ruler3 div
 {
 	display: inline;
 	margin-left: 40px;
@@ -393,11 +369,7 @@ div.ruler19 div
 	background-repeat: no-repeat;
 }
 
-div.ruler4,
-div.ruler8,
-div.ruler12,
-div.ruler16,
-div.ruler20
+div.ruler4
 {
 	background-color: #ffffff;	
 
@@ -411,11 +383,7 @@ div.ruler20
 	width: 100%;
 }
 
-div.ruler4 div,
-div.ruler8 div,
-div.ruler12 div,
-div.ruler16 div,
-div.ruler20 div
+div.ruler4 div
 {
 	display: inline;
 	margin-left: 40px;
