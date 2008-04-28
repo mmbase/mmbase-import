@@ -9,13 +9,11 @@
 	<short-name>cmsc-glossary</short-name>
 	<uri>http://finalist.com/cmsc-glossary</uri>
 
-
 	<tag>
 		<description>Tag that make words in glossary module highlight and hover link in the body text</description>
 		<name>glossary</name>
 		<tag-class>com.finalist.cmsc.module.glossary.taglib.GlossaryTag</tag-class>
 		<body-content>JSP</body-content>
 	</tag>
-
 
 </taglib>
