@@ -116,13 +116,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Type</guiname>
             <guiname xml:lang="en">Type</guiname>
-			<guiname xml:lang="zh">类型</guiname>
+			   <guiname xml:lang="zh">类型</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -157,7 +157,7 @@
          <gui>
             <guiname xml:lang="nl">Verplicht</guiname>
             <guiname xml:lang="en">Mandatory</guiname>
-			<guiname xml:lang="zh">强制的</guiname>
+			   <guiname xml:lang="zh">强制的</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -186,13 +186,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Reguliere expressie</guiname> 
-  			<guiname xml:lang="en">Regular expression</guiname> 
-			<guiname xml:lang="zh">正则表达式</guiname>
+  			   <guiname xml:lang="en">Regular expression</guiname> 
+			   <guiname xml:lang="zh">正则表达式</guiname>
          </gui>
          <!-- editor related -->
          <editor>

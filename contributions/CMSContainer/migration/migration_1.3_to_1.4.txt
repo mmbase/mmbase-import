@@ -152,6 +152,7 @@ Exceptions/errors/other problems and what to do:
 *
 *
 
+
 Name: Add detailsupport to views.
 Goal: SearchService will use this setting for determination of detail pages
 Type: sql-script
@@ -163,3 +164,17 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+
+Name: Update field size of the dynamic forms
+Goal: increase size of text to be entered.
+Type: sql-script
+--- Start script ---
+ALTER TABLE mm_savedfieldvalue MODIFY column m_value text;
+ALTER TABLE live_savedfieldvalue MODIFY column m_value text;
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
