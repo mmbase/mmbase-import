@@ -20,13 +20,14 @@
 	</neededbuilderlist>
 	<neededreldeflist>
 		 <reldef source="defaulttheme" target="defaulttheme" direction="bidirectional" guisourcename="defaulttheme" guitargetname="defaulttheme" builder="insrel" />
-		 <reldef source="newslettertheme" target="newslettertheme" direction="bidirectional" guisourcename="newslettertheme" guitargetname="newslettertheme" builder="insrel" />
+       <reldef source="newslettertheme" target="newslettertheme" direction="bidirectional" guisourcename="newslettertheme" guitargetname="newslettertheme" builder="insrel" />
 		 <reldef source="newslettercontent" target="newslettercontent" direction="bidirectional" guisourcename="newslettercontent" guitargetname="newslettercontent" builder="insrel" />
 		 <reldef source="newslettered" target="newslettered" direction="bidirectional" guisourcename="newslettered" guitargetname="newslettered" builder="insrel" />		
 		 <reldef source="tagged" target="tagged" direction="bidirectional" guisourcename="tagged" guitargetname="tagged" builder="insrel" />
 	</neededreldeflist>
 	<allowedrelationlist>
-		<relation from="article" to="newsletter" type="newslettercontent" />
+		<relation from="article" to="tag" type="newslettercontent" />
+      <relation from="article" to="newsletter" type="newslettercontent" />
 		<relation from="article" to="newsletterpublicationtheme" type="newslettercontent" />
 		<relation from="newsletter" to="newslettertheme" type="newslettertheme" />
 		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
@@ -52,6 +53,7 @@
 		<datasource builder="article" path="basecontentelements/article.xml" />
 		<datasource builder="cronjobs" path="newsletter/cronjobs.xml" />
 	</datasourcelist>
-	<relationsourcelist></relationsourcelist>
+	<relationsourcelist>
+   </relationsourcelist>
 	<contextsourcelist></contextsourcelist>
 </application>
