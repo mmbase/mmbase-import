@@ -19,7 +19,7 @@
  -->
    </steps>
    <form-schema id="edit_page" extends="config/page/edit_page.xml"/>
-   <form-schema id="edit_pagefields" extends="config/navigationitem/edit_navigationitemfields.xml"/>
+   <form-schema id="edit_navigationitemfields" extends="config/navigationitem/edit_navigationitemfields.xml"/>
 <!-- 
    <form-schema id="edit_pageadmin" extends="config/page/edit_pageadmin.xml"/>
  -->
