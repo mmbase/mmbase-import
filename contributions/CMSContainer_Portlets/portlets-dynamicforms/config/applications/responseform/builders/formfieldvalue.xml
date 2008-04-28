@@ -13,11 +13,11 @@
     Names can be provided in various languages. -->
    <names>
       <!-- singular names per language as defined by ISO 639 -->
-      <singular xml:lang="nl">Formulier feld waarde</singular>
+      <singular xml:lang="nl">Formulier veldwaarden</singular>
       <singular xml:lang="en">Form Field Value</singular>
-	  <singular xml:lang="zh">表单框值</singular>
+	   <singular xml:lang="zh">表单框值</singular>
       <!-- plural names per language as defined by ISO 639 -->
-      <plural xml:lang="nl">Formulier veld waarden</plural>
+      <plural xml:lang="nl">Formulier veldwaarden</plural>
       <plural xml:lang="en">Form field values</plural>
 	  <plural xml:lang="zh">表单框值</plural>
    </names>
@@ -27,7 +27,7 @@
    <descriptions>
       <description xml:lang="nl"></description>
       <description xml:lang="en"></description>
-	  <description xml:lang="zh"></description>
+	   <description xml:lang="zh"></description>
    </descriptions>
    <!-- description per language as defined by ISO 639 -->
 
@@ -46,13 +46,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Waarde</guiname>
             <guiname xml:lang="en">Value</guiname>
-			<guiname xml:lang="zh">值</guiname>
+			   <guiname xml:lang="zh">值</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -81,13 +81,13 @@
             <!-- description per language as defined by ISO 639 -->
             <description xml:lang="nl"></description>
             <description xml:lang="en"></description>
-			<description xml:lang="zh"></description>
+			   <description xml:lang="zh"></description>
          </descriptions>
          <!-- gui related -->
          <gui>
             <guiname xml:lang="nl">Tekst</guiname>
             <guiname xml:lang="en">Text</guiname>
-			<guiname xml:lang="zh">文本框</guiname>
+		    	<guiname xml:lang="zh">文本框</guiname>
          </gui>
          <!-- editor related -->
          <editor>
@@ -122,7 +122,7 @@
          <gui>
             <guiname xml:lang="nl">Default waarde</guiname>
             <guiname xml:lang="en">Default value</guiname>
-			<guiname xml:lang="zh">默认值</guiname>
+			   <guiname xml:lang="zh">默认值</guiname>
          </gui>
          <!-- editor related -->
          <editor>
