@@ -84,6 +84,7 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
             } else {
                %><jsp:include page="includes/events/subscribe.jsp">
                   <jsp:param name="p" value="<%= paginaID%>" />
+                  <jsp:param name="sid" value="<%= subsiteID%>" />
                   <jsp:param name="rl" value="<%= iRubriekLayout %>" />
                </jsp:include><%
             }
