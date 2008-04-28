@@ -13,7 +13,7 @@ public class NavigationItem extends NodeBean implements Comparable<NavigationIte
    private Date creationdate;
    private Date lastmodifieddate;
    private Date publishdate;
-   private Date expirydate;
+   private Date expiredate;
    private boolean use_expiry;
    private String lastmodifier;
    private boolean inmenu;
@@ -85,13 +85,13 @@ public class NavigationItem extends NodeBean implements Comparable<NavigationIte
    }
 
 
-   public Date getExpirydate() {
-      return expirydate;
+   public Date getExpiredate() {
+      return expiredate;
    }
 
 
-   public void setExpirydate(Date expirydate) {
-      this.expirydate = expirydate;
+   public void setExpiredate(Date expirydate) {
+      this.expiredate = expirydate;
    }
 
 
