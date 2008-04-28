@@ -110,7 +110,7 @@ public class SiteManagementServiceMMBaseImpl extends SiteManagementService {
    private boolean isValidNavigation(NavigationItem item) {
        if (item.isUse_expirydate()) {
            Date now = new Date();
-           return now.after(item.getPublishdate()) && now.before(item.getExpirydate());
+           return now.after(item.getPublishdate()) && now.before(item.getExpiredate());
        }
        return true;
    }
