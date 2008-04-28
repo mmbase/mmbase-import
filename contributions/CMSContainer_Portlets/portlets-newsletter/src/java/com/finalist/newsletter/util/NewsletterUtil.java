@@ -2,22 +2,33 @@ package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldValueInConstraint;
+import org.mmbase.storage.search.RelationStep;
+import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.ContentElement;
+import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 
 public abstract class NewsletterUtil {
-
+   private static Log log = LogFactory
+   .getLog(NewsletterUtil.class);
    public static final String NEWSLETTER = "newsletter";
    public static final String NEWSLETTERPUBLICATION = "newsletterpublication";
 
@@ -204,8 +215,26 @@ public abstract class NewsletterUtil {
          List<ContentElement> articles = new ArrayList<ContentElement>();
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(newsletterNumber);
-         NodeManager articleNodeManager = cloud.getNodeManager("article");         
-         NodeQuery  query =  Queries.createRelatedNodesQuery(newsletterNode,articleNodeManager,null,null);
+         
+         NodeManager tagNodeManager = cloud.getNodeManager("tag");   
+         NodeList tags = newsletterNode.getRelatedNodes(tagNodeManager);
+         NodeManager articleNodeManager = cloud.getNodeManager("article"); 
+         Node tag = null;     
+         SortedSet<Integer> sort= new TreeSet<Integer>();
+         for (int i = 0 ; i < tags.size(); i++) {
+            tag =  tags.getNode(i);
+            sort.add(new Integer(tag.getNumber()));
+         }
+         if(sort.size() == 0) {
+            return (null);
+         }
+         NodeQuery query = cloud.createNodeQuery();
+         Step parameterStep = query.addStep(articleNodeManager);
+         query.setNodeStep(parameterStep);
+         query.addRelationStep(tagNodeManager,
+               null, null);
+         SearchUtil.addInConstraint(query, tagNodeManager
+               .getField("number"), sort);           
          Queries.addSortOrders(query, orderBy, direction);
          query.setOffset(offset);
          query.setMaxNumber(elementsPerPage);
@@ -222,12 +251,33 @@ public abstract class NewsletterUtil {
       }
       return (null);
    }
+   
    public static int countArticlesByNewsletter(int newsletterNumber) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(newsletterNumber);
-         NodeManager articleNodeManager = cloud.getNodeManager("article");         
-         NodeQuery  query =  Queries.createRelatedNodesQuery(newsletterNode,articleNodeManager,null,null);
+         
+         NodeManager tagNodeManager = cloud.getNodeManager("tag");   
+         NodeList tags = newsletterNode.getRelatedNodes(tagNodeManager);
+         NodeManager articleNodeManager = cloud.getNodeManager("article"); 
+         Node tag = null;     
+         SortedSet<Integer> sort= new TreeSet<Integer>();
+         for (int i = 0 ; i < tags.size(); i++) {
+            tag =  tags.getNode(i);
+            sort.add(new Integer(tag.getNumber()));
+         }
+         if(sort.size() == 0) {
+            return (0);
+         }
+         NodeQuery query = cloud.createNodeQuery();
+         Step parameterStep = query.addStep(articleNodeManager);
+         query.setNodeStep(parameterStep);
+         query.addRelationStep(tagNodeManager,
+               null, null);
+         SearchUtil.addInConstraint(query, tagNodeManager
+               .getField("number"), sort);  
+         
+//         NodeQuery  query =  Queries.createRelatedNodesQuery(tag,articleNodeManager,null,null);
          return Queries.count(query);
       }
       return (0);
