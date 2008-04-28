@@ -1,28 +1,27 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="posrel" destination="tag" minoccurs="0" maxoccurs="*"
 	orderby="field[@name='pos']" ordertype="number">
 	
 	<title xml:lang="nl"></title>
 	<title xml:lang="en">TAG</title>
-	<title xml:lang="zh">标签</title>
+
 
 	<item>
 		<field name="name"  dtrequired="true">
 			<prompt xml:lang="en">Name</prompt>
 			<prompt xml:lang="nl">Name</prompt>
-			<prompt xml:lang="zh">名称</prompt>
 		</field>
 	</item>
 
 	<command name="search" nodepath="tag" age="-1" fields="name">
 		<prompt xml:lang="en">Search tag</prompt>
 		<prompt xml:lang="nl">Zoek bijlage</prompt>
-		<prompt xml:lang="zh">查找标签</prompt>
+
 		<search-filter>
 			<name xml:lang="en">Name</name>
 			<name xml:lang="nl">Titel</name>
-			<name xml:lang="zh">标签</name>
+
 			<search-fields>[name]</search-fields>
 		</search-filter>
 	</command>
@@ -30,13 +29,15 @@
 	<command name="insert" objectnumber="new">
 		<prompt xml:lang="en">New</prompt>
 		<prompt xml:lang="nl">Nieuw</prompt>
-		<prompt xml:lang="zh">新建</prompt>
+
 	</command>
 
 	<action type="create">
    	<relation destinationtype="tag" role="posrel">
 			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='tag']/../field[@name='pos'])-{$pos}}</field>
-			<object type="tag"></object>
+			<object type="tag">
+         <field name="subject">{object[@type='newsletter']/field[@name='title']}</field>
+         </object>
 		</relation>
 	</action>
 </list>

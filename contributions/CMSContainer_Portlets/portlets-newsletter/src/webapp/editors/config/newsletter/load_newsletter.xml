@@ -26,10 +26,10 @@
 	<field name="txtempty" />
 	<field name="schedule" />
 	<relation destination="attachments" role="posrel" />
+   <relation destination="tag" role="posrel" />
 	<relation destination="images" role="namedrel" />
 	<relation destination="layout" role="allowrel" />
 	<relation destination="layout" role="layoutrel" />
 	<relation destination="page" role="navrel" />
 	<relation destination="portlet" role="portletrel" />
-	<relation destination="newslettertheme" role="newslettertheme" />
 </action>
