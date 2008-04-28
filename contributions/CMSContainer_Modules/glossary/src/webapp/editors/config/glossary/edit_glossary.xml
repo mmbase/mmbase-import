@@ -7,7 +7,7 @@
 
 	<field name="term" dtmaxlength="1024" ftype="line" dtrequired="true">
 		<prompt xml:lang="en">Term</prompt>
-		<prompt xml:lang="nl">Termijn</prompt>
+		<prompt xml:lang="nl">Woord</prompt>
 		<prompt xml:lang="zh">术语</prompt>
 	</field>
     <field name="definition" dtmaxlength="64000" ftype="text" rows="5" dtrequired="true">
@@ -17,7 +17,7 @@
 	</field>
      <field name="editor_note" dtmaxlength="64000" ftype="text" rows="5">
 		<prompt xml:lang="en">Editornote</prompt>
-		<prompt xml:lang="nl">Editornote</prompt>
+		<prompt xml:lang="nl">Bewerkers notitie</prompt>
 		<prompt xml:lang="zh">编辑注解</prompt>
 	</field>
 </form-schema>
