@@ -15,12 +15,15 @@
     <names>
         <singular xml:lang="nl">glossary</singular>
         <singular xml:lang="en">glossary</singular>
-        <plural xml:lang="nl">glossary</plural>
-        <plural xml:lang="en">glossary</plural>
+	     <singular xml:lang="zh">术语表</singular>
+        <plural xml:lang="nl">glossaries</plural>
+        <plural xml:lang="en">glossaries</plural>
+		<plural xml:lang="zh">术语表</plural>
     </names>
     <descriptions>
         <description xml:lang="nl"></description>
         <description xml:lang="en"></description>
+		<description xml:lang="zh"></description>
     </descriptions>
     <properties></properties>
     <fieldlist>
@@ -28,10 +31,12 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				    <description xml:lang="zh"></description>
             </descriptions>
             <gui>
-                <guiname xml:lang="nl">Definition</guiname>
+                <guiname xml:lang="nl">Definitie</guiname>
                 <guiname xml:lang="en">Definition</guiname>
+				<guiname xml:lang="zh">定义</guiname>
             </gui>
             <editor>
                 <positions>
@@ -50,10 +55,12 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				    <description xml:lang="zh"></description>
             </descriptions>
             <gui>
-                <guiname xml:lang="nl">Term</guiname>
+                <guiname xml:lang="nl">Woord</guiname>
                 <guiname xml:lang="en">Term</guiname>
+				<guiname xml:lang="zh">术语名</guiname>
             </gui>
             <editor>
                 <positions>
@@ -72,10 +79,12 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				    <description xml:lang="zh"></description>
             </descriptions>
             <gui>
-                <guiname xml:lang="nl">Editornote</guiname>
-                <guiname xml:lang="en">Editornote</guiname>
+                <guiname xml:lang="nl">Bewerkers notitie</guiname>
+                <guiname xml:lang="en">Editor note</guiname>
+				    <guiname xml:lang="zh">编辑注解</guiname>
             </gui>
             <editor>
                 <positions>
@@ -94,10 +103,12 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				<description xml:lang="zh"></description>
             </descriptions>
             <gui>
                 <guiname xml:lang="nl">Gewijzigd</guiname>
-                <guiname xml:lang="en">Lastmodifieddate</guiname>
+                <guiname xml:lang="en">Last modified date</guiname>
+				    <guiname xml:lang="zh">最后修改时间</guiname>
             </gui>
             <editor>
                 <positions>
@@ -116,10 +127,12 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				    <description xml:lang="zh"></description>
             </descriptions>
             <gui>
                 <guiname xml:lang="nl">Aangemaakt</guiname>
-                <guiname xml:lang="en">Creationdate</guiname>
+                <guiname xml:lang="en">Creation date</guiname>
+				    <guiname xml:lang="zh">创建时间</guiname>
             </gui>
             <editor>
                 <positions>
@@ -138,10 +151,12 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				    <description xml:lang="zh"></description>
             </descriptions>
             <gui>
                 <guiname xml:lang="nl">Gewijzigd door</guiname>
-                <guiname xml:lang="en">Lastmodifier</guiname>
+                <guiname xml:lang="en">Last modifier</guiname>
+				<guiname xml:lang="zh">最后修改人</guiname>
             </gui>
             <editor>
                 <positions>
@@ -160,9 +175,10 @@
             <descriptions>
                 <description xml:lang="nl"></description>
                 <description xml:lang="en"></description>
+				    <description xml:lang="zh"></description>
             </descriptions>
             <gui>
-                <guiname xml:lang="nl">Creator</guiname>
+                <guiname xml:lang="nl">Aangemaakt door</guiname>
                 <guiname xml:lang="en">Creator</guiname>
             </gui>
             <editor>
@@ -179,5 +195,4 @@
             </db>
         </field>
     </fieldlist>
-
 </builder>

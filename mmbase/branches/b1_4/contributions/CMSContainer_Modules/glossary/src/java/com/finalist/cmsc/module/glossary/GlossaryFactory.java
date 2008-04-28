@@ -13,9 +13,6 @@ import java.util.Iterator;
 
 public class GlossaryFactory {
 
-   public GlossaryFactory() {
-   }
-
 
    public static Glossary getGlossary() {
       Glossary glossary = Glossary.instance();
