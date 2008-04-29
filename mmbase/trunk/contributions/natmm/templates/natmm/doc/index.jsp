@@ -46,10 +46,7 @@
 
         <tr><td style="width:80%;">het gebruiken van de <b>Mailformulier functionaliteit</b> door externe website</td>
             <td style="width:20%;"><a href="GebruikershandleidingMailformExtern.doc" title="GebruikershandleidingMailformExtern.doc">GebruikershandleidingMailformExtern.doc</a></td></tr>
-            
-        <tr><td style="width:80%;">het werken met <b>het intranet</b></td>
-            <td style="width:20%;"><a href="../../nmintra/doc/GebruikershandleidingNMIntra.doc" title="GebruikershandleidingNMIntra.doc">GebruikershandleidingNMIntra.doc</a></td></tr>
-
+          
 	   </table>
 		<h3>Richtlijn voor het (her)gebruik van afbeeldingen</h3>
 		<p>
