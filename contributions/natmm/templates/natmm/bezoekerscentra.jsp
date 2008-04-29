@@ -79,6 +79,3 @@
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>
-
-
-
