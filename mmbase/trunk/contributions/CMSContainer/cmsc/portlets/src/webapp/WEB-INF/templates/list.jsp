@@ -43,6 +43,9 @@
    <c:if test="${not empty listHeader}">
 	    <c:import url="${listHeader}"/>
 	</c:if>
+   <c:if test="${empty elements}"><br/>
+     <font size="1" ><fmt:message key="edit_defaults.relation.nocontent" /></font>
+   </c:if>
 	<c:forEach var="elem" items="${elements}" varStatus="listStatus">
 	<pg:item>
 	   	<c:set var="elementIndex" value="${listStatus.index}" scope="request"/>
