@@ -51,7 +51,7 @@ public class NewsletterPublisher {
          setMIME(message, subscription.getMimeType());
 
          Transport.send(message);
-         log.debug("mail send!");
+         log.debug("mail send! publication:"+publication.getId()+"to subscription"+subscription.getId()+" in MIME"+subscription.getMimeType());
       } catch (MessagingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
