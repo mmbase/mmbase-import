@@ -36,6 +36,19 @@ public class CommunityModuleAdapter {
       return person;
    }
 
+   public static boolean isUserLogin(){
+      return null != getCurrentUser();
+   }
+   
+   public static int getCurrentUserId(){
+      Person person = getCurrentUser();
+      if(null==person){
+         return -1;
+      }
+
+      return person.getId().intValue();
+   }
+
    public static Person getUserById(String id) {
       
       PersonService personService = (PersonService) ApplicationContextFactory.getApplicationContext().getBean("personService");

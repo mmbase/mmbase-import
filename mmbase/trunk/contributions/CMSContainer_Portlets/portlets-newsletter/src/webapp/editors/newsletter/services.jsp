@@ -8,7 +8,7 @@
 	NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
 	int userId = CommunityModuleAdapter.getCurrentUser().getId().intValue();
 	int newsletterId = 0;
-	int tagId = 0;
+	int termId = 0;
 	boolean hasSelect = false;
 	String status = "INACTIVE";
 	String format = "html";
@@ -22,9 +22,9 @@
 	{
 	newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 	}
-	if(null!=request.getParameter("tagId"))
+	if(null!=request.getParameter("termId"))
 	{
-	tagId = Integer.parseInt(request.getParameter("tagId"));
+	termId = Integer.parseInt(request.getParameter("termId"));
 	}
 	if(null!=request.getParameter("select"))
 	{
@@ -77,10 +77,10 @@
 	if("modifyTag".equals(action))
 	{	
 		if(hasSelect){
-				service.selectTagInLetter(userId,newsletterId,tagId);	
+				service.selectTermInLetter(userId,newsletterId, termId);
 		}
 			else{
-				service.unSelectTagInLetter(userId,newsletterId,tagId);	
+				service.unSelectTermInLetter(userId,newsletterId, termId);
 		}
 	}
 		

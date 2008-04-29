@@ -1,7 +1,7 @@
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 <%@ page import="java.util.*"%>
 <%@ page import="com.finalist.newsletter.domain.Newsletter"%>
-<%@ page import="com.finalist.newsletter.domain.Tag"%>
+<%@ page import="com.finalist.newsletter.domain.Term"%>
 <%@ page import="com.finalist.newsletter.domain.Subscription"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request" />
@@ -90,7 +90,7 @@
         	 Subscription subscription = (Subscription) it.next();
 			 Newsletter newsletter = subscription.getNewsletter();
 			 String title = newsletter.getTitle();
-			 Set<Tag> tags = subscription.getTags();
+			 Set<Term> terms = subscription.getTags();
 			 int newsletterId = newsletter.getId();
 			 String format = subscription.getMimeType();
 			 String status = subscription.getStatus().toString();
@@ -161,7 +161,7 @@
 			 <%  Iterator tagit = tags.iterator(); 
 				  for(int j=0;j<tags.size();j++)
 				{
-					  Tag tag = (Tag)tagit.next();
+					  Term term = (Term)tagit.next();
 					  String name = tag.getName();
 					  int tagId = tag.getId();
 					  boolean select = tag.isSubscription();

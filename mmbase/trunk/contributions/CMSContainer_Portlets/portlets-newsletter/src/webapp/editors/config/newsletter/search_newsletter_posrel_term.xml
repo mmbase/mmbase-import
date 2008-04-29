@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="posrel" destination="tag" minoccurs="0" maxoccurs="*"
+<list role="posrel" destination="term" minoccurs="0" maxoccurs="*"
 	orderby="field[@name='pos']" ordertype="number">
 	
 	<title xml:lang="nl"></title>
-	<title xml:lang="en">TAG</title>
+	<title xml:lang="en">TERM</title>
 
 
 	<item>
@@ -14,8 +14,8 @@
 		</field>
 	</item>
 
-	<command name="search" nodepath="tag" age="-1" fields="name">
-		<prompt xml:lang="en">Search tag</prompt>
+	<command name="search" nodepath="term" age="-1" fields="name">
+		<prompt xml:lang="en">Search Term</prompt>
 		<prompt xml:lang="nl">Zoek bijlage</prompt>
 
 		<search-filter>
@@ -33,9 +33,9 @@
 	</command>
 
 	<action type="create">
-   	<relation destinationtype="tag" role="posrel">
-			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='tag']/../field[@name='pos'])-{$pos}}</field>
-			<object type="tag">
+   	<relation destinationtype="term" role="posrel">
+			<field name="pos">{sum(//relation[@role='posrel' and @firstitem='true']/object[@type='term']/../field[@name='pos'])-{$pos}}</field>
+			<object type="term">
          <field name="subject">{object[@type='newsletter']/field[@name='title']}</field>
          </object>
 		</relation>

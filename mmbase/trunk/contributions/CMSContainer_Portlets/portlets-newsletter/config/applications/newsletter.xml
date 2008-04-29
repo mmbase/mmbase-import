@@ -23,17 +23,17 @@
        <reldef source="newslettertheme" target="newslettertheme" direction="bidirectional" guisourcename="newslettertheme" guitargetname="newslettertheme" builder="insrel" />
 		 <reldef source="newslettercontent" target="newslettercontent" direction="bidirectional" guisourcename="newslettercontent" guitargetname="newslettercontent" builder="insrel" />
 		 <reldef source="newslettered" target="newslettered" direction="bidirectional" guisourcename="newslettered" guitargetname="newslettered" builder="insrel" />		
-		 <reldef source="tagged" target="tagged" direction="bidirectional" guisourcename="tagged" guitargetname="tagged" builder="insrel" />
+		 <reldef source="termed" target="termed" direction="bidirectional" guisourcename="termed" guitargetname="termed" builder="insrel" />
 	</neededreldeflist>
 	<allowedrelationlist>
-		<relation from="article" to="tag" type="newslettercontent" />
+		<relation from="article" to="term" type="newslettercontent" />
       <relation from="article" to="newsletter" type="newslettercontent" />
 		<relation from="article" to="newsletterpublicationtheme" type="newslettercontent" />
 		<relation from="newsletter" to="newslettertheme" type="newslettertheme" />
 		<relation from="newsletter" to="newslettertheme" type="defaulttheme" />
 		<relation from="newsletter" to="newsletterpublication" type="related" />
-		<relation from="newsletter" to="tag" type="posrel" />
-		<relation from="subscriptionrecord" to="tag" type="tagged" />
+		<relation from="newsletter" to="term" type="posrel" />
+		<relation from="subscriptionrecord" to="term" type="termed" />
 		<relation from="newsletter" to="subscriptionrecord" type="newslettered" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="newslettertheme" />
 		<relation from="newsletterpublication" to="newsletterpublicationtheme" type="defaulttheme" />

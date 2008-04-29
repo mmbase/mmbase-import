@@ -6,7 +6,7 @@ import java.util.Set;
 import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.domain.Term;
 
 public interface NewsletterSubscriptionCAO {
 
@@ -18,13 +18,13 @@ public interface NewsletterSubscriptionCAO {
 
 	public void modifySubscriptionFormat(Subscription subscription);
 
-	public void addSubscriptionTag(Subscription subscription,int tagId);
+	public void addSubscriptionTerm(Subscription subscription,int termId);
 
-	public void removeSubscriptionTag(Subscription subscription,int tagId);	
+	public void removeSubscriptionTerm(Subscription subscription,int termId);
 
-	public List<Subscription> getSubscriptionByNewsletterId(int newsletterId);
+	public List<Subscription> getSubscription(int newsletterId);
 
 	public Subscription getSubscription(int newsletterId, int userId);
 
-   Set<Tag> getTags(int id);
+   Set<Term> getTerms(int id);
 }

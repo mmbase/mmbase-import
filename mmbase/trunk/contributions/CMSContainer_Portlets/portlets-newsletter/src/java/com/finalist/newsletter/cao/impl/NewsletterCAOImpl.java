@@ -7,14 +7,13 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.newsletter.cao.util.NlUtil;
 
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.domain.Term;
 
 public class NewsletterCAOImpl implements NewsletterCAO {
 	private Cloud cloud;
@@ -40,16 +39,16 @@ public class NewsletterCAOImpl implements NewsletterCAO {
 
 		newsletter.setId(newsletterNode.getIntValue("number"));
 		newsletter.setTitle(newsletterNode.getStringValue("title"));
-		List<Node> tagList = newsletterNode.getRelatedNodes("tag");
-		Iterator tagIt = tagList.iterator();
+		List<Node> terms = newsletterNode.getRelatedNodes("term");
+		Iterator termsIt = terms.iterator();
 
-		for (int i = 0; i < tagList.size(); i++) {
-			Tag tag = new Tag();
-			Node tagNode = (Node) tagIt.next();
-			tag.setId(tagNode.getNumber());
-			tag.setName(tagNode.getStringValue("name"));
-			tag.setSubscription(false);
-			newsletter.getTags().add(tag);
+		for (int i = 0; i < terms.size(); i++) {
+			Term term = new Term();
+			Node termNode = (Node) termsIt.next();
+			term.setId(termNode.getNumber());
+			term.setName(termNode.getStringValue("name"));
+			term.setSubscription(false);
+			newsletter.getTerms().add(term);
 		}
 
 		return newsletter;
