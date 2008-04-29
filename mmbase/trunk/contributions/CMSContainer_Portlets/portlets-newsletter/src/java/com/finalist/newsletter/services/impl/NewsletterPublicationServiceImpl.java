@@ -13,6 +13,7 @@ import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
+import com.finalist.cmsc.services.community.person.Person;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.Node;
@@ -85,6 +86,8 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 
       for (Subscription subscription : subscriptions) {
          Set<Term> terms = subscriptionCAO.getTerms(subscription.getId());
+         Person subscripber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
+         subscription.setEmail(subscripber.getEmail());
          subscription.setTerms(terms);
          publisher.deliver(publication, subscription);
       }
