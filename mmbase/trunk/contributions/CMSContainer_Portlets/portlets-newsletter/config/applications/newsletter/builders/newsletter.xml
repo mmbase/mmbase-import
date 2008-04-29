@@ -295,10 +295,10 @@
 					<search>-1</search>
 				</positions>
 			</editor>
-			<datatype base="yesno" xmlns="http://www.mmbase.org/xmlns/datatypes" />
+         <datatype base="cmscrichtext" xmlns="http://www.mmbase.org/xmlns/datatypes" />
 			<db>
 				<name>txtempty</name>
-				<type key="false" required="true" state="persistent">BOOLEAN</type>
+				<type key="false" notnull="false" size="64000" state="persistent">STRING</type>
 			</db>
 		</field>
       <field>

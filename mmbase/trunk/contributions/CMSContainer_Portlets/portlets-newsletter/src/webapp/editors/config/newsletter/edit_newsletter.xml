@@ -86,11 +86,10 @@
 		<prompt xml:lang="zh">内容为空时是否发送</prompt>
 		<optionlist select="boolean" />
 	</field>
-	<field name="txtempty" ftype="enum">
+	<field name="txtempty" dtmaxlength="1024" ftype="text" rows="3">
 		<prompt xml:lang="en">Text when empty</prompt>
 		<prompt xml:lang="nl">Text when empty</prompt>
 		<prompt xml:lang="zh">内容为空时是否发送其他内容</prompt>
-		<optionlist select="boolean" />
 	</field>
    <field name="schedule" ftype="calendar">
 		<prompt xml:lang="en">Schedule</prompt>
