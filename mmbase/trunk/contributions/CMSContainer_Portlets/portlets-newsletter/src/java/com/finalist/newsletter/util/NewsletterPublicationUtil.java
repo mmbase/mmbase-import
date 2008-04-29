@@ -89,7 +89,7 @@ public abstract class NewsletterPublicationUtil {
          defaultTerm.setStringValue("name", "default");
          defaultTerm.setStringValue("subject", newsletterNode.getStringValue("title"));
          defaultTerm.commit();
-         newsletterNode.createRelation(defaultTerm, newsletterNode.getCloud().getRelationManager("related")).commit();
+         newsletterNode.createRelation(defaultTerm, newsletterNode.getCloud().getRelationManager("posrel")).commit();
       }
    }
    
