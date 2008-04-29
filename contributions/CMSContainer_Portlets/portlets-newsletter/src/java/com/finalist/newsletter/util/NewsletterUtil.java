@@ -1,6 +1,10 @@
 package com.finalist.newsletter.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
@@ -12,16 +16,11 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Query;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.FieldValueInConstraint;
-import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.ContentElement;
-import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 
@@ -219,10 +218,9 @@ public abstract class NewsletterUtil {
          NodeManager termNodeManager = cloud.getNodeManager("term");
          NodeList terms = newsletterNode.getRelatedNodes(termNodeManager);
          NodeManager articleNodeManager = cloud.getNodeManager("article");
-         Node term = null;
          SortedSet<Integer> sort = new TreeSet<Integer>();
          for (int i = 0; i < terms.size(); i++) {
-            term = terms.getNode(i);
+            Node term = terms.getNode(i);
             sort.add(new Integer(term.getNumber()));
          }
          if (sort.size() == 0) {
