@@ -340,11 +340,8 @@ public class SubscribeForm extends ActionForm {
       this.skipValidation = "N";
 
       Node thisEvent = CloudFactory.getCloud().getNode(this.getNode());
-      if(thisEvent.getStringValue("adres_verplicht").equals("1")) {
-         this.showAddress = "true";
-      } else {
-         this.showAddress = "false";
-      }
+      
+      this.showAddress = "true";
 
       if(thisEvent.getLongValue("embargo") < (new Date()).getTime()/1000) {
          this.showPastDates = "false";
