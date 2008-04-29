@@ -93,6 +93,7 @@ public class SubscribeForm extends ActionForm {
    private String description;
    private String bankaccount;
 
+   
    private String selectedParticipant;
    private String numberInCategory;
    private String participantsCategory;
