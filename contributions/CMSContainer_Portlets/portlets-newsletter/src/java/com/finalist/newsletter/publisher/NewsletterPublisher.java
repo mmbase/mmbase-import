@@ -2,8 +2,10 @@ package com.finalist.newsletter.publisher;
 
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.publisher.NewsletterGenerator;
 import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logger;
@@ -33,16 +35,20 @@ public class NewsletterPublisher {
       NewsletterPublisher.personaliser = personaliser;
    }
 
-   public void deliver(String url, String recipient, String mineType, String title,
-                       String fromAddress, String fromName, String replyAddress, String replyName) {
+   public void deliver(Publication publication, Subscription subscription) {
       try {
          Message message = new MimeMessage(getMailSession());
-         setSenderInfomation(message, fromAddress, fromName, replyAddress, replyName);
+         Newsletter newsletter = publication.getNewsletter();
+         setSenderInfomation(message,
+               newsletter.getFromAddress(),
+               newsletter.getFromName(),
+               newsletter.getReplyAddress(),
+               newsletter.getReplyName());
 
-         setRecipient(message, recipient);
-         setBody(message, url, mineType);
-         setTitle(message, title);
-         setMIME(message, mineType);
+         setRecipient(message, subscription.getEmail());
+         setBody(publication, subscription, message);
+         setTitle(message, publication.getTitle());
+         setMIME(message, subscription.getMimeType());
 
          Transport.send(message);
          log.debug("mail send!");
@@ -55,11 +61,17 @@ public class NewsletterPublisher {
       }
    }
 
+   private void setBody(Publication publication, Subscription subscription, Message message) throws MessagingException {
+      String url = NewsletterUtil.getTermURL(publication.getUrl(),subscription.getTerms(),publication.getId());
+      String content = NewsletterGenerator.generate(url, subscription.getMimeType());
 
-   protected void setBody(Message message, String url, String mimeType) throws MessagingException {
-      String content = NewsletterGenerator.generate(url, mimeType);
+      if (null != getPersonalise()) {
+         content = getPersonalise().personalise(content, subscription, publication);
+      }
+      
       message.setText(content + "\n");
    }
+
 
    private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
          throws MessagingException, UnsupportedEncodingException {
@@ -146,17 +158,15 @@ public class NewsletterPublisher {
       return parameter;
    }
 
-   private static String personalise(String rawHtmlContent, Subscription subscription) {
-      String result = rawHtmlContent;
-
+   private Personaliser getPersonalise() {
+      Personaliser ps = null;
       if (null == personaliser) {
          personaliser = PropertiesUtil.getProperty("newsletter.personaliser");
       }
 
       if (StringUtils.isNotEmpty(personaliser)) {
          try {
-            Personaliser ps = (Personaliser) Class.forName(personaliser).newInstance();
-            result = ps.personalise(rawHtmlContent, subscription);
+            ps = (Personaliser) Class.forName(personaliser).newInstance();
          } catch (ClassNotFoundException e) {
             log.error("No specified personaliser found:" + personaliser, e);
          } catch (IllegalAccessException e) {
@@ -165,7 +175,7 @@ public class NewsletterPublisher {
             log.error(e);
          }
       }
-      return result;
+      return ps;
 
    }
 }

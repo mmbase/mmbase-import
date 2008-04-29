@@ -13,7 +13,7 @@ import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices{
@@ -51,23 +51,23 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		if(subscription==null){
 			Subscription newSubscription = new Subscription();
 			newSubscription.setNewsletter(newsletter);
-			newSubscription.setTags(newsletter.getTags());	
+			newSubscription.setTerms(newsletter.getTerms());
 			return newSubscription;
 		}else{
-			Set<Tag> newsletterTags = newsletter.getTags();
-			Set<Tag> subscriptionTags = subscription.getTags();
-			Iterator newsletterTagListIt = newsletterTags.iterator();
-			Iterator selectListIt = subscriptionTags.iterator();
-			for(int i=0;i<newsletterTags.size();i++)
+			Set<Term> newsletterTerms = newsletter.getTerms();
+			Set<Term> subscriptionTerms = subscription.getTerms();
+			Iterator newsletterTermList = newsletterTerms.iterator();
+			Iterator selectListIt = subscriptionTerms.iterator();
+			for(int i=0;i<subscriptionTerms.size();i++)
 			{
-				Tag tag = (Tag) newsletterTagListIt.next();		
-				if(subscriptionTags.size()==0){
-					subscriptionTags.add(tag);
+				Term term = (Term) newsletterTermList.next();
+				if(subscriptionTerms.size()==0){
+					subscriptionTerms.add(term);
 				}else{
-					if(subscriptionTags.contains(tag)){
+					if(subscriptionTerms.contains(term)){
 						continue;
 					}else{
-						subscriptionTags.add(tag);
+						subscriptionTerms.add(term);
 					}			
 				}	
 			}			
@@ -87,7 +87,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 			Subscription subscription = new Subscription();
 			subscription.setNewsletter(newsletter);
 			Newsletter test = subscription.getNewsletter();
-			subscription.setTags(newsletter.getTags());	
+			subscription.setTerms(newsletter.getTerms());
 			list.add(subscription);
 		}
 		return list;
@@ -105,31 +105,31 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 		}
 	}
 
-	public void selectTagInLetter(int userId, int newsletterId, int tagId) {
+	public void selectTermInLetter(int userId, int newsletterId, int termId) {
 		Subscription subscription = cao.getSubscription(newsletterId, userId);
-		Set<Tag> tagList = subscription.getTags();
-		Iterator it = tagList.iterator();
-		for(int i=0;i<tagList.size();i++){
-			Tag tag = (Tag)it.next();
-			if(tagId==tag.getId()){
-				tag.setSubscription(true);
+		Set<Term> termList = subscription.getTerms();
+		Iterator it = termList.iterator();
+		for(int i=0;i<termList.size();i++){
+			Term term = (Term)it.next();
+			if(termId==term.getId()){
+				term.setSubscription(true);
 			}
 		}
-		cao.addSubscriptionTag(subscription,tagId);
+		cao.addSubscriptionTerm(subscription,termId);
 		
 	}
 	
-	public void unSelectTagInLetter(int userId, int newsletterId, int tagId) {
+	public void unSelectTermInLetter(int userId, int newsletterId, int termId) {
 		Subscription subscription = cao.getSubscription(newsletterId, userId);
-		Set<Tag> tagList = subscription.getTags();
-		Iterator it = tagList.iterator();
-		for(int i=0;i<tagList.size();i++){
-			Tag tag = (Tag)it.next();
-			if(tagId==tag.getId()){
-				tag.setSubscription(false);
+		Set<Term> termList = subscription.getTerms();
+		Iterator it = termList.iterator();
+		for(int i=0;i<termList.size();i++){
+			Term term = (Term)it.next();
+			if(termId==term.getId()){
+				term.setSubscription(false);
 			}
 		}
-		cao.removeSubscriptionTag(subscription,tagId);
+		cao.removeSubscriptionTerm(subscription,termId);
 	}
 
    public void modifyStauts(int userId, int newsletterId, String status) {

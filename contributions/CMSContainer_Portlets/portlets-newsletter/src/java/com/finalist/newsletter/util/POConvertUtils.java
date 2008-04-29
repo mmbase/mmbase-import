@@ -1,34 +1,14 @@
 package com.finalist.newsletter.util;
 
-import com.finalist.cmsc.services.community.person.Person;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.services.CommunityModuleAdapter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class POConvertUtils<T> {
-     private static Logger log = Logging.getLoggerInstance(POConvertUtils.class.getName());
-   public static List<Subscription> convertSubscriptions(List<Node> nodes) {
-      List<Subscription> subscriptions = new ArrayList<Subscription>();
-      for (Node node : nodes) {
-         subscriptions.add(convertSubscription(node));
-      }
-      return subscriptions;
-   }
-
-   public static Subscription convertSubscription(Node node) {
-      Subscription subscription = new Subscription();
-//      Person subscripber = CommunityModuleAdapter.;
-//      subscription.setSubscriber(subscripber);
-      return subscription;
-   }
-
+   private static Logger log = Logging.getLoggerInstance(POConvertUtils.class.getName());
 
    public void convert(T target, Node node) {
 
@@ -38,7 +18,7 @@ public class POConvertUtils<T> {
          for (Method method : targetFields) {
             String name = method.getName();
             if("setId".equals(name)){
-               BeanUtils.setProperty(target, "id", node.getNumber());               
+               BeanUtils.setProperty(target, "id", node.getNumber());
             }
             if (null != getNodeValue(node, name)) {
                String propertyName = name.substring(3,4).toLowerCase()+name.substring(4, name.length());

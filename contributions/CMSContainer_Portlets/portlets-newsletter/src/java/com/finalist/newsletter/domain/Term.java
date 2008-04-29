@@ -1,6 +1,6 @@
 package com.finalist.newsletter.domain;
 
-public class Tag {
+public class Term {
 	private int id;
 	private String name;
 	private boolean subscription = false;
@@ -33,9 +33,9 @@ public class Tag {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Tag) {
-			Tag tag = (Tag) obj;
-			if(this.name.equals(tag.name)){
+		if (obj instanceof Term) {
+			Term term = (Term) obj;
+			if(this.name.equals(term.name)){
 				return true;
 			}
 		}

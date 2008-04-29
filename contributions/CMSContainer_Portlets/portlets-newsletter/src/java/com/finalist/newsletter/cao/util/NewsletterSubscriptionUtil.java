@@ -1,16 +1,14 @@
 package com.finalist.newsletter.cao.util;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
 import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.domain.Term;
 
 public class NewsletterSubscriptionUtil {
 	public static Newsletter populateNewsletter(Node node,Newsletter newsletter){
@@ -18,17 +16,17 @@ public class NewsletterSubscriptionUtil {
 		return newsletter;
 	}
 	
-	public static Newsletter convertNodeListtoTagList(NodeList list,Newsletter newsletter){
+	public static Newsletter convertNodeListtoTermList(NodeList list,Newsletter newsletter){
 		Iterator<Node> nodelist = list.iterator();
-		Set<Tag> taglist= new HashSet<Tag>();
+		Set<Term> termSet= new HashSet<Term>();
 		
 		for (int j = 0; j < list.size(); j++) {
-			Tag tag = new Tag();
+			Term term = new Term();
 			Node node = nodelist.next();
-			tag.setName(node.getStringValue("name"));
-			taglist.add(tag);
+			term.setName(node.getStringValue("name"));
+			termSet.add(term);
 		}
-		newsletter.setTags(taglist);
+		newsletter.setTerms(termSet);
 		return newsletter;
 	}
 

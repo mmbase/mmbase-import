@@ -1,9 +1,6 @@
 package com.finalist.newsletter.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
@@ -25,10 +22,12 @@ import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
+import com.finalist.newsletter.domain.Term;
+import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 
 public abstract class NewsletterUtil {
    private static Log log = LogFactory
-   .getLog(NewsletterUtil.class);
+         .getLog(NewsletterUtil.class);
    public static final String NEWSLETTER = "newsletter";
    public static final String NEWSLETTERPUBLICATION = "newsletterpublication";
 
@@ -125,7 +124,8 @@ public abstract class NewsletterUtil {
       String themeType = themeNode.getNodeManager().getName();
       if (themeType.equals("newslettertheme")) {
          managerName = "newsletter";
-      } else {
+      }
+      else {
          managerName = "newsletterpublication";
       }
       Node newsletterNode = SearchUtil.findRelatedNode(themeNode, managerName, "newslettertheme");
@@ -209,36 +209,34 @@ public abstract class NewsletterUtil {
       }
       return (null);
    }
-   
-   public static List<ContentElement> getArticlesByNewsletter(int newsletterNumber,int offset,int elementsPerPage,String orderBy,String direction) {
+
+   public static List<ContentElement> getArticlesByNewsletter(int newsletterNumber, int offset, int elementsPerPage, String orderBy, String direction) {
       if (newsletterNumber > 0) {
          List<ContentElement> articles = new ArrayList<ContentElement>();
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(newsletterNumber);
-         
-         NodeManager tagNodeManager = cloud.getNodeManager("tag");   
-         NodeList tags = newsletterNode.getRelatedNodes(tagNodeManager);
-         NodeManager articleNodeManager = cloud.getNodeManager("article"); 
-         Node tag = null;     
-         SortedSet<Integer> sort= new TreeSet<Integer>();
-         for (int i = 0 ; i < tags.size(); i++) {
-            tag =  tags.getNode(i);
-            sort.add(new Integer(tag.getNumber()));
+
+         NodeManager termNodeManager = cloud.getNodeManager("term");
+         NodeList terms = newsletterNode.getRelatedNodes(termNodeManager);
+         NodeManager articleNodeManager = cloud.getNodeManager("article");
+         Node term = null;
+         SortedSet<Integer> sort = new TreeSet<Integer>();
+         for (int i = 0; i < terms.size(); i++) {
+            term = terms.getNode(i);
+            sort.add(new Integer(term.getNumber()));
          }
-         if(sort.size() == 0) {
+         if (sort.size() == 0) {
             return (null);
          }
          NodeQuery query = cloud.createNodeQuery();
          Step parameterStep = query.addStep(articleNodeManager);
          query.setNodeStep(parameterStep);
-         query.addRelationStep(tagNodeManager,
-               null, null);
-         SearchUtil.addInConstraint(query, tagNodeManager
-               .getField("number"), sort);           
+         query.addRelationStep(termNodeManager, null, null);
+         SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
          Queries.addSortOrders(query, orderBy, direction);
          query.setOffset(offset);
          query.setMaxNumber(elementsPerPage);
-         NodeList articleList =query.getList();
+         NodeList articleList = query.getList();
          if (articleList != null) {
             for (int i = 0; i < articleList.size(); i++) {
                Node articleNode = articleList.getNode(i);
@@ -246,43 +244,41 @@ public abstract class NewsletterUtil {
                articles.add(element);
             }
          }
-         
+
          return (articles);
       }
       return (null);
    }
-   
+
    public static int countArticlesByNewsletter(int newsletterNumber) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(newsletterNumber);
-         
-         NodeManager tagNodeManager = cloud.getNodeManager("tag");   
-         NodeList tags = newsletterNode.getRelatedNodes(tagNodeManager);
-         NodeManager articleNodeManager = cloud.getNodeManager("article"); 
-         Node tag = null;     
-         SortedSet<Integer> sort= new TreeSet<Integer>();
-         for (int i = 0 ; i < tags.size(); i++) {
-            tag =  tags.getNode(i);
-            sort.add(new Integer(tag.getNumber()));
+
+         NodeManager termNodeManager = cloud.getNodeManager("term");
+         NodeList terms = newsletterNode.getRelatedNodes(termNodeManager);
+         NodeManager articleNodeManager = cloud.getNodeManager("article");
+         Node term = null;
+         SortedSet<Integer> sort = new TreeSet<Integer>();
+         for (int i = 0; i < terms.size(); i++) {
+            term = terms.getNode(i);
+            sort.add(new Integer(term.getNumber()));
          }
-         if(sort.size() == 0) {
+         if (sort.size() == 0) {
             return (0);
          }
          NodeQuery query = cloud.createNodeQuery();
          Step parameterStep = query.addStep(articleNodeManager);
          query.setNodeStep(parameterStep);
-         query.addRelationStep(tagNodeManager,
-               null, null);
-         SearchUtil.addInConstraint(query, tagNodeManager
-               .getField("number"), sort);  
-         
-//         NodeQuery  query =  Queries.createRelatedNodesQuery(tag,articleNodeManager,null,null);
+         query.addRelationStep(termNodeManager, null, null);
+         SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
+
+//         NodeQuery  query =  Queries.createRelatedNodesQuery(term,articleNodeManager,null,null);
          return Queries.count(query);
       }
       return (0);
    }
-   
+
    public static int getDefaultTheme(int number) {
       int defaultTheme = 0;
       if (number > 0) {
@@ -386,4 +382,25 @@ public abstract class NewsletterUtil {
          }
       }
    }
+
+   public static String getTermURL(String url, Set<Term> terms, int publicationId) {
+      if (null != terms) {
+         log.debug("get publication " + publicationId + " with " + terms.size() + " terms");
+         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+         Node publicationNode = cloud.getNode(publicationId);
+
+         List<Node> relatedportlets = publicationNode.getRelatedNodes("portlet");
+
+         for (Node portlet : relatedportlets) {
+            List<Node> portletdefNodes = portlet.getRelatedNodes("portletdefinition");
+            String portletDefinition = portletdefNodes.get(0).getStringValue("definition");
+            if (portletDefinition.equals(NewsletterContentPortlet.DEFINITION)) {
+//               todo: add real logic
+            }
+         }
+      }
+      return url;
+   }
+
+
 }

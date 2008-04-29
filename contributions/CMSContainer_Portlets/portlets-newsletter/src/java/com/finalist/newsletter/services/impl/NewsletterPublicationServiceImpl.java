@@ -1,29 +1,35 @@
 package com.finalist.newsletter.services.impl;
 
-import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication.STATUS;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.publisher.NewsletterPublisher;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterPublicationService;
-
-import java.util.List;
-
+import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.Node;
+
+import java.util.List;
+import java.util.Set;
 
 public class NewsletterPublicationServiceImpl implements NewsletterPublicationService {
 
-   private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
+   private static Logger log = Logging.getLoggerInstance(NewsletterPublicationServiceImpl.class.getName());
 
    private NewsletterPublisher publisher;
    private NewsletterPublicationCAO publicationCAO;
    private NewsletterSubscriptionCAO subscriptionCAO;
    private NewsLetterStatisticCAO statisticCAO;
 
+   //CAO setters
    public void setMailSender(NewsletterPublisher publisher) {
       this.publisher = publisher;
    }
@@ -40,39 +46,58 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       this.statisticCAO = statisticCAO;
    }
 
+   //service method.
+   public STATUS getStatus(int publicationId) {
+      return publicationCAO.getPublication(publicationId).getStatus();
+   }
+
+   public void setStatus(int publicationId, STATUS status) {
+      publicationCAO.setStatus(publicationId, status);
+   }
+
+   /**
+    * deliver all READY publications in the system
+    */
    public void deliverAllPublication() {
-      List<Publication> publications = publicationCAO.getIntimePublication();
-      for(Publication publication:publications){
-         deliver(publication);
+      log.info("starting deliver all publications in READY status");
+
+      List<Integer> publications = publicationCAO.getIntimePublicationIds();
+
+      log.debug(publications.size() + " publications found");
+
+      for (int publicationId : publications) {
+         deliver(publicationId);
       }
    }
 
-   private void deliver(Publication publication) {
-      List<Subscription> subscriptions = subscriptionCAO.getSubscription(publication.getNewsletter().getId());
-      publisher.deliver(publication,subscriptions);
-      statisticCAO.logPubliction(publication.getId(),subscriptions.size());
-      publicationCAO.setStatus(publication, STATUS.DELIVERED);
+   /**
+    * deliver specific publication.
+    *
+    * @param publicationId The id of the publication to be sent out
+    */
+   public void deliver(int publicationId) {
+
+      int newsletterId = publicationCAO.getNewsletterId(publicationId);
+      List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
+      log.debug("deliver publication " + publicationId + " which has " + subscriptions.size() + " subscriptions");
+
+      Publication publication = publicationCAO.getPublication(publicationId);
+
+      for (Subscription subscription : subscriptions) {
+         Set<Term> terms = subscriptionCAO.getTerms(subscription.getId());
+         subscription.setTerms(terms);
+         publisher.deliver(publication, subscription);
+      }
+
+      statisticCAO.logPubliction(publicationId, subscriptions.size());
+      publicationCAO.setStatus(publicationId, STATUS.DELIVERED);
    }
 
-   public void deliver(int newsletterId,String email,String mimeType) {
-
-      log.debug("deliver newsletter "+newsletterId+" to "+email+" in mimetype "+mimeType);
-      
-      Publication publication = publicationCAO.getPublication(newsletterId);
+   public void deliver(int publicationId, String email, String mimeType) {
+      Publication publication = publicationCAO.getPublication(publicationId);
       Subscription subscription = new Subscription();
-
+      subscription.setEmail(email);
       subscription.setMimeType(mimeType);
-
-      subscription.setNewsletter(publication.getNewsletter());
-
-      Person person = new Person();
-      person.setEmail(email);
-      subscription.setSubscriber(person);
-
       publisher.deliver(publication, subscription);
-   }
-   public void deliverPublication(int number) {
-      Publication publication = publicationCAO.getPublication(number);
-      deliver(publication);
    }
 }

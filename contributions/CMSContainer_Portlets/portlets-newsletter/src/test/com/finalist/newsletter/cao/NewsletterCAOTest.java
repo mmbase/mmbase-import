@@ -25,24 +25,24 @@ public class NewsletterCAOTest extends BaseNewsletterTest {
 		node.setStringValue("title", "food");
 		node.commit();
 
-		NodeManager tagManager = cloud.getNodeManager("tag");
+		NodeManager termManager = cloud.getNodeManager("term");
 
-		Node tag1 = tagManager.createNode();
-		tag1.setStringValue("name", "meet");
-		tag1.commit();
-		Node tag2 = tagManager.createNode();
-		tag2.setStringValue("name", "bread");
-		tag2.commit();
+		Node term = termManager.createNode();
+		term.setStringValue("name", "meet");
+		term.commit();
+		Node term2 = termManager.createNode();
+		term2.setStringValue("name", "bread");
+		term2.commit();
 		
 
-		RelationManager insrel = cloud.getRelationManager("newsletter","tag", "tagged");
+		RelationManager insrel = cloud.getRelationManager("newsletter","term", "termed");
 		
-		node.createRelation(tag1, insrel).commit();
-		node.createRelation(tag2, insrel).commit();
+		node.createRelation(term, insrel).commit();
+		node.createRelation(term2, insrel).commit();
 		
 
       assertNotNull(cao.getNewsletterById(node.getNumber()));
-	  assertEquals(2,cao.getNewsletterById(node.getNumber()).getTags().size());	
+	  assertEquals(2,cao.getNewsletterById(node.getNumber()).getTerms().size());
    }
 
 }

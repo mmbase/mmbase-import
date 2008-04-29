@@ -1,21 +1,16 @@
 package com.finalist.newsletter.cao.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import net.sf.mmapps.modules.cloudprovider.CloudProvider;
-import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.bridge.Query;
@@ -27,7 +22,7 @@ import org.mmbase.storage.search.Step;
 
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
 import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Tag;
+import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import static com.finalist.newsletter.domain.Subscription.STATUS;
 
@@ -92,7 +87,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 
 		if ("INACTIVE".equals(stauts)) {
 			record.setStringValue("format", "html");
-			record.deleteRelations("tagged");
+			record.deleteRelations("termed");
 			record.commit();
 			}
 
@@ -107,29 +102,29 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		record.commit();
 	}
 
-	public void addSubscriptionTag(Subscription subscription,int tagId) {
+	public void addSubscriptionTerm(Subscription subscription,int termId) {
 			int recordId = subscription.getId();
 			Node record = cloud.getNode(recordId);
-			Node tag = cloud.getNode(tagId);
+			Node term = cloud.getNode(termId);
 
 			RelationManager insrel = cloud.getRelationManager(
-					"subscriptionrecord", "tag", "tagged");
-			record.createRelation(tag, insrel).commit();
+					"subscriptionrecord", "term", "termed");
+			record.createRelation(term, insrel).commit();
 	}
 
-	public void removeSubscriptionTag(Subscription subscription,int tagId) {
+	public void removeSubscriptionTerm(Subscription subscription,int termId) {
 			int recordId = subscription.getId();
 			Node record = cloud.getNode(recordId);
 
-			List<Node> taglist = record.getRelatedNodes("tag");
-			Iterator taglistIt = taglist.iterator();
-			record.deleteRelations("tagged");
-			for (int i = 0; i < taglist.size(); i++) {
-				Node tag = (Node) taglistIt.next();
-				if (tagId != tag.getNumber()) {
+			List<Node> terms = record.getRelatedNodes("term");
+			Iterator termsit = terms.iterator();
+			record.deleteRelations("termed");
+			for (int i = 0; i < terms.size(); i++) {
+				Node term = (Node) termsit.next();
+				if (termId != term.getNumber()) {
 					RelationManager insrel = cloud.getRelationManager(
-							"subscriptionrecord", "tag", "tagged");
-					record.createRelation(tag, insrel).commit();
+							"subscriptionrecord", "term", "termed");
+					record.createRelation(term, insrel).commit();
 				}
 			}
 	}
@@ -163,16 +158,16 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 			subscription.setId(subscriptionId);
 			subscription.setMimeType(subscriptionNode.getStringValue("subscriptionrecord.format"));
 			subscription.setStatus(STATUS.valueOf(subscriptionNode.getStringValue("subscriptionrecord.status")));
-			List<Node> tagList =  cloud.getNode(subscriptionId).getRelatedNodes("tag");
+			List<Node> terms =  cloud.getNode(subscriptionId).getRelatedNodes("term");
 
-			Iterator tagIt = tagList.iterator();
-			for(int i=0;i<tagList.size();i++){
-				Tag tag = new Tag();
-				Node tagNode = (Node) tagIt.next();
-				tag.setId(tagNode.getNumber());
-				tag.setName(tagNode.getStringValue("name"));
-				tag.setSubscription(true);
-				subscription.getTags().add(tag);
+			Iterator termIt = terms.iterator();
+			for(int i=0;i<terms.size();i++){
+				Term term = new Term();
+				Node termNode = (Node) termIt.next();
+				term.setId(termNode.getNumber());
+				term.setName(termNode.getStringValue("name"));
+				term.setSubscription(true);
+				subscription.getTerms().add(term);
 			}
 			return subscription;
 		} else {
@@ -182,24 +177,24 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
 		}
 	}
 
-   public Set<Tag> getTags(int subscriptionId) {
+   public Set<Term> getTerms(int subscriptionId) {
 
-      List<Node> tagList = cloud.getNode(subscriptionId).getRelatedNodes("tag");
-      Set<Tag> tags = new HashSet<Tag>();
+      List<Node> termList = cloud.getNode(subscriptionId).getRelatedNodes("term");
+      Set<Term> terms = new HashSet<Term>();
 
-      for (Node tagNode : tagList) {
-         Tag tag = new Tag();
-         tag.setId(tagNode.getNumber());
-         tag.setName(tagNode.getStringValue("name"));
-         tag.setSubscription(true);
+      for (Node termNode : termList) {
+         Term term = new Term();
+         term.setId(termNode.getNumber());
+         term.setName(termNode.getStringValue("name"));
+         term.setSubscription(true);
       }
 
-      return tags;
+      return terms;
    }
 
 
 
-   public List<Subscription> getSubscriptionByNewsletterId(int newsletterId) {
+   public List<Subscription> getSubscription(int newsletterId) {
 
       List<Node> records = cloud.getNode(newsletterId).getRelatedNodes("subscriptionrecord");
       log.debug("Get subscriptions of newsletter:"+newsletterId+" and get "+records.size()+" records in all");
