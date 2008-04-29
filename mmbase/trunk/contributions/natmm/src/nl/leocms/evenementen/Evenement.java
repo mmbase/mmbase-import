@@ -34,7 +34,7 @@ import org.mmbase.bridge.RelationList;
  * Evenement
  *
  * @author Henk Hangyi
- * @version $Revision: 1.12 $, $Date: 2008-04-29 12:07:04 $
+ * @version $Revision: 1.13 $, $Date: 2008-04-29 13:22:46 $
  *
  */
 
@@ -251,6 +251,7 @@ public class Evenement extends DoubleDateNode {
          if ( (parentBegin <= now) || (nextChildBegin < parentBegin)) {
             nextChild = cl.getNode(0).getStringValue("evenement2.number");
          }
+         
       }
       return nextChild;
    }
