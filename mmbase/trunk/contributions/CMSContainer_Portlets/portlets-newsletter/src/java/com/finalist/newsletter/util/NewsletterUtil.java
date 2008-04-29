@@ -208,16 +208,25 @@ public abstract class NewsletterUtil {
       }
       return (null);
    }
+   public static List<ContentElement> getArticlesByNewsletter(String termNumbers, int offset, int elementsPerPage, String orderBy, String direction) {
 
+         String[] numbers = termNumbers.split(",");
+         SortedSet<Integer> sort = new TreeSet<Integer>();
+         for (int i = 0; i < numbers.length; i++) {
+            sort.add(new Integer(numbers[i]));
+         }
+         if (sort.size() == 0) {
+            return (null);
+         }         
+         return getArticles( offset,  elementsPerPage,  orderBy,  direction,sort);
+   }
    public static List<ContentElement> getArticlesByNewsletter(int newsletterNumber, int offset, int elementsPerPage, String orderBy, String direction) {
       if (newsletterNumber > 0) {
-         List<ContentElement> articles = new ArrayList<ContentElement>();
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(newsletterNumber);
-
          NodeManager termNodeManager = cloud.getNodeManager("term");
          NodeList terms = newsletterNode.getRelatedNodes(termNodeManager);
-         NodeManager articleNodeManager = cloud.getNodeManager("article");
+
          SortedSet<Integer> sort = new TreeSet<Integer>();
          for (int i = 0; i < terms.size(); i++) {
             Node term = terms.getNode(i);
@@ -226,28 +235,62 @@ public abstract class NewsletterUtil {
          if (sort.size() == 0) {
             return (null);
          }
-         NodeQuery query = cloud.createNodeQuery();
-         Step parameterStep = query.addStep(articleNodeManager);
-         query.setNodeStep(parameterStep);
-         query.addRelationStep(termNodeManager, null, null);
-         SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
-         Queries.addSortOrders(query, orderBy, direction);
-         query.setOffset(offset);
-         query.setMaxNumber(elementsPerPage);
-         NodeList articleList = query.getList();
-         if (articleList != null) {
-            for (int i = 0; i < articleList.size(); i++) {
-               Node articleNode = articleList.getNode(i);
-               ContentElement element = MMBaseNodeMapper.copyNode(articleNode, ContentElement.class);
-               articles.add(element);
-            }
-         }
-
-         return (articles);
+         return getArticles( offset,  elementsPerPage,  orderBy,  direction,sort);
       }
       return (null);
    }
+   
+   public  static List<ContentElement> getArticles(int offset, int elementsPerPage, String orderBy, String direction,SortedSet<Integer> sort) {
+      List<ContentElement> articles = new ArrayList<ContentElement>();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
+      NodeManager termNodeManager = cloud.getNodeManager("term");
+      NodeManager articleNodeManager = cloud.getNodeManager("article");
+      NodeQuery query = cloud.createNodeQuery();
+      Step parameterStep = query.addStep(articleNodeManager);
+      query.setNodeStep(parameterStep);
+      query.addRelationStep(termNodeManager, null, null);
+      SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
+      Queries.addSortOrders(query, orderBy, direction);
+      query.setOffset(offset);
+      query.setMaxNumber(elementsPerPage);
+      NodeList articleList = query.getList();
+      if (articleList != null) {
+         for (int i = 0; i < articleList.size(); i++) {
+            Node articleNode = articleList.getNode(i);
+            ContentElement element = MMBaseNodeMapper.copyNode(articleNode, ContentElement.class);
+            articles.add(element);
+         }
+      }
+      return (articles);
+      
+   }
+   public static int countArticles(SortedSet<Integer> sort) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+
+      NodeManager termNodeManager = cloud.getNodeManager("term");
+      NodeManager articleNodeManager = cloud.getNodeManager("article");
+      NodeQuery query = cloud.createNodeQuery();
+      Step parameterStep = query.addStep(articleNodeManager);
+      query.setNodeStep(parameterStep);
+      query.addRelationStep(termNodeManager, null, null);
+      SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
+
+      return Queries.count(query);
+   }
+   public static int countArticlesByNewsletter(String termNumbers) {
+
+         String[] numbers = termNumbers.split(",");
+         SortedSet<Integer> sort = new TreeSet<Integer>();
+         for (int i = 0; i < numbers.length; i++) {
+            sort.add(new Integer(numbers[i]));
+         }
+         if (sort.size() == 0) {
+            return (0);
+         }
+         return countArticles(sort);
+   }
+   
    public static int countArticlesByNewsletter(int newsletterNumber) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
@@ -255,24 +298,16 @@ public abstract class NewsletterUtil {
 
          NodeManager termNodeManager = cloud.getNodeManager("term");
          NodeList terms = newsletterNode.getRelatedNodes(termNodeManager);
-         NodeManager articleNodeManager = cloud.getNodeManager("article");
-         Node term = null;
          SortedSet<Integer> sort = new TreeSet<Integer>();
          for (int i = 0; i < terms.size(); i++) {
-            term = terms.getNode(i);
+            Node term = terms.getNode(i);
             sort.add(new Integer(term.getNumber()));
          }
          if (sort.size() == 0) {
             return (0);
          }
-         NodeQuery query = cloud.createNodeQuery();
-         Step parameterStep = query.addStep(articleNodeManager);
-         query.setNodeStep(parameterStep);
-         query.addRelationStep(termNodeManager, null, null);
-         SearchUtil.addInConstraint(query, termNodeManager.getField("number"), sort);
-
 //         NodeQuery  query =  Queries.createRelatedNodesQuery(term,articleNodeManager,null,null);
-         return Queries.count(query);
+         return countArticles(sort);
       }
       return (0);
    }
