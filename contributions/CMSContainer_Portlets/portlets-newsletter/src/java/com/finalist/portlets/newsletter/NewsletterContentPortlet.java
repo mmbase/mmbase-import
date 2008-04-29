@@ -10,6 +10,8 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.sf.mmapps.commons.util.StringUtil;
 
 import com.finalist.cmsc.beans.om.ContentElement;
@@ -42,6 +44,8 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    protected static final String ELEMENTS = "elements";
    protected static final String TYPES = "types";
    protected static final String MAX_ELEMENTS = "maxElements";
+   
+   private static final String NEWSLETTER_TERMS_PARAM = "termNumbers";
    @Override
    protected void doEditDefaults(RenderRequest request, RenderResponse response) throws IOException, PortletException {
       super.doEditDefaults(request, response);
@@ -51,18 +55,19 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, java.io.IOException {
       PortletPreferences preferences = request.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
+
       String currentPath = getUrlPath(request);
       NavigationItem result = SiteManagement.getNavigationItemFromPath(currentPath);
-
       if (result != null) {
-         int itemNumber = result.getId();
-         addContentElements(request,itemNumber);
+            int itemNumber = result.getId();
+            addContentElements(request,itemNumber);
       } 
       else {
          throw new RuntimeException("The page number could not be found");
       }
       doInclude("view", template, request, response);
-   }
+   }   
+   
    protected void addContentElements(RenderRequest req, int itemNumber) {
       String elementId = req.getParameter(ELEMENT_ID);
       if (StringUtil.isEmpty(elementId)) {
@@ -101,13 +106,22 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
             // A live server will remove expired nodes.
             useLifecycleBool = false;
          }
+         int totalItems  = 0 ;
+         List<ContentElement> elements  = null;
+         String termNumbers = preferences.getValue(NEWSLETTER_TERMS_PARAM, null);
+         if(StringUtils.isEmpty(termNumbers)) {
+            totalItems = countContentElements(itemNumber);
+            elements = getContentElements(itemNumber,offset,elementsPerPage, orderby, direction);
+         }
+         else {
+            totalItems = countContentElements(termNumbers);
+            elements = getContentElements(termNumbers,offset,elementsPerPage, orderby, direction);
+         }
 
-         int totalItems = countContentElements(itemNumber);
          if (startIndex > 0) {
             totalItems = totalItems - startIndex;
          }
 
-         List<ContentElement> elements = getContentElements(req,itemNumber,offset,elementsPerPage, orderby, direction);
 
          setAttribute(req, ELEMENTS, elements);
          if (contenttypes != null && !contenttypes.isEmpty()) {
@@ -141,19 +155,27 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          setMetaData(req, elementId);
       }
    }
-   
+        
    protected int countContentElements(int itemNumber) {
       int totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber);
       
       return totalItems;
    }
-
-   protected List<ContentElement> getContentElements(RenderRequest req, int itemNumber,int offset,int elementsPerPage, String orderBy, String direction) {
+   protected int countContentElements(String termNumbers) {
+      int totalItems = NewsletterUtil.countArticlesByNewsletter(termNumbers);
+      
+      return totalItems;
+   }
+   protected List<ContentElement> getContentElements(int itemNumber,int offset,int elementsPerPage, String orderBy, String direction) {
 
       List<ContentElement> elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,offset,elementsPerPage,orderBy,direction);
       return elements;
    }
+   protected List<ContentElement> getContentElements(String termNumbers,int offset,int elementsPerPage, String orderBy, String direction) {
 
+      List<ContentElement> elements = NewsletterUtil.getArticlesByNewsletter(termNumbers,offset,elementsPerPage,orderBy,direction);
+      return elements;
+   }
 
    public int getOffset(int currentPage, int pageSize) {
       return ((currentPage - 1) * pageSize) + 1;
