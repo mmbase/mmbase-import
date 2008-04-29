@@ -22,6 +22,8 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterContentPortlet extends AbstractContentPortlet {
 
+   public static final String DEFINITION = "newslettercontentportlet";
+   
    protected static final String DISPLAYTYPE_PARAM = "displayType";
 
    protected static final String USE_PAGING = "usePaging";

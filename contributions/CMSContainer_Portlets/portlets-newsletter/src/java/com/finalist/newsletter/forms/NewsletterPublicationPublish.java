@@ -17,10 +17,15 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.newsletter.publisher.NewsletterPublisher;
+import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.newsletter.services.NewsletterServiceFactory;
+import com.finalist.newsletter.services.NewsletterPublicationService;
+import com.finalist.newsletter.domain.Publication;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
@@ -33,6 +38,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
+      NewsletterPublicationService publciationService = NewsletterServiceFactory.getNewsletterPublicationService();
       int number = Integer.parseInt(getParameter(request, "number", true));
       Node publicationNode = cloud.getNode(number);
 
@@ -44,8 +50,14 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          if (NavigationUtil.getChildCount(publicationNode) > 0 && !isWebMaster) {
             return mapping.findForward("confirmationpage");
          }
-//         Thread publisher = new NewsletterPublisher(number);
-//         publisher.start();
+
+         if (ServerUtil.isSinle()) {
+            publciationService.deliver(number);
+         }
+         else {
+            publciationService.setStatus(number, Publication.STATUS.READY);
+            Publish.publish(publicationNode);
+         }
 
          return mapping.findForward(SUCCESS);
       }
@@ -56,12 +68,6 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          return new ActionForward(forwardPath);
       }
 
-      // neither remove or cancel, show confirmation page
-
-      String publishDate = publicationNode.getStringValue("publishdate");
-      if (publishDate != null && publishDate.length() > 0 ) {
-         return mapping.findForward("confirm_resend");
-      }
       return mapping.findForward("confirm_send");
    }
 

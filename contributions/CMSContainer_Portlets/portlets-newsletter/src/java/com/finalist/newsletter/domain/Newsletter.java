@@ -1,9 +1,7 @@
 package com.finalist.newsletter.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Newsletter {
@@ -18,7 +16,7 @@ public class Newsletter {
 
 	private Date interval;
 
-	private Set<Tag> tags = new HashSet<Tag>();
+	private Set<Term> terms = new HashSet<Term>();
 
 	private String title;
 
@@ -102,13 +100,11 @@ public class Newsletter {
 		this.fromAddress = fromAddress;
 	}
 
-	public Set<Tag> getTags() {
-		return tags;
-	}
+   public Set<Term> getTerms() {
+      return terms;
+   }
 
-	public void setTags(Set<Tag> tags) {
-		this.tags = tags;
-	}
-
-
+   public void setTerms(Set<Term> terms) {
+      this.terms = terms;
+   }
 }

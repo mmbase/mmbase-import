@@ -1,21 +1,13 @@
 package com.finalist.newsletter.publisher;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import javax.mail.MessagingException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.apache.commons.lang.StringUtils;
-
-import com.finalist.cmsc.mmbase.PropertiesUtil;
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Publication;
 
 public class NewsletterGenerator {
 
