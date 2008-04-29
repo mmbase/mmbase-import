@@ -17,9 +17,9 @@
    </lists>
    <steps>
       <step form-schema="edit_article"/>
-      <step form-schema="edit_contentfields"/>      
+      <step form-schema="edit_contentfields"/>
 
-      <step form-schema="search_article_insrel_term"/> 
+      <step form-schema="search_article_insrel_term"/>
 
       <step form-schema="edit_contentinfo"/>
    </steps>
