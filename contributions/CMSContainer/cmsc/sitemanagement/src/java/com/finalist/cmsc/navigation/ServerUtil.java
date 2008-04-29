@@ -18,15 +18,21 @@ import javax.naming.NamingException;
  */
 public class ServerUtil {
 
-   /** MMbase logging system */
+   /** MMbase logging system */       
    private static Logger log = Logging.getLoggerInstance(ServerUtil.class.getName());
 
    private static boolean live;
+   private static boolean single;
    private static boolean useServerName = false;
    private static boolean production = false;
 
    private static boolean loaded;
 
+
+   public static boolean isSinle(){
+      getSetting();
+      return single;
+   }
 
    public static boolean isLive() {
       getSetting();
@@ -60,7 +66,7 @@ public class ServerUtil {
             Context env = (Context) context.lookup("java:comp/env");
             String liveOrStaging = (String) env.lookup("server/LiveOrStaging");
             live = "live".equals(liveOrStaging);
-
+            single = "single".equals(liveOrStaging);
             String useServerNameStr = (String) env.lookup("server/useServerName");
             if (useServerNameStr != null && useServerNameStr.length() > 0) {
                useServerName = Boolean.valueOf(useServerNameStr);
