@@ -9,6 +9,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.Relation;
 import org.mmbase.bridge.RelationList;
 
@@ -58,6 +59,7 @@ public abstract class NewsletterPublicationUtil {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(newsletterNumber);
+         createDefaultTerm(newsletterNode);
          Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
 
          if (publicationNode != null) {
@@ -80,6 +82,31 @@ public abstract class NewsletterPublicationUtil {
       return (null);
    }
 
+   private static void createDefaultTerm(Node newsletterNode) {
+
+      if(!hasDefaultTerm(newsletterNode)) {
+         Node defaultTerm = newsletterNode.getCloud().getNodeManager("term").createNode();
+         defaultTerm.setStringValue("name", "default");
+         defaultTerm.setStringValue("subject", newsletterNode.getStringValue("title"));
+         defaultTerm.commit();
+         newsletterNode.createRelation(defaultTerm, newsletterNode.getCloud().getRelationManager("related")).commit();
+      }
+   }
+   
+   private static boolean hasDefaultTerm(Node newsletterNode) {
+      NodeManager termNodeManager = newsletterNode.getCloud().getNodeManager("term");
+      NodeList terms = newsletterNode.getRelatedNodes(termNodeManager);
+      boolean hasDefaultTerm = false;
+      for(int i = 0 ; i < terms.size() ; i++) {
+        Node term = terms.getNode(i);
+        if(term.getStringValue("name") != null && term.getStringValue("name").equals("default")) {
+           hasDefaultTerm = true;
+           break;
+        }
+      }
+      return hasDefaultTerm;
+   }
+   
    // Delete a publication, only if not yet published
    public static void deletePublication(int publicationNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
