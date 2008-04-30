@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+   <!-- Data Sources Definitions -->
+   <!-- Form Bean Definitions -->
+   <form-beans>
+   </form-beans>
+   <!-- Global Exceptions Definitions -->
+   <!-- Global Forward Definitions -->
+   <!-- Action Mapping Definitions -->
+   <action-mappings>
+		<action path="/unsubscribe/UnsubscribeAction" type="com.finalist.action.unsubscribe.UnsubscribeAction"
+			unknown="false" validate="false">
+			<forward name="delete" path="/editors/unsubscribe/delete.jsp" redirect="false" />
+			<forward name="finish" path="/editors/unsubscribe/finish.jsp" redirect="false" />
+			<forward name="canel" path="/editors/unsubscribe/canel.jsp" redirect="false" />
+		</action>
+   </action-mappings>
+   <message-resources parameter="portlets-unsubscribe" key="UNSUBSCRIBE" />
+</struts-config>
