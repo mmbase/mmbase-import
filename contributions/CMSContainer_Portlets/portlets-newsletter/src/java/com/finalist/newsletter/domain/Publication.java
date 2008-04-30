@@ -69,6 +69,9 @@ public class Publication {
    }
 
    public String getTitle() {
+      if(null!=this.newsletter){
+         return newsletter.getTitle();
+      }
       return title;
    }
 
