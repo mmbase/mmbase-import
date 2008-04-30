@@ -22,6 +22,7 @@ import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.services.NewsletterPublicationService;
@@ -40,6 +41,10 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
       NewsletterPublicationService publciationService = NewsletterServiceFactory.getNewsletterPublicationService();
       int number = Integer.parseInt(getParameter(request, "number", true));
+      if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
+         request.setAttribute("isPaused", true);
+         return mapping.findForward(SUCCESS);
+      }
       Node publicationNode = cloud.getNode(number);
 
       if (isSendAction(request)) {
