@@ -18,7 +18,7 @@ import javax.naming.NamingException;
  */
 public class ServerUtil {
 
-   /** MMbase logging system */       
+   /** MMBase logging system */       
    private static Logger log = Logging.getLoggerInstance(ServerUtil.class.getName());
 
    private static boolean live;
@@ -29,7 +29,7 @@ public class ServerUtil {
    private static boolean loaded;
 
 
-   public static boolean isSinle(){
+   public static boolean isSingle(){
       getSetting();
       return single;
    }
