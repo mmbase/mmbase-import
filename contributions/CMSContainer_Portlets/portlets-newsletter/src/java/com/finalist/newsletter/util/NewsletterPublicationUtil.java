@@ -55,6 +55,13 @@ public abstract class NewsletterPublicationUtil {
       }
    }
 
+   public static Node getNewsletterByPublicationNumber(int publicationNumber) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node newsletterPublicationNode = cloud.getNode(publicationNumber);
+      List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
+      return relatedNewsletters.get(0);
+   }
+   
    public static Node createPublication(int newsletterNumber, boolean copyContent) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();

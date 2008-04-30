@@ -31,6 +31,7 @@ public class NewsletterCronJob implements CronJob {
    private static Logger log = Logging.getLoggerInstance(NewsletterCronJob.class.getName());
 
    private List<Node> getNewslettersToPublish() {
+
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       NodeManager manager = cloud.getNodeManager(NewsletterUtil.NEWSLETTER);
       NodeQuery query = manager.createQuery();
@@ -38,6 +39,9 @@ public class NewsletterCronJob implements CronJob {
       List<Node> newslettersToPublish = new ArrayList<Node>();
       for (int i = 0; i < newsletters.size(); i++) {
          Node newsletter = newsletters.getNode(i);
+         if (NewsletterUtil.isPaused(newsletter)) {
+            continue;
+         }
          if (!Publish.isPublished(newsletter)) {
             Object scheduleExpression = newsletter.getValue("schedule");
             Date lastCreatedDateTime = newsletter.getDateValue("lastcreateddate");

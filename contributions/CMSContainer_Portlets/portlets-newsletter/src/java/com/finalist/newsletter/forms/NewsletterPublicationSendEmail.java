@@ -18,6 +18,8 @@ import org.mmbase.bridge.Cloud;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
 
@@ -34,6 +36,10 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
       int number = Integer.parseInt(getParameter(request, "number", true));
+      if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
+         request.setAttribute("isPaused", true);
+         return mapping.findForward(SUCCESS);
+      }
       if (isSendAction(request)) {
          String email = getParameter(request, "email");
          String mimeType = request.getParameter("mimetype");

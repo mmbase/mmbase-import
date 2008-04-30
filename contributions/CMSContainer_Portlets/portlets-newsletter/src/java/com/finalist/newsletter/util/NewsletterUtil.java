@@ -1,6 +1,7 @@
 package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -386,14 +387,18 @@ public abstract class NewsletterUtil {
       if (number > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(number);
-         if (newsletterNode != null) {
-            boolean isPaused = newsletterNode.getBooleanValue("paused");
-            return (isPaused);
-         }
+         return isPaused(newsletterNode);
       }
       return (false);
    }
-
+   public static boolean isPaused(Node newsletterNode) {
+      if (newsletterNode != null) {
+            boolean isPaused = newsletterNode.getBooleanValue("paused");
+            Date now = new Date();     
+            return (isPaused && now.after(newsletterNode.getDateValue("pausedstartdate")) && now.before(newsletterNode.getDateValue("pausedstopdate")));
+      }
+      return (false);
+   }
    public static void pauseNewsletter(int number) {
       if (number > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
