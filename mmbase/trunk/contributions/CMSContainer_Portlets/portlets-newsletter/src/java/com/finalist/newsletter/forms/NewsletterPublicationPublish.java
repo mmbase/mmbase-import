@@ -39,7 +39,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      NewsletterPublicationService publciationService = NewsletterServiceFactory.getNewsletterPublicationService();
+      NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
       int number = Integer.parseInt(getParameter(request, "number", true));
       if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
          request.setAttribute("isPaused", true);
@@ -56,11 +56,11 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
             return mapping.findForward("confirmationpage");
          }
 
-         if (ServerUtil.isSinle()) {
-            publciationService.deliver(number);
+         if (ServerUtil.isSingle()) {
+            publicationService.deliver(number);
          }
          else {
-            publciationService.setStatus(number, Publication.STATUS.READY);
+            publicationService.setStatus(number, Publication.STATUS.READY);
             Publish.publish(publicationNode);
          }
 
