@@ -1,0 +1,37 @@
+<portlet-app
+	xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+	version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+
+	<portlet>
+		<description>a unsubscribeportlet portlet</description>
+		<portlet-name>unsubscribeportlet</portlet-name>
+		<display-name>unsubscribeportlet Content Portlet</display-name>
+		<portlet-class>
+			com.finalist.portlets.unsubscribe.UnsubscribePortlet
+		</portlet-class>
+		<init-param>
+			<name>template.edit_defaults</name>
+			<value>unsubscribe/unsubscribe.jsp</value>
+		</init-param>
+		<init-param>
+			<name>template.help</name>
+			<value>unsubscribe/unsubscribe.jsp</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+			<portlet-mode>EDIT_DEFAULTS</portlet-mode>
+			<portlet-mode>DELETE</portlet-mode>
+		</supports>
+		<supported-locale>en</supported-locale>
+		<supported-locale>nl</supported-locale>
+		<resource-bundle>portlets-unsubscribe</resource-bundle>
+		<portlet-info>
+			<title>unsubscribe Portlet</title>
+			<short-title>unsubscribe</short-title>
+			<keywords>unsubscribe</keywords>
+		</portlet-info>
+	</portlet>
+</portlet-app>
