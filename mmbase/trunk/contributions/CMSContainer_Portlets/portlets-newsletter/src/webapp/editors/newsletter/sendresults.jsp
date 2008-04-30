@@ -15,9 +15,15 @@
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <body>
 <cmscedit:sideblock title="sendsuccess.title" titleClass="side_block_green">
-	<p>
-		<fmt:message key="sendsuccess.subtitle" />
-	</p>
+   <c:if test="${not empty isPaused}">
+      <p> <fmt:message key="newsletter.ispaused" />
+	   </p>
+   </c:if>
+   <c:if test="${empty isPaused}">
+	   <p>
+		   <fmt:message key="sendsuccess.subtitle" />
+	   </p>
+   </c:if>
 </cmscedit:sideblock>
 </body>
 </mm:cloud>

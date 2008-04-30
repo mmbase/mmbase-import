@@ -47,7 +47,7 @@ public class NewsletterPublisher {
 
          setRecipient(message, subscription.getEmail());
          setBody(publication, subscription, message);
-         setTitle(message, publication.getTitle());
+         setTitle(message, publication.getNewsletter().getTitle());
          setMIME(message, subscription.getMimeType());
 
          Transport.send(message);
@@ -63,8 +63,17 @@ public class NewsletterPublisher {
 
    private void setBody(Publication publication, Subscription subscription, Message message) throws MessagingException {
       String url = NewsletterUtil.getTermURL(publication.getUrl(),subscription.getTerms(),publication.getId());
-      String content = NewsletterGenerator.generate(url, subscription.getMimeType());
-
+      int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
+      String content = " ";
+      if(articleCounts == 0) {
+         if(publication.getNewsletter().getSendempty()) {
+            content = publication.getNewsletter().getTxtempty();
+         }
+      }
+      else {
+         content = NewsletterGenerator.generate(url, subscription.getMimeType());
+      }
+      
       if (null != getPersonalise()) {
          content = getPersonalise().personalise(content, subscription, publication);
       }

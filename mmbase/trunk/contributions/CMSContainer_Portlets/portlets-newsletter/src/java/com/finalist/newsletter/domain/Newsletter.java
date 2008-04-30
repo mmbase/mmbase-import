@@ -27,6 +27,10 @@ public class Newsletter {
 	private String fromName;
 
 	private String fromAddress;
+	
+	private boolean sendempty;
+	
+	private String txtempty;
 
 	public int getId() {
 		return id;
@@ -106,5 +110,21 @@ public class Newsletter {
 
    public void setTerms(Set<Term> terms) {
       this.terms = terms;
+   }
+
+   public boolean getSendempty() {
+      return sendempty;
+   }
+
+   public void setSendempty(boolean sendempty) {
+      this.sendempty = sendempty;
+   }
+
+   public String getTxtempty() {
+      return txtempty;
+   }
+
+   public void setTxtempty(String txtempty) {
+      this.txtempty = txtempty;
    }
 }
