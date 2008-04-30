@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="portlets-banner/target/classes" path="portlets-banner/src/java"/>
+	<classpathentry kind="src" output="portlets-secure/target/classes" path="portlets-secure/src/java"/>
 	<classpathentry kind="src" output="portlets-dynamicforms/target/classes" path="portlets-dynamicforms/src/java"/>
 	<classpathentry kind="src" output="portlets-ecard/target/classes" path="portlets-ecard/src/java"/>
 	<classpathentry kind="src" output="portlets-emailalert/target/classes" path="portlets-emailalert/src/java"/>

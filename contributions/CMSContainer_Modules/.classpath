@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="alias/target/classes" path="alias/src/java"/>
+	<classpathentry kind="src" output="openofficeintegration/target/classes" path="openofficeintegration/src/java"/>
 	<classpathentry kind="src" output="community/target/classes" path="community/src/java"/>
 	<classpathentry kind="src" output="directreaction/target/classes" path="directreaction/src/java"/>
 	<classpathentry kind="src" output="egemmail/target/classes" path="egemmail/src/java"/>
@@ -173,7 +174,6 @@
 	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-server-0.42.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-core-2.1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jmock/jars/jmock-1.2.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
