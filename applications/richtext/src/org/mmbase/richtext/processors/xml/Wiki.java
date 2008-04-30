@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.7 2008-04-27 04:26:56 michiel Exp $
+ * @version $Id: Wiki.java,v 1.8 2008-04-30 12:17:03 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -39,7 +39,11 @@ class Wiki {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Searches in the existsing relations for a relation with the given id
+     * Searches in the existsing relations for a relation with the
+     * given id
+     * @param a The anchor which we are trying to match
+     * @param links List of alreayd existing relation objects
+     * @param id (of a)
      */
     Node findById(Element a, NodeList links, String id) {
         NodeIterator ni = links.nodeIterator();
@@ -49,7 +53,8 @@ class Wiki {
             log.debug("Id in " + relation.getNumber() + " " + relId + " comparing with '" + id);
             if (! "".equals(relId)) {
                 String decorId = decorateId(id);
-                if (relId.equals(decorId)) {
+                String decorRelId = decorateId(relId);
+                if (relId.equals(decorId) || relId.equals(decorRelId)) {
                     log.debug(relId + "==" + decorId);
                     return relation;
                 } else {
