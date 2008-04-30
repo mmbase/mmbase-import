@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+
+	<!-- ========== Data Sources Definitions =================================== -->
+	<form-beans>
+      <form-bean name="NewletterPublicationForm" type="com.finalist.newsletter.forms.NewletterPublicationForm" />
+	</form-beans>
+	<!-- ========== Global Exceptions Definitions =================================== -->
+	<!-- ========== Global Forward Definitions =================================== -->
+	<!-- ========== Action Mapping Definitions =================================== -->
+	<action-mappings>
+
+      <action path="/editors/newsletter/NewletterPublicationInitAction" type="com.finalist.newsletter.forms.NewletterPublicationInitAction"
+         name="NewletterPublicationForm" scope="request" unknown="false" validate="false">
+			<forward name="searchoptions" path="/editors/newsletter/publication/newspubsearch.jsp" redirect="false" />
+			<forward name="dosearch" path="/editors/newsletter/publication/NewletterPublicationAction.do" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewletterPublicationAction" type="com.finalist.newsletter.forms.NewletterPublicationAction"
+         name="NewletterPublicationForm" scope="request" input="/editors/newsletter/publication/newspubsearch.jsp" unknown="false" validate="true">
+		</action>
+
+	</action-mappings>
+
+	<message-resources parameter="newsletter" />
+</struts-config>
