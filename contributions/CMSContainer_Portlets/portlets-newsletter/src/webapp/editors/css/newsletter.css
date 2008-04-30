@@ -1356,3 +1356,5 @@ a.channeldelete {
 	font-weight:bold;
 	text-decoration:none;
 }
+
+ul.shortcuts li.newsletterpublications{  background-image: url('../gfx/icons/type/newsletterpublication_editor.png');}
