@@ -14,7 +14,6 @@
 		<form-bean name="ImageForm" type="com.finalist.cmsc.resources.forms.ImageForm" />
 		<form-bean name="AttachmentForm" type="com.finalist.cmsc.resources.forms.AttachmentForm" />
 		<form-bean name="UrlForm" type="com.finalist.cmsc.resources.forms.UrlForm" />
-		<form-bean name="NewletterPublicationForm" type="com.finalist.cmsc.resources.forms.NewletterPublicationForm" />
 		<form-bean name="DeleteSecondaryContentForm" type="com.finalist.cmsc.resources.forms.DeleteSecondaryContentForm" />
 		<form-bean name="SecondaryEditForm" type="com.finalist.cmsc.resources.forms.SecondaryEditForm" />
 
@@ -166,15 +165,6 @@
 			<forward name="images" path="/editors/resources/imagesearch.jsp" redirect="false" />
 			<forward name="attachments" path="/editors/resources/attachmentsearch.jsp" redirect="false" />
 			<forward name="urls" path="/editors/resources/urlsearch.jsp" redirect="false" />
-		</action>
-
-		<action path="/editors/resources/NewletterPublicationInitAction" type="com.finalist.cmsc.resources.forms.NewletterPublicationInitAction"
-         name="NewletterPublicationForm" scope="request" unknown="false" validate="false">
-			<forward name="searchoptions" path="/editors/resources/newspubsearch.jsp" redirect="false" />
-			<forward name="dosearch" path="/editors/resources/NewletterPublicationAction.do" redirect="false" />
-		</action>
-		<action path="/editors/resources/NewletterPublicationAction" type="com.finalist.cmsc.resources.forms.NewletterPublicationAction"
-         name="NewletterPublicationForm" scope="request" input="/editors/resources/newspubsearch.jsp" unknown="false" validate="true">
 		</action>
 
 		<action path="/editors/resources/SecondaryEditAction" type="com.finalist.cmsc.resources.forms.SecondaryEditAction"
