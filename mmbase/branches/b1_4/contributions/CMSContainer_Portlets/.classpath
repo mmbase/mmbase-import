@@ -13,6 +13,7 @@
 	<classpathentry kind="src" output="portlets-poll/target/classes" path="portlets-poll/src/java"/>
 	<classpathentry kind="src" output="portlets-print/target/classes" path="portlets-print/src/java"/>
 	<classpathentry kind="src" output="portlets-search/target/classes" path="portlets-search/src/java"/>
+	<classpathentry kind="src" output="portlets-secure/target/classes" path="portlets-secure/src/java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_4"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
@@ -153,12 +154,8 @@
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/ehcache-constructs/documentation/javadoc/"/>
 		</attributes>
 	</classpathentry>
-
-	<!-- MS office parsers -->
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5.1.jar"/>
-
-	<!-- unit tests -->
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://junit.sourceforge.net/javadoc"/>
