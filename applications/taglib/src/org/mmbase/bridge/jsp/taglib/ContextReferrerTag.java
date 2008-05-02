@@ -33,7 +33,7 @@ import java.util.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.90.2.8 2007-11-20 12:53:45 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.90.2.9 2008-05-02 07:44:08 nklasens Exp $
  * @see ContextTag
  */
 
@@ -87,52 +87,24 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     void setPageContextOnly(final PageContext pc) {
         super.setPageContext(pc);
         // the 'page' Context
-        setThreadPageContext(pc);
+        PageContextThreadLocal.setThreadPageContext(pc, this);
     }
 
 
-    private static ThreadLocal threadPageContexts = new ThreadLocal() {
-        protected synchronized Object initialValue() {
-                return new LinkedList();
-            }
-    };
-
-
-    protected static boolean ok(PageContext pc) {
-        return pc == null || pc.getResponse() != null; // works in Tomcat
-    }
-    protected static PageContext cleanThreadPageContexts(LinkedList stack) {
-        if (stack.size() == 0) return null;
-
-        PageContext proposal = stack.size() > 0 ? (PageContext) stack.get(0) : null;
-        while(stack.size() > 0) {
-            if (ok(proposal)) {
-                return proposal;
-            } else {
-                stack.remove(0);
-                proposal = stack.size() > 0 ? (PageContext) stack.get(0) : null;
-            }
-        }
-        return null;
-    }
-
-    protected static void setThreadPageContext(final PageContext pc) {
-        LinkedList stack = (LinkedList) threadPageContexts.get();
-        cleanThreadPageContexts(stack);
-        if (stack.size() == 0 || stack.getFirst() != pc) {
-            stack.add(0, pc);
-        }
-    }
 
     /**
+     * Returns the pageContext which is stored on a trhead local for this request
+     * @return jsp pageContext
      * @since MMBase-1.8.5
      */
     public static PageContext getThreadPageContext() {
-        LinkedList stack = (LinkedList) threadPageContexts.get();
-        if (stack.size() == 0) throw new RuntimeException("Used in thread which did not yet use mmbase tags");
-        return cleanThreadPageContexts(stack);
+        return PageContextThreadLocal.getThreadPageContext();
     }
-
+    
+    /**
+     * Just exposes the (otherwise protected) pageContext member. Needed by some helper classes in
+     * the neighbourhood. Lacking concept of friends.
+     */
     public PageContext getPageContext() {
         return pageContext;
     }
@@ -147,7 +119,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 
 
             if (pageContextTag == null) { // not yet put
-                log.debug("No pageContextTag found in pagecontext, creating..");
+                if (log.isDebugEnabled()) {
+                    log.debug("No pageContextTag found in pagecontext, creating.. for "+ pageContext);
+                }
                 if (pageLog.isServiceEnabled()) {
                     HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
                     //thisPage = request.getRequestURI();
@@ -203,6 +177,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * a ContextReferrer has the 'id' attribute it registers its
      * output in the surrounding Context.  With 'referid' you can 'repeat' a
      * tag which had the 'id' attribute.
+     * @throws JspTagException when parsing of attributes fails
      */
 
     public void setReferid(String r) throws JspTagException {
@@ -248,6 +223,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
      * parent tag, so that this knows that it has a body. If a
      * write-tag has a body, then on default it will not write itself,
      * but only communicate itself tot the body's tags.
+     * @throws JspTagException when parsing of attributes fails
      */
     public Writer findWriter() throws JspTagException {
         return findWriter(true);
@@ -255,6 +231,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     }
     /**
      * @since MMBase-1.6.2
+     * @param th if it has to throw an exception if the parent can not be found (default: yes).
+     * @throws JspTagException when parsing of attributes fails
      */
     public Writer findWriter(boolean th) throws JspTagException {
         Writer w = (Writer) findParentTag(Writer.class, (String) writerid.getValue(this), th);
@@ -268,6 +246,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
 
     /**
      * Sets the writer attribute.
+     * @param w unparsed attribute
+     * @throws JspTagException when parsing of attributes fails
      */
     public void setWriter(String w) throws JspTagException {
         writerid = getAttribute(w);
@@ -279,6 +259,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     }
 
     public void doFinally() {
+        PageContextThreadLocal.cleanThreadPageContexts(this);
         helper.doFinally();
         thisPage = null;
         pageContextTag = null;
@@ -347,6 +328,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
         return getAttribute(attribute).getString(this);
     }
     /**
+     * @param attribute unparsed attribute
+     * @return Attribute
+     * @throws JspTagException when parsing of attributes fails
      * @since MMBase-1.6.1
      */
     public Attribute getAttribute(String attribute) throws JspTagException {
@@ -356,6 +340,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport implements TryCa
     /**
      * Like getAttributeValue but converts the result to a Boolean,
      * and throws an exception if this cannot be done.
+     * @param b unparsed attribute
+     * @return boolean
+     * @throws JspTagException when parsing of attributes fails
      **/
 
     protected Boolean getAttributeBoolean(String b) throws JspTagException {
