@@ -154,8 +154,8 @@ public class SearchAction extends PagerAction {
                 String paramName = nodeManager.getName() + "." + field.getName();
                 String paramValue = request.getParameter(paramName);
                 if (!StringUtil.isEmpty(paramValue)) {
-                    SearchUtil.addLikeConstraint(query, field, paramValue);
-                }
+                    SearchUtil.addLikeConstraint(query, field, paramValue.trim());
+                } 
                 queryStringComposer.addParameter(paramName, paramValue);
             }
         }
@@ -163,9 +163,9 @@ public class SearchAction extends PagerAction {
         // Add the title constraint:
         if (!StringUtil.isEmpty(searchForm.getTitle())) {
 
-            queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle());
+            queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle().trim());
             Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
-            Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
+            Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle().trim());
             SearchUtil.addConstraint(query, titleConstraint);
         }
 
@@ -182,20 +182,21 @@ public class SearchAction extends PagerAction {
 
         // Set the objectid constraint
         if (!StringUtil.isEmpty(searchForm.getObjectid())) {
+        	String stringObjectId = searchForm.getObjectid().trim();
             Integer objectId = null;
-            if (searchForm.getObjectid().matches("^\\d+$")) {
-                objectId = new Integer(searchForm.getObjectid());
+            if (stringObjectId.matches("^\\d+$")) {
+                objectId = new Integer(stringObjectId);
             }
             else {
-                if (cloud.hasNode(searchForm.getObjectid())) {
-                    objectId = new Integer(cloud.getNode(searchForm.getObjectid()).getNumber());
+                if (cloud.hasNode(stringObjectId)) {
+                    objectId = new Integer(cloud.getNode(stringObjectId).getNumber());
                 }
                 else {
                     objectId = new Integer(-1);
                 }
             }
             SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.NUMBER_FIELD, objectId);
-            queryStringComposer.addParameter(OBJECTID, searchForm.getObjectid());
+            queryStringComposer.addParameter(OBJECTID, stringObjectId);
         }
 
         // Add the user personal:
