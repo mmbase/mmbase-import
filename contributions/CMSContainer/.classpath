@@ -131,37 +131,37 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jcvsii/jars/jcvsii-5.3.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/sshtools/jars/j2ssh-core-0.2.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.6-20080404.jar">
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
