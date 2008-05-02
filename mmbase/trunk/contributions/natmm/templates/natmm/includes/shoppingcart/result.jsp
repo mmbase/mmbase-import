@@ -9,7 +9,8 @@ String toEmail = NatMMConfig.getToEmailAddress();
    %>
 </mm:node>
 <%
-String responseText = "De volgende bestelling is afkomstig van de Natuurmonumenten webwinkel.";
+String responseText = "De volgende bestelling is afkomstig van de Natuurmonumenten webwinkel.\n";
+String responseTextToCustomer = "Geachte ";
 String warningText = "<ul>";
 boolean isValidAnswer = true;
 
@@ -23,15 +24,19 @@ if(answerValue.equals("")) {
     responseText += "niet ingevuld";
 } else if(answerValue.equals("f")) {
     responseText += "Mevr.";
+    responseTextToCustomer += "mevrouw ";
 } else {
     responseText += "Dhr.";
+    responseTextToCustomer += "meneer ";
 }
 
 String [] fields = { "Naam", "Adres+huisnr.", "Postcode", "Woonplaats", "Telefoon", "E-mail adres" };
 String memberIDMessage = "";
+String emailAddressCustomer = "";
 for(int i=0; i<fields.length; i++) {
 
    responseText += "<br><br>" + fields[i] + ": ";
+   if (i!=0) responseTextToCustomer += "<br>" + fields[i] + ": ";
    answerValue = (String) session.getAttribute("q" + i);
    if(answerValue==null) { answerValue = ""; }
    if(answerValue.equals("")) {
@@ -42,7 +47,7 @@ for(int i=0; i<fields.length; i++) {
       }
    } else if(i==5 && !com.cfdev.mail.verify.EmailVerifier.validateEmailAddressSyntax(answerValue)) {
      isValidAnswer = false;
-     warningText += "<li>" + answerValue +  " is geen geldig email adres</li>";
+     warningText += "<li>" + answerValue +  " is geen geldig emailadres</li>";
    } else if(i==2 && !memberId.equals("")) {
      memberIDMessage = SubscribeForm.getMemberIdMessage(memberId,answerValue.toUpperCase().replaceAll(" ",""));
      if(!"".equals(memberIDMessage)) {
@@ -51,21 +56,36 @@ for(int i=0; i<fields.length; i++) {
      }
    }
    responseText += answerValue;
+   responseTextToCustomer += answerValue;
+
+   if (i == 5) emailAddressCustomer = answerValue;
+   if (i == 0) { 
+      responseTextToCustomer += ",<br><br>Bedankt voor uw bestelling!<br>Hieronder volgen de gegevens van uw bestelling.<br>"; 
+   }
 }
 warningText += "</ul>";
 
 responseText += "<br><br>Lidmaatschapsnr.: ";
+responseTextToCustomer += "<br>Lidmaatschapsnr.: ";
+
 if(memberId.equals("")) {
   responseText += "niet ingevuld";
+  responseTextToCustomer += "niet ingevuld";
 } else {
   responseText += memberId;
+  responseTextToCustomer += memberId;
 }
 
 responseText += "<br><br>Gift: ";
+responseTextToCustomer += "<br>Gift: ";
+
 if(donationStr.equals("")) {
     responseText += "geen gift";
+    responseTextToCustomer += "geen gift";
+    
 } else {
   responseText +=  "&euro; " + nf.format(((double) Integer.parseInt(donationStr) )/100);
+  responseTextToCustomer +=  "&euro; " + nf.format(((double) Integer.parseInt(donationStr) )/100);
 }
 
 if(isValidAnswer) { 
@@ -73,35 +93,53 @@ if(isValidAnswer) {
   if(products!=null) { 
       %><%@include file="getbasket.jsp" %><%
       responseText += productsStr;
+      responseTextToCustomer += productsStr;
+      responseTextToCustomer += "<br><br>Met vriendelijke groet,\n<br>Natuurmonumenten Webshop<br>\n";
   }
     
   %><mm:createnode type="email" id="mail1"
         ><mm:setfield name="subject"><bean:message bundle="LEOCMS" key="shoppingcart.email_title" /></mm:setfield
         ><mm:setfield name="from"><%= fromEmail %></mm:setfield
-        ><mm:setfield name="replyto"><%= fromEmail %></mm:setfield
         ><mm:setfield name="body">
         <multipart id="plaintext" type="text/plain" encoding="UTF-8">
         </multipart>
         <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-            <%= "<html>" + responseText + "</html>" %>
+            <%= "<html>" + responseText + "</html>\n" %>
+        </multipart>
+        </mm:setfield
+    ></mm:createnode>
+    <mm:createnode type="email" id="mail2"
+        ><mm:setfield name="subject"><bean:message bundle="LEOCMS" key="shoppingcart.email_title" /></mm:setfield
+        ><mm:setfield name="from"><%= fromEmail %></mm:setfield
+        ><mm:setfield name="body">
+        <multipart id="plaintext" type="text/plain" encoding="UTF-8">
+        </multipart>
+        <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
+            <%= "<html>" + responseTextToCustomer + "</html>\n" %>
         </multipart>
         </mm:setfield
     ></mm:createnode><%
     
-    String emailAdresses = toEmail + ";"; 
-    int semicolon = emailAdresses.indexOf(";");
+    String emailAddresses = toEmail + ";"; 
+    int semicolon = emailAddresses.indexOf(";");
     while(semicolon>-1) { 
-        String emailAdress = emailAdresses.substring(0,semicolon);
-        emailAdresses = emailAdresses.substring(semicolon+1);
-        semicolon = emailAdresses.indexOf(";");
+        String emailAdress = emailAddresses.substring(0,semicolon);
+        emailAddresses = emailAddresses.substring(semicolon+1);
+        semicolon = emailAddresses.indexOf(";");
         %><mm:node referid="mail1"
             ><mm:setfield name="to"><%= emailAdress %></mm:setfield
             ><mm:field name="mail(oneshot)" 
-        /></mm:node><%
+        /></mm:node>
+        
+        <mm:node referid="mail2"
+            ><mm:setfield name="to"><%= emailAddressCustomer %></mm:setfield
+            ><mm:field name="mail(oneshot)" 
+        /></mm:node>
+        <%
     }
     
-    formMessageHref =  ph.createPaginaUrl((new RubriekHelper(cloud)).getFirstPage(subsiteID),request.getContextPath());
-    session.setAttribute("totalitems","0");
+    formMessageHref = ph.createPaginaUrl((new RubriekHelper(cloud)).getFirstPage(subsiteID),request.getContextPath());
+    //session.setAttribute("totalitems","0");
     
 } else { 
     String targetPage = "javascript:history.go(-1)";
@@ -122,7 +160,7 @@ if(isValidAnswer) {
     <div class="maincolor"><bean:message bundle="LEOCMS" key="shoppingcart.order_title" /></div>
       <% 
       if(isValidAnswer) {
-        %><bean:message bundle="LEOCMS" key="shoppingcart.correct_message" /> <%= toEmail %><%
+        %><bean:message bundle="LEOCMS" key="shoppingcart.correct_message" /> <%= (toEmail + " en " + emailAddressCustomer) %><%
       } else {
         %><bean:message bundle="LEOCMS" key="shoppingcart.incorrect_message" /> <%= warningText %><%
       } %>
