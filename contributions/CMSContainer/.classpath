@@ -16,7 +16,6 @@
 	<classpathentry kind="src" output="cmsc/utilities/target/classes" path="cmsc/utilities/src/java"/>
 	<classpathentry kind="src" output="thirdparty/pager-taglib/target/classes" path="thirdparty/pager-taglib/src/java"/>
 	<classpathentry kind="src" output="overview_generator/target/classes" path="overview_generator/src/java"/>
-
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://commons.apache.org/beanutils/apidocs/"/>
@@ -52,7 +51,6 @@
 			<attribute name="javadoc_location" value="http://commons.apache.org/logging/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0-20040521.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://tomcat.apache.org/tomcat-5.5-doc/jspapi"/>
@@ -73,7 +71,6 @@
 			<attribute name="javadoc_location" value="http://java.sun.com/products/jsp/jstl/1.1/docs/api"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/mmapps/jars/cloudprovider-1.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/cloudprovider/apidocs/"/>
@@ -94,52 +91,14 @@
 			<attribute name="javadoc_location" value="http://mmapps.sourceforge.net/remotepublishing/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.apache.pluto/jars/pluto-descriptors-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.jar"/>
-
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-rmmci-server-1.8.2-20061020.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://logging.apache.org/log4j/1.2/apidocs/"/>
@@ -150,7 +109,6 @@
 			<attribute name="javadoc_location" value="http://struts.apache.org/1.x/apidocs/"/>
 		</attributes>
 	</classpathentry>
-
 	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/javadoc/"/>
@@ -161,26 +119,52 @@
 			<attribute name="javadoc_location" value="http://ehcache.sourceforge.net/ehcache-constructs/documentation/javadoc/"/>
 		</attributes>
 	</classpathentry>
-
-	<!-- MS office parsers -->
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-2.5.1-final-20040804.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5.1.jar"/>
-
-	<!-- unit tests -->
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://junit.sourceforge.net/javadoc"/>
 		</attributes>
 	</classpathentry>
-
-	<!-- ntlm login -->
 	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
-
-	<!-- overview generator -->
 	<classpathentry kind="var" path="MAVEN_REPO/svnkit/jars/svnkit-1.1.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jcvsii/jars/jcvsii-5.3.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/sshtools/jars/j2ssh-core-0.2.2.jar"/>
-
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-taglib-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-dove-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-crontab-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-cloudcontext-1.8.6-20080404.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
