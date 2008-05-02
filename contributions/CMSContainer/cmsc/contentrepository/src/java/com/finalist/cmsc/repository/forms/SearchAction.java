@@ -37,6 +37,7 @@ public class SearchAction extends PagerAction {
     public static final String GETURL = "geturl";
 
     public static final String PERSONAL = "personal";
+    public static final String MODE = "mode";
     public static final String AUTHOR = "author";
     public static final String OBJECTID = "objectid";
     public static final String PARENTCHANNEL = "parentchannel";
@@ -89,6 +90,9 @@ public class SearchAction extends PagerAction {
 
         NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
         QueryStringComposer queryStringComposer = new QueryStringComposer();
+        if(!StringUtil.isEmpty(request.getParameter(MODE))) {
+        	queryStringComposer.addParameter(MODE, request.getParameter(MODE));
+        }
         NodeQuery query = cloud.createNodeQuery();
 
         // First we add the contenttype parameter
