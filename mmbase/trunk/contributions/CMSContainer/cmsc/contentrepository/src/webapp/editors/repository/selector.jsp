@@ -48,6 +48,11 @@
 		resizeTreeDiv();
 		alphaImages();
       }
+      
+      function doSearch() {
+      	clearDefaultSearchText('<fmt:message key="selector.search.term" />');
+      	document.forms['searchForm'].submit();
+      }
    </script>
 
 	<style type="text/css">
@@ -75,7 +80,7 @@
 			</div>
 		
 			<div class="search_form_options">
-				<a href="javascript:document.forms['searchForm'].submit()" class="button"><fmt:message key="selector.search.search" /></a>
+				<a href="javascript:doSearch()" class="button"><fmt:message key="selector.search.search" /></a>
 			</div>
 				
 			<ul class="shortcuts">
