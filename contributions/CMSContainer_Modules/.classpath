@@ -115,11 +115,6 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
@@ -175,7 +170,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-core-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-server-0.42.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/jmock/jars/jmock-1.2.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/ejb3-persistence-3.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
