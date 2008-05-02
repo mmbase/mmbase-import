@@ -68,6 +68,18 @@ Exceptions/errors/other problems and what to do:
 *
 *
 
+Name: Add environment variable for mmbase/mmbaseroot/database = mysql-cmsc
+Goal: The cmsc uses a modified storage definition which forces lowercase table names
+Type: META-INF/context.xml (installed under <CATALINA_HOME>/conf/Catalina/localhost/<webapp>.xml)
+--- Start script ---
+	<Environment name="mmbase/mmbaseroot/database" value="mysql-cmsc" type="java.lang.String" />
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
+
+
 Name: Checksum field for binary content 
 Goal: Add a checksum field to attachments and images
 Type:  sql-script
