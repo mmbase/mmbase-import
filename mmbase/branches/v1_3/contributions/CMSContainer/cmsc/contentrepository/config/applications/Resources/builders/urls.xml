@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
                         http://www.mmbase.org/xmlns/builder.xsd"                        
-    name="urls" maintainer="www.mmbase.org" version="0" extends="object">
+    name="urls" maintainer="www.mmbase.org" version="1" extends="object">
   <status>active</status>
   <class>org.mmbase.module.builders.Urls</class>
   <searchage>14</searchage>
@@ -64,7 +64,7 @@
       <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" />
       <db>
         <name>url</name>
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
+        <type state="persistent" size="2000" notnull="true" key="false">STRING</type>
       </db>
     </field>
     
