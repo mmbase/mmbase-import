@@ -141,11 +141,6 @@
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-email-1.8.6-20080502.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="MAVEN_REPO/mmbase/jars/mmbase-editwizard-1.8.6-20080502.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.mmbase.org/development/api/1.8/"/>
