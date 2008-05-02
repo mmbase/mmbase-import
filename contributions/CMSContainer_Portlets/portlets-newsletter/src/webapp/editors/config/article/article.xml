@@ -18,9 +18,15 @@
    <steps>
       <step form-schema="edit_article"/>
       <step form-schema="edit_contentfields"/>
+
+      <step form-schema="search_article_insrel_term"/>
+
       <step form-schema="edit_contentinfo"/>
    </steps>
    <form-schema id="edit_article" extends="config/article/edit_article.xml"/>
    <form-schema id="edit_contentfields" extends="config/contentelement/edit_contentfields.xml"/>
+
+   <form-schema id="search_article_insrel_term" extends="config/newsletter/search_article_insrel_term.xml"/>
+
    <form-schema id="edit_contentinfo" extends="config/contentelement/edit_contentinfo.xml"/>
 </wizard-schema>
