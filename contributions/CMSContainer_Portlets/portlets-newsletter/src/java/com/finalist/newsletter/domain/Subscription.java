@@ -2,6 +2,7 @@ package com.finalist.newsletter.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Date;
 
 import com.finalist.cmsc.services.community.person.Person;
 
@@ -18,6 +19,8 @@ public class Subscription {
    private String email;
    private int id;
    private String url;
+   private String newesletterId;
+   private Date pausedTill;
 
    public enum STATUS {
       ACTIVE, PAUSED, INACTIVE
@@ -87,5 +90,24 @@ public class Subscription {
 
    public void setEmail(String email) {
       this.email = email;
+   }
+
+   public String getNewesletterId() {
+      if(null!=newsletter){
+         return Integer.toString(newsletter.getId());  
+      }
+      return newesletterId;
+   }
+
+   public void setNewesletterId(String newesletterId) {
+      this.newesletterId = newesletterId;
+   }
+
+   public Date getPausedTill() {
+      return pausedTill;
+   }
+
+   public void setPausedTill(Date pausedTill) {
+      this.pausedTill = pausedTill;
    }
 }
