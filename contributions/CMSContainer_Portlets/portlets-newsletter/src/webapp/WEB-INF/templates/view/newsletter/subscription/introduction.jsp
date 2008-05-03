@@ -1,13 +1,30 @@
-<form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:renderURL><cmsc:param name="action" value="subscribe"/></cmsc:renderURL>" target="_self">
-<input type="hidden" name="template" value="newsletter/subscription/subscribe.jsp">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div class="heading">
-	<h3><fmt:message key="subscription.introduction.title" /></h3>
-</div>
-<div class="content">
-	<p><fmt:message key="subscription.introduction.info" />
-</div>
-<br>
-<a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" alt=""/> <fmt:message key="subscription.introduction.buttontext" /></a>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 
-</form>	
+<fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
+
+<form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:renderURL/>" target="_self">
+   <input name="action" value="subscribe"/>
+
+   <div class="heading">
+      <h3><fmt:message key="subscription.introduction.title"/></h3>
+   </div>
+   <div class="content">
+      <p><fmt:message key="subscription.introduction.info"/>
+   </div>
+   <br>
+   <c:choose>
+      <c:when test="${isUserLogin}">
+      <a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button">
+         <img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" alt=""/>
+         <fmt:message key="subscription.introduction.buttontext"/>
+      </a>
+      </c:when>
+      <c:otherwise>
+         <fmt:message key="subscription.introduction.pleaselogin"/>         
+      </c:otherwise>
+      </c:choose>
+</form>
