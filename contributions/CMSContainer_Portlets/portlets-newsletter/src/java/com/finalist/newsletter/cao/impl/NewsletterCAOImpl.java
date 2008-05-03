@@ -8,6 +8,8 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeQuery;
 import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 import com.finalist.newsletter.cao.util.NlUtil;
 
@@ -16,7 +18,8 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Term;
 
 public class NewsletterCAOImpl implements NewsletterCAO {
-	private Cloud cloud;
+   private static Logger log = Logging.getLoggerInstance(NewsletterCAOImpl.class.getName());
+   private Cloud cloud;
 
 	public NewsletterCAOImpl() {
 	}
@@ -33,25 +36,27 @@ public class NewsletterCAOImpl implements NewsletterCAO {
 		return NlUtil.convertFromNodeList(list);
 	}
 
-	public Newsletter getNewsletterById(int id) {
-		Node newsletterNode = cloud.getNode(id);
-		Newsletter newsletter = new Newsletter();
+   public Newsletter getNewsletterById(int id) {
+      Node newsletterNode = cloud.getNode(id);
+      Newsletter newsletter = new Newsletter();
 
-		newsletter.setId(newsletterNode.getIntValue("number"));
-		newsletter.setTitle(newsletterNode.getStringValue("title"));
-		List<Node> terms = newsletterNode.getRelatedNodes("term");
-		Iterator termsIt = terms.iterator();
+      newsletter.setId(newsletterNode.getIntValue("number"));
+      newsletter.setTitle(newsletterNode.getStringValue("title"));
 
-		for (int i = 0; i < terms.size(); i++) {
-			Term term = new Term();
-			Node termNode = (Node) termsIt.next();
-			term.setId(termNode.getNumber());
-			term.setName(termNode.getStringValue("name"));
-			term.setSubscription(false);
-			newsletter.getTerms().add(term);
-		}
+      List<Node> terms = newsletterNode.getRelatedNodes("term");
+      log.debug("get newsletter by id:" + id + ",and get " + terms.size() + " terms with it.");
+      Iterator termsIt = terms.iterator();
 
-		return newsletter;
-	}
+      for (int i = 0; i < terms.size(); i++) {
+         Term term = new Term();
+         Node termNode = (Node) termsIt.next();
+         term.setId(termNode.getNumber());
+         term.setName(termNode.getStringValue("name"));
+         term.setSubscription(false);
+         newsletter.getTerms().add(term);
+      }
+
+      return newsletter;
+   }
 
 }
