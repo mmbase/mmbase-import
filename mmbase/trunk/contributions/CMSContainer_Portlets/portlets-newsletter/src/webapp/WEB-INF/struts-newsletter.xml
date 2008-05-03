@@ -33,7 +33,11 @@
 		<action path="/editors/newsletter/NewsletterResume" type="com.finalist.newsletter.forms.NewsletterResume" unknown="false" validate="false">
 			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
 		</action>
-		<action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false" validate="false">
+      <action path="/editors/newsletter/Subscribe" type="com.finalist.newsletter.forms.SubscribeAction" unknown="false"
+              validate="false" parameter="action">
+         <forward name="success" path="/editors/site/refreshpages.jsp" redirect="false"/>
+      </action>
+      <action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false" validate="false">
 		</action>
 		<!-- ==== Select page nodes ==== -->
 
@@ -42,4 +46,5 @@
 	</action-mappings>
 
 	<message-resources parameter="cmsc-site" key="SITE" />
+	<message-resources parameter="portlets-newslettersubscription"/>
 </struts-config>
