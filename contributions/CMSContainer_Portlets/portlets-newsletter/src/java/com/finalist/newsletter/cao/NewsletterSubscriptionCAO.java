@@ -7,6 +7,7 @@ import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.domain.Publication;
 
 public interface NewsletterSubscriptionCAO {
 
@@ -27,4 +28,11 @@ public interface NewsletterSubscriptionCAO {
 	public Subscription getSubscription(int newsletterId, int userId);
 
    Set<Term> getTerms(int id);
+
+   public Subscription getSubscriptionById(int id);
+   public void createSubscription(int userId, int newsletterId);
+
+   public void updateSubscription(Subscription subscription);
+
+   public List<Subscription> getSubscriptionByUserIdAndStatus(int userId, Subscription.STATUS status);
 }

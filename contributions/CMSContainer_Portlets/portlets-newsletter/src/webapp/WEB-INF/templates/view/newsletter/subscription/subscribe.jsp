@@ -1,65 +1,164 @@
+<%@ page import="com.finalist.newsletter.domain.Subscription" %>
 <%@include file="/WEB-INF/templates/portletglobals.jsp" %>
 
-<cmsc:portlet-preferences />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
 
-<mm:cloud>
-	<form method="POST" name="<portlet:namespace />form_subscribe" action="<cmsc:actionURL><cmsc:param name="action" value="subscribe"/></cmsc:actionURL>" target="_parent">
-	<input type="hidden" name="template" value="newsletter/subscription/overview.jsp">
-	<div class="heading">
-		<h3><fmt:message key="subscription.subscribe.title" /></h3>
-	</div>
-	<div class="content">
-		<p><fmt:message key="subscription.subscribe.info" /></p><br>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<c:forEach var="newsletternumber" items="${allowednewsletters}">
-		<mm:node number="${newsletternumber}" notfound="skip">
-			<tr>
-				<td colspan="2">
-					<b><fmt:message key="newsletter" />: <mm:field jspvar="newslettertitle" name="title" write="true" /></b>
-				</td>					
-			</tr>
-			<tr>
-				<td colspan="2"><mm:field name="intro" write="true" />	</td>
-			</tr>
-			<tr>
-				<td colspan="2"><cmsc:checkbox var="newslettersubscriptions" value="${newsletternumber}" checked="true" /><fmt:message key="subscription.subscribe.tothisnewsletter" /></td></tr>
-			<tr>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td colspan="2"><b><fmt:message key="additionalthemes" />: ${newslettertitle}</b></td>
-			</tr>
-			<mm:relatednodes type="newslettertheme" role="newslettertheme">
-				<mm:field name="number" write="false" jspvar="theme"/>
-				<mm:field name="title" write="false" jspvar="themeTitle"/>
-				<mm:field name="shortdescription" write="false" jspvar="themeShortDescription"/>
-				<tr>				
-					<td width="25%"><cmsc:checkbox var="newslettertheme" value="${theme}" checked="true">${themeTitle}</cmsc:checkbox></td> 
-					<td>${themeShortDescription}</td>
-				</tr>				
-			</mm:relatednodes>
-			<tr><td>&nbsp;</td></tr>
-			</mm:node>
-			</c:forEach>
-			<tr><td colspan="2"><b><fmt:message key="subscription.mimetype.title" /></b></td></tr>
-			<tr><td colspan="2"><fmt:message key="subscription.mimetype.info" /></td></tr>
-			<tr>
-				<td><fmt:message key="subscription.mimetype.select" /></td>
-				<td>
-				<cmsc:select var="preferredmimetype">
-					<c:forEach var="m" items="${mimetypeoptions}">
-						<cmsc:option name="${m}" value="${m}" />
-					</c:forEach>
-				</cmsc:select>
-				</td>
-			</tr>
-		</table>
-		<br>
-		<a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button"><img src="<cmsc:staticurl page='/editors/gfx/icons/save.png'/>" alt=""/><fmt:message key="subscription.subscribe.buttontext" /></a>
-		<br>
-	</div>
-	</form>
-</mm:cloud>
+<fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
+<c:set var="contextPath">
+   <%=request.getContextPath()%>/editors/newsletter/Subscribe.do
+</c:set>
+<SCRIPT LANGUAGE="JavaScript">
+   function modifyStatus(newsletterId, box) {
+      console.debug("modifyStatus")
+      new Ajax.Request(
+            "${contextPath}",
+      {
+         method: 'get',
+         parameters: {newsletterId: newsletterId,select: box.checked ,action: 'modifyStatus'}
+      }
+            );
+   }
+
+   function addOrRemoveTag(newsletterId, termId, box) {
+      console.debug("add or remove tag")
+      new Ajax.Request(
+            "${contextPath}",
+      {
+         method: 'get',
+         parameters: {newsletterId: newsletterId, termId:termId, select: box.checked , action: 'modifyTag'}
+      }
+            );
+   }
+
+   function modifyFormat(newsletterId, format) {
+      console.debug("Modify format:" + newsletterId + " to " + format)
+      new Ajax.Request
+            ("${contextPath}",
+            {
+               method: 'get',
+               parameters: {newsletterId: newsletterId, format:format, action: 'modifyFormat'}
+            }
+                  );
+   }
+</SCRIPT>
+<form method="POST" name="<portlet:namespace />form_subscribe"
+      action="<cmsc:actionURL/>"
+>
+
+<div class="heading">
+   <h3><fmt:message key="subscription.subscribe.title"/></h3>
+</div>
+<div class="content">
+<p><fmt:message key="subscription.subscribe.info"/></p><br>
+<table border="1" width="600px">
+   <tr>
+      <td><fmt:message key="subscription.view.list.title"/></td>
+      <td>&nbsp;</td>
+      <td><fmt:message key="subscription.view.list.tag"/></td>
+      <td><fmt:message key="subscription.view.list.status"/></td>
+      <td><fmt:message key="subscription.view.list.format"/></td>
+   </tr>
+   <c:forEach items="${subscriptionList}" var="subscription">
+      <tr>
+         <td>
+            <c:set var="newsletterId" value="${subscription.newsletter.id}"/>
+            <c:set var="status" value="${subscription.status}"/>
+            <input type="checkbox"
+                   value="${subscription.id}"
+                   name="subscriptions"
+                   id="subscription-${subscription.id}"
+                   onclick="modifyStatus('${newsletterId}',this)"
+               ${status ne 'INACTIVE' ? 'checked' : ''}
+                  />
+         </td>
+         <td>
+               ${subscription.newsletter.title}
+         </td>
+         <td>
+            <%pageContext.setAttribute("terms", ((Subscription) pageContext.findAttribute("subscription")).getTerms());%>
+            <c:forEach items="${terms}" var="term">
+               <label for="tag-${term.id}">${term.name}</label>
+               <input type="checkbox"
+                      id="tag-${term.id}"
+                      onclick="addOrRemoveTag('${newsletterId}','${term.id}',this)"
+                  ${true eq term.subscription ? 'checked' : ''}/>
+            </c:forEach>
+         </td>
+         <td>
+            <select onchange="modifyFormat('${newsletterId}',this.value)">
+               <option name="html" value="text/html" ${subscription.mimeType eq 'text/html' ? 'selected' : ''}>
+                  <fmt:message key="subscription.view.list.status.html"/>
+               </option>
+               <option name="text" value="text/plain" ${subscription.mimeType eq 'text/plain' ? 'selected' : ''}>
+                  <fmt:message key="subscription.view.list.status.text"/>
+               </option>
+            </select>
+         </td>
+         <td>
+            <c:if test="${subscription.status ne 'INACTIVE'}">
+               <c:set var="terminateURL">
+                  <cmsc:renderURL>
+                     <cmsc:param name="action" value="terminate"/>
+                     <cmsc:param name="subscriptions" value="${subscription.id}"/>
+                  </cmsc:renderURL>
+               </c:set>
+               <a href="${terminateURL}">
+                  <fmt:message key="subscription.subscribe.operation.terminate"/>
+               </a>
+
+               <c:set var="pauseURL">
+                  <cmsc:renderURL>
+                     <cmsc:param name="action" value="pause"/>
+                     <cmsc:param name="subscriptions" value="${subscription.id}"/>
+                  </cmsc:renderURL>
+               </c:set>
+               <c:if test="${subscription.status eq 'PAUSED'}">
+                  <c:set var="resumeURL">
+                     <cmsc:renderURL>
+                        <cmsc:param name="action" value="resume"/>
+                        <cmsc:param name="subscriptions" value="${subscription.id}"/>
+                     </cmsc:renderURL>
+                  </c:set>
+                  <fmt:message key="subscription.subscribe.status.paused"/>
+                  <a href="${pauseURL}">
+                     <fmt:message key="subscription.subscribe.status.paused.resumedate"/>
+                  </a>
+                  <a href="${resumeURL}">
+                     <fmt:message key="subscription.subscribe.operation.resume"/>
+                  </a>
+               </c:if>
+               <c:if test="${subscription.status eq 'ACTIVE'}">
+                  <a href="${pauseURL}">
+                     <fmt:message key="subscription.subscribe.operation.pause"/>
+                  </a>
+               </c:if>
+            </c:if>
+         </td>
+      </tr>
+   </c:forEach>
+</table>
+<br>
+<input type="hidden" name="action" id="action"/>
+<a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button">
+   <fmt:message key="subscription.subscribe.buttontext"/>
+</a>
+<a href="javascript:document.getElementById('action').value='terminate';document.forms['<portlet:namespace />form_subscribe'].submit()"
+   class="button">
+   <fmt:message key="subscription.subscribe.operation.terminateall"/>
+</a>
+<a href="javascript:document.getElementById('action').value='pause';document.forms['<portlet:namespace />form_subscribe'].submit()"
+   class="button">
+     <fmt:message key="subscription.subscribe.operation.pauseall"/>
+</a>
+<a href="javascript:document.getElementById('action').value='resume';document.forms['<portlet:namespace />form_subscribe'].submit()"
+   class="button">
+     <fmt:message key="subscription.subscribe.operation.resumeall"/>
+</a>
+<br>
+</div>
+</form>
 
 
 
