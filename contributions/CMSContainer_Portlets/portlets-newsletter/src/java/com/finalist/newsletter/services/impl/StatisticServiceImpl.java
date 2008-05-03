@@ -43,12 +43,8 @@ public class StatisticServiceImpl implements StatisticService {
 
 		Date startDate;
 		Date endDate;
-		try {
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		} catch (ParseException e) {
-			throw new ServiceException("Date parser failed", e);
-		}
 		List<StatisticResult> list = statisticcao.getAllRecordsByPeriod(
 				startDate, endDate);
 		return list;
@@ -66,12 +62,8 @@ public class StatisticServiceImpl implements StatisticService {
 
 		Date startDate;
 		Date endDate;
-		try {
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		} catch (ParseException e) {
-			throw new ServiceException("Date parser failed", e);
-		}
 		List<StatisticResult> list = statisticcao
 				.getRecordsByNewsletterAndPeriod(startDate, endDate, newsletterId);
 		StatisticResult result = new StatisticResult();
@@ -106,12 +98,8 @@ public class StatisticServiceImpl implements StatisticService {
 
 		Date startDate;
 		Date endDate;
-		try {
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		} catch (ParseException e) {
-			throw new ServiceException("Date parser failed", e);
-		}
 		List<StatisticResult> list = statisticcao.getAllRecordsByPeriod(
 				startDate, endDate);
 		StatisticResult result = new StatisticResult();
@@ -131,12 +119,8 @@ public class StatisticServiceImpl implements StatisticService {
 
 		Date startDate;
 		Date endDate;
-		try {
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		} catch (ParseException e) {
-			throw new ServiceException("Date parser failed", e);
-		}
 		List<StatisticResult> list = statisticcao
 				.getRecordsByNewsletterAndPeriod(startDate, endDate, newsletterId);
 		return list;
