@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder 
 
                         http://www.mmbase.org/xmlns/builder.xsd"
-	extends="object" maintainer="finalist.com" name="term" version="1">
+	extends="object" maintainer="finalist.com" name="tag" version="1">
 
 	<status>active</status>
 
@@ -15,9 +15,9 @@
 
 	<names>
 
-		<singular xml:lang="nl">Term</singular>
+		<singular xml:lang="nl">tag</singular>
 
-		<singular xml:lang="en">Term</singular>
+		<singular xml:lang="en">tag</singular>
 
 	</names>
 
@@ -61,7 +61,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">Subject</guiname>
+				<guiname xml:lang="nl">Onderwerp</guiname>
 				<guiname xml:lang="en">Subject</guiname>
 			</gui>
 			<editor>
