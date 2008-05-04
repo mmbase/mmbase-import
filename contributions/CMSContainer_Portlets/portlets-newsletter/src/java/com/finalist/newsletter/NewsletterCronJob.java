@@ -39,7 +39,9 @@ public class NewsletterCronJob implements CronJob {
       List<Node> newslettersToPublish = new ArrayList<Node>();
       for (int i = 0; i < newsletters.size(); i++) {
          Node newsletter = newsletters.getNode(i);
-         if (NewsletterUtil.isPaused(newsletter)) {
+         boolean isPaused = NewsletterUtil.isPaused(newsletter);
+         System.out.println("------------>"+isPaused);
+         if (isPaused) {
             continue;
          }
          if (!Publish.isPublished(newsletter)) {
@@ -105,12 +107,16 @@ public class NewsletterCronJob implements CronJob {
                }
                else if(expressions[4].equals("2")) {
                   int interval = Integer.parseInt(expressions[5]);
+                  System.out.println("-----------------------111>"+lastCreatedDateTime);
                   if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
+                     System.out.println("-----------------------222>"+lastCreatedDateTime);
                      if(DateUtils.isSameDay(DateUtils.addDays(startDate, interval),now)) {
+                        System.out.println("-----------------------333>"+interval);
                         isPublish = true;
                      }
                   }
                   else {
+                     System.out.println("-----------------------444>111111111");
                      if(DateUtils.isSameDay(DateUtils.addDays(lastCreatedDateTime, interval),now)) {
                         isPublish = true;
                      }
