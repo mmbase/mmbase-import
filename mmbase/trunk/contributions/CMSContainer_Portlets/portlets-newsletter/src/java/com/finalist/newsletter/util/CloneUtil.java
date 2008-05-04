@@ -202,9 +202,9 @@ public class CloneUtil {
          String relName = relationTypeNode.getStringValue("sname");
          relationManager = localRelation.getCloud().getRelationManager(sourceNode.getNodeManager().getName(),
                destinationNode.getNodeManager().getName(), relName);
+
       }
       Relation newRelation = relationManager.createRelation(sourceNode, destinationNode);
-
       FieldIterator fields = localRelation.getNodeManager().getFields().fieldIterator();
       while (fields.hasNext()) {
          Field field = fields.nextField();
@@ -247,8 +247,9 @@ public class CloneUtil {
       while (ri.hasNext()) {
          Relation rel = ri.nextRelation();
          if (rel.getSource().getNumber() == localNode.getNumber()) {
-            cloneRelation(rel, newNode, rel.getDestination());
-         } else {
+            cloneRelation(rel, newNode,  rel.getDestination());
+         } 
+         else {
             if (rel.getDestination().getNumber() == localNode.getNumber()) {
                cloneRelation(rel, rel.getSource(), newNode);
             }

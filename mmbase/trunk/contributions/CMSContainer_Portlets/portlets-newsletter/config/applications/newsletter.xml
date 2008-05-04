@@ -38,6 +38,7 @@
 		<relation from="newsletterpublicationtheme" to="newslettertheme" type="related" />
 		<relation from="newsletter" to="newsletterdailylog" type="related" />
 		<relation from="newsletter" to="attachments" type="posrel"/>
+      <relation from="newsletterpublication" to="attachments" type="posrel"/>
 	</allowedrelationlist>
 	<datasourcelist>
 		<datasource builder="portletdefinition" path="newsletter/portletdefinition.xml" />
