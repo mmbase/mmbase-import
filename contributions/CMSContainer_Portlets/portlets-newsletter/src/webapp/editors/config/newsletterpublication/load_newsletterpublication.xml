@@ -17,6 +17,7 @@
 	<field name="externalurl"/>
 
 	<relation destination="images" role="namedrel" />
+   <relation destination="attachments" role="posrel" />
 	<relation destination="layout" role="allowrel" />
 	<relation destination="layout" role="layoutrel" />
 	<relation destination="page" role="navrel" />

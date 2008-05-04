@@ -19,36 +19,43 @@ import com.finalist.newsletter.domain.Publication;
 
 public abstract class NewsletterPublicationUtil {
 
-   private static void copyContent(Node oldThemeNode, Node newThemeNode) {
-      RelationList contentList = oldThemeNode.getRelations("newslettercontent");
+   private static void copyContent(Node oldTermNode, Node newTermNode) {
+      RelationList contentList = oldTermNode.getRelations("newslettercontent");
       if (contentList != null && contentList.size() > 0) {
          for (int r = 0; r < contentList.size(); r++) {
             Relation contentRelation = contentList.getRelation(r);
             Node contentNode = contentRelation.getSource();
-            RelationUtil.createRelation(newThemeNode, contentNode, "newslettercontent");
+            RelationUtil.createRelation(newTermNode, contentNode, "newslettercontent");
          }
       }
    }
 
    private static void copyOtherRelations(Node newsletterNode, Node publicationNode) {
       PagesUtil.copyPageRelations(newsletterNode, publicationNode);
+      copyImageAndAttachment(newsletterNode, publicationNode);
    }
 
-   private static void copyThemesAndContent(Node newsletterNode, Node publicationNode, boolean copyContent) {
-      copyThemesAndContent(newsletterNode, publicationNode, copyContent, "newslettertheme");
-      copyThemesAndContent(newsletterNode, publicationNode, copyContent, "defaulttheme");
+   
+   private static void copyImageAndAttachment(Node newsletterNode, Node publicationNode) {
+      CloneUtil.cloneRelations(newsletterNode,publicationNode,"namedrel","images");
+      CloneUtil.cloneRelations(newsletterNode,publicationNode,"posrel","attachments");
+   }
+   
+   private static void copyTermsAndContent(Node newsletterNode, Node publicationNode, boolean copyContent) {
+      copyTermsAndContent(newsletterNode, publicationNode, copyContent, "newslettertheme");
+      copyTermsAndContent(newsletterNode, publicationNode, copyContent, "defaulttheme");
    }
 
-   private static void copyThemesAndContent(Node newsletterNode, Node publicationNode, boolean copyContent, final String relationName) {
-      NodeList newsletterThemeList = newsletterNode.getRelatedNodes("newslettertheme", relationName, "DESTINATION");
-      if (newsletterThemeList != null) {
-         for (int i = 0; i < newsletterThemeList.size(); i++) {
-            Node oldThemeNode = newsletterThemeList.getNode(i);
-            Node newThemeNode = CloneUtil.cloneNode(oldThemeNode, "newsletterpublicationtheme");
-            if (newThemeNode != null) {
-               RelationUtil.createRelation(publicationNode, newThemeNode, relationName);
+   private static void copyTermsAndContent(Node newsletterNode, Node publicationNode, boolean copyContent, final String relationName) {
+      NodeList newsletterTermList = newsletterNode.getRelatedNodes("term", relationName, "DESTINATION");
+      if (newsletterTermList != null) {
+         for (int i = 0; i < newsletterTermList.size(); i++) {
+            Node oldTermNode = newsletterTermList.getNode(i);
+            Node newTermNode = CloneUtil.cloneNode(oldTermNode, "newsletterpublicationtheme");
+            if (newTermNode != null) {
+               RelationUtil.createRelation(publicationNode, newTermNode, relationName);
                if (copyContent == true) {
-                  copyContent(oldThemeNode, newThemeNode);
+                  copyContent(oldTermNode, newTermNode);
                }
             }
          }
@@ -76,7 +83,7 @@ public abstract class NewsletterPublicationUtil {
             publicationNode.setStringValue("status", Publication.STATUS.INITIAL.toString());
             publicationNode.commit();
 
-            copyThemesAndContent(newsletterNode, publicationNode, copyContent);
+           // copyTermsAndContent(newsletterNode, publicationNode, copyContent);
             copyOtherRelations(newsletterNode, publicationNode);
             NavigationUtil.appendChild(newsletterNode, publicationNode);
             Node layoutNode = PagesUtil.getLayout(publicationNode);
@@ -130,7 +137,7 @@ public abstract class NewsletterPublicationUtil {
       NavigationUtil.deleteItem(publicationNode);
    }
 
-   public static List<String> getAllThemesForPublication(int publicationNumber) {
+   public static List<String> getAllTermsForPublication(int publicationNumber) {
       List<String> themes = new ArrayList<String>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterNode = cloud.getNode(publicationNumber);

@@ -1,33 +1,51 @@
 package com.finalist.newsletter.publisher;
 
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.publisher.NewsletterGenerator;
-import com.finalist.newsletter.NewsletterSendFailException;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.cmsc.mmbase.PropertiesUtil;
-import org.mmbase.module.Module;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.apache.commons.lang.StringUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Date;
+
+import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.module.Module;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+import com.finalist.cmsc.mmbase.PropertiesUtil;
+import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterPublisher {
 
-   private static Logger log = Logging.getLoggerInstance(NewsletterPublisher.class.getName());
+   private static Logger log = Logging
+         .getLoggerInstance(NewsletterPublisher.class.getName());
 
    private static String personaliser;
 
@@ -35,62 +53,134 @@ public class NewsletterPublisher {
       NewsletterPublisher.personaliser = personaliser;
    }
 
+   enum MimeType {
+      image, attachment
+   };
+
    public void deliver(Publication publication, Subscription subscription) {
       try {
          Message message = new MimeMessage(getMailSession());
          Newsletter newsletter = publication.getNewsletter();
-         setSenderInfomation(message,
-               newsletter.getFromAddress(),
-               newsletter.getFromName(),
-               newsletter.getReplyAddress(),
-               newsletter.getReplyName());
+         setSenderInfomation(message, newsletter.getFromAddress(), newsletter
+               .getFromName(), newsletter.getReplyAddress(), newsletter
+               .getReplyName());
 
+         setContent(message, publication, subscription);
          setRecipient(message, subscription.getEmail());
-         setBody(publication, subscription, message);
-         setTitle(message, publication.getNewsletter().getTitle());
-         setMIME(message, subscription.getMimeType());
+         // setBody(publication, subscription, message);
+         setTitle(message, newsletter.getTitle());
+         // setMIME(message, subscription.getMimeType());
 
          Transport.send(message);
-         log.debug("mail send! publication:"+publication.getId()+"to subscription"+subscription.getId()+" in MIME"+subscription.getMimeType());
-      } catch (MessagingException e) {
+         log.debug("mail send! publication:" + publication.getId()
+               + "to subscription" + subscription.getId() + " in MIME"
+               + subscription.getMimeType());
+      } 
+      catch (MessagingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
-      } catch (UnsupportedEncodingException e) {
+      } 
+      catch (UnsupportedEncodingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
       }
    }
 
-   private void setBody(Publication publication, Subscription subscription, Message message) throws MessagingException {
-      String url = NewsletterUtil.getTermURL(publication.getUrl(),subscription.getTerms(),publication.getId());
-      int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
-      String content = " ";
-      if(articleCounts == 0) {
-         if(publication.getNewsletter().getSendempty()) {
-            content = publication.getNewsletter().getTxtempty();
+   private void setContent(Message message, Publication publication,
+         Subscription subscription) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node newsletterPublicationNode = cloud.getNode(publication.getId());
+      NodeList attachmentNodes = newsletterPublicationNode.getRelatedNodes("attachments");
+      Multipart multipart = new MimeMultipart();
+      BodyPart mdp = new MimeBodyPart();
+      try {
+         mdp.setContent(getBody(publication, subscription), "text/html");
+         multipart.addBodyPart(mdp);
+      } catch (MessagingException e1) {
+         e1.printStackTrace();
+      }
+
+      setAttachment(multipart, attachmentNodes, MimeType.attachment);
+      NodeList imageNodes = newsletterPublicationNode.getRelatedNodes("images");
+      setAttachment(multipart, imageNodes, MimeType.image);
+      try {
+         message.setContent(multipart);
+      } 
+      catch (MessagingException e) {
+         e.printStackTrace();
+      }
+   }
+
+   private void setAttachment(Multipart multipart, NodeList attachmentNodes,
+         MimeType mimeType) {
+      if (attachmentNodes.size() > 0) {
+
+         try {
+            for (int i = 0; i < attachmentNodes.size(); i++) {
+               Node node = attachmentNodes.getNode(i);
+               DataHandler dh = null;
+               byte[] bytes = node.getByteValue("handle");
+               ByteArrayDataSource bads = new ByteArrayDataSource(bytes, null);
+
+               BodyPart messageBodyPart = new MimeBodyPart();
+               if (mimeType.compareTo(MimeType.image) == 0) {
+                  bads = new ByteArrayDataSource(bytes, "image/"
+                        + node.getStringValue("itype"));
+               } else if (mimeType.compareTo(MimeType.attachment) == 0) {
+                  bads = new ByteArrayDataSource(bytes, node
+                        .getStringValue("mimetype"));
+               }
+               dh = new DataHandler(bads);
+               messageBodyPart.setFileName(node.getStringValue("filename"));
+               messageBodyPart.setDataHandler(dh);
+               multipart.addBodyPart(messageBodyPart);
+            }
+         } 
+         catch (MessagingException e) {
+            e.printStackTrace();
          }
       }
-      else {
-         content = NewsletterGenerator.generate(url, subscription.getMimeType());
-      }
-      
-      if (null != getPersonalise()) {
-         content = getPersonalise().personalise(content, subscription, publication);
-      }
-      
-      message.setText(content + "\n");
    }
 
+   private String getBody(Publication publication, Subscription subscription)
+         throws MessagingException {
+      String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
+            .getTerms(), publication.getId());
+      int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication
+            .getNewsletterId());
+      String content = " ";
+      if (articleCounts == 0) {
+         if (publication.getNewsletter().getSendempty()) {
+            content = publication.getNewsletter().getTxtempty();
+         }
+      } else {
+         content = NewsletterGenerator
+               .generate(url, subscription.getMimeType());
+      }
 
-   private void setSenderInfomation(Message message, String fromAddress, String fromName, String replyAddress, String replyName)
+      if (null != getPersonalise()) {
+         content = getPersonalise().personalise(content, subscription,
+               publication);
+      }
+
+      return content + "\n";
+   }
+
+   private void setSenderInfomation(Message message, String fromAddress,
+         String fromName, String replyAddress, String replyName)
          throws MessagingException, UnsupportedEncodingException {
 
-      String emailFrom = getHeaderProperties(fromAddress, "newsletter.default.fromaddress");
-      String nameFrom = getHeaderProperties(fromName, "newsletter.default.fromname");
-      String emailReplyTo = getHeaderProperties(replyAddress, "newsletter.default.replytoadress");
-      String nameReplyTo = getHeaderProperties(replyName, "newsletter.default.replyto");
+      String emailFrom = getHeaderProperties(fromAddress,
+            "newsletter.default.fromaddress");
+      String nameFrom = getHeaderProperties(fromName,
+            "newsletter.default.fromname");
+      String emailReplyTo = getHeaderProperties(replyAddress,
+            "newsletter.default.replytoadress");
+      String nameReplyTo = getHeaderProperties(replyName,
+            "newsletter.default.replyto");
 
-      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<" + nameReplyTo + ">" + emailReplyTo);
+      log.debug("set header property:<" + nameFrom + ">" + emailFrom + "<"
+            + nameReplyTo + ">" + emailReplyTo);
 
       InternetAddress senderAddress = new InternetAddress(emailFrom);
       senderAddress.setPersonal(nameFrom);
@@ -98,8 +188,7 @@ public class NewsletterPublisher {
 
       InternetAddress replyToAddress = new InternetAddress(emailReplyTo);
       replyToAddress.setPersonal(nameReplyTo);
-      message.setReplyTo(new InternetAddress[]{replyToAddress});
-
+      message.setReplyTo(new InternetAddress[] { replyToAddress });
 
    }
 
@@ -110,11 +199,13 @@ public class NewsletterPublisher {
       message.setSentDate(new Date());
    }
 
-   private void setTitle(Message message, String title) throws MessagingException {
+   private void setTitle(Message message, String title)
+         throws MessagingException {
       message.setSubject(title);
    }
 
-   private void setRecipient(Message message, String email) throws MessagingException {
+   private void setRecipient(Message message, String email)
+         throws MessagingException {
       InternetAddress toAddress = new InternetAddress(email);
       message.setRecipient(MimeMessage.RecipientType.TO, toAddress);
    }
@@ -123,13 +214,15 @@ public class NewsletterPublisher {
       if (StringUtils.isBlank(property)) {
          property = PropertiesUtil.getProperty(defaultKey);
 
-         log.debug("get property:" + defaultKey + " from system property got:" + property);
+         log.debug("get property:" + defaultKey + " from system property got:"
+               + property);
       }
 
       if (StringUtils.isBlank(property)) {
          property = "newslettermodule@cmscontainer.org";
 
-         log.debug("get property:" + defaultKey + " from system property failed use default:" + property);
+         log.debug("get property:" + defaultKey
+               + " from system property failed use default:" + property);
       }
 
       return property;
@@ -146,8 +239,11 @@ public class NewsletterPublisher {
          Context initCtx = new InitialContext();
          Context envCtx = (Context) initCtx.lookup(context);
          session = (javax.mail.Session) envCtx.lookup(datasource);
-      } catch (NamingException e) {
-         log.fatal("Configured dataSource '" + getParameter("datasource") + "' of context '" + getParameter("context") + "' is not a Session ");
+      } 
+      catch (NamingException e) {
+         log.fatal("Configured dataSource '" + getParameter("datasource")
+               + "' of context '" + getParameter("context")
+               + "' is not a Session ");
       }
       return session;
    }
@@ -155,14 +251,16 @@ public class NewsletterPublisher {
    private static String getParameter(String name) {
       Module sendmailModule = Module.getModule("sendmail");
       if (sendmailModule == null) {
-         log.fatal("Sendmail module not installed which is required for newsletter generation");
+         log
+               .fatal("Sendmail module not installed which is required for newsletter generation");
          return null;
       }
 
       String parameter = sendmailModule.getInitParameter(name);
       if (parameter == null) {
          parameter = "java:comp/env";
-         log.warn("The property " + parameter + " is missing, taking default " + parameter);
+         log.warn("The property " + parameter + " is missing, taking default "
+               + parameter);
       }
       return parameter;
    }
@@ -186,5 +284,61 @@ public class NewsletterPublisher {
       }
       return ps;
 
+   }
+
+   public class ByteArrayDataSource implements DataSource {
+      private byte[] data; // data
+      private String type; // content-type
+
+      /* Create a DataSource from an input stream */
+      public ByteArrayDataSource(InputStream is, String type) {
+         this.type = type;
+         try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            int ch;
+            while ((ch = is.read()) != -1)
+               os.write(ch);
+               data = os.toByteArray();
+         }
+         catch (IOException ioex) {
+         }
+      }
+
+      /* Create a DataSource from a byte array */
+      public ByteArrayDataSource(byte[] data, String type) {
+         this.data = data;
+         this.type = type;
+      }
+
+      /* Create a DataSource from a String */
+      public ByteArrayDataSource(String data, String type) {
+         try {
+            this.data = data.getBytes("iso-8859-1");
+         } 
+         catch (UnsupportedEncodingException uex) {
+         }
+         this.type = type;
+      }
+      /**
+       * Return an InputStream for the data. Note - a new stream must be
+       * returned each time.
+       */
+      public InputStream getInputStream() throws IOException {
+         if (data == null)
+            throw new IOException("no data");
+         return new ByteArrayInputStream(data);
+      }
+
+      public OutputStream getOutputStream() throws IOException {
+         throw new IOException("cannot do this");
+      }
+
+      public String getContentType() {
+         return type;
+      }
+
+      public String getName() {
+         return "dummy";
+      }
    }
 }
