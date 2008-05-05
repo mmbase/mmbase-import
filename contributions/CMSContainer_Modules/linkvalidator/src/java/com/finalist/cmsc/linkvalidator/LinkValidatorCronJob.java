@@ -10,14 +10,18 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.mmbase.applications.crontab.CronEntry;
 import org.mmbase.applications.crontab.CronJob;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.HugeNodeListIterator;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 public class LinkValidatorCronJob implements CronJob {
 
+    private static final String URL_MANAGER = "urls";
+    private static final String URL_FIELD = "url";
+    private static final String VALID_FIELD = "valid";
+    
    private static final int TIMEOUT = 15000;
    private static Logger log = Logging.getLoggerInstance(LinkValidatorCronJob.class.getName());
 
@@ -38,16 +42,18 @@ public class LinkValidatorCronJob implements CronJob {
 
 
    private void checkExternalLinks() {
-      log.info("LinkValidation thread started [freek]");
+        log.info("LinkValidation thread started");
 
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
-      NodeList linkElements = cloud.getNodeManager("urls").getList("", "url", null);
+      NodeQuery urlQuery = cloud.getNodeManager(URL_MANAGER).createQuery();
+      SearchUtil.addSortOrder(urlQuery, urlQuery.getNodeManager(),URL_FIELD, "UP");
+      HugeNodeListIterator iterator = new HugeNodeListIterator(urlQuery);
 
       Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
-      for (int i = 0; i < linkElements.size(); i++) {
-         Node linkNode = linkElements.getNode(i);
-         String url = linkNode.getStringValue("url");
+      while (iterator.hasNext()) {
+         Node linkNode = iterator.nextNode();
+         String url = linkNode.getStringValue(URL_FIELD);
          boolean valid;
          if (url.startsWith("#") || url.startsWith("mailto:")) {
             valid = true;
@@ -56,9 +62,12 @@ public class LinkValidatorCronJob implements CronJob {
             valid = isValid(url);
          }
          log.debug("Found url: [" + url + "] (" + valid + ")");
-         linkNode.setStringValue("valid", valid ? "1" : "0");
-         linkNode.commit();
+         if (linkNode.getBooleanValue(VALID_FIELD) != valid) {
+             linkNode.setBooleanValue(VALID_FIELD, valid);
+             linkNode.commit();
+         }
       }
+      log.info("LinkValidation thread done");
    }
 
 
