@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 
 public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
@@ -99,6 +100,37 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
       return relatedNewsletters.get(0).getNumber();
    }
+
+   public List<Publication> getAllPublications() {
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(cloud.getNodeManager("newsletterpublication"));
+      query.setNodeStep(step);
+      NodeList list = query.getList();
+      return list;
+   }
+
+   public List<Publication> getPublicationsByNewsletter(int id, Publication.STATUS status) {
+       Node newsletterNode = cloud.getNode(id);
+       List<Node> publicationNodes = newsletterNode.getRelatedNodes("newsletterpublication");
+
+       Set<Publication> publications = new HashSet<Publication>();
+
+       for(Node publicationNode:publicationNodes){
+          if(null==status||status.toString().equals(publicationNode.getStringValue("status"))){
+             publications.add(convertFromNode(publicationNode));
+          }
+       }
+
+      log.debug(String.format("Get %s publications of newsletter %s in %s status",publications.size(),id,status));
+      return new ArrayList(publications);
+    }
+
+   private Publication convertFromNode(Node node){
+      Publication publication = new Publication();
+      publication.setId(node.getNumber());
+      return publication;
+   }
+
 
    protected String getNewsletterPath(Node newsletterPublicationNode) {
       return NavigationUtil.getPathToRootString(newsletterPublicationNode, true);

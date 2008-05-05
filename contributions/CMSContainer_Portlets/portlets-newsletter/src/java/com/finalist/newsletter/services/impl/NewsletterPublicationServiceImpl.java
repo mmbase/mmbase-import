@@ -1,22 +1,19 @@
 package com.finalist.newsletter.services.impl;
 
+import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
+import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Publication.STATUS;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.publisher.NewsletterPublisher;
 import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.portlets.newsletter.NewsletterContentPortlet;
-import com.finalist.cmsc.services.community.person.Person;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.bridge.Node;
 
 import java.util.List;
 import java.util.Set;
@@ -94,6 +91,18 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
 
       statisticCAO.logPubliction(publicationId, subscriptions.size());
       publicationCAO.setStatus(publicationId, STATUS.DELIVERED);
+   }
+
+   public int countAllPublications() {
+      return publicationCAO.getAllPublications().size();
+   }
+
+   public int countPublicationByNewsletter(int id) {
+      return publicationCAO.getPublicationsByNewsletter(id, null).size();
+   }
+
+   public int countSentPublications(int id) {
+      return publicationCAO.getPublicationsByNewsletter(id, STATUS.DELIVERED).size();
    }
 
    public void deliver(int publicationId, String email, String mimeType) {

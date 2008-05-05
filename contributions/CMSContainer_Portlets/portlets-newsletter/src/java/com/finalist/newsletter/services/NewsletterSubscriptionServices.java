@@ -50,4 +50,12 @@ public interface NewsletterSubscriptionServices {
    public Subscription getSubscription(String sId);
 
    public List<Subscription> getActiveSubscription(int userId);
+
+   public int countAllSubscriptions();
+
+   public int countSubscriptionByNewsletter(int id);
+
+   public List<Subscription> getAllSubscription();
+
+   public List<Subscription> getSubscriptionsByNewsletterId(int i);
 }

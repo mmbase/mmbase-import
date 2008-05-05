@@ -13,7 +13,32 @@
             http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
+
+   <!-- Cloud provider -->
+   <bean name="cloudProviderBean" class="com.finalist.newsletter.cao.CloudProviderBean"/>
+   <bean id="cloud" factory-bean="cloudProviderBean" factory-method="getCloud" lazy-init="true"/>
+
+   <!-- Cloud Access Ojbect -->
+   <bean name="subscriptionCAO" class="com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl" lazy-init="true">
+      <property name="cloud" ref="cloud"/>
+   </bean>
+   <bean name="newsletterCAO" class="com.finalist.newsletter.cao.impl.NewsletterCAOImpl" lazy-init="true">
+      <property name="cloud" ref="cloud"/>
+   </bean>
+
    <!-- Services -->
-   <bean name="userDetailsService" class="com.finalist.cmsc.services.community.security.UserDetailsHibernateService"/>
+   <bean id="newsletterSubscriptionServices"
+         class="com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl" lazy-init="true">
+      <property name="subscriptinCAO" ref="subscriptionCAO"/>
+      <property name="newsletterCAO" ref="newsletterCAO"/>
+      <property name="newsletterService" ref="newsletterServices"/>
+   </bean>
+   
+   <bean id="newsletterServices"
+         class="com.finalist.newsletter.services.impl.NewsletterServiceImpl" lazy-init="true">
+      <property name="newsletterCAO" ref="newsletterCAO"/>
+   </bean>
+
+   <!-- Services Holder-->
    <bean id="contextHolder" class="com.finalist.newsletter.ApplicationContextFactory"/>
 </beans>
