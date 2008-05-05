@@ -80,7 +80,8 @@ public class WordHtmlCleaner {
                xmlVersion += data[i]; // nog even het afsluitende haakje
                                        // toevoegen
                continue;
-            } else if (data[i + 1] == '!') {
+            }
+            else if (data[i + 1] == '!') {
                while (data[i] != '>') {
                   docType += data[i];
                   i++;
@@ -129,7 +130,8 @@ public class WordHtmlCleaner {
 //            xmlStr = shrinkBR(xmlStr);
             log.debug("new value : " + xmlStr);
             return xmlStr;
-         } catch (IllegalStateException e) {
+         }
+         catch (IllegalStateException e) {
             log.error("Clean html failed");
             log.error(Logging.stackTrace(e));
          }
@@ -145,8 +147,7 @@ public class WordHtmlCleaner {
 
    private static String niceHtml(String xmlStr) {
       try {
-         xmlbs.XMLBS xmlbs = new xmlbs.XMLBS("<body>" + xmlStr
-               + "</body>", xmlbsDTD);
+         xmlbs.XMLBS xmlbs = new xmlbs.XMLBS("<body>" + xmlStr + "</body>", xmlbsDTD);
          xmlbs.setRemoveEmptyTags(false); // Uitgezet omdat de <td/><td/> onterecht werd gemerged
          xmlbs.process();
          ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -160,14 +161,16 @@ public class WordHtmlCleaner {
          if (i != -1) {
             xmlStr = xmlStr.substring(0, i);
          }
-      } catch (Throwable t) {
+      }
+      catch (Throwable t) {
          log.error(Logging.stackTrace(t));
       }
       return xmlStr;
    }
 
    /**
-    * CMSC-416: FP: Using the DOTALL pattern matcher parameter, will solve problems with linebreaks in hidden if blocks
+    * CMSC-416: FP: Using the DOTALL pattern matcher parameter, will solve
+    * problems with linebreaks in hidden if blocks
     */
    private static String removeHtmlIfComments(String text) {
       Pattern pattern = Pattern.compile("<!--\\[if.*?endif]-->",Pattern.DOTALL);
@@ -192,31 +195,29 @@ public class WordHtmlCleaner {
    }
 
    private static String replaceParagraph(String text) {
-	  // remove <p></p> (empty paragraphs)
-// CMSC-421: FP: Commented this out, because this is eating whitespace!
-//      text = text.replaceAll("<\\s{0,1}[pP]{1}\\s{0,1}></\\s{0,1}[pP]{1}\\s{0,1}>", "");
-      
-      // remove all remaining <p>
+       // see CMSC-421 when you are going to change this code
+       
+      // remove <p></p> (empty paragraphs)
+      text = text.replaceAll("<[pP]{1}>\\s*</[pP]{1}>", ""); 
+
+      // remove all remaining <p> start tags
       text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
-      
-      // replace all remaining </p> with a <br><br>
-// CMSC-421: FP: Changed this to two newlines, because it was eating whitespace 
-	   text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br/><br/>");
-         
+      // replace all remaining </p> closing tags with a <br><br>
+      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br/><br/>");
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
    }
 
    private static String replaceHeaders(String text) {
-	      // remove the starting header tags ( <h1> till <h7>)
-	      text = text.replaceAll("<\\s*[hH]{1}[1-7]{1}\\s*.*?>", "<strong>");
-	      // replace all remaining </p> with a <br><br>
-	      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong><br />");
-	      // remove all <br> at the end
-	      text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
-	      return text;
-	   }
+      // remove the starting header tags ( <h1> till <h7>)
+      text = text.replaceAll("<\\s*[hH]{1}[1-7]{1}\\s*.*?>", "<strong>");
+      // replace all remaining ending header tags ( </h1> till </h7>)
+      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong><br />");
+      // remove all <br> at the end
+      text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
+      return text;
+    }
 
     /**
     * Fixes the anchors tags for Wordpad: <U><FONT color=#0000ff> ... </U></FONT>
@@ -233,11 +234,11 @@ public class WordHtmlCleaner {
          xml += xmlStr.substring(end, begin);
          end = nextResult(xmlStr, "</U></FONT>", begin);
          if (end > -1) {
-            String link = xmlStr.substring(begin
-                  + "<U><FONT color=#0000ff>".length(), end);
+            String link = xmlStr.substring(begin + "<U><FONT color=#0000ff>".length(), end);
             xml += "<a href=\"" + stripHtml(link) + "\">" + link + "</a>";
             end += "</U></FONT>".length();
-         } else {
+         }
+         else {
             xml += "<U><FONT color=#0000ff>";
             end = begin + "<U><FONT color=#0000ff>".length();
          }
@@ -251,8 +252,9 @@ public class WordHtmlCleaner {
 
    
    /**
-    * CMSC-417: FWP, this method fixes the problem with the 'ugly' lists sometimes pasted from word,
-    * these lists are created by adding spaces and tabs before and behind the dots of the lists.
+    * CMSC-417: FWP, this method fixes the problem with the 'ugly' lists
+    * sometimes pasted from word, these lists are created by adding spaces and
+    * tabs before and behind the dots of the lists.
     */
    private static String fixBadLists(String text) {
       text = text.replaceAll("[งท]", "");
@@ -285,7 +287,8 @@ public class WordHtmlCleaner {
          if (end > -1) {
             end += "</li>".length();
             xml += xmlStr.substring(begin, end);
-         } else {
+         }
+         else {
             end = nextResult(xmlStr, "<li>", begin + "<li>".length());
             if (end == -1) {
                end = xmlStr.length();
@@ -302,13 +305,13 @@ public class WordHtmlCleaner {
             if (end <= endList) {
                xml += xmlStr.substring(begin, end) + "</li>";
                end -= 1;
-            } else {
+            }
+            else {
                if (end > endList) {
                   xml += xmlStr.substring(begin, endList) + "</li>";
                   end = endList;
                   if (endList != xmlStr.length()) {
-                     xml += xmlStr.substring(endList, (endList + "</ol>"
-                           .length()));
+                     xml += xmlStr.substring(endList, (endList + "</ol>".length()));
                      end += "</ol>".length();
                   }
                }
@@ -345,12 +348,14 @@ public class WordHtmlCleaner {
                hrefBegin += "href=\"".length();
                int hrefEnd = atag.indexOf("\"", hrefBegin);
                xml += atag + atag.substring(hrefBegin, hrefEnd) + "</a>";
-            } else if (nameBegin > -1) {
+            }
+            else if (nameBegin > -1) {
                xml += atag + "</a>";
             }
 
             end += "</a>".length();
-         } else {
+         }
+         else {
             end += "</a>".length();
             xml += xmlStr.substring(begin, end);
          }
@@ -375,7 +380,8 @@ public class WordHtmlCleaner {
             end = closinggt;
             xml += xmlStr.substring(begin, end) + "></a>";
             end += 2;
-         } else {
+         }
+         else {
             end = gt + 1;
             xml += xmlStr.substring(begin, end);
          }
@@ -400,9 +406,9 @@ public class WordHtmlCleaner {
    }
 
    private static String removeEmptyFonts(String text) {
-	   // do it twice for nested empty font tags 
-	   text = text.replaceAll("<font[a-zA-Z_0-9\"'= ]*>((&nbsp;)|())</font>", "");
-	   return text.replaceAll("<font[a-zA-Z_0-9\"'= ]*>((&nbsp;)|())</font>", "");
+      // do it twice for nested empty font tags 
+      text = text.replaceAll("<font[a-zA-Z_0-9\"'= ]*>((&nbsp;)|())</font>", "");
+      return text.replaceAll("<font[a-zA-Z_0-9\"'= ]*>((&nbsp;)|())</font>", "");
    }
 
    private static String stripHtml(String text) {
