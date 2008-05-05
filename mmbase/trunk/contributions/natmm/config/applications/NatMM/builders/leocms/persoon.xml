@@ -258,7 +258,7 @@
          </editor>
          <db>
             <name xml:lang="nl">email</name>
-            <type key="false" notnull="false" size="64" state="persistent">STRING</type>
+            <type key="false" notnull="true" size="64" state="persistent">STRING</type>
          </db>
       </field>
       <field>
