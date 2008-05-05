@@ -496,6 +496,9 @@ public class SubscribeAction extends Action {
          emailMsg.append("\nBetreft: \n");
          emailMsg.append("Aanmelding " + thisEvent.getStringValue("titel") + ", " + (new DoubleDateNode(thisEvent)).getReadableValue() + "\n");
          
+         emailMsg.append("\nActiviteitnummer: " + thisEvent.getStringValue("number") + "\n");
+         emailMsg.append("Aanmeldingsnummer: " + thisSubscription.getStringValue("number") + "\n");
+         
          emailMsg.append("\nAanmelder: \n");
          emailMsg.append(thisParticipantName + "\n");
          emailMsg.append(thisParticipant.getStringValue("email") + "\n");         
