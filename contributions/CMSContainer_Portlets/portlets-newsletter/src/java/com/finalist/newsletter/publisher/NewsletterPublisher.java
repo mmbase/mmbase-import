@@ -10,7 +10,6 @@ import java.util.Date;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -94,10 +93,11 @@ public class NewsletterPublisher {
       Multipart multipart = new MimeMultipart();
       BodyPart mdp = new MimeBodyPart();
       try {
-         mdp.setContent(getBody(publication, subscription), "text/html");
+         mdp.setContent(getBody(publication, subscription), subscription.getMimeType());
          multipart.addBodyPart(mdp);
-      } catch (MessagingException e1) {
-         e1.printStackTrace();
+      } 
+      catch (MessagingException e) {
+         log.error(e);
       }
 
       setAttachment(multipart, attachmentNodes, MimeType.attachment);
@@ -126,7 +126,8 @@ public class NewsletterPublisher {
                if (mimeType.compareTo(MimeType.image) == 0) {
                   bads = new ByteArrayDataSource(bytes, "image/"
                         + node.getStringValue("itype"));
-               } else if (mimeType.compareTo(MimeType.attachment) == 0) {
+               } 
+               else if (mimeType.compareTo(MimeType.attachment) == 0) {
                   bads = new ByteArrayDataSource(bytes, node
                         .getStringValue("mimetype"));
                }
@@ -153,7 +154,8 @@ public class NewsletterPublisher {
          if (publication.getNewsletter().getSendempty()) {
             content = publication.getNewsletter().getTxtempty();
          }
-      } else {
+      } 
+      else {
          content = NewsletterGenerator
                .generate(url, subscription.getMimeType());
       }
@@ -274,11 +276,14 @@ public class NewsletterPublisher {
       if (StringUtils.isNotEmpty(personaliser)) {
          try {
             ps = (Personaliser) Class.forName(personaliser).newInstance();
-         } catch (ClassNotFoundException e) {
+         } 
+         catch (ClassNotFoundException e) {
             log.error("No specified personaliser found:" + personaliser, e);
-         } catch (IllegalAccessException e) {
+         }
+         catch (IllegalAccessException e) {
             log.error(e);
-         } catch (InstantiationException e) {
+         } 
+         catch (InstantiationException e) {
             log.error(e);
          }
       }
