@@ -1,40 +1,73 @@
 package com.finalist.newsletter.cao.impl;
 
+import com.finalist.newsletter.cao.NewsletterCAO;
+import com.finalist.newsletter.cao.AbstractCAO;
+import com.finalist.newsletter.cao.util.NlUtil;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Term;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.AggregatedField;
+import org.mmbase.storage.search.Step;
+import org.mmbase.storage.search.ResultBuilder;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.implementation.BasicAggregatedField;
+import org.mmbase.storage.search.implementation.BasicSearchQuery;
+import org.mmbase.storage.search.implementation.database.BasicQueryHandler;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.core.CoreField;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Iterator;
 import java.util.List;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.storage.search.Step;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-import com.finalist.newsletter.cao.util.NlUtil;
-
-import com.finalist.newsletter.cao.NewsletterCAO;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.domain.Term;
-
-public class NewsletterCAOImpl implements NewsletterCAO {
+public class NewsletterCAOImpl extends AbstractCAO implements NewsletterCAO {
    private static Logger log = Logging.getLoggerInstance(NewsletterCAOImpl.class.getName());
-   private Cloud cloud;
 
-	public NewsletterCAOImpl() {
-	}
+   public NewsletterCAOImpl() {
+   }
 
-	public NewsletterCAOImpl(Cloud cloud) {
-		this.cloud = cloud;
-	}
+   public NewsletterCAOImpl(Cloud cloud) {
+      this.cloud = cloud;
+   }
 
-	public List<Newsletter> getAllNewsletters() {
-		NodeQuery query = cloud.createNodeQuery();
-		Step step = query.addStep(cloud.getNodeManager("newsletter"));
-		query.setNodeStep(step);
-		NodeList list = query.getList();
-		return NlUtil.convertFromNodeList(list);
-	}
+   public List<Term> getALLTerm() {
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(cloud.getNodeManager("term"));
+      query.setNodeStep(step);
+      NodeList list = query.getList();
+      return list;
+   }
+
+   public List<Newsletter> getNewsletterByConstraint(String property, String constraintType, String value) {
+      NodeQuery query = cloud.createNodeQuery();
+      NodeManager nodeManager = cloud.getNodeManager("newsletter");
+      Step step = query.addStep(nodeManager);
+      query.setNodeStep(step);
+      if (StringUtils.isNotBlank(property)) {
+         if (constraintType.equals("like")) {
+            SearchUtil.addLikeConstraint(query, nodeManager.getField(property), value);
+         }
+      }
+      NodeList list = query.getList();
+      return NlUtil.convertFromNodeList(list);
+   }
+
+   public int getNewsletterIdBySubscription(int id) {
+      log.debug("Get newsletter by subsription "+id);
+      Node subscriptionNode = cloud.getNode(id);
+      List<Node> nodes = subscriptionNode.getRelatedNodes("newsletter");
+
+      if(nodes.size()>0){
+         return nodes.get(0).getNumber();
+      }else{
+         return -1;
+      }
+   }
 
    public Newsletter getNewsletterById(int id) {
       Node newsletterNode = cloud.getNode(id);

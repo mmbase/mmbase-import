@@ -13,7 +13,7 @@
 							<mm:haspage page="/editors/modules/customermenu.jsp">
 								<jsp:include page="/editors/modules/customermenu.jsp"/>
 							</mm:haspage>
-							
+
 							<mm:haspage page="/editors/resources/banners_and_positions.jsp">
 								<li class="banners"> <a href="<mm:url page="/editors/resources/banners_and_positions.jsp"/>" target="rightpane">
 									<fmt:message key="modules.banners" />
@@ -36,11 +36,12 @@
 									<fmt:message key="modules.versioning" />
 									</a> </li>
 							</mm:haspage>
-							<mm:haspage page="/editors/newsletter/module/report_overview.jsp">
-								<li class="newsletter"><a href="<mm:url page="../newsletter/module/ReportOverview.do" />" target="rightpane">
-									<fmt:message key="modules.newsletter" />
-									</a> </li>
-							</mm:haspage>
+                     <mm:haspage page="/editors/newsletter">
+                        <li class="newsletter">
+                           <c:url var="newsletterUrl" value="/editors/newsletter/SubscriptionManagement.do"/>
+                           <a href="${newsletterUrl}" target="rightpane"><fmt:message key="modules.newsletter"/></a>
+                        </li>
+                     </mm:haspage>
                      <mm:haspage page="/editors/community">
                         <li class="users">
                            <c:url var="communityUrl" value="/editors/community/index.jsp"/>

@@ -78,4 +78,22 @@ public class Publication {
    public void setTitle(String title) {
       this.title = title;
    }
+
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+
+      Publication that = (Publication) o;
+
+      return id == that.id;
+
+   }
+
+   public int hashCode() {
+      return this.id;
+   }
 }

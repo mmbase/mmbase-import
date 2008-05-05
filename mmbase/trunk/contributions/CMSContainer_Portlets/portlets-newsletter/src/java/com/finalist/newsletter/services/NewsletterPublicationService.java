@@ -16,4 +16,10 @@ public interface NewsletterPublicationService {
    public void setStatus(int publciationId, Publication.STATUS status);
 
    public void deliver(int publidcation);
+
+   public int countAllPublications();
+
+   public int countPublicationByNewsletter(int id);
+
+   public int countSentPublications(int id);
 }

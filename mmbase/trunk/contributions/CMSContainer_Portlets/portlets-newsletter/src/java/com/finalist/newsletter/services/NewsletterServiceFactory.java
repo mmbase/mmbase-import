@@ -26,16 +26,16 @@ import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 public class NewsletterServiceFactory {
 	
 	private static CloudProvider cloudProvider = CloudProviderFactory.getCloudProvider();
-	
-	public static NewsletterSubscriptionServices getNewsletterSubscriptionServices(){
-		NewsletterSubscriptionCAO subscriptionCAO = new NewsletterSubscriptionCAOImpl(cloudProvider.getCloud());
-		NewsletterSubscriptionServicesImpl newsletterSubscriptionServices = new NewsletterSubscriptionServicesImpl();
-		newsletterSubscriptionServices.setCao(subscriptionCAO); 
-		NewsletterCAO newsletterCAO = new NewsletterCAOImpl(cloudProvider.getCloud());
-	    newsletterSubscriptionServices.setNewsletterCao(newsletterCAO);
-		return newsletterSubscriptionServices;
-		
-	}
+
+   public static NewsletterSubscriptionServices getNewsletterSubscriptionServices() {
+      NewsletterSubscriptionCAO subscriptionCAO = new NewsletterSubscriptionCAOImpl(cloudProvider.getCloud());
+      NewsletterSubscriptionServicesImpl newsletterSubscriptionServices = new NewsletterSubscriptionServicesImpl();
+      newsletterSubscriptionServices.setSubscriptinCAO(subscriptionCAO);
+      NewsletterCAO newsletterCAO = new NewsletterCAOImpl(cloudProvider.getCloud());
+      newsletterSubscriptionServices.setNewsletterCAO(newsletterCAO);
+      return newsletterSubscriptionServices;
+
+   }
 	
 	 public static NewsletterPublicationService getNewsletterPublicationService(){
 	      
