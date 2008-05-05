@@ -1,5 +1,23 @@
 package com.finalist.newsletter.cao.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.SearchUtil;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.newsletter.NewsletterSendFailException;
@@ -8,6 +26,7 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.util.POConvertUtils;
+
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
@@ -21,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+
 
 
 public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
@@ -149,5 +169,22 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
          hostUrl += "/";
       }
       return hostUrl;
+   }
+   
+   public Set<Term> getTermsByPublication(int publicationId) {
+      Node newsletterPublicationNode = cloud.getNode(publicationId);
+      List<Node> relatedNewsletters = newsletterPublicationNode.getRelatedNodes("newsletter");
+      List<Node> terms = relatedNewsletters.get(0).getRelatedNodes("term");
+      Iterator termsIt = terms.iterator();
+      Set<Term> termSet = new HashSet<Term>();
+      for (int i = 0; i < terms.size(); i++) {
+         Term term = new Term();
+         Node termNode = (Node) termsIt.next();
+         term.setId(termNode.getNumber());
+         term.setName(termNode.getStringValue("name"));
+         term.setSubscription(false);
+         termSet.add(term);
+      }
+      return termSet;
    }
 }

@@ -17,6 +17,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.RelationList;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Step;
@@ -64,10 +65,10 @@ public abstract class NewsletterUtil {
 
    public static int countThemes() {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList themeList = SearchUtil.findNodeList(cloud, "newslettertheme");
-      if (themeList != null) {
+      NodeList termList = SearchUtil.findNodeList(cloud, "newslettertheme");
+      if (termList != null) {
          int newsletters = countNewsletters();
-         return (0 - newsletters + themeList.size());
+         return (0 - newsletters + termList.size());
       }
       return (0);
    }
@@ -429,11 +430,20 @@ public abstract class NewsletterUtil {
 
          List<Node> relatedportlets = publicationNode.getRelatedNodes("portlet");
 
+         String termIds = "";
+         for(Term term :terms) {
+            termIds += term.getId()+",";
+         }
+         if(termIds.endsWith(",")) {
+            termIds = termIds.substring(0, termIds.length()-2);
+         }
          for (Node portlet : relatedportlets) {
             List<Node> portletdefNodes = portlet.getRelatedNodes("portletdefinition");
             String portletDefinition = portletdefNodes.get(0).getStringValue("definition");
             if (portletDefinition.equals(NewsletterContentPortlet.DEFINITION)) {
-//               todo: add real logic
+               RelationList relations = portlet.getRelations("portletrel", publicationNode.getNodeManager());
+               String name =  relations.getNode(0).getStringValue("name");
+               url += "/_rp_".concat(name).concat("_").concat(NewsletterContentPortlet.NEWSLETTER_TERMS_PARAM).concat("/1_").concat(termIds);
             }
          }
       }
