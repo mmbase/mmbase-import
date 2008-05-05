@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.finalist.cmsc.services.community.NewsletterCommunication;
+import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
+import org.mmbase.bridge.Node;
 
 public abstract class NewsletterSubscriptionUtil {
 
@@ -260,6 +263,16 @@ public abstract class NewsletterSubscriptionUtil {
    public static List<String> getAllSubscribers(int newsletterNumber) {
       List<String> subscribers = null;
       return (subscribers);
+   }
+
+    public static Subscription convertFromNode(Node node) {
+      Subscription subscription = new Subscription();
+      subscription.setId(node.getIntValue("number"));
+      subscription.setMimeType(node.getStringValue("format"));
+      subscription.setStatus(Subscription.STATUS.valueOf(node.getStringValue("status")));
+      subscription.setSubscriber(CommunityModuleAdapter.getUserById(node.getStringValue("subscriber")));
+      subscription.setSubscriberId(node.getStringValue("subscriber"));
+      return subscription;
    }
 
 }

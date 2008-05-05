@@ -1,37 +1,25 @@
 package com.finalist.newsletter.cao.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
+import com.finalist.newsletter.cao.AbstractCAO;
+import com.finalist.newsletter.domain.Newsletter;
+import com.finalist.newsletter.domain.Subscription;
+import static com.finalist.newsletter.domain.Subscription.STATUS;
+import com.finalist.newsletter.domain.Term;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Query;
-import org.mmbase.bridge.RelationManager;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
-import org.mmbase.storage.search.RelationStep;
 import org.mmbase.storage.search.Step;
 
-import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
-import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.domain.Newsletter;
-import com.finalist.newsletter.services.CommunityModuleAdapter;
-import static com.finalist.newsletter.domain.Subscription.STATUS;
+import static com.finalist.newsletter.util.NewsletterSubscriptionUtil.*;
+import java.util.*;
 
-public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO {
+public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements NewsletterSubscriptionCAO {
 
    private static Log log = LogFactory.getLog(NewsletterSubscriptionCAOImpl.class);
 
-   private Cloud cloud;
 
    public NewsletterSubscriptionCAOImpl() {
    }
@@ -198,15 +186,7 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
       return subscribers;
    }
 
-   private Subscription convertFromNode(Node node) {
-      Subscription subscription = new Subscription();
-      subscription.setId(node.getIntValue("number"));
-      subscription.setMimeType(node.getStringValue("format"));
-      subscription.setStatus(Subscription.STATUS.valueOf(node.getStringValue("status")));
-      subscription.setSubscriber(CommunityModuleAdapter.getUserById(node.getStringValue("subscriber")));
-      subscription.setSubscriberId(node.getStringValue("subscriber"));
-      return subscription;
-   }
+  
 
    public void createSubscription(int userId, int newsletterId) {
       log.debug("Create subscription user:" + userId + " newsletter:" + newsletterId);
@@ -261,5 +241,15 @@ public class NewsletterSubscriptionCAOImpl implements NewsletterSubscriptionCAO 
       }
 
       return subs;
+   }
+
+   public List<Node> getAllSubscriptions() {
+
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(cloud.getNodeManager("subscriptionrecord"));
+      query.setNodeStep(step);
+      List<Node> list = query.getList();
+
+      return list;
    }
 }
