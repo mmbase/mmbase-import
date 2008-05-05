@@ -20,7 +20,8 @@
 <mm:import externid="action"/>
 <mm:present referid="action">
 	<mm:write referid="action" jspvar="action" vartype="String">
-	<%= new SqlExecutor().execute(new CreationChannelDuplication(action)) %>
+	<%= new SqlExecutor().execute(new SingleRelationDuplication("creationrel", "DESTINATION", action)) %>
+	<%= new SqlExecutor().execute(new SingleRelationDuplication("ownerrel", "DESTINATION", action)) %>
 	</mm:write>
 </mm:present>
 
