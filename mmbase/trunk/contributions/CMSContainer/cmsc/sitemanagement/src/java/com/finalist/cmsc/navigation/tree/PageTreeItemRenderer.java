@@ -40,11 +40,6 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
 
           renderer.addParentOptions(element, id);
           
-          if (SecurityUtil.isWebmaster(role)
-                || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
-             element.addOption(renderer.createTreeOption("delete.png", "site.page.remove", "PageDelete.do?number=" + id));
-          }
-
           if (NavigationUtil.getChildCount(parentNode) >= 2) {
              element.addOption(renderer.createTreeOption("reorder.png", "site.page.reorder", "reorder.jsp?parent=" + id));
           }
@@ -55,6 +50,11 @@ public class PageTreeItemRenderer implements NavigationTreeItemRenderer {
              element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
           }
 
+          if (SecurityUtil.isWebmaster(role)
+                || (model.getChildCount(parentNode) == 0 && !Publish.isPublished(parentNode))) {
+             element.addOption(renderer.createTreeOption("delete.png", "site.page.remove", "PageDelete.do?number=" + id));
+          }
+          
           if (SecurityUtil.isWebmaster(role) && ModuleUtil.checkFeature(FEATURE_WORKFLOW)) {
              element.addOption(renderer.createTreeOption("publish.png", "site.page.publish",
                    "../workflow/publish.jsp?number=" + id));
