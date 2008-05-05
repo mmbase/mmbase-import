@@ -83,7 +83,7 @@ public abstract class NewsletterPublicationUtil {
             publicationNode.setStringValue("status", Publication.STATUS.INITIAL.toString());
             publicationNode.commit();
 
-           // copyTermsAndContent(newsletterNode, publicationNode, copyContent);
+            copyTermsAndContent(newsletterNode, publicationNode, copyContent);
             copyOtherRelations(newsletterNode, publicationNode);
             NavigationUtil.appendChild(newsletterNode, publicationNode);
             Node layoutNode = PagesUtil.getLayout(publicationNode);
