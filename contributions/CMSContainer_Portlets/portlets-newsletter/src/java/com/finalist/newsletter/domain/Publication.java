@@ -53,10 +53,14 @@ public class Publication {
    }
 
    public int getNewsletterId() {
+      if(null!=this.newsletter){
+         return newsletter.getId();
+      }
       return newsletterId;
    }
 
    public void setNewsletterId(int newsletterId) {
+
       this.newsletterId = newsletterId;
    }
 

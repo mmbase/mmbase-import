@@ -76,6 +76,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    public void deliver(int publicationId) {
 
       int newsletterId = publicationCAO.getNewsletterId(publicationId);
+      
       List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
       log.debug("deliver publication " + publicationId + " which has " + subscriptions.size() + " subscriptions");
 
@@ -109,6 +110,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       Publication publication = publicationCAO.getPublication(publicationId);
       Subscription subscription = new Subscription();
       subscription.setEmail(email);
+      subscription.setTerms(publicationCAO.getTermsByPublication(publicationId));
       subscription.setMimeType(mimeType);
       publisher.deliver(publication, subscription);
    }

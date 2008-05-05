@@ -32,11 +32,10 @@ public abstract class NewsletterPublicationUtil {
 
    private static void copyOtherRelations(Node newsletterNode, Node publicationNode) {
       PagesUtil.copyPageRelations(newsletterNode, publicationNode);
-      copyImageAndAttachment(newsletterNode, publicationNode);
+      copyImageAndAttachmentRelations(newsletterNode, publicationNode);
    }
-
    
-   private static void copyImageAndAttachment(Node newsletterNode, Node publicationNode) {
+   private static void copyImageAndAttachmentRelations(Node newsletterNode, Node publicationNode) {
       CloneUtil.cloneRelations(newsletterNode,publicationNode,"namedrel","images");
       CloneUtil.cloneRelations(newsletterNode,publicationNode,"posrel","attachments");
    }
@@ -83,7 +82,7 @@ public abstract class NewsletterPublicationUtil {
             publicationNode.setStringValue("status", Publication.STATUS.INITIAL.toString());
             publicationNode.commit();
 
-            copyTermsAndContent(newsletterNode, publicationNode, copyContent);
+            //copyTermsAndContent(newsletterNode, publicationNode, copyContent);
             copyOtherRelations(newsletterNode, publicationNode);
             NavigationUtil.appendChild(newsletterNode, publicationNode);
             Node layoutNode = PagesUtil.getLayout(publicationNode);

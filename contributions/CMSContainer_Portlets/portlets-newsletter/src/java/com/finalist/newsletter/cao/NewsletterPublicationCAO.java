@@ -20,4 +20,6 @@ public interface NewsletterPublicationCAO {
    public List<Publication> getAllPublications();
 
    public List<Publication> getPublicationsByNewsletter(int id, Publication.STATUS status);
+
+   public Set<Term> getTermsByPublication(int publicationId);
 }
