@@ -9,7 +9,10 @@
    </field> 
    <field name="omschrijving_de" ftype="html">
       <prompt>onderschrift</prompt>
-   </field> 
+   </field>
+   <field name="titel_eng">
+      <prompt>terugknop-URL na versturen (optioneel)</prompt>
+   </field>
    <field name="titel_fra">
       <prompt>feedback-titel na versturen</prompt>
    </field> 
