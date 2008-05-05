@@ -127,7 +127,18 @@
       		} else conf=true;
       		cancelClick=true;
       		return conf;
-         }            
+        }   
+        
+        function selectAllDates(field) {
+            for (i = 0; i < field.length; i++) {
+               if (field[i].checked) { 
+                  field[i].checked = false;
+               } else {
+                  field[i].checked = true;
+               }
+            }
+        } 
+                  
     </script>
 </head>
 <%
@@ -270,6 +281,7 @@ String evenementId = "";
      </mm:present>
      </div>
      <span class="notvalid"><html:errors bundle="LEOCMS" property="lijst" /></span><br>
+     <input type="button" value="Alles (de)selecteren" style="<%= buttonStyle %>" onclick="selectAllDates(document.forms[0].selectedDates);"/>
      <html:submit property="action" value="Activeer selectie" style="<%= buttonStyle %>"/>
      <html:submit property="action" value="Annuleer selectie" style="<%= buttonStyle %>"/>
      <mm:present referid="multidayfound">
