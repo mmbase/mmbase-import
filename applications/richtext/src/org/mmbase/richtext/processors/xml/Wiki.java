@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.8 2008-04-30 12:17:03 michiel Exp $
+ * @version $Id: Wiki.java,v 1.9 2008-05-05 14:07:36 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -54,7 +54,7 @@ class Wiki {
             if (! "".equals(relId)) {
                 String decorId = decorateId(id);
                 String decorRelId = decorateId(relId);
-                if (relId.equals(decorId) || relId.equals(decorRelId)) {
+                if (relId.equals(id) || decorRelId.equals(decorId)) {
                     log.debug(relId + "==" + decorId);
                     return relation;
                 } else {
