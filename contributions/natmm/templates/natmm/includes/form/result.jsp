@@ -18,6 +18,7 @@ if(referer!=null) {
 <%
    String okSendTo = "Uw bericht is verstuurd naar";
    String okLink = "Naar de homepage";
+   String formMessageHrefCustom = "";
    String okTitleDefault = "Bedankt voor uw bericht.";
    String okMessageDefault = "We zullen u zo spoedig mogelijk een reactie sturen.";
    String responseTextDefault = "E-mail verstuurd vanaf " + NatMMConfig.getLiveUrl() + " / pagina: ";
@@ -77,6 +78,10 @@ if(referer!=null) {
             boolean extraLineBreak = false;
             if(thisForm.getStringValue("titel_de")!=null&&thisForm.getStringValue("titel_de").equals("1")) {
                extraLineBreak = true;
+            }
+            
+            if(!thisForm.getStringValue("titel_eng").equals("")) {
+               formMessageHrefCustom = thisForm.getStringValue("titel_eng");
             }
             
             String responseText = "<b>" + responseTextDefault + pages_title + "</b><br>"
@@ -206,6 +211,12 @@ if(isValidAnswer)
    if(sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT)) {
       formMessageHref = "portal.jsp";
    }
+   
+   //Override the href is a custom href is set in the title_eng variable
+   if (!formMessageHrefCustom.equals("")) {
+      formMessageHref = formMessageHrefCustom;
+   }
+   
    String formMessageLinktext = okLink;
 
    for(int i = 0; i< 1; i++) {
@@ -260,6 +271,11 @@ if(isValidAnswer)
    String formMessageHref = "javascript:history.go(-1)";
    String formMessageLinktext = warningLink;
 
+   //Override the href is a custom href is set in the title_eng variable
+   if (!formMessageHrefCustom.equals("")) {
+      formMessageHref = formMessageHrefCustom;
+   }
+   
    %><%@include file="message.jsp" %><%
 }
 
