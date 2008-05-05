@@ -202,21 +202,23 @@ public class WordHtmlCleaner {
    }
 
 
+   /**
+    *  Replace <p> tags with <rr /> tags. This removes issues with <p> tags in <p> tags
+    *  1 We do not know if these fields are used in a template with surrounding <p> tags
+    *  2 HTML-editors do not enforce <p> tags around the contents. To make everything
+    *  look the same and xhtml just replace them.
+    *  3 Nested <p> tags have issues in several browsers.    
+    */
    private static String replaceParagraph(String text) {
+       // see CMSC-421 when you are going to change this code
+       
       // remove <p></p> (empty paragraphs)
-      // CMSC-421: FP: Commented this out, because this is eating whitespace!
-      // text =
-      // text.replaceAll("<\\s{0,1}[pP]{1}\\s{0,1}></\\s{0,1}[pP]{1}\\s{0,1}>",
-      // "");
+      text = text.replaceAll("<[pP]{1}>\\s*</[pP]{1}>", ""); 
 
-      // remove all remaining <p>
+      // remove all remaining <p> start tags
       text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
-
-      // replace all remaining </p> with a <br><br>
-      // CMSC-421: FP: Changed this to two newlines, because it was eating
-      // whitespace
+      // replace all remaining </p> closing tags with a <br><br>
       text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br/><br/>");
-
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
@@ -227,7 +229,7 @@ public class WordHtmlCleaner {
       // remove the starting header tags ( <h1> till <h7>)
       text = text.replaceAll("<\\s*[hH]{1}[1-7]{1}\\s*.*?>", "<strong>");
       // replace all remaining ending header tags ( </h1> till </h7>)
-      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong>>");
+      text = text.replaceAll("<\\s*/[hH]{1}[1-7]{1}\\s*.*?>", "</strong><br />");
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
