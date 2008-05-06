@@ -19,17 +19,6 @@ import com.finalist.newsletter.domain.Publication;
 
 public abstract class NewsletterPublicationUtil {
 
-   private static void copyContent(Node oldTermNode, Node newTermNode) {
-      RelationList contentList = oldTermNode.getRelations("newslettercontent");
-      if (contentList != null && contentList.size() > 0) {
-         for (int r = 0; r < contentList.size(); r++) {
-            Relation contentRelation = contentList.getRelation(r);
-            Node contentNode = contentRelation.getSource();
-            RelationUtil.createRelation(newTermNode, contentNode, "newslettercontent");
-         }
-      }
-   }
-
    private static void copyOtherRelations(Node newsletterNode, Node publicationNode) {
       PagesUtil.copyPageRelations(newsletterNode, publicationNode);
       copyImageAndAttachmentRelations(newsletterNode, publicationNode);
@@ -40,27 +29,6 @@ public abstract class NewsletterPublicationUtil {
       CloneUtil.cloneRelations(newsletterNode,publicationNode,"posrel","attachments");
    }
    
-   private static void copyTermsAndContent(Node newsletterNode, Node publicationNode, boolean copyContent) {
-      copyTermsAndContent(newsletterNode, publicationNode, copyContent, "newslettertheme");
-      copyTermsAndContent(newsletterNode, publicationNode, copyContent, "defaulttheme");
-   }
-
-   private static void copyTermsAndContent(Node newsletterNode, Node publicationNode, boolean copyContent, final String relationName) {
-      NodeList newsletterTermList = newsletterNode.getRelatedNodes("term", relationName, "DESTINATION");
-      if (newsletterTermList != null) {
-         for (int i = 0; i < newsletterTermList.size(); i++) {
-            Node oldTermNode = newsletterTermList.getNode(i);
-            Node newTermNode = CloneUtil.cloneNode(oldTermNode, "newsletterpublicationtheme");
-            if (newTermNode != null) {
-               RelationUtil.createRelation(publicationNode, newTermNode, relationName);
-               if (copyContent == true) {
-                  copyContent(oldTermNode, newTermNode);
-               }
-            }
-         }
-      }
-   }
-
    public static Node getNewsletterByPublicationNumber(int publicationNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterPublicationNode = cloud.getNode(publicationNumber);
@@ -71,18 +39,14 @@ public abstract class NewsletterPublicationUtil {
    public static Node createPublication(int newsletterNumber, boolean copyContent) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-         Node newsletterNode = cloud.getNode(newsletterNumber);
-         createDefaultTerm(newsletterNode);
+         Node newsletterNode = cloud.getNode(newsletterNumber);        
          Node publicationNode = CloneUtil.cloneNode(newsletterNode, "newsletterpublication");
-
          if (publicationNode != null) {
             String urlFragment = String.valueOf(publicationNode.getNumber());
             publicationNode.setStringValue("urlfragment", urlFragment);
             publicationNode.setStringValue("publishdate","null");
             publicationNode.setStringValue("status", Publication.STATUS.INITIAL.toString());
             publicationNode.commit();
-
-            //copyTermsAndContent(newsletterNode, publicationNode, copyContent);
             copyOtherRelations(newsletterNode, publicationNode);
             NavigationUtil.appendChild(newsletterNode, publicationNode);
             Node layoutNode = PagesUtil.getLayout(publicationNode);
@@ -95,7 +59,7 @@ public abstract class NewsletterPublicationUtil {
       return (null);
    }
 
-   private static void createDefaultTerm(Node newsletterNode) {
+   public static void createDefaultTerm(Node newsletterNode) {
 
       if(!hasDefaultTerm(newsletterNode)) {
          Node defaultTerm = newsletterNode.getCloud().getNodeManager("term").createNode();
@@ -124,14 +88,6 @@ public abstract class NewsletterPublicationUtil {
    public static void deletePublication(int publicationNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node publicationNode = cloud.getNode(publicationNumber);
-
-      NodeList themes = publicationNode.getRelatedNodes("newsletterpublicationtheme");
-      if (themes != null) {
-         for (int i = themes.size() - 1; i >= 0; i--) {
-            Node publicationThemeNode = themes.getNode(i);
-            publicationThemeNode.delete(true);
-         }
-      }
 
       NavigationUtil.deleteItem(publicationNode);
    }

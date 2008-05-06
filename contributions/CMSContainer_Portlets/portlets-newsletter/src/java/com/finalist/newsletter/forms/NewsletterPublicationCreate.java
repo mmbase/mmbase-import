@@ -45,7 +45,6 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
          ret.setRedirect(true);
          return ret;
       }
-
       String ewnodelastedited = getParameter(request, "ewnodelastedited");
       addToRequest(request, "showpage", ewnodelastedited);
       ActionForward ret = mapping.findForward("SUCCESS");
