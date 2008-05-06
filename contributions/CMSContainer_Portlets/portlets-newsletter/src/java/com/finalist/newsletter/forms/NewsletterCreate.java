@@ -23,6 +23,7 @@ import org.mmbase.bridge.NodeManager;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 
 public class NewsletterCreate extends MMBaseFormlessAction {
 
@@ -49,23 +50,10 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             PagesUtil.linkPortlets(newNewsletter, layoutNode);
             request.getSession().removeAttribute("parentnewsletter");
 
-            // Create a default theme for this newsletter
-            String newsletterTitle = "" + newNewsletter.getStringValue("title");
-            String newsletterDescription = "" + newNewsletter.getStringValue("description");
-
-            String themeTitle = newsletterTitle;
-            String themeDescription = newsletterDescription;
-            String themeShortDescription = newsletterDescription;
-
-            NodeManager themeNodeManager = cloud.getNodeManager("newslettertheme");
-            Node themeNode = themeNodeManager.createNode();
-
-            themeNode.setStringValue("title", themeTitle);
-            themeNode.setStringValue("description", themeDescription);
-            themeNode.setStringValue("shortdescription", themeShortDescription);
-            themeNode.commit();
-
-            RelationUtil.createRelation(newNewsletter, themeNode, "defaulttheme");
+            // Create a default term for this newsletter
+            
+            NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
+           
 
             addToRequest(request, "showpage", ewnodelastedited);
             ActionForward ret = mapping.findForward(SUCCESS);

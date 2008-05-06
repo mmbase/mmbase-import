@@ -40,16 +40,6 @@ public class NewsletterEdit extends MMBaseFormlessAction {
          SecurityUtil.clearUserRoles(cloud);
          String ewnodelastedited = getParameter(request, "ewnodelastedited");
          addToRequest(request, "showpage", ewnodelastedited);
-
-         Node newsletterNode = cloud.getNode(ewnodelastedited);
-         int defaultTheme = NewsletterUtil.getDefaultTheme(Integer.valueOf(ewnodelastedited));
-         Node defaultThemeNode = cloud.getNode(defaultTheme);
-
-         defaultThemeNode.setStringValue("title", newsletterNode.getStringValue("title"));
-         defaultThemeNode.setStringValue("description", newsletterNode.getStringValue("description"));
-         defaultThemeNode.setStringValue("shortDescription", newsletterNode.getStringValue("description"));
-         defaultThemeNode.commit();
-
          ActionForward ret = mapping.findForward(SUCCESS);
          return ret;
       }
