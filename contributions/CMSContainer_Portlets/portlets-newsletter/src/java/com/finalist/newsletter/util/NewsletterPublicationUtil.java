@@ -3,25 +3,34 @@ package com.finalist.newsletter.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
-
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.Relation;
-import org.mmbase.bridge.RelationList;
-
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
+import com.finalist.cmsc.navigation.PortletUtil;
 import com.finalist.newsletter.domain.Publication;
 
 public abstract class NewsletterPublicationUtil {
 
-   private static void copyOtherRelations(Node newsletterNode, Node publicationNode) {
-      PagesUtil.copyPageRelations(newsletterNode, publicationNode);
+   private static void copyOtherRelations(Node newsletterNode, Node publicationNode,boolean copyContent) {
+      copyPageRelations(newsletterNode, publicationNode,copyContent);
       copyImageAndAttachmentRelations(newsletterNode, publicationNode);
+   }
+   
+   public static Node copyPageRelations(Node sourcePage, Node newPage,boolean copyContent) {
+      CloneUtil.cloneRelations(sourcePage, newPage, PagesUtil.LAYOUTREL, PagesUtil.LAYOUT);
+      if(copyContent) {
+         PortletUtil.copyPortlets(sourcePage, newPage);
+      }
+      Node popupinfo = PagesUtil.getPopupinfo(sourcePage);
+      if (popupinfo != null) {
+         Node newPopupinfo = PagesUtil.copyPopupinfo(popupinfo);
+         PagesUtil.addPopupinfo(newPage, newPopupinfo);
+      }
+      return newPage;
    }
    
    private static void copyImageAndAttachmentRelations(Node newsletterNode, Node publicationNode) {
@@ -47,7 +56,9 @@ public abstract class NewsletterPublicationUtil {
             publicationNode.setStringValue("publishdate","null");
             publicationNode.setStringValue("status", Publication.STATUS.INITIAL.toString());
             publicationNode.commit();
-            copyOtherRelations(newsletterNode, publicationNode);
+            
+          //  copyContent(newsletterNode, publicationNode);
+            copyOtherRelations(newsletterNode, publicationNode,copyContent);
             NavigationUtil.appendChild(newsletterNode, publicationNode);
             Node layoutNode = PagesUtil.getLayout(publicationNode);
             if (copyContent == true) {
