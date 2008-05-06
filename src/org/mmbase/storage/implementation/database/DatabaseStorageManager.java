@@ -32,7 +32,7 @@ import org.mmbase.util.transformers.CharTransformer;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.192 2008-04-11 15:13:38 nklasens Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.193 2008-05-06 15:27:40 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -2922,15 +2922,18 @@ public class DatabaseStorageManager implements StorageManager {
                                             if (foundColumn) {
 
                                                 Blob b = getBlobFromDatabase(node, field, false);
-                                                byte[] bytes = b.getBytes(0L, (int) b.length());
-                                                node.setValue(fieldName, bytes);
-                                                storeBinaryAsFile(node, field);
+                                                int length = (int) b.length();
+                                                if (length > 0) {
+                                                  byte[] bytes = b.getBytes(1L, length);
+                                                  node.setValue(fieldName, bytes);
+                                                  storeBinaryAsFile(node, field);
 
-                                                node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
-                                                // node.commit(); no need, because we only changed blob (so no database updates are done)
-                                                result++;
+                                                  node.storeValue(fieldName, MMObjectNode.VALUE_SHORTED); // remove to avoid filling node-cache with lots of handles and cause out-of-memory
+                                                  // node.commit(); no need, because we only changed blob (so no database updates are done)
+                                                  result++;
+                                                  log.service("( " + result + ") Found " + length + " bytes for " + node.getNumber() + " in database while configured to be on disk. Stored to " + storeFile);
+                                                }
                                                 fromDatabase++;
-                                                log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
                                             }
                                         }
                                     }
