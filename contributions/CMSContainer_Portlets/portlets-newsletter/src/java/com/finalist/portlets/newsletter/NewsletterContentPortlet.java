@@ -113,15 +113,12 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          int totalItems  = 0 ;
          List<ContentElement> elements  = null;
          String termNumbers = req.getParameter(NEWSLETTER_TERMS_PARAM);
-         System.out.println("------------------>"+termNumbers+"-----itemNumber--"+itemNumber);
          if(StringUtils.isEmpty(termNumbers)) {
             totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber);
-            System.out.println("-------------111----->"+totalItems);
             elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,offset,elementsPerPage,orderBy,direction);
          }
          else {
             totalItems = NewsletterUtil.countArticlesByNewsletter(termNumbers);
-            System.out.println("-------------222----->"+totalItems);
             elements = NewsletterUtil.getArticlesByNewsletter(termNumbers,offset,elementsPerPage,orderBy,direction);
          }
 
