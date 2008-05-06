@@ -12,6 +12,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -23,7 +24,9 @@ import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Step;
 
 import com.finalist.cmsc.beans.om.ContentElement;
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.domain.Term;
+import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 
 public abstract class NewsletterUtil {
@@ -133,18 +136,20 @@ public abstract class NewsletterUtil {
       }
       return (null);
    }
+
    public static List<ContentElement> getArticlesByNewsletter(String termNumbers, int offset, int elementsPerPage, String orderBy, String direction) {
 
-         String[] numbers = termNumbers.split(",");
-         SortedSet<Integer> sort = new TreeSet<Integer>();
-         for (int i = 0; i < numbers.length; i++) {
-            sort.add(new Integer(numbers[i]));
-         }
-         if (sort.size() == 0) {
-            return (null);
-         }         
-         return getArticles( offset,  elementsPerPage,  orderBy,  direction,sort);
+      String[] numbers = termNumbers.split(",");
+      SortedSet<Integer> sort = new TreeSet<Integer>();
+      for (int i = 0; i < numbers.length; i++) {
+         sort.add(new Integer(numbers[i]));
+      }
+      if (sort.size() == 0) {
+         return (null);
+      }
+      return getArticles(offset, elementsPerPage, orderBy, direction, sort);
    }
+
    public static List<ContentElement> getArticlesByNewsletter(int newsletterNumber, int offset, int elementsPerPage, String orderBy, String direction) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
@@ -160,12 +165,12 @@ public abstract class NewsletterUtil {
          if (sort.size() == 0) {
             return (null);
          }
-         return getArticles( offset,  elementsPerPage,  orderBy,  direction,sort);
+         return getArticles(offset, elementsPerPage, orderBy, direction, sort);
       }
       return (null);
    }
-   
-   public  static List<ContentElement> getArticles(int offset, int elementsPerPage, String orderBy, String direction,SortedSet<Integer> sort) {
+
+   public static List<ContentElement> getArticles(int offset, int elementsPerPage, String orderBy, String direction, SortedSet<Integer> sort) {
       List<ContentElement> articles = new ArrayList<ContentElement>();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
@@ -188,8 +193,9 @@ public abstract class NewsletterUtil {
          }
       }
       return (articles);
-      
+
    }
+
    public static int countArticles(SortedSet<Integer> sort) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
 
@@ -203,19 +209,20 @@ public abstract class NewsletterUtil {
 
       return Queries.count(query);
    }
+
    public static int countArticlesByNewsletter(String termNumbers) {
 
-         String[] numbers = termNumbers.split(",");
-         SortedSet<Integer> sort = new TreeSet<Integer>();
-         for (int i = 0; i < numbers.length; i++) {
-            sort.add(new Integer(numbers[i]));
-         }
-         if (sort.size() == 0) {
-            return (0);
-         }
-         return countArticles(sort);
+      String[] numbers = termNumbers.split(",");
+      SortedSet<Integer> sort = new TreeSet<Integer>();
+      for (int i = 0; i < numbers.length; i++) {
+         sort.add(new Integer(numbers[i]));
+      }
+      if (sort.size() == 0) {
+         return (0);
+      }
+      return countArticles(sort);
    }
-   
+
    public static int countArticlesByNewsletter(int newsletterNumber) {
       if (newsletterNumber > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
@@ -302,14 +309,16 @@ public abstract class NewsletterUtil {
       }
       return (false);
    }
+
    public static boolean isPaused(Node newsletterNode) {
       if (newsletterNode != null) {
-            boolean isPaused = newsletterNode.getBooleanValue("paused");
-            Date now = new Date();     
-            return (isPaused && now.after(newsletterNode.getDateValue("pausedstartdate")) && now.before(newsletterNode.getDateValue("pausedstopdate")));
+         boolean isPaused = newsletterNode.getBooleanValue("paused");
+         Date now = new Date();
+         return (isPaused && now.after(newsletterNode.getDateValue("pausedstartdate")) && now.before(newsletterNode.getDateValue("pausedstopdate")));
       }
       return (false);
    }
+
    public static void pauseNewsletter(int number) {
       if (number > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
@@ -360,5 +369,20 @@ public abstract class NewsletterUtil {
       return url;
    }
 
+
+   public static String getHostUrl() {
+      String hostUrl = PropertiesUtil.getProperty("host");
+
+      if (StringUtils.isEmpty(hostUrl)) {
+         throw new NewsletterSendFailException("get property <host> from system property and get nothing");
+      }
+
+      log.debug("get property <host> from system property and get:" + hostUrl);
+
+      if (!hostUrl.endsWith("/")) {
+         hostUrl += "/";
+      }
+      return hostUrl;
+   }
 
 }
