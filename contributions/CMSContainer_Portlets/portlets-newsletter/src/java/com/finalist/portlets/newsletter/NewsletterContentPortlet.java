@@ -20,6 +20,7 @@ import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterContentPortlet extends AbstractContentPortlet {
@@ -59,6 +60,11 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       NavigationItem result = SiteManagement.getNavigationItemFromPath(currentPath);
       if (result != null) {
             int itemNumber = result.getId();
+            if(!NewsletterUtil.isNewsletter(itemNumber)) {
+               if(NewsletterUtil.isNewsletterPublication(itemNumber)) {
+                  itemNumber = NewsletterPublicationUtil.getNewsletterByPublicationNumber(itemNumber).getNumber();
+               }
+            }
             addContentElements(request,itemNumber);
       } 
       else {
@@ -107,12 +113,15 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          int totalItems  = 0 ;
          List<ContentElement> elements  = null;
          String termNumbers = req.getParameter(NEWSLETTER_TERMS_PARAM);
+         System.out.println("------------------>"+termNumbers+"-----itemNumber--"+itemNumber);
          if(StringUtils.isEmpty(termNumbers)) {
             totalItems = NewsletterUtil.countArticlesByNewsletter(itemNumber);
+            System.out.println("-------------111----->"+totalItems);
             elements = NewsletterUtil.getArticlesByNewsletter(itemNumber,offset,elementsPerPage,orderBy,direction);
          }
          else {
             totalItems = NewsletterUtil.countArticlesByNewsletter(termNumbers);
+            System.out.println("-------------222----->"+totalItems);
             elements = NewsletterUtil.getArticlesByNewsletter(termNumbers,offset,elementsPerPage,orderBy,direction);
          }
 
