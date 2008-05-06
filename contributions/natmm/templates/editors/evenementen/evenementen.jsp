@@ -458,7 +458,7 @@ if(!provincieId.equals("")) {
 <table class="formcontent">
 <tr><td colspan="4" style="text-align:center;color:red;font-weight:bold;" id="message"></td></tr>
 <tr><td><%  if((isAdmin||isChiefEditor)&&actionId.indexOf("print")==-1) { %>
-            <a href="EvenementInitAction.eb"><img src="<mm:url page="<%= editwizard_location %>"/>/media/new.gif" border='0' alt='Maak een nieuwe activiteit' /></a>
+            <a href="EvenementInitAction.eb"><img src="<mm:url page="<%= editwizard_location %>"/>/media/new.gif" border='0' alt='Maak een nieuwe activiteit' onclick="javascript:showMessage(this,'Een moment geduld a.u.b.');"/></a>
         <% } %>
     </td>
     <td class="fieldname" style="padding-left:5px;vertical-align:middle;"><nobr><%= soortId.toUpperCase() %></nobr></td>
