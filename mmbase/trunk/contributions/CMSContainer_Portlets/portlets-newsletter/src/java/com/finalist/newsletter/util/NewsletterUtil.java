@@ -63,36 +63,16 @@ public abstract class NewsletterUtil {
       return (0);
    }
 
-   public static int countThemes() {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList termList = SearchUtil.findNodeList(cloud, "newslettertheme");
-      if (termList != null) {
-         int newsletters = countNewsletters();
-         return (0 - newsletters + termList.size());
-      }
-      return (0);
-   }
-
-   public static int countThemes(int newsletterNumber) {
-      int amount = 0;
-      List<Integer> themes = getAllThemes(newsletterNumber);
-      if (themes != null) {
-         amount = themes.size();
-      }
-      return (amount);
-   }
-
-   public static void deleteNewsletterThemesForNewsletter(int number) {
+   public static void deleteNewsletterTermsForNewsletter(int number) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node newsletterNode = cloud.getNode(number);
-      String themeType = determineThemeType(number);
-      NodeManager newsletterThemeNodeManager = cloud.getNodeManager(themeType);
-      NodeList themes = newsletterNode.getRelatedNodes(newsletterThemeNodeManager);
-      if (themes != null) {
-         for (int i = 0; i < themes.size(); i++) {
-            Node themeNode = themes.getNode(i);
-            themeNode.deleteRelations();
-            themeNode.delete();
+      NodeManager newsletterTermNodeManager = cloud.getNodeManager("term");
+      NodeList terms = newsletterNode.getRelatedNodes(newsletterTermNodeManager);
+      if (terms != null) {
+         for (int i = 0; i < terms.size(); i++) {
+            Node termNode = terms.getNode(i);
+            termNode.deleteRelations();
+            termNode.delete();
          }
       }
    }
@@ -105,35 +85,6 @@ public abstract class NewsletterUtil {
          return (type);
       }
       return (null);
-   }
-
-   public static String determineThemeType(int number) {
-      String themeType = null;
-      if (isNewsletter(number)) {
-         themeType = NewsletterUtil.THEMETYPE_NEWSLETTER;
-      }
-      if (isNewsletterPublication(number)) {
-         themeType = NewsletterUtil.THEMETYPE_NEWSLETTERPUBLICATION;
-      }
-      return (themeType);
-   }
-
-   public static int findNewsletterForTheme(int themeNumber) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
-      Node themeNode = cloud.getNode(themeNumber);
-      String managerName = null;
-      String themeType = themeNode.getNodeManager().getName();
-      if (themeType.equals("newslettertheme")) {
-         managerName = "newsletter";
-      }
-      else {
-         managerName = "newsletterpublication";
-      }
-      Node newsletterNode = SearchUtil.findRelatedNode(themeNode, managerName, "newslettertheme");
-      if (newsletterNode != null) {
-         return (newsletterNode.getNumber());
-      }
-      return (0);
    }
 
    public static List<Integer> getAllNewsletters() {
@@ -162,34 +113,6 @@ public abstract class NewsletterUtil {
          }
       }
       return (publications);
-   }
-
-   public static List<Integer> getAllThemes() {
-      List<Integer> themes = new ArrayList<Integer>();
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      NodeList themeList = SearchUtil.findNodeList(cloud, "newslettertheme");
-      if (themeList != null && themeList.size() > 0) {
-         for (int n = 0; n < themeList.size(); n++) {
-            Node themeNode = themeList.getNode(n);
-            int themeNumber = themeNode.getNumber();
-            themes.add(themeNumber);
-         }
-      }
-      return (themes);
-   }
-
-   public static List<Integer> getAllThemes(int number) {
-      List<Integer> themes = new ArrayList<Integer>();
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-      Node newsletterNode = cloud.getNode(number);
-      String themeType = determineThemeType(number);
-      NodeList themeList = SearchUtil.findRelatedNodeList(newsletterNode, themeType, "newslettertheme");
-      for (int i = 0; i < themeList.size(); i++) {
-         Node themeNode = themeList.getNode(i);
-         int theme = themeNode.getNumber();
-         themes.add(theme);
-      }
-      return (themes);
    }
 
    public static List<Integer> getArticlesForTheme(int themeNumber) {
@@ -314,19 +237,6 @@ public abstract class NewsletterUtil {
       return (0);
    }
 
-   public static int getDefaultTheme(int number) {
-      int defaultTheme = 0;
-      if (number > 0) {
-         Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
-         Node newsletterNode = cloud.getNode(number);
-         String themeType = determineThemeType(number);
-         Node defaultThemeNode = SearchUtil.findRelatedNode(newsletterNode, themeType, "defaulttheme");
-         if (defaultThemeNode != null) {
-            defaultTheme = defaultThemeNode.getNumber();
-         }
-      }
-      return (defaultTheme);
-   }
 
    public static String getTitle(int newsletterNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
