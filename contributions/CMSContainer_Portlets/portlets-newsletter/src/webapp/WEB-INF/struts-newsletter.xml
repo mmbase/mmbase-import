@@ -6,10 +6,15 @@
 
    <!-- ========== Data Sources Definitions =================================== -->
    <!-- ========== Form Bean Definitions =================================== -->
+
+   <form-beans>
+      <form-bean name="datafilebean" type="com.finalist.newsletter.forms.SubscriptionImportUploadForm"/>
+   </form-beans>
    <!-- ========== Global Exceptions Definitions =================================== -->
    <!-- ========== Global Forward Definitions =================================== -->
    <!-- ========== Action Mapping Definitions =================================== -->
    <action-mappings>
+
       <!-- ==== Site management ==== -->
 
       <action path="/editors/newsletter/NewsletterCreate" type="com.finalist.newsletter.forms.NewsletterCreate"
@@ -45,11 +50,27 @@
       <action path="/editors/newsletter/SubscriptionManagement"
               type="com.finalist.newsletter.forms.SubscriptioManagementAction" parameter="action">
          <forward name="newsletterdashboard" path="/editors/newsletter/module/report_overview.jsp" redirect="false"/>
-         <forward name="newsletteroverview" path="/editors/newsletter/module/report_newsletter_list.jsp" redirect="false"/>
-         <forward name="newsletterdetail" path="/editors/newsletter/module/report_newsletter_subscriptions.jsp" redirect="false"/>
+         <forward name="newsletteroverview" path="/editors/newsletter/module/report_newsletter_list.jsp"
+                  redirect="false"/>
+         <forward name="newsletterdetail" path="/editors/newsletter/module/report_newsletter_subscriptions.jsp"
+                  redirect="false"/>
+         <forward name="importpage" path="/editors/newsletter/module/import.jsp" redirect="false"/>
+         <forward name="listsubscribers" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false"/>
+         <forward name="ubscriber_subscriptions" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp"
+                  redirect="false"/>
+
       </action>
+      <action path="/editors/newsletter/SubscriptionImportExportAction" name="datafilebean"
+              type="com.finalist.newsletter.forms.SubscriptionImportExportAction" parameter="action"/>
       <action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false"
               validate="false">
+      </action>
+      <action path="/editors/newsletter/UnsubscribeAction" type="com.finalist.newsletter.forms.UnsubscribeAction"
+              unknown="false"
+              validate="false">
+         <forward name="delete" path="/editors/newsletter/unsubscription/delete.jsp" redirect="false"/>
+         <forward name="finish" path="/editors/newsletter/unsubscription/finish.jsp" redirect="false"/>
+         <forward name="canel" path="/editors/newsletter/unsubscription/canel.jsp" redirect="false"/>
       </action>
       <!-- ==== Select page nodes ==== -->
 
