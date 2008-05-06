@@ -77,23 +77,6 @@ public abstract class NewsletterSubscriptionUtil {
       return (amount);
    }
 
-   public static int getNumberOfSubscribedThemes(String userName, int newsletterNumber) {
-      int amount = 0;
-      if (userName != null && newsletterNumber > 0) {
-         List<Integer> themesList = NewsletterUtil.getAllThemes(newsletterNumber);
-         if (themesList != null) {
-            List<String> subscribedThemes = NewsletterCommunication.getUserPreferences(userName, NewsletterSubscriptionUtil.NEWSLETTER_THEME);
-            for (int t = 0; t < themesList.size(); t++) {
-               int theme = Integer.valueOf(themesList.get(t));
-               if (subscribedThemes.contains(theme)) {
-                  amount++;
-               }
-            }
-         }
-      }
-      return (amount);
-   }
-
    public static String getPreferredMimeType(String userName) {
       if (userName != null) {
          String preferredMimeType = NewsletterCommunication.getUserPreference(userName, PREFERRED_MIMETYPE);
