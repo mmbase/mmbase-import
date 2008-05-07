@@ -100,7 +100,13 @@ public class NodeService {
                   Iterator<Map.Entry<String,Object>>  properties = element.getMap().entrySet().iterator();
                   while (properties.hasNext()) {
                      Map.Entry<String,Object> entry= properties.next();
-                     relate.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
+                     String name = entry.getKey().toString();
+                     if(name.equals("pos") && data.getDestinationRelationType().equals("imagerel")) {
+                        relate.setObjectValue(name, "intro") ;
+                     }
+                     else {
+                        relate.setObjectValue(entry.getKey().toString(), entry.getValue()) ;
+                     }
                   }
                   relate.commit();
                }
