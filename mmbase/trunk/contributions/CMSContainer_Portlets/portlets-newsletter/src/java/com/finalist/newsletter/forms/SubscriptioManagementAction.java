@@ -31,7 +31,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
       newsletterService = (NewsletterService) getWebApplicationContext().getBean("newsletterServices");
       subscriptionServices = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
       personServices = (PersonService) getWebApplicationContext().getBean("personService");
-      publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
+      publicationService = (NewsletterPublicationService) getWebApplicationContext().getBean("publicationService");
    }
 
    protected ActionForward unspecified(ActionMapping mapping, ActionForm form,

@@ -12,7 +12,9 @@ import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
+import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.ApplicationContextFactory;
 
 
 public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItemRenderer {
@@ -44,7 +46,8 @@ public class NewsletterPublicationTreeItemRenderer implements NavigationTreeItem
          boolean isPublished;
 
          if (isSingleApplication) {
-            Publication.STATUS status = NewsletterServiceFactory.getNewsletterPublicationService().getStatus(parentNode.getNumber());
+            NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+            Publication.STATUS status = publicationService.getStatus(parentNode.getNumber());
             isPublished = Publication.STATUS.DELIVERED.equals(status);
          }
          else {

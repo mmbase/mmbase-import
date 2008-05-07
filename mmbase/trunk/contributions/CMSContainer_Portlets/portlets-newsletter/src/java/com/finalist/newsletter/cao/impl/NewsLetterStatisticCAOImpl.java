@@ -26,14 +26,11 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 
 	private Cloud cloud;
 	
-	 public NewsLetterStatisticCAOImpl() {
-   }
-   
-   public NewsLetterStatisticCAOImpl(Cloud cloud) {
+   public void setCloud(Cloud cloud) {
       this.cloud = cloud;
    }
 
-	public List<StatisticResult> getAllRecords (){
+   public List<StatisticResult> getAllRecords (){
 
 		NodeQuery query = cloud.createNodeQuery();
 		Step step = query.addStep(cloud.getNodeManager("newsletterdailylog"));

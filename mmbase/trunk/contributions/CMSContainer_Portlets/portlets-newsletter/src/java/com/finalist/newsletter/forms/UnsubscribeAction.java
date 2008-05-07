@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+import com.finalist.newsletter.ApplicationContextFactory;
 
 public class UnsubscribeAction extends Action {
 
@@ -19,16 +20,20 @@ public class UnsubscribeAction extends Action {
 
    private static final String ACTION_REMOVE = "remove";
 
+   NewsletterSubscriptionServices service ;
+
+
+
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                                 HttpServletResponse response) throws Exception {
-
+      service = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
       log.debug("Excute unsubscribe");      
       int userId = Integer.parseInt(request.getParameter("userId"));
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
       if (isRemoveAction(request)) {
-         NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+
          service.modifyStauts(userId, newsletterId, "INACTIVE");
          return mapping.findForward("finish");
       }

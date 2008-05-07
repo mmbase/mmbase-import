@@ -27,6 +27,7 @@ import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.ApplicationContextFactory;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
@@ -39,7 +40,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
+      NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");;
       int number = Integer.parseInt(getParameter(request, "number", true));
       if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
          request.setAttribute("isPaused", true);
