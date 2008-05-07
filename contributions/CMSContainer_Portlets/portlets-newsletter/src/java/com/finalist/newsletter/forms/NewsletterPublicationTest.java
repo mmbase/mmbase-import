@@ -18,6 +18,7 @@ import org.mmbase.bridge.Cloud;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
+import com.finalist.newsletter.ApplicationContextFactory;
 
 public class NewsletterPublicationTest extends MMBaseFormlessAction {
 
@@ -44,7 +45,7 @@ public class NewsletterPublicationTest extends MMBaseFormlessAction {
 //         }
 //         Thread publisher = new NewsletterPublisher(number);
 //         publisher.start();
-         NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
+         NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");;
          return mapping.findForward(SUCCESS);
       }
 

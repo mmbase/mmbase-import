@@ -20,6 +20,7 @@ import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
+import com.finalist.newsletter.ApplicationContextFactory;
 
 public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
 
@@ -43,7 +44,7 @@ public class NewsletterPublicationSendEmail extends MMBaseFormlessAction {
       if (isSendAction(request)) {
          String email = getParameter(request, "email");
          String mimeType = request.getParameter("mimetype");
-         NewsletterPublicationService publicationService = NewsletterServiceFactory.getNewsletterPublicationService();
+          NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");;
          publicationService.deliver(number,email,mimeType);
          return mapping.findForward(SUCCESS);
       }

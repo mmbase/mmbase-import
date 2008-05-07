@@ -28,7 +28,8 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
    private NewsLetterStatisticCAO statisticCAO;
 
    //CAO setters
-   public void setMailSender(NewsletterPublisher publisher) {
+
+   public void setPublisher(NewsletterPublisher publisher) {
       this.publisher = publisher;
    }
 

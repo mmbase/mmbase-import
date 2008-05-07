@@ -49,10 +49,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
 
    Cloud cloud;
 
-   public NewsletterPublicationCAOImpl() {
-   }
-
-   public NewsletterPublicationCAOImpl(Cloud cloud) {
+   public void setCloud(Cloud cloud) {
       this.cloud = cloud;
    }
 
