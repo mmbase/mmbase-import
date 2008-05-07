@@ -2,12 +2,15 @@ package com.finalist.newsletter.publisher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.apache.commons.lang.StringUtils;
 
 import javax.mail.MessagingException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterGenerator {
 
@@ -16,12 +19,12 @@ public class NewsletterGenerator {
 
    public static String generate(String urlPath, String mimeType) throws MessagingException {
 
-      log.debug("generate newsletter from url:"+urlPath);
-      
-        String inputString = "";
+      log.debug("generate newsletter from url:" + urlPath);
+
+      String inputString = "";
       try {
 
-         log.debug("Try to get content from URL:"+urlPath);
+         log.debug("Try to get content from URL:" + urlPath);
 
          URL url = new URL(urlPath);
          HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -43,11 +46,19 @@ public class NewsletterGenerator {
          reader.close();
 
          inputString = buffer.toString().trim();
+
+         inputString = calibrateRelativeURL(inputString);
          return (inputString);
       } catch (Exception e) {
-         log.debug("Error when try to get content from"+urlPath,e);
+         log.debug("Error when try to get content from" + urlPath, e);
       }
 
       return inputString;
+   }
+
+   private static String calibrateRelativeURL(String inputString) {
+      String host = NewsletterUtil.getHostUrl();
+      host = StringUtils.remove(host,"\\\\","")
+      return StringUtils.replace(inputString, "<a href=\"/", "<a href=\"" + );
    }
 }
