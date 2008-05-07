@@ -127,4 +127,25 @@ public class Newsletter {
    public void setTxtempty(String txtempty) {
       this.txtempty = txtempty;
    }
+
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+
+      Newsletter that = (Newsletter) o;
+
+      if (id != that.id) {
+         return false;
+      }
+
+      return true;
+   }
+
+   public int hashCode() {
+     return id;
+   }
 }

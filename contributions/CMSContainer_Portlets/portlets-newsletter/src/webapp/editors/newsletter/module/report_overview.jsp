@@ -32,27 +32,27 @@
             <td>${requestScope.subscriptioncount}</td>
          </tr>
       </table>
-
-      <br/>
-
       <div>
          <p>
             <a href="SubscriptionManagement.do?action=newsletterOverview">
                <fmt:message key="index.link.newsletteroverview"/>
             </a>
          </p>
+
          <p>
-            <a href="SubscriptionManagement.do?action=subscriberOverview">
+            <a href="SubscriptionManagement.do?action=listSubscribers">
                <fmt:message key="index.link.subscriptionoverview"/>
             </a>
          </p>
+
          <p>
-            <a href="SubscriptionManagement.do?action=exportSusbscriptions">
+            <a href="SubscriptionImportExportAction.do?action=export">
                <fmt:message key="index.link.exportall"/>
             </a>
          </p>
+
          <p>
-            <a href="SubscriptionManagement.do?action=import">
+            <a href="SubscriptionManagement.do?action=showImportPage">
                <fmt:message key="index.link.import"/>
             </a>
          </p>

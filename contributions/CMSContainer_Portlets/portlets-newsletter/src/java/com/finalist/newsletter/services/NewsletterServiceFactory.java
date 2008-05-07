@@ -30,7 +30,7 @@ public class NewsletterServiceFactory {
    public static NewsletterSubscriptionServices getNewsletterSubscriptionServices() {
       NewsletterSubscriptionCAO subscriptionCAO = new NewsletterSubscriptionCAOImpl(cloudProvider.getCloud());
       NewsletterSubscriptionServicesImpl newsletterSubscriptionServices = new NewsletterSubscriptionServicesImpl();
-      newsletterSubscriptionServices.setSubscriptinCAO(subscriptionCAO);
+      newsletterSubscriptionServices.setSubscriptionCAO(subscriptionCAO);
       NewsletterCAO newsletterCAO = new NewsletterCAOImpl(cloudProvider.getCloud());
       newsletterSubscriptionServices.setNewsletterCAO(newsletterCAO);
       return newsletterSubscriptionServices;
@@ -52,13 +52,6 @@ public class NewsletterServiceFactory {
 	      
 	   }
 
-	public static NewsletterService getNewsletterService (){
-
-		NewsletterServiceImpl service = new NewsletterServiceImpl();
-		service.setNewsletterCAO(new NewsletterCAOImpl(cloudProvider.getCloud()));
-		return service;
-	}
- 
 	public static StatisticService getStatisticService (){
 		StatisticServiceImpl service = new StatisticServiceImpl();
 		service.setNewLettercao(new NewsletterCAOImpl(cloudProvider.getCloud()));

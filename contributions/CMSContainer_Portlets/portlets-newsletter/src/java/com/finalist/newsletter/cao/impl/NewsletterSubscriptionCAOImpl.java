@@ -8,12 +8,14 @@ import static com.finalist.newsletter.domain.Subscription.STATUS;
 import com.finalist.newsletter.domain.Term;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
 import static com.finalist.newsletter.util.NewsletterSubscriptionUtil.*;
+
 import java.util.*;
 
 public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements NewsletterSubscriptionCAO {
@@ -186,7 +188,6 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       return subscribers;
    }
 
-  
 
    public void createSubscription(int userId, int newsletterId) {
       log.debug("Create subscription user:" + userId + " newsletter:" + newsletterId);
@@ -214,29 +215,31 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
       newsletter.setTitle(newsletterNodes.get(0).getStringValue("subject"));
       subscription.setNewsletter(newsletter);
 
-      return subscription; 
+      return subscription;
    }
 
    public void updateSubscription(Subscription subscription) {
       Node node = cloud.getNode(subscription.getId());
-      node.setStringValue("status",subscription.getStatus().toString());
-      node.setDateValue("pausetill",subscription.getPausedTill());
+      node.setStringValue("status", subscription.getStatus().toString());
+      node.setDateValue("pausetill", subscription.getPausedTill());
       node.commit();
 
    }
 
-   public List<Subscription> getSubscriptionByUserIdAndStatus(int userId,STATUS status) {
+   public List<Subscription> getSubscriptionByUserIdAndStatus(int userId, STATUS status) {
 
       NodeManager recordManager = cloud.getNodeManager("subscriptionrecord");
 
       Query query = recordManager.createQuery();
-      SearchUtil.addEqualConstraint(query,recordManager.getField("status"),status.toString());
-      SearchUtil.addEqualConstraint(query,recordManager.getField("subscriber"),Integer.toString(userId));
+      if (null != status) {
+         SearchUtil.addEqualConstraint(query, recordManager.getField("status"), status.toString());
+      }
+      SearchUtil.addEqualConstraint(query, recordManager.getField("subscriber"), Integer.toString(userId));
 
       List<Node> subscriptions = query.getList();
 
       List<Subscription> subs = new ArrayList<Subscription>();
-      for(Node node :subscriptions){
+      for (Node node : subscriptions) {
          subs.add(convertFromNode(node));
       }
 

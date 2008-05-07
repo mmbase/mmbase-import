@@ -27,16 +27,19 @@
    </bean>
 
    <!-- Services -->
-   <bean id="newsletterSubscriptionServices"
+   <bean id="subscriptionServices"
          class="com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl" lazy-init="true">
-      <property name="subscriptinCAO" ref="subscriptionCAO"/>
+      <property name="subscriptionCAO" ref="subscriptionCAO"/>
       <property name="newsletterCAO" ref="newsletterCAO"/>
       <property name="newsletterService" ref="newsletterServices"/>
+      <property name="personService" ref="personService"/>
    </bean>
    
    <bean id="newsletterServices"
          class="com.finalist.newsletter.services.impl.NewsletterServiceImpl" lazy-init="true">
       <property name="newsletterCAO" ref="newsletterCAO"/>
+      <property name="subscriptionCAO" ref="subscriptionCAO"/>
+      <property name="subscriptionServices" ref="subscriptionServices"/>
    </bean>
 
    <!-- Services Holder-->

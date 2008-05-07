@@ -8,7 +8,7 @@ public interface NewsletterService {
 
    public List<Newsletter> getAllNewsletter();
 
-   public String getNewsletterName(int newsletterId);
+   public String getNewsletterName(String newsletterId);
 
    public int countAllNewsletters();
 
@@ -17,4 +17,6 @@ public interface NewsletterService {
    public List<Newsletter> getNewslettersByTitle(String title);
 
    public Newsletter getNewsletterBySubscription(int id);
+
+   public List<Newsletter> getNewsletters(String subscriber, String title);
 }
