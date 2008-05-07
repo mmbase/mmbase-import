@@ -21,11 +21,13 @@ import org.mmbase.util.logging.Logging;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.newsletter.NewsletterSendFailException;
+import com.finalist.newsletter.ApplicationContextFactory;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.util.POConvertUtils;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 import org.apache.commons.lang.StringUtils;
@@ -93,7 +95,10 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       pub.setUrl(getPublicationURL(number));
       Newsletter newsletter = new Newsletter();
 
-      new POConvertUtils<Newsletter>().convert(newsletter, relatedNewsletters.get(0));
+      Node node = relatedNewsletters.get(0);
+      new POConvertUtils<Newsletter>().convert(newsletter, node);
+      newsletter.setSendempty(node.getBooleanValue("sendempty"));
+      newsletter.setTxtempty(node.getStringValue("txtempty"));
       pub.setNewsletter(newsletter);
 
       return pub;
@@ -102,10 +107,8 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
    public String getPublicationURL(int publciationId) {
 
       Node publicationNode = cloud.getNode(publciationId);
-      String hostUrl = getHostUrl();
+      String hostUrl = NewsletterUtil.getHostUrl();
       String newsletterPath = getNewsletterPath(publicationNode);
-
-
       return "".concat(hostUrl).concat(newsletterPath);
    }
 
@@ -153,20 +156,6 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
       return NavigationUtil.getPathToRootString(newsletterPublicationNode, true);
    }
 
-   protected String getHostUrl() {
-      String hostUrl = PropertiesUtil.getProperty("host");
-
-      if (StringUtils.isEmpty(hostUrl)) {
-         throw new NewsletterSendFailException("get property <host> from system property and get nothing");
-      }
-
-      log.debug("get property <host> from system property and get:" + hostUrl);
-
-      if (!hostUrl.endsWith("/")) {
-         hostUrl += "/";
-      }
-      return hostUrl;
-   }
    
    public Set<Term> getTermsByPublication(int publicationId) {
       Node newsletterPublicationNode = cloud.getNode(publicationId);

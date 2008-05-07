@@ -9,25 +9,23 @@ See http://www.MMBase.org/license
  */
 package com.finalist.newsletter.forms;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.finalist.cmsc.navigation.NavigationUtil;
+import com.finalist.cmsc.navigation.ServerUtil;
+import com.finalist.cmsc.security.SecurityUtil;
+import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.ApplicationContextFactory;
+import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.services.NewsletterPublicationService;
+import com.finalist.newsletter.util.NewsletterPublicationUtil;
+import com.finalist.newsletter.util.NewsletterUtil;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import com.finalist.cmsc.navigation.NavigationUtil;
-import com.finalist.cmsc.navigation.ServerUtil;
-import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.security.UserRole;
-import com.finalist.cmsc.struts.MMBaseFormlessAction;
-import com.finalist.cmsc.services.publish.Publish;
-import com.finalist.newsletter.util.NewsletterPublicationUtil;
-import com.finalist.newsletter.util.NewsletterUtil;
-import com.finalist.newsletter.services.NewsletterServiceFactory;
-import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.ApplicationContextFactory;
+import javax.servlet.http.HttpServletRequest;
 
 public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
@@ -40,12 +38,15 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
    @Override
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {
 
-      NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");;
+      NewsletterPublicationService publicationService = (NewsletterPublicationService) ApplicationContextFactory.getBean("publicationService");
+
       int number = Integer.parseInt(getParameter(request, "number", true));
+
       if(NewsletterUtil.isPaused(NewsletterPublicationUtil.getNewsletterByPublicationNumber(number))) {
          request.setAttribute("isPaused", true);
          return mapping.findForward(SUCCESS);
       }
+
       Node publicationNode = cloud.getNode(number);
 
       if (isSendAction(request)) {
@@ -59,6 +60,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
 
          if (ServerUtil.isSingle()) {
             publicationService.deliver(number);
+            publicationService.setStatus(number, Publication.STATUS.DELIVERED);
          }
          else {
             publicationService.setStatus(number, Publication.STATUS.READY);
