@@ -11,7 +11,6 @@ import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.tree.TreeElement;
 import com.finalist.tree.TreeModel;
 import com.finalist.util.module.ModuleUtil;
-import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.services.NewsletterPublicationService;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.ApplicationContextFactory;

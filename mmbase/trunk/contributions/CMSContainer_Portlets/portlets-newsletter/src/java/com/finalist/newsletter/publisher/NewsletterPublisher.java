@@ -54,7 +54,8 @@ public class NewsletterPublisher {
 
    enum MimeType {
       image, attachment
-   };
+   }
+
 
    public void deliver(Publication publication, Subscription subscription) {
       try {
@@ -71,14 +72,15 @@ public class NewsletterPublisher {
          // setMIME(message, subscription.getMimeType());
 
          Transport.send(message);
-         log.debug("mail send! publication:" + publication.getId()
-               + "to subscription" + subscription.getId() + " in MIME"
-               + subscription.getMimeType());
-      } 
+         log.debug(String.format(
+               "mail send! publication %s to %s in %s format",
+               publication.getId(), subscription.getId(), subscription.getMimeType())
+         );
+      }
       catch (MessagingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
-      } 
+      }
       catch (UnsupportedEncodingException e) {
          log.error(e);
          throw new NewsletterSendFailException(e);
@@ -86,7 +88,7 @@ public class NewsletterPublisher {
    }
 
    private void setContent(Message message, Publication publication,
-         Subscription subscription) {
+                           Subscription subscription) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       Node newsletterPublicationNode = cloud.getNode(publication.getId());
       NodeList attachmentNodes = newsletterPublicationNode.getRelatedNodes("attachments");
@@ -95,7 +97,7 @@ public class NewsletterPublisher {
       try {
          mdp.setContent(getBody(publication, subscription), subscription.getMimeType());
          multipart.addBodyPart(mdp);
-      } 
+      }
       catch (MessagingException e) {
          log.error(e);
       }
@@ -105,14 +107,14 @@ public class NewsletterPublisher {
       setAttachment(multipart, imageNodes, MimeType.image);
       try {
          message.setContent(multipart);
-      } 
+      }
       catch (MessagingException e) {
          e.printStackTrace();
       }
    }
 
    private void setAttachment(Multipart multipart, NodeList attachmentNodes,
-         MimeType mimeType) {
+                              MimeType mimeType) {
       if (attachmentNodes.size() > 0) {
 
          try {
@@ -126,7 +128,7 @@ public class NewsletterPublisher {
                if (mimeType.compareTo(MimeType.image) == 0) {
                   bads = new ByteArrayDataSource(bytes, "image/"
                         + node.getStringValue("itype"));
-               } 
+               }
                else if (mimeType.compareTo(MimeType.attachment) == 0) {
                   bads = new ByteArrayDataSource(bytes, node
                         .getStringValue("mimetype"));
@@ -136,7 +138,7 @@ public class NewsletterPublisher {
                messageBodyPart.setDataHandler(dh);
                multipart.addBodyPart(messageBodyPart);
             }
-         } 
+         }
          catch (MessagingException e) {
             e.printStackTrace();
          }
@@ -147,17 +149,16 @@ public class NewsletterPublisher {
          throws MessagingException {
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
             .getTerms(), publication.getId());
+
       int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication
             .getNewsletterId());
+
       String content = " ";
-      if (articleCounts == 0) {
-         if (publication.getNewsletter().getSendempty()) {
+      if (articleCounts == 0&&publication.getNewsletter().getSendempty()) {
             content = publication.getNewsletter().getTxtempty();
-         }
-      } 
+      }
       else {
-         content = NewsletterGenerator
-               .generate(url, subscription.getMimeType());
+         content = NewsletterGenerator.generate(url, subscription.getMimeType());
       }
 
       if (null != getPersonalise()) {
@@ -169,7 +170,7 @@ public class NewsletterPublisher {
    }
 
    private void setSenderInfomation(Message message, String fromAddress,
-         String fromName, String replyAddress, String replyName)
+                                    String fromName, String replyAddress, String replyName)
          throws MessagingException, UnsupportedEncodingException {
 
       String emailFrom = getHeaderProperties(fromAddress,
@@ -190,7 +191,7 @@ public class NewsletterPublisher {
 
       InternetAddress replyToAddress = new InternetAddress(emailReplyTo);
       replyToAddress.setPersonal(nameReplyTo);
-      message.setReplyTo(new InternetAddress[] { replyToAddress });
+      message.setReplyTo(new InternetAddress[]{replyToAddress});
 
    }
 
@@ -241,7 +242,7 @@ public class NewsletterPublisher {
          Context initCtx = new InitialContext();
          Context envCtx = (Context) initCtx.lookup(context);
          session = (javax.mail.Session) envCtx.lookup(datasource);
-      } 
+      }
       catch (NamingException e) {
          log.fatal("Configured dataSource '" + getParameter("datasource")
                + "' of context '" + getParameter("context")
@@ -276,13 +277,13 @@ public class NewsletterPublisher {
       if (StringUtils.isNotEmpty(personaliser)) {
          try {
             ps = (Personaliser) Class.forName(personaliser).newInstance();
-         } 
+         }
          catch (ClassNotFoundException e) {
             log.error("No specified personaliser found:" + personaliser, e);
          }
          catch (IllegalAccessException e) {
             log.error(e);
-         } 
+         }
          catch (InstantiationException e) {
             log.error(e);
          }
@@ -303,7 +304,7 @@ public class NewsletterPublisher {
             int ch;
             while ((ch = is.read()) != -1)
                os.write(ch);
-               data = os.toByteArray();
+            data = os.toByteArray();
          }
          catch (IOException ioex) {
          }
@@ -319,18 +320,20 @@ public class NewsletterPublisher {
       public ByteArrayDataSource(String data, String type) {
          try {
             this.data = data.getBytes("iso-8859-1");
-         } 
+         }
          catch (UnsupportedEncodingException uex) {
          }
          this.type = type;
       }
+
       /**
        * Return an InputStream for the data. Note - a new stream must be
        * returned each time.
        */
       public InputStream getInputStream() throws IOException {
-         if (data == null)
+         if (data == null) {
             throw new IOException("no data");
+         }
          return new ByteArrayInputStream(data);
       }
 
