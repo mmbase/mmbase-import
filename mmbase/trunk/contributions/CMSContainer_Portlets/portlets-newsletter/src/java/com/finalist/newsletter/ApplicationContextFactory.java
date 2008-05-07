@@ -19,6 +19,7 @@ public class ApplicationContextFactory implements ServletContextAware {
    private static Object initObj = null;
    private static int count = 0;
    private static ApplicationContext context;
+   private static String contextName;
 
    public static void init(Object o) {
       if (count > 0) {
@@ -56,10 +57,16 @@ public class ApplicationContextFactory implements ServletContextAware {
    public void setServletContext(ServletContext context) {
       System.out.println("got it----");
       init(context);
+      context.get
+      contextName = context.getServletContextName();
    }
 
    public static Object getBean(String name){
       return getApplicationContext().getBean(name);
+   }
+
+   public static String getContextName(){
+      return contextName;
    }
 
 }
