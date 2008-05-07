@@ -1,15 +1,15 @@
 <% if (!show_unused) {%>
-	<hr noshade size="3">
+   <hr noshade size="3">
 <% } %>
 <input type="hidden" name="orderColumn" value="<%=orderColumn %>" id="orderColumn">
 <input type="hidden" name="curPage" value="<%=curPage %>">
 <input type="hidden" name="popup" value="<%=popup %>">
 <input type="hidden" name="searchIsOn" value="true">
-<% 
+<%
 if (searchIsOn) {
    Date start = new Date();
    String queryLog = "";
-   
+
    String contentElementConstraint = "";
    StringTokenizer st = new StringTokenizer(selectedTypes,",",false);
    if (st.countTokens() > 0 && (allTypesSelected==false)) {
@@ -46,13 +46,13 @@ if (searchIsOn) {
       long realAge = nu - ( changeAge * 3600 * 24 );
       contentElementConstraint += " contentelement.datumlaatstewijziging > "+realAge;
    }
-   
+
    if (pageNo != 0) {
       // todo: include other possible paths between contentelements and pagina
       String nodes = Integer.toString(pageNo);
       NodeList list = cloud.getList(nodes, "pagina,contentrel,contentelement", "contentelement.number", "", "", null, null, true );
 
-      // The where clause is outside the if, because we have to create a 
+      // The where clause is outside the if, because we have to create a
       // where clause when a page is selected
       if (contentElementConstraint.length() > 0) { contentElementConstraint += " AND "; }
       contentElementConstraint += " contentelement.number IN (0";
@@ -65,15 +65,15 @@ if (searchIsOn) {
       }
       contentElementConstraint += ") ";
    }
-	
-	if (show_unused){
-		String unused_items = (String) application.getAttribute("unused_items");
-		contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
-	}
-  
+
+   if (show_unused){
+      String unused_items = (String) application.getAttribute("unused_items");
+      contentElementConstraint = " contentelement.number IN (0, " + unused_items + ") ";
+   }
+
    String objects = "";
    if(!"".equals(contentElementConstraint)||allTypesSelected||show_unused) {
-     	queryLog += ", using cc=" +  (contentElementConstraint.length()>100 ? contentElementConstraint.substring(0,100) + "..." : contentElementConstraint); 
+      queryLog += ", using cc=" +  (contentElementConstraint.length()>100 ? contentElementConstraint.substring(0,100) + "..." : contentElementConstraint);
       NodeList nlObjects = cloud.getList("",
                                  "contentelement",
                                  "contentelement.number",
@@ -133,17 +133,17 @@ if (searchIsOn) {
    boolean foundResults = false;
    // where fields:
    //    - contentelement.otype, contentelement.metatags, contentelement.titel, contentelement.creatiedatum, contentelement.datumlaatstewijziging, contentelement.number
-   //    - users.number, 
+   //    - users.number,
    //    - rubriek.number
-   // orderby fields: 
+   // orderby fields:
    //    -contentelement.titel, contentelement.otype, contentelement.creatiedatum, contentelement.datumlaatstewijziging
    //    -rubriek.naam
-	
-	if(!objects.equals("")) {
+
+   if(!objects.equals("")) {
       queryLog += ", using path=" +  path + " and rc=" + rubriekConstraint;
       %>
       <mm:list nodes="<%= objects %>" path="<%=path%>" orderby="<%=orderColumn%>" constraints="<%=rubriekConstraint%>" id="contentresults">
-			<mm:first>
+         <mm:first>
            <mm:import jspvar="size" vartype="Integer"><mm:size /></mm:import>
            <%
             foundResults = true;
@@ -151,8 +151,8 @@ if (searchIsOn) {
             lowerBound = Math.max(1,curPage-EXTRA_PAGES);
             pages = Math.round( (float)sizeint/((float)AMOUNT_OF_RESULTS) +0.49f);
             upperBound = Math.min(pages,curPage+EXTRA_PAGES);
-   
-            if (lowerBound>1) { 
+
+            if (lowerBound>1) {
               pagesLinkString += "<a href=\"#\" onClick=\"javascript:pageIterate(1);\"><< </a>&nbsp;";
             }
             if (curPage>1) {
@@ -163,21 +163,21 @@ if (searchIsOn) {
           </mm:import>
         </mm:first>
         <mm:index jspvar="index" vartype="Integer">
-        <% 
+        <%
         int indexint = index.intValue();
         // First element of page
-        if (indexint % AMOUNT_OF_RESULTS == 1) { 
+        if (indexint % AMOUNT_OF_RESULTS == 1) {
           %>
           <mm:field name="<%= fieldname %>" jspvar="contentTitel" vartype="String"> <% charsStartPage = contentTitel.substring(0, Math.min(2, contentTitel.length())); %>  </mm:field>
           <% pageInIteration++;
         }
         // Last element of page
-        if (indexint % AMOUNT_OF_RESULTS == 0 || indexint == sizeint) { 
+        if (indexint % AMOUNT_OF_RESULTS == 0 || indexint == sizeint) {
           %>
           <mm:field name="<%= fieldname %>" jspvar="contentTitel" vartype="String"> <% charsEndPage = contentTitel.substring(0, Math.min(2, contentTitel.length())); %>  </mm:field>
           <%
            pagesLinkString += "<a href=\"#\" class=\"nav\" onClick=\"javascript:pageIterate(" + pageInIteration + ");\">";
-           if (pageInIteration == curPage) { pagesLinkString += "<font color=\"#FF0000\">"; } 
+           if (pageInIteration == curPage) { pagesLinkString += "<font color=\"#FF0000\">"; }
            if (orderColumn.indexOf("titel") > -1) {
               pagesLinkString += charsStartPage + "-" + charsEndPage;
            }
@@ -204,11 +204,19 @@ if (searchIsOn) {
    } else {
       %><mm:list nodes="" path="<%=path%>" orderby="<%=orderColumn%>" constraints="<%=rubriekConstraint%>" max="0" id="contentresults" /><%
    }
-   int counter = 0; 
+   int counter = 0;
    %>
    <mm:import id="pagesString">Pagina's <b> <%= pagesLinkString %> </b></mm:import>
    <mm:list referid="contentresults">
-      <% counter++; %>
+      <%
+         String thisType = "";
+         counter++;
+      %>
+
+      <mm:field name="contentelement.otype" jspvar="otype" vartype="String" >
+      <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
+      </mm:field>
+
       <mm:first>
          <p><b>Er zijn <mm:size/> content elementen gevonden</b></p>
          <table border="0" cellpadding="0" cellspacing="0" width="876" height="73">
@@ -221,11 +229,19 @@ if (searchIsOn) {
                </td>
             </tr>
          </table>
-         <table border="0" cellpadding="0" cellspacing="0" width="876" height="73">
+         <table border="0" cellpadding="0" cellspacing="0" width="976" height="73">
             <tr>
                <th style="width:60;height:13;"></th>
                <th style="width:60;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("contentelement.otype")'>Type</a><% if("contentelement.otype".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %>  </th>
                <th style="width:250;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("contentelement.titel")'>Titel</a><% if("contentelement.titel".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %> </th>
+
+            <%
+            if (thisType.equals("medewerkers")) {%>
+            <th style="width:100;height:13;vertical-align:bottom;text-align:left;">
+            Afbeelding?
+            </th>
+               <% } %>
+
                <th style="width:200;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("rubriek.naam")'>Rubriek</a><% if("rubriek.naam".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %> </th>
                <th style="width:90;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("contentelement.creatiedatum")'>Creatie</a><% if("contentelement.creatiedatum".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %> </th>
                <th style="width:90;height:13;vertical-align:bottom;text-align:left;"><a class="th" href="#" onclick='javascript:changeOrder("contentelement.datumlaatstewijziging")'>Geupdate</a><% if("contentelement.datumlaatstewijziging".equals(orderColumn)) { %><img border="0" src="../img/down.gif"> <% } %> </th>
@@ -233,26 +249,25 @@ if (searchIsOn) {
                <th style="width:50;height:13;vertical-align:bottom;text-align:left;">Versie</th>
             </tr>
        </mm:first>
-       <% 
-         if( (counter > (curPage-1)*AMOUNT_OF_RESULTS ) && (counter < curPage*AMOUNT_OF_RESULTS+1) ) { 
-         String thisType = "";
+
+       <%
+         if( (counter > (curPage-1)*AMOUNT_OF_RESULTS ) && (counter < curPage*AMOUNT_OF_RESULTS+1) ) {
+
          String usedIn = "";
          %><mm:field name="contentelement.number" jspvar="contentelement_number" vartype="String" write="false">
-					<% NodeList nl = contentHelper.usedInItems(contentelement_number);
-						if (nl!=null){
-							for (int i = 0; i < nl.size(); i++){
-								usedIn += nl.getNode(i).getNodeManager().getName() + " " + nl.getNode(i).getStringValue("titel") + "\n";
-							}
-						}
-						// todo: not used content elements can not be opened in the editwizard
-						usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit object is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );%>
-				</mm:field>
-				<mm:field name="contentelement.otype" jspvar="otype" vartype="String" >
-               <% thisType = (String) contentHelper.getNameWithOtype(otype); %>
+               <% NodeList nl = contentHelper.usedInItems(contentelement_number);
+                  if (nl!=null){
+                     for (int i = 0; i < nl.size(); i++){
+                        usedIn += nl.getNode(i).getNodeManager().getName() + " " + nl.getNode(i).getStringValue("titel") + "\n";
+                     }
+                  }
+                  // todo: not used content elements can not be opened in the editwizard
+                  usedIn = (usedIn.equals("") ? "style=\"color:red;\" title=\"Dit object is niet in gebruik.\"" : "title=\"Gebruikt in: " +  usedIn + "\"" );%>
             </mm:field>
+
          <tr height="11">
             <td valign="top">
-               <% 
+               <%
                if ("administrator".equalsIgnoreCase(cloud.getUser().getRank())) {
                   %>
                   <img src="../img/remove.gif" alt="Verwijder object" class="button"
@@ -274,12 +289,12 @@ if (searchIsOn) {
                 <%= thisType %>
             </td>
             <td valign="top">
-              <% 
+              <%
               if (!filterProductlinks) { %>
                  <a href="#" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= thisType %>');" <%= usedIn %>>
                      <mm:field name="contentelement.titel"/>
                  </a>
-                 <% 
+                 <%
               } else {
                   boolean showLine = true;
                   %>
@@ -292,12 +307,35 @@ if (searchIsOn) {
                       <a href="#" onClick="javascript:doForward(<mm:field name="contentelement.number" write="true"/>,'<%= thisType %>');" <%= usedIn %>>
                         <mm:field name="contentelement.titel" />
                      </a>
-                     <%  
-                  } else { 
+                     <%
+                  } else {
                      %><mm:field name="contentelement.titel" /><%
                   }
                } %>
             </td>
+
+          <%
+          if (thisType.equals("medewerkers")) {%>
+            <td>
+            <% boolean hasPicture = false; %>
+
+            <mm:field name="contentelement.number" jspvar="contentNumber" write="false" vartype="String">
+               <mm:listcontainer nodes="<%= contentNumber %>" path="medewerkers,posrel,images">
+                  <mm:list max="1">
+                     <% hasPicture = true; %>
+                  </mm:list>
+               </mm:listcontainer>
+            </mm:field>
+
+            <% if (hasPicture) { %>
+               ja
+            <% } else { %>
+               nee
+            <% } %>
+
+            </td>
+            <% } %>
+            
             <td valign="top">
                 <mm:field name="rubriek.naam" />
             </td>
@@ -305,14 +343,14 @@ if (searchIsOn) {
                 <mm:field name="contentelement.creatiedatum" jspvar="date" vartype="String">
                   <mm:isnotempty>
                     <mm:time time="<%=date%>" format="dd-MM-yyyy"/>
-                  </mm:isnotempty>                    
+                  </mm:isnotempty>
                 </mm:field>
             </td>
             <td valign="top">
                 <mm:field name="contentelement.datumlaatstewijziging" jspvar="date" vartype="String">
                   <mm:isnotempty>
                     <mm:time time="<%=date%>" format="dd-MM-yyyy"/>
-                  </mm:isnotempty>                    
+                  </mm:isnotempty>
                 </mm:field>
             </td>
             <td valign="top">
@@ -352,13 +390,13 @@ if (searchIsOn) {
          </table>
       </mm:last>
    </mm:list>
-   <% 
+   <%
    if (!foundResults) {
       %>
       <p><b>Er zijn geen content elementen gevonden</b></p>
       <%
    }
    Date end = new Date();
-   log.info("Search for " + cloud.getUser().getIdentifier() + " took " + (end.getTime()-start.getTime())/1000 + " sec " + queryLog);  
+   log.info("Search for " + cloud.getUser().getIdentifier() + " took " + (end.getTime()-start.getTime())/1000 + " sec " + queryLog);
 } // searchIsOn
 %>
