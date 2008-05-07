@@ -4,6 +4,8 @@ import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.services.*;
 import com.finalist.newsletter.util.DateUtil;
+import com.finalist.newsletter.ApplicationContextFactory;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,8 +22,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
-		NewsletterService newsletterService = NewsletterServiceFactory
-				.getNewsletterService();
+		NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
 		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
 
 		addBlankNewsletter(newsletters);
@@ -35,10 +36,8 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		NewsletterService newsletterService = NewsletterServiceFactory
-				.getNewsletterService();
-		StatisticService service = NewsletterServiceFactory
-				.getStatisticService();
+		NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
+		StatisticService service = NewsletterServiceFactory.getStatisticService();
 		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
 		addBlankNewsletter(newsletters);
 		request.setAttribute("newsletters", newsletters);
@@ -104,7 +103,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 
 		for (StatisticResult s : records) {
 			s.setShowingdate(DateUtil.parser(s.getLogdate()));
-			s.setName(newsletterService.getNewsletterName(s.getNewsletterId()));
+			s.setName(newsletterService.getNewsletterName(Integer.toString(s.getNewsletterId())));
 		}
 
 	}

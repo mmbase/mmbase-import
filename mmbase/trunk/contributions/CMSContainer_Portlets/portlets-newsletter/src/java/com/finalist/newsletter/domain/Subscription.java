@@ -110,4 +110,25 @@ public class Subscription {
    public void setPausedTill(Date pausedTill) {
       this.pausedTill = pausedTill;
    }
+
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+
+      Subscription that = (Subscription) o;
+
+      if (newesletterId != null ? !newesletterId.equals(that.newesletterId) : that.newesletterId != null) {
+         return false;
+      }
+
+      return true;
+   }
+
+   public int hashCode() {
+      return 31 * (newesletterId != null ? newesletterId.hashCode() : 0);
+   }
 }

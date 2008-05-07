@@ -1,21 +1,10 @@
 package com.finalist.newsletter.services;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.util.SearchUtil;
-import org.mmbase.cache.CachePolicy;
-
-import com.finalist.newsletter.cao.impl.NewsletterSubscriptionCAOImpl;
-import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.cmsc.services.community.person.Person;
+
+import java.util.List;
+import java.util.Set;
 
 public interface NewsletterSubscriptionServices {
 
@@ -57,5 +46,15 @@ public interface NewsletterSubscriptionServices {
 
    public List<Subscription> getAllSubscription();
 
-   public List<Subscription> getSubscriptionsByNewsletterId(int i);
+   public List<Subscription> getSubscriptionsByNewsletterId(String i);
+
+   Set<Subscription> getSubscriptions(String newsletterId, String name, String email);
+
+   public List<Person> getAllSubscribers();
+
+   public List<Person> getAllSubscribers(String name, String email);
+
+   public List<Subscription> getSubscriptionBySubscriber(String newsletterid);
+
+   public Subscription getSubscription(int sbId, int nId);
 }
