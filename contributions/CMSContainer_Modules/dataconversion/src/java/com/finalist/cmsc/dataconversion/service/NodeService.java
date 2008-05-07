@@ -88,6 +88,10 @@ public class NodeService {
             Node desNode = cloud.getNode(dnumber.intValue());
             type = data.getDestinationRelationType();
             Relation relate = RelationUtil.createRelation(sourceNode, desNode, data.getDestinationRelationType());
+            if(sourceNode.getNodeManager().getName().equals("contentchannel") && desNode.getNodeManager().getName().equals("article")) {
+               Relation creationRelation  = RelationUtil.createRelation(desNode, sourceNode, "creationrel");
+               creationRelation.commit();
+            }
             if(holder.getCollection() != null) {
                Elements[] elements = new Elements[0];
                elements = holder.getCollection().toArray(elements);
