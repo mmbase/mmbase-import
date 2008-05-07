@@ -108,8 +108,29 @@ if(!action.equals("print")) {
         
         if(!searchResults.equals("")) { 
             %><mm:list nodes="<%= searchResults %>" path="medewerkers" orderby="medewerkers.firstname,medewerkers.lastname" directions="UP,UP"
-                fields="medewerkers.number,medewerkers.firstname,medewerkers.lastname,medewerkers.suffix"
-            ><mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"
+                fields="medewerkers.number,medewerkers.firstname,medewerkers.lastname,medewerkers.suffix">
+            <%String slistSize = ""; %>
+            <mm:size jspvar="listSize" vartype="String" write="false"><%slistSize = listSize; %></mm:size>
+            <% 
+               if (slistSize.equals("1") && (request.getParameter("employee") == null)) { 
+            %>
+               <mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false">
+               <%
+                  String toUrl = "/nmintra/smoelenboek.jsp" + templateQueryString 
+                        + "&department=" +  departmentId 
+                        + "&program=" +  programId
+                        + "&name=" +  java.net.URLEncoder.encode(nameId) 
+                        + "&firstname=" +  java.net.URLEncoder.encode(firstnameId) 
+                        + "&lastname=" +  java.net.URLEncoder.encode(lastnameId)
+                        + "&description=" +  java.net.URLEncoder.encode(descriptionId)
+                        + "&employee=" +  employees_number; 
+                  
+                  response.sendRedirect(toUrl);
+               %>
+               </mm:field>
+    
+            <% } else { %>
+            <mm:field name="medewerkers.number" jspvar="employees_number" vartype="String" write="false"
             ><mm:first>
                 <div class="smoelenboeklist" id="smoelenboeklist"><table cellpadding="0" cellspacing="0" align="left">
                 <tr>
@@ -134,7 +155,10 @@ if(!action.equals("print")) {
                 </table></div>
             </mm:last
         ></mm:field
-        ></mm:list><%
+        >
+            <% } %>
+        
+        </mm:list><%
 
         } else { 
 
