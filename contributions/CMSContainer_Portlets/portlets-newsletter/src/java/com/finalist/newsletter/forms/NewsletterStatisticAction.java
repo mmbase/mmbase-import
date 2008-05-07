@@ -37,7 +37,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 			throws Exception {
 
 		NewsletterService newsletterService = (NewsletterService) ApplicationContextFactory.getBean("newsletterServices");
-		StatisticService service = NewsletterServiceFactory.getStatisticService();
+		StatisticService service = (StatisticService) ApplicationContextFactory.getBean("statisticService");
 		List<Newsletter> newsletters = newsletterService.getAllNewsletter();
 		addBlankNewsletter(newsletters);
 		request.setAttribute("newsletters", newsletters);

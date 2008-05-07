@@ -2,10 +2,10 @@ package com.finalist.portlets.newsletter;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.portlets.JspPortlet;
+import com.finalist.cmsc.services.community.person.PersonService;
 import com.finalist.newsletter.domain.Subscription;
-import com.finalist.newsletter.services.CommunityModuleAdapter;
-import com.finalist.newsletter.services.NewsletterServiceFactory;
-import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+import com.finalist.newsletter.services.*;
+import com.finalist.newsletter.ApplicationContextFactory;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -17,12 +17,6 @@ import java.util.ArrayList;
 
 public class NewsletterSubscriptionPortlet extends JspPortlet {
    private static Logger log = Logging.getLoggerInstance(NewsletterSubscriptionPortlet.class.getName());
-   private static final String HAS_SUBSCRIPTIONS = "hassubscriptions";
-   private static final String NEWSLETTERSUBSCRIPTIONS = "newslettersubscriptions";
-   private static final String ACTION_SUBSCRIBE = "subscribe";
-   private static final String ACTION_CHANGE = "change";
-   private static final String ACTION_TERMINATE = "terminate";
-
    private static final String ALLOWED_NEWSLETTERS = "allowednewsletters";
 
    @Override
@@ -39,7 +33,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
-      NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
       int userId = CommunityModuleAdapter.getCurrentUserId();
       String[] newsletters = preferences.getValues(ALLOWED_NEWSLETTERS, null);
 
@@ -86,7 +80,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    }
 
    private List<Subscription> getSubscriptionsFromParameter(RenderRequest request, Subscription.STATUS status) {
-      NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
 
       List<Subscription> subscriptions = new ArrayList<Subscription>();
       if (null != request.getParameterValues("subscriptions")) {
@@ -133,7 +127,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    }
 
    private void processTermination(ActionRequest request, ActionResponse response) {
-      NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
       String confirmation = request.getParameter("confirm_unsubscribe");
 
       String[] subscriptionIds = request.getParameterValues("subscriptions");
@@ -150,7 +144,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
    }
 
    private void processResume(ActionRequest request, ActionResponse response) {
-      NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
       String confirmation = request.getParameter("confirm_resume");
 
       String[] subscriptionIds = request.getParameterValues("subscriptions");
@@ -168,7 +162,7 @@ public class NewsletterSubscriptionPortlet extends JspPortlet {
 
    private void processPause(ActionRequest request, ActionResponse response) {
 
-      NewsletterSubscriptionServices services = NewsletterServiceFactory.getNewsletterSubscriptionServices();
+      NewsletterSubscriptionServices services = (NewsletterSubscriptionServices) ApplicationContextFactory.getBean("subscriptionServices");
       String duration = request.getParameter("timeduration");
       String durationunit = request.getParameter("durationunit");
       String resumeDate = request.getParameter("resumeDate");

@@ -1,25 +1,31 @@
 package com.finalist.newsletter.forms;
 
-import com.finalist.newsletter.services.CommunityModuleAdapter;
-import com.finalist.newsletter.services.NewsletterServiceFactory;
-import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+import com.finalist.newsletter.services.*;
+import com.finalist.cmsc.services.community.person.PersonService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
+import org.springframework.web.struts.DispatchActionSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SubscribeAction extends DispatchAction {
+public class SubscribeAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscribeAction.class);
+
+   NewsletterSubscriptionServices service;
+
+   protected void onInit() {
+      super.onInit();
+      service = (NewsletterSubscriptionServices) getWebApplicationContext().getBean("subscriptionServices");
+   }
 
    public ActionForward modifyStatus(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
          throws Exception {
 
-      NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
       int userId = CommunityModuleAdapter.getCurrentUserId();
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
 
@@ -36,7 +42,6 @@ public class SubscribeAction extends DispatchAction {
 
    public ActionForward modifyFormat(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
          throws Exception {
-      NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
       int userId = CommunityModuleAdapter.getCurrentUserId();
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
       String format = request.getParameter("format");
@@ -51,7 +56,6 @@ public class SubscribeAction extends DispatchAction {
    public ActionForward modifyTag(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
          throws Exception {
 
-      NewsletterSubscriptionServices service = NewsletterServiceFactory.getNewsletterSubscriptionServices();
       Boolean hasSelect = Boolean.parseBoolean(request.getParameter("select"));
       int userId = CommunityModuleAdapter.getCurrentUserId();
       int newsletterId = Integer.parseInt(request.getParameter("newsletterId"));
