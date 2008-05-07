@@ -1,27 +1,118 @@
 <%@include file="globals.jsp" %>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
+
 <cmscedit:head title="reactions.title">
-	<fmt:message key="subscriptionoverview.title" />
 </cmscedit:head>
 
-<br><br>
+<div class="tabs">
+   <div class="tab_active">
+      <div class="body">
+         <div>
+            <a href="#"><fmt:message key="newsletterdetail.title"/></a>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="editor">
+   <c:if test="${fn:length(results) gt pagesize || not empty param.name || not empty param.email }">
+   <div class="body">
+      <form method="POST" name="form" action="SubscriptionManagement.do">
+         <input type="hidden" name="action" value="listSubscribers"/>
+         <table>
+            <tr>
+               <td style="width: 150px"><fmt:message key="subscriptiondetail.fullname"/></td>
+               <td>
+                  <input type="text" name="name" value="${param.name}" style="width: 250px"/>
+               </td>
+            </tr>
+            <tr>
+               <td style="width: 150px"><fmt:message key="subscriptiondetail.emailaddress"/></td>
+               <td>
+                  <input type="text" name="email" value="${param.email}" style="width: 250px"/>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="2">
+                  <input type="submit" name="submitButton"
+                         onclick="document.forms['form'].submit()" value="Search"/>
+               </td>
+            </tr>
+         </table>
+      </form>
 
-<table width="50%">
-	<tr>
-		<th align="left"><fmt:message key="subscriptionoverview.username" /></tk>
-		<th align="left"><fmt:message key="subscriptionoverview.status" /></tk>
-		<th align="left"><fmt:message key="subscriptionoverview.mimetype" /></tk>
-		<th align="left"><fmt:message key="subscriptionoverview.numberofnewsletters" /></tk>
-		<th align="left"><fmt:message key="subscriptionoverview.numberofthemes" /></tk>
-	</tr>
-	<c:forEach var="bean" items="${subscriptionoverviewBeans}">
-	<c:url var="url" value="ReportSubscriberSubscriptions.do?name=${bean.userName}" />
-	<tr>
-		<td><a href="${url}"><jsp:getProperty name="bean" property="userName" /></a></td>
-		<td><jsp:getProperty name="bean" property="status" /></td>
-		<td><jsp:getProperty name="bean" property="mimeType" /></td>
-		<td><jsp:getProperty name="bean" property="numberOfNewsletters" /></td>
-		<td><jsp:getProperty name="bean" property="numberOfThemes" /></td>
-	</tr>
-	</c:forEach>
-</table>
+      <div class="ruler_green">
+         <div>Reactions found</div>
+      </div>
+      </c:if>
+      <div class="body">
+         <form method="POST" name="operationform" action="SubscriptionImportExportAction.do">
+            <input type="hidden" name="action" value="export"/>
+            <input type="hidden" name="type" value="person"/>
+            <pg:pager maxPageItems="${pagesize}" url="SubscriptionManagement.do">
+               <pg:param name="action" value="listSubscribers"/>
+               <pg:param name="name" value="${param.name}"/>
+               <pg:param name="email" value="${param.email}"/>
+               <table>
+                  <thead>
+                     <th></th>
+                     <th><fmt:message key="subscriptionoverview.username"/></th>
+                     <th><fmt:message key="subscriptiondetail.fullname"/></th>
+                     <th><fmt:message key="subscriptiondetail.emailaddress"/></th>
+                  </thead>
+                  <tbody>
+                        <%--@elvariable id="results" type="java.util.List"--%>
+                     <c:forEach items="${results}" var="result">
+                        <pg:item>
+                           <tr>
+                              <td><input type="checkbox" name="userId" value="${result.id}"/></td>
+                              <td>
+                                 <a href="SubscriptionManagement.do?action=listSubscriptionByPerson&subsriberId=${result.id}">
+                                       ${result.email}
+                                 </a>
+                              </td>
+                              <td>${result.fullname}</td>
+                              <td>${result.email}</td>
+                           </tr>                                                                                              
+                        </pg:item>
+                     </c:forEach>
+                  </tbody>
+               </table>
+               <%@ include file="pager_index.jsp" %>
+            </pg:pager>
+            <br/>
+            <input type="button" name="submitButton" class="submit"
+                   onclick="exportsubscription()"
+                   value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
+         </form>
+      </div>
+
+   </div>
+</div>
+
+<script>
+   function exportsubscription() {
+      var subscriptions = document.getElementsByName('userId');
+      var hasSelection = false;
+      for (var i = 0; i < subscriptions.length; i ++) {
+         if (subscriptions[i].checked) {
+            hasSelection = true;
+            break;
+         }
+      }
+
+      if (hasSelection) {
+         document.forms['operationform'].submit();
+      }
+      else {
+         alert("You have to select at least one item");
+      }
+
+      return false;
+   }
+</script>
+
+

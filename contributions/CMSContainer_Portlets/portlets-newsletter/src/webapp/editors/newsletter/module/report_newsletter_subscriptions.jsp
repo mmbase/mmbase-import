@@ -18,16 +18,22 @@
    </div>
 </div>
 <div class="editor">
-   <c:if test="${fn:length(results) gt pagesize || not empty param.query_parameter_name || not empty param.query_parameter_email }">
+   <c:if test="${fn:length(results) gt pagesize || not empty param.name || not empty param.email }">
    <div class="body">
       <form method="POST" name="form" action="SubscriptionManagement.do">
-         <input type="hidden" name="action" value="newsletterDetail"/>
-         <table border="0">
+         <input type="hidden" name="action" value="listSubscription"/>
+         <input type="hidden" name="newsletterId" value="${param.newsletterId}"/>
+         <table>
             <tr>
-               <td style="width: 150px">Title</td>
+               <td style="width: 150px"><fmt:message key="subscriptiondetail.fullname"/></td>
                <td>
-                  <input type="text" name="query_parameter_name" value="${param.query_parameter_name}"
-                         style="width: 250px"/>
+                  <input type="text" name="name" value="${param.name}" style="width: 250px"/>
+               </td>
+            </tr>
+            <tr>
+               <td style="width: 150px"><fmt:message key="subscriptiondetail.emailaddress"/></td>
+               <td>
+                  <input type="text" name="email" value="${param.email}" style="width: 250px"/>
                </td>
             </tr>
             <tr>
@@ -44,18 +50,20 @@
       </div>
       </c:if>
       <div class="body">
-         <form method="POST" name="operationform" action="SubscriptionManagement.do">
-            <input type="hidden" name="action" value="exportSusbscriptions"/>
+         <form method="POST" name="operationform" action="SubscriptionImportExportAction.do">
+            <input type="hidden" name="action" value="export"/>
             <input type="hidden" name="type" value="subscription"/>
             <pg:pager maxPageItems="${pagesize}" url="SubscriptionManagement.do">
-               <pg:param name="action" value="newsletterOverview"/>
-               <pg:param name="query_parameter_title" value="${param.query_parameter_title}"/>
+               <pg:param name="action" value="listSubscription"/>
+               <pg:param name="name" value="${param.name}"/>
+               <pg:param name="name" value="${param.name}"/>
+               <pg:param name="newsletterId" value="${param.newsletterId}"/>
                <table>
                   <thead>
                      <th></th>
-                     <th>user name</th>
-                     <th>full name</th>
-                     <th>email</th>
+                     <th><fmt:message key="subscriptionoverview.username"/></th>
+                     <th><fmt:message key="subscriptiondetail.fullname"/></th>
+                     <th><fmt:message key="subscriptiondetail.emailaddress"/></th>
                   </thead>
                   <tbody>
                         <%--@elvariable id="results" type="java.util.List"--%>
@@ -63,7 +71,9 @@
                         <pg:item>
                            <tr>
                               <td><input type="checkbox" name="subscriptionId" value="${result.id}"/></td>
-                              <td>${result.username}</td>
+                              <td>
+                                    ${result.email}
+                              </td>
                               <td>${result.fullname}</td>
                               <td>${result.email}</td>
                            </tr>
@@ -73,18 +83,36 @@
                </table>
                <%@ include file="pager_index.jsp" %>
             </pg:pager>
-
-            <ul>
-               <li>
-                  <input type="submit" name="submitButton"
-                         onclick="document.forms['operationform'].submit()"
-                         value="Export subscriptions"/>
-               </li>
-            </ul>
+            <br/>
+            <input type="button" name="submitButton" class="submit"
+                   onclick="exportsubscription()"
+                   value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
          </form>
       </div>
 
    </div>
 </div>
+
+<script>
+   function exportsubscription() {
+      var subscriptions = document.getElementsByName('subscriptionId');
+      var hasSelection = false;
+      for (var i = 0; i < subscriptions.length; i ++) {
+         if (subscriptions[i].checked) {
+            hasSelection = true;
+            break;
+         }
+      }
+
+      if (hasSelection) {
+         document.forms['operationform'].submit();
+      }
+      else {
+         alert("You have to select at least one item");
+      }
+
+      return false;
+   }
+</script>
 
 

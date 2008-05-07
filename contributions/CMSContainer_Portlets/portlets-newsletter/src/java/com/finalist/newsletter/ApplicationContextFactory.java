@@ -58,5 +58,8 @@ public class ApplicationContextFactory implements ServletContextAware {
       init(context);
    }
 
+   public static Object getBean(String name){
+      return getApplicationContext().getBean(name);
+   }
 
 }

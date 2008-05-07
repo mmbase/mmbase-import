@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +54,23 @@ public class PersonHibernateService extends HibernateService implements PersonSe
 
    /** {@inheritDoc} */
    @Transactional
+   public List<Person> getLikePersons(Person example) {
+      if (example == null) {
+         return Collections.emptyList();
+      }
+
+      Example userExample = Example.create(example).
+            enableLike(MatchMode.ANYWHERE).
+            excludeZeroes().
+            ignoreCase();
+      List personList = getSession().createCriteria(Person.class).add(userExample).list();
+      return personList;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Transactional
    public Person createPerson(String firstName, String infix, String lastName, Long authenticationId) {
       if (firstName == null) {
          throw new IllegalArgumentException("Firstname is null. ");
@@ -81,6 +99,10 @@ public class PersonHibernateService extends HibernateService implements PersonSe
    public void updatePerson(Person person) {
       getSession().saveOrUpdate(person);
       getSession().flush();
+   }
+    @Transactional
+   public List<Person> getAllPersons() {
+      return getSession().createCriteria(Person.class).list();
    }
 
    /** {@inheritDoc} */

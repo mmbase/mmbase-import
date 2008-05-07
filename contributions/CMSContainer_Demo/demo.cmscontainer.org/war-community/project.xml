@@ -177,14 +177,20 @@
             </properties>
         </dependency>
 
-<!-- Newsletter bundle - uncomment to enable -->
-        <dependency>
-            <groupId>finalist</groupId>
-            <artifactId>cmsc-portlets-newsletter</artifactId>
-            <version>${cmscportlets.version}</version>
-            <type>mmbase-module</type>
-        </dependency>
-
+      <!-- Newsletter bundle - uncomment to enable -->
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-portlets-newsletter</artifactId>
+         <version>${cmscportlets.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+      <!-- XStream dependencies -->
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <version>1.2</version>
+         <type>jar</type>
+      </dependency>
 <!--begin dependency by JForum portlet. -->
 <!--
         <dependency>

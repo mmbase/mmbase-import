@@ -35,6 +35,16 @@ public interface PersonService {
     */
    List<Person> getPersons(Person example);
 
+   /**
+    * Get a list of matching persons that like the given example. The fields
+    * that are set on the example Person are the criteria for the search.
+    *
+    * @param example
+    *           the example person
+    * @return a list of persons that like the given example.
+    */
+   List<Person> getLikePersons(Person example);
+
    Person getPersonByAuthenticationId(Long authenticationId);
 
    Person createPerson(String firstName, String infix, String lastName, Long authenticationId);
@@ -43,6 +53,8 @@ public interface PersonService {
     * Save or update the person to the database
     */
    void updatePerson(Person person);
+
+   List<Person> getAllPersons();
 
    boolean deletePersonByAuthenticationId(Long userId);
 

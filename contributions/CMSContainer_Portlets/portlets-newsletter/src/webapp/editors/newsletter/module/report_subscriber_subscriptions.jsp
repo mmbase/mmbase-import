@@ -1,67 +1,86 @@
 <%@include file="globals.jsp" %>
 
-<cmscedit:head title="reactions.title">
-	<fmt:message key="subscriptiondetail.title" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+<%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
+
+<cmscedit:head title="ewsletter.subscription.manage.newsletteroverview">
 </cmscedit:head>
 
-<br><br>
+<div class="tabs">
+   <div class="tab_active">
+      <div class="body">
+         <div>
+            <a href="#"><fmt:message key="newsletteroverview.title"/></a>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="editor">
+   <c:if test="${fn:length(results) gt pagesize || not empty param.title }">
+   <div class="body">
+      <form method="POST" name="form" action="SubscriptionManagement.do">
+         <input type="hidden" name="action" value="newsletterOverview"/>
+         <table border="0">
+            <tr>
+               <td style="width: 150px">Title</td>
+               <td><input type="text" name="title" value="${param.title}" style="width: 250px"/></td>
+            </tr>
+            <tr>
+               <td colspan="2">
+                  <input type="submit" name="submitButton" onclick="document.forms['form'].submit()" value="Search"/>
+               </td>
+            </tr>
+         </table>
+      </form>
 
-<jsp:useBean id="subscriptionDetailBean" scope="request" class="com.finalist.newsletter.module.bean.SubscriptionDetailBean" />
-<c:set var="userName" value="${subscriptionDetailBean.userName}" />
+      <div class="ruler_green">
+         <div><fmt:message key="newsletteroverview.title"/></div>
+      </div>
+      </c:if>
 
-<mm:cloud>
-<table width="50%">
-	<tr>
-		<th align="left"><fmt:message key="subscriptiondetail.username" /></tk>
-		<td><jsp:getProperty name="subscriptionDetailBean" property="userName" /></td>
-	</tr>
-	<tr>
-		<th align="left"><fmt:message key="subscriptiondetail.emailaddress" /></tk>
-		<td><jsp:getProperty name="subscriptionDetailBean" property="emailAddress" /></td>
-	</tr>
-	<tr>
-		<th align="left"><fmt:message key="subscriptiondetail.status" /></tk>
-		<td>
-			<cmsc:select var="mimetype">
-				<c:forEach var="m" items="${bean.availableMimeTypes}">
-					<cmsc:option name="${m}" value="${m}" />
-				</c:forEach>
-			</cmsc:select>
-		</td>
-	</tr>
-	<tr>
-		<th align="left"><fmt:message key="subscriptiondetail.mimetype" /></tk>
-		<td>
-			<cmsc:select var="status">
-				<c:forEach var="s" items="${bean.availableStatusOptions}">
-					<cmsc:option name="${s}" value="${s}" />
-				</c:forEach>
-			</cmsc:select>
-		</td>
+      <div class="body">
+         <c:choose>
+            <c:when test="${fn:length(results) gt 0}">
+               <form method="POST" name="operationform" action="SubscriptionManagement.do">
+                  <input type="hidden" name="action" id="action"/>
+                  <pg:pager maxPageItems="${pagesize}" url="SubscriptionManagement.do">
+                     <pg:param name="action" value="newsletterOverview"/>
+                     <pg:param name="query_parameter_title" value="${param.query_parameter_title}"/>
+                     <table>
+                        <thead>
+                           <th></th>
+                           <th><fmt:message key="newsletteroverview.newsletter"/></th>
+                           <th><fmt:message key="globalstats.total.publications"/></th>
+                        </thead>
+                        <tbody>
+                              <%--@elvariable id="results" type="java.util.List"--%>
+                           <c:forEach items="${results}" var="result">
+                              <pg:item>
+                                 <tr>
+                                    <td><input type="checkbox" name="newsletterIds" value="${result.id}"/></td>
+                                    <td>
+                                          ${result.newsletter}
+                                    </td>
+                                    <td>${result.status}</td>
+                                 </tr>
+                              </pg:item>
+                           </c:forEach>
+                        </tbody>
+                     </table>
+                     <%@ include file="pager_index.jsp" %>
+                     <br>
+                  </pg:pager>
+               </form>
+            </c:when>
+            <c:otherwise>
+               <fmt:message key="error.no_items"/>
+            </c:otherwise>
+         </c:choose>
+      </div>
 
-	</tr>
-</table>
-<br><br>
-<table width="75%">
-	<mm:listnodes type="newsletter">
-	<mm:field name="number" jspvar="newsletternumber" write="false" />
-		<tr>
-			<td width="10px"><cmsc:checkbox var="newslettersubscriptions" value="${newsletternumber}" />
-			<td colspan="2"><mm:field name="title" write="true" />	</td>
-		</tr>		
-		<mm:relatednodes type="newslettertheme" role="newslettertheme">
-		<mm:field name="number" jspvar="themenumber" write="false" />
-		<tr><td>&nbsp;</td>
-			<td width="10px"><cmsc:checkbox var="themesubscriptions" value="${themenumber}" />
-			<td><mm:field name="title" write="true" />	</td>
-		</tr>
-		</mm:relatednodes>
-	</mm:listnodes>
-</table>
-</mm:cloud>
+   </div>
+</div>
 
-<br /><a href="SubscriptionAction.do?action=update&username=${userName}"><fmt:message key="subscriptiondetail.link.update" /></a>
-<br /><a href="SubscriptionAction.do?action=pause&username=${userName}"><fmt:message key="subscriptiondetail.link.pause" /></a>
-<br /><a href="SubscriptionAction.do?action=resume&username=${userName}"><fmt:message key="subscriptiondetail.link.resume" /></a>
-<br /><a href="SubscriptionAction.do?action=unsubscribe&username=${userName}"><fmt:message key="subscriptiondetail.link.unsubscribe" /></a>
-<br /><a href="SubscriptionAction.do?action=terminate&username=${userName}"><fmt:message key="subscriptiondetail.link.terminate" /></a>
+

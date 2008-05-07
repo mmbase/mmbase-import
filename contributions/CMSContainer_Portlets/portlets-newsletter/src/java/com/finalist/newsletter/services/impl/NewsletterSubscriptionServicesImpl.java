@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 
 import com.finalist.newsletter.cao.NewsletterCAO;
@@ -16,19 +17,17 @@ import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.DateUtil;
 import com.finalist.newsletter.util.NewsletterSubscriptionUtil;
+import com.finalist.cmsc.services.community.person.PersonService;
+import com.finalist.cmsc.services.community.person.Person;
 
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices {
 
-   NewsletterSubscriptionCAO subscriptinCAO;
-   NewsletterCAO newsletterCAO;
-   NewsletterService newsletterService;
-
    private static Log log = LogFactory.getLog(NewsletterSubscriptionServicesImpl.class);
 
-   public void setSubscriptinCAO(NewsletterSubscriptionCAO subscriptinCAO) {
-      this.subscriptinCAO = subscriptinCAO;
-
-   }
+   NewsletterSubscriptionCAO subscriptionCAO;
+   NewsletterCAO newsletterCAO;
+   NewsletterService newsletterService;
+   PersonService personService;
 
    public void setNewsletterCAO(NewsletterCAO newsletterCAO) {
       this.newsletterCAO = newsletterCAO;
@@ -38,21 +37,29 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       this.newsletterService = newsletterService;
    }
 
+   public void setPersonService(PersonService personService) {
+      this.personService = personService;
+   }
+
+   public void setSubscriptionCAO(NewsletterSubscriptionCAO subscriptionCAO) {
+      this.subscriptionCAO = subscriptionCAO;
+   }
+
    public List<Subscription> getSubscriptionList(String[] allowedLetters, int userId) {
 
       List<Subscription> subscriptionList = new ArrayList<Subscription>();
-      int newsletterId;
-      for (int i = 0; i < allowedLetters.length; i++) {
-         newsletterId = Integer.parseInt(allowedLetters[i]);
-         subscriptionList.add(getSubscription(newsletterId, userId));
+      for (String allowedLetter : allowedLetters) {
+         subscriptionList.add(getSubscription(allowedLetter, Integer.toString(userId)));
       }
       return subscriptionList;
    }
 
-   private Subscription getSubscription(int newsletterId, int userId) {
+   private Subscription getSubscription(String newsletterId, String userId) {
+      int nId = Integer.parseInt(newsletterId);
+      int uId = Integer.parseInt(userId);
 
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
-      Newsletter newsletter = newsletterCAO.getNewsletterById(newsletterId);
+      Subscription subscription = subscriptionCAO.getSubscription(nId, uId);
+      Newsletter newsletter = newsletterCAO.getNewsletterById(nId);
 
       if (subscription == null) {
          subscription = new Subscription();
@@ -93,7 +100,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public void changeStatus(int userId, int newsletterId) {
       log.debug(String.format("user % change subscribe status on %s", userId, newsletterId));
 
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
+      Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
 
       if (STATUS.ACTIVE.equals(subscription.getStatus())) {
          subscription.setStatus(STATUS.INACTIVE);
@@ -101,11 +108,11 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       else {
          subscription.setStatus(STATUS.ACTIVE);
       }
-      subscriptinCAO.modifySubscriptionStauts(subscription);
+      subscriptionCAO.modifySubscriptionStauts(subscription);
    }
 
    public void pause(String subscriptionId, String duration, String durationunit) {
-      Subscription subscription = subscriptinCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
+      Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
 
       subscription.setStatus(STATUS.PAUSED);
       if (null != duration) {
@@ -113,7 +120,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
          subscription.setPausedTill(date);
       }
 
-      subscriptinCAO.updateSubscription(subscription);
+      subscriptionCAO.updateSubscription(subscription);
    }
 
 
@@ -121,7 +128,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
       log.debug(String.format("Pasue subscription %s till %s", subscriptionId, resumeDate));
 
-      Subscription subscription = subscriptinCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
+      Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
 
       subscription.setStatus(STATUS.PAUSED);
       if (null != resumeDate) {
@@ -129,13 +136,13 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
          subscription.setPausedTill(date);
       }
 
-      subscriptinCAO.updateSubscription(subscription);
+      subscriptionCAO.updateSubscription(subscription);
    }
 
 
    public boolean hasSubscription(int userId) {
 
-      List<Node> list = subscriptinCAO.querySubcriptionByUser(userId);
+      List<Node> list = subscriptionCAO.querySubcriptionByUser(userId);
       if (0 == list.size()) {
          return false;
       }
@@ -146,7 +153,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
    public void selectTermInLetter(int userId, int newsletterId, int termId) {
       log.debug("Add term " + termId + " to user" + userId + "'s newsletter:" + newsletterId);
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
+      Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
       Set<Term> termList = subscription.getTerms();
       Iterator it = termList.iterator();
       for (int i = 0; i < termList.size(); i++) {
@@ -155,13 +162,13 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
             term.setSubscription(true);
          }
       }
-      subscriptinCAO.addSubscriptionTerm(subscription, termId);
+      subscriptionCAO.addSubscriptionTerm(subscription, termId);
 
    }
 
    public void unSelectTermInLetter(int userId, int newsletterId, int termId) {
       log.debug("Remove term " + termId + " to user " + userId + "'s newsletter:" + newsletterId);
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
+      Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
       Set<Term> termList = subscription.getTerms();
       Iterator it = termList.iterator();
       for (int i = 0; i < termList.size(); i++) {
@@ -170,31 +177,31 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
             term.setSubscription(false);
          }
       }
-      subscriptinCAO.removeSubscriptionTerm(subscription, termId);
+      subscriptionCAO.removeSubscriptionTerm(subscription, termId);
    }
 
    public void modifyStauts(int userId, int newsletterId, String status) {
       log.debug("user " + userId + " change subscription status of newsletter " + newsletterId + " to " + status);
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
+      Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
 
       if (null == subscription) {
-         subscriptinCAO.createSubscription(userId, newsletterId);
+         subscriptionCAO.createSubscription(userId, newsletterId);
       }
       else {
          subscription.setStatus(STATUS.valueOf(status));
-         subscriptinCAO.modifySubscriptionStauts(subscription);
+         subscriptionCAO.modifySubscriptionStauts(subscription);
       }
    }
 
    public void modifyFormat(int userId, int newsletterId, String format) {
       log.debug("User " + userId + " modify format of newsletter " + newsletterId + "to " + format);
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
+      Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
       subscription.setMimeType(format);
-      subscriptinCAO.modifySubscriptionFormat(subscription);
+      subscriptionCAO.modifySubscriptionFormat(subscription);
    }
 
    public boolean noSubscriptionRecord(int userId, int newsletterId) {
-      Subscription subscription = subscriptinCAO.getSubscription(newsletterId, userId);
+      Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
       return subscription == null;
    }
 
@@ -205,28 +212,28 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       subscription.setNewsletter(newsletter);
       subscription.setMimeType("text/html");
       subscription.setStatus(STATUS.ACTIVE);
-      subscriptinCAO.addSubscriptionRecord(subscription, userId);
+      subscriptionCAO.addSubscriptionRecord(subscription, userId);
    }
 
    public void resume(String subscriptionId) {
-      Subscription subscription = subscriptinCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
+      Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
       subscription.setStatus(STATUS.ACTIVE);
-      subscriptinCAO.updateSubscription(subscription);
+      subscriptionCAO.updateSubscription(subscription);
    }
 
    public void terminateUserSubscription(String subscriptionId) {
-      Subscription subscription = subscriptinCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
+      Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
       subscription.setStatus(STATUS.INACTIVE);
-      subscriptinCAO.updateSubscription(subscription);
+      subscriptionCAO.updateSubscription(subscription);
    }
 
    public Subscription getSubscription(String sId) {
       int id = Integer.parseInt(sId);
-      return subscriptinCAO.getSubscriptionById(id);
+      return subscriptionCAO.getSubscriptionById(id);
    }
 
    public List<Subscription> getActiveSubscription(int userId) {
-      return subscriptinCAO.getSubscriptionByUserIdAndStatus(userId,STATUS.ACTIVE);
+      return subscriptionCAO.getSubscriptionByUserIdAndStatus(userId, STATUS.ACTIVE);
    }
 
    public int countAllSubscriptions() {
@@ -234,11 +241,11 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    }
 
    public int countSubscriptionByNewsletter(int id) {
-      return subscriptinCAO.getSubscription(id).size();
+      return subscriptionCAO.getSubscription(id).size();
    }
 
    public List<Subscription> getAllSubscription() {
-      List<Node> subscriptionNodes = subscriptinCAO.getAllSubscriptions();
+      List<Node> subscriptionNodes = subscriptionCAO.getAllSubscriptions();
 
       List<Subscription> subscriptions = new ArrayList<Subscription>();
 
@@ -251,8 +258,88 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       return subscriptions;
    }
 
-   public List<Subscription> getSubscriptionsByNewsletterId(int i) {
-      log.debug("Get all subscriptions of newsletter "+i);
-      return subscriptinCAO.getSubscription(i);
+
+
+   public List<Subscription> getSubscriptionsByNewsletterId(String i) {
+      log.debug("Get all subscriptions of newsletter " + i);
+      return subscriptionCAO.getSubscription(Integer.parseInt(i));
+   }
+
+   public Set<Subscription> getSubscriptions(String newsletterId, String name, String email) {
+      Set<String> personIds = getPersonIdSet(name, email);
+
+      Set<Subscription> result = new HashSet<Subscription>();
+
+      System.out.printf("---------------"+personIds.size());
+
+      for (Subscription subscription : getSubscriptionsByNewsletterId(newsletterId)) {
+         if(personIds.contains(subscription.getSubscriberId())){
+            result.add(subscription);
+         }
+      }
+
+      return result;
+   }
+
+   private Set<String> getPersonIdSet(String name, String email) {
+      Set<String> personIds = new HashSet<String>();
+
+      Person person = new Person();
+      if (StringUtils.isNotBlank(name)) {
+         person.setLastName(name);
+      }
+
+      if (StringUtils.isNotBlank(email)) {
+         person.setEmail(email);
+      }
+
+      List<Person> persons = personService.getLikePersons(person);
+      for (Person p : persons) {
+         personIds.add(p.getId().toString());
+      }
+
+      return personIds;
+   }
+
+   public List<Person> getAllSubscribers() {
+
+      List<Person> persons = personService.getAllPersons();
+      removeNoneSubscribers(persons);
+      return persons;
+   }
+
+   private void removeNoneSubscribers(List<Person> persons) {
+      for (int i = 0; i < persons.size(); i++) {
+         Person person = persons.get(i);
+         List subscrioptions = subscriptionCAO.getSubscriptionByUserIdAndStatus(person.getId().intValue(), null);
+         if (subscrioptions.size() < 1) {
+            persons.remove(i);
+         }
+      }
+   }
+
+   public List<Person> getAllSubscribers(String name, String email) {
+
+      Person person = new Person();
+      if (StringUtils.isNotBlank(name)) {
+         person.setLastName(name);
+      }
+
+      if (StringUtils.isNotBlank(email)) {
+         person.setEmail(email);
+      }
+
+      List<Person> persons = personService.getLikePersons(person);
+      removeNoneSubscribers(persons);
+
+      return persons;
+   }
+
+   public List<Subscription> getSubscriptionBySubscriber(String newsletterid) {
+      return subscriptionCAO.getSubscriptionByUserIdAndStatus(Integer.parseInt(newsletterid),null);
+   }
+
+   public Subscription getSubscription(int userId, int newsletterId) {
+      return subscriptionCAO.getSubscription(newsletterId,userId);
    }
 }
