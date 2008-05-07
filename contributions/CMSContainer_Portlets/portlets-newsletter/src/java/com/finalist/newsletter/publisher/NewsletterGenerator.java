@@ -58,7 +58,8 @@ public class NewsletterGenerator {
 
    private static String calibrateRelativeURL(String inputString) {
       String host = NewsletterUtil.getHostUrl();
-      host = StringUtils.remove(host,"\\\\","")
-      return StringUtils.replace(inputString, "<a href=\"/", "<a href=\"" + );
+//      host = StringUtils.remove(host,"\\\\","")
+//      return StringUtils.replace(inputString, "<a href=\"/", "<a href=\"" + );
+      return "";
    }
 }

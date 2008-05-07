@@ -17,7 +17,6 @@ import org.mmbase.bridge.Cloud;
 
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.services.NewsletterPublicationService;
-import com.finalist.newsletter.services.NewsletterServiceFactory;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 import com.finalist.newsletter.ApplicationContextFactory;
