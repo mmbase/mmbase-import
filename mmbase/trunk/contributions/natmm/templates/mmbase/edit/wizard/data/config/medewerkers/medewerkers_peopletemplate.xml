@@ -14,6 +14,7 @@
       <step form-schema="edit_medewerkers"/>
    </steps>
    <form-schema id="edit_medewerkers">
+      <field name="prefix" ftype="line"><prompt>voorvoegsel</prompt></field>
       <field name="firstname" ftype="line" ><prompt>voornaam</prompt></field>
       <field name="initials" ftype="line" ><prompt>initialen</prompt></field>
       <field name="suffix" ftype="line" ><prompt>tussenvoegsel</prompt></field>
