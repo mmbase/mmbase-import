@@ -57,7 +57,7 @@ public class ApplicationContextFactory implements ServletContextAware {
    public void setServletContext(ServletContext context) {
       System.out.println("got it----");
       init(context);
-      context.get
+//      context.get
       contextName = context.getServletContextName();
    }
 
