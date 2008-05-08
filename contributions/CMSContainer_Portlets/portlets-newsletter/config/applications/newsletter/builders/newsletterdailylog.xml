@@ -147,10 +147,10 @@
                <search>-1</search>
             </positions>
          </editor>
-         <datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
+         <datatype  xmlns="http://www.mmbase.org/xmlns/datatypes"></datatype>
          <db>
             <name>logdate</name>
-            <type key="false" notnull="false" size="100" state="persistent">Date</type>
+           	<type key="false" required="false" state="persistent">DATETIME</type>
          </db>
       </field>
       <field>
