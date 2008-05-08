@@ -95,7 +95,7 @@ public class NewsletterStatisticAction extends MappingDispatchAction {
 		Newsletter newsletter = new Newsletter();
 		newsletter.setTitle("ALL");
 		newsletter.setId(0);
-		newsletters.add(newsletter);
+		newsletters.add(0,newsletter);
 	}
 
 	private void transferShowingFromDB(List<StatisticResult> records,
