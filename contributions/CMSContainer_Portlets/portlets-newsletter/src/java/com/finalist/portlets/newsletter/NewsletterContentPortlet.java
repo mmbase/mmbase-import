@@ -70,7 +70,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
       else {
          throw new RuntimeException("The page number could not be found");
       }
-      doInclude("view", template, request, response);
+      super.doView(request,response);
    }   
    
    protected void addContentElements(RenderRequest req, int itemNumber) {
