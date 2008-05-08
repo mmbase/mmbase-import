@@ -350,18 +350,18 @@ public abstract class NewsletterUtil {
          List<Node> relatedportlets = publicationNode.getRelatedNodes("portlet");
 
          String termIds = "";
-         for(Term term :terms) {
-            termIds += term.getId()+",";
+         for (Term term : terms) {
+            termIds += term.getId() + ",";
          }
-         if(termIds.endsWith(",")) {
-            termIds = termIds.substring(0, termIds.length()-2);
+         if (termIds.endsWith(",")) {
+            termIds = termIds.substring(0, termIds.length() - 2);
          }
          for (Node portlet : relatedportlets) {
             List<Node> portletdefNodes = portlet.getRelatedNodes("portletdefinition");
             String portletDefinition = portletdefNodes.get(0).getStringValue("definition");
             if (portletDefinition.equals(NewsletterContentPortlet.DEFINITION)) {
                RelationList relations = portlet.getRelations("portletrel", publicationNode.getNodeManager());
-               String name =  relations.getNode(0).getStringValue("name");
+               String name = relations.getNode(0).getStringValue("name");
                url += "/_rp_".concat(name).concat("_").concat(NewsletterContentPortlet.NEWSLETTER_TERMS_PARAM).concat("/1_").concat(termIds);
             }
          }
@@ -371,6 +371,17 @@ public abstract class NewsletterUtil {
 
 
    public static String getHostUrl() {
+      String url = getServerURL();
+      if (StringUtils.isNotBlank(getApplicatoinURL())) {
+         url += getApplicatoinURL();
+      }
+      if (!url.endsWith("/")) {
+         url += "/";
+      }
+      return url;
+   }
+
+   public static String getServerURL() {
       String hostUrl = PropertiesUtil.getProperty("host");
 
       if (StringUtils.isEmpty(hostUrl)) {
@@ -383,6 +394,18 @@ public abstract class NewsletterUtil {
          hostUrl += "/";
       }
       return hostUrl;
+   }
+
+   public static String getApplicatoinURL() {
+      String application = PropertiesUtil.getProperty("application");
+
+      if (StringUtils.isEmpty(application)) {
+         throw new NewsletterSendFailException("get property <application> from system property and get nothing");
+      }
+
+      log.debug("get property <host> from system property and get:" + application);
+
+      return application;
    }
 
 }
