@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -72,16 +73,17 @@ public class ResponseFormPortlet extends ContentPortlet {
    private static final String CHECKBOX_YES = "ja";
    private static final String RADIO_EMPTY = "[niets gekozen]";
    private static final String TEXTBOX_EMPTY = "[niet ingevuld]";
-   private static final int TEXTAREA_MAXLENGTH = 1024;
+   private static final String REGEX = " ";
    private static final String DEFAULT_EMAILREGEX = "^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$";
 
 
+   @SuppressWarnings("unchecked")
    public void processView(ActionRequest request, ActionResponse response) throws PortletException, IOException {
       Map<String, String> errorMessages = new Hashtable<String, String>();
-      Map<String, String> parameterMap = new HashMap<String, String>();
+      Map<String, Object> parameterMap = new HashMap<String, Object>();
       DataSource attachment = processUserRequest(request, errorMessages, parameterMap);
       String action = request.getParameter(ACTION_PARAM);
-      Map<String, String> formfields = new HashMap<String, String>();
+      Map<String, Object> formfields = new HashMap<String, Object>();
       StringBuffer data = new StringBuffer();
 
       if (action == null) {
@@ -109,14 +111,15 @@ public class ResponseFormPortlet extends ContentPortlet {
                   String regex = formfield.getStringValue("regex");
                   boolean isMandatory = formfield.getBooleanValue("mandatory");
                   boolean sendEmail = formfield.getBooleanValue("sendemail");
+                  int maxlength = formfield.getIntValue("maxlength");
                   String fieldIdentifier = FIELD_PREFIX + number;
-                  String value = parameterMap.get(fieldIdentifier);
+                  Object value = parameterMap.get(fieldIdentifier);
                   String textValue = null;
                   if (sendEmail) {
-                     userEmailAddress = value;
+                     userEmailAddress = value.toString();
                   }
-                  if (type == TYPE_TEXTAREA && value != null && value.length() >= TEXTAREA_MAXLENGTH) {
-                     value = value.substring(0, TEXTAREA_MAXLENGTH - 1);
+                  if (type == TYPE_TEXTAREA && value != null && maxlength > 0 && value.toString().length() > maxlength) {
+                     errorMessages.put(fieldIdentifier, Integer.valueOf(maxlength).toString());
                   }
                   if (isMandatory
                         && (((type == TYPE_RADIO || type == TYPE_CHECKBOX) && (value == null)) || (((type == TYPE_TEXTBOX)
@@ -124,7 +127,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                      errorMessages.put(fieldIdentifier, "view.formfield.empty");
                   }
                   if (!regex.equals("")
-                        && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value))) {
+                        && (((type == TYPE_TEXTBOX) || (type == TYPE_TEXTAREA)) && !isEmailAddress(value.toString()))) {
                    errorMessages.put(fieldIdentifier, "view.formfield.invalid");
                   }
                   
@@ -134,13 +137,21 @@ public class ResponseFormPortlet extends ContentPortlet {
                   }
                   
                   if (type == TYPE_CHECKBOX) {
-                     textValue = (value == null) ? CHECKBOX_NO : CHECKBOX_YES;
+                     if(value != null && value instanceof String){
+                        textValue = (value == null) ? CHECKBOX_NO : value.toString();
+                     }
+                     else if (value != null && value instanceof ArrayList){
+                        textValue = transferParameterValues((ArrayList)value);
+                     }
+                     else{
+                        textValue = CHECKBOX_NO;
+                     }
                   }
                   else if (type == TYPE_RADIO) {
-                     textValue = (value == null) ? RADIO_EMPTY : value;
+                     textValue = (value == null) ? RADIO_EMPTY : value.toString();
                   }
                   else {
-                     textValue = (StringUtil.isEmptyOrWhitespace(value)) ? TEXTBOX_EMPTY : value;
+                     textValue = (value == null || value.toString().trim().length() ==0) ? TEXTBOX_EMPTY : value.toString();
                   }
                   addFormFieldsData(data, label, textValue);
                   formfields.put(number, textValue);
@@ -191,9 +202,17 @@ public class ResponseFormPortlet extends ContentPortlet {
       data.append(textValue);
       data.append(System.getProperty("line.separator"));
    }
+   @SuppressWarnings("unchecked")
+   private String transferParameterValues(List textValues) {
+      StringBuffer temp = new StringBuffer();
+      for(Object textValue : textValues){
+         temp.append(textValue+REGEX);
+      }
+      return temp.toString();
+   }
 
 
-   private void saveResponseForm(Cloud cloud, Map<String, String> formfields, Node responseForm) {
+   private void saveResponseForm(Cloud cloud, Map<String, Object> formfields, Node responseForm) {
 
       NodeManager savedFormMgr = cloud.getNodeManager("savedform");
       Node savedResponse = savedFormMgr.createNode();
@@ -218,7 +237,7 @@ public class ResponseFormPortlet extends ContentPortlet {
          }
          Node savedFieldValue = savedFieldMgr.createNode();
          savedFieldValue.setStringValue("field", formFieldNumber);
-         savedFieldValue.setStringValue("value", formfields.get(key));
+         savedFieldValue.setValue("value", formfields.get(key));
          savedFieldValue.commit();
 
          RelationUtil.createRelation(savedResponse, savedFieldValue, "posrel");
@@ -231,7 +250,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
 
    protected boolean sendUserEmail(Node responseform, String userEmailAddress, String responseformData,
-         Map<String, String> parameterMap) {
+         Map<String, Object> parameterMap) {
       boolean sent = false;
       String userEmailSubject = responseform.getStringValue("useremailsubject");
       String userEmailSenderAddress = responseform.getStringValue("useremailsender");
@@ -328,6 +347,7 @@ public class ResponseFormPortlet extends ContentPortlet {
    }
 
 
+   @SuppressWarnings("unchecked")
    @Override
    protected void doView(RenderRequest request, RenderResponse response) throws PortletException, IOException {
       PortletPreferences preferences = request.getPreferences();
@@ -346,13 +366,23 @@ public class ResponseFormPortlet extends ContentPortlet {
             request.setAttribute(ERRORMESSAGES, errormessages);
          }
          if (portletSession.getAttribute(PARAMETER_MAP) != null) {
-            Map<String, String> parameterMap = (Map<String, String>) portletSession.getAttribute(PARAMETER_MAP);
+            Map<String, Object> parameterMap = (Map<String, Object>) portletSession.getAttribute(PARAMETER_MAP);
             portletSession.removeAttribute(PARAMETER_MAP);
             Iterator<String> keyIterator = parameterMap.keySet().iterator();
             while (keyIterator.hasNext()) {
                String keyValue = keyIterator.next();
-               String entryValue = parameterMap.get(keyValue);
+               if(parameterMap.get(keyValue) instanceof String) {
+                  String entryValue = parameterMap.get(keyValue).toString();
                request.setAttribute(keyValue, entryValue);
+               }
+               else if (parameterMap.get(keyValue) instanceof ArrayList){
+                  List<String> entryValue = (List<String>)parameterMap.get(keyValue);
+                  String fieldValue = "";
+                  for (String value :entryValue) {
+                     fieldValue += value+":";
+                  }
+                  request.setAttribute(keyValue, fieldValue);
+               }
             }
          }
 
@@ -380,12 +410,13 @@ public class ResponseFormPortlet extends ContentPortlet {
       }
    }
 
-
+   @SuppressWarnings("unchecked")
    private DataSource processUserRequest(ActionRequest request, Map<String, String> errorMessages,
-         Map<String, String> parameterMap) {
+         Map<String, Object> parameterMap) {
       List<FileItem> fileItems = null;
       DataSource attachment = null;
       String encoding = "UTF-8";
+      List<String> parameterValues = null;
       try {
          DiskFileItemFactory factory = new DiskFileItemFactory();
          PortletFileUpload upload = new PortletFileUpload(factory);
@@ -402,7 +433,20 @@ public class ResponseFormPortlet extends ContentPortlet {
             FileItem fileItem = itFileItems.next();
             if (fileItem.isFormField()) {
                try {
+                  if (parameterMap.containsKey(fileItem.getFieldName())) {
+                     if (parameterMap.get(fileItem.getFieldName()) instanceof String) {
+                        parameterValues = new ArrayList<String>(8);
+                        parameterValues.add(parameterMap.get(fileItem.getFieldName()).toString());
+                     }
+                     else if (parameterMap.get(fileItem.getFieldName()) instanceof ArrayList){
+                        parameterValues = (ArrayList<String>) parameterMap.get(fileItem.getFieldName());
+                     }
+                     parameterValues.add(fileItem.getString(encoding));
+                     parameterMap.put(fileItem.getFieldName(), parameterValues);
+                  }
+                  else{
                   parameterMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
+                  }
                }
                catch (UnsupportedEncodingException e) {
                   getLogger().error("UnsupportedEncoding " + encoding);

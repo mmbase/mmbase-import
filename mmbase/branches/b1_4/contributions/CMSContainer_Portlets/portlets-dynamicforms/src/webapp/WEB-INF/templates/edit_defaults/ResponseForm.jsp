@@ -51,6 +51,15 @@
 		</td>
 	</tr>
 	<tr>
+		<td colspan="2"><fmt:message key="edit_defaults.define"/>:</td>
+		<% String mm=(String)request.getAttribute("com.finalist.cmsc.beans.om.definitionId");%>
+		<mm:cloud>
+			<mm:node number="<%=mm%>" >		
+				<td ><input type="text" name="portletname" value="<mm:field name='title'/>"  disabled="disabled"/></td>
+			</mm:node>
+		</mm:cloud>
+	</tr>
+	<tr>
 		<td colspan="2"><fmt:message key="edit_defaults.view" />:</td>
 		<td><cmsc:select var="view">
 			<c:forEach var="v" items="${views}">

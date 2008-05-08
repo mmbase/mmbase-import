@@ -72,9 +72,19 @@
 											type="text" value="${fieldvalue}" maxlength="255"/>
 										</c:when>
 										<c:when test="${fieldtype==2}">
+										    <c:set var="errormessagekey">
+                                                <c:out value="${errormessages[fieldidentifier]}"/>
+                                            </c:set>
 											<textarea name="${fieldidentifier}" 
 		                    						rows="<mm:field name="rows" write="true"/>"
 		                    						cols="<mm:field name="columns" write="true"/>">${fieldvalue}</textarea>
+						                        <c:if test="${not empty errormessagekey}">
+								                  <font size="1" color="${error_style == ''?'':'red'}">
+							                      <fmt:message key="view.formfield.maxlength">
+										           <fmt:param value="${errormessagekey}"/>
+								                  </fmt:message>
+								                  </font>
+							                    </c:if>
 										</c:when>
 										<c:when test="${fieldtype==3}">
 											<input type="hidden" name="${fieldidentifier}" value="${fieldvalue}"/>
@@ -95,7 +105,7 @@
 								                        <c:set var="radiochecked" value="checked"/>
 								                    </c:if>			                    						                   
 								                    <input type="radio" name="${fieldidentifier}" value="${standardvalue}" ${radiochecked} />							                        
-								                    <label for="${fieldidentifier}"><mm:field name="text" write="true"/></label><br/>								                        						                   								                    
+								                    <label for="${fieldidentifier}"><mm:field name="text" write="true"/></label><br/>	          								                    
 							                    </mm:relatednodes>
 							                    </mm:relatednodescontainer>								                  					               		
 							            	</mm:node>
@@ -123,11 +133,34 @@
 							            	</mm:node>
 										</c:when>
 										<c:when test="${fieldtype==6}">
-											<c:remove var="checkedval"/>
-											<c:if test="${!empty fieldvalue}">
-												<c:set var="checkedval" value="CHECKED"/>
-											</c:if>
-											<input type="checkbox" name="${fieldidentifier}" ${checkedval} value="yes" id="inputnieuwsbrief"/>											
+											<mm:node number="${fieldnumber}" notfound="skip">	
+							                   	<mm:relatednodescontainer type="formfieldvalue" role="posrel">						
+							                   	<mm:sortorder field="posrel.pos"/>	
+												<mm:relatednodes> 													
+													<c:set var="values" >
+														<c:out value="${fieldvalue}"/>
+													</c:set> 				
+													<c:set var="usedefault" >
+														<mm:field name="standard"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+													</c:set> 												
+													<c:set var="standardvalue" >
+														<mm:field name="value"><mm:isnotempty><mm:write /></mm:isnotempty></mm:field>
+													</c:set> 	
+										            <c:remove var="checkedval"/>
+													<c:if test="${(usedefault==1) && (empty values)}">
+							                        		<c:set var="checkedval" value="CHECKED"/>
+							                        </c:if> 
+													<c:forTokens items="${values}" var="chkValue" delims=":">
+														<c:if test="${chkValue == standardvalue}">
+		                                                   <c:set var="checkedval" value="CHECKED"/>
+														</c:if>
+													</c:forTokens>
+        										    <input type="checkbox" name="${fieldidentifier}" value="${standardvalue}"  ${checkedval} id="inputnieuwsbrief"/>						                        
+								                    <label for="${fieldidentifier}"><mm:field name="text" write="true"/></label><br/>				                    
+							                    </mm:relatednodes>
+							                    </mm:relatednodescontainer>								                  					               		
+							            	</mm:node>
+									
 										</c:when>
 										<c:when test="${fieldtype==7}">
 											<input type="file" name="${fieldidentifier}"/>

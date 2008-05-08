@@ -53,6 +53,10 @@
   		<description>Wanneer hier ja wordt ingevuld krijgt de gebruiker een email op het adres wat hij hier invult.</description> 
   		<optionlist select="boolean" /> 
   	</field>
-	
+	<field name="maxlength" ftype="line" dttype="int"  dtmin="-1">
+  		<prompt xml:lang="en">Maxlength</prompt>
+		<prompt xml:lang="nl">Mail naar</prompt>
+  		<description>The maxlength of the field</description> 
+   	</field>
     <list include="config/formfieldvalue/search_formfield_posrel_formfieldvalue.xml" />
 </form-schema>
