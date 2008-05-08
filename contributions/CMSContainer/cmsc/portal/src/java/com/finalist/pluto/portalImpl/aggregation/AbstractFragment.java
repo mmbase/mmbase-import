@@ -104,7 +104,6 @@ public abstract class AbstractFragment implements Fragment {
 
    public RequestDispatcher getRequestDispatcher(String contentName, String defaultValue, String resourceName) {
       String root = getServletContextParameterValue(contentName, defaultValue);
-      System.out.println("---------------------"+root);
       return getServletConfig().getServletContext().getRequestDispatcher(root + resourceName);
    }
 
