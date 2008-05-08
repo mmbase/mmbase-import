@@ -448,7 +448,7 @@ public class TreeUtil {
    }
 
    public static NodeList getChildren(Node parentNode, String relationName) {
-      return parentNode.getRelatedNodes(parentNode.getNodeManager().getName(), relationName, DESTINATION);
+      return parentNode.getRelatedNodes("object", relationName, DESTINATION);
    }
 
    public static NodeList getChildren(Node parentNode, String nodeManager, String relationName) {
