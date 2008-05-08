@@ -17,13 +17,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.core.CoreUtils;
 import org.apache.pluto.core.InternalPortletRequest;
-import org.apache.pluto.om.portlet.ContentType;
 import org.mmbase.bridge.*;
-import org.mmbase.security.UserContext;
 
 import com.finalist.cmsc.beans.om.PortletParameter;
 import com.finalist.cmsc.beans.om.View;
 import com.finalist.cmsc.portalImpl.PortalConstants;
+import com.finalist.cmsc.portalImpl.ControllerFilter;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.cmsc.services.sitemanagement.SiteManagementAdmin;
@@ -37,6 +36,7 @@ public class CmscPortlet extends GenericPortlet {
    private static final String CONTENT_TYPE = "contenttype";
    private static final String CONTENT_TYPE_DEFAULT = "text/html";
    private static final String CONTENT_TYPE_PLAIN = "text/plain";
+   private static Properties routings;
    private Log log;
 
 
@@ -261,9 +261,9 @@ public class CmscPortlet extends GenericPortlet {
    /**
     * This will set both the primary and the secondary resource bundle (which is
     * used when in edit modus)
-    * 
+    *
     * @param req
-    * @param baseName
+    * @param template
     */
    protected void setResourceBundle(RenderRequest req, String template) {
       String baseName = null;
@@ -339,13 +339,19 @@ public class CmscPortlet extends GenericPortlet {
    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, java.io.IOException {
       PortletPreferences preferences = req.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
-      
-      if (req.getAttribute("Content-Type") != null && req.getAttribute("Content-Type").equals(CONTENT_TYPE_PLAIN)) {
-         doInclude("plain", template, req, res);
+
+      String location = "view";
+
+      String contentType = ControllerFilter.getContentType();
+      initRoutingRules(contentType);
+
+      if (null != contentType && null != routings.getProperty(contentType)) {
+         location = routings.getProperty(contentType);
       }
-      else {
-         doInclude("view", template, req, res);
-      }
+
+      System.out.println(String.format("Use %s as view from %s",template,location));
+      log.debug(String.format("Use %s as view from %s",template,location));
+      doInclude(location.trim(), template, req, res);
    }
 
 
@@ -577,11 +583,21 @@ public class CmscPortlet extends GenericPortlet {
       }
    }
 
-
    protected PortletFragment getPortletFragment(PortletRequest request) {
       InternalPortletRequest internalPortletRequest = CoreUtils.getInternalRequest(request);
       ServletRequest servletRequest = ((HttpServletRequestWrapper) internalPortletRequest).getRequest();
       return (PortletFragment) servletRequest.getAttribute(PortalConstants.FRAGMENT);
    }
 
+   private void initRoutingRules(String contentType) {
+      if (null != contentType && null == routings) {
+         InputStream inputStream = this.getClass().getResourceAsStream("viewrouting.properties");
+         routings = new Properties();
+         try {
+            routings.load(inputStream);
+         } catch (IOException e) {
+            log.error(e);
+         }
+      }
+   }
 }

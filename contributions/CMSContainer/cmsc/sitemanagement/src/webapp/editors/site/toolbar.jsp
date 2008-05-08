@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
 <%@ include file="globals.jsp" %>
-
+                             <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
    <html:html xhtml="true">
@@ -32,6 +32,21 @@
                item.className = 'active';
                selected = item;
             }
+
+            <c:if test="${not empty param.format}">
+            <c:choose>
+            <c:when test="${'clear' eq param.format}">
+            <c:remove var="contenttype" scope="session"/>
+            </c:when>
+            <c:otherwise>
+
+            <c:set var="contenttype" scope="session" value="${param.format}"/>
+            </c:otherwise>
+            </c:choose>
+
+
+            parent.frames['pcontent'].location.href='${param.pagepath}';
+            </c:if>
          </script>
       </cmscedit:head>
       <body>
@@ -58,6 +73,23 @@
                   onclick="selectMenu(this.parentNode)">
                   <fmt:message key="toolbar.preview"/>
                </a>
+            </li>
+            <li>
+               <a href="${param.pagepath}?mode=preview" class="tlink3" target="pcontent"
+                  onclick="selectMenu(this.parentNode)">
+                  <fmt:message key="toolbar.preview"/>
+               </a>
+            </li>
+            <li>
+               <form action="toolbar.jsp">
+
+                  <select onchange="submit()" name="format">
+                     <option value="clear" ${empty sessionScope.contenttype ? 'selected' : ''}>HTML</option>
+                     <option value="text/plain" ${'text/plain' eq sessionScope.contenttype ? 'selected' : ''}>Text</option>
+                  </select>
+                  <input type="hidden" value="${param.pagepath}" name="pagepath"/>
+               </form>
+
             </li>
             <mm:cloud jspvar="cloud" loginpage="../../editors/login.jsp">
                <mm:hasrank minvalue="administrator">
