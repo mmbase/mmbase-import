@@ -26,7 +26,7 @@ public class GoogleAnalyticsTag extends SimpleTagSupport {
 
    @Override
    public void doTag() throws IOException {
-      if (ServerUtil.isLive() && ServerUtil.isProduction()) {
+      if (ServerUtil.isProduction() && (ServerUtil.isLive() || ServerUtil.isSingle())) {
          if (StringUtils.isBlank(account)) {
             account = PropertiesUtil.getProperty("googleanalytics.account");
          }
