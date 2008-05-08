@@ -349,7 +349,6 @@ public class CmscPortlet extends GenericPortlet {
          location = routings.getProperty(contentType);
       }
 
-      System.out.println(String.format("Use %s as view from %s",template,location));
       log.debug(String.format("Use %s as view from %s",template,location));
       doInclude(location.trim(), template, req, res);
    }
@@ -591,7 +590,7 @@ public class CmscPortlet extends GenericPortlet {
 
    private void initRoutingRules(String contentType) {
       if (null != contentType && null == routings) {
-         InputStream inputStream = this.getClass().getResourceAsStream("viewrouting.properties");
+         InputStream inputStream = CmscPortlet.class.getResourceAsStream("viewrouting.properties");
          routings = new Properties();
          try {
             routings.load(inputStream);
