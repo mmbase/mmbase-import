@@ -4,19 +4,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueDateConstraint;
-import org.mmbase.storage.search.implementation.BasicStep;
 
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.util.StatisticUtil;
@@ -81,6 +77,7 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 				field, start, end);
 		query.setConstraint(constraint);
 		query.setNodeStep(step1);
+		System.out.println("---------->"+query.toSql());
 		NodeList list = query.getList();
 
 		StatisticUtil util = new StatisticUtil();
