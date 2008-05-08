@@ -151,7 +151,7 @@ public class StatusCronJob implements CronJob {
                MMObjectNode objectNode = MMBase.getMMBase().getBuilder("contentelement").getNode(node.getNumber());
 
                objectNode.setValue(FIELD_STATUS, newStatus);
-               cleckDates(objectNode);
+               checkDates(objectNode);
                objectNode.commit();
 
                log.debug("Altered MMObjectNode " + objectNode.getNumber());
@@ -169,7 +169,7 @@ public class StatusCronJob implements CronJob {
    }
 
 
-   private void cleckDates(MMObjectNode objectNode) {
+   private void checkDates(MMObjectNode objectNode) {
       Date publishDate = objectNode.getDateValue(FIELD_PUBLISHDATE);
       Date archiveDate = objectNode.getDateValue(FIELD_ARCHIVEDATE);
       Date expireDate = objectNode.getDateValue(FIELD_EXPIREDATE);
