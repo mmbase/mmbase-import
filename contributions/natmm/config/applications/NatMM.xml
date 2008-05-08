@@ -201,6 +201,7 @@
         <relation from="pagina" to="dossier" type="posrel" />
         <relation from="pagina" to="email" type="related" />
         <relation from="pagina" to="evenement_type" type="posrel" />
+        <relation from="pagina" to="evenement" type="contentrel" />
         <relation from="pagina" to="formulier" type="posrel" />
         <relation from="pagina" to="items" type="posrel"/>
         <relation from="pagina" to="linklijst" type="posrel" />
