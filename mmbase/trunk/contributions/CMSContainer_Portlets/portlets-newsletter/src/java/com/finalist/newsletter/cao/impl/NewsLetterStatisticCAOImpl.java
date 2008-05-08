@@ -77,7 +77,6 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 				field, start, end);
 		query.setConstraint(constraint);
 		query.setNodeStep(step1);
-		System.out.println("---------->"+query.toSql());
 		NodeList list = query.getList();
 
 		StatisticUtil util = new StatisticUtil();
