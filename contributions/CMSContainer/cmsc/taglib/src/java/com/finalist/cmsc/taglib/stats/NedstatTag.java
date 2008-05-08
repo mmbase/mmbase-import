@@ -85,7 +85,7 @@ public class NedstatTag extends CmscTag {
        * The production environment to be added in the context file is
        * 'server/production' set to 'true' or 'false'.
        */
-      if (ServerUtil.isLive() && ServerUtil.isProduction()) {
+       if (ServerUtil.isProduction() && (ServerUtil.isLive() || ServerUtil.isSingle())) {
 
          /* Validations */
          if (StringUtils.isEmpty(getCustomerName())) {
