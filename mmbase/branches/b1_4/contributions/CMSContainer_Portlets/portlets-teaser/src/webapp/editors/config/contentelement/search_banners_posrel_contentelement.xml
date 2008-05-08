@@ -5,6 +5,7 @@ orderby="field[@name='pos']" ordertype="number" searchdir="destination">
 	<title xml:lang="nl">Content element</title>
 	<title xml:lang="en">Content element</title>
 	<title xml:lang="zh">内容元素</title>
+
 	<item>
 		<field name="title">
 			<prompt xml:lang="en">Title</prompt>
@@ -17,7 +18,7 @@ orderby="field[@name='pos']" ordertype="number" searchdir="destination">
 
 	<action type="create">
 		<relation destinationtype="contentelement" role="posrel" createdir="destination">
-			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='contentelement']/../field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@searchtype='contentelement']/../field[@name='pos'])+{$pos}}</field>
 			<object type="contentelement" />
 		</relation>
 	</action>
