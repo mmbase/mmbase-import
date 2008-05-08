@@ -7,14 +7,11 @@
 		<form-bean name="recordSearchForm"
 			type="com.finalist.newsletter.forms.NewsLetterLogSearchForm">
 		</form-bean>
-		<form-bean name="showForm"
-		  type="com.finalist.newsletter.forms.NewsLetterShowForm">
-		 </form-bean>
 	</form-beans>
 	<action-mappings>
 		<action path="/editors/newsletter/ShowNewsletters"
 			type="com.finalist.newsletter.forms.NewsletterStatisticAction"
-			name="showForm" input="/editors/newsletter/showNewsletters.jsp"
+			name="recordSearchForm" input="/editors/newsletter/showNewsletters.jsp"
 			validate="false" parameter="show">
 			<forward name="result"
 				path="/editors/newsletter/showNewsletters.jsp" redirect="false" />

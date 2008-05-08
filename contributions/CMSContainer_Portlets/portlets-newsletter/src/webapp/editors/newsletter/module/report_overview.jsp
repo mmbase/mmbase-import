@@ -56,6 +56,11 @@
                <fmt:message key="index.link.import"/>
             </a>
          </p>
+         <p>
+            <a href="ShowNewsletters.do?action=show">
+               <fmt:message key="index.link.newsletterstatistic"/>
+            </a>
+         </p>
       </div>
    </div>
 </div>

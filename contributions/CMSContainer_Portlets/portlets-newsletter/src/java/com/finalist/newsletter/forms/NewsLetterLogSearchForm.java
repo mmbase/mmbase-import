@@ -1,21 +1,12 @@
 package com.finalist.newsletter.forms;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.util.MessageResources;
-import org.apache.struts.util.MessageResourcesFactory;
-
-import com.finalist.newsletter.util.DateUtil;
 
 public class NewsLetterLogSearchForm extends
 		org.apache.struts.action.ActionForm {

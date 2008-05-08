@@ -3,7 +3,6 @@ package com.finalist.newsletter.cao.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 
 import com.finalist.newsletter.domain.StatisticResult;
