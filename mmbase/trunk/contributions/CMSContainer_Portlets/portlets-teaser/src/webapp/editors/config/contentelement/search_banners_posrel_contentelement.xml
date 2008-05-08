@@ -17,7 +17,7 @@ orderby="field[@name='pos']" ordertype="number" searchdir="destination">
 
 	<action type="create">
 		<relation destinationtype="contentelement" role="posrel" createdir="destination">
-			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@type='contentelement']/../field[@name='pos'])+{$pos}}</field>
+			<field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/object[@searchtype='contentelement']/../field[@name='pos'])+{$pos}}</field>
 			<object type="contentelement" />
 		</relation>
 	</action>
