@@ -14,7 +14,6 @@ import java.net.*;
 import java.util.concurrent.BlockingQueue;
 
 import org.mmbase.core.util.DaemonThread;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * to receive changes from other MMBase Servers.
  *
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.9 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: ChangesReceiver.java,v 1.10 2008-05-09 11:33:54 nklasens Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -40,13 +39,15 @@ public class ChangesReceiver implements Runnable {
 
     /**
      * Construct UniCast Receiver
+     * @param unicastHost host of unicast connection
      * @param unicastPort port of the unicast connections
      * @param nodesToSpawn Queue of received messages
+     * @throws IOException when server socket failrf to listen
      */
-    ChangesReceiver(int unicastPort, BlockingQueue<byte[]> nodesToSpawn) throws IOException {
+    ChangesReceiver(String unicastHost, int unicastPort, BlockingQueue<byte[]> nodesToSpawn) throws IOException {
         this.nodesToSpawn = nodesToSpawn;
         this.serverSocket = new ServerSocket();
-        SocketAddress address = new InetSocketAddress(MMBase.getMMBase().getHost(), unicastPort);
+        SocketAddress address = new InetSocketAddress(unicastHost, unicastPort);
         serverSocket.bind(address);
         log.info("Listening to " + address);
         this.start();

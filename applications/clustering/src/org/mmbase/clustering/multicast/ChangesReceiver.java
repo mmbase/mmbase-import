@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesReceiver.java,v 1.15 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: ChangesReceiver.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
  */
 public class ChangesReceiver implements Runnable {
 
@@ -53,6 +53,7 @@ public class ChangesReceiver implements Runnable {
      * @param mport port of the multicast
      * @param dpsize datapacket receive size
      * @param nodesToSpawn Queue of received messages
+     * @throws UnknownHostException when multicastHost is not found
      */
     ChangesReceiver(String multicastHost, int mport, int dpsize, BlockingQueue<byte[]> nodesToSpawn)  throws UnknownHostException {
         this.mport = mport;
