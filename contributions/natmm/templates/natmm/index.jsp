@@ -2,6 +2,7 @@
 <%-- if(paginaID.equals("-1")&&ID.equals("-1")) {
    response.sendRedirect("/100jaarlater/index.html");
 } --%>
+<mm:content type="text/html" escaper="none">
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
@@ -69,3 +70,4 @@
 <%@include file="includes/footer.jsp" %>
 </cache:cache>
 </mm:cloud>
+</mm:content>
