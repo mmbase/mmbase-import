@@ -5,4 +5,9 @@
 		<key>repository.search.results.per.page</key>
 		<value>50</value>
 	</node>
+	
+	<node number="301" owner="admin">
+		<key>system.contenttypes.hide</key>
+		<value></value>
+	</node>
 </properties>
