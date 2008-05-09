@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Nico Klasens
  * @author Costyn van Dongen
- * @version $Id: ChangesSender.java,v 1.9 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: ChangesSender.java,v 1.10 2008-05-09 11:33:54 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -53,6 +53,7 @@ public class ChangesSender implements Runnable {
     /** Construct MultiCast Sender
      * @param channel Channel on which to send messages
      * @param nodesToSend Queue of messages to send
+     * @param send Statistics
      */
     ChangesSender(JChannel channel, BlockingQueue<byte[]> nodesToSend, Statistics send) {
         this.send = send;
