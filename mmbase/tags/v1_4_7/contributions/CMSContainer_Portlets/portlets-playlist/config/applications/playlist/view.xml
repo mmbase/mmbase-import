@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view exportsource="jdbc:mysql://localhost/playlist" timestamp="20050919142139">
+	<node number="55010" owner="default">
+		<title>playlist/basic</title>
+		<resource>playlist/basic.jsp</resource>
+	</node>
+</view>

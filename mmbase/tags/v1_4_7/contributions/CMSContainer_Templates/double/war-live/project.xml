@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../maven-base/project.xml</extend>
+    <artifactId>application-live</artifactId>
+    <name>Application live web application</name>
+    <shortDescription>Application live web application</shortDescription>
+	<dependencies>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>application-webapp</artifactId>
+         <version>${application.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-publish-cleaner</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+
+	</dependencies>
+</project>

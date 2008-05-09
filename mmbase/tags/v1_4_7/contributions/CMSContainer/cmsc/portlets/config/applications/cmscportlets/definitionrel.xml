@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitionrel exportsource="jdbc:mysql://localhost/cmsc" timestamp="20050919142139">
+   <node number="44200" owner="default" snumber="44002" dnumber="44100" rtype="definitionrel" dir="bidirectional">
+   </node>
+</definitionrel>

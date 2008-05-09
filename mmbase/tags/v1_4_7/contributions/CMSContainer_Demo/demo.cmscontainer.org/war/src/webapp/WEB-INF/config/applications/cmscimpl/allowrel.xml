@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allowrel exportsource="cmsc file dumper" timestamp="20070324161134">
+	<node number="864" owner="default" snumber="579" dnumber="647" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="178921" owner="default" snumber="661" dnumber="138" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="850" owner="default" snumber="545" dnumber="651" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="848" owner="default" snumber="571" dnumber="659" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="866" owner="default" snumber="571" dnumber="655" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="874" owner="default" snumber="553" dnumber="671" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="868" owner="default" snumber="571" dnumber="645" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="838" owner="default" snumber="579" dnumber="653" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="860" owner="default" snumber="571" dnumber="661" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="856" owner="default" snumber="547" dnumber="643" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="854" owner="default" snumber="643" dnumber="146" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+	<node number="872" owner="default" snumber="553" dnumber="637" rtype="allowrel" dir="bidirectional">
+		<allow>true</allow>
+	</node>
+</allowrel>
