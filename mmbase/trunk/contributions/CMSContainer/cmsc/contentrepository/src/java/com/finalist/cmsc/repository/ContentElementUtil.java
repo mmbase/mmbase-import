@@ -18,6 +18,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
 
+import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 
@@ -44,6 +45,7 @@ public class ContentElementUtil {
 
    public static final String OWNERREL = "ownerrel";
 
+   private static final String PROPERTY_HIDDEN_TYPES = "system.contenttypes.hide";
 
    private ContentElementUtil() {
       // utility
@@ -422,6 +424,25 @@ public class ContentElementUtil {
       else {
          return archiveDate.getTime() >= date;
       }
+   }
+
+   /**
+    * Helper method to get all hidden types
+    * 
+    * @return List of hidden types
+    */
+   public static List<String> getHiddenTypes() {
+      String property = PropertiesUtil.getProperty(PROPERTY_HIDDEN_TYPES);
+      if (property == null) {
+         return new ArrayList<String>();
+      }
+
+      ArrayList<String> list = new ArrayList<String>();
+      String[] values = property.split(",");
+      for (String value : values) {
+         list.add(value);
+      }
+      return list;
    }
 
 }

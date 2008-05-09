@@ -34,7 +34,7 @@ public class ContentAction extends MMBaseAction {
       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
       List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
-      List<String> hiddenTypes = PropertiesUtil.getHiddenTypes();
+      List<String> hiddenTypes = ContentElementUtil.getHiddenTypes();
       for (NodeManager manager : types) {
          String name = manager.getName();
          if (!hiddenTypes.contains(name)) {
