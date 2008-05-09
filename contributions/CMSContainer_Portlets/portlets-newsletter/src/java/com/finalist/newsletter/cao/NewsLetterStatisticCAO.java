@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
+import static com.finalist.newsletter.domain.Subscription.STATUS;
 
 import com.finalist.newsletter.domain.StatisticResult;
 
@@ -17,5 +18,5 @@ public interface NewsLetterStatisticCAO {
 
 	public List<StatisticResult> getRecordsByNewsletterAndPeriod(Date start,
 			Date end, int newsletter);
-	public void logPubliction(int id, int i);
+	public void logPubliction(int userId,int id, STATUS status);
 }

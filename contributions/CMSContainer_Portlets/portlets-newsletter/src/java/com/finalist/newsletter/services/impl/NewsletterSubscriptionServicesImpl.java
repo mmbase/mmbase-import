@@ -6,9 +6,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
-
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterSubscriptionCAO;
+import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
@@ -23,12 +24,15 @@ import com.finalist.cmsc.services.community.person.Person;
 public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptionServices {
 
    private static Log log = LogFactory.getLog(NewsletterSubscriptionServicesImpl.class);
-
+   NewsLetterStatisticCAO statisticCAO;
    NewsletterSubscriptionCAO subscriptionCAO;
    NewsletterCAO newsletterCAO;
    NewsletterService newsletterService;
    PersonService personService;
 
+   public void setStatisticCAO(NewsLetterStatisticCAO statisticCAO) {
+      this.statisticCAO = statisticCAO;
+   }
    public void setNewsletterCAO(NewsletterCAO newsletterCAO) {
       this.newsletterCAO = newsletterCAO;
    }
@@ -99,7 +103,6 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
    public void changeStatus(int userId, int newsletterId) {
       log.debug(String.format("user % change subscribe status on %s", userId, newsletterId));
-
       Subscription subscription = subscriptionCAO.getSubscription(newsletterId, userId);
 
       if (STATUS.ACTIVE.equals(subscription.getStatus())) {
@@ -108,12 +111,12 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       else {
          subscription.setStatus(STATUS.ACTIVE);
       }
-      subscriptionCAO.modifySubscriptionStauts(subscription);
+       subscriptionCAO.modifySubscriptionStauts(subscription);
+       statisticCAO.logPubliction(userId,newsletterId,subscription.getStatus());
    }
 
    public void pause(String subscriptionId, String duration, String durationunit) {
       Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
-
       subscription.setStatus(STATUS.PAUSED);
       if (null != duration) {
          Date date = DateUtil.calculateDateByDuration(DateUtil.getCurrent(), Integer.parseInt(duration), durationunit);
@@ -125,7 +128,6 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
 
 
    public void pause(String subscriptionId, String resumeDate) {
-
       log.debug(String.format("Pasue subscription %s till %s", subscriptionId, resumeDate));
 
       Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
@@ -213,6 +215,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       subscription.setMimeType("text/html");
       subscription.setStatus(STATUS.ACTIVE);
       subscriptionCAO.addSubscriptionRecord(subscription, userId);
+      statisticCAO.logPubliction(userId,newsletterId,STATUS.ACTIVE);
    }
 
    public void resume(String subscriptionId) {
@@ -225,6 +228,9 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       Subscription subscription = subscriptionCAO.getSubscriptionById(Integer.parseInt(subscriptionId));
       subscription.setStatus(STATUS.INACTIVE);
       subscriptionCAO.updateSubscription(subscription);
+      int newsletterId = newsletterCAO.getNewsletterIdBySubscription(Integer.parseInt(subscriptionId));
+      int userId = CommunityModuleAdapter.getCurrentUserId();
+      statisticCAO.logPubliction(userId,newsletterId,STATUS.INACTIVE);
    }
 
    public Subscription getSubscription(String sId) {
@@ -269,8 +275,6 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       Set<String> personIds = getPersonIdSet(name, email);
 
       Set<Subscription> result = new HashSet<Subscription>();
-
-      System.out.printf("---------------"+personIds.size());
 
       for (Subscription subscription : getSubscriptionsByNewsletterId(newsletterId)) {
          if(personIds.contains(subscription.getSubscriberId())){
