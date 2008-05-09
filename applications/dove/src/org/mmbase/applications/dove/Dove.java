@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.78.2.8 2008-04-02 14:49:35 michiel Exp $
+ * @version $Id: Dove.java,v 1.78.2.9 2008-05-09 13:01:45 nklasens Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -1015,7 +1015,7 @@ public class Dove extends AbstractDove {
                         dt instanceof LongDataType ||
                         dt instanceof IntegerDataType) {
                         // have to convert ourselves because bridge will use user-defined formatting
-                        mmbaseValue = "" + node.getLongValue(key);
+                        mmbaseValue = node.isNull(key) ? "" : "" + node.getLongValue(key);
                     } else {
                         mmbaseValue = node.isNull(key) ? null : node.getStringValue(key);
                     }
