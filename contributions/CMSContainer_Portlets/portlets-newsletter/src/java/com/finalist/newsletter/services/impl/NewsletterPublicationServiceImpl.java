@@ -91,7 +91,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
          publisher.deliver(publication, subscription);
       }
 
-      statisticCAO.logPubliction(publicationId, subscriptions.size());
+     
       publicationCAO.setStatus(publicationId, STATUS.DELIVERED);
    }
 
