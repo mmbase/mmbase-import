@@ -25,7 +25,7 @@ import org.mmbase.util.xml.UtilReader;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: Multicast.java,v 1.12 2007-06-21 15:50:23 nklasens Exp $
+ * @version $Id: Multicast.java,v 1.13 2008-05-09 11:33:54 nklasens Exp $
  */
 public class Multicast extends ClusterManager {
 
@@ -78,6 +78,8 @@ public class Multicast extends ClusterManager {
     }
 
     /**
+     * Read configuration settings
+     * @param configuration read from config resource
      * @since MMBase-1.8.1
      */
     protected synchronized void readConfiguration(Map<String,String> configuration) {

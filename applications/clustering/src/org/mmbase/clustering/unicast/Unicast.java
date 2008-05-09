@@ -11,18 +11,20 @@ package org.mmbase.clustering.unicast;
 
 import java.util.Map;
 
-import org.mmbase.core.event.NodeEvent;
 import org.mmbase.clustering.ClusterManager;
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.xml.UtilReader;
 
 
 /**
- * @javadoc
+ * Unicast implementation for the mmbase cluster. This implemenetation
+ * opens a direct network connection to each host mentioned in the mmservers
+ * as active. 
  *
  * @author Nico Klasens
- * @version $Id: Unicast.java,v 1.11 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: Unicast.java,v 1.12 2008-05-09 11:33:54 nklasens Exp $
  */
 public class Unicast extends ClusterManager {
 
@@ -30,6 +32,9 @@ public class Unicast extends ClusterManager {
 
     public static final String CONFIG_FILE = "unicast.xml";
 
+    /** Host on which the server socket is bound.*/
+    private String unicastHost;
+    
     /** Port on which the talking between nodes take place.*/
     private int unicastPort = 4243;
 
@@ -79,13 +84,25 @@ public class Unicast extends ClusterManager {
             } catch (Exception e) {}
         }
 
-        tmp = configuration.get("unicasttimeout");
-        if (tmp != null && !tmp.equals("")) {
+        unicastHost = MMBase.getMMBase().getHost();
+        
+        String tmpHost = configuration.get("unicasthost");
+        if (tmpHost != null && !tmpHost.equals("")) {
+            unicastHost = tmpHost;
+        }
+        tmpHost = configuration.get(org.mmbase.module.core.MMBase.getMMBase().getMachineName() + ".unicasthost");
+        if (tmpHost != null && !tmpHost.equals("")) {
+            unicastHost = tmpHost;
+        }
+        
+        String tmpTimeout = configuration.get("unicasttimeout");
+        if (tmpTimeout != null && !tmpTimeout.equals("")) {
             try {
-                unicastTimeout = Integer.parseInt(tmp);
+                unicastTimeout = Integer.parseInt(tmpTimeout);
             } catch (Exception e) {}
         }
 
+        log.info("unicast host: "    + unicastHost);
         log.info("unicast port: "    + unicastPort);
         log.info("unicast timeout: " + unicastTimeout);
 
@@ -97,7 +114,7 @@ public class Unicast extends ClusterManager {
     protected synchronized void startCommunicationThreads() {
         ucs = new ChangesSender(reader.getProperties(), unicastPort, unicastTimeout, nodesToSend, send);
         try {
-            ucr = new ChangesReceiver(unicastPort, nodesToSpawn);
+            ucr = new ChangesReceiver(unicastHost, unicastPort, nodesToSpawn);
         } catch (java.io.IOException ioe) {
             log.error(ioe);
         }
@@ -117,18 +134,6 @@ public class Unicast extends ClusterManager {
             log.service("Stopped communication receiver " + ucr);
             ucr = null;
         }
-    }
-
-    // javadoc inherited
-    public void changedNode(NodeEvent event) {
-        byte[] message = createMessage(event);
-        nodesToSend.offer(message);
-        //Multicast receives his own message. Unicast now too.
-        nodesToSpawn.offer(message);
-        if (log.isDebugEnabled()) {
-            log.debug("message: " + event);
-        }
-        return;
     }
 
 }

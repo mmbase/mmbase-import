@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
- * @version $Id: ClusterManager.java,v 1.36 2007-12-12 16:19:52 michiel Exp $
+ * @version $Id: ClusterManager.java,v 1.37 2008-05-09 11:33:54 nklasens Exp $
  */
 public abstract class ClusterManager implements AllEventListener, Runnable {
 
@@ -158,6 +158,7 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
 
     /** Followup number of message */
     protected int follownr = 1;
+    protected int lastRecievedMessage;
 
     /**
      * Creates MMBase 1.7 parseable message. This is simple String, which is prefixed before the actual 1.8 message.
@@ -221,7 +222,13 @@ public abstract class ClusterManager implements AllEventListener, Runnable {
         if (tok.hasMoreTokens()) {
             String machine = tok.nextToken();
             if (tok.hasMoreTokens()) {
-                String vnr = tok.nextToken();
+                String fnr = tok.nextToken();
+                int newFollowNr = Integer.valueOf(fnr);
+                int expectedFollowNr = lastRecievedMessage + 1;
+                if (newFollowNr != expectedFollowNr) {
+                    log.info("Expected message " + expectedFollowNr + ", but message " + newFollowNr + " was recieved ");
+                }
+                lastRecievedMessage = newFollowNr;
                 if (tok.hasMoreTokens()) {
                     String id = tok.nextToken();
                     if (tok.hasMoreTokens()) {

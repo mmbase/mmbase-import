@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.15 2007-12-12 16:17:20 michiel Exp $
+ * @version $Id: ChangesSender.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -58,6 +58,7 @@ public class ChangesSender implements Runnable {
      * @param mTTL time-to-live of the multicast packet (0-255)
      * @param nodesToSend Queue of messages to send
      * @param send Statistics object in which to administer duration costs
+     * @throws UnknownHostException when multicastHost is not found
      */
     ChangesSender(String multicastHost, int mport, int mTTL, BlockingQueue<byte[]> nodesToSend, Statistics send) throws UnknownHostException  {
         this.mport = mport;

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * sending queue over unicast connections
  *
  * @author Nico Klasens
- * @version $Id: ChangesSender.java,v 1.15 2007-06-21 15:50:25 nklasens Exp $
+ * @version $Id: ChangesSender.java,v 1.16 2008-05-09 11:33:54 nklasens Exp $
  */
 public class ChangesSender implements Runnable {
 
@@ -58,10 +58,11 @@ public class ChangesSender implements Runnable {
 
     /**
      * Construct UniCast Sender
+     * @param configuration configuration of unicast
      * @param unicastPort port of the unicast connections
      * @param unicastTimeout timeout on the connections
      * @param nodesToSend Queue of messages to send
-     * @param mmbase MMBase instance
+     * @param send Statistics
      */
     ChangesSender(Map<String,String> configuration, int unicastPort, int unicastTimeout, BlockingQueue<byte[]> nodesToSend, Statistics send) {
         this.nodesToSend = nodesToSend;
