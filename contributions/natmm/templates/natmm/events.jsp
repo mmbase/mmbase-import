@@ -12,6 +12,7 @@
 if(paginaID.equals("-1") && session.getAttribute("pagina")!=null) { 
    paginaID = (String) session.getAttribute("pagina");
 } %>
+<mm:content type="text/html" escaper="none">
 <mm:cloud jspvar="cloud">
 <%@include file="includes/top1_params.jsp" %>
 <%@include file="includes/top2_cacheparams.jsp" %>
@@ -153,3 +154,4 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
 <a name="bottom"></a>
 <%@include file="includes/footer.jsp" %>
 </mm:cloud>
+</mm:content>
