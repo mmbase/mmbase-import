@@ -110,8 +110,6 @@ public class PortalErrorServlet extends PortalServlet {
                 HttpServletRequest errorRequest = new ErrorHttpServletRequest(request, errorPageSite.getUrlfragment(), String.valueOf(statusCode)); 
                 PortalEnvironment errorEnv = new PortalEnvironment(errorRequest, response, config);
 
-                response.setContentType(CONTENT_TYPE);
-
                 String errorPagePath = errorPageSite.getUrlfragment() + PATH_SP + statusCode;
                 setSiteLocale(request, errorPagePath);
 
@@ -149,7 +147,7 @@ public class PortalErrorServlet extends PortalServlet {
 
 
    private void basicErrorPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      response.setContentType(CONTENT_TYPE);
+      response.setContentType("text/html");
       PrintWriter out = response.getWriter();
       out.println("<html><head><title>" + request.getAttribute(ERROR_STATUS_CODE) + " "
             + request.getAttribute(ERROR_MESSAGE) + "</title></head><body><table>");

@@ -19,8 +19,7 @@
 
 package com.finalist.pluto.portalImpl.core;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
@@ -36,8 +35,6 @@ import org.apache.pluto.services.information.ResourceURLProvider;
 import com.finalist.pluto.portalImpl.services.config.Config;
 
 public class DynamicInformationProviderImpl implements DynamicInformationProvider {
-
-   private final static int NumberOfKnownMimetypes = 15;
 
    private ServletConfig config;
 
@@ -87,17 +84,23 @@ public class DynamicInformationProviderImpl implements DynamicInformationProvide
 
 
    public String getResponseContentType() {
-      return "text/html";
+      String mimetype = env.getRequestedMimetype();
+      if (mimetype == null || mimetype.length() == 0) {
+          mimetype = getSupportedMimeTypes()[0];
+      }
+      return mimetype;
    }
 
 
    public Iterator getResponseContentTypes() {
-      HashSet responseMimeTypes = new HashSet(NumberOfKnownMimetypes);
-      responseMimeTypes.add("text/html");
-
-      return responseMimeTypes.iterator();
+      String[] supportedMimetypes = getSupportedMimeTypes();
+      return Arrays.asList(supportedMimetypes).iterator();
    }
 
+   private String[] getSupportedMimeTypes() {
+      String[] supportedMimetypes = Config.getParameters().getStrings("supported.mimetypes");
+      return supportedMimetypes;
+   }
 
    public WindowState getWindowState(PortletWindow portletWindow) {
       return env.getPortalControlParameter().getState(portletWindow);

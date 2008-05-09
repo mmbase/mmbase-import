@@ -20,8 +20,10 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
     /** MMbase logging system */
    private static Logger log = Logging.getLoggerInstance(AliasNavigationRenderer.class.getName());
     
-   protected static String CONTENT_TYPE = "text/html";
-
+   public String getContentType() {
+       return "text/html";
+   }
+   
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
            ServletConfig servletConfig) throws IOException {
        
@@ -33,11 +35,17 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
 
              HttpServletRequest aliasRequest = new AliasHttpServletRequest(request, path); 
              PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response, servletConfig);
-             response.setContentType(CONTENT_TYPE); 
              
              if (pageItem != null) {
                 NavigationItemRenderer manager = NavigationManager.getRenderer(pageItem);
                 if (manager != null) {
+                    String contentType = manager.getContentType();
+                    String charset = servletConfig.getInitParameter("charset");
+                    if (charset != null && charset.length() > 0) {
+                        contentType += "; charset=" + charset;
+                    }
+                    response.setContentType(contentType);
+                    
                     manager.render(pageItem, aliasRequest, response, servletConfig);
                 }
              }

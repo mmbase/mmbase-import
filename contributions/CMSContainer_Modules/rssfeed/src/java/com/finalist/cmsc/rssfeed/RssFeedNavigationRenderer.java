@@ -40,14 +40,16 @@ public class RssFeedNavigationRenderer implements NavigationItemRenderer {
 
    private final static DateFormat formatRFC822Date = new SimpleDateFormat("EE d MMM yyyy HH:mm:ss zzzzz");
 
+   public String getContentType() {
+        return "application/xml+rss";
+    }
+   
 
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
            ServletConfig servletConfig) {
        
       if (item instanceof RssFeed) {
          RssFeed rssFeed = (RssFeed) item;
-
-         response.setHeader("Content-Type", "application/xml+rss; charset=UTF-8");
 
          Document doc = XmlUtil.createDocument();
          Element rss = XmlUtil.createRoot(doc, "rss");
