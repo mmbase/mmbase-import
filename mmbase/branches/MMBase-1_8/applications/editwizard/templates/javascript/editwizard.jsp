@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.62.2.7 2008-04-02 12:09:47 andre Exp $
+ * @version  $Id: editwizard.jsp,v 1.62.2.8 2008-05-09 14:01:40 nklasens Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -222,7 +222,7 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("searchvalue", searchterm);
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
-    url += setParam("constraints", encodeURI(constraints));
+    url += setParam("constraints", escape(constraints));
     url += setParam("orderby", orderby);
     url += setParam("directions", directions);
     url += setParam("searchdir", searchdir);
