@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletContainerException;
 import org.apache.pluto.om.ControllerObjectAccess;
 import org.apache.pluto.om.entity.PortletEntity;
+import org.apache.pluto.om.portlet.PortletApplicationDefinition;
 import org.apache.pluto.om.portlet.PortletDefinition;
 import org.apache.pluto.om.servlet.ServletDefinition;
 import org.apache.pluto.om.servlet.ServletDefinitionCtrl;
@@ -37,6 +38,7 @@ import com.finalist.cmsc.portalImpl.headerresource.HeaderResource;
 import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.om.common.impl.PreferenceSetImpl;
 import com.finalist.pluto.portalImpl.om.entity.impl.PortletEntityImpl;
+import com.finalist.pluto.portalImpl.om.servlet.impl.WebApplicationDefinitionImpl;
 import com.finalist.pluto.portalImpl.om.window.impl.PortletWindowImpl;
 import com.finalist.pluto.portalImpl.servlet.ServletObjectAccess;
 import com.finalist.pluto.portalImpl.servlet.ServletResponseImpl;
@@ -162,8 +164,19 @@ public class PortletFragment extends AbstractFragment {
       // okay
       String errorMsg = null;
       try {
-         log.debug("|| portletLoad:'" + portletWindow.getId() + "'");
+          log.debug("|| portletLoad:'" + portletWindow.getId() + "'");
+          
          PortletContainerFactory.getPortletContainer().portletLoad(portletWindow, wrappedRequest, response);
+
+         PortletDefinition def = portletWindow.getPortletEntity().getPortletDefinition();
+         if (def == null) {
+            throw new PortletException("PortletDefinition not found for window " + portletWindow.getId());
+         }
+
+         // store the context path in the webapp.
+         PortletApplicationDefinition app = def.getPortletApplicationDefinition();
+         WebApplicationDefinitionImpl wa = (WebApplicationDefinitionImpl) app.getWebApplicationDefinition();
+         wa.setContextRoot(request.getContextPath());
       }
       catch (PortletContainerException e) {
          log.error("PortletContainerException-Error in Portlet", e);
@@ -285,7 +298,7 @@ public class PortletFragment extends AbstractFragment {
          // output the header JSP page
 
          // request.setAttribute("portletInfo", portletInfo);
-         RequestDispatcher rd = getMainRequestDispatcher(portletHeaderJsp);
+         RequestDispatcher rd = getMainRequestDispatcher(portletHeaderJsp, response.getContentType());
          rd.include(request, response);
          try {
             // output the Portlet
@@ -301,7 +314,7 @@ public class PortletFragment extends AbstractFragment {
          finally {
             // output the footer JSP page
             String portletFooterJsp = getServletContextParameterValue("portlet.footer.jsp", "PortletFragmentFooter.jsp");
-            RequestDispatcher rdFooter = getMainRequestDispatcher(portletFooterJsp);
+            RequestDispatcher rdFooter = getMainRequestDispatcher(portletFooterJsp, response.getContentType());
             rdFooter.include(request, response);
 
             request.removeAttribute(PortalConstants.FRAGMENT);
@@ -318,6 +331,10 @@ public class PortletFragment extends AbstractFragment {
       finally {
          storedWriter = null;
       }
+   }
+
+   public PortletMode getPortletMode(PortalEnvironment env, PortletWindow portletWindow) {
+       return env.getPortalControlParameter().getMode(portletWindow);
    }
 
 

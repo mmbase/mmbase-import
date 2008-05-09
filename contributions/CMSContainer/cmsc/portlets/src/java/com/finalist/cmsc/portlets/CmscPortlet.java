@@ -33,9 +33,7 @@ import com.finalist.pluto.portalImpl.core.*;
 @SuppressWarnings("unused")
 public class CmscPortlet extends GenericPortlet {
 
-   private static final String CONTENT_TYPE = "contenttype";
    private static final String CONTENT_TYPE_DEFAULT = "text/html";
-   private static final String CONTENT_TYPE_PLAIN = "text/plain";
    private static Properties routings;
    private Log log;
 
@@ -47,6 +45,11 @@ public class CmscPortlet extends GenericPortlet {
       return log;
    }
 
+   @Override
+   public void init() throws PortletException {
+        super.init();
+        initRoutingRules();
+   }
 
    /**
     * @see javax.portlet.GenericPortlet#processAction(javax.portlet.ActionRequest,
@@ -340,14 +343,8 @@ public class CmscPortlet extends GenericPortlet {
       PortletPreferences preferences = req.getPreferences();
       String template = preferences.getValue(PortalConstants.CMSC_PORTLET_VIEW_TEMPLATE, null);
 
-      String location = "view";
-
-      String contentType = ControllerFilter.getContentType();
-      initRoutingRules(contentType);
-
-      if (null != contentType && null != routings.getProperty(contentType)) {
-         location = routings.getProperty(contentType);
-      }
+      String contentType = req.getResponseContentType();
+      String location = routings.getProperty(contentType);
 
       log.debug(String.format("Use %s as view from %s",template,location));
       doInclude(location.trim(), template, req, res);
@@ -411,7 +408,7 @@ public class CmscPortlet extends GenericPortlet {
          throws PortletException, IOException {
       setResourceBundle(request, template);
 
-      String contentType = request.getParameter(CONTENT_TYPE);
+      String contentType = request.getResponseContentType();
       if (contentType == null) {
          contentType = CONTENT_TYPE_DEFAULT;
       }
@@ -588,8 +585,8 @@ public class CmscPortlet extends GenericPortlet {
       return (PortletFragment) servletRequest.getAttribute(PortalConstants.FRAGMENT);
    }
 
-   private void initRoutingRules(String contentType) {
-      if (null != contentType && null == routings) {
+   private void initRoutingRules() {
+     if (routings == null) {
          InputStream inputStream = CmscPortlet.class.getResourceAsStream("viewrouting.properties");
          routings = new Properties();
          try {
@@ -597,6 +594,6 @@ public class CmscPortlet extends GenericPortlet {
          } catch (IOException e) {
             log.error(e);
          }
-      }
+     }
    }
 }

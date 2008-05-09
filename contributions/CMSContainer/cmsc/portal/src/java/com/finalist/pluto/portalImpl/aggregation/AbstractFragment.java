@@ -19,7 +19,6 @@
 
 package com.finalist.pluto.portalImpl.aggregation;
 
-import com.finalist.cmsc.portalImpl.ControllerFilter;
 import com.finalist.cmsc.services.Parameters;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -58,6 +57,7 @@ public abstract class AbstractFragment implements Fragment {
       }
 
       this.config = config;
+      initRoutingRules();
    }
 
 
@@ -86,21 +86,25 @@ public abstract class AbstractFragment implements Fragment {
    }
 
 
-   public RequestDispatcher getMainRequestDispatcher(String resourceName) {
-
-      String location = "/WEB-INF/templates/layout/";
-
-      String contentType = ControllerFilter.getContentType();
-      initRoutingRules(contentType);
-
-      if (null != contentType && null != routings.getProperty(contentType)) {
-         location = routings.getProperty(contentType);
-      }
-
+   public RequestDispatcher getMainRequestDispatcher(String resourceName, String contentType) {
+       contentType = removeCharsetFromContentType(contentType);
+       if (null != contentType && !routings.containsKey(contentType)) {
+           throw new IllegalArgumentException("invalid contenttype: " + contentType);
+       }
+       
+      String location = routings.getProperty(contentType);
       log.debug(String.format("Get RequestDispatcher of %s from %s", resourceName, location));
 
       return getRequestDispatcher("cmsc.portal.layout.base.dir", location.trim(), resourceName.trim());
    }
+
+    private String removeCharsetFromContentType(String contentType) {
+        int indexOf = contentType.indexOf(";");
+        if (indexOf > -1) {
+            contentType = contentType.substring(0, indexOf);
+        }
+        return contentType;
+    }
 
    public RequestDispatcher getRequestDispatcher(String contentName, String defaultValue, String resourceName) {
       String root = getServletContextParameterValue(contentName, defaultValue);
@@ -112,8 +116,8 @@ public abstract class AbstractFragment implements Fragment {
       return initParameters.getString(name);
    }
 
-   private void initRoutingRules(String contentType) {
-      if (null != contentType && null == routings) {
+   private void initRoutingRules() {
+     if (routings == null) {
          InputStream inputStream = this.getClass().getResourceAsStream("layoutrouting.properties");
          routings = new Properties();
          try {
@@ -121,6 +125,6 @@ public abstract class AbstractFragment implements Fragment {
          } catch (IOException e) {
             log.error(e);
          }
-      }
+     }
    }
 }

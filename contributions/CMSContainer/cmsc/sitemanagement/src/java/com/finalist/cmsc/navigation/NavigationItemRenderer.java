@@ -10,6 +10,8 @@ import com.finalist.cmsc.beans.om.NavigationItem;
 
 public interface NavigationItemRenderer {
 
+   String getContentType();
+    
    void render(NavigationItem item, HttpServletRequest request, 
            HttpServletResponse response, ServletConfig servletConfigc)
            throws IOException;

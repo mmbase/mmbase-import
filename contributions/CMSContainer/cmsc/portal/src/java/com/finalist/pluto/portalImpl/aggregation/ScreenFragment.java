@@ -49,7 +49,7 @@ public class ScreenFragment extends AbstractFragment {
 
       Iterator<PortletFragment> portlets = this.getChildFragments().iterator();
       while (portlets.hasNext()) {
-         Fragment portlet = portlets.next();
+          PortletFragment portlet = portlets.next();
          // let the Portlet do it's thing
          portlet.service(request, response);
       }
@@ -59,7 +59,7 @@ public class ScreenFragment extends AbstractFragment {
             log.debug("using layout:'" + layout.getResource() + "' for page:'" + page.getTitle() + "'");
 
             request.setAttribute(PortalConstants.FRAGMENT, this);
-            RequestDispatcher rd = getMainRequestDispatcher(layout.getResource());
+            RequestDispatcher rd = getMainRequestDispatcher(layout.getResource(), response.getContentType());
             rd.include(request, response);
             request.removeAttribute(PortalConstants.FRAGMENT);
          }

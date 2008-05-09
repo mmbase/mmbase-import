@@ -28,6 +28,10 @@ public class PageNavigationRenderer implements NavigationItemRenderer {
 
    private static Log log = LogFactory.getLog(PageNavigationRenderer.class);
 
+   public String getContentType() {
+       return "text/html";
+   }
+   
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
          ServletConfig sc) throws IOException {
       if (item instanceof Page) {

@@ -16,6 +16,9 @@
 
 package com.finalist.pluto.portalImpl.core;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.portlet.PortletRequest;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +37,8 @@ public class PortalEnvironment {
    private PortalURL requestedPortalURL;
 
    private PortalControlParameter portalControl;
-
+   
+   private String requestedMimetype;
 
    public PortalEnvironment(HttpServletRequest request, HttpServletResponse response, ServletConfig config) {
       this.request = request;
@@ -96,4 +100,17 @@ public class PortalEnvironment {
       portalControl = control;
    }
 
+   public List<String> getAcceptContentTypes() {
+       String acceptHeader = request.getHeader("accept");
+       String[] contentTypes = acceptHeader.split(",");
+       return Arrays.asList(contentTypes);
+   }
+
+    public String getRequestedMimetype() {
+        return requestedMimetype;
+    }
+    
+    public void setRequestedMimetype(String requestedMimetype) {
+        this.requestedMimetype = requestedMimetype;
+    }
 }
