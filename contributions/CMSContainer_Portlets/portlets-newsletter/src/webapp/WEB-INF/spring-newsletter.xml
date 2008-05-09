@@ -40,6 +40,7 @@
          class="com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl" lazy-init="true">
       <property name="subscriptionCAO" ref="subscriptionCAO"/>
       <property name="newsletterCAO" ref="newsletterCAO"/>
+      <property name="statisticCAO" ref="statisticCAOImpl"/>
       <property name="newsletterService" ref="newsletterServices"/>
       <property name="personService" ref="personService"/>
    </bean>
