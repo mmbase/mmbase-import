@@ -40,7 +40,6 @@ public class NewsletterCronJob implements CronJob {
       for (int i = 0; i < newsletters.size(); i++) {
          Node newsletter = newsletters.getNode(i);
          boolean isPaused = NewsletterUtil.isPaused(newsletter);
-         System.out.println("------------>"+isPaused);
          if (isPaused) {
             continue;
          }
@@ -107,16 +106,12 @@ public class NewsletterCronJob implements CronJob {
                }
                else if(expressions[4].equals("2")) {
                   int interval = Integer.parseInt(expressions[5]);
-                  System.out.println("-----------------------111>"+lastCreatedDateTime);
                   if(lastCreatedDateTime == null || DateUtils.isSameDay(minDate, lastCreatedDateTime)) {
-                     System.out.println("-----------------------222>"+lastCreatedDateTime);
                      if(DateUtils.isSameDay(DateUtils.addDays(startDate, interval),now)) {
-                        System.out.println("-----------------------333>"+interval);
                         isPublish = true;
                      }
                   }
                   else {
-                     System.out.println("-----------------------444>111111111");
                      if(DateUtils.isSameDay(DateUtils.addDays(lastCreatedDateTime, interval),now)) {
                         isPublish = true;
                      }
@@ -165,8 +160,6 @@ public class NewsletterCronJob implements CronJob {
             char[] months = expressions[5].toCharArray();
             for(int j = 0 ; j < months.length ; j++) {
                String month = String.valueOf(months[j]);
-               System.out.println("month="+month);
-               System.out.println(Arrays.toString(months));
                if(!month.equals("a") && !month.equals("b") && (Integer.parseInt(month) == calender.get(Calendar.MONTH)) || (month.equals("b") && calender.get(Calendar.MONTH) == 11) || (month.equals("a") && calender.get(Calendar.MONTH) == 10)) {
                   if(calender.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(dayOfMonth)) {
                      if(calender.after(startTime)) {
