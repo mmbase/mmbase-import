@@ -11,7 +11,6 @@ import org.apache.struts.util.LabelValueBean;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.SortOrder;
 
-import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
 
@@ -48,7 +47,7 @@ public class SearchInitAction extends MMBaseAction {
       List<LabelValueBean> typesList = new ArrayList<LabelValueBean>();
 
       List<NodeManager> types = ContentElementUtil.getContentTypes(cloud);
-      List<String> hiddenTypes = PropertiesUtil.getHiddenTypes();
+      List<String> hiddenTypes = ContentElementUtil.getHiddenTypes();
       for (NodeManager manager : types) {
          String name = manager.getName();
          if (!hiddenTypes.contains(name)) {
