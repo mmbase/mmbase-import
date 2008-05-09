@@ -49,10 +49,8 @@ public class PortalServlet extends HttpServlet {
 
    private static Log log = LogFactory.getLog(PortalServlet.class);
 
-   protected static String CONTENT_TYPE = "text/html";
    protected static final String PATH_SP = "/";
    protected static ServletConfig sc;
-
 
    public String getServletInfo() {
       return "CMSC Portal Driver";
@@ -68,11 +66,6 @@ public class PortalServlet extends HttpServlet {
       NavigationManager.registerNavigationManager(new PageNavigationItemManager());
 
       PortalServlet.sc = getServletConfig();
-
-      String charset = config.getInitParameter("charset");
-      if (charset != null && charset.length() > 0) {
-         CONTENT_TYPE = "text/html; charset=" + charset;
-      }
 
       try {
          ServiceManager.init(config);
@@ -136,7 +129,6 @@ public class PortalServlet extends HttpServlet {
 
    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
       log.debug("===>PortalServlet.doGet START!");
-      response.setContentType(CONTENT_TYPE);
       log.debug("===>REQ spth='" + request.getServletPath() + "'");
       log.debug("===>REQ qry='" + request.getQueryString() + "'");
 
@@ -199,11 +191,18 @@ public class PortalServlet extends HttpServlet {
      if (item != null) {
         NavigationItemRenderer manager = NavigationManager.getRenderer(item);
         if (manager != null) {
+            String contentType = manager.getContentType();
+            String charset = getServletConfig().getInitParameter("charset");
+            if (charset != null && charset.length() > 0) {
+                contentType += "; charset=" + charset;
+            }
+            response.setContentType(contentType);
+            
             manager.render(item, request, response, sc);
             return true;
         }
      }
-      return false;
+     return false;
    }
 
 
