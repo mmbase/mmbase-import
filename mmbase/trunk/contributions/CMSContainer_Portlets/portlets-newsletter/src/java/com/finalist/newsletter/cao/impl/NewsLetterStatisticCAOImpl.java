@@ -13,10 +13,14 @@ import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
+import static com.finalist.newsletter.domain.Subscription.STATUS;
 
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.util.StatisticUtil;
 import com.finalist.newsletter.domain.StatisticResult;
+import org.apache.commons.lang.time.DateUtils;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.SearchUtil;
 
 public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 
@@ -112,11 +116,47 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 		return util.convertFromNodeList((NodeList) list);
 	}
 	
-	 public void logPubliction(int newsletterId, int post) {
+	public void logPubliction(int userId,int newsletterId, STATUS status) {
+      if(!mayLog(userId,newsletterId)) {
+         return;
+      }
       NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
       Node logNode = logManager.createNode();
       logNode.setIntValue("newsletter",newsletterId);
-      logNode.setIntValue("post",post);
+      logNode.setIntValue("post",0);
+      logNode.setIntValue("bounches",0);
+      logNode.setIntValue("subscribe",0);
+      logNode.setIntValue("unsubscribe",0);
+      logNode.setIntValue("removed",0);
+      logNode.setIntValue("userid",userId);
+      logNode.setDateValue("logdate",new Date());
+      if(status.equals(STATUS.ACTIVE)) {
+         logNode.setIntValue("subscribe",1);
+      }
+      else if(status.equals(STATUS.INACTIVE)) {
+         logNode.setIntValue("unsubscribe",1);
+      }
       logNode.commit();
-   }
+    }
+
+	 private boolean mayLog(int userId,int newsletterId) {
+	    boolean isLog = false;
+	    NodeManager logNodeManager = cloud.getNodeManager("newsletterdailylog");
+	    NodeQuery query = cloud.createNodeQuery();
+	    Step parameterStep = query.addStep(logNodeManager);
+	    query.setNodeStep(parameterStep);
+	    Queries.addSortOrders(query, "logdate", "DOWN");
+	    query.setMaxNumber(2);
+	    SearchUtil.addEqualConstraint(query, logNodeManager.getField("newsletter"), new Integer(newsletterId));
+
+	    SearchUtil.addEqualConstraint(query, logNodeManager.getField("userid"),  new Integer(userId));
+	    NodeList logs = query.getList();
+	    if(logs.size() < 2) {
+	       isLog = true;
+	    }
+	    else if(logs.size() ==2){
+	       isLog = !(DateUtils.isSameDay(new Date(),logs.getNode(0).getDateValue("logdate")) && DateUtils.isSameDay(new Date(),logs.getNode(1).getDateValue("logdate")));
+	    }
+	    return isLog;
+	 }
 }
