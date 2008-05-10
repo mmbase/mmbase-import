@@ -12,7 +12,7 @@ package com.finalist.cmsc.resources.forms;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
@@ -63,7 +63,7 @@ public abstract class SearchAction extends PagerAction {
       String order = searchForm.getOrder();
 
       // set default order field
-      if (StringUtil.isEmpty(order)) {
+      if (StringUtils.isEmpty(order)) {
          if (nodeManager.hasField("title")) {
             order = "title";
          }
@@ -72,7 +72,7 @@ public abstract class SearchAction extends PagerAction {
          }
       }
 
-      if (!StringUtil.isEmpty(order)) {
+      if (StringUtils.isNotEmpty(order)) {
          queryStringComposer.addParameter(ORDER, order);
          queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
          query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
@@ -83,7 +83,7 @@ public abstract class SearchAction extends PagerAction {
       addConstraints(searchForm, nodeManager, queryStringComposer, query);
 
       // Set the objectid constraint
-      if (!StringUtil.isEmpty(searchForm.getObjectid())) {
+      if (StringUtils.isNotEmpty(searchForm.getObjectid())) {
          Integer objectId = null;
          if (searchForm.getObjectid().matches("^\\d+$")) {
             objectId = new Integer(searchForm.getObjectid());
@@ -135,7 +135,7 @@ public abstract class SearchAction extends PagerAction {
 
    protected void addField(NodeManager nodeManager, QueryStringComposer queryStringComposer, NodeQuery query,
          String fieldname, String value) {
-      if (!StringUtil.isEmpty(value)) {
+      if (StringUtils.isNotEmpty(value)) {
          Field field = nodeManager.getField(fieldname);
          SearchUtil.addLikeConstraint(query, field, value);
          queryStringComposer.addParameter(fieldname, value);

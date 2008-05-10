@@ -43,7 +43,7 @@ public class LoginPortlet extends CmscPortlet {
          String userName = request.getParameter(ACEGI_SECURITY_FORM_USERNAME_KEY);
          String password = request.getParameter(ACEGI_SECURITY_FORM_PASSWORD_KEY);
 
-         if (!StringUtils.isBlank(userName) && !StringUtils.isBlank(password)) {
+         if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
             Community.login(userName, password);
          }
 
@@ -67,7 +67,7 @@ public class LoginPortlet extends CmscPortlet {
       String template;
 
       String error = request.getParameter("errormessage");
-      if (!StringUtils.isBlank(error)) {
+      if (StringUtils.isNotBlank(error)) {
          request.setAttribute("errormessage", error);
       }
 

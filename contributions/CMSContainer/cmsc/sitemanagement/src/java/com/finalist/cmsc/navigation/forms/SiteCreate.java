@@ -11,7 +11,7 @@ package com.finalist.cmsc.navigation.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -30,7 +30,7 @@ public class SiteCreate extends MMBaseFormlessAction {
 
       String action = getParameter(request, "action");
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isBlank(action)) {
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"
                + "&contenttype=" + SiteUtil.SITE + "&returnurl=" + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);

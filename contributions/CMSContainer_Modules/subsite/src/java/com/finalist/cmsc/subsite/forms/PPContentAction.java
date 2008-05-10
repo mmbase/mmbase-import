@@ -12,7 +12,7 @@ package com.finalist.cmsc.subsite.forms;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -42,10 +42,10 @@ public class PPContentAction extends MMBaseAction {
 	  if (ppChannel != null) {
 	     String orderby = request.getParameter("orderby");
 	     String direction = request.getParameter("direction");
-	     if (StringUtil.isEmpty(orderby)) {
+	     if (StringUtils.isEmpty(orderby)) {
 	        orderby = null;
 	     }
-	     if (StringUtil.isEmpty(direction)) {
+	     if (StringUtils.isEmpty(direction)) {
 	        direction = null;
 	     }
 	     

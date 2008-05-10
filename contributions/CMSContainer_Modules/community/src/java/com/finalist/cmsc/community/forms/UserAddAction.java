@@ -70,7 +70,7 @@ public class UserAddAction extends AbstractCommunityAction {
             if (authenticationId != null) {
                String newPassword1 = userForm.getPasswordText();
                String newPassword2 = userForm.getPasswordConfirmation();
-               if (!StringUtils.isBlank(newPassword1) && !StringUtils.isBlank(newPassword2)) {
+               if (StringUtils.isNotBlank(newPassword1) && StringUtils.isNotBlank(newPassword2)) {
                   if (newPassword1.equals(newPassword2)) {
                      as.updateAuthenticationPassword(accountName, newPassword1);
                   }

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
@@ -90,7 +90,7 @@ public class XsltPortlet extends CmscPortlet {
        */
       PortletPreferences preferences = req.getPreferences();
       String pageid = preferences.getValue(PAGE, null);
-      if (!StringUtil.isEmpty(pageid)) {
+      if (StringUtils.isNotEmpty(pageid)) {
 
          String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
 
@@ -120,7 +120,7 @@ public class XsltPortlet extends CmscPortlet {
 
       // set required content type and write content
       response.setContentType("text/html");
-      if (!StringUtil.isEmpty(xsl) && !StringUtil.isEmpty(xmlSource)) {
+      if (StringUtils.isNotEmpty(xsl) && StringUtils.isNotEmpty(xmlSource)) {
          try {
             HashMap<String, Object> xslParams = getXsltParams(preferences);
             
@@ -206,7 +206,7 @@ public class XsltPortlet extends CmscPortlet {
       while (p.hasMoreElements()) {
          String pref = p.nextElement();
          String value = preferences.getValue(pref, null);
-         if (!StringUtils.isBlank(value)) {
+         if (StringUtils.isNotBlank(value)) {
             xslParams.put(pref, value);
          }
       }

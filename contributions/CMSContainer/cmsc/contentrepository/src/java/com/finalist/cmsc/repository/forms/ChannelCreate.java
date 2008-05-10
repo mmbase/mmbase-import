@@ -11,7 +11,7 @@ package com.finalist.cmsc.repository.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -29,7 +29,7 @@ public class ChannelCreate extends MMBaseFormlessAction {
       String action = getParameter(request, "action");
       String channeltype = getParameter(request, "channeltype", RepositoryUtil.CONTENTCHANNEL);
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isBlank(action)) {
          request.getSession().setAttribute("parentchannel", parentchannel);
 
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"

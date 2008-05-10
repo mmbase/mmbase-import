@@ -3,7 +3,7 @@ package com.finalist.cmsc.security.forms;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
@@ -47,7 +47,7 @@ public class UserAction extends MMBaseAction {
          changedOwnLanguage = changedOwnLanguage(oldLanguage, newLanguage, cloud, userNode);
          userNode.setStringValue("language", newLanguage);
 
-         if (!StringUtil.isEmpty(userForm.getPassword1())) {
+         if (StringUtils.isNotEmpty(userForm.getPassword1())) {
             userNode.setStringValue("password", userForm.getPassword1());
             // TODO: what should we do with an admin password change?
             // if ("admin".equals(userNode.getStringValue("account"))) {

@@ -12,7 +12,7 @@ package com.finalist.cmsc.portlets;
 import java.io.IOException;
 import javax.portlet.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Portlet to edit content elements
@@ -31,13 +31,13 @@ public class ContentPortlet extends AbstractContentPortlet {
    @Override
    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
       String elementId = req.getParameter(ELEMENT_ID);
-      if (StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isEmpty(elementId)) {
          PortletPreferences preferences = req.getPreferences();
          elementId = preferences.getValue(CONTENTELEMENT, null);
       }
       getLogger().debug("doView for elementId: " + elementId);
 
-      if (!StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isNotEmpty(elementId)) {
          setAttribute(req, ELEMENT_ID, elementId);
          setMetaData(req, elementId);
          super.doView(req, res);
@@ -49,13 +49,13 @@ public class ContentPortlet extends AbstractContentPortlet {
    @Override
    protected void doEdit(RenderRequest req, RenderResponse res) throws IOException, PortletException {
       String elementId = req.getParameter(ELEMENT_ID);
-      if (StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isEmpty(elementId)) {
          PortletPreferences preferences = req.getPreferences();
          elementId = preferences.getValue(CONTENTELEMENT, null);
       }
       getLogger().debug("doEdit for elementId: " + elementId);
 
-      if (!StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isNotEmpty(elementId)) {
          setAttribute(req, ELEMENT_ID, elementId);
          setMetaData(req, elementId);
          doEdit(req, res, elementId);

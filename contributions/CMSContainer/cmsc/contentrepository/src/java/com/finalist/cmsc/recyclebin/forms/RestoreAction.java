@@ -11,7 +11,7 @@ package com.finalist.cmsc.recyclebin.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -42,7 +42,7 @@ public class RestoreAction extends MMBaseFormlessAction {
          }
          else {
             String channelnumber = getParameter(request, "channelnumber");
-            if (!StringUtil.isEmpty(channelnumber)) {
+            if (StringUtils.isNotEmpty(channelnumber)) {
                Node channelNode = cloud.getNode(channelnumber);
                RepositoryUtil.addContentToChannel(objectNode, channelNode);
                Workflow.create(objectNode, null);

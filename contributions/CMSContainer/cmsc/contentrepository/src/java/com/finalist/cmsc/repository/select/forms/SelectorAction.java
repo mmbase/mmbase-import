@@ -14,7 +14,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
@@ -37,7 +37,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
          HttpServletResponse response, Cloud cloud) throws Exception {
 
       String action = request.getParameter("action");
-      if (StringUtil.isEmpty(action)) {
+      if (StringUtils.isEmpty(action)) {
          RepositoryInfo info = new RepositoryInfo(RepositoryUtil.getRepositoryInfo(cloud));
          cloud.setProperty("Selector" + RepositoryInfo.class.getName(), info);
       }
@@ -57,7 +57,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
    @Override
    protected String getChannelId(HttpServletRequest request, Cloud cloud) {
       String path = request.getParameter("path");
-      if (!StringUtil.isEmpty(path)) {
+      if (StringUtils.isNotEmpty(path)) {
          Node parentNode = RepositoryUtil.getChannelFromPath(cloud, path);
          if (parentNode != null) {
             return String.valueOf(parentNode.getNumber());
@@ -103,7 +103,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
    @Override
    protected List<String> getChildren(Cloud cloud, String path) {
       List<String> strings = new ArrayList<String>();
-      if (StringUtil.isEmpty(path)) {
+      if (StringUtils.isEmpty(path)) {
          Node parentNode = RepositoryUtil.getRootNode(cloud);
          strings.add(parentNode.getStringValue(TreeUtil.PATH_FIELD));
       }

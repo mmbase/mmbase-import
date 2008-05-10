@@ -216,7 +216,7 @@ public class SiteManagement {
      */
     public static NavigationItem convertToNavigationItemString(String s) {
         NavigationItem temp = null;
-        if (!StringUtils.isBlank(s)) {
+        if (StringUtils.isNotBlank(s)) {
             if (StringUtils.isNumeric(s)) {
                 temp = SiteManagement.getNavigationItem(Integer.parseInt(s));
             }

@@ -11,7 +11,7 @@ package com.finalist.cmsc.richtext;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
@@ -47,7 +47,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
          public Object process(Node node, Field field, Object value) {
             String out = "";
             String in = (String) value;
-            if (!StringUtil.isEmpty(in) && RichText.hasRichtextItems(in)) {
+            if (StringUtils.isNotEmpty(in) && RichText.hasRichtextItems(in)) {
                try {
                   Document doc = RichText.getRichTextDocument(in);
                   if (doc == null) {
@@ -152,7 +152,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
             Node imageNode = cloud.getNode(imageId);
             if (dynamicDescriptions) {
                String description = imageNode.getStringValue("description");
-               if (StringUtil.isEmptyOrWhitespace(description)) {
+               if (StringUtils.isBlank(description)) {
                   description = imageNode.getStringValue(RichText.TITLE_ATTR);
                }
                image.setAttribute(RichText.ALT_ATTR, description);
@@ -241,7 +241,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
             String builderName = destinationNode.getNodeManager().getName();
             if ("attachments".equals(builderName)) {
                name = destinationNode.getStringValue(RichText.DESCRIPTION_ATTR);
-               if (StringUtil.isEmptyOrWhitespace(name)) {
+               if (StringUtils.isBlank(name)) {
                   name = destinationNode.getStringValue(RichText.TITLE_ATTR);
                }
                url = ResourcesUtil.getServletPath(destinationNode, destinationNode.getStringValue("number"));
@@ -269,7 +269,7 @@ public class RichTextGetProcessor implements ParameterizedProcessorFactory {
             }
             aElement.setAttribute(RichText.HREF_ATTR, url);
 
-            if (StringUtil.isEmptyOrWhitespace(name)) {
+            if (StringUtils.isBlank(name)) {
                name = url;
             }
             if (!aElement.hasAttribute(RichText.TITLE_ATTR) || dynamicDescriptions) {

@@ -1,7 +1,7 @@
 package com.finalist.cmsc.taglib;
 
 import net.sf.mmapps.commons.bridge.NodeFieldComparator;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
@@ -50,7 +50,7 @@ public class LinkedContentTag extends NodeReferrerTag {
 
    private String getFormatter() throws JspTagException {
       String result = formatter.getString(this);
-      if (StringUtil.isEmpty(result)) {
+      if (StringUtils.isEmpty(result)) {
          result = "net.sf.mmapps.commons.basicmodel.taglib.LinkedContentTag$DefaultFormatter";
       }
       return result;
@@ -76,11 +76,11 @@ public class LinkedContentTag extends NodeReferrerTag {
          // get the related nodes
          NodeList nodes = contentNode.getRelatedNodes(mgrRelatedNodesStr, roleStr, "destination");
 
-         if (!StringUtil.isEmpty(sortStr)) {
+         if (StringUtils.isNotEmpty(sortStr)) {
             Collections.sort(nodes, new NodeFieldComparator(sortStr));
          }
          else {
-            if (!StringUtil.isEmpty(roleStr)) {
+            if (StringUtils.isNotEmpty(roleStr)) {
                RelationManager relationManager = contentNode.getCloud().getRelationManager(roleStr);
                if (relationManager != null && relationManager.hasField("pos")) {
                   Collections.sort(nodes, new NodeFieldComparator("pos"));

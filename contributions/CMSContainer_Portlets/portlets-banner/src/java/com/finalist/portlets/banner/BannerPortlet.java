@@ -122,7 +122,7 @@ public class BannerPortlet extends ContentChannelPortlet {
       Cloud cloud = cloudProvider.getCloud();
 
       String bannerId = request.getParameter("elementId");
-      if (!StringUtils.isBlank(bannerId)) {
+      if (StringUtils.isNotBlank(bannerId)) {
          try {
             Node banner = cloud.getNode(bannerId);
             Node counter = findCounterNode(banner, page, position);
@@ -139,7 +139,7 @@ public class BannerPortlet extends ContentChannelPortlet {
             getLogger().debug("Clicks updated to: " + clicks + " for banner: " + bannerId);
 
             String redirectUrl = request.getParameter(PARAM_REDIRECT);
-            if (!StringUtils.isBlank(redirectUrl)) {
+            if (StringUtils.isNotBlank(redirectUrl)) {
                getLogger().debug("Redirecting request for banner: " + bannerId + " to: " + redirectUrl);
                if (redirectUrl.indexOf("?") > -1) {
                   redirectUrl += "&";

@@ -10,7 +10,7 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.pluto.portalImpl.core.CmscPortletMode;
@@ -19,7 +19,7 @@ import com.finalist.pluto.portalImpl.core.CmscPortletMode;
  * Fulltext search portlet
  * 
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class SearchPortlet extends CmscPortlet {
 
@@ -129,7 +129,7 @@ public class SearchPortlet extends CmscPortlet {
 
       int offset = 0;
       String currentOffset = req.getParameter(OFFSET);
-      if (!StringUtil.isEmpty(currentOffset)) {
+      if (StringUtils.isNotEmpty(currentOffset)) {
          offset = Integer.parseInt(currentOffset);
       }
       setAttribute(req, "offset", offset);
@@ -146,22 +146,22 @@ public class SearchPortlet extends CmscPortlet {
       setAttribute(req, ELEMENTS_PER_PAGE, elementsPerPage);
 
       String showPages = preferences.getValue(SHOW_PAGES, null);
-      if (StringUtil.isEmpty(showPages)) {
+      if (StringUtils.isEmpty(showPages)) {
          setAttribute(req, SHOW_PAGES, 10);
       }
 
       String indexPosition = preferences.getValue(INDEX_POSITION, null);
-      if (StringUtil.isEmpty(indexPosition)) {
+      if (StringUtils.isEmpty(indexPosition)) {
          setAttribute(req, INDEX_POSITION, "bottom");
       }
 
       String pagesIndex = preferences.getValue(PAGES_INDEX, null);
-      if (StringUtil.isEmpty(pagesIndex)) {
+      if (StringUtils.isEmpty(pagesIndex)) {
          setAttribute(req, PAGES_INDEX, "center");
       }
 
       String indexName = preferences.getValue(SEARCH_INDEX, null);
-      if (StringUtil.isEmpty(indexName)) {
+      if (StringUtils.isEmpty(indexName)) {
          setAttribute(req, SEARCH_INDEX, "cmsc");
       }
 

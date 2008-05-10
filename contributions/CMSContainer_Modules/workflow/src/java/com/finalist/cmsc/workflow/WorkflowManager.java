@@ -6,7 +6,7 @@ import org.mmbase.bridge.Node;
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
@@ -342,7 +342,7 @@ public abstract class WorkflowManager {
 
    protected void changeWorkflow(Node wfItem, String status, String remark) {
       wfItem.setStringValue(STATUS_FIELD, status);
-      if (!StringUtil.isEmpty(remark)) {
+      if (StringUtils.isNotEmpty(remark)) {
          wfItem.setStringValue(REMARK_FIELD, remark);
       }
       wfItem.commit();
@@ -350,7 +350,7 @@ public abstract class WorkflowManager {
 
    protected void changeWorkflowFailPublished(Node wfItem, String status, String stacktrace) {
 	      wfItem.setStringValue(STATUS_FIELD, status);
-	      if (!StringUtil.isEmpty(stacktrace)) {
+	      if (StringUtils.isNotEmpty(stacktrace)) {
 	          wfItem.setStringValue(STACKTRACE_FIELD, stacktrace);
 	       }
 	      wfItem.commit();

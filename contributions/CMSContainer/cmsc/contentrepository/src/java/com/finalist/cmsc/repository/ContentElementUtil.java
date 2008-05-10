@@ -11,7 +11,7 @@ package com.finalist.cmsc.repository;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
@@ -377,7 +377,7 @@ public class ContentElementUtil {
 
 
    public static void addArchiveConstraint(Node channel, NodeQuery query, Long date, String archive) {
-      if (StringUtil.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
+      if (StringUtils.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
          return;
       }
       NodeManager contentManager = channel.getCloud().getNodeManager(CONTENTELEMENT);
@@ -408,7 +408,7 @@ public class ContentElementUtil {
      *         <li>true if archive is others and content's archive time is after or equels to current time
      */
    public static boolean matchArchive(Node content, String archive) {
-      if (StringUtil.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
+      if (StringUtils.isEmpty(archive) || "all".equalsIgnoreCase(archive)) {
          return true;
       }
       // Precision of now is based on minutes.

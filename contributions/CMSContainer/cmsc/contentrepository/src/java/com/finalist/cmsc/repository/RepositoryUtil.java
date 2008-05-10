@@ -12,7 +12,7 @@ package com.finalist.cmsc.repository;
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.*;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
@@ -666,7 +666,7 @@ public class RepositoryUtil {
         if (useLifecycle) {
             ContentElementUtil.addLifeCycleConstraint(query, date);
         }
-        if (!StringUtil.isEmpty(archive)) {
+        if (StringUtils.isNotEmpty(archive)) {
             ContentElementUtil.addArchiveConstraint(channel, query, date, archive);
         }
 
@@ -840,7 +840,7 @@ public class RepositoryUtil {
     public static Node createChannel(Cloud cloud, String name, String pathname) {
         Node channel = getNodeManager(cloud).createNode();
         channel.setStringValue(TITLE_FIELD, name);
-        if (!StringUtil.isEmpty(pathname)) {
+        if (StringUtils.isNotEmpty(pathname)) {
             channel.setStringValue(FRAGMENT_FIELD, pathname);
         }
         channel.commit();

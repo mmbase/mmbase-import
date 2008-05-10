@@ -11,7 +11,7 @@ package com.finalist.cmsc.navigation.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -27,7 +27,7 @@ public class PageEdit extends MMBaseFormlessAction {
 
       String action = getParameter(request, "action");
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isBlank(action)) {
          String objectnumber = getParameter(request, "number", true);
 
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber="

@@ -67,7 +67,7 @@ public class ListNavigationItemsTag extends AbstractListTag<NavigationItem> {
    }
 
    protected Class<? extends NavigationItem> getChildNavigationClass() {
-       if (!StringUtils.isBlank(type)) {
+       if (StringUtils.isNotBlank(type)) {
            NavigationItemManager navigationManager = NavigationManager.getNavigationManager(type);
            if (navigationManager != null) {
                return navigationManager.getItemClass();

@@ -12,7 +12,7 @@ package com.finalist.cmsc.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 public class Role {
 
@@ -82,7 +82,7 @@ public class Role {
 
 
    public static Role getRole(String name) {
-      if (StringUtil.isEmpty(name)) {
+      if (StringUtils.isEmpty(name)) {
          throw new IllegalArgumentException("Role with empty name does not exist");
       }
       for (int i = 0; i < roles.size(); i++) {

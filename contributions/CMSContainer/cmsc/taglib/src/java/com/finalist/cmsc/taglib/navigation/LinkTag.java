@@ -61,7 +61,7 @@ public class LinkTag extends CmscTag {
       HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
       if (page == null) {
-         if (!StringUtils.isBlank(urlfragment)) {
+         if (StringUtils.isNotBlank(urlfragment)) {
             // Computing the window for a given urlfragment can be expensive and will always yield
             // the same result. Therefore the computed pageId is cached in the page context.
             String key = "linktag_urlfragment_" + urlfragment;
@@ -81,7 +81,7 @@ public class LinkTag extends CmscTag {
             }
          }
          else {
-            if (!StringUtils.isBlank(portletdefinition)) {
+            if (StringUtils.isNotBlank(portletdefinition)) {
                // Computing the window and page for a given portletdefinition can be expensive and
                // will always yield the same result. Therefore the computed values are cached in the
                // page context.
@@ -123,7 +123,7 @@ public class LinkTag extends CmscTag {
          if (page instanceof Page) {
              externalurl = ((Page) page).getExternalurl();
          }
-         if (!StringUtils.isBlank(externalurl)) {
+         if (StringUtils.isNotBlank(externalurl)) {
             if (externalurl.indexOf("://") > -1) {
                newlink = externalurl;
             }

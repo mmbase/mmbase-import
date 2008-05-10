@@ -2,7 +2,7 @@ package com.finalist.cmsc.builders;
 
 import java.util.LinkedHashMap;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Cloud;
@@ -95,14 +95,14 @@ public abstract class TreeBuilder extends MMObjectBuilder {
 
     private void updateEmptyNameField(MMObjectNode objectNode) {
         String nameFieldname = getNameFieldname();
-        if (StringUtil.isEmpty(objectNode.getStringValue(nameFieldname))) {
+        if (StringUtils.isEmpty(objectNode.getStringValue(nameFieldname))) {
             String fragmentFieldname = getFragmentFieldnameForBuilder();
             String pathFragment = objectNode.getStringValue(fragmentFieldname);
             objectNode.setValue(nameFieldname, pathFragment);
         }
         else {
             String fragmentFieldname = getFragmentFieldnameForBuilder();
-            if (StringUtil.isEmpty(objectNode.getStringValue(fragmentFieldname))) {
+            if (StringUtils.isEmpty(objectNode.getStringValue(fragmentFieldname))) {
                 String name = objectNode.getStringValue(nameFieldname);
                 String pathFragment = TreeUtil.convertToFragment(name);
                 objectNode.setValue(fragmentFieldname, pathFragment);
@@ -156,7 +156,7 @@ public abstract class TreeBuilder extends MMObjectBuilder {
          if (TreeUtil.OLDPATH_FIELD.equals(field)) {
             String p = getPath(node);
             String oldpathname = node.getStringValue(TMP_OLDPATHNAME);
-            if(!StringUtil.isEmpty(oldpathname)) {
+            if(StringUtils.isNotEmpty(oldpathname)) {
                return p.substring(0, p.lastIndexOf('/')+1) + oldpathname.replace(' ', '_');
             }
             return p;

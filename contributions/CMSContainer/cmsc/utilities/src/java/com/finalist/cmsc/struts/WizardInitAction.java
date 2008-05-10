@@ -5,7 +5,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,17 +39,17 @@ public class WizardInitAction extends MMBaseFormlessAction {
       HttpSession session = request.getSession();
 
       String returnurl = request.getParameter("returnurl");
-      if (!StringUtil.isEmpty(returnurl)) {
+      if (StringUtils.isNotEmpty(returnurl)) {
          session.setAttribute("returnurl", returnurl);
       }
 
       String popup = request.getParameter("popup");
-      if (!StringUtil.isEmpty(popup)) {
+      if (StringUtils.isNotEmpty(popup)) {
          session.setAttribute("popup", popup);
       }
 
       String creation = request.getParameter("creation");
-      if (!StringUtil.isEmpty(creation)) {
+      if (StringUtils.isNotEmpty(creation)) {
          session.setAttribute("creation", creation);
       }
       else {
@@ -82,7 +82,7 @@ public class WizardInitAction extends MMBaseFormlessAction {
       session.setAttribute("contenttype", contenttype);
 
       String wizardConfigName = request.getParameter("wizardConfigName");
-      if (StringUtil.isEmpty(wizardConfigName)) {
+      if (StringUtils.isEmpty(wizardConfigName)) {
          NodeList list = null;
          NodeManager manager = cloud.getNodeManager("editwizards");
          list = manager.getList("nodepath = '" + contenttype + "'", null, null);

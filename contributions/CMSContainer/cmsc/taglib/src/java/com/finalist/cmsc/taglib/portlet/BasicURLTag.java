@@ -11,7 +11,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.NavigationItem;
 import com.finalist.cmsc.mmbase.ResourcesUtil;
@@ -65,7 +65,7 @@ public abstract class BasicURLTag extends TagSupport {
       // make sure we start with an unset url variable;
       setUrl(null);
 
-      if (StringUtil.isEmpty(page) && StringUtil.isEmpty(window) && !StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isEmpty(page) && StringUtils.isEmpty(window) && StringUtils.isNotEmpty(elementId)) {
          contenturl = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", elementId, null);
          return EVAL_PAGE;
       }

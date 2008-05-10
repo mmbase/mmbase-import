@@ -14,7 +14,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Register a list as attribute in the request.
@@ -44,7 +44,7 @@ public abstract class AbstractListTag<E> extends CmscTag {
 
 
    protected void setAttribute(HttpServletRequest request, List<E> list) {
-      if (!StringUtil.isEmpty(var)) {
+      if (StringUtils.isNotEmpty(var)) {
          // put in variable
          if (list != null) {
             request.setAttribute(var, list);

@@ -14,7 +14,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -50,7 +50,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       if (remark != null && remark.equals(REMARK_UNCHANGED)) {
          remark = null;
       }
-      if (!StringUtil.isEmpty(actionValueStr)) {
+      if (StringUtils.isNotEmpty(actionValueStr)) {
          List<Node> nodes = new ArrayList<Node>();
          Enumeration<String> parameters = request.getParameterNames();
          while (parameters.hasMoreElements()) {
@@ -76,13 +76,13 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
       }
 
       String orderby = request.getParameter("orderby");
-      if (StringUtil.isEmpty(orderby)) {
+      if (StringUtils.isEmpty(orderby)) {
          orderby = "contenttype";
       }
       request.setAttribute("orderby", orderby);
 
       String laststatus = request.getParameter("laststatus");
-      if (StringUtil.isEmpty(laststatus) || laststatus == null) {
+      if (StringUtils.isEmpty(laststatus) || laststatus == null) {
          request.setAttribute("laststatus", true);
       }
       else {
@@ -91,7 +91,7 @@ public abstract class WorkflowAction extends MMBaseFormlessAction {
 
       String status = Workflow.STATUS_DRAFT;
       String statusStr = request.getParameter("status");
-      if (!StringUtil.isEmpty(statusStr)) {
+      if (StringUtils.isNotEmpty(statusStr)) {
          status = statusStr;
       }
 

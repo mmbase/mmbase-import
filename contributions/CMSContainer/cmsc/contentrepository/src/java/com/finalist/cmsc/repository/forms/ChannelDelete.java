@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -38,7 +38,7 @@ public class ChannelDelete extends MMBaseFormlessAction {
         String action = getParameter(request, "remove");
         Node channelNode = cloud.getNode(objectnumber);
 
-        if (StringUtil.isEmptyOrWhitespace(action)) {
+        if (StringUtils.isBlank(action)) {
             if (RepositoryUtil.hasCreatedContent(channelNode)) {
                 return mapping.findForward("channeldeletewarning");
             }

@@ -16,19 +16,19 @@ import com.finalist.cmsc.beans.om.*;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 public class RelatedContentPortlet extends AbstractContentPortlet {
 
    protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
       String window = req.getPreferences().getValue(WINDOW, null);
-      if (!StringUtil.isEmpty(window)) {
+      if (StringUtils.isNotEmpty(window)) {
          String elementId = getElementIdFromRequestParameters(req, window);
-         if (StringUtil.isEmpty(elementId)) {
+         if (StringUtils.isEmpty(elementId)) {
             elementId = getElementIdFromScreen(req, window);
          }
 
-         if (!StringUtil.isEmpty(elementId)) {
+         if (StringUtils.isNotEmpty(elementId)) {
             setAttribute(req, ELEMENT_ID, elementId);
          }
       }

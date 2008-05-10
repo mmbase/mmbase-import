@@ -160,7 +160,7 @@ public class PortalServlet extends HttpServlet {
       if (site != null) {
          String language = site.getLanguage();
          // NIJ-519 r2: Locale accepts anything, also whitespace
-         if (!StringUtils.isBlank(language)) {
+         if (StringUtils.isNotBlank(language)) {
              Locale locale = new Locale(language.trim());
              request.setAttribute("siteLocale", locale);
          }

@@ -1,6 +1,6 @@
 package com.finalist.cmsc.struts;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -96,10 +96,10 @@ public class WizardListAction extends MMBaseFormlessAction {
 
 
    private void addParameter(StringBuffer forward, String value, String paramname, String defaultvalue) {
-      if (StringUtil.isEmptyOrWhitespace(value)) {
+      if (StringUtils.isBlank(value)) {
          value = defaultvalue;
       }
-      if (!StringUtil.isEmptyOrWhitespace(value)) {
+      if (StringUtils.isNotBlank(value)) {
          forward.append("&").append(paramname).append("=").append(value);
       }
    }

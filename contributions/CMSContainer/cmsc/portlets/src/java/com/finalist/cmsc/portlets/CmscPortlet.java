@@ -11,7 +11,7 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -252,7 +252,7 @@ public class CmscPortlet extends GenericPortlet {
          Node userNode = SecurityUtil.getUserNode(cloud);
          if (userNode != null) {
             String userLanguage = userNode.getStringValue("language");
-            if (!StringUtil.isEmpty(userLanguage)) {
+            if (StringUtils.isNotEmpty(userLanguage)) {
                userLocale = new Locale(userLanguage);
             }
          }
@@ -270,7 +270,7 @@ public class CmscPortlet extends GenericPortlet {
     */
    protected void setResourceBundle(RenderRequest req, String template) {
       String baseName = null;
-      if (!StringUtil.isEmpty(template)) {
+      if (StringUtils.isNotEmpty(template)) {
          int extnsionIndex = template.lastIndexOf(".");
          if (extnsionIndex > -1) {
             baseName = template.substring(0, extnsionIndex);
@@ -286,7 +286,7 @@ public class CmscPortlet extends GenericPortlet {
          ResourceBundle bundle = null;
          CombinedResourceBundle cbundle = null;
 
-         while (!StringUtil.isEmpty(baseName)) {
+         while (StringUtils.isNotEmpty(baseName)) {
             try {
                ResourceBundle otherbundle = ResourceBundle.getBundle(baseName, locale);
                if (cbundle == null) {
@@ -388,7 +388,7 @@ public class CmscPortlet extends GenericPortlet {
       setAttribute(req, "views", views);
 
       String viewId = preferences.getValue(PortalConstants.CMSC_OM_VIEW_ID, null);
-      if (!StringUtil.isEmpty(viewId)) {
+      if (StringUtils.isNotEmpty(viewId)) {
          setAttribute(req, "view", viewId);
       }
    }
@@ -428,9 +428,9 @@ public class CmscPortlet extends GenericPortlet {
 
    protected String getTemplate(String type, String template, String resourceExtension) {
       String baseDir = getPortletContext().getInitParameter("cmsc.portal." + type + ".base.dir");
-      if (StringUtil.isEmpty(baseDir)) {
+      if (StringUtils.isEmpty(baseDir)) {
          String aggregationDir = getPortletContext().getInitParameter("cmsc.portal.aggregation.base.dir");
-         if (StringUtil.isEmpty(aggregationDir)) {
+         if (StringUtils.isEmpty(aggregationDir)) {
             aggregationDir = "/WEB-INF/templates/";
          }
          baseDir = aggregationDir + type + "/";
@@ -438,9 +438,9 @@ public class CmscPortlet extends GenericPortlet {
 
       logInitParameters();
 
-      if (StringUtil.isEmpty(template)) {
+      if (StringUtils.isEmpty(template)) {
          template = getInitParameter("template." + type);
-         if (StringUtil.isEmpty(template)) {
+         if (StringUtils.isEmpty(template)) {
             template = getPortletName() + "." + resourceExtension;
          }
       }
@@ -449,7 +449,7 @@ public class CmscPortlet extends GenericPortlet {
 
 
    protected void setAttribute(RenderRequest request, String var, Object value) {
-      if (!StringUtil.isEmpty(var)) {
+      if (StringUtils.isNotEmpty(var)) {
          // put in variable
          if (value != null) {
             request.setAttribute(var, value);

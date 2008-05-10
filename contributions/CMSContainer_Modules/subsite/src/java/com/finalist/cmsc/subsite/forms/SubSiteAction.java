@@ -14,7 +14,7 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
@@ -100,7 +100,7 @@ public class SubSiteAction extends PagerAction {
       String order = searchForm.getOrder();
 
       // set default order field
-      if (order != null && StringUtil.isEmpty(order)) {
+      if (order != null && StringUtils.isEmpty(order)) {
           if (nodeManager.hasField("title")) {
               order = "title";
           }
@@ -129,7 +129,7 @@ public class SubSiteAction extends PagerAction {
       NodeQuery query = createLinkedElementsQuery(subsiteNode, order, direction, offset*maxNumber, maxNumber, -1, -1, -1);
 
       // Add the title constraint:
-      if (!StringUtil.isEmpty(searchForm.getTitle())) {
+      if (StringUtils.isNotEmpty(searchForm.getTitle())) {
           Field field = nodeManager.getField(PagesUtil.TITLE_FIELD);
           Constraint titleConstraint = SearchUtil.createLikeConstraint(query, field, searchForm.getTitle());
           SearchUtil.addConstraint(query, titleConstraint);
