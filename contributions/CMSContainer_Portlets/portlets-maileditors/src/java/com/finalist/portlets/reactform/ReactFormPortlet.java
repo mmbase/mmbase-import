@@ -15,7 +15,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import javax.portlet.*;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -44,20 +44,20 @@ public class ReactFormPortlet extends ContentPortlet {
             String useremail = request.getParameter("useremail");
             String message = request.getParameter("message");
             String articleNumber = request.getParameter("articleNumber");
-            if (StringUtil.isEmptyOrWhitespace(articleNumber)) {
+            if (StringUtils.isBlank(articleNumber)) {
                errorMessages.put("subject", "view.error.nosubject");
             }
             String emailRegex = PropertiesUtil.getProperty("email.regex");
-            if (StringUtil.isEmptyOrWhitespace(name)) {
+            if (StringUtils.isBlank(name)) {
                errorMessages.put("name", "view.name.empty");
             }
-            if (StringUtil.isEmptyOrWhitespace(useremail)) {
+            if (StringUtils.isBlank(useremail)) {
                errorMessages.put("useremail", "view.useremail.empty");
             }
             else if (!useremail.matches(emailRegex)) {
                errorMessages.put("useremail", "view.useremail.invalid");
             }
-            if (StringUtil.isEmptyOrWhitespace(message)) {
+            if (StringUtils.isBlank(message)) {
                errorMessages.put("message", "view.message.empty");
             }
 

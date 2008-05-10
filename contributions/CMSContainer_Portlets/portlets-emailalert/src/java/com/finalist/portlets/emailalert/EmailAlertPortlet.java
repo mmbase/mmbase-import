@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.HttpUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -47,13 +47,13 @@ public class EmailAlertPortlet extends ContentPortlet {
             String emailAddress = request.getParameter(EMAILADDRESS);
             String subscribePage = request.getParameter(SUBSCRIBEPAGE);
             String emailRegex = PropertiesUtil.getProperty("email.regex");
-            if (StringUtil.isEmptyOrWhitespace(emailAddress)) {
+            if (StringUtils.isBlank(emailAddress)) {
                errorMessages.put(EMAILADDRESS, "view.emailaddress.empty");
             }
             else if (!emailAddress.matches(emailRegex)) {
                errorMessages.put(EMAILADDRESS, "view.emailaddress.invalid");
             }
-            if (StringUtil.isEmptyOrWhitespace(subscribePage)) {
+            if (StringUtils.isBlank(subscribePage)) {
                errorMessages.put(SUBSCRIBEPAGE, "view.error.nopage");
             }
             if (errorMessages.size() == 0) {

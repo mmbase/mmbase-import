@@ -14,7 +14,7 @@ import java.util.*;
 
 import javax.portlet.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.Node;
 
@@ -102,7 +102,7 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
       PortletPreferences preferences = req.getPreferences();
 
       String channel = preferences.getValue(CONTENTCHANNEL, null);
-      if (!StringUtil.isEmpty(channel)) {
+      if (StringUtils.isNotEmpty(channel)) {
          addContentElements(req, channel);
          super.doView(req, res);
       }
@@ -112,11 +112,11 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
    @Override
    protected void doEdit(RenderRequest req, RenderResponse res) throws PortletException, IOException {
       String elementId = req.getParameter(ELEMENT_ID);
-      if (StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isEmpty(elementId)) {
          PortletPreferences preferences = req.getPreferences();
          String channel = preferences.getValue(CONTENTCHANNEL, null);
          addContentElements(req, channel);
-         if (!StringUtil.isEmpty(channel)) {
+         if (StringUtils.isNotEmpty(channel)) {
             if (ContentRepository.mayEdit(channel)) {
                super.doEdit(req, res);
             }
@@ -133,14 +133,14 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
 
    protected void addContentElements(RenderRequest req, String channel) {
       String elementId = req.getParameter(ELEMENT_ID);
-      if (StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isEmpty(elementId)) {
          PortletPreferences preferences = req.getPreferences();
          String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
          List<String> contenttypes = SiteManagement.getContentTypes(portletId);
 
          int offset = 0;
          String currentOffset = req.getParameter(OFFSET);
-         if (!StringUtil.isEmpty(currentOffset)) {
+         if (StringUtils.isNotEmpty(currentOffset)) {
             offset = Integer.parseInt(currentOffset);
          }
          int startIndex = Integer.parseInt(preferences.getValue(START_INDEX, "1")) - 1;
@@ -197,12 +197,12 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
          setAttribute(req, ELEMENTS_PER_PAGE, elementsPerPage);
 
          String pagesIndex = preferences.getValue(PAGES_INDEX, null);
-         if (StringUtil.isEmpty(pagesIndex)) {
+         if (StringUtils.isEmpty(pagesIndex)) {
             setAttribute(req, PAGES_INDEX, "center");
          }
 
          String showPages = preferences.getValue(SHOW_PAGES, null);
-         if (StringUtil.isEmpty(showPages)) {
+         if (StringUtils.isEmpty(showPages)) {
             setAttribute(req, SHOW_PAGES, 10);
          }
 
@@ -213,11 +213,11 @@ public class ContentChannelPortlet extends AbstractContentPortlet {
          setAttribute(req, USE_PAGING, usePaging);
 
          String indexPosition = preferences.getValue(INDEX_POSITION, null);
-         if (StringUtil.isEmpty(indexPosition)) {
+         if (StringUtils.isEmpty(indexPosition)) {
             setAttribute(req, INDEX_POSITION, "bottom");
          }
          String viewType = preferences.getValue(VIEW_TYPE, null);
-         if (StringUtil.isEmpty(viewType)) {
+         if (StringUtils.isEmpty(viewType)) {
             setAttribute(req, DISPLAY_TYPE, "list");
          }
          else {

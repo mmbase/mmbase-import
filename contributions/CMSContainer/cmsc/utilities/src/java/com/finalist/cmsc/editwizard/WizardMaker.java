@@ -6,7 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Nico Klasens
  * @author Wouter Heijke
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class WizardMaker {
    private static Logger log = Logging.getLoggerInstance(WizardMaker.class.getName());
@@ -82,15 +82,15 @@ public class WizardMaker {
 
       HttpSession session = request.getSession();
 
-      if (!StringUtil.isEmpty(this.returnUrl)) {
+      if (StringUtils.isNotEmpty(this.returnUrl)) {
          session.setAttribute("returnurl", this.returnUrl);
       }
 
-      if (!StringUtil.isEmpty(this.popup)) {
+      if (StringUtils.isNotEmpty(this.popup)) {
          session.setAttribute("popup", this.popup);
       }
 
-      if (!StringUtil.isEmpty(this.creation)) {
+      if (StringUtils.isNotEmpty(this.creation)) {
          session.setAttribute("creation", this.creation);
       }
 
@@ -124,7 +124,7 @@ public class WizardMaker {
 
       session.setAttribute("contenttype", contentType);
 
-      if (StringUtil.isEmpty(wizardConfigName)) {
+      if (StringUtils.isEmpty(wizardConfigName)) {
          NodeList list = null;
          NodeManager manager = cloud.getNodeManager("editwizards");
          list = manager.getList("nodepath = '" + contentType + "'", null, null);

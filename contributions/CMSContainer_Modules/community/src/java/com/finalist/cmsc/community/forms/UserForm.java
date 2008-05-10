@@ -129,7 +129,7 @@ public class UserForm extends ActionForm {
 		   validatePassword(actionErrors);
 		} else {
 		   if (this.getAction().equalsIgnoreCase(ACTION_EDIT)){
-   		   if (!StringUtils.isBlank(passwordText) || !StringUtils.isBlank(passwordConfirmation)){
+   		   if (StringUtils.isNotBlank(passwordText) || StringUtils.isNotBlank(passwordConfirmation)){
    		      validatePassword(actionErrors);
    		   }
 		   }
@@ -145,8 +145,8 @@ public class UserForm extends ActionForm {
       if (StringUtils.isBlank(passwordConfirmation)) {
       	actionErrors.add("passwordConfirmation", new ActionMessage("userform.password.empty"));
       }
-      if (!StringUtils.isBlank(passwordText) 
-            && !StringUtils.isBlank(passwordConfirmation) 
+      if (StringUtils.isNotBlank(passwordText) 
+            && StringUtils.isNotBlank(passwordConfirmation) 
             && !passwordText.equals(passwordConfirmation)) {
       	actionErrors.add("password", new ActionMessage("userform.passwords.not_equal"));
       }

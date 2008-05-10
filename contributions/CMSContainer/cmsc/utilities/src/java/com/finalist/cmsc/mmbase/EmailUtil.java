@@ -13,7 +13,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.util.functions.Function;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 public class EmailUtil {
@@ -33,7 +33,7 @@ public class EmailUtil {
          cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       }
 
-      if (StringUtil.isEmpty(emailFrom) || StringUtil.isEmpty(nameFrom)) {
+      if (StringUtils.isEmpty(emailFrom) || StringUtils.isEmpty(nameFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
          nameFrom = PropertiesUtil.getProperty("mail.system.name");
       }
@@ -42,8 +42,8 @@ public class EmailUtil {
       emailNode.setStringValue("subject", subject);
       emailNode.setStringValue("body", body);
 
-      String from = StringUtil.isEmpty(nameFrom) ? emailFrom : nameFrom + "<" + emailFrom + ">";
-      String to = StringUtil.isEmpty(name) ? email : name + "<" + email + ">";
+      String from = StringUtils.isEmpty(nameFrom) ? emailFrom : nameFrom + "<" + emailFrom + ">";
+      String to = StringUtils.isEmpty(name) ? email : name + "<" + email + ">";
 
       emailNode.setStringValue("from", from);
       emailNode.setStringValue("to", to);

@@ -12,7 +12,7 @@ package com.finalist.newsletter.forms;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -33,7 +33,7 @@ public class NewsletterCreate extends MMBaseFormlessAction {
       String parentnewsletter = getParameter(request, "parentnewsletter", true);
       String action = getParameter(request, "action");
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isBlank(action)) {
          request.getSession().setAttribute("parentnewsletter", parentnewsletter);
 
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create" + "&contenttype=newsletter"

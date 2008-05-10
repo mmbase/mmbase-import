@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.bridge.*;
 import net.sf.mmapps.commons.util.HttpUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
@@ -211,7 +211,7 @@ public class NavigationUtil {
      * @return node with page path
      */
     public static Node getPageFromPath(Cloud cloud, String path) {
-        if (!StringUtil.isEmptyOrWhitespace(path)) {
+        if (StringUtils.isNotBlank(path)) {
             int index = path.indexOf(TreeUtil.PATH_SEPARATOR);
             if (index == -1) {
                 Node site = SiteUtil.getSite(cloud, path);
@@ -230,7 +230,7 @@ public class NavigationUtil {
     }
 
    public static Node getSiteFromPath(Cloud cloud, String path) {
-      if (!StringUtil.isEmptyOrWhitespace(path)) {
+      if (StringUtils.isNotBlank(path)) {
          int index = path.indexOf(TreeUtil.PATH_SEPARATOR);
          if (index == -1) {
             Node site = SiteUtil.getSite(cloud, path);

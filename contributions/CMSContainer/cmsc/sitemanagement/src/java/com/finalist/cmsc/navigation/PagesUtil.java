@@ -12,7 +12,7 @@ package com.finalist.cmsc.navigation;
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.*;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.*;
@@ -170,10 +170,10 @@ public class PagesUtil {
         String description, Node layout, String managerName) {
       Node page = TreeUtil.getNodeManager(cloud, managerName).createNode();
       page.setStringValue(TITLE_FIELD, name);
-      if (!StringUtil.isEmpty(pathname)) {
+      if (StringUtils.isNotEmpty(pathname)) {
          page.setStringValue(FRAGMENT_FIELD, pathname);
       }
-      if (!StringUtil.isEmpty(description)) {
+      if (StringUtils.isNotEmpty(description)) {
          page.setStringValue(DESCRIPTION_FIELD, description);
       }
       page.commit();

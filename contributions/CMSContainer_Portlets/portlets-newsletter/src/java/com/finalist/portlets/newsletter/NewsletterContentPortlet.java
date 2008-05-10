@@ -12,7 +12,7 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.beans.om.ContentElement;
 import com.finalist.cmsc.beans.om.NavigationItem;
@@ -75,14 +75,14 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
    
    protected void addContentElements(RenderRequest req, int itemNumber) {
       String elementId = req.getParameter(ELEMENT_ID);
-      if (StringUtil.isEmpty(elementId)) {
+      if (StringUtils.isEmpty(elementId)) {
          PortletPreferences preferences = req.getPreferences();
          String portletId = preferences.getValue(PortalConstants.CMSC_OM_PORTLET_ID, null);
          List<String> contenttypes = SiteManagement.getContentTypes(portletId);
 
          int offset = 0;
          String currentOffset = req.getParameter(OFFSET);
-         if (!StringUtil.isEmpty(currentOffset)) {
+         if (StringUtils.isNotEmpty(currentOffset)) {
             offset = Integer.parseInt(currentOffset);
          }
          int startIndex = Integer.parseInt(preferences.getValue(START_INDEX, "1")) - 1;
@@ -134,12 +134,12 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          setAttribute(req, ELEMENTS_PER_PAGE, elementsPerPage);
 
          String pagesIndex = preferences.getValue(PAGES_INDEX, null);
-         if (StringUtil.isEmpty(pagesIndex)) {
+         if (StringUtils.isEmpty(pagesIndex)) {
             setAttribute(req, PAGES_INDEX, "center");
          }
 
          String showPages = preferences.getValue(SHOW_PAGES, null);
-         if (StringUtil.isEmpty(showPages)) {
+         if (StringUtils.isEmpty(showPages)) {
             setAttribute(req, SHOW_PAGES, 10);
          }
 
@@ -150,7 +150,7 @@ public class NewsletterContentPortlet extends AbstractContentPortlet {
          setAttribute(req, USE_PAGING, usePaging);
 
          String indexPosition = preferences.getValue(INDEX_POSITION, null);
-         if (StringUtil.isEmpty(indexPosition)) {
+         if (StringUtils.isEmpty(indexPosition)) {
             setAttribute(req, INDEX_POSITION, "bottom");
          }
       }

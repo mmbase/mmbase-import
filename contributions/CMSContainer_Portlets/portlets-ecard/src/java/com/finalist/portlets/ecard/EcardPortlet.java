@@ -26,7 +26,7 @@ import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -87,29 +87,29 @@ public class EcardPortlet extends ContentChannelPortlet {
       String textBody = request.getParameter(TEXT_BODY);
       parameterMap.put(TEXT_BODY, textBody);
 
-      if (StringUtil.isEmptyOrWhitespace(elementId) || StringUtil.isEmptyOrWhitespace(galleryId)) {
+      if (StringUtils.isBlank(elementId) || StringUtils.isBlank(galleryId)) {
          errorMessages.put("noimage", "view.ecard.noimage");
          getLogger().error("image or galery not available");
       }
-      if (StringUtil.isEmptyOrWhitespace(fromEmail)) {
+      if (StringUtils.isBlank(fromEmail)) {
          errorMessages.put(FROM_EMAIL, "view.ecard.fromEmail.empty");
       }
       else if (!fromEmail.matches(getEmailRegex())) {
          errorMessages.put(FROM_EMAIL, VIEW_ECARD_INVALID);
       }
-      if (StringUtil.isEmptyOrWhitespace(toEmail)) {
+      if (StringUtils.isBlank(toEmail)) {
          errorMessages.put(TO_EMAIL, "view.ecard.toEmail.empty");
       }
       else if (!toEmail.matches(getEmailRegex())) {
          errorMessages.put(TO_EMAIL, VIEW_ECARD_INVALID);
       }
-      if (StringUtil.isEmptyOrWhitespace(fromName)) {
+      if (StringUtils.isBlank(fromName)) {
          errorMessages.put(FROM_NAME, "view.ecard.fromName.empty");
       }
-      if (StringUtil.isEmptyOrWhitespace(toName)) {
+      if (StringUtils.isBlank(toName)) {
          errorMessages.put(TO_NAME, "view.ecard.toName.empty");
       }
-      if (StringUtil.isEmptyOrWhitespace(textBody)) {
+      if (StringUtils.isBlank(textBody)) {
          errorMessages.put(TEXT_BODY, "view.ecard.textBody.empty");
       }
       else if (textBody.length() > TEXTAREA_MAXLENGTH) {
@@ -173,7 +173,7 @@ public class EcardPortlet extends ContentChannelPortlet {
       String senderName = preferences.getValue(SENDER_NAME, null);
       String subject = preferences.getValue(EMAIL_SUBJECT, null);
       String bodyBefore = preferences.getValue(EMAIL_BODY_BEFORE, null);
-      if (!StringUtil.isEmptyOrWhitespace(bodyBefore)) {
+      if (StringUtils.isNotBlank(bodyBefore)) {
          bodyBefore = bodyBefore.replace("#TO#", toName);
          bodyBefore = bodyBefore.replace("#FROM#", fromName);
       }
@@ -181,7 +181,7 @@ public class EcardPortlet extends ContentChannelPortlet {
 
       if (senderEmail != null && subject != null) {
          StringBuffer body = new StringBuffer();
-         if (!StringUtil.isEmptyOrWhitespace(bodyBefore)) {
+         if (StringUtils.isNotBlank(bodyBefore)) {
             body.append(bodyBefore);
             body.append("\n");
          }
@@ -189,7 +189,7 @@ public class EcardPortlet extends ContentChannelPortlet {
          body.append(url);
          body.append("\n");
          body.append("\n");
-         if (!StringUtil.isEmptyOrWhitespace(bodyAfter)) {
+         if (StringUtils.isNotBlank(bodyAfter)) {
             body.append(bodyAfter);
          }
          EmailUtil.send(cloud, toName, toEmail, senderName, senderEmail, subject, body.toString());
@@ -279,7 +279,7 @@ public class EcardPortlet extends ContentChannelPortlet {
 
    private String getEmailRegex() {
       String emailRegex = PropertiesUtil.getProperty("email.regex");
-      if (!StringUtil.isEmptyOrWhitespace(emailRegex)) {
+      if (StringUtils.isNotBlank(emailRegex)) {
          return emailRegex;
       }
       else {

@@ -129,16 +129,16 @@ public class SearchGuestBookAction extends MMBaseAction {
          String email, String title, String body) {
       NodeManager manager = cloud.getNodeManager("guestmessage");
       NodeQuery query = manager.createQuery();
-      if (!StringUtils.isBlank(name)) {
+      if (StringUtils.isNotBlank(name)) {
          addConstraint(query, manager, "name", name);
       }
-      if (!StringUtils.isBlank(email)) {
+      if (StringUtils.isNotBlank(email)) {
          addConstraint(query, manager, "email", email);
       }
-      if (!StringUtils.isBlank(title)) {
+      if (StringUtils.isNotBlank(title)) {
          addConstraint(query, manager, "title", title);
       }
-      if (!StringUtils.isBlank(body)) {
+      if (StringUtils.isNotBlank(body)) {
          addConstraint(query, manager, "body", body);
       }
       query.addSortOrder(query.getStepField(manager.getField("creationdate")), SortOrder.ORDER_DESCENDING);

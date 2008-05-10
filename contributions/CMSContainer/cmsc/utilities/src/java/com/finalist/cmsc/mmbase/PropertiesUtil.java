@@ -3,7 +3,7 @@ package com.finalist.cmsc.mmbase;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.mmbase.bridge.Field;
@@ -141,7 +141,7 @@ public class PropertiesUtil {
       String result = "";
       if (property != null) {
          result = property.getStringValue(environment);
-         if (!DEFAULT.equals(environment) && StringUtil.isEmpty(result)) {
+         if (!DEFAULT.equals(environment) && StringUtils.isEmpty(result)) {
             log.warn("Property '" + key + "' empty in environment " + environment + ". Using default value");
             result = property.getStringValue(DEFAULT);
          }

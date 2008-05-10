@@ -15,7 +15,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import javax.portlet.*;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -44,23 +44,23 @@ public class MailFriendPortlet extends ContentPortlet {
             String toemail = request.getParameter("toemail");
             String toname = request.getParameter("toname");
             String articleNumber = request.getParameter("articleNumber");
-            if (StringUtil.isEmptyOrWhitespace(articleNumber)) {
+            if (StringUtils.isBlank(articleNumber)) {
                errorMessages.put("article", "view.error.noarticle");
             }
             String emailRegex = PropertiesUtil.getProperty("email.regex");
-            if (StringUtil.isEmptyOrWhitespace(fromname)) {
+            if (StringUtils.isBlank(fromname)) {
                errorMessages.put("fromname", "view.fromname.empty");
             }
-            if (StringUtil.isEmptyOrWhitespace(fromemail)) {
+            if (StringUtils.isBlank(fromemail)) {
                errorMessages.put("fromemail", "view.fromemail.empty");
             }
             else if (!fromemail.matches(emailRegex)) {
                errorMessages.put("fromemail", "view.fromemail.invalid");
             }
-            if (StringUtil.isEmptyOrWhitespace(toname)) {
+            if (StringUtils.isBlank(toname)) {
                errorMessages.put("toname", "view.toname.empty");
             }
-            if (StringUtil.isEmptyOrWhitespace(toemail)) {
+            if (StringUtils.isBlank(toemail)) {
                errorMessages.put("toemail", "view.toemail.empty");
             }
             else if (!toemail.matches(emailRegex)) {

@@ -12,7 +12,7 @@ package com.finalist.cmsc.repository;
 import java.util.*;
 
 import net.sf.mmapps.commons.util.KeywordUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.datatypes.StringDataType;
@@ -26,7 +26,7 @@ public class KeywordProcessor implements CommitProcessor {
          throw new IllegalArgumentException("Processor only works on ContentElement types, not on: "
                + node.getNodeManager().getName());
       }
-      if (StringUtil.isEmpty(node.getStringValue(field.getName()))) {
+      if (StringUtils.isEmpty(node.getStringValue(field.getName()))) {
          List<String> textFields = new ArrayList<String>();
 
          FieldList fields = node.getNodeManager().getFields();
@@ -38,20 +38,20 @@ public class KeywordProcessor implements CommitProcessor {
                   && !ContentElementUtil.isContentElementField(managerField)) {
 
                String text = node.getStringValue(managerField.getName());
-               if (!StringUtil.isEmptyOrWhitespace(text)) {
+               if (StringUtils.isNotBlank(text)) {
                   text = text.replaceAll("<.+?>", "");
                   textFields.add(text);
                }
             }
          }
          String title = node.getStringValue(ContentElementUtil.TITLE_FIELD);
-         if (!StringUtil.isEmptyOrWhitespace(title)) {
+         if (StringUtils.isNotBlank(title)) {
             textFields.add(title);
          }
 
          List<String> keywords = KeywordUtil.getKeywords(textFields, 50);
          String keywordStr = KeywordUtil.keywordsToString(keywords);
-         if (!StringUtil.isEmpty(keywordStr)) {
+         if (StringUtils.isNotEmpty(keywordStr)) {
             node.setValue(field.getName(), keywordStr);
          }
       }

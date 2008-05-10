@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.commons.util.KeywordUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
@@ -90,7 +90,7 @@ public class SearchAction extends PagerAction {
 
         NodeManager nodeManager = cloud.getNodeManager(searchForm.getContenttypes());
         QueryStringComposer queryStringComposer = new QueryStringComposer();
-        if(!StringUtil.isEmpty(request.getParameter(MODE))) {
+        if(StringUtils.isNotEmpty(request.getParameter(MODE))) {
         	queryStringComposer.addParameter(MODE, request.getParameter(MODE));
         }
         NodeQuery query = cloud.createNodeQuery();
@@ -100,7 +100,7 @@ public class SearchAction extends PagerAction {
 
         // First add the proper step to the query.
         Step theStep = null;
-        if (!StringUtil.isEmpty(searchForm.getParentchannel())) {
+        if (StringUtils.isNotEmpty(searchForm.getParentchannel())) {
             Step step = query.addStep(cloud.getNodeManager(RepositoryUtil.CONTENTCHANNEL));
             query.addNode(step, cloud.getNode(searchForm.getParentchannel()));
             theStep = query.addRelationStep(nodeManager, RepositoryUtil.CONTENTREL, "DESTINATION").getNext();
@@ -116,7 +116,7 @@ public class SearchAction extends PagerAction {
         String order = searchForm.getOrder();
 
         // set default order field
-        if (StringUtil.isEmpty(order)) {
+        if (StringUtils.isEmpty(order)) {
             if (nodeManager.hasField("title")) {
                 order = "title";
             }
@@ -124,7 +124,7 @@ public class SearchAction extends PagerAction {
                 order = "name";
             }
         }
-        if (StringUtil.isEmpty(order)) {
+        if (StringUtils.isEmpty(order)) {
             queryStringComposer.addParameter(ORDER, searchForm.getOrder());
             queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
             query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
@@ -157,7 +157,7 @@ public class SearchAction extends PagerAction {
                 Field field = fieldIterator.nextField();
                 String paramName = nodeManager.getName() + "." + field.getName();
                 String paramValue = request.getParameter(paramName);
-                if (!StringUtil.isEmpty(paramValue)) {
+                if (StringUtils.isNotEmpty(paramValue)) {
                     SearchUtil.addLikeConstraint(query, field, paramValue.trim());
                 } 
                 queryStringComposer.addParameter(paramName, paramValue);
@@ -165,7 +165,7 @@ public class SearchAction extends PagerAction {
         }
 
         // Add the title constraint:
-        if (!StringUtil.isEmpty(searchForm.getTitle())) {
+        if (StringUtils.isNotEmpty(searchForm.getTitle())) {
 
             queryStringComposer.addParameter(ContentElementUtil.TITLE_FIELD, searchForm.getTitle().trim());
             Field field = nodeManager.getField(ContentElementUtil.TITLE_FIELD);
@@ -174,7 +174,7 @@ public class SearchAction extends PagerAction {
         }
 
         // And some keyword searching
-        if (!StringUtil.isEmpty(searchForm.getKeywords())) {
+        if (StringUtils.isNotEmpty(searchForm.getKeywords())) {
             queryStringComposer.addParameter(ContentElementUtil.KEYWORD_FIELD, searchForm.getKeywords());
             Field keywordField = nodeManager.getField(ContentElementUtil.KEYWORD_FIELD);
             List<String> keywords = KeywordUtil.getKeywords(searchForm.getKeywords());
@@ -185,7 +185,7 @@ public class SearchAction extends PagerAction {
         }
 
         // Set the objectid constraint
-        if (!StringUtil.isEmpty(searchForm.getObjectid())) {
+        if (StringUtils.isNotEmpty(searchForm.getObjectid())) {
         	String stringObjectId = searchForm.getObjectid().trim();
             Integer objectId = null;
             if (stringObjectId.matches("^\\d+$")) {
@@ -204,7 +204,7 @@ public class SearchAction extends PagerAction {
         }
 
         // Add the user personal:
-        if (!StringUtil.isEmpty(searchForm.getPersonal())) {
+        if (StringUtils.isNotEmpty(searchForm.getPersonal())) {
 
             String useraccount = cloud.getUser().getIdentifier();
             if (ContentElementUtil.LASTMODIFIER_FIELD.equals(searchForm.getPersonal())) {
@@ -217,7 +217,7 @@ public class SearchAction extends PagerAction {
         }
 
         // Add the user
-        if (!StringUtil.isEmpty(searchForm.getUseraccount())) {
+        if (StringUtils.isNotEmpty(searchForm.getUseraccount())) {
             String useraccount = searchForm.getUseraccount();
             SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.LASTMODIFIER_FIELD, useraccount);
         }

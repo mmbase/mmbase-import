@@ -239,7 +239,7 @@ public class NedstatTag extends CmscTag {
          url = "homepage";
       }
 
-      if (!StringUtils.isEmpty(getPrefix())) {
+      if (StringUtils.isNotEmpty(getPrefix())) {
          url = getPrefix() + "/" + url + "/index";
       }
       return url;

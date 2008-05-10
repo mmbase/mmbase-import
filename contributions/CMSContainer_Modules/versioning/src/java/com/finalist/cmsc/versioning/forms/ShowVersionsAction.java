@@ -18,7 +18,7 @@ import org.mmbase.bridge.util.SearchUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Locale;
 
@@ -34,7 +34,7 @@ public class ShowVersionsAction extends MMBaseAction {
       Locale locale = request.getLocale();
 
       String nodeNumber = request.getParameter("nodenumber");
-      if (!StringUtil.isEmptyOrWhitespace(nodeNumber) && cloud.hasNode(nodeNumber)) {
+      if (StringUtils.isNotBlank(nodeNumber) && cloud.hasNode(nodeNumber)) {
 
          Node node = cloud.getNode(nodeNumber);
          int number = node.getNumber();

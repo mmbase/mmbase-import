@@ -11,7 +11,7 @@ package com.finalist.cmsc.navigation.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -29,7 +29,7 @@ public class ReorderAction extends MMBaseFormlessAction {
 
       String action = getParameter(request, "action");
 
-      if (!StringUtil.isEmptyOrWhitespace(action) && "reorder".equals(action)) {
+      if (StringUtils.isNotBlank(action) && "reorder".equals(action)) {
          String parent = request.getParameter("parent");
          if (!isCancelled(request)) {
             String ids = request.getParameter("ids");

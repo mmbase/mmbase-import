@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -37,7 +37,7 @@ public class DownloadSavedFormAction extends MMBaseAction {
       String nodeNumber = request.getParameter("nodenumber");
       String formTitle;
       // construct headers
-      if (!StringUtil.isEmptyOrWhitespace(nodeNumber) && cloud.hasNode(nodeNumber)) {
+      if (StringUtils.isNotBlank(nodeNumber) && cloud.hasNode(nodeNumber)) {
          Node responseForm = cloud.getNode(nodeNumber);
          formTitle = responseForm.getStringValue("title");
          NodeList savedFormNodeList = responseForm.getRelatedNodes("savedform");

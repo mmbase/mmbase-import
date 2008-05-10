@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 
@@ -40,7 +40,7 @@ public class PropertyTag extends SimpleTagSupport {
       String property = PropertiesUtil.getProperty(key);
 
       PageContext ctx = (PageContext) getJspContext();
-      if (!StringUtil.isEmpty(var)) {
+      if (StringUtils.isNotEmpty(var)) {
          HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
          // put in variable
          if (property != null) {

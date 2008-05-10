@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.util.KeywordUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -39,16 +39,16 @@ public class EgemSearchAction extends MMBaseAction {
       NodeManager nodeManager = cloud.getNodeManager(ContentElementUtil.CONTENTELEMENT);
       NodeQuery query = nodeManager.createQuery();
 
-      if (!StringUtil.isEmpty(form.getTitle())) {
+      if (StringUtils.isNotEmpty(form.getTitle())) {
          Field field = nodeManager.getField("title");
          SearchUtil.addLikeConstraint(query, field, form.getTitle());
       }
 
-      if (!StringUtil.isEmpty(form.getAuthor())) {
+      if (StringUtils.isNotEmpty(form.getAuthor())) {
          SearchUtil.addEqualConstraint(query, nodeManager, "lastmodifier", form.getAuthor());
       }
 
-      if (!StringUtil.isEmpty(form.getKeywords())) {
+      if (StringUtils.isNotEmpty(form.getKeywords())) {
          List<String> keywords = KeywordUtil.getKeywords(form.getKeywords());
          Field field = nodeManager.getField("keywords");
          for (String string : keywords) {
@@ -72,7 +72,7 @@ public class EgemSearchAction extends MMBaseAction {
          removeUnpublished(cloud, results);
       }
 
-      int offset = StringUtil.isEmptyOrWhitespace(form.getPage()) ? 0 : Integer.parseInt(form.getPage());
+      int offset = StringUtils.isBlank(form.getPage()) ? 0 : Integer.parseInt(form.getPage());
       int resultsPerPage = 50;
       int numberOfResults = results.size();
 

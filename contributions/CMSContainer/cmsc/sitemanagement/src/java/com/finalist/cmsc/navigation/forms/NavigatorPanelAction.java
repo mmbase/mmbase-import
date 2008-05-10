@@ -7,7 +7,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ public class NavigatorPanelAction extends MMBaseAction {
       String pathofpage = NavigationUtil.getNavigationItemUrl(request, response, parentNode);
       
       String fresh = request.getParameter("fresh");
-      if (!StringUtil.isEmpty(fresh)) {
+      if (StringUtils.isNotEmpty(fresh)) {
          request.setAttribute("fresh", fresh); 
       }
       request.setAttribute("toolbar", "toolbar.jsp");

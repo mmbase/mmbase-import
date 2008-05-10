@@ -17,7 +17,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -47,12 +47,12 @@ public class SelectTag extends SimpleTagSupport {
 
       selected = (String) request.getAttribute(var);
 
-      if (StringUtil.isEmpty(selected)) {
+      if (StringUtils.isEmpty(selected)) {
          selected = defaultValue;
       }
       
       String myOnChange = "";
-      if (!StringUtil.isEmpty(onchange)){
+      if (StringUtils.isNotEmpty(onchange)){
          myOnChange = " " + "onchange=\"" + StringEscapeUtils.escapeXml(onchange) + "\"";  
       } 
       

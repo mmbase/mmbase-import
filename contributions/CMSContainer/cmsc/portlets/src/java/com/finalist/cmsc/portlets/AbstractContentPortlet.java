@@ -16,7 +16,7 @@ import java.util.*;
 
 import javax.portlet.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.commons.bridge.CloudUtil;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -133,7 +133,7 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
                   String number = name.substring(index + 1, secondIndex);
                   String field = name.substring(secondIndex + 1);
                   String value = request.getParameter(name);
-                  if (!StringUtil.isEmpty(number)) {
+                  if (StringUtils.isNotEmpty(number)) {
                      if (!nodesMap.containsKey(number)) {
                         Cloud cloud = getCloud();
                         Node node = cloud.getNode(number);
@@ -198,7 +198,7 @@ public abstract class AbstractContentPortlet extends CmscPortlet {
 
       PortletPreferences preferences = req.getPreferences();
       String pageid = preferences.getValue(PAGE, null);
-      if (!StringUtil.isEmpty(pageid)) {
+      if (StringUtils.isNotEmpty(pageid)) {
 
          String pagepath = SiteManagement.getPath(Integer.valueOf(pageid), true);
 

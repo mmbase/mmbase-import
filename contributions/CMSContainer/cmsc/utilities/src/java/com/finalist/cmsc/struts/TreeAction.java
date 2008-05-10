@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.mmapps.commons.util.HttpUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.Cloud;
@@ -35,7 +35,7 @@ public abstract class TreeAction extends MMBaseAction {
       TreeInfo info = getTreeInfo(cloud);
 
       String action = request.getParameter("action");
-      if (!StringUtil.isEmpty(action)) {
+      if (StringUtils.isNotEmpty(action)) {
          response.setContentType("text/xml");
          if ("expand".equals(action)) {
             String persistentid = request.getParameter("persistentid");
@@ -75,7 +75,7 @@ public abstract class TreeAction extends MMBaseAction {
       }
       else {
          String channel = getChannelId(request, cloud);
-         if (!StringUtil.isEmpty(channel) && !"notfound".equals(channel)) {
+         if (StringUtils.isNotEmpty(channel) && !"notfound".equals(channel)) {
             Node channelNode = cloud.getNode(channel);
             List<Node> openChannels = getOpenChannels(channelNode);
             if (openChannels != null) {

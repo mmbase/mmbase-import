@@ -11,7 +11,7 @@ package com.finalist.cmsc.rssfeed.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -27,7 +27,7 @@ public class RssFeedCreate extends MMBaseFormlessAction {
       String parentpage = getParameter(request, "parentpage", true);
       String action = getParameter(request, "action");
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isBlank(action)) {
          request.getSession().setAttribute("parentpage", parentpage);
 
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?action=create"

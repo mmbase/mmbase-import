@@ -11,7 +11,7 @@ package com.finalist.cmsc.repository.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -53,7 +53,7 @@ public class LinkToChannelAction extends MMBaseFormlessAction {
             }
             else {
                String destinationnumber = getParameter(request, "destionationchannel");
-               if (!StringUtil.isEmpty(destinationnumber)) {
+               if (StringUtils.isNotEmpty(destinationnumber)) {
                   Node newCreationNode = cloud.getNode(destinationnumber);
 
                   RepositoryUtil.removeContentFromChannel(objectNode, channelNode);

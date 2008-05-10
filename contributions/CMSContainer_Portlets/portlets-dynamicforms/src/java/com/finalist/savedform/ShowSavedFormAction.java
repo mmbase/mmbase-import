@@ -3,7 +3,7 @@ package com.finalist.savedform;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -27,7 +27,7 @@ public class ShowSavedFormAction extends MMBaseAction {
          HttpServletResponse response, Cloud cloud) throws Exception {
 
       String nodeNumber = request.getParameter("nodenumber");
-      if (!StringUtil.isEmptyOrWhitespace(nodeNumber) && cloud.hasNode(nodeNumber)) {
+      if (StringUtils.isNotBlank(nodeNumber) && cloud.hasNode(nodeNumber)) {
 
          Set<String> headersNumbers = new TreeSet<String>();
          Node responseForm = cloud.getNode(nodeNumber);

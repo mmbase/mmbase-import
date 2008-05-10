@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 
@@ -25,31 +25,31 @@ public class WizardCloseAction extends Action {
       session.removeAttribute("creation");
 
       String returnurl = request.getParameter("returnurl");
-      if (StringUtil.isEmpty(returnurl)) {
+      if (StringUtils.isEmpty(returnurl)) {
          returnurl = (String) session.getAttribute("returnurl");
          session.removeAttribute("returnurl");
       }
       String url = "empty.html";
-      if (!StringUtil.isEmpty(returnurl)) {
+      if (StringUtils.isNotEmpty(returnurl)) {
          url = returnurl;
       }
 
       String action = request.getParameter("action");
-      if (StringUtil.isEmpty(action)) {
+      if (StringUtils.isEmpty(action)) {
          action = (String) session.getAttribute("wizardaction");
          session.removeAttribute("wizardaction");
       }
       url = addParam(url, "action", action);
 
       String ewnode = request.getParameter("ewnode-lastedited");
-      if (StringUtil.isEmpty(ewnode)) {
+      if (StringUtils.isEmpty(ewnode)) {
          ewnode = (String) session.getAttribute("ewnode-lastedited");
          session.removeAttribute("ewnode-lastedited");
       }
       url = addParam(url, "ewnodelastedited", ewnode);
 
       String popup = request.getParameter("popup");
-      if (StringUtil.isEmpty(popup)) {
+      if (StringUtils.isEmpty(popup)) {
          popup = (String) session.getAttribute("popup");
          session.removeAttribute("popup");
       }
@@ -76,7 +76,7 @@ public class WizardCloseAction extends Action {
 
 
    private String addParam(String url, String name, String value) {
-      if (!StringUtil.isEmpty(value)) {
+      if (StringUtils.isNotEmpty(value)) {
          if (url.indexOf("?") > -1) {
             return url + "&" + name + "=" + value;
          }

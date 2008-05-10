@@ -2,7 +2,7 @@ package com.finalist.cmsc.repository.forms;
 
 import java.util.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -25,19 +25,19 @@ public class SearchInitAction extends MMBaseAction {
 
       SearchForm searchForm = (SearchForm) form;
 
-      if (StringUtil.isEmpty(searchForm.getExpiredate())) {
+      if (StringUtils.isEmpty(searchForm.getExpiredate())) {
          searchForm.setExpiredate("0");
       }
 
-      if (StringUtil.isEmpty(searchForm.getPublishdate())) {
+      if (StringUtils.isEmpty(searchForm.getPublishdate())) {
          searchForm.setPublishdate("0");
       }
 
-      if (StringUtil.isEmpty(searchForm.getOffset())) {
+      if (StringUtils.isEmpty(searchForm.getOffset())) {
          searchForm.setOffset("0");
       }
 
-      if (StringUtil.isEmpty(searchForm.getOrder())) {
+      if (StringUtils.isEmpty(searchForm.getOrder())) {
          searchForm.setOrder("title");
       }
 

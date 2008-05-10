@@ -32,7 +32,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -275,8 +275,8 @@ public class ResponseFormPortlet extends ContentPortlet {
          userEmailText.append(userEmailTextAfter);
       }
 
-      if (!StringUtil.isEmptyOrWhitespace(userEmailText.toString())
-            && !StringUtil.isEmptyOrWhitespace(userEmailSenderName)
+      if (StringUtils.isNotBlank(userEmailText.toString())
+            && StringUtils.isNotBlank(userEmailSenderName)
             && isEmailAddress(userEmailAddress)
             && isEmailAddress(userEmailSenderAddress)) {
          try {
@@ -311,7 +311,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
       String senderEmailAddress = userEmailAddress;
       String senderName = userEmailAddress;
-      if (StringUtil.isEmptyOrWhitespace(userEmailAddress)) {
+      if (StringUtils.isBlank(userEmailAddress)) {
          senderEmailAddress = responseform.getStringValue("useremailsender");
          senderName = responseform.getStringValue("useremailsendername");
       }
@@ -456,7 +456,7 @@ public class ResponseFormPortlet extends ContentPortlet {
                }
             }
             else {
-               if (!StringUtil.isEmptyOrWhitespace(fileItem.getName())) {
+               if (StringUtils.isNotBlank(fileItem.getName())) {
                   if (fileItem.getSize() <= getMaxAttachmentSize()) {
                      attachment = new WrappedFileItem(fileItem);
                   }
@@ -474,7 +474,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
    public boolean isEmailAddress(String emailAddress) {
       if (emailAddress == null) return false;
-      if (StringUtil.isEmptyOrWhitespace(emailAddress)) return false;
+      if (StringUtils.isBlank(emailAddress)) return false;
       
       String emailRegex = getEmailRegex();
       return emailAddress.matches(emailRegex);
@@ -486,7 +486,7 @@ public class ResponseFormPortlet extends ContentPortlet {
             
       String emailRegex = getEmailRegex();
       for (String email : emailList) {
-      	 if (email == null || StringUtil.isEmptyOrWhitespace(email)) return false;
+      	 if (email == null || StringUtils.isBlank(email)) return false;
          if (!email.matches(emailRegex)) return false;
       }
       
@@ -496,7 +496,7 @@ public class ResponseFormPortlet extends ContentPortlet {
    private long getMaxAttachmentSize() {
       long maxFileSize = DEFAULT_MAXFILESIZE;
       String maxFileSizeValue = PropertiesUtil.getProperty("email.maxattachmentsize");
-      if (!StringUtil.isEmptyOrWhitespace(maxFileSizeValue)) {
+      if (StringUtils.isNotBlank(maxFileSizeValue)) {
          try {
             maxFileSize = Integer.parseInt(maxFileSizeValue);
          }
@@ -511,7 +511,7 @@ public class ResponseFormPortlet extends ContentPortlet {
 
    protected String getEmailRegex() {
       String emailRegex = PropertiesUtil.getProperty("email.regex");
-      if (!StringUtil.isEmptyOrWhitespace(emailRegex)) {
+      if (StringUtils.isNotBlank(emailRegex)) {
          return emailRegex;
       }
       else {

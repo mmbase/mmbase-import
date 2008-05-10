@@ -15,7 +15,7 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -85,7 +85,7 @@ public class SiteManagementAdminServiceMMBaseImpl extends SiteManagementAdminSer
          Node node = null;
          if (!values.isEmpty()) {
             for (String value : values) {
-               if (!StringUtil.isEmptyOrWhitespace(value)) {
+               if (StringUtils.isNotBlank(value)) {
                   node = cloud.getNode(value);
                   nodeList.add(node);
                }

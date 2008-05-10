@@ -29,7 +29,7 @@ public class PageInfoComparator implements Comparator<PageInfo> {
 
 
    public int compare(PageInfo info1, PageInfo info2) {
-      if (!StringUtils.isBlank(preferredSite)) {
+      if (StringUtils.isNotBlank(preferredSite)) {
          String host1 = info1.getHost();
          String host2 = info2.getHost();
 

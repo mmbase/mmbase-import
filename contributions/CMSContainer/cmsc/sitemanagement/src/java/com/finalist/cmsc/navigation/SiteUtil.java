@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
  */
 package com.finalist.cmsc.navigation;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 
@@ -68,11 +68,11 @@ public class SiteUtil {
    public static Node createSite(Cloud cloud, String name, String pathname, String description, Node layout) {
       Node site = cloud.getNodeManager(SITE).createNode();
       site.setStringValue(TITLE_FIELD, name);
-      if (!StringUtil.isEmpty(pathname)) {
+      if (StringUtils.isNotEmpty(pathname)) {
          site.setStringValue(STAGING_FRAGMENT, pathname);
          site.setStringValue(LIVE_FRAGMENT, pathname);
       }
-      if (!StringUtil.isEmpty(description)) {
+      if (StringUtils.isNotEmpty(description)) {
          site.setStringValue(DESCRIPTION_FIELD, description);
       }
       site.commit();

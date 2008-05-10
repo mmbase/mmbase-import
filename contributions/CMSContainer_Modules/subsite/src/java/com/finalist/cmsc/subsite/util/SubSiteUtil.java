@@ -2,7 +2,7 @@ package com.finalist.cmsc.subsite.util;
 
 import java.util.List;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
@@ -104,7 +104,7 @@ public class SubSiteUtil {
    }
 
    public static Node getPersonalpageNodeByUserId(Cloud cloud, String userId) {
-      if (userId == null || StringUtil.isEmpty(userId)) {
+      if (userId == null || StringUtils.isEmpty(userId)) {
          return null;
       }
       return SearchUtil.findNode(cloud, PERSONALPAGE, USERID_FIELD, userId);

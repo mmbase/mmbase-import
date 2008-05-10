@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 public class TextTag extends SimpleTagSupport {
    public String var;
@@ -41,11 +41,11 @@ public class TextTag extends SimpleTagSupport {
 
       String attValue = (String) request.getAttribute(var);
       String inputValue = "";
-      if (!StringUtil.isEmpty(attValue)) {
+      if (StringUtils.isNotEmpty(attValue)) {
          inputValue = attValue;
       }
       else {
-         if (!StringUtil.isEmpty(value)) {
+         if (StringUtils.isNotEmpty(value)) {
             inputValue = attValue;
          }
       }
