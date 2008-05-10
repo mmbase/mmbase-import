@@ -4,7 +4,7 @@ import javax.portlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import com.finalist.pluto.PortletURLImpl;
 
@@ -18,7 +18,7 @@ public class RenderURLTag extends BasicURLTag {
    @Override
    protected PortletURL getRenderUrl() {
       PortletURL renderUrl = null;
-      if (!StringUtil.isEmpty(page) && !StringUtil.isEmpty(window)) {
+      if (StringUtils.isNotEmpty(page) && StringUtils.isNotEmpty(window)) {
          String link = getLink();
          renderUrl = new PortletURLImpl(link, window, (HttpServletRequest) pageContext.getRequest(),
                (HttpServletResponse) pageContext.getResponse(), false);

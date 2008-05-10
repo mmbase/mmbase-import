@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForm;
 import org.mmbase.util.logging.Logger;
@@ -59,7 +59,7 @@ public class MMBaseForm extends ActionForm {
 
    protected Date convertToDate(String deadline) {
       Date input = null;
-      if (!StringUtil.isEmpty(deadline)) {
+      if (StringUtils.isNotEmpty(deadline)) {
          try {
             input = DateFormat.getDateInstance().parse(deadline);
          }

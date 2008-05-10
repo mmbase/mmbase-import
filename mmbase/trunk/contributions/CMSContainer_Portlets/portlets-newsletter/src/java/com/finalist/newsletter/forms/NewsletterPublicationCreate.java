@@ -11,7 +11,7 @@ package com.finalist.newsletter.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -29,7 +29,7 @@ public class NewsletterPublicationCreate extends MMBaseFormlessAction {
 
       String action = request.getParameter("action");
 
-      if (StringUtil.isEmptyOrWhitespace(action)) { // Initialize the new
+      if (StringUtils.isBlank(action)) { // Initialize the new
          int parent = Integer.parseInt(getParameter(request, "parent", true));
          boolean copyContent = Boolean.valueOf(getParameter(request, "copycontent", true));
          Node publicationNode = NewsletterPublicationUtil.createPublication(parent, copyContent);

@@ -21,7 +21,7 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProvider;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
@@ -119,7 +119,7 @@ public class GuestBookPortlet extends ContentPortlet {
                 Node message = messageMgr.createNode();
                 message.setStringValue(TITLE_FIELD, request.getParameter(TITLE_FIELD));
                 message.setStringValue(NAME_FIELD, request.getParameter(NAME_FIELD));
-                if (!StringUtil.isEmpty(request.getParameter(EMAIL_FIELD))) {
+                if (StringUtils.isNotEmpty(request.getParameter(EMAIL_FIELD))) {
                     message.setStringValue(EMAIL_FIELD, request.getParameter(EMAIL_FIELD));
                 }
                 String body = request.getParameter(BODY_FIELD);

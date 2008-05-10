@@ -4,7 +4,7 @@
  */
 package com.finalist.cmsc.editwizard;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.applications.editwizard.Config;
 import org.mmbase.applications.editwizard.Config.WizardConfig;
@@ -67,7 +67,7 @@ public class WizardController {
       log.debug("contenttype " + contenttype);
 
       String readonly = (String) session.getAttribute("readonly");
-      if (StringUtil.isEmptyOrWhitespace(readonly)) {
+      if (StringUtils.isBlank(readonly)) {
          readonly = "false";
       }
 
@@ -77,9 +77,9 @@ public class WizardController {
       log.debug("readonly " + readonly);
 
       Node creationNode = null;
-      if (!StringUtil.isEmpty(contenttype)) {
+      if (StringUtils.isNotEmpty(contenttype)) {
          String creation = (String) session.getAttribute("creation");
-         if (!StringUtil.isEmpty(creation)) {
+         if (StringUtils.isNotEmpty(creation)) {
             creationNode = cloud.getNode(creation);
          }
          if (creationNode == null && objectnr != null && !"new".equals(objectnr)) {
@@ -179,7 +179,7 @@ public class WizardController {
 
          String objectnr = wizardConfig.objectNumber;
          log.debug("objectnr " + objectnr);
-         if (!StringUtil.isEmpty(objectnr)) {
+         if (StringUtils.isNotEmpty(objectnr)) {
             if (!"new".equals(objectnr) || wizardConfig.wiz.committed()) {
                if ("new".equals(objectnr)) {
                   // We are closing a wizard which was called with
@@ -206,7 +206,7 @@ public class WizardController {
                   // will create double creationchannels when first "save" and
                   // then "save and close"
                   if (!RepositoryUtil.hasCreationChannel(editNode)) {
-                     if (!StringUtil.isEmpty(channelnr)) {
+                     if (StringUtils.isNotEmpty(channelnr)) {
                         RepositoryUtil.addCreationChannel(editNode, channelnr);
                         ContentElementUtil.addOwner(editNode);
                         if (isMainWizard(ewconfig, wizardConfig)) {
@@ -227,7 +227,7 @@ public class WizardController {
                      String channelnr = (String) session.getAttribute("creation");
                      log.debug("Creation " + channelnr);
 
-                     if (!StringUtil.isEmpty(channelnr)) {
+                     if (StringUtils.isNotEmpty(channelnr)) {
                         RepositoryUtil.addCreationChannel(editNode, channelnr);
                      }
                   }

@@ -9,7 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import net.sf.mmapps.commons.util.HttpUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -124,7 +124,7 @@ public class XMLServlet extends HttpServlet {
 
       // Primary key request
       String pk = request.getParameter(PK);
-      if (!StringUtil.isEmptyOrWhitespace(pk)) {
+      if (StringUtils.isNotBlank(pk)) {
          processSingle(response, cloud, xsl, pk);
          return;
       }
@@ -154,7 +154,7 @@ public class XMLServlet extends HttpServlet {
       for (int i = 0; i < contentTypes.length; i++) {
          log.debug("CONTENTTYPE " + contentTypes[i]);
 
-         if (StringUtil.isEmptyOrWhitespace(contentTypes[i])) {
+         if (StringUtils.isBlank(contentTypes[i])) {
             sendError("Content type is empty", response);
             return;
          }
@@ -234,7 +234,7 @@ public class XMLServlet extends HttpServlet {
          List<String> contentTypes, String fromIndex, String toIndex, String filterName, String filterValue,
          String sortName, String sortDirection, String previewdateParam, String numbersOnly) {
 
-      if (StringUtil.isEmptyOrWhitespace(channel)) {
+      if (StringUtils.isBlank(channel)) {
          sendError("Channel is empty", response);
          return;
       }
@@ -264,7 +264,7 @@ public class XMLServlet extends HttpServlet {
       int offSet = -1;
       int maxNumber = -1;
 
-      if (!StringUtil.isEmptyOrWhitespace(fromIndex) && !StringUtil.isEmptyOrWhitespace(toIndex)) {
+      if (StringUtils.isNotBlank(fromIndex) && StringUtils.isNotBlank(toIndex)) {
          offSet = getInt(fromIndex, 0);
          maxNumber = Math.max(getInt(toIndex, -1) - getInt(fromIndex, 0), -1);
       }
@@ -276,7 +276,7 @@ public class XMLServlet extends HttpServlet {
       NodeManager queryNodeManager = query.getNodeManager();
 
       // add other constraints
-      if (!StringUtil.isEmptyOrWhitespace(filterName) && !StringUtil.isEmptyOrWhitespace(filterValue)) {
+      if (StringUtils.isNotBlank(filterName) && StringUtils.isNotBlank(filterValue)) {
          // check if field exsists
          if (queryNodeManager.hasField(filterName)) {
             Field field = queryNodeManager.getField(filterName);
@@ -354,7 +354,7 @@ public class XMLServlet extends HttpServlet {
 
 
    private String transformXml(String xsl, String xml) throws IOException, TransformerException {
-      if (!StringUtil.isEmpty(xsl)) {
+      if (StringUtils.isNotEmpty(xsl)) {
          // get xslt source and xml source
          InputStream xslSrc = getClass().getClassLoader().getResourceAsStream(xsl);
          // transform

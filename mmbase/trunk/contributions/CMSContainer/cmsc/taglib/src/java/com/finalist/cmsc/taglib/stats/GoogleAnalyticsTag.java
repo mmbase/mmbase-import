@@ -31,7 +31,7 @@ public class GoogleAnalyticsTag extends SimpleTagSupport {
             account = PropertiesUtil.getProperty("googleanalytics.account");
          }
 
-         if (!StringUtils.isBlank(account)) {
+         if (StringUtils.isNotBlank(account)) {
             String javascript = "<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\">\r\n"
                   + "</script>\r\n"
                   + "<script type=\"text/javascript\">\r\n"

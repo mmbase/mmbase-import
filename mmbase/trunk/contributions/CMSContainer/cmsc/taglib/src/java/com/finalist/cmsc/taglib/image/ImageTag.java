@@ -1,6 +1,6 @@
 package com.finalist.cmsc.taglib.image;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
@@ -256,7 +256,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
     */
    public String getLegendtype() throws JspTagException {
       String temp = legendType.getString(this);
-      return StringUtil.isEmpty(temp) ? LEGEND_NONE : temp;
+      return StringUtils.isEmpty(temp) ? LEGEND_NONE : temp;
    }
 
 

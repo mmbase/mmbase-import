@@ -1,6 +1,6 @@
 package com.finalist.cmsc.resources.forms;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForward;
@@ -18,7 +18,7 @@ public class SearchInitAction extends Action {
          HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
       SearchForm searchForm = (SearchForm) actionForm;
 
-      if (StringUtil.isEmpty(searchForm.getOffset())) {
+      if (StringUtils.isEmpty(searchForm.getOffset())) {
          searchForm.setOffset("0");
       }
 

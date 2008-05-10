@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 
 import net.sf.mmapps.commons.bridge.CloneUtil;
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
@@ -277,7 +277,7 @@ public class PortletUtil {
             }
 
             for (String newValue : values) {
-               if (!StringUtil.isEmptyOrWhitespace(newValue)) {
+               if (StringUtils.isNotBlank(newValue)) {
                   if (storedValues.containsKey(newValue)) {
                      storedValues.remove(newValue);
                   }
@@ -296,7 +296,7 @@ public class PortletUtil {
          }
          else {
             for (String value : values) {
-               if (!StringUtil.isEmptyOrWhitespace(value)) {
+               if (StringUtils.isNotBlank(value)) {
                   log.debug("creating node for node:" + portlet.getNumber());
                   Node newNode = createPortletParameter(portlet.getCloud(), key, value);
                   addPortletParameter(portlet, newNode);
@@ -310,7 +310,7 @@ public class PortletUtil {
    public static void updatePortletParameter(Node portlet, String key, String value) {
       NodeList plist = SearchUtil.findRelatedNodeList(portlet, PORTLETPARAMETER, PARAMETERREL, KEY_FIELD, key);
       if (!plist.isEmpty()) {
-         if (StringUtil.isEmptyOrWhitespace(value)) {
+         if (StringUtils.isBlank(value)) {
             for (Iterator<Node> iterator = plist.iterator(); iterator.hasNext();) {
                Node foundNode = iterator.next();
                log.debug("removing parameter node:" + foundNode.getNumber());
@@ -333,7 +333,7 @@ public class PortletUtil {
          }
       }
       else {
-         if (!StringUtil.isEmptyOrWhitespace(value)) {
+         if (StringUtils.isNotBlank(value)) {
             log.debug("creating node for node:" + portlet.getNumber());
             Node newNode = createPortletParameter(portlet.getCloud(), key, value);
             addPortletParameter(portlet, newNode);
@@ -496,11 +496,11 @@ public class PortletUtil {
 
    public static Node createPortlet(Cloud cloud, String portletName, String definitionId, String viewId) {
       Node viewNode = null;
-      if (!StringUtil.isEmpty(viewId)) {
+      if (StringUtils.isNotEmpty(viewId)) {
          viewNode = cloud.getNode(viewId);
       }
       Node definitionNode = null;
-      if (!StringUtil.isEmpty(definitionId)) {
+      if (StringUtils.isNotEmpty(definitionId)) {
          definitionNode = cloud.getNode(definitionId);
       }
 

@@ -11,7 +11,7 @@ package com.finalist.cmsc.mmbase;
 
 import java.util.List;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.module.builders.Images;
@@ -56,7 +56,7 @@ public class ResourcesUtil {
 
 
    public static Node getImageNode(Node node, String template) {
-      if (StringUtil.isEmpty(template)) {
+      if (StringUtils.isEmpty(template)) {
          return node;
       }
       else {
@@ -92,7 +92,7 @@ public class ResourcesUtil {
          servletpath += "/";
       }
       String url = servletpath + id;
-      if (!StringUtil.isEmpty(title)) {
+      if (StringUtils.isNotEmpty(title)) {
          url += "/" + TreeUtil.convertToFragment(title);
          // Apache webserver fails to pass the request to tomcat when / or \ is
          // in the url (escaped or not)

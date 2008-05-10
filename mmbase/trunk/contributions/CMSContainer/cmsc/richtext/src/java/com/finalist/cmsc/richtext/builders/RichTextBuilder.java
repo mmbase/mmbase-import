@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.applications.wordfilter.WordHtmlCleaner;
 import org.mmbase.bridge.Field;
@@ -58,18 +58,18 @@ public class RichTextBuilder extends MMObjectBuilder {
 
       Map<String, String> map = getInitParameters("cmsc/richtext");
       String download = map.get("downloadImages");
-      if (!StringUtil.isEmpty(download)) {
+      if (StringUtils.isNotEmpty(download)) {
          downloadImages = Boolean.valueOf(download);
       }
       String resolve = map.get("resolveIds");
-      if (!StringUtil.isEmpty(resolve)) {
+      if (StringUtils.isNotEmpty(resolve)) {
          resolveIds = Boolean.valueOf(resolve);
       }
 
       Collection<CoreField> fields = getFields();
       for (CoreField field : fields) {
          DataType dataType = field.getDataType();
-         while (StringUtil.isEmpty(dataType.getName())) {
+         while (StringUtils.isEmpty(dataType.getName())) {
             dataType = dataType.getOrigin();
          }
 
@@ -212,7 +212,7 @@ public class RichTextBuilder extends MMObjectBuilder {
                if (isSnsert || node.getChanged().contains(fieldName)) {
                   // Persistent string field.
                   String fieldValue = (String) node.getValues().get(fieldName);
-                  if (!StringUtil.isEmpty(fieldValue)) {
+                  if (StringUtils.isNotEmpty(fieldValue)) {
                      try {
                         if (RichText.hasRichtextItems(fieldValue)) {
                            Document doc = RichText.getRichTextDocument(fieldValue);
@@ -233,7 +233,7 @@ public class RichTextBuilder extends MMObjectBuilder {
                }
                else {
                   String fieldValue = (String) node.getValues().get(fieldName);
-                  if (!StringUtil.isEmpty(fieldValue) && RichText.hasRichtextItems(fieldValue)) {
+                  if (StringUtils.isNotEmpty(fieldValue) && RichText.hasRichtextItems(fieldValue)) {
                      Document doc = RichText.getRichTextDocument(fieldValue);
                      fillIdFromLinks(doc, idsList);
                      fillIdFromImages(doc, idsList);
@@ -642,13 +642,13 @@ public class RichTextBuilder extends MMObjectBuilder {
 
 
    protected void setImageIdRelFields(MMObjectNode imagerel, String height, String width, String legend) {
-      if (!StringUtil.isEmpty(height)) {
+      if (StringUtils.isNotEmpty(height)) {
          imagerel.setValue("height", height);
       }
-      if (!StringUtil.isEmpty(width)) {
+      if (StringUtils.isNotEmpty(width)) {
          imagerel.setValue("width", width);
       }
-      if (!StringUtil.isEmpty(legend)) {
+      if (StringUtils.isNotEmpty(legend)) {
          imagerel.setValue("legend", legend);
       }
    }
@@ -691,7 +691,7 @@ public class RichTextBuilder extends MMObjectBuilder {
 
    protected MMObjectNode createUrl(String owner, String href, String name) {
       MMObjectNode urlNode = mmb.getMMObject("urls").getNewNode(owner);
-      if (!StringUtil.isEmpty(name)) {
+      if (StringUtils.isNotEmpty(name)) {
          urlNode.setValue("name", name);
       }
       else {

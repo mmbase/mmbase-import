@@ -14,7 +14,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
@@ -34,7 +34,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
          HttpServletResponse response, Cloud cloud) throws Exception {
 
       String action = request.getParameter("action");
-      if (StringUtil.isEmpty(action)) {
+      if (StringUtils.isEmpty(action)) {
          NavigationInfo info = new NavigationInfo(NavigationUtil.getNavigationInfo(cloud));
          cloud.setProperty("Selector" + NavigationInfo.class.getName(), info);
       }
@@ -47,7 +47,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
    @Override
    protected String getChannelId(HttpServletRequest request, Cloud cloud) {
       String path = request.getParameter("path");
-      if (!StringUtil.isEmpty(path)) {
+      if (StringUtils.isNotEmpty(path)) {
          Node parentNode = NavigationUtil.getPageFromPath(cloud, path);
          if (parentNode != null) {
             return String.valueOf(parentNode.getNumber());
@@ -98,7 +98,7 @@ public class SelectorAction extends com.finalist.cmsc.struts.SelectorAction {
    @Override
    protected List<String> getChildren(Cloud cloud, String path) {
       List<String> strings = new ArrayList<String>();
-      if (StringUtil.isEmpty(path)) {
+      if (StringUtils.isEmpty(path)) {
          NodeList sites = SiteUtil.getSites(cloud);
          for (Iterator<Node> iter = sites.iterator(); iter.hasNext();) {
             Node child = iter.next();

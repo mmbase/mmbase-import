@@ -11,7 +11,7 @@ import javax.portlet.RenderResponse;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import com.finalist.cmsc.portlets.AbstractContentPortlet;
@@ -29,13 +29,13 @@ public class SecureContentPortlet extends AbstractContentPortlet {
 	   @Override
 	   protected void doView(RenderRequest req, RenderResponse res) throws PortletException, IOException {
 	      String elementId = req.getParameter(ELEMENT_ID);
-	      if (StringUtil.isEmpty(elementId)) {
+	      if (StringUtils.isEmpty(elementId)) {
 	         PortletPreferences preferences = req.getPreferences();
 	         elementId = preferences.getValue(CONTENTELEMENT, null);
 	      }
 	      getLogger().debug("doView for elementId: " + elementId);
 
-	      if (!StringUtil.isEmpty(elementId)) {
+	      if (StringUtils.isNotEmpty(elementId)) {
 	    	  if(!isSecure(elementId) || isUserLoggedIn()) {
 		         setAttribute(req, ELEMENT_ID, elementId);
 		         setMetaData(req, elementId);
@@ -61,13 +61,13 @@ public class SecureContentPortlet extends AbstractContentPortlet {
 	@Override
 	   protected void doEdit(RenderRequest req, RenderResponse res) throws IOException, PortletException {
 	      String elementId = req.getParameter(ELEMENT_ID);
-	      if (StringUtil.isEmpty(elementId)) {
+	      if (StringUtils.isEmpty(elementId)) {
 	         PortletPreferences preferences = req.getPreferences();
 	         elementId = preferences.getValue(CONTENTELEMENT, null);
 	      }
 	      getLogger().debug("doEdit for elementId: " + elementId);
 
-	      if (!StringUtil.isEmpty(elementId)) {
+	      if (StringUtils.isNotEmpty(elementId)) {
 	         setAttribute(req, ELEMENT_ID, elementId);
 	         setMetaData(req, elementId);
 	         doEdit(req, res, elementId);

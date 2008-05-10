@@ -13,7 +13,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -31,7 +31,7 @@ public class ReorderAction extends MMBaseFormlessAction {
 
       String action = getParameter(request, "action");
 
-      if (!StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isNotBlank(action)) {
          if ("reorder".equals(action)) {
             String parent = request.getParameter("parent");
             if (!isCancelled(request)) {
@@ -61,7 +61,7 @@ public class ReorderAction extends MMBaseFormlessAction {
             String direction = request.getParameter("direction");
             String offsetStr = request.getParameter("offset");
             String[] ids = request.getParameterValues("ids[]");
-            if (!StringUtil.isEmptyOrWhitespace(direction) && direction.equalsIgnoreCase("down")) {
+            if (StringUtils.isNotBlank(direction) && direction.equalsIgnoreCase("down")) {
                ids = reverseIds(ids).split(",");
             }
             List<Integer> changeNumbers = RepositoryUtil

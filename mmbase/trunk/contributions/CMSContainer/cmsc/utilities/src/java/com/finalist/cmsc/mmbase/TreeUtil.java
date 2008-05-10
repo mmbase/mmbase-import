@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.EncodingUtil;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.apache.commons.lang.RandomStringUtils;
@@ -210,7 +210,7 @@ public class TreeUtil {
       String pathStr = TreePathCache.getPathStringFromCache(getRootManager(treeManagers), node.getNumber());
       if (pathStr == null) {
          pathStr = getPathToRootStringWithoutCache(node, treeManagers, relationName);
-         if (!StringUtil.isEmpty(pathStr)) {
+         if (StringUtils.isNotEmpty(pathStr)) {
             TreePathCache.addToCache(getRootManager(treeManagers), pathStr, node.getNumber());
          }
       }
@@ -456,7 +456,7 @@ public class TreeUtil {
    }
 
    public static int getLevel(String path) {
-      if (StringUtil.isEmpty(path.trim())) {
+      if (StringUtils.isEmpty(path.trim())) {
          return 0;
       }
       String[] fragements = path.split(PATH_SEPARATOR);

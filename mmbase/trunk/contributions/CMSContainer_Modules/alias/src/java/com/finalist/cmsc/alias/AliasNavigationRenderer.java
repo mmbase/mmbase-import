@@ -52,7 +52,7 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
          }
          else {
              String url = alias.getUrl();
-             if (!StringUtils.isBlank(url)) {
+             if (StringUtils.isNotBlank(url)) {
                  String redirect = response.encodeRedirectURL(url);
                  try {
                     response.sendRedirect(redirect);

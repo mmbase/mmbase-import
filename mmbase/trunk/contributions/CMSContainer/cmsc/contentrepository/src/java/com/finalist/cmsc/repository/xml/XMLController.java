@@ -10,7 +10,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.sf.mmapps.commons.bridge.NodeFieldComparator;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
@@ -318,7 +318,7 @@ public class XMLController {
             else {
                if ("page".equals(builderName) || "site".equals(builderName)) {
                   url = node.getStringValue("externalurl");
-                  if (StringUtil.isEmpty(url)) {
+                  if (StringUtils.isEmpty(url)) {
                      url = ResourcesUtil.getServletPathWithAssociation("content", "/content/*", node
                            .getStringValue("number"), node.getStringValue("title"));
                   }
@@ -326,7 +326,7 @@ public class XMLController {
             }
          }
       }
-      if (!StringUtil.isEmpty(url)) {
+      if (StringUtils.isNotEmpty(url)) {
          if (fieldsAsAttribute) {
             nodeElement.setAttribute("externalUrl", url);
          }

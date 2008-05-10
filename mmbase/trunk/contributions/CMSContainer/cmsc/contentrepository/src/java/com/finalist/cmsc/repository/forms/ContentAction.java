@@ -14,7 +14,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.apache.struts.util.LabelValueBean;
@@ -47,10 +47,10 @@ public class ContentAction extends MMBaseAction {
       String parentchannel = request.getParameter("parentchannel");
       String orderby = request.getParameter("orderby");
       String direction = request.getParameter("direction");
-      if (StringUtil.isEmpty(orderby)) {
+      if (StringUtils.isEmpty(orderby)) {
          orderby = null;
       }
-      if (StringUtil.isEmpty(direction)) {
+      if (StringUtils.isEmpty(direction)) {
          direction = null;
       }
 
@@ -69,7 +69,7 @@ public class ContentAction extends MMBaseAction {
       }
       addToRequest(request, "resultsPerPage", Integer.toString(maxNumber));
       
-      if (!StringUtil.isEmpty(parentchannel)) {
+      if (StringUtils.isNotEmpty(parentchannel)) {
          Node channel = cloud.getNode(parentchannel);
          NodeList elements = RepositoryUtil.getLinkedElements(channel, null, orderby, direction, false, offset*maxNumber, maxNumber, -1, -1, -1);
          int elementCount = RepositoryUtil.countLinkedContent(channel);

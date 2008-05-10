@@ -3,7 +3,7 @@ package com.finalist.portlets.banner.search;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
@@ -56,7 +56,7 @@ public class BannerForm extends SearchForm {
       }
 
       // set default order field
-      if (StringUtil.isEmpty(getOrder())) {
+      if (StringUtils.isEmpty(getOrder())) {
          setOrder("name");
       }
 

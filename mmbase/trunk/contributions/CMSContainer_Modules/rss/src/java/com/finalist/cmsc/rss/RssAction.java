@@ -117,7 +117,7 @@ public class RssAction extends MMBaseAction {
     */
    private Node getParentChannel(Cloud cloud, String feed) {
       String channel = getProperty(feed, "rubriek", DEFAULT_CHANNEL);
-      if (!StringUtils.isEmpty(channel)) {
+      if (StringUtils.isNotEmpty(channel)) {
          Node parentNode = RepositoryUtil.getChannelFromPath(cloud, channel);
          if (parentNode != null) {
             return parentNode;
@@ -150,7 +150,7 @@ public class RssAction extends MMBaseAction {
 
    private int getProperty(String feed, String key, int defaultValue) {
       String value = getProperty(feed, key, "");
-      if (!StringUtils.isEmpty(value)) {
+      if (StringUtils.isNotEmpty(value)) {
          try {
             return Integer.parseInt(value);
          }

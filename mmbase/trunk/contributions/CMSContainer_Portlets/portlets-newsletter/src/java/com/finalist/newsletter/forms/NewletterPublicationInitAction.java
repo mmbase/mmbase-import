@@ -1,6 +1,6 @@
 package com.finalist.newsletter.forms;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -16,7 +16,7 @@ public class NewletterPublicationInitAction extends SearchInitAction{
 	         HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 		NewletterPublicationForm searchForm = (NewletterPublicationForm) actionForm;
 
-	      if (StringUtil.isEmpty(searchForm.getOrder())) {
+	      if (StringUtils.isEmpty(searchForm.getOrder())) {
 	         searchForm.setOrder("title");
 	      }
 	      return super.execute(actionMapping, actionForm, httpServletRequest, httpServletResponse);

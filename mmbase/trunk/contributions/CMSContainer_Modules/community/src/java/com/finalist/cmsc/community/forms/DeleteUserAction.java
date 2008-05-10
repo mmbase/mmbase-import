@@ -21,7 +21,7 @@ public class DeleteUserAction extends AbstractCommunityAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
 			HttpServletResponse httpServletResponse) throws Exception {
 		String authenticationId = request.getParameter(AUTHENTICATION_ID);
-		if (!StringUtils.isBlank(authenticationId)) {
+		if (StringUtils.isNotBlank(authenticationId)) {
 			Long authId = Long.valueOf(authenticationId);
             getPersonService().deletePersonByAuthenticationId(authId);
 			getAuthenticationService().deleteAuthentication(authId);

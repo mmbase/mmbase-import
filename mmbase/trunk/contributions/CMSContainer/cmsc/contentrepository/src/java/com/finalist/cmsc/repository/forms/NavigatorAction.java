@@ -14,7 +14,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
@@ -73,7 +73,7 @@ public class NavigatorAction extends TreeAction {
    @Override
    protected List<String> getChildren(Cloud cloud, String path) {
       List<String> strings = new ArrayList<String>();
-      if (StringUtil.isEmpty(path)) {
+      if (StringUtils.isEmpty(path)) {
          Node parentNode = RepositoryUtil.getRootNode(cloud);
          strings.add(parentNode.getStringValue(TreeUtil.PATH_FIELD));
       }

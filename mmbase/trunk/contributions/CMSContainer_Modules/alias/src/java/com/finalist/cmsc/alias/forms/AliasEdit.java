@@ -11,7 +11,7 @@ package com.finalist.cmsc.alias.forms;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -27,7 +27,7 @@ public class AliasEdit extends MMBaseFormlessAction {
       String action = getParameter(request, "action");
       boolean stacked=(request.getParameter("stacked") != null && request.getParameter("stacked").equals("true"));
 
-      if (StringUtil.isEmptyOrWhitespace(action)) {
+      if (StringUtils.isBlank(action)) {
           request.getSession().setAttribute("parentpage", parentpage);
 
          String objectnumber = getParameter(request, "number", true);

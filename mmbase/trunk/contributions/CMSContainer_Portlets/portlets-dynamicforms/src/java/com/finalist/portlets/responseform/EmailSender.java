@@ -15,7 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import net.sf.mmapps.commons.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import com.finalist.cmsc.mmbase.PropertiesUtil;
 
 /**
@@ -64,10 +64,10 @@ public class EmailSender {
     */
    public void sendEmail(String emailFrom, String nameFrom, List<String> toAddresses, String subject, String body,
          DataSource dataSource) throws UnsupportedEncodingException, MessagingException {
-      if (StringUtil.isEmptyOrWhitespace(emailFrom)) {
+      if (StringUtils.isBlank(emailFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
       }
-      if (StringUtil.isEmptyOrWhitespace(nameFrom)) {
+      if (StringUtils.isBlank(nameFrom)) {
          nameFrom = PropertiesUtil.getProperty("mail.system.name");
       }
       Session session = Session.getInstance(props, null);
@@ -106,10 +106,10 @@ public class EmailSender {
     */
    public void sendEmail(String emailFrom, String nameFrom, String emailTo, String subject, String body)
          throws UnsupportedEncodingException, MessagingException {
-      if (StringUtil.isEmptyOrWhitespace(emailFrom)) {
+      if (StringUtils.isBlank(emailFrom)) {
          emailFrom = PropertiesUtil.getProperty("mail.system.email");
       }
-      if (StringUtil.isEmptyOrWhitespace(nameFrom)) {
+      if (StringUtils.isBlank(nameFrom)) {
          nameFrom = PropertiesUtil.getProperty("mail.system.name");
       }
       Session session = Session.getInstance(props, null);
