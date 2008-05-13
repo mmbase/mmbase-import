@@ -125,22 +125,51 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
          ddn.clipBeginOnToday();
          %>
          <tr>
-            <td style="vertical-align:top;width:50%;padding-right:3px;">
+            <td colspan="2">
+            
+            <mm:field name="titel" jspvar="title" vartype="String" write="false">   
+               <a href="activity3.jsp?p=<%= paginaID 
+                     %>&e=<%=event_number%>&<%= searchParams %>" class="maincolor_link"><%=HtmlCleaner.insertShy(title,30)%></a>
+              </mm:field>
+              <br/>
+            
+            <mm:node number="<%= parent_number %>">
+               <mm:field name="tekst" jspvar="tekst" vartype="String">
+               <% 
+                 tekst = HtmlCleaner.cleanBRs(tekst); //Otherwise the summary gets to long 
+                 if (tekst.length() > 150) {
+                     out.print(tekst.substring(0,150) + "..."); 
+               } else 
+                  { out.print(tekst);
+                 }
+                   %>
+               </mm:field>
+            </mm:node>
+            </td>
+         </tr>
+         <tr>
+            <td style="vertical-align:top;width:50%;">
+              <mm:remove referid="imageused" 
+              /><mm:list nodes="<%= parent_number %>" path="evenement,posrel,images" max="1"
+                  ><table style="margin:0px;padding:0px;"><tr>
+                     <td style="margin:0px;padding:0px;"><img src="<mm:node element="images"><mm:image template="s(120)" /></mm:node
+                        >" alt="<mm:field name="evenement.naam"
+                        />">&nbsp;</td>
+                     <td style="margin:0px;padding:0px;vertical-align:top;"><mm:import id="imageused"
+              /></mm:list>&#32;
+              
+              <mm:present referid="imageused"></td></tr></table></mm:present>
+            </td>
+            
+            <td style="vertical-align:top;width:50%;padding-right:3px;padding-top:10px;">
               <%= ddn.getReadableDate(" | ") %>&nbsp;|&nbsp;<%= ddn.getReadableStartTime() %>
               <br/>
               <mm:list nodes="<%= parent_number %>" path="evenement,related,evenement_type"
                      constraints="evenement_type.isoninternet='1'">
                   <mm:field name="evenement_type.naam" />
                   <br/>
-              </mm:list>
-            </td>
-            <td style="vertical-align:top;width:50%;">
-              <mm:field name="titel" jspvar="title" vartype="String" write="false">   
-               <a href="activity1.jsp?p=<%= paginaID 
-                     %>&e=<%=event_number%>&<%= searchParams %>" class="maincolor_link"><%=HtmlCleaner.insertShy(title,30)%></a>
-              </mm:field>
-              <br/>
-              <mm:node number="<%= parent_number %>" jspvar="parentEvent">
+                  
+                  <mm:node number="<%= parent_number %>" jspvar="parentEvent">
                   <mm:related path="related,natuurgebieden,posrel,provincies" fields="provincies.naam" distinct="true">
                     <mm:first inverse="true">, </mm:first>
                     <mm:field name="provincies.naam" />
@@ -155,9 +184,12 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
                      if(evenement.getStringValue("iscanceled").equals("true")) {
                         %><b>Helaas kan deze activiteit niet doorgaan.</b><% 
                      } %>
-              </mm:node>
-              <mm:present referid="imageused"></td></tr></table></mm:present>
+                   </mm:node>
+                   
+                  
+              </mm:list>
             </td>
+            
          </tr>
          <tr><td colspan="2"><table class="dotline"><tr><td height="3"></td></tr></table></td></tr>
       </mm:node>
