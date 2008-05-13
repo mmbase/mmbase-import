@@ -68,6 +68,9 @@ public class NewsletterServiceImpl implements NewsletterService {
 
    public Newsletter getNewsletterBySubscription(int id) {
       int newsletterId = newsletterCAO.getNewsletterIdBySubscription(id);
+      if(newsletterId < 1) {
+         return null;
+      }
       return newsletterCAO.getNewsletterById(newsletterId);
    }
 

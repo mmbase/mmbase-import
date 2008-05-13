@@ -74,7 +74,7 @@
 				<div class="body">
 					<div>
 						<a name="activetab"> <fmt:message
-								key="newsletterlog.newsletter" /> </a>
+								key="newsletterlog.newsletter.log" /> </a>
 					</div>
 				</div>
 			</div>
