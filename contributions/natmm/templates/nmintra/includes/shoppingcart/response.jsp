@@ -25,6 +25,7 @@
    }
 %><%
 String responseText = "";
+Integer shopItemPrice = null;
 String thisForm = null;   
 %><mm:node number="<%= thisShop_item %>"
 	><mm:relatednodes type="pagina" max="1" jspvar="thisPage"
@@ -61,10 +62,17 @@ String thisForm = null;
          %></mm:notpresent
       ></mm:isempty
    ></mm:field
-	><mm:field name="titel" jspvar="dummy" vartype="String" write="false"><%
-	   responseText += "<b>" + numberOfItems + " x " + dummy + "</b><br>\n";
-	%></mm:field
-	><mm:related path="posrel,formulier" orderby="formulier.pos" directions="UP" searchdir="destination"
+	>
+     <mm:field name="price1" jspvar="price" vartype="Integer" write="false">
+         <% shopItemPrice = price;%>
+     </mm:field>
+     
+     <mm:field name="titel" jspvar="dummy" vartype="String" write="false"><%
+	   responseText += "<b>" + numberOfItems + " x " + dummy + " á &euro; " + nf.format(((double) shopItemPrice.intValue() )/100) + "</b><br>\n";
+	   shopItemPrice = new Integer(Integer.valueOf(numberOfItems).intValue() * shopItemPrice.intValue());
+	%></mm:field>
+     
+     <mm:related path="posrel,formulier" orderby="formulier.pos" directions="UP" searchdir="destination"
 		><mm:node element="formulier" jspvar="form">
 			<%
 			thisForm = form.getStringValue("number");
@@ -155,9 +163,21 @@ String thisForm = null;
 							// *** check whether this question provides the client email address ***
 							// *** the object cloud has to contain a question with alias client_email ***
 							%><mm:list nodes="client_email" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
-									clientEmail = answerValue;
-							%></mm:list><%
-							
+									clientEmail.append(answerValue);
+							%></mm:list>
+                     <mm:list nodes="client_email2" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+                           clientEmail.append(";" + answerValue);
+					      %></mm:list>
+                     <mm:list nodes="client_email3" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+                           clientEmail.append(";" + answerValue);
+                     %></mm:list>
+                     <mm:list nodes="client_email4" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+                           clientEmail.append(";" + answerValue);
+                     %></mm:list>
+                     <mm:list nodes="client_email5" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
+                           clientEmail.append(";" + answerValue);
+                     %></mm:list><%
+                                                               							
 							// *** check whether this question provides the client email address ***
 							// *** the object cloud has to contain a question with alias client_department ***
 							%><mm:list nodes="client_department" path="formulierveld" constraints="<%= "formulierveld.number=" + questions_number %>"><%
@@ -170,7 +190,9 @@ String thisForm = null;
    			></mm:related><%
 		   }
 		   
-		%></mm:node
+		%>
+      </mm:node
 ></mm:related><% 
 responses.put(thisShop_item, responseText);
+shopItemPrices.put(thisShop_item, shopItemPrice);
 %></mm:node>

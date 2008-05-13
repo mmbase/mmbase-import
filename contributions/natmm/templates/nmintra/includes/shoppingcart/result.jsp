@@ -40,9 +40,10 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
 	String warningLink = "Terug naar het formulier";
 
 	boolean isValidAnswer = true;
-	String clientEmail = "";                // *** see shoppingcartresponse.jsp
+	StringBuffer clientEmail = new StringBuffer(); // *** see shoppingcartresponse.jsp
 	String clientDept  = "";	             // *** see shoppingcartresponse.jsp
 	TreeMap responses = new TreeMap();      // *** treemap with response text for every shop item ordered ***
+	TreeMap shopItemPrices = new TreeMap();  // *** treemap with price for every shop item ordered ***
    TreeMap emails = new TreeMap();         // *** treemap with email address for every shop item ordered ***
 	TreeMap product_groups = new TreeMap(); // *** treemap with product group for every shop item ordered ***
 	// *** example: 
@@ -140,17 +141,19 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
             if(shopItems.hasNext()) { 
    		    
                String responseText = "";
+               int totalPrice = 0;
                while(shopItems.hasNext()) {
-                  responseText += responses.get(shopItems.next());
-               }
-					
+                  String currentShopItem = (String)shopItems.next();
+                  responseText += responses.get(currentShopItem);
+                  totalPrice = totalPrice + ((Integer)shopItemPrices.get(currentShopItem)).intValue();
+               }               
                %><mm:node referid="productorder_email"
                   ><mm:setfield name="subject"><%=  emailSubject + orderId %></mm:setfield
                   ><mm:setfield name="body">
                      <multipart id="plaintext" type="text/plain" encoding="UTF-8">
                      </multipart>
                      <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
-                         <%= "<html>" + responseText  + "</html>" %>
+                         <%= "<html>" + responseText  + "<br/><b>Totaal prijs: &euro; " + nf.format(((double) totalPrice )/100) + "</b>\n</html>" %>
                      </multipart>
                   </mm:setfield
                   ><mm:setfield name="to"><%= (debug ? debugEmail : thisEmail ) %></mm:setfield
@@ -168,12 +171,12 @@ public TreeSet unify(TreeSet ts1, TreeSet ts2){
                      </multipart>
                      <multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8">
                          <%= "<html>Uw onderstaande bestelling heeft als ordernummer " + orderId + " en is verstuurd naar " + thisEmail + "<br><br>"
-            		            + responseText  + "</html>" %>
+            		            + responseText  + "<br/><b>Totaal prijs: &euro; " + nf.format(((double) totalPrice )/100) + "</b>\n</html>" %>
                      </multipart>
                   </mm:setfield>
                   </mm:node><%
       
-                  String cEmails = clientEmail + ";";
+                  String cEmails = clientEmail.toString() + ";";
                   int semicolon = cEmails.indexOf(";"); 
                   while(semicolon>-1) {
                      String emailAddress = cEmails.substring(0,semicolon).trim();
