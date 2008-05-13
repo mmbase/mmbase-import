@@ -20,7 +20,7 @@
             <td>${requestScope.newslettercount}</td>
          </tr>
          <tr>
-            <td><fmt:message key="globalstats.total.themes"/></td>
+            <td><fmt:message key="globalstats.total.terms"/></td>
             <td>${requestScope.termcount}</td>
          </tr>
          <tr>

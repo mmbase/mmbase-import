@@ -74,10 +74,26 @@ public abstract class NewsletterUtil {
       if (terms != null) {
          for (int i = 0; i < terms.size(); i++) {
             Node termNode = terms.getNode(i);
+            deleteSubscriptionByTerm(termNode.getNumber());
             termNode.deleteRelations();
             termNode.delete();
          }
       }
+   }
+   
+   public static void deleteSubscriptionByTerm(int termNumber) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
+      Node termNode = cloud.getNode(termNumber);
+      NodeManager subscriptionNodeManager = cloud.getNodeManager("subscriptionrecord");
+      NodeList subscriptions = termNode.getRelatedNodes(subscriptionNodeManager);
+      if (subscriptions != null) {
+         for (int i = 0; i < subscriptions.size(); i++) {
+            Node subscriptionNode = subscriptions.getNode(i);
+            subscriptionNode.deleteRelations();
+            subscriptionNode.delete();
+         }
+      }
+      
    }
 
    public static String determineNodeType(int number) {
