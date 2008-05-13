@@ -127,14 +127,6 @@ SubscribeForm subscribeForm = (SubscribeForm) session.getAttribute("SubscribeFor
          <tr>
             
             <td style="vertical-align:top;width:50%;">
-              <mm:remove referid="imageused" 
-              /><mm:list nodes="<%= parent_number %>" path="evenement,related,evenement_type,posrel,images" max="1"
-                  ><table style="margin:0px;padding:0px;"><tr>
-                     <td style="margin:0px;padding:0px;"><img src="<mm:node element="images"><mm:image template="s(37)" /></mm:node
-                        >" alt="<mm:field name="evenement_type.naam"
-                        />">&nbsp;</td>
-                     <td style="margin:0px;padding:0px;vertical-align:top;"><mm:import id="imageused"
-              /></mm:list>
               <mm:field name="titel" jspvar="title" vartype="String" write="false">   
                <a href="activity2.jsp?p=<%= paginaID 
                      %>&e=<%=event_number%>&<%= searchParams %>" class="maincolor_link"><%=HtmlCleaner.insertShy(title,30)%></a>
