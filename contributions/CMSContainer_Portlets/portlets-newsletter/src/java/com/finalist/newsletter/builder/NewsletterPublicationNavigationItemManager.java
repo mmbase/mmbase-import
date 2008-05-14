@@ -5,7 +5,7 @@ import com.finalist.cmsc.portalImpl.PageNavigationItemManager;
 import com.finalist.newsletter.tree.NewsletterPublicationTreeItemRenderer;
 import com.finalist.newsletter.util.NewsletterUtil;
 
-public class NewsletterPublicationNavigationItemManager extends PageNavigationItemManager {
+public class NewsletterPublicationNavigationItemManager extends NewsletterNavigationItemManager {
 
    private NavigationTreeItemRenderer treeRenderer = new NewsletterPublicationTreeItemRenderer();
 
