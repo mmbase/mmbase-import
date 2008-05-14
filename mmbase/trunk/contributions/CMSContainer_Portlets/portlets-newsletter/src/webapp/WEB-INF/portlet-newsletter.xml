@@ -19,7 +19,7 @@
          <value>newsletter/newslettercontent.jsp</value>
       </init-param>
       <supports>
-         <mime-type>text/html</mime-type>
+         <mime-type>text/*</mime-type>
          <portlet-mode>VIEW</portlet-mode>
          <portlet-mode>HELP</portlet-mode>
          <portlet-mode>EDIT_DEFAULTS</portlet-mode>

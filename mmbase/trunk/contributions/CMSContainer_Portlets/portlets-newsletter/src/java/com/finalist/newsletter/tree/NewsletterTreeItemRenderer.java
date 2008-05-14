@@ -64,6 +64,16 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       element.addOption(renderer.createTreeOption("cut.png", "site.page.cut", "javascript:cut('" + id + "');"));
       element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
       element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
+      element.addOption(
+            renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
+                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s","text/plain",id)
+            )
+      );
+      element.addOption(
+            renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
+                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s","text/html",id)
+            )
+      );
    }
 
    private void addWebmasterOptions(NavigationRenderer renderer, String id, TreeElement element) {
@@ -82,7 +92,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       }
       else {
          element.addOption(
-               renderer.createTreeOption("pause.png", "site.newsletter.pause", "newsletter", 
+               renderer.createTreeOption("pause.png", "site.newsletter.pause", "newsletter",
                      "../newsletter/NewsletterPause.do?number=" + id
                )
          );
@@ -108,7 +118,7 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
    }
 
    public boolean showChildren(Node parentNode) {
-      return true; 
+      return true;
    }
 
 
