@@ -3,24 +3,24 @@ package com.finalist.newsletter.cao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
 import org.mmbase.bridge.NodeManager;
 import org.mmbase.bridge.NodeQuery;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Step;
 import org.mmbase.storage.search.StepField;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueBetweenConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import static com.finalist.newsletter.domain.Subscription.STATUS;
 
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.util.StatisticUtil;
 import com.finalist.newsletter.domain.StatisticResult;
-import org.apache.commons.lang.time.DateUtils;
-import org.mmbase.bridge.util.Queries;
-import org.mmbase.bridge.util.SearchUtil;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 
 public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 
@@ -116,11 +116,12 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 		return util.convertFromNodeList((NodeList) list);
 	}
 	
-	public void logPubliction(int userId,int newsletterId, STATUS status) {
+	public void logPubliction(int userId,int newsletterId, HANDLE handle) {
       if(!mayLog(userId,newsletterId)) {
          return;
       }
       NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
+      
       Node logNode = logManager.createNode();
       logNode.setIntValue("newsletter",newsletterId);
       logNode.setIntValue("post",0);
@@ -130,13 +131,20 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
       logNode.setIntValue("removed",0);
       logNode.setIntValue("userid",userId);
       logNode.setDateValue("logdate",new Date());
-      if(status.equals(STATUS.ACTIVE)) {
+      if(handle.equals(HANDLE.ACTIVE)) {
          logNode.setIntValue("subscribe",1);
       }
-      else if(status.equals(STATUS.INACTIVE)) {
+      else if(handle.equals(HANDLE.INACTIVE)) {
          logNode.setIntValue("unsubscribe",1);
       }
+      else if(handle.equals(HANDLE.REMOVE)) {
+         logNode.setIntValue("removed",1);
+      }
+      else if(handle.equals(HANDLE.BOUNCE)) {
+         logNode.setIntValue("bounches",1);
+      }
       logNode.commit();
+
     }
 
 	 private boolean mayLog(int userId,int newsletterId) {
@@ -159,4 +167,5 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 	    }
 	    return isLog;
 	 }
+
 }

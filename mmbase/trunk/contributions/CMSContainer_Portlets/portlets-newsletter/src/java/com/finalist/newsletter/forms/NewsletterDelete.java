@@ -20,6 +20,10 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 import com.finalist.cmsc.security.UserRole;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
+import com.finalist.newsletter.services.NewsletterSubscriptionServices;
+import com.finalist.newsletter.services.StatisticService;
+import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterDelete extends MMBaseFormlessAction {
@@ -47,7 +51,7 @@ public class NewsletterDelete extends MMBaseFormlessAction {
          int number = newsletterNode.getNumber();
          NewsletterUtil.deleteNewsletterTermsForNewsletter(number);
          NavigationUtil.deleteItem(newsletterNode);
-
+         NewsletterUtil.logPubliction(number,HANDLE.REMOVE);
          return mapping.findForward(SUCCESS);
       }
 
