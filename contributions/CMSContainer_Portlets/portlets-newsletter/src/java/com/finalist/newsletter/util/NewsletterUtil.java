@@ -28,6 +28,11 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.newsletter.domain.Term;
 import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
+import com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl;
+import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
+import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
+import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 
 public abstract class NewsletterUtil {
    private static Log log = LogFactory
@@ -424,4 +429,12 @@ public abstract class NewsletterUtil {
       return application;
    }
 
+	public static void logPubliction(int newsletterId, HANDLE handle) {
+      StatisticServiceImpl service = new StatisticServiceImpl();
+      NewsLetterStatisticCAOImpl statisticCAO= new NewsLetterStatisticCAOImpl();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      statisticCAO.setCloud(cloud);
+      service.setStatisticCAO(statisticCAO);
+      service.logPubliction(newsletterId,handle);
+   }
 }

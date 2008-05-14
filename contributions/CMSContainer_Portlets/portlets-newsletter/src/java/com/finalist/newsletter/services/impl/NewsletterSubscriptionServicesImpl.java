@@ -13,7 +13,8 @@ import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
-import static com.finalist.newsletter.domain.Subscription.STATUS;
+import com.finalist.newsletter.domain.Subscription.STATUS;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
 import com.finalist.newsletter.util.DateUtil;
@@ -112,7 +113,12 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
          subscription.setStatus(STATUS.ACTIVE);
       }
        subscriptionCAO.modifySubscriptionStauts(subscription);
-       statisticCAO.logPubliction(userId,newsletterId,subscription.getStatus());
+       if(STATUS.ACTIVE.equals(subscription.getStatus())){
+          statisticCAO.logPubliction(userId,newsletterId,HANDLE.ACTIVE);
+       }
+       else {
+          statisticCAO.logPubliction(userId,newsletterId,HANDLE.INACTIVE);
+       }
    }
 
    public void pause(String subscriptionId, String duration, String durationunit) {
@@ -215,7 +221,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       subscription.setMimeType("text/html");
       subscription.setStatus(STATUS.ACTIVE);
       subscriptionCAO.addSubscriptionRecord(subscription, userId);
-      statisticCAO.logPubliction(userId,newsletterId,STATUS.ACTIVE);
+      statisticCAO.logPubliction(userId,newsletterId,HANDLE.ACTIVE);
    }
 
    public void resume(String subscriptionId) {
@@ -230,7 +236,7 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
       subscriptionCAO.updateSubscription(subscription);
       int newsletterId = newsletterCAO.getNewsletterIdBySubscription(Integer.parseInt(subscriptionId));
       int userId = CommunityModuleAdapter.getCurrentUserId();
-      statisticCAO.logPubliction(userId,newsletterId,STATUS.INACTIVE);
+      statisticCAO.logPubliction(userId,newsletterId,HANDLE.INACTIVE);
    }
 
    public Subscription getSubscription(String sId) {
