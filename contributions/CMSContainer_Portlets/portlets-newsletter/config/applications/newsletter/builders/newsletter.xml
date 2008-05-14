@@ -122,7 +122,7 @@
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Pauze start datum</guiname>
-				<guiname xml:lang="en">Paused start date</guiname>
+				<guiname xml:lang="en">Pause start date</guiname>
 			</gui>
 			<editor>
 				<positions>
@@ -144,7 +144,7 @@
 			</descriptions>
 			<gui>
 				<guiname xml:lang="nl">Pauze stop datum</guiname>
-				<guiname xml:lang="en">Paused stop date</guiname>
+				<guiname xml:lang="en">Pause stop date</guiname>
 			</gui>
 			<editor>
 				<positions>

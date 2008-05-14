@@ -93,7 +93,7 @@
 				<description xml:lang="en"></description>
 			</descriptions>
 			<gui>
-				<guiname xml:lang="nl">format</guiname>
+				<guiname xml:lang="nl">formaat</guiname>
 				<guiname xml:lang="en">format</guiname>
 			</gui>
 			<editor>
@@ -115,8 +115,8 @@
             <description xml:lang="en"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">pausetill</guiname>
-            <guiname xml:lang="en">pausetill</guiname>
+            <guiname xml:lang="nl">pause tot</guiname>
+            <guiname xml:lang="en">pause till</guiname>
          </gui>
          <editor>
             <positions>
