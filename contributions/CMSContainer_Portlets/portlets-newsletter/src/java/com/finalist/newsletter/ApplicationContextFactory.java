@@ -54,7 +54,6 @@ public class ApplicationContextFactory implements ServletContextAware {
    * @see org.springframework.web.context.ServletContextAwar e#setServletContext(javax.servlet.ServletContext)
    */
    public void setServletContext(ServletContext context) {
-      System.out.println("got it----");
       init(context);
    }
 

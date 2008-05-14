@@ -28,7 +28,6 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
    private NavigationTreeItemRenderer treeRenderer = new NewsletterTreeItemRenderer();
 
    public Class<? extends NavigationItem> getItemClass() {
-      System.out.println("++++++++++++++++++++++++++++++1");
       return Newsletter.class;
    }
 
@@ -81,19 +80,16 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
 
 
    public NavigationItemRenderer getRenderer() {
-      System.out.println("++++++++++++++++++++++++++++++3");
-      return renderer;                                                  
+      return renderer;
    }
 
    @Override
    public String getTreeManager() {
-      System.out.println("+++++++++++++++++++++++++++++ +4");
       return NewsletterUtil.NEWSLETTER;
    }
 
    @Override
    public NavigationTreeItemRenderer getTreeRenderer() {
-      System.out.println("++++++++++++++++++++++++++++++5");
       return treeRenderer;
    }
 

@@ -16,8 +16,6 @@ public class NewsletterNavigationRenderer extends PageNavigationRenderer {
    private static ThreadLocal<String> threadLocal = new ThreadLocal<String>();
 
    public String getContentType() {
-      System.out.println("-----------------------------acva" + threadLocal.get());
-
       if (null != threadLocal.get()) {
          return threadLocal.get();
       }
@@ -37,7 +35,6 @@ public class NewsletterNavigationRenderer extends PageNavigationRenderer {
       if (null != contentType && isSupportMIME((String) contentType)) {
          String type = (String) contentType;
          threadLocal.set(type);
-         System.out.println("---------------adfaf++++--------------" + request.getHeader("Content-Type"));
          PortalEnvironment env = PortalEnvironment.getPortalEnvironment(request);
          env.setRequestedMimetype(type);
       }else{
@@ -45,7 +42,6 @@ public class NewsletterNavigationRenderer extends PageNavigationRenderer {
          env.setRequestedMimetype("text/html");
       }
 
-      System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
       super.render(item, request, response, sc);
    }
 
