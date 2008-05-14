@@ -165,7 +165,16 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
-
+           <!-- XStream dependencies -->
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <version>1.2</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
 <!-- Acegi Security dependencies (for Community Module) -->
         <dependency>
             <groupId>acegisecurity</groupId>
@@ -184,13 +193,7 @@
          <version>${cmscportlets.version}</version>
          <type>mmbase-module</type>
       </dependency>
-      <!-- XStream dependencies -->
-      <dependency>
-         <groupId>com.thoughtworks.xstream</groupId>
-         <artifactId>xstream</artifactId>
-         <version>1.2</version>
-         <type>jar</type>
-      </dependency>
+
 <!--begin dependency by JForum portlet. -->
 <!--
         <dependency>
