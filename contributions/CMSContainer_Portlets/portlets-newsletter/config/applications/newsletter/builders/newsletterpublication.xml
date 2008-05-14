@@ -2,7 +2,7 @@
 <builder xmlns="http://www.mmbase.org/xmlns/builder"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mmbase.org/xmlns/builder  http://www.mmbase.org/xmlns/builder.xsd" 
-	extends="page" 
+	extends="newsletter" 
 	maintainer="finalist.com" 
 	name="newsletterpublication" 
 	version="2"> 

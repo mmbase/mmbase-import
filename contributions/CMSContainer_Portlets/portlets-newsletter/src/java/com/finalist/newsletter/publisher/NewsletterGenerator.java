@@ -2,7 +2,11 @@ package com.finalist.newsletter.publisher;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.bridge.NodeIterator;
 import org.apache.commons.lang.StringUtils;
+import org.htmlparser.Parser;
+import org.htmlparser.visitors.HtmlPage;
+import org.htmlparser.util.ParserException;
 
 import javax.mail.MessagingException;
 import java.io.InputStreamReader;
@@ -47,7 +51,11 @@ public class NewsletterGenerator {
 
          inputString = buffer.toString().trim();
 
+         if ("text/plain".equals(mimeType)) {
+            inputString = getContentFromPage(inputString);
+         }
          inputString = calibrateRelativeURL(inputString);
+
          return (inputString);
       } catch (Exception e) {
          log.debug("Error when try to get content from" + urlPath, e);
@@ -56,12 +64,33 @@ public class NewsletterGenerator {
       return inputString;
    }
 
+   public static String getContentFromPage(String inputString) {
+      Parser myParser;
+      myParser = Parser.createParser(inputString, "utf-8");
+
+      HtmlPage visitor = new HtmlPage(myParser);
+
+      try {
+         myParser.visitAllNodesWith(visitor);
+      } catch (ParserException e) {
+         e.printStackTrace();
+      }
+
+      inputString =  visitor.getBody().asHtml().trim();
+      inputString = inputString.replaceAll("(?m)^\\s*\r\n+", "").replaceAll("(?m)^\\s*\r+", "").replaceAll("(?m)^\\s*\n+", "");
+      inputString = inputString.replaceAll("(?m)\r\n+", "").replaceAll("(?m)\r+", "").replaceAll("(?m)\n+", "");
+      inputString = inputString.replaceAll("<br/>", "\r\n");
+
+
+      return inputString;
+   }
+
    private static String calibrateRelativeURL(String inputString) {
 
       String host = NewsletterUtil.getServerURL();
-      inputString =  StringUtils.replace(inputString, "href=\"/", "href=\"" +host );
-      inputString =  StringUtils.replace(inputString, "src=\"/", "src=\"" +host );
-      inputString =  StringUtils.replace(inputString, "src=\"/", "src=\"" +host );
+      inputString = StringUtils.replace(inputString, "href=\"/", "href=\"" + host);
+      inputString = StringUtils.replace(inputString, "src=\"/", "src=\"" + host);
+      inputString = StringUtils.replace(inputString, "src=\"/", "src=\"" + host);
       return inputString;
    }
 }
