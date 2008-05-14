@@ -1,9 +1,9 @@
 package com.finalist.newsletter.services;
 
 import java.util.List;
-import java.util.Map;
 
 import com.finalist.newsletter.domain.StatisticResult;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 
 public interface StatisticService {
 
@@ -26,4 +26,6 @@ public interface StatisticService {
 
 	public List<StatisticResult> StatisticDetailByNewsletterPeriod (
 			int newsletterId, String start, String end) throws ServiceException;
+	
+	public void logPubliction(int newsletterId, HANDLE handle);
 }

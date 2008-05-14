@@ -214,11 +214,9 @@
 									<fmt:message key="newsletterlog.summary.unsubscribe" />
 								</th>
 								<th>
-									<fmt:message key="newsletterlog.summary.bounches" />
+									<fmt:message key="newsletterlog.summary.bounces" />
 								</th>
-								<th>
-									<fmt:message key="newsletterlog.summary.result" />
-								</th>
+
 								<th></th>
 							</tr>
 						</thead>
@@ -240,9 +238,6 @@
 								</td>
 								<td onMouseDown="objClick(this);">
 									${requestScope.result.bounches}
-								</td>
-								<td onMouseDown="objClick(this);" style="white-space: nowrap;">
-									${requestScope.result.post}
 								</td>
 								<td></td>
 							</tr>
@@ -274,7 +269,7 @@
 									<fmt:message key="newsletterlog.detail.unsubcribe" />
 								</th>
 								<th>
-									<fmt:message key="newsletterlog.detail.bounches" />
+									<fmt:message key="newsletterlog.detail.bounces" />
 								</th>
 								<th></th>
 							</tr>

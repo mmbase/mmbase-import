@@ -11,29 +11,31 @@ import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.StatisticResult;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
+import com.finalist.newsletter.services.CommunityModuleAdapter;
 import com.finalist.newsletter.services.ServiceException;
 import com.finalist.newsletter.services.StatisticService;
 import com.finalist.newsletter.util.DateUtil;
 
 public class StatisticServiceImpl implements StatisticService {
 
-	NewsLetterStatisticCAO statisticcao;
+	NewsLetterStatisticCAO statisticCAO;
 
-	NewsletterCAO newLettercao;
+	NewsletterCAO newsletterCAO;
 
-	public void setStatisticcao (NewsLetterStatisticCAO statisticcao){
+	public void setStatisticCAO (NewsLetterStatisticCAO statisticCAO){
 
-		this.statisticcao = statisticcao;
+		this.statisticCAO = statisticCAO;
 	}
 
-	public void setNewLettercao (NewsletterCAO newLettercao){
+	public void setNewsletterCAO (NewsletterCAO newsletterCAO){
 
-		this.newLettercao = newLettercao;
+		this.newsletterCAO = newsletterCAO;
 	}
 
 	public List<StatisticResult> statisticAll (){
 
-		List<StatisticResult> list = statisticcao.getAllRecords();
+		List<StatisticResult> list = statisticCAO.getAllRecords();
 
 		return list;
 	}
@@ -45,14 +47,14 @@ public class StatisticServiceImpl implements StatisticService {
 		Date endDate;
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticcao.getAllRecordsByPeriod(
+		List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
 				startDate, endDate);
 		return list;
 	}
 
 	public List<StatisticResult> statisticByNewsletter (int newsletterId){
 
-		List<StatisticResult> list = statisticcao
+		List<StatisticResult> list = statisticCAO
 				.getRecordsByNewsletter(newsletterId);
 		return list;
 	}
@@ -64,7 +66,7 @@ public class StatisticServiceImpl implements StatisticService {
 		Date endDate;
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticcao
+		List<StatisticResult> list = statisticCAO
 				.getRecordsByNewsletterAndPeriod(startDate, endDate, newsletterId);
 		StatisticResult result = new StatisticResult();
 		for (StatisticResult r : list) {
@@ -80,7 +82,7 @@ public class StatisticServiceImpl implements StatisticService {
 
 	public StatisticResult statisticSummery (){
 
-		List<StatisticResult> list = statisticcao.getAllRecords();
+		List<StatisticResult> list = statisticCAO.getAllRecords();
 		StatisticResult result = new StatisticResult();
 		for (StatisticResult r : list) {
 			result.setPost(result.getPost() + r.getPost());
@@ -100,7 +102,7 @@ public class StatisticServiceImpl implements StatisticService {
 		Date endDate;
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticcao.getAllRecordsByPeriod(
+		List<StatisticResult> list = statisticCAO.getAllRecordsByPeriod(
 				startDate, endDate);
 		StatisticResult result = new StatisticResult();
 		for (StatisticResult r : list) {
@@ -121,14 +123,14 @@ public class StatisticServiceImpl implements StatisticService {
 		Date endDate;
 			startDate = DateUtil.parser(start);
 			endDate = DateUtil.parser(end);
-		List<StatisticResult> list = statisticcao
+		List<StatisticResult> list = statisticCAO
 				.getRecordsByNewsletterAndPeriod(startDate, endDate, newsletterId);
 		return list;
 	}
 
 	public StatisticResult StatisticSummaryByNewsletter (int newsletterId){
 
-		List<StatisticResult> list = statisticcao
+		List<StatisticResult> list = statisticCAO
 				.getRecordsByNewsletter(newsletterId);
 		StatisticResult result = new StatisticResult();
 		for (StatisticResult r : list) {
@@ -141,5 +143,9 @@ public class StatisticServiceImpl implements StatisticService {
 		result.setName("newsletter.summary");
 		return result;
 	}
+	  public void logPubliction(int newsletterId, HANDLE handle){
+	      int userId = CommunityModuleAdapter.getCurrentUserId();
+	      statisticCAO.logPubliction(userId,newsletterId,handle);
+	  }
 
 }

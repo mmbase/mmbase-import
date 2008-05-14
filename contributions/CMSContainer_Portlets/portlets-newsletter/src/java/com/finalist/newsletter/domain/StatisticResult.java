@@ -4,6 +4,9 @@ import java.util.Date;
 
 public class StatisticResult {
 
+   public enum HANDLE {
+      BOUNCE,ACTIVE,INACTIVE,REMOVE
+   }
 	private int newsletterId = 0;
 
 	private String name;
