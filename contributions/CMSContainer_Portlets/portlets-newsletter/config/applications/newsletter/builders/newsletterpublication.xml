@@ -75,9 +75,9 @@
             <description xml:lang="zh"></description>
          </descriptions>
          <gui>
-            <guiname xml:lang="nl">Stauts</guiname>
-            <guiname xml:lang="en">Stauts</guiname>
-            <guiname xml:lang="zh">Stauts</guiname>
+            <guiname xml:lang="nl">Status</guiname>
+            <guiname xml:lang="en">Status</guiname>
+            <guiname xml:lang="zh">Status</guiname>
          </gui>
          <editor>
             <positions>
