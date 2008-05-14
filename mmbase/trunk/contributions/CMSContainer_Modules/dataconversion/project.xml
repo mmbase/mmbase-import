@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
     <extend>${basedir}/../maven-base/project.xml</extend>
     <artifactId>cmsc-modules-dataconversion</artifactId>
     <name>Data Conversion</name>
-    <shortDescription>Data conversion from elder mmbase database</shortDescription>
+    <shortDescription>Data conversion from older mmbase database</shortDescription>
 	<dependencies>
     	<dependency>
 			<groupId>commons-dbcp</groupId>
