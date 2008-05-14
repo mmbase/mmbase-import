@@ -16,8 +16,8 @@
 	</field>
 	<field name="urlfragment" dtmaxlength="40">
 		dtpattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,38}[a-zA-Z0-9]$">
-		<prompt xml:lang="en">Urlfragment</prompt>
-		<prompt xml:lang="nl">Urlfragment</prompt>
+		<prompt xml:lang="en">URL fragment</prompt>
+		<prompt xml:lang="nl">URL-fragment</prompt>
 		<prompt xml:lang="zh">Url片段</prompt>
 	</field>
 	<field name="description" dtmaxlength="1024" ftype="text" rows="3">
@@ -57,13 +57,13 @@
 		<optionlist select="boolean" />
 	</field>
   	<field name="pausedstartdate">
-		<prompt xml:lang="en">Paused Start</prompt>
+		<prompt xml:lang="en">Pause Start</prompt>
 		<prompt xml:lang="nl">Gepauseerd</prompt>
 		<prompt xml:lang="zh">暂停起始</prompt>
 		<optionlist select="boolean" />
 	</field>
    <field name="pausedstopdate">
-		<prompt xml:lang="en">Paused Stop</prompt>
+		<prompt xml:lang="en">Pause Stop</prompt>
 		<prompt xml:lang="nl">Gepauseerd</prompt>
 		<prompt xml:lang="zh">暂停截止</prompt>
 		<optionlist select="boolean" />
