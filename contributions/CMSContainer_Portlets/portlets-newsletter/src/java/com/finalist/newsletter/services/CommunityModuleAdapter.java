@@ -46,7 +46,7 @@ public class CommunityModuleAdapter {
          return -1;
       }
 
-      return person.getId().intValue();
+     return person.getAuthenticationId().intValue();
    }
 
    public static Person getUserById(String id) {
