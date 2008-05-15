@@ -23,6 +23,7 @@ import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.workflow.Workflow;
 
 public class PagePublisher extends Publisher {
     
@@ -136,6 +137,9 @@ public class PagePublisher extends Publisher {
     }
 
     private void addContentBlock(Map<Node, Date> nodes, Node content) {
+        if (Workflow.hasWorkflow(content) && !Workflow.mayPublish(content)) {
+            return;
+         }
         Date contentPublishDate = content.getDateValue(ContentElementUtil.PUBLISHDATE_FIELD);
         List<Node> contentBlockNodes = findContentBlockNodes(content);
         for (Node contentNode : contentBlockNodes) {
