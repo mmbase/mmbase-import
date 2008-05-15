@@ -15,6 +15,7 @@ import org.mmbase.storage.search.Constraint;
 import org.mmbase.storage.search.Step;
 
 import static com.finalist.newsletter.util.NewsletterSubscriptionUtil.*;
+import com.finalist.newsletter.util.DateUtil;
 
 import java.util.*;
 
@@ -140,6 +141,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
          subscription.setId(subscriptionId);
          subscription.setMimeType(subscriptionNode.getStringValue("format"));
          subscription.setStatus(STATUS.valueOf(subscriptionNode.getStringValue("status")));
+         subscription.setResumeDate(DateUtil.parser(subscriptionNode.getDateValue("pausetill")));
          List<Node> terms = subscriptionNode.getRelatedNodes("term");
          log.debug("Get subscription successful and get " + terms.size() + " term with it");
          for (Node termNode : terms) {
