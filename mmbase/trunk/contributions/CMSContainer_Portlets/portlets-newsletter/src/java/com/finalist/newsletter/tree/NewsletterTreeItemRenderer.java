@@ -65,13 +65,18 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
       element.addOption(renderer.createTreeOption("copy.png", "site.page.copy", "javascript:copy('" + id + "');"));
       element.addOption(renderer.createTreeOption("paste.png", "site.page.paste", "javascript:paste('" + id + "');"));
       element.addOption(
-            renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
+            renderer.createTreeOption("switch.png", "site.newsletter.switchtoplain", "newsletter",
                   String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s","text/plain",id)
             )
       );
       element.addOption(
-            renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
-                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s","text/html",id)
+            renderer.createTreeOption("switch.png", "site.newsletter.switchtohtml", "newsletter",
+                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "text/html", id)
+            )
+      );
+      element.addOption(
+            renderer.createTreeOption("switch.png", "site.newsletter.switchtowap", "newsletter",
+                  String.format("../newsletter/SwitchMIMEAction.do?target=%s&number=%s", "application/vnd.wap.xhtml+xml", id)
             )
       );
    }

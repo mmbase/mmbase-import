@@ -51,14 +51,14 @@
    <h3><fmt:message key="subscription.subscribe.title"/></h3>
 </div>
 <div class="content">
-<p><fmt:message key="subscription.subscribe.info"/></p><br>
 <table border="1" width="600px">
    <tr>
-      <td><fmt:message key="subscription.view.list.title"/></td>
       <td>&nbsp;</td>
-      <td><fmt:message key="subscription.view.list.tag"/></td>
-      <td><fmt:message key="subscription.view.list.status"/></td>
+      <td><fmt:message key="subscription.view.list.title"/></td>
+      <td><fmt:message key="subscription.view.list.term"/></td>
       <td><fmt:message key="subscription.view.list.format"/></td>
+      <td><fmt:message key="subscription.view.list.status"/></td>
+      <td width="100px">&nbsp;</td>
    </tr>
    <c:forEach items="${subscriptionList}" var="subscription">
       <tr>
@@ -95,6 +95,9 @@
                   <fmt:message key="subscription.view.list.status.text"/>
                </option>
             </select>
+         </td>
+         <td>
+            ${subscription.status}
          </td>
          <td>
             <c:if test="${subscription.status ne 'INACTIVE'}">

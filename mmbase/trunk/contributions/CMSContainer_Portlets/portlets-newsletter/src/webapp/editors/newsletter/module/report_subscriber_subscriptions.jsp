@@ -50,16 +50,14 @@
                      <pg:param name="query_parameter_title" value="${param.query_parameter_title}"/>
                      <table>
                         <thead>
-                           <th></th>
                            <th><fmt:message key="newsletteroverview.newsletter"/></th>
-                           <th><fmt:message key="globalstats.total.publications"/></th>
+                           <th><fmt:message key="subscriptionoverview.status"/></th>
                         </thead>
                         <tbody>
                               <%--@elvariable id="results" type="java.util.List"--%>
                            <c:forEach items="${results}" var="result">
                               <pg:item>
                                  <tr>
-                                    <td><input type="checkbox" name="newsletterIds" value="${result.id}"/></td>
                                     <td>
                                           ${result.newsletter}
                                     </td>

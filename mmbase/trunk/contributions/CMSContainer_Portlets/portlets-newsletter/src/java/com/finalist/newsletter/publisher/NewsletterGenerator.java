@@ -54,7 +54,7 @@ public class NewsletterGenerator {
          if ("text/plain".equals(mimeType)) {
             inputString = getContentFromPage(inputString);
          }
-         inputString = calibrateRelativeURL(inputString);
+         inputString = NewsletterUtil.calibrateRelativeURL(inputString);
 
          return (inputString);
       } catch (Exception e) {
@@ -85,12 +85,5 @@ public class NewsletterGenerator {
       return inputString;
    }
 
-   private static String calibrateRelativeURL(String inputString) {
-
-      String host = NewsletterUtil.getServerURL();
-      inputString = StringUtils.replace(inputString, "href=\"/", "href=\"" + host);
-      inputString = StringUtils.replace(inputString, "src=\"/", "src=\"" + host);
-      inputString = StringUtils.replace(inputString, "src=\"/", "src=\"" + host);
-      return inputString;
-   }
+  
 }

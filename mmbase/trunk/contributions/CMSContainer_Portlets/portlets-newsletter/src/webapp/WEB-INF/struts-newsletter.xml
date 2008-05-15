@@ -56,6 +56,7 @@
                   redirect="false"/>
          <forward name="importpage" path="/editors/newsletter/module/import.jsp" redirect="false"/>
          <forward name="listsubscribers" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false"/>
+         <forward name="confirmunsubscribe" path="/editors/newsletter/module/confirm_unsubscribe.jsp" redirect="false"/>
          <forward name="ubscriber_subscriptions" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp"
                   redirect="false"/>
 
@@ -74,7 +75,6 @@
       </action>
       <action path="/editors/newsletter/SwitchMIMEAction" type="com.finalist.newsletter.forms.SwitchMIMEAction" unknown="false"
               validate="false">
-         <forward name="reload" path="/editors/newsletter/reload.jsp" redirect="true"/>
       </action>
 
       <!-- ==== Select page nodes ==== -->

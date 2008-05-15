@@ -19,7 +19,7 @@ public class UnsubscribePortlet extends JspPortlet {
 
       String url = String.format(
             "%seditors/newsletter/UnsubscribeAction.do?userId=$USERID$&newsletterId=%s",
-            NewsletterUtil.getHostUrl(),
+            NewsletterUtil.getServerURL(),
             newsletterId
       );
       request.setAttribute("baseurl", url);

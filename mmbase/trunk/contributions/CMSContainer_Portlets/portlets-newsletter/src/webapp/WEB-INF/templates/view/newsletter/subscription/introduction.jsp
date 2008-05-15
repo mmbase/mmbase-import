@@ -15,16 +15,16 @@
    <div class="content">
       <p><fmt:message key="subscription.introduction.info"/>
    </div>
-   <br>
    <c:choose>
       <c:when test="${isUserLogin}">
-      <a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button">
-         <img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" alt=""/>
-         <fmt:message key="subscription.introduction.buttontext"/>
-      </a>
+         <p><fmt:message key="subscription.subscribe.info"/></p>
+         <a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button">
+            <img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" alt=""/>
+            <fmt:message key="subscription.introduction.buttontext"/>
+         </a>
       </c:when>
       <c:otherwise>
-         <fmt:message key="subscription.introduction.pleaselogin"/>         
+         <fmt:message key="subscription.login.info"/>
       </c:otherwise>
-      </c:choose>
+   </c:choose>
 </form>
