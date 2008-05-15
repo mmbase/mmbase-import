@@ -126,7 +126,7 @@
                   </c:set>
                   <fmt:message key="subscription.subscribe.status.paused"/>
                   <a href="${pauseURL}">
-                     <fmt:message key="subscription.subscribe.status.paused.resumedate"/>
+                     <fmt:message key="subscription.subscribe.status.paused.resumedate"/>:${subscription.resumeDate}
                   </a>
                   <a href="${resumeURL}">
                      <fmt:message key="subscription.subscribe.operation.resume"/>

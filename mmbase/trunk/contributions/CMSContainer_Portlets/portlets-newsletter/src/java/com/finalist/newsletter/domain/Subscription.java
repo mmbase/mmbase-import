@@ -21,6 +21,14 @@ public class Subscription {
    private String url;
    private String newesletterId;
    private Date pausedTill;
+   private String resumeDate;
+   public void setResumeDate(String s) {
+      this.resumeDate = s;
+   }
+
+   public String getResumeDate() {
+      return resumeDate;
+   }
 
    public enum STATUS {
       ACTIVE, PAUSED, INACTIVE
