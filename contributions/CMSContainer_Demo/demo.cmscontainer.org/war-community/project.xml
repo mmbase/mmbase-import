@@ -18,12 +18,18 @@
 			<version>${cmscmodules.version}</version>
 			<type>mmbase-module</type>
 		</dependency>
-   		<dependency>
-			<groupId>finalist</groupId>
-			<artifactId>cmsc-modules-versioning</artifactId>
-			<version>${cmscmodules.version}</version>
-			<type>mmbase-module</type>
-		</dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-versioning</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
+      <dependency>
+         <groupId>finalist</groupId>
+         <artifactId>cmsc-modules-egemmail</artifactId>
+         <version>${cmscmodules.version}</version>
+         <type>mmbase-module</type>
+      </dependency>
         <dependency>
             <groupId>finalist</groupId>
             <artifactId>cmsc-modules-linkvalidator</artifactId>
