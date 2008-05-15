@@ -45,6 +45,7 @@
             <c:when test="${fn:length(results) gt 0}">
                <form method="POST" name="operationform" action="SubscriptionManagement.do">
                   <input type="hidden" name="action" id="action"/>
+                  <input type="hidden" name="type" id="action" value="newsletter"/>
                   <pg:pager maxPageItems="${pagesize}" url="SubscriptionManagement.do">
                      <pg:param name="action" value="newsletterOverview"/>
                      <pg:param name="query_parameter_title" value="${param.query_parameter_title}"/>
@@ -78,11 +79,11 @@
                      <%@ include file="pager_index.jsp" %>
                      <br>
                   </pg:pager>
-                  <input type="submit" name="submitButton"
-                         onclick="document.getElementById('action').value='exportSusbscriptions';document.forms['operationform'].submit()"
+                  <input type="button" name="submitButton" class="submit"
+                         onclick="exportsubscription()"
                          value="<fmt:message key="subscriptiondetail.link.exportselect"/>"/>
-                  <input type="submit" name="submitButton"
-                         onclick="document.getElementById('action').value='exportSusbscriptions';document.forms['operationform'].submit()"
+                  <input type="button" name="submitButton"
+                         onclick="unsubscribeAll()"
                          value="<fmt:message key="globalstats.total.unsubscribeselect"/>"/>
                </form>
             </c:when>
@@ -94,5 +95,54 @@
 
    </div>
 </div>
+<script>
+   function exportsubscription() {
+      var subscriptions = document.getElementsByName('newsletterIds');
+      var hasSelection = false;
+      for (var i = 0; i < subscriptions.length; i ++) {
+         if (subscriptions[i].checked) {
+            hasSelection = true;
+            break;
+         }
+      }
+
+      if (hasSelection) {
+         document.forms['operationform'].action = 'SubscriptionImportExportAction.do';
+         document.getElementById('action').value = 'export';
+         document.forms['operationform'].submit();
+      }
+      else {
+         alert('<fmt:message key="confirm_noselect"/>');
+      }
+
+      return false;
+   }
+
+   function unsubscribeAll() {
+
+      var subscriptions = document.getElementsByName('newsletterIds');
+      var hasSelection = false;
+      for (var i = 0; i < subscriptions.length; i ++) {
+         if (subscriptions[i].checked) {
+            hasSelection = true;
+            break;
+         }
+      }
+
+      if (hasSelection) {
+         var confirm = window.confirm('<fmt:message key="confirm.unsubscribe.newsletter"/>')
+         if (!confirm) {
+            return false;
+         }
+         document.getElementById('action').value = 'unsubscribe';
+         document.forms['operationform'].submit();
+      }
+      else {
+         alert('<fmt:message key="confirm_noselect"/>');
+      }
+
+      return false;
+   }
+</script>
 
 

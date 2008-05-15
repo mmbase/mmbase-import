@@ -9,7 +9,7 @@
 	<h3><fmt:message key="subscription.overview.title" /></h3>
 </div>
 <div class="content">
-	<p><fmt:message key="subscription.overview.info" />
+	<p><fmt:message key="subscription.subscribe.info" />
 </div>
 <br>
 <a href="javascript:document.forms['<portlet:namespace />form_change'].submit()" class="button"><img src="<cmsc:staticurl page='/editors/gfx/icons/edit.png'/>" alt=""/> <fmt:message key="subscription.overview.buttontext" /></a>

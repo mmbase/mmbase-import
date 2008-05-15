@@ -175,6 +175,16 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
 
    }
 
+   public ActionForward unsubscribe(ActionMapping mapping, ActionForm form,
+                                        HttpServletRequest request, HttpServletResponse response) {
+      String[] newsletterIds = request.getParameterValues("newsletterIds");
+      for(String id :newsletterIds){
+         subscriptionServices.unSubscribeAllInNewsletter(Integer.decode(id));
+      }
+
+      return newsletterOverview(mapping,form,request, response);
+   }
+
    private List<Map> convertPersonsToMap(List<Person> persons) {
       List<Map> results = new ArrayList<Map>();
       for (int i = 0; i < persons.size(); i++) {

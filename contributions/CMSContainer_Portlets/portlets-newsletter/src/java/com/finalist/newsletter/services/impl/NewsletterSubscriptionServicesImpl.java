@@ -352,4 +352,12 @@ public class NewsletterSubscriptionServicesImpl implements NewsletterSubscriptio
    public Subscription getSubscription(int userId, int newsletterId) {
       return subscriptionCAO.getSubscription(newsletterId,userId);
    }
+
+   public void unSubscribeAllInNewsletter(int newsletterId) {
+      List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
+      for (Subscription subscription : subscriptions) {
+         subscription.setStatus(STATUS.INACTIVE);
+         subscriptionCAO.modifySubscriptionStauts(subscription);
+      }
+   }
 }

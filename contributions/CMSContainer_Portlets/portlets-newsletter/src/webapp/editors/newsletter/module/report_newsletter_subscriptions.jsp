@@ -108,7 +108,7 @@
          document.forms['operationform'].submit();
       }
       else {
-         alert("You have to select at least one item");
+         alert(<fmt:message key="confirm_noselect"/>);
       }
 
       return false;

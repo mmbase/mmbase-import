@@ -107,7 +107,7 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
    public String getPublicationURL(int publciationId) {
 
       Node publicationNode = cloud.getNode(publciationId);
-      String hostUrl = NewsletterUtil.getHostUrl();
+      String hostUrl = NewsletterUtil.getServerURL();
       String newsletterPath = getNewsletterPath(publicationNode);
       return "".concat(hostUrl).concat(newsletterPath);
    }
