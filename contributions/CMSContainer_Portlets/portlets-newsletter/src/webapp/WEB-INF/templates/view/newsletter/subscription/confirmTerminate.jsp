@@ -21,7 +21,7 @@
       <input type="hidden" name="confirm_unsubscribe" value="confirm_unsubscribe"/>
 
       <a href="javascript:document.forms['<portlet:namespace />form_subscribe'].submit()" class="button">
-         <fmt:message key="subscription.subscribe.operation.pause"/>
+         <fmt:message key="subscription.subscribe.operation.terminate"/>
       </a>
    </div>
    </c:when>
