@@ -7,13 +7,6 @@ import org.htmlparser.visitors.HtmlPage;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.util.NodeList;
 
-/**
- * Created by IntelliJ IDEA.
- * User: gmark
- * Date: May 8, 2008
- * Time: 5:44:06 PM
- * To change this template use File | Settings | File Templates.
- */
 public class HtmlParserTest extends TestCase {
 
    public void test() {

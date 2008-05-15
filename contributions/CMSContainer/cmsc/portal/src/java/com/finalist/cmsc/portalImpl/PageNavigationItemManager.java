@@ -68,7 +68,7 @@ public class PageNavigationItemManager implements NavigationItemManager {
         return page;
     }
 
-    private void loadLayout(Node pageNode, Page page) {
+    protected void loadLayout(Node pageNode, Page page) {
         Node layoutNode = PagesUtil.getLayout(pageNode);
         if (layoutNode != null) {
             page.setLayout(layoutNode.getNumber());
@@ -77,7 +77,7 @@ public class PageNavigationItemManager implements NavigationItemManager {
         }
     }
 
-     private void loadStylesheet(Node pageNode, Page page) {
+     protected void loadStylesheet(Node pageNode, Page page) {
         NodeList styleNode = PagesUtil.getStylesheet(pageNode);
         if (!styleNode.isEmpty()) {
             for (NodeIterator iter = styleNode.nodeIterator(); iter.hasNext();) {
@@ -87,7 +87,7 @@ public class PageNavigationItemManager implements NavigationItemManager {
         }
     }
 
-     private void loadPageImages(Node pageNode, Page page) {
+     protected void loadPageImages(Node pageNode, Page page) {
          Map<String, List<Integer>> pageImages = PagesUtil.getPageImages(pageNode);
          page.setPageImages(pageImages);
      }
