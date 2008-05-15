@@ -48,13 +48,15 @@ for(int i=0; i<fields.length; i++) {
    } else if(i==5 && !com.cfdev.mail.verify.EmailVerifier.validateEmailAddressSyntax(answerValue)) {
      isValidAnswer = false;
      warningText += "<li>" + answerValue +  " is geen geldig emailadres</li>";
-   } else if(i==2 && !memberId.equals("")) {
-     memberIDMessage = SubscribeForm.getMemberIdMessage(memberId,answerValue.toUpperCase().replaceAll(" ",""));
-     if(!"".equals(memberIDMessage)) {
-      isValidAnswer = false;
-      warningText += ResourceBundle.getBundle("ApplicationResources").getString(memberIDMessage) + "</li>";
-     }
-   }
+   
+   } else if(i==2 ) {
+      memberIDMessage = SubscribeForm.getZipCodeMessage(answerValue.toUpperCase().replaceAll(" ",""));
+      if(!"".equals(memberIDMessage)) {
+       isValidAnswer = false;
+       warningText += ResourceBundle.getBundle("ApplicationResources").getString(memberIDMessage) + "</li>";
+      }
+    }
+   
    responseText += answerValue;
    responseTextToCustomer += answerValue;
 
