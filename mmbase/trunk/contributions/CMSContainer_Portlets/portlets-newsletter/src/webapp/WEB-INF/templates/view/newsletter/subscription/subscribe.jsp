@@ -3,7 +3,9 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://finalist.com/cmsc" prefix="cmsc" %>
+<%--@elvariable id="subscriptionList" type="java.util.List"--%>
 
 <fmt:setBundle basename="portlets-newslettersubscription" scope="request"/>
 <c:set var="contextPath">
@@ -45,12 +47,16 @@
 </SCRIPT>
 <form method="POST" name="<portlet:namespace />form_subscribe"
       action="<cmsc:actionURL/>"
->
+      >
 
 <div class="heading">
    <h3><fmt:message key="subscription.subscribe.title"/></h3>
 </div>
 <div class="content">
+<c:choose>
+<c:when test="${fn:length(subscriptionList) > 0}">
+
+
 <table border="1" width="600px">
    <tr>
       <td>&nbsp;</td>
@@ -60,6 +66,7 @@
       <td><fmt:message key="subscription.view.list.status"/></td>
       <td width="100px">&nbsp;</td>
    </tr>
+
    <c:forEach items="${subscriptionList}" var="subscription">
       <tr>
          <td>
@@ -97,7 +104,7 @@
             </select>
          </td>
          <td>
-            ${subscription.status}
+               ${subscription.status}
          </td>
          <td>
             <c:if test="${subscription.status ne 'INACTIVE'}">
@@ -153,13 +160,18 @@
 </a>
 <a href="javascript:document.getElementById('action').value='pause';document.forms['<portlet:namespace />form_subscribe'].submit()"
    class="button">
-     <fmt:message key="subscription.subscribe.operation.pauseall"/>
+   <fmt:message key="subscription.subscribe.operation.pauseall"/>
 </a>
 <a href="javascript:document.getElementById('action').value='resume';document.forms['<portlet:namespace />form_subscribe'].submit()"
    class="button">
-     <fmt:message key="subscription.subscribe.operation.resumeall"/>
+   <fmt:message key="subscription.subscribe.operation.resumeall"/>
 </a>
 <br>
+</c:when>
+<c:otherwise>
+   <fmt:message key="subscription.nonewsletter"/>
+</c:otherwise>
+</c:choose>
 </div>
 </form>
 
