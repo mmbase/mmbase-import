@@ -82,21 +82,24 @@ public class NewsletterTreeItemRenderer implements NavigationTreeItemRenderer {
                   "../newsletter/NewsletterDelete.do?number=" + id
             )
       );
-      boolean isPaused = NewsletterUtil.isPaused(Integer.parseInt(id));
-      if (isPaused) {
-         element.addOption(
-               renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
-                     "../newsletter/NewsletterResume.do?number=" + id
-               )
-         );
-      }
-      else {
-         element.addOption(
-               renderer.createTreeOption("pause.png", "site.newsletter.pause", "newsletter",
-                     "../newsletter/NewsletterPause.do?number=" + id
-               )
-         );
-      }
+      //todo remove the code
+      //This  has been implement in the wizard.
+      
+//      boolean isPaused = NewsletterUtil.isPaused(Integer.parseInt(id));
+//      if (isPaused) {
+//         element.addOption(
+//               renderer.createTreeOption("resume.png", "site.newsletter.resume", "newsletter",
+//                     "../newsletter/NewsletterResume.do?number=" + id
+//               )
+//         );
+//      }
+//      else {
+//         element.addOption(
+//               renderer.createTreeOption("pause.png", "site.newsletter.pause", "newsletter",
+//                     "../newsletter/NewsletterPause.do?number=" + id
+//               )
+//         );
+//      }
    }
 
    private void addEditorOptions(NavigationRenderer renderer, String id, TreeElement element) {
