@@ -193,6 +193,15 @@
          <version>${cmscportlets.version}</version>
          <type>mmbase-module</type>
       </dependency>
+      <dependency>
+         <groupId>htmlparser</groupId>
+         <artifactId>htmlparser</artifactId>
+         <version>1.5</version>
+         <type>jar</type>
+         <properties>
+            <war.bundle>${war.bundle}</war.bundle>
+         </properties>
+      </dependency>
 
 <!--begin dependency by JForum portlet. -->
 <!--
@@ -205,15 +214,7 @@
                 <war.bundle>${war.bundle}</war.bundle>
             </properties>
         </dependency>
-        <dependency>
-            <groupId>htmlparser</groupId>
-            <artifactId>htmlparser</artifactId>
-            <version>1.5</version>
-            <type>jar</type>
-            <properties>
-                <war.bundle>${war.bundle}</war.bundle>
-            </properties>
-        </dependency>
+
         <dependency>
             <groupId>quartz</groupId>
             <artifactId>quartz</artifactId>
