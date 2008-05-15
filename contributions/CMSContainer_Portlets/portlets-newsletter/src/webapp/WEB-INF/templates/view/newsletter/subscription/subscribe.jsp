@@ -13,7 +13,6 @@
 </c:set>
 <SCRIPT LANGUAGE="JavaScript">
    function modifyStatus(newsletterId, box) {
-      console.debug("modifyStatus")
       new Ajax.Request(
             "${contextPath}",
       {
@@ -24,7 +23,6 @@
    }
 
    function addOrRemoveTag(newsletterId, termId, box) {
-      console.debug("add or remove tag")
       new Ajax.Request(
             "${contextPath}",
       {
@@ -35,7 +33,6 @@
    }
 
    function modifyFormat(newsletterId, format) {
-      console.debug("Modify format:" + newsletterId + " to " + format)
       new Ajax.Request
             ("${contextPath}",
             {
