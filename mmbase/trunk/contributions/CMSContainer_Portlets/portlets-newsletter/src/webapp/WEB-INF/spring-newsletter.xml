@@ -24,14 +24,14 @@
    </bean>
 
 
-   <bean name="publicationCAOImpl" class="com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl"
+   <bean name="publicationCAO" class="com.finalist.newsletter.cao.impl.NewsletterPublicationCAOImpl"
          lazy-init="true">
       <property name="cloud" ref="cloud"/>
    </bean>
    <bean name="newsletterCAO" class="com.finalist.newsletter.cao.impl.NewsletterCAOImpl" lazy-init="true">
       <property name="cloud" ref="cloud"/>
    </bean>
-   <bean name="statisticCAOImpl" class="com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl" lazy-init="true">
+   <bean name="statisticCAO" class="com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl" lazy-init="true">
       <property name="cloud" ref="cloud"/>
    </bean>
    <bean name="publisher" class="com.finalist.newsletter.publisher.NewsletterPublisher" lazy-init="true"/>
@@ -40,7 +40,7 @@
          class="com.finalist.newsletter.services.impl.NewsletterSubscriptionServicesImpl" lazy-init="true">
       <property name="subscriptionCAO" ref="subscriptionCAO"/>
       <property name="newsletterCAO" ref="newsletterCAO"/>
-      <property name="statisticCAO" ref="statisticCAOImpl"/>
+      <property name="statisticCAO" ref="statisticCAO"/>
       <property name="newsletterService" ref="newsletterServices"/>
       <property name="personService" ref="personService"/>
    </bean>
@@ -55,14 +55,14 @@
    <bean id="publicationService"
          class="com.finalist.newsletter.services.impl.NewsletterPublicationServiceImpl" lazy-init="true">
       <property name="subscriptionCAO" ref="subscriptionCAO"/>
-      <property name="statisticCAO" ref="statisticCAOImpl"/>
-      <property name="publicationCAO" ref="publicationCAOImpl"/>
+      <property name="statisticCAO" ref="statisticCAO"/>
+      <property name="publicationCAO" ref="publicationCAO"/>
       <property name="publisher" ref="publisher"/>
    </bean>
    <bean id="statisticService"
          class="com.finalist.newsletter.services.impl.StatisticServiceImpl" lazy-init="true">
-      <property name="newLettercao" ref="newsletterCAO"/>
-      <property name="statisticcao" ref="statisticCAOImpl"/>
+      <property name="newsletterCAO" ref="newsletterCAO"/>
+      <property name="statisticCAO" ref="statisticCAO"/>
    </bean>
    <!-- Services Holder-->
    <bean id="contextHolder" class="com.finalist.newsletter.ApplicationContextFactory"/>
