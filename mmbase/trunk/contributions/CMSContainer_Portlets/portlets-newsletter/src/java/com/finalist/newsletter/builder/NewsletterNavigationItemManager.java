@@ -53,32 +53,6 @@ public class NewsletterNavigationItemManager extends PageNavigationItemManager {
       return newsletter;
    }
 
-   private void loadLayout(Node pageNode, Page page) {
-      Node layoutNode = PagesUtil.getLayout(pageNode);
-      if (layoutNode != null) {
-         page.setLayout(layoutNode.getNumber());
-      }
-      else {
-         log.error("NO LAYOUT");
-      }
-   }
-
-   private void loadStylesheet(Node pageNode, Page page) {
-      NodeList styleNode = PagesUtil.getStylesheet(pageNode);
-      if (!styleNode.isEmpty()) {
-         for (NodeIterator iter = styleNode.nodeIterator(); iter.hasNext();) {
-            Node stylesheetNode = iter.nextNode();
-            page.addStylesheet(stylesheetNode.getNumber());
-         }
-      }
-   }
-
-   private void loadPageImages(Node pageNode, Page page) {
-      Map<String, List<Integer>> pageImages = PagesUtil.getPageImages(pageNode);
-      page.setPageImages(pageImages);
-   }
-
-
    public NavigationItemRenderer getRenderer() {
       return renderer;
    }
