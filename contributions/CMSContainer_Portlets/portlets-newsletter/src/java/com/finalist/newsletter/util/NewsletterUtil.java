@@ -85,7 +85,7 @@ public abstract class NewsletterUtil {
          }
       }
    }
-   
+
    public static void deleteSubscriptionByTerm(int termNumber) {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node termNode = cloud.getNode(termNumber);
@@ -98,7 +98,7 @@ public abstract class NewsletterUtil {
             subscriptionNode.delete();
          }
       }
-      
+
    }
 
    public static String determineNodeType(int number) {
@@ -326,7 +326,7 @@ public abstract class NewsletterUtil {
       if (number > 0) {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(number);
-         return isPaused(newsletterNode);
+         return "true".equals(newsletterNode.getStringValue("paused"));
       }
       return (false);
    }
@@ -341,11 +341,13 @@ public abstract class NewsletterUtil {
    }
 
    public static void pauseNewsletter(int number) {
+
       if (number > 0) {
+         log.debug("Pause newsletter " + number);
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(number);
          if (newsletterNode != null) {
-            newsletterNode.setBooleanValue("paused", true);
+            newsletterNode.setStringValue("paused", "true");
             newsletterNode.commit();
          }
       }
@@ -356,7 +358,7 @@ public abstract class NewsletterUtil {
          Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
          Node newsletterNode = cloud.getNode(number);
          if (newsletterNode != null) {
-            newsletterNode.setBooleanValue("paused", false);
+            newsletterNode.setStringValue("paused", "false");
             newsletterNode.commit();
          }
       }
@@ -391,25 +393,14 @@ public abstract class NewsletterUtil {
    }
 
 
-   public static String getHostUrl() {
-      String url = getServerURL();
-      if (StringUtils.isNotBlank(getApplicatoinURL())) {
-         url += getApplicatoinURL();
-      }
-      if (!url.endsWith("/")) {
-         url += "/";
-      }
-      return url;
-   }
-
    public static String getServerURL() {
-      String hostUrl = PropertiesUtil.getProperty("host");
+         String hostUrl = PropertiesUtil.getProperty("system.livepath");
 
       if (StringUtils.isEmpty(hostUrl)) {
-         throw new NewsletterSendFailException("get property <host> from system property and get nothing");
+         throw new NewsletterSendFailException("get property <system.livepath> from system property and get nothing");
       }
 
-      log.debug("get property <host> from system property and get:" + hostUrl);
+      log.debug("get property <system.livepath> from system property and get:" + hostUrl);
 
       if (!hostUrl.endsWith("/")) {
          hostUrl += "/";
@@ -417,24 +408,35 @@ public abstract class NewsletterUtil {
       return hostUrl;
    }
 
-   public static String getApplicatoinURL() {
-      String application = PropertiesUtil.getProperty("application");
 
-      if (StringUtils.isEmpty(application)) {
-         throw new NewsletterSendFailException("get property <application> from system property and get nothing");
-      }
-
-      log.debug("get property <host> from system property and get:" + application);
-
-      return application;
-   }
-
-	public static void logPubliction(int newsletterId, HANDLE handle) {
+   public static void logPubliction(int newsletterId, HANDLE handle) {
       StatisticServiceImpl service = new StatisticServiceImpl();
-      NewsLetterStatisticCAOImpl statisticCAO= new NewsLetterStatisticCAOImpl();
+      NewsLetterStatisticCAOImpl statisticCAO = new NewsLetterStatisticCAOImpl();
       Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
       statisticCAO.setCloud(cloud);
       service.setStatisticCAO(statisticCAO);
-      service.logPubliction(newsletterId,handle);
+      service.logPubliction(newsletterId, handle);
+   }
+
+
+   public static String calibrateRelativeURL(String inputString) {
+      return calibrateRelativeURL(inputString, NewsletterUtil.getServerURL());
+   }
+
+   public static String calibrateRelativeURL(String inputString, String liveURL) {
+
+      if (liveURL.charAt(liveURL.length() - 1) == '/') {
+         liveURL = liveURL.substring(0, liveURL.lastIndexOf("/"));
+      }
+
+      if (StringUtils.split(liveURL, "/").length > 2) {
+         liveURL = liveURL.substring(0, liveURL.lastIndexOf("/"));
+      }
+
+      liveURL += "/";
+
+      inputString = StringUtils.replace(inputString, "href=\"/", "href=\"" + liveURL);
+      inputString = StringUtils.replace(inputString, "src=\"/", "src=\"" + liveURL);
+      return inputString;
    }
 }
