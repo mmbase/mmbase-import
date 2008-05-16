@@ -18,7 +18,7 @@ import com.finalist.cmsc.rssfeed.util.RssFeedUtil;
 
 public class RssFeedNavigationItemManager implements NavigationItemManager {
 
-    private static Logger log = Logging.getLoggerInstance(RssFeedNavigationItemManager.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(RssFeedNavigationItemManager.class.getName());
 	
 	private NavigationItemRenderer renderer = new RssFeedNavigationRenderer();
 	private NavigationTreeItemRenderer treeRenderer = new RssFeedTreeItemRenderer();

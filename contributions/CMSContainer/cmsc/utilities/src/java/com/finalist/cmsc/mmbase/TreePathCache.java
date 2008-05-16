@@ -9,19 +9,15 @@ See http://www.MMBase.org/license
 */
 package com.finalist.cmsc.mmbase;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
-public class TreePathCache {
+public final class TreePathCache {
 
     private static Map<String,BidiMap> treeCaches = new HashMap<String,BidiMap>();
-    
+
     private TreePathCache() {
         //utility
     }
@@ -51,7 +47,7 @@ public class TreePathCache {
     public static void moveCache(String nodeManagerName, int node, String newPath) {
         replaceCache(getCache(nodeManagerName), node, newPath);
     }
-    
+
     private static BidiMap getCache(String nodeManagerName) {
         synchronized (treeCaches) {
             if (treeCaches.containsKey(nodeManagerName)) {
@@ -64,11 +60,11 @@ public class TreePathCache {
             }
         }
     }
-    
-   
+
+
     private static String getPathStringFromCache(BidiMap treeCache, int node) {
        synchronized(treeCache) {
-          TreePathCacheKey key = (TreePathCacheKey) treeCache.getKey(new Integer(node));
+          TreePathCacheKey key = (TreePathCacheKey) treeCache.getKey(Integer.valueOf(node));
           if (key != null) {
              return key.getPath();
           }
@@ -84,13 +80,13 @@ public class TreePathCache {
 
     private static void addToCache(BidiMap treeCache, String path, int node) {
        synchronized(treeCache) {
-          treeCache.put(new TreePathCacheKey(path), new Integer(node));
+          treeCache.put(new TreePathCacheKey(path), Integer.valueOf(node));
        }
     }
 
     private static void removeFromCache(BidiMap treeCache, int node) {
        synchronized(treeCache) {
-          treeCache.removeValue(new Integer(node));
+          treeCache.removeValue(Integer.valueOf(node));
        }
     }
 
@@ -102,7 +98,7 @@ public class TreePathCache {
 
     private static void updateCache(BidiMap treeCache, int node, String name) {
        synchronized(treeCache) {
-          Integer nodeNumber = new Integer(node);
+          Integer nodeNumber = Integer.valueOf(node);
           if (treeCache.containsValue(nodeNumber)) {
              TreePathCacheKey cKey = (TreePathCacheKey) treeCache.getKey(nodeNumber);
              String path = cKey.getPath();
@@ -145,5 +141,5 @@ public class TreePathCache {
             }
         }
     }
-    
+
 }

@@ -8,7 +8,7 @@ import org.mmbase.util.logging.Logging;
 
 public class TestEventListener implements NodeEventListener {
 
-   private static Logger log = Logging.getLoggerInstance(TestEventListener.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(TestEventListener.class.getName());
 
 
    public TestEventListener(LuceusModule module) {

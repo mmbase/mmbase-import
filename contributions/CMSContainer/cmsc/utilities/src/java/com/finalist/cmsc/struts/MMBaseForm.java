@@ -24,7 +24,7 @@ public class MMBaseForm extends ActionForm {
    private static final long serialVersionUID = 4264517673164742392L;
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(MMBaseForm.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(MMBaseForm.class.getName());
 
    private int id;
 

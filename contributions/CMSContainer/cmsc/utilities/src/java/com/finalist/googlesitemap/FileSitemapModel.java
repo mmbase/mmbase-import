@@ -26,7 +26,7 @@ public class FileSitemapModel implements SitemapModel {
 
    public Object getRoot() {
       if (startingDirectory == null) {
-         throw new NullPointerException();
+         throw new IllegalArgumentException("startingDirectory is null");
       }
       if (startingDirectory.length() == 0) {
          throw new IllegalArgumentException("startingDirectory may not be empty");
@@ -56,9 +56,10 @@ public class FileSitemapModel implements SitemapModel {
    public boolean isUrl(Object root) {
       if (root instanceof File) {
          File file = ((File) root);
-         if (!file.isDirectory())
+         if (!file.isDirectory()) {
             return file.getName().endsWith(".htm") || file.getName().endsWith(".html")
                   || file.getName().endsWith(".shtml");
+         }
       }
       return false;
    }

@@ -129,7 +129,7 @@ public class EgemSearchAction extends MMBaseAction {
       HashSet<Integer> remoteNumbers = new HashSet<Integer>();
       for (NodeIterator ni = remoteNodes.nodeIterator(); ni.hasNext();) {
          Node next = ni.nextNode();
-         remoteNumbers.add(new Integer(next.getStringValue("sourcenumber")));
+         remoteNumbers.add(Integer.valueOf(next.getStringValue("sourcenumber")));
       }
 
       int found = 0;

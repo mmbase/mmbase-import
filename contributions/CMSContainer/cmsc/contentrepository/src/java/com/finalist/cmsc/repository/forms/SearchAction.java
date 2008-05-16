@@ -48,7 +48,7 @@ public class SearchAction extends PagerAction {
     /**
      * MMbase logging system
      */
-    private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 
 
     @Override
@@ -189,14 +189,14 @@ public class SearchAction extends PagerAction {
         	String stringObjectId = searchForm.getObjectid().trim();
             Integer objectId = null;
             if (stringObjectId.matches("^\\d+$")) {
-                objectId = new Integer(stringObjectId);
+                objectId = Integer.valueOf(stringObjectId);
             }
             else {
                 if (cloud.hasNode(stringObjectId)) {
-                    objectId = new Integer(cloud.getNode(stringObjectId).getNumber());
+                    objectId = Integer.valueOf(cloud.getNode(stringObjectId).getNumber());
                 }
                 else {
-                    objectId = new Integer(-1);
+                    objectId = Integer.valueOf(-1);
                 }
             }
             SearchUtil.addEqualConstraint(query, nodeManager, ContentElementUtil.NUMBER_FIELD, objectId);

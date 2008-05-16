@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 public class DerivedDateProcessor implements CommitProcessor {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(DerivedDateProcessor.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(DerivedDateProcessor.class.getName());
 
    private static DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 

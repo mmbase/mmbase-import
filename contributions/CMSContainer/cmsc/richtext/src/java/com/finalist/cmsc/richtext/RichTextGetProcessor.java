@@ -31,7 +31,7 @@ import com.finalist.cmsc.mmbase.ResourcesUtil;
 public class RichTextGetProcessor implements ParameterizedProcessorFactory {
 
    /** MMbase logging system */
-   static Logger log = Logging.getLoggerInstance(RichTextGetProcessor.class.getName());
+   static final Logger log = Logging.getLoggerInstance(RichTextGetProcessor.class.getName());
    protected static final Parameter[] PARAMS = new Parameter[] { new Parameter("dynamicDescriptions", String.class,
          "false") };
 

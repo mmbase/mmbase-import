@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 public class SqlExecutor {
 
    /** MMBase logging system */
-   private static Logger log = Logging.getLoggerInstance(SqlExecutor.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(SqlExecutor.class.getName());
    private Connection connection;
 
 
@@ -120,7 +120,7 @@ public class SqlExecutor {
             }
          }
          if (connection == null) {
-            throw new NullPointerException("connection not set. Write code to get it from MMBase datasource!");
+            throw new IllegalStateException("connection not set. Write code to get it from MMBase datasource!");
          }
       }
       return connection;

@@ -35,7 +35,7 @@ public class WizardController {
    /**
     * MMbase logging system
     */
-   private static Logger log = Logging.getLoggerInstance(WizardController.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WizardController.class.getName());
 
 
    /**

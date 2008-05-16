@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public abstract class AbstractFragment implements Fragment {
-   private static Logger log = Logging.getLoggerInstance(AbstractFragment.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(AbstractFragment.class.getName());
 
    private String id;
 

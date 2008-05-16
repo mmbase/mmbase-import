@@ -16,7 +16,7 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
 
 public class InlineRel extends InsRel {
-   static Logger log = Logging.getLoggerInstance(InlineRel.class.getName());
+   static final Logger log = Logging.getLoggerInstance(InlineRel.class.getName());
    MMBase mmbaseroot = null;
 
 

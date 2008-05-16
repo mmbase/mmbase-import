@@ -22,7 +22,7 @@ import com.finalist.cmsc.services.search.Search;
 
 public class EmailAlertCronJob implements CronJob {
 
-   private static Logger log = Logging.getLoggerInstance(EmailAlertCronJob.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(EmailAlertCronJob.class.getName());
    private static final String PAGINAURL = "#URL#";
    private static final String AFMELDENPAGINA = "#AFMELDENPAGINA#";
    private static final String AFMELDEN = "#AFMELDEN#";

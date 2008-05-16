@@ -30,7 +30,7 @@ import com.finalist.cmsc.services.sitemanagement.tree.PageTreeNode;
 public class SiteCache implements RelationEventListener, NodeEventListener {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(SiteCache.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(SiteCache.class.getName());
 
    private CloudProvider cloudProvider;
    private Map<String, PageTree> trees = new HashMap<String, PageTree>();

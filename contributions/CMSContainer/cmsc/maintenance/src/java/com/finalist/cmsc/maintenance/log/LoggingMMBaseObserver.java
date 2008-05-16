@@ -1,18 +1,18 @@
 package com.finalist.cmsc.maintenance.log;
 
-import org.mmbase.module.core.MMBaseObserver;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseObserver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Jeoffrey Bakker (Finalist IT Group)
  */
-public class LoggingMMBaseObserver implements MMBaseObserver {
-   private final static Logger log = Logging.getLoggerInstance(MMBaseObserver.class);
+public final class LoggingMMBaseObserver implements MMBaseObserver {
+   private static final Logger log = Logging.getLoggerInstance(MMBaseObserver.class);
 
    private ArrayList<LogConstraint> logLocalConstraints = new ArrayList<LogConstraint>();
    private ArrayList<LogConstraint> logRemoteConstraints = new ArrayList<LogConstraint>();
@@ -40,7 +40,7 @@ public class LoggingMMBaseObserver implements MMBaseObserver {
          if (logConstraint.matches(machine, number, builder, ctype)) {
             log.info("Remote! machine:" + machine + ", number:" + number + ",builder:" + ", ctype:" + ctype);
             if (logConstraint.isPrintStrackTrace()) {
-               log.info(Logging.stackTrace(new Exception()));
+               log.info(Logging.stackTrace());
             }
          }
       }
@@ -56,7 +56,7 @@ public class LoggingMMBaseObserver implements MMBaseObserver {
          if (logConstraint.matches(machine, number, builder, ctype)) {
             log.info("Local! machine:" + machine + ", number:" + number + ",builder:" + builder + ", ctype:" + ctype);
             if (logConstraint.isPrintStrackTrace()) {
-               log.info(Logging.stackTrace(new Exception()));
+               log.info(Logging.stackTrace());
             }
          }
       }

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 public abstract class FormlessAction extends Action {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(FormlessAction.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(FormlessAction.class.getName());
 
 
    @Override

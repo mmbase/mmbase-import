@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.mmbase.applications.wordfilter.WordHtmlCleaner;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.NodeManager;
@@ -18,9 +17,7 @@ import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
 import org.mmbase.storage.search.implementation.NodeSearchQuery;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import com.finalist.cmsc.richtext.RichText;
 
@@ -32,7 +29,7 @@ import com.finalist.cmsc.richtext.RichText;
 public class RichTextBuilder extends MMObjectBuilder {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(RichTextBuilder.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(RichTextBuilder.class.getName());
 
    /** list of html text fields to clean */
    protected List<String> htmlFields = new ArrayList<String>();
@@ -85,7 +82,7 @@ public class RichTextBuilder extends MMObjectBuilder {
 
    /**
     * override this method if you have your own rich text fields!
-    * 
+    *
     * @param name
     * @return
     */
@@ -98,7 +95,7 @@ public class RichTextBuilder extends MMObjectBuilder {
       if (inlinerelBuilder == null) {
          inlinerelBuilder = mmb.getMMObject(RichText.INLINEREL_NM);
          if (inlinerelBuilder == null) {
-            throw new RuntimeException("Builder '" + RichText.INLINEREL_NM + "' does not exist.");
+            throw new IllegalStateException("Builder '" + RichText.INLINEREL_NM + "' does not exist.");
          }
          inlinerelNumber = mmb.getRelDef().getNumberByName(RichText.INLINEREL_NM);
       }
@@ -106,7 +103,7 @@ public class RichTextBuilder extends MMObjectBuilder {
       if (imagerelBuilder == null) {
          imagerelBuilder = mmb.getMMObject(RichText.IMAGEINLINEREL_NM);
          if (imagerelBuilder == null) {
-            throw new RuntimeException("Builder '" + RichText.IMAGEINLINEREL_NM + "' does not exist.");
+            throw new IllegalStateException("Builder '" + RichText.IMAGEINLINEREL_NM + "' does not exist.");
          }
          imagerelNumber = mmb.getRelDef().getNumberByName(RichText.IMAGEINLINEREL_NM);
       }

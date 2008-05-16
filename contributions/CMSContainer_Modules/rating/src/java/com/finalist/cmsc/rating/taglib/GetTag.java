@@ -18,12 +18,12 @@ public class GetTag extends SimpleTagSupport {
       Rating rating = RatingUtil.getContentRating(number);
       getJspContext().setAttribute(var, new Float(rating.getRating()));
       if (countVar != null) {
-         getJspContext().setAttribute(countVar, new Integer(rating.getCount()));
+         getJspContext().setAttribute(countVar, Integer.valueOf(rating.getCount()));
       }
 
       if (userVar != null && user != null) {
          int userRating = RatingUtil.getUserRating(number, user);
-         getJspContext().setAttribute(userVar, new Integer(userRating));
+         getJspContext().setAttribute(userVar, Integer.valueOf(userRating));
       }
    }
 

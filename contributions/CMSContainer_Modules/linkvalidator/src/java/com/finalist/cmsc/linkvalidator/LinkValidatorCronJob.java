@@ -23,7 +23,7 @@ public class LinkValidatorCronJob implements CronJob {
     private static final String VALID_FIELD = "valid";
     
    private static final int TIMEOUT = 15000;
-   private static Logger log = Logging.getLoggerInstance(LinkValidatorCronJob.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(LinkValidatorCronJob.class.getName());
 
 
    public void init(CronEntry cronEntry) {

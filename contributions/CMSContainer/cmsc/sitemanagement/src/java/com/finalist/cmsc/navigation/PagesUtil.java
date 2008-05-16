@@ -12,9 +12,9 @@ package com.finalist.cmsc.navigation;
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.*;
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
@@ -22,13 +22,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.services.workflow.Workflow;
 import com.finalist.cmsc.services.publish.Publish;
+import com.finalist.cmsc.services.workflow.Workflow;
 
-public class PagesUtil {
+public final class PagesUtil {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(PagesUtil.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(PagesUtil.class.getName());
 
    private static final String SOURCE = "source";
    private static final String DESTINATION = "DESTINATION";
@@ -64,6 +64,10 @@ public class PagesUtil {
    public static final String POS_FIELD = "pos";
 
 
+   private PagesUtil() {
+      // utility
+   }
+
    public static NodeManager getNodeManager(Cloud cloud) {
       return TreeUtil.getNodeManager(cloud, PAGE);
    }
@@ -90,7 +94,7 @@ public class PagesUtil {
 
    /**
     * Is element of page type
-    * 
+    *
     * @param node
     *           node to check
     * @return is page
@@ -103,7 +107,7 @@ public class PagesUtil {
 
    /**
     * Is ModeManager of the type page
-    * 
+    *
     * @param nm
     *           NodeManager to check
     * @return is page
@@ -214,7 +218,7 @@ public class PagesUtil {
 
    /**
     * Use this method to remove a page.
-    * 
+    *
     * @param page
     */
    public static void deletePage(Node page) {
@@ -338,10 +342,10 @@ public class PagesUtil {
         for(RelationIterator iter = relations.relationIterator(); iter.hasNext();) {
             Relation relation = iter.nextRelation();
             String name = relation.getStringValue(NAME_FIELD);
-             
+
             // this is a bit of a hack, but saves on the loading of the actual node
             int image = relation.getIntValue("dnumber");
-             
+
             List<Integer> images = pageImages.get(name);
             if (images == null) {
                 images = new ArrayList<Integer>();
@@ -357,7 +361,7 @@ public class PagesUtil {
         Collections.sort(namedrels, new NodeFieldComparator(NAME_FIELD));
         return namedrels;
     }
-    
+
    public static Node copyPopupinfo(Node popupinfo) {
       return CloneUtil.cloneNode(popupinfo);
    }
@@ -409,7 +413,7 @@ public class PagesUtil {
                      PortletUtil.addPortlet(newPage, portlet, name);
                   }
                   else {
-                     throw new NullPointerException("Single portletdefinition does not have a portlet instance");
+                     throw new IllegalArgumentException("Single portletdefinition does not have a portlet instance");
                   }
                }
             }
@@ -498,7 +502,7 @@ public class PagesUtil {
       int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL : FieldCompareConstraint.LESS_EQUAL);
 
       Field expireField = pageManager.getField(EXPIREDATE_FIELD);
-      Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+      Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
       Constraint expirydate = query.createConstraint(query.getStepField(expireField), operator, expireDateObj);
       return expirydate;
    }
@@ -508,7 +512,7 @@ public class PagesUtil {
       int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL : FieldCompareConstraint.LESS_EQUAL);
 
       Field publishField = pageManager.getField(PUBLISHDATE_FIELD);
-      Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+      Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
       Constraint publishdate = query.createConstraint(query.getStepField(publishField), operator, publishDateObj);
       return publishdate;
    }

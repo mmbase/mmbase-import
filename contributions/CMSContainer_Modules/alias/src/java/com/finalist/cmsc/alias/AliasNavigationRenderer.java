@@ -18,7 +18,7 @@ import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 public class AliasNavigationRenderer implements NavigationItemRenderer {
 
     /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(AliasNavigationRenderer.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(AliasNavigationRenderer.class.getName());
     
    public String getContentType() {
        return "text/html";

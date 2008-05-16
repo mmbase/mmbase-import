@@ -17,7 +17,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 public class UnPublishNodeEventListener implements NodeEventListener, RelationEventListener {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(UnPublishNodeEventListener.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(UnPublishNodeEventListener.class.getName());
 
 
    public void notify(NodeEvent event) {

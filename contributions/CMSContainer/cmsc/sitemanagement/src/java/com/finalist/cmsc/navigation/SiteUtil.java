@@ -10,13 +10,12 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.navigation;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.mmbase.bridge.*;
 
 import com.finalist.cmsc.security.Role;
 import com.finalist.cmsc.security.SecurityUtil;
 
-public class SiteUtil {
+public final class SiteUtil {
 
    private static final String STAGING_FRAGMENT = "stagingfragment";
    private static final String LIVE_FRAGMENT = "urlfragment";
@@ -37,7 +36,7 @@ public class SiteUtil {
 
    public static boolean isSite(Node node) {
       if (node == null) {
-         throw new NullPointerException("node can not be null");
+         throw new IllegalArgumentException("node can not be null");
       }
       return SITE.equals(node.getNodeManager().getName());
    }
@@ -55,8 +54,7 @@ public class SiteUtil {
 
    public static NodeList getSites(Cloud cloud) {
       NodeManager sitesManager = cloud.getNodeManager(SITE);
-      NodeList sites = sitesManager.getList(sitesManager.createQuery());
-      return sites;
+      return sitesManager.getList(sitesManager.createQuery());
    }
 
 

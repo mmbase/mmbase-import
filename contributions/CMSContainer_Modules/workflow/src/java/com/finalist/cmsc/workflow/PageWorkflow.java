@@ -30,7 +30,7 @@ import com.finalist.cmsc.services.workflow.WorkflowException;
 public class PageWorkflow extends WorkflowManager {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(PageWorkflow.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(PageWorkflow.class.getName());
 
    public static final String TYPE_PAGE = "page";
 

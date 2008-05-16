@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class SecondaryContentEventListener implements NodeEventListener {
 
-   private static Logger log = Logging.getLoggerInstance(SecondaryContentEventListener.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(SecondaryContentEventListener.class.getName());
 
    protected final static String TYPE_IMAGES = "images";
 

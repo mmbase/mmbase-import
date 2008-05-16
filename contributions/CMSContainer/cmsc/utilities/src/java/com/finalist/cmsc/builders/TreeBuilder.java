@@ -23,7 +23,7 @@ public abstract class TreeBuilder extends MMObjectBuilder {
     private static final String TMP_OLDPATHNAME = "_oldpathname";
 
     /** Logger instance. */
-    private static Logger log = Logging.getLoggerInstance(TreeBuilder.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(TreeBuilder.class.getName());
    
    @Override
    public boolean init() {
@@ -163,7 +163,7 @@ public abstract class TreeBuilder extends MMObjectBuilder {
          }
          if (TreeUtil.LEVEL_FIELD.equals(field)) {
             int level = TreeUtil.getLevel(getPath(node));
-            return new Integer(level);
+            return Integer.valueOf(level);
          }
 
       }

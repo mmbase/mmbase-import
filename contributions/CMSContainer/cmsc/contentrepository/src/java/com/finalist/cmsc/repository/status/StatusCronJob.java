@@ -60,7 +60,7 @@ public class StatusCronJob implements CronJob {
 
    private long maximumEndDate;
 
-   private static Logger log = Logging.getLoggerInstance(StatusCronJob.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(StatusCronJob.class.getName());
 
 
    public void init(CronEntry cronEntry) {

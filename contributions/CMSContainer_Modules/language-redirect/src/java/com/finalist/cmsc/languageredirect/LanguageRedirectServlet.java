@@ -36,7 +36,7 @@ public class LanguageRedirectServlet extends BridgeServlet {
    @Override
    protected Map getAssociations() {
       Map a = super.getAssociations();
-      a.put("language", new Integer(50));
+      a.put("language", Integer.valueOf(50));
       return a;
    }
 

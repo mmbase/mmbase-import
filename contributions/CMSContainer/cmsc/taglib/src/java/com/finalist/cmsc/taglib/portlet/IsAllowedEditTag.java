@@ -16,7 +16,7 @@ import net.sf.mmapps.commons.bridge.CloudUtil;
 @SuppressWarnings("serial")
 public class IsAllowedEditTag extends TagSupport {
 
-   private static Logger log = Logging.getLoggerInstance(IsAllowedEditTag.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(IsAllowedEditTag.class.getName());
 
    private int channelNumber;
    private boolean inverse;

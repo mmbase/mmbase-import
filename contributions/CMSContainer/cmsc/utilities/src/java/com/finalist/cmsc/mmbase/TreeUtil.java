@@ -10,18 +10,18 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.mmbase;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.mmapps.commons.bridge.RelationUtil;
 import net.sf.mmapps.commons.util.EncodingUtil;
-import org.apache.commons.lang.StringUtils;
 
-import org.mmbase.bridge.*;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.*;
 
 
-public class TreeUtil {
+public final class TreeUtil {
 
 
    private static final String DESTINATION = "DESTINATION";

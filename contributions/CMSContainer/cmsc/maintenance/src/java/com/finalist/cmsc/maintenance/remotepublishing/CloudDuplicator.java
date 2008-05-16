@@ -31,7 +31,7 @@ import java.util.*;
  * @version CloudDuplicator.java,v 1.2 2003/07/28 09:44:23 nico Exp
  */
 public class CloudDuplicator implements Runnable {
-   private static Logger log = Logging.getLoggerInstance(CloudDuplicator.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(CloudDuplicator.class.getName());
    private CloudInfo sourceCloudInfo;
    private CloudInfo destinationCloudInfo;
    private List<String> nodeManagers;

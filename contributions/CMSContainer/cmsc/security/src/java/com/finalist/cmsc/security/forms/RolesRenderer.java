@@ -6,7 +6,7 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 
 import com.finalist.cmsc.security.UserRole;
-import com.finalist.tree.*;
+import com.finalist.tree.TreeModel;
 import com.finalist.tree.html.HTMLTreeCellRenderer;
 import com.finalist.tree.html.HTMLTreeElement;
 
@@ -28,7 +28,7 @@ public abstract class RolesRenderer implements HTMLTreeCellRenderer {
          this.user = cloud.getNode(form.getId());
       }
       else {
-         throw new RuntimeException("What is the user node? nodenumber is missing in UserForm for roles");
+         throw new IllegalStateException("What is the user node? nodenumber is missing in UserForm for roles");
       }
    }
 

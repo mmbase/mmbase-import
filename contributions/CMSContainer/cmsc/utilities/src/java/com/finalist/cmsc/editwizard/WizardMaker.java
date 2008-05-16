@@ -7,23 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  * Create a link to a Editwizard
- * 
+ *
  * @author Nico Klasens
  * @author Wouter Heijke
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class WizardMaker {
-   private static Logger log = Logging.getLoggerInstance(WizardMaker.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WizardMaker.class.getName());
 
    private static String DEFAULT_SESSION_KEY = "editwizard";
 
@@ -106,7 +102,7 @@ public class WizardMaker {
             contentType = node.getNodeManager().getName();
          }
          else {
-            throw new RuntimeException("No criteria available to find a wizard."
+            throw new IllegalStateException("No criteria available to find a wizard."
                   + " Provide a contenttype or objectnumber");
          }
       }
@@ -129,7 +125,7 @@ public class WizardMaker {
          NodeManager manager = cloud.getNodeManager("editwizards");
          list = manager.getList("nodepath = '" + contentType + "'", null, null);
          if (list.isEmpty()) {
-            throw new RuntimeException("Unable to find a wizard for contenttype " + contentType + " or objectnumber "
+            throw new IllegalStateException("Unable to find a wizard for contenttype " + contentType + " or objectnumber "
                   + objectNumber);
          }
 
