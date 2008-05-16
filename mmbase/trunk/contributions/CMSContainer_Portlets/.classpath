@@ -171,7 +171,9 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.octo.captcha/jars/jcaptcha-all-1.0-RC6.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/org.springframework/jars/spring-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-test-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-webmvc-struts-2.5.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.thoughtworks.xstream/jars/xstream-1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/htmlparser/jars/htmlparser-1.5.jar"/>
