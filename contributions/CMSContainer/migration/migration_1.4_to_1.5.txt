@@ -23,3 +23,16 @@ Exceptions/errors/other problems and what to do:
 *
 *
 *
+
+Name: Enlarge mimetype field for attachments
+Goal: Enlarge mimetype field for attachments
+Type:  sql-script
+--- Start script ---
+ALTER TABLE mm_attachements MODIFY mimetype varchar(128);
+
+ALTER TABLE live_attachements MODIFY mimetype varchar(128);
+--- End script ---
+Exceptions/errors/other problems and what to do:
+*
+*
+*
