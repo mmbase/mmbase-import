@@ -47,6 +47,15 @@ See http://www.MMBase.org/license
             </properties>
         </dependency>
         <dependency>
+            <groupId>mindterm</groupId>
+            <artifactId>mindterm</artifactId>
+            <version>3.2</version>
+            <type>jar</type>
+            <properties>
+                <jar.manifest.classpath>true</jar.manifest.classpath>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.11</version>
