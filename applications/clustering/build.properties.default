@@ -1,7 +1,0 @@
-# ----- JGroups and Commons-Logging ---------
-jgroups.version=JGroups-2.2.9.2
-jgroups.file=${jgroups.version}.bin.zip
-jgroups.dest=${download.dir}/${jgroups.file}
-jgroups.loc=http://heanet.dl.sourceforge.net/sourceforge/javagroups/${jgroups.file}
-jgroups.jar=${expand.dir}/${jgroups.version}.bin/jgroups-all.jar
-# commons-logging.jar=${build.dir}/lib/commons-logging.jar

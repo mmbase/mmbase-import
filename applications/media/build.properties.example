@@ -1,5 +1,0 @@
-build.dir=../../1.6/mmbase/build
-build.compiler=jikes
-debug=on
-deprecation=off
-optimize=off
