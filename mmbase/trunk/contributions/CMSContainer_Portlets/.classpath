@@ -14,6 +14,7 @@
 	<classpathentry kind="src" output="portlets-poll/target/classes" path="portlets-poll/src/java"/>
 	<classpathentry kind="src" output="portlets-print/target/classes" path="portlets-print/src/java"/>
 	<classpathentry kind="src" output="portlets-search/target/classes" path="portlets-search/src/java"/>
+	<classpathentry kind="src" path="portlets-newsletter/src/java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer_Modules-1_5"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMSContainer-1_5"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
@@ -170,6 +171,10 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jaxb-impl-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jaxb/jars/jsr173_1.0_api-20060426.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/com.octo.captcha/jars/jcaptcha-all-1.0-RC6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org.springframework/jars/spring-2.5.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/com.thoughtworks.xstream/jars/xstream-1.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/htmlparser/jars/htmlparser-1.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
