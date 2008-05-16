@@ -39,7 +39,7 @@ public class ScriptReader {
    private String fileName;
 
    /** MMBase logging system */
-   private static Logger log = Logging.getLoggerInstance(ScriptReader.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ScriptReader.class.getName());
 
 
    /**

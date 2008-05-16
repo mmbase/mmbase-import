@@ -12,19 +12,10 @@ package com.finalist.cmsc.repository;
 import java.util.*;
 
 import net.sf.mmapps.commons.bridge.*;
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.NodeManager;
-import org.mmbase.bridge.NodeQuery;
-import org.mmbase.bridge.Relation;
-import org.mmbase.bridge.RelationIterator;
-import org.mmbase.bridge.RelationList;
-import org.mmbase.bridge.RelationManager;
+import org.apache.commons.lang.StringUtils;
+import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.FieldValueDateConstraint;
@@ -35,17 +26,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import com.finalist.cmsc.mmbase.TreeUtil;
-import com.finalist.cmsc.security.Role;
-import com.finalist.cmsc.security.SecurityUtil;
-import com.finalist.cmsc.security.UserRole;
+import com.finalist.cmsc.security.*;
 import com.finalist.cmsc.security.forms.RolesInfo;
 
-public class RepositoryUtil {
+public final class RepositoryUtil {
 
     public static final String NAME_FIELD = "name";
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(RepositoryUtil.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(RepositoryUtil.class.getName());
 
     private static final String SOURCE = "SOURCE";
     private static final String DESTINATION = "DESTINATION";
@@ -82,14 +71,14 @@ public class RepositoryUtil {
     }
 
     /**
-     * This method is used on startup of MMBase to fill the information about treeManagers 
+     * This method is used on startup of MMBase to fill the information about treeManagers
      * and path fragment fields
      * This method is synchronized on the class (static method) to make sure only one managers is added
      * at the same time.
-     * 
+     *
      * @param manager name of nodemanager which is used in the tree
      * @param fragmentFieldname name of field which is used in the path of a tree item
-     * @param root This nodemanager maintains the nodes which are root tree items 
+     * @param root This nodemanager maintains the nodes which are root tree items
      */
     public static synchronized void registerTreeManager(String manager, String fragmentFieldname, boolean root) {
         if (root) {
@@ -103,7 +92,7 @@ public class RepositoryUtil {
         }
     }
 
-    
+
     private RepositoryUtil() {
         // utility
     }
@@ -124,11 +113,11 @@ public class RepositoryUtil {
         Node channel = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNode(node);
         return isChannel(channel);
     }
-    
+
     public static boolean isContentChannel(Node node) {
         return CONTENTCHANNEL.equals(node.getNodeManager().getName());
     }
-    
+
     public static boolean isContentChannel(String node) {
         Node channel = CloudProviderFactory.getCloudProvider().getAnonymousCloud().getNode(node);
         return isContentChannel(channel);
@@ -146,10 +135,10 @@ public class RepositoryUtil {
     public static NodeList getCollectionChannels(Node contentchannel) {
         return contentchannel.getRelatedNodes(COLLECTIONCHANNEL, null, null);
     }
-    
+
     /** gets the root number
      * @param cloud - MMbase cloud
-     * @return root node number 
+     * @return root node number
      */
     public static String getRoot(Cloud cloud) {
        return getRootNode(cloud).getStringValue("number");
@@ -359,7 +348,7 @@ public class RepositoryUtil {
     /** Reorder content in channel
      * @param cloud - MMbase cloud
      * @param parentNode - parent
-     * @param children - new order 
+     * @param children - new order
      * @return changed numbers
      */
     public static List<Integer> reorderContent(Cloud cloud, String parentNode, String children) {
@@ -370,7 +359,7 @@ public class RepositoryUtil {
     /** Reorder content in channel
      * @param cloud - MMbase cloud
      * @param parentNode - parent
-     * @param children - new order 
+     * @param children - new order
      * @return changed numbers
      */
     public static List<Integer> reorderContent(Cloud cloud, String parentNode, String[] children) {
@@ -399,7 +388,7 @@ public class RepositoryUtil {
     public static NodeList getContentChannelOrderedChildren(Node parentNode) {
         return SearchUtil.findRelatedOrderedNodeList(parentNode, CONTENTCHANNEL, CHILDREL, NAME_FIELD);
      }
-    
+
     /** Get sorted child nodes
      * @param parentNode - parent
      * @return list of sorted children
@@ -434,7 +423,7 @@ public class RepositoryUtil {
         return TreeUtil.getChildCount(parent, CONTENTCHANNEL, CHILDREL);
     }
 
-    
+
     /**
      * Create the relation to the creationchannel.
      * @param content - Content Node
@@ -457,7 +446,7 @@ public class RepositoryUtil {
 
     /**
      * Check if a contentnode has a creationchannel
-     * @param content - Content Node 
+     * @param content - Content Node
      * @return true if the node has a related creation channel
      */
     public static boolean hasCreationChannel(Node content) {
@@ -619,12 +608,12 @@ public class RepositoryUtil {
         NodeQuery query = createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, extraParameters);
         return query.getNodeManager().getList(query);
     }
-    
+
 
     public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day) {
     	return createLinkedContentQuery(channel, contenttypes, orderby, direction, useLifecycle, archive, offset, maxNumber, year, month, day, null);
     }
-    
+
     public static NodeQuery createLinkedContentQuery(Node channel, List<String> contenttypes, String orderby, String direction, boolean useLifecycle, String archive, int offset, int maxNumber, int year, int month, int day, HashMap<String, Object> extraParameters) {
         String destinationManager = CONTENTELEMENT;
 
@@ -662,7 +651,7 @@ public class RepositoryUtil {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         Long date = cal.getTimeInMillis();
-        
+
         if (useLifecycle) {
             ContentElementUtil.addLifeCycleConstraint(query, date);
         }
@@ -674,16 +663,19 @@ public class RepositoryUtil {
           Field field = query.getCloud().getNodeManager("contentelement").getField("publishdate");
           StepField basicStepField = query.getStepField(field);
            if(year != -1) {
-              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(year), FieldValueDateConstraint.YEAR));
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField,
+                  Integer.valueOf(year), FieldValueDateConstraint.YEAR));
            }
            if(month != -1) {
-              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(month), FieldValueDateConstraint.MONTH));
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField,
+                  Integer.valueOf(month), FieldValueDateConstraint.MONTH));
            }
            if(day != -1) {
-              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(day), FieldValueDateConstraint.DAY_OF_MONTH));
+              SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField,
+                  Integer.valueOf(day), FieldValueDateConstraint.DAY_OF_MONTH));
            }
         }
-        
+
         if(extraParameters != null) {
         	for(String key:extraParameters.keySet()) {
         		Object value = extraParameters.get(key);
@@ -779,7 +771,7 @@ public class RepositoryUtil {
 
     /**
      * Create the relation to the deletion relation with this node.
-     * 
+     *
      * @param contentNode - Content Node
      * @param channelNumber - Channel Node
      */
@@ -817,7 +809,7 @@ public class RepositoryUtil {
         if (! rootPathFragment.equals(fragments[0])) {
             throw new IllegalArgumentException("path does not start with root pathfragment (" + rootPathFragment + ")");
         }
-        
+
         for (int i = 1; i < fragments.length; i++) {
             String fragment = fragments[i];
 
@@ -832,7 +824,7 @@ public class RepositoryUtil {
         }
         return parentChannel;
     }
-    
+
     public static Node createChannel(Cloud cloud, String name) {
         return createChannel(cloud, name, null);
     }
@@ -937,7 +929,7 @@ public class RepositoryUtil {
             info = new RepositoryInfo();
             cloud.setProperty(RepositoryInfo.class.getName(), info);
             TreeMap<String,UserRole> channelsWithRole = SecurityUtil.getLoggedInRoleMap(cloud, treeManagers, CHILDREL);
-            
+
             for(Map.Entry<String,UserRole> entry : channelsWithRole.entrySet()) {
                 UserRole role = entry.getValue();
                 if (!Role.NONE.equals(role.getRole())) {
@@ -975,7 +967,7 @@ public class RepositoryUtil {
     /**
      * This is the method for a USER, the old ones want a GROUP...
      * (even although the are called getRoleForUser(..)
-     * 
+     *
      * @param channel channel to get role for
      * @param user user to get role for
      * @return User Role
@@ -991,19 +983,19 @@ public class RepositoryUtil {
      * @param cloud Cloud
      * @param roleName specified roleName
      * @return boolean
-     */    
+     */
     public static boolean hasRecyclebinRights(Cloud cloud, String roleName) {
         Node node = getTrashNode(cloud);
         roleName = roleName.toLowerCase();
-        
+
         UserRole role = RepositoryUtil.getRole(cloud, node, true);
-        
+
         if (role != null && roleName.equals(role.getRole().getName())) {
             return true;
-        } 
+        }
         else {
             return false;
         }
-    }        
-        
+    }
+
 }

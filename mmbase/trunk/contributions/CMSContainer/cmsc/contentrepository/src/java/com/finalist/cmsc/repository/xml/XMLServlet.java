@@ -2,14 +2,14 @@ package com.finalist.cmsc.repository.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import net.sf.mmapps.commons.util.HttpUtil;
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +30,7 @@ import com.finalist.cmsc.util.XsltUtil;
  * The XMLServlet is a basic servlet for retrieving data from MMBase. A remote
  * system can request content and this Servlet will access MMBase, generate the
  * proper XML and send it back.
- * 
+ *
  * @author Nico Klasens
  */
 @SuppressWarnings("serial")
@@ -38,7 +38,7 @@ public class XMLServlet extends HttpServlet {
    /**
     * MMBase logging system
     */
-   static Logger log = Logging.getLoggerInstance(XMLServlet.class.getName());
+   static final Logger log = Logging.getLoggerInstance(XMLServlet.class.getName());
 
    private static final String CHANNEL = "channel";
    private static final String CONTENT_TYPE = "contentType";
@@ -109,7 +109,7 @@ public class XMLServlet extends HttpServlet {
     * This method handles all requests, checks the request to see what data is
     * required and calls the proper methods for creating the xml. After
     * processing the proper XML is written out to the HttpServletResponse.
-    * 
+    *
     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
     *      javax.servlet.http.HttpServletResponse)
     * @param request
@@ -293,7 +293,7 @@ public class XMLServlet extends HttpServlet {
       if (previewdateParam != null) {
          Integer date = null;
          if (previewdateParam.matches("^\\d+$")) {
-            date = new Integer(previewdateParam);
+            date = Integer.valueOf(previewdateParam);
             ContentElementUtil.addLifeCycleConstraint(query, date);
          }
       }
@@ -373,7 +373,7 @@ public class XMLServlet extends HttpServlet {
    /**
     * Retrieves the int-value held in a String. This method will return the
     * default value if the String could not be properly parsed.
-    * 
+    *
     * @param value
     *           The String holding the int value.
     * @param dflt
@@ -393,7 +393,7 @@ public class XMLServlet extends HttpServlet {
 
    /**
     * This method sends an error-response to the HttpServletResponse.
-    * 
+    *
     * @param error
     *           The error to output.
     * @param response

@@ -37,7 +37,7 @@ public class NodeParameterEventListener implements NodeEventListener {
 
    private LuceusModule module;
 
-   private static Logger log = Logging.getLoggerInstance(NodeParameterEventListener.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(NodeParameterEventListener.class.getName());
 
 
    public NodeParameterEventListener(LuceusModule module) {

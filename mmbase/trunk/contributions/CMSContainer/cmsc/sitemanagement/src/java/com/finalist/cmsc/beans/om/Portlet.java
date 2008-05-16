@@ -48,7 +48,7 @@ public class Portlet extends NodeBean implements Comparable<Portlet> {
 
 
    public void addView(int view) {
-      this.views.add(new Integer(view));
+      this.views.add(Integer.valueOf(view));
    }
 
 

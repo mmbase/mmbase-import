@@ -33,7 +33,7 @@ import com.finalist.cmsc.repository.ContentElementUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 
 public class TaskCronJob implements CronJob {
-   private static Logger log = Logging.getLoggerInstance(TaskCronJob.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(TaskCronJob.class.getName());
 
    private long lastExecutionTime;
 

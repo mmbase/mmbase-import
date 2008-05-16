@@ -24,11 +24,11 @@ import com.finalist.cmsc.security.builders.Contexts;
 import com.finalist.cmsc.util.NameUtil;
 
 
-public class SecurityUtil {
+public final class SecurityUtil {
 
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(SecurityUtil.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SecurityUtil.class.getName());
 
     private static final String CMSC_USERROLES = "cmsc.userroles.";
 
@@ -43,14 +43,14 @@ public class SecurityUtil {
     public static final String NUMBER_FIELD = "number";
     public static final String USERNAME_FIELD = "username";
     public static final String ROLE_FIELD = "role";
-    
+
     private static final String DESTINATION = "DESTINATION";
     private static final String SOURCE = "SOURCE";
 
     private SecurityUtil() {
         // utility
     }
-    
+
     public static Node getUserNode(Cloud userCloud) {
 //        User user = (User) userCloud.getUser();
 //        return userCloud.getNode(user.getNode().getNumber());
@@ -60,7 +60,7 @@ public class SecurityUtil {
     public static Node getUserNode(Cloud cloud, String username) {
         return SearchUtil.findNode(cloud, USER, USERNAME_FIELD, username);
     }
-    
+
     public static boolean isLoggedInUser(Cloud cloud, Node userNode) {
 //        User user = (User) cloud.getUser();
         return cloud.getUser().getIdentifier().equals(userNode.getStringValue(USERNAME_FIELD));
@@ -97,7 +97,7 @@ public class SecurityUtil {
        }
        return resultRole;
     }
-    
+
     public static Map<Integer,UserRole> buildRolesFromRequest(HttpServletRequest request) {
         Map<Integer,UserRole> roles = new HashMap<Integer,UserRole>();
         Enumeration<String> requestEnum = request.getParameterNames();
@@ -106,10 +106,10 @@ public class SecurityUtil {
            if (name.startsWith("role_")) {
               String role = request.getParameter(name);
               if (!role.equals("-1")) {
-                 roles.put( new Integer(name.substring(5)), new UserRole( Integer.parseInt(role),false));
+                 roles.put( Integer.valueOf(name.substring(5)), new UserRole( Integer.parseInt(role),false));
               }
               else {
-                 roles.put( new Integer(name.substring(5)), null);
+                 roles.put( Integer.valueOf(name.substring(5)), null);
               }
            }
         }
@@ -123,7 +123,7 @@ public class SecurityUtil {
         return getLoggedInRoleMap(cloud, treeManagers, relationName);
     }
 
-    
+
     public static TreeMap<String, UserRole> getLoggedInRoleMap(Cloud cloud,  LinkedHashMap<String,String> treeManagers,
             String relationName) {
 
@@ -162,7 +162,7 @@ public class SecurityUtil {
 		                    channelsWithRole.put(path, extraRole);
 		                }
 		            }
-		            
+
 		            for (Map.Entry<String, UserRole> entry : extraRoles.entrySet()) {
 		                String extraPath = entry.getKey();
 		                UserRole extraRole = entry.getValue();
@@ -201,18 +201,18 @@ public class SecurityUtil {
         checkGroup(group);
         Cloud cloud = group.getCloud();
         List<String> managers = TreeUtil.convertToList(treeManagers);
-        
+
         for (int i = managers.size() - 1; i >= 0; i--) {
             String managerName = managers.get(i);
 
             if (cloud.hasRelationManager(GROUP, managerName, ROLEREL)) {
                 // retrieve a list of all channels with a rolerel to this group
-                NodeList channelNodeList = cloud.getList(null, 
-                        managerName + "," + ROLEREL + "," + GROUP, 
-                        ROLEREL + "." + ROLE_FIELD+ ", " + managerName + "." + NUMBER_FIELD, 
+                NodeList channelNodeList = cloud.getList(null,
+                        managerName + "," + ROLEREL + "," + GROUP,
+                        ROLEREL + "." + ROLE_FIELD+ ", " + managerName + "." + NUMBER_FIELD,
                         "[" + GROUP + "." + NUMBER_FIELD + "] = " + group.getNumber(),
                         null, null, null, true);
-    
+
                 NodeIterator nodeIterator = channelNodeList.nodeIterator();
                 while (nodeIterator.hasNext()) {
                     Node channelRoleGroupNode = nodeIterator.nextNode();
@@ -225,26 +225,26 @@ public class SecurityUtil {
             }
         }
     }
-    
+
     public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights, String managerName) {
         checkGroup(group);
         List<String> treeManagers = new ArrayList<String>();
         treeManagers.add(managerName);
         setGroupRights(cloud, group, rights, treeManagers);
     }
-    
+
     public static void setGroupRights(Cloud cloud, Node group, Map<Integer, UserRole> rights, List<String> treeManagers) {
         checkGroup(group);
         clearUserRoles(cloud, treeManagers);
-        
+
         List<Integer> rolesDone = new ArrayList<Integer>();
-        
+
         for (String managerName : treeManagers) {
             if (cloud.hasRelationManager(GROUP, managerName, ROLEREL)) {
                 RelationList list = group.getRelations(ROLEREL, cloud.getNodeManager(managerName), DESTINATION);
                 for (RelationIterator iter = list.relationIterator(); iter.hasNext();) {
                    Relation rolerel = iter.nextRelation();
-                   Integer channelNumber = new Integer(rolerel.getDestination().getNumber());
+                   Integer channelNumber = Integer.valueOf(rolerel.getDestination().getNumber());
                    if (rights.containsKey(channelNumber)) {
                       rolesDone.add(channelNumber);
                       UserRole role = rights.get(channelNumber);
@@ -283,21 +283,21 @@ public class SecurityUtil {
             }
         }
     }
-    
+
     public static void addRole(Cloud cloud, String channelNumber, Node group, Role role, List<String> treeManagers) {
         Node channelNode = cloud.getNode(channelNumber);
         addRole(cloud, channelNode, group, role, treeManagers);
     }
-    
+
     public static void addRole(Cloud cloud, Node channelNode, Node group, Role role,  List<String> treeManagers) {
         addRole(group, channelNode, role);
         clearUserRoles(cloud, treeManagers);
     }
-    
+
     public static void addRole(Node group, Node channelNode, Role role) {
         checkGroup(group);
 
-        RelationManager rolemanager = 
+        RelationManager rolemanager =
             group.getCloud().getRelationManager(GROUP, channelNode.getNodeManager().getName(), ROLEREL);
           Relation relation = rolemanager.createRelation(group, channelNode);
           relation.setIntValue(ROLE_FIELD, role.getId());
@@ -322,7 +322,7 @@ public class SecurityUtil {
           }
        }
     }
-    
+
     public static boolean isWriter(UserRole role) {
         return role.getRole().getId() >= Role.WRITER.getId();
     }
@@ -401,7 +401,7 @@ public class SecurityUtil {
                 r.delete();
             }
         }
-        
+
         clearUserRoles(cloud);
     }
 
@@ -420,7 +420,7 @@ public class SecurityUtil {
         checkUser(user);
         return user.getRelatedNodes(GROUP, CONTAINS, SOURCE);
     }
-    
+
     public static Node getRank(Node userNode) {
         checkUser(userNode);
         Node rankNode = null;
@@ -456,8 +456,8 @@ public class SecurityUtil {
     public static String getFullname(Node user) {
         checkUser(user);
 
-        return NameUtil.getFullName(user.getStringValue("firstname"), 
-                user.getStringValue("prefix"), 
+        return NameUtil.getFullName(user.getStringValue("firstname"),
+                user.getStringValue("prefix"),
                 user.getStringValue("surname"));
     }
 
@@ -473,7 +473,7 @@ public class SecurityUtil {
             throw new IllegalArgumentException("Node " + user.getNumber() + " is not a " + USER);
         }
     }
-    
+
     private static void checkRank(Node rank) {
         if (!RANK.equals(rank.getNodeManager().getName())) {
             throw new IllegalArgumentException("Node " + rank.getNumber() + " is not a " + RANK);
@@ -511,7 +511,7 @@ public class SecurityUtil {
               }
            }
         }
-        
+
         List<Node> users = new ArrayList<Node>();
         Iterator<Node> groupIter = groups.iterator();
         while (groupIter.hasNext()) {
@@ -521,7 +521,7 @@ public class SecurityUtil {
                 addToList(users, user);
            }
         }
-        
+
         return users;
     }
 

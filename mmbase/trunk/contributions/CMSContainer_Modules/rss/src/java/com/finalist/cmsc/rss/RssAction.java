@@ -38,7 +38,7 @@ import com.finalist.cmsc.struts.MMBaseAction;
  */
 public class RssAction extends MMBaseAction {
 
-   private static Logger log = Logging.getLoggerInstance(RssAction.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(RssAction.class.getName());
 
    private static final String PREFIX = "rss.";
    private static final String DEFAULT_CONTENTTYPE = "article";

@@ -6,7 +6,7 @@ import org.mmbase.util.logging.Logging;
 public class RequestCountThread extends Thread {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(RequestCountThread.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(RequestCountThread.class.getName());
 
    private int requestCount = 0;
    private long lastCheck = 0;

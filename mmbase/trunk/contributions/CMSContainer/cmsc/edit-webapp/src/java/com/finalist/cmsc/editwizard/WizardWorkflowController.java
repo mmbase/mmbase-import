@@ -31,7 +31,7 @@ public class WizardWorkflowController extends WizardController {
    /**
     * MMbase logging system
     */
-   private static Logger log = Logging.getLoggerInstance(WizardWorkflowController.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WizardWorkflowController.class.getName());
 
 
    /**

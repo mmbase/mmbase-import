@@ -17,7 +17,7 @@ import com.finalist.cmsc.dataconversion.service.DateUtil;
  */
 public class DataSourceFactory {
    
-   private static Logger log = Logging.getLoggerInstance(DataSourceFactory.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(DataSourceFactory.class.getName());
 
    public static  DataSource getDataSource(Properties properties) {
      

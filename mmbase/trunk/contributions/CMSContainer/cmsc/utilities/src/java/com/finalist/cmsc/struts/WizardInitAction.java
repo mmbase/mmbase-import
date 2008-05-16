@@ -1,12 +1,12 @@
 package com.finalist.cmsc.struts;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.mmbase.bridge.*;
@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logging;
 public class WizardInitAction extends MMBaseFormlessAction {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(WizardInitAction.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WizardInitAction.class.getName());
 
    private static String DEFAULT_SESSION_KEY = "editwizard";
 
@@ -64,7 +64,7 @@ public class WizardInitAction extends MMBaseFormlessAction {
             contenttype = node.getNodeManager().getName();
          }
          else {
-            throw new RuntimeException("No criteria available to find a wizard."
+            throw new IllegalStateException("No criteria available to find a wizard."
                   + " Provide a contenttype or objectnumber");
          }
       }
@@ -87,7 +87,7 @@ public class WizardInitAction extends MMBaseFormlessAction {
          NodeManager manager = cloud.getNodeManager("editwizards");
          list = manager.getList("nodepath = '" + contenttype + "'", null, null);
          if (list.isEmpty()) {
-            throw new RuntimeException("Unable to find a wizard for contenttype " + contenttype + " or objectnumber "
+            throw new IllegalStateException("Unable to find a wizard for contenttype " + contenttype + " or objectnumber "
                   + objectNumber);
          }
 

@@ -25,7 +25,7 @@ import net.sf.mmapps.commons.util.UploadUtil.BinaryData;
 public class MenuImportRequest {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(MenuImportRequest.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(MenuImportRequest.class.getName());
 
 
    public void process(Cloud cloud, HttpServletRequest request) {

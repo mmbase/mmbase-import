@@ -27,7 +27,7 @@ import com.finalist.cmsc.services.workflow.WorkflowException;
 public class ContentWorkflow extends RepositoryWorkflow {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(ContentWorkflow.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ContentWorkflow.class.getName());
 
    public static final String TYPE_CONTENT = "content";
 

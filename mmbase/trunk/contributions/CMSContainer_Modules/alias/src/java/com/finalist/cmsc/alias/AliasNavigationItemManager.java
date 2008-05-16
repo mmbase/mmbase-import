@@ -15,7 +15,7 @@ import com.finalist.cmsc.navigation.*;
 
 public class AliasNavigationItemManager implements NavigationItemManager {
 
-    private static Logger log = Logging.getLoggerInstance(AliasNavigationItemManager.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(AliasNavigationItemManager.class.getName());
 	
 	private NavigationItemRenderer renderer = new AliasNavigationRenderer();
 	private NavigationTreeItemRenderer treeRenderer = new AliasTreeItemRenderer();

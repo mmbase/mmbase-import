@@ -11,17 +11,12 @@ package com.finalist.cmsc.struts;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import net.sf.mmapps.commons.bridge.CloudUtil;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.mmbase.bridge.*;
 import org.mmbase.security.Rank;
 import org.mmbase.util.Encode;
@@ -63,7 +58,7 @@ public abstract class MMBaseAction extends Action {
          }
       }
       if (cloud == null) {
-         throw new NullPointerException("Unable to get a cloud from action, request, session and cloudprovider");
+         throw new IllegalArgumentException("Unable to get a cloud from action, request, session and cloudprovider");
       }
       else {
          Rank requiredRank = getRequiredRank();
@@ -187,7 +182,7 @@ public abstract class MMBaseAction extends Action {
 
    /**
     * Checks if a cloud is on the session with given the default sessionname.
-    * 
+    *
     * @param request
     *           HttpServletRequest to search for the cloud.
     * @return true if a cloud is found, false otherwise.
@@ -199,7 +194,7 @@ public abstract class MMBaseAction extends Action {
 
    /**
     * Checks if a cloud is on the session with given sessionname.
-    * 
+    *
     * @param request
     *           HttpServletRequest to search for the cloud.
     * @param sessionname

@@ -41,7 +41,7 @@ public class Page extends NavigationItem {
 
 
    public void addStylesheet(int stylesheet) {
-      this.stylesheet.add(new Integer(stylesheet));
+      this.stylesheet.add(Integer.valueOf(stylesheet));
    }
 
 

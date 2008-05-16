@@ -32,7 +32,7 @@ public class ContentElementEventListener implements NodeEventListener, RelationE
 
    private LuceusModule module;
 
-   private static Logger log = Logging.getLoggerInstance(ContentElementEventListener.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ContentElementEventListener.class.getName());
 
 
    public ContentElementEventListener(LuceusModule module) {

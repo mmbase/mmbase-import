@@ -54,7 +54,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
    public final static String LEGEND_ALT = "alt";
 
    /** The logger. */
-   private static Logger log = Logging.getLoggerInstance(ImageTag.class);
+   private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
 
    /** Holds value of property popup. */
    private Attribute popup = Attribute.NULL;

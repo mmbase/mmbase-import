@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ChangePasswordAction extends MMBaseAction {
 
    /** MMbase logging system */
-   private static transient Logger log = Logging.getLoggerInstance(ChangePasswordAction.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ChangePasswordAction.class.getName());
 
 
    /**

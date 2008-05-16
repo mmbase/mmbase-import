@@ -25,7 +25,7 @@ import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 public abstract class MMBaseCacheEntryFactory implements CacheEntryFactory, NodeEventListener, RelationEventListener {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(MMBaseCacheEntryFactory.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(MMBaseCacheEntryFactory.class.getName());
 
    private CloudProvider cloudProvider;
    private SelfPopulatingCache cache;
@@ -170,12 +170,12 @@ public abstract class MMBaseCacheEntryFactory implements CacheEntryFactory, Node
 
 
    protected Integer getKey(NodeEvent event) {
-      return new Integer(event.getNodeNumber());
+      return Integer.valueOf(event.getNodeNumber());
    }
 
 
    protected Integer getKey(RelationEvent event) {
-      return new Integer(event.getRelationSourceNumber());
+      return Integer.valueOf(event.getRelationSourceNumber());
    }
 
 

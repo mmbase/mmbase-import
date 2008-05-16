@@ -2,17 +2,14 @@ package com.finalist.cmsc.file;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class FileWalker {
 
    /**
     * Walk through the directory structure and return a collection containing
     * all those files for which the filter returns true
-    * 
+    *
     * @param startingDirectory
     *           Start walking in this directory
     * @param filter
@@ -30,7 +27,7 @@ public class FileWalker {
    /**
     * Walk through the directory structure and return a collection containing
     * all those directories for which the filter returns true
-    * 
+    *
     * @param startingDirectory
     *           Start walking in this directory
     * @param filter
@@ -48,7 +45,7 @@ public class FileWalker {
    /**
     * Walk through the directory structure and return a collection containing
     * all those files and directories for which the filter returns true
-    * 
+    *
     * @param startingDirectory
     *           Start walking in this directory
     * @param filter
@@ -67,7 +64,7 @@ public class FileWalker {
          boolean includeFiles, boolean includeDirectories) {
 
       if (startingDirectory == null) {
-         throw new NullPointerException();
+         throw new IllegalArgumentException("startingDirectory is null");
       }
       if (startingDirectory.length() == 0) {
          throw new IllegalArgumentException("startingDirectory may not be empty");

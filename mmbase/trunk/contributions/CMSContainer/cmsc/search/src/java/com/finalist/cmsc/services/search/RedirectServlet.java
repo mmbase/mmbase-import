@@ -38,7 +38,7 @@ public class RedirectServlet extends BridgeServlet {
     @Override
     protected Map<String, Integer> getAssociations() {
         Map<String, Integer> a = super.getAssociations();
-        a.put("content", new Integer(50));
+        a.put("content", Integer.valueOf(50));
         return a;
     }
     

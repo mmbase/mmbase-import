@@ -41,12 +41,12 @@ public class RolesForm extends MMBaseForm {
 
 
    public UserRole getRole(int number) {
-      return roles.get(new Integer(number));
+      return roles.get(Integer.valueOf(number));
    }
 
 
    public void addRole(int number, UserRole role) {
-      roles.put(new Integer(number), role);
+      roles.put(Integer.valueOf(number), role);
    }
 
 

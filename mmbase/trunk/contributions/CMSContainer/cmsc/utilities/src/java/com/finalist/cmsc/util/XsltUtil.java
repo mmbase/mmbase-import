@@ -1,21 +1,12 @@
 package com.finalist.cmsc.util;
 
-import java.io.CharArrayWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
+import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -63,7 +54,7 @@ public class XsltUtil {
 
    /**
     * Constuctor XsltUtil.
-    * 
+    *
     * @param xmlSource
     *           Source XML
     * @param xslSource
@@ -84,7 +75,7 @@ public class XsltUtil {
 
    /**
     * create XSL Source.
-    * 
+    *
     * @return Source
     * @throws IOException
     *            if IO fails
@@ -96,7 +87,7 @@ public class XsltUtil {
 
    /**
     * create XML Source.
-    * 
+    *
     * @return Source
     * @throws IOException
     *            if IO fails
@@ -108,7 +99,7 @@ public class XsltUtil {
 
    /**
     * create Source.
-    * 
+    *
     * @param source
     *           data
     * @param sourceType
@@ -152,13 +143,13 @@ public class XsltUtil {
 
    /**
     * set XSL Source.
-    * 
+    *
     * @param obj
     *           XSL source
     */
    public void setXSLSource(Object obj) {
       if (obj == null) {
-         throw new NullPointerException("You cannot have a null XSL source.");
+         throw new IllegalArgumentException("You cannot have a null XSL source.");
       }
 
       xslSourceType = getType(obj);
@@ -171,13 +162,13 @@ public class XsltUtil {
 
    /**
     * set XML Source.
-    * 
+    *
     * @param obj
     *           XML source
     */
    public void setXMLSource(Object obj) {
       if (obj == null) {
-         throw new NullPointerException("You cannot have a null XML source.");
+         throw new IllegalArgumentException("You cannot have a null XML source.");
       }
 
       xmlSourceType = getType(obj);
@@ -191,7 +182,7 @@ public class XsltUtil {
 
    /**
     * get Type.of source
-    * 
+    *
     * @param obj
     *           Source
     * @return int
@@ -218,7 +209,7 @@ public class XsltUtil {
 
    /**
     * setURIResolver.
-    * 
+    *
     * @param uriresolver
     *           resolver
     */
@@ -229,7 +220,7 @@ public class XsltUtil {
 
    /**
     * getURIResolver.
-    * 
+    *
     * @return URIResolver
     */
    public URIResolver getURIResolver() {
@@ -239,7 +230,7 @@ public class XsltUtil {
 
    /**
     * setOutputMimeType.
-    * 
+    *
     * @param s
     *           String
     */
@@ -255,7 +246,7 @@ public class XsltUtil {
 
    /**
     * getOutputMimeType.
-    * 
+    *
     * @return String
     */
    public String getOutputMimeType() {
@@ -265,7 +256,7 @@ public class XsltUtil {
 
    /**
     * XSL Transform.
-    * 
+    *
     * @param streamresult
     *           result
     * @param params
@@ -289,15 +280,16 @@ public class XsltUtil {
 
    /**
     * This method can set the stylesheetparams for a transformer.
-    * 
+    *
     * @param transformer
     *           The transformer.
     * @param params
     *           The params to be placed. Standard name/value pairs.
     */
    private static void setStylesheetParams(Transformer transformer, Map<String, Object> params) {
-      if (params == null)
+      if (params == null) {
          return;
+      }
 
       Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
       while (i.hasNext()) {
@@ -309,7 +301,7 @@ public class XsltUtil {
 
    /**
     * Method transformToString.
-    * 
+    *
     * @param params
     *           The params to be placed. Standard name/value pairs.
     * @return String
@@ -330,7 +322,7 @@ public class XsltUtil {
 
    /**
     * transform To ServletResponse.
-    * 
+    *
     * @param response
     *           HTTP response
     * @param params

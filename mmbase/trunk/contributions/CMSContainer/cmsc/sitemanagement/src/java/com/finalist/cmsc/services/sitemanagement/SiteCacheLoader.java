@@ -28,7 +28,7 @@ import com.finalist.cmsc.services.sitemanagement.tree.PageTreeNode;
 public class SiteCacheLoader {
 
     /** MMbase logging system */
-    private static Logger log = Logging.getLoggerInstance(SiteCacheLoader.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SiteCacheLoader.class.getName());
     
     public Map<String, PageTree> loadPageTreeMap(Cloud cloud) {
         Map<String, PageTree> newtrees = new HashMap<String, PageTree>();

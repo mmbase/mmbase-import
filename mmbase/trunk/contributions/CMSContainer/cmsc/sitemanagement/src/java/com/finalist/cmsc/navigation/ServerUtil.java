@@ -19,7 +19,7 @@ import javax.naming.NamingException;
 public class ServerUtil {
 
    /** MMBase logging system */       
-   private static Logger log = Logging.getLoggerInstance(ServerUtil.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ServerUtil.class.getName());
 
    private static boolean live;
    private static boolean single;

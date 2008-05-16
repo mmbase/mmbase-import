@@ -45,7 +45,7 @@ public class PagePublisher extends Publisher {
 	protected void addPageNodes(Node node, Map<Node, Date> nodes) {
 		Date publishDate = node.getDateValue(PagesUtil.PUBLISHDATE_FIELD);
 
-        Long date = new Long(System.currentTimeMillis());
+        Long date = Long.valueOf(System.currentTimeMillis());
         Map<Node, Date> pageNodes = findPageNodes(node, publishDate);
         for (Node pnode : pageNodes.keySet()) {
             if (PortletUtil.isNodeParameter(pnode)) {

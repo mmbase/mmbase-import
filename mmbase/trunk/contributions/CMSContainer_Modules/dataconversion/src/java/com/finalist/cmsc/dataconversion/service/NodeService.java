@@ -27,7 +27,7 @@ import com.finalist.cmsc.dataconversion.dataaccess.Elements;
  */
 public class NodeService {
 
-   private static Logger log = Logging.getLoggerInstance(NodeService.class.getName());   
+   private static final Logger log = Logging.getLoggerInstance(NodeService.class.getName());   
    
    /**
     *  insert one record into cmsc db.

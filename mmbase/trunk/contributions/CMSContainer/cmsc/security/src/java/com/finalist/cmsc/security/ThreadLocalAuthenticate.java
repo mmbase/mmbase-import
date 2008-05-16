@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Jeoffrey Bakker, Finalist IT Group
  */
 public class ThreadLocalAuthenticate extends Authenticate {
-   private static Logger log = Logging.getLoggerInstance(ThreadLocalAuthenticate.class);
+   private static final Logger log = Logging.getLoggerInstance(ThreadLocalAuthenticate.class);
 
    public static ThreadLocal<String> context = new ThreadLocal<String>();
 
