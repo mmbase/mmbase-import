@@ -18,8 +18,8 @@
 <mm:cloud jspvar="cloud" loginpage="login.jsp" rank="administrator">
 	<ul class="shortcuts">
        <li class="views">
-          <c:url var="unlinkUrl" value="/editors/maintenance/view_usage.jsp"/>
-          <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.view_layout.etc_usage" /></a>
+          <c:url var="usageUrl" value="/editors/maintenance/view_usage.jsp"/>
+          <a href="${usageUrl}" target="rightpane"><fmt:message key="maintenance.view_layout.etc_usage" /></a>
        </li>
         <li class="advancedpublish">
            <c:url var="threadsUrl" value="/editors/maintenance/threads.jsp"/>
@@ -36,11 +36,15 @@
                   <c:url var="compareUrl" value="/editors/maintenance/compare-models.jsp"/>
                   <a href="${compareUrl}" target="rightpane"><fmt:message key="maintenance.publish.compare" /></a>
                </li>
+               <li class="advancedpublish">
+                  <c:url var="unlinkUrl" value="/editors/maintenance/remotepublishing/unlink-remotenodes.jsp"/>
+                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
+               </li>
+               <li class="advancedpublish">
+                  <c:url var="unpublishUrl" value="/editors/maintenance/remotepublishing/unpublish-remotenodes.jsp"/>
+                  <a href="${unpublishUrl}" target="rightpane"><fmt:message key="maintenance.publish.unpublish-remotenodes" /></a>
+               </li>
                <% if (ServerUtil.isLive()) { %>
-	               <li class="advancedpublish">
-	                  <c:url var="unlinkUrl" value="/editors/maintenance/live/unlink-remotenodes.jsp"/>
-	                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
-	               </li>
 	               <li class="advancedpublish">
 	                  <c:url var="removeImportedUrl" value="/editors/maintenance/live/remove-imported-nodes.jsp"/>
 	                  <a href="${removeImportedUrl}" target="rightpane"><fmt:message key="maintenance.publish.remove-imported-nodes" /></a>
@@ -59,12 +63,6 @@
 	                  <c:url var="publishQueueUrl" value="/editors/maintenance/staging/remove-publishqueue.jsp"/>
 	                  <a href="${publishQueueUrl}" target="rightpane"><fmt:message key="maintenance.publish.remove-publishqueue" /></a>
 	               </li>
-	               <li class="advancedpublish">
-	                  <c:url var="unlinkUrl" value="/editors/maintenance/staging/unlink-remotenodes.jsp"/>
-	                  <a href="${unlinkUrl}" target="rightpane"><fmt:message key="maintenance.publish.unlink-remotenodes" /></a>
-	               </li>
-
-
                <% } %>
             </mm:haspage>
 		<%--  </cmsc:hasfeature> --%>
