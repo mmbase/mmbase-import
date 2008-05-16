@@ -34,7 +34,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    private PortletDefinition selectDefinition;
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(SiteModelManager.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(SiteModelManager.class.getName());
 
 
    public SiteModelManager() throws CacheException {
@@ -206,7 +206,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    public View getView(int id) {
       if (id > 0) {
          try {
-            return (View) getCache(VIEW_CACHE).get(new Integer(id));
+            return (View) getCache(VIEW_CACHE).get(Integer.valueOf(id));
          }
          catch (CacheException e) {
             log.info("" + e.getMessage(), e);
@@ -219,7 +219,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    public Stylesheet getStylesheet(int id) {
       if (id > 0) {
          try {
-            return (Stylesheet) getCache(STYLESHEET_CACHE).get(new Integer(id));
+            return (Stylesheet) getCache(STYLESHEET_CACHE).get(Integer.valueOf(id));
          }
          catch (CacheException e) {
             log.info("" + e.getMessage(), e);
@@ -232,7 +232,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
    public Layout getLayout(int id) {
       if (id > 0) {
          try {
-            return (Layout) getCache(LAYOUT_CACHE).get(new Integer(id));
+            return (Layout) getCache(LAYOUT_CACHE).get(Integer.valueOf(id));
          }
          catch (CacheException e) {
             log.info("" + e.getMessage(), e);
@@ -247,7 +247,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
          return selectDefinition;
       }
       try {
-         return (PortletDefinition) getCache(PORTLET_DEFINITION_CACHE).get(new Integer(id));
+         return (PortletDefinition) getCache(PORTLET_DEFINITION_CACHE).get(Integer.valueOf(id));
       }
       catch (CacheException e) {
          log.info("" + e.getMessage(), e);
@@ -265,7 +265,7 @@ public class SiteModelManager extends SelfPopulatingCacheManager {
          return empty;
       }
       try {
-         return (Portlet) getCache(PORTLET_CACHE).get(new Integer(id));
+         return (Portlet) getCache(PORTLET_CACHE).get(Integer.valueOf(id));
       }
       catch (CacheException e) {
          log.info("" + e.getMessage(), e);

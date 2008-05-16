@@ -47,7 +47,7 @@ public class RolesInfo implements TreeInfo {
       }
 
       if (openChannels.contains(number)) {
-         openChannels.remove(new Integer(number));
+         openChannels.remove(Integer.valueOf(number));
       }
    }
 

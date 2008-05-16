@@ -28,7 +28,7 @@ public class PagerAction extends MMBaseAction {
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
       PagerForm pagerForm = (PagerForm) form;
-      request.setAttribute(RESULT_COUNT, new Integer(pagerForm.getResultCount()));
+      request.setAttribute(RESULT_COUNT, Integer.valueOf(pagerForm.getResultCount()));
       request.setAttribute(RESULTS, pagerForm.getResults());
 
       return mapping.getInputForward();

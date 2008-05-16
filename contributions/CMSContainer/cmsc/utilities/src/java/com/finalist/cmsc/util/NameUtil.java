@@ -5,7 +5,7 @@ package com.finalist.cmsc.util;
  * name-String from the firstname and/or middlename and/or lastname of a person
  * in several nameformats.
  */
-public class NameUtil {
+public final class NameUtil {
    /**
     * Use this value to indicate the nameformat to use is 'firstname middlename
     * lastname' (default).
@@ -26,7 +26,7 @@ public class NameUtil {
    /**
     * Returns the full name of a person using only the first- and last name. The
     * default nameformat will be used (NAMEFORMAT_FIRSTMIDDLELAST).
-    * 
+    *
     * @param firstName
     *           The first name of the person to retrieve the full name for
     * @param lastName
@@ -42,7 +42,7 @@ public class NameUtil {
    /**
     * Returns the full name of a person using only the first- and last name.
     * It'll use the nameformat specified.
-    * 
+    *
     * @param firstName
     *           The first name of the person to retrieve the full name for
     * @param lastName
@@ -61,7 +61,7 @@ public class NameUtil {
    /**
     * Returns the full name of a person using the first-, middle- and last name.
     * The default nameformat will be used (NAMEFORMAT_FIRSTMIDDLELAST).
-    * 
+    *
     * @param firstName
     *           The first name of the person to retrieve the full name for
     * @param middleName
@@ -79,7 +79,7 @@ public class NameUtil {
    /**
     * Returns the full name of a person using the first-, middle- and last name.
     * It'll use the nameformat specified.
-    * 
+    *
     * @param firstName
     *           The first name of the person to retrieve the full name for
     * @param middleName
@@ -120,43 +120,42 @@ public class NameUtil {
       }
 
       // Build the correct full name, depending on the nameformat specified
-      switch (nameFormat) {
-         case NAMEFORMAT_LASTFIRSTMIDDLE:
+      if (nameFormat == NAMEFORMAT_LASTFIRSTMIDDLE) {
+         if (lastNameAvailable) {
+            retValue.append(lastName);
+            if (firstNameAvailable || middleNameAvailable) {
+               retValue.append(", ");
+            }
+         }
+         if (firstNameAvailable) {
+            retValue.append(firstName);
+         }
+         if (middleNameAvailable) {
             if (lastNameAvailable) {
-               retValue.append(lastName);
-               if (firstNameAvailable || middleNameAvailable) {
-                  retValue.append(", ");
-               }
+               retValue.append(' ');
             }
+            retValue.append(middleName);
+         }
+      }
+      else {
+         // NAMEFORMAT_FIRSTMIDDLELAST
+         if (firstNameAvailable) {
+            retValue.append(firstName);
+         }
+         if (middleNameAvailable) {
             if (firstNameAvailable) {
-               retValue.append(firstName);
+               // There's already a firstname, so add a space
+               retValue.append(' ');
             }
-            if (middleNameAvailable) {
-               if (lastNameAvailable) {
-                  retValue.append(" ");
-               }
-               retValue.append(middleName);
+            retValue.append(middleName);
+         }
+         if (lastNameAvailable) {
+            if (firstNameAvailable || middleNameAvailable) {
+               // There's already something there, so we need a space
+               retValue.append(' ');
             }
-            break;
-         default:
-            // NAMEFORMAT_FIRSTMIDDLELAST
-            if (firstNameAvailable) {
-               retValue.append(firstName);
-            }
-            if (middleNameAvailable) {
-               if (firstNameAvailable) {
-                  // There's already a firstname, so add a space
-                  retValue.append(" ");
-               }
-               retValue.append(middleName);
-            }
-            if (lastNameAvailable) {
-               if (firstNameAvailable || middleNameAvailable) {
-                  // There's already something there, so we need a space
-                  retValue.append(" ");
-               }
-               retValue.append(lastName);
-            }
+            retValue.append(lastName);
+         }
       }
       return retValue.toString();
    }

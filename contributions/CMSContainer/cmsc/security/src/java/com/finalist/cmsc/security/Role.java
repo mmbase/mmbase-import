@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Role {
+public final class Role {
 
    public static final Role NONE = new Role(0, "none"); // DENY all rights
    public static final Role WRITER = new Role(1, "writer");
@@ -53,10 +53,12 @@ public class Role {
 
    @Override
    public boolean equals(Object other) {
-      if (other == null)
+      if (other == null) {
          return false;
-      if (other == this)
+      }
+      if (other == this) {
          return true;
+      }
       if (other instanceof Role) {
          return this.id == ((Role) other).id;
       }

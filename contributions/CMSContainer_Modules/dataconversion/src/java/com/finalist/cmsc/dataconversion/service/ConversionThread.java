@@ -8,7 +8,7 @@ import org.mmbase.util.logging.Logging;
 
 public class ConversionThread  extends Thread{
    
-   private static Logger log = Logging.getLoggerInstance(ConversionThread.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ConversionThread.class.getName());
    
    Properties properties;
    

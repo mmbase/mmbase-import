@@ -22,7 +22,7 @@ import com.finalist.cmsc.navigation.tree.PageTreeItemRenderer;
 
 public class PageNavigationItemManager implements NavigationItemManager {
 
-    private static Logger log = Logging.getLoggerInstance(PageNavigationItemManager.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(PageNavigationItemManager.class.getName());
 	
 	private NavigationItemRenderer renderer = new PageNavigationRenderer();
 

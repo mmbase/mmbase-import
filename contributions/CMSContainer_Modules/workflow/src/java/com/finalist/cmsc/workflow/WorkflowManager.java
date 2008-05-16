@@ -21,7 +21,7 @@ import com.finalist.cmsc.services.workflow.WorkflowException;
 public abstract class WorkflowManager {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(WorkflowManager.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WorkflowManager.class.getName());
 
    protected static final String SOURCE = "SOURCE";
    protected static final String DESTINATION = "DESTINATION";

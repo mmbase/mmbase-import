@@ -30,7 +30,7 @@ import xmlbs.PropertiesDocumentStructure;
 public class WordHtmlCleaner {
 
    /** MMBase logging system */
-   private static Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
 
    /**
     * xmlbs stuff Document structure configurable using a property file. A

@@ -100,7 +100,7 @@ public class SearchBannerAction extends MMBaseAction {
       count = Queries.count(query);
       rows = populateBannersAndPositions(nodes);
 
-      request.setAttribute("offset", new Integer(offset));
+      request.setAttribute("offset", Integer.valueOf(offset));
       request.setAttribute("rows", rows);
       request.setAttribute("resultCount", count);
       request.setAttribute("allPositions", bannerForm.getAllPositions());

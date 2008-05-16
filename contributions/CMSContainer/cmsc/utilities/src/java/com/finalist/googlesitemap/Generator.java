@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 public class Generator {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(Generator.class.getName());
 
    private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/googlesitemap/generator.properties";
 

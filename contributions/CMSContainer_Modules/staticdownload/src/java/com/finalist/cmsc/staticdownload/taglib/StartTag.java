@@ -34,7 +34,7 @@ public class StartTag extends SimpleTagSupport {
       boolean started = StaticDownload.startDownload(liveUrl, downloadSettings);
 
       if (startedVar != null) {
-         request.setAttribute(startedVar, new Boolean(started));
+         request.setAttribute(startedVar, Boolean.valueOf(started));
       }
    }
 

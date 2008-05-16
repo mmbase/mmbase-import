@@ -25,7 +25,7 @@ import com.finalist.cmsc.navigation.PortletUtil;
 public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(PortletCacheEntryFactory.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(PortletCacheEntryFactory.class.getName());
 
 
    public PortletCacheEntryFactory() {
@@ -131,7 +131,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
    protected Integer getKey(NodeEvent event) {
       int nodeNumber = event.getNodeNumber();
       if (isNodeEvent(event, PortletUtil.PORTLET)) {
-         return new Integer(nodeNumber);
+         return Integer.valueOf(nodeNumber);
       }
       if (isNodeEvent(event, PortletUtil.PORTLETPARAMETER) || isNodeEvent(event, PortletUtil.NODEPARAMETER)) {
 
@@ -140,7 +140,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
             if (parameter != null) {
                Node portlet = PortletUtil.getPortletForParameter(parameter);
                if (portlet != null) {
-                  return new Integer(portlet.getNumber());
+                  return Integer.valueOf(portlet.getNumber());
                }
             }
          }
@@ -153,7 +153,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
    protected Integer getKey(RelationEvent event) {
       int nodeNumber = event.getRelationSourceNumber();
       if (isRelationEvent(event, PortletUtil.PORTLET)) {
-         return new Integer(nodeNumber);
+         return Integer.valueOf(nodeNumber);
       }
       if (isRelationEvent(event, PortletUtil.PORTLETPARAMETER) || isRelationEvent(event, PortletUtil.NODEPARAMETER)) {
 
@@ -161,7 +161,7 @@ public class PortletCacheEntryFactory extends MMBaseCacheEntryFactory {
          if (parameter != null) {
             Node portlet = PortletUtil.getPortletForParameter(parameter);
             if (portlet != null) {
-               return new Integer(portlet.getNumber());
+               return Integer.valueOf(portlet.getNumber());
             }
          }
       }

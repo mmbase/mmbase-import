@@ -9,7 +9,7 @@ import org.mmbase.module.core.MMBase;
 
 /**
  * TODO: javadoc
- * 
+ *
  * @author Nico Klasens
  */
 public abstract class SqlAction {
@@ -26,7 +26,7 @@ public abstract class SqlAction {
 
    public String getFieldname(String name) {
       if (mmb == null) {
-         throw new NullPointerException("MMBase system not found");
+         throw new IllegalStateException("MMBase system not found");
       }
       return (String) mmb.getStorageManagerFactory().getStorageIdentifier(name);
    }
@@ -34,7 +34,7 @@ public abstract class SqlAction {
 
    public String getTable(String name) {
       if (mmb == null) {
-         throw new NullPointerException("MMBase system not found");
+         throw new IllegalStateException("MMBase system not found");
       }
       return mmb.getBaseName() + "_" + name;
    }

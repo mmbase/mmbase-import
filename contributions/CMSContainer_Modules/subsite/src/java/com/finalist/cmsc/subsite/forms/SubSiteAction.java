@@ -48,7 +48,7 @@ public class SubSiteAction extends PagerAction {
     /**
      * MMBase logging system
      */
-    private static Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SearchAction.class.getName());
 	
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -166,13 +166,13 @@ public class SubSiteAction extends PagerAction {
          Field field = query.getCloud().getNodeManager(destinationManager).getField("publishdate"); //Does this work?
          StepField basicStepField = query.getStepField(field);
           if(year != -1) {
-             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(year), FieldValueDateConstraint.YEAR));
+             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, Integer.valueOf(year), FieldValueDateConstraint.YEAR));
           }
           if(month != -1) {
-             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(month), FieldValueDateConstraint.MONTH));
+             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, Integer.valueOf(month), FieldValueDateConstraint.MONTH));
           }
           if(day != -1) {
-             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, new Integer(day), FieldValueDateConstraint.DAY_OF_MONTH));
+             SearchUtil.addConstraint(query, new BasicFieldValueDateConstraint(basicStepField, Integer.valueOf(day), FieldValueDateConstraint.DAY_OF_MONTH));
           }
        }
 

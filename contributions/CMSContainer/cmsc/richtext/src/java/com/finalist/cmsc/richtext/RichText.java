@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
 public class RichText {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(RichText.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(RichText.class.getName());
 
    public final static String RICHTEXT_ROOT_OPEN = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<richtext>";
 

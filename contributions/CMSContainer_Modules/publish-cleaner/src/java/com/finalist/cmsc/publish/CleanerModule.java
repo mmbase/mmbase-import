@@ -23,7 +23,7 @@ public class CleanerModule extends Module implements Runnable {
    /**
     * MMBase logging system
     */
-   private static Logger log = Logging.getLoggerInstance(CleanerModule.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(CleanerModule.class.getName());
 
    /**
     * The mmbase.

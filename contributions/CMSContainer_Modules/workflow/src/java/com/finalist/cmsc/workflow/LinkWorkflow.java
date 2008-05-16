@@ -27,7 +27,7 @@ import com.finalist.cmsc.services.workflow.Workflow;
 public class LinkWorkflow extends RepositoryWorkflow {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(LinkWorkflow.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(LinkWorkflow.class.getName());
 
    public static final String TYPE_LINK = "link";
 

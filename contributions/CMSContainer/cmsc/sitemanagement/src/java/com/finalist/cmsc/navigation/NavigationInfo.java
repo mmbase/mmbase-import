@@ -56,7 +56,7 @@ public class NavigationInfo implements TreeInfo {
         }
 
         if (openItems.contains(number)) {
-            openItems.remove(new Integer(number));
+            openItems.remove(Integer.valueOf(number));
         }
     }
 

@@ -163,7 +163,7 @@ public class PortletURLProviderImpl implements PortletURLProvider {
          }
       }
 
-      return url.toString(controlURL, new Boolean(secure));
+      return url.toString(controlURL, Boolean.valueOf(secure));
    }
 
 

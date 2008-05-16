@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ChangeLanguageAction extends MMBaseAction {
 
    /** MMbase logging system */
-   private static transient Logger log = Logging.getLoggerInstance(ChangeLanguageAction.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ChangeLanguageAction.class.getName());
 
 
    /**

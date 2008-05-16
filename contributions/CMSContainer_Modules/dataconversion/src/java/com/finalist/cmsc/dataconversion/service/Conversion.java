@@ -25,7 +25,7 @@ import com.finalist.cmsc.dataconversion.dataaccess.DataSourceFactory;
 
 public class Conversion {
 
-   private static Logger log = Logging.getLoggerInstance(Conversion.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(Conversion.class.getName());
    
    private static final String IMPORT_FILE = "import.xml"; 
    private Properties properties;       

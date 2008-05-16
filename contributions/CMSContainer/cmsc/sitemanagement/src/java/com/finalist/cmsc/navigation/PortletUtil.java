@@ -14,17 +14,17 @@ import java.util.Map.Entry;
 
 import net.sf.mmapps.commons.bridge.CloneUtil;
 import net.sf.mmapps.commons.bridge.RelationUtil;
-import org.apache.commons.lang.StringUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-public class PortletUtil {
+public final class PortletUtil {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(PortletUtil.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(PortletUtil.class.getName());
 
    private static final String SOURCE = "source";
    private static final String DESTINATION = "destination";
@@ -135,7 +135,7 @@ public class PortletUtil {
 
    /**
     * Delete all parameters associated with a portlet.
-    * 
+    *
     * @param portlet
     *           Portlet whose parameters are to be deleted.
     */

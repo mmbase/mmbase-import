@@ -12,7 +12,7 @@ package com.finalist.cmsc.mmbase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeUtil {
+public final class TypeUtil {
 
    private TypeUtil() {
       // utility

@@ -16,7 +16,7 @@ import com.finalist.cmsc.struts.MMBaseFormlessAction;
 
 public class ConverseAction extends MMBaseFormlessAction {
    
-   private static Logger log = Logging.getLoggerInstance(ConverseAction.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(ConverseAction.class.getName());
    @Override
    public ActionForward execute(ActionMapping mapping,HttpServletRequest request,
           Cloud cloud) throws Exception {

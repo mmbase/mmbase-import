@@ -11,9 +11,9 @@ package com.finalist.cmsc.repository;
 
 import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.*;
@@ -22,7 +22,7 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 import com.finalist.cmsc.mmbase.TypeUtil;
 import com.finalist.cmsc.security.SecurityUtil;
 
-public class ContentElementUtil {
+public final class ContentElementUtil {
 
    private static final String SOURCE = "SOURCE";
    private static final String DESTINATION = "DESTINATION";
@@ -86,7 +86,7 @@ public class ContentElementUtil {
 
    /**
     * Is element from one of the content types
-    * 
+    *
     * @param element
     *           node to check
     * @return is content type
@@ -99,7 +99,7 @@ public class ContentElementUtil {
 
    /**
     * Is ModeManager of the content types
-    * 
+    *
     * @param nm
     *           NodeManager to check
     * @return is content type
@@ -110,9 +110,9 @@ public class ContentElementUtil {
          return false;
       }
       try {
-         nm = nm.getParent();
-         while (!CONTENTELEMENT.equals(nm.getName())) {
-            nm = nm.getParent();
+         NodeManager nmTemp = nm.getParent();
+         while (!CONTENTELEMENT.equals(nmTemp.getName())) {
+            nmTemp = nmTemp.getParent();
          }
          return true;
       }
@@ -125,7 +125,7 @@ public class ContentElementUtil {
 
    /**
     * Is type of content type
-    * 
+    *
     * @param type
     *           to check
     * @return is content type
@@ -254,7 +254,7 @@ public class ContentElementUtil {
 
    /**
     * Add owner
-    * 
+    *
     * @param content -
     *           content
     */
@@ -269,7 +269,7 @@ public class ContentElementUtil {
 
    /**
     * Check if a contentnode has an owner
-    * 
+    *
     * @param content -
     *           Content Node
     * @return true if the node has a related workflowitem
@@ -282,7 +282,7 @@ public class ContentElementUtil {
 
    /**
     * Get author of the content element
-    * 
+    *
     * @param content -
     *           Content Node
     * @return Author node
@@ -295,7 +295,7 @@ public class ContentElementUtil {
 
    /**
     * Get owner of the content element
-    * 
+    *
     * @param content -
     *           Content Node
     * @return Owner node
@@ -360,7 +360,7 @@ public class ContentElementUtil {
       int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL : FieldCompareConstraint.LESS_EQUAL);
 
       Field expireField = contentManager.getField(EXPIREDATE_FIELD);
-      Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+      Object expireDateObj = (expireField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
       Constraint expirydate = query.createConstraint(query.getStepField(expireField), operator, expireDateObj);
       return expirydate;
    }
@@ -370,7 +370,7 @@ public class ContentElementUtil {
       int operator = (greater ? FieldCompareConstraint.GREATER_EQUAL : FieldCompareConstraint.LESS_EQUAL);
 
       Field publishField = contentManager.getField(PUBLISHDATE_FIELD);
-      Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+      Object publishDateObj = (publishField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
       Constraint publishdate = query.createConstraint(query.getStepField(publishField), operator, publishDateObj);
       return publishdate;
    }
@@ -383,7 +383,7 @@ public class ContentElementUtil {
       NodeManager contentManager = channel.getCloud().getNodeManager(CONTENTELEMENT);
 
       Field archiveDateField = contentManager.getField(ARCHIVEDATE_FIELD);
-      Object archiveDateObj = (archiveDateField.getType() == Field.TYPE_DATETIME) ? new Date(date) : new Long(date);
+      Object archiveDateObj = (archiveDateField.getType() == Field.TYPE_DATETIME) ? new Date(date) : Long.valueOf(date);
 
       Constraint archivedate = null;
       if ("old".equalsIgnoreCase(archive)) {
@@ -428,7 +428,7 @@ public class ContentElementUtil {
 
    /**
     * Helper method to get all hidden types
-    * 
+    *
     * @return List of hidden types
     */
    public static List<String> getHiddenTypes() {

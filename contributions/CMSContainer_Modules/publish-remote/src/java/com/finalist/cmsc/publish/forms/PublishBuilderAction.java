@@ -24,7 +24,7 @@ public class PublishBuilderAction extends MMBaseFormlessAction {
 
    protected static final String DESTINATION = "DESTINATION";
 
-   private static Logger log = Logging.getLoggerInstance(PublishBuilderAction.class);
+   private static final Logger log = Logging.getLoggerInstance(PublishBuilderAction.class);
 
 
    public ActionForward execute(ActionMapping mapping, HttpServletRequest request, Cloud cloud) throws Exception {

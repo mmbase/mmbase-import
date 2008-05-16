@@ -21,7 +21,7 @@ import com.finalist.cmsc.dataconversion.service.Constants;
  */
 public class DataAccessor {
    
-   private static Logger log = Logging.getLoggerInstance(DataAccessor.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(DataAccessor.class.getName());
      
    private DataSource dataSource;   
    private ElementMeta elementMeta;   

@@ -76,9 +76,8 @@ public class DumpDefaultsTag extends SimpleTagSupport {
 
       public boolean meets(Node node) {
          String fieldValue = node.getStringValue(field);
-         switch (operator) {
-            case OPERATOR_EQUALS:
-               return value.equals(fieldValue);
+         if (operator == OPERATOR_EQUALS) {
+            return value.equals(fieldValue);
          }
          return false;
       }
@@ -174,7 +173,7 @@ public class DumpDefaultsTag extends SimpleTagSupport {
       for (String key : backupMap.keySet()) {
          HashSet<Node> values = backupMap.get(key);
 
-         report.append(key).append(" ").append(values.size()).append(" nodes. <br/>");
+         report.append(key).append(' ').append(values.size()).append(" nodes. <br/>");
 
          Calendar cal = Calendar.getInstance();
          long htimestamp = cal.get(Calendar.YEAR) * 10000 + (cal.get(Calendar.MONTH) + 1) * 100

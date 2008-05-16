@@ -44,7 +44,7 @@ public class VersioningServiceMMBaseImpl extends VersioningService {
    /**
     * MMbase logging system
     */
-   private static Logger log = Logging.getLoggerInstance(VersioningServiceMMBaseImpl.class);
+   private static final Logger log = Logging.getLoggerInstance(VersioningServiceMMBaseImpl.class);
    public static final int DEFAULT_MAX_ARCHIVES_NODES = 10;
 
 

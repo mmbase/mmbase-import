@@ -32,7 +32,7 @@ import com.finalist.cmsc.mmbase.PropertiesUtil;
 public class NtlmVisitorFilter implements Filter {
    private static final String realm = "jCIFS";
 
-   private static Logger log = Logging.getLoggerInstance(NtlmVisitorFilter.class);
+   private static final Logger log = Logging.getLoggerInstance(NtlmVisitorFilter.class);
 
 
    public void init(FilterConfig filterConfig) throws ServletException {

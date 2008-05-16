@@ -71,7 +71,7 @@ public class Layout extends NodeBean implements Comparable<Layout> {
          definitions = new ArrayList<Integer>();
          allowedDefinitions.put(name, definitions);
       }
-      Integer nr = new Integer(number);
+      Integer nr = Integer.valueOf(number);
       if (!definitions.contains(nr)) {
          definitions.add(nr);
       }

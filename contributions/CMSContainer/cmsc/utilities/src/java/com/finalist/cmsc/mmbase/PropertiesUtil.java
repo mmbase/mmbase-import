@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 public class PropertiesUtil {
 
    /** MMbase logging system */
-   private static Logger log = Logging.getLoggerInstance(PropertiesUtil.class.getName());
+   private static final Logger log = Logging.getLoggerInstance(PropertiesUtil.class.getName());
 
    private final static String DEFAULT = "value";
    private final static String DEV = "dev";

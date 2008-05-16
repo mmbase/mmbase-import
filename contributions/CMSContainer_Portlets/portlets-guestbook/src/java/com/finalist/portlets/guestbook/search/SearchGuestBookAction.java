@@ -94,7 +94,7 @@ public class SearchGuestBookAction extends MMBaseAction {
       }
       queryStringComposer.addParameter("offset", String.valueOf(offset));
 
-      request.setAttribute("offset", new Integer(offset));
+      request.setAttribute("offset", Integer.valueOf(offset));
       request.setAttribute("rows", rows);
       request.setAttribute("resultCount", count);
       request.setAttribute("geturl", queryStringComposer.getQueryString());
