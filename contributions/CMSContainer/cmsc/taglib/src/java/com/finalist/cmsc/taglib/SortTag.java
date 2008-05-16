@@ -44,13 +44,13 @@ public class SortTag extends SimpleTagSupport {
          List list = (List) o;
          if (!list.isEmpty()) {
             Object first = list.get(0);
-            boolean acending = !"DOWN".equalsIgnoreCase(direction);
+            boolean ascending = !"DOWN".equalsIgnoreCase(direction);
             Comparator comparator;
             if (first instanceof Node) {
-               comparator = new NodeFieldComparator(orderby, acending);
+               comparator = new NodeFieldComparator(orderby, ascending);
             }
             else {
-               comparator = new PropertyComparator(orderby, acending);
+               comparator = new PropertyComparator(orderby, ascending);
             }
             Collections.sort(list, comparator);
          }
