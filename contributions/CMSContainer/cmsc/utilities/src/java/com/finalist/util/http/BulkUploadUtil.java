@@ -42,7 +42,7 @@ public class BulkUploadUtil {
 
    private static final String CONFIGURATION_RESOURCE_NAME = "/com/finalist/util/http/util.properties";
 
-   private static final String ZIP_MIME_TYPES[] = new String[] { "application/x-zip-compressed", "application/zip" };
+   private static final String ZIP_MIME_TYPES[] = new String[] { "application/x-zip-compressed", "application/zip", "application/x-zip" };
 
    private static Set<String> supportedImages;
 
