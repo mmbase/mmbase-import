@@ -1,19 +1,23 @@
 
 Locate to  CMSContainer/overview_generator 
-there are 3 methods to generate report,
+there are 3 approachs for generating report
 
-The first generate a jar including all dependencies;
-   run it with the command "maven gen:multi"
+The first is generating a jar including all dependencies;
+   run it with the command "maven gen:single"
    locate to CMSContainer/overview_generator/target,we'll find a jar generated
-   This jar file is executable,wo can run it with "java -jar jarfilename configfile [workfolder] [outputpath]"
+   This jar file is executable,wo can run it with "java -jar jarfilename configfilePath [workfolder] [outputpath]"
 
-      e.g:windows,  java -jar cmsc-overview_generator-0.1.jar D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties d:/
+   configfilePath:  absolute path ,the file included urls of cvs and svn ; e.g.  D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties
+      workfolder :  the path that the source code,checked out , will be put . e.g. d:/
+      outputpath :  the path used for gengerating report file.          
+
+      e.g.  (windows)  java -jar cmsc-overview_generator-0.1.jar D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties d:/ d:/
 
 The Second ,generate a jar file ,excluding all dependencies,but all dependencies will be copy to the same folder,
-   run it with the command "maven gen:single"
+   run it with the command "maven gen:multi"
    we'll find some jar files generated in directory CMSContainer/overview_generator/target
 
-   wo can run it with "java -jar jarfilename configfile [workfolder] [outputpath]"
+   wo can run it with "java -jar jarfilename configfilePath [workfolder] [outputpath]"
 
 The last method is generate report using maven goal,the following is the step
  
@@ -25,7 +29,7 @@ The last method is generate report using maven goal,the following is the step
     cvs :pserver:guest@cvs.mmbase.org:/var/cvs contributions/CMSContainer_Demo guest guest
 2. open project.properties ,mofidy the path, there are 3 key/value,
    e.g:
-      maven.overview_generator.src = D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties  #the  file configed at 2 step
+      maven.overview_generator.src = D:/project/cmsc/CMSContainer/overview_generator/config.sample.properties  #the  file configed at  step 2
       maven.overview_generator.dest = D:/project/cmsc/CMSContainer/overview_generator/dest     # the directory which  the source code  be checked out
       maven.overview_generator.reportFileLocation = D:/                     #the directory where report file is in 
    
