@@ -8,6 +8,7 @@ import org.mmbase.bridge.NodeList;
 
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.domain.StatisticResult;
+import com.finalist.newsletter.domain.Subscription;
 
 public class FakeNewsLetterStatisticCAO implements NewsLetterStatisticCAO{
 
@@ -45,6 +46,14 @@ public class FakeNewsLetterStatisticCAO implements NewsLetterStatisticCAO{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+   public void logPubliction(int userId, int newsletterId, StatisticResult.HANDLE handle) {
+
+   }
+
+   public void logPubliction(int userId, int id, Subscription.STATUS status) {
+
+   }
 
    public void logPubliction(int id, int i) {
       //To change body of implemented methods use File | Settings | File Templates.
