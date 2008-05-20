@@ -25,6 +25,11 @@
          <input type="hidden" name="action" value="importsubscription"/>
          <input type="submit" value="Import"/>
       </html:form>
+      <div style="margin:4px;color:red;">
+         <html:messages id="msg" message="true">
+            <bean:write name="msg"/><br>
+         </html:messages>
+      </div>
    </div>
 
 </div>
