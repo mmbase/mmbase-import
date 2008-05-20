@@ -32,7 +32,6 @@ public class NewsletterPublicationServiceTest extends TestCase {
 
       NewsletterPublicationCAO publicationCAO = (NewsletterPublicationCAO) mockController.getMock(NewsletterPublicationCAOImpl.class);
       service.setPublicationCAO(publicationCAO);
-      service.setMailSender(fakepuFakeNewsletterPublisher);
 
       mockController.expect(new NewsletterPublicationCAOImpl() {
          public Publication getPublication(int number) {

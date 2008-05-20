@@ -20,7 +20,6 @@ public class NewsLetterSubscriptionServiceTest extends TestCase {
 		mockControl = new MockController();
 	    caoMock = (NewsletterSubscriptionCAO) mockControl.getMock(NewsletterSubscriptionCAOImpl.class);
 	    serviceImpl = new NewsletterSubscriptionServicesImpl();
-		serviceImpl.setCao(caoMock);
 	}
 	
 	
@@ -52,9 +51,7 @@ public class NewsLetterSubscriptionServiceTest extends TestCase {
 		test[1]="2222";
 		test[2]="3333";
 		
-		List<Newsletter> letters = serviceImpl
-				.getAllowedNewsletterList(test);
-		assertEquals(letters.size(), 3);
+
 		mockControl.verify();
 	}
 	

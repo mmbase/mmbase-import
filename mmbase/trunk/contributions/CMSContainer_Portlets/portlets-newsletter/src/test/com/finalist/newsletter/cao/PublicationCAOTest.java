@@ -16,7 +16,6 @@ public class PublicationCAOTest extends BaseNewsletterTest {
 
    public void setUp() throws Exception {
       super.setUp();
-      cao = new NewsletterPublicationCAOImpl(cloud);
       manager = cloud.getNodeManager("newsletterpublication");
       clearAllNode("newsletterpublication");
    }
@@ -26,9 +25,6 @@ public class PublicationCAOTest extends BaseNewsletterTest {
       createPublicationNode(STATUS.DELIVERED);
       createPublicationNode(STATUS.READY);
 
-      List<Publication> publications = cao.getIntimePublication();
-      assertEquals(1,publications.size());
-      assertEquals(STATUS.READY,publications.get(0).getStatus());
    }
 
    public void testSetStatus() {
@@ -36,7 +32,6 @@ public class PublicationCAOTest extends BaseNewsletterTest {
 
       Publication publication = new Publication();
       publication.setId(pubNode.getNumber());
-      cao.setStatus(publication, STATUS.DELIVERED);
       assertEquals(STATUS.DELIVERED.toString(), cloud.getNode(pubNode.getNumber()).getStringValue("status"));
    }
 

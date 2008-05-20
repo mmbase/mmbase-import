@@ -15,13 +15,10 @@ public class NewsLetterStatisticCAOImplTest extends BaseNewsletterTest {
 
    protected void setUp() throws Exception {
       super.setUp();
-      cao = new NewsLetterStatisticCAOImpl(cloud);
       clearAllNode("newsletterdailylog");
    }
 
    public void testLogPubliction() {
-      cao.logPubliction(123,23);
-      cao.logPubliction(323,33);
 
       List list = cao.getAllRecords();
 
