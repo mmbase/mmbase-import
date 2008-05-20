@@ -17,7 +17,10 @@ import com.finalist.cmsc.services.publish.Publish;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.ApplicationContextFactory;
 import com.finalist.newsletter.domain.Publication;
+import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.NewsletterPublicationService;
+import com.finalist.newsletter.services.StatisticService;
+import com.finalist.newsletter.services.impl.StatisticServiceImpl;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
 import com.finalist.newsletter.util.NewsletterUtil;
 import org.apache.struts.action.ActionForward;
@@ -60,6 +63,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          if (ServerUtil.isSingle()) {
             publicationService.deliver(number);
             publicationService.setStatus(number, Publication.STATUS.DELIVERED);
+            NewsletterUtil.logPubliction(number, HANDLE.POST);
          }
          else {
             publicationService.setStatus(number, Publication.STATUS.READY);
