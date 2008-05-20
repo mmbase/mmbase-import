@@ -62,7 +62,12 @@
 
       </action>
       <action path="/editors/newsletter/SubscriptionImportExportAction" name="datafilebean"
-              type="com.finalist.newsletter.forms.SubscriptionImportExportAction" parameter="action"/>
+              type="com.finalist.newsletter.forms.SubscriptionImportExportAction" parameter="action"
+              validate="true">
+         <forward name="failed" path="/editors/newsletter/module/import.jsp"/>
+         <forward name="success" path="/editors/newsletter/module/import_success.jsp"/>
+
+         </action>
       <action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false"
               validate="false">
       </action>
