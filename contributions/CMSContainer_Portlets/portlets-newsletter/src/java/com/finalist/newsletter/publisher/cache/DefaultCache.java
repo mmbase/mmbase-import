@@ -27,10 +27,7 @@ public class DefaultCache implements ICache{
 	
      //	implement the interface	
 	public DefaultCache(long time) {        
-		datas = Collections.synchronizedMap(new HashMap<String, CacheInfo>());		
-		TimerTask task = new CacheFreshTask(this);
-		timer = new Timer("Cache_Timer", true);
-		timer.scheduleAtFixedRate(task, 1000, FreshTimerIntervalSeconds * 1000);	
+      this();	
 		this.time=time;			
 	}
 

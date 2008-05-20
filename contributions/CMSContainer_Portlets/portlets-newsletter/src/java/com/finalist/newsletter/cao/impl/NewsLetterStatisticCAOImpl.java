@@ -21,6 +21,7 @@ import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.util.StatisticUtil;
 import com.finalist.newsletter.domain.StatisticResult;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
+import net.sf.mmapps.commons.bridge.RelationUtil;
 
 public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
 
@@ -121,7 +122,7 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
          return;
       }
       NodeManager logManager = cloud.getNodeManager("newsletterdailylog");
-      
+      Node newsletter = cloud.getNode(newsletterId);
       Node logNode = logManager.createNode();
       logNode.setIntValue("newsletter",newsletterId);
       logNode.setIntValue("post",0);
@@ -144,7 +145,7 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
          logNode.setIntValue("bounches",1);
       }
       logNode.commit();
-
+      RelationUtil.createRelation(newsletter, logNode, "related");
     }
 
 	 private boolean mayLog(int userId,int newsletterId) {
