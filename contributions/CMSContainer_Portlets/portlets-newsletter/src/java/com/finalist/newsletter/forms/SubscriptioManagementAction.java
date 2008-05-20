@@ -177,7 +177,7 @@ public class SubscriptioManagementAction extends DispatchActionSupport {
 
    public ActionForward unsubscribe(ActionMapping mapping, ActionForm form,
                                         HttpServletRequest request, HttpServletResponse response) {
-      String[] newsletterIds = request.getParameterValues("newsletterIds");
+      String[] newsletterIds = request.getParameterValues("ids");
       for(String id :newsletterIds){
          subscriptionServices.unSubscribeAllInNewsletter(Integer.decode(id));
       }

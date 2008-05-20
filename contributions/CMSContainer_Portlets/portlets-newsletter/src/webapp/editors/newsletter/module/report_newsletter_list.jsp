@@ -62,7 +62,7 @@
                            <c:forEach items="${results}" var="result">
                               <pg:item>
                                  <tr>
-                                    <td><input type="checkbox" name="newsletterIds" value="${result.id}"/></td>
+                                    <td><input type="checkbox" name="ids" value="${result.id}"/></td>
                                     <td>
                                        <a href="SubscriptionManagement.do?action=listSubscription&newsletterId=${result.id}">
                                              ${result.title}
@@ -97,7 +97,7 @@
 </div>
 <script>
    function exportsubscription() {
-      var subscriptions = document.getElementsByName('newsletterIds');
+      var subscriptions = document.getElementsByName('ids');
       var hasSelection = false;
       for (var i = 0; i < subscriptions.length; i ++) {
          if (subscriptions[i].checked) {
@@ -120,7 +120,7 @@
 
    function unsubscribeAll() {
 
-      var subscriptions = document.getElementsByName('newsletterIds');
+      var subscriptions = document.getElementsByName('ids');
       var hasSelection = false;
       for (var i = 0; i < subscriptions.length; i ++) {
          if (subscriptions[i].checked) {
