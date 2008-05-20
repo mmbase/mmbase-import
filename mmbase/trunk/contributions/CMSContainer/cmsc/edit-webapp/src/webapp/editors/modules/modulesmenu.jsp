@@ -53,7 +53,14 @@
                            <fmt:message key="modules.subsite" />
                            </a> </li>
                      </mm:haspage>
-							<mm:haspage page="/editors/egemmail">
+                     <mm:haspage page="/editors/modules/glossary">
+                        <li class="glossary">
+                           <a href="<mm:url page="/editors/WizardListAction.do?nodetype=glossary"/>" target="rightpane">
+                              Glossary
+                           </a>
+                        </li>
+                     </mm:haspage>
+                     <mm:haspage page="/editors/egemmail">
 								<li class="egem"> <a href="../egemmail/EgemSearchInitAction.do" target="rightpane">
 									<fmt:message key="modules.egemmail.export" />
 									</a> </li>
