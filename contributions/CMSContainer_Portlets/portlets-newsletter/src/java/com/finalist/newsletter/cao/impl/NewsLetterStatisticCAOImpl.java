@@ -144,8 +144,11 @@ public class NewsLetterStatisticCAOImpl implements NewsLetterStatisticCAO {
       else if(handle.equals(HANDLE.BOUNCE)) {
          logNode.setIntValue("bounches",1);
       }
+      else if(handle.equals(HANDLE.POST)) {
+         logNode.setIntValue("post",1);
+      }
       logNode.commit();
-      RelationUtil.createRelation(newsletter, logNode, "related");
+     // RelationUtil.createRelation(newsletter, logNode, "related");
     }
 
 	 private boolean mayLog(int userId,int newsletterId) {
