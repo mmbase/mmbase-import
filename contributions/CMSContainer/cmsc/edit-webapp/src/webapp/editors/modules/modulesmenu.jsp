@@ -56,7 +56,7 @@
                      <mm:haspage page="/editors/modules/glossary">
                         <li class="glossary">
                            <a href="<mm:url page="/editors/WizardListAction.do?nodetype=glossary"/>" target="rightpane">
-                              Glossary
+                              <fmt:message key="modules.glossary" />
                            </a>
                         </li>
                      </mm:haspage>
