@@ -1,7 +1,10 @@
 <%
 int numberOfDays = 7;
 try {
-   numberOfDays = 7 * cloud.getNode(paginaID).getIntValue("titel_fra");
+   int number = cloud.getNode(paginaID).getIntValue("titel_fra");
+   if (number > 0) { //Only use this number if the value is valid and filled in (otherwise it returns -1)
+      numberOfDays = 7 * number; 
+   }
 } catch (Exception e) { }
 
 cal.setTime(now);
