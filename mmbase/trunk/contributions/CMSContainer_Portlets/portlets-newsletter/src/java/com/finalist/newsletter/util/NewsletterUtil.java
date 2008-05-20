@@ -71,25 +71,48 @@ public abstract class NewsletterUtil {
       return (0);
    }
 
-   public static void deleteNewsletterTermsForNewsletter(int number) {
+   public static void deleteRelatedElement(int number) {
+
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node newsletterNode = cloud.getNode(number);
-      NodeManager newsletterTermNodeManager = cloud.getNodeManager("term");
+      deleteNewsletterTermsForNewsletter(newsletterNode);
+      System.out.println("###############333--1"+newsletterNode);
+       System.out.println("###############333--2"+newsletterNode);
+      deleteNewsletterLogForNewsletter(newsletterNode);
+   }
+
+   public static void deleteNewsletterLogForNewsletter(Node newsletterNode) {
+
+      NodeManager newsletterLogManager = newsletterNode.getCloud().getNodeManager("newsletterdailylog");
+      NodeList logs = newsletterNode.getRelatedNodes(newsletterLogManager);
+      if (logs != null) {
+         System.out.println("###############--"+logs.size());
+         for (int i = 0; i < logs.size(); i++) {
+            Node logNode = logs.getNode(i);
+            System.out.println("###############-1-");
+            logNode.deleteRelations();
+                     System.out.println("###############-2-");
+            logNode.delete();
+              System.out.println("###############-3-");
+         }
+      }
+   }
+   public static void deleteNewsletterTermsForNewsletter(Node newsletterNode) {
+      NodeManager newsletterTermNodeManager = newsletterNode.getCloud().getNodeManager("term");
       NodeList terms = newsletterNode.getRelatedNodes(newsletterTermNodeManager);
       if (terms != null) {
          for (int i = 0; i < terms.size(); i++) {
             Node termNode = terms.getNode(i);
-            deleteSubscriptionByTerm(termNode.getNumber());
+            deleteSubscriptionByTerm(termNode);
             termNode.deleteRelations();
             termNode.delete();
          }
       }
    }
 
-   public static void deleteSubscriptionByTerm(int termNumber) {
-      Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
-      Node termNode = cloud.getNode(termNumber);
-      NodeManager subscriptionNodeManager = cloud.getNodeManager("subscriptionrecord");
+   public static void deleteSubscriptionByTerm(Node termNode) {
+
+      NodeManager subscriptionNodeManager = termNode.getCloud().getNodeManager("subscriptionrecord");
       NodeList subscriptions = termNode.getRelatedNodes(subscriptionNodeManager);
       if (subscriptions != null) {
          for (int i = 0; i < subscriptions.size(); i++) {
