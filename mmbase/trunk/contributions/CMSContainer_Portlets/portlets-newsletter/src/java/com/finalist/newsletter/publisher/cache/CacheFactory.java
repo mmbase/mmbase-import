@@ -32,7 +32,7 @@ public class CacheFactory {
 	}
 
 	public static ICache getDefaultCache() {		
-		return getDefaultCache();
+		return getDefaultCache(1800);
 	}
 	
 	public static ICache getDefaultCache(long time) {
