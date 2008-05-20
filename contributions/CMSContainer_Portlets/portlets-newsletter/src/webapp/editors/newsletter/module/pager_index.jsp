@@ -13,6 +13,6 @@
       </c:choose>
    </pg:pages>
    <pg:next>
-      <a href="${pageUrl}"><strong>&#187;</strong></a>
+     <a href="${pageUrl}"><strong>&#187;</strong></a>
    </pg:next>
 </pg:index>
