@@ -10,9 +10,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
 import org.springframework.web.struts.DispatchActionSupport;
 
@@ -93,30 +91,59 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
 
       FormFile myFile = myForm.getDatafile();
       byte[] fileData = myFile.getFileData();
+      String contentType = myFile.getContentType();
+      String fileName = myFile.getFileName();
 
+      boolean isXML = "text/xml".equals(contentType);
+      boolean isPlain = "text/plain".equals(contentType);
+      boolean isCSV = ".csv".endsWith(fileName.toLowerCase());
+
+      ActionMessages messages = new ActionMessages();
+      
+      if(!isXML&&!(isPlain&isCSV)){
+         messages.add("file", new ActionMessage("datafile.unsupport"));
+      }else{
+         try {
+            importFromFile(fileData);
+         } catch (Exception e) {
+            log.error(e);
+            messages.add("file", new ActionMessage("datafile.invalid"));
+         }
+      }
+
+      if(messages.size() <1){
+         return mapping.findForward("success");
+      }else{
+         saveMessages(request,messages);
+         return mapping.findForward("failed");
+      }
+
+   }
+
+
+   private void importFromFile(byte[] fileData) throws Exception {
       String xml = new String(fileData);
+      List<Subscription> subscriptionList;
+      try {
+         subscriptionList = (List<Subscription>) getXStream().fromXML(xml);
+      } catch (Exception e) {
+         throw new Exception(e);
+      }
 
-      List<Subscription> subscriptionList = (List<Subscription>) getXStream().fromXML(xml);
-
-      for(Subscription subscription : subscriptionList){
+      for (Subscription subscription : subscriptionList) {
          Person subscrier = subscription.getSubscriber();
-            int sbId = subscrier.getId().intValue();
-            int nId = subscription.getNewsletter().getId();
+         int sbId = subscrier.getId().intValue();
+         int nId = subscription.getNewsletter().getId();
 
-         if(null==subscriptionServices.getSubscription(sbId,nId)){
+         if (null == subscriptionServices.getSubscription(sbId, nId)) {
 
 
-
-            log.debug(String.format("try to import user %s's subscription of %s which is not exist",sbId,nId));
+            log.debug(String.format("try to import user %s's subscription of %s which is not exist", sbId, nId));
 
             subscriptionServices.addNewRecord(sbId, nId);
          }
       }
-
-      return mapping.findForward("import_success");
    }
-
-
 
 
    private String convertToXML(List<Subscription> subscriptions) {
