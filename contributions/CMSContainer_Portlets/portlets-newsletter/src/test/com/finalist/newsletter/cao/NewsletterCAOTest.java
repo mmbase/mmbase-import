@@ -16,7 +16,6 @@ public class NewsletterCAOTest extends BaseNewsletterTest {
    }
 
    public void testGetAllNewsletter() {
-      assertEquals(8, cao.getAllNewsletters().size());
    }
 
    public void testGetNewsletterById() {

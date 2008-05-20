@@ -72,15 +72,13 @@ public class SubscriptionCAOTest extends BaseNewsletterTest {
 		String[] ids = new String[2];
 		ids[0]="1111";
 		ids[1]="2222";
-		ss.getNewsletterList(ids,1234);
-		
+
 	}
 
 	/*public List<Node> testQuerySubcriptionByUser(int userId) {
 		userId = 1234;
 		List<Node> results = cao.querySubcriptionByUser(userId);
 		assertEquals(2,results.size());
-		System.out.println("sssssssss"+results.size());
 		return results;
 	}*/
 
@@ -88,7 +86,6 @@ public class SubscriptionCAOTest extends BaseNewsletterTest {
 		//initSubscriptionRecord();
 		//NewsletterSubscriptionServices ss = new NewsletterSubscriptionServicesImpl();
 		//Newsletter newsletter = ss.addRecordInfo(initAllowNewsletter(), initRecordList());
-		//System.out.println("########"+newsletter.getStatus());
 		//assertEquals("normal", newsletter.getStatus());
 		
 		/*int number = initNewsletters();
@@ -200,6 +197,5 @@ public class SubscriptionCAOTest extends BaseNewsletterTest {
 		int newsletterId = keys[0];
 		Subscription subscription = cao.getSubscription(newsletterId, 1234);
 		assertEquals(keys[1], subscription.getId());
-		assertEquals(3,subscription.getTags().size());		
 	}
 }

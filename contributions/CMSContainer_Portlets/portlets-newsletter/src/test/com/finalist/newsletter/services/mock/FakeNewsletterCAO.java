@@ -5,7 +5,7 @@ import java.util.List;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.domain.Newsletter;
 
-public class FakeNewsletterCAO implements NewsletterCAO{
+public class FakeNewsletterCAO {
 
 	public Newsletter getNewsletterById(int id) {
 		Newsletter letter = new Newsletter();

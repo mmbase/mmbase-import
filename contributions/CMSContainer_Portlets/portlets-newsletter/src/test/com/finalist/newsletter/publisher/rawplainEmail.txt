@@ -1,0 +1,231 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+	<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+		<head>
+		<title>test</title>
+
+
+
+
+	<script type="text/javascript" src="/cmsc-community/js/window.js"></script>
+	<script type="text/javascript" src="/cmsc-community/js/prototype.js"></script>
+
+	<script type="text/javascript" src="/cmsc-community/editors/site/portletediting.js.jsp"></script>
+	<script type="text/javascript" src="/cmsc-community/js/scriptaculous/scriptaculous.js"></script>
+	<script type="text/javascript">
+		_editor_url = '/cmsc-community/mmbase/edit/wizard/xinha/';
+		_editor_lang = 'en';
+	</script>
+
+	<script type="text/javascript" src="/cmsc-community/mmbase/edit/wizard/xinha/htmlarea.js"></script>
+	<script type="text/javascript" src="/cmsc-community/mmbase/edit/wizard/xinha/my-htmlarea.js"></script>
+	<script type="text/javascript">
+		function createHTMLArea(name) {
+          var editor_names = [ name ];
+          var xinha_plugins = createDefaultPlugins;
+          var xinha_config = createDefaultConfig();
+		  var editor = HTMLArea.makeEditors(editor_names , xinha_config, xinha_plugins);
+          HTMLArea.startEditors(editor);
+		}
+	</script>
+
+	<script type="text/javascript" src="/cmsc-community/editors/utils/localeditor.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/cmsc-community/editors/site/portaledit.css" />
+	<link rel="stylesheet" type="text/css" href="/cmsc-community/mmbase/edit/wizard/xinha/htmlarea.css" />
+
+		</head>
+		<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+testa<br/>
+testa<br/>
+---------<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+testa<br/>
+testa<br/>
+---------<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tesat<br/>
+sasdfsadf<br/>
+---------<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</body>
+
+	</html>
+
