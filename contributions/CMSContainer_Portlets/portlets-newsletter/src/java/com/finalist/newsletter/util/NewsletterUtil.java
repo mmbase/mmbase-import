@@ -76,24 +76,24 @@ public abstract class NewsletterUtil {
       Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
       Node newsletterNode = cloud.getNode(number);
       deleteNewsletterTermsForNewsletter(newsletterNode);
-      System.out.println("###############333--1"+newsletterNode);
-       System.out.println("###############333--2"+newsletterNode);
-      deleteNewsletterLogForNewsletter(newsletterNode);
+      deleteNewsletterLogForNewsletter(number);
    }
 
-   public static void deleteNewsletterLogForNewsletter(Node newsletterNode) {
+   public static void deleteNewsletterLogForNewsletter(int newsletterNumber) {
 
-      NodeManager newsletterLogManager = newsletterNode.getCloud().getNodeManager("newsletterdailylog");
-      NodeList logs = newsletterNode.getRelatedNodes(newsletterLogManager);
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getAdminCloud();
+      NodeManager newsletterLogManager = cloud.getNodeManager("newsletterdailylog");
+      NodeQuery query = cloud.createNodeQuery();
+      Step step = query.addStep(newsletterLogManager);
+      query.setNodeStep(step);
+      SearchUtil.addEqualConstraint(query, newsletterLogManager.getField("newsletter"), newsletterNumber);
+      
+      NodeList logs = query.getList();
       if (logs != null) {
-         System.out.println("###############--"+logs.size());
          for (int i = 0; i < logs.size(); i++) {
             Node logNode = logs.getNode(i);
-            System.out.println("###############-1-");
             logNode.deleteRelations();
-                     System.out.println("###############-2-");
             logNode.delete();
-              System.out.println("###############-3-");
          }
       }
    }
