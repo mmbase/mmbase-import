@@ -400,7 +400,7 @@ public abstract class NewsletterUtil {
             termIds += term.getId() + ",";
          }
          if (termIds.endsWith(",")) {
-            termIds = termIds.substring(0, termIds.length() - 2);
+            termIds = termIds.substring(0, termIds.length() - 1);
          }
          for (Node portlet : relatedportlets) {
             List<Node> portletdefNodes = portlet.getRelatedNodes("portletdefinition");

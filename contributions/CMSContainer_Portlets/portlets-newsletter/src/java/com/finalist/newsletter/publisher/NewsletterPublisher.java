@@ -42,7 +42,8 @@ import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.publisher.cache.CacheFactory;
 import com.finalist.newsletter.publisher.cache.ICache;
 import com.finalist.newsletter.util.NewsletterUtil;
-
+import com.finalist.newsletter.domain.Term;
+import java.util.Set;
 public class NewsletterPublisher {
 
    private static Logger log = Logging
@@ -149,6 +150,7 @@ public class NewsletterPublisher {
 
    private String getBody(Publication publication, Subscription subscription)
          throws MessagingException {
+
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
             .getTerms(), publication.getId());
       ICache cache = null;
@@ -160,7 +162,7 @@ public class NewsletterPublisher {
          cache = CacheFactory.getDefaultCache(Long.parseLong(expiration));
       }
       String content = " ";
-      if (!cache.contains(url)) {
+      if ((subscription.getTerms() == null) || (subscription.getTerms().size() == 0) || !cache.contains(url)) {
          int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
          if (articleCounts == 0&&publication.getNewsletter().getSendempty()) {
             content = publication.getNewsletter().getTxtempty();
