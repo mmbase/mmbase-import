@@ -3,7 +3,6 @@
   <%-- link rel="alternate stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.2.css" title="groot" / --%>
   <%-- link rel="alternate stylesheet" type="text/css" href="hoofdsite/themas/fontsize1.4.css" title="groter" / --%>
   <script type="text/javascript" language="javaScript" src="<%= (isSubDir? "../" : "" ) %>scripts/launchcenter.js"></script>
-  <!-- <script type="text/javascript" language="javaScript" src="<%= (isSubDir? "../" : "" ) %>scripts/skyscraper_cookie.js"></script>-->
   <link rel="stylesheet" type="text/css" href="<%= (isSubDir? "../" : "" ) %><%= styleSheet %>" />
    <title><mm:node number="root"><mm:field name="naam"/></mm:node>: <mm:node number="<%= rubriekID %>"><mm:field name="naam" id="rubriek_naam" /></mm:node
       ><mm:node number="<%= paginaID %>"
