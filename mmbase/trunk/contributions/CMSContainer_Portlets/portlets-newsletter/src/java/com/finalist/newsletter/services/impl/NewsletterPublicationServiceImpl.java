@@ -16,6 +16,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 public class NewsletterPublicationServiceImpl implements NewsletterPublicationService {
@@ -111,7 +112,7 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
       Publication publication = publicationCAO.getPublication(publicationId);
       Subscription subscription = new Subscription();
       subscription.setEmail(email);
-      subscription.setTerms(publicationCAO.getTermsByPublication(publicationId));
+      subscription.setTerms(new HashSet<Term>());
       subscription.setMimeType(mimeType);
       publisher.deliver(publication, subscription);
    }

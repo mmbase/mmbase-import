@@ -169,6 +169,7 @@ public class NewsletterSubscriptionCAOImpl extends AbstractCAO implements Newsle
          term.setId(termNode.getNumber());
          term.setName(termNode.getStringValue("name"));
          term.setSubscription(true);
+         terms.add(term);
       }
 
       return terms;
