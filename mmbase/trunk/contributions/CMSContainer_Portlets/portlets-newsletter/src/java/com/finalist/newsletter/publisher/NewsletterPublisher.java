@@ -39,6 +39,8 @@ import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.domain.Publication;
 import com.finalist.newsletter.domain.Subscription;
+import com.finalist.newsletter.publisher.cache.CacheFactory;
+import com.finalist.newsletter.publisher.cache.ICache;
 import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterPublisher {
@@ -149,23 +151,31 @@ public class NewsletterPublisher {
          throws MessagingException {
       String url = NewsletterUtil.getTermURL(publication.getUrl(), subscription
             .getTerms(), publication.getId());
-
-      int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication
-            .getNewsletterId());
-
-      String content = " ";
-      if (articleCounts == 0&&publication.getNewsletter().getSendempty()) {
-            content = publication.getNewsletter().getTxtempty();
+      ICache cache = null;
+      String expiration = PropertiesUtil.getProperty("publication.cache.expiration");
+      if(StringUtils.isEmpty(expiration)) {
+         cache = CacheFactory.getDefaultCache();
       }
       else {
-         content = NewsletterGenerator.generate(url, subscription.getMimeType());
+         cache = CacheFactory.getDefaultCache(Long.parseLong(expiration));
       }
-
-      if (null != getPersonalise()) {
-         content = getPersonalise().personalise(content, subscription,
-               publication);
+      String content = " ";
+      if (!cache.contains(url)) {
+         int articleCounts = NewsletterUtil.countArticlesByNewsletter(publication.getNewsletterId());
+         if (articleCounts == 0&&publication.getNewsletter().getSendempty()) {
+            content = publication.getNewsletter().getTxtempty();
+         }
+         else {
+            content = NewsletterGenerator.generate(url, subscription.getMimeType());
+         }
+         if (null != getPersonalise()) {
+            content = getPersonalise().personalise(content, subscription,publication);
+         }
+         cache.add(url, content);
       }
-
+      else{
+         content=(String) cache.get(url);
+      }
       return content + "\n";
    }
 
