@@ -96,7 +96,8 @@ if(isValidAnswer) {
       %><%@include file="getbasket.jsp" %><%
       responseText += productsStr;
       responseTextToCustomer += productsStr;
-      responseTextToCustomer += "<br><br>Met vriendelijke groet,\n<br>Natuurmonumenten Webshop<br>\n";
+      responseTextToCustomer += "<br><br>Met vriendelijke groet,\n<br>Natuurmonumenten Webwinkel<br>\n" +
+      "<br>\nVragen over uw bestelling? Bel gratis naar 0800 023 16 66 (ma t/m do 9-21 uur en vr van 9-17 uur).<br>\n";
   }
     
   %><mm:createnode type="email" id="mail1"
@@ -155,16 +156,18 @@ if(isValidAnswer) {
 %>
 <table width="100%" cellspacing="0" cellpadding="0">
 <tr>
-  <td width="20%"><img src="media/trans.gif" width="1" height="1" border="0" alt=""></td>
-  <td width="60%">
+  <td width="70%">
     <img src="media/trans.gif" width="1" height="11" border="0" alt=""><br>
     
-    <div class="maincolor"><bean:message bundle="LEOCMS" key="shoppingcart.order_title" /></div>
+    <div class="maincolor">
       <% 
       if(isValidAnswer) {
-        %><bean:message bundle="LEOCMS" key="shoppingcart.correct_message" /> <%= (toEmail + " en " + emailAddressCustomer) %><%
+        %><bean:message bundle="LEOCMS" key="shoppingcart.order_title" /></div>
+        <bean:message bundle="LEOCMS" key="shoppingcart.correct_message" /> <%= (emailAddressCustomer) %><br/><br/>
+        <bean:message bundle="LEOCMS" key="shoppingcart.vragen_bestelling" /><%
       } else {
-        %><bean:message bundle="LEOCMS" key="shoppingcart.incorrect_message" /> <%= warningText %><%
+        %><bean:message bundle="LEOCMS" key="shoppingcart.order_title_incorrect" /></div>
+        <bean:message bundle="LEOCMS" key="shoppingcart.incorrect_message" /> <%= warningText %><%
       } %>
       <br><br>
       <a class="maincolor_link" href="<mm:url page="<%= formMessageHref 
