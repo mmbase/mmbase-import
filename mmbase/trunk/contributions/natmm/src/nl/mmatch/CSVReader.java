@@ -141,7 +141,7 @@ public class CSVReader implements Runnable {
         // mark all relations for employees and departments
         log.info("markNodesAndRelations " + thisType);
         NodeManager relatedNodeNM = cloud.getNodeManager(thisType);
-        NodeList thisnodesList = relatedNodeNM.getList(null,null,null);
+        NodeList thisnodesList = relatedNodeNM.getList("importstatus not like '%" + IGNORE_BEAUFORT + "%'",null,null);
         RelationList relations = null;
         Node thisnode = null;
         int i = 0;
@@ -174,7 +174,7 @@ public class CSVReader implements Runnable {
         // deletes all nodes relations for employees and departments, which are inactive
         log.info("deleteNodesAndRelations " + thisType);
         NodeManager relatedNodeNM = cloud.getNodeManager(thisType);
-        NodeList thisnodesList = relatedNodeNM.getList(null,null,null);
+        NodeList thisnodesList = relatedNodeNM.getList("importstatus not like '%" + IGNORE_BEAUFORT + "%'",null,null);
         RelationList relations = null;
         Node thisnode = null;
         int i = 0;
@@ -355,27 +355,30 @@ public class CSVReader implements Runnable {
 
             }
         }
-        personsNode.setValue("externid", thisPerson.get("SOFI_NR"));
-        String alias = (String) personsNode.getValue("account");
-        if(alias==null||alias.equals("")) { // no alias found, use the created one
-            personsNode.setValue("account", thisPerson.get("ALIAS"));
-        }
-        personsNode.setValue("prefix", thisPerson.get("E_TITUL"));
-        personsNode.setValue("firstname", thisPerson.get("E_ROEPNAAM"));
-        personsNode.setValue("initials", thisPerson.get("E_VRLT"));
-        if(thisPerson.get("GBRK_OMS").equals("Partnernaam-geboortenaam")) {
-            personsNode.setValue("suffix", thisPerson.get("P_VRVG"));
-            personsNode.setValue("lastname", thisPerson.get("P_NAAM") + " - " + thisPerson.get("E_VRVG") + " " + thisPerson.get("E_NAAM"));
-        } else {
-            personsNode.setValue("suffix", thisPerson.get("E_VRVG"));
-            personsNode.setValue("lastname", thisPerson.get("E_NAAM"));
-        }
-        personsNode.setValue("gender",getGender((String) thisPerson.get("GENDER")));
+        
         // if null means not in db - new medewerker. set to active to prevent NullPE. also being in beaufort means it is an active medewerker
-        if ((personsNode.getValue("importstatus") == null) || (!personsNode.getValue("importstatus").equals(IGNORE_BEAUFORT))) {
-        	personsNode.setValue("importstatus","active");
+        if ((personsNode.getValue("importstatus") == null) || (!personsNode.getValue("importstatus").equals(IGNORE_BEAUFORT))) {        
+        
+            personsNode.setValue("externid", thisPerson.get("SOFI_NR"));
+            String alias = (String) personsNode.getValue("account");
+            if(alias==null||alias.equals("")) { // no alias found, use the created one
+               personsNode.setValue("account", thisPerson.get("ALIAS"));
+            }
+            personsNode.setValue("prefix", thisPerson.get("E_TITUL"));
+            personsNode.setValue("firstname", thisPerson.get("E_ROEPNAAM"));
+            personsNode.setValue("initials", thisPerson.get("E_VRLT"));
+            if(thisPerson.get("GBRK_OMS").equals("Partnernaam-geboortenaam")) {
+               personsNode.setValue("suffix", thisPerson.get("P_VRVG"));
+               personsNode.setValue("lastname", thisPerson.get("P_NAAM") + " - " + thisPerson.get("E_VRVG") + " " + thisPerson.get("E_NAAM"));
+            } else {
+               personsNode.setValue("suffix", thisPerson.get("E_VRVG"));
+               personsNode.setValue("lastname", thisPerson.get("E_NAAM"));
+            }
+            personsNode.setValue("gender",getGender((String) thisPerson.get("GENDER")));
+
+            personsNode.setValue("importstatus","active");
+            personsNode.commit();
         }
-        personsNode.commit();
         return personsNode;
     }
 
