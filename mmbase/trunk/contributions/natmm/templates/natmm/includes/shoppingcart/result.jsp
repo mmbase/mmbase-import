@@ -142,7 +142,7 @@ if(isValidAnswer) {
     }
     
     formMessageHref = ph.createPaginaUrl((new RubriekHelper(cloud)).getFirstPage(subsiteID),request.getContextPath());
-    //session.setAttribute("totalitems","0");
+    session.setAttribute("totalitems","0");
     
 } else { 
     String targetPage = "javascript:history.go(-1)";
