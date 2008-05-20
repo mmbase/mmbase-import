@@ -53,18 +53,18 @@
 	</field>
 	<field name="paused" ftype="enum">
 		<prompt xml:lang="en">Paused</prompt>
-		<prompt xml:lang="nl">Gepauseerd</prompt>
+		<prompt xml:lang="nl">Pauze</prompt>
 		<optionlist select="boolean" />
 	</field>
   	<field name="pausedstartdate">
 		<prompt xml:lang="en">Pause Start</prompt>
-		<prompt xml:lang="nl">Gepauseerd</prompt>
+		<prompt xml:lang="nl">Pauze van</prompt>
 		<prompt xml:lang="zh">暂停起始</prompt>
 		<optionlist select="boolean" />
 	</field>
    <field name="pausedstopdate">
 		<prompt xml:lang="en">Pause Stop</prompt>
-		<prompt xml:lang="nl">Gepauseerd</prompt>
+		<prompt xml:lang="nl">Pauze tot</prompt>
 		<prompt xml:lang="zh">暂停截止</prompt>
 		<optionlist select="boolean" />
 	</field>
@@ -82,7 +82,7 @@
 	</field>
 	<field name="sendempty" ftype="enum">
 		<prompt xml:lang="en">Send when empty</prompt>
-		<prompt xml:lang="nl">Send when empty</prompt>
+		<prompt xml:lang="nl">Verstuur als leeg</prompt>
 		<prompt xml:lang="zh">内容为空时是否发送</prompt>
 		<optionlist select="boolean" />
 	</field>
