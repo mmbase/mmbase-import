@@ -3,13 +3,13 @@ package com.finalist.newsletter.forms;
 import com.finalist.cmsc.services.community.person.Person;
 import com.finalist.newsletter.domain.Subscription;
 import com.finalist.newsletter.domain.Term;
-import com.finalist.newsletter.domain.Newsletter;
 import com.finalist.newsletter.services.NewsletterSubscriptionServices;
 import com.finalist.newsletter.services.NewsletterService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
 import org.springframework.web.struts.DispatchActionSupport;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public class SubscriptionImportExportAction extends DispatchActionSupport {
    private static Log log = LogFactory.getLog(SubscriptionImportExportAction.class);
@@ -40,25 +41,13 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       log.debug("Export Susbscriptions");
 
       List<Subscription> subscriptions = new ArrayList<Subscription>();
+
       String type = request.getParameter("type");
-      if ("subscription".equals(type)) {
-         String[] subscriptionIds = request.getParameterValues("subscriptionId");
-         for (String subscriptionId : subscriptionIds) {
-            subscriptions.add(subscriptionServices.getSubscription(subscriptionId));
-         }
-      }
-      else if ("newsletter".equals(type)) {
-         String[] newsletterIds = request.getParameterValues("newsletterIds");
-         for (String newsletterid : newsletterIds) {
-            List<Subscription> s = subscriptionServices.getSubscriptionsByNewsletterId(newsletterid);
-            subscriptions.addAll(s);
-         }
-      }
-      else if ("person".equals(type)) {
-         String[] newsletterIds = request.getParameterValues("userId");
-         for (String newsletterid : newsletterIds) {
-            List<Subscription> s = subscriptionServices.getSubscriptionBySubscriber(newsletterid);
-            subscriptions.addAll(s);
+
+      if (StringUtils.isNotBlank(type)) {
+         String[] ids = request.getParameterValues("ids");
+         for (String id : ids) {
+            subscriptions.addAll(getSubscriptions(type, id));
          }
       }
       else {
@@ -99,25 +88,36 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
       boolean isCSV = ".csv".endsWith(fileName.toLowerCase());
 
       ActionMessages messages = new ActionMessages();
-      
-      if(!isXML&&!(isPlain&isCSV)){
-         messages.add("file", new ActionMessage("datafile.unsupport"));
-      }else{
-         try {
-            importFromFile(fileData);
-         } catch (Exception e) {
-            log.error(e);
-            messages.add("file", new ActionMessage("datafile.invalid"));
-         }
-      }
 
-      if(messages.size() <1){
-         return mapping.findForward("success");
-      }else{
-         saveMessages(request,messages);
+      if (!isXML && !(isPlain & isCSV)) {
+         messages.add("file", new ActionMessage("datafile.unsupport"));
+         saveMessages(request, messages);
          return mapping.findForward("failed");
       }
 
+      try {
+         importFromFile(fileData);
+      } catch (Exception e) {
+         log.error(e);
+         messages.add("file", new ActionMessage("datafile.invalid"));
+         saveMessages(request, messages);
+         return mapping.findForward("failed");
+      }
+
+         return mapping.findForward("success");
+   }
+
+   private List<Subscription> getSubscriptions(String type, String id) {
+      if ("person".equals(type)) {
+         return subscriptionServices.getSubscriptionBySubscriber(id);
+      }
+      if ("newsletter".equals(type)) {
+         return subscriptionServices.getSubscriptionsByNewsletterId(id);
+      }
+      if ("subscription".equals(type)) {
+         return Collections.singletonList(subscriptionServices.getSubscription(id));
+      }
+      return Collections.emptyList();
    }
 
 
@@ -143,18 +143,6 @@ public class SubscriptionImportExportAction extends DispatchActionSupport {
             subscriptionServices.addNewRecord(sbId, nId);
          }
       }
-   }
-
-
-   private String convertToXML(List<Subscription> subscriptions) {
-      String xml;
-      XStream xstream = new XStream(new DomDriver());
-      xstream.alias("person", Person.class);
-      xstream.alias("subscription", Subscription.class);
-      xstream.alias("term", Term.class);
-
-      xml = xstream.toXML(subscriptions);
-      return xml;
    }
 
    private XStream getXStream() {
