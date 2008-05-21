@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="jforum" maintainer="finalist.com" version="1" auto-deploy="true">
+
+   <requirements/>
+   <neededbuilderlist/>
+   <neededreldeflist/>
+   <allowedrelationlist/>
+
+   <datasourcelist>
+      <datasource builder="portletdefinition" path="jforum/portletdefinition.xml"/>
+   </datasourcelist>
+
+   <relationsourcelist/>
+   <contextsourcelist/>
+
+</application>

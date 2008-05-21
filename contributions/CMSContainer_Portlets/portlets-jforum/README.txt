@@ -1,2 +1,317 @@
 DESCRIPTION:
 This Portlet integrate JForum to CMSC.
+
+INSTALL GUIDE:
+
+To install JForum Portlet,there is two step operation you should do.
+
+Step 1 :
+Adding below dependencies to you maven project.xml.You shoud check to prevent duplicated dependencies.
+
+<!-- Hibernate dependencies (for Community Module) -->
+   <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>1.5.3</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>2.7.6</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.1.3</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>ejb3-persistence</artifactId>
+      <version>3.0</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>3.2.5.GA</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>3.3.1.GA</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+      <version>3.3.0.GA</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <version>3.0.0.GA</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <version>1.0.1B</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+
+   <!-- Spring dependencies (for Community Module) -->
+   <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>2.5.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>2.5.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-webmvc-struts</artifactId>
+      <version>2.5.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+
+   <!-- Acegi Security dependencies (for Community Module) -->
+   <dependency>
+      <groupId>acegisecurity</groupId>
+      <artifactId>acegi-security</artifactId>
+      <version>1.0.6</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+
+
+   <!--begin dependency by JForum portlet. -->
+
+   <dependency>
+      <groupId>freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.8</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>htmlparser</groupId>
+      <artifactId>htmlparser</artifactId>
+      <version>1.5</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+      <version>1.5.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>0.9.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>com.octo.captcha</groupId>
+      <artifactId>jcaptcha-all</artifactId>
+      <version>1.0-RC-2.0.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <!-- jboss -->
+   <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-cache</artifactId>
+      <version>1.2.2</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-common</artifactId>
+      <version>4.0.2</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-j2ee</artifactId>
+      <version>4.0.2</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-jmx</artifactId>
+      <version>4.0.2</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-minimal</artifactId>
+      <version>4.0.2</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-system</artifactId>
+      <version>4.0.2</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>dwr</groupId>
+      <artifactId>dwr</artifactId>
+      <version>1.1.3</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <dependency>
+      <groupId>jgroups</groupId>
+      <artifactId>jgroups-all</artifactId>
+      <version>2.2.9.1</version>
+      <type>jar</type>
+      <properties>
+         <war.bundle>${war.bundle}</war.bundle>
+      </properties>
+   </dependency>
+   <!--end dependency by JForum portlet.-->
+
+
+Step 2: Add below elements to web.xml
+
+<listener>
+      <listener-class>net.jforum.ForumSessionListener</listener-class>
+   </listener>
+
+   <filter>
+      <filter-name>clickstream-jforum</filter-name>
+      <filter-class>net.jforum.util.legacy.clickstream.ClickstreamFilter</filter-class>
+   </filter>
+   <filter-mapping>
+      <filter-name>clickstream-jforum</filter-name>
+      <url-pattern>*.page</url-pattern>
+   </filter-mapping>
+   <!-- JForum Controller -->
+   <servlet>
+      <servlet-name>jforum</servlet-name>
+      <servlet-class>net.jforum.JForum</servlet-class>
+      <init-param>
+         <param-name>development</param-name>
+         <param-value>true</param-value>
+      </init-param>
+   </servlet>
+
+   <!-- JForum JahiaWebapps bridge-->
+   <servlet>
+      <servlet-name>jForumJahiaWebApp</servlet-name>
+      <servlet-class>org.jahia.jahiawebapps.jforum.JForumJahiaWebAppBridge</servlet-class>
+   </servlet>
+   <!-- AJAX -->
+   <servlet>
+      <servlet-name>dwr-invoker</servlet-name>
+      <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+      <init-param>
+         <param-name>configJForum</param-name>
+         <param-value>WEB-INF/dwr-jforum.xml</param-value>
+      </init-param>
+      <init-param>
+         <param-name>debug</param-name>
+         <param-value>true</param-value>
+      </init-param>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>dwr-invoker</servlet-name>
+      <url-pattern>/dwr/*</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+      <servlet-name>jforum</servlet-name>
+      <url-pattern>*.page</url-pattern>
+   </servlet-mapping>

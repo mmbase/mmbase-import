@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portletdefinition exportsource="jdbc:mysql://localhost/responseform" timestamp="20060906000000">
+	<node number="78889" owner="default">
+		<title>JForumPortlet</title>
+		<description>Integrate JForum to CMSC</description>
+		<definition>jforumportlet</definition>
+		<type>multiple</type>
+	</node>
+</portletdefinition>
