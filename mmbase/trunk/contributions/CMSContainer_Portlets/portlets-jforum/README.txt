@@ -1,2 +1,2 @@
 DESCRIPTION:
-This portlet displays a television or radio playlist.
+This Portlet integrate JForum to CMSC.
