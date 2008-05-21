@@ -145,6 +145,7 @@
 			            	}
 			            	case 3: {
 			            		String userSelectedStreet = (String)pageContext.getAttribute("selectedStreet");
+                           if (userSelectedStreet == null) userSelectedStreet = "leeg";
 								// maybe nothing has been entered or we have only one street
 			            		if(allStreets == null || allStreets.size() == 0) {
 			            		%>
