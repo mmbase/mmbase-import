@@ -347,7 +347,7 @@ if(!provincieId.equals("")) {
    // the search query much check for participant constraints
    if(isValidEvent && (!aanmelderNaamId.equals("")||!aanmelderPostcodeId.equals("")||!aanmelderNummerId.equals(""))) {
         isValidEvent = false;
-        %><mm:listcontainer nodes="<%= parent_number %>"  path="evenement,posrel,inschrijvingen,posrel,deelnemers"><%
+        %><mm:listcontainer nodes="<%= event_number %>"  path="evenement,posrel,inschrijvingen,posrel,deelnemers"><%
           if(!aanmelderNaamId.equals("")) {
             %><mm:constraint field="deelnemers.lastname" operator="LIKE" value="<%= "%" + aanmelderNaamId + "%" %>" /><%
           }
@@ -436,6 +436,17 @@ if(!provincieId.equals("")) {
       clickedButton=obj;
       document.EvenementForm.command.value = clickedButton.value;
    }
+   
+   function disableExtraSearch() {
+      document.EvenementForm.aanmelder_naam.disabled=true;
+      document.EvenementForm.aanmelder_postcode.disabled=true;
+      document.EvenementForm.aanmelder_nummer.disabled=true;
+      
+      document.EvenementForm.aanmelder_naam.style.backgroundColor="#cccccc";
+      document.EvenementForm.aanmelder_postcode.style.backgroundColor="#cccccc";
+      document.EvenementForm.aanmelder_nummer.style.backgroundColor="#cccccc";  
+   }
+   
 
 </script>
 <% if(actionId.indexOf("print")>-1) { %>
@@ -651,9 +662,12 @@ if(actionId.indexOf("print")==-1) {
          <td style="padding-top:3px;"><input type="text" name="aanmelder_postcode" tabindex="4" value="<%= aanmelderPostcodeId %>" style="width:100px;" MAXLENGTH="6"></td>
    <!-- Aanmeldingsnummer -->
          <td colspan="4"style="padding-top:3px;"><input type="text" name="aanmelder_nummer" tabindex="5" value="<%= aanmelderNummerId %>" style="width:100px;"></td>
+   
+   <% if(soortId.equals("activiteiten")) out.print("<script>disableExtraSearch();</script>"); %>
+
    </tr>
-         <td colspan="7">&nbsp;</td>
    <tr>
+         <td colspan="7">&nbsp;</td>
    </tr>
 
 <% } else { %>
