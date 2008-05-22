@@ -1,12 +1,16 @@
 package com.finalist.newsletter.services;
 
-import com.finalist.newsletter.domain.Publication;
-import com.finalist.newsletter.domain.Term;
+import java.util.List;
+import java.util.Map;
 
-import java.util.Set;
+import com.finalist.newsletter.domain.Publication;
 
 
 public interface NewsletterPublicationService {
+   
+   public static final String SEND_SUCCESS = "sendSucess";
+   public static final String SEND_FAIL = "sendFail";
+   
    public void deliverAllPublication();
 
    public void deliver(int publicationId, String email, String mimeType);
@@ -15,7 +19,7 @@ public interface NewsletterPublicationService {
 
    public void setStatus(int publciationId, Publication.STATUS status);
 
-   public void deliver(int publidcation);
+   public Map<String,List<String>> deliver(int publidcation);
 
    public int countAllPublications();
 

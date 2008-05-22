@@ -22,4 +22,6 @@ public interface NewsletterPublicationCAO {
    public List<Publication> getPublicationsByNewsletter(int id, Publication.STATUS status);
 
    public Set<Term> getTermsByPublication(int publicationId);
+   
+   public void renamePublicationTitle(int publicationId);
 }
