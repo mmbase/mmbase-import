@@ -37,6 +37,7 @@ if(referer!=null) {
    Vector okMessage = new Vector();
    Vector emailAddress = new Vector();
    Vector formResponse = new Vector();
+   String thisFormNumber = "";
 
    boolean isValidAnswer = true;
 
@@ -58,7 +59,7 @@ if(referer!=null) {
    <mm:related path="posrel,formulier" orderby="posrel.pos" directions="UP">
       <mm:node element="formulier" jspvar="thisForm">
          <%
-            String thisFormNumber = thisForm.getStringValue("number");
+            thisFormNumber = thisForm.getStringValue("number");
             if(!thisForm.getStringValue("titel_fra").equals("")) { 
                okTitle.add(thisForm.getStringValue("titel_fra"));
             } else {
@@ -114,6 +115,9 @@ if(referer!=null) {
                if(formulierveld_type.equals("6")) { // *** date ***
 
                   String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_day",postingStr);
+                  // save in session
+                  session.setAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_day", answerValue);
+               
                   if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText += noAnswer;
@@ -125,6 +129,9 @@ if(referer!=null) {
                      responseText += answerValue;
                   }
                   answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_month",postingStr);
+                  // save in session
+                  session.setAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_month", answerValue);
+                  
                   if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText += ", " + noAnswer;
@@ -136,6 +143,9 @@ if(referer!=null) {
                      responseText +=  "-" + answerValue;
                   }
                   answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_year",postingStr);
+                  // save in session
+                  session.setAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_year", answerValue);                  
+                  
                   if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText +=  ", " + noAnswer;
@@ -152,6 +162,9 @@ if(referer!=null) {
                   %><mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP"
                   ><mm:field name="formulierveldantwoord.number" jspvar="formulierveldantwoord_number" vartype="String" write="false"><%   
                         String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_" + formulierveldantwoord_number,postingStr);
+                        // save in session
+                        session.setAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_" + formulierveldantwoord_number, answerValue);    
+                  
                         if(answerValue==null) { answerValue = ""; }
                         if(!answerValue.equals("")) {
                            if (hasSelected){
@@ -163,6 +176,9 @@ if(referer!=null) {
                      %></mm:field
                   ></mm:related><%
                   String answer_else_Value = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number + "_else",postingStr);
+                  // save in session
+                  session.setAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_else", answer_else_Value);      
+                  
                   if(answer_else_Value==null) { answer_else_Value = ""; }
                   if (!answer_else_Value.equals("")){
                      if (hasSelected){
@@ -181,6 +197,9 @@ if(referer!=null) {
 
                } else { // *** textarea, textline, dropdown, radio buttons ***
                   String answerValue = getResponseVal("q" + thisFormNumber + "_" + formulierveld_number,postingStr);
+                  // save in session
+                  session.setAttribute("q" + thisFormNumber + "_" + formulierveld_number, answerValue); 
+               
                   if(answerValue==null) { answerValue = ""; }
                   if(answerValue.equals("")) {
                      responseText += noAnswer;
@@ -206,6 +225,14 @@ if(referer!=null) {
 <%
 if(isValidAnswer)
 {  
+   // remove form values from the session because the form will be send
+   java.util.Enumeration e = session.getAttributeNames();
+   
+   while (e.hasMoreElements()){
+      String sessionAttrName = (String) e.nextElement();
+      if (sessionAttrName.startsWith("q" + thisFormNumber)) session.removeAttribute(sessionAttrName);
+   }
+   
    String formMessage = "";
    String formMessageHref = "index.jsp";
    if(sRubriekLayout.equals("" + NatMMConfig.DEMO_LAYOUT)) {
