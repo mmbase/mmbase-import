@@ -16,8 +16,6 @@
    <field name="paused" />
 	<field name="pausedstartdate" />
    <field name="pausedstopdate" />
-	<field name="inmenu" />
-	<field name="secure" />
 	<field name="title" />
 	<field name="subject" />
 	<field name="description" />
