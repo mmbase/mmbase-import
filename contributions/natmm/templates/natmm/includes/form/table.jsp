@@ -27,6 +27,12 @@ String p = request.getParameter("p");
               ><mm:node element="formulierveld" jspvar="thisFormField"><%
               String formulierveld_number = thisFormField.getStringValue("number");
               String formulierveld_label = thisFormField.getStringValue("label");
+              
+              String formulierveldLastValue = null;
+              String formulierveldLastValueDay = null;
+              String formulierveldLastValueMonth = null;
+              String formulierveldLastValueYear = null;
+
               if(!thisFormField.getStringValue("label_fra").equals("")) {
                  formulierveld_label = thisFormField.getStringValue("label_fra");
               }
@@ -94,25 +100,36 @@ String p = request.getParameter("p");
                 
                  // **** dropdown ****
                  if(formulierveld_type.equals("3")) {
-                 %>
+
+                    String dropdownWaarde = "";
+                    formulierveldLastValue = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number);
+                    if (formulierveldLastValue == null) formulierveldLastValue = "";                    
+                    
+                    %>
                     <td class="maincolor" style="width:177px;padding:5px;line-height:0.90em;"><%= formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } %></td>
                     <td class="maincolor" style="width:177px;padding:0px;vertical-align:top;">
                         <select name="q<%= thisFormNumber %>_<%= formulierveld_number %>" style="width:178px;font-size:11px;">
                           <option>...
                           <mm:related path="posrel,formulierveldantwoord" orderby="posrel.pos" directions="UP">
                              <option value="<mm:field name="formulierveldantwoord.waarde" />"
+
+                                <mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
+                                    <% dropdownWaarde = (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : ""); %>
+                                </mm:field>
+                             
                                 <mm:field name="formulierveldantwoord.standaard" jspvar="defaultValue" vartype="Integer">
                                    <%
                                       if((!bDefaultIsSet) && (defaultValue.intValue() != 0))
                                       {
                                          %>selected="selected"<%
                                          bDefaultIsSet = true;
+                                      } else if (formulierveldLastValue.toLowerCase().equals(dropdownWaarde.toLowerCase())){
+                                         
+                                         %>selected="selected"<%
                                       }
                                    %>
                                 </mm:field>
-                                ><mm:field name="formulierveldantwoord.waarde" jspvar="waarde" vartype="String" write="false">
-                                    <%= (waarde!=null ? waarde.substring(0,1).toUpperCase()+waarde.substring(1) : "") %>
-                                </mm:field>
+                                ><%=dropdownWaarde %>
                              </option>
                           </mm:related>
                        </select></td>
@@ -121,52 +138,78 @@ String p = request.getParameter("p");
 
               // *** textline ***
               if(formulierveld_type.equals("2")) {
+                 
+                 formulierveldLastValue = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number);
+                 if (formulierveldLastValue == null) formulierveldLastValue = "";
+                 
                  %>
                     <td class="maincolor" style="width:177px;padding:5px;line-height:0.85em;"><%=
                          formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } %></td>
                     <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;<% if(!isIE) { %>padding-top:1px;<% } %>">
-                       <input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>" style="width:100%;border:0;" onkeypress="return handleEnter(this, event)">
+                       <input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>" style="width:100%;border:0;" onkeypress="return handleEnter(this, event)" value="<%=formulierveldLastValue%>">
                     </td>
                  <%
               }
               
               // *** textarea ***
               if(formulierveld_type.equals("1")) {
+                 
+                 formulierveldLastValue = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number);
+                 if (formulierveldLastValue == null) formulierveldLastValue = "";                 
+                 
                  %>
                     <td colspan="2" class="maincolor" style="padding:5px;line-height:0.90em;"><%=
                          formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } 
                      %></td>
                     </tr>
                     <tr>
-                    <td colspan="2" class="maincolor" style="<% if(!isIE) { %>padding-right:2px;<% } %>"><textarea rows="4" name="q<%= thisFormNumber %>_<%= formulierveld_number %>" wrap="physical" style="width:100%;margin-left:1px;margin-right:1px;border:0;"></textarea></td>
+                    <td colspan="2" class="maincolor" style="<% if(!isIE) { %>padding-right:2px;<% } %>"><textarea rows="4" name="q<%= thisFormNumber %>_<%= formulierveld_number %>" wrap="physical" style="width:100%;margin-left:1px;margin-right:1px;border:0;"><%=formulierveldLastValue%></textarea></td>
                  <%
               }
   
               // *** date ***
               if(formulierveld_type.equals("6")) { // *** create input fields for day, month and year
+                 
+                 formulierveldLastValueDay = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_day");
+                 formulierveldLastValueMonth = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_month");
+                 formulierveldLastValueYear = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_year");
+                 
+                 if (formulierveldLastValueDay == null) formulierveldLastValueDay = "";
+                 if (formulierveldLastValueMonth == null) formulierveldLastValueMonth = "";    
+                 if (formulierveldLastValueYear == null) formulierveldLastValueYear = "";    
+                 
                   %>
                   <td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;">
                      <%= formulierveld_label %>&nbsp;<% if(isRequired) { %>*&nbsp;<% } %>
                   </td>
                   <td class="maincolor" style="width:177px;padding:0px;padding-right:1px;vertical-align:top;text-align:right;<% if(!isIE) { %>padding-top:1px;<% } %>"><%
-                     %><input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_day" style="width:43px;border:0;" onkeypress="return handleEnter(this, event)"><%
-                     %><select name="q<%= thisFormNumber %>_<%= formulierveld_number %>_month" style="width:89px;font-size:9px;">
+                     %><input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_day" style="width:43px;border:0;" onkeypress="return handleEnter(this, event)" value="<%=formulierveldLastValueDay%>"><%
+                                          %><select name="q<%= thisFormNumber %>_<%= formulierveld_number %>_month" style="width:89px;font-size:9px;">
                        <option value="">...<%
-                       for(int m = 0; m < 12; m++) { %><option value="<%= months_lcase[m] %>"><%= months_lcase[m] %><% }
-                       %></select><%
-                     %><input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_year" style="width:43px;border:0;" onkeypress="return handleEnter(this, event)"><%
+                       for(int m = 0; m < 12; m++) { 
+                       %>
+                           <option value="<%= months_lcase[m] %>" <% 
+                              
+                              if (formulierveldLastValueMonth.toLowerCase().equals(months_lcase[m])) {%><%="selected='selected'"%><%}
+                           
+                           %>><%= months_lcase[m] %><% } %></select><%
+                     %><input type="text" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_year" style="width:43px;border:0;" onkeypress="return handleEnter(this, event)" value="<%=formulierveldLastValueYear%>"><%
                   %></td>
                  <%
               }
               
 				  if (formulierveld_else.equals("1")) { 
+                 
+                 formulierveldLastValue = (String) session.getAttribute("q" + thisFormNumber + "_" + formulierveld_number + "_else");
+                 if (formulierveldLastValue == null) formulierveldLastValue = "";                              
+                 
 				  		 %>
 				  		</tr>
 						<tr>
 					  		<td class="maincolor" style="width:177px;padding:5px;line-height:0.80em;" colspan="2">Anders &hellip;</td>
 						</tr>
 				      <tr>
-                    <td colspan="2" class="maincolor" style="<% if(!isIE) { %>padding-right:2px;<% } %>"><textarea rows="4" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_else" wrap="physical" style="width:100%;margin-left:1px;margin-right:1px;border:0;"></textarea></td>
+                    <td colspan="2" class="maincolor" style="<% if(!isIE) { %>padding-right:2px;<% } %>"><textarea rows="4" name="q<%= thisFormNumber %>_<%= formulierveld_number %>_else" wrap="physical" style="width:100%;margin-left:1px;margin-right:1px;border:0;"><%=formulierveldLastValue%></textarea></td>
 				  <% } %>
               </tr>     
 				  
