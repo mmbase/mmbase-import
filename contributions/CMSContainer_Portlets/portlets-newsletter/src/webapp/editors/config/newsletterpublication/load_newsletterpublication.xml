@@ -12,8 +12,6 @@
 	<field name="subject" />
 	<field name="description" />
 	<field name="intro" />
-	<field name="inmenu" />
-	<field name="secure" />
 	<field name="externalurl"/>
 
 	<relation destination="images" role="namedrel" />

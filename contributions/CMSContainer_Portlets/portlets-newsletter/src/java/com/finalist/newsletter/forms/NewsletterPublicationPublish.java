@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
  */
 package com.finalist.newsletter.forms;
 
+import java.util.List;
+import java.util.Map;
+
 import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.security.SecurityUtil;
@@ -48,7 +51,7 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          request.setAttribute("isPaused", true);
          return mapping.findForward(SUCCESS);
       }
-
+      Map<String,List<String>> sendResults = null;
       Node publicationNode = cloud.getNode(number);
 
       if (isSendAction(request)) {
@@ -61,12 +64,17 @@ public class NewsletterPublicationPublish extends MMBaseFormlessAction {
          }
 
          if (ServerUtil.isSingle()) {
-            publicationService.deliver(number);
+            sendResults = publicationService.deliver(number);
             publicationService.setStatus(number, Publication.STATUS.DELIVERED);
             NewsletterUtil.logPubliction(number, HANDLE.POST);
+            request.setAttribute("isSingle", true);
+            request.setAttribute("sendResults", sendResults);
+            request.setAttribute("sendSuccess", sendResults.get(NewsletterPublicationService.SEND_SUCCESS).size());
+            request.setAttribute("sendFail", sendResults.get(NewsletterPublicationService.SEND_FAIL).size());
          }
          else {
             publicationService.setStatus(number, Publication.STATUS.READY);
+            request.setAttribute("isPublish", true);
             Publish.publish(publicationNode);
          }
 
