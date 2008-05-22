@@ -1,6 +1,7 @@
 package com.finalist.newsletter.cao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.finalist.newsletter.util.NewsletterUtil;
 
 import com.finalist.portlets.newsletter.NewsletterContentPortlet;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.SearchUtil;
 import org.mmbase.storage.search.Constraint;
@@ -172,5 +174,24 @@ public class NewsletterPublicationCAOImpl implements NewsletterPublicationCAO {
          termSet.add(term);
       }
       return termSet;
+   }
+   
+   public void renamePublicationTitle(int publicationId) {
+
+      String now = DateFormatUtils.format(new Date(), "dd-MM-yyyy hh:mm");
+      Node publicationNode = cloud.getNode(publicationId);
+      String oldTitle =  publicationNode.getStringValue("title");
+      String newTile = oldTitle;
+      String dateTime = "";
+      if(oldTitle.length() > 18) {
+         dateTime = oldTitle.substring(oldTitle.length()-16);
+      }
+      if(dateTime.indexOf("-") > 0 && dateTime.indexOf(":") > 0){
+         newTile = oldTitle.substring(0,oldTitle.length()-18);
+      }
+         
+      publicationNode.setStringValue("title", newTile+"  "+now);
+      publicationNode.commit();
+   
    }
 }

@@ -1,6 +1,7 @@
 package com.finalist.newsletter.services.impl;
 
 import com.finalist.cmsc.services.community.person.Person;
+import com.finalist.newsletter.NewsletterSendFailException;
 import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.NewsletterCAO;
 import com.finalist.newsletter.cao.NewsletterPublicationCAO;
@@ -15,8 +16,11 @@ import com.finalist.newsletter.services.NewsletterPublicationService;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class NewsletterPublicationServiceImpl implements NewsletterPublicationService {
@@ -75,10 +79,12 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
     *
     * @param publicationId The id of the publication to be sent out
     */
-   public void deliver(int publicationId) {
+   public Map<String,List<String>> deliver(int publicationId) {
 
       int newsletterId = publicationCAO.getNewsletterId(publicationId);
-      
+      List<String> sendSuccess = new ArrayList<String>();
+      List<String> sendFails = new ArrayList<String>() ;
+      Map<String,List<String>> sendResults = new HashMap<String,List<String>>();
       List<Subscription> subscriptions = subscriptionCAO.getSubscription(newsletterId);
       log.debug("deliver publication " + publicationId + " which has " + subscriptions.size() + " subscriptions");
 
@@ -89,11 +95,21 @@ public class NewsletterPublicationServiceImpl implements NewsletterPublicationSe
          Person subscripber = CommunityModuleAdapter.getUserById(subscription.getSubscriberId());
          subscription.setEmail(subscripber.getEmail());
          subscription.setTerms(terms);
-         publisher.deliver(publication, subscription);
+         try {
+            publisher.deliver(publication, subscription);
+            sendSuccess.add(subscription.getSubscriberId());
+         } 
+         catch (NewsletterSendFailException e) {
+            sendFails.add(subscription.getSubscriberId());
+            log.error(e.getMessage());
+         }
       }
-
-     
+      sendResults.put(SEND_SUCCESS, sendSuccess);
+      sendResults.put(SEND_FAIL, sendFails);
+      
       publicationCAO.setStatus(publicationId, STATUS.DELIVERED);
+      publicationCAO.renamePublicationTitle(publicationId);
+      return sendResults;
    }
 
    public int countAllPublications() {
