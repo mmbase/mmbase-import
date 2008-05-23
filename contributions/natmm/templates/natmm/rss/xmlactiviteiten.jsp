@@ -89,10 +89,7 @@ boolean isProvincieMatch = false;
                      if (pProvincie.toLowerCase().equals(naam.toLowerCase())) isProvincieMatch = true; 
                 %></mm:field
                ></mm:related
-               ></mm:node><%="Provincie: |" + pProvincie + "|"%><% 
-               
-               
-               
+               ></mm:node><% 
                if ((pProvincie == "") || (isProvincieMatch)) { 
                 %><item>
                   <title><mm:field name="titel" jspvar="naam" vartype="String" write="false"
