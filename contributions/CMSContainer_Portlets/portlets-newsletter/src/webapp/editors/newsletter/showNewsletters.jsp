@@ -8,7 +8,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"%>
 
-<fmt:setBundle basename="newsletter-log" scope="request" />
+<fmt:setBundle basename="newsletter" scope="request" />
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
