@@ -9,9 +9,14 @@
 
    <form-beans>
       <form-bean name="datafilebean" type="com.finalist.newsletter.forms.SubscriptionImportUploadForm"/>
+      <form-bean name="recordSearchForm"	type="com.finalist.newsletter.forms.NewsLetterLogSearchForm"/>
+      <form-bean name="NewletterPublicationForm" type="com.finalist.newsletter.forms.NewletterPublicationForm" />
    </form-beans>
    <!-- ========== Global Exceptions Definitions =================================== -->
    <!-- ========== Global Forward Definitions =================================== -->
+   <global-forwards>	
+		<forward name="error" path="/editors/newsletter/module/error.jsp" />
+	</global-forwards>
    <!-- ========== Action Mapping Definitions =================================== -->
    <action-mappings>
 
@@ -59,7 +64,6 @@
          <forward name="confirmunsubscribe" path="/editors/newsletter/module/confirm_unsubscribe.jsp" redirect="false"/>
          <forward name="ubscriber_subscriptions" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp"
                   redirect="false"/>
-
       </action>
       <action path="/editors/newsletter/SubscriptionImportExportAction" name="datafilebean"
               type="com.finalist.newsletter.forms.SubscriptionImportExportAction" parameter="action"
@@ -67,7 +71,7 @@
          <forward name="failed" path="/editors/newsletter/module/import.jsp"/>
          <forward name="success" path="/editors/newsletter/module/import_success.jsp"/>
 
-         </action>
+      </action>
       <action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false"
               validate="false">
       </action>
@@ -82,12 +86,79 @@
               validate="false">
       </action>
 
-      <!-- ==== Select page nodes ==== -->
+      <!-- ==== Newsletter Search ==== -->
+      <action path="/editors/newsletter/NewletterPublicationInitAction" type="com.finalist.newsletter.forms.NewletterPublicationInitAction"
+         name="NewletterPublicationForm" scope="request" unknown="false" validate="false">
+			<forward name="searchoptions" path="/editors/newsletter/publication/newspubsearch.jsp" redirect="false" />
+			<forward name="dosearch" path="/editors/newsletter/publication/NewletterPublicationAction.do" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewletterPublicationAction" type="com.finalist.newsletter.forms.NewletterPublicationAction"
+         name="NewletterPublicationForm" scope="request" input="/editors/newsletter/publication/newspubsearch.jsp" unknown="false" validate="true">
+		</action>
+      <!-- ==== Newsletter Module ==== -->
+		<action path="/editors/newsletter/module/ReportOverview" type="com.finalist.newsletter.module.ReportOverview" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_overview.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/module/ReportNewsletterList" type="com.finalist.newsletter.module.ReportNewsletterList" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_newsletter_list.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/module/ReportNewsletterSubscriptions" type="com.finalist.newsletter.module.ReportNewsletterSubscriptions" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_newsletter_subscriptions.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/module/ReportSubscriberList" type="com.finalist.newsletter.module.ReportSubscriberList" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_subscriber_list.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/module/ReportSubscriberSubscriptions" type="com.finalist.newsletter.module.ReportSubscriberSubscriptions" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_subscriber_subscriptions.jsp" redirect="false" />
+		</action>
 
-
-      <!-- ==== Security role management ==== -->
+		<action path="/editors/newsletter/module/SubscriptionAction" type="com.finalist.newsletter.module.SubscriptionAction" unknown="false" validate="false">
+			<forward name="success" path="/editors/newsletter/module/report_subscriber_overview.jsp" redirect="false" />
+		</action>
+      <!-- ==== Newsletter Publication ==== -->
+		<action path="/editors/newsletter/NewsletterPublicationCreate" type="com.finalist.newsletter.forms.NewsletterPublicationCreate" unknown="false" validate="false">
+			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
+			<forward name="returnurl" path="/editors/newsletter/NewsletterPublicationEdit.do" redirect="false" />
+			<forward name="cancel" path="/editors/empty.html" redirect="true" />
+			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewsletterPublicationEdit" type="com.finalist.newsletter.forms.NewsletterPublicationEdit" unknown="false" validate="false">
+			<forward name="openwizard" path="/editors/WizardInitAction.do" redirect="false" />
+			<forward name="returnurl" path="/editors/newsletter/NewsletterPublicationEdit.do" redirect="false" />
+			<forward name="success" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewsletterPublicationDelete" type="com.finalist.newsletter.forms.NewsletterPublicationDelete" unknown="false" validate="false">
+			<forward name="newsletterpublicationdelete" path="/editors/newsletter/newsletterpublicationdelete.jsp" redirect="false" />
+			<forward name="success" path="/editors/site/refreshpages.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewsletterPublicationPublish" type="com.finalist.newsletter.forms.NewsletterPublicationPublish" unknown="false" validate="false">
+			<forward name="confirm_send" path="/editors/newsletter/confirm_send.jsp" redirect="false" />
+			<forward name="confirm_resend" path="/editors/newsletter/confirm_resend.jsp" redirect="false" />
+			<forward name="success" path="/editors/newsletter/sendresults.jsp" redirect="false" />
+			<forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewsletterPublicationTest" type="com.finalist.newsletter.forms.NewsletterPublicationSendEmail" unknown="false" validate="false">
+			<forward name="inputpage" path="/editors/newsletter/testinputform.jsp" redirect="false" />
+			<forward name="success" path="/editors/newsletter/sendresults.jsp" redirect="false" />
+			<forward name="cancel" path="/editors/site/refreshpagesandshow.jsp" redirect="false" />
+		</action>
+      <!-- ==== Newsletter Statistic ==== -->
+      <action path="/editors/newsletter/ShowNewsletters"
+			type="com.finalist.newsletter.forms.NewsletterStatisticAction"
+			name="recordSearchForm" input="/editors/newsletter/showNewsletters.jsp"
+			validate="false" parameter="show">
+			<forward name="result"
+				path="/editors/newsletter/showNewsletters.jsp" redirect="false" />
+		</action>
+		<action path="/editors/newsletter/NewsletterStatistic"
+			type="com.finalist.newsletter.forms.NewsletterStatisticAction"
+			name="recordSearchForm"
+			input="/editors/newsletter/ShowNewsletters.do" validate="true"
+			parameter="search">
+			<forward name="result"
+				path="/editors/newsletter/showNewsletters.jsp" redirect="false" />
+		</action>
    </action-mappings>
 
-   <message-resources parameter="cmsc-site" key="SITE"/>
-   <message-resources parameter="portlets-newslettersubscription"/>
+   <message-resources parameter="newsletter" key="newsletter"/>
 </struts-config>
