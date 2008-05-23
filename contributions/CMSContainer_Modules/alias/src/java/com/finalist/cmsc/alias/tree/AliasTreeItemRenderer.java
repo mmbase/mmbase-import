@@ -30,14 +30,16 @@ public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
          Node parentParentNode = NavigationUtil.getParent(parentNode);
          UserRole role = NavigationUtil.getRole(parentNode.getCloud(), parentParentNode, false);
          
+         TreeElement element = null;
+         String id = null;
+         
          NodeList parentParentAliasses = parentParentNode.getRelatedNodes("pagealias");
          if(parentParentAliasses.size() >= 5) {
 	         if(parentNode.getNumber() == parentParentAliasses.getNode(0).getNumber()) {
 	        	 String icon = renderer.getIcon("pagealias_stacked", role); 
 	        	 String label = parentParentAliasses.size()+" "+renderer.getLabel("site.alias.stacked", RESOURCEBUNDLE);
-	        	 TreeElement element = renderer.createElement(icon, "", label, label, "../alias/stacked.jsp?parent="+parentParentNode.getNumber(), "content");
-	         
-	        	 return element;
+	        	 element = renderer.createElement(icon, "", label, label, "../alias/stacked.jsp?parent="+parentParentNode.getNumber(), "content");
+	        	 id = ""+parentParentNode.getNumber();
 	         }
 	         else {
 	        	 return null;
@@ -47,8 +49,8 @@ public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
 	         String name = parentNode.getStringValue(AliasUtil.TITLE_FIELD);
 	         String fragment = parentNode.getStringValue( NavigationUtil.getFragmentFieldname(parentNode) );
 	
-	         String id = String.valueOf(parentNode.getNumber());
-	         TreeElement element = renderer.createElement(parentNode, role, name, fragment, false);
+	         id = String.valueOf(parentNode.getNumber());
+	         element = renderer.createElement(parentNode, role, name, fragment, false);
 	
 	         if (SecurityUtil.isEditor(role)) {
 	            element.addOption(renderer.createTreeOption("edit_defaults.png", "site.alias.edit",
@@ -70,11 +72,11 @@ public class AliasTreeItemRenderer implements NavigationTreeItemRenderer {
 	                   "../workflow/publish.jsp?number=" + id));
 	         }
 	         
-	         element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
-	                 "../usermanagement/pagerights.jsp?number=" + id));
-	         
-	         return element;
          }
+         element.addOption(renderer.createTreeOption("rights.png", "site.page.rights",
+                 "../usermanagement/pagerights.jsp?number=" + id));
+         
+         return element;
       }
 
    public void addParentOption(NavigationRenderer renderer, TreeElement element, String parentId) {
