@@ -4,7 +4,7 @@
 <mm:content type="text/html" encoding="UTF-8" expires="0">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
-<cmscedit:head title="search.title">
+<cmscedit:head title="stacked.title">
       <script src="content.js" type="text/javascript"></script>
       <script src="search.js" type="text/javascript"></script>
     <c:if test="${not empty requestScope.refreshChannels}">
@@ -15,11 +15,27 @@
 </cmscedit:head>
 <body>
 
+<c:set var="hasWorkflow" value="false"/>
+<mm:haspage page="/editors/workflow">
+    <c:set var="hasWorkflow" value="true"/>
+</mm:haspage>
+
 <cmsc:rights nodeNumber="${param.parent}" var="rights"/>
 <c:set var="orderby" value="${(param.orderby == null)?'title':param.orderby}"/>
 <c:set var="orderdir" value="${(param.orderdir == null)?'up':param.orderdir}"/>
 <c:set var="hasRights" value="${(rights == 'writer' || rights == 'chiefeditor' || rights == 'editor' || rights == 'webmaster')}"/>
 
+<div class="tabs">
+    <!-- active TAB -->
+    <div class="tab_active">
+        <div class="body">
+            <div>
+
+                <a name="activetab"><fmt:message key="stacked.title" /></a>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="editor">
    <div class="body">
    <br />
@@ -63,6 +79,10 @@
       			<tr <mm:even inverse="true">class="swap"</mm:even>>
       				<td>
 						<c:if test="${hasRights}">
+							<c:if test="${hasWorkflow}">
+		      					<a href="../workflow/publish.jsp?number=<mm:field name="number"/>">
+									<img src="../gfx/icons/publish.png" title="<fmt:message key="stacked.icon.publish" />" alt="<fmt:message key="stacked.icon.publish" />"/></a>
+							</c:if>
 	      					<a href="AliasEdit.do?number=<mm:field name="number"/>&stacked=true&parentpage=${param.parent}">
 			                   <img src="../gfx/icons/page_edit.png" alt="<fmt:message key="stacked.icon.edit" />" title="<fmt:message key="stacked.icon.edit" />" /></a>
 	      					<a href="AliasDelete.do?number=<mm:field name="number"/>&stacked=true&parentpage=${param.parent}">
@@ -85,6 +105,24 @@
 							${targetName} (${targetUrl})
 						</c:if>
 					</td>
+					
+					<c:if test="${hasWorkflow}">
+					    <td width="10" onMouseDown="objClick(this);">
+					        <c:set var="status" value="waiting"/>
+					        <mm:relatednodes type="workflowitem">
+					            <c:set var="status"><mm:field name="status"/></c:set>
+					        </mm:relatednodes>
+					        <c:if test="${status == 'waiting'}">
+					        	<c:set var="number"><mm:field name="number"/></c:set>
+					            <mm:listnodes type="remotenodes" constraints="sourcenumber=${number}">
+					                <c:set var="status" value="onlive"/>
+					            </mm:listnodes>
+					        </c:if>
+					        <img src="../gfx/icons/status_${status}.png"
+					             alt="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />"
+					             title="<fmt:message key="content.status" />: <fmt:message key="content.status.${status}" />"/>
+					    </td>
+					</c:if>
 				</tr>				
 		      <mm:last>
 		            </tbody>
