@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>2.3.1</version>
+			<version>2.3.2</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-misc</artifactId>
-			<version>2.3.1</version>
+			<version>2.3.2</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>lucene</groupId>
 			<artifactId>lucene-highlighter</artifactId>
-			<version>2.3.1</version>
+			<version>2.3.2</version>
 			<url>http://lucene.apache.org/java/docs/index.html</url>
 			<properties>
 				<war.bundle>${war.bundle}</war.bundle>
