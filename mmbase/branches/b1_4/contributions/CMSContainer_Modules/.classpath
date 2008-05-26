@@ -188,7 +188,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/com.luceus/jars/luceus-server-0.42.jar"/>
 
 	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-core-2.1.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.13.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org.samba.jcifs/jars/jcifs-1.2.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/acegisecurity/jars/acegi-security-1.0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/ejb3-persistence-3.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-3.2.5.GA.jar"/>
