@@ -30,7 +30,7 @@ import xmlbs.PropertiesDocumentStructure;
 public class WordHtmlCleaner {
 
    /** MMBase logging system */
-   private static final Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
+   private static Logger log = Logging.getLoggerInstance(WordHtmlCleaner.class.getName());
 
    /**
     * xmlbs stuff Document structure configurable using a property file. A
@@ -100,7 +100,7 @@ public class WordHtmlCleaner {
     * 
     * @param textStr
     *           ugly html code
- * @param replaceHeaders 
+    * @param replaceHeaders 
     * @return clean html code
     */
    public static String cleanHtml(String textStr, boolean replaceHeaders) {
@@ -216,9 +216,9 @@ public class WordHtmlCleaner {
       text = text.replaceAll("<[pP]{1}>\\s*</[pP]{1}>", ""); 
 
       // remove all remaining <p> start tags
-      text = text.replaceAll("<\\s*[pP]{1}\\s*.*?>", "");
+      text = text.replaceAll("<\\s*[pP]{1}(\\s{1}.*?)?>", "");
       // replace all remaining </p> closing tags with a <br><br>
-      text = text.replaceAll("<\\s*/[pP]{1}\\s*.*?>", "<br/><br/>");
+      text = text.replaceAll("<\\s*/[pP]{1}(\\s{1}.*?)?>", "<br/><br/>");
       // remove all <br> at the end
       text = text.replaceAll("(<\\s*[bB][rR]\\s*/?>|\\s|&nbsp;)+\\z", "");
       return text;
