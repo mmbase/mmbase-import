@@ -180,6 +180,7 @@
             <gui>
                 <guiname xml:lang="nl">Aangemaakt door</guiname>
                 <guiname xml:lang="en">Creator</guiname>
+                <guiname xml:lang="zh">创建者</guiname>
             </gui>
             <editor>
                 <positions>
