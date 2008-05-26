@@ -87,7 +87,7 @@ public class InsertPageImageTag extends CmscTag {
       boolean override = StringUtils.equals(this.inherit, "override");
 
       List<Integer> images = getCurrentPageImages();
-      if ((override && images.size() < 1) || directly) { // inherit from parent.
+      if ((override && images.size() == 0) || directly) { // inherit from parent.
          images.addAll(getImagesOfParent());
       }
 
@@ -102,16 +102,19 @@ public class InsertPageImageTag extends CmscTag {
       return null;
    }
 
-
+   /**
+    * Search for images of parent pages and return an image when found.
+    * @return the image of a parent page
+    */
    private List<Integer> getImagesOfParent() {
       List<Page> pages = SiteManagement.getPagesFromPath(getPath());
 
       if (pages.size() > 1) {
 
-         for (int i = pages.size() - 2; i > 0; i--) {
+         for (int i = pages.size() - 2; i >= 0; i--) {
             if (pages.get(i).getPageImages().size() > 0)
-               return pages.get(i).getImages(); // once find image from a closer
-                                                // parent,stop inherint.
+               return pages.get(i).getImages(); // when an image is found in a parent,
+                                                // stop recursing
          }
 
       }
