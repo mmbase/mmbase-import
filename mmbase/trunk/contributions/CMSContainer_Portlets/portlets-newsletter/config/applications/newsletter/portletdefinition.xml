@@ -15,7 +15,7 @@
    <node number="54705" owner="default">
 		<title>Newsletter unsubscribeportlet Portlet</title>
 		<description>Newsletter unsubscribeportlet portlet</description>
-		<definition>unsubscribeportlet</definition>
+		<definition>newsletterunsubscriptionportlet</definition>
 		<type>multiple</type>
 	</node>
 </portletdefinition>
