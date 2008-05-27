@@ -88,9 +88,9 @@
                      <td> <fmt:message key="newsletterlog.from" /> </td>
                      <td>
                         <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:125px" />
-                        <button type="reset" id="f_trigger_b" style="width: 25px">
-                           <fmt:message key="newsletterlog.doc" />
-                        </button>
+                        <input type="image" src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_b" border="0">
+                           
+                        </input>
                         <script type="text/javascript">
                            Calendar.setup({
                               inputField     :    "f_date_b",      // id of the input field
@@ -103,9 +103,9 @@
                      <td> <fmt:message key="newsletterlog.to" /> </td>
                      <td>
                         <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:125px" />
-                        <button type="reset" id="f_trigger_be" style="width: 25px">
-                           <fmt:message key="newsletterlog.doc" />
-                        </button>
+                        <input type="image" src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_be" border="0">
+                           
+                        </input>
                         <script type="text/javascript">
                            Calendar.setup({
                               inputField     :    "f_date_be",      // id of the input field
@@ -148,7 +148,7 @@
                   </tr>
                   <tr>
                      <td>
-                        <input type="button" onclick="javascript:submits()" 
+                         <input type="button" onclick="javascript:submits()" 
                            value="<fmt:message key="newsletterlog.submit" />" />
                         <input type="button" onclick="javascript:resets()"
                            value="<fmt:message key="newsletterlog.reset" />" />
