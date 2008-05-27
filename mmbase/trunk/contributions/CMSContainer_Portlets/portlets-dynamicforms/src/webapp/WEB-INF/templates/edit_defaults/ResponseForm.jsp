@@ -51,7 +51,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2"><fmt:message key="edit_defaults.define"/>:</td>
+		<td colspan="2"><fmt:message key="edit_defaults.definition"/>:</td>
 		<% String mm=(String)request.getAttribute("com.finalist.cmsc.beans.om.definitionId");%>
 		<mm:cloud>
 			<mm:node number="<%=mm%>" >		
