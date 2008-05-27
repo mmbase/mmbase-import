@@ -7,10 +7,17 @@
       <config></config>
       <type>2</type>
    </node>
-   <node number="104972" owner="default">
+   <node number="104973" owner="default">
       <name>Publication Sent CronJob</name>
       <crontime>*/5 * * * *</crontime>
       <classfile>com.finalist.newsletter.PublicationSentCronJob</classfile>
+      <config></config>
+      <type>2</type>
+   </node>
+   <node number="104974" owner="default">
+      <name>Newsletter LogRecord CronJob</name>
+      <crontime>* 23 * * *</crontime>
+      <classfile>com.finalist.newsletter.NewsletterCronLogRecorder</classfile>
       <config></config>
       <type>2</type>
    </node>

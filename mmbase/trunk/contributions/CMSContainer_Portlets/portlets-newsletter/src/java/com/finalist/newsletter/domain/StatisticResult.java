@@ -8,6 +8,8 @@ public class StatisticResult {
       BOUNCE,ACTIVE,INACTIVE,REMOVE,POST
    }
 	private int newsletterId = 0;
+	
+	private int userId=0;
 
 	private String name;
 
@@ -114,5 +116,15 @@ public class StatisticResult {
 
 		this.logdate = logdate;
 	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	
 
 }
