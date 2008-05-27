@@ -18,7 +18,7 @@
            textStr += dummy; 
            %>
         </mm:field>
-        <mm:field name="titel" jspvar="titel" vartype="String" write="false">
+        <mm:field name="title" jspvar="titel" vartype="String" write="false">
            <% 
            String highlightSearchTerms = su.highlightSearchTerms(textStr,defaultSearchTerms,"b");
            if (!highlightSearchTerms.trim().equals("")){
