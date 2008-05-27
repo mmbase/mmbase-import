@@ -77,9 +77,9 @@
       </portlet-info>
    </portlet>
    <portlet>
-      <description>a unsubscribeportlet portlet</description>
-      <portlet-name>unsubscribeportlet</portlet-name>
-      <display-name>unsubscribeportlet Content Portlet</display-name>
+      <description>a Newsletter unsubscribeportlet portlet</description>
+      <portlet-name>newsletterunsubscriptionportlet</portlet-name>
+      <display-name>Newsletter unsubscribeportlet Content Portlet</display-name>
       <portlet-class>
          com.finalist.portlets.newsletter.UnsubscribePortlet
       </portlet-class>
