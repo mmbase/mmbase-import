@@ -52,7 +52,9 @@ public class SiteCreate extends MMBaseFormlessAction {
 
             addToRequest(request, "showpage", ewnodelastedited);
 
-            ActionForward ret = mapping.findForward(SUCCESS);
+//            ActionForward ret = mapping.findForward(SUCCESS);
+            ActionForward ret = new ActionForward("/editors/site/NavigatorPanel.do?nodeId=" + ewnodelastedited
+                    + "&fresh=fresh");
             return ret;
          }
          ActionForward ret = mapping.findForward(CANCEL);
