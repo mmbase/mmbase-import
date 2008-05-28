@@ -16,7 +16,7 @@
    <xsl:import href="ew:xsl/wizard.xsl"/>
 <!-- <xsl:include href="wizard-simple.xsl"/> -->
    <xsl:include href="wizard-workflow.xsl"/>
-
+   <xsl:include href="templatesi18n:xsl/prompts-newsletter.xsl"/>
    <!-- contains templates which can be implemented by customer projects -->
    <xsl:include href="wizard-custom.xsl"/>
 
