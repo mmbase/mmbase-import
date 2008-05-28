@@ -239,7 +239,19 @@ function inits(){
          message += "Monthly,start time:"+expression[1]+":"+expression[2];
          var months = "";
           if(expression[3] == "0") {
-            message += "<br/> Every "+expression[4]+" day";
+            message += "<br/> day : "+expression[4]+"";
+             if(expression[4] == "1") {
+               message += "st";
+            }
+            else if (expression[4] == "2") {
+               message += "nd";
+            }
+            else if (expression[4] == "3") {
+               message += "rd";
+            }
+            else {
+               message += "th";  
+            }
             months = expression[5];
          }
          else if(expression[3] == "1") {
