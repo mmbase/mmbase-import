@@ -2,6 +2,8 @@ package com.finalist.newsletter.forms;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,21 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.mmbase.bridge.Cloud;
-
-import com.finalist.cmsc.struts.MMBaseAction;
+import org.apache.struts.actions.DispatchAction;
+import com.finalist.newsletter.domain.Schedule;
 import com.finalist.newsletter.schedule.AbstractSchedule;
 import com.finalist.newsletter.schedule.DailySchedule;
 import com.finalist.newsletter.schedule.MonthSchedule;
 import com.finalist.newsletter.schedule.ScheduleService;
 import com.finalist.newsletter.schedule.SingleSchedule;
 import com.finalist.newsletter.schedule.WeeklySchedule;
+import com.finalist.newsletter.util.NewsletterUtil;
 
-public class Schedule  extends MMBaseAction{
+public class ScheduleAction  extends DispatchAction{
    
-   @Override
-   public ActionForward execute(ActionMapping mapping, ActionForm form,
-         HttpServletRequest request, HttpServletResponse response, Cloud cloud)
+
+   public ActionForward transform(ActionMapping mapping, ActionForm form,
+         HttpServletRequest request, HttpServletResponse response)
          throws Exception {
       Map<String,Object> requestParameters = new HashMap<String,Object>();
       AbstractSchedule schedule = null;
@@ -92,7 +94,42 @@ public class Schedule  extends MMBaseAction{
       }
       return null;
    }
-   
+
+   public ActionForward getSchedules(ActionMapping mapping, ActionForm form,
+      HttpServletRequest request, HttpServletResponse response)
+         throws Exception {
+      response.setContentType("text/xml");
+      response.setCharacterEncoding("utf-8");
+      StringBuffer sb = new StringBuffer();
+      String newsletterId = request.getParameter("newsletterid");
+      List<Schedule> schedules = NewsletterUtil.getSchedulesBynewsletterId(Integer.valueOf(newsletterId));
+      for(Schedule schedule : schedules) {
+         sb.append("<schedule>");
+         sb.append("<number>"+schedule.getId()+"</number>");
+         sb.append("<expression>"+schedule.getExpression()+"</expression>");
+         sb.append("<description>"+schedule.getScheduleDescription()+"</description>");
+         sb.append("</schedule>");
+      }       
+      response.getWriter().print("<schedules>"+sb.toString()+"</schedules>");     
+      return null;
+   }
+
+   public ActionForward deleteSchedule(ActionMapping mapping, ActionForm form,
+      HttpServletRequest request, HttpServletResponse response)
+         throws Exception {
+      String scheduleId = request.getParameter("scheduleid");
+      NewsletterUtil.deleteSchedule(Integer.valueOf(scheduleId));
+      return null;
+   }
+
+   public ActionForward restoreSchedule(ActionMapping mapping, ActionForm form,
+      HttpServletRequest request, HttpServletResponse response)
+         throws Exception {
+      String scheduleId = request.getParameter("scheduleid");
+      NewsletterUtil.getSchedulesBynewsletterId(Integer.valueOf(scheduleId));
+      return null;
+   }
+
    /**
     * from array to String
     * @param args

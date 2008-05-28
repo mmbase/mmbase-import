@@ -72,7 +72,7 @@
          <forward name="success" path="/editors/newsletter/module/import_success.jsp"/>
 
       </action>
-      <action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.Schedule" unknown="false"
+      <action path="/editors/newsletter/Schedule" type="com.finalist.newsletter.forms.ScheduleAction" unknown="false"
               validate="false">
       </action>
       <action path="/editors/newsletter/UnsubscribeAction" type="com.finalist.newsletter.forms.UnsubscribeAction"

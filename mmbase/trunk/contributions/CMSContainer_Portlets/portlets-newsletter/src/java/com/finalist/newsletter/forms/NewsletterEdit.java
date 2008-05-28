@@ -31,15 +31,18 @@ public class NewsletterEdit extends MMBaseFormlessAction {
 
       if (StringUtils.isBlank(action)) {
          String objectnumber = getParameter(request, "number", true);
-
          ActionForward ret = new ActionForward(mapping.findForward("openwizard").getPath() + "?objectnumber=" + objectnumber + "&returnurl="
                + mapping.findForward("returnurl").getPath());
          ret.setRedirect(true);
          return ret;
       } else {
          SecurityUtil.clearUserRoles(cloud);
+
          String ewnodelastedited = getParameter(request, "ewnodelastedited");
+         Node newsletterNode = cloud.getNode(ewnodelastedited);
+         NewsletterUtil.addScheduleForNewsletter(newsletterNode);
          addToRequest(request, "showpage", ewnodelastedited);
+
          ActionForward ret = mapping.findForward(SUCCESS);
          return ret;
       }

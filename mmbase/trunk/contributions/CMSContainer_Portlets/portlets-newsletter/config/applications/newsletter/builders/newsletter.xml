@@ -345,5 +345,27 @@
 			<type key="false" notnull="false" state="system">DATETIME</type>
 			</db>
 		</field>
+      <field>
+			<descriptions>
+				<description xml:lang="nl">Schedule Description</description>
+				<description xml:lang="en">Schedule Description</description>
+			</descriptions>
+			<gui>
+				<guiname xml:lang="nl">ScheduleDescription</guiname>
+				<guiname xml:lang="en">ScheduleDescription</guiname>
+			</gui>
+			<editor>
+				<positions>
+					<input>9</input>
+					<list>-1</list>
+					<search>-1</search>
+				</positions>
+			</editor>
+			<datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" ></datatype>
+			<db>
+				<name>scheduledescription</name>
+				<type key="false" notnull="false" size="256" state="persistent">STRING</type>
+			</db>
+		</field>
 	</fieldlist>
 </builder>

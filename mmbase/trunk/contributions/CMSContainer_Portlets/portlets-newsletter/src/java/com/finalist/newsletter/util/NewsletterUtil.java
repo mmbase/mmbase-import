@@ -2,14 +2,18 @@ package com.finalist.newsletter.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import net.sf.mmapps.commons.beans.MMBaseNodeMapper;
 import net.sf.mmapps.modules.cloudprovider.CloudProviderFactory;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +37,8 @@ import com.finalist.newsletter.cao.NewsLetterStatisticCAO;
 import com.finalist.newsletter.cao.impl.NewsLetterStatisticCAOImpl;
 import com.finalist.newsletter.domain.StatisticResult.HANDLE;
 import com.finalist.newsletter.services.impl.StatisticServiceImpl;
+import net.sf.mmapps.commons.bridge.RelationUtil;
+import com.finalist.newsletter.domain.Schedule;
 
 public abstract class NewsletterUtil {
    private static Log log = LogFactory
@@ -461,5 +467,231 @@ public abstract class NewsletterUtil {
       inputString = StringUtils.replace(inputString, "href=\"/", "href=\"" + liveURL);
       inputString = StringUtils.replace(inputString, "src=\"/", "src=\"" + liveURL);
       return inputString;
+   }
+
+ public static void addScheduleForNewsletter(Node newsletterNode) {
+      NodeManager scheduleNodeManager = newsletterNode.getCloud().getNodeManager("schedule");
+      NodeList schedules =SearchUtil.findRelatedOrderedNodeList(newsletterNode, "schedule", "posrel", "createdatetime","DOWN");
+      if(schedules.size() == 0) {
+         addScheduleNode(newsletterNode,scheduleNodeManager);
+      }
+      else {
+         Node firstScheduleNode = schedules.getNode(0);
+         if(firstScheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue("schedule"))){
+            return;  
+         }
+         for(int i = 0; i < schedules.size(); i ++) {
+            Node scheduleNode = schedules.getNode(i);
+            if(scheduleNode.getStringValue("expression").equals(newsletterNode.getStringValue("schedule"))) {
+               scheduleNode.setLongValue("createdatetime", System.currentTimeMillis());
+               scheduleNode.commit();
+               return;
+            }
+         }
+         addScheduleNode(newsletterNode,scheduleNodeManager);
+      }
+   }
+   
+   public static void addScheduleNode(Node newsletterNode, NodeManager scheduleNodeManager) {
+      Node scheduleNode = scheduleNodeManager.createNode();
+      scheduleNode.setStringValue("expression",newsletterNode.getStringValue("schedule"));
+      scheduleNode.setLongValue("createdatetime",System.currentTimeMillis());
+      scheduleNode.commit();
+      RelationUtil.createRelation(newsletterNode, scheduleNode, "posrel");
+   }
+
+   public static List<Schedule> getSchedulesBynewsletterId(int id) {
+      List<Schedule> schedules = new ArrayList<Schedule>();
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node newsletterNode = cloud.getNode(id);
+      NodeList scheduleList =SearchUtil.findRelatedOrderedNodeList(newsletterNode, "schedule", "posrel", "createdatetime","DOWN");
+      for(int i = 1 ; i < scheduleList.size() ;i++) {
+         Node scheduleNode = scheduleList.getNode(i);
+         Schedule schedule = new Schedule();
+         schedule.setId(scheduleNode.getIntValue("number"));
+         schedule.setExpression(scheduleNode.getStringValue("expression"));
+         schedule.setScheduleDescription(getScheduleMessageByExpression(scheduleNode.getStringValue("expression")));
+         schedules.add(schedule);
+      }
+      return schedules;      
+   }
+   public static String getScheduleMessageByExpression(String expression){
+      StringBuilder scheduleMessage = null;
+      ResourceBundle rb =  ResourceBundle.getBundle("cmsc-calendar");
+      String[] expressions = expression.split("\\|");
+      String type;
+      if(expressions == null || expressions.length ==0) {
+        return null;
+      }
+      scheduleMessage = new StringBuilder();
+      type = expressions[0];
+      if(type.equals("1")) {
+         scheduleMessage.append(rb.getString("calendar.once")+",");
+         scheduleMessage.append(rb.getString("calendar.start.datetime"));
+         scheduleMessage.append(expressions[1]).append(" ").append(expressions[2]).append(":").append(expressions[3]);
+      }
+      else if(type.equals("2")) {
+         scheduleMessage.append(rb.getString("calendar.daily")+",");
+         scheduleMessage.append(rb.getString("calendar.start.datetime"));
+         scheduleMessage.append(expressions[1]).append(" ").append(expressions[2]).append(":").append(expressions[3]);
+         scheduleMessage.append("<br/>");
+         if(expressions[4].equals("0")) {
+            scheduleMessage.append(rb.getString("calendar.approach.interval.pre")).append(rb.getString("calendar.approach.interval.day"));
+         }
+         else if(expressions[4].equals("1")){
+            scheduleMessage.append(rb.getString("calendar.approach.interval.pre")).append(rb.getString("calendar.approach.weekday"));
+         }
+         else if(expressions[4].equals("2")) {
+            scheduleMessage.append(rb.getString("calendar.approach.interval.pre")).append(" ").append(expressions[5]).append(" ").append(rb.getString("calendar.approach.interval.day"));
+         }
+      }
+      else if(type.equals("3")) {
+         scheduleMessage.append(rb.getString("calendar.weekly")).append(",").append(rb.getString("calendar.start.datetime"));
+         scheduleMessage.append(expressions[1]).append(":").append(expressions[2]);
+         scheduleMessage.append("<br/>").append(rb.getString("calendar.approach.interval.pre")).append(expressions[3]).append(rb.getString("calendar.approach.interval.week"));
+         
+         String tempWeek = "";
+         for (int i = 0; i < expressions[4].length(); i++) {
+            String month = expressions[4].substring(i, i + 1);
+            if (month.equals("1")) {
+               tempWeek += rb.getString("calendar.week.monday") + ",";
+            } else if (month.equals("2")) {
+               tempWeek += rb.getString("calendar.week.tuesday") + ",";
+            } else if (month.equals("3")) {
+               tempWeek += rb.getString("calendar.week.wednesday") + ",";
+            } else if (month.equals("4")) {
+               tempWeek += rb.getString("calendar.week.thursday") + ",";
+            } else if (month.equals("5")) {
+               tempWeek += rb.getString("calendar.week.friday") + ",";
+            } else if (month.equals("6")) {
+               tempWeek += rb.getString("calendar.week.saturday") + ",";
+            } else if (month.equals("7")) {
+               tempWeek += rb.getString("calendar.week.sunday") + ",";
+            }
+         }
+         if(StringUtils.isNotEmpty(tempWeek)){
+            if(tempWeek.endsWith(",")){
+               tempWeek = tempWeek.substring(0,tempWeek.length()-1) ;
+            }
+         }
+         scheduleMessage.append("<br/>").append(rb.getString("calendar.approach.interval.week")).append(":").append(tempWeek);
+      }
+      else {
+         scheduleMessage.append(rb.getString("calendar.monthly")).append(",").append(rb.getString("calendar.start.datetime")).append(expressions[1]).append(":").append(expressions[2]);
+         String months = "";
+         if(expressions[3].equals("0")) {
+            scheduleMessage.append("<br/>").append(rb.getString("calendar.approach.interval.pre")).append(" ").append(expressions[4]).append(" ").append(rb.getString("calendar.approach.interval.day"));
+            months = expressions[5];
+         }
+         else if(expressions[3].equals("1")) {
+            scheduleMessage.append("<br/>").append(rb.getString("calendar.week"));
+            if(expressions[4].equals("1")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.which.week.first")).append(" ").append(rb.getString("calendar.approach.interval.week")).append(",");
+            }
+            else if (expressions[4].equals("2")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.which.week.second")).append(" ").append(rb.getString("calendar.approach.interval.week")).append(",");
+            }
+            else if (expressions[4].equals("3")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.which.week.third")).append(" ").append(rb.getString("calendar.approach.interval.week")).append(",");
+            }
+            else if (expressions[4].equals("4")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.which.week.forth")).append(" ").append(rb.getString("calendar.approach.interval.week")).append(",");
+            }
+            else if (expressions[4].equals("5")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.which.week.last")).append(" ").append(rb.getString("calendar.approach.interval.week")).append(",");
+            }
+
+            if(expressions[5].equals("1")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.monday")).append(".");
+            }
+            else if (expressions[5].equals("2")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.tuesday")).append(".");
+            }
+            else if (expressions[5].equals("3")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.wednesday")).append(".");
+            }
+            else if (expressions[5].equals("4")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.thursday")).append(".");
+            }
+            else if (expressions[5].equals("5")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.friday")).append(".");
+            }
+            else if (expressions[5].equals("6")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.saturday")).append(".");
+            }
+            else if (expressions[5].equals("7")) {
+               scheduleMessage.append(" ").append(rb.getString("calendar.week.sunday")).append(".");
+            }
+             months = expressions[6];
+         }
+         
+         String temp = "";
+         for(int i = 0 ; i < months.length();i++) {
+              String month = months.substring(i,i+1);
+               if(month.equals("0")) {
+                  temp += rb.getString("calendar.month.january")+",";
+               }
+               else if(month.equals("1")) {
+                  temp += rb.getString("calendar.month.february")+",";
+               }
+               else if(month.equals("2")) {
+                  temp += rb.getString("calendar.month.march")+",";
+               }
+               else if(month.equals("3")) {
+                  temp += rb.getString("calendar.month.april")+",";
+               }
+               else if(month.equals("4")) {
+                  temp += rb.getString("calendar.month.may")+",";
+               }
+               else if(month.equals("5")) {
+                  temp += rb.getString("calendar.month.june")+",";
+               }
+               else if(month.equals("6")) {
+                  temp += rb.getString("calendar.month.july")+",";
+               }
+               else if(month.equals("7")) {
+                  temp += rb.getString("calendar.month.august")+",";
+               }
+               else if(month.equals("8")) {
+                  temp += rb.getString("calendar.month.september")+",";
+               }
+               else if(month.equals("9")) {
+                  temp += rb.getString("calendar.month.october")+",";
+               }
+               else if(month.equals("a")) {
+                  temp += rb.getString("calendar.month.november")+",";
+               }
+               else if(month.equals("b")) {
+                  temp += rb.getString("calendar.month.december")+",";
+               }
+        }
+        if(StringUtils.isNotEmpty(temp)){
+           if(temp.endsWith(",")){
+              temp = temp.substring(0,temp.length()-1) ;
+           }
+        }
+        scheduleMessage.append("<br/>").append(rb.getString("calendar.month")).append(" ").append(temp);
+      }
+      return scheduleMessage.toString();
+   }
+
+   public static void deleteSchedule(int scheduleId) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node scheduleNode = cloud.getNode(scheduleId);
+      scheduleNode.deleteRelations();
+      scheduleNode.delete();
+   }
+
+   public static void restoreSchedule(int scheduleId) {
+      Cloud cloud = CloudProviderFactory.getCloudProvider().getCloud();
+      Node scheduleNode = cloud.getNode(scheduleId);
+      Node newsletterNode = SearchUtil.findRelatedNode(scheduleNode, "newsletter", "posrel");
+      if(newsletterNode != null) {
+         newsletterNode.setStringValue("schedule", scheduleNode.getStringValue("expression"));
+         newsletterNode.setStringValue("scheduledescription", getScheduleMessageByExpression(scheduleNode.getStringValue("expression")));
+         newsletterNode.commit();
+      }
+      scheduleNode.setLongValue("createdatetime", System.currentTimeMillis());
+      scheduleNode.commit();
    }
 }
