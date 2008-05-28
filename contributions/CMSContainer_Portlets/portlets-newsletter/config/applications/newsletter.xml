@@ -24,6 +24,7 @@
 		<relation from="subscriptionrecord" to="term" type="termed" />
 		<relation from="newsletter" to="subscriptionrecord" type="newslettered" />
 		<relation from="newsletter" to="attachments" type="posrel"/>
+      <relation from="newsletter" to="schedule" type="posrel"/>
       <relation from="newsletterpublication" to="attachments" type="posrel"/>
 	</allowedrelationlist>
 	<datasourcelist>

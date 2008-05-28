@@ -24,6 +24,7 @@ import com.finalist.cmsc.navigation.NavigationUtil;
 import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.struts.MMBaseFormlessAction;
 import com.finalist.newsletter.util.NewsletterPublicationUtil;
+import com.finalist.newsletter.util.NewsletterUtil;
 
 public class NewsletterCreate extends MMBaseFormlessAction {
 
@@ -53,8 +54,10 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             // Create a default term for this newsletter
             
             NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
-           
-
+            NewsletterUtil.addScheduleForNewsletter(newNewsletter);
+            
+            newNewsletter.setStringValue("scheduledescription",NewsletterUtil.getScheduleMessageByExpression(newsletterNode.getStringValue("schedule")));
+            newNewsletter.commit();
             addToRequest(request, "showpage", ewnodelastedited);
             ActionForward ret = mapping.findForward(SUCCESS);
             return ret;
