@@ -56,7 +56,7 @@ public class NewsletterCreate extends MMBaseFormlessAction {
             NewsletterPublicationUtil.createDefaultTerm(newNewsletter);
             NewsletterUtil.addScheduleForNewsletter(newNewsletter);
             
-            newNewsletter.setStringValue("scheduledescription",NewsletterUtil.getScheduleMessageByExpression(newsletterNode.getStringValue("schedule")));
+            newNewsletter.setStringValue("scheduledescription",NewsletterUtil.getScheduleMessageByExpression(newNewsletter.getStringValue("schedule")));
             newNewsletter.commit();
             addToRequest(request, "showpage", ewnodelastedited);
             ActionForward ret = mapping.findForward(SUCCESS);
