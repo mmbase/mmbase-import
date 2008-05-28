@@ -6,12 +6,35 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html:html xhtml="true">
 <cmscedit:head title="calendar.head.title">
-<link href="../../../../editors/css/main.css" type="text/css" rel="stylesheet">
+
+
+<link href="/cmsc-community/editors/editwizards_new/style/layout/wizard.css" type="text/css" rel="stylesheet">
+<link href="/cmsc-community/editors/editwizards_new/style/color/wizard.css" type="text/css" rel="stylesheet">
+<link href="/cmsc-community/editors/editwizards_new/style/extra/wizard.css" type="text/css" rel="stylesheet">
+<link href="../style/layout/searchlist.css" type="text/css" rel="stylesheet">
+<link href="/cmsc-community/editors/editwizards_new/style/color/searchlist.css" type="text/css" rel="stylesheet">
+<link href="/cmsc-community/editors/editwizards_new/style/extra/searchlist.css" type="text/css" rel="stylesheet">
+
+<style xml:space="preserve" type="text/css">
+   input.calendar {
+       width: 22px;
+       height: 17px; 
+       border:0px;
+    }
+   input.schedule {
+      width: 18px;
+      height: 17px;
+      border:0px;
+   }
+</style>
+
+<script src="../../../../js/prototype.js" type="text/javascript"></script>
 <c:url var="actionUrl" value="/editors/newsletter/Schedule.do"/>
 <c:set var="type" value="${param.type}"/>
 
 <script type="text/javascript">
    var type =1; 
+   var newsletterId = "";
    type = '${type}';
 
    var gotoString = '<fmt:message key="calendar.goto"/>';
@@ -132,32 +155,15 @@
       }
       sendRequest();
    }
- 	var XMLHttpReq;
-   var flag = false;
- 	function createXMLHttpRequest() {	
-		if(window.XMLHttpRequest) { 
-			XMLHttpReq = new XMLHttpRequest();
-		}
-		else if (window.ActiveXObject) { 
-			try {
-				XMLHttpReq = new ActiveXObject("Msxml2.XMLHTTP");
-			} 
-         catch (e) {
-				try {
-					XMLHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
-				} 
-            catch (e) {}
-			}
-		}
-	}
 	//send request 
 	function sendRequest() {
-		createXMLHttpRequest();
-      var url = "${actionUrl}";
-		XMLHttpReq.open("POST", url);
-      XMLHttpReq.setRequestHeader("CONTENT-TYPE","application/x-www-form-urlencoded");
-		XMLHttpReq.onreadystatechange = processResponse;
-		XMLHttpReq.send(getParameters()); 
+      var myAjax = new Ajax.Request(
+         '${actionUrl}?method=transform',
+          {
+		      parameters:getParameters(),
+            onComplete: processResponse
+          }
+      );
 	}
 
    function getParameters(){
@@ -318,18 +324,12 @@
       return parameters;
    }
 	//deal with the response 
-    function processResponse() {
-    	if (XMLHttpReq.readyState == 4) { 
-        	if (XMLHttpReq.status == 200) { 
-				DisplayHot();
-         } 
-        }
-    }
-    function DisplayHot() {	
-	    var expression = XMLHttpReq.responseXML.getElementsByTagName("expression")[0].firstChild.nodeValue;
+
+    function processResponse(response) {	
+	    var expression = response.responseXML.getElementsByTagName("expression")[0].firstChild.nodeValue;
        window.opener.document.getElementById(id).value = expression;
        window.opener.document.getElementById("calendar-expression").innerHTML = message;
-       this.close();
+       window.close();
 	}
    function strDateTime(str){
       var reg = /^(\d{1,2})(-|\/)(\d{1,2})\2(\d{1,4})$/;
@@ -349,53 +349,212 @@
      var reg = /^[0-9]*[1-9][0-9]*$/;
      return check(reg,s);
   }
+
+  function showTab(element,type) {
+     if(type == "add") {
+        $('scheduleAdd').show(); 
+        $('addDiv').className = "tab_active";
+        $('listDiv').className = "tab";
+        $('scheduleList').hide();
+     }
+     else if(type == "list") {
+        $('addDiv').className = "tab";
+        $('listDiv').className = "tab_active";
+        $('scheduleAdd').hide(); 
+  
+        $('scheduleList').show();
+        createSchedules();
+     }
+  }
+
+  function createSchedules() {
+      $('scheduleList').innerHTML = "";
+     var myAjax = new Ajax.Request(
+        '${actionUrl}?method=getSchedules',
+         {
+		      parameters:'newsletterid='+newsletterId,
+            onComplete: createScheduleList
+         }
+     );
+  }
+
+  function createScheduleList(response){
+     var numbers = response.responseXML.getElementsByTagName("number");
+     var expressions = response.responseXML.getElementsByTagName("expression");
+     var descriptions = response.responseXML.getElementsByTagName("description");
+
+     var divElement =  document.createElement("div");
+     divElement.className = "searchresult";
+     var table = document.createElement("table");
+     var tbody = document.createElement("tbody");
+      table.className = "searchresult";
+      table.setAttribute("cellspacing","0");
+     for(i = 0 ; i < numbers.length;i++) {
+
+        var aDeleteElement=document.createElement("a");
+        aDeleteElement.href="javascript:deleteSchedule('"+numbers[i].childNodes[0].nodeValue+"')";
+        
+        var deleteImg=new Image();
+        deleteImg.src="../../../../editors/gfx/icons/delete.png";
+        deleteImg.style.border="none";
+        deleteImg.title = '<fmt:message key="calendar.delete"/>';
+        aDeleteElement.appendChild(deleteImg) 
+
+        var aRestoreElement=document.createElement("a");
+        aRestoreElement.href="javascript:restoreSchedule('"+expressions[i].childNodes[0].nodeValue+"','"+descriptions[i].childNodes[0].nodeValue+"')";
+        
+        var restoreImg=new Image();
+        restoreImg.src="../../../../editors/gfx/icons/restore.png";
+        restoreImg.style.border="none";
+        restoreImg.title = '<fmt:message key="calendar.restore"/>';
+        aRestoreElement.appendChild(restoreImg) 
+
+        var tr = document.createElement("tr");
+        if(i% 2 ==0){
+           tr.className = "even";
+        }
+        else {
+           tr.className = "odd";
+        }
+        var td = document.createElement("td");
+        td.innerHTML = descriptions[i].childNodes[0].nodeValue;
+        tr.appendChild(td);
+
+        var td1 = document.createElement("td");
+        td1.appendChild(aRestoreElement);
+        td1.appendChild(aDeleteElement);
+        tr.appendChild(td1);
+
+        tr.appendChild(td);
+
+        tbody.appendChild(tr);
+
+     }
+     table.appendChild(tbody);
+    divElement.appendChild(table);
+    $('scheduleList').appendChild(divElement);
+  }
+
+  function deleteSchedule(number) {
+
+     var myAjax = new Ajax.Request(
+        '${actionUrl}?method=deleteSchedule',
+         {
+		      parameters:'scheduleid='+number
+         }
+     );
+    createSchedules();
+  }
+
+  function restoreSchedule(expression,scheduleDescription){
+
+     window.opener.document.getElementById(id).value = expression;
+     window.opener.document.getElementById("calendar-expression").innerHTML = scheduleDescription;
+     window.close();
+  }
+
+  function initPage(){
+      $('scheduleList').hide(); 
+
+      var inputs = window.opener.document.getElementsByTagName("input");
+      for( i = 0 ; i < inputs.length ; i++) {
+         if(inputs[i].getAttribute("fdatapath") && inputs[i].getAttribute("fdatapath") == "field[@name='title']") {
+            newsletterId = inputs[i].getAttribute("number");
+         }
+      }
+      $('newsletterid').value = newsletterId;
+  }
 </script>
 <script src="../javascript/datepicker-new.js" type="text/javascript"></script>
 </cmscedit:head>
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 
-<body onload=" initPopCalendar();initDatetime()">
+<body onload=" initPopCalendar();initDatetime();initPage()">
+
+<div id="stepsbar">
+
+<div class="tabs">
+
+<div class="tab_active" id="addDiv">
+
+<div class="body">
+
+<a href="javascript:showTab(this,'add');"  class="valid">
+
+<fmt:message key="calendar.tab.add"/>
+
+</a>
+</div></div>
+
+<div class="tab" id="listDiv"><div class="body"><a href="javascript:showTab(this,'list');" class="valid"><fmt:message key="calendar.tab.list"/></a></div></div></div></div>
+
+
+<input type="hidden" value="" name="newsletterid" id="newsletterid"/>
+
 <form method="post" name="form1" action="">
-<div >
-<p><fmt:message key="calendar.title"/></p>
+<div class="editor" style="height:260px">
+<p></p>
+<div id="scheduleAdd">
+<div class="body">
+<table>
 <c:choose>
     <c:when test="${type == '1'}">         
-        <fmt:message key="calendar.startdate"/> <input type="text" name="date" id="date" size="12"/> <input type="image" class="calendar" src="../media/datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 ,this.form, 'date',event);return false;"/>
-        <p>
-       <fmt:message key="calendar.starttime"/> <select id="hour" name="hour"></select>:<select id="minute" name="minute"></select><br/>
-       <p>  <a href="#"  onclick="javascript:window.close()"/> <fmt:message key="calendar.cancel"/></a> <a href="#"  onclick="createCalendar('1')"/> <fmt:message key="calendar.ok"/></a></p>
+        <tr class="fieldcanvas"><td  class="fieldprompt"><span  class="valid" ><fmt:message key="calendar.startdate"/></span> </td><td ><input type="text" name="date" id="date" size="12" maxlength="12" class="date"/> <input type="image" class="calendar" src="../media/datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', -105 , -30 ,this.form, 'date',event);return false;"/></td></tr>
+        <tr class="fieldcanvas"><td class="fieldprompt">
+       <span  class="valid" ><fmt:message key="calendar.starttime"/></span> </td><td> <select id="hour" name="hour"></select>:<select id="minute" name="minute"></select></td></tr>
+       <tr > <td colspan="2"> <table  width="100%"><tr class="fieldcanvas"><td width="40%"  ><a href="#"  onclick="createCalendar('1')"/><span  class="valid" > <fmt:message key="calendar.ok"/></span></a></td> <td><a href="#"  onclick="javascript:window.close()"/><span  class="valid" > <fmt:message key="calendar.cancel"/></span> </a><td></tr>
+       </td></tr></table>
     </c:when>
     <c:when test="${type == '2'}">
-        <fmt:message key="calendar.startdate"/> <input type="text" name="date" id="date" size="12"/><input type="image" class="calendar" src="../media/datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', - 205 , 5 , document.forms[0], 'date',event);return false;"/>
-        <p>
-        <fmt:message key="calendar.starttime"/><select id="hour" name="hour"></select>:<select id="minute" name="minute"></select>
-        </p>
-        <fmt:message key="calendar.approach"/></br>                
-        <input type="radio" name="strategy" checked id ="strategy" value="0"/><fmt:message key="calendar.daily"/></br>
-        <input type="radio" name="strategy" id ="strategy"  value="1"/><fmt:message key="calendar.approach.weekday"/></br>
-        <input type="radio" name="strategy" id ="strategy"  value="2"/><fmt:message key="calendar.approach.interval.pre"/><input type="text" size="4" name="interval" id="interval" value="1"/> <fmt:message key="calendar.approach.interval.day"/></br>         
-                    
-       <p> <a href="#"  onclick="javascript:window.close()"/><fmt:message key="calendar.cancel"/></a> <a href="#"  onclick="createCalendar('2')"/><fmt:message key="calendar.ok"/></a></p>
+      <tr class="fieldcanvas">
+        <td class="fieldprompt"><span  class="valid" >
+            <fmt:message key="calendar.startdate"/></span>
+        </td>
+        <td > <input type="text" name="date" id="date" size="12" class="date"/><input type="image" class="calendar" src="../media/datepicker/calendar.gif" border="0" onClick="popUpCalendar(this, 'dd-mm-yyyy', -105 , -30  , document.forms[0], 'date',event);return false;"/>
+        </td></tr>
+        <tr class="fieldcanvas"><td class="fieldprompt"><span  class="valid" >
+        <fmt:message key="calendar.starttime"/></span></td><td ><select id="hour" name="hour"></select>:<select id="minute" name="minute"></select></td>
+        </tr><tr class="fieldcanvas"><td  class="fieldprompt">
+        <span  class="valid" ><fmt:message key="calendar.approach"/></span></td><td>                
+        <input type="radio" name="strategy" checked id ="strategy" value="0" class="calendar"/><span  class="valid" ><fmt:message key="calendar.daily"/></span><br>
+        <input type="radio" name="strategy" id ="strategy"  value="1" class="calendar"/><span  class="valid" ><fmt:message key="calendar.approach.weekday"/></span><br>
+        <input type="radio" name="strategy" id ="strategy"  value="2" class="calendar"/><span  class="valid" ><fmt:message key="calendar.approach.interval.pre"/></span><input type="text" size="4" name="interval" id="interval" value="1" class="calendar"/><span  class="valid" > <fmt:message key="calendar.approach.interval.day"/></span></td>         
+        </tr>   
+       <tr class="fieldcanvas"><td><a href="#"  onclick="createCalendar('2')"/><span  class="valid" ><fmt:message key="calendar.ok"/></span></a></td><td>  <a href="#"  onclick="javascript:window.close()"/><span  class="valid" ><fmt:message key="calendar.cancel"/></span></a></td></tr>
     </c:when>
     <c:when test="${type == '3'}">
-        <fmt:message key="calendar.starttime"/> <select id="hour" name="hour"></select>:<select id="minute" name="minute"></select>
-        <p/>
-        <fmt:message key="calendar.approach.interval.pre"/> <input type="text" name="interval" size="2"  id="interval" value="1"/> <fmt:message key="calendar.approach.interval.week"/>  <p/>
-        <fmt:message key="calendar.week"/> <br/>
-        <input type="checkbox" name="weeks" id="weeks"  value="1" checked/><fmt:message key="calendar.week.monday"/>
-        <input type="checkbox" name="weeks" id="weeks"  value="2" checked/><fmt:message key="calendar.week.tuesday"/> 
-        <input type="checkbox" name="weeks" id="weeks"  value="3" checked/><fmt:message key="calendar.week.wednesday"/> <br/>
-        <input type="checkbox" name="weeks" id="weeks"  value="4" checked/><fmt:message key="calendar.week.thursday"/>
-        <input type="checkbox" name="weeks" id="weeks"  value="5" checked/><fmt:message key="calendar.week.friday"/>
-        <input type="checkbox" name="weeks" id="weeks"  value="6" checked/><fmt:message key="calendar.week.saturday"/> <br/>
-        <input type="checkbox" name="weeks" id="weeks"  value="7" checked/><fmt:message key="calendar.week.sunday"/>  <br/>
-        <p> <a href="#"  onclick="javascript:window.close()"/><fmt:message key="calendar.cancel"/></a> <a href="#"  onclick="createCalendar('3')"/><fmt:message key="calendar.ok"/></a></p>
+        <tr class="fieldcanvas"><td  class="fieldprompt">
+        <span  class="valid" ><fmt:message key="calendar.starttime"/></span></td><td> <select id="hour" name="hour"></select>:<select id="minute" name="minute"></select></td>
+        </tr>
+        <tr class="fieldcanvas"><td class="fieldprompt"></td> <td >
+        <span  class="valid" ><fmt:message key="calendar.approach.interval.pre"/></span><input  class="calendar" type="text" name="interval" size="2"  id="interval" value="1"/><span  class="valid" > <fmt:message key="calendar.approach.interval.week"/>  </span></td></tr>
+       <tr class="fieldcanvas"><td  class="fieldprompt"> <span  class="valid" ><fmt:message key="calendar.week"/></span></td><td>
+       <table><tr  class="fieldcanvas"><td  >
+        <input type="checkbox" name="weeks" id="weeks"  value="1" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.monday"/></span>
+        </td><td  >
+        <input type="checkbox" name="weeks" id="weeks"  value="2" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.tuesday"/> </span>
+        </td><td  c>
+        <input type="checkbox" name="weeks" id="weeks"  value="3" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.wednesday"/></span>
+         </td></tr><tr class="fieldcanvas"><td  >
+        <input type="checkbox" name="weeks" id="weeks"  value="4" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.thursday"/></span>
+         </td><td  >
+        <input type="checkbox" name="weeks" id="weeks"  value="5" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.friday"/></span>
+         </td><td  >
+        <input type="checkbox" name="weeks" id="weeks"  value="6" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.saturday"/></span>
+        </td></tr><tr class="fieldcanvas"><td colspan="3" >
+        <input type="checkbox" name="weeks" id="weeks"  value="7" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.week.sunday"/> </span>
+        </td></tr></table>
+        </td></tr>
+        <tr><td><a href="#"  onclick="createCalendar('3')"/><span  class="valid" ><fmt:message key="calendar.ok"/></span></a>
+        </td><td> <a href="#"  onclick="javascript:window.close()"/><span  class="valid" ><fmt:message key="calendar.cancel"/></span></a> </td></tr>
     </c:when>
     <c:otherwise>
-       <fmt:message key="calendar.starttime"/> <select id="hour" name="hour"></select>:<select id="minute" name="minute"></select>
-       <br/><p></p>
-       <input type="radio" checked name="strategy" id="strategy" value="0"/> <fmt:message key="calendar.approach.interval.day"/> <input size="2" value="1"  type="text" name="day" id="day"><br/>
-       <input type="radio" name="strategy" id="strategy" value="1"/> 
+      <tr class="fieldcanvas"><td  class="fieldprompt">
+       <span  class="valid" ><fmt:message key="calendar.starttime"/></span></td><td> <select id="hour" name="hour"></select>:<select id="minute" name="minute"></select></td></tr>
+       <tr class="fieldcanvas"><td class="fieldprompt"></td><td>
+       <input type="radio" checked name="strategy" id="strategy" value="0"  class="calendar"/> <span  class="valid" ><fmt:message key="calendar.approach.interval.day"/></span> <input size="2" value="1"  type="text" name="day" id="day"  class="calendar"></td></tr>
+       <tr><td></td><td>
+       <input type="radio" name="strategy" id="strategy" value="1"  class="calendar"/> 
        <select name="whichweek" id="whichweek">
           <option value="1"><fmt:message key="calendar.which.week.first"/> </option>
           <option value="2"><fmt:message key="calendar.which.week.second"/> </option>
@@ -405,32 +564,55 @@
        </select>
        <select name="week" id="week">
           <option value="1"> <fmt:message key="calendar.week.monday"/> </option>
-          <option value="2"> <fmt:message key="calendar.week.Tuesday"/> </option>
-          <option value="3"> <fmt:message key="calendar.week.Wednesday"/> </option>
-          <option value="4"> <fmt:message key="calendar.week.Thursday"/> </option>
-          <option value="5"> <fmt:message key="calendar.week.Friday"/> </option>
-          <option value="6"> <fmt:message key="calendar.week.Saturday"/> </option>
-          <option value="7"> <fmt:message key="calendar.week.Sunday"/></option>
+          <option value="2"> <fmt:message key="calendar.week.tuesday"/> </option>
+          <option value="3"> <fmt:message key="calendar.week.wednesday"/> </option>
+          <option value="4"> <fmt:message key="calendar.week.thursday"/> </option>
+          <option value="5"> <fmt:message key="calendar.week.friday"/> </option>
+          <option value="6"> <fmt:message key="calendar.week.saturday"/> </option>
+          <option value="7"> <fmt:message key="calendar.week.sunday"/></option>
       </select>
-      <p>
-      <fmt:message key="calendar.month"/><br/>
-      <input type="checkbox" name="month" id="month" value="0" checked/><fmt:message key="calendar.month.january"/>
-      <input type="checkbox" name="month" id="month" value="1" checked/><fmt:message key="calendar.month.february"/>
-      <input type="checkbox" name="month" id="month" value="2" checked/><fmt:message key="calendar.month.march"/>
-      <input type="checkbox" name="month" id="month" value="3" checked/><fmt:message key="calendar.month.april"/><br/>
-      <input type="checkbox" name="month" id="month" value="4" checked/><fmt:message key="calendar.month.may"/>
-      <input type="checkbox" name="month" id="month" value="5" checked/><fmt:message key="calendar.month.june"/>
-      <input type="checkbox" name="month" id="month" value="6" checked/><fmt:message key="calendar.month.july"/>
-      <input type="checkbox" name="month" id="month" value="7" checked/><fmt:message key="calendar.month.august"/><br/>
-      <input type="checkbox" name="month" id="month" value="8" checked/><fmt:message key="calendar.month.september"/>
-      <input type="checkbox" name="month" id="month" value="9" checked/><fmt:message key="calendar.month.october"/>
-      <input type="checkbox" name="month" id="month" value="a" checked/><fmt:message key="calendar.month.november"/>
-      <input type="checkbox" name="month" id="month" value="b" checked/><fmt:message key="calendar.month.december"/> <br/>
-      <p> <a href="#"  onclick="javascript:window.close()"/><fmt:message key="calendar.cancel"/></a> <a href="#"  onclick="createCalendar('4')"/><fmt:message key="calendar.ok"/></a></p>
+      </td></tr>
+      <tr class="fieldcanvas"><td  class="fieldprompt">
+      <span  class="valid" ><fmt:message key="calendar.month"/></span></td><td>
+      <table><tr class="fieldcanvas"><td>
+      <input type="checkbox" name="month" id="month" value="0" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.january"/></span>
+      </td><td  class="fieldprompt">
+      <input type="checkbox" name="month" id="month" value="1" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.february"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="2" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.march"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="3" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.april"/></span></td></tr>
+      <tr class="fieldcanvas"><td>
+      <input type="checkbox" name="month" id="month" value="4" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.may"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="5" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.june"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="6" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.july"/>
+      </span></td><td>
+      <input type="checkbox" name="month" id="month" value="7" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.august"/></span></td></tr>
+      <tr class="fieldcanvas"><td>
+      <input type="checkbox" name="month" id="month" value="8" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.september"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="9" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.october"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="a" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.november"/></span>
+      </td><td>
+      <input type="checkbox" name="month" id="month" value="b" checked class="schedule"/><span  class="valid" ><fmt:message key="calendar.month.december"/></span></td></tr>
+      </table>
+      </td><tr><td>
+      <a href="#"  onclick="createCalendar('4')"/><span  class="valid" ><fmt:message key="calendar.ok"/></span></a>
+      </td><td>  <a href="#"  onclick="javascript:window.close()"/><span  class="valid" ><fmt:message key="calendar.cancel"/></span></a></tr>
    </c:otherwise>
 </c:choose>
+</table>
+</div>
+
+</div>
+<div id="scheduleList">
+
 </div>
 </form>
+
 </body>
 </mm:cloud>
 </html:html>
