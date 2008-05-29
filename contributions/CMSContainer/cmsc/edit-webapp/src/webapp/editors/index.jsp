@@ -38,7 +38,7 @@
             <mm:param name="bottomurl"><mm:write referid="bottomurl"/></mm:param>
          </mm:url>
          <mm:url page="${bottomurl}" id="bottompane" write="false"/>
-         <frameset rows="75,*,46" framespacing="0" border="0">
+         <frameset rows="75,*,30" framespacing="0" border="0">
             <frame src="<mm:url referid="toppane"/>" name="toppane" frameborder="0" scrolling="no" noresize="noresize" style="border: 0px" />
             <frame src="<mm:url referid="bottompane"/>" name="bottompane" frameborder="0" scrolling="auto" onload="initMenu();"/>
             <frame src="footer.jsp" name="footerpane" frameborder="0" scrolling="no"/>
