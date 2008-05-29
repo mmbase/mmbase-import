@@ -2,7 +2,6 @@
 <mm:cloud jspvar="cloud">
 <%@include file="includes/templateheader.jsp" %>
 <%@include file="includes/cacheparams.jsp" %>
-<cache:cache groups="<%= paginaID %>" key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
 <%@include file="includes/header.jsp" %>
 <td><%@include file="includes/pagetitle.jsp" %></td>
 <td><% String rightBarTitle = "Zoek een collega";
@@ -228,5 +227,4 @@ function postIt(el) {
 <%@include file="includes/whiteline.jsp" %>
 </td>
 <%@include file="includes/footer.jsp" %>
-</cache:cache>
 </mm:cloud>
