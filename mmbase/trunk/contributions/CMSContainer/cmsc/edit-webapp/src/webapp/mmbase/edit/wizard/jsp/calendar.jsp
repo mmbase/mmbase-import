@@ -8,12 +8,12 @@
 <cmscedit:head title="calendar.head.title">
 
 
-<link href="/cmsc-community/editors/editwizards_new/style/layout/wizard.css" type="text/css" rel="stylesheet">
-<link href="/cmsc-community/editors/editwizards_new/style/color/wizard.css" type="text/css" rel="stylesheet">
-<link href="/cmsc-community/editors/editwizards_new/style/extra/wizard.css" type="text/css" rel="stylesheet">
+<link href="../../../../editors/editwizards_new/style/layout/wizard.css" type="text/css" rel="stylesheet">
+<link href="../../../../editors/editwizards_new/style/color/wizard.css" type="text/css" rel="stylesheet">
+<link href="../../../../editors/editwizards_new/style/extra/wizard.css" type="text/css" rel="stylesheet">
 <link href="../style/layout/searchlist.css" type="text/css" rel="stylesheet">
-<link href="/cmsc-community/editors/editwizards_new/style/color/searchlist.css" type="text/css" rel="stylesheet">
-<link href="/cmsc-community/editors/editwizards_new/style/extra/searchlist.css" type="text/css" rel="stylesheet">
+<link href="../../../../editors/editwizards_new/style/color/searchlist.css" type="text/css" rel="stylesheet">
+<link href="../../../../editors/editwizards_new/style/extra/searchlist.css" type="text/css" rel="stylesheet">
 
 <style xml:space="preserve" type="text/css">
    input.calendar {
