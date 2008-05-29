@@ -39,7 +39,6 @@ function heartbeat() {
 </cmscedit:head>
 <body onLoad="javascript:heartbeat();">
    <div id="footer">
-      <br />
       <fmt:message key="createdby" />
       <div style="float:right">&nbsp;</div>      
       <br/>
