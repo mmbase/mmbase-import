@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="contentrepository" maintainer="finalist.com" version="3" auto-deploy="true">
+<application name="contentrepository" maintainer="finalist.com" version="2" auto-deploy="true">
    <requirements>
       <requires name="Security" maintainer="mmbase://security.mmbase.org/" version="1" type="application"/>
       <requires name="Resources" maintainer="mmbase.org" version="1" type="application"/>
