@@ -84,12 +84,19 @@ import freemarker.template.Template;
  *  JForum Web Installer.
  *
  *@author     Rafael Steil
- *@version    $Id: InstallAction.java,v 1.1 2008-01-17 08:04:50 mguo Exp $
+ *@version    $Id: InstallAction.java,v 1.2 2008-05-30 07:53:49 kevinshen Exp $
  */
 public class InstallAction extends Command {
 	private static Logger logger = Logger.getLogger(InstallAction.class);
 
-
+	public InstallAction(){
+	   
+	}
+	
+	public InstallAction(ActionServletRequest request,SimpleHash context) {
+	   this.request = request;
+	   this.context = context;
+	}
 	/**
 	 *  Description of the Method
 	 *
@@ -121,7 +128,6 @@ public class InstallAction extends Command {
 	 */
 	public void doInstall() throws Exception {
 		Connection conn = null;
-
 		if (!this.checkForWritableDir()) {
 			return;
 		}
@@ -219,19 +225,18 @@ public class InstallAction extends Command {
 	 *@exception  Exception  Description of Exception
 	 */
 	public void checkInformation() throws Exception {
-		this.setTemplateName(TemplateKeys.INSTALL_CHECK_INFO);
-
-		String language = this.request.getParameter("language");
-		String database = this.request.getParameter("database");
-		String dbHost = this.request.getParameter("dbhost");
-		String dbUser = this.request.getParameter("dbuser");
-		String dbName = this.request.getParameter("dbname");
-		String dbPassword = this.request.getParameter("dbpasswd");
-		String dbEncoding = this.request.getParameter("dbencoding");
-		String dbEncodingOther = this.request.getParameter("dbencoding_other");
-		String usePool = this.request.getParameter("use_pool");
-		String forumLink = this.request.getParameter("forum_link");
-		String adminPassword = this.request.getParameter("admin_pass1");
+		//this.setTemplateName(TemplateKeys.INSTALL_CHECK_INFO);
+		String language = this.request.getAttribute("language").toString();
+		String database = this.request.getAttribute("database").toString();
+		String dbHost = null;//this.request.getAttribute("dbhost").toString();
+		String dbUser = null;//this.request.getAttribute("dbuser").toString();
+		String dbName = null;//this.request.getAttribute("dbname").toString();
+		String dbPassword = null;//this.request.getAttribute("dbpasswd").toString();
+		String dbEncoding = this.request.getAttribute("dbencoding").toString();
+		String dbEncodingOther = this.request.getAttribute("dbencoding_other").toString();
+		String usePool = this.request.getAttribute("use_pool").toString();
+		String forumLink = this.request.getAttribute("forum_link").toString();
+		String adminPassword = this.request.getAttribute("admin_pass1").toString();
 
 		dbHost = this.notNullDefault(dbHost, "localhost");
 		dbEncodingOther = this.notNullDefault(dbEncodingOther, "utf-8");
@@ -258,10 +263,10 @@ public class InstallAction extends Command {
 		this.addToSessionAndContext("dbEncoding", dbEncoding);
 		this.addToSessionAndContext("usePool", usePool);
 		this.addToSessionAndContext("forumLink", forumLink);
-		this.addToSessionAndContext("siteLink", this.request.getParameter("site_link"));
+		this.addToSessionAndContext("siteLink", this.request.getAttribute("site_link").toString());
 		this.addToSessionAndContext("adminPassword", adminPassword);
-		this.addToSessionAndContext("dbdatasource", this.request.getParameter("dbdatasource"));
-		this.addToSessionAndContext("db_connection_type", this.request.getParameter("db_connection_type"));
+		this.addToSessionAndContext("dbdatasource", this.request.getAttribute("dbdatasource").toString());
+		this.addToSessionAndContext("db_connection_type", this.request.getAttribute("db_connection_type").toString());
 
 		this.addToSessionAndContext("configureDatabase", null);
 		this.addToSessionAndContext("createTables", null);
@@ -270,7 +275,7 @@ public class InstallAction extends Command {
 		this.context.put("canWriteToWebInf", this.canWriteToWebInf());
 		this.context.put("canWriteToIndex", this.canWriteToIndex());
 
-		this.context.put("moduleAction", "install_check_info.htm");
+		//this.context.put("moduleAction", "install_check_info.htm");
 	}
 
 
@@ -869,4 +874,7 @@ public class InstallAction extends Command {
 
 		return value;
 	}
+   public void ignoreAction() {
+      super.ignoreAction();
+  }
 }

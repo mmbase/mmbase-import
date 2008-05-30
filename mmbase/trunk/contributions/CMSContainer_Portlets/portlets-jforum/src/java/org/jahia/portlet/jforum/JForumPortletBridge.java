@@ -1,12 +1,18 @@
 package org.jahia.portlet.jforum;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.portlet.*;
 import javax.servlet.*;
+import javax.sql.DataSource;
 
 import net.jforum.*;
 import net.jforum.entities.UserSession;
 import net.jforum.sso.RemoteUserSSO;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 
 import net.jforum.util.preferences.SystemGlobals;
@@ -14,12 +20,21 @@ import net.jforum.util.preferences.ConfigKeys;
 import net.jforum.util.legacy.commons.fileupload.disk.*;
 import net.jforum.util.legacy.commons.fileupload.servlet.*;
 import net.jforum.util.legacy.commons.fileupload.*;
+import net.jforum.view.install.InstallAction;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
 
 import org.jahia.portlet.fileupload.PortletRequestContext;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.storage.StorageManagerFactory;
+import org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory;
+
 import com.finalist.cmsc.portlets.CmscPortlet;
+
+import freemarker.template.SimpleHash;
 
 /**
  * Portlet Brigde for JForum
@@ -190,7 +205,7 @@ public class JForumPortletBridge extends CmscPortlet {
                 // default case of : Install wizard
                 defaultRequestUri = "install/install.page";
                 defaultModule = "install";
-                defaultAction = "welcome";
+                defaultAction = "finished";
             }
 
             //call JForum service method
@@ -440,18 +455,27 @@ public class JForumPortletBridge extends CmscPortlet {
     private void callServletServiceMethod(RenderRequest request, RenderResponse response, String defaultRequestUri, String defaultModule, String defaultAction, String postBody) {
         // deal with file upload
         synchFileUpload(request);
-        //logRequestAttributes(request);
-        // build HttpServletRequest/response object
-        HttpServletRequestWrapper reqW = new HttpServletRequestWrapper(request, defaultRequestUri, defaultModule, defaultAction, HttpServletRequestWrapper.HTTP_GET, postBody);
-        HttpServletResponseWrapper respW = new HttpServletResponseWrapper(response);
 
+        HttpServletResponseWrapper respW = new HttpServletResponseWrapper(response);
+        HttpServletRequestWrapper reqW = new HttpServletRequestWrapper(request, defaultRequestUri, defaultModule, defaultAction, HttpServletRequestWrapper.HTTP_GET, postBody);
+        if(defaultModule.equals("install")) {
+           Locale locale = (Locale)(request.getPortletSession().getAttribute("javax.servlet.jsp.jstl.fmt.locale.session"));
+           String language = "en_US";
+           String charset = (String)request.getPortletSession().getAttribute("javax.servlet.jsp.jstl.fmt.request.charset");
+
+           if(!locale.getLanguage().equals("en") && StringUtils.isEmpty(locale.getCountry())) {
+              locale = Locale.getDefault();
+              language = locale.getLanguage()+"_"+locale.getCountry();
+           }
+           install(respW, reqW,language,charset);
+        }
         // get servlet object
         Servlet instance = (Servlet) getPortletContext().getAttribute(JFORUM_KEY);
-
 
         try {
             // call service method
             // isRedirect = false;
+                       
             instance.service(reqW, respW);
             boolean isRedirect = respW.isRedirect();
             if (isRedirect) {
@@ -475,6 +499,52 @@ public class JForumPortletBridge extends CmscPortlet {
             logger.error("Error has occured", ex);
         }
     }
+
+
+   private void install(HttpServletResponseWrapper respW, HttpServletRequestWrapper reqW,String language,String charset) {
+
+           reqW.setAttribute("language", language);
+           reqW.setAttribute("database", "mysql");
+           reqW.setAttribute("dbencoding", StringUtils.isEmpty(charset)?"utf-8":charset);
+           reqW.setAttribute("dbencoding_other", "");
+           reqW.setAttribute("use_pool", "true");
+           reqW.setAttribute("forum_link", "");
+           reqW.setAttribute("admin_pass1", "admin2k");
+           reqW.setAttribute("db_connection_type", "ds");
+           reqW.setAttribute("site_link", "");
+           reqW.setAttribute("dbdatasource", "java:comp/env/jdbc/jforum");
+           try {
+
+             ActionServletRequest reqAW1 = new ActionServletRequest(reqW);
+             JForumContext jforumcontext = new JForumContext(reqW
+                  .getContextPath(), SystemGlobals
+                  .getValue(ConfigKeys.SERVLET_EXTENSION), reqW, respW, false);
+
+             reqAW1.setJForumContext(jforumcontext);
+
+             JForumExecutionContext ex = JForumExecutionContext.get();
+             ex.setResponse(respW);
+             ex.setRequest(reqAW1);
+
+            // Assigns the information to user's thread
+             JForumExecutionContext.set(ex);
+
+             // Context
+             SimpleHash context = JForumExecutionContext.getTemplateContext();
+
+             InstallAction command;
+
+             command = new InstallAction(reqAW1, context);
+             command.checkInformation();
+             command.doInstall();
+         } 
+         catch (IOException e) {
+            logger.debug("install io error: " +e.getMessage());
+         } 
+         catch (Exception e) {
+            logger.debug("install error: " + e.getMessage());
+         }
+   }
 
     private void logRequestAttributes(RenderRequest request) {
         Enumeration enume = request.getAttributeNames();
