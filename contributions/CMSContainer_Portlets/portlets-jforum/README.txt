@@ -315,3 +315,27 @@ Step 2: Add below elements to web.xml
       <servlet-name>jforum</servlet-name>
       <url-pattern>*.page</url-pattern>
    </servlet-mapping>
+
+    <resource-ref>
+		<description>Jforum</description>
+		<res-ref-name>jdbc/jforum</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+
+   Step 3  : Configure DataSouce
+
+   Add DataSouce in the context xml file,e.g.: the name should be jdbc/jforum
+
+    <Resource name="jdbc/jforum" auth="Container" type="javax.sql.DataSource"
+		removeAbandoned="true" 
+		removeAbandonedTimeout="60"
+		logAbandoned="true" 
+		maxActive="10"
+		maxIdle="1" 
+		maxWait="10000" 
+		username="root" 
+		password="1234"
+		driverClassName="com.mysql.jdbc.Driver" 
+		url="jdbc:mysql://localhost:3306/jforum" />
+
