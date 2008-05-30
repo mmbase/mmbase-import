@@ -1,34 +1,39 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<%
+   String contextPath = request.getContextPath(); 
+%>
+
 <html>
 <head>
 	<meta name="robots" content="index,follow" />
 	<meta http-equiv="imagetoolbar" content="no" />
 	<meta http-equiv="expires" content="-1">
-	<script type="text/javascript" src="/natmm-internet/natmm/scripts/milonic_src.js"></script>
+	<script type="text/javascript" src="<%=contextPath%>/natmm/scripts/milonic_src.js"></script>
    <param copyright="JavaScript Menu by Milonic" value="http://www.milonic.com/"></param>
 	<script type="text/javascript">
-		_d.write("<scr"+"ipt language=JavaScript src=scripts/mmenudom.js><\/scr"+"ipt>"); 
+		_d.write("<scr"+"ipt language=JavaScript src=<%=contextPath%>/natmm/scripts/mmenudom.js><\/scr"+"ipt>"); 
 	</script>
-	<script type="text/javascript" src="/natmm-internet/natmm/404/menu-bovenkant.js"></script>
+	<script type="text/javascript" src="<%=contextPath%>/404/menu-bovenkant.js"></script>
 	
-   <title>Natuurmonumenten - Sorry, deze link is niet voor iedereen toegankelijk</title>
+	<title>Natuurmonumenten - Sorry, dit verzoek kan niet uitgevoerd worden</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="stylesheet" type="text/css" href="/natmm-internet/natmm/hoofdsite/themas/main.css"/>
-	<link rel="stylesheet" type="text/css" href="/natmm-internet/natmm/hoofdsite/themas/default.css" />
+	<link rel="stylesheet" type="text/css" href="<%=contextPath%>/natmm/hoofdsite/themas/main.css"/>
+	<link rel="stylesheet" type="text/css" href="<%=contextPath%>/natmm/hoofdsite/themas/default.css" />
 </head>
 <body style="margin:0;">
 <div style="position:relative; width:100%;">
    <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
    <td style="width:48%" class="maincolor" style=""></td>
-   <td style="width:744px;height:21px:" class="maincolor" style=""><img src="/natmm-internet/natmm/media/trans.gif" width="744px" height="21" border="0" alt=""></td>
+   <td style="width:744px;height:21px:" class="maincolor" style=""><img src="<%=contextPath%>/natmm/media/trans.gif" width="744px" height="21" border="0" alt=""></td>
    <td style="width:48%;text-align:center;" class="maincolor" style=""></td>
 
 </tr>
 <tr>
    <td style="width:48%;background-color:#0076b9"></td>
    <td style="width:744px;height:68px;background-color: #c6d5ec;"><div style="background-color: #c6d5ec;">     
-   <table width="744" border="0" cellspacing="0" cellpadding="0" background="/natmm-internet/natmm/media/bgtab_ho_light.gif" style="background-color: #c6d5ec;"> 
+   <table width="744" border="0" cellspacing="0" cellpadding="0" background="<%=contextPath%>/natmm/media/bgtab_ho_light.gif" style="background-color: #c6d5ec;"> 
       <tr>
          <td style="width:523;height:68;vertical-align:bottom;padding-bottom:6px;">
             <span style="font-size:16px;color:#FFFFFF;margin:0px 0px 5px 0px; font-weight: normal;">Natuurmonumenten.</span>
@@ -45,10 +50,10 @@
 <tr>
    <td style="width:48%"></td>
    <td style="text-align:left; vertical-align:top; width:744;height:157px;padding-bottom:1px;"> 
-         <img src="http://www.natuurmonumenten.nl/media/hooglander-gat-KINA3817.jpg"" border="0"></td>
+         <img src="<%=contextPath%>/404/hooglander.jpg" border="0"></td>
 
    <td style="width:48%" rowspan="2" valign="top">
-   <img src="/natmm-internet/natmm/media/natmm_logo_rgb1.gif" width="159" height="216" style="padding:0;">
+   <img src="<%=contextPath%>/natmm/media/natmm_logo_rgb1.gif" width="159" height="216" style="padding:0;">
    </td>
 </tr>
 <tr>
@@ -58,14 +63,18 @@
 <table width="744" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
 <tr>
    <td style="vertical-align:top;width:374px;padding:10px;padding-top:0px"><br/>
-<p style="font-size:14px;color:#1D1E94;margin:0px 0px 5px 0px; font-weight: bold;">Error 403: Sorry, deze link is niet voor iedereen toegankelijk</p>
+<p style="font-size:14px;color:#1D1E94;margin:0px 0px 5px 0px; font-weight: bold;">Error 400: Sorry, dit verzoek kan niet uitgevoerd worden</p>
 &nbsp;<br />
 <p>Onze excuses voor het ongemak.</p>
 &nbsp;<br />
 Als je denkt dat het een fout betreft zouden we het erg op prijs stellen als je de link die je probeerde te bereiken mailt naar
-<a href="mailto:webredactie@natuurmonumenten.nl?Subject=Error 403: Sorry, deze link is niet voor iedereen toegankelijk">webredactie@natuurmonumenten.nl</a>.<br />
+<a href="mailto:webredactie@natuurmonumenten.nl?Subject=Error 400: Sorry, dit verzoek kan niet uitgevoerd worden">webredactie@natuurmonumenten.nl</a>.<br />
 Alvast bedankt.<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />
+&nbsp;<br />
+&nbsp;<br />
+&nbsp;<br />
+&nbsp;<br />
 </div>      
 </table>
 </div>
@@ -73,18 +82,18 @@ Alvast bedankt.<br />
 </tr>
 </table>
 
-<form action="/natmm-internet/zoek/zoek.htm" style="margin:0px 0px 0px 0px">
+<form action="<%=contextPath%>/zoek/zoek.htm" style="margin:0px 0px 0px 0px">
 <table style="line-height:90%;width:744;" border="0" cellspacing="0" cellpadding="0" align="center" valign="top">
    <tr>
       <td class="footer" style="width:544;">
          &nbsp;&copy 2008 Natuurmonumenten
               &nbsp;&nbsp;|&nbsp;&nbsp; 
-              <a href="/natmm-internet/mededelingen/fotografie.htm" class="footerlinks">Fotografie</a>
+              <a href="<%=contextPath%>/mededelingen/fotografie.htm" class="footerlinks">Fotografie</a>
 
               &nbsp;&nbsp;|&nbsp;&nbsp; 
-              <a href="/natmm-internet/mededelingen/privacy.htm" class="footerlinks">Privacy</a>
+              <a href="<%=contextPath%>/mededelingen/privacy.htm" class="footerlinks">Privacy</a>
               &nbsp;&nbsp;|&nbsp;&nbsp; 
-              <a href="/natmm-internet/mededelingen/lid_worden.htm" class="footerlinks">Lid worden</a>
+              <a href="<%=contextPath%>/mededelingen/lid_worden.htm" class="footerlinks">Lid worden</a>
       </td>
          <input type="hidden" name="offset" value="0"/>
          <input type="hidden" name="pcontentype" value="0"/>
@@ -94,7 +103,7 @@ Alvast bedankt.<br />
                <tr>
                   <td class="footerzoektext"><input type="submit" value="ZOEKEN" style="height:16px;border:0;color:#FFFFFF;background-color:#1D1E94;text-align:left;padding-left:10px;font-weight:bold;font-size:0.9em;" /></td>
                   <td class="footerzoekbox"><input type="text" name="query_frm" style="width:100%;height:14px;font-size:12px;border:none;" value=""></td>
-                  <td class="footerzoekbox"><input type="image" src="/natmm-internet/natmm/media/submit_default.gif" alt="ZOEK" align="middle" border="0"></td>
+                  <td class="footerzoekbox"><input type="image" src="<%=contextPath%>/natmm/media/submit_default.gif" alt="ZOEK" align="middle" border="0"></td>
                </tr>
             </table>
          </td>
