@@ -504,7 +504,7 @@ public class JForumPortletBridge extends CmscPortlet {
    private void install(HttpServletResponseWrapper respW, HttpServletRequestWrapper reqW,String language,String charset) {
 
            reqW.setAttribute("language", language);
-           reqW.setAttribute("database", "mysql");
+           reqW.setAttribute("database", StringUtils.isEmpty(SystemGlobals.getValue("database.driver.name"))?"mysql":SystemGlobals.getValue("database.driver.name"));
            reqW.setAttribute("dbencoding", StringUtils.isEmpty(charset)?"utf-8":charset);
            reqW.setAttribute("dbencoding_other", "");
            reqW.setAttribute("use_pool", "true");
