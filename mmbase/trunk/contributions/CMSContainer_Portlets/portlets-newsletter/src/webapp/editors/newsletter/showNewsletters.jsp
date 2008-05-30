@@ -266,7 +266,7 @@
                      </c:forEach>
                   </tbody>
                </table>
-               <%@ include file="pager_index.jsp"%>
+               <%@ include file="module/pager_index.jsp"%>
                </pg:pager>
             </div>
          </c:if>
