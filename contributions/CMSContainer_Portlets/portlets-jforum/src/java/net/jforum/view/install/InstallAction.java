@@ -84,7 +84,7 @@ import freemarker.template.Template;
  *  JForum Web Installer.
  *
  *@author     Rafael Steil
- *@version    $Id: InstallAction.java,v 1.2 2008-05-30 07:53:49 kevinshen Exp $
+ *@version    $Id: InstallAction.java,v 1.3 2008-05-31 02:45:05 kevinshen Exp $
  */
 public class InstallAction extends Command {
 	private static Logger logger = Logger.getLogger(InstallAction.class);
@@ -184,9 +184,9 @@ public class InstallAction extends Command {
 
 		simpleConnection.releaseConnection(conn);
 
-		JForumExecutionContext.setRedirect(this.request.getContextPath() + "/install/install"
-				+ SystemGlobals.getValue(ConfigKeys.SERVLET_EXTENSION)
-				+ "?module=install&action=finished");
+	//	JForumExecutionContext.setRedirect(this.request.getContextPath() + "/install/install"
+	//			+ SystemGlobals.getValue(ConfigKeys.SERVLET_EXTENSION)
+	//			+ "?module=install&action=finished");
 
 	}
 
@@ -197,7 +197,7 @@ public class InstallAction extends Command {
 	 *@exception  Exception  Description of Exception
 	 */
 	public void finished() throws Exception {
-		this.setTemplateName(TemplateKeys.INSTALL_FINISHED);
+	//	this.setTemplateName(TemplateKeys.INSTALL_FINISHED);
 
 		this.context.put("clickHere", I18n.getMessage("Install.clickHere"));
 		this.context.put("forumLink", this.getFromSession("forumLink"));
