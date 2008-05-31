@@ -188,20 +188,20 @@ function inits(){
         message += "Once,start datetime:"+expression[1]+" "+expression[2]+":"+expression[3];
      }
      else if(type == '2') {
-        message += "Daily,start datetime:"+expression[1]+" "+expression[2]+":"+expression[3];
+        message += "Days of years,start datetime:"+expression[1]+" "+expression[2]+":"+expression[3];
         if(expression[4] == "0") {
-            message += "<br/>  every day"; 
+            message += "<br/>  dayly"; 
          }
          else if(expression[4] == "1") {
-            message += "<br/>  every weekday"; 
+            message += "<br/>  weekday"; 
          }
           else if(expression[4] == "2") {
-            message += "<br/>  every "+expression[5]+" day"; 
+            message += "<br/>   day of year: "+expression[5]; 
          }
      }
      else if(type == '3') {
-         message += "Weekly,start time:"+expression[1]+":"+expression[2];
-         message += "<br/> Every "+expression[3]+" week";
+         message += "weeks of year,start time:"+expression[1]+":"+expression[2];
+         message += "<br/> week of year "+expression[3];
 
         var varWeek = "";
         for(var i = 0 ; i < expression[4].length;i++) {
@@ -236,10 +236,10 @@ function inits(){
         message += "<br/> week: "+varWeek;
      }
      else if(type == '4') {
-         message += "Monthly,start time:"+expression[1]+":"+expression[2];
+         message += "Months of year,start time:"+expression[1]+":"+expression[2];
          var months = "";
           if(expression[3] == "0") {
-            message += "<br/> day : "+expression[4]+"";
+            message += "<br/> day of month: "+expression[4]+"";
              if(expression[4] == "1") {
                message += "st";
             }
