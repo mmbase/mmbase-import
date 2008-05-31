@@ -78,15 +78,14 @@ public class JForumPortletBridge extends CmscPortlet {
             // if it's already load JForum App
             if (isAlreadyInstalled()) {
                 logger.info("JForum is already installed");
-
+				 instance = new JForum();
                 // load JForum servlet
-                instance = new JForum();
+
 
             } else {
                 logger.info("is not already installed");
                 instance = new InstallServlet();
             }
-
             // init Servlet instance
             instance.init(new ServletConfigWrapper(config));
 
@@ -96,6 +95,7 @@ public class JForumPortletBridge extends CmscPortlet {
         }
 
         // set in context
+		getPortletContext().setAttribute("config", config);
         getPortletContext().setAttribute(JFORUM_KEY, instance);
 
     }
@@ -163,14 +163,14 @@ public class JForumPortletBridge extends CmscPortlet {
             String defaultAction;
             // Manage auto login portal user
             PortalAutoConnectUserManager userProcesseur = new PortalAutoConnectUserManager(request, response);
-
+            defaultRequestUri = "forums/list.page";
+            defaultModule = "forums";
+            defaultAction = "list";
             if (isAlreadyInstalled()) {
                 // if (false) {
                 logger.debug("JForum is already installed");
                 Servlet instance = (Servlet) getPortletContext().getAttribute(JFORUM_KEY);
-                defaultRequestUri = "forums/list.page";
-                defaultModule = "forums";
-                defaultAction = "list";
+
 
                 logger.debug("Database is: " + SystemGlobals.getValue(ConfigKeys.SQL_QUERIES_DRIVER));
                 if (instance instanceof InstallServlet) {
@@ -203,9 +203,6 @@ public class JForumPortletBridge extends CmscPortlet {
                 logger.info("Is not already installed");
 
                 // default case of : Install wizard
-                defaultRequestUri = "install/install.page";
-                defaultModule = "install";
-                defaultAction = "finished";
             }
 
             //call JForum service method
@@ -458,7 +455,7 @@ public class JForumPortletBridge extends CmscPortlet {
 
         HttpServletResponseWrapper respW = new HttpServletResponseWrapper(response);
         HttpServletRequestWrapper reqW = new HttpServletRequestWrapper(request, defaultRequestUri, defaultModule, defaultAction, HttpServletRequestWrapper.HTTP_GET, postBody);
-        if(defaultModule.equals("install")) {
+        if (!isAlreadyInstalled()) {
            Locale locale = (Locale)(request.getPortletSession().getAttribute("javax.servlet.jsp.jstl.fmt.locale.session"));
            String language = "en_US";
            String charset = (String)request.getPortletSession().getAttribute("javax.servlet.jsp.jstl.fmt.request.charset");
@@ -468,6 +465,17 @@ public class JForumPortletBridge extends CmscPortlet {
               language = locale.getLanguage()+"_"+locale.getCountry();
            }
            install(respW, reqW,language,charset);
+		   PortletConfig config = (PortletConfig)getPortletContext().getAttribute("config");
+		   JForum instance = new JForum();
+		   try {
+		    instance.init(new ServletConfigWrapper(config));
+		   }
+		   catch (ServletException ex) {
+            ex.printStackTrace();
+           }
+
+		   getPortletContext().setAttribute(JFORUM_KEY,instance);
+		   getPortletContext().removeAttribute("config");
         }
         // get servlet object
         Servlet instance = (Servlet) getPortletContext().getAttribute(JFORUM_KEY);
@@ -489,7 +497,6 @@ public class JForumPortletBridge extends CmscPortlet {
             // get result as StringBuffer
             String encoding = SystemGlobals.getValue(ConfigKeys.ENCODING);
             String result = new String(((ServletOutputStreamWrapper) respW.getOutputStream()).getAsByteArray(), encoding);
-
             // update result
             PortletSession session = request.getPortletSession();
             saveResultInSession(session, result);
@@ -509,10 +516,10 @@ public class JForumPortletBridge extends CmscPortlet {
            reqW.setAttribute("dbencoding_other", "");
            reqW.setAttribute("use_pool", "true");
            reqW.setAttribute("forum_link", "");
-           reqW.setAttribute("admin_pass1", "admin2k");
+           reqW.setAttribute("admin_pass1",StringUtils.isEmpty(SystemGlobals.getValue("admin.password"))?"admin2k":SystemGlobals.getValue("admin.password"));
            reqW.setAttribute("db_connection_type", "ds");
            reqW.setAttribute("site_link", "");
-           reqW.setAttribute("dbdatasource", "java:comp/env/jdbc/jforum");
+           reqW.setAttribute("dbdatasource", StringUtils.isEmpty(SystemGlobals.getValue("database.dbdatasource"))?"java:comp/env/jdbc/jforum":SystemGlobals.getValue("database.dbdatasource"));
            try {
 
              ActionServletRequest reqAW1 = new ActionServletRequest(reqW);
@@ -537,6 +544,7 @@ public class JForumPortletBridge extends CmscPortlet {
              command = new InstallAction(reqAW1, context);
              command.checkInformation();
              command.doInstall();
+			 command.finished();
          } 
          catch (IOException e) {
             logger.debug("install io error: " +e.getMessage());
