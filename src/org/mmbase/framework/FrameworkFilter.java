@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * 'excludes' parameter in web.xml.
  *
  * @author Andr&eacute; van Toly
- * @version $Id: FrameworkFilter.java,v 1.25 2008-04-25 14:31:39 andre Exp $
+ * @version $Id: FrameworkFilter.java,v 1.26 2008-06-02 17:36:17 ernst Exp $
  */
 
 public class FrameworkFilter implements Filter, MMBaseStarter  {
@@ -158,6 +158,7 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
             if (path != null) {
                 try {
                     if (excludePattern != null && excludePattern.matcher(path).find()) {
+   
                         chain.doFilter(request, response);  // url is excluded from further actions
                         return;
                     }
@@ -194,7 +195,13 @@ public class FrameworkFilter implements Filter, MMBaseStarter  {
                      * as relative to the current context root.
                      */
                     RequestDispatcher rd = request.getRequestDispatcher(forwardUrl);
-                    rd.forward(request, response);
+                    if(response.isCommitted()){
+                        log.debug("** respone committed, including");
+                        rd.include(request, response);
+                    }else{
+                        log.debug("** respone not committed, forwarding");
+                        rd.forward(request, response);
+                    }
                 } else {
                     if (log.isDebugEnabled()) log.debug("No matching technical URL, just forwarding: " + path);
                     chain.doFilter(request, response);
