@@ -19,23 +19,23 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
 
     /** MMbase logging system */
    private static final Logger log = Logging.getLoggerInstance(AliasNavigationRenderer.class.getName());
-    
+
    public String getContentType() {
        return "text/html";
    }
-   
+
    public void render(NavigationItem item, HttpServletRequest request, HttpServletResponse response,
            ServletConfig servletConfig) throws IOException {
-       
+
       if (item instanceof Alias) {
           Alias alias = (Alias) item;
           if (alias.getPage() > 0 ) {
              NavigationItem pageItem = SiteManagement.getNavigationItem(alias.getPage());
              String path = SiteManagement.getPath(pageItem, !ServerUtil.useServerName());
 
-             HttpServletRequest aliasRequest = new AliasHttpServletRequest(request, path); 
-             PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response, servletConfig);
-             
+             HttpServletRequest aliasRequest = new AliasHttpServletRequest(request, path);
+             PortalEnvironment aliasEnv = new PortalEnvironment(aliasRequest, response);
+
              if (pageItem != null) {
                 NavigationItemRenderer manager = NavigationManager.getRenderer(pageItem);
                 if (manager != null) {
@@ -45,7 +45,7 @@ public class AliasNavigationRenderer implements NavigationItemRenderer {
                         contentType += "; charset=" + charset;
                     }
                     response.setContentType(contentType);
-                    
+
                     manager.render(pageItem, aliasRequest, response, servletConfig);
                 }
              }
