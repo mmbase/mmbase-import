@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Ernst Bunders
  * @since MMBase-1.7
- * @version $Id: SpaceReducer.java,v 1.20 2008-03-11 12:43:05 ernst Exp $
+ * @version $Id: SpaceReducer.java,v 1.21 2008-06-02 17:37:27 ernst Exp $
  */
 
 public class SpaceReducer extends BufferedReaderTransformer implements CharTransformer {
@@ -153,7 +153,7 @@ public class SpaceReducer extends BufferedReaderTransformer implements CharTrans
         private int countOccurences(Pattern pattern, String line) {
             Matcher m = pattern.matcher(line);
             int counter = 0;
-            while(m.find() && counter < 5){
+            while(m.find()){
                 counter ++;
                 line = line.substring(m.end(), line.length());
                 m = pattern.matcher(line);
