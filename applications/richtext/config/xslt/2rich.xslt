@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.6 2008-04-22 16:00:49 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.7 2008-06-02 12:54:54 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -104,19 +104,29 @@
 </xsl:text>
   </xsl:template>
 
+
   <!--
       Sometimes, ids are autoamticly generated as n[a..z]_<node_number>. Remove this prefix, if requested, so wiki-user can see only the number.
   -->
   <xsl:template match="*" mode="undecorateids">
+    <xsl:variable name="id" ><xsl:value-of select="substring-after(substring-after(@id, '_'), '_')" /></xsl:variable>
     <xsl:choose>
       <xsl:when test="$org.mmbase.richtext.wiki.undecorateids = 'true'
-                      and string-length(substring-after(@id, '_')) gt 0" >
-        <xsl:value-of select="substring-after(@id, '_')" />
+                      and string-length($id) gt 0" >
+        <xsl:choose>
+          <xsl:when test="string-length(substring-after($id, '-')) gt 0">
+            <xsl:value-of select="substring-before($id, '-')" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$id" />
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@id" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
 
 </xsl:stylesheet>
