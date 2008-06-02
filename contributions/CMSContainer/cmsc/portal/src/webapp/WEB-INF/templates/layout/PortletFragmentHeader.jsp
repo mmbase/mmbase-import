@@ -5,20 +5,22 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm"%>
 
 <cmsc:protected>
-	<fmt:setBundle basename="cmsc-portal" scope="request" />
+<c:if test="${'edit' eq sessionScope.pageMode}">
+   <fmt:setBundle basename="cmsc-portal" scope="request"/>
 
-<cmsc:portlet infovar="portletInfo">
-<c:choose>
-	<c:when test="${portletInfo.id == -1}">
-		<div class="portlet-canvas">
-			<div class="portlet-header-canvas">
-	</c:when>
-	<c:otherwise>
-		<div class="portlet-canvas" id="portlet-${portletInfo.id}">
-			<div class="portlet-header-canvas" id="portlet-header-${portletInfo.id}" 
-				onmouseover="showInfo('${portletInfo.id}');" onmouseout="hideInfo('${portletInfo.id}');">
-	</c:otherwise>
-</c:choose> 
+   <cmsc:portlet infovar="portletInfo">
+      <c:choose>
+         <c:when test="${portletInfo.id == -1}">
+            <div class="portlet-canvas">
+            <div class="portlet-header-canvas">
+         </c:when>
+         <c:otherwise>
+            <div class="portlet-canvas" id="portlet-${portletInfo.id}">
+            <div class="portlet-header-canvas" id="portlet-header-${portletInfo.id}"
+            onmouseover="showInfo('${portletInfo.id}');" onmouseout="hideInfo('${portletInfo.id}');">
+         </c:otherwise>
+      </c:choose>
+
 <div class="portlet-mode-canvas portlet-mode-type-${portletInfo.currentMode.name}" id="portlet-mode-${portletInfo.id}">
 
 ${requestScope.fragment.key}
@@ -44,4 +46,5 @@ ${requestScope.fragment.key}
 </div>
 <div class="portlet-mode-spacer"></div>
 </cmsc:portlet>
+   </c:if>
 </cmsc:protected>
