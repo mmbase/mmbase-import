@@ -1,7 +1,7 @@
 todo:
 
 Y   zorg dat de vpro wizards compileren in de mmbase build.
-N   zorg dat de hele applicatie goed installeerd met de build.
+N   zorg dat de hele applicatie goed installeert met de build.
 N   pas de paden aan van de edit jsp's en de tags.
 N   refactor de java code
 N   pas de documentatie aan
