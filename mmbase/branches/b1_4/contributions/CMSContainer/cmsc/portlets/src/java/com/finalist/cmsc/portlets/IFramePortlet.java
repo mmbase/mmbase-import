@@ -94,6 +94,7 @@ public class IFramePortlet extends CmscPortlet {
 
       // get IFRAME source
       String source = getPreference(preferences, SOURCE_ATTR_PARAM, SOURCE_ATTR_DEFAULT);
+      // allow for source suggested from other portlet
       if(request.getParameter(SOURCE_REQ_PARAM) != null) source = request.getParameter(SOURCE_REQ_PARAM);
       
       // IFRAME attribute members.
