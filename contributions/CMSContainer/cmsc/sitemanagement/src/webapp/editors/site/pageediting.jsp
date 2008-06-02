@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="net.sf.mmapps.modules.cloudprovider.*,org.mmbase.bridge.Cloud,org.mmbase.bridge.Node,java.util.*,net.sf.mmapps.commons.util.StringUtil;" %>
 <mm:content type="text/html" encoding="UTF-8" expires="0">
-   
+
    <html:html xhtml="true">
       <cmscedit:head title="toolbar.title">
          <link href="../css/toolbar.css" rel="stylesheet" type="text/css"/>
@@ -11,39 +11,11 @@
          <c:url value="/editors/workflow/PageWorkflowPublishAction.do" var="pagePublishAction"/>
          <c:url value="/editors/site/NavigatorPanel.do" var="pageUrl"/>
          <script type="text/javascript">
-            
+
             function refreshTreeTab(){
                var fresh="${requestScope.fresh}";
                if(fresh != null && fresh !=""){
                   parent.frames['pages'].location.reload();
-               }
-            }
-            
-            function loadPreview(){
-               var curMode="${sessionScope.pageMode}";
-               if(curMode =='preview'){
-                  setPagePreview();
-               }
-            }
-
-            function setPagePreview(){
-               setElementStyleByClassName('portlet-mode-type-admin', 'display', false ? '' : 'none');
-               setElementStyleByClassName('portlet-mode-type-edit', 'display', false ? '' : 'none');
-               setElementStyleByClassName('portlet-mode-type-view', 'display', false ? '' : 'none');
-               setElementStyleByClassName('portlet-mode-spacer', 'display', 'none');
-               setElementStyleByClassName('portlet-header-canvas', 'display', 'none');
-               setElementStyleByClassName('portlet-canvas', 'borderWidth', '0px');
-               setElementStyleByClassName('portlet-mode-canvas portlet-mode-type-view', 'display', 'none');
-            }
-
-            function setElementStyleByClassName(cl, propertyName, propertyValue) {
-               if (!pcontent.document.getElementsByTagName) return;
-               var re = new RegExp("(^| )" + cl + "( |$)");
-               var el = pcontent.document.all ? pcontent.document.all : pcontent.document.getElementsByTagName("body")[0].getElementsByTagName("*"); // fix for IE5.x
-               for (var i = 0; i < el.length; i++) {
-                  if (el[i].className && el[i].className.match(re)) {
-                     el[i].style[propertyName] = propertyValue;
-                  }
                }
             }
 
@@ -69,7 +41,7 @@
                   }
                );
             }
-               
+
             function showResponse(response) {
                $('divResult').innerHTML = response.responseText;
                var alertDiv = $('alertMain');
@@ -95,15 +67,15 @@
 			top:35px;
 			z-index:1000;
 		}
-		
+
 		#alertLf{
-			width:58px; 
-			height:80px; 
-			background:url(../gfx/alert_green_left.gif) no-repeat; 
+			width:58px;
+			height:80px;
+			background:url(../gfx/alert_green_left.gif) no-repeat;
 			float:left;
 		}
 		#divResult{
-			width:314px; 
+			width:314px;
 			height:80px;
 			background:url(../gfx/alert_middle.gif) repeat-x;
 			vertical-align:middle;
@@ -120,30 +92,31 @@
 		-->
 		</style>
       <body onLoad="refreshTreeTab();">
-         <table style="width:100%; height:100%;" cellpadding="0" cellspacing="0" border="0">
-            <tr style="height:37px;">
-               <td style="width:60%;">
-                  <div class="tabs" style="width:100%;">
-                     <div ${'edit' eq sessionScope.pageMode ? 'class="tab_active"' : 'class="tab"'} >
-                        <div class="body">
-                           <div>
-                              <a href="${pageUrl}?nodeId=${requestScope.nodeId}&pageMode=edit" id="edit">
-                                 <fmt:message key="toolbar.editpage"/>
-                              </a>
-                           </div>
-                        </div>
-                     </div>
-                     <div ${'preview' eq sessionScope.pageMode ? 'class="tab_active"' : 'class="tab"'} >
-                        <div class="body">
-                           <div>
-                              <a href="${pageUrl}?nodeId=${requestScope.nodeId}&pageMode=preview" id="preview">
-                                 <fmt:message key="toolbar.preview" />
-                              </a>
-                           </div>
+      <table style="width:100%; height:100%;" cellpadding="0" cellspacing="0" border="0">
+         <tr style="height:37px;">
+            <td style="width:60%;">
+               <div class="tabs" style="width:100%;">
+                  <div ${'edit' eq sessionScope.pageMode ? 'class="tab_active"' : 'class="tab"'} >
+                     <div class="body">
+                        <div>
+                           <a href="${pageUrl}?nodeId=${requestScope.nodeId}&pageMode=edit" id="edit">
+                              <fmt:message key="toolbar.editpage"/>
+                           </a>
                         </div>
                      </div>
                   </div>
-               </td>
+                  <div ${'preview' eq sessionScope.pageMode ? 'class="tab_active"' : 'class="tab"'} >
+                     <div class="body">
+                        <div>
+                           <a href="${pageUrl}?nodeId=${requestScope.nodeId}&pageMode=preview" id="preview">
+                              <fmt:message key="toolbar.preview"/>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+            </td>
                <td style="width:40%; height:36px;vertical-align:middle; text-align:right; background:url(<cmsc:staticurl page='/editors/gfx/edit_shadow.gif'/>) repeat-x center;">
                   <input type="checkbox" name="treevisable" id="treevisable" value="<fmt:message key='toolbar.showtree'/>" checked onClick="return switchChannelPanel(this);">
                      <fmt:message key="toolbar.showtree" />
@@ -167,10 +140,10 @@
                   </div>
                </td>
             </tr>
-         
+
             <tr>
                <td  style="width:100%;" colspan="2">
-                  <iframe src="${requestScope.pathofpage}" onload="loadPreview()" name="pcontent" id="pcontent" frameborder="0" style="width:100%;height:100%;"/>
+                  <iframe src="${requestScope.pathofpage}" name="pcontent" id="pcontent" frameborder="0" style="width:100%;height:100%;"/>
                </td>
             </tr>
          </table>
