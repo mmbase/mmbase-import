@@ -516,6 +516,9 @@ public abstract class NewsletterUtil {
       return schedules;      
    }
    public static String getScheduleMessageByExpression(String expression){
+      if(StringUtils.isEmpty(expression)) {
+         return "";
+      }
       StringBuilder scheduleMessage = null;
       ResourceBundle rb =  ResourceBundle.getBundle("cmsc-calendar");
       String[] expressions = expression.split("\\|");
