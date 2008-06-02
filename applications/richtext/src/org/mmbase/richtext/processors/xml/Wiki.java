@@ -18,6 +18,7 @@ import org.mmbase.util.*;
 import org.w3c.dom.*;
 import javax.xml.transform.dom.*;
 import java.util.*;
+import java.util.regex.*;
 
 import org.mmbase.util.logging.*;
 
@@ -28,12 +29,11 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.9 2008-05-05 14:07:36 michiel Exp $
+ * @version $Id: Wiki.java,v 1.10 2008-06-02 12:54:20 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
 class Wiki {
-
 
     private static final Logger log = Logging.getLoggerInstance(Wiki.class);
     private static final long serialVersionUID = 1L;
@@ -45,58 +45,103 @@ class Wiki {
      * @param links List of alreayd existing relation objects
      * @param id (of a)
      */
-    Node findById(Element a, NodeList links, String id) {
+    Node findById(Element a, NodeList links, String fieldName, Set<String> usedIds) {
+        String xmlId = a.getAttribute("id");
         NodeIterator ni = links.nodeIterator();
         while (ni.hasNext()) {
             Node relation = ni.nextNode();
-            String relId = relation.getStringValue("id");
-            log.debug("Id in " + relation.getNumber() + " " + relId + " comparing with '" + id);
-            if (! "".equals(relId)) {
-                String decorId = decorateId(id);
-                String decorRelId = decorateId(relId);
-                if (relId.equals(id) || decorRelId.equals(decorId)) {
-                    log.debug(relId + "==" + decorId);
-                    return relation;
-                } else {
-                    log.debug(relId + "!=" + decorId);
-                }
-            } else {
+            String relId  = relation.getStringValue("id");
+            if (log.isDebugEnabled()) {
+                log.debug("Id in " + relation.getNumber() + " " + relId + " comparing with '" + xmlId);
+            }
+            if ("".equals(relId)) {
+                // id field in relation object is empty, generate one, supposing that the id in the
+                // xml simply refers to a node number.
                 Node destination = relation.getNodeValue("dnumber");
                 log.debug("Found " + destination);
                 if (destination == null) {
                     log.warn("dnumber null in " + relation);
                 } else {
-                    if (destination.getStringValue("number").equals(id)) {
+                    if (destination.getStringValue("number").equals(xmlId)) {
                         log.debug("Setting relation id of " + relation.getNumber() + " to " + destination.getNumber());
-                        String decoratedId = decorateId("" + destination.getNumber());
-                        relation.setStringValue("id", decoratedId);
+                        String id = generateId(fieldName, "" + destination.getNumber(), usedIds);
+                        relation.setStringValue("id", id);
                         relation.commit();
-                        a.setAttribute("id", decoratedId);
+                        a.setAttribute("id", id);
                         log.debug("relation " + relation + " " + relation.getCloud());
+                        usedIds.add(id);
                         return relation;
                     }
                 }
+            } else {
+                String decorXmlId = decorateId(xmlId, fieldName);
+                String decorRelId = decorateId(relId, fieldName);
+                if (relId.equals(xmlId) || decorRelId.equals(decorXmlId)) {
+                    log.debug(relId + "==" + xmlId);
+                    // relation already exists and corresponds with id in this
+
+                    // fix 'legacy' values.
+                    if (! decorXmlId.equals(xmlId)) {
+                        a.setAttribute("id", decorXmlId);
+                    }
+                    if (! decorRelId.equals(relId)) {
+                        relation.setStringValue("id", decorRelId);
+                        relation.commit();
+                    }
+                    usedIds.add(decorXmlId);
+                    return relation;
+                } else {
+                    usedIds.add(xmlId);
+                    log.debug(relId + "!=" + xmlId);
+                }
             }
+
         }
         return null; // not found
     }
 
-    String cleanId(String id) {
-        if (id.startsWith("n_")) {
-            return id.substring(2);
+    String prefix(String fieldName) {
+        return "n_" + fieldName + "_";
+    }
+
+    String generateId(String fieldName, String nodeNumber, Set<String> usedIds) {
+        String decoratedId = decorateId(nodeNumber, fieldName);
+        String uniqueDecoratedId = decoratedId;
+        int seq = 0;
+        while (usedIds.contains(uniqueDecoratedId)) {
+            uniqueDecoratedId = decoratedId + "-" + (++seq);
+        }
+        return uniqueDecoratedId;
+    }
+
+    static final Pattern DECORATED = Pattern.compile("n_[a-zA-Z]+_(\\d+)(?:_\\d+)?");
+    String idToNodeNumber(String id, String fieldName) {
+        Matcher matcher = DECORATED.matcher(id);
+        if (matcher.matches()) {
+            return matcher.group(1);
         } else {
             return id;
         }
     }
-    String decorateId(String id) {
-        return "n_" + cleanId(id);
+    /**
+     * Prefixes a node number, because the a node number is not a convenient id. Numbers are already
+     * used in the o: xml. (The _same_ numbers).
+     */
+    String decorateId(String id, String fieldName) {
+        return prefix(fieldName) + idToNodeNumber(id, fieldName);
     }
 
    /**
      * Simply considers the id the node-number, but this could be sophisitcated on.
      */
-    Node getNode(Cloud cloud, String id) {
-        return cloud.getNode(id);
+    Node getNode(Cloud cloud, String id, String fieldName) {
+        String nodeNumber = idToNodeNumber(id, fieldName);
+        if (cloud.hasNode(nodeNumber)) {
+            return cloud.getNode(nodeNumber);
+        } else {
+            return null;
+        }
+
     }
 
     /**
@@ -105,9 +150,11 @@ class Wiki {
      * @param source
      *
      */
-    Document parse(Node editedNode, Document source) {
+    Document parse(Node editedNode, Field field, Document source) {
 
-        Map<Integer, Node> usedLinks = new HashMap<Integer, Node>();
+        String fieldName = field.getName();
+        Set<String> usedIds = new HashSet<String>();
+
         // reolve anchors. Allow to use nodenumber as anchor.
         if (log.isDebugEnabled()) {
             log.debug("Resolving " + editedNode + " " + XMLWriter.write(source, true));
@@ -122,25 +169,28 @@ class Wiki {
         org.w3c.dom.NodeList as = source.getElementsByTagName("a");
         for (int i = 0; i < as.getLength(); i++) {
             Element a = (Element) as.item(i);
-            String id = a.getAttribute("id");
-
             if (log.isDebugEnabled()) {
                 log.debug("Found " + XMLWriter.write(a, true));
             }
-            Node link = findById(a, links, id);
+            Node link = findById(a, links, fieldName, usedIds);
             if (link == null) {
+                String id = a.getAttribute("id");
                 log.service("No relation found with id'" + id + "'. Implicitely creating one now.");
-                Node node = getNode(cloud, cleanId(id));
-                try {
-                    Relation newRel = editedNode.createRelation(node, cloud.getRelationManager(editedNode.getNodeManager(), node.getNodeManager(), "idrel"));
-                    String decoratedId = decorateId(id);
-                    newRel.setStringValue("id", decoratedId);
-                    newRel.commit();
-                    a.setAttribute("id", decoratedId);
-                } catch (Exception e) {
-                    log.warn(e);
+                Node node = getNode(cloud, id, fieldName);
+                if (node != null) {
+                    try {
+                        Relation newRel = editedNode.createRelation(node, cloud.getRelationManager(editedNode.getNodeManager(), node.getNodeManager(), "idrel"));
+                        String decoratedId = generateId(fieldName, id, usedIds);
+                        newRel.setStringValue("id", decoratedId);
+                        newRel.commit();
+                        a.setAttribute("id", decoratedId);
+                        usedIds.add(decoratedId);
+                    } catch (Exception e) {
+                        log.warn(e);
+                    }
+                } else {
+                    log.warn("No node found for " + id + "");
                 }
-
             }
 
         }
