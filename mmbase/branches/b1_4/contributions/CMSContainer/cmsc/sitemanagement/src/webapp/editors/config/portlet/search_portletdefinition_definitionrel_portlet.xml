@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<list role="definitionrel" destination="portlet" minoccurs="0" maxoccurs="*" orderby="field[@name='name']" ordertype="string">
+<list role="definitionrel" destination="portlet" minoccurs="1" maxoccurs="1" orderby="field[@name='name']" ordertype="string">
 	<title xml:lang="nl">Portlet</title>
 	<title xml:lang="en">Portlet</title>
 
