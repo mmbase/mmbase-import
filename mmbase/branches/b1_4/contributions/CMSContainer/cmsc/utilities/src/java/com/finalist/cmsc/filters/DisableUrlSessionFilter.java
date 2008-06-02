@@ -108,7 +108,7 @@ public class DisableUrlSessionFilter implements Filter {
     private void cleanSessions(HttpServletRequest httpRequest) {
         try {
             String userAgent = httpRequest.getHeader("User-Agent");
-            if (userAgentPattern != null && userAgentPattern.matcher(userAgent).find()) {
+            if (StringUtils.isNotBlank(userAgent) && userAgentPattern != null && userAgentPattern.matcher(userAgent).find()) {
                 HttpSession session = httpRequest.getSession(false);
                 if (session != null && session.isNew()) {
                     session.invalidate();
