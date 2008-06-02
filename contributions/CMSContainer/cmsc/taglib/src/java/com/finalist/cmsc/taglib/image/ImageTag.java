@@ -1,20 +1,18 @@
 package com.finalist.cmsc.taglib.image;
 
-import org.apache.commons.lang.StringUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspTagException;
 
+import org.apache.commons.lang.StringUtils;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import org.mmbase.util.images.Dimension;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspTagException;
-
 /**
  * This tag renders an html image tag to display an image from MMBase.
- * 
+ *
  * @author Hillebrand Gelderblom
  */
 @SuppressWarnings("serial")
@@ -79,7 +77,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
    /**
     * Method that renders the html image tag to display an image from MMBase.
     * This tag displays a legend.
-    * 
+    *
     * @param node
     *           image node
     * @param servletPath
@@ -124,7 +122,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
    /**
     * Retrieves html code to display a legend of an image.
-    * 
+    *
     * @param image -
     *           image for which the legend should be displayed
     * @param style -
@@ -136,7 +134,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
       try {
          String descr = image.getStringValue("description");
-         if ((descr != null) && (descr.trim() != "")) {
+         if (StringUtils.isNotBlank(descr)) {
             legend.append("<span class=\"" + style + "\">");
             legend.append(descr.trim());
             legend.append("</span>\n");
@@ -188,7 +186,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
    /**
     * Adds html code to popup this image
-    * 
+    *
     * @param image -
     *           image to display in the popup
     * @param imgHtml -
@@ -227,7 +225,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
    /**
     * Getter for property popup.
-    * 
+    *
     * @return Value of property popup.
     * @throws JspTagException
     */
@@ -238,7 +236,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
    /**
     * Setter for property popup.
-    * 
+    *
     * @param popup
     *           New value of property popup.
     * @throws JspTagException
@@ -250,7 +248,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
    /**
     * Getter for property legendtype.
-    * 
+    *
     * @return Value of property legendtype.
     * @throws JspTagException
     */
@@ -262,7 +260,7 @@ public class ImageTag extends org.mmbase.bridge.jsp.taglib.ImageTag {
 
    /**
     * Setter for property legendtype.
-    * 
+    *
     * @param legendType
     *           New value of property legendtype.
     * @throws JspTagException
