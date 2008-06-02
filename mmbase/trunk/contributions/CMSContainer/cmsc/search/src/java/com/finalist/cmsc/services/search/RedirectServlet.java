@@ -24,8 +24,6 @@ import com.finalist.cmsc.navigation.PagesUtil;
 import com.finalist.cmsc.navigation.ServerUtil;
 import com.finalist.cmsc.portalImpl.PortalConstants;
 import com.finalist.cmsc.repository.ContentElementUtil;
-import com.finalist.cmsc.services.search.PageInfo;
-import com.finalist.cmsc.services.search.Search;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
 import com.finalist.pluto.portalImpl.core.PortalEnvironment;
 import com.finalist.pluto.portalImpl.core.PortalURL;
@@ -41,14 +39,14 @@ public class RedirectServlet extends BridgeServlet {
         a.put("content", Integer.valueOf(50));
         return a;
     }
-    
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         String forwardRequest = config.getInitParameter("forwardRequest");
         this.forwardRequest = Boolean.valueOf(forwardRequest);
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doRedirect(request, response);
@@ -58,7 +56,7 @@ public class RedirectServlet extends BridgeServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doRedirect(request, response);
     }
-    
+
     private void doRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
         QueryParts queryParts = readQueryFromRequestURI(request, null);
         Node node = getNode(queryParts);
@@ -67,7 +65,7 @@ public class RedirectServlet extends BridgeServlet {
             return;
         }
         String redirect = null;
-        
+
         String managerName = node.getNodeManager().getName();
         if (ResourcesUtil.URLS.equals(managerName)) {
             redirect = node.getStringValue("url");
@@ -78,7 +76,7 @@ public class RedirectServlet extends BridgeServlet {
         if (ResourcesUtil.IMAGES.equals(managerName)) {
             redirect = ResourcesUtil.getServletPath(node, node.getStringValue("number"));
         }
-        
+
         /* *****************************
          * All types above this comment should all be redirected and not forwarded with a dispatcher
          * *****************************
@@ -87,14 +85,14 @@ public class RedirectServlet extends BridgeServlet {
             response.sendRedirect(redirect);
             return;
         }
-        
+
         if (PagesUtil.isPageType(node)) {
             NavigationItem item = SiteManagement.getNavigationItem(node.getNumber());
             if (item != null) {
                 redirect = getPortalUrl(request, item);
             }
         }
-        
+
         if (ContentElementUtil.isContentElement(node)) {
             PageInfo pageInfo = null;
             if (ServerUtil.useServerName()) {
@@ -103,12 +101,12 @@ public class RedirectServlet extends BridgeServlet {
             else {
                 pageInfo = Search.findDetailPageForContent(node);
             }
-            
+
             if (pageInfo != null) {
                 PortalURL u = new PortalURL(pageInfo.getHost(), request, pageInfo.getPath());
                 String elementId = String.valueOf(node.getNumber());
                 // When contentelement and the same number then it is a contentportlet
-                if (! ( "contentelement".equals(pageInfo.getParametername()) 
+                if (! ( "contentelement".equals(pageInfo.getParametername())
                         && elementId.equals(pageInfo.getParametervalue()) ) ) {
                     u.setRenderParameter(pageInfo.getWindowName(), "elementId", new String[] { elementId } );
                 }
@@ -119,7 +117,7 @@ public class RedirectServlet extends BridgeServlet {
                 redirect = u.toString();
             }
         }
-        
+
         if (redirect != null) {
             if (this.forwardRequest) {
                 if (redirect.indexOf("://") > -1 && ServerUtil.useServerName()) {
@@ -147,7 +145,7 @@ public class RedirectServlet extends BridgeServlet {
                 try {
                     RequestDispatcher rd = super.getServletContext().getNamedDispatcher(PortalConstants.CMSC_PORTAL_SERVLET);
                     HttpServletRequest internalRequest = new InternalRedirectHttpServletRequest(request, redirect);
-                    PortalEnvironment internalEnv = new PortalEnvironment(internalRequest, response, this.getServletConfig());
+                    PortalEnvironment internalEnv = new PortalEnvironment(internalRequest, response);
                     rd.forward(internalRequest, response);
                 }
                 catch (ServletException e) {
@@ -162,7 +160,7 @@ public class RedirectServlet extends BridgeServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "No page found");
         }
     }
-    
+
     private String getPortalUrl(HttpServletRequest request, NavigationItem item) {
         String host = null;
         if(ServerUtil.useServerName()) {
@@ -173,16 +171,16 @@ public class RedirectServlet extends BridgeServlet {
         PortalURL u = new PortalURL(host, request, link);
         return u.toString();
     }
-    
+
     class InternalRedirectHttpServletRequest extends HttpServletRequestWrapper {
-        
+
         private String pagePath;
 
         public InternalRedirectHttpServletRequest(HttpServletRequest request, String pagePath) {
             super(request);
-            this.pagePath = pagePath;            
+            this.pagePath = pagePath;
         }
-        
+
         @Override
         public String getServletPath() {
             return pagePath;

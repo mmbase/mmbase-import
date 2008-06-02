@@ -10,16 +10,10 @@ See http://www.MMBase.org/license
 package com.finalist.cmsc.portalImpl;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -31,17 +25,14 @@ import com.finalist.cmsc.beans.om.Site;
 import com.finalist.cmsc.navigation.*;
 import com.finalist.cmsc.services.ServiceManager;
 import com.finalist.cmsc.services.sitemanagement.SiteManagement;
-import com.finalist.pluto.portalImpl.core.PortalEnvironment;
-import com.finalist.pluto.portalImpl.core.PortalURL;
-import com.finalist.pluto.portalImpl.core.PortletContainerEnvironment;
-import com.finalist.pluto.portalImpl.core.PortletContainerFactory;
+import com.finalist.pluto.portalImpl.core.*;
 import com.finalist.pluto.portalImpl.factory.FactoryAccess;
 import com.finalist.pluto.portalImpl.services.factorymanager.FactoryManager;
 import com.finalist.pluto.portalImpl.services.log.CommonsLogging;
 
 /**
- * Portal controller servlet. Alle portal requests gaan door deze servlet.
- * 
+ * Portal controller servlet. All portal requests go through this servlet.
+ *
  * @author Wouter Heijke
  */
 @SuppressWarnings("serial")
@@ -50,25 +41,30 @@ public class PortalServlet extends HttpServlet {
    private static Log log = LogFactory.getLog(PortalServlet.class);
 
    protected static final String PATH_SP = "/";
-   protected static ServletConfig sc;
 
+   @Override
    public String getServletInfo() {
       return "CMSC Portal Driver";
    }
 
 
+   @Override
    public void init(ServletConfig config) throws ServletException {
       super.init(config);
+      startPortal();
+   }
 
+
+   protected void startPortal() throws UnavailableException {
       // [FP] register the navigation item managers, this should be done by the
       // modules in the future
       NavigationManager.registerNavigationManager(new SiteNavigationItemManager());
       NavigationManager.registerNavigationManager(new PageNavigationItemManager());
 
-      PortalServlet.sc = getServletConfig();
+      ServletConfig sc = getServletConfig();
 
       try {
-         ServiceManager.init(config);
+         ServiceManager.init(sc);
       }
       catch (Throwable exc) {
          log.error("Initialization failed!", exc);
@@ -76,7 +72,7 @@ public class PortalServlet extends HttpServlet {
       }
 
       try {
-         ServiceManager.postInit(config);
+         ServiceManager.postInit(sc);
       }
       catch (Throwable expos) {
          log.error("Post initialization failed!", expos);
@@ -97,7 +93,7 @@ public class PortalServlet extends HttpServlet {
          Properties properties = new Properties();
          properties.put("portletcontainer.supportsBuffering", Boolean.FALSE);
          try {
-            PortletContainerFactory.getPortletContainer().init(uniqueContainerName, config, environment, properties);
+            PortletContainerFactory.getPortletContainer().init(uniqueContainerName, sc, environment, properties);
          }
          catch (PortletContainerException exc) {
             log.error("Initialization of the portlet container failed!", exc);
@@ -112,6 +108,7 @@ public class PortalServlet extends HttpServlet {
    }
 
 
+   @Override
    public void destroy() {
       log.info("Shutting down portlet container. . .");
 
@@ -127,6 +124,7 @@ public class PortalServlet extends HttpServlet {
    }
 
 
+   @Override
    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
       log.debug("===>PortalServlet.doGet START!");
       log.debug("===>REQ spth='" + request.getServletPath() + "'");
@@ -197,8 +195,8 @@ public class PortalServlet extends HttpServlet {
                 contentType += "; charset=" + charset;
             }
             response.setContentType(contentType);
-            
-            manager.render(item, request, response, sc);
+
+            manager.render(item, request, response, getServletConfig());
             return true;
         }
      }
@@ -206,11 +204,13 @@ public class PortalServlet extends HttpServlet {
    }
 
 
+   @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       service(request, response);
    }
 
 
+   @Override
    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       service(request, response);
    }
@@ -226,7 +226,7 @@ public class PortalServlet extends HttpServlet {
 
 
    public static boolean isNavigation(HttpServletRequest request, HttpServletResponse response) {
-      PortalEnvironment env = new PortalEnvironment(request, response, sc);
+      PortalEnvironment env = new PortalEnvironment(request, response);
       PortalURL currentURL = env.getRequestedPortalURL();
       String path = extractPath(request, currentURL);
       if (path == null) {
