@@ -7,6 +7,7 @@ N   refactor de java code
 N   pas de documentatie aan
 N   pas mmbase buildbase.properties aan: install.tagfiles
 N   zorg dat de fck richtext editor wordt gedownlaod, en niet in de cvs zit.
+N   zorg dat de build een war file kan bouwen met alle resources erin.
 
 wat is er qua paden veranderd:
 1 het mapje /edit is nu /mmbase/vpro-wizards
