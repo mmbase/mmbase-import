@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * Set-processing for an `mmxf' field. This is the counterpart and inverse of {@link MmxfGetString}, for more
  * information see the javadoc of that class.
  * @author Michiel Meeuwissen
- * @version $Id: MmxfSetString.java,v 1.21 2008-04-27 04:26:56 michiel Exp $
+ * @version $Id: MmxfSetString.java,v 1.22 2008-06-02 12:54:20 michiel Exp $
  * @since MMBase-1.8
  */
 
@@ -61,7 +61,7 @@ public class MmxfSetString implements  Processor {
                 if (log.isDebugEnabled()) {
                     log.debug("XML: " + xml);
                 }
-                return  wiki.parse(node, Util.parse(xml));
+                return  wiki.parse(node, field, Util.parse(xml));
             }
             case Modes.DOCBOOK: {
                 log.debug("Handling docbook-input: " + value);
