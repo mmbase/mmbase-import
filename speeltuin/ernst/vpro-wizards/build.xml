@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<project name="vpro-wizards" default="jar" basedir=".">
+  <property name="project.name"      value="vpro-wizards" />
+  <property name="project.package"   value="org/mmbase/applications/vpro-wizards" />
+  <property name="project.comment"   value="The VPRO wizard toolkit for MMBase" />
+
+  <property name="project.jars.includes"   value="spring.jar,spring-webmvc.jar,commons-collections*.jar,commons-fileupload*.jar,commons-lang*.jar,oscache*.jar,nekohtml*.jar" />
+  <property name="project.jars.dir" location="build" />
+  <property name="java.source.version" value="1.5"/>
+
+
+  <import file="../buildbase-include.xml" />
+  <property file="build.properties.default" />
+
+  <target name="jar" description="Create the vpro-wizards jar"
+    depends="vpro-wizards.jars,project.manifest,buildbase.jar" />
+
+   <target name="vpro-wizards.jars" description="Get the vpro-wizards dependencies">
+
+    <!--spring-->
+    <echo message="download spring" />
+    <antcall target="downloadzip">
+        <param name="sourcefile" value="${spring.loc}"/>
+        <param name="destfile" value="${spring.dest}"/>
+        <param name="destdir" value="${expand.dir}"/>
+        <param name="expandedfile" value="${spring.jar}"/>
+    </antcall>
+
+    <echo message="hallo: ${project.jars.dir} ${project.jars.includes}" />
+    <copy file="${spring.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+    <copy file="${spring.mvc.jar}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+    <!--commons collections-->
+    <echo message="download commons-collections" />
+    <antcall target="download">
+        <param name="sourcefile" value="${comm.collections.loc}"/>
+        <param name="destfile" value="${download.dir}/${comm.collections.file}"/>
+    </antcall>
+    <copy file="${download.dir}/${comm.collections.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+
+    <!--commons lang-->
+    <echo message="download commons-lang" />
+    <antcall target="download">
+        <param name="sourcefile" value="${comm.lang.loc}"/>
+        <param name="destfile" value="${download.dir}/${comm.lang.file}"/>
+    </antcall>
+    <copy file="${download.dir}/${comm.lang.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+     <!--nekohtml-->
+    <echo message="download nekohtml" />
+    <antcall target="download">
+        <param name="sourcefile" value="${nekohtml.loc}"/>
+        <param name="destfile" value="${download.dir}/${nekohtml.file}"/>
+    </antcall>
+    <copy file="${download.dir}/${nekohtml.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+
+    <!--oscache-->
+    <echo message="download oscache" />
+    <antcall target="download">
+        <param name="sourcefile" value="${oscache.loc}"/>
+        <param name="destfile" value="${download.dir}/${oscache.file}"/>
+    </antcall>
+    <copy file="${download.dir}/${oscache.file}" todir="${project.jar.dir}" preservelastmodified="true" />
+  </target>
+
+  <target name="test" depends="init">
+    <echo message="webapp.dir: ${webapp.dir}"/>
+    <echo message="templates.dir: ${templates.dir}"/>
+    <echo message="templates.available: ${templates.available}"/>
+    <echo message="project.templates.dir: ${project.templates.dir}"/>
+    <echo message="examples.dir: ${examples.dir}"/>
+    <echo message="project.target.examples.dir: ${project.target.examples.dir}"/>
+    <echo message="project.examples.dir: ${project.examples.dir}"/>
+    <echo message="project.build.dir: ${project.build.dir}"/>
+    <echo message="project.source.dir: ${project.source.dir}"/>
+    <echo message="tagfiles.available: ${tagfiles.available}"/>
+    </target>
+
+</project>

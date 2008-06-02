@@ -1,0 +1,1103 @@
+/* TABLE OF CONTENTS
+
+ * general
+ * forms
+ * icons, buttons and headers
+ * header
+ * selected level
+ * add
+ * search
+ * highlighted
+ * itemlist
+ * paging
+ * objectfields
+ * relatedview
+ * editorslist
+ * bookmarks
+ * teasers
+ * login
+ */
+
+ #mm_owner_search{
+     width: auto;
+ }
+
+/* info*/
+.info{
+    border: 1px solid #4A83C4;
+    margin: 20px;
+}
+.info .content{
+    padding: 5px;
+}
+.relatedview .info{
+    margin: 0px;
+    background: white;
+    border: 0px;
+    border-bottom: 20px solid white;
+}
+div.info div.content{
+    padding 2px;
+}
+.info h1, .info h2, .info h3, .info h4, .info h5{
+    background-color: #4A83C4;
+    color: white;
+    font-size: 0.9 em;
+    margin: 0px;
+    padding: 2px;
+}
+.info p{
+    margin: 2px 5px 5px 2px;
+}
+
+/* general
+*******************************************************************************************/
+
+#tabel.eenTeaser td.vierteasers {
+    display:none;
+}
+
+#tabel.vierTeasers td.eenteaser {
+    display:none;
+}
+
+div.error{
+    color:#f00;
+}
+body{
+    font:85% Arial,Helvetica,sans-serif;
+    margin:0;
+    padding:10px;
+    background:#fff;
+    color:#333333;
+}
+a {
+    color:#666;
+}
+a:active,
+a:hover{
+    color:#f60;
+}
+h1,h2,h3,h4,h5,h6,form,ul,li{
+    font-size:1em;
+    margin:0;
+    padding:5px 0px 5px 3px;
+}
+ul{
+    list-style:none;
+}
+ul li{
+    display:block;
+}
+img {
+    vertical-align:middle;
+    border-style:none;
+}
+table{
+    font-size:0.9em;
+    width:100%;
+    border-width:1px 0 1px 0;
+    border-style:solid;
+    border-color:#c8daed;
+}
+table thead tr td{
+    font-weight:bold;
+    color:#4a83c4;
+    padding:5px;
+    margin:0 0 5px 0;
+}
+table tbody tr.even{
+    background: #f3f5f7;
+}
+table tbody tr.odd{
+    background: #fff;
+}
+
+table tbody tr td{
+    color:#666;
+    padding:5px;
+    border-left:solid #c8daed 1px;
+    margin-right:5px;
+    vertical-align:top;
+
+}
+table tbody tr td a{
+    color:#666;
+}
+table tbody tr td.icons{
+    border:none;
+}
+#disableRelated,
+#enableButtons{
+    width:10px;
+    height:10px;
+    left:-100px;
+    position:absolute;
+    background:#fff;
+    opacity:0.7;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=70);
+}
+div.terug {
+    color:#666;
+    font-size:0.9em;
+    background:#dae0e3;
+    padding:5px;
+    margin:20px 20px 0 20px;
+    width:50px;
+}
+div.terug a {
+    color:#666;
+    text-decoration:none;
+}
+div.terug a:active,
+div.terug a:hover{
+    color:#f60;
+}
+
+/* forms
+*******************************************************************************************/
+form{
+    padding:10px;
+    _height:1%;
+}
+form:after{
+    clear:both;
+    display:block;
+    content:".";
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+form INPUT,
+form TEXTAREA,
+form SELECT{
+    font-size:9pt;
+    font-family:Arial,Helvetica,sans-serif;
+    border: 1px solid #666666;
+}
+.inputBlock input,
+.inputBlock TEXTAREA{
+
+    width:395px;
+}
+form INPUT.radio,
+form INPUT.checkbox{
+    width:auto !important;
+}
+form INPUT.file{
+    width:auto !important;
+}
+form TEXTAREA{
+    height:5em;
+}
+form TEXTAREA.small{
+    height:10em;
+}
+form TEXTAREA.medium{
+    height:20em;
+}
+form TEXTAREA.large{
+    height:30em;
+}
+form div.inputBlock{
+    float:left;
+    clear:left;
+    margin:0 10px 5px 0;
+    padding:0 0 5px 0;
+}
+form div.inputBlock div.fieldName{
+    font-size:0.9em;
+    color:#666;
+    width:110px;
+    float:left;
+    margin:0 0 5px 0;
+}
+form div.inputBlock div.fieldValue {
+    font-size:0.9em;
+    float:left;
+}
+form div.inputBlock div.fieldValue span.help{
+    font-size:0.9em;
+    font-style:italic;
+    margin:0 5px 0 5px;
+    color:#666;
+}
+form div.inputBlock div.fieldValue IMG{
+    float:left;
+    margin:0 10px 10px 0;
+}
+form div.inputBlock div.fieldValue A{
+    display:block;
+    float:left;
+    margin:0 10px 10px 0;
+}
+form div.inputBlock div.fieldValue A IMG{
+    float:none;
+    margin:0;
+}
+form div.inputBlock div.mmevent div.fieldValue input{
+    width:auto;
+}
+form div.formButtons{
+    float:left;
+    clear:left;
+    display:inline; /*IE trick ter voorkoming van dubbele margins */
+    margin:0 0 0 110px;
+    width:300px;
+}
+form div.formButtons INPUT{
+    font-weight:bold;
+    color:#fff;
+    width:auto !important;
+    border:none;
+}
+form div.formButtons INPUT.save{
+    background:#4eae44;
+}
+form div.formButtons INPUT.cancel{
+    background:#f00;
+}
+/* icons, buttons and headers
+*******************************************************************************************/
+td.move,
+div.move{
+/*    width:36px;*/
+}
+div.move{
+    float:left;
+}
+img.icon{
+    vertical-align:middle;
+    width:15px;
+    height:15px;
+}
+td.move a.moveup img.icon,
+div.move a.moveup img.icon{
+    float:left;
+    margin:0 5px 0 0;
+}
+td.move a.movedown img.icon,
+div.move a.movedown img.icon{
+    float:left;
+}
+div.move span.position{
+    /*background-color:#4A83C4;*/
+    background-color:#cccccc;
+    color: white;
+    font-weight: bold;
+    font-size: 8px;
+    margin: 0px 2px 0px 2px;
+    padding: 0px 2px 0px 2px;
+}
+/************/
+td.icons{
+    width:100px;
+}
+div.icons{
+    float:left;
+    width:50px;
+}
+a.edit img.icon,
+a.delete img.icon,
+a.highlight img.icon,
+a.unhighlight img.icon,
+a.link img.icon,
+a.list img.icon{
+    width:15px;
+    height:15px;
+    margin:0 5px 0 0;
+}
+/************/
+a.editButton,
+a.addButton,
+a.searchButton,
+a.backButton{
+    font-size:0.9em;
+    font-weight:bold;
+    color:#fff;
+    background:#f60;
+    display:block;
+    padding:2px 5px 2px 5px;
+    text-decoration:none;
+}
+a.searchButton{
+    background:#4a83c4;
+}
+a.backButton{
+    background:#ffde00;
+    color:#666;
+}
+a.editButton:hover,
+a.editButton:active,
+a.addButton:hover,
+a.addButton:active{
+    color:#fff;
+    background:#cd3400;
+}
+a.backButton:hover,
+a.backButton:active{
+    background:#ebb000;
+}
+
+a.searchButton:hover,
+a.searchButton:active{
+    color:#fff;
+    background:#185192;
+}
+a.header img.icon,
+div.header img.icon,
+a.editButton img.icon,
+a.addButton img.icon,
+a.searchButton img.icon,
+a.backButton img.icon{
+    width:11px;
+    height:11px;
+}
+a.header img.fold{
+    margin:0 5px 0 0;
+    width:9px;
+    height:9px;
+}
+a.header,
+div.header{
+    font-weight:bold;
+    text-decoration:none;
+    color:#fff;
+    display:block;
+    padding:2px 5px 2px 5px;
+}
+div.header{
+    background:none;
+    border-bottom:solid #333 1px;
+}
+/* header
+*******************************************************************************************/
+div#header{
+    font-size:0.9em;
+    font-weight:bold;
+    background:#dae0e3;
+    color:#666;
+    border-bottom:1px solid #aaa;
+    padding:0 20px 0 20px;
+    line-height:28px;
+    height:28px;
+}
+
+div#header a{
+    float:left;
+}
+
+div#header div#path{
+    float: left;
+    white-space: nowrap;
+}
+div#header div#path a,
+div#header h6 a{
+    float:none;
+}
+
+div#header h6{
+    font-size:0.8em;
+    display:inline;
+    float:right;
+}
+div#header em,
+div#header a em {
+    font-size:1.1em;
+    font-style:normal;
+    color: #ff6600;
+}
+
+/* selected level
+*******************************************************************************************/
+div.selectedLevel {
+    color:#666;
+    background:#dae0e3;
+    padding:5px;
+    margin:20px 20px 0 20px;
+    border:1px solid #aaa;
+    _height:1%;
+}
+div.selectedLevel:after{
+    clear:both;
+    display:block;
+    content:".";
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+div.selectedLevel div.text{
+    float:left;
+}
+div.selectedLevel div.text a{
+    color:#666;
+}
+div.selectedLevel h3{
+    font-size:1.2em;
+    margin:0 10px 0 0;
+}
+div.selectedLevel h4{
+    font-size:0.8em;
+    margin:0 10px 0 0;
+}
+div.selectedLevel p{
+    font-size:0.8em;
+    width:300px;
+    float:left;
+    margin:0 10px 0 0;
+}
+div.selectedLevel a.editButton{
+    float:left;
+}
+
+/* add
+*******************************************************************************************/
+div.add{
+    margin:20px 20px 20px 20px;
+    float:left;
+    display:inline;
+}
+div.addFields{
+    font-size:0.9em;
+    margin:0 5px 5px 5px;
+    background:#f8e5d7;
+    clear:both;
+}
+div.addFields a.header{
+    background-color:#f60;
+}
+div.addFields a.header:hover,
+div.addFields a.header:active{
+    background-color:#cd3400;
+    color:#fff;
+}
+div.addFields div#addopen{
+    color:#f60;
+}
+
+/* search
+*******************************************************************************************/
+div.searchFields{
+    font-size:0.9em;
+    margin:20px 20px 0 20px;
+    background:#c8daed;
+    clear:both;
+}
+    body.related div.searchFields{
+        margin:0 20px 0 20px;
+    }
+div.searchFields a.header{
+    color:#fff;
+    background-color:#4a83c4;
+}
+div.searchFields a.header:hover,
+div.searchFields a.header:active{
+    background-color:#185192;
+}
+div.searchFields div#searchopen{
+    color:#4a83c4;
+    zoom:1;
+}
+div.searchFields form div.inputBlock{
+    float:left;
+    clear:none;
+    margin:0 10px 5px 0;
+    height:4em;
+}
+div.searchFields form div.inputBlock div.fieldName{
+    float:none;
+}
+div.searchFields form div.inputBlock INPUT{
+    width:220px;
+}
+div.searchFields form div.formButtons{
+    margin:0;
+}
+div.searchFields form div.formButtons INPUT{
+    background:#4a83c4;
+}
+
+/* highlighted
+*******************************************************************************************/
+div.highlighted{
+    margin:0 20px 0 20px;
+    background:#cee0b0;
+    clear:both;
+}
+div.highlighted div.header{
+    font-size:0.9em;
+    color:#40973e;
+    border-color:#e0eee0;
+    background:#c9e0b0;
+}
+div.highlighted table{
+    border:none;
+    margin:5px 0 5px 0;
+}
+div.highlighted table tbody tr.even{
+    background:#d3e3b8;
+}
+div.highlighted table tr td{
+    color:#40973e;
+}
+div.highlighted table tr td a {
+    color:#40973e;
+    text-decoration:none;
+}
+div.highlighted table tr.passed td a {
+    color:#a7b0a7;
+    font-size:0.9em;
+}
+div.highlighted table tr.future td a{
+    color:#636963;
+    font-size:0.9em;
+}
+/* itemlist
+*******************************************************************************************/
+div.itemlist{
+    border-style:solid;
+    border-color:#c8daed;
+    border-width:0 1px 1px 1px;
+    padding:5px;
+    background:#f0f5f8;
+}
+div.itemlist p{
+    font-size:0.9em;
+}
+div.itemlist table tbody a{
+    text-decoration:none;
+}
+div.itemlist table tbody a:active,
+div.itemlist table tbody a:hover{
+    color:#666;
+}
+
+/* paging
+*******************************************************************************************/
+div.paging {
+    font-size:0.9em;
+    margin:5px 0 5px 0;
+    color:#4a83c4;
+}
+div.paging div.paginginfo {
+    float:right;
+}
+div.paging div.pagingnumbers {
+}
+div.paging a:link,
+div.paging a:visited{
+    color:#4a83c4
+}
+div.paging a:hover,
+div.paging a:active{
+    color:#2961a2;
+}
+div.paging div.pagingnumbers a,
+div.paging div.pagingnumbers b{
+    margin:0 5px 0 0;
+}
+.paging b {
+    color:#f00;
+}
+div.paging div.pagingnumbers a.previous img.icon,
+div.paging div.pagingnumbers a.next img.icon{
+    width:8px;
+    height:8px;
+}
+
+/* objectfields
+*******************************************************************************************/
+div.objectfields{
+    float:left;
+    clear:left;
+    width:545px;
+}
+div.objectfields form{
+    padding:20px 0 20px 20px;
+}
+div.objectfields form div.inputBlock{
+    width:525px;
+}
+
+div.objectfields form div.fieldblock{
+    padding: 10px;
+    border: 1px solid #cccccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin: 10px 0px 25px 0px;
+}
+
+div.objectfields form div.fieldblock span.title{
+    color: #333333;
+    padding: 3px;
+    top: -20px;
+    position: relative;
+    background-color: white;
+}
+
+
+
+/* relatedview
+*******************************************************************************************/
+div.relatedview{
+    float:left;
+    color:#666;
+    background:#e2e8ef;
+    margin:20px 0 0 10px;
+    display:inline; /*IE trick ter voorkoming van dubbele margins */
+    font-size:0.9em;
+    clear:right;
+    width:350px;
+}
+    /* related edit pagina */
+    body.related div.relatedview{
+        float:none;
+        clear:both;
+        width:auto;
+        display:block;
+        margin:20px 20px 20px 20px; /*voorkomt dubbele margins in IE, firefox collapsed de 2 20px margins */
+        padding:0 0 5px 0;
+        _height:1%;
+    }
+    body.related div.relatedview:after{
+        clear:both;
+        display:block;
+        content:".";
+        height:0;
+        visibility:hidden;
+        overflow:hidden;
+    }
+    body.related div.relatedview div.listen{
+        padding:5px;
+    }
+    body.related div.relatedview div.listen a{
+        font-weight:bold;
+        text-decoration:none;
+        background:url("http://images.vpro.nl/images/30731794+s%2815%29+colorizehex%28666666%29+f%28png%29/image.png") no-repeat;
+        padding:0 0 0 20px;
+    }
+    body.related a.backButton{
+        float:left;
+        clear:both;
+        margin:20px;
+        display:inline; /*IE trick ter voorkoming van dubbele margins */
+    }
+    body.related div.relatedview div.searchFields,
+    body.related div.relatedview div.addFields{
+        margin-left:5px;
+        margin-right:5px;
+        font-size:1em;
+    }
+    body.related div.relatedview div.itemlist{
+        margin:0;
+    }
+    body.related div.relatedview div.itemlist TABLE,
+    body.related div.relatedview div.itemlist div.paging{
+        font-size:1em;
+    }
+div.relatedview h5{
+    font-size:0.9em;
+    text-transform:uppercase;
+    font-weight:bold;
+    color:#4a83c4;
+    margin:5px 0 0 5px;
+    display:inline; /*IE trick ter voorkoming van dubbele margins */
+    clear:both;
+    float:left;
+    clear:left;
+}
+div.relatedview li a{
+    color:#666;
+}
+div.relatedview div.relatedError{
+    border-bottom:solid #fff 10px;
+    background:#d10;
+    padding:5px;
+    _height:1%;
+    zoom:1;
+}
+div.relatedview div.relatedError div.error{
+    color:#fff;
+}
+div.relatedview div.relatedItem{
+    border-bottom:solid #fff 10px;
+    padding:0 0 5px 0;
+    _height:1%;
+    zoom:1;
+}
+div.relatedview div.relatedItem:after{
+    clear:both;
+    display:block;
+    content:".";
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+    body.related div.relatedview div.relatedItem{
+        border-bottom:none;
+    }
+div.relatedview div.relatedItem li{
+    width:340px;
+    padding:5px;
+    float:left;
+    clear:left;
+    border-bottom:solid #fff 1px;
+}
+    body.related div.relatedview div.relatedItem li{
+        width:800px;
+    }
+    body.related div.relatedview div.relatedItem li FORM{
+        border-bottom-width:0;
+    }
+    body.related div.relatedview div.relatedItem li FORM div.inputBlock{
+        width:525px;
+    }
+div.relatedview div.relatedItem li.last{
+    border-bottom:none;
+}
+div.relatedview div.relatedItem div.addItem{
+    float:right;
+    display:inline; /*IE trick ter voorkoming van dubbele margins */
+    margin:5px 5px 0 0;
+}
+div.relatedview div.relatedItem div.addItem a{
+    font-size:0.7em;
+    margin:0 0 0 5px;
+    display:inline;
+    float:left;
+}
+div.relatedview div.relatedItem form{
+    float:left;
+    clear:left;
+    display:inline; /*IE trick ter voorkoming van dubbele margins */
+    margin:0;
+    padding:5px;
+    border-bottom:solid #fff 1px;
+    width:340px;
+}
+    body.related div.relatedview div.relatedItem form{
+        width:auto;
+    }
+div.relatedview div.relatedItem form div.fieldValue{
+    width:200px;
+    margin:0 0 5px 0;
+}
+    body.related div.relatedview div.relatedItem form div.fieldValue{
+        width:auto;
+    }
+    /*
+div.relatedview div.relatedItem form INPUT{
+    width:150px;
+}
+*/
+    body.related div.relatedview div.relatedItem form INPUT{
+        width:395px;
+    }
+div.relatedview div.relatedItem form div.formButtons{
+    margin:0;
+}
+    body.related div.relatedview div.relatedItem form div.formButtons{
+        margin:0 0 0 110px;
+    }
+div.relatedview div.relatedItem form div.formButtons INPUT{
+    font-size:1em;
+}
+div.relatedview div.relatedItem span.offline{
+    color:#f00;
+}
+/* editorslist
+*******************************************************************************************/
+div.editors{
+    margin:0 0 0 20px;
+    padding:20px 0 0 0;
+    color:#666;
+    width:250px;
+    float:left;
+    border-right:solid #666 1px;
+    display:inline; /*IE trick ter voorkoming van dubbele margins */
+}
+div.editors img.icon{
+    width:11px;
+    height:11px;
+    margin:2px 2px 2px 5px;
+    _padding:0;
+}
+div.editors a:hover img.icon,
+div.editors a:active img.icon{
+    background:#f60;
+}
+div.editors h4{
+    margin:0 0 0.3em;
+}
+div.editors a{
+    text-decoration:none;
+}
+div.editors a:active,
+div.editors a:hover{
+    text-decoration:underline;
+}
+div.editors ul{
+    font-size:0.9em;
+    font-weight:bold;
+    margin:0 0 2em 0;
+}
+div.editors ul li{
+    margin:0 0 5px 0;
+}
+/* bookmarks
+*******************************************************************************************/
+div.bookmarks{
+    font-size:0.9em;
+    margin:0 0 0 270px;
+    _height:1%;
+}
+div.bookmarks:after{
+    clear:both;
+    display:block;
+    content:".";
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+div.bookmarks div.header{
+    font-weight:bold;
+    background:#edf0f1;
+    color:#666;
+    border:none;
+    padding:5px;
+}
+div.bookmarks div.header a.editButton{
+    color:#fff;
+    float:right;
+}
+div.editBookmarks div.header a#bookmarksEdit{
+    display:none;
+}
+div.bookmarks div.header a#bookmarksReady{
+    color:#fff;
+    background:#4eae44;
+    display:none;
+}
+div.bookmarks div.header a#bookmarksReady:active,
+div.bookmarks div.header a#bookmarksReady:hover{
+    background:#3b8333;
+}
+div.editBookmarks div.header a#bookmarksReady{
+    display:block;
+}
+div.bookmarks div.header h3{
+    font-size:1.2em;
+}
+div.bookmarks div.add{
+    margin:20px 10px 10px 10px;
+    display:none;
+    float:none;
+}
+div.editBookmarks div.add{
+    display:block;
+}
+div.bookmarks div.add a{
+    display:inline;
+}
+div.bookmarks div.categorieKolom{
+    float:left;
+    width:235px;
+    border:solid #fff 1px;
+}
+div.bookmarks div.categorieKolom div.categorie{
+    width:215px;
+    margin:10px 0 0 10px;
+    background:#edf0f1;
+    padding:0 0 5px 0;
+    _height:1%;
+}
+div.bookmarks div.categorieKolom div.categorie:after{
+    clear:both;
+    display:block;
+    content:".";
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+div.bookmarks div.categorieKolom div.categorie div.header{
+    padding:2px 5px 2px 5px;
+    background:#dae0e3;
+}
+div.editBookmarks div.categorieKolom div.categorie div.header{
+    background:#f60;
+    color:#fff;
+}
+div.bookmarks div.categorieKolom div.categorie div.header div.move,
+div.bookmarks div.categorieKolom div.categorie div.header div.icons{
+    display:none;
+}
+div.editBookmarks div.categorieKolom div.categorie div.header div.move{
+    display:block;
+    width:60px;
+    margin:0 10px 0 0;
+    float:none;
+}
+div.editBookmarks div.categorieKolom div.categorie div.header div.icons{
+    display:block;
+    width:60px;
+    float:right;
+    text-align:right;
+    display:inline;
+}
+div.bookmarks div.categorieKolom div.categorie ul li{
+    color:#6b7580;
+    margin:5px;
+    clear:both;
+    _height:1%;
+}
+div.bookmarks div.categorieKolom div.categorie ul li:after{
+    clear:both;
+    display:block;
+    content:".";
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+div.bookmarks div.categorieKolom div.categorie ul li.bijlage img.icon,
+div.bookmarks div.categorieKolom div.categorie ul li.note img.icon{
+    float:left;
+}
+div.bookmarks div.categorieKolom div.categorie ul li.bijlage a,
+div.bookmarks div.categorieKolom div.categorie ul li.note div{
+    float:left;
+    display:block;
+}
+div.bookmarks div.categorieKolom div.categorie ul li.bijlage img.icon{
+    width:9px;
+    height:12px;
+}
+div.bookmarks div.categorieKolom div.categorie ul li.note img.icon{
+    width:12px;
+    height:12px;
+    margin:0 3px 0 0;
+}
+div.bookmarks div.categorieKolom div.categorie ul li a{
+    text-decoration:none;
+}
+div.bookmarks div.categorieKolom div.categorie ul li a:active,
+div.bookmarks div.categorieKolom div.categorie ul li a:hover{
+    text-decoration:underline;
+}
+
+/* teasers
+*******************************************************************************************/
+div.layout{
+    color:#40973e;
+    margin:5px;
+    clear:left;
+}
+div.layout a{
+    margin:0 5px 5px 0;
+}
+div.layout_eenTeaser a.eenteaser img.icon,
+div.layout_vierTeasers a.vierteasers img.icon,
+div.layout a:active img.icon,
+div.layout a:hover img.icon{
+    background:#fff;
+}
+div.layout a img.icon{
+    width:29px;
+    height:23px;
+}
+table.teasers{
+    clear:left;
+}
+table.teasers td.eenteaser{
+    width:20px;
+}
+table.teasers td.eenteaser a.selected img.icon,
+table.teasers td.eenteaser a:active img.icon,
+table.teasers td.eenteaser a:hover img.icon{
+    background:#40973e;
+}
+table.teasers td.vierteasers{
+    width:90px;
+}
+table.teasers td.vierteasers a.selected img.icon,
+table.teasers td.vierteasers a:active img.icon,
+table.teasers td.vierteasers a:hover img.icon{
+    background:#eee;
+}
+table.teasers td.layout a{
+    float:left;
+    margin:0 5px 0 0;
+}
+table.teasers td.layout a img.icon{
+    width:17px;
+    height:13px;
+}
+
+/* login
+*******************************************************************************************/
+body.login{
+    background:#dae0e3;
+    text-align:center;
+    min-width:225px;
+}
+body.login div.loginFields{
+    width:225px;
+    padding:5px;
+    text-align:left;
+    margin:20px auto 0 auto;
+}
+body.login div.loginFields h3{
+    color:#f60;
+    margin:0 0 5px 0;
+}
+div.loginFields form{
+    margin:0;
+    padding:0;
+}
+div.loginFields form div.inputBlock{
+    float:left;
+    clear:none;
+    margin:0 10px 0 0;
+}
+div.loginFields form div.inputBlock div.fieldName{
+    font-size:0.8em;
+    float:none;
+}
+div.loginFields form div.inputBlock INPUT{
+    width:220px;
+}
+div.loginFields form div.formButtons{
+    margin:5px 0 0 0;
+}
+div.loginFields form div.formButtons INPUT{
+    background:#f60;
+}
+/* error
+*******************************************************************************************/
+body.error{
+    background:#dae0e3;
+    text-align:center;
+    min-width:225px;
+    color:#666;
+}
+body.error a{
+    color:#666;
+    margin:1em 0 0 0;
+    display:block;
+}
+body.error h4{
+    font-size:2em;
+    color:#f00;
+}
+body.error div.message{
+    width:400px;
+    text-align:left;
+    margin:20px auto 0 auto;
+}
+
+/* fix for date dropdonw */
+ul#clock li{
+    font-size: 0.7em;
+    padding: 0px;
+    margin: 0px;
+
+}
