@@ -24,17 +24,11 @@
 	      <p>
 		      <fmt:message key="sendsuccess.subtitle" >
             <fmt:param><c:out value="${sendSuccess+sendFail}"/></fmt:param>
-            <fmt:param><c:out value="${sendSuccess}"/></fmt:param>
-            <fmt:param><c:out value="${sendFail}"/></fmt:param>
             </fmt:message>
 	      </p>
       </c:if>
       <c:if test="${empty isSingle}">
          <c:choose>
-            <c:when test="${not empty isPaused}">
-               <p> <fmt:message key="newsletter.ispaused" />
-	            </p>
-            </c:when>
             <c:when test="${not empty isPublish}">
                <p> <fmt:message key="sendsuccess.publish.subtitle" />
 	            </p>
