@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE server>
+<server>
+
+  <!-- ==================================================================== -->
+  <!-- Mail Connection Factory                                              -->
+  <!-- ==================================================================== -->
+  <mbean code="org.jboss.mail.MailService"
+         name="jboss:service=CmscMail">
+    <attribute name="JNDIName">java:/mail/Session</attribute>
+    <attribute name="User">cmsc</attribute>
+    <attribute name="Password">cmsc</attribute>
+    <attribute name="Configuration">
+       <configuration>
+          <!-- Change to your mail server prototocol -->
+          <property name="mail.store.protocol" value="pop3"/>
+          <property name="mail.transport.protocol" value="smtp"/>
+          <!-- Change to the user who will receive mail  -->
+          <property name="mail.user" value="cmsc"/>
+          <!-- Change to the mail server  -->
+          <property name="mail.pop3.host" value="pop3.MISSING.MAILSERVER"/>
+          <!-- Change to the SMTP gateway server -->
+          <property name="mail.smtp.host" value="smtp.MISSING.MAILSERVER"/>
+          <!-- Change to the address mail will be from  -->
+          <property name="mail.from" value="cmsc@MISSING.MAILSERVER"/>
+          <!-- Enable debugging output from the javamail classes -->
+          <property name="mail.debug" value="true"/>
+       </configuration>
+    </attribute>
+  </mbean>
+
+</server>

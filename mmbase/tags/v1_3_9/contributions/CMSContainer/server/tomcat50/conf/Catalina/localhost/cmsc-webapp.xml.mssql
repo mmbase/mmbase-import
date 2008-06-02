@@ -1,0 +1,78 @@
+<!--
+	Context configuration file for the Tomcat CMSC Web App
+-->
+<Context path="/cmsc-webapp" docBase="cmsc-webapp" debug="5" reloadable="true">
+
+	<Logger className="org.apache.catalina.logger.FileLogger" prefix="localhost_cmsc_log." suffix=".txt"
+		timestamp="true" />
+	<!--
+		Remove this if you want to use the default StandarManager. The standard 
+		manager try to save the the session when you restart the tomcat it may cause
+		problem as not all of your session attribute is not serializable
+	-->
+	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false" />
+
+	<Resource name="mail/Session" auth="CONTAINER" type="javax.mail.Session" />
+
+	<Resource name="jdbc/cmsc" auth="CONTAINER" type="javax.sql.DataSource" />
+
+	<ResourceParams name="jdbc/cmsc">
+		<parameter>
+			<name>factory</name>
+			<value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+		</parameter>
+		<parameter>
+			<name>removeAbandoned</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>removeAbandonedTimeout</name>
+			<value>60</value>
+		</parameter>
+		<parameter>
+			<name>logAbandoned</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>maxActive</name>
+			<value>10</value>
+		</parameter>
+		<parameter>
+			<name>maxIdle</name>
+			<value>1</value>
+		</parameter>
+		<parameter>
+			<name>maxWait</name>
+			<value>10000</value>
+		</parameter>
+
+		<parameter>
+			<name>username</name>
+			<value>cmsc</value>
+		</parameter>
+		<parameter>
+			<name>password</name>
+			<value>cmsc</value>
+		</parameter>
+		<parameter>
+			<name>driverClassName</name>
+			<value>com.microsoft.jdbc.sqlserver.SQLServerDriver</value>
+		</parameter>
+		<parameter>
+			<name>url</name>
+			<value>jdbc:microsoft:sqlserver://localhost:1433;DatabaseName=cmsc</value>
+		</parameter>
+	</ResourceParams>
+
+	<ResourceParams name="mail/Session">
+		<parameter>
+			<name>factory</name>
+			<value>org.apache.naming.factory.MailSessionFactory</value>
+		</parameter>
+		<parameter>
+			<name>mail.smtp.host</name>
+			<value>MISSING.MAILSERVER</value>
+		</parameter>
+	</ResourceParams>
+
+</Context>
