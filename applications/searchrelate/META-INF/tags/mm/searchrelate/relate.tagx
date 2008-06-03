@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.23 2008-04-24 20:01:09 michiel Exp $
+      @version $Id: relate.tagx,v 1.24 2008-06-03 11:51:10 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -70,22 +70,20 @@
     $(document).ready(function() {
     <c:if test="${! empty submit}">
       <!-- if a submit id is given, commit the search/relate on click of that element -->
-
          $("${submit}").click(function(el) {
             return $("#mm_related_${seq}")[0].relater.commit(el);
          });
     </c:if>
-    $("#mm_related_${seq}").each(function() {
-    <c:if test="${! empty pagesize}"> this.relater.setPageSize(${pagesize}); </c:if>
+      $("#mm_related_${seq}").each(function() {
+    <c:if test="${! empty pagesize}">  this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
-    <c:if test="${! empty context}">  this.relater.setContext('${context}'); </c:if>
+    <c:if test="${! empty context}"> this.relater.setContext('${context}'); </c:if>
     <c:if test="${! empty current}">
       if (this.relater.current != null) this.relater.current.searcher.maxNumber = ${current.maxNumber};
     </c:if>
+      })
     });
-    });
-
-    </script>
+  </script>
 
   <fmt:bundle
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
