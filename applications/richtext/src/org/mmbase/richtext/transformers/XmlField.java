@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.6 2008-04-22 11:16:59 michiel Exp $
+ * @version $Id: XmlField.java,v 1.7 2008-06-03 11:26:22 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -71,15 +71,13 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         org.mmbase.util.Encode.register(XmlField.class.getName());
     }
 
-
-
-    private static Pattern wikiWrappingAnchor = Pattern.compile("\\[(\\w+):(.*?)\\]");
-    private static Pattern wikiP = Pattern.compile("<p>\\[(\\w+)\\]");
-    private static Pattern wikiSection = Pattern.compile("<section><h>\\[(\\w+)\\]");
-    private static Pattern wikiAnchor = Pattern.compile("\\[(\\w+)\\]");
+    private static final Pattern WIKI_WRAPPING_ANCHOR = Pattern.compile("\\[(\\w+):(.*?)\\]");
+    private static final Pattern WIKI_P               = Pattern.compile("<p>\\[(\\w+)\\]");
+    private static final Pattern WIKI_SECTION         = Pattern.compile("<section><h>\\[(\\w+)\\]");
+    private static final Pattern WIKI_ANCHOR          = Pattern.compile("\\[(\\w+)\\]");
 
     public static String wikiToXML(String data, boolean leaveExtraNewLines, boolean placeListsInsideP) {
-        Matcher wrappingAnchors = wikiWrappingAnchor.matcher(prepareDataString(data));
+        Matcher wrappingAnchors = WIKI_WRAPPING_ANCHOR.matcher(prepareDataString(data));
         data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
         StringObject obj = new StringObject(data);
         handleRich(obj, true, leaveExtraNewLines, true, placeListsInsideP);
@@ -88,11 +86,11 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         }
         handleFormat(obj, false);
         String string = obj.toString();
-        Matcher ps = wikiP.matcher(string);
+        Matcher ps = WIKI_P.matcher(string);
         string = ps.replaceAll("<p id=\"$1\">");
-        Matcher sections = wikiSection.matcher(string);
+        Matcher sections = WIKI_SECTION.matcher(string);
         string = sections.replaceAll("<section id=\"$1\"><h>");
-        Matcher anchors = wikiAnchor.matcher(string);
+        Matcher anchors = WIKI_ANCHOR.matcher(string);
         string = anchors.replaceAll("<a id=\"$1\" />");
         return string;
     }
