@@ -354,7 +354,7 @@
   </xsl:template>
   
   <xsl:template name="listtable">
-    <tr class="item{position()}">
+    <tr class="item{(position() mod 4)+1}">
       <!-- 
         I know this really shouldn't be here (the style attribute)
         but since we need to do more fixes anyway I'll leave it
