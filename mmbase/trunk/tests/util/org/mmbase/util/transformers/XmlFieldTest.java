@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Currently only tests a small part of the XmlField functionality.
  *
  * @author Simon Groenewolt (simon@submarine.nl)
- * @version $Id: XmlFieldTest.java,v 1.5 2008-03-25 21:11:01 nklasens Exp $
+ * @version $Id: XmlFieldTest.java,v 1.6 2008-06-03 11:16:27 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -59,7 +59,7 @@ public class XmlFieldTest  extends TestCase {
         // -nogeending
         // hallo
 //        result = xmlField.richToHTMLBlock("hallo\n-eending\n-nogeending\nhallo");
-        StringObject in = new StringObject("hallo\n-eending\n-nogeending\nhallo");
+        StringObject in = new StringObject("hallo\n- eending\n- nogeending\nhallo");
         XmlField.handleRich(in,
                             XmlField.NO_SECTIONS,
                             XmlField.REMOVE_NEWLINES,
@@ -78,7 +78,7 @@ public class XmlFieldTest  extends TestCase {
         // -nogeending
         //
         // hallo
-        result = XmlField.richToHTMLBlock("hallo\n\n-eending\n-nogeending\n\nhallo");
+        result = XmlField.richToHTMLBlock("hallo\n\n- eending\n- nogeending\n\nhallo");
         expectedResult = "<p>hallo</p><p><ul><li>eending</li><li>nogeending</li></ul></p><p>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
@@ -89,22 +89,24 @@ public class XmlFieldTest  extends TestCase {
         // *eending
         // *nogeending
         // hallo
-        result = XmlField.richToHTMLBlock("hallo\n*eending\n*nogeending\nhallo");
+        result = XmlField.richToHTMLBlock("hallo\n* eending\n* nogeending\nhallo");
         expectedResult = "<p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p>";
         assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
     }
 
     public static String[][] RICH_TO_XML_CASES = {
-        {"$TITEL\nhallo\n*eending\n*nogeending\nhallo", 
+        {"$TITEL\nhallo\n* eending\n* nogeending\nhallo",
          "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending\nhallo",
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending",
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n*eending\n*nogeending\n\n\nbla bla",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>"}
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\n\nbla bla",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\n*hallo* hoe gaat het",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>"}
     };
 
     public void testRichToXML() {
@@ -148,17 +150,17 @@ public class XmlFieldTest  extends TestCase {
         surroundingP = true;
         placeListsInsideP = false;
 
-        listData = "-a\n-b\n-c";
+        listData = "- a\n- b\n- c";
         expectedListResult = "<ul><li>a</li><li>b</li><li>c</li></ul>";
         expectedResult = "<ul><li>a</li><li>b</li><li>c</li></ul>";
         listTest();
 
-        listData = "Hallo\n-x\n-y\n-z\nhallo";
+        listData = "Hallo\n- x\n- y\n- z\nhallo";
         expectedListResult = "Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo";
         expectedResult = "<p>Hallo</p><ul><li>x</li><li>y</li><li>z</li></ul><p>hallo</p>";
         listTest();
 
-        listData = "\n\n-x\n-y\n-z\n\n";
+        listData = "\n\n- x\n- y\n- z\n\n";
         expectedListResult = "<ul><li>x</li><li>y</li><li>z</li></ul>";
         expectedResult = "<p></p><ul><li>x</li><li>y</li><li>z</li></ul><p></p>";
         listTest();
@@ -173,17 +175,17 @@ public class XmlFieldTest  extends TestCase {
         surroundingP = false;
         placeListsInsideP = false;
 
-        listData = "-a\n-b\n-c";
+        listData = "- a\n- b\n- c";
         expectedListResult = "<ul><li>a</li><li>b</li><li>c</li></ul>";
         expectedResult = "</p><ul><li>a</li><li>b</li><li>c</li></ul><p>";
         listTest();
 
-        listData = "Hallo\n-x\n-y\n-z\nhallo";
+        listData = "Hallo\n- x\n- y\n- z\nhallo";
         expectedListResult = "Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo";
         expectedResult = "Hallo</p><ul><li>x</li><li>y</li><li>z</li></ul><p>hallo";
         listTest();
 
-        listData = "\n\n-x\n-y\n-z\n\n";
+        listData = "\n\n- x\n- y\n- z\n\n";
         expectedListResult = "<ul><li>x</li><li>y</li><li>z</li></ul>";
         expectedResult = "</p><ul><li>x</li><li>y</li><li>z</li></ul><p>";
         listTest();
@@ -198,17 +200,17 @@ public class XmlFieldTest  extends TestCase {
         surroundingP = true;
         placeListsInsideP = true;
 
-        listData = "-a\n-b\n-c";
+        listData = "- a\n- b\n- c";
         expectedListResult = "<ul><li>a</li><li>b</li><li>c</li></ul>";
         expectedResult = "<p><ul><li>a</li><li>b</li><li>c</li></ul></p>";
 //        listTest();
 
-        listData = "Hallo\n-x\n-y\n-z\nhallo";
+        listData = "Hallo\n- x\n- y\n- z\nhallo";
         expectedListResult = "Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo";
         expectedResult = "<p>Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo</p>";
         listTest();
 
-        listData = "\n\n-x\n-y\n-z\n\n";
+        listData = "\n\n- x\n- y\n- z\n\n";
         expectedListResult = "<ul><li>x</li><li>y</li><li>z</li></ul>";
         expectedResult = "<p></p><p><ul><li>x</li><li>y</li><li>z</li></ul></p><p></p>";
         listTest();
@@ -223,17 +225,17 @@ public class XmlFieldTest  extends TestCase {
         surroundingP = false;
         placeListsInsideP = true;
 
-        listData = "-a\n-b\n-c";
+        listData = "- a\n- b\n- c";
         expectedListResult = "<ul><li>a</li><li>b</li><li>c</li></ul>";
         expectedResult = "<ul><li>a</li><li>b</li><li>c</li></ul>";
         listTest();
 
-        listData = "Hallo\n-x\n-y\n-z\nhallo";
+        listData = "Hallo\n- x\n- y\n- z\nhallo";
         expectedListResult = "Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo";
         expectedResult = "Hallo<ul><li>x</li><li>y</li><li>z</li></ul>hallo";
         listTest();
 
-        listData = "\n\n-x\n-y\n-z\n\n";
+        listData = "\n\n- x\n- y\n- z\n\n";
         expectedListResult = "<ul><li>x</li><li>y</li><li>z</li></ul>";
         expectedResult = "</p><p><ul><li>x</li><li>y</li><li>z</li></ul></p><p>";
         listTest();
