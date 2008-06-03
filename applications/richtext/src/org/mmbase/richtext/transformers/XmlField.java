@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * Like {@link org.mmbase.util.transformers.XmlField} but adds everything related to the MMXF doctype. This means basicly that it knows how to surround &lt;mmxf /&gt;
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.7 2008-06-03 11:26:22 michiel Exp $
+ * @version $Id: XmlField.java,v 1.8 2008-06-03 11:58:43 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -71,14 +71,14 @@ public class XmlField extends org.mmbase.util.transformers.XmlField {
         org.mmbase.util.Encode.register(XmlField.class.getName());
     }
 
-    private static final Pattern WIKI_WRAPPING_ANCHOR = Pattern.compile("\\[(\\w+):(.*?)\\]");
+    private static final Pattern WIKI_WRAPPING_ANCHOR = Pattern.compile("\\[(\\w+):(.*?)(?:(.*?))?\\]");
     private static final Pattern WIKI_P               = Pattern.compile("<p>\\[(\\w+)\\]");
     private static final Pattern WIKI_SECTION         = Pattern.compile("<section><h>\\[(\\w+)\\]");
     private static final Pattern WIKI_ANCHOR          = Pattern.compile("\\[(\\w+)\\]");
 
     public static String wikiToXML(String data, boolean leaveExtraNewLines, boolean placeListsInsideP) {
         Matcher wrappingAnchors = WIKI_WRAPPING_ANCHOR.matcher(prepareDataString(data));
-        data = wrappingAnchors.replaceAll("<a id=\"$1\">$2</a>");
+        data = wrappingAnchors.replaceAll("<a id=\"$1\" class=\"$3\">$2</a>");
         StringObject obj = new StringObject(data);
         handleRich(obj, true, leaveExtraNewLines, true, placeListsInsideP);
         if (leaveExtraNewLines) {
