@@ -1,3 +1,9 @@
+TODO: because of migration to maven the below information is not any more correct.
+      I have no idea how to run the tests now.
+      The tests cannot even be run with ant any more, because rmmci does not compile with ant.
+
+
+
 Automated (junit) tests for mmbase. Things you might like to know.
 
 - Every test should have an entry in build.xml in this directory.
@@ -12,12 +18,12 @@ Automated (junit) tests for mmbase. Things you might like to know.
 
   - several logging configurations can be chosen (three different log.xml are present now)
      - if test-cases fail you might change logging configuration to explore what is wrong.
-     - you might want to require that no warn/error logging are issued. There is log configuration 
+     - you might want to require that no warn/error logging are issued. There is log configuration
        present which converts those into test-case-errors.
 	 - this is currently configured in implementation of the specific test suites
-	 -  
+	 -
   - three applications are auto-deploy in this test-install:
-     - General.xml 
+     - General.xml
      - BridgeTests.xml (aa, bb, cc builders with all kind of fields)
      - MyNews.xml      (based on MyNews from core, but auto deploy (and perhaps more?))
-   
+
