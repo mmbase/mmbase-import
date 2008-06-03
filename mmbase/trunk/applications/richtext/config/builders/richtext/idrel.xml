@@ -2,6 +2,7 @@
 <builder
     xmlns="http://www.mmbase.org/xmlns/builder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
                         http://www.mmbase.org/xmlns/builder.xsd"
     name="idrel" maintainer="mmbase.org" version="0" extends="insrel">
@@ -77,5 +78,9 @@
         <maxLength value="255" />
       </datatype>
     </field>
+
   </fieldlist>
+
+  <xi:include href="http://www.mmbase.org/builders/versioning/relation.fields.xml" />
+
 </builder>
