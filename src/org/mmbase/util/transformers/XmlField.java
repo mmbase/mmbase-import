@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.53 2008-04-22 11:15:58 michiel Exp $
+ * @version $Id: XmlField.java,v 1.54 2008-06-03 11:18:31 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -69,21 +69,21 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             return;
         }
         char listChar = '-';
-        if (isListChar(obj.charAt(0)) && !isListChar(obj.charAt(1))) { // hoo, we even _start_ with a list;
+        if (isListChar(obj.charAt(0)) && obj.charAt(1) == ' ' && !isListChar(obj.charAt(2))) { // hoo, we even _start_ with a list;
             listChar = obj.charAt(0);
             obj.insert(0, "\n"); // in the loop \n- is deleted, so it must be there.
         } else {
             while (true) {
-                int pos1 = obj.indexOf("\n-", pos); // search the first
-                int pos2 = obj.indexOf("\n*", pos); // search the first
+                int pos1 = obj.indexOf("\n- ", pos); // search the first
+                int pos2 = obj.indexOf("\n* ", pos); // search the first
 
                 pos = (pos1 > 0 && pos1 < pos2) || pos2 < 0 ? pos1 : pos2;
-                if (pos == -1 || obj.length() <= pos + 2) break;
-                if (! isListChar(obj.charAt(pos + 2))) {
+                if (pos == -1 || obj.length() <= pos + 3) break;
+                if (! isListChar(obj.charAt(pos + 3))) {
                     listChar = obj.charAt(pos + 1);
                     break;
                 }
-                pos += 2;
+                pos += 3;
             }
         }
 
@@ -135,16 +135,16 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 }
             } else { // search for next item
                 while (true) {
-                    int pos1 = obj.indexOf("\n-", pos);
-                    int pos2 = obj.indexOf("\n*", pos);
+                    int pos1 = obj.indexOf("\n- ", pos);
+                    int pos2 = obj.indexOf("\n* ", pos);
 
                     pos = (pos1 > 0 && pos1 < pos2) || pos2 < 0 ? pos1 : pos2;
-                    if (pos == -1 || obj.length() <= pos + 2) break;
-                    if (! isListChar(obj.charAt(pos + 2))) {
+                    if (pos == -1 || obj.length() <= pos + 3) break;
+                    if (! isListChar(obj.charAt(pos + 3))) {
                         listChar = obj.charAt(pos + 1);
                         break; // should not start with two -'s, because this is some seperation line
                     }
-                    pos += 2;
+                    pos += 3;
                 }
             }
         }
