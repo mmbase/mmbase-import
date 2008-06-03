@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.7 2008-06-02 12:54:54 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.8 2008-06-03 12:24:37 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -74,6 +74,7 @@
 
     <!-- also for conveniences: all related nodes to this node-->
     <xsl:variable name="related_to_node"   select="//o:objects/o:object[@id=$rels/@related]" />
+    <xsl:variable name="class_name"             select="//o:objects/o:object[o:field[@name='id']/text() = $id]/o:field[@name='class']/text()" />
 
     <!-- There are two type of relations, it is handy to treat them seperately: -->
     <xsl:variable name="srelations" select="//o:objects/o:object[@id=$rels[@type='source']/@object and o:field[@name='id'] = current()/@id]" />
@@ -87,9 +88,12 @@
     <xsl:choose>
       <xsl:when test="count($relatednodes) &gt; 0 or $org.mmbase.richtext.wiki.show_broken = 'true'" >
         <xsl:text>[</xsl:text><xsl:apply-templates select="." mode="undecorateids" />
-        <xsl:if test="count(*|text()) &gt; 1 or (count(*|text()) = 1 and count(text()) &gt; 0)">
+        <xsl:if test="count(*|text()) &gt; 1 or string-length($class_name) &gt; 0 or (count(*|text()) = 1 and count(text()) &gt; 0)">
           <xsl:text>:</xsl:text>
           <xsl:apply-templates />
+        </xsl:if>
+        <xsl:if test="string-length($class_name) &gt; 0">
+          <xsl:text>:</xsl:text><xsl:value-of select="$class_name" />
         </xsl:if>
         <xsl:text>]</xsl:text>
       </xsl:when>
