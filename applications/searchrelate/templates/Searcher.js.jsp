@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.19 2008-04-24 14:40:10 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.20 2008-06-04 12:57:16 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -86,7 +86,6 @@ function MMBaseRelater(d) {
  */
 
 MMBaseRelater.readyFunctions = [];
-
 
 MMBaseRelater.ready = function(fun) {
     MMBaseRelater.readyFunctions[MMBaseRelater.readyFunctions.length] = fun;
@@ -328,10 +327,10 @@ MMBaseRelater.prototype.setContext = function(context) {
 
 MMBaseRelater.prototype.setPageSize = function(pagesize) {
     if (this.current != null) {
-	this.current.searcher.pagesize = pagesize;
+	this.current.searcher.setPageSize(pagesize);
     }
     if (this.repository != null) {
-	this.repository.searcher.pagesize = pagesize;
+	this.repository.searcher.setPageSize(pagesize);
     }
 }
 
@@ -374,6 +373,10 @@ function MMBaseSearcher(d, r, type, logger) {
     this.logger.debug("found " + this.searchUrl);
     this.maxNumber = -1;
 
+}
+
+MMBaseSearcher.prototype.setPageSize = function(pagesize) {
+    this.pagesize = pagesize;
 }
 
 MMBaseSearcher.prototype.getQueryId = function() {
