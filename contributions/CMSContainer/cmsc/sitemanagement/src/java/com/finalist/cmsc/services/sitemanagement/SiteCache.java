@@ -299,15 +299,21 @@ public class SiteCache implements RelationEventListener, NodeEventListener {
               if (event.getChangedFields().contains(fragmentField)) {
                   String newFragment = (String) event.getNewValue(fragmentField);
                   if (navigationManager.isRoot()) {
-                     Iterator<PageTree> i = trees.values().iterator();
-                      while (i.hasNext()){
-                         PageTree tree = i.next();
+                     
+                     //Search for keys to change
+                     ArrayList<PageTree> addList = new ArrayList<PageTree>();
+                     for (PageTree tree : trees.values()) {
                           if (tree.containsPageTreeNode(key)) {
-                              trees.remove(tree.getRoot().getPathStr().toLowerCase());
-                              trees.put(newFragment.toLowerCase(), tree);
-                              tree.replace(key, newFragment);
-                          }
-                      }   
+                             addList.add(tree);
+                        }
+                     }
+                     
+                     //Now change the 'trees' Map (otherwise the Map gets corrupted)
+                     for (PageTree tree : addList) {
+                        trees.remove(tree.getRoot().getPathStr().toLowerCase());
+                        trees.put(newFragment.toLowerCase(), tree);
+                        tree.replace(key, newFragment);
+                     }
                   }
                   else {
                       for (PageTree tree : trees.values()) {
