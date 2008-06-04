@@ -6,7 +6,7 @@
 
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2rich.xslt,v 1.8 2008-06-03 12:24:37 michiel Exp $
+  @version: $Id: 2rich.xslt,v 1.9 2008-06-04 12:18:21 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet
@@ -62,8 +62,8 @@
 
     <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/o:field[@name = 'dnumber']] | $related_to_node[@id = $drelations/o:field[@name='snumber']]" />
 
-    <xsl:if test="count($relatednodes) &gt; 0" >
-      <xsl:text>[</xsl:text><xsl:value-of select="@id" /><xsl:text>]</xsl:text>
+    <xsl:if test="$id != '' and (count($relatednodes) &gt; 0 or $org.mmbase.richtext.wiki.show_broken = 'true')" >
+      <xsl:text>[</xsl:text><xsl:apply-templates select="." mode="undecorateids" /><xsl:text>]</xsl:text>
     </xsl:if>
   </xsl:template>
 
