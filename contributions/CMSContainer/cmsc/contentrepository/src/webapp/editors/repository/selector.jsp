@@ -11,7 +11,7 @@
 	<link href="../utils/ajaxtree/ajaxtree.css" type="text/css" rel="stylesheet" />
 	<link href="../utils/ajaxtree/addressbar.css" type="text/css" rel="stylesheet" />
 	<mm:haspage page="/editors/newsletter/">
-		<link href="<cmsc:staticurl page='/editors/css/newsletter.css'/>" type="text/css" rel="stylesheet" />
+		<link href="<cmsc:staticurl page='/editors/newsletter/styles/newsletter.css'/>" type="text/css" rel="stylesheet" />
 	</mm:haspage>
 
 	<script type="text/javascript" src="../utils/ajaxtree/ajaxtree.js"></script>
