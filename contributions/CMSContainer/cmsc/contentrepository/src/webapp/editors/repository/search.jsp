@@ -339,8 +339,8 @@
                         <input type="checkbox" onclick="selectAll(this.checked, 'linkForm', 'link_');" value="on" name="selectall" />
                      </mm:compare>
                   </th>
-                  <th><a href="#" class="headerlink" onclick="orderBy('otype');"><fmt:message key="locate.typecolumn" /></a></th>
-                  <th><a href="#" class="headerlink" onclick="orderBy('title');" ><fmt:message key="locate.titlecolumn" /></a></th>
+                  <th><a href="javascript:orderBy('otype')" class="headerlink" ><fmt:message key="locate.typecolumn" /></a></th>
+                  <th><a href="javascript:orderBy('title')" class="headerlink" ><fmt:message key="locate.titlecolumn" /></a></th>
                   <th><fmt:message key="locate.creationchannelcolumn" /></th>
                   <th><fmt:message key="locate.authorcolumn" /></th>
                   <th><fmt:message key="locate.lastmodifiedcolumn" /></th>

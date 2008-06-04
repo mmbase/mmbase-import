@@ -18,7 +18,6 @@
     </c:if>
     addLoadEvent(alphaImages);
 </script>
-
 <mm:cloud jspvar="cloud" rank="basic user" loginpage="../login.jsp">
 <mm:import externid="parentchannel" jspvar="parentchannel" vartype="Integer" from="parameters" required="true"/>
 <mm:import jspvar="returnurl" id="returnurl">/editors/repository/Content.do?parentchannel=<mm:write
@@ -124,8 +123,10 @@
 <thead>
     <tr>
         <th></th>
-        <th><fmt:message key="content.typecolumn"/></th>
-        <th><fmt:message key="content.titlecolumn"/></th>
+        <th><a href="javascript:sortByType('<mm:write referid="parentchannel" />')" class="headerlink">
+        <fmt:message key="content.typecolumn"/></a></th>
+        <th><a href="javascript:sortByTitle('<mm:write referid="parentchannel" />')" class="headerlink">
+        <fmt:message key="content.titlecolumn"/></a></th>
         <th><fmt:message key="content.authorcolumn"/></th>
         <th><fmt:message key="content.lastmodifiedcolumn"/></th>
         <th><fmt:message key="content.numbercolumn"/></th>
