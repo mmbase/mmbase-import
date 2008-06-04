@@ -10,7 +10,8 @@
       <mm:import externid="id"     required="true" from="request,parameters" />
       <mm:import externid="node"     required="true" from="request,parameters" />
       <mm:node referid="node">
-        <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'}" >
+        <mm:nodeinfo type="nodemanager" id="nodemanager" write="false" />
+        <tr class="click ${(! empty status and status.index % 2 eq 0) ? 'even' : 'odd'} ${nodemanager}">
           <td class="node number">
             <mm:field name="number" />
           </td>
