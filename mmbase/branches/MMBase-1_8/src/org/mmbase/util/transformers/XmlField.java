@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.46.2.3 2008-06-03 11:18:45 michiel Exp $
+ * @version $Id: XmlField.java,v 1.46.2.4 2008-06-04 14:31:52 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -234,6 +234,27 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         obj.replace("&#95;", sch);
     }
 
+
+    /**
+     * Makes sure that lines indicating headers (starting with $), are followed by at least 2
+     * newlines, if followed by some list.
+     * @since MMBase-1.8.6
+     */
+    static void preHandleHeaders(StringObject obj) {
+
+        int pos = obj.charAt(0) == '$' ? 0 : obj.indexOf("\n$");
+        while (pos >= 0) {
+            // search newline
+            pos++;
+            int nextLine = obj.indexOf("\n", pos);
+            char firstChar = obj.charAt(nextLine + 1);
+            if (isListChar(firstChar)) {
+                obj.insert(nextLine, "\n");
+                pos++;
+            }
+            pos = obj.indexOf("\n$", pos);
+        }
+    }
     /**
      * Some paragraphs are are really \sections. So this handler can
      * be done after handleParagraphs. It will search the paragraphs
@@ -689,6 +710,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     protected static void handleRich(StringObject obj, boolean sections, boolean leaveExtraNewLines, boolean surroundingP, boolean placeListsInsideP) {
         // the order _is_ important!
+        if (sections) {
+            preHandleHeaders(obj);
+        }
         handleList(obj);
         handleTables(obj);
         handleParagraphs(obj, leaveExtraNewLines, surroundingP, placeListsInsideP);
