@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * id of the node).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Wiki.java,v 1.11 2008-06-03 11:58:08 michiel Exp $
+ * @version $Id: Wiki.java,v 1.12 2008-06-04 12:15:27 michiel Exp $
  * @todo something goes wrong if same node relation multiple times.
  */
 
@@ -144,6 +144,8 @@ class Wiki {
 
     }
 
+    private static final Pattern ID_HAVERS = Pattern.compile("a|p|section");
+
     /**
      * @param editedNode Node that is edited. Anchors will be either changed, or idrels will be
      * created/modified to be in order
@@ -166,9 +168,10 @@ class Wiki {
         NodeList links = cloud.getNodeManager("idrel").getList(q);
 
         // search all anchors
-        org.w3c.dom.NodeList as = source.getElementsByTagName("a");
+        org.w3c.dom.NodeList as = source.getElementsByTagName("*");
         for (int i = 0; i < as.getLength(); i++) {
             Element a = (Element) as.item(i);
+            if (! ID_HAVERS.matcher(a.getNodeName()).matches()) continue;
             if (log.isDebugEnabled()) {
                 log.debug("Found " + XMLWriter.write(a, true));
             }
@@ -196,6 +199,9 @@ class Wiki {
                 }
             } else {
                 link.setStringValue("class", className);
+                if (link.isChanged()) {
+                    link.commit();
+                }
             }
 
         }
