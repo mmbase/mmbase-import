@@ -11,7 +11,7 @@
 
  *
  * @author Michiel Meeuwissen
- * @version $Id: Searcher.js.jsp,v 1.20 2008-06-04 12:57:16 michiel Exp $
+ * @version $Id: Searcher.js.jsp,v 1.21 2008-06-04 13:00:27 michiel Exp $
  */
 
 $(document).ready(function(){
@@ -155,7 +155,7 @@ MMBaseRelater.prototype.commit = function(el) {
 	    params.transaction = this.transaction;
 	}
 	var self = this;
-	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
+	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    $(a).removeClass("submitting");
 		    if (status == "success") {
