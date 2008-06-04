@@ -26,7 +26,7 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 public class ContentAction extends MMBaseAction {
-
+   private static boolean flag;
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -51,7 +51,14 @@ public class ContentAction extends MMBaseAction {
          orderby = null;
       }
       if (StringUtils.isEmpty(direction)) {
-         direction = null;
+    	  if(flag==true){
+    		  direction="down";
+    		  flag=false;
+    	  }else{
+    		  direction="up";
+    		  flag=true;
+    	  }
+         //direction = null;
       }
 
       // Set the offset (used for paging).
@@ -85,7 +92,6 @@ public class ContentAction extends MMBaseAction {
          }
          addToRequest(request, "createdNumbers", createdNumbers);
       }
-
       return mapping.findForward(SUCCESS);
    }
 

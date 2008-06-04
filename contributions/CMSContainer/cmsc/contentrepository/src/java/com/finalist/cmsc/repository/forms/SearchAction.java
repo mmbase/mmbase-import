@@ -124,7 +124,7 @@ public class SearchAction extends PagerAction {
                 order = "name";
             }
         }
-        if (StringUtils.isEmpty(order)) {
+        if (StringUtils.isNotEmpty(order)) {
             queryStringComposer.addParameter(ORDER, searchForm.getOrder());
             queryStringComposer.addParameter(DIRECTION, "" + searchForm.getDirection());
             query.addSortOrder(query.getStepField(nodeManager.getField(order)), searchForm.getDirection());
