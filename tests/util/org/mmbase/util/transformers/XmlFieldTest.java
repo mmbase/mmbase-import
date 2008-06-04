@@ -9,7 +9,7 @@ import junit.framework.TestCase;
  *
  * @author Simon Groenewolt (simon@submarine.nl)
  * @author Michiel Meeuwissen
- * @version $Id: XmlFieldTest.java,v 1.9 2008-06-04 14:00:05 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.10 2008-06-04 14:46:14 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -97,26 +97,30 @@ public class XmlFieldTest  extends TestCase {
     }
 
     public static String[][] RICH_TO_XML_CASES = {
+
         {"$TITEL\nhallo\n* eending\n* nogeending\nhallo",
          "<section><h>TITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section>"},
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\nhallo",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol>hallo</p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\n\n_test_\neenalinea\n\nnogeenalinea\n\nhallo",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em>eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><em>test</em><br />eenalinea</p><p>nogeenalinea</p><p>hallo</p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\n\nbla bla",
+        {"$TITEL\n\n$$SUBTITEL\nhallo\n* eending\n* nogeending\n\nbla bla",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p>hallo<ol><li>eending</li><li>nogeending</li></ol></p><p>bla bla</p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\n*hallo* hoe gaat het",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>"},
+
         {"$TITEL\n\n$$SUBTITEL\n* a\n* b\n* c",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"},
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"} //MMB-1654
+        ,
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\nbla",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>bla</p></section></section>"},
-        {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\n\nbla",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bla</p></section></section>"}
+        {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\n\nbloe",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bloe</p></section></section>"}
+
     };
 
     public void testRichToXML() {
@@ -128,6 +132,7 @@ public class XmlFieldTest  extends TestCase {
                                 XmlField.LEAVE_NEWLINES,
                                 XmlField.SURROUNDING_P,
                                 XmlField.LISTS_INSIDE_P);
+            XmlField.handleNewlines(in);
             result         = ignoreNL(in);
             expectedResult = testCase[1];
             if (! expectedResult.equals(result)) {
