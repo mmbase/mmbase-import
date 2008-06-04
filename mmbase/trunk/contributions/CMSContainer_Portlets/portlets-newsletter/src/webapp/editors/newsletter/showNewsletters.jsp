@@ -16,7 +16,7 @@
       <title>newsletters</title>
       <link rel="icon" href="<c:url value='/favicon.ico'/>" type="image/x-icon" />
       <link rel="shortcut icon" href="<c:url value='/favicon.ico'/>" type="image/x-icon" />
-      <link href="<c:url value='/editors/css/newsletter.css'/>" type="text/css" rel="stylesheet" />
+      <link href="<c:url value='/editors/newsletter/styles/newsletter.css'/>" type="text/css" rel="stylesheet" />
 
       <!-- calendar stylesheet -->
       <link rel="stylesheet" type="text/css" media="all"
@@ -88,7 +88,7 @@
                      <td> <fmt:message key="newsletterlog.from" /> </td>
                      <td>
                         <html:text property="startDate" styleId="f_date_b" readonly="true" style="width:125px" />
-                        <input type="image" src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_b" border="0">
+                        <img src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_b" class="img">
                            
                         </input>
                         <script type="text/javascript">
@@ -103,7 +103,7 @@
                      <td> <fmt:message key="newsletterlog.to" /> </td>
                      <td>
                         <html:text property="endDate" styleId="f_date_be" readonly="true" style="width:125px" />
-                        <input type="image" src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_be" border="0">
+                        <img src="/cmsc-community/editors/editwizards_new/media/datepicker/calendar.gif" id="f_trigger_be" class="img">
                            
                         </input>
                         <script type="text/javascript">
@@ -148,9 +148,9 @@
                   </tr>
                   <tr>
                      <td>
-                         <input type="button" onclick="javascript:submits()" 
+                         <input type="submit" onclick="javascript:submits()" style="text-decoration:none"
                            value="<fmt:message key="newsletterlog.submit" />" />
-                        <input type="button" onclick="javascript:resets()"
+                        <input type="submit" onclick="javascript:resets()"  style="text-decoration:none"
                            value="<fmt:message key="newsletterlog.reset" />" />
                      </td>
                      <td colspan="3">&nbsp;</td>
