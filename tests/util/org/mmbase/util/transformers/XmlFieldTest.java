@@ -1,5 +1,6 @@
 package org.mmbase.util.transformers;
 import org.mmbase.util.*;
+import java.util.*;
 import junit.framework.TestCase;
 
 /**
@@ -7,7 +8,8 @@ import junit.framework.TestCase;
  * Currently only tests a small part of the XmlField functionality.
  *
  * @author Simon Groenewolt (simon@submarine.nl)
- * @version $Id: XmlFieldTest.java,v 1.8 2008-06-04 13:44:07 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: XmlFieldTest.java,v 1.9 2008-06-04 14:00:05 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -118,17 +120,22 @@ public class XmlFieldTest  extends TestCase {
     };
 
     public void testRichToXML() {
+        List<String> errors = new ArrayList<String>();
         for (String[] testCase : RICH_TO_XML_CASES) {
             StringObject in = new StringObject(testCase[0]);
             XmlField.handleRich(in,
                                 XmlField.SECTIONS,
-                                XmlField.REMOVE_NEWLINES,
+                                XmlField.LEAVE_NEWLINES,
                                 XmlField.SURROUNDING_P,
                                 XmlField.LISTS_INSIDE_P);
-            result = ignoreNL(in);
+            result         = ignoreNL(in);
             expectedResult = testCase[1];
-            assertTrue("\n" + expectedResult + "\n!=\n" + result, expectedResult.equals(result));
+            if (! expectedResult.equals(result)) {
+                errors.add("\n" + expectedResult + "\n!=\n" + result);
+            }
         }
+        assertTrue("" + errors, errors.size() == 0);
+
     }
 
 
