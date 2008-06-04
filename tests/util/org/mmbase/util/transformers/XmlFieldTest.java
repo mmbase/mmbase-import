@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Currently only tests a small part of the XmlField functionality.
  *
  * @author Simon Groenewolt (simon@submarine.nl)
- * @version $Id: XmlFieldTest.java,v 1.7 2008-06-04 13:23:20 michiel Exp $
+ * @version $Id: XmlFieldTest.java,v 1.8 2008-06-04 13:44:07 michiel Exp $
  */
 public class XmlFieldTest  extends TestCase {
 
@@ -108,9 +108,13 @@ public class XmlFieldTest  extends TestCase {
         {"$TITEL\n\n$$SUBTITEL\n*hallo* hoe gaat het",
          "<section><h>TITEL</h><section><h>SUBTITEL</h><p><strong>hallo</strong> hoe gaat het</p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\n* a\n* b\n* c",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><ol><li>a</li><li>b</li><li>c</li></ol></section></section>"},
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"},
         {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c",
-         "<section><h>TITEL</h><section><h>SUBTITEL</h><ol><li>a</li><li>b</li><li>c</li></ol></section></section>"}
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\nbla",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol>bla</p></section></section>"},
+        {"$TITEL\n\n$$SUBTITEL\n\n* a\n* b\n* c\n\nbla",
+         "<section><h>TITEL</h><section><h>SUBTITEL</h><p><ol><li>a</li><li>b</li><li>c</li></ol></p><p>bla</p></section></section>"}
     };
 
     public void testRichToXML() {
