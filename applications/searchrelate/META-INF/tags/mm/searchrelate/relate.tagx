@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relate.tagx,v 1.24 2008-06-03 11:51:10 michiel Exp $
+      @version $Id: relate.tagx,v 1.25 2008-06-04 14:11:14 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -71,9 +71,7 @@
     <c:if test="${! empty submit}">
       <!-- if a submit id is given, commit the search/relate on click of that element -->
          $("${submit}").click(function(el) {
-            return $("#mm_related_${seq}")[0].relater.commit(el);
-         });
-    </c:if>
+            return $("#mm_related_${seq}")[0].relater.commit(el); });</c:if>
       $("#mm_related_${seq}").each(function() {
     <c:if test="${! empty pagesize}">  this.relater.setPageSize(${pagesize}); </c:if>
     <c:if test="${! empty maxpages}"> this.relater.setMaxPages(${maxpages}); </c:if>
