@@ -2,7 +2,7 @@
 
 
 MMBase Build File
-$Id: build.xml,v 1.172 2008-04-11 09:11:44 nklasens Exp $
+$Id: build.xml,v 1.173 2008-06-04 09:48:04 ernst Exp $
 =================
 
 This build file can be used to build the following from CVS or from the source
@@ -649,7 +649,7 @@ Build-compiler: ${build.compiler}
           depends="war,minimalistic.war"
   />
 
-  <target name="webapp" depends="lib.release,web,jar,applications" />
+  <target name="webapp" depends="lib.release,web,jar,applications" description="build the mmbase webapp"/>
 
   <target name="war" description="Create a MMBase war-file" depends="webapp">
     <war warfile="${build.dir}/mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
