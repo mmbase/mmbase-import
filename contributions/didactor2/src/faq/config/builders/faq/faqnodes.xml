@@ -1,23 +1,20 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="faqnodes" maintainer="didactor.nl" version="3" extends="navigationnodes">
-  <status>active</status>
+<?xml version="1.0" ?>
+<builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder http://www.mmbase.org/xmlns/builder.xsd"
+    name="faqnodes" maintainer="didactor.nl" version="3" extends="navigationnodes">
 
-  <classfile>org.mmbase.module.builders.Dummy</classfile>
   <searchage>1000</searchage>
 
   <names>
-    <!-- singles per language as defined by ISO 639 -->
     <singular xml:lang="en">Faqnode</singular>
     <singular xml:lang="nl">Faqnode</singular>
-  
-    <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Faqnodes</plural>
     <plural xml:lang="nl">Faqnodes</plural>
   </names>
 
   <descriptions>
-    <!-- descriptions per language as defined by ISO 639  -->
     <description xml:lang="en">Faq Node</description>
     <description xml:lang="nl">Faq Node</description>
   </descriptions>
