@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: delete.tagx,v 1.3 2008-06-05 13:34:24 michiel Exp $
+      @version $Id: delete.tagx,v 1.4 2008-06-05 14:25:50 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -14,6 +14,9 @@
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String" />
   <jsp:directive.attribute name="source"       required="true" />
+  <jsp:directive.attribute name="confirm"      type="java.lang.Boolean"
+                           description="Whether deleting must be confirmed"
+                           />
 
 
   <mm:import id="icons">${empty icondir ? '/mmbase/style/images' : icondir}</mm:import>
@@ -21,7 +24,8 @@
 
 
   <mm:link page="/mmbase/searchrelate/list/delete.jspx" referids="_node@n,source">
-    <a class="delete" href="${_}">
+    <a class="delete ${empty confirm or ! confirm ? '' : 'confirm'}"
+       href="${_}">
       <img class="icon" alt="-"
            src="${mm:link(deleteicon)}" />
     </a>
