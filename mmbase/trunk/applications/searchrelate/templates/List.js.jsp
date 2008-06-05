@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.10 2008-06-05 13:57:20 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.11 2008-06-05 14:25:50 michiel Exp $
  */
 
 
@@ -173,19 +173,27 @@ List.prototype.bindCreate = function(a) {
 List.prototype.bindDelete = function(a) {
     a.list = this;
     $(a).click(function(ev) {
-	var url = a.href;
-	var params = {};
-	$.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
-		complete: function(res, status){
-		    if ( status == "success" || status == "notmodified" ) {
-			var li = $(a).parents("li")[0];
-			a.list.validator.removeValidation(li);
-			var ol = $(a).parents("ol")[0];
-			ol.removeChild(li);
-			a.list.executeCallBack("delete", li);
+	var really = true;
+	if ($(a).hasClass("confirm")) {
+	    $($(a).parents("li")[0]).addClass("highlight");
+	    really = confirm("Really");
+	    $($(a).parents("li")[0]).removeClass("highlight");
+	}
+	if (really) {
+	    var url = a.href;
+	    var params = {};
+	    $.ajax({async: true, url: url, type: "GET", dataType: "xml", data: params,
+		    complete: function(res, status){
+			if ( status == "success" || status == "notmodified" ) {
+			    var li = $(a).parents("li")[0];
+			    a.list.validator.removeValidation(li);
+			    var ol = $(a).parents("ol")[0];
+			    ol.removeChild(li);
+			    a.list.executeCallBack("delete", li);
+			}
 		    }
-		}
-	       });
+		   });
+	}
 	return false;
     });
 
