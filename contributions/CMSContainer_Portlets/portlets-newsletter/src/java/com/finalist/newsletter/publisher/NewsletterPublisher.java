@@ -96,7 +96,7 @@ public class NewsletterPublisher {
       Node newsletterPublicationNode = cloud.getNode(publication.getId());
       NodeList attachmentNodes = newsletterPublicationNode.getRelatedNodes("attachments");
       Multipart multipart = new MimeMultipart();
-      BodyPart mdp = new MimeBodyPart();
+      MimeBodyPart mdp = new MimeBodyPart();
       try {
          mdp.setContent(getBody(publication, subscription), subscription.getMimeType());
          multipart.addBodyPart(mdp);
@@ -127,7 +127,7 @@ public class NewsletterPublisher {
                byte[] bytes = node.getByteValue("handle");
                ByteArrayDataSource bads = new ByteArrayDataSource(bytes, null);
 
-               BodyPart messageBodyPart = new MimeBodyPart();
+               MimeBodyPart messageBodyPart = new MimeBodyPart();
                if (mimeType.compareTo(MimeType.image) == 0) {
                   bads = new ByteArrayDataSource(bytes, "image/"
                         + node.getStringValue("itype"));
@@ -168,6 +168,7 @@ public class NewsletterPublisher {
             content = publication.getNewsletter().getTxtempty();
          }
          else {
+            log.info("url---->"+url);
             content = NewsletterGenerator.generate(url, subscription.getMimeType());
          }
          if (null != getPersonalise()) {
