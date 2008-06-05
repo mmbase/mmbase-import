@@ -13,15 +13,19 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.8 2008-04-24 20:00:52 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.9 2008-06-05 13:35:10 michiel Exp $
  */
 
 
-$(document).ready(function() {
+$(document).ready(function(a, b) {
     $(document).find("div.list").each(function() {
-	this.list = new List(this);
+	if (this.list == null) {
+	    this.list = new List(this);
+	}
     });
 });
+
+
 
 
 function List(d) {
@@ -30,9 +34,9 @@ function List(d) {
 
     this.callBack = null; // called on delete and create
 
-    this.type = $(this.div).find("form.list input[name = 'type']")[0].value;
-    this.role = $(this.div).find("form.list input[name = 'role']")[0].value;
-    this.source = $(this.div).find("form.list input[name = 'submit']")[0].value;
+    this.type = this.find(this.div, "form.list").find("input[name = 'type']")[0].value;
+    this.role = this.find(this.div, "form.list").find("input[name = 'role']")[0].value;
+    this.source = this.find(this.div, "form.list").find("input[name = 'submit']")[0].value;
 
     this.lastChange = null;
     this.lastCommit = null;
@@ -40,7 +44,9 @@ function List(d) {
     this.defaultStale = 1000;
 
     this.valid = true;
-    this.validator = new MMBaseValidator(this.div);
+    this.validator = new MMBaseValidator();
+    this.validator.prefetchNodeManager(this.type);
+    this.validator.setup(this.div);
 
     this.validator.validateHook = function(valid) {
 	self.valid = valid;
@@ -50,8 +56,19 @@ function List(d) {
     $.timer(1000, function(timer) {
 	self.commit();
     });
-    $(this.div).find("a.create").each(function() { self.bindCreate(this); });
-    $(this.div).find("a.delete").each(function() { self.bindDelete(this); });
+
+    this.find(this.div, "a.create").each(function() {
+	self.bindCreate(this);
+    });
+    this.find(this.div, "a.delete").each(function() {
+	self.bindDelete(this);
+    });
+
+
+    //console.log($(this.div).find("div.list").remove().find("a.create").end());
+
+    //$(this.div).find("*").not("div.list").not("div.list *").find("a.create").each(function() {
+    //$(this.div).find("a.delete").each(function() { self.bindDelete(this); });
 
     $(window).bind("beforeunload",
 		   function(ev) {
@@ -72,6 +89,35 @@ function List(d) {
     this.setTabIndices();
     $(this.div).trigger("mmsrRelatedNodesReady", [self]);
 }
+
+
+
+
+/**
+ * Finds all elements with given node name and class, but ignores everything in a child div.list.
+ */
+List.prototype.find = function(el, selector, result) {
+    if (result == null) {
+	result = [];
+    }
+    var self = this;
+    $(el).find("> *").each(function() {
+	if ($(this).hasClass("list") && this.nodeName == 'div') {
+
+	} else {
+	    if ($(this).filter(selector).length > 0) {
+		result[result.length] = this;
+	    }
+	    self.find(this, selector, result);
+
+	}
+
+    });
+    return $(result);
+}
+
+
+
 
 /**
  * Effort to get the browsers tab-indices on a logical order
@@ -94,7 +140,7 @@ List.prototype.bindCreate = function(a) {
     $(a).click(function(ev) {
 	var url = a.href;
 	var params = {};
-	$.ajax({url: url, type: "GET", dataType: "xml", data: params,
+	$.ajax({async: false, url: url, type: "GET", dataType: "xml", data: params,
 		complete: function(res, status){
 		    if ( status == "success" || status == "notmodified" ) {
 			var r = $(res.responseText)[0];
@@ -104,10 +150,16 @@ List.prototype.bindCreate = function(a) {
 			    this.value = "";
 			    a.list.validator.validateElement(this);
 			});
-			$(a.list.div).find("ol").append(r);
+			a.list.find(a.list.div, "ol").append(r);
 			a.list.validator.addValidation(r);
-			$(r).find("a.delete").each(function() {
+			a.list.find(r, "a", "delete").each(function() {
 			    a.list.bindDelete(this);
+			});
+			$(r).find("* div.list").each(function() {
+			    var div = this;
+			    if (div.list == null) {
+				div.list = new List(div);
+			    }
 			});
 			a.list.executeCallBack();
 
@@ -154,7 +206,7 @@ List.prototype.needsCommit = function() {
 }
 
 List.prototype.status = function(message) {
-    $(this.div).find(".status").each(function() {
+    this.find(this.div, "span.status").each(function() {
 	$(this).empty();
 	$(this).append(message);
     });
@@ -172,7 +224,7 @@ List.prototype.commit = function(stale, async) {
 	    if (now.getTime() - this.lastChange.getTime() > stale) {
 		this.lastCommit = now;
 		var params = {};
-		$(this.div).find("input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
+		this.find(this.div, "input[checked], input[type='text'], input[type='hidden'], input[type='password'], option[selected], textarea")
 		.each(function() {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
 		});
