@@ -493,6 +493,9 @@ public abstract class NewsletterUtil {
    }
    
    public static void addScheduleNode(Node newsletterNode, NodeManager scheduleNodeManager) {
+      if(StringUtils.isEmpty(newsletterNode.getStringValue("schedule"))) {
+         return;
+      }
       Node scheduleNode = scheduleNodeManager.createNode();
       scheduleNode.setStringValue("expression",newsletterNode.getStringValue("schedule"));
       scheduleNode.setLongValue("createdatetime",System.currentTimeMillis());
