@@ -5,7 +5,7 @@
     xmlns:di="http://www.didactor.nl/ditaglib_1.0"
     version="2.0">
   <jsp:directive.tag
-      description="This tag produces 1 div, perhpas with a background image, defined by the current node (related to by role 'background'" />
+      description="This tag produces 1 div, perhaps with a background image, defined by the current node (related to by role 'background')" />
 
   <jsp:directive.attribute name="styleClass"        />
 
