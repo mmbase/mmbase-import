@@ -13,11 +13,11 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.9 2008-06-05 13:35:10 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.10 2008-06-05 13:57:20 michiel Exp $
  */
 
 
-$(document).ready(function(a, b) {
+$(document).ready(function() {
     $(document).find("div.list").each(function() {
 	if (this.list == null) {
 	    this.list = new List(this);
@@ -152,7 +152,7 @@ List.prototype.bindCreate = function(a) {
 			});
 			a.list.find(a.list.div, "ol").append(r);
 			a.list.validator.addValidation(r);
-			a.list.find(r, "a", "delete").each(function() {
+			a.list.find(r, "a.delete").each(function() {
 			    a.list.bindDelete(this);
 			});
 			$(r).find("* div.list").each(function() {
@@ -161,7 +161,7 @@ List.prototype.bindCreate = function(a) {
 				div.list = new List(div);
 			    }
 			});
-			a.list.executeCallBack();
+			a.list.executeCallBack("create", r);
 
 		    }
 		}
@@ -182,7 +182,7 @@ List.prototype.bindDelete = function(a) {
 			a.list.validator.removeValidation(li);
 			var ol = $(a).parents("ol")[0];
 			ol.removeChild(li);
-			a.list.executeCallBack();
+			a.list.executeCallBack("delete", li);
 		    }
 		}
 	       });
@@ -191,9 +191,9 @@ List.prototype.bindDelete = function(a) {
 
 }
 
-List.prototype.executeCallBack = function() {
+List.prototype.executeCallBack = function(type, element) {
     if (this.callBack != null) {
-	this.callBack(self);
+	this.callBack(self, type, element);
     } else {
     }
 
