@@ -26,7 +26,7 @@ import com.finalist.cmsc.repository.RepositoryUtil;
 import com.finalist.cmsc.struts.MMBaseAction;
 
 public class ContentAction extends MMBaseAction {
-   private static boolean flag;
+   
    @Override
    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
          HttpServletResponse response, Cloud cloud) throws Exception {
@@ -51,14 +51,7 @@ public class ContentAction extends MMBaseAction {
          orderby = null;
       }
       if (StringUtils.isEmpty(direction)) {
-    	  if(flag==true){
-    		  direction="down";
-    		  flag=false;
-    	  }else{
-    		  direction="up";
-    		  flag=true;
-    	  }
-         //direction = null;
+    	 direction = null;
       }
 
       // Set the offset (used for paging).
@@ -80,7 +73,8 @@ public class ContentAction extends MMBaseAction {
          Node channel = cloud.getNode(parentchannel);
          NodeList elements = RepositoryUtil.getLinkedElements(channel, null, orderby, direction, false, offset*maxNumber, maxNumber, -1, -1, -1);
          int elementCount = RepositoryUtil.countLinkedContent(channel);
-
+         addToRequest(request, "direction", direction);
+         addToRequest(request, "orderby", orderby);
          addToRequest(request, "elements", elements);
          addToRequest(request, "elementCount", Integer.toString(elementCount));
 

@@ -39,15 +39,35 @@ function move(direction, objectNumber, channel) {
     document.location = url;
 }
 
-function sortByType(channel){
-         var url = 'Content.do?orderby=otype&parentchannel=' + channel;
-         document.location = url;
-	} 
+
 	
-function sortByTitle(channel){
-         var url = 'Content.do?orderby=title&parentchannel=' + channel;
-         document.location = url;
-	} 
+function sortBy(orderColumn, channel) {
+    var offset = document.forms[0].offset.value;
+    var oldOrderColumn = document.forms[0].order.value;
+    
+    if (oldOrderColumn == orderColumn) {
+       // order column is not changed so change direction
+       var oldDirection = document.forms[0].direction.value;
+       
+       if (oldDirection == 'down') {
+          document.forms[0].direction.value = 'up';
+       }
+       else {
+          document.forms[0].direction.value = 'down';
+       }
+    }
+    else {
+       document.forms[0].order.value = orderColumn;
+       document.forms[0].direction.value = 'down';
+    }
+    newDirection=document.forms[0].direction.value;
+    type=document.forms[0].order.value;
+    var url = 'Content.do?orderby='+type+'&parentchannel=' + channel+'&direction='+newDirection+'&offset='+offset;
+    
+    document.location = url;
+    
+ }	
+
 
 var moveContentNumber;
 var moveParentChannel;

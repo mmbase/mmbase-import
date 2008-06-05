@@ -59,7 +59,9 @@
             <input type="hidden" name="action" value="create"/>
             <input type="hidden" name="creation" value="<mm:write referid="parentchannel" />"/>
             <input type="hidden" name="returnurl" value="<%= returnurl %>"/>
-
+            <input type="hidden" name="order" value="${orderby}" />
+            <input type="hidden" name="direction" value="${direction}"/>
+            <input type="hidden" name="offset" value="${param.offset}"/>
             <select name="contenttype">
                 <c:forEach var="type" items="${typesList}">
                     <option value="${type.value}">${type.label}</option>
@@ -115,7 +117,7 @@
 <c:set var="listSize" value="${elementCount}"/>
 <c:set var="offset" value="${param.offset}"/>
 <c:set var="extraparams" value="&direction=${param.direction}&parentchannel=${param.parentchannel}"/>
-
+<c:set var="orderby" value="${param.orderby}" scope="page" />
 <%@ include file="../pages.jsp" %>
 
 
@@ -123,9 +125,9 @@
 <thead>
     <tr>
         <th></th>
-        <th><a href="javascript:sortByType('<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('otype','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.typecolumn"/></a></th>
-        <th><a href="javascript:sortByTitle('<mm:write referid="parentchannel" />')" class="headerlink">
+        <th><a href="javascript:sortBy('title','<mm:write referid="parentchannel" />')" class="headerlink">
         <fmt:message key="content.titlecolumn"/></a></th>
         <th><fmt:message key="content.authorcolumn"/></th>
         <th><fmt:message key="content.lastmodifiedcolumn"/></th>
