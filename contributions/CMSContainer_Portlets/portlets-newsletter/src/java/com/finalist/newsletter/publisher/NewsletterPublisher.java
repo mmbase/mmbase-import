@@ -112,7 +112,7 @@ public class NewsletterPublisher {
          message.setContent(multipart);
       }
       catch (MessagingException e) {
-         e.printStackTrace();
+         log.error(e);
       }
    }
 
@@ -143,7 +143,7 @@ public class NewsletterPublisher {
             }
          }
          catch (MessagingException e) {
-            e.printStackTrace();
+            log.error(e);
          }
       }
    }
