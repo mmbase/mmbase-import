@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.12 2008-06-05 14:28:04 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.13 2008-06-05 15:12:01 michiel Exp $
  */
 
 
@@ -237,7 +237,7 @@ List.prototype.commit = function(stale, async) {
 		    params[this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
 		});
 		var self = this;
-		this.status("<img src='${mm:link('/mmbase/ajax-loader.gif')}' />");
+		this.status("<img src='${mm:link('/mmbase/style/ajax-loader.gif')}' />");
 		$.ajax({ type: "POST",
 			 async: async == null ? true : async,
 			 url: "${mm:link('/mmbase/searchrelate/list/save.jspx')}",
