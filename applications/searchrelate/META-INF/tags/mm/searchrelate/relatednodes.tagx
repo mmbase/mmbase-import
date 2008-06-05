@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.7 2008-06-05 10:05:00 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.8 2008-06-05 13:34:24 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -26,8 +26,12 @@
 
   <jsp:directive.attribute name="fields"      type="java.lang.String" />
 
-  <jsp:directive.attribute name="icondir"      type="java.lang.String" />
-  <jsp:directive.attribute name="li"           type="java.lang.String" />
+  <jsp:directive.attribute name="icondir"      type="java.lang.String"
+                           description="Directory from which to take create/delete icons, can be empty for default icons."
+                           />
+  <jsp:directive.attribute name="li"           type="java.lang.String"
+                           description="Jsp to use to present one li-item, can be empty for a default presentation."
+                           />
 
   <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
   <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
@@ -52,6 +56,7 @@
         <input type="hidden" name="fields" value="${fields}" />
         <ol>
           <mm:node id="source" />
+
           <mm:relatednodes type="${type}"
                            role="${r}"
                            orderby="${order}">
