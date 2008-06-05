@@ -13,7 +13,7 @@
  * The user does not need to push a commit button. All data is implicitely committed (after a few second of inactivity, or before unload).
  *
  * @author Michiel Meeuwissen
- * @version $Id: List.js.jsp,v 1.11 2008-06-05 14:25:50 michiel Exp $
+ * @version $Id: List.js.jsp,v 1.12 2008-06-05 14:28:04 michiel Exp $
  */
 
 
@@ -176,7 +176,7 @@ List.prototype.bindDelete = function(a) {
 	var really = true;
 	if ($(a).hasClass("confirm")) {
 	    $($(a).parents("li")[0]).addClass("highlight");
-	    really = confirm("Really");
+	    really = confirm('<fmt:message key="really" />');
 	    $($(a).parents("li")[0]).removeClass("highlight");
 	}
 	if (really) {
