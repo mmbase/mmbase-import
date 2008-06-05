@@ -6,7 +6,7 @@
     >
   <!--
       @author Michiel Meeuwissen
-      @version $Id: relatednodes.tagx,v 1.6 2008-04-24 09:56:07 michiel Exp $
+      @version $Id: relatednodes.tagx,v 1.7 2008-06-05 10:05:00 michiel Exp $
   -->
   <jsp:directive.tag
       example="See /mmexamples/searchrelate"
@@ -15,17 +15,22 @@
 
 
   <jsp:directive.attribute name="type"        type="java.lang.String"  required="true"
-                           description="Type of mmbase related nodes" />
+                           description="Type of mmbase related nodes. Like 'type' of mm:relatednodes." />
 
-  <jsp:directive.attribute name="orderby"     type="java.lang.String" />
-  <jsp:directive.attribute name="role"        type="java.lang.String" />
+  <jsp:directive.attribute name="role"        type="java.lang.String"
+                           description="Like 'role' of mm:relatednodes, but defaults to 'posrel'"
+                           />
+  <jsp:directive.attribute name="orderby"     type="java.lang.String"
+                           description="Like orderby of mm:relatednodes, but default to &lt;role&gt;.pos"
+                           />
+
   <jsp:directive.attribute name="fields"      type="java.lang.String" />
 
   <jsp:directive.attribute name="icondir"      type="java.lang.String" />
   <jsp:directive.attribute name="li"           type="java.lang.String" />
 
   <mm:import id="r">${empty role ? 'posrel' : role}</mm:import>
-  <mm:import id="order">${empty orderby ? r : role}${empty orderby ? '.pos' : ''}</mm:import>
+  <mm:import id="order">${empty orderby ? r : orderby}${empty orderby ? '.pos' : ''}</mm:import>
   <mm:import id="f">${fields}</mm:import>
 
   <mm:import from="request" id="seq" externid="mm_list_sequence" vartype="integer">0</mm:import>
