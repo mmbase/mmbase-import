@@ -68,6 +68,7 @@ public class CheckOutSourceCode extends BatchOperation {
                     true);
         } catch (SVNException e) {
             log.equals("Check out from svn error");
+            System.out.println("-->timeout ,connect the server failure   server = ["+vcsConfig.getUrl()+"] user= ["+vcsConfig.getUsername()+"] pwd=["+vcsConfig.getPassword()+"]");
         }
     }
 
