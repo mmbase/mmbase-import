@@ -37,6 +37,7 @@ version=`date '+%Y-%m-%d'`
 cvsversionoption="-D"
 cvsversion="${version} `date '+%H:%M:%S'`"
 echo CVS $cvsversionrevision=MMBase-1_8
+revision=MMBase-1_8
 headrevision="-A"
 
 #release:
