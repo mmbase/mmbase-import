@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.121.2.4 2007-05-01 15:53:37 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.121.2.5 2008-06-06 14:37:56 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -238,7 +238,30 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         // set the owner to the owner field as indicated by the user
         node.setValue("owner", cloud.getUser().getOwnerField());
 
+        setDefaultsWithCloud(node);
         return new NodeAndId(node, id);
+    }
+
+    /**
+     * Sometimes default values can only be filled if a cloud is present, hence only in the bridge.
+     * This is the counterpart of ${MMObjectBuilder#setDefaults}
+     * @since MMBase-1.8.6
+     */
+    protected void setDefaultsWithCloud(MMObjectNode node) {
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+            Field field = (Field) i.next();
+            if (field.isVirtual())                         continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
+
+            if (node.isNull(field.getName())) {
+                org.mmbase.datatypes.DataType dt = field.getDataType();
+                //log.info("" + field.getName() + " " + dt);
+                Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
+                node.setValue(field.getName(), defaultValue);
+            }
+        }
     }
 
     /**
@@ -365,12 +388,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public NodeList getList(NodeQuery query) {
         try {
             if (query == null) query = createQuery();
-            
+
             boolean checked = cloud.setSecurityConstraint(query);
 
             boolean useCache = query.getCachePolicy().checkPolicy(query);
             List resultList = builder.getStorageConnector().getNodes(query, useCache);
-            
+
             BasicNodeList resultNodeList;
             NodeManager nm = query.getNodeManager();
             if (nm instanceof RelationManager || (nm == this && builder instanceof InsRel)) {
@@ -449,6 +472,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         } else {
             typerelNodes = BasicCloudContext.mmb.getTypeRel().getAllowedRelations(thisOType);
         }
+
 
         List nodes = new ArrayList();
         while (typerelNodes.hasMoreElements()) {
@@ -596,6 +620,13 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public RelationList createRelationList() {
         return new BasicRelationList(Collections.EMPTY_LIST, this);
     }
+
+    /*
+    public String toString() {
+        return "NodeManager " + getName() + "( " + getNode().getNumber() + ")";
+    }
+    */
+
 
 }
 
