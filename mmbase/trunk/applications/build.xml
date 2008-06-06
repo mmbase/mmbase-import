@@ -310,7 +310,7 @@ Applications build file
     </ant>
   </target>
 
-  <target name="install" depends="init,minimalistic.install,install.rmmci,install.mynews,install.resources,install.jumpers">
+  <target name="install" depends="init,minimalistic.install,install.rmmci,install.mynews,install.resources">
 
     <ant dir="editwizard"    target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
