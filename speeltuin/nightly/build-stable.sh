@@ -34,18 +34,18 @@ echo generating version, and some directories
 
 #nightly build:
 version=`date '+%Y-%m-%d'`
-cvsversion="-D ${version}T`date '+%H:%M:%S'`"
-
-echo $cvsversion
-
-#revision=MMBase-1_8
-#headrevision="-A"
+cvsversionoption="-D"
+cvsversion="${version} `date '+%H:%M:%S'`"
+echo CVS $cvsversionrevision=MMBase-1_8
+headrevision="-A"
 
 #release:
-version=MMBase-1_8_6_rc1
-cvsversion=
-revision=MMBase-1_8_6_rc1
-#headrevision="-r MMBase-1_8_5_Final"
+#version=MMBase-1_8_6_rc1
+#cvsversion=
+#revision=MMBase-1_8_6_rc1
+#headrevision="-r MMBase-1_8_6_rc1"
+
+echo $cvsversion
 
 # STABLE branch
 builddir="/home/nightly/builds/stable/${version}"
@@ -67,18 +67,19 @@ rm -rf ${builddir}/*
 echo cleaning in ${STABLE} | tee  ${builddir}/messages.log
 find ${STABLE} -name build | xargs rm -r
 
-echo update cvs to `pwd`  using -r '${cvsversion}' | tee -a  ${builddir}/messages.log
+
+echo update cvs to `pwd`  using -r '${cvsversionoption} ${cvsversion}' | tee -a  ${builddir}/messages.log
 
 if ( true ) ; then
     for i in '.' 'applications' 'contributions'; do
-    echo updating `pwd`/$i using     ${CVS} -q update -d -P -l ${cvsversion} -r "${revision}"  $i | tee -a ${builddir}/messages.log;
-    ${CVS} -q update -d -P -l ${cvsversion} -r "${revision}"  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    echo updating `pwd`/$i using     ${CVS} -q update -d -P -l ${cvsversionoption} ${cvsversion} -r "${revision}"  $i | tee -a ${builddir}/messages.log;
+    ${CVS} -q update -d -P -l ${cvsversionoption} "${cvsversion}" -r "${revision}"  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     for i in 'applications/build.xml' 'contributions/build.xml' 'download.xml' ; do
-    echo updating `pwd`/$i to  HEAD | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
-    ${CVS} -q update -d -P -l ${cvsversion} ${headrevision}  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+    echo updating `pwd`/$i to  HEAD  using -l ${cvsversionoption} ${cvsversion} ${headrevision} | tee -a ${builddir}/messages.log 2>> ${builddir}/errors.log
+    ${CVS} -q update -d -P -l ${cvsversionoption} "${cvsversion}" ${headrevision}  $i | tee -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
-    echo "Build from ${revision} ${cvsversion} against java 1.4 are" > ${builddir}/README
+    echo "Build from ${revision} ${cvsversionoption} ${cvsversion} against java 1.4 are" > ${builddir}/README
     for i in 'src' 'documentation' 'tests' 'config' 'html' \
         'applications/taglib' 'applications/editwizard' 'applications/dove' 'applications/crontab' 'applications/cloudcontext' \
         'applications/rmmci' 'applications/vwms' 'applications/scan' 'applications/clustering' 'applications/oscache-cache' \
@@ -88,16 +89,16 @@ if ( true ) ; then
     ; do
       echo updating `pwd`/$i | tee -a ${builddir}/messages.log
       echo $i >> ${builddir}/README
-      ${CVS} -q update -d -P ${cvsversion} -r "${revision}" $i | tee  -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
+      ${CVS} -q update -d -P ${cvsversionoption} "${cvsversion}" -r "${revision}" $i | tee  -a  ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
     echo "==========UPDATING TO HEAD========" >> ${builddir}/messages.log
-    echo "Build from HEAD ${cvsversion} against java 1.5 are" >> ${builddir}/README
+    echo "Build from HEAD ${cvsversionoption} ${cvsversion} against java 1.5 are" >> ${builddir}/README
     for i in 'applications/email' 'contributions/lucene' 'contributions/mmbob' 'contributions/thememanager' 'contributions/didactor2' 'applications/richtext' \
         'applications/jumpers' 'applications/commandserver' 'applications/notifications' 'contributions/poll' 'contributions/calendar' \
     ; do
     echo updating to HEAD `pwd`/$i | tee -a   ${builddir}/messages.log
     echo $i >> ${builddir}/README
-    ${CVS} -q update -d -P ${cvsversion} ${headrevision} $i | tee -a   ${builddir}/messages.log 2>> ${builddir}/errors.log
+    ${CVS} -q update -d -P ${cvsversionoption} "${cvsversion}" ${headrevision} $i | tee -a   ${builddir}/messages.log 2>> ${builddir}/errors.log
     done
 fi
 stableoptions="-Doptional.lib.dir=${optdir} -Dbuild.documentation=false -Ddestination.dir=${builddir} -Ddownload.dir=${downloaddir}"
@@ -106,11 +107,22 @@ echo "options : ${stableoptions}"
 echo "Ant Command: ${antcommand} ${stableoptions}  "
 
 if ( true ) ; then
-    echo "Starting nightly build" + `pwd`
+    echo "Starting nightly build" + `pwd` | tee -a ${builddir}/messages.log
+
+    echo "JAVA 14 from now on" | tee -a ${builddir}/messages.log
     export JAVA_HOME=${JAVA_HOME14}
     export JAVAC=${JAVAC14}
+    cd ${STABLE}
+    ${antcommand} jar ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+
+    echo "JAVA 14 from now on" | tee -a ${builddir}/messages.log
+    export JAVA_HOME=${JAVA_HOME14}
+    export JAVAC=${JAVAC14}
+    echo "BINDIST DOWING NOW" | tee -a ${builddir}/messages.log
+    cd ${STABLE}
     ${antcommand} bindist ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     if ( true ) ; then
+    echo "APPS14 building now" | tee -a ${builddir}/messages.log
     cd ${STABLE}/applications
     ${antcommand} all18_14 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
     cd ${STABLE}/contributions
@@ -129,11 +141,14 @@ if ( true ) ; then
     cd ${STABLE}/contributions
     pwd >> ${builddir}/messages.log 
     ${antcommand} -Djava.source.version=1.5 all18_15 ${stableoptions} >> ${builddir}/messages.log 2>> ${builddir}/errors.log
+
+
+
     fi
 fi
 
 cd ${STABLE}
-for i in `find . -regex ".*/mmbase-.*\.zip"` ; do
+for i in `find . -regex ".*/mmbase.*\.zip"` ; do
     cp  -a $i ${builddir}
 done
 
