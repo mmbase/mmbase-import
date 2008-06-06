@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.134 2008-04-12 11:18:09 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.135 2008-06-06 14:38:59 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager {
@@ -240,8 +240,32 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
         // set the owner to the owner field as indicated by the user
         node.setValue("owner", cloud.getUser().getOwnerField());
 
+        setDefaultsWithCloud(node);
         return new NodeAndId(node, id);
     }
+
+    /**
+     * Sometimes default values can only be filled if a cloud is present, hence only in the bridge.
+     * This is the counterpart of ${MMObjectBuilder#setDefaults}
+     * @since MMBase-1.8.6
+     */
+    protected void setDefaultsWithCloud(MMObjectNode node) {
+        for (Iterator i = getFields().iterator(); i.hasNext(); ) {
+            Field field = (Field) i.next();
+            if (field.isVirtual())                         continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_NUMBER))      continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OWNER))       continue;
+            if (field.getName().equals(MMObjectBuilder.FIELD_OBJECT_TYPE)) continue;
+
+            if (node.isNull(field.getName())) {
+                org.mmbase.datatypes.DataType dt = field.getDataType();
+                //log.info("" + field.getName() + " " + dt);
+                Object defaultValue = dt.getDefaultValue(getCloud().getLocale(), getCloud(), field);
+                node.setValue(field.getName(), defaultValue);
+            }
+        }
+    }
+
 
     /**
      * BasicNodeManager is garantueed to return BasicNode's. So extendsion must override this, and not {@link #createNode}
@@ -372,7 +396,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager {
 
             boolean useCache = query.getCachePolicy().checkPolicy(query);
             List<MMObjectNode> resultList = builder.getStorageConnector().getNodes(query, useCache);
-            
+
             if (! checked) {
                 resultList = cloud.checkNodes(resultList, query);
             }
