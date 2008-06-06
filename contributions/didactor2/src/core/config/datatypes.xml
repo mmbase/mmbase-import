@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd">
 
-  <!-- @version $Id: datatypes.xml,v 1.7 2008-03-28 13:12:39 michiel Exp $
+  <!-- @version $Id: datatypes.xml,v 1.8 2008-06-06 14:40:33 michiel Exp $
 
   These are didactor specific datatypes.
 
@@ -14,6 +14,13 @@
 
   The convention for the id's is didactor_[builder name]_[field name]
   -->
+
+  <datatype base="node" id="didactor_education">
+    <description>
+      A field pointing directory to the associated education object.
+    </description>
+    <class name="nl.didactor.datatypes.Education" />
+  </datatype>
 
   <datatype id="didactor_people_lastname" base="line">
     <class name="nl.didactor.datatypes.UserName" /> <!-- this makes sure that some values are 'disallowed' -->
