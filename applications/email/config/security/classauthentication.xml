@@ -5,7 +5,7 @@
   <authenticate class=".*components\.email.*">
     <property name="rank" value="administrator" />
   </authenticate>
-  <authenticate class=".*">
+  <authenticate class=".*" weight="-10000">
     <property name="rank" value="administrator" />
   </authenticate>
 
