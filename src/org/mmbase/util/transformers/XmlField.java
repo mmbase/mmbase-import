@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.56 2008-06-09 09:17:45 michiel Exp $
+ * @version $Id: XmlField.java,v 1.57 2008-06-09 14:38:57 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -99,22 +99,23 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                     obj.insert(pos, "\n");
                     pos += 1;
                 }
-                obj.insert(pos, "<" + listTag(listChar) + ">\r<li>"); // insert 9 chars.
-                pos += 9;
+                obj.insert(pos, "<" + listTag(listChar) + "><li>"); // insert 9 chars.
+                pos += 8;
 
             } else { // already in list
                 if (obj.charAt(pos + 1) != listChar) { // end of list
                     obj.delete(pos, 1); // delete \n
-                    obj.insert(pos, "</li>\r</" + listTag(listChar) + ">\n");
-                    pos += 12;
+                    obj.insert(pos, "</li></" + listTag(listChar) + ">\n");
+                    pos += 11;
                     inList--;
                 } else { // not yet end
                     obj.delete(pos, 2); // delete \n-
                     // remove spaces..
-                    while (pos < obj.length() && obj.charAt(pos) == ' ')
+                    while (pos < obj.length() && obj.charAt(pos) == ' ') {
                         obj.delete(pos, 1);
-                    obj.insert(pos, "</li>\r<li>");
-                    pos += 10;
+                    }
+                    obj.insert(pos, "</li><li>");
+                    pos += 9;
                 }
             }
             if (inList > 0) { // search for new line
@@ -499,8 +500,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 }
             }
             // next paragraph.
-            obj.insert(pos, "\r<p>");
-            pos += skip + 4;
+            obj.insert(pos, "<p>");
+            pos += skip + 3;
             inParagraph = true;
         }
         if (inParagraph) { // in current impl. this is always true
