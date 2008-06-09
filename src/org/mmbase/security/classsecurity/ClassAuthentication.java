@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  *
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.17 2007-02-11 19:45:04 nklasens Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.18 2008-06-09 09:53:20 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -87,6 +87,7 @@ public class ClassAuthentication {
                     Node node = authenticates.item(i);
                     String clazz    = node.getAttributes().getNamedItem("class").getNodeValue();
                     String method   = node.getAttributes().getNamedItem("method").getNodeValue();
+                    int    weight   = Integer.parseInt(node.getAttributes().getNamedItem("weight").getNodeValue());
                     Node property   = node.getFirstChild();
                     Map<String, String> map = new HashMap<String, String>();
                     while (property != null) {
@@ -97,17 +98,19 @@ public class ClassAuthentication {
                         }
                         property = property.getNextSibling();
                     }
-                    authenticatedClasses.add(new Login(Pattern.compile(clazz), method, Collections.unmodifiableMap(map)));
+                    authenticatedClasses.add(new Login(Pattern.compile(clazz), method, Collections.unmodifiableMap(map), weight));
                 }
             } catch (Exception e) {
                 log.error(u + " " + e.getMessage(), e);
             }
         }
 
+        Collections.sort(authenticatedClasses);
+
         { // last fall back, everybody may get the 'anonymous' cloud.
             Map<String, String> map = new HashMap<String, String>();
             map.put("rank", "anonymous");
-            authenticatedClasses.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map)));
+            authenticatedClasses.add(new Login(Pattern.compile(".*"), "class", Collections.unmodifiableMap(map), Integer.MIN_VALUE));
         }
 
         log.service("Class authentication: " + authenticatedClasses);
@@ -174,21 +177,26 @@ public class ClassAuthentication {
     /**
      * A structure to hold the login information.
      */
-    public static class  Login {
-        Pattern classPattern;
-        String application;
-        Map<String, String>    map;
-        Login(Pattern p , String a, Map<String, String> m) {
+    public static class  Login implements Comparable<Login> {
+        final Pattern classPattern;
+        final String application;
+        final Map<String, String>    map;
+        final int    weight;
+        Login(Pattern p , String a, Map<String, String> m, int w) {
             classPattern = p;
             application = a;
             map = m;
+            weight = w;
         }
 
         public Map<String, String> getMap() {
             return map;
         }
         public String toString() {
-            return classPattern.pattern() + (application.equals("class") ? "" : ": " + application);
+            return "" + weight + ":" + classPattern.pattern() + (application.equals("class") ? "" : ": " + application) + " " + map;
+        }
+        public int compareTo(Login o) {
+            return o.weight - this.weight;
         }
     }
 

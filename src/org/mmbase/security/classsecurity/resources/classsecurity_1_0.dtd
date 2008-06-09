@@ -2,14 +2,14 @@
 
 <!ELEMENT authentication EMPTY >
 <!ATTLIST authentication class NMTOKEN #REQUIRED >
-<!ATTLIST authentication url CDATA #REQUIRED > 
+<!ATTLIST authentication url CDATA #REQUIRED >
 
 <!ELEMENT authenticate ( property*)  >
 <!ATTLIST authenticate  class   CDATA  #REQUIRED >
 <!ATTLIST authenticate  method  CDATA "class" >
-<!ATTLIST authenticate  requestedmethod CDATA #IMPLIED >
+<!ATTLIST authenticate  weight  CDATA "0" >
 
 
 <!ELEMENT property EMPTY >
 <!ATTLIST property  name NMTOKEN #REQUIRED >
-<!ATTLIST property  value CDATA #REQUIRED > 
+<!ATTLIST property  value CDATA #REQUIRED >
